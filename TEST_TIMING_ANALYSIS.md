@@ -140,33 +140,29 @@ Current fast suite estimate after marking additional tests:
 
 4. **Updated Makefile targets:**
    ```makefile
-   test-fast        # Parallel unit tests (~5 min)
-   test-fast-serial # Serial unit tests (debugging)
-   test             # Default pre-commit (~5-7 min)
+   test             # Default daily development (~5-7 min, parallel)
    test-comprehensive # Full suite (~30 min)
    ```
 
 ### Test Categorization Strategy
 
-**Pure Unit Tests (FAST - Parallel):**
-- Mocked dependencies
-- No database connections
-- No FastAPI app initialization
-- No network I/O
-- **Result: 2,065 tests in ~5 minutes**
+**Daily Development Tests (Parallel):**
+- Unit tests + integration tests + verification tests
+- Excludes: slow tests and e2e tests
+- Parallel execution with pytest-xdist
+- **Result: ~2,932 tests in 5-7 minutes**
 
-**Integration-Style Tests (SLOW - Serial):**
-- Full FastAPI TestClient with app initialization
-- ApplicationContainer + middleware stack
-- Database connections
-- Real service dependencies
-- **Result: 1,626 tests excluded from fast suite**
+**Comprehensive Tests (Serial + Long-Running):**
+- ALL tests including slow and e2e tests
+- Performance benchmarks
+- Full integration testing
+- **Result: 4,869 tests in ~30 minutes**
 
 ### Benefits
 
-1. **Local Development:** 5-minute feedback loop for rapid iteration
-2. **CI/CD:** Comprehensive suite still available for thorough validation
-3. **Debugging:** Serial mode available via `test-fast-serial`
+1. **Simplified Workflow:** Single `make test` command for daily development
+2. **Fast Feedback:** 5-7 minute validation before commits
+3. **CI/CD:** Comprehensive suite for thorough validation
 4. **Scalability:** Auto-detection adapts to available CPU cores
 
 ### Performance Analysis
