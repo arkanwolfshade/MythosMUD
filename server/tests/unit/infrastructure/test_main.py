@@ -86,7 +86,7 @@ class TestEndpoints:
 
     def test_get_room_existing(self, client):
         """Test getting an existing room."""
-        with patch.object(client.app.state.persistence, "async_get_room", new_callable=AsyncMock) as mock_get_room:
+        with patch.object(client.app.state.room_service, "get_room", new_callable=AsyncMock) as mock_get_room:
             mock_room = {"id": "test_room", "name": "Test Room"}
             mock_get_room.return_value = mock_room
 
@@ -97,7 +97,7 @@ class TestEndpoints:
 
     def test_get_room_not_found(self, client):
         """Test getting a non-existent room."""
-        with patch.object(client.app.state.persistence, "async_get_room", new_callable=AsyncMock) as mock_get_room:
+        with patch.object(client.app.state.room_service, "get_room", new_callable=AsyncMock) as mock_get_room:
             mock_get_room.return_value = None
 
             response = client.get("/rooms/nonexistent")

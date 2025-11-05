@@ -516,6 +516,7 @@ def test_client(mock_application_container):
 
     from fastapi.testclient import TestClient
 
+    from ..game.player_service import PlayerService
     from ..main import app
     from ..persistence import get_persistence, reset_persistence
     from ..realtime.event_handler import get_real_time_event_handler
@@ -531,15 +532,20 @@ def test_client(mock_application_container):
     app.state.event_handler = get_real_time_event_handler()
     app.state.persistence = get_persistence(event_bus=app.state.event_handler.event_bus)
 
+    # Create real PlayerService with real persistence
+    player_service = PlayerService(app.state.persistence)
+
     # Use the comprehensive mock container
     app.state.container = mock_application_container
-    # Update container's persistence and event_bus with real instances for this test
+    # Update container's persistence, event_bus, and player_service with real instances
     mock_application_container.persistence = app.state.persistence
     mock_application_container.event_bus = app.state.event_handler.event_bus
     mock_application_container.event_handler = app.state.event_handler
+    mock_application_container.player_service = player_service
 
     # Also set these on app.state for backward compatibility
     app.state.event_bus = app.state.event_handler.event_bus
+    app.state.player_service = player_service
 
     return TestClient(app)
 
