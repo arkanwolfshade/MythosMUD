@@ -67,8 +67,13 @@ class TestSSEEventsToken:
         mock_request = Mock(spec=Request)
         mock_request.query_params = {"token": "valid_token"}
 
+        # Mock the connection_manager readiness gate check
+        mock_connection_manager = Mock()
+        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
+
         # Mock dependencies
         with (
+            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.get_persistence") as mock_get_persistence,
             patch("server.api.real_time.game_event_stream") as mock_stream,

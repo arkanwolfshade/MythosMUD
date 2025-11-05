@@ -10,7 +10,11 @@ import pytest
 
 def pytest_collection_modifyitems(items):
     """Add slow marker to all tests in this directory only."""
+    marked_count = 0
     for item in items:
         # Only mark tests that are actually in this directory
-        if "tests/unit/infrastructure" in str(item.fspath):
+        if "tests/unit/infrastructure" in str(item.fspath) or "tests\\unit\\infrastructure" in str(item.fspath):
             item.add_marker(pytest.mark.slow)
+            marked_count += 1
+    if marked_count > 0:
+        print(f"DEBUG: Marked {marked_count} infrastructure tests as slow")
