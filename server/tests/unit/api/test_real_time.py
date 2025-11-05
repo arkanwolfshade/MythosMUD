@@ -31,8 +31,15 @@ class TestSSEEvents:
         mock_request.query_params = Mock()
         mock_request.query_params.get.return_value = None  # No session_id
 
+        # Mock the connection_manager readiness gate check
+        mock_connection_manager = Mock()
+        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
+
         # Mock the game_event_stream function
-        with patch("server.api.real_time.game_event_stream") as mock_stream:
+        with (
+            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
+            patch("server.api.real_time.game_event_stream") as mock_stream,
+        ):
             mock_stream.return_value = ["event1", "event2"]
 
             # Call the endpoint
