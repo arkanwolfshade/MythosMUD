@@ -7,7 +7,10 @@ database initialization, and Argon2 password hashing. They typically have
 
 import pytest
 
-# Mark all tests in this directory as slow
-# Auth tests involve heavy FastAPI app setup, database initialization,
-# and time-intensive password hashing operations - not suitable for rapid feedback
-pytestmark = pytest.mark.slow
+
+def pytest_collection_modifyitems(items):
+    """Add slow marker to all tests in this directory only."""
+    for item in items:
+        # Only mark tests that are actually in this directory
+        if "tests/unit/auth" in str(item.fspath):
+            item.add_marker(pytest.mark.slow)

@@ -200,8 +200,8 @@ class TestRunner:
             Exit code from pytest (0 for success, non-zero for failure)
         """
         if test_paths is None:
-            # Always point to tests under the server directory explicitly
-            test_paths = ["server/tests"]
+            # Always point to tests under the server directory
+            test_paths = ["tests"]
 
         if extra_args is None:
             extra_args = []
@@ -224,17 +224,17 @@ class TestRunner:
         if "-m" not in cmd:
             cmd.extend(["-m", "not e2e"])
 
-        logger.info("Starting test execution", command=" ".join(cmd), working_directory=str(self.project_root))
+        logger.info("Starting test execution", command=" ".join(cmd), working_directory=str(self.server_dir))
 
         # Record start time
         start_time = time.time()
 
         try:
-            # Run pytest
+            # Run pytest from server/ directory so conftest.py files are discovered correctly
+            # This is CRITICAL for pytestmark in conftest.py to work properly
             result = subprocess.run(
                 cmd,
-                # Run from project root to prevent doubling of 'server/' in relative paths
-                cwd=self.project_root,
+                cwd=self.server_dir,  # Changed from project_root to server_dir
                 env=env,
                 capture_output=False,  # Let output go to console
                 text=True,
@@ -254,28 +254,28 @@ class TestRunner:
     def run_unit_tests(self, extra_args: list[str] | None = None) -> int:
         """Run unit tests only."""
         logger.info("Running unit tests")
-        return self.run_tests(test_paths=["server/tests/unit"], extra_args=extra_args, markers="not e2e")
+        return self.run_tests(test_paths=["tests/unit"], extra_args=extra_args, markers="not e2e")
 
     def run_integration_tests(self, extra_args: list[str] | None = None) -> int:
         """Run integration tests only."""
         logger.info("Running integration tests")
-        return self.run_tests(test_paths=["server/tests/integration"], extra_args=extra_args, markers="not e2e")
+        return self.run_tests(test_paths=["tests/integration"], extra_args=extra_args, markers="not e2e")
 
     def run_e2e_tests(self, extra_args: list[str] | None = None) -> int:
         """Run E2E tests only."""
         logger.info("Running E2E tests")
-        return self.run_tests(test_paths=["server/tests/e2e"], extra_args=extra_args, markers="e2e")
+        return self.run_tests(test_paths=["tests/e2e"], extra_args=extra_args, markers="e2e")
 
     def run_all_tests(self, extra_args: list[str] | None = None) -> int:
         """Run all tests (unit, integration, but not E2E by default)."""
         logger.info("Running all tests (excluding E2E)")
-        return self.run_tests(test_paths=["server/tests"], extra_args=extra_args, markers="not e2e")
+        return self.run_tests(test_paths=["tests"], extra_args=extra_args, markers="not e2e")
 
     def run_coverage_report(self) -> int:
         """Generate coverage report only."""
         logger.info("Generating coverage report")
         return self.run_tests(
-            test_paths=["server/tests"], extra_args=["--cov-report=html", "--cov-report=term-missing"], markers="not e2e"
+            test_paths=["tests"], extra_args=["--cov-report=html", "--cov-report=term-missing"], markers="not e2e"
         )
 
 

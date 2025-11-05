@@ -7,6 +7,11 @@ real WebSocket connections, and complete user workflows. They are marked as both
 
 import pytest
 
-# Mark all tests in this directory as both slow and e2e
-# E2E tests require running server/client and test complete workflows
-pytestmark = [pytest.mark.slow, pytest.mark.e2e]
+
+def pytest_collection_modifyitems(items):
+    """Add slow and e2e markers to all tests in this directory only."""
+    for item in items:
+        # Only mark tests that are actually in this directory
+        if "tests/e2e" in str(item.fspath):
+            item.add_marker(pytest.mark.slow)
+            item.add_marker(pytest.mark.e2e)

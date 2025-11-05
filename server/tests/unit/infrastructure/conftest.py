@@ -7,7 +7,10 @@ exclude from the fast test suite.
 
 import pytest
 
-# Mark all tests in this directory as slow
-# Infrastructure tests involve real database setup, dependency injection,
-# and comprehensive service initialization - not suitable for rapid feedback
-pytestmark = pytest.mark.slow
+
+def pytest_collection_modifyitems(items):
+    """Add slow marker to all tests in this directory only."""
+    for item in items:
+        # Only mark tests that are actually in this directory
+        if "tests/unit/infrastructure" in str(item.fspath):
+            item.add_marker(pytest.mark.slow)

@@ -7,7 +7,10 @@ WebSocket connections, and complex service interactions. They typically have
 
 import pytest
 
-# Mark all tests in this directory as slow
-# Integration tests involve full system setup with real dependencies
-# and are not suitable for rapid feedback during development
-pytestmark = pytest.mark.slow
+
+def pytest_collection_modifyitems(items):
+    """Add slow marker to all tests in this directory only."""
+    for item in items:
+        # Only mark tests that are actually in this directory
+        if "tests/integration" in str(item.fspath):
+            item.add_marker(pytest.mark.slow)

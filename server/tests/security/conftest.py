@@ -7,7 +7,10 @@ have 20+ second setup times and are marked as slow to exclude from the fast test
 
 import pytest
 
-# Mark all tests in this directory as slow
-# Security tests involve full app initialization with all middleware,
-# comprehensive security validation, and penetration testing scenarios
-pytestmark = pytest.mark.slow
+
+def pytest_collection_modifyitems(items):
+    """Add slow marker to all tests in this directory only."""
+    for item in items:
+        # Only mark tests that are actually in this directory
+        if "tests/security" in str(item.fspath):
+            item.add_marker(pytest.mark.slow)
