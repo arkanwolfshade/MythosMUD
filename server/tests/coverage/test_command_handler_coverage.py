@@ -934,7 +934,6 @@ class TestAliasManagementEdgeCases:
     """Test alias management edge cases through unified command handler."""
 
 
-
 class TestUtilityFunctions:
     """Test utility functions."""
 

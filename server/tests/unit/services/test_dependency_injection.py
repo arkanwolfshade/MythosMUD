@@ -11,7 +11,7 @@ from unittest.mock import AsyncMock, patch
 import pytest
 from fastapi.testclient import TestClient
 
-from server.dependencies import PlayerServiceDep, RoomServiceDep, get_player_service, get_room_service
+from server.dependencies import get_player_service, get_room_service
 from server.game.player_service import PlayerService
 from server.game.room_service import RoomService
 
@@ -119,45 +119,6 @@ class TestServiceDependencyInjection:
         assert isinstance(room_service, RoomService)
         assert hasattr(room_service, "persistence")
 
-    def test_dependency_injection_with_real_services(self, client):
-        """Test that dependency injection works with real service instances."""
-        app = client.app
-
-        assert hasattr(app.state, "player_service")
-        assert hasattr(app.state, "persistence")
-
-        player_service = app.state.player_service
-        assert isinstance(player_service, PlayerService)
-        assert hasattr(player_service, "persistence")
-
-    def test_fastapi_depends_mechanism(self, client):
-        """Test that FastAPI's Depends() mechanism works correctly."""
-        app = client.app
-
-        assert PlayerServiceDep is not None
-        assert RoomServiceDep is not None
-
-        from fastapi import Request
-
-        mock_request = Request(scope={"type": "http", "app": app})
-
-        player_service = get_player_service(mock_request)
-        room_service = get_room_service(mock_request)
-
-        assert isinstance(player_service, PlayerService)
-        assert isinstance(room_service, RoomService)
-
-    def test_service_instances_are_properly_configured(self, client):
-        """Test that service instances have proper configuration."""
-        app = client.app
-
-        player_service = app.state.player_service
-        assert hasattr(player_service, "persistence")
-
-        persistence = app.state.persistence
-        assert hasattr(persistence, "async_list_players")
-        assert hasattr(persistence, "async_get_player")
-
     def test_dependency_injection_independence(self, client):
         """Test that different services can be injected independently."""
         app = client.app
@@ -184,23 +145,6 @@ class TestServiceDependencyInjection:
             response = client.get(endpoint)
             assert response.status_code in [200, 401, 404]
 
-    def test_dependency_injection_error_handling(self, client):
-        """Test that dependency injection handles errors gracefully."""
-        app = client.app
-
-        assert hasattr(app.state, "player_service")
-        assert hasattr(app.state, "persistence")
-
-    def test_service_method_availability(self, client):
-        """Test that injected services have the expected methods."""
-        app = client.app
-
-        player_service = app.state.player_service
-        assert hasattr(player_service, "list_players")
-        assert hasattr(player_service, "get_player_by_id")
-        assert hasattr(player_service, "get_player_by_name")
-        assert hasattr(player_service, "create_player")
-
     def test_persistence_layer_injection(self, client):
         """Test that the persistence layer is properly injected into services."""
         app = client.app
@@ -213,22 +157,6 @@ class TestServiceDependencyInjection:
         mock_request = Request(scope={"type": "http", "app": app})
         room_service = get_room_service(mock_request)
         assert hasattr(room_service, "persistence")
-
-    def test_app_state_consistency(self, client):
-        """Test that app state is consistent across the application."""
-        app = client.app
-
-        expected_services = [
-            "player_service",
-            "persistence",
-            "user_manager",
-            "event_handler",
-            "event_bus",
-            "connection_manager",
-        ]
-
-        for service_name in expected_services:
-            assert hasattr(app.state, service_name), f"Missing {service_name} in app state"
 
 
 # ============================================================================

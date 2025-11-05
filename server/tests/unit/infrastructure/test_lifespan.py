@@ -206,6 +206,7 @@ class TestLifespanStartup:
                         assert hasattr(app.state, "event_bus")
                         assert hasattr(app.state, "task_registry")
 
+
 class TestGameTickLoopLegacy:
     """Test game tick loop functionality."""
 

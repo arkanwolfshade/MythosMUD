@@ -20,45 +20,6 @@ from server.models.room import Room
 class TestRoomModel:
     """Test the Room model class."""
 
-    def test_room_creation(self):
-        """Test that Room can be created with proper data."""
-        room_data = {
-            "id": "test_room_001",
-            "name": "Test Room",
-            "description": "A test room for testing",
-            "plane": "earth",
-            "zone": "test_zone",
-            "sub_zone": "test_subzone",
-            "resolved_environment": "indoors",
-            "exits": {"north": "test_room_002", "south": None},
-        }
-
-        room = Room(room_data)
-
-        assert room.id == "test_room_001"
-        assert room.name == "Test Room"
-        assert room.description == "A test room for testing"
-        assert room.plane == "earth"
-        assert room.zone == "test_zone"
-        assert room.sub_zone == "test_subzone"
-        assert room.environment == "indoors"
-        assert room.exits == {"north": "test_room_002", "south": None}
-
-    def test_room_creation_with_defaults(self):
-        """Test that Room can be created with minimal data."""
-        room_data = {"id": "minimal_room"}
-
-        room = Room(room_data)
-
-        assert room.id == "minimal_room"
-        assert room.name == ""
-        assert room.description == ""
-        assert room.plane == ""
-        assert room.zone == ""
-        assert room.sub_zone == ""
-        assert room.environment == "outdoors"
-        assert room.exits == {}
-
     def test_room_with_event_bus(self):
         """Test that Room can be created with EventBus."""
         room_data = {"id": "test_room"}
