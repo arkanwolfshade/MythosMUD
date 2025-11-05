@@ -1,6 +1,6 @@
 # MythosMUD Makefile
 
-.PHONY: help clean lint format test test-fast test-comprehensive test-coverage test-client test-client-e2e test-e2e test-slow coverage build install run semgrep semgrep-autofix mypy lint-sqlalchemy setup-test-env
+.PHONY: help clean lint format test test-fast test-fast-serial test-comprehensive test-coverage test-client test-client-e2e test-e2e test-slow coverage build install run semgrep semgrep-autofix mypy lint-sqlalchemy setup-test-env
 
 # Determine project root for worktree contexts
 PROJECT_ROOT := $(shell python -c "import os; print(os.path.dirname(os.getcwd()) if 'MythosMUD-' in os.getcwd() else os.getcwd())")
@@ -16,10 +16,11 @@ help:
 	@echo "  format          - Run ruff format (Python) and Prettier (Node)"
 	@echo ""
 	@echo "Testing - Daily Development:"
-	@echo "  test-fast       - Quick unit tests for rapid feedback (~2-3 min)"
-	@echo "  test            - Default pre-commit validation (~5-7 min target)"
-	@echo "  test-client     - Client unit tests only (Vitest)"
-	@echo "  test-client-e2e - Automated client E2E tests (Playwright)"
+	@echo "  test-fast        - Quick unit tests with parallelization (~2-3 min)"
+	@echo "  test-fast-serial - Quick unit tests serially (for debugging)"
+	@echo "  test             - Default pre-commit validation (~5-7 min target)"
+	@echo "  test-client      - Client unit tests only (Vitest)"
+	@echo "  test-client-e2e  - Automated client E2E tests (Playwright)"
 	@echo ""
 	@echo "Testing - CI/CD:"
 	@echo "  test-comprehensive - Full test suite for CI/CD (~30 min)"
@@ -68,7 +69,11 @@ format:
 # ----------------------------------------------------------------------------
 
 test-fast: setup-test-env
-	@echo "Running FAST unit tests for rapid feedback (~2-3 min)..."
+	@echo "Running FAST unit tests with parallelization (~2-3 min)..."
+	cd $(PROJECT_ROOT) && uv run pytest server/tests/unit/ -m "not slow" -n auto -x --tb=short -q
+
+test-fast-serial: setup-test-env
+	@echo "Running FAST unit tests serially (for debugging)..."
 	cd $(PROJECT_ROOT) && uv run pytest server/tests/unit/ -m "not slow" -x --tb=short -q
 
 test: setup-test-env
