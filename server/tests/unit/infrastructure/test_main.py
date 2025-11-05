@@ -59,7 +59,12 @@ class TestEndpoints:
             # Create a test client
             test_client = TestClient(app)
 
-            # Manually set the persistence in app state
+            # Create a mock ApplicationContainer
+            mock_container = Mock()
+            mock_container.persistence = mock_persistence
+
+            # Set both the container and the persistence in app state
+            test_client.app.state.container = mock_container
             test_client.app.state.persistence = mock_persistence
 
             return test_client
