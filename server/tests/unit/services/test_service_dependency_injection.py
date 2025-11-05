@@ -20,7 +20,7 @@ class TestServiceDependencyInjection:
     """Test service layer dependency injection using real FastAPI dependency system."""
 
     @pytest.fixture
-    def app(self):
+    def app(self, mock_application_container):
         """Create FastAPI app for testing with mocked external dependencies."""
         with (
             patch("server.services.nats_service.nats_service") as mock_nats,
@@ -76,14 +76,14 @@ class TestServiceDependencyInjection:
                 nats_service=mock_nats,
             )
 
-            # Create mock ApplicationContainer for dependency injection
-            from unittest.mock import Mock
-
-            mock_container = Mock()
-            mock_container.persistence = mock_persistence
-            mock_container.player_service = app.state.player_service
-            mock_container.event_bus = app.state.event_bus
-            app.state.container = mock_container
+            # Use the comprehensive mock container and update with real/mocked services
+            mock_application_container.persistence = mock_persistence
+            mock_application_container.player_service = app.state.player_service
+            mock_application_container.event_bus = app.state.event_bus
+            mock_application_container.user_manager = app.state.user_manager
+            mock_application_container.nats_service = mock_nats
+            mock_application_container.connection_manager = connection_manager
+            app.state.container = mock_application_container
 
             return app
 

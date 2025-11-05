@@ -449,7 +449,69 @@ def ensure_test_db_ready(test_database):
 
 
 @pytest.fixture
-def test_client():
+def mock_application_container():
+    """
+    Create a fully-mocked ApplicationContainer for testing.
+
+    This fixture provides a comprehensive mock of the ApplicationContainer with all
+    required services properly mocked. This ensures that tests requiring the container
+    have access to all necessary dependencies without needing to initialize the full
+    application infrastructure.
+
+    Services provided:
+    - Core: persistence, event_bus, event_handler, connection_manager
+    - Business: player_service, room_service, user_manager
+    - Cache: room_cache_service, profession_cache_service
+    - Infrastructure: task_registry
+
+    AI Agent: This fixture is the foundation for testing components that depend on
+    the ApplicationContainer. Use this instead of creating incomplete mocks that
+    cause "ApplicationContainer not found" errors.
+    """
+    from pathlib import Path
+    from unittest.mock import AsyncMock, Mock
+
+    container = Mock()
+
+    # Core services
+    container.persistence = AsyncMock()
+    container.event_bus = Mock()
+    container.event_handler = Mock()
+    container.connection_manager = Mock()
+
+    # Business services
+    container.player_service = Mock()
+    container.room_service = Mock()
+    container.user_manager = Mock()
+
+    # Cache services
+    container.room_cache_service = Mock()
+    container.profession_cache_service = Mock()
+
+    # Infrastructure
+    container.task_registry = Mock()
+
+    # Configure commonly-used methods to return sensible defaults
+    container.persistence.async_list_players = AsyncMock(return_value=[])
+    container.persistence.async_get_player = AsyncMock(return_value=None)
+    container.persistence.async_get_room = AsyncMock(return_value=None)
+    container.persistence.async_save_player = AsyncMock(return_value=None)
+    container.persistence.async_delete_player = AsyncMock(return_value=True)
+
+    container.player_service.list_players = AsyncMock(return_value=[])
+    container.player_service.get_player_by_id = AsyncMock(return_value=None)
+
+    container.room_service.get_room = AsyncMock(return_value=None)
+
+    # Configure user_manager with a test data directory
+    project_root = Path(__file__).parent.parent.parent
+    container.user_manager.data_dir = project_root / "data" / "unit_test" / "user_management"
+
+    return container
+
+
+@pytest.fixture
+def test_client(mock_application_container):
     """Create a test client with properly initialized app state."""
 
     from fastapi.testclient import TestClient
@@ -469,13 +531,15 @@ def test_client():
     app.state.event_handler = get_real_time_event_handler()
     app.state.persistence = get_persistence(event_bus=app.state.event_handler.event_bus)
 
-    # Create mock ApplicationContainer for dependency injection
-    from unittest.mock import Mock
+    # Use the comprehensive mock container
+    app.state.container = mock_application_container
+    # Update container's persistence and event_bus with real instances for this test
+    mock_application_container.persistence = app.state.persistence
+    mock_application_container.event_bus = app.state.event_handler.event_bus
+    mock_application_container.event_handler = app.state.event_handler
 
-    mock_app_container = Mock()
-    mock_app_container.persistence = app.state.persistence
-    mock_app_container.event_bus = app.state.event_handler.event_bus
-    app.state.container = mock_app_container
+    # Also set these on app.state for backward compatibility
+    app.state.event_bus = app.state.event_handler.event_bus
 
     return TestClient(app)
 

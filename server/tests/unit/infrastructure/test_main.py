@@ -42,7 +42,7 @@ class TestEndpoints:
     """Test API endpoints."""
 
     @pytest.fixture
-    def client(self):
+    def client(self, mock_application_container):
         """Create a test client with initialized app state."""
         # Initialize the app state with persistence
         with patch("server.persistence.get_persistence") as mock_get_persistence:
@@ -66,15 +66,15 @@ class TestEndpoints:
 
             player_service = PlayerService(mock_persistence)
 
-            # Create a mock ApplicationContainer
-            mock_container = Mock()
-            mock_container.persistence = mock_persistence
-            mock_container.player_service = player_service
+            # Use the comprehensive mock container and update specific services
+            mock_application_container.persistence = mock_persistence
+            mock_application_container.player_service = player_service
 
             # Set container and services in app state
-            test_client.app.state.container = mock_container
+            test_client.app.state.container = mock_application_container
             test_client.app.state.persistence = mock_persistence
             test_client.app.state.player_service = player_service
+            test_client.app.state.room_service = mock_application_container.room_service
 
             return test_client
 
