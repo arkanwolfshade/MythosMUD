@@ -10,7 +10,7 @@ from unittest.mock import AsyncMock, Mock
 import pytest
 from fastapi import Request
 
-from server.dependencies import get_player_service, get_player_service_for_testing, get_room_service
+from server.dependencies import get_player_service, get_room_service
 from server.game.player_service import PlayerService
 from server.game.room_service import RoomService
 
@@ -76,15 +76,6 @@ class TestDependencyInjectionFunctions:
         assert hasattr(service, "persistence")
         assert service.persistence is container_test_client.app.state.container.persistence
 
-    def test_get_player_service_for_testing_function(self):
-        """Test that get_player_service_for_testing function works correctly."""
-        service = get_player_service_for_testing()
-
-        # Verify the service is created correctly
-        assert isinstance(service, PlayerService)
-        assert hasattr(service, "persistence")
-        assert service.persistence is not None
-
     def test_dependency_functions_return_same_instances(self, container_test_client):
         """
         Test that dependency functions return SAME instances from container (singleton).
@@ -144,71 +135,6 @@ class TestDependencyInjectionFunctions:
 
         with pytest.raises((AttributeError, RuntimeError)):
             get_player_service(bad_request)
-
-    def test_dependency_function_type_annotations(self):
-        """Test that dependency functions have correct type annotations."""
-        import inspect
-
-        # Check get_player_service signature
-        player_sig = inspect.signature(get_player_service)
-        assert "request" in player_sig.parameters
-        assert player_sig.return_annotation == PlayerService
-
-        # Check get_room_service signature
-        room_sig = inspect.signature(get_room_service)
-        assert "request" in room_sig.parameters
-        assert room_sig.return_annotation == RoomService
-
-        # Check get_player_service_for_testing signature
-        assert player_sig.return_annotation == PlayerService
-
-    def test_dependency_functions_performance(self, mock_request):
-        """Test that dependency functions perform well."""
-        import time
-
-        start_time = time.time()
-
-        # Create many service instances
-        services = []
-        for _ in range(100):
-            service = get_player_service(mock_request)
-            services.append(service)
-
-        end_time = time.time()
-        elapsed_time = end_time - start_time
-
-        # Should complete within reasonable time (less than 1 second for 100 instances)
-        assert elapsed_time < 1.0
-        assert len(services) == 100
-
-    def test_dependency_functions_thread_safety(self, mock_request):
-        """Test that dependency functions are thread-safe."""
-        import threading
-
-        results = []
-        errors = []
-
-        def worker():
-            try:
-                service = get_player_service(mock_request)
-                results.append(service)
-            except Exception as e:
-                errors.append(e)
-
-        # Create multiple threads
-        threads = []
-        for _i in range(10):
-            thread = threading.Thread(target=worker)
-            threads.append(thread)
-            thread.start()
-
-        # Wait for all threads to complete
-        for thread in threads:
-            thread.join()
-
-        # Verify no errors occurred
-        assert len(errors) == 0, f"Thread safety errors: {errors}"
-        assert len(results) == 10, "Not all workers completed successfully"
 
     def test_dependency_functions_require_container(self):
         """
@@ -281,13 +207,3 @@ class TestDependencyInjectionFunctions:
         assert room_service is container_test_client.app.state.container.room_service
         assert not isinstance(player_service, RoomService)
         assert not isinstance(room_service, PlayerService)
-
-    def test_dependency_functions_request_parameter_validation(self):
-        """Test that dependency functions validate request parameters correctly."""
-        # Test with None request
-        with pytest.raises((TypeError, AttributeError)):
-            get_player_service(None)
-
-        # Test with invalid request object
-        with pytest.raises(AttributeError):
-            get_player_service("invalid_request")

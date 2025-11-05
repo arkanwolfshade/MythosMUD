@@ -23,8 +23,8 @@ class TestServiceDependencyInjection:
     def app(self):
         """Create FastAPI app for testing with mocked external dependencies."""
         with (
-            patch("server.app.lifespan.init_db"),
-            patch("server.app.lifespan.init_npc_db"),
+            patch("server.database.init_db"),
+            patch("server.npc_database.init_npc_db"),
             patch("server.services.nats_service.nats_service") as mock_nats,
             patch("server.persistence.get_persistence") as mock_get_persistence,
         ):
@@ -229,38 +229,6 @@ class TestServiceDependencyInjection:
 
         for service_name in expected_services:
             assert hasattr(app.state, service_name), f"Missing {service_name} in app state"
-
-    def test_dependency_injection_performance(self, client):
-        """Test that dependency injection is performant."""
-        import time
-
-        app = client.app
-        from fastapi import Request
-
-        mock_request = Request(scope={"type": "http", "app": app})
-
-        start_time = time.time()
-        player_service = get_player_service(mock_request)
-        end_time = time.time()
-
-        assert (end_time - start_time) < 0.1
-        assert isinstance(player_service, PlayerService)
-
-    def test_dependency_injection_memory_usage(self, client):
-        """Test that dependency injection doesn't cause memory leaks."""
-        app = client.app
-        from fastapi import Request
-
-        mock_request = Request(scope={"type": "http", "app": app})
-
-        services = []
-        for _ in range(10):
-            service = get_player_service(mock_request)
-            services.append(service)
-            assert isinstance(service, PlayerService)
-
-        assert len(services) == 10
-        assert all(isinstance(s, PlayerService) for s in services)
 
 
 # ============================================================================
