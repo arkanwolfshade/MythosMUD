@@ -67,7 +67,7 @@ test: setup-test-env
 
 test-server: setup-test-env
 	@echo "Running FAST server test suite (unit + critical integration, ~5-7 min)..."
-	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --markers "not slow"
+	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --markers "not slow and not e2e"
 
 test-comprehensive: setup-test-env
 	@echo "Running COMPREHENSIVE server test suite (all tests including slow, ~30 min)..."
