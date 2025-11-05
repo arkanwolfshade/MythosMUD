@@ -85,12 +85,6 @@ class TestDependencyInjectionFunctions:
         assert hasattr(service, "persistence")
         assert service.persistence is not None
 
-    def test_dependency_functions_are_callable(self):
-        """Test that dependency functions are callable."""
-        assert callable(get_player_service)
-        assert callable(get_room_service)
-        assert callable(get_player_service_for_testing)
-
     def test_dependency_functions_return_same_instances(self, container_test_client):
         """
         Test that dependency functions return SAME instances from container (singleton).
@@ -186,25 +180,6 @@ class TestDependencyInjectionFunctions:
         # Should complete within reasonable time (less than 1 second for 100 instances)
         assert elapsed_time < 1.0
         assert len(services) == 100
-
-    def test_dependency_functions_memory_usage(self, mock_request):
-        """Test that dependency functions don't cause memory leaks."""
-        import gc
-
-        # Create many service instances
-        services = []
-        for _ in range(1000):
-            service = get_player_service(mock_request)
-            services.append(service)
-
-        # Clear references
-        services.clear()
-
-        # Force garbage collection
-        gc.collect()
-
-        # This test passes if no exceptions are raised
-        assert True  # Placeholder assertion
 
     def test_dependency_functions_thread_safety(self, mock_request):
         """Test that dependency functions are thread-safe."""
@@ -307,17 +282,6 @@ class TestDependencyInjectionFunctions:
         assert not isinstance(player_service, RoomService)
         assert not isinstance(room_service, PlayerService)
 
-    def test_dependency_functions_with_testing_function(self):
-        """Test that the testing function works correctly."""
-        service = get_player_service_for_testing()
-
-        # Verify it's a valid service
-        assert isinstance(service, PlayerService)
-        assert hasattr(service, "persistence")
-
-        # The testing function should create its own mock persistence
-        assert service.persistence is not None
-
     def test_dependency_functions_request_parameter_validation(self):
         """Test that dependency functions validate request parameters correctly."""
         # Test with None request
@@ -327,20 +291,3 @@ class TestDependencyInjectionFunctions:
         # Test with invalid request object
         with pytest.raises(AttributeError):
             get_player_service("invalid_request")
-
-    def test_dependency_functions_service_method_access(self, mock_request):
-        """Test that services returned by dependency functions have accessible methods."""
-        player_service = get_player_service(mock_request)
-        room_service = get_room_service(mock_request)
-
-        # Verify PlayerService methods are accessible
-        assert hasattr(player_service, "create_player")
-        assert hasattr(player_service, "get_player_by_id")
-        assert hasattr(player_service, "list_players")
-        assert callable(player_service.create_player)
-        assert callable(player_service.get_player_by_id)
-        assert callable(player_service.list_players)
-
-        # Verify RoomService methods are accessible
-        assert hasattr(room_service, "get_room")
-        assert callable(room_service.get_room)

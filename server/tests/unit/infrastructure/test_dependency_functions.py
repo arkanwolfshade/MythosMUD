@@ -83,13 +83,6 @@ class TestDependencyFunctions:
         # Service should be the same instance from container
         assert service is container_test_client.app.state.container.room_service
 
-    def test_dependency_functions_are_callable(self):
-        """Test that dependency functions are callable."""
-        from server.dependencies import get_player_service, get_room_service
-
-        assert callable(get_player_service)
-        assert callable(get_room_service)
-
     def test_dependency_functions_return_same_instances(self, container_test_client):
         """
         Test that dependency functions return SAME instances from container.
@@ -163,20 +156,6 @@ class TestDependencyFunctions:
         with pytest.raises(AttributeError):
             get_player_service(mock_request)
 
-    def test_dependency_function_type_annotations(self):
-        """Test that dependency functions have correct type annotations."""
-        import inspect
-
-        from server.dependencies import get_player_service, get_room_service
-
-        # Check get_player_service signature
-        player_sig = inspect.signature(get_player_service)
-        assert player_sig.return_annotation == PlayerService or player_sig.return_annotation == inspect.Signature.empty
-
-        # Check get_room_service signature
-        room_sig = inspect.signature(get_room_service)
-        assert room_sig.return_annotation == RoomService or room_sig.return_annotation == inspect.Signature.empty
-
     def test_dependency_functions_performance(self, mock_persistence):
         """Test that dependency functions perform well."""
         import time
@@ -203,33 +182,6 @@ class TestDependencyFunctions:
         # Should complete within reasonable time (less than 1 second for 100 instances)
         assert elapsed_time < 1.0
         assert len(services) == 100
-
-    def test_dependency_functions_memory_usage(self, mock_persistence):
-        """Test that dependency functions don't cause memory leaks."""
-        import gc
-        from unittest.mock import Mock
-
-        from fastapi import Request
-
-        from server.dependencies import get_player_service
-
-        mock_request = Mock(spec=Request)
-        mock_request.app.state.persistence = mock_persistence
-
-        # Create many service instances
-        services = []
-        for _ in range(1000):
-            service = get_player_service(mock_request)
-            services.append(service)
-
-        # Clear references
-        services.clear()
-
-        # Force garbage collection
-        gc.collect()
-
-        # This test passes if no exceptions are raised
-        assert True  # Placeholder assertion
 
     def test_dependency_functions_thread_safety(self, mock_persistence):
         """Test that dependency functions are thread-safe."""

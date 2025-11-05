@@ -502,13 +502,3 @@ class TestAdminTeleportPerformance:
 
         # Should complete within reasonable time (less than 100ms)
         assert execution_time < 0.1
-
-    @pytest.mark.asyncio
-    async def test_concurrent_teleport_performance(self):
-        """Test performance of concurrent teleport operations."""
-        # This test would measure the performance impact of multiple
-        # simultaneous teleport operations
-        # Implementation would depend on the specific performance requirements
-
-        # For now, just verify that the system can handle basic concurrency
-        assert True  # Placeholder for actual performance test

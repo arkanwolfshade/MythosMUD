@@ -218,26 +218,6 @@ class TestServiceDependencyInjectionSimple:
         assert not hasattr(player_service, "_create_persistence")
         assert not hasattr(room_service, "_create_persistence")
 
-    def test_service_memory_management(self, mock_persistence):
-        """Test that service instances don't cause memory leaks."""
-        import gc
-
-        # Create and destroy multiple service instances
-        services = []
-        for _i in range(100):
-            service = PlayerService(persistence=mock_persistence)
-            services.append(service)
-
-        # Clear references
-        services.clear()
-
-        # Force garbage collection
-        gc.collect()
-
-        # This test passes if no exceptions are raised
-        # In a real scenario, you'd check memory usage
-        assert True  # Placeholder assertion
-
     def test_service_concurrent_access_safety(self, mock_persistence):
         """Test that services can handle concurrent access safely."""
         import threading

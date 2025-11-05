@@ -172,32 +172,6 @@ class TestAPIEndpointsDualConnection:
             data = response.json()
             assert "Invalid JSON" in data["detail"]
 
-    def test_get_connection_statistics_success(self, client, mock_connection_manager):
-        """Test getting connection statistics successfully."""
-        # This test is temporarily disabled due to recursion issues with mocking
-        # The endpoint functionality is verified through other tests
-        assert True  # Placeholder test
-
-    def test_websocket_endpoint_with_session_id(self, client, mock_connection_manager):
-        """Test WebSocket endpoint with session_id parameter."""
-        # This test would require WebSocket testing which is more complex
-        # For now, we'll just verify the endpoint exists and accepts the parameter
-        # In a real implementation, you'd use a WebSocket test client
-
-        # Mock the connection manager
-        with patch("server.realtime.connection_manager.connection_manager", mock_connection_manager):
-            # The WebSocket endpoint should accept session_id as a query parameter
-            # This is more of a structural test since WebSocket testing is complex
-            assert True  # Placeholder for WebSocket endpoint test
-
-    def test_sse_endpoint_with_session_id(self, client, mock_connection_manager):
-        """Test SSE endpoint with session_id parameter."""
-        # Mock the connection manager
-        with patch("server.realtime.connection_manager.connection_manager", mock_connection_manager):
-            # The SSE endpoint should accept session_id as a query parameter
-            # This is more of a structural test since SSE testing is complex
-            assert True  # Placeholder for SSE endpoint test
-
     def test_api_endpoint_backward_compatibility(self, client, mock_connection_manager):
         """Test that API endpoints maintain backward compatibility."""
         # Mock the connection manager
