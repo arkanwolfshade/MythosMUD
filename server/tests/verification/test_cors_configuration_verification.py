@@ -24,11 +24,11 @@ class TestCORSConfigurationVerification:
     @pytest.fixture
     def app(self):
         """Create FastAPI app for testing."""
+        from unittest.mock import AsyncMock, Mock
+
         app = create_app()
 
         # Mock the persistence layer with async methods
-        from unittest.mock import AsyncMock
-
         mock_persistence = AsyncMock()
         mock_persistence.async_list_players.return_value = []
         mock_persistence.async_get_player.return_value = None
@@ -42,6 +42,11 @@ class TestCORSConfigurationVerification:
         mock_persistence.save_player.return_value = None
         mock_persistence.delete_player.return_value = True
 
+        # Create mock ApplicationContainer for dependency injection
+        mock_container = Mock()
+        mock_container.persistence = mock_persistence
+
+        app.state.container = mock_container
         app.state.persistence = mock_persistence
         return app
 

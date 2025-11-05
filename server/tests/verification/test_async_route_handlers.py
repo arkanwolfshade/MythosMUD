@@ -28,6 +28,8 @@ class TestAsyncRouteHandlers:
     @pytest.fixture
     def app(self):
         """Create FastAPI app for testing."""
+        from unittest.mock import Mock
+
         app = create_app()
 
         # Mock the persistence layer with async methods
@@ -39,6 +41,12 @@ class TestAsyncRouteHandlers:
         mock_persistence.list_players.return_value = []
         mock_persistence.get_player.return_value = None
         mock_persistence.get_room.return_value = None
+
+        # Create mock ApplicationContainer for dependency injection
+        mock_container = Mock()
+        mock_container.persistence = mock_persistence
+
+        app.state.container = mock_container
         app.state.persistence = mock_persistence
 
         return app
