@@ -79,6 +79,15 @@ class TestServiceDependencyInjection:
                 nats_service=mock_nats,
             )
 
+            # Create mock ApplicationContainer for dependency injection
+            from unittest.mock import Mock
+
+            mock_container = Mock()
+            mock_container.persistence = mock_persistence
+            mock_container.player_service = app.state.player_service
+            mock_container.event_bus = app.state.event_bus
+            app.state.container = mock_container
+
             return app
 
     @pytest.fixture
