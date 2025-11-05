@@ -21,6 +21,27 @@ from server.commands.admin_shutdown_command import (
 )
 
 
+def create_mock_task_registry():
+    """
+    Create a mock task registry that properly consumes coroutines.
+
+    This prevents "coroutine was never awaited" warnings by ensuring
+    any coroutines passed to register_task are properly consumed.
+    """
+    mock_registry = MagicMock()
+    mock_task = MagicMock()
+    mock_task.cancel = MagicMock()
+    mock_task.done = MagicMock(return_value=False)
+
+    def register_task_side_effect(coro, *args, **kwargs):
+        # Close the coroutine to prevent "never awaited" warning
+        coro.close()
+        return mock_task
+
+    mock_registry.register_task.side_effect = register_task_side_effect
+    return mock_registry, mock_task
+
+
 class TestNotificationTimeCalculation:
     """Test calculation of notification times for countdown."""
 
@@ -146,9 +167,8 @@ class TestShutdownCountdownInitiation:
         mock_app.state.connection_manager.broadcast_global_event = AsyncMock(return_value={"successful_deliveries": 5})
 
         # Create mock for task registry
-        mock_task_registry = MagicMock()
-        mock_task = AsyncMock()
-        mock_task_registry.register_task = MagicMock(return_value=mock_task)
+        # Mock task registry (properly consumes coroutines)
+        mock_task_registry, mock_task = create_mock_task_registry()
         mock_app.state.task_registry = mock_task_registry
 
         await initiate_shutdown_countdown(mock_app, 10, "admin_user")

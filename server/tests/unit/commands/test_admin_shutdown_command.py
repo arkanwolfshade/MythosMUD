@@ -19,6 +19,27 @@ from server.commands.admin_shutdown_command import (
 )
 
 
+def create_mock_task_registry():
+    """
+    Create a mock task registry that properly consumes coroutines.
+
+    This prevents "coroutine was never awaited" warnings by ensuring
+    any coroutines passed to register_task are properly consumed.
+    """
+    mock_registry = MagicMock()
+    mock_task = MagicMock()
+    mock_task.cancel = MagicMock()
+    mock_task.done = MagicMock(return_value=False)
+
+    def register_task_side_effect(coro, *args, **kwargs):
+        # Close the coroutine to prevent "never awaited" warning
+        coro.close()
+        return mock_task
+
+    mock_registry.register_task.side_effect = register_task_side_effect
+    return mock_registry, mock_task
+
+
 class TestShutdownAdminPermissionValidation:
     """Test admin permission validation for shutdown command."""
 
@@ -164,12 +185,8 @@ class TestShutdownCommand:
         mock_player_service.get_player_by_name = AsyncMock(return_value=mock_admin_player)
         mock_app.state.player_service = mock_player_service
 
-        # Mock task registry
-        mock_task_registry = MagicMock()
-        mock_task = MagicMock()
-        mock_task.cancel = MagicMock()
-        mock_task.done = MagicMock(return_value=False)
-        mock_task_registry.register_task.return_value = mock_task
+        # Mock task registry (properly consumes coroutines)
+        mock_task_registry, mock_task = create_mock_task_registry()
         mock_app.state.task_registry = mock_task_registry
 
         # Mock connection manager
@@ -203,12 +220,8 @@ class TestShutdownCommand:
         mock_player_service.get_player_by_name = AsyncMock(return_value=mock_admin_player)
         mock_app.state.player_service = mock_player_service
 
-        # Mock task registry
-        mock_task_registry = MagicMock()
-        mock_task = MagicMock()
-        mock_task.cancel = MagicMock()
-        mock_task.done = MagicMock(return_value=False)
-        mock_task_registry.register_task.return_value = mock_task
+        # Mock task registry (properly consumes coroutines)
+        mock_task_registry, mock_task = create_mock_task_registry()
         mock_app.state.task_registry = mock_task_registry
 
         # Mock connection manager
