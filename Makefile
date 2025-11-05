@@ -78,7 +78,7 @@ test-fast-serial: setup-test-env
 
 test: setup-test-env
 	@echo "Running default test suite (pre-commit validation, ~5-7 min target)..."
-	cd $(PROJECT_ROOT) && uv run pytest server/tests/ -m "not slow and not e2e" --maxfail=10 --tb=short
+	cd $(PROJECT_ROOT) && uv run pytest server/tests/ -m "not slow and not e2e" -n auto --maxfail=10 --tb=short
 
 test-client:
 	@echo "Running client unit tests..."
