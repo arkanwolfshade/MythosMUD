@@ -156,6 +156,70 @@ class TestDependencyFunctions:
         with pytest.raises(AttributeError):
             get_player_service(mock_request)
 
+    def test_dependency_functions_performance(self, mock_persistence):
+        """Test that dependency functions perform well."""
+        import time
+        from unittest.mock import Mock
+
+        from fastapi import Request
+
+        from server.dependencies import get_player_service
+
+        mock_request = Mock(spec=Request)
+        mock_request.app.state.persistence = mock_persistence
+
+        start_time = time.time()
+
+        # Create many service instances
+        services = []
+        for _ in range(100):
+            service = get_player_service(mock_request)
+            services.append(service)
+
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+
+        # Should complete within reasonable time (less than 1 second for 100 instances)
+        assert elapsed_time < 1.0
+        assert len(services) == 100
+
+    def test_dependency_functions_thread_safety(self, mock_persistence):
+        """Test that dependency functions are thread-safe."""
+        import threading
+
+        results = []
+        errors = []
+
+        def worker():
+            try:
+                from unittest.mock import Mock
+
+                from fastapi import Request
+
+                from server.dependencies import get_player_service
+
+                mock_request = Mock(spec=Request)
+                mock_request.app.state.persistence = mock_persistence
+                service = get_player_service(mock_request)
+                results.append(service)
+            except Exception as e:
+                errors.append(e)
+
+        # Create multiple threads
+        threads = []
+        for _i in range(10):
+            thread = threading.Thread(target=worker)
+            threads.append(thread)
+            thread.start()
+
+        # Wait for all threads to complete
+        for thread in threads:
+            thread.join()
+
+        # Verify no errors occurred
+        assert len(errors) == 0, f"Thread safety errors: {errors}"
+        assert len(results) == 10, "Not all workers completed successfully"
+
     def test_dependency_functions_require_container(self):
         """
         Test dependency functions require ApplicationContainer to be initialized.
