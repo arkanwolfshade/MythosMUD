@@ -259,14 +259,23 @@ class RoomService:
                 logger.debug("Room not found for occupant lookup", room_id=room_id)
                 return []
 
-            # If it's a Room object, use its method
+            # AI Agent: CRITICAL FIX - Include NPCs in fallback path to match cached path behavior
+            #           Previously only returned players, causing NPCs to not appear when cache unavailable
             if hasattr(room, "get_players"):
-                occupants = room.get_players()
+                players = room.get_players()
+                npcs = room.get_npcs() if hasattr(room, "get_npcs") else []
+                occupants = players + npcs
             else:
                 # If it's a dictionary, check for occupants field
                 occupants = room.get("occupants", [])
 
-            logger.debug("Room occupants retrieved", room_id=room_id, occupant_count=len(occupants))
+            logger.debug(
+                "Room occupants retrieved (fallback path)",
+                room_id=room_id,
+                occupant_count=len(occupants),
+                player_count=len(players) if hasattr(room, "get_players") else 0,
+                npc_count=len(npcs) if hasattr(room, "get_npcs") else 0,
+            )
             return occupants
 
     async def validate_player_in_room(self, player_id: str, room_id: str) -> bool:

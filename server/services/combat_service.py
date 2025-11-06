@@ -701,7 +701,7 @@ class CombatService:
                 # AI Agent: CRITICAL FIX - Resolve UUID back to original string ID for lifecycle manager
                 #           Combat uses random UUIDs for NPCs, but lifecycle_manager uses string IDs.
                 #           Without this mapping, NPCs won't be queued for respawn!
-                original_npc_id = str(target.participant_id)  # Default to UUID string
+                original_npc_id = str(target.participant_id)  # Default to UUID string (will fail respawn!)
                 if self._npc_combat_integration_service and hasattr(
                     self._npc_combat_integration_service, "_uuid_to_string_id_mapping"
                 ):
@@ -714,10 +714,23 @@ class CombatService:
                             original_id=original_npc_id,
                         )
                     else:
-                        logger.warning(
-                            "UUID not found in mapping, using UUID string as fallback",
+                        # AI Agent: CRITICAL - UUID not in mapping means NPC won't queue for respawn!
+                        #           This is a severe error that breaks the respawn system.
+                        logger.error(
+                            "UUID not found in mapping - NPC WILL NOT RESPAWN!",
                             uuid=target.participant_id,
+                            npc_name=target.name,
+                            combat_id=combat.combat_id,
+                            available_mappings=list(uuid_mapping.keys()),
                         )
+                else:
+                    # AI Agent: CRITICAL - No NPC combat integration service means NO respawns!
+                    logger.error(
+                        "NPC combat integration service not available - NPC WILL NOT RESPAWN!",
+                        uuid=target.participant_id,
+                        npc_name=target.name,
+                        combat_id=combat.combat_id,
+                    )
 
                 death_event = NPCDiedEvent(
                     combat_id=combat.combat_id,
