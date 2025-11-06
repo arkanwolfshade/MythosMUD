@@ -283,7 +283,9 @@ class TestMonitoringAPIEndpoints:
     def test_monitoring_endpoints_content_type(self, mock_container, client, mock_connection_manager):
         """Test that monitoring endpoints return proper content type."""
         mock_container.connection_manager = mock_connection_manager
-        mock_connection_manager.get_dual_connection_stats.return_value = mock_connection_manager.get_dual_connection_stats()
+        mock_connection_manager.get_dual_connection_stats.return_value = (
+            mock_connection_manager.get_dual_connection_stats()
+        )
         mock_connection_manager.get_performance_stats.return_value = mock_connection_manager.get_performance_stats()
         mock_connection_manager.get_connection_health_stats.return_value = (
             mock_connection_manager.get_connection_health_stats()
@@ -302,7 +304,9 @@ class TestMonitoringAPIEndpoints:
     def test_monitoring_endpoints_response_validation(self, mock_container, client, mock_connection_manager):
         """Test that monitoring endpoints return valid response models."""
         mock_container.connection_manager = mock_connection_manager
-        mock_connection_manager.get_dual_connection_stats.return_value = mock_connection_manager.get_dual_connection_stats()
+        mock_connection_manager.get_dual_connection_stats.return_value = (
+            mock_connection_manager.get_dual_connection_stats()
+        )
         mock_connection_manager.get_performance_stats.return_value = mock_connection_manager.get_performance_stats()
         mock_connection_manager.get_connection_health_stats.return_value = (
             mock_connection_manager.get_connection_health_stats()
