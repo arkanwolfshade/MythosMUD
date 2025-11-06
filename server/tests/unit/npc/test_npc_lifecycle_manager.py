@@ -721,8 +721,13 @@ class TestNPCLifecycleManager:
         # Handle the death event
         lifecycle_manager._handle_npc_died(died_event)
 
-        # Verify NPC was despawned
+        # Verify NPC was removed from active NPCs
         assert npc_id not in lifecycle_manager.active_npcs
+
+        # AI Agent: CRITICAL - Verify lifecycle record is PRESERVED for XP calculation
+        #           The record must remain so combat service can read xp_value from base_stats
+        assert npc_id in lifecycle_manager.lifecycle_records, \
+            "Lifecycle record must be preserved after death for XP calculation"
 
         # Verify NPC was queued for respawn
         assert npc_id in lifecycle_manager.respawn_queue

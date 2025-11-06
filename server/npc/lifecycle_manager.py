@@ -281,11 +281,33 @@ class NPCLifecycleManager:
             record = self.lifecycle_records[event.npc_id]
             definition = record.definition
 
-            # Despawn the NPC first
-            success = self.despawn_npc(event.npc_id, reason=f"death: {event.cause}")
-            if not success:
-                logger.error("Failed to despawn dead NPC", npc_id=event.npc_id)
-                return
+            # AI Agent: CRITICAL FIX - Do NOT despawn immediately!
+            #           Despawning removes the NPC from lifecycle_records, which prevents
+            #           XP calculation from finding the NPC's xp_value in base_stats.
+            #           Instead, mark as inactive and queue for respawn. The respawn process
+            #           will handle cleanup when it spawns a new instance.
+
+            # Mark NPC as inactive but keep lifecycle record
+            if event.npc_id in self.active_npcs:
+                npc_instance = self.active_npcs[event.npc_id]
+                # Remove from active NPCs (so it won't be processed)
+                del self.active_npcs[event.npc_id]
+
+                # Remove from room if we have persistence
+                if self.persistence:
+                    room_id = getattr(npc_instance, "room_id", event.room_id)
+                    room = self.persistence.get_room(room_id)
+                    if room:
+                        room.npc_left(event.npc_id)
+                        logger.debug("NPC removed from room after death", npc_id=event.npc_id, room_id=room_id)
+
+                # Update population controller
+                if self.population_controller:
+                    self.population_controller.despawn_npc(event.npc_id)
+
+            # Update lifecycle record state (but DON'T remove it yet)
+            record.change_state(NPCLifecycleState.DESPAWNED, f"death: {event.cause}")
+            record.add_event(NPCLifecycleEvent.DESPAWNED, {"reason": f"death: {event.cause}"})
 
             # Queue for respawn (respects configured delay for both required and optional NPCs)
             # AI Agent: ALL NPCs (required or optional) must respect respawn delay
