@@ -259,13 +259,32 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                     try:
                         room = persistence.get_room(canonical_room_id)
                         if room:
+                            # Get room occupants and transform IDs to names
+                            room_occupants = connection_manager.get_room_occupants(str(canonical_room_id))
+                            occupant_names = []
+                            try:
+                                for occ in room_occupants or []:
+                                    name = occ.get("player_name") or occ.get("name")
+                                    if name:
+                                        occupant_names.append(name)
+                            except Exception as e:
+                                logger.error(
+                                    "Error transforming initial_state occupants",
+                                    room_id=canonical_room_id,
+                                    error=str(e),
+                                )
+
                             initial_state = build_event(
                                 "room_update",
-                                {"room": room.to_dict(), "entities": [], "occupants": room.get_players()},
+                                {"room": room.to_dict(), "entities": [], "occupants": occupant_names},
                                 player_id=player_id_str,
                             )
                             await websocket.send_json(initial_state)
-                            logger.debug("Sent initial room state to connecting player", player_id=player_id_str)
+                            logger.debug(
+                                "Sent initial room state to connecting player",
+                                player_id=player_id_str,
+                                occupants_sent=occupant_names,
+                            )
                     except Exception as e:
                         logger.error("Error sending initial room state", player_id=player_id_str, error=str(e))
 
