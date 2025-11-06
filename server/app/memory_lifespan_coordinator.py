@@ -63,9 +63,6 @@ class PeriodicOrphanAuditor:
 
         logger.info("Periodic auditing lifecycle coordination initiated", interval=self.check_interval)
 
-        def audit_wrapper():
-            return self._background_audit_cycle()
-
         asyncio.get_running_loop()
         tracked_manager = get_global_tracked_manager()
 

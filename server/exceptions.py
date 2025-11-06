@@ -34,7 +34,7 @@ class ErrorContext:
     command: str | None = None
     session_id: str | None = None
     request_id: str | None = None
-    timestamp: datetime = field(default_factory=lambda: datetime.utcnow().replace(tzinfo=UTC))
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
