@@ -17,8 +17,6 @@ from sqlalchemy import select
 
 from ..container import ApplicationContainer
 from ..logging.enhanced_logging_config import get_logger, update_logging_with_player_service
-from ..realtime.connection_manager import connection_manager
-from ..realtime.nats_message_handler import get_nats_message_handler
 from ..realtime.sse_handler import broadcast_game_event
 
 logger = get_logger("server.lifespan")
@@ -95,16 +93,19 @@ async def lifespan(app: FastAPI):
     app.state.room_cache_service = container.room_cache_service
     app.state.profession_cache_service = container.profession_cache_service
 
-    # Legacy connection_manager properties (still uses singleton pattern)
-    # TODO: Migrate connection_manager to container-managed instance
-    connection_manager.persistence = container.persistence
-    connection_manager._event_bus = container.event_bus
-    connection_manager.app = app
+    # AI Agent: Use container instance instead of global singleton
+    #           This completes the migration to dependency injection
+    # AI Agent: Add type guard for mypy (container.connection_manager is ConnectionManager | None)
+    if container.connection_manager is None:
+        raise RuntimeError("Connection manager not initialized in container")
+
+    container.connection_manager.persistence = container.persistence
+    container.connection_manager._event_bus = container.event_bus
+    container.connection_manager.app = app
 
     # Clear any stale pending messages from previous server sessions
-    if container.connection_manager is not None:
-        container.connection_manager.message_queue.pending_messages.clear()
-        logger.info("Cleared stale pending messages from previous server sessions")
+    container.connection_manager.message_queue.pending_messages.clear()
+    logger.info("Cleared stale pending messages from previous server sessions")
 
     # Initialize NPC services (not yet in container - Phase 2 migration)
     # TODO: Move these to container in Phase 2 after core services are stable
@@ -170,7 +171,8 @@ async def lifespan(app: FastAPI):
 
     app.state.player_combat_service = PlayerCombatService(container.persistence, container.event_bus)
     # Make player combat service available to connection manager for movement validation
-    connection_manager._player_combat_service = app.state.player_combat_service
+    # AI Agent: Use container instance instead of global singleton
+    container.connection_manager._player_combat_service = app.state.player_combat_service
     logger.info("Player combat service initialized")
 
     app.state.player_death_service = PlayerDeathService(
@@ -249,16 +251,19 @@ async def lifespan(app: FastAPI):
         container.player_service.player_combat_service = app.state.player_combat_service
         logger.info("Combat service initialized and added to app.state")
 
-        # Initialize NATS message handler
+        # Initialize NATS message handler (now from container, not global factory)
+        # AI Agent: Migrated from global get_nats_message_handler() to container instance
+        #           This follows dependency injection best practices and eliminates global singletons
         try:
-            # Get subject manager from NATS service if available
-            subject_manager = getattr(container.nats_service, "subject_manager", None)
-            nats_message_handler = get_nats_message_handler(container.nats_service, subject_manager)
-            await nats_message_handler.start()
-            app.state.nats_message_handler = nats_message_handler
-            logger.info("NATS message handler started successfully")
+            if container.nats_message_handler:
+                await container.nats_message_handler.start()
+                app.state.nats_message_handler = container.nats_message_handler
+                logger.info("NATS message handler started successfully from container")
+            else:
+                logger.warning("NATS message handler not available in container (NATS disabled or failed)")
+                app.state.nats_message_handler = None
         except Exception as e:
-            logger.error("Error initializing NATS message handler", error=str(e))
+            logger.error("Error starting NATS message handler", error=str(e))
             app.state.nats_message_handler = None
     else:
         if is_testing:
@@ -507,13 +512,16 @@ async def game_tick_loop(app: FastAPI):
                     logger.error("Error during NPC maintenance", tick_count=tick_count, error=str(e))
 
             # Broadcast game tick to all connected players
+            # AI Agent: Use container instance instead of global singleton
             tick_data = {
                 "tick_number": tick_count,
                 "timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
-                "active_players": len(connection_manager.player_websockets),
+                "active_players": len(app.state.container.connection_manager.player_websockets),
             }
             logger.debug(
-                "Broadcasting game tick", tick_count=tick_count, player_count=len(connection_manager.player_websockets)
+                "Broadcasting game tick",
+                tick_count=tick_count,
+                player_count=len(app.state.container.connection_manager.player_websockets),
             )
             await broadcast_game_event("game_tick", tick_data)
             logger.debug("Game tick broadcast completed", tick_count=tick_count)

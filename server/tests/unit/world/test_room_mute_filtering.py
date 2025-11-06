@@ -50,7 +50,9 @@ class TestRoomBasedMuteFiltering:
         """Test that say messages are properly filtered when sender is muted."""
         chat_event = self.create_chat_event("say", "Hello everyone!")
 
-        with patch("server.realtime.nats_message_handler.connection_manager") as mock_conn_mgr:
+        with patch("server.realtime.nats_message_handler.app.state.container") as mock_container:
+            mock_conn_mgr = MagicMock()
+            mock_container.connection_manager = mock_conn_mgr
             # Mock room subscriptions
             mock_conn_mgr.room_subscriptions = {self.room_id: {self.sender_id, self.receiver_id}}
             mock_conn_mgr._canonical_room_id.return_value = self.room_id
@@ -73,7 +75,9 @@ class TestRoomBasedMuteFiltering:
         """Test that local messages are properly filtered when sender is muted."""
         chat_event = self.create_chat_event("local", "Anyone in the area?")
 
-        with patch("server.realtime.nats_message_handler.connection_manager") as mock_conn_mgr:
+        with patch("server.realtime.nats_message_handler.app.state.container") as mock_container:
+            mock_conn_mgr = MagicMock()
+            mock_container.connection_manager = mock_conn_mgr
             # Mock room subscriptions
             mock_conn_mgr.room_subscriptions = {self.room_id: {self.sender_id, self.receiver_id}}
             mock_conn_mgr._canonical_room_id.return_value = self.room_id
@@ -96,7 +100,9 @@ class TestRoomBasedMuteFiltering:
         """Test that emote messages are properly filtered when sender is muted."""
         chat_event = self.create_chat_event("emote", "dance")
 
-        with patch("server.realtime.nats_message_handler.connection_manager") as mock_conn_mgr:
+        with patch("server.realtime.nats_message_handler.app.state.container") as mock_container:
+            mock_conn_mgr = MagicMock()
+            mock_container.connection_manager = mock_conn_mgr
             # Mock room subscriptions
             mock_conn_mgr.room_subscriptions = {self.room_id: {self.sender_id, self.receiver_id}}
             mock_conn_mgr._canonical_room_id.return_value = self.room_id
@@ -119,7 +125,9 @@ class TestRoomBasedMuteFiltering:
         """Test that pose messages are properly filtered when sender is muted."""
         chat_event = self.create_chat_event("pose", "looks around nervously")
 
-        with patch("server.realtime.nats_message_handler.connection_manager") as mock_conn_mgr:
+        with patch("server.realtime.nats_message_handler.app.state.container") as mock_container:
+            mock_conn_mgr = MagicMock()
+            mock_container.connection_manager = mock_conn_mgr
             # Mock room subscriptions
             mock_conn_mgr.room_subscriptions = {self.room_id: {self.sender_id, self.receiver_id}}
             mock_conn_mgr._canonical_room_id.return_value = self.room_id
@@ -146,7 +154,9 @@ class TestRoomBasedMuteFiltering:
         for channel, content in zip(channels, contents, strict=False):
             chat_event = self.create_chat_event(channel, content)
 
-            with patch("server.realtime.nats_message_handler.connection_manager") as mock_conn_mgr:
+            with patch("server.realtime.nats_message_handler.app.state.container") as mock_container:
+                mock_conn_mgr = MagicMock()
+                mock_container.connection_manager = mock_conn_mgr
                 # Mock room subscriptions
                 mock_conn_mgr.room_subscriptions = {self.room_id: {self.sender_id, self.receiver_id}}
                 mock_conn_mgr._canonical_room_id.return_value = self.room_id
@@ -174,7 +184,9 @@ class TestRoomBasedMuteFiltering:
         """Test that all room-based channels use the same filtering logic."""
         channels = ["say", "local", "emote", "pose"]
 
-        with patch("server.realtime.nats_message_handler.connection_manager") as mock_conn_mgr:
+        with patch("server.realtime.nats_message_handler.app.state.container") as mock_container:
+            mock_conn_mgr = MagicMock()
+            mock_container.connection_manager = mock_conn_mgr
             # Mock room subscriptions
             mock_conn_mgr.room_subscriptions = {self.room_id: {self.sender_id, self.receiver_id}}
             mock_conn_mgr._canonical_room_id.return_value = self.room_id
@@ -208,7 +220,9 @@ class TestRoomBasedMuteFiltering:
 
         chat_event = self.create_chat_event("say", "Hello everyone!")
 
-        with patch("server.realtime.nats_message_handler.connection_manager") as mock_conn_mgr:
+        with patch("server.realtime.nats_message_handler.app.state.container") as mock_container:
+            mock_conn_mgr = MagicMock()
+            mock_container.connection_manager = mock_conn_mgr
             # Mock room subscriptions with multiple receivers
             mock_conn_mgr.room_subscriptions = {self.room_id: set(all_player_ids)}
             mock_conn_mgr._canonical_room_id.return_value = self.room_id
@@ -245,7 +259,9 @@ class TestRoomBasedMuteFiltering:
         """Test that room-based channels exclude sender from receiving their own message."""
         chat_event = self.create_chat_event("say", "Hello everyone!")
 
-        with patch("server.realtime.nats_message_handler.connection_manager") as mock_conn_mgr:
+        with patch("server.realtime.nats_message_handler.app.state.container") as mock_container:
+            mock_conn_mgr = MagicMock()
+            mock_container.connection_manager = mock_conn_mgr
             # Mock room subscriptions
             mock_conn_mgr.room_subscriptions = {self.room_id: {self.sender_id, self.receiver_id}}
             mock_conn_mgr._canonical_room_id.return_value = self.room_id
@@ -268,7 +284,9 @@ class TestRoomBasedMuteFiltering:
         """Test that room-based channels filter out players not in the room."""
         chat_event = self.create_chat_event("say", "Hello everyone!")
 
-        with patch("server.realtime.nats_message_handler.connection_manager") as mock_conn_mgr:
+        with patch("server.realtime.nats_message_handler.app.state.container") as mock_container:
+            mock_conn_mgr = MagicMock()
+            mock_container.connection_manager = mock_conn_mgr
             # Mock room subscriptions
             mock_conn_mgr.room_subscriptions = {self.room_id: {self.sender_id, self.receiver_id}}
             mock_conn_mgr._canonical_room_id.return_value = self.room_id
@@ -291,7 +309,9 @@ class TestRoomBasedMuteFiltering:
         """Test that room-based channels use optimized UserManager instance management."""
         chat_event = self.create_chat_event("say", "Hello everyone!")
 
-        with patch("server.realtime.nats_message_handler.connection_manager") as mock_conn_mgr:
+        with patch("server.realtime.nats_message_handler.app.state.container") as mock_container:
+            mock_conn_mgr = MagicMock()
+            mock_container.connection_manager = mock_conn_mgr
             # Mock room subscriptions
             mock_conn_mgr.room_subscriptions = {self.room_id: {self.sender_id, self.receiver_id}}
             mock_conn_mgr._canonical_room_id.return_value = self.room_id

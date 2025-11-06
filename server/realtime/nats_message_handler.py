@@ -11,7 +11,6 @@ from typing import Any
 from ..logging.enhanced_logging_config import get_logger
 from ..middleware.metrics_collector import metrics_collector
 from ..realtime.circuit_breaker import CircuitBreaker, CircuitBreakerOpen
-from ..realtime.connection_manager import connection_manager
 from ..realtime.dead_letter_queue import DeadLetterMessage, DeadLetterQueue
 from ..realtime.envelope import build_event
 from ..realtime.nats_retry_handler import NATSRetryHandler
@@ -27,19 +26,22 @@ class NATSMessageHandler:
     them to the appropriate WebSocket clients based on room and channel.
     """
 
-    def __init__(self, nats_service, subject_manager=None):
+    def __init__(self, nats_service, subject_manager=None, connection_manager=None):
         """
         Initialize NATS message handler with error boundaries.
 
         Args:
             nats_service: NATS service instance for subscribing to subjects
             subject_manager: NATSSubjectManager instance for standardized subscription patterns
+            connection_manager: ConnectionManager instance for broadcasting to WebSocket clients
 
         AI: Initializes retry handler, DLQ, and circuit breaker for resilience.
+        AI Agent: connection_manager injected via constructor to eliminate global singleton dependency
         """
         logger.info("NATSMessageHandler __init__ called - ENHANCED LOGGING TEST")
         self.nats_service = nats_service
         self.subject_manager = subject_manager
+        self.connection_manager = connection_manager  # AI Agent: Injected dependency, not global
         self.subscriptions = {}
 
         # Sub-zone subscription tracking for local channels
@@ -460,7 +462,7 @@ class NATSMessageHandler:
 
         try:
             # Get all players subscribed to this room
-            canonical_id = connection_manager._canonical_room_id(room_id) or room_id
+            canonical_id = self.connection_manager._canonical_room_id(room_id) or room_id
             logger.debug(
                 "=== BROADCAST FILTERING DEBUG: Room ID resolution ===",
                 room_id=room_id,
@@ -471,22 +473,22 @@ class NATSMessageHandler:
 
             targets: set[str] = set()
 
-            if canonical_id in connection_manager.room_subscriptions:
-                targets.update(connection_manager.room_subscriptions[canonical_id])
+            if canonical_id in self.connection_manager.room_subscriptions:
+                targets.update(self.connection_manager.room_subscriptions[canonical_id])
                 logger.debug(
                     "=== BROADCAST FILTERING DEBUG: Added canonical room subscribers ===",
                     room_id=room_id,
                     canonical_id=canonical_id,
-                    canonical_subscribers=list(connection_manager.room_subscriptions[canonical_id]),
+                    canonical_subscribers=list(self.connection_manager.room_subscriptions[canonical_id]),
                     sender_id=sender_id,
                     channel=channel,
                 )
-            if room_id != canonical_id and room_id in connection_manager.room_subscriptions:
-                targets.update(connection_manager.room_subscriptions[room_id])
+            if room_id != canonical_id and room_id in self.connection_manager.room_subscriptions:
+                targets.update(self.connection_manager.room_subscriptions[room_id])
                 logger.debug(
                     "=== BROADCAST FILTERING DEBUG: Added original room subscribers ===",
                     room_id=room_id,
-                    original_subscribers=list(connection_manager.room_subscriptions[room_id]),
+                    original_subscribers=list(self.connection_manager.room_subscriptions[room_id]),
                     sender_id=sender_id,
                     channel=channel,
                 )
@@ -628,7 +630,7 @@ class NATSMessageHandler:
                     target_player_id=player_id,
                     channel=channel,
                 )
-                await connection_manager.send_personal_message(player_id, chat_event)
+                await self.connection_manager.send_personal_message(player_id, chat_event)
 
             logger.info(
                 "Room message broadcasted with server-side filtering",
@@ -662,25 +664,25 @@ class NATSMessageHandler:
         """
         try:
             # Get player's current room from connection manager's online players
-            if player_id in connection_manager.online_players:
-                player_info = connection_manager.online_players[player_id]
+            if player_id in self.connection_manager.online_players:
+                player_info = self.connection_manager.online_players[player_id]
                 player_room_id = player_info.get("current_room_id")
 
                 if player_room_id:
                     # Use canonical room ID for comparison
-                    canonical_player_room = connection_manager._canonical_room_id(player_room_id) or player_room_id
-                    canonical_message_room = connection_manager._canonical_room_id(room_id) or room_id
+                    canonical_player_room = self.connection_manager._canonical_room_id(player_room_id) or player_room_id
+                    canonical_message_room = self.connection_manager._canonical_room_id(room_id) or room_id
 
                     return canonical_player_room == canonical_message_room
 
             # Fallback: check persistence layer
-            if connection_manager.persistence:
-                player = connection_manager.persistence.get_player(player_id)
+            if self.connection_manager.persistence:
+                player = self.connection_manager.persistence.get_player(player_id)
                 if player and player.current_room_id:
                     canonical_player_room = (
-                        connection_manager._canonical_room_id(player.current_room_id) or player.current_room_id
+                        self.connection_manager._canonical_room_id(player.current_room_id) or player.current_room_id
                     )
-                    canonical_message_room = connection_manager._canonical_room_id(room_id) or room_id
+                    canonical_message_room = self.connection_manager._canonical_room_id(room_id) or room_id
 
                     return canonical_player_room == canonical_message_room
 
@@ -1419,11 +1421,8 @@ class NATSMessageHandler:
                 logger.warning("Player entered event missing room_id", data=data)
                 return
 
-            # Import here to avoid circular imports
-            from .connection_manager import connection_manager
-
-            # Broadcast to room
-            await connection_manager.broadcast_room_event("player_entered", room_id, data)
+            # Broadcast to room using injected connection_manager
+            await self.connection_manager.broadcast_room_event("player_entered", room_id, data)
 
             logger.debug(
                 "Player entered event broadcasted",
@@ -1447,11 +1446,8 @@ class NATSMessageHandler:
                 logger.warning("Player left event missing room_id", data=data)
                 return
 
-            # Import here to avoid circular imports
-            from .connection_manager import connection_manager
-
-            # Broadcast to room
-            await connection_manager.broadcast_room_event("player_left", room_id, data)
+            # Broadcast to room using injected connection_manager
+            await self.connection_manager.broadcast_room_event("player_left", room_id, data)
 
             logger.debug(
                 "Player left event broadcasted",
@@ -1470,11 +1466,8 @@ class NATSMessageHandler:
             data: Event data containing tick information
         """
         try:
-            # Import here to avoid circular imports
-            from .connection_manager import connection_manager
-
-            # Broadcast globally
-            await connection_manager.broadcast_global_event("game_tick", data)
+            # Broadcast globally using injected connection_manager
+            await self.connection_manager.broadcast_global_event("game_tick", data)
 
             logger.debug(
                 "Game tick event broadcasted",
@@ -1524,11 +1517,8 @@ class NATSMessageHandler:
                 logger.warning("Combat started event missing room_id", data=data)
                 return
 
-            # Import here to avoid circular imports
-            from .connection_manager import connection_manager
-
-            # Broadcast to room
-            await connection_manager.broadcast_room_event("combat_started", room_id, data)
+            # Broadcast to room using injected connection_manager
+            await self.connection_manager.broadcast_room_event("combat_started", room_id, data)
             logger.debug("Combat started event broadcasted", room_id=room_id)
 
         except Exception as e:
@@ -1542,11 +1532,8 @@ class NATSMessageHandler:
                 logger.warning("Combat ended event missing room_id", data=data)
                 return
 
-            # Import here to avoid circular imports
-            from .connection_manager import connection_manager
-
-            # Broadcast to room
-            await connection_manager.broadcast_room_event("combat_ended", room_id, data)
+            # Broadcast to room using injected connection_manager
+            await self.connection_manager.broadcast_room_event("combat_ended", room_id, data)
             logger.debug("Combat ended event broadcasted", room_id=room_id)
 
         except Exception as e:
@@ -1560,11 +1547,8 @@ class NATSMessageHandler:
                 logger.warning("Player attacked event missing room_id", data=data)
                 return
 
-            # Import here to avoid circular imports
-            from .connection_manager import connection_manager
-
-            # Broadcast to room
-            await connection_manager.broadcast_room_event("player_attacked", room_id, data)
+            # Broadcast to room using injected connection_manager
+            await self.connection_manager.broadcast_room_event("player_attacked", room_id, data)
             logger.debug("Player attacked event broadcasted", room_id=room_id)
 
         except Exception as e:
@@ -1578,11 +1562,8 @@ class NATSMessageHandler:
                 logger.warning("NPC attacked event missing room_id", data=data)
                 return
 
-            # Import here to avoid circular imports
-            from .connection_manager import connection_manager
-
-            # Broadcast to room
-            await connection_manager.broadcast_room_event("npc_attacked", room_id, data)
+            # Broadcast to room using injected connection_manager
+            await self.connection_manager.broadcast_room_event("npc_attacked", room_id, data)
             logger.debug("NPC attacked event broadcasted", room_id=room_id)
 
         except Exception as e:
@@ -1596,11 +1577,8 @@ class NATSMessageHandler:
                 logger.warning("NPC took damage event missing room_id", data=data)
                 return
 
-            # Import here to avoid circular imports
-            from .connection_manager import connection_manager
-
-            # Broadcast to room
-            await connection_manager.broadcast_room_event("npc_took_damage", room_id, data)
+            # Broadcast to room using injected connection_manager
+            await self.connection_manager.broadcast_room_event("npc_took_damage", room_id, data)
             logger.debug("NPC took damage event broadcasted", room_id=room_id)
 
         except Exception as e:
@@ -1608,10 +1586,27 @@ class NATSMessageHandler:
 
     async def _handle_npc_died_event(self, data: dict[str, Any]):
         """
-        Handle npc_died event.
+        Handle npc_died event - NATS to EventBus bridge pattern.
 
-        AI Agent: CRITICAL FIX - Publish NPCDied event to EventBus so lifecycle manager
-                  can queue the NPC for respawn with proper delay.
+        ARCHITECTURE NOTE - Dual Event Path by Design:
+        This handler implements the NATS→EventBus bridge pattern, which is NOT redundant:
+
+        1. NATS Path (Inter-Service Communication):
+           - CombatService publishes NPCDiedEvent → NATS → NATSMessageHandler (here)
+           - Purpose: Broadcast death to WebSocket clients for UI updates
+
+        2. EventBus Path (Internal Game Logic):
+           - NATSMessageHandler publishes NPCDied → EventBus → NPCLifecycleManager
+           - Purpose: Trigger respawn queue processing with configured delay
+
+        This separation of concerns follows NATS.mdc best practices:
+        - NATS handles distributed messaging and client broadcasting
+        - EventBus handles internal domain logic and game state management
+        - Bridge pattern prevents tight coupling between communication and domain layers
+
+        AI Agent: This is the ONLY place that bridges NATS npc_died messages to EventBus.
+                  CombatService publishes to NATS only, not EventBus directly.
+                  Removing this bridge would break NPC respawning entirely!
 
         Note: NPC removal from room is handled by the NPCLeftRoom event published
         by the lifecycle manager. This handler broadcasts the death event to clients
@@ -1633,23 +1628,17 @@ class NATSMessageHandler:
             # Import here to avoid circular imports
             from server.events.event_types import NPCDied
 
-            from .connection_manager import connection_manager
-
-            # Broadcast death event to room clients
+            # Broadcast death event to room clients using injected connection_manager
             # AI: Room state mutation is handled by NPCLeftRoom event from lifecycle manager
             # AI: This prevents duplicate removal attempts and maintains single source of truth
-            await connection_manager.broadcast_room_event("npc_died", room_id, data)
+            await self.connection_manager.broadcast_room_event("npc_died", room_id, data)
             logger.debug("NPC died event broadcasted", room_id=room_id, npc_id=npc_id, npc_name=npc_name)
 
             # AI Agent: CRITICAL - Publish to EventBus so lifecycle manager can queue for respawn
             #           This ensures ALL NPCs (required and optional) respect respawn delay
-            event_bus = connection_manager._get_event_bus()
+            event_bus = self.connection_manager._get_event_bus()
             if event_bus:
-                npc_died_event = NPCDied(
-                    npc_id=str(npc_id),
-                    room_id=room_id,
-                    cause=data.get("cause", "combat")
-                )
+                npc_died_event = NPCDied(npc_id=str(npc_id), room_id=room_id, cause=data.get("cause", "combat"))
                 event_bus.publish(npc_died_event)
                 logger.info(
                     "NPCDied event published to EventBus for respawn queue",
@@ -1661,31 +1650,5 @@ class NATSMessageHandler:
             logger.error("Error handling NPC died event", error=str(e), data=data)
 
 
-# Global NATS message handler instance
-nats_message_handler = None
-
-
-def get_nats_message_handler(nats_service=None, subject_manager=None):
-    """
-    Get or create the global NATS message handler instance.
-
-    Args:
-        nats_service: NATS service instance (optional, for testing)
-        subject_manager: NATSSubjectManager instance (optional, for standardized patterns)
-
-    Returns:
-        NATSMessageHandler instance
-    """
-    global nats_message_handler
-    logger.info(
-        "get_nats_message_handler called",
-        nats_service_provided=nats_service is not None,
-        subject_manager_provided=subject_manager is not None,
-        global_handler_exists=nats_message_handler is not None,
-    )
-    if nats_message_handler is None and nats_service is not None:
-        logger.info("Creating new NATSMessageHandler instance")
-        nats_message_handler = NATSMessageHandler(nats_service, subject_manager)
-    else:
-        logger.info("Using existing global NATSMessageHandler instance")
-    return nats_message_handler
+# AI Agent: Global singleton removed - use ApplicationContainer.nats_message_handler instead
+# Migration complete: All code now uses dependency injection via container

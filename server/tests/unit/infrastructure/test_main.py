@@ -5,7 +5,7 @@ Tests the FastAPI application, endpoints, logging setup, and game tick functiona
 """
 
 import uuid
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
 from fastapi import FastAPI
@@ -364,10 +364,13 @@ class TestEndpoints:
 
     def test_get_game_status(self, client):
         """Test getting game status."""
-        with patch("server.api.game.connection_manager") as mock_connection_manager:
+        # AI Agent: Patch via app.state.container (no longer a module-level global)
+        with patch("server.api.game.app.state.container") as mock_container:
+            mock_connection_manager = MagicMock()
             mock_connection_manager.get_active_connection_count.return_value = 5
             mock_connection_manager.player_websockets = {"player1": "conn1", "player2": "conn2"}
             mock_connection_manager.room_subscriptions = {"room1": {"player1"}}
+            mock_container.connection_manager = mock_connection_manager
 
             response = client.get("/game/status")
 

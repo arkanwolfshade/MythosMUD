@@ -35,11 +35,19 @@ class HealthService:
     including server metrics, database connectivity, and connection statistics.
     """
 
-    def __init__(self):
-        """Initialize the health service."""
+    def __init__(self, connection_manager=None):
+        """
+        Initialize the health service.
+
+        Args:
+            connection_manager: ConnectionManager instance (optional, for connection stats)
+
+        AI Agent: connection_manager injected via constructor to eliminate global singleton
+        """
         self.start_time = time.time()
         self.last_health_check = None
         self.health_check_count = 0
+        self.connection_manager = connection_manager  # AI Agent: Injected dependency
 
         # Performance thresholds
         self.memory_threshold_mb = 1024  # 1GB
@@ -108,9 +116,17 @@ class HealthService:
     def check_connections_health(self) -> dict:
         """Check connection manager health."""
         try:
-            from ..realtime.connection_manager import connection_manager
+            # AI Agent: Use injected connection_manager instead of global import
+            if not self.connection_manager:
+                logger.warning("Connection manager not available for health check")
+                return {
+                    # AI Agent: UNKNOWN doesn't exist, using UNHEALTHY as fallback
+                    "status": HealthStatus.UNHEALTHY,
+                    "active_connections": 0,
+                    "connection_rate": 0.0,
+                }
 
-            memory_stats = connection_manager.get_memory_stats()
+            memory_stats = self.connection_manager.get_memory_stats()
             connections_data = memory_stats.get("connections", {})
 
             active_connections = connections_data.get("active_connections", 0)

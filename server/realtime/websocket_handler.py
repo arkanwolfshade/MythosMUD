@@ -12,8 +12,10 @@ from fastapi import WebSocket, WebSocketDisconnect
 
 from ..error_types import ErrorMessages, ErrorType, create_websocket_error_response
 from ..logging.enhanced_logging_config import get_logger
-from .connection_manager import connection_manager
 from .envelope import build_event
+
+# AI Agent: Don't import app at module level - causes circular import!
+#           Import locally in functions instead
 
 logger = get_logger(__name__)
 
@@ -48,7 +50,9 @@ def _get_npc_name_from_instance(npc_id: str) -> str | None:
         return None
 
 
-async def handle_websocket_connection(websocket: WebSocket, player_id: str, session_id: str | None = None) -> None:
+async def handle_websocket_connection(
+    websocket: WebSocket, player_id: str, session_id: str | None = None, connection_manager=None
+) -> None:
     """
     Handle a WebSocket connection for a player.
 
@@ -56,6 +60,9 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
         websocket: The WebSocket connection
         player_id: The player's ID
         session_id: Optional session ID for dual connection management
+        connection_manager: ConnectionManager instance (injected from endpoint)
+
+    AI Agent: connection_manager now injected as parameter instead of global import
     """
     # Check if server is shutting down - prevent new connections
     # Import here to avoid circular imports
@@ -430,6 +437,12 @@ async def handle_game_command(
         args: Command arguments (optional, will parse from command if not provided)
     """
     try:
+        # AI Agent: Access connection_manager via app.state.container (no longer a global)
+        #           Import locally to avoid circular import
+        from ..main import app
+
+        connection_manager = app.state.container.connection_manager
+
         logger.info(
             "🚨 SERVER DEBUG: handle_game_command called",
             command=command,
@@ -512,6 +525,12 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
     """
     logger.info("SERVER DEBUG: process_websocket_command called", cmd=cmd, args=args, player_id=player_id)
     logger.debug("Processing command", cmd=cmd, args=args, player_id=player_id)
+
+    # AI Agent: Access connection_manager via app.state.container (no longer a global)
+    #           Import locally to avoid circular import
+    from ..main import app
+
+    connection_manager = app.state.container.connection_manager
 
     # Get player from connection manager
     logger.debug("Getting player for ID", player_id=player_id, player_id_type=type(player_id))
@@ -655,7 +674,7 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
     logger.info("SERVER DEBUG: Reconstructed command_line", command_line=command_line, cmd=cmd, args=args)
     result = await process_command_unified(
         command_line=command_line,
-        current_user=player,  # type: ignore[arg-type]
+        current_user=player,
         # WebSocketRequestContext provides duck-typed Request interface but isn't a subclass
         # This is intentional - WebSocket contexts need different lifecycle than HTTP Requests
         request=request_context,  # type: ignore[arg-type]
@@ -694,6 +713,12 @@ async def handle_chat_message(websocket: WebSocket, player_id: str, message: str
         message: The chat message
     """
     try:
+        # AI Agent: Access connection_manager via app.state.container (no longer a global)
+        #           Import locally to avoid circular import
+        from ..main import app
+
+        connection_manager = app.state.container.connection_manager
+
         # Create chat event
         chat_event = build_event(
             "chat",
@@ -733,6 +758,12 @@ async def broadcast_room_update(player_id: str, room_id: str) -> None:
     """
     logger.debug("broadcast_room_update called", player_id=player_id, room_id=room_id)
     try:
+        # AI Agent: Access connection_manager via app.state.container (no longer a global)
+        #           Import locally to avoid circular import
+        from ..main import app
+
+        connection_manager = app.state.container.connection_manager
+
         # Get room data
         persistence = connection_manager.persistence
         if not persistence:
@@ -827,7 +858,7 @@ async def broadcast_room_update(player_id: str, room_id: str) -> None:
             logger.debug("Player subscribed to new room", player_id=player_id, new_room_id=room_id)
 
             # Update player's current room
-            player.current_room_id = room_id  # type: ignore[assignment]
+            player.current_room_id = room_id
 
         # Broadcast to room
         logger.debug("Broadcasting room update to room", room_id=room_id)

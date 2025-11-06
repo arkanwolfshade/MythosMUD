@@ -5,7 +5,7 @@ This module tests the new monitoring API endpoints that provide dual connection
 statistics, performance metrics, and connection health information.
 """
 
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 from fastapi import FastAPI
@@ -149,10 +149,15 @@ class TestMonitoringAPIEndpoints:
 
         return manager
 
-    @patch("server.api.monitoring.connection_manager")
-    def test_get_dual_connection_stats_success(self, mock_conn_manager, client, mock_connection_manager):
+    # AI Agent: Patch via app.state.container (no longer module-level global)
+    @patch("server.api.monitoring.app.state.container")
+    def test_get_dual_connection_stats_success(self, mock_container, client, mock_connection_manager):
         """Test successful retrieval of dual connection statistics."""
-        mock_conn_manager.get_dual_connection_stats.return_value = mock_connection_manager.get_dual_connection_stats()
+        # AI Agent: Set up connection_manager on container mock
+        mock_container.connection_manager = mock_connection_manager
+        mock_connection_manager.get_dual_connection_stats.return_value = (
+            mock_connection_manager.get_dual_connection_stats()
+        )
 
         response = client.get("/monitoring/dual-connections")
 
@@ -174,10 +179,13 @@ class TestMonitoringAPIEndpoints:
         assert data["connection_health"]["total_connections"] == 15
         assert data["connection_health"]["health_percentage"] == 93.3
 
-    @patch("server.api.monitoring.connection_manager")
-    def test_get_dual_connection_stats_error(self, mock_conn_manager, client):
+    # AI Agent: Patch via app.state.container (no longer module-level global)
+    @patch("server.api.monitoring.app.state.container")
+    def test_get_dual_connection_stats_error(self, mock_container, client):
         """Test error handling in dual connection statistics endpoint."""
+        mock_conn_manager = MagicMock()
         mock_conn_manager.get_dual_connection_stats.side_effect = Exception("Database error")
+        mock_container.connection_manager = mock_conn_manager
 
         response = client.get("/monitoring/dual-connections")
 
@@ -185,10 +193,12 @@ class TestMonitoringAPIEndpoints:
         data = response.json()
         assert "Error retrieving dual connection stats" in data["detail"]
 
-    @patch("server.api.monitoring.connection_manager")
-    def test_get_performance_stats_success(self, mock_conn_manager, client, mock_connection_manager):
+    # AI Agent: Patch via app.state.container (no longer module-level global)
+    @patch("server.api.monitoring.app.state.container")
+    def test_get_performance_stats_success(self, mock_container, client, mock_connection_manager):
         """Test successful retrieval of performance statistics."""
-        mock_conn_manager.get_performance_stats.return_value = mock_connection_manager.get_performance_stats()
+        mock_container.connection_manager = mock_connection_manager
+        mock_connection_manager.get_performance_stats.return_value = mock_connection_manager.get_performance_stats()
 
         response = client.get("/monitoring/performance")
 
@@ -210,10 +220,13 @@ class TestMonitoringAPIEndpoints:
         assert data["message_delivery"]["total_messages"] == 1500
         assert data["message_delivery"]["avg_delivery_time_ms"] == 5.2
 
-    @patch("server.api.monitoring.connection_manager")
-    def test_get_performance_stats_error(self, mock_conn_manager, client):
+    # AI Agent: Patch via app.state.container (no longer module-level global)
+    @patch("server.api.monitoring.app.state.container")
+    def test_get_performance_stats_error(self, mock_container, client):
         """Test error handling in performance statistics endpoint."""
+        mock_conn_manager = MagicMock()
         mock_conn_manager.get_performance_stats.side_effect = Exception("Performance data unavailable")
+        mock_container.connection_manager = mock_conn_manager
 
         response = client.get("/monitoring/performance")
 
@@ -221,10 +234,12 @@ class TestMonitoringAPIEndpoints:
         data = response.json()
         assert "Error retrieving performance stats" in data["detail"]
 
-    @patch("server.api.monitoring.connection_manager")
-    def test_get_connection_health_stats_success(self, mock_conn_manager, client, mock_connection_manager):
+    # AI Agent: Patch via app.state.container (no longer module-level global)
+    @patch("server.api.monitoring.app.state.container")
+    def test_get_connection_health_stats_success(self, mock_container, client, mock_connection_manager):
         """Test successful retrieval of connection health statistics."""
-        mock_conn_manager.get_connection_health_stats.return_value = (
+        mock_container.connection_manager = mock_connection_manager
+        mock_connection_manager.get_connection_health_stats.return_value = (
             mock_connection_manager.get_connection_health_stats()
         )
 
@@ -249,10 +264,13 @@ class TestMonitoringAPIEndpoints:
         assert data["connection_lifecycle"]["stale_connections"] == 8
         assert data["session_health"]["session_health_percentage"] == 87.5
 
-    @patch("server.api.monitoring.connection_manager")
-    def test_get_connection_health_stats_error(self, mock_conn_manager, client):
+    # AI Agent: Patch via app.state.container (no longer module-level global)
+    @patch("server.api.monitoring.app.state.container")
+    def test_get_connection_health_stats_error(self, mock_container, client):
         """Test error handling in connection health statistics endpoint."""
+        mock_conn_manager = MagicMock()
         mock_conn_manager.get_connection_health_stats.side_effect = Exception("Health check failed")
+        mock_container.connection_manager = mock_conn_manager
 
         response = client.get("/monitoring/connection-health")
 
@@ -260,12 +278,14 @@ class TestMonitoringAPIEndpoints:
         data = response.json()
         assert "Error retrieving connection health stats" in data["detail"]
 
-    @patch("server.api.monitoring.connection_manager")
-    def test_monitoring_endpoints_content_type(self, mock_conn_manager, client, mock_connection_manager):
+    # AI Agent: Patch via app.state.container (no longer module-level global)
+    @patch("server.api.monitoring.app.state.container")
+    def test_monitoring_endpoints_content_type(self, mock_container, client, mock_connection_manager):
         """Test that monitoring endpoints return proper content type."""
-        mock_conn_manager.get_dual_connection_stats.return_value = mock_connection_manager.get_dual_connection_stats()
-        mock_conn_manager.get_performance_stats.return_value = mock_connection_manager.get_performance_stats()
-        mock_conn_manager.get_connection_health_stats.return_value = (
+        mock_container.connection_manager = mock_connection_manager
+        mock_connection_manager.get_dual_connection_stats.return_value = mock_connection_manager.get_dual_connection_stats()
+        mock_connection_manager.get_performance_stats.return_value = mock_connection_manager.get_performance_stats()
+        mock_connection_manager.get_connection_health_stats.return_value = (
             mock_connection_manager.get_connection_health_stats()
         )
 
@@ -277,12 +297,14 @@ class TestMonitoringAPIEndpoints:
             assert response.status_code == 200
             assert response.headers["content-type"] == "application/json"
 
-    @patch("server.api.monitoring.connection_manager")
-    def test_monitoring_endpoints_response_validation(self, mock_conn_manager, client, mock_connection_manager):
+    # AI Agent: Patch via app.state.container (no longer module-level global)
+    @patch("server.api.monitoring.app.state.container")
+    def test_monitoring_endpoints_response_validation(self, mock_container, client, mock_connection_manager):
         """Test that monitoring endpoints return valid response models."""
-        mock_conn_manager.get_dual_connection_stats.return_value = mock_connection_manager.get_dual_connection_stats()
-        mock_conn_manager.get_performance_stats.return_value = mock_connection_manager.get_performance_stats()
-        mock_conn_manager.get_connection_health_stats.return_value = (
+        mock_container.connection_manager = mock_connection_manager
+        mock_connection_manager.get_dual_connection_stats.return_value = mock_connection_manager.get_dual_connection_stats()
+        mock_connection_manager.get_performance_stats.return_value = mock_connection_manager.get_performance_stats()
+        mock_connection_manager.get_connection_health_stats.return_value = (
             mock_connection_manager.get_connection_health_stats()
         )
 
@@ -323,7 +345,8 @@ class TestMonitoringAPIEndpoints:
         assert isinstance(data["health_trends"], dict)
         assert isinstance(data["timestamp"], int | float)
 
-    @patch("server.api.monitoring.connection_manager")
+    # AI Agent: Patch via app.state.container (no longer module-level global)
+    @patch("server.api.monitoring.app.state.container")
     def test_monitoring_endpoints_with_empty_data(self, mock_conn_manager, client):
         """Test monitoring endpoints with empty data."""
         # Mock empty responses

@@ -90,7 +90,7 @@ def optional_npc_definition():
         room_id="earth_arkhamcity_downtown_001",
         base_stats='{"strength": 5, "sanity": 30, "current_health": 50}',
         behavior_config='{"wander_probability": 0.2}',
-        ai_integration_stub='{}',
+        ai_integration_stub="{}",
     )
     definition.id = 100
     return definition
@@ -109,8 +109,8 @@ def required_npc_definition():
         spawn_probability=1.0,
         room_id="earth_arkhamcity_sanitarium_office",
         base_stats='{"strength": 10, "sanity": 80, "current_health": 100}',
-        behavior_config='{}',
-        ai_integration_stub='{}',
+        behavior_config="{}",
+        ai_integration_stub="{}",
     )
     definition.id = 200
     return definition
@@ -526,9 +526,9 @@ class TestMultipleNPCTypes:
             max_population=2,
             spawn_probability=1.0,
             room_id="earth_arkhamcity_downtown_001",
-            base_stats='{}',
-            behavior_config='{}',
-            ai_integration_stub='{}',
+            base_stats="{}",
+            behavior_config="{}",
+            ai_integration_stub="{}",
         )
         npc1.id = 101
 
@@ -541,9 +541,9 @@ class TestMultipleNPCTypes:
             max_population=2,
             spawn_probability=1.0,
             room_id="earth_arkhamcity_downtown_002",
-            base_stats='{}',
-            behavior_config='{}',
-            ai_integration_stub='{}',
+            base_stats="{}",
+            behavior_config="{}",
+            ai_integration_stub="{}",
         )
         npc2.id = 102
 
@@ -611,9 +611,9 @@ class TestEdgeCases:
             max_population=1,
             spawn_probability=1.0,
             room_id=None,  # No room configured
-            base_stats='{}',
-            behavior_config='{}',
-            ai_integration_stub='{}',
+            base_stats="{}",
+            behavior_config="{}",
+            ai_integration_stub="{}",
         )
         npc_no_room.id = 103
 

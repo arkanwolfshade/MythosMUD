@@ -18,8 +18,22 @@ import json
 from datetime import UTC, datetime
 from typing import Any
 
-# Importing here avoids circular imports (connection_manager does not import this module)
-from .connection_manager import connection_manager
+# Global sequence counter for events (when connection_manager not available)
+_global_sequence_counter = 0
+_sequence_lock = None
+
+
+def _get_next_global_sequence() -> int:
+    """Thread-safe global sequence number generation (fallback when no connection_manager)."""
+    import threading
+
+    global _global_sequence_counter, _sequence_lock
+    if _sequence_lock is None:
+        _sequence_lock = threading.Lock()
+
+    with _sequence_lock:
+        _global_sequence_counter += 1
+        return _global_sequence_counter
 
 
 def utc_now_z() -> str:
@@ -34,13 +48,30 @@ def build_event(
     room_id: str | None = None,
     player_id: str | None = None,
     sequence_number: int | None = None,
+    connection_manager=None,
 ) -> dict[str, Any]:
-    """Create a normalized event envelope.
-
-    If sequence_number is not provided, a global monotonic value is assigned.
     """
+    Create a normalized event envelope.
 
-    seq = sequence_number if sequence_number is not None else connection_manager._get_next_sequence()  # noqa: SLF001
+    Args:
+        event_type: Type of event
+        data: Event data payload
+        room_id: Optional room ID for room-scoped events
+        player_id: Optional player ID for player-scoped events
+        sequence_number: Optional explicit sequence number
+        connection_manager: Optional ConnectionManager for sequence generation
+
+    If sequence_number is not provided and connection_manager is available,
+    uses connection_manager's sequence counter. Otherwise uses global fallback.
+
+    AI Agent: connection_manager is now optional parameter instead of global import
+    """
+    if sequence_number is not None:
+        seq = sequence_number
+    elif connection_manager is not None:
+        seq = connection_manager._get_next_sequence()  # noqa: SLF001
+    else:
+        seq = _get_next_global_sequence()  # Fallback for backward compatibility
     event: dict[str, Any] = {
         "event_type": event_type,
         "timestamp": utc_now_z(),

@@ -93,27 +93,29 @@ class TestWebSocketConnectionEvents:
         # Note: mock_room is a real Room object, so we can't mock its methods
         # The test will use the real has_player method
 
-        # Mock the room to track event publishing
-        with patch("server.realtime.websocket_handler.connection_manager", mock_connection_manager):
-            with patch("server.realtime.websocket_handler.broadcast_room_update", AsyncMock()):
-                # Import WebSocketDisconnect to properly simulate disconnection
-                from fastapi import WebSocketDisconnect
+        # AI Agent: Pass connection_manager as parameter (no longer a global)
+        with patch("server.realtime.websocket_handler.broadcast_room_update", AsyncMock()):
+            # Import WebSocketDisconnect to properly simulate disconnection
+            from fastapi import WebSocketDisconnect
 
-                # Mock the WebSocket to disconnect immediately to end the connection loop
-                mock_websocket.receive_text.side_effect = [
-                    json.dumps({"type": "command", "command": "test"}),
-                    WebSocketDisconnect(1000, "Connection closed"),  # This will break the loop
-                ]
+            # Mock the WebSocket to disconnect immediately to end the connection loop
+            mock_websocket.receive_text.side_effect = [
+                json.dumps({"type": "command", "command": "test"}),
+                WebSocketDisconnect(1000, "Connection closed"),  # This will break the loop
+            ]
 
-                # Mock the message handler to avoid processing the command
-                with patch("server.realtime.websocket_handler.handle_websocket_message", AsyncMock()):
-                    try:
-                        await handle_websocket_connection(mock_websocket, "test_player_123")
-                    except Exception:
-                        pass  # Expected to break due to our mock
+            # Mock the message handler to avoid processing the command
+            with patch("server.realtime.websocket_handler.handle_websocket_message", AsyncMock()):
+                try:
+                    # Pass connection_manager as parameter
+                    await handle_websocket_connection(
+                        mock_websocket, "test_player_123", connection_manager=mock_connection_manager
+                    )
+                except Exception:
+                    pass  # Expected to break due to our mock
 
-                # Verify that room.player_entered was called by checking if player is in room
-                assert mock_room.has_player("test_player_123"), "Player should be in room after connection"
+            # Verify that room.player_entered was called by checking if player is in room
+            assert mock_room.has_player("test_player_123"), "Player should be in room after connection"
 
     @pytest.mark.asyncio
     async def test_websocket_disconnection_fires_player_left_event(
@@ -136,21 +138,24 @@ class TestWebSocketConnectionEvents:
 
         mock_connection_manager.disconnect_websocket = mock_disconnect_websocket
 
-        with patch("server.realtime.websocket_handler.connection_manager", mock_connection_manager):
-            with patch("server.realtime.websocket_handler.broadcast_room_update", AsyncMock()):
-                # Import WebSocketDisconnect to properly simulate disconnection
-                from fastapi import WebSocketDisconnect
+        # AI Agent: Pass connection_manager as parameter (no longer a global)
+        with patch("server.realtime.websocket_handler.broadcast_room_update", AsyncMock()):
+            # Import WebSocketDisconnect to properly simulate disconnection
+            from fastapi import WebSocketDisconnect
 
-                # Mock the WebSocket to disconnect immediately
-                mock_websocket.receive_text.side_effect = WebSocketDisconnect(1000, "Connection closed")
+            # Mock the WebSocket to disconnect immediately
+            mock_websocket.receive_text.side_effect = WebSocketDisconnect(1000, "Connection closed")
 
-                try:
-                    await handle_websocket_connection(mock_websocket, "test_player_123")
-                except WebSocketDisconnect:
-                    pass  # Expected to break due to our mock
+            try:
+                # Pass connection_manager as parameter
+                await handle_websocket_connection(
+                    mock_websocket, "test_player_123", connection_manager=mock_connection_manager
+                )
+            except WebSocketDisconnect:
+                pass  # Expected to break due to our mock
 
-                # Verify that room.player_left was called by checking if player is not in room
-                assert not mock_room.has_player("test_player_123"), "Player should not be in room after disconnection"
+            # Verify that room.player_left was called by checking if player is not in room
+            assert not mock_room.has_player("test_player_123"), "Player should not be in room after disconnection"
 
     @pytest.mark.asyncio
     async def test_room_player_entered_publishes_event(self, mock_event_bus):
@@ -328,27 +333,30 @@ class TestWebSocketConnectionEvents:
         mock_connection_manager.persistence.get_room.return_value = room
         mock_connection_manager.get_room_occupants.return_value = []
 
-        with patch("server.realtime.websocket_handler.connection_manager", mock_connection_manager):
-            with patch("server.realtime.websocket_handler.broadcast_room_update", AsyncMock()):
-                # Import WebSocketDisconnect to properly simulate disconnection
-                from fastapi import WebSocketDisconnect
+        # AI Agent: Pass connection_manager as parameter (no longer a global)
+        with patch("server.realtime.websocket_handler.broadcast_room_update", AsyncMock()):
+            # Import WebSocketDisconnect to properly simulate disconnection
+            from fastapi import WebSocketDisconnect
 
-                # Mock the WebSocket to disconnect after allowing room operations to complete
-                # First, let the initial setup complete, then disconnect
-                mock_websocket.receive_text.side_effect = WebSocketDisconnect(1000, "Connection closed")
+            # Mock the WebSocket to disconnect after allowing room operations to complete
+            # First, let the initial setup complete, then disconnect
+            mock_websocket.receive_text.side_effect = WebSocketDisconnect(1000, "Connection closed")
 
-                # Mock the message handler to avoid processing the command
-                with patch("server.realtime.websocket_handler.handle_websocket_message", AsyncMock()):
-                    try:
-                        await handle_websocket_connection(mock_websocket, "test_player_123")
-                    except WebSocketDisconnect:
-                        pass  # Expected to break due to our mock
+            # Mock the message handler to avoid processing the command
+            with patch("server.realtime.websocket_handler.handle_websocket_message", AsyncMock()):
+                try:
+                    # Pass connection_manager as parameter
+                    await handle_websocket_connection(
+                        mock_websocket, "test_player_123", connection_manager=mock_connection_manager
+                    )
+                except WebSocketDisconnect:
+                    pass  # Expected to break due to our mock
 
-                # Verify that PlayerEnteredRoom event was published
-                player_entered_events = [e for e in published_events if isinstance(e, PlayerEnteredRoom)]
-                assert len(player_entered_events) == 1
-                assert player_entered_events[0].player_id == "test_player_123"
-                assert player_entered_events[0].room_id == "test_room_001"
+            # Verify that PlayerEnteredRoom event was published
+            player_entered_events = [e for e in published_events if isinstance(e, PlayerEnteredRoom)]
+            assert len(player_entered_events) == 1
+            assert player_entered_events[0].player_id == "test_player_123"
+            assert player_entered_events[0].room_id == "test_room_001"
 
     @pytest.mark.skip(reason="Complex WebSocket mocking issue - needs investigation")
     @pytest.mark.asyncio
@@ -383,18 +391,21 @@ class TestWebSocketConnectionEvents:
 
         mock_connection_manager.disconnect_websocket = mock_disconnect_websocket
 
-        with patch("server.realtime.websocket_handler.connection_manager", mock_connection_manager):
-            with patch("server.realtime.websocket_handler.broadcast_room_update", AsyncMock()):
-                # Import WebSocketDisconnect to properly simulate disconnection
-                from fastapi import WebSocketDisconnect
+        # AI Agent: Pass connection_manager as parameter (no longer a global)
+        with patch("server.realtime.websocket_handler.broadcast_room_update", AsyncMock()):
+            # Import WebSocketDisconnect to properly simulate disconnection
+            from fastapi import WebSocketDisconnect
 
-                # Mock the WebSocket to disconnect immediately with proper exception
-                mock_websocket.receive_text.side_effect = WebSocketDisconnect(1000, "Connection closed")
+            # Mock the WebSocket to disconnect immediately with proper exception
+            mock_websocket.receive_text.side_effect = WebSocketDisconnect(1000, "Connection closed")
 
-                try:
-                    await handle_websocket_connection(mock_websocket, "test_player_123")
-                except WebSocketDisconnect:
-                    pass  # Expected to break due to our mock
+            try:
+                # Pass connection_manager as parameter
+                await handle_websocket_connection(
+                    mock_websocket, "test_player_123", connection_manager=mock_connection_manager
+                )
+            except WebSocketDisconnect:
+                pass  # Expected to break due to our mock
 
                 # Verify that PlayerLeftRoom event was published
                 player_left_events = [e for e in published_events if isinstance(e, PlayerLeftRoom)]

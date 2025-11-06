@@ -31,7 +31,7 @@ USAGE:
 
 import asyncio
 import threading
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .app.task_registry import TaskRegistry
@@ -107,6 +107,8 @@ class ApplicationContainer:
         self.connection_manager: ConnectionManager | None = None
         self.real_time_event_handler: RealTimeEventHandler | None = None
         self.nats_service: NATSService | None = None
+        self.nats_message_handler: Any | None = None  # NATSMessageHandler type hint would create circular import
+        self.event_publisher: Any | None = None  # EventPublisher type hint would create circular import
 
         # Game services
         self.player_service: PlayerService | None = None
@@ -248,15 +250,43 @@ class ApplicationContainer:
                 else:
                     logger.warning("NATS service disabled in configuration")
 
-                # Initialize real-time event handler with event bus
-                self.real_time_event_handler = RealTimeEventHandler(
-                    event_bus=self.event_bus, task_registry=self.task_registry
-                )
-
-                # Initialize connection manager (no singleton - direct instantiation)
+                # Initialize connection manager FIRST (needed by other services)
                 self.connection_manager = ConnectionManager()
                 self.connection_manager.persistence = self.persistence
                 self.connection_manager._event_bus = self.event_bus
+
+                # Initialize real-time event handler with event bus and connection_manager
+                # AI Agent: Pass connection_manager as dependency to complete migration
+                self.real_time_event_handler = RealTimeEventHandler(
+                    event_bus=self.event_bus,
+                    task_registry=self.task_registry,
+                    connection_manager=self.connection_manager,
+                )
+
+                # Initialize NATS-dependent services (if NATS is enabled and connected)
+                if self.nats_service:
+                    # Get subject manager from NATS service if available
+                    subject_manager = getattr(self.nats_service, "subject_manager", None)
+
+                    # Initialize event publisher (previously global singleton)
+                    from .realtime.event_publisher import EventPublisher
+
+                    self.event_publisher = EventPublisher(self.nats_service, subject_manager)
+                    logger.info("Event publisher initialized")
+
+                    # Initialize NATS message handler (previously global singleton)
+                    # AI Agent: Pass connection_manager as dependency instead of using global import
+                    from .realtime.nats_message_handler import NATSMessageHandler
+
+                    self.nats_message_handler = NATSMessageHandler(
+                        self.nats_service, subject_manager, self.connection_manager
+                    )
+                    logger.info("NATS message handler initialized with injected connection_manager")
+                else:
+                    self.event_publisher = None
+                    self.nats_message_handler = None
+                    logger.info("NATS-dependent services skipped (NATS disabled or not connected)")
+
                 logger.info("Real-time communication initialized")
 
                 # Phase 7: Game services
@@ -354,6 +384,15 @@ class ApplicationContainer:
                     logger.error("Error shutting down log aggregator", error=str(e))
 
             # 2. Stop real-time services
+            # Stop NATS message handler first (depends on NATS service)
+            if self.nats_message_handler is not None:
+                try:
+                    await self.nats_message_handler.stop()
+                    logger.debug("NATS message handler stopped")
+                except Exception as e:
+                    logger.error("Error stopping NATS message handler", error=str(e))
+
+            # Then disconnect NATS service
             if self.nats_service is not None:
                 try:
                     await self.nats_service.disconnect()

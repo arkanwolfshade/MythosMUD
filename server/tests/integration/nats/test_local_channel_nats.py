@@ -5,7 +5,7 @@ This module tests the NATS integration for local channels, including
 sub-zone subscription management and dynamic subscription changes.
 """
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
@@ -29,7 +29,10 @@ class TestLocalChannelNATSIntegration:
     @pytest.fixture
     def nats_handler(self, mock_nats_service):
         """Create a NATS message handler with mocked dependencies."""
-        return NATSMessageHandler(mock_nats_service)
+        # AI Agent: Inject mock connection_manager via constructor (no longer a global)
+        #           Post-migration: NATSMessageHandler requires connection_manager
+        mock_connection_manager = MagicMock()
+        return NATSMessageHandler(mock_nats_service, connection_manager=mock_connection_manager)
 
     @pytest.mark.asyncio
     async def test_local_channel_subscription_on_start(self, nats_handler, mock_nats_service):
@@ -149,7 +152,10 @@ class TestLocalChannelSubZoneSubscriptionManagement:
     @pytest.fixture
     def nats_handler(self, mock_nats_service):
         """Create a NATS message handler with mocked dependencies."""
-        return NATSMessageHandler(mock_nats_service)
+        # AI Agent: Inject mock connection_manager via constructor (no longer a global)
+        #           Post-migration: NATSMessageHandler requires connection_manager
+        mock_connection_manager = MagicMock()
+        return NATSMessageHandler(mock_nats_service, connection_manager=mock_connection_manager)
 
     @pytest.mark.asyncio
     async def test_subzone_subscription_creation(self, nats_handler, mock_nats_service):
@@ -183,34 +189,37 @@ class TestLocalChannelSubZoneSubscriptionManagement:
     @pytest.mark.asyncio
     async def test_player_movement_subzone_change(self, nats_handler, mock_nats_service):
         """Test handling player movement between sub-zones."""
-        # Mock the connection manager
-        with patch("server.realtime.nats_message_handler.connection_manager") as mock_connection_manager:
-            mock_connection_manager.online_players = {
-                "test-player-123": {"current_room_id": "earth_arkhamcity_northside_intersection_derby_high"}
-            }
+        # AI Agent: Inject mock connection_manager via instance variable (no longer a global)
+        mock_connection_manager = MagicMock()
+        mock_connection_manager.online_players = {
+            "test-player-123": {"current_room_id": "earth_arkhamcity_northside_intersection_derby_high"}
+        }
 
-            # Mock sub-zone subscription methods
-            nats_handler.subscribe_to_subzone = AsyncMock()
-            nats_handler.unsubscribe_from_subzone = AsyncMock()
+        # Set mock on handler instance
+        nats_handler._connection_manager = mock_connection_manager
 
-            # Simulate player moving from northside to downtown
-            old_room_id = "earth_arkhamcity_northside_intersection_derby_high"
-            new_room_id = "earth_arkhamcity_downtown_market_square"
+        # Mock sub-zone subscription methods
+        nats_handler.subscribe_to_subzone = AsyncMock()
+        nats_handler.unsubscribe_from_subzone = AsyncMock()
 
-            old_subzone = extract_subzone_from_room_id(old_room_id)
-            new_subzone = extract_subzone_from_room_id(new_room_id)
+        # Simulate player moving from northside to downtown
+        old_room_id = "earth_arkhamcity_northside_intersection_derby_high"
+        new_room_id = "earth_arkhamcity_downtown_market_square"
 
-            # Update player's room
-            mock_connection_manager.online_players["test-player-123"]["current_room_id"] = new_room_id
+        old_subzone = extract_subzone_from_room_id(old_room_id)
+        new_subzone = extract_subzone_from_room_id(new_room_id)
 
-            # Mock the handle_player_movement method (to be implemented)
-            nats_handler.handle_player_movement = AsyncMock()
+        # Update player's room
+        mock_connection_manager.online_players["test-player-123"]["current_room_id"] = new_room_id
 
-            await nats_handler.handle_player_movement("test-player-123", old_room_id, new_room_id)
+        # Mock the handle_player_movement method (to be implemented)
+        nats_handler.handle_player_movement = AsyncMock()
 
-            nats_handler.handle_player_movement.assert_called_once_with("test-player-123", old_room_id, new_room_id)
-            assert old_subzone == "northside"
-            assert new_subzone == "downtown"
+        await nats_handler.handle_player_movement("test-player-123", old_room_id, new_room_id)
+
+        nats_handler.handle_player_movement.assert_called_once_with("test-player-123", old_room_id, new_room_id)
+        assert old_subzone == "northside"
+        assert new_subzone == "downtown"
 
     @pytest.mark.asyncio
     async def test_subzone_subscription_tracking(self, nats_handler):
@@ -232,58 +241,64 @@ class TestLocalChannelSubZoneSubscriptionManagement:
     @pytest.mark.asyncio
     async def test_multiple_players_same_subzone(self, nats_handler, mock_nats_service):
         """Test multiple players in the same sub-zone sharing subscription."""
-        # Mock the connection manager
-        with patch("server.realtime.nats_message_handler.connection_manager") as mock_connection_manager:
-            mock_connection_manager.online_players = {
-                "player1": {"current_room_id": "earth_arkhamcity_northside_intersection_derby_high"},
-                "player2": {"current_room_id": "earth_arkhamcity_northside_room_high_ln_001"},
-                "player3": {"current_room_id": "earth_arkhamcity_northside_room_high_ln_002"},
-            }
+        # AI Agent: Inject mock connection_manager via instance variable (no longer a global)
+        mock_connection_manager = MagicMock()
+        mock_connection_manager.online_players = {
+            "player1": {"current_room_id": "earth_arkhamcity_northside_intersection_derby_high"},
+            "player2": {"current_room_id": "earth_arkhamcity_northside_room_high_ln_001"},
+            "player3": {"current_room_id": "earth_arkhamcity_northside_room_high_ln_002"},
+        }
 
-            # Mock sub-zone subscription methods
-            nats_handler.subscribe_to_subzone = AsyncMock()
-            nats_handler.unsubscribe_from_subzone = AsyncMock()
+        # Set mock on handler instance
+        nats_handler._connection_manager = mock_connection_manager
 
-            subzone = "northside"
+        # Mock sub-zone subscription methods
+        nats_handler.subscribe_to_subzone = AsyncMock()
+        nats_handler.unsubscribe_from_subzone = AsyncMock()
 
-            # Mock the get_players_in_subzone method (to be implemented)
-            nats_handler.get_players_in_subzone = MagicMock(return_value=["player1", "player2", "player3"])
+        subzone = "northside"
 
-            players_in_subzone = nats_handler.get_players_in_subzone(subzone)
+        # Mock the get_players_in_subzone method (to be implemented)
+        nats_handler.get_players_in_subzone = MagicMock(return_value=["player1", "player2", "player3"])
 
-            assert len(players_in_subzone) == 3
-            assert "player1" in players_in_subzone
-            assert "player2" in players_in_subzone
-            assert "player3" in players_in_subzone
-            assert subzone == "northside"  # Use the variable to avoid linting warning
+        players_in_subzone = nats_handler.get_players_in_subzone(subzone)
+
+        assert len(players_in_subzone) == 3
+        assert "player1" in players_in_subzone
+        assert "player2" in players_in_subzone
+        assert "player3" in players_in_subzone
+        assert subzone == "northside"  # Use the variable to avoid linting warning
 
     @pytest.mark.asyncio
     async def test_subzone_subscription_cleanup(self, nats_handler, mock_nats_service):
         """Test cleanup of sub-zone subscriptions when no players remain."""
-        # Mock the connection manager
-        with patch("server.realtime.nats_message_handler.connection_manager") as mock_connection_manager:
-            mock_connection_manager.online_players = {
-                "player1": {"current_room_id": "earth_arkhamcity_northside_intersection_derby_high"}
-            }
+        # AI Agent: Inject mock connection_manager via instance variable (no longer a global)
+        mock_connection_manager = MagicMock()
+        mock_connection_manager.online_players = {
+            "player1": {"current_room_id": "earth_arkhamcity_northside_intersection_derby_high"}
+        }
 
-            # Mock sub-zone subscription methods
-            nats_handler.subscribe_to_subzone = AsyncMock()
-            nats_handler.unsubscribe_from_subzone = AsyncMock()
-            nats_handler.get_players_in_subzone = MagicMock(return_value=["player1"])
+        # Set mock on handler instance
+        nats_handler._connection_manager = mock_connection_manager
 
-            subzone = "northside"
+        # Mock sub-zone subscription methods
+        nats_handler.subscribe_to_subzone = AsyncMock()
+        nats_handler.unsubscribe_from_subzone = AsyncMock()
+        nats_handler.get_players_in_subzone = MagicMock(return_value=["player1"])
 
-            # Mock the cleanup_empty_subzone_subscriptions method (to be implemented)
-            nats_handler.cleanup_empty_subzone_subscriptions = AsyncMock()
+        subzone = "northside"
 
-            # Simulate player leaving the sub-zone
-            del mock_connection_manager.online_players["player1"]
-            nats_handler.get_players_in_subzone.return_value = []
+        # Mock the cleanup_empty_subzone_subscriptions method (to be implemented)
+        nats_handler.cleanup_empty_subzone_subscriptions = AsyncMock()
 
-            await nats_handler.cleanup_empty_subzone_subscriptions()
+        # Simulate player leaving the sub-zone
+        del mock_connection_manager.online_players["player1"]
+        nats_handler.get_players_in_subzone.return_value = []
 
-            nats_handler.cleanup_empty_subzone_subscriptions.assert_called_once()
-            assert subzone == "northside"  # Use the variable to avoid linting warning
+        await nats_handler.cleanup_empty_subzone_subscriptions()
+
+        nats_handler.cleanup_empty_subzone_subscriptions.assert_called_once()
+        assert subzone == "northside"  # Use the variable to avoid linting warning
 
 
 class TestLocalChannelNATSSubjectPatterns:

@@ -27,12 +27,16 @@ class TestGameTickLoop:
 
     @pytest.mark.asyncio
     @patch("server.app.lifespan.broadcast_game_event")
-    @patch("server.app.lifespan.connection_manager")
-    async def test_game_tick_loop_runs(self, mock_connection_manager, mock_broadcast):
+    # AI Agent: Patch via app.state.container instead of module-level global
+    @patch("server.app.lifespan.app.state.container")
+    async def test_game_tick_loop_runs(self, mock_container, mock_broadcast):
         """Test game tick loop executes ticks."""
         from fastapi import FastAPI
 
+        # AI Agent: Extract connection_manager from container
+        mock_connection_manager = MagicMock()
         mock_connection_manager.player_websockets = {"player1": MagicMock(), "player2": MagicMock()}
+        mock_container.connection_manager = mock_connection_manager
         mock_broadcast.return_value = None
 
         app = FastAPI()
@@ -53,12 +57,16 @@ class TestGameTickLoop:
 
     @pytest.mark.asyncio
     @patch("server.app.lifespan.broadcast_game_event")
-    @patch("server.app.lifespan.connection_manager")
-    async def test_game_tick_loop_broadcast_data(self, mock_connection_manager, mock_broadcast):
+    # AI Agent: Patch via app.state.container instead of module-level global
+    @patch("server.app.lifespan.app.state.container")
+    async def test_game_tick_loop_broadcast_data(self, mock_container, mock_broadcast):
         """Test game tick loop broadcasts correct data."""
         from fastapi import FastAPI
 
+        # AI Agent: Extract connection_manager from container
+        mock_connection_manager = MagicMock()
         mock_connection_manager.player_websockets = {"player1": MagicMock()}
+        mock_container.connection_manager = mock_connection_manager
         mock_broadcast.return_value = None
 
         app = FastAPI()
@@ -85,12 +93,16 @@ class TestGameTickLoop:
 
     @pytest.mark.asyncio
     @patch("server.app.lifespan.broadcast_game_event")
-    @patch("server.app.lifespan.connection_manager")
-    async def test_game_tick_loop_handles_exception(self, mock_connection_manager, mock_broadcast):
+    # AI Agent: Patch via app.state.container instead of module-level global
+    @patch("server.app.lifespan.app.state.container")
+    async def test_game_tick_loop_handles_exception(self, mock_container, mock_broadcast):
         """Test game tick loop continues after exception."""
         from fastapi import FastAPI
 
+        # AI Agent: Extract connection_manager from container
+        mock_connection_manager = MagicMock()
         mock_connection_manager.player_websockets = {}
+        mock_container.connection_manager = mock_connection_manager
         call_count = [0]  # Use list to avoid closure issues
 
         async def broadcast_with_error(*args, **kwargs):
@@ -120,12 +132,16 @@ class TestGameTickLoop:
 
     @pytest.mark.asyncio
     @patch("server.app.lifespan.broadcast_game_event")
-    @patch("server.app.lifespan.connection_manager")
-    async def test_game_tick_loop_cancellation(self, mock_connection_manager, mock_broadcast):
+    # AI Agent: Patch via app.state.container instead of module-level global
+    @patch("server.app.lifespan.app.state.container")
+    async def test_game_tick_loop_cancellation(self, mock_container, mock_broadcast):
         """Test game tick loop handles cancellation gracefully."""
         from fastapi import FastAPI
 
+        # AI Agent: Extract connection_manager from container
+        mock_connection_manager = MagicMock()
         mock_connection_manager.player_websockets = {}
+        mock_container.connection_manager = mock_connection_manager
         mock_broadcast.return_value = None
 
         app = FastAPI()
@@ -226,7 +242,10 @@ class TestGameTickLoopLegacy:
         app = FastAPI()
 
         with patch("server.app.lifespan.broadcast_game_event", AsyncMock()) as mock_broadcast:
-            with patch("server.app.lifespan.connection_manager") as mock_conn_mgr:
+            # AI Agent: Patch via app.state.container instead of module-level global
+            with patch("server.app.lifespan.app.state.container") as mock_container:
+                mock_conn_mgr = MagicMock()
+                mock_container.connection_manager = mock_conn_mgr
                 mock_conn_mgr.player_websockets = {}
 
                 # Run loop for a short time
@@ -257,7 +276,10 @@ class TestGameTickLoopLegacy:
         app = FastAPI()
 
         with patch("server.app.lifespan.broadcast_game_event", AsyncMock()):
-            with patch("server.app.lifespan.connection_manager") as mock_conn_mgr:
+            # AI Agent: Patch via app.state.container instead of module-level global
+            with patch("server.app.lifespan.app.state.container") as mock_container:
+                mock_conn_mgr = MagicMock()
+                mock_container.connection_manager = mock_conn_mgr
                 mock_conn_mgr.player_websockets = {}
 
                 task = asyncio.create_task(game_tick_loop(app))
@@ -292,7 +314,10 @@ class TestGameTickLoopLegacy:
             # Succeed on subsequent calls
 
         with patch("server.app.lifespan.broadcast_game_event", mock_broadcast_with_error):
-            with patch("server.app.lifespan.connection_manager") as mock_conn_mgr:
+            # AI Agent: Patch via app.state.container instead of module-level global
+            with patch("server.app.lifespan.app.state.container") as mock_container:
+                mock_conn_mgr = MagicMock()
+                mock_container.connection_manager = mock_conn_mgr
                 mock_conn_mgr.player_websockets = {}
 
                 task = asyncio.create_task(game_tick_loop(app))
@@ -323,7 +348,10 @@ class TestGameTickLoopLegacy:
             captured_data.append((event_type, data))
 
         with patch("server.app.lifespan.broadcast_game_event", capture_broadcast):
-            with patch("server.app.lifespan.connection_manager") as mock_conn_mgr:
+            # AI Agent: Patch via app.state.container instead of module-level global
+            with patch("server.app.lifespan.app.state.container") as mock_container:
+                mock_conn_mgr = MagicMock()
+                mock_container.connection_manager = mock_conn_mgr
                 mock_conn_mgr.player_websockets = {"player1": Mock(), "player2": Mock()}
 
                 task = asyncio.create_task(game_tick_loop(app))

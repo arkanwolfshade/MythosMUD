@@ -11,7 +11,7 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from server.realtime.nats_message_handler import NATSMessageHandler, get_nats_message_handler
+from server.realtime.nats_message_handler import NATSMessageHandler
 from server.services.nats_service import NATSService
 
 
@@ -481,48 +481,6 @@ class TestNATSMessageHandler:
         subjects = self.handler.get_active_subjects()
         expected_subjects = ["chat.say.room1", "chat.global", "chat.system"]
         assert set(subjects) == set(expected_subjects)
-
-
-class TestNATSMessageHandlerGlobal:
-    """Test cases for global NATS message handler functions."""
-
-    def test_get_nats_message_handler_creates_new_instance(self):
-        """Test getting NATS message handler creates new instance."""
-        mock_nats_service = Mock()
-
-        # Reset global instance
-        import server.realtime.nats_message_handler as nats_module
-
-        nats_module.nats_message_handler = None
-
-        handler = get_nats_message_handler(mock_nats_service)
-
-        assert handler is not None
-        assert isinstance(handler, NATSMessageHandler)
-        assert handler.nats_service == mock_nats_service
-
-    def test_get_nats_message_handler_returns_existing_instance(self):
-        """Test getting NATS message handler returns existing instance."""
-        mock_nats_service = Mock()
-
-        # Create initial instance
-        handler1 = get_nats_message_handler(mock_nats_service)
-
-        # Get again without nats_service
-        handler2 = get_nats_message_handler()
-
-        assert handler1 is handler2
-
-    def test_get_nats_message_handler_no_service_returns_none(self):
-        """Test getting NATS message handler without service returns None."""
-        # Reset global instance
-        import server.realtime.nats_message_handler as nats_module
-
-        nats_module.nats_message_handler = None
-
-        handler = get_nats_message_handler()
-
-        assert handler is None
 
 
 class TestNATSMessageHandlerEventSubscription:

@@ -184,11 +184,13 @@ class RoomSubscriptionManager:
                     for npc_id in npc_ids:
                         # Create a minimal dict for NPC occupant (matching player format)
                         # The NPC name will be resolved in broadcast_room_update via _get_npc_name_from_instance
-                        occupants.append({
-                            "player_id": npc_id,  # Use npc_id as player_id for compatibility
-                            "player_name": npc_id,  # Will be resolved to actual name in broadcast_room_update
-                            "is_npc": True,
-                        })
+                        occupants.append(
+                            {
+                                "player_id": npc_id,  # Use npc_id as player_id for compatibility
+                                "player_name": npc_id,  # Will be resolved to actual name in broadcast_room_update
+                                "is_npc": True,
+                            }
+                        )
 
             return occupants
 

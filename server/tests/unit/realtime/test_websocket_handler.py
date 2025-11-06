@@ -8,7 +8,7 @@ of our forbidden knowledge transmission protocols.
 """
 
 import json
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
 from fastapi import WebSocket, WebSocketDisconnect
@@ -40,7 +40,10 @@ class TestWebSocketConnection:
     @pytest.fixture
     def mock_connection_manager(self):
         """Create a mock connection manager."""
-        with patch("server.realtime.websocket_handler.connection_manager") as mock_cm:
+        # AI Agent: Patch via app.state.container (no longer module-level global)
+        with patch("server.realtime.websocket_handler.app.state.container") as mock_container:
+            mock_cm = MagicMock()
+            mock_container.connection_manager = mock_cm
             mock_cm.connect_websocket = AsyncMock(return_value=True)
             mock_cm.disconnect_websocket = AsyncMock()
             mock_cm._get_player = Mock()
@@ -308,7 +311,10 @@ class TestWebSocketCommandProcessing:
     @pytest.fixture
     def mock_connection_manager(self):
         """Create a mock connection manager."""
-        with patch("server.realtime.websocket_handler.connection_manager") as mock_cm:
+        # AI Agent: Patch via app.state.container (no longer module-level global)
+        with patch("server.realtime.websocket_handler.app.state.container") as mock_container:
+            mock_cm = MagicMock()
+            mock_container.connection_manager = mock_cm
             mock_cm._get_player = Mock()
             mock_cm.persistence = Mock()
             yield mock_cm
@@ -482,7 +488,10 @@ class TestChatMessageHandling:
     @pytest.fixture
     def mock_connection_manager(self):
         """Create a mock connection manager."""
-        with patch("server.realtime.websocket_handler.connection_manager") as mock_cm:
+        # AI Agent: Patch via app.state.container (no longer module-level global)
+        with patch("server.realtime.websocket_handler.app.state.container") as mock_container:
+            mock_cm = MagicMock()
+            mock_container.connection_manager = mock_cm
             mock_cm._get_player = Mock()
             mock_cm.broadcast_to_room = AsyncMock()
             yield mock_cm
@@ -530,7 +539,10 @@ class TestRoomUpdateBroadcasting:
     @pytest.fixture
     def mock_connection_manager(self):
         """Create a mock connection manager."""
-        with patch("server.realtime.websocket_handler.connection_manager") as mock_cm:
+        # AI Agent: Patch via app.state.container (no longer module-level global)
+        with patch("server.realtime.websocket_handler.app.state.container") as mock_container:
+            mock_cm = MagicMock()
+            mock_container.connection_manager = mock_cm
             mock_cm._get_player = Mock()
             mock_cm.persistence = Mock()
             mock_cm.get_room_occupants = Mock(return_value=[])

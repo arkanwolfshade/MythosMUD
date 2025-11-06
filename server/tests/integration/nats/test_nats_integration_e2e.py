@@ -29,11 +29,12 @@ class TestNATSIntegrationE2E:
         # Create EventPublisher
         self.event_publisher = EventPublisher(self.mock_nats_service)
 
-        # Create NATSMessageHandler
-        self.nats_handler = NATSMessageHandler(self.mock_nats_service)
-
         # Create ConnectionManager with EventPublisher
         self.connection_manager = ConnectionManager(event_publisher=self.event_publisher)
+
+        # AI Agent: Create NATSMessageHandler with injected connection_manager (no longer a global)
+        #           Post-migration: connection_manager must be passed via constructor
+        self.nats_handler = NATSMessageHandler(self.mock_nats_service, None, self.connection_manager)
 
         # Create GameTickService
         self.game_tick_service = GameTickService(
@@ -176,9 +177,10 @@ class TestNATSIntegrationE2E:
             "timestamp": datetime.now(UTC).isoformat(),
         }
 
-        # Mock the connection manager methods
-        with patch(
-            "server.realtime.nats_message_handler.connection_manager.broadcast_room_event", new_callable=AsyncMock
+        # AI Agent: Patch the method on the handler's injected connection_manager instance
+        #           Post-migration: connection_manager is no longer a module-level global
+        with patch.object(
+            self.nats_handler._connection_manager, "broadcast_room_event", new_callable=AsyncMock
         ) as mock_broadcast:
             # Simulate receiving the message
             await self.nats_handler._handle_nats_message(player_entered_message)
@@ -205,9 +207,10 @@ class TestNATSIntegrationE2E:
             "timestamp": datetime.now(UTC).isoformat(),
         }
 
-        # Mock the connection manager methods
-        with patch(
-            "server.realtime.nats_message_handler.connection_manager.broadcast_global_event", new_callable=AsyncMock
+        # AI Agent: Patch the method on the handler's injected connection_manager instance
+        #           Post-migration: connection_manager is no longer a module-level global
+        with patch.object(
+            self.nats_handler._connection_manager, "broadcast_global_event", new_callable=AsyncMock
         ) as mock_broadcast:
             # Simulate receiving the message
             await self.nats_handler._handle_nats_message(game_tick_message)

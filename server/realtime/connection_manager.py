@@ -3267,5 +3267,13 @@ class ConnectionManager:
             logger.error("Error handling PlayerLeftRoom event", error=str(e), exc_info=True)
 
 
-# Global connection manager instance
-connection_manager = ConnectionManager()
+# AI Agent: Global singleton removed - use ApplicationContainer.connection_manager instead
+# Migration complete: All production code now uses dependency injection via container
+#
+# IMPORTANT: Tests must update fixtures to use container.connection_manager
+# Importing `connection_manager` as a global will NO LONGER WORK
+#
+# If you see "NameError: name 'connection_manager' is not defined":
+# - In production code: Get from request.app.state.container.connection_manager
+# - In tests: Create container and use container.connection_manager
+# - In services: Accept as constructor parameter

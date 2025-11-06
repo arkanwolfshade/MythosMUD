@@ -445,8 +445,8 @@ class TestNPCLifecycleManager:
             spawn_probability=0.5,
             room_id="earth_arkhamcity_downtown_001",
             base_stats='{"strength": 5, "sanity": 50, "current_health": 50}',
-            behavior_config='{}',
-            ai_integration_stub='{}',
+            behavior_config="{}",
+            ai_integration_stub="{}",
         )
         optional_npc.id = 2
 
@@ -464,9 +464,7 @@ class TestNPCLifecycleManager:
         with patch.object(
             lifecycle_manager.population_controller, "get_zone_configuration", return_value=mock_zone_config
         ):
-            with patch.object(
-                lifecycle_manager.population_controller, "get_population_stats", return_value=mock_stats
-            ):
+            with patch.object(lifecycle_manager.population_controller, "get_population_stats", return_value=mock_stats):
                 with patch.object(lifecycle_manager, "_can_spawn_npc", return_value=True):
                     with patch.object(lifecycle_manager.spawning_service, "_create_npc_instance") as mock_create:
                         mock_npc = MagicMock()
@@ -504,8 +502,8 @@ class TestNPCLifecycleManager:
             spawn_probability=1.0,  # 100% for testing
             room_id="earth_arkhamcity_downtown_001",
             base_stats='{"strength": 5, "sanity": 50, "current_health": 50}',
-            behavior_config='{}',
-            ai_integration_stub='{}',
+            behavior_config="{}",
+            ai_integration_stub="{}",
         )
         optional_npc.id = 2
 
@@ -523,9 +521,7 @@ class TestNPCLifecycleManager:
         with patch.object(
             lifecycle_manager.population_controller, "get_zone_configuration", return_value=mock_zone_config
         ):
-            with patch.object(
-                lifecycle_manager.population_controller, "get_population_stats", return_value=mock_stats
-            ):
+            with patch.object(lifecycle_manager.population_controller, "get_population_stats", return_value=mock_stats):
                 with patch.object(lifecycle_manager, "_can_spawn_npc", return_value=True):
                     with patch.object(lifecycle_manager.spawning_service, "_create_npc_instance") as mock_create:
                         mock_npc = MagicMock()
@@ -559,9 +555,9 @@ class TestNPCLifecycleManager:
             max_population=2,
             spawn_probability=1.0,
             room_id="earth_arkhamcity_downtown_001",
-            base_stats='{}',
-            behavior_config='{}',
-            ai_integration_stub='{}',
+            base_stats="{}",
+            behavior_config="{}",
+            ai_integration_stub="{}",
         )
         optional_npc.id = 2
 
@@ -608,9 +604,9 @@ class TestNPCLifecycleManager:
             max_population=1,  # Only allow 1
             spawn_probability=1.0,
             room_id="earth_arkhamcity_downtown_001",
-            base_stats='{}',
-            behavior_config='{}',
-            ai_integration_stub='{}',
+            base_stats="{}",
+            behavior_config="{}",
+            ai_integration_stub="{}",
         )
         optional_npc.id = 2
 
@@ -627,9 +623,7 @@ class TestNPCLifecycleManager:
         with patch.object(
             lifecycle_manager.population_controller, "get_zone_configuration", return_value=mock_zone_config
         ):
-            with patch.object(
-                lifecycle_manager.population_controller, "get_population_stats", return_value=mock_stats
-            ):
+            with patch.object(lifecycle_manager.population_controller, "get_population_stats", return_value=mock_stats):
                 # Call spawn checking
                 results = lifecycle_manager._check_optional_npc_spawns()
 
@@ -649,9 +643,9 @@ class TestNPCLifecycleManager:
             max_population=1,
             spawn_probability=1.0,
             room_id="earth_arkhamcity_downtown_001",
-            base_stats='{}',
-            behavior_config='{}',
-            ai_integration_stub='{}',
+            base_stats="{}",
+            behavior_config="{}",
+            ai_integration_stub="{}",
         )
         definition.id = 1
 
@@ -662,7 +656,7 @@ class TestNPCLifecycleManager:
             npc_definition_id=1,
             sub_zone_id=1,
             max_population=1,
-            spawn_conditions='{}',
+            spawn_conditions="{}",
         )
         lifecycle_manager.population_controller.spawn_rules[1] = [spawn_rule]
 
@@ -686,9 +680,9 @@ class TestNPCLifecycleManager:
             max_population=1,
             spawn_probability=1.0,
             room_id="earth_arkhamcity_downtown_001",
-            base_stats='{}',
-            behavior_config='{}',
-            ai_integration_stub='{}',
+            base_stats="{}",
+            behavior_config="{}",
+            ai_integration_stub="{}",
         )
         definition.id = 1
 
@@ -712,11 +706,7 @@ class TestNPCLifecycleManager:
         assert npc_id in lifecycle_manager.lifecycle_records
 
         # Create NPCDied event
-        died_event = NPCDied(
-            npc_id=npc_id,
-            room_id=test_room_id,
-            cause="combat"
-        )
+        died_event = NPCDied(npc_id=npc_id, room_id=test_room_id, cause="combat")
 
         # Handle the death event
         lifecycle_manager._handle_npc_died(died_event)
@@ -726,8 +716,9 @@ class TestNPCLifecycleManager:
 
         # AI Agent: CRITICAL - Verify lifecycle record is PRESERVED for XP calculation
         #           The record must remain so combat service can read xp_value from base_stats
-        assert npc_id in lifecycle_manager.lifecycle_records, \
+        assert npc_id in lifecycle_manager.lifecycle_records, (
             "Lifecycle record must be preserved after death for XP calculation"
+        )
 
         # Verify NPC was queued for respawn
         assert npc_id in lifecycle_manager.respawn_queue
@@ -752,8 +743,8 @@ class TestNPCLifecycleManager:
             spawn_probability=1.0,
             room_id=test_room_id,
             base_stats='{"health": 50, "strength": 10}',
-            behavior_config='{}',
-            ai_integration_stub='{}',
+            behavior_config="{}",
+            ai_integration_stub="{}",
         )
         required_definition.id = 999
 
@@ -765,11 +756,7 @@ class TestNPCLifecycleManager:
         death_time = time.time()
 
         # Create NPCDied event
-        died_event = NPCDied(
-            npc_id=npc_id,
-            room_id=test_room_id,
-            cause="combat"
-        )
+        died_event = NPCDied(npc_id=npc_id, room_id=test_room_id, cause="combat")
 
         # Handle the death event
         lifecycle_manager._handle_npc_died(died_event)
@@ -785,7 +772,9 @@ class TestNPCLifecycleManager:
         actual_delay = scheduled_time - death_time
 
         # Allow 1 second tolerance for execution time
-        assert actual_delay >= expected_delay - 1.0, \
+        assert actual_delay >= expected_delay - 1.0, (
             f"Required NPC should respect respawn delay! Expected ~{expected_delay}s, got {actual_delay}s"
-        assert actual_delay <= expected_delay + 1.0, \
+        )
+        assert actual_delay <= expected_delay + 1.0, (
             f"Respawn delay too long! Expected ~{expected_delay}s, got {actual_delay}s"
+        )

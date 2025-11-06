@@ -319,7 +319,7 @@ class NPCLifecycleManager:
             respawn_queued = self.respawn_npc(
                 npc_id=event.npc_id,
                 delay=None,  # Use default delay from config
-                reason=f"respawn_after_death: {event.cause}"
+                reason=f"respawn_after_death: {event.cause}",
             )
 
             if respawn_queued:
@@ -559,7 +559,9 @@ class NPCLifecycleManager:
                     respawned_count += 1
                     npcs_to_remove.append(npc_id)
                 else:
-                    logger.warning("NPC respawn attempt failed", npc_id=npc_id, attempts=respawn_data.get("attempts", 0))
+                    logger.warning(
+                        "NPC respawn attempt failed", npc_id=npc_id, attempts=respawn_data.get("attempts", 0)
+                    )
                     # Increment attempt count
                     respawn_data["attempts"] += 1
                     if respawn_data["attempts"] >= self.max_respawn_attempts:
@@ -579,7 +581,9 @@ class NPCLifecycleManager:
             logger.debug("Removing NPC from respawn queue", npc_id=npc_id)
             del self.respawn_queue[npc_id]
 
-        logger.debug("Respawn queue processing completed", respawned_count=respawned_count, removed_count=len(npcs_to_remove))
+        logger.debug(
+            "Respawn queue processing completed", respawned_count=respawned_count, removed_count=len(npcs_to_remove)
+        )
         return respawned_count
 
     def _attempt_respawn(self, npc_id: str, respawn_data: dict[str, Any]) -> bool:
@@ -825,9 +829,7 @@ class NPCLifecycleManager:
             # AI Agent: CRITICAL FIX - Skip NPCs that are already in the respawn queue
             #           This prevents periodic spawn checks from bypassing the respawn delay
             #           by immediately spawning a new instance of an NPC that just died
-            npc_in_respawn_queue = any(
-                data["definition"].id == definition_id for data in self.respawn_queue.values()
-            )
+            npc_in_respawn_queue = any(data["definition"].id == definition_id for data in self.respawn_queue.values())
             if npc_in_respawn_queue:
                 logger.debug(
                     "Skipping periodic spawn check - NPC in respawn queue",

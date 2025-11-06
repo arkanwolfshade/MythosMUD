@@ -94,6 +94,23 @@ class NATSService:
 
     This service provides a clean interface for publishing chat messages
     and managing real-time communication between players using NATS.
+
+    CONNECTION POOLING:
+    The service uses connection pooling by default for high-throughput scenarios.
+    - Default pool size: 5 connections (configurable via NATSConfig.connection_pool_size)
+    - Connections are managed via asyncio.Queue for thread-safe access
+    - Pool is initialized lazily on first use
+    - All publish operations automatically use pooled connections
+
+    MESSAGE BATCHING:
+    Supports message batching for bulk operations to reduce network overhead.
+    - Default batch size: 100 messages (configurable via NATSConfig.batch_size)
+    - Default batch timeout: 100ms (configurable via NATSConfig.batch_timeout)
+    - Batching improves throughput for high-volume message scenarios
+
+    AI Agent: Connection pooling follows NATS best practices from nats.mdc Section 1.3.
+              The nats-py client library also provides built-in connection management
+              on top of our application-level pooling for optimal performance.
     """
 
     def __init__(self, config: NATSConfig | dict[str, Any] | None = None, subject_manager=None):
@@ -305,7 +322,9 @@ class NATSService:
         Returns:
             True if published successfully, False otherwise
         """
-        start_time = asyncio.get_event_loop().time()
+        # AI Agent: Use asyncio.get_running_loop() instead of deprecated get_event_loop()
+        #           Python 3.10+ deprecates get_event_loop() in async contexts
+        start_time = asyncio.get_running_loop().time()
         success = False
 
         try:
@@ -364,7 +383,9 @@ class NATSService:
             )
         finally:
             # Record metrics
-            processing_time = asyncio.get_event_loop().time() - start_time
+            # AI Agent: Use asyncio.get_running_loop() instead of deprecated get_event_loop()
+            #           Python 3.10+ deprecates get_event_loop() in async contexts
+            processing_time = asyncio.get_running_loop().time() - start_time
             self.metrics.record_publish(success, processing_time)
 
         return success

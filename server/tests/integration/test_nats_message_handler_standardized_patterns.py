@@ -10,7 +10,7 @@ from unittest.mock import AsyncMock, patch
 import pytest
 
 from server.config.models import NATSConfig
-from server.realtime.nats_message_handler import NATSMessageHandler, get_nats_message_handler
+from server.realtime.nats_message_handler import NATSMessageHandler
 from server.services.nats_service import NATSService
 from server.services.nats_subject_manager import NATSSubjectManager
 
@@ -106,28 +106,6 @@ class TestNATSMessageHandlerStandardizedPatterns:
 
         for pattern in expected_legacy_patterns:
             assert pattern in subscribed_patterns, f"Expected legacy pattern {pattern} not found in subscriptions"
-
-    @pytest.mark.asyncio
-    async def test_get_nats_message_handler_passes_subject_manager(self):
-        """Test that get_nats_message_handler passes subject manager to NATSMessageHandler."""
-        # Mock the global handler to None to force creation
-        with patch("server.realtime.nats_message_handler.nats_message_handler", None):
-            # Create handler with subject manager
-            handler = get_nats_message_handler(self.nats_service, self.subject_manager)
-
-            # Verify subject manager was passed
-            assert handler.subject_manager is self.subject_manager
-
-    @pytest.mark.asyncio
-    async def test_get_nats_message_handler_works_without_subject_manager(self):
-        """Test that get_nats_message_handler works without subject manager."""
-        # Mock the global handler to None to force creation
-        with patch("server.realtime.nats_message_handler.nats_message_handler", None):
-            # Create handler without subject manager
-            handler = get_nats_message_handler(self.nats_service, None)
-
-            # Verify subject manager is None
-            assert handler.subject_manager is None
 
     @pytest.mark.asyncio
     async def test_subscription_patterns_match_publishing_patterns(self):

@@ -51,7 +51,9 @@ class TestAPIEndpointsDualConnection:
     def test_get_player_connections_success(self, client, mock_connection_manager):
         """Test getting player connection information successfully."""
         # Mock the connection manager
-        with patch("server.realtime.connection_manager.connection_manager", mock_connection_manager):
+        # AI Agent: Patch via app.state.container (no longer module-level global)
+        with patch("server.api.dual_connection.app.state.container") as mock_container:
+            mock_container.connection_manager = mock_connection_manager
             # Set up mock return values
             mock_connection_manager.get_player_presence_info.return_value = {
                 "player_id": "test_player",
@@ -86,7 +88,9 @@ class TestAPIEndpointsDualConnection:
     def test_get_player_connections_offline_player(self, client, mock_connection_manager):
         """Test getting connection information for an offline player."""
         # Mock the connection manager
-        with patch("server.realtime.connection_manager.connection_manager", mock_connection_manager):
+        # AI Agent: Patch via app.state.container (no longer module-level global)
+        with patch("server.api.dual_connection.app.state.container") as mock_container:
+            mock_container.connection_manager = mock_connection_manager
             # Set up mock return values for offline player
             mock_connection_manager.get_player_presence_info.return_value = {
                 "player_id": "test_player",
@@ -120,7 +124,9 @@ class TestAPIEndpointsDualConnection:
     def test_handle_new_game_session_success(self, client, mock_connection_manager):
         """Test handling a new game session successfully."""
         # Mock the connection manager
-        with patch("server.realtime.connection_manager.connection_manager", mock_connection_manager):
+        # AI Agent: Patch via app.state.container (no longer module-level global)
+        with patch("server.api.dual_connection.app.state.container") as mock_container:
+            mock_container.connection_manager = mock_connection_manager
             # Set up mock return values
             mock_connection_manager.handle_new_game_session.return_value = {
                 "player_id": "test_player",
@@ -147,7 +153,9 @@ class TestAPIEndpointsDualConnection:
     def test_handle_new_game_session_missing_session_id(self, client, mock_connection_manager):
         """Test handling new game session with missing session_id."""
         # Mock the connection manager
-        with patch("server.realtime.connection_manager.connection_manager", mock_connection_manager):
+        # AI Agent: Patch via app.state.container (no longer module-level global)
+        with patch("server.api.dual_connection.app.state.container") as mock_container:
+            mock_container.connection_manager = mock_connection_manager
             # Make request without session_id
             response = client.post("/api/connections/test_player/session", json={})
 
@@ -159,7 +167,9 @@ class TestAPIEndpointsDualConnection:
     def test_handle_new_game_session_invalid_json(self, client, mock_connection_manager):
         """Test handling new game session with invalid JSON."""
         # Mock the connection manager
-        with patch("server.realtime.connection_manager.connection_manager", mock_connection_manager):
+        # AI Agent: Patch via app.state.container (no longer module-level global)
+        with patch("server.api.dual_connection.app.state.container") as mock_container:
+            mock_container.connection_manager = mock_connection_manager
             # Make request with invalid JSON
             response = client.post(
                 "/api/connections/test_player/session",
@@ -175,7 +185,9 @@ class TestAPIEndpointsDualConnection:
     def test_api_endpoint_backward_compatibility(self, client, mock_connection_manager):
         """Test that API endpoints maintain backward compatibility."""
         # Mock the connection manager
-        with patch("server.realtime.connection_manager.connection_manager", mock_connection_manager):
+        # AI Agent: Patch via app.state.container (no longer module-level global)
+        with patch("server.api.dual_connection.app.state.container") as mock_container:
+            mock_container.connection_manager = mock_connection_manager
             # Test that endpoints work without session_id parameter
             mock_connection_manager.get_player_presence_info.return_value = {
                 "player_id": "test_player",
@@ -206,7 +218,9 @@ class TestAPIEndpointsDualConnection:
     def test_connection_metadata_in_responses(self, client, mock_connection_manager):
         """Test that API responses include comprehensive connection metadata."""
         # Mock the connection manager
-        with patch("server.realtime.connection_manager.connection_manager", mock_connection_manager):
+        # AI Agent: Patch via app.state.container (no longer module-level global)
+        with patch("server.api.dual_connection.app.state.container") as mock_container:
+            mock_container.connection_manager = mock_connection_manager
             # Set up mock return values with comprehensive metadata
             mock_connection_manager.get_player_presence_info.return_value = {
                 "player_id": "test_player",

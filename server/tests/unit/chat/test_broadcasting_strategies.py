@@ -34,44 +34,43 @@ class TestChannelBroadcastingStrategies:
 
     @pytest.fixture
     def mock_connection_manager(self):
-        """Mock the connection manager for _broadcast_to_room_with_filtering tests."""
-        with (
-            patch("server.realtime.nats_message_handler.connection_manager") as mock_cm1,
-            patch("server.realtime.connection_manager.connection_manager") as mock_cm2,
-        ):
-            mock_cm1.broadcast_global = AsyncMock()
-            mock_cm1.send_personal_message = AsyncMock()
-            mock_cm1._canonical_room_id.return_value = "test_room"
-            mock_cm1.room_subscriptions = {"test_room": {"player1", "player2"}}
-            mock_cm1.online_players = {
-                "player1": {"current_room_id": "test_room"},
-                "player2": {"current_room_id": "test_room"},
-            }
+        """
+        AI Agent: Mock connection_manager by creating a mock instance and injecting it
+        Post-migration: connection_manager is no longer a module-level global
+        """
+        # Create a single mock connection_manager instance
+        mock_cm = MagicMock()
+        mock_cm.broadcast_global = AsyncMock()
+        mock_cm.send_personal_message = AsyncMock()
+        mock_cm._canonical_room_id.return_value = "test_room"
+        mock_cm.room_subscriptions = {"test_room": {"player1", "player2"}}
+        mock_cm.online_players = {
+            "player1": {"current_room_id": "test_room"},
+            "player2": {"current_room_id": "test_room"},
+        }
 
-            mock_cm2.broadcast_global = AsyncMock()
-            mock_cm2.send_personal_message = AsyncMock()
-            mock_cm2._canonical_room_id.return_value = "test_room"
-            mock_cm2.room_subscriptions = {"test_room": {"player1", "player2"}}
-            mock_cm2.online_players = {
-                "player1": {"current_room_id": "test_room"},
-                "player2": {"current_room_id": "test_room"},
-            }
-
-            # Return the first mock since that's what _broadcast_to_room_with_filtering uses
-            yield mock_cm1
+        # Patch via app.state.container (single source of truth)
+        with patch("server.realtime.nats_message_handler.app.state.container") as mock_container:
+            mock_container.connection_manager = mock_cm
+            yield mock_cm
 
     @pytest.fixture
     def mock_connection_manager_strategy(self):
-        """Mock the connection manager for strategy pattern tests."""
-        with patch("server.realtime.connection_manager.connection_manager") as mock_cm:
-            mock_cm.broadcast_global = AsyncMock()
-            mock_cm.send_personal_message = AsyncMock()
-            mock_cm._canonical_room_id.return_value = "test_room"
-            mock_cm.room_subscriptions = {"test_room": {"player1", "player2"}}
-            mock_cm.online_players = {
-                "player1": {"current_room_id": "test_room"},
-                "player2": {"current_room_id": "test_room"},
-            }
+        """
+        AI Agent: Mock connection_manager via app.state.container
+        Post-migration: connection_manager is no longer a module-level global
+        """
+        mock_cm = MagicMock()
+        mock_cm.broadcast_global = AsyncMock()
+        mock_cm.send_personal_message = AsyncMock()
+        mock_cm._canonical_room_id.return_value = "test_room"
+        mock_cm.room_subscriptions = {"test_room": {"player1", "player2"}}
+        mock_cm.online_players = {
+            "player1": {"current_room_id": "test_room"},
+            "player2": {"current_room_id": "test_room"},
+        }
+        with patch("server.realtime.connection_manager.app.state.container") as mock_container:
+            mock_container.connection_manager = mock_cm
             yield mock_cm
 
     @pytest.mark.asyncio
@@ -334,10 +333,15 @@ class TestChannelBroadcastingStrategiesLegacy:
 
     @pytest.fixture
     def mock_connection_manager(self):
-        """Mock the connection manager."""
-        with patch("server.realtime.connection_manager.connection_manager") as mock_cm:
-            mock_cm.broadcast_global = AsyncMock()
-            mock_cm.send_personal_message = AsyncMock()
+        """
+        AI Agent: Mock connection_manager via app.state.container
+        Post-migration: connection_manager is no longer a module-level global
+        """
+        mock_cm = MagicMock()
+        mock_cm.broadcast_global = AsyncMock()
+        mock_cm.send_personal_message = AsyncMock()
+        with patch("server.realtime.connection_manager.app.state.container") as mock_container:
+            mock_container.connection_manager = mock_cm
             yield mock_cm
 
     @pytest.mark.asyncio
@@ -535,10 +539,15 @@ class TestStrategyIntegration:
 
     @pytest.fixture
     def mock_connection_manager(self):
-        """Mock the connection manager."""
-        with patch("server.realtime.connection_manager.connection_manager") as mock_cm:
-            mock_cm.broadcast_global = AsyncMock()
-            mock_cm.send_personal_message = AsyncMock()
+        """
+        AI Agent: Mock connection_manager via app.state.container
+        Post-migration: connection_manager is no longer a module-level global
+        """
+        mock_cm = MagicMock()
+        mock_cm.broadcast_global = AsyncMock()
+        mock_cm.send_personal_message = AsyncMock()
+        with patch("server.realtime.connection_manager.app.state.container") as mock_container:
+            mock_container.connection_manager = mock_cm
             yield mock_cm
 
     @pytest.mark.asyncio

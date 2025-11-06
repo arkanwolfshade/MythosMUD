@@ -26,10 +26,18 @@ class TestWebSocketMessageHandler:
 
     @pytest.fixture
     def mock_connection_manager(self):
-        """Mock the connection manager."""
-        with patch("server.realtime.websocket_handler.connection_manager") as mock_cm:
-            mock_cm._get_player.return_value = MagicMock()
-            mock_cm._get_player.return_value.current_room_id = "test_room"
+        """
+        AI Agent: Mock the connection_manager by patching it via app.state.container.
+        Post-migration: connection_manager is no longer a module-level global,
+        it's accessed via app.state.container.connection_manager in the handler.
+        """
+        mock_cm = MagicMock()
+        mock_cm._get_player.return_value = MagicMock()
+        mock_cm._get_player.return_value.current_room_id = "test_room"
+
+        # Patch via FastAPI app state (where handlers access it)
+        with patch("server.realtime.websocket_handler.app.state.container") as mock_container:
+            mock_container.connection_manager = mock_cm
             yield mock_cm
 
     @pytest.mark.asyncio
