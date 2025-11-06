@@ -17,7 +17,33 @@ class TestGameApiBroadcast:
 
     def setup_method(self):
         """Set up test fixtures."""
+        # AI Agent: Initialize container mock for dependency injection
+        from unittest.mock import AsyncMock, Mock
+
+        from server.container import ApplicationContainer
+
+        # Create mock container
+        mock_container = Mock(spec=ApplicationContainer)
+        mock_container.connection_manager = Mock()
+        # AI Agent: Use AsyncMock for async methods to make them awaitable
+        mock_container.connection_manager.broadcast_global_event = AsyncMock(return_value={
+            "successful_deliveries": 5,
+            "failed_deliveries": 0,
+            "total_players": 5,
+        })
+
+        # Inject mock container into app state
+        app.state.container = mock_container
+
         self.client = TestClient(app)
+
+    def teardown_method(self):
+        """Clean up after tests."""
+        # Clear dependency overrides
+        app.dependency_overrides.clear()
+        # Clean up container mock (optional, but good practice)
+        if hasattr(app.state, 'container'):
+            delattr(app.state, 'container')
 
     def test_broadcast_endpoint_requires_superuser(self):
         """Test broadcast endpoint with authenticated superuser.
