@@ -822,6 +822,20 @@ class NPCLifecycleManager:
             if definition.is_required():
                 continue
 
+            # AI Agent: CRITICAL FIX - Skip NPCs that are already in the respawn queue
+            #           This prevents periodic spawn checks from bypassing the respawn delay
+            #           by immediately spawning a new instance of an NPC that just died
+            npc_in_respawn_queue = any(
+                data["definition"].id == definition_id for data in self.respawn_queue.values()
+            )
+            if npc_in_respawn_queue:
+                logger.debug(
+                    "Skipping periodic spawn check - NPC in respawn queue",
+                    npc_name=definition.name,
+                    definition_id=definition_id,
+                )
+                continue
+
             # Check if enough time has passed since last spawn check for this definition
             last_check = self.last_spawn_check.get(definition_id, 0)
             if current_time - last_check < NPCMaintenanceConfig.MIN_SPAWN_CHECK_INTERVAL:
