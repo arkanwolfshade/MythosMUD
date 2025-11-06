@@ -702,9 +702,8 @@ class CombatService:
                 #           Combat uses random UUIDs for NPCs, but lifecycle_manager uses string IDs.
                 #           Without this mapping, NPCs won't be queued for respawn!
                 original_npc_id = str(target.participant_id)  # Default to UUID string
-                if (
-                    self._npc_combat_integration_service
-                    and hasattr(self._npc_combat_integration_service, "_uuid_to_string_id_mapping")
+                if self._npc_combat_integration_service and hasattr(
+                    self._npc_combat_integration_service, "_uuid_to_string_id_mapping"
                 ):
                     uuid_mapping = self._npc_combat_integration_service._uuid_to_string_id_mapping
                     if target.participant_id in uuid_mapping:
@@ -920,19 +919,46 @@ class CombatService:
             # Update player HP using proper methods
             stats = player.get_stats()
             old_hp = stats.get("current_health", 100)
+
+            # AI Agent: CRITICAL DEBUG - Log stats BEFORE modification to diagnose persistence bug
+            logger.debug(
+                "Stats before HP update",
+                player_id=player_id,
+                raw_stats=player.stats,
+                parsed_stats=stats,
+                current_health_in_stats=stats.get("current_health"),
+            )
+
             stats["current_health"] = current_hp
             player.set_stats(stats)
+
+            # AI Agent: CRITICAL DEBUG - Log stats AFTER modification but BEFORE save
+            logger.debug(
+                "Stats after HP update, before save",
+                player_id=player_id,
+                raw_stats_after_set=player.stats,
+                new_current_health=current_hp,
+            )
 
             # Save player to database
             await persistence.async_save_player(player)
 
-            logger.info(
-                "Player HP persisted to database",
-                player_id=player_id,
-                player_name=player.name,
-                old_hp=old_hp,
-                new_hp=current_hp,
-            )
+            # AI Agent: CRITICAL DEBUG - Verify save by reading back immediately
+            verification_player = await persistence.async_get_player(str(player_id))
+            if verification_player:
+                verification_stats = verification_player.get_stats()
+                verification_hp = verification_stats.get("current_health", -999)
+                logger.info(
+                    "Player HP persisted to database - VERIFICATION",
+                    player_id=player_id,
+                    player_name=player.name,
+                    old_hp=old_hp,
+                    new_hp=current_hp,
+                    verified_hp_from_db=verification_hp,
+                    save_successful=verification_hp == current_hp,
+                )
+            else:
+                logger.error("Could not verify player save - player not found after save", player_id=player_id)
 
             # Publish HP update event for real-time UI updates
             await self._publish_player_hp_update_event(player_id, old_hp, current_hp, stats.get("max_health", 100))
