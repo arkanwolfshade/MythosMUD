@@ -479,6 +479,10 @@ class AsyncPersistenceLayer:
 
     def _convert_row_to_player_data(self, row: aiosqlite.Row) -> dict[str, Any]:
         """Convert a database row to player data dictionary."""
+        # AI Agent: CRITICAL FIX - Do NOT pre-parse JSON fields!
+        #           Player model expects stats/inventory/status_effects as JSON STRINGS,
+        #           not dicts. The Player.get_stats() method handles parsing.
+        #           Pre-parsing causes get_stats() to fail and return default values.
         return {
             "player_id": row["player_id"],
             "user_id": row["user_id"],
@@ -487,9 +491,9 @@ class AsyncPersistenceLayer:
             "profession_id": row["profession_id"],
             "experience_points": row["experience_points"],
             "level": row["level"],
-            "stats": json.loads(row["stats"]) if row["stats"] else {},
-            "inventory": json.loads(row["inventory"]) if row["inventory"] else {},
-            "status_effects": json.loads(row["status_effects"]) if row["status_effects"] else {},
+            "stats": row["stats"] or "{}",  # Keep as JSON string, not dict!
+            "inventory": row["inventory"] or "[]",  # Keep as JSON string, not dict!
+            "status_effects": row["status_effects"] or "[]",  # Keep as JSON string, not dict!
             "created_at": row["created_at"],
             "last_active": row["last_active"],
             "is_admin": bool(row["is_admin"]),
