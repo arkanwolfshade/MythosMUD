@@ -5,6 +5,8 @@ This module tests the room utility functions for sub-zone extraction
 and NATS subject generation for the Advanced Chat Channels feature.
 """
 
+import pytest
+
 from server.utils.room_utils import (
     extract_subzone_from_room_id,
     get_local_channel_subject,
@@ -128,6 +130,7 @@ class TestRoomUtils:
         # None
         assert is_valid_room_id_format(None) is False
 
+    @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     def test_get_local_channel_subject_valid(self):
         """Test generating local channel NATS subjects with valid room IDs."""
         room_id = "earth_arkhamcity_northside_intersection_derby_high"
@@ -138,6 +141,7 @@ class TestRoomUtils:
         subject = get_local_channel_subject(room_id)
         assert subject == "chat.local.earth_innsmouth_docks_warehouse_1"
 
+    @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     def test_get_local_channel_subject_invalid(self):
         """Test generating local channel NATS subjects with invalid room IDs."""
         # Invalid room IDs should return None
@@ -187,6 +191,7 @@ class TestRoomUtils:
         plane = get_plane_from_room_id(room_id)
         assert plane == "earth"
 
+    @pytest.mark.filterwarnings("ignore::DeprecationWarning")
     def test_nats_subject_generation_consistency(self):
         """Test that NATS subject generation is consistent."""
         room_id = "earth_arkhamcity_northside_intersection_derby_high"

@@ -27,8 +27,15 @@ class TestPlayerCombatServiceUnit:
 
     @pytest.fixture
     def mock_event_bus(self):
-        """Create a mock event bus."""
-        return AsyncMock()
+        """Create a mock event bus.
+
+        Note: EventBus.publish() is synchronous, so use Mock() not AsyncMock().
+        """
+        from unittest.mock import Mock
+
+        mock_bus = Mock()
+        mock_bus.publish = Mock(return_value=None)
+        return mock_bus
 
     @pytest.fixture
     def player_combat_service(self, mock_persistence, mock_event_bus):

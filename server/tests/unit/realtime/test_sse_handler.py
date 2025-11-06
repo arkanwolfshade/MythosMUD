@@ -531,11 +531,11 @@ class TestGameEventStream:
 
         mock_connection_manager.connect_sse = AsyncMock(side_effect=mock_connect_sse)
 
-        async def slow_disconnect(player_id):
-            await asyncio.sleep(0.1)  # Simulate slow disconnect
+        # disconnect_sse is SYNCHRONOUS, not async
+        def slow_disconnect(player_id):
             return None
 
-        mock_connection_manager.disconnect_sse = AsyncMock(side_effect=slow_disconnect)
+        mock_connection_manager.disconnect_sse = Mock(side_effect=slow_disconnect)
         mock_connection_manager.get_pending_messages = AsyncMock(return_value=[])
 
         with patch("server.realtime.sse_handler.connection_manager", mock_connection_manager):
