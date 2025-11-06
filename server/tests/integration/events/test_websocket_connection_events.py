@@ -244,8 +244,9 @@ class TestWebSocketConnectionEvents:
         # Handle the event directly (no need to mock the method itself)
         await event_handler._handle_player_entered(event)
 
-        # Verify player was looked up (called 3 times: once directly, twice in room occupants update)
-        assert mock_connection_manager._get_player.call_count == 3
+        # Verify player was looked up (called 4 times: once directly for player name,
+        # once for room_update event occupants, twice more for occupants snapshot)
+        assert mock_connection_manager._get_player.call_count == 4
         mock_connection_manager._get_player.assert_any_call("test_player_123")
 
     @pytest.mark.asyncio
