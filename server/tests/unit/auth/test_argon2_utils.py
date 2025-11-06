@@ -258,6 +258,7 @@ class TestArgon2ErrorHandling:
 class TestArgon2Security:
     """Test Argon2 security properties."""
 
+    @pytest.mark.slow
     def test_hash_uniqueness(self):
         """Test that same password produces different hashes."""
         password = "test_password"
@@ -280,6 +281,7 @@ class TestArgon2Security:
         assert len(hash_part) >= 40  # Base64 encoding of 32 bytes should be at least 40 chars
         assert len(hash_part) <= 50  # And not more than 50 chars
 
+    @pytest.mark.slow
     def test_verification_timing_consistency(self):
         """Test that verification timing is consistent (no timing attacks)."""
         password = "test_password"

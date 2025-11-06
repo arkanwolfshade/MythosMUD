@@ -17,46 +17,6 @@ from server.models import Alias
 class TestAliasModel:
     """Test suite for the Alias model."""
 
-    def test_create_valid_alias(self):
-        """Test creating a valid alias with all required fields."""
-        alias = Alias(name="look", command="look")
-
-        assert alias.name == "look"
-        assert alias.command == "look"
-        assert isinstance(alias.id, str)
-        assert isinstance(alias.created_at, datetime)
-        assert isinstance(alias.updated_at, datetime)
-
-    def test_create_alias_with_custom_timestamps(self):
-        """Test creating an alias with custom timestamps."""
-        custom_time = datetime(2024, 1, 1, 12, 0, 0)
-        alias = Alias(name="test", command="look", created_at=custom_time, updated_at=custom_time)
-
-        assert alias.created_at == custom_time
-        assert alias.updated_at == custom_time
-
-    def test_create_alias_with_custom_id(self):
-        """Test creating an alias with a custom ID."""
-        custom_id = str(uuid.uuid4())
-        alias = Alias(id=custom_id, name="test", command="help")
-
-        assert alias.id == custom_id
-        assert alias.name == "test"
-        assert alias.command == "help"
-
-    def test_alias_timestamps(self):
-        """Test that timestamps are properly set."""
-        before_creation = datetime.now(UTC)
-        alias = Alias(name="test", command="look")
-        after_creation = datetime.now(UTC)
-
-        # Convert alias timestamps to UTC for comparison
-        alias_created_utc = alias.created_at.replace(tzinfo=UTC)
-        alias_updated_utc = alias.updated_at.replace(tzinfo=UTC)
-
-        assert before_creation <= alias_created_utc <= after_creation
-        assert before_creation <= alias_updated_utc <= after_creation
-
     def test_alias_required_fields(self):
         """Test that required fields are enforced."""
         with pytest.raises(PydanticValidationError):

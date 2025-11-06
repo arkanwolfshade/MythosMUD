@@ -37,6 +37,9 @@ from server.exceptions import (
 )
 from server.tests.fixtures.test_error_logging import ErrorLoggingTestMixin
 
+# Mark entire module as slow for CI/CD-only execution
+pytestmark = pytest.mark.slow
+
 
 class TestErrorContextLogging:
     """Test error context creation and logging."""

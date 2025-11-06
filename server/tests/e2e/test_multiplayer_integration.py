@@ -13,6 +13,9 @@ from server.events.event_types import PlayerEnteredRoom, PlayerLeftRoom
 from server.models import Player
 from server.models.room import Room
 
+# Mark entire module as slow for CI/CD-only execution
+pytestmark = pytest.mark.slow
+
 
 class TestMultiplayerIntegration:
     """Test multiplayer integration functionality."""

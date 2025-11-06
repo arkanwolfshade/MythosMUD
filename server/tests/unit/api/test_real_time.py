@@ -31,8 +31,15 @@ class TestSSEEvents:
         mock_request.query_params = Mock()
         mock_request.query_params.get.return_value = None  # No session_id
 
+        # Mock the connection_manager readiness gate check
+        mock_connection_manager = Mock()
+        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
+
         # Mock the game_event_stream function
-        with patch("server.api.real_time.game_event_stream") as mock_stream:
+        with (
+            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
+            patch("server.api.real_time.game_event_stream") as mock_stream,
+        ):
             mock_stream.return_value = ["event1", "event2"]
 
             # Call the endpoint
@@ -60,8 +67,13 @@ class TestSSEEventsToken:
         mock_request = Mock(spec=Request)
         mock_request.query_params = {"token": "valid_token"}
 
+        # Mock the connection_manager readiness gate check
+        mock_connection_manager = Mock()
+        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
+
         # Mock dependencies
         with (
+            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.get_persistence") as mock_get_persistence,
             patch("server.api.real_time.game_event_stream") as mock_stream,
@@ -161,8 +173,13 @@ class TestWebSocketEndpoint:
         mock_websocket = AsyncMock(spec=WebSocket)
         mock_websocket.query_params = {"token": "valid_token"}
 
+        # Mock connection_manager for readiness gate
+        mock_connection_manager = Mock()
+        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
+
         # Mock dependencies
         with (
+            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.get_persistence") as mock_get_persistence,
             patch("server.api.real_time.handle_websocket_connection") as mock_handle,
@@ -189,7 +206,12 @@ class TestWebSocketEndpoint:
         mock_websocket.query_params = {"session_id": None}
         mock_websocket.headers = {"sec-websocket-protocol": "bearer, test_token_from_header"}
 
+        # Mock connection_manager for readiness gate
+        mock_connection_manager = Mock()
+        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
+
         with (
+            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.get_persistence") as mock_get_persistence,
             patch("server.api.real_time.handle_websocket_connection") as mock_handle,
@@ -214,8 +236,13 @@ class TestWebSocketEndpoint:
         mock_websocket = AsyncMock(spec=WebSocket)
         mock_websocket.query_params = {"token": "invalid_token", "player_id": "test_player_id"}
 
+        # Mock connection_manager for readiness gate
+        mock_connection_manager = Mock()
+        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
+
         # Mock dependencies
         with (
+            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.get_persistence") as mock_get_persistence,
             patch("server.api.real_time.handle_websocket_connection") as mock_handle,
@@ -241,8 +268,15 @@ class TestWebSocketEndpoint:
         mock_websocket = AsyncMock(spec=WebSocket)
         mock_websocket.query_params = {}
 
+        # Mock connection_manager for readiness gate
+        mock_connection_manager = Mock()
+        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
+
         # Mock decode_access_token to return None
-        with patch("server.api.real_time.decode_access_token") as mock_decode:
+        with (
+            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
+            patch("server.api.real_time.decode_access_token") as mock_decode,
+        ):
             mock_decode.return_value = None
 
             # Call the endpoint and expect HTTPException
@@ -259,8 +293,13 @@ class TestWebSocketEndpoint:
         mock_websocket = AsyncMock(spec=WebSocket)
         mock_websocket.query_params = {"token": "valid_token"}
 
+        # Mock connection_manager for readiness gate
+        mock_connection_manager = Mock()
+        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
+
         # Mock dependencies
         with (
+            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.get_persistence") as mock_get_persistence,
         ):
@@ -284,8 +323,13 @@ class TestWebSocketEndpoint:
         mock_websocket = AsyncMock(spec=WebSocket)
         mock_websocket.query_params = {"token": "valid_token"}
 
+        # Mock connection_manager for readiness gate
+        mock_connection_manager = Mock()
+        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
+
         # Mock dependencies
         with (
+            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.get_persistence") as mock_get_persistence,
             patch("server.api.real_time.handle_websocket_connection") as mock_handle,
@@ -325,8 +369,13 @@ class TestWebSocketEndpointRoute:
         mock_websocket = AsyncMock(spec=WebSocket)
         mock_websocket.query_params = {"token": "valid_token"}
 
+        # Mock connection_manager for readiness gate
+        mock_connection_manager = Mock()
+        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
+
         # Mock dependencies
         with (
+            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.get_persistence") as mock_get_persistence,
             patch("server.api.real_time.handle_websocket_connection") as mock_handle,
@@ -358,8 +407,13 @@ class TestWebSocketEndpointRoute:
         mock_websocket = AsyncMock(spec=WebSocket)
         mock_websocket.query_params = {}
 
+        # Mock connection_manager for readiness gate
+        mock_connection_manager = Mock()
+        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
+
         # Mock dependencies
         with (
+            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.handle_websocket_connection") as mock_handle,
             patch("server.logging.enhanced_logging_config.get_logger") as mock_get_logger,
@@ -385,8 +439,13 @@ class TestWebSocketEndpointRoute:
         mock_websocket = AsyncMock(spec=WebSocket)
         mock_websocket.query_params = {"token": "invalid_token"}
 
+        # Mock connection_manager for readiness gate
+        mock_connection_manager = Mock()
+        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
+
         # Mock dependencies
         with (
+            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.handle_websocket_connection") as mock_handle,
             patch("server.logging.enhanced_logging_config.get_logger") as mock_get_logger,
@@ -412,8 +471,13 @@ class TestWebSocketEndpointRoute:
         mock_websocket = AsyncMock(spec=WebSocket)
         mock_websocket.query_params = {"token": "valid_token"}
 
+        # Mock connection_manager for readiness gate
+        mock_connection_manager = Mock()
+        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
+
         # Mock dependencies
         with (
+            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.get_persistence") as mock_get_persistence,
             patch("server.api.real_time.handle_websocket_connection") as mock_handle,
@@ -443,8 +507,13 @@ class TestWebSocketEndpointRoute:
         mock_websocket = AsyncMock(spec=WebSocket)
         mock_websocket.query_params = {"token": "valid_token"}
 
+        # Mock connection_manager for readiness gate
+        mock_connection_manager = Mock()
+        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
+
         # Mock dependencies
         with (
+            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
             patch("server.api.real_time.decode_access_token") as mock_decode,
             patch("server.api.real_time.get_persistence") as mock_get_persistence,
             patch("server.api.real_time.handle_websocket_connection") as mock_handle,

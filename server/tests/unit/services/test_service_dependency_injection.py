@@ -20,7 +20,7 @@ class TestServiceDependencyInjection:
     """Test service layer dependency injection using real FastAPI dependency system."""
 
     @pytest.fixture
-    def app(self):
+    def app(self, mock_application_container):
         """Create FastAPI app for testing with mocked external dependencies."""
         with (
             patch("server.services.nats_service.nats_service") as mock_nats,
@@ -53,6 +53,7 @@ class TestServiceDependencyInjection:
             # Manually set up app state since lifespan won't run in tests
             from server.game.chat_service import ChatService
             from server.game.player_service import PlayerService
+            from server.game.room_service import RoomService
             from server.realtime.connection_manager import connection_manager
             from server.realtime.event_handler import get_real_time_event_handler
             from server.services.user_manager import UserManager
@@ -60,6 +61,7 @@ class TestServiceDependencyInjection:
             # Set up app state manually
             app.state.persistence = mock_persistence
             app.state.player_service = PlayerService(mock_persistence)
+            app.state.room_service = RoomService(mock_persistence)
             from pathlib import Path
 
             # Use absolute path to prevent nested server/server/ directory creation
@@ -71,10 +73,20 @@ class TestServiceDependencyInjection:
             app.state.nats_service = mock_nats
             app.state.chat_service = ChatService(
                 persistence=mock_persistence,
-                room_service=mock_persistence,
+                room_service=app.state.room_service,
                 player_service=app.state.player_service,
                 nats_service=mock_nats,
             )
+
+            # Use the comprehensive mock container and update with real/mocked services
+            mock_application_container.persistence = mock_persistence
+            mock_application_container.player_service = app.state.player_service
+            mock_application_container.room_service = app.state.room_service
+            mock_application_container.event_bus = app.state.event_bus
+            mock_application_container.user_manager = app.state.user_manager
+            mock_application_container.nats_service = mock_nats
+            mock_application_container.connection_manager = connection_manager
+            app.state.container = mock_application_container
 
             return app
 
@@ -156,7 +168,12 @@ class TestServiceDependencyInjection:
         assert hasattr(persistence, "async_get_player")
 
     def test_dependency_injection_independence(self, client):
-        """Test that different services can be injected independently."""
+        """Test that different services can be injected independently.
+
+        With ApplicationContainer pattern, services are singletons within the container,
+        so multiple calls to get_player_service() return the same instance. This test
+        verifies that different service types can be retrieved independently.
+        """
         app = client.app
 
         from fastapi import Request
@@ -171,7 +188,11 @@ class TestServiceDependencyInjection:
         assert isinstance(player_service2, PlayerService)
         assert isinstance(room_service, RoomService)
 
-        assert player_service1 is not player_service2
+        # With ApplicationContainer, services are singletons - same instance returned
+        assert player_service1 is player_service2
+
+        # But different service types are different instances
+        assert player_service1 is not room_service
 
     def test_api_endpoints_use_dependency_injection(self, client):
         """Test that API endpoints actually use the dependency injection system."""

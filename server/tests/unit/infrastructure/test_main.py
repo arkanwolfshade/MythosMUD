@@ -42,7 +42,7 @@ class TestEndpoints:
     """Test API endpoints."""
 
     @pytest.fixture
-    def client(self):
+    def client(self, mock_application_container):
         """Create a test client with initialized app state."""
         # Initialize the app state with persistence
         with patch("server.persistence.get_persistence") as mock_get_persistence:
@@ -59,8 +59,22 @@ class TestEndpoints:
             # Create a test client
             test_client = TestClient(app)
 
-            # Manually set the persistence in app state
+            # Create real PlayerService with mocked persistence
+            # This allows tests to patch persistence methods and have those patches
+            # affect the service layer behavior
+            from server.game.player_service import PlayerService
+
+            player_service = PlayerService(mock_persistence)
+
+            # Use the comprehensive mock container and update specific services
+            mock_application_container.persistence = mock_persistence
+            mock_application_container.player_service = player_service
+
+            # Set container and services in app state
+            test_client.app.state.container = mock_application_container
             test_client.app.state.persistence = mock_persistence
+            test_client.app.state.player_service = player_service
+            test_client.app.state.room_service = mock_application_container.room_service
 
             return test_client
 
@@ -72,7 +86,7 @@ class TestEndpoints:
 
     def test_get_room_existing(self, client):
         """Test getting an existing room."""
-        with patch.object(client.app.state.persistence, "async_get_room", new_callable=AsyncMock) as mock_get_room:
+        with patch.object(client.app.state.room_service, "get_room", new_callable=AsyncMock) as mock_get_room:
             mock_room = {"id": "test_room", "name": "Test Room"}
             mock_get_room.return_value = mock_room
 
@@ -83,7 +97,7 @@ class TestEndpoints:
 
     def test_get_room_not_found(self, client):
         """Test getting a non-existent room."""
-        with patch.object(client.app.state.persistence, "async_get_room", new_callable=AsyncMock) as mock_get_room:
+        with patch.object(client.app.state.room_service, "get_room", new_callable=AsyncMock) as mock_get_room:
             mock_get_room.return_value = None
 
             response = client.get("/rooms/nonexistent")

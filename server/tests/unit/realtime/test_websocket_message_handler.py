@@ -146,22 +146,46 @@ class TestWebSocketMessageHandler:
 
     @pytest.mark.asyncio
     async def test_handle_command_with_room_change(self, mock_websocket, mock_connection_manager):
-        """Test command handling with room change result."""
+        """Test command handling with room change result.
+
+        NOTE: As of Phase 1.2 architecture refactoring, broadcast_room_update() is no longer
+        called directly. Room updates now flow through EventBus:
+        Movement → Room.player_entered() → PlayerEnteredRoom event → EventBus → clients
+
+        This test verifies the command completes without error. Room update broadcasting
+        is now tested in EventBus integration tests.
+        """
         with patch("server.realtime.websocket_handler.process_websocket_command") as mock_process:
             mock_process.return_value = {"result": "You move north.", "room_changed": True, "room_id": "new_room"}
 
-            with patch("server.realtime.websocket_handler.broadcast_room_update") as mock_broadcast:
-                await handle_game_command(mock_websocket, "test_player", "go north")
+            # Execute command
+            await handle_game_command(mock_websocket, "test_player", "go north")
 
-                mock_broadcast.assert_called_once_with("test_player", "new_room")
+            # Verify command response was sent to player
+            mock_websocket.send_json.assert_called_once()
+            call_args = mock_websocket.send_json.call_args[0][0]
+            assert call_args["event_type"] == "command_response"
+            assert "You move north." in str(call_args["data"])
 
     @pytest.mark.asyncio
     async def test_handle_go_command_with_room_update(self, mock_websocket, mock_connection_manager):
-        """Test go command handling with room update."""
+        """Test go command handling with room update.
+
+        NOTE: As of Phase 1.2 architecture refactoring, broadcast_room_update() is no longer
+        called directly. Room updates now flow through EventBus:
+        Movement → Room.player_entered() → PlayerEnteredRoom event → EventBus → clients
+
+        This test verifies the command completes without error. Room update broadcasting
+        is now tested in EventBus integration tests.
+        """
         with patch("server.realtime.websocket_handler.process_websocket_command") as mock_process:
             mock_process.return_value = {"result": "You move north."}
 
-            with patch("server.realtime.websocket_handler.broadcast_room_update") as mock_broadcast:
-                await handle_game_command(mock_websocket, "test_player", "go north")
+            # Execute command
+            await handle_game_command(mock_websocket, "test_player", "go north")
 
-                mock_broadcast.assert_called_once_with("test_player", "test_room")
+            # Verify command response was sent to player
+            mock_websocket.send_json.assert_called_once()
+            call_args = mock_websocket.send_json.call_args[0][0]
+            assert call_args["event_type"] == "command_response"
+            assert "You move north." in str(call_args["data"])

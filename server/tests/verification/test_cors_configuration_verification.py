@@ -13,17 +13,22 @@ from fastapi.testclient import TestClient
 from server.app.factory import create_app
 
 
+@pytest.mark.slow
 class TestCORSConfigurationVerification:
-    """Test CORS configuration works with environment variables."""
+    """Test CORS configuration works with environment variables.
+
+    These tests require full FastAPI app initialization with dependency injection
+    container and make actual HTTP requests to verify CORS middleware behavior.
+    """
 
     @pytest.fixture
-    def app(self):
+    def app(self, mock_application_container):
         """Create FastAPI app for testing."""
+        from unittest.mock import AsyncMock
+
         app = create_app()
 
         # Mock the persistence layer with async methods
-        from unittest.mock import AsyncMock
-
         mock_persistence = AsyncMock()
         mock_persistence.async_list_players.return_value = []
         mock_persistence.async_get_player.return_value = None
@@ -37,7 +42,17 @@ class TestCORSConfigurationVerification:
         mock_persistence.save_player.return_value = None
         mock_persistence.delete_player.return_value = True
 
+        # Use the comprehensive mock container and update persistence
+        mock_application_container.persistence = mock_persistence
+
+        app.state.container = mock_application_container
         app.state.persistence = mock_persistence
+
+        # Set additional app state attributes that middleware and routes may access
+        app.state.player_service = mock_application_container.player_service
+        app.state.room_service = mock_application_container.room_service
+        app.state.event_bus = mock_application_container.event_bus
+
         return app
 
     @pytest.fixture

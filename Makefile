@@ -1,44 +1,42 @@
 # MythosMUD Makefile
 
-.PHONY: help clean lint format test coverage build install run semgrep semgrep-autofix mypy test-client-e2e test-server-e2e lint-sqlalchemy test-unit test-integration test-e2e test-security test-performance test-coverage test-regression test-monitoring test-verification test-all test-fast test-slow setup-test-env
+.PHONY: help clean lint format test test-fast test-fast-serial test-comprehensive test-coverage test-client test-client-e2e test-e2e test-slow coverage build install run semgrep semgrep-autofix mypy lint-sqlalchemy setup-test-env
 
 # Determine project root for worktree contexts
 PROJECT_ROOT := $(shell python -c "import os; print(os.path.dirname(os.getcwd()) if 'MythosMUD-' in os.getcwd() else os.getcwd())")
 
 help:
 	@echo "Available targets:"
-	@echo "  clean     - Remove build, dist, and cache files"
-	@echo "  lint      - Run ruff (Python) and ESLint (Node)"
-	@echo "  lint-sqlalchemy - Run SQLAlchemy async pattern linter"
-	@echo "  mypy      - Run mypy static type checking"
-	@echo "  format    - Run ruff format (Python) and Prettier (Node)"
-	@echo "  test      - Run all tests (server + client)"
-	@echo "  test-server - Run server tests only (unit + integration)"
-	@echo "  test-client - Run client unit tests only (Vitest)"
-	@echo "  test-client-e2e - Run automated client E2E tests (Playwright e2e)"
-	@echo "  test-server-e2e - Run server E2E tests (requires running server)"
-	@echo "  test-unit - Run unit tests only"
-	@echo "  test-integration - Run integration tests only"
-	@echo "  test-e2e - Run E2E tests only"
-	@echo "  test-security - Run security tests only"
-	@echo "  test-performance - Run performance tests only"
-	@echo "  test-coverage - Generate coverage report only"
-	@echo "  test-regression - Run regression tests only"
-	@echo "  test-monitoring - Run monitoring tests only"
-	@echo "  test-verification - Run verification tests only"
-	@echo "  test-all - Run all tests (unit + integration, excluding E2E)"
-	@echo "  test-fast - Run unit tests with fail-fast mode"
-	@echo "  test-slow - Run slow tests only"
-	@echo "  coverage  - Run coverage for both server and client"
-	@echo "  build     - Build the client (Node)"
-	@echo "  install   - Install dependencies (worktree-aware)"
-	@echo "  semgrep   - Run Semgrep static analysis (security and best practices)"
-	@echo "  semgrep-autofix - Run Semgrep with autofix to automatically resolve issues"
-	@echo "  setup-test-env - Setup test environment files (required before running tests)"
 	@echo ""
-	@echo "E2E Testing:"
-	@echo "  make test-client-e2e  - Automated single-player E2E tests (fast)"
-	@echo "  See e2e-tests/MULTIPLAYER_TEST_RULES.md for multi-player MCP scenarios"
+	@echo "Code Quality:"
+	@echo "  clean           - Remove build, dist, and cache files"
+	@echo "  lint            - Run ruff (Python) and ESLint (Node)"
+	@echo "  lint-sqlalchemy - Run SQLAlchemy async pattern linter"
+	@echo "  mypy            - Run mypy static type checking"
+	@echo "  format          - Run ruff format (Python) and Prettier (Node)"
+	@echo ""
+	@echo "Testing - Daily Development:"
+	@echo "  test-fast        - Quick unit tests with parallelization (~2-3 min)"
+	@echo "  test-fast-serial - Quick unit tests serially (for debugging)"
+	@echo "  test             - Default pre-commit validation (~5-7 min target)"
+	@echo "  test-client      - Client unit tests only (Vitest)"
+	@echo "  test-client-e2e  - Automated client E2E tests (Playwright)"
+	@echo ""
+	@echo "Testing - CI/CD:"
+	@echo "  test-comprehensive - Full test suite for CI/CD (~30 min)"
+	@echo "  test-coverage      - Generate coverage reports"
+	@echo ""
+	@echo "Testing - On-Demand:"
+	@echo "  test-e2e        - Server E2E tests (requires running services)"
+	@echo "  test-slow       - All slow tests (performance, integration, etc.)"
+	@echo ""
+	@echo "Build & Deploy:"
+	@echo "  build           - Build the client (Node)"
+	@echo "  install         - Install dependencies (worktree-aware)"
+	@echo "  semgrep         - Run Semgrep security analysis"
+	@echo "  semgrep-autofix - Run Semgrep with autofix"
+	@echo ""
+	@echo "Note: See e2e-tests/MULTIPLAYER_TEST_RULES.md for multi-player MCP scenarios"
 
 clean:
 	cd $(PROJECT_ROOT) && python scripts/clean.py
@@ -62,60 +60,55 @@ mypy:
 format:
 	cd $(PROJECT_ROOT) && python scripts/format.py
 
-test: setup-test-env
-	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py
+# ============================================================================
+# TESTING TARGETS - Simplified Hierarchy
+# ============================================================================
 
-test-server: setup-test-env
-	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py
+# ----------------------------------------------------------------------------
+# Daily Development Workflow
+# ----------------------------------------------------------------------------
+
+test: setup-test-env
+	@echo "Running default test suite (pre-commit validation, ~5-7 min target)..."
+	cd $(PROJECT_ROOT) && uv run pytest server/tests/ -m "not slow and not e2e" -n auto --maxfail=10 --tb=short
 
 test-client:
+	@echo "Running client unit tests..."
 	cd $(PROJECT_ROOT)/client && npm run test:unit:run
 
 test-client-e2e:
+	@echo "Running automated client E2E tests..."
 	cd $(PROJECT_ROOT)/client && npm run test
 
-test-server-e2e:
-	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --e2e
+# ----------------------------------------------------------------------------
+# CI/CD Workflow
+# ----------------------------------------------------------------------------
 
-# New hierarchical test targets
-test-unit:
-	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --unit
+test-comprehensive: setup-test-env
+	@echo "Running COMPREHENSIVE test suite (all tests, ~30 min)..."
+	cd $(PROJECT_ROOT) && uv run pytest server/tests/ -v --tb=short
 
-test-integration:
-	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --integration
+test-coverage: setup-test-env
+	@echo "Generating coverage report..."
+	cd $(PROJECT_ROOT) && uv run pytest server/tests/ -m "not slow and not e2e" --cov --cov-report=html --cov-report=term-missing --cov-report=xml
 
-test-e2e:
-	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --e2e
+# ----------------------------------------------------------------------------
+# On-Demand Specialized Testing
+# ----------------------------------------------------------------------------
 
-test-security:
-	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --path server/tests/security
+test-e2e: setup-test-env
+	@echo "Running server E2E tests (requires running services)..."
+	cd $(PROJECT_ROOT) && uv run pytest server/tests/e2e/ -m "e2e" -v
 
-test-performance:
-	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --path server/tests/performance
+test-slow: setup-test-env
+	@echo "Running slow tests (performance, integration, etc.)..."
+	cd $(PROJECT_ROOT) && uv run pytest server/tests/ -m "slow" -v
 
-test-coverage:
-	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --coverage
+# ----------------------------------------------------------------------------
+# Legacy Aliases (for backward compatibility)
+# ----------------------------------------------------------------------------
 
-test-regression:
-	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --path server/tests/regression
-
-test-monitoring:
-	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --path server/tests/monitoring
-
-test-verification:
-	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --path server/tests/verification
-
-test-all:
-	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py
-
-test-fast:
-	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --unit --pytest-args -x
-
-test-slow:
-	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --markers "slow"
-
-coverage:
-	cd $(PROJECT_ROOT) && uv run python scripts/test_runner.py --coverage
+coverage: test-coverage
 
 build:
 	cd $(PROJECT_ROOT) && python scripts/build.py
@@ -136,6 +129,6 @@ all:
 	cd $(PROJECT_ROOT) && make format
 	cd $(PROJECT_ROOT) && make mypy
 	cd $(PROJECT_ROOT) && make lint
-	cd $(PROJECT_ROOT) && make test-all
+	cd $(PROJECT_ROOT) && make test-comprehensive
 	cd $(PROJECT_ROOT) && make build
 	cd $(PROJECT_ROOT) && make semgrep

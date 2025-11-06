@@ -148,13 +148,56 @@ class RealTimeEventHandler:
             if room_id_str is not None and exclude_player_id is not None:
                 await self._send_room_occupants_update(room_id_str, exclude_player=exclude_player_id)
             try:
+                # Send full room update to the entering player so their Room Info panel updates
+                if room_id_str is not None and exclude_player_id is not None:
+                    # Get room data
+                    room = (
+                        self.connection_manager.persistence.get_room(room_id_str)
+                        if self.connection_manager.persistence
+                        else None
+                    )
+                    if room:
+                        # Get room occupants and transform to names
+                        occupants_info = self._get_room_occupants(room_id_str)
+                        occupant_names: list[str] = []
+                        for occ in occupants_info or []:
+                            if isinstance(occ, dict):
+                                n = occ.get("player_name") or occ.get("npc_name") or occ.get("name")
+                                if n:
+                                    occupant_names.append(n)
+                            elif isinstance(occ, str):
+                                occupant_names.append(occ)
+
+                        # Create room_update event with full room data
+                        room_data = room.to_dict() if hasattr(room, "to_dict") else room
+                        room_update_event = {
+                            "event_type": "room_update",
+                            "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
+                            "sequence_number": self._get_next_sequence(),
+                            "room_id": room_id_str,
+                            "data": {
+                                "room": room_data,
+                                "entities": [],
+                                "occupants": occupant_names,
+                                "occupant_count": len(occupant_names),
+                            },
+                        }
+                        # Send as personal message to entering player
+                        await self.connection_manager.send_personal_message(exclude_player_id, room_update_event)
+                        self._logger.debug(
+                            "Sent room_update to entering player",
+                            player_id=exclude_player_id,
+                            room_id=room_id_str,
+                            occupants=occupant_names,
+                        )
+
                 # Also send a direct occupants snapshot to the entering player
                 if room_id_str is None:
-                    occupants_info: list[dict[str, Any] | str] | None = []
+                    occupants_snapshot: list[dict[str, Any] | str] | None = []
                 else:
-                    occupants_info = self._get_room_occupants(room_id_str)
+                    occupants_snapshot = self._get_room_occupants(room_id_str)
                 names: list[str] = []
-                for occ in occupants_info or []:
+                for occ in occupants_snapshot or []:
                     if isinstance(occ, dict):
                         n = occ.get("player_name") or occ.get("npc_name") or occ.get("name")
                         if n:
@@ -174,7 +217,7 @@ class RealTimeEventHandler:
                 if exclude_player_id is not None:
                     await self.connection_manager.send_personal_message(exclude_player_id, personal)
             except Exception as e:
-                self._logger.error("Error sending personal occupants update", error=str(e))
+                self._logger.error("Error sending personal room update and occupants", error=str(e))
 
             self._logger.info(
                 "Player entered room with enhanced synchronization",

@@ -18,6 +18,9 @@ from server.services.combat_service import CombatService
 from server.services.npc_combat_integration_service import NPCCombatIntegrationService
 from server.services.player_combat_service import PlayerCombatService
 
+# Mark entire module as slow for CI/CD-only execution
+pytestmark = pytest.mark.slow
+
 logger = get_logger(__name__)
 
 

@@ -16,8 +16,12 @@ import pytest
 import pytest_asyncio
 from playwright.async_api import async_playwright
 
-# Skip all E2E tests by default - they require running servers
-pytestmark = pytest.mark.skip(reason="E2E tests require running servers. Run with: pytest -m e2e --runxfail")
+# Mark as slow E2E test - requires running servers
+pytestmark = [
+    pytest.mark.slow,
+    pytest.mark.e2e,
+    pytest.mark.skip(reason="E2E tests require running servers. Run with: pytest -m e2e --runxfail")
+]
 
 
 @pytest_asyncio.fixture(scope="function")

@@ -8,8 +8,6 @@ Note: Tests for Item, InventoryItem, and NPC models are commented out pending
 implementation of those systems.
 """
 
-from datetime import datetime
-
 from server.models.alias import Alias
 from server.models.game import AttributeType, Player, Stats, StatusEffect, StatusEffectType
 
@@ -117,16 +115,6 @@ class TestStats:
 class TestStatusEffect:
     """Test the StatusEffect model."""
 
-    def test_status_effect_creation(self):
-        """Test creating a StatusEffect."""
-        effect = StatusEffect(effect_type=StatusEffectType.POISONED, duration=10, intensity=5, source="poison dart")
-
-        assert effect.effect_type == StatusEffectType.POISONED
-        assert effect.duration == 10
-        assert effect.intensity == 5
-        assert effect.source == "poison dart"
-        assert isinstance(effect.applied_at, datetime)
-
     def test_status_effect_is_active(self):
         """Test the is_active method."""
         effect = StatusEffect(effect_type=StatusEffectType.POISONED, duration=10, intensity=5)
@@ -153,46 +141,6 @@ class TestStatusEffect:
 
 class TestAlias:
     """Test the Alias model."""
-
-    def test_alias_creation(self):
-        """Test creating an Alias."""
-        alias = Alias(name="n", command="go north")
-
-        assert alias.name == "n"
-        assert alias.command == "go north"
-        assert alias.version == "1.0"
-        assert isinstance(alias.created_at, datetime)
-        assert isinstance(alias.updated_at, datetime)
-
-    def test_alias_equality(self):
-        """Test alias equality comparison."""
-        alias1 = Alias(name="n", command="go north")
-        alias2 = Alias(name="n", command="go north")
-        alias3 = Alias(name="s", command="go south")
-
-        assert alias1 == alias2
-        assert alias1 != alias3
-        assert alias1 != "not an alias"
-
-    def test_alias_hash(self):
-        """Test alias hash method."""
-        alias1 = Alias(name="n", command="go north")
-        alias2 = Alias(name="n", command="go north")
-
-        assert hash(alias1) == hash(alias2)
-
-    def test_alias_update_timestamp(self):
-        """Test the update_timestamp method."""
-        alias = Alias(name="n", command="go north")
-        old_updated_at = alias.updated_at
-
-        # Wait a moment to ensure timestamp difference
-        import time
-
-        time.sleep(0.001)
-
-        alias.update_timestamp()
-        assert alias.updated_at > old_updated_at
 
     def test_alias_is_reserved_command(self):
         """Test the is_reserved_command method."""

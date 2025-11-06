@@ -197,6 +197,7 @@ class TestNATSMessageHandler:
                 assert call_args[5] == "player_001"  # sender_id
 
     @pytest.mark.asyncio
+    @pytest.mark.slow
     async def test_handle_nats_message_invalid_missing_fields(self):
         """Test handling a message with missing required fields."""
         message_data = {
@@ -213,6 +214,7 @@ class TestNATSMessageHandler:
             self.mock_connection_manager.send_personal_message.assert_not_called()
 
     @pytest.mark.asyncio
+    @pytest.mark.slow
     async def test_handle_nats_message_with_exception(self):
         """Test handling a message when an exception occurs."""
         message_data = {

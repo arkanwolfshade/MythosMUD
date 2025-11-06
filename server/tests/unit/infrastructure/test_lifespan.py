@@ -193,6 +193,13 @@ class TestLifespanStartup:
                     mock_container.user_manager = Mock()
                     mock_container.room_cache_service = Mock()
                     mock_container.profession_cache_service = Mock()
+                    mock_container.config = Mock()
+                    mock_container.config.logging = Mock()
+                    mock_container.config.logging.environment = "unit_test"
+
+                    # Mock nats_service with synchronous is_connected()
+                    mock_container.nats_service = Mock()
+                    mock_container.nats_service.is_connected = Mock(return_value=False)
 
                     mock_container_class.return_value = mock_container
 
@@ -205,6 +212,7 @@ class TestLifespanStartup:
                         assert hasattr(app.state, "event_handler")
                         assert hasattr(app.state, "event_bus")
                         assert hasattr(app.state, "task_registry")
+
 
 class TestGameTickLoopLegacy:
     """Test game tick loop functionality."""

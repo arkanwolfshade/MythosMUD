@@ -9,6 +9,8 @@ AI: Tests sliding window rate limiting for command spam prevention.
 
 import time
 
+import pytest
+
 from server.middleware.command_rate_limiter import CommandRateLimiter
 
 
@@ -70,6 +72,7 @@ class TestCommandRateLimiter:
         # Since we just issued a command, it should be close to window_seconds
         assert wait_time > 0  # Not zero, but should be small since we're not limited
 
+    @pytest.mark.slow
     def test_rate_limit_resets_after_window(self):
         """Rate limit resets after time window passes."""
         limiter = CommandRateLimiter(max_commands=2, window_seconds=1)
@@ -137,6 +140,7 @@ class TestCommandRateLimiter:
 
         assert remaining == 8  # 10 max - 2 used
 
+    @pytest.mark.slow
     def test_cleanup_old_entries(self):
         """Old entries are cleaned up automatically."""
         limiter = CommandRateLimiter(max_commands=5, window_seconds=1)
@@ -148,6 +152,7 @@ class TestCommandRateLimiter:
         # Old entry should be cleaned up
         assert limiter.get_remaining_commands("player1") == 4  # Only 1 command in window
 
+    @pytest.mark.slow
     def test_sliding_window_accuracy(self):
         """Sliding window accurately tracks commands over time."""
         limiter = CommandRateLimiter(max_commands=3, window_seconds=2)
@@ -178,6 +183,7 @@ class TestCommandRateLimiter:
 
         assert limiter.is_allowed("player1") is False
 
+    @pytest.mark.slow
     def test_very_short_window(self):
         """Very short time window works correctly."""
         limiter = CommandRateLimiter(max_commands=2, window_seconds=0.5)

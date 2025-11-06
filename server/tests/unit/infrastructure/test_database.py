@@ -307,6 +307,11 @@ class TestDatabaseIntegration:
         # Create properly configured mocks
         mock_conn = AsyncMock()
 
+        # Mock execute to return a result with synchronous fetchone()
+        mock_result = Mock()
+        mock_result.fetchone = Mock(return_value=None)
+        mock_conn.execute = AsyncMock(return_value=mock_result)
+
         # Create a mock async context manager
         mock_context_manager = MagicMock()
         mock_context_manager.__aenter__ = AsyncMock(return_value=mock_conn)

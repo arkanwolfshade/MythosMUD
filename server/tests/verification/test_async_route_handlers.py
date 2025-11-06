@@ -17,11 +17,16 @@ from fastapi.testclient import TestClient
 from server.app.factory import create_app
 
 
+@pytest.mark.slow
 class TestAsyncRouteHandlers:
-    """Test async route handler functionality and performance."""
+    """Test async route handler functionality and performance.
+
+    These tests require full FastAPI app initialization with dependency injection
+    container and make actual HTTP requests, making them integration-style tests.
+    """
 
     @pytest.fixture
-    def app(self):
+    def app(self, mock_application_container):
         """Create FastAPI app for testing."""
         app = create_app()
 
@@ -34,7 +39,17 @@ class TestAsyncRouteHandlers:
         mock_persistence.list_players.return_value = []
         mock_persistence.get_player.return_value = None
         mock_persistence.get_room.return_value = None
+
+        # Use the comprehensive mock container and update persistence
+        mock_application_container.persistence = mock_persistence
+
+        app.state.container = mock_application_container
         app.state.persistence = mock_persistence
+
+        # Set additional app state attributes that middleware and routes may access
+        app.state.player_service = mock_application_container.player_service
+        app.state.room_service = mock_application_container.room_service
+        app.state.event_bus = mock_application_container.event_bus
 
         return app
 
