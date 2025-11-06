@@ -71,6 +71,15 @@ async def lifespan(app: FastAPI):
     app.state.container = container
     logger.info("ApplicationContainer initialized and added to app.state")
 
+    # AI Agent: CRITICAL FIX - Ensure global persistence singleton uses container's instance
+    #           This prevents the dual-cache bug where NPCs are added to one cache
+    #           but player connections see a different cache
+    from ..persistence import _persistence_lock
+    with _persistence_lock:
+        globals_module = __import__("server.persistence", fromlist=["_persistence_instance"])
+        globals_module._persistence_instance = container.persistence  # type: ignore[attr-defined]
+    logger.info("Global persistence singleton synchronized with container instance")
+
     # LEGACY COMPATIBILITY: Also expose services directly on app.state
     # This maintains backward compatibility during migration
     # TODO: Remove these direct assignments once all code uses container
@@ -474,6 +483,27 @@ async def game_tick_loop(app: FastAPI):
                         break
                 except Exception as e:
                     logger.error("Error processing HP decay", tick_count=tick_count, error=str(e))
+
+            # Process NPC lifecycle maintenance (every 60 ticks = 1 minute)
+            # AI Agent: This integrates the orphaned periodic_maintenance() method into the game tick loop
+            #           to enable NPC respawning and periodic spawn checks
+            from ..config.npc_config import NPCMaintenanceConfig
+
+            if NPCMaintenanceConfig.should_run_maintenance(tick_count) and hasattr(app.state, "npc_lifecycle_manager"):
+                try:
+                    # AI Agent: CRITICAL DEBUG - Log maintenance execution even when no NPCs are processed
+                    #           This helps diagnose why respawn queue is not being processed
+                    logger.debug(
+                        "Running NPC maintenance",
+                        tick_count=tick_count,
+                        has_lifecycle_manager=True,
+                        respawn_queue_size=len(app.state.npc_lifecycle_manager.respawn_queue),
+                    )
+                    maintenance_results = app.state.npc_lifecycle_manager.periodic_maintenance()
+                    # AI Agent: ALWAYS log maintenance results to track respawn queue processing
+                    logger.info("NPC maintenance completed", tick_count=tick_count, **maintenance_results)
+                except Exception as e:
+                    logger.error("Error during NPC maintenance", tick_count=tick_count, error=str(e))
 
             # Broadcast game tick to all connected players
             tick_data = {

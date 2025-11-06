@@ -528,24 +528,53 @@ class NPCLifecycleManager:
         respawned_count = 0
         npcs_to_remove = []
 
+        # AI Agent: CRITICAL DEBUG - Log respawn queue processing details
+        logger.debug(
+            "Processing respawn queue",
+            queue_size=len(self.respawn_queue),
+            current_time=current_time,
+            queue_entries=[
+                {
+                    "npc_id": npc_id,
+                    "scheduled_time": respawn_data["scheduled_time"],
+                    "ready": current_time >= respawn_data["scheduled_time"],
+                    "attempts": respawn_data.get("attempts", 0),
+                }
+                for npc_id, respawn_data in self.respawn_queue.items()
+            ],
+        )
+
         for npc_id, respawn_data in self.respawn_queue.items():
             if current_time >= respawn_data["scheduled_time"]:
+                logger.debug("Attempting respawn for NPC", npc_id=npc_id, respawn_data=respawn_data)
                 # Attempt to respawn
                 success = self._attempt_respawn(npc_id, respawn_data)
                 if success:
+                    logger.info("NPC successfully respawned from queue", npc_id=npc_id)
                     respawned_count += 1
                     npcs_to_remove.append(npc_id)
                 else:
+                    logger.warning("NPC respawn attempt failed", npc_id=npc_id, attempts=respawn_data.get("attempts", 0))
                     # Increment attempt count
                     respawn_data["attempts"] += 1
                     if respawn_data["attempts"] >= self.max_respawn_attempts:
                         logger.warning("Max respawn attempts reached for NPC", npc_id=npc_id)
                         npcs_to_remove.append(npc_id)
+            else:
+                logger.debug(
+                    "NPC not yet ready for respawn",
+                    npc_id=npc_id,
+                    scheduled_time=respawn_data["scheduled_time"],
+                    current_time=current_time,
+                    time_remaining=respawn_data["scheduled_time"] - current_time,
+                )
 
         # Remove processed NPCs from queue
         for npc_id in npcs_to_remove:
+            logger.debug("Removing NPC from respawn queue", npc_id=npc_id)
             del self.respawn_queue[npc_id]
 
+        logger.debug("Respawn queue processing completed", respawned_count=respawned_count, removed_count=len(npcs_to_remove))
         return respawned_count
 
     def _attempt_respawn(self, npc_id: str, respawn_data: dict[str, Any]) -> bool:
