@@ -16,7 +16,7 @@ from enum import Enum
 from typing import Any
 
 from server.events.event_bus import EventBus
-from server.events.event_types import NPCEnteredRoom, NPCLeftRoom
+from server.events.event_types import NPCDied, NPCEnteredRoom, NPCLeftRoom
 from server.models.npc import NPCDefinition
 from server.npc.behaviors import NPCBase
 from server.npc.population_control import NPCPopulationController
@@ -195,6 +195,10 @@ class NPCLifecycleManager:
         self.cleanup_interval = 3600.0  # 1 hour
         self.last_cleanup = time.time()
 
+        # Periodic spawn checking
+        # AI Agent: Track last spawn check time per NPC definition to prevent spam spawning
+        self.last_spawn_check: dict[int, float] = {}  # npc_definition_id -> last_check_timestamp
+
         # Subscribe to relevant events
         self._subscribe_to_events()
 
@@ -241,6 +245,7 @@ class NPCLifecycleManager:
         """Subscribe to relevant game events."""
         self.event_bus.subscribe(NPCEnteredRoom, self._handle_npc_entered_room)
         self.event_bus.subscribe(NPCLeftRoom, self._handle_npc_left_room)
+        self.event_bus.subscribe(NPCDied, self._handle_npc_died)
 
     def _handle_npc_entered_room(self, event: NPCEnteredRoom) -> None:
         """Handle NPC entering a room."""
@@ -255,6 +260,54 @@ class NPCLifecycleManager:
         if event.npc_id in self.lifecycle_records:
             record = self.lifecycle_records[event.npc_id]
             record.add_event(NPCLifecycleEvent.DEACTIVATED, {"room_id": event.room_id})
+
+    def _handle_npc_died(self, event: NPCDied) -> None:
+        """
+        Handle NPC death by queuing for respawn.
+
+        AI Agent: CRITICAL FIX - This event handler ensures NPCs are queued for respawn
+                  when they die, respecting the configured respawn delay for ALL NPCs
+                  (both required and optional).
+
+        Args:
+            event: NPCDied event containing death information
+        """
+        try:
+            # Get NPC definition from lifecycle records
+            if event.npc_id not in self.lifecycle_records:
+                logger.warning("NPC died but no lifecycle record found", npc_id=event.npc_id)
+                return
+
+            record = self.lifecycle_records[event.npc_id]
+            definition = record.definition
+
+            # Despawn the NPC first
+            success = self.despawn_npc(event.npc_id, reason=f"death: {event.cause}")
+            if not success:
+                logger.error("Failed to despawn dead NPC", npc_id=event.npc_id)
+                return
+
+            # Queue for respawn (respects configured delay for both required and optional NPCs)
+            # AI Agent: ALL NPCs (required or optional) must respect respawn delay
+            respawn_queued = self.respawn_npc(
+                npc_id=event.npc_id,
+                delay=None,  # Use default delay from config
+                reason=f"respawn_after_death: {event.cause}"
+            )
+
+            if respawn_queued:
+                logger.info(
+                    "NPC queued for respawn after death",
+                    npc_id=event.npc_id,
+                    npc_name=definition.name,
+                    cause=event.cause,
+                    respawn_delay=self.default_respawn_delay,
+                )
+            else:
+                logger.error("Failed to queue NPC for respawn", npc_id=event.npc_id, npc_name=definition.name)
+
+        except Exception as e:
+            logger.error("Error handling NPC death event", npc_id=event.npc_id, error=str(e))
 
     def spawn_npc(self, definition: NPCDefinition, room_id: str, reason: str = "manual") -> str | None:
         """
@@ -650,6 +703,10 @@ class NPCLifecycleManager:
         """
         Perform periodic maintenance tasks.
 
+        This method is called every 60 ticks (1 minute) from the game tick loop
+        to handle NPC respawning, periodic spawn checks for optional NPCs,
+        and cleanup of old lifecycle records.
+
         Returns:
             Dictionary containing maintenance results
         """
@@ -657,8 +714,20 @@ class NPCLifecycleManager:
         results = {}
 
         # Process respawn queue
+        # AI Agent: Existing respawn queue processing for NPCs that died
         respawned_count = self.process_respawn_queue()
         results["respawned_npcs"] = respawned_count
+
+        # Check for optional NPCs that should re-roll spawn probability
+        # AI Agent: New functionality - periodic spawn checks for optional NPCs
+        try:
+            spawn_check_results = self._check_optional_npc_spawns()
+            results["spawned_npcs"] = spawn_check_results["spawned_count"]
+            results["spawn_checks_performed"] = spawn_check_results["checks_performed"]
+        except Exception as e:
+            logger.error("Error during periodic spawn checks", error=str(e))
+            results["spawned_npcs"] = 0
+            results["spawn_checks_performed"] = 0
 
         # Cleanup old records if enough time has passed
         if current_time - self.last_cleanup > self.cleanup_interval:
@@ -667,3 +736,139 @@ class NPCLifecycleManager:
             self.last_cleanup = current_time
 
         return results
+
+    def _check_optional_npc_spawns(self) -> dict[str, int]:
+        """
+        Check if optional NPCs should spawn based on periodic probability rolls.
+
+        This method is called periodically to give optional NPCs that failed their
+        initial spawn probability check another chance to appear in the game world.
+
+        AI Agent: Implements Phase 2 - periodic spawn checks for optional NPCs.
+                  This prevents the issue where optional NPCs that fail their initial
+                  spawn roll never appear until server restart.
+
+        Returns:
+            Dictionary with spawn check statistics
+        """
+        if not self.population_controller:
+            return {"spawned_count": 0, "checks_performed": 0}
+
+        from ..config.npc_config import NPCMaintenanceConfig
+
+        current_time = time.time()
+        spawned_count = 0
+        checks_performed = 0
+
+        # Iterate through all NPC definitions
+        for definition_id, definition in self.population_controller.npc_definitions.items():
+            # Skip required NPCs - they're handled at startup
+            if definition.is_required():
+                continue
+
+            # Check if enough time has passed since last spawn check for this definition
+            last_check = self.last_spawn_check.get(definition_id, 0)
+            if current_time - last_check < NPCMaintenanceConfig.MIN_SPAWN_CHECK_INTERVAL:
+                continue
+
+            # Update last check time
+            self.last_spawn_check[definition_id] = current_time
+            checks_performed += 1
+
+            # Get the zone key from the definition's sub_zone_id
+            # AI Agent: Build zone key from sub_zone_id to find proper zone configuration
+            zone_key = self._get_zone_key_for_definition(definition)
+            if not zone_key:
+                continue
+
+            # Get zone configuration
+            zone_config = self.population_controller.get_zone_configuration(zone_key)
+            if not zone_config:
+                continue
+
+            # Get current population stats
+            stats = self.population_controller.get_population_stats(zone_key)
+            current_count = stats.npcs_by_definition.get(definition_id, 0) if stats else 0
+
+            # Check if we can spawn more of this NPC type
+            if not definition.can_spawn(current_count):
+                logger.debug(
+                    "Optional NPC spawn check: population limit reached",
+                    npc_name=definition.name,
+                    current_count=current_count,
+                    max_population=definition.max_population,
+                )
+                continue
+
+            # Roll spawn probability with zone modifier
+            import random
+
+            effective_probability = zone_config.get_effective_spawn_probability(float(definition.spawn_probability))
+            if random.random() <= effective_probability:
+                # Determine spawn room (use the NPC's configured room_id or first room in sub-zone)
+                spawn_room_id = self._get_spawn_room_for_definition(definition)
+                if not spawn_room_id:
+                    logger.warning("No spawn room found for optional NPC", npc_name=definition.name)
+                    continue
+
+                # Spawn the NPC
+                npc_id = self.spawn_npc(definition, spawn_room_id, "periodic_spawn_check")
+                if npc_id:
+                    spawned_count += 1
+                    logger.info(
+                        "Periodic spawn check successful",
+                        npc_name=definition.name,
+                        npc_id=npc_id,
+                        room_id=spawn_room_id,
+                    )
+
+        return {"spawned_count": spawned_count, "checks_performed": checks_performed}
+
+    def _get_zone_key_for_definition(self, definition: NPCDefinition) -> str | None:
+        """
+        Get the zone key for an NPC definition based on its sub_zone_id.
+
+        Args:
+            definition: NPC definition
+
+        Returns:
+            Zone key in format "zone/sub_zone" or None if cannot be determined
+        """
+        if not definition.sub_zone_id:
+            return None
+
+        # AI Agent: Extract zone from sub_zone relationship
+        #           sub_zone_id links to SubZone which has zone_id
+        # For now, use the first spawn rule to get the zone information
+        if self.population_controller and int(definition.id) in self.population_controller.spawn_rules:
+            # The spawn rule has sub_zone_id which we can use to build the zone key
+            # We need to query the actual sub-zone to get its zone_id
+            # For now, we'll extract from the definition's room_id if available
+            if definition.room_id:
+                return self.population_controller._get_zone_key_from_room_id(str(definition.room_id))
+
+        return None
+
+    def _get_spawn_room_for_definition(self, definition: NPCDefinition) -> str | None:
+        """
+        Get the spawn room for an NPC definition.
+
+        Args:
+            definition: NPC definition
+
+        Returns:
+            Room ID where NPC should spawn, or None if cannot be determined
+        """
+        # Use the NPC's configured room_id if available
+        if definition.room_id:
+            return str(definition.room_id)
+
+        # Otherwise, we'd need to query the sub-zone for available rooms
+        # For now, return None if no room_id is configured
+        # AI Agent: Future enhancement - query persistence layer for rooms in sub-zone
+        logger.warning(
+            "No room_id configured for NPC definition",
+            npc_name=definition.name,
+            definition_id=definition.id,
+        )
+        return None

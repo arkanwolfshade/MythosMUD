@@ -1610,9 +1610,12 @@ class NATSMessageHandler:
         """
         Handle npc_died event.
 
+        AI Agent: CRITICAL FIX - Publish NPCDied event to EventBus so lifecycle manager
+                  can queue the NPC for respawn with proper delay.
+
         Note: NPC removal from room is handled by the NPCLeftRoom event published
-        by the lifecycle manager. This handler only broadcasts the death event
-        to clients - no room state mutation occurs here.
+        by the lifecycle manager. This handler broadcasts the death event to clients
+        AND publishes to EventBus for respawn queue processing.
         """
         try:
             room_id = data.get("room_id")
@@ -1628,13 +1631,31 @@ class NATSMessageHandler:
                 return
 
             # Import here to avoid circular imports
+            from server.events.event_types import NPCDied
+
             from .connection_manager import connection_manager
 
-            # Broadcast death event to room
+            # Broadcast death event to room clients
             # AI: Room state mutation is handled by NPCLeftRoom event from lifecycle manager
             # AI: This prevents duplicate removal attempts and maintains single source of truth
             await connection_manager.broadcast_room_event("npc_died", room_id, data)
             logger.debug("NPC died event broadcasted", room_id=room_id, npc_id=npc_id, npc_name=npc_name)
+
+            # AI Agent: CRITICAL - Publish to EventBus so lifecycle manager can queue for respawn
+            #           This ensures ALL NPCs (required and optional) respect respawn delay
+            event_bus = connection_manager._get_event_bus()
+            if event_bus:
+                npc_died_event = NPCDied(
+                    npc_id=str(npc_id),
+                    room_id=room_id,
+                    cause=data.get("cause", "combat")
+                )
+                event_bus.publish(npc_died_event)
+                logger.info(
+                    "NPCDied event published to EventBus for respawn queue",
+                    npc_id=npc_id,
+                    npc_name=npc_name,
+                )
 
         except Exception as e:
             logger.error("Error handling NPC died event", error=str(e), data=data)

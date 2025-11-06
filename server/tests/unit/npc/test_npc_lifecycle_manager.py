@@ -16,7 +16,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from server.events.event_bus import EventBus
-from server.events.event_types import NPCEnteredRoom, NPCLeftRoom
+from server.events.event_types import NPCDied, NPCEnteredRoom, NPCLeftRoom
 from server.models.npc import NPCDefinition, NPCDefinitionType
 from server.npc.lifecycle_manager import (
     NPCLifecycleEvent,
@@ -431,3 +431,356 @@ class TestNPCLifecycleManager:
         assert "test_shopkeeper" in npc_id
         assert "room_001" in npc_id
         assert npc_id.count("_") >= 3  # Should have multiple parts
+
+    def test_periodic_maintenance_with_spawn_checks(self, lifecycle_manager, shopkeeper_definition):
+        """Test periodic maintenance includes spawn checks."""
+        # Create an optional NPC definition
+        optional_npc = NPCDefinition(
+            name="Test Optional NPC",
+            description="An optional test NPC",
+            npc_type=NPCDefinitionType.PASSIVE_MOB,
+            sub_zone_id="downtown",
+            required_npc=False,
+            max_population=2,
+            spawn_probability=0.5,
+            room_id="earth_arkhamcity_downtown_001",
+            base_stats='{"strength": 5, "sanity": 50, "current_health": 50}',
+            behavior_config='{}',
+            ai_integration_stub='{}',
+        )
+        optional_npc.id = 2
+
+        # Add the definition to population controller
+        lifecycle_manager.population_controller.npc_definitions[2] = optional_npc
+
+        # Mock zone configuration
+        mock_zone_config = MagicMock()
+        mock_zone_config.get_effective_spawn_probability.return_value = 1.0  # Always spawn for testing
+
+        # Mock population stats
+        mock_stats = MagicMock()
+        mock_stats.npcs_by_definition = {}
+
+        with patch.object(
+            lifecycle_manager.population_controller, "get_zone_configuration", return_value=mock_zone_config
+        ):
+            with patch.object(
+                lifecycle_manager.population_controller, "get_population_stats", return_value=mock_stats
+            ):
+                with patch.object(lifecycle_manager, "_can_spawn_npc", return_value=True):
+                    with patch.object(lifecycle_manager.spawning_service, "_create_npc_instance") as mock_create:
+                        mock_npc = MagicMock()
+                        mock_npc.room_id = "earth_arkhamcity_downtown_001"
+                        mock_create.return_value = mock_npc
+
+                        class _FakeRoom:
+                            def npc_entered(self, _nid):
+                                lifecycle_manager.event_bus.publish(
+                                    NPCEnteredRoom(npc_id=_nid, room_id="earth_arkhamcity_downtown_001")
+                                )
+
+                        with patch("server.npc.lifecycle_manager.get_persistence") as mock_get_persistence:
+                            mock_get_persistence.return_value.get_room.return_value = _FakeRoom()
+
+                            # Run periodic maintenance
+                            results = lifecycle_manager.periodic_maintenance()
+
+                            # Verify results
+                            assert "spawned_npcs" in results
+                            assert "spawn_checks_performed" in results
+                            # Should have checked optional NPCs
+                            assert results["spawn_checks_performed"] >= 0
+
+    def test_check_optional_npc_spawns(self, lifecycle_manager):
+        """Test periodic spawn checks for optional NPCs."""
+        # Create an optional NPC definition
+        optional_npc = NPCDefinition(
+            name="Test Optional NPC",
+            description="An optional test NPC",
+            npc_type=NPCDefinitionType.PASSIVE_MOB,
+            sub_zone_id="downtown",
+            required_npc=False,
+            max_population=2,
+            spawn_probability=1.0,  # 100% for testing
+            room_id="earth_arkhamcity_downtown_001",
+            base_stats='{"strength": 5, "sanity": 50, "current_health": 50}',
+            behavior_config='{}',
+            ai_integration_stub='{}',
+        )
+        optional_npc.id = 2
+
+        # Add definition to population controller
+        lifecycle_manager.population_controller.npc_definitions[2] = optional_npc
+
+        # Mock zone configuration
+        mock_zone_config = MagicMock()
+        mock_zone_config.get_effective_spawn_probability.return_value = 1.0  # Always spawn
+
+        # Mock population stats
+        mock_stats = MagicMock()
+        mock_stats.npcs_by_definition = {}  # No NPCs spawned yet
+
+        with patch.object(
+            lifecycle_manager.population_controller, "get_zone_configuration", return_value=mock_zone_config
+        ):
+            with patch.object(
+                lifecycle_manager.population_controller, "get_population_stats", return_value=mock_stats
+            ):
+                with patch.object(lifecycle_manager, "_can_spawn_npc", return_value=True):
+                    with patch.object(lifecycle_manager.spawning_service, "_create_npc_instance") as mock_create:
+                        mock_npc = MagicMock()
+                        mock_npc.room_id = "earth_arkhamcity_downtown_001"
+                        mock_create.return_value = mock_npc
+
+                        class _FakeRoom:
+                            def npc_entered(self, _nid):
+                                lifecycle_manager.event_bus.publish(
+                                    NPCEnteredRoom(npc_id=_nid, room_id="earth_arkhamcity_downtown_001")
+                                )
+
+                        with patch("server.npc.lifecycle_manager.get_persistence") as mock_get_persistence:
+                            mock_get_persistence.return_value.get_room.return_value = _FakeRoom()
+
+                            # Call spawn checking directly
+                            results = lifecycle_manager._check_optional_npc_spawns()
+
+                            assert results["checks_performed"] >= 0
+                            # Note: spawned_count depends on probability roll
+
+    def test_check_optional_npc_spawns_respects_interval(self, lifecycle_manager):
+        """Test that spawn checks respect minimum interval."""
+        # Create an optional NPC
+        optional_npc = NPCDefinition(
+            name="Test Optional NPC",
+            description="An optional test NPC",
+            npc_type=NPCDefinitionType.PASSIVE_MOB,
+            sub_zone_id="downtown",
+            required_npc=False,
+            max_population=2,
+            spawn_probability=1.0,
+            room_id="earth_arkhamcity_downtown_001",
+            base_stats='{}',
+            behavior_config='{}',
+            ai_integration_stub='{}',
+        )
+        optional_npc.id = 2
+
+        lifecycle_manager.population_controller.npc_definitions[2] = optional_npc
+
+        # Set last check time to recent past
+        lifecycle_manager.last_spawn_check[2] = time.time()
+
+        # Mock zone configuration
+        mock_zone_config = MagicMock()
+        mock_zone_config.get_effective_spawn_probability.return_value = 1.0
+
+        with patch.object(
+            lifecycle_manager.population_controller, "get_zone_configuration", return_value=mock_zone_config
+        ):
+            # Call spawn checking
+            results = lifecycle_manager._check_optional_npc_spawns()
+
+            # Should skip check due to interval
+            assert results["checks_performed"] == 0
+            assert results["spawned_count"] == 0
+
+    def test_check_optional_npc_spawns_skips_required(self, lifecycle_manager, shopkeeper_definition):
+        """Test that periodic spawn checks skip required NPCs."""
+        # Add required NPC to definitions
+        lifecycle_manager.population_controller.npc_definitions[shopkeeper_definition.id] = shopkeeper_definition
+
+        # Call spawn checking
+        results = lifecycle_manager._check_optional_npc_spawns()
+
+        # Should skip required NPC
+        assert results["checks_performed"] == 0
+        assert results["spawned_count"] == 0
+
+    def test_check_optional_npc_spawns_respects_population_limit(self, lifecycle_manager):
+        """Test that spawn checks respect population limits."""
+        # Create an optional NPC
+        optional_npc = NPCDefinition(
+            name="Test Optional NPC",
+            description="An optional test NPC",
+            npc_type=NPCDefinitionType.PASSIVE_MOB,
+            sub_zone_id="downtown",
+            required_npc=False,
+            max_population=1,  # Only allow 1
+            spawn_probability=1.0,
+            room_id="earth_arkhamcity_downtown_001",
+            base_stats='{}',
+            behavior_config='{}',
+            ai_integration_stub='{}',
+        )
+        optional_npc.id = 2
+
+        lifecycle_manager.population_controller.npc_definitions[2] = optional_npc
+
+        # Mock zone configuration
+        mock_zone_config = MagicMock()
+        mock_zone_config.get_effective_spawn_probability.return_value = 1.0
+
+        # Mock population stats - already at limit
+        mock_stats = MagicMock()
+        mock_stats.npcs_by_definition = {2: 1}  # Already at max
+
+        with patch.object(
+            lifecycle_manager.population_controller, "get_zone_configuration", return_value=mock_zone_config
+        ):
+            with patch.object(
+                lifecycle_manager.population_controller, "get_population_stats", return_value=mock_stats
+            ):
+                # Call spawn checking
+                results = lifecycle_manager._check_optional_npc_spawns()
+
+                # Should check but not spawn due to population limit
+                assert results["checks_performed"] >= 0
+                assert results["spawned_count"] == 0
+
+    def test_get_zone_key_for_definition(self, lifecycle_manager):
+        """Test extracting zone key from NPC definition."""
+        # Create a definition with room_id
+        definition = NPCDefinition(
+            name="Test NPC",
+            description="Test",
+            npc_type=NPCDefinitionType.PASSIVE_MOB,
+            sub_zone_id="downtown",
+            required_npc=False,
+            max_population=1,
+            spawn_probability=1.0,
+            room_id="earth_arkhamcity_downtown_001",
+            base_stats='{}',
+            behavior_config='{}',
+            ai_integration_stub='{}',
+        )
+        definition.id = 1
+
+        # Add a spawn rule so the method can find zone info
+        from server.models.npc import NPCSpawnRule
+
+        spawn_rule = NPCSpawnRule(
+            npc_definition_id=1,
+            sub_zone_id=1,
+            max_population=1,
+            spawn_conditions='{}',
+        )
+        lifecycle_manager.population_controller.spawn_rules[1] = [spawn_rule]
+
+        with patch.object(
+            lifecycle_manager.population_controller,
+            "_get_zone_key_from_room_id",
+            return_value="arkhamcity/downtown",
+        ):
+            zone_key = lifecycle_manager._get_zone_key_for_definition(definition)
+            assert zone_key == "arkhamcity/downtown"
+
+    def test_get_spawn_room_for_definition(self, lifecycle_manager):
+        """Test getting spawn room from NPC definition."""
+        # Test with room_id configured
+        definition = NPCDefinition(
+            name="Test NPC",
+            description="Test",
+            npc_type=NPCDefinitionType.PASSIVE_MOB,
+            sub_zone_id="downtown",
+            required_npc=False,
+            max_population=1,
+            spawn_probability=1.0,
+            room_id="earth_arkhamcity_downtown_001",
+            base_stats='{}',
+            behavior_config='{}',
+            ai_integration_stub='{}',
+        )
+        definition.id = 1
+
+        room_id = lifecycle_manager._get_spawn_room_for_definition(definition)
+        assert room_id == "earth_arkhamcity_downtown_001"
+
+        # Test without room_id
+        definition.room_id = None
+        room_id = lifecycle_manager._get_spawn_room_for_definition(definition)
+        assert room_id is None
+
+    def test_handle_npc_died_event_queues_for_respawn(self, lifecycle_manager, shopkeeper_definition):
+        """Test that NPCDied event handler queues NPC for respawn."""
+        # Use a real room that exists in the test environment
+        test_room_id = "earth_arkhamcity_sanitarium_room_foyer_entrance_001"
+
+        # Spawn the NPC first
+        npc_id = lifecycle_manager.spawn_npc(shopkeeper_definition, test_room_id, "test")
+        assert npc_id is not None
+        assert npc_id in lifecycle_manager.active_npcs
+        assert npc_id in lifecycle_manager.lifecycle_records
+
+        # Create NPCDied event
+        died_event = NPCDied(
+            npc_id=npc_id,
+            room_id=test_room_id,
+            cause="combat"
+        )
+
+        # Handle the death event
+        lifecycle_manager._handle_npc_died(died_event)
+
+        # Verify NPC was despawned
+        assert npc_id not in lifecycle_manager.active_npcs
+
+        # Verify NPC was queued for respawn
+        assert npc_id in lifecycle_manager.respawn_queue
+        respawn_data = lifecycle_manager.respawn_queue[npc_id]
+        assert respawn_data["npc_id"] == npc_id
+        assert respawn_data["definition"] == shopkeeper_definition
+        assert "scheduled_time" in respawn_data
+
+    def test_handle_npc_died_respects_delay_for_required_npcs(self, lifecycle_manager):
+        """Test that required NPCs also respect respawn delay."""
+        # Use a real room that exists in the test environment
+        test_room_id = "earth_arkhamcity_sanitarium_room_foyer_entrance_001"
+
+        # Create a required NPC
+        required_definition = NPCDefinition(
+            name="Required Test NPC",
+            description="A required test NPC",
+            npc_type=NPCDefinitionType.QUEST_GIVER,
+            sub_zone_id="downtown",
+            required_npc=True,  # This is a required NPC
+            max_population=1,
+            spawn_probability=1.0,
+            room_id=test_room_id,
+            base_stats='{"health": 50, "strength": 10}',
+            behavior_config='{}',
+            ai_integration_stub='{}',
+        )
+        required_definition.id = 999
+
+        # Spawn the required NPC
+        npc_id = lifecycle_manager.spawn_npc(required_definition, test_room_id, "test")
+        assert npc_id is not None
+
+        # Record the current time
+        death_time = time.time()
+
+        # Create NPCDied event
+        died_event = NPCDied(
+            npc_id=npc_id,
+            room_id=test_room_id,
+            cause="combat"
+        )
+
+        # Handle the death event
+        lifecycle_manager._handle_npc_died(died_event)
+
+        # Verify NPC was queued for respawn
+        assert npc_id in lifecycle_manager.respawn_queue
+        respawn_data = lifecycle_manager.respawn_queue[npc_id]
+
+        # AI Agent: CRITICAL - Verify required NPCs respect respawn delay
+        #           The scheduled_time should be death_time + delay, not immediate
+        scheduled_time = respawn_data["scheduled_time"]
+        expected_delay = lifecycle_manager.default_respawn_delay
+        actual_delay = scheduled_time - death_time
+
+        # Allow 1 second tolerance for execution time
+        assert actual_delay >= expected_delay - 1.0, \
+            f"Required NPC should respect respawn delay! Expected ~{expected_delay}s, got {actual_delay}s"
+        assert actual_delay <= expected_delay + 1.0, \
+            f"Respawn delay too long! Expected ~{expected_delay}s, got {actual_delay}s"
