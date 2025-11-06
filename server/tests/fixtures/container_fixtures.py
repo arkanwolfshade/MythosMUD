@@ -142,8 +142,11 @@ def container_test_client():
         logger.info("Shutting down container after test")
         loop.run_until_complete(container.shutdown())
     finally:
-        # Cleanup: Close event loop
+        # Cleanup: Close event loop and reset to None
+        # AI: This prevents "Event loop is closed" errors in subsequent tests
+        # by ensuring asyncio.get_event_loop() doesn't return a closed loop
         loop.close()
+        asyncio.set_event_loop(None)
 
 
 @pytest.fixture
