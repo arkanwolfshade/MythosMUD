@@ -223,13 +223,13 @@ class RoomService:
 
     async def get_room_occupants(self, room_id: str) -> list[str]:
         """
-        Get all players currently in a room using cached data.
+        Get all occupants (players and NPCs) currently in a room using cached data.
 
         Args:
             room_id: The ID of the room to check
 
         Returns:
-            list[str]: List of player IDs in the room
+            list[str]: List of player and NPC IDs in the room
         """
         logger.debug("Getting room occupants", room_id=room_id)
 
@@ -239,14 +239,18 @@ class RoomService:
                 logger.debug("Room not found for occupant lookup", room_id=room_id)
                 return []
 
-            # If it's a Room object, use its method
+            # If it's a Room object, use its methods
+            # AI Agent: Fixed bug where NPCs were not included in room occupants
+            #           Previously only returned players, now returns both players and NPCs
             if hasattr(room, "get_players"):
-                occupants = room.get_players()
+                players = room.get_players()
+                npcs = room.get_npcs() if hasattr(room, "get_npcs") else []
+                occupants = players + npcs
             else:
                 # If it's a dictionary, check for occupants field
                 occupants = room.get("occupants", [])
 
-            logger.debug("Room occupants retrieved", room_id=room_id, occupant_count=len(occupants))
+            logger.debug("Room occupants retrieved", room_id=room_id, occupant_count=len(occupants), player_count=len(players) if hasattr(room, "get_players") else 0, npc_count=len(npcs) if hasattr(room, "get_npcs") else 0)
             return occupants
         else:
             # Fallback to direct persistence call

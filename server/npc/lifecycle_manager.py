@@ -189,7 +189,7 @@ class NPCLifecycleManager:
         self.death_suppression: dict[str, float] = {}  # npc_id -> death_timestamp
 
         # Configuration
-        self.default_respawn_delay = 300.0  # 5 minutes
+        self.default_respawn_delay = 60.0  # 1 minute
         self.death_suppression_duration = 30.0  # 30 seconds suppression after death
         self.max_respawn_attempts = 3
         self.cleanup_interval = 3600.0  # 1 hour

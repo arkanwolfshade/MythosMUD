@@ -27,7 +27,7 @@ class RoomSubscriptionManager:
         # Room occupants (room_id -> set of player_ids)
         self.room_occupants: dict[str, set[str]] = {}
         # Reference to persistence layer (set during initialization)
-        self.persistence = None
+        self.persistence: Any | None = None
 
     def set_persistence(self, persistence: Any) -> None:
         """Set the persistence layer reference."""
@@ -150,14 +150,14 @@ class RoomSubscriptionManager:
 
     def get_room_occupants(self, room_id: str, online_players: dict[str, Any]) -> list[dict[str, Any]]:
         """
-        Get list of occupants in a room.
+        Get list of occupants (players and NPCs) in a room.
 
         Args:
             room_id: The room ID
             online_players: Dictionary of online players
 
         Returns:
-            List[Dict[str, Any]]: List of occupant information
+            List[Dict[str, Any]]: List of occupant information (players and NPCs)
         """
         try:
             occupants: list[dict[str, Any]] = []
@@ -165,12 +165,30 @@ class RoomSubscriptionManager:
             # Resolve to canonical id and check set presence
             canonical_id = self._canonical_room_id(room_id) or room_id
             if canonical_id not in self.room_occupants:
-                return occupants
+                # Still check for NPCs even if no players
+                canonical_id = canonical_id
 
             # Only include online players currently tracked in this room
-            for player_id in self.room_occupants[canonical_id]:
-                if player_id in online_players:
-                    occupants.append(online_players[player_id])
+            if canonical_id in self.room_occupants:
+                for player_id in self.room_occupants[canonical_id]:
+                    if player_id in online_players:
+                        occupants.append(online_players[player_id])
+
+            # AI Agent: Add NPCs to the occupants list
+            #           This fixes the bug where NPCs were spawned but not displayed in room occupants
+            if self.persistence:
+                room = self.persistence.get_room(canonical_id)
+                if room and hasattr(room, "get_npcs"):
+                    npc_ids = room.get_npcs()
+                    logger.debug("Adding NPCs to room occupants", room_id=canonical_id, npc_count=len(npc_ids))
+                    for npc_id in npc_ids:
+                        # Create a minimal dict for NPC occupant (matching player format)
+                        # The NPC name will be resolved in broadcast_room_update via _get_npc_name_from_instance
+                        occupants.append({
+                            "player_id": npc_id,  # Use npc_id as player_id for compatibility
+                            "player_name": npc_id,  # Will be resolved to actual name in broadcast_room_update
+                            "is_npc": True,
+                        })
 
             return occupants
 
@@ -255,7 +273,7 @@ class RoomSubscriptionManager:
         if self.persistence is None:
             return room_id
 
-        try:  # type: ignore[unreachable]
+        try:
             room = self.persistence.get_room(room_id)
             if room is not None and getattr(room, "id", None):
                 return room.id

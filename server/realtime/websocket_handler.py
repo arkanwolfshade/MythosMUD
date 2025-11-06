@@ -260,13 +260,40 @@ async def handle_websocket_connection(websocket: WebSocket, player_id: str, sess
                         room = persistence.get_room(canonical_room_id)
                         if room:
                             # Get room occupants and transform IDs to names
+                            # AI Agent: Include both players AND NPCs in the occupants list
                             room_occupants = connection_manager.get_room_occupants(str(canonical_room_id))
                             occupant_names = []
                             try:
+                                # Add player names
                                 for occ in room_occupants or []:
                                     name = occ.get("player_name") or occ.get("name")
                                     if name:
                                         occupant_names.append(name)
+
+                                # AI Agent: CRITICAL FIX - Include NPCs in the initial room_update occupants list
+                                #           This ensures NPCs are displayed to the client on connection
+                                if hasattr(connection_manager, "app") and hasattr(
+                                    connection_manager.app.state, "npc_lifecycle_manager"
+                                ):
+                                    npc_lifecycle_manager = connection_manager.app.state.npc_lifecycle_manager
+                                    npc_ids = room.get_npcs()
+                                    for npc_id in npc_ids:
+                                        npc = npc_lifecycle_manager.active_npcs.get(npc_id)
+                                        if npc and hasattr(npc, "name"):
+                                            occupant_names.append(npc.name)
+                                            logger.info(
+                                                "Added NPC to room occupants display",
+                                                npc_name=npc.name,
+                                                npc_id=npc_id,
+                                                room_id=canonical_room_id,
+                                            )
+                                        else:
+                                            logger.warning(
+                                                "NPC instance not found for room occupant display",
+                                                npc_id=npc_id,
+                                                room_id=canonical_room_id,
+                                            )
+
                             except Exception as e:
                                 logger.error(
                                     "Error transforming initial_state occupants",
