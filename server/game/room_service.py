@@ -250,7 +250,13 @@ class RoomService:
                 # If it's a dictionary, check for occupants field
                 occupants = room.get("occupants", [])
 
-            logger.debug("Room occupants retrieved", room_id=room_id, occupant_count=len(occupants), player_count=len(players) if hasattr(room, "get_players") else 0, npc_count=len(npcs) if hasattr(room, "get_npcs") else 0)
+            logger.debug(
+                "Room occupants retrieved",
+                room_id=room_id,
+                occupant_count=len(occupants),
+                player_count=len(players) if hasattr(room, "get_players") else 0,
+                npc_count=len(npcs) if hasattr(room, "get_npcs") else 0,
+            )
             return occupants
         else:
             # Fallback to direct persistence call

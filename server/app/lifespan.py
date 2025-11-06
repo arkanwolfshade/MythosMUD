@@ -75,6 +75,7 @@ async def lifespan(app: FastAPI):
     #           This prevents the dual-cache bug where NPCs are added to one cache
     #           but player connections see a different cache
     from ..persistence import _persistence_lock
+
     with _persistence_lock:
         globals_module = __import__("server.persistence", fromlist=["_persistence_instance"])
         globals_module._persistence_instance = container.persistence  # type: ignore[attr-defined]
