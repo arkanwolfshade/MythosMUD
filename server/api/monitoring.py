@@ -341,7 +341,8 @@ async def get_connection_health_stats(request: Request) -> ConnectionHealthStats
 async def get_health_status(request: Request) -> HealthResponse | JSONResponse:
     """Get comprehensive system health status."""
     try:
-        health_service = get_health_service()
+        connection_manager = request.app.state.container.connection_manager
+        health_service = get_health_service(connection_manager=connection_manager)
         health_response = health_service.get_health_status()
 
         # Return appropriate HTTP status code based on health status

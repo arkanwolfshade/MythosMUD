@@ -54,7 +54,7 @@ async def sse_events(player_id: str, request: Request) -> StreamingResponse:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from e
 
     return StreamingResponse(
-        game_event_stream(player_id, session_id),
+        game_event_stream(player_id, session_id, connection_manager),
         media_type="text/event-stream",
         headers=headers,
     )
@@ -105,7 +105,7 @@ async def sse_events_token(request: Request) -> StreamingResponse:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
 
     return StreamingResponse(
-        game_event_stream(player_id, session_id),
+        game_event_stream(player_id, session_id, _cm),
         media_type="text/event-stream",
         headers=headers,
     )

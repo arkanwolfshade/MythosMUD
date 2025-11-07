@@ -1598,6 +1598,49 @@ class TestConnectionManagerComprehensive:
         assert player_info["total_connections"] == 2
 
     @pytest.mark.asyncio
+    async def test_track_player_connected_broadcasts_player_entered_event(
+        self, connection_manager, mock_player, mock_persistence
+    ):
+        """Ensure new connections broadcast a player_entered_game event to room occupants."""
+        connection_manager.persistence = mock_persistence
+        mock_persistence.get_player.return_value = mock_player
+        mock_persistence.save_player = Mock()
+
+        # Prepare mock room returned by the persistence layer
+        mock_room = Mock()
+        mock_room.id = mock_player.current_room_id
+        mock_persistence.get_room.return_value = mock_room
+
+        # Replace collaborators with lightweight mocks for this test
+        connection_manager.room_manager = Mock()
+        connection_manager.room_manager.add_room_occupant = Mock()
+        connection_manager.room_manager.reconcile_room_presence = Mock()
+        connection_manager.message_queue = Mock()
+        connection_manager.message_queue.remove_player_messages = Mock()
+
+        connection_manager._send_initial_game_state = AsyncMock()
+        connection_manager.broadcast_to_room = AsyncMock()
+
+        # Track the initial (new) connection
+        await connection_manager._track_player_connected(mock_player.player_id, mock_player, "sse")
+
+        # The room should receive a player_entered_game event excluding the connecting player
+        connection_manager.broadcast_to_room.assert_awaited_once()
+        broadcast_args = connection_manager.broadcast_to_room.await_args
+        assert broadcast_args.args[0] == mock_room.id
+        event_payload = broadcast_args.args[1]
+        assert event_payload["event_type"] == "player_entered_game"
+        assert event_payload["data"]["player_id"] == mock_player.player_id
+        assert event_payload["data"]["player_name"] == mock_player.name
+        assert broadcast_args.kwargs["exclude_player"] == mock_player.player_id
+        mock_room.player_entered.assert_called_once_with(mock_player.player_id)
+
+        # Additional connections should not re-broadcast the entry event
+        connection_manager.broadcast_to_room.reset_mock()
+        await connection_manager._track_player_connected(mock_player.player_id, mock_player, "websocket")
+        connection_manager.broadcast_to_room.assert_not_awaited()
+
+    @pytest.mark.asyncio
     async def test_track_player_disconnected_with_remaining_connections(
         self, connection_manager, mock_websocket, mock_player, mock_persistence
     ):

@@ -301,9 +301,17 @@ class HealthService:
 _health_service: HealthService | None = None
 
 
-def get_health_service() -> HealthService:
-    """Get the global health service instance."""
+def get_health_service(connection_manager=None) -> HealthService:
+    """
+    Get the global health service instance.
+
+    Args:
+        connection_manager: Optional ConnectionManager to bind to the service.
+            When provided, ensures the singleton tracks the current container-managed instance.
+    """
     global _health_service
     if _health_service is None:
-        _health_service = HealthService()
+        _health_service = HealthService(connection_manager=connection_manager)
+    elif connection_manager is not None:
+        _health_service.connection_manager = connection_manager
     return _health_service

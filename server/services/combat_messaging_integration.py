@@ -35,7 +35,50 @@ class CombatMessagingIntegration:
         AI Agent: connection_manager injected via constructor to eliminate global singleton
         """
         self.messaging_service = CombatMessagingService()
-        self.connection_manager = connection_manager  # AI Agent: Injected dependency
+        self._connection_manager = None
+        if connection_manager is not None:
+            self.connection_manager = connection_manager
+
+    def _resolve_connection_manager_from_container(self):
+        """
+        Lazily resolve the connection manager from the application container.
+
+        Returns:
+            ConnectionManager: The resolved connection manager instance
+
+        Raises:
+            RuntimeError: If the container or connection manager is unavailable
+        """
+        try:
+            from server.container import ApplicationContainer
+
+            container = ApplicationContainer.get_instance()
+            connection_manager = getattr(container, "connection_manager", None)
+            if connection_manager is None:
+                raise RuntimeError("Application container does not have an initialized connection_manager")
+            return connection_manager
+        except Exception as exc:
+            logger.error(
+                "Failed to resolve connection manager from container",
+                error=str(exc),
+            )
+            raise RuntimeError("Connection manager is not available") from exc
+
+    @property
+    def connection_manager(self):
+        """
+        Return the connection manager, resolving it from the application container if needed.
+        """
+        if self._connection_manager is None:
+            self._connection_manager = self._resolve_connection_manager_from_container()
+        return self._connection_manager
+
+    @connection_manager.setter
+    def connection_manager(self, value):
+        """
+        Explicitly set the connection manager (primarily used in tests).
+        """
+        self._connection_manager = value
 
     async def broadcast_combat_start(
         self,
