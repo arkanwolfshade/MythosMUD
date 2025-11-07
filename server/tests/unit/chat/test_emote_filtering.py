@@ -8,7 +8,7 @@ during the broadcasting process.
 
 import uuid
 from datetime import UTC, datetime
-from unittest.mock import AsyncMock, MagicMock, Mock, patch
+from unittest.mock import AsyncMock, MagicMock, Mock, call, patch
 
 import pytest
 
@@ -158,8 +158,8 @@ class TestEmoteMuteFiltering:
                     self.room_id, chat_event, self.sender_id, "emote"
                 )
 
-                # Verify that the muted receiver did not receive the message
-                mock_conn_mgr.send_personal_message.assert_not_called()
+                # Verify sender gets echo but muted receiver does not
+                mock_conn_mgr.send_personal_message.assert_called_once_with(self.sender_id, chat_event)
 
     @pytest.mark.asyncio
     async def test_broadcast_to_room_with_filtering_allows_unmuted_emote(self):
@@ -191,8 +191,12 @@ class TestEmoteMuteFiltering:
                     self.room_id, chat_event, self.sender_id, "emote"
                 )
 
-                # Verify that ArkanWolfshade received the emote
-                connection_manager.send_personal_message.assert_called_once_with(self.receiver_id, chat_event)
+                # Verify both sender echo and receiver delivery
+                expected_calls = [
+                    call(self.receiver_id, chat_event),
+                    call(self.sender_id, chat_event),
+                ]
+                connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
 
     def test_is_player_muted_by_receiver_returns_true_when_muted(self):
         """Test that _is_player_muted_by_receiver returns True when receiver has muted sender."""

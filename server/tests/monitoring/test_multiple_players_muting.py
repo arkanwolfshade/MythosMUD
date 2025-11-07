@@ -7,7 +7,7 @@ ensuring that the mute filtering works correctly for all muting players.
 
 import uuid
 from datetime import UTC, datetime
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, call, patch
 
 import pytest
 
@@ -75,7 +75,8 @@ class TestMultiplePlayersMuting:
                 await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "say")
 
                 # Verify that only unmuted receivers got the message
-                expected_calls = [((receiver_id, chat_event),) for receiver_id in self.unmuted_receivers]
+                expected_calls = [call(receiver_id, chat_event) for receiver_id in self.unmuted_receivers]
+                expected_calls.append(call(self.sender_id, chat_event))
                 self.mock_connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
 
                 # Verify muted receivers didn't get the message
@@ -88,11 +89,11 @@ class TestMultiplePlayersMuting:
 
                 # Verify sender didn't get their own message
                 sender_calls = [
-                    call
-                    for call in self.mock_connection_manager.send_personal_message.call_args_list
-                    if call[0][0] == self.sender_id
+                    recorded_call
+                    for recorded_call in self.mock_connection_manager.send_personal_message.call_args_list
+                    if recorded_call.args[0] == self.sender_id
                 ]
-                assert len(sender_calls) == 0
+                assert len(sender_calls) == 1
 
     @pytest.mark.asyncio
     async def test_multiple_players_muting_same_sender_emote(self):
@@ -117,7 +118,8 @@ class TestMultiplePlayersMuting:
                 await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "emote")
 
                 # Verify that only unmuted receivers got the message
-                expected_calls = [((receiver_id, chat_event),) for receiver_id in self.unmuted_receivers]
+                expected_calls = [call(receiver_id, chat_event) for receiver_id in self.unmuted_receivers]
+                expected_calls.append(call(self.sender_id, chat_event))
                 self.mock_connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
 
                 # Verify muted receivers didn't get the message
@@ -151,7 +153,8 @@ class TestMultiplePlayersMuting:
                 await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "local")
 
                 # Verify that only unmuted receivers got the message
-                expected_calls = [((receiver_id, chat_event),) for receiver_id in self.unmuted_receivers]
+                expected_calls = [call(receiver_id, chat_event) for receiver_id in self.unmuted_receivers]
+                expected_calls.append(call(self.sender_id, chat_event))
                 self.mock_connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
 
                 # Verify muted receivers didn't get the message
@@ -185,7 +188,8 @@ class TestMultiplePlayersMuting:
                 await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "pose")
 
                 # Verify that only unmuted receivers got the message
-                expected_calls = [((receiver_id, chat_event),) for receiver_id in self.unmuted_receivers]
+                expected_calls = [call(receiver_id, chat_event) for receiver_id in self.unmuted_receivers]
+                expected_calls.append(call(self.sender_id, chat_event))
                 self.mock_connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
 
                 # Verify muted receivers didn't get the message
@@ -218,8 +222,8 @@ class TestMultiplePlayersMuting:
                 # Execute
                 await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "say")
 
-                # Verify that no one received the message (all receivers muted, sender excluded)
-                self.mock_connection_manager.send_personal_message.assert_not_called()
+                # Only sender should receive the echo
+                self.mock_connection_manager.send_personal_message.assert_called_once_with(self.sender_id, chat_event)
 
     @pytest.mark.asyncio
     async def test_partial_muting_with_mixed_room_status(self):
@@ -254,7 +258,8 @@ class TestMultiplePlayersMuting:
 
                 # Verify that only unmuted players who are in the room got the message
                 expected_recipients = [pid for pid in self.unmuted_receivers if pid in players_in_room]
-                expected_calls = [((receiver_id, chat_event),) for receiver_id in expected_recipients]
+                expected_calls = [call(receiver_id, chat_event) for receiver_id in expected_recipients]
+                expected_calls.append(call(self.sender_id, chat_event))
                 self.mock_connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
 
                 # Verify muted players didn't get the message (even if they're in the room)

@@ -67,7 +67,7 @@ class TestRoomBasedMuteFiltering:
         ):
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "say")
 
-        self.mock_connection_manager.send_personal_message.assert_not_called()
+        self.mock_connection_manager.send_personal_message.assert_called_once_with(self.sender_id, chat_event)
 
     @pytest.mark.asyncio
     async def test_local_message_mute_filtering(self) -> None:
@@ -81,7 +81,7 @@ class TestRoomBasedMuteFiltering:
         ):
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "local")
 
-        self.mock_connection_manager.send_personal_message.assert_not_called()
+        self.mock_connection_manager.send_personal_message.assert_called_once_with(self.sender_id, chat_event)
 
     @pytest.mark.asyncio
     async def test_emote_message_mute_filtering(self) -> None:
@@ -95,7 +95,7 @@ class TestRoomBasedMuteFiltering:
         ):
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "emote")
 
-        self.mock_connection_manager.send_personal_message.assert_not_called()
+        self.mock_connection_manager.send_personal_message.assert_called_once_with(self.sender_id, chat_event)
 
     @pytest.mark.asyncio
     async def test_pose_message_mute_filtering(self) -> None:
@@ -109,7 +109,7 @@ class TestRoomBasedMuteFiltering:
         ):
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "pose")
 
-        self.mock_connection_manager.send_personal_message.assert_not_called()
+        self.mock_connection_manager.send_personal_message.assert_called_once_with(self.sender_id, chat_event)
 
     @pytest.mark.asyncio
     async def test_all_room_based_channels_allow_unmuted_messages(self) -> None:
@@ -127,7 +127,12 @@ class TestRoomBasedMuteFiltering:
             ):
                 await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, channel)
 
-            self.mock_connection_manager.send_personal_message.assert_called_once_with(self.receiver_id, chat_event)
+            expected_calls = [
+                call(self.receiver_id, chat_event),
+                call(self.sender_id, chat_event),
+            ]
+            self.mock_connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
+            self.mock_connection_manager.send_personal_message.reset_mock()
 
     @pytest.mark.asyncio
     async def test_room_based_channels_use_same_filtering_logic(self) -> None:
@@ -172,8 +177,8 @@ class TestRoomBasedMuteFiltering:
             assert recorded_call.args[0] != receiver_ids[0]
 
     @pytest.mark.asyncio
-    async def test_room_based_channels_handle_sender_not_receiving_own_message(self) -> None:
-        """Test that room-based channels exclude sender from receiving their own message."""
+    async def test_room_based_channels_echo_sender_even_when_muted(self) -> None:
+        """Test that the sender still receives an echo even when everyone else filters them out."""
         chat_event = self.create_chat_event("say", "Hello everyone!")
         self._prepare_connection_manager()
 
@@ -183,7 +188,7 @@ class TestRoomBasedMuteFiltering:
         ):
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "say")
 
-        self.mock_connection_manager.send_personal_message.assert_not_called()
+        self.mock_connection_manager.send_personal_message.assert_called_once_with(self.sender_id, chat_event)
 
     @pytest.mark.asyncio
     async def test_room_based_channels_handle_players_not_in_room(self) -> None:
@@ -197,7 +202,7 @@ class TestRoomBasedMuteFiltering:
         ):
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "say")
 
-        self.mock_connection_manager.send_personal_message.assert_not_called()
+        self.mock_connection_manager.send_personal_message.assert_called_once_with(self.sender_id, chat_event)
 
     @pytest.mark.asyncio
     async def test_room_based_channels_performance_with_optimized_user_manager(self) -> None:

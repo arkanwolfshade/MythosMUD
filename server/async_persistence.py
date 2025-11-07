@@ -110,6 +110,7 @@ class AsyncPersistenceLayer:
         """Get a player by ID using async database operations."""
         context = create_error_context()
         context.metadata["operation"] = "async_get_player_by_id"
+        player_id = str(player_id)
         context.metadata["player_id"] = player_id
 
         try:

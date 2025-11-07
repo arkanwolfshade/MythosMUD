@@ -309,10 +309,13 @@ class ChatLogger:
             duration_minutes: Duration in minutes (None for permanent)
             reason: Reason for mute
         """
+        muter_id_str = str(muter_id)
+        target_id_str = str(target_id)
+
         entry = {
             "event_type": "player_muted",
-            "muter_id": muter_id,
-            "target_id": target_id,
+            "muter_id": muter_id_str,
+            "target_id": target_id_str,
             "target_name": target_name,
             "mute_type": mute_type,
             "duration_minutes": duration_minutes,
@@ -321,7 +324,7 @@ class ChatLogger:
         }
 
         self._write_log_entry("moderation", entry)
-        logger.info("Player mute logged", target_id=target_id, mute_type=mute_type)
+        logger.info("Player mute logged", target_id=target_id_str, mute_type=mute_type)
 
     def log_player_unmuted(self, unmuter_id: str, target_id: str, target_name: str, mute_type: str):
         """
@@ -333,17 +336,20 @@ class ChatLogger:
             target_name: Name of unmuted player
             mute_type: Type of mute that was removed
         """
+        unmuter_id_str = str(unmuter_id)
+        target_id_str = str(target_id)
+
         entry = {
             "event_type": "player_unmuted",
-            "unmuter_id": unmuter_id,
-            "target_id": target_id,
+            "unmuter_id": unmuter_id_str,
+            "target_id": target_id_str,
             "target_name": target_name,
             "mute_type": mute_type,
             "timestamp": datetime.now(UTC).isoformat(),
         }
 
         self._write_log_entry("moderation", entry)
-        logger.info("Player unmute logged", target_id=target_id, mute_type=mute_type)
+        logger.info("Player unmute logged", target_id=target_id_str, mute_type=mute_type)
 
     def log_system_event(self, event_type: str, event_data: dict[str, Any]):
         """

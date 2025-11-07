@@ -560,6 +560,10 @@ async def handle_emote_command(
     # Extract action from command_data
     action = command_data.get("action")
     if not action:
+        parsed_command = command_data.get("parsed_command")
+        if parsed_command is not None and hasattr(parsed_command, "action"):
+            action = parsed_command.action
+    if not action:
         logger.warning("Emote command with no action", player=player_name)
         return {"result": "Emote what? Usage: emote <action>"}
 

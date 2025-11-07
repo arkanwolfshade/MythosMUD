@@ -632,6 +632,24 @@ class NATSMessageHandler:
                 )
                 await self.connection_manager.send_personal_message(player_id, chat_event)
 
+            # Always echo message back to sender so they see it in the chat pane
+            try:
+                await self.connection_manager.send_personal_message(sender_id, chat_event)
+                logger.debug(
+                    "=== BROADCAST FILTERING DEBUG: Echoed message to sender ===",
+                    room_id=room_id,
+                    sender_id=sender_id,
+                    channel=channel,
+                )
+            except Exception as echo_error:
+                logger.warning(
+                    "Failed to echo message to sender",
+                    sender_id=sender_id,
+                    room_id=room_id,
+                    channel=channel,
+                    error=str(echo_error),
+                )
+
             logger.info(
                 "Room message broadcasted with server-side filtering",
                 channel=channel,

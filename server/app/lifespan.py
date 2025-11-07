@@ -278,12 +278,21 @@ async def lifespan(app: FastAPI):
     # Initialize chat service (not yet in container - Phase 2 migration)
     # TODO: Move to container in Phase 2
     from ..game.chat_service import ChatService
+    from ..services.nats_subject_manager import nats_subject_manager
+
+    subject_manager = None
+    nats_service = getattr(app.state, "nats_service", None)
+    if nats_service and getattr(nats_service, "subject_manager", None):
+        subject_manager = nats_service.subject_manager
+    else:
+        subject_manager = nats_subject_manager
 
     app.state.chat_service = ChatService(
         persistence=container.persistence,
         room_service=container.persistence,  # Persistence layer provides room service functionality
         player_service=container.player_service,
-        nats_service=app.state.nats_service if hasattr(app.state, "nats_service") else None,
+        nats_service=nats_service,
+        subject_manager=subject_manager,
     )
 
     # Verify NATS service connection in chat service
