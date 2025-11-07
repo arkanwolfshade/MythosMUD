@@ -147,7 +147,7 @@ class TestEmoteMuteFiltering:
         mock_conn_mgr.send_personal_message = AsyncMock()
 
         # Set mock on handler instance
-        self.nats_handler._connection_manager = mock_conn_mgr
+        self.nats_handler.connection_manager = mock_conn_mgr
 
         # Mock player in room check
         with patch.object(self.nats_handler, "_is_player_in_room", return_value=True):
@@ -197,6 +197,7 @@ class TestEmoteMuteFiltering:
                     call(self.sender_id, chat_event),
                 ]
                 connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
+                connection_manager.send_personal_message.reset_mock()
 
     def test_is_player_muted_by_receiver_returns_true_when_muted(self):
         """Test that _is_player_muted_by_receiver returns True when receiver has muted sender."""
@@ -360,7 +361,11 @@ class TestEmoteMuteFiltering:
                 )
 
                 # Verify that ArkanWolfshade received the emote
-                connection_manager.send_personal_message.assert_called_once_with(self.receiver_id, chat_event)
+                expected_calls = [
+                    call(self.receiver_id, chat_event),
+                    call(self.sender_id, chat_event),
+                ]
+                connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
 
     @pytest.mark.asyncio
     async def test_emote_message_uses_correct_channel_type(self):
