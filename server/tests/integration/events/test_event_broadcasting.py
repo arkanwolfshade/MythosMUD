@@ -72,7 +72,7 @@ class TestPlayerMovementMessageExclusion:
     def event_handler(self, connection_manager):
         """Create an event handler for testing."""
         event_bus = EventBus()
-        handler = RealTimeEventHandler(event_bus)
+        handler = RealTimeEventHandler(event_bus, connection_manager=connection_manager)
         # Mock the persistence layer
         handler.connection_manager.persistence = Mock()
         return handler
@@ -185,7 +185,7 @@ class TestRoomEventBroadcasting:
     @pytest.fixture
     def event_handler(self, connection_manager, event_bus):
         """Create an event handler for testing."""
-        return RealTimeEventHandler(event_bus)
+        return RealTimeEventHandler(event_bus, connection_manager=connection_manager)
 
     @pytest.mark.asyncio
     async def test_player_movement_publishes_events(self, event_bus):

@@ -27,16 +27,20 @@ class TestEmoteMuteFiltering:
         self.mock_room_service = Mock()
         self.mock_player_service = AsyncMock()
         self.mock_connection_manager = Mock()
+        self.mock_connection_manager._canonical_room_id = Mock(
+            return_value="earth_arkhamcity_sanitarium_room_hallway_001"
+        )
+        self.mock_connection_manager.room_subscriptions = {self.mock_connection_manager._canonical_room_id(): set()}
+        self.mock_connection_manager.send_personal_message = AsyncMock()
 
-        # Create mock services
+        # Create the service instances
         self.mock_nats_service = Mock()
         self.mock_chat_logger = Mock()
         self.mock_rate_limiter = Mock()
         self.mock_user_manager = Mock()
 
-        # Create the service instances
         self.chat_service = ChatService(self.mock_persistence, self.mock_room_service, self.mock_player_service)
-        self.nats_handler = NATSMessageHandler(self.mock_nats_service)
+        self.nats_handler = NATSMessageHandler(self.mock_nats_service, connection_manager=self.mock_connection_manager)
 
         # Replace service dependencies with mocks
         self.chat_service.nats_service = self.mock_nats_service
@@ -173,26 +177,22 @@ class TestEmoteMuteFiltering:
             },
         }
 
-        # AI Agent: Inject mock connection_manager via instance variable (no longer a global)
-        mock_conn_mgr = Mock()
-        mock_conn_mgr.room_subscriptions = {self.room_id: {self.sender_id, self.receiver_id}}
-        mock_conn_mgr._canonical_room_id.return_value = self.room_id
-        mock_conn_mgr.send_personal_message = AsyncMock()
-
-        # Set mock on handler instance
-        self.nats_handler._connection_manager = mock_conn_mgr
+        connection_manager = self.nats_handler.connection_manager
+        connection_manager.room_subscriptions = {self.room_id: {self.sender_id, self.receiver_id}}
+        connection_manager._canonical_room_id.return_value = self.room_id
+        connection_manager.send_personal_message = AsyncMock()
 
         # Mock player in room check
         with patch.object(self.nats_handler, "_is_player_in_room", return_value=True):
-            # Mock mute check - receiver has NOT muted sender
+            # Mock mute check - ArkanWolfshade has NOT muted Ithaqua
             with patch.object(self.nats_handler, "_is_player_muted_by_receiver", return_value=False):
-                # Execute
+                # Process the emote message
                 await self.nats_handler._broadcast_to_room_with_filtering(
                     self.room_id, chat_event, self.sender_id, "emote"
                 )
 
-                # Verify that the unmuted receiver received the message
-                mock_conn_mgr.send_personal_message.assert_called_once_with(self.receiver_id, chat_event)
+                # Verify that ArkanWolfshade received the emote
+                connection_manager.send_personal_message.assert_called_once_with(self.receiver_id, chat_event)
 
     def test_is_player_muted_by_receiver_returns_true_when_muted(self):
         """Test that _is_player_muted_by_receiver returns True when receiver has muted sender."""
@@ -341,14 +341,10 @@ class TestEmoteMuteFiltering:
         # Simulate NATS message processing without mute filtering
         chat_event = {"type": "chat_message", "data": emote_result["message"]}
 
-        # AI Agent: Inject mock connection_manager via instance variable (no longer a global)
-        mock_conn_mgr = Mock()
-        mock_conn_mgr.room_subscriptions = {self.room_id: {self.sender_id, self.receiver_id}}
-        mock_conn_mgr._canonical_room_id.return_value = self.room_id
-        mock_conn_mgr.send_personal_message = AsyncMock()
-
-        # Set mock on handler instance
-        self.nats_handler._connection_manager = mock_conn_mgr
+        connection_manager = self.nats_handler.connection_manager
+        connection_manager.room_subscriptions = {self.room_id: {self.sender_id, self.receiver_id}}
+        connection_manager._canonical_room_id.return_value = self.room_id
+        connection_manager.send_personal_message = AsyncMock()
 
         # Mock player in room check
         with patch.object(self.nats_handler, "_is_player_in_room", return_value=True):
@@ -360,7 +356,7 @@ class TestEmoteMuteFiltering:
                 )
 
                 # Verify that ArkanWolfshade received the emote
-                mock_conn_mgr.send_personal_message.assert_called_once_with(self.receiver_id, chat_event)
+                connection_manager.send_personal_message.assert_called_once_with(self.receiver_id, chat_event)
 
     @pytest.mark.asyncio
     async def test_emote_message_uses_correct_channel_type(self):

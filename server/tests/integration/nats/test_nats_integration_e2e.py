@@ -180,7 +180,7 @@ class TestNATSIntegrationE2E:
         # AI Agent: Patch the method on the handler's injected connection_manager instance
         #           Post-migration: connection_manager is no longer a module-level global
         with patch.object(
-            self.nats_handler._connection_manager, "broadcast_room_event", new_callable=AsyncMock
+            self.nats_handler.connection_manager, "broadcast_room_event", new_callable=AsyncMock
         ) as mock_broadcast:
             # Simulate receiving the message
             await self.nats_handler._handle_nats_message(player_entered_message)
@@ -210,7 +210,7 @@ class TestNATSIntegrationE2E:
         # AI Agent: Patch the method on the handler's injected connection_manager instance
         #           Post-migration: connection_manager is no longer a module-level global
         with patch.object(
-            self.nats_handler._connection_manager, "broadcast_global_event", new_callable=AsyncMock
+            self.nats_handler.connection_manager, "broadcast_global_event", new_callable=AsyncMock
         ) as mock_broadcast:
             # Simulate receiving the message
             await self.nats_handler._handle_nats_message(game_tick_message)

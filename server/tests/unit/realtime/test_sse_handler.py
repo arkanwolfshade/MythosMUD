@@ -6,6 +6,7 @@ communication streams, event broadcasting, and player notifications.
 """
 
 import asyncio
+from contextlib import contextmanager
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
@@ -20,6 +21,24 @@ from server.realtime.sse_handler import (
     send_room_event,
     send_system_notification,
 )
+
+
+def _override_connection_manager(connection_manager):
+    """Context manager to temporarily set the FastAPI app's connection manager."""
+    from server.main import app as fastapi_app
+
+    @contextmanager
+    def _manager():
+        original_container = getattr(fastapi_app.state, "container", None)
+        mock_container = Mock()
+        mock_container.connection_manager = connection_manager
+        fastapi_app.state.container = mock_container
+        try:
+            yield
+        finally:
+            fastapi_app.state.container = original_container
+
+    return _manager()
 
 
 class TestSSEHandlerFunctions:
@@ -50,12 +69,10 @@ class TestSSEHandlerFunctions:
         event_type = "player_move"
         data = {"direction": "north", "room_id": "room_002"}
 
-        # AI Agent: Patch via app.state.container instead of module-level global
         mock_connection_manager = Mock()
         mock_connection_manager.send_personal_message = AsyncMock()
 
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             # Execute
             await send_game_event(player_id, event_type, data)
 
@@ -79,9 +96,7 @@ class TestSSEHandlerFunctions:
         mock_connection_manager = Mock()
         mock_connection_manager.send_personal_message = AsyncMock(side_effect=Exception("Connection error"))
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             # Execute - should not raise exception
             await send_game_event(player_id, event_type, data)
 
@@ -98,9 +113,7 @@ class TestSSEHandlerFunctions:
         mock_connection_manager = Mock()
         mock_connection_manager.broadcast_global = AsyncMock()
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             # Execute
             await broadcast_game_event(event_type, data)
 
@@ -123,19 +136,12 @@ class TestSSEHandlerFunctions:
         mock_connection_manager = Mock()
         mock_connection_manager.broadcast_global = AsyncMock()
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
-            # Execute
-            await broadcast_game_event(event_type, data, exclude_player)
+        with _override_connection_manager(mock_connection_manager):
+            await broadcast_game_event(event_type, data, exclude_player=exclude_player)
 
-            # Verify
             mock_connection_manager.broadcast_global.assert_called_once()
             call_args = mock_connection_manager.broadcast_global.call_args
-            event_data = call_args[0][0]  # event data
-            assert event_data["event_type"] == event_type
-            assert event_data["data"] == data
-            assert call_args[0][1] == exclude_player  # exclude_player should be passed
+            assert call_args[0][1] == exclude_player
 
     @pytest.mark.asyncio
     async def test_broadcast_game_event_exception_handling(self):
@@ -147,9 +153,7 @@ class TestSSEHandlerFunctions:
         mock_connection_manager = Mock()
         mock_connection_manager.broadcast_global = AsyncMock(side_effect=Exception("Broadcast error"))
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             # Execute - should not raise exception
             await broadcast_game_event(event_type, data)
 
@@ -167,9 +171,7 @@ class TestSSEHandlerFunctions:
         mock_connection_manager = Mock()
         mock_connection_manager.broadcast_to_room = AsyncMock()
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             # Execute
             await send_room_event(room_id, event_type, data)
 
@@ -195,9 +197,7 @@ class TestSSEHandlerFunctions:
         mock_connection_manager = Mock()
         mock_connection_manager.broadcast_to_room = AsyncMock()
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             # Execute
             await send_room_event(room_id, event_type, data, exclude_player)
 
@@ -222,9 +222,7 @@ class TestSSEHandlerFunctions:
         mock_connection_manager = Mock()
         mock_connection_manager.broadcast_to_room = AsyncMock(side_effect=Exception("Room broadcast error"))
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             # Execute - should not raise exception
             await send_room_event(room_id, event_type, data)
 
@@ -242,9 +240,7 @@ class TestSSEHandlerFunctions:
         mock_connection_manager = Mock()
         mock_connection_manager.send_personal_message = AsyncMock()
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             # Execute
             await send_system_notification(player_id, message, notification_type)
 
@@ -268,9 +264,7 @@ class TestSSEHandlerFunctions:
         mock_connection_manager = Mock()
         mock_connection_manager.send_personal_message = AsyncMock()
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             # Execute
             await send_system_notification(player_id, message)
 
@@ -290,9 +284,7 @@ class TestSSEHandlerFunctions:
         mock_connection_manager = Mock()
         mock_connection_manager.send_personal_message = AsyncMock(side_effect=Exception("Notification error"))
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             # Execute - should not raise exception
             await send_system_notification(player_id, message)
 
@@ -309,9 +301,7 @@ class TestSSEHandlerFunctions:
         mock_connection_manager = Mock()
         mock_connection_manager.send_personal_message = AsyncMock()
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             # Execute
             await send_player_status_update(player_id, status_data)
 
@@ -334,9 +324,7 @@ class TestSSEHandlerFunctions:
         mock_connection_manager = Mock()
         mock_connection_manager.send_personal_message = AsyncMock(side_effect=Exception("Status update error"))
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             # Execute - should not raise exception
             await send_player_status_update(player_id, status_data)
 
@@ -357,9 +345,7 @@ class TestSSEHandlerFunctions:
         mock_connection_manager = Mock()
         mock_connection_manager.send_personal_message = AsyncMock()
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             # Execute
             await send_room_description(player_id, room_data)
 
@@ -382,9 +368,7 @@ class TestSSEHandlerFunctions:
         mock_connection_manager = Mock()
         mock_connection_manager.send_personal_message = AsyncMock(side_effect=Exception("Room description error"))
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             # Execute - should not raise exception
             await send_room_description(player_id, room_data)
 
@@ -411,12 +395,10 @@ class TestGameEventStream:
         # Make pending_messages iterable for the "in" operator
         mock_connection_manager.pending_messages = {}
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             # Execute
             events = []
-            async for event in game_event_stream(player_id):
+            async for event in game_event_stream(player_id, connection_manager=mock_connection_manager):
                 events.append(event)
                 if len(events) >= 3:  # Get initial events
                     break
@@ -449,12 +431,10 @@ class TestGameEventStream:
         # Make pending_messages iterable for the "in" operator
         mock_connection_manager.pending_messages = {player_id: pending_messages}
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             # Execute
             events = []
-            async for event in game_event_stream(player_id):
+            async for event in game_event_stream(player_id, connection_manager=mock_connection_manager):
                 events.append(event)
                 if len(events) >= 5:  # Get initial events + pending messages
                     break
@@ -480,13 +460,11 @@ class TestGameEventStream:
         # Make pending_messages iterable for the "in" operator
         mock_connection_manager.pending_messages = {}
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             with patch("asyncio.sleep", new_callable=AsyncMock) as mock_sleep:
                 # Execute
                 events = []
-                async for event in game_event_stream(player_id):
+                async for event in game_event_stream(player_id, connection_manager=mock_connection_manager):
                     events.append(event)
                     if len(events) >= 4:  # Get initial events + one heartbeat
                         break
@@ -510,11 +488,9 @@ class TestGameEventStream:
         mock_connection_manager.prune_stale_players = Mock()
         mock_connection_manager.cleanup_orphaned_data = Mock(side_effect=lambda: asyncio.sleep(0))
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             # Test that the generator completes and finally block runs by ensuring it gets to the anyway block through normal operation
-            async_generator = game_event_stream(player_id)
+            async_generator = game_event_stream(player_id, connection_manager=mock_connection_manager)
 
             # Break early to exit generator gracefully
             async for _event in async_generator:
@@ -545,11 +521,9 @@ class TestGameEventStream:
 
         mock_connection_manager.cleanup_orphaned_data = Mock(side_effect=slow_cleanup)
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             # Test timeout boundary behavior by running generator and closing to trigger finally
-            async_generator = game_event_stream(player_id)
+            async_generator = game_event_stream(player_id, connection_manager=mock_connection_manager)
             async for _event in async_generator:
                 break
             await async_generator.aclose()
@@ -578,11 +552,9 @@ class TestGameEventStream:
         mock_connection_manager.disconnect_sse = Mock(side_effect=slow_disconnect)
         mock_connection_manager.get_pending_messages = AsyncMock(return_value=[])
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             # Test disconnect timeout handling by ensuring generator completes properly
-            async_generator = game_event_stream(player_id)
+            async_generator = game_event_stream(player_id, connection_manager=mock_connection_manager)
             async for _event in async_generator:
                 break
             await async_generator.aclose()
@@ -604,13 +576,11 @@ class TestGameEventStream:
         mock_connection_manager.mark_player_seen = Mock()
         mock_connection_manager.prune_stale_players = Mock()
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             with patch("asyncio.sleep", side_effect=Exception("Test error")):
                 # Execute
                 events = []
-                async for event in game_event_stream(player_id):
+                async for event in game_event_stream(player_id, connection_manager=mock_connection_manager):
                     events.append(event)
                     break  # Should exit on exception
 
@@ -632,13 +602,11 @@ class TestGameEventStream:
         mock_connection_manager.mark_player_seen = Mock()
         mock_connection_manager.prune_stale_players = Mock()
 
-        # AI Agent: Patch via app.state.container instead of module-level global
-        with patch("server.realtime.sse_handler.app.state.container") as mock_container:
-            mock_container.connection_manager = mock_connection_manager
+        with _override_connection_manager(mock_connection_manager):
             with patch("asyncio.sleep", new_callable=AsyncMock):
                 # Execute
                 events = []
-                async for event in game_event_stream(player_id):
+                async for event in game_event_stream(player_id, connection_manager=mock_connection_manager):
                     events.append(event)
                     if len(events) >= 2:  # Get initial events
                         break

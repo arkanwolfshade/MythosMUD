@@ -208,6 +208,7 @@ class TestEventOrderingAndTimingBugs:
         """Test that concurrent player movements don't cause race conditions."""
         event_bus = EventBus()
         event_handler = RealTimeEventHandler(event_bus)
+        event_handler.connection_manager = ConnectionManager()
 
         player_1_id = str(uuid4())
         player_2_id = str(uuid4())
