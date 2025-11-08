@@ -1,5 +1,11 @@
 import React, { useMemo, useState } from 'react';
-import { AVAILABLE_CHANNELS, DEFAULT_CHANNEL } from '../../config/channels';
+import {
+  ALL_MESSAGES_CHANNEL,
+  AVAILABLE_CHANNELS,
+  CHAT_CHANNEL_OPTIONS,
+  DEFAULT_CHANNEL,
+  getChannelById,
+} from '../../config/channels';
 import { ansiToHtmlWithBreaks } from '../../utils/ansiToHtml';
 import { extractChannelFromMessage, isChatContent } from '../../utils/messageTypeUtils';
 import { ChannelSelector } from '../ui/ChannelSelector';
@@ -61,87 +67,76 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   selectedChannel = DEFAULT_CHANNEL,
   onChannelSelect,
 }) => {
-  const [showChatHistory, setShowChatHistory] = useState(false);
-  const [chatFilter, setChatFilter] = useState<string>('current');
   const [clearedChannels, setClearedChannels] = useState<Record<string, number>>({});
 
-  // Calculate chat statistics
+  const normalizedSelectedChannel = selectedChannel ?? DEFAULT_CHANNEL;
+
+  const filteredMessages = useMemo(() => {
+    return messages.filter(message => {
+      if (message.messageType === 'system') {
+        return false;
+      }
+
+      if (normalizedSelectedChannel === ALL_MESSAGES_CHANNEL.id) {
+        return true;
+      }
+
+      if (message.messageType === 'command' || message.messageType === 'error') {
+        return true;
+      }
+
+      const isChatMessage = message.messageType === 'chat' || isChatContent(message.text);
+      if (!isChatMessage) {
+        return false;
+      }
+
+      const messageChannel = message.channel || extractChannelFromMessage(message.text) || 'local';
+
+      if (messageChannel === 'whisper') {
+        return true;
+      }
+
+      return messageChannel === normalizedSelectedChannel;
+    });
+  }, [messages, normalizedSelectedChannel]);
+
   const chatStats = {
-    currentChannelMessages: messages.filter(message => {
-      const messageChannel = message.channel || extractChannelFromMessage(message.text) || selectedChannel;
-      return messageChannel === selectedChannel;
-    }).length,
-    totalMessages: messages.length,
+    currentChannelMessages: filteredMessages.length,
+    totalMessages: messages.filter(message => message.messageType !== 'system').length,
   };
 
-  // Compute unread counts using useMemo instead of effect
   const unreadCounts = useMemo(() => {
+    if (normalizedSelectedChannel === ALL_MESSAGES_CHANNEL.id) {
+      return {};
+    }
+
     const counts: Record<string, number> = {};
 
     messages.forEach((message, index) => {
-      // Handle both 'chat' and 'command' messages that contain chat content
       if (message.messageType === 'chat' || (message.messageType === 'command' && isChatContent(message.text))) {
-        const channelId = message.channel || extractChannelFromMessage(message.text) || selectedChannel;
-        // Count messages for other channels that are after the "cleared" point
-        if (channelId !== selectedChannel && index >= (clearedChannels[channelId] || 0)) {
+        const channelId = message.channel || extractChannelFromMessage(message.text) || normalizedSelectedChannel;
+        if (channelId !== normalizedSelectedChannel && index >= (clearedChannels[channelId] || 0)) {
           counts[channelId] = (counts[channelId] || 0) + 1;
         }
       }
     });
 
     return counts;
-  }, [messages, selectedChannel, clearedChannels]);
-
-  // Filter messages - simplified for display only
-  const getFilteredMessages = () => {
-    return messages;
-  };
+  }, [messages, normalizedSelectedChannel, clearedChannels]);
 
   const handleChannelSelect = (channelId: string) => {
-    // Mark this channel as "seen" at current message index
-    setClearedChannels(prev => ({ ...prev, [channelId]: messages.length }));
+    if (channelId === ALL_MESSAGES_CHANNEL.id) {
+      setClearedChannels({});
+    } else {
+      setClearedChannels(prev => ({ ...prev, [channelId]: messages.length }));
+    }
     onChannelSelect?.(channelId);
   };
 
-  // Filter messages by channel and moderation settings
-  const filteredMessages = getFilteredMessages().filter(message => {
-    // Always exclude system messages from Chat Panel - they belong in Game Log Panel
-    if (message.messageType === 'system') {
-      return false;
-    }
-
-    if (chatFilter === 'all') return true;
-    if (chatFilter === 'current') {
-      // Show all command responses (user initiated actions should always be visible)
-      if (message.messageType === 'command') {
-        return true;
-      }
-
-      // Show error messages regardless of channel (they're typically global)
-      if (message.messageType === 'error') {
-        return true;
-      }
-
-      // Filter for current channel messages - handle chat messages
-      const isChatMessage = message.messageType === 'chat' || isChatContent(message.text);
-
-      // If it's a chat message, check the channel
-      if (isChatMessage) {
-        const messageChannel = message.channel || extractChannelFromMessage(message.text) || 'local';
-
-        // ALWAYS show whisper messages (private messages should always be visible)
-        if (messageChannel === 'whisper') {
-          return true;
-        }
-
-        // For other channels, filter by selected channel
-        return messageChannel === selectedChannel;
-      }
-
-      return false;
-    }
-    return true;
-  });
+  const viewingLabel =
+    normalizedSelectedChannel === ALL_MESSAGES_CHANNEL.id
+      ? ALL_MESSAGES_CHANNEL.name
+      : (getChannelById(normalizedSelectedChannel)?.name ?? normalizedSelectedChannel);
 
   const formatTimestamp = (timestamp: string): string => {
     try {
@@ -205,8 +200,8 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
           <span className="text-sm text-mythos-terminal-text-secondary font-mono">Channel:</span>
           <ChannelSelector
-            channels={AVAILABLE_CHANNELS}
-            selectedChannel={selectedChannel}
+            channels={CHAT_CHANNEL_OPTIONS}
+            selectedChannel={normalizedSelectedChannel}
             onChannelSelect={handleChannelSelect}
             disabled={disabled || !isConnected}
             className="flex-1 w-full sm:w-auto"
@@ -257,29 +252,16 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         </div>
       </div>
 
-      {/* Chat History Toggle */}
+      {/* Chat Filter Summary */}
       <div className="p-2 border-b border-gray-700 bg-mythos-terminal-background">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <TerminalButton
-              variant="secondary"
-              size="sm"
-              onClick={() => setShowChatHistory(!showChatHistory)}
-              className="flex items-center gap-2 text-xs"
-            >
-              <EldritchIcon name={MythosIcons.clock} size={12} variant="primary" />
-              <span>Chat History</span>
-            </TerminalButton>
-            <select
-              value={chatFilter}
-              onChange={e => setChatFilter(e.target.value)}
-              className="bg-mythos-terminal-surface border border-gray-700 rounded px-2 py-1 text-xs text-mythos-terminal-text"
-            >
-              <option value="all">All Messages</option>
-              <option value="current">Current Channel</option>
-            </select>
+          <div className="flex items-center gap-2 text-xs text-mythos-terminal-text-secondary">
+            <EldritchIcon name={MythosIcons.clock} size={12} variant="primary" />
+            <span>Viewing: {viewingLabel}</span>
           </div>
-          <div className="text-xs text-mythos-terminal-text-secondary">{chatStats.currentChannelMessages} messages</div>
+          <div className="text-xs text-mythos-terminal-text-secondary">
+            {chatStats.currentChannelMessages} message{chatStats.currentChannelMessages === 1 ? '' : 's'}
+          </div>
         </div>
       </div>
 
@@ -383,7 +365,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
             </div>
             <div className="flex items-center gap-1">
               <EldritchIcon name={MythosIcons.connection} size={12} variant="secondary" />
-              <span>Channel: {AVAILABLE_CHANNELS.find(c => c.id === selectedChannel)?.name}</span>
+              <span>Channel: {viewingLabel}</span>
             </div>
             <div className="flex items-center gap-1">
               <EldritchIcon name={MythosIcons.clock} size={12} variant="secondary" />

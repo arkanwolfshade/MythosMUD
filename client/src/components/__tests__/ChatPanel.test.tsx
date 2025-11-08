@@ -5,15 +5,24 @@ import { vi } from 'vitest';
 import { ChatPanel } from '../panels/ChatPanel';
 
 // Mock the child components to isolate testing
-vi.mock('../../config/channels', () => ({
-  AVAILABLE_CHANNELS: [
+vi.mock('../../config/channels', () => {
+  const baseChannels = [
     { id: 'say', name: 'Say', shortcut: 'say' },
     { id: 'local', name: 'Local', shortcut: 'local' },
     { id: 'whisper', name: 'Whisper', shortcut: 'whisper' },
     { id: 'shout', name: 'Shout', shortcut: 'shout' },
-  ],
-  DEFAULT_CHANNEL: 'say',
-}));
+  ];
+  const allChannel = { id: 'all', name: 'All Messages' };
+
+  return {
+    AVAILABLE_CHANNELS: baseChannels,
+    ALL_MESSAGES_CHANNEL: allChannel,
+    CHAT_CHANNEL_OPTIONS: [allChannel, ...baseChannels],
+    DEFAULT_CHANNEL: 'all',
+    getChannelById: (channelId: string) =>
+      channelId === allChannel.id ? allChannel : baseChannels.find(channel => channel.id === channelId),
+  };
+});
 
 vi.mock('../../utils/ansiToHtml', () => ({
   ansiToHtmlWithBreaks: (text: string) => text.replace(/\n/g, '<br/>'),
@@ -186,8 +195,7 @@ describe('ChatPanel', () => {
       expect(screen.getByText('Chat')).toBeInTheDocument();
       expect(screen.getByTestId('channel-selector')).toBeInTheDocument();
       expect(screen.getByText('Chat History')).toBeInTheDocument();
-      expect(screen.getByText('All Messages')).toBeInTheDocument();
-      expect(screen.getByText('Current Channel')).toBeInTheDocument();
+      expect(screen.getByText('Viewing: All Messages')).toBeInTheDocument();
     });
 
     it('should render with correct data-testid attributes', () => {
@@ -202,8 +210,8 @@ describe('ChatPanel', () => {
       render(<ChatPanel {...defaultProps} selectedChannel="local" />);
 
       // Change filter to "All Messages" to see all chat messages
-      const filterSelect = screen.getByDisplayValue('Current Channel');
-      await user.selectOptions(filterSelect, 'all');
+      const channelSelector = screen.getByTestId('channel-selector');
+      await user.selectOptions(channelSelector, 'all');
 
       expect(screen.getByText('[local] Player1 says: Hello everyone!')).toBeInTheDocument();
       expect(screen.getByText('[whisper] Player2 whispers: Secret message')).toBeInTheDocument();
@@ -234,8 +242,8 @@ describe('ChatPanel', () => {
       const user = userEvent.setup();
       render(<ChatPanel {...defaultProps} selectedChannel="local" />);
 
-      const filterSelect = screen.getByDisplayValue('Current Channel');
-      await user.selectOptions(filterSelect, 'all');
+      const channelSelector = screen.getByTestId('channel-selector');
+      await user.selectOptions(channelSelector, 'all');
 
       // Should show both chat messages
       expect(screen.getByText('[local] Player1 says: Hello everyone!')).toBeInTheDocument();
@@ -415,11 +423,10 @@ describe('ChatPanel', () => {
       expect(screen.getByText('Chat History')).toBeInTheDocument();
     });
 
-    it('should show filter options', () => {
+    it('should show viewing label for current selection', () => {
       render(<ChatPanel {...defaultProps} />);
 
-      expect(screen.getByText('All Messages')).toBeInTheDocument();
-      expect(screen.getByText('Current Channel')).toBeInTheDocument();
+      expect(screen.getByText('Viewing: All Messages')).toBeInTheDocument();
     });
   });
 

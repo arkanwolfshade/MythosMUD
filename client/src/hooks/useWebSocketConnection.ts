@@ -184,7 +184,7 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
             // DEV-only: check NATS health via server
             if (import.meta.env.DEV) {
               try {
-                const healthResponse = await fetch('/api/health/nats', {
+                const healthResponse = await fetch('/api/monitoring/health', {
                   method: 'GET',
                   headers: { Authorization: `Bearer ${authToken}` },
                 });
