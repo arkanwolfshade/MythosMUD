@@ -34,50 +34,37 @@ class TestChannelBroadcastingStrategies:
 
     @pytest.fixture
     def mock_connection_manager(self):
-        """Mock the connection manager for _broadcast_to_room_with_filtering tests."""
-        with (
-            patch("server.realtime.nats_message_handler.connection_manager") as mock_cm1,
-            patch("server.realtime.connection_manager.connection_manager") as mock_cm2,
-        ):
-            mock_cm1.broadcast_global = AsyncMock()
-            mock_cm1.send_personal_message = AsyncMock()
-            mock_cm1._canonical_room_id.return_value = "test_room"
-            mock_cm1.room_subscriptions = {"test_room": {"player1", "player2"}}
-            mock_cm1.online_players = {
-                "player1": {"current_room_id": "test_room"},
-                "player2": {"current_room_id": "test_room"},
-            }
-
-            mock_cm2.broadcast_global = AsyncMock()
-            mock_cm2.send_personal_message = AsyncMock()
-            mock_cm2._canonical_room_id.return_value = "test_room"
-            mock_cm2.room_subscriptions = {"test_room": {"player1", "player2"}}
-            mock_cm2.online_players = {
-                "player1": {"current_room_id": "test_room"},
-                "player2": {"current_room_id": "test_room"},
-            }
-
-            # Return the first mock since that's what _broadcast_to_room_with_filtering uses
-            yield mock_cm1
+        """Return a mock connection manager for room broadcasts."""
+        mock_cm = MagicMock()
+        mock_cm.broadcast_global = AsyncMock()
+        mock_cm.send_personal_message = AsyncMock()
+        mock_cm._canonical_room_id.return_value = "test_room"
+        mock_cm.room_subscriptions = {"test_room": {"player1", "player2"}}
+        mock_cm.online_players = {
+            "player1": {"current_room_id": "test_room"},
+            "player2": {"current_room_id": "test_room"},
+        }
+        return mock_cm
 
     @pytest.fixture
     def mock_connection_manager_strategy(self):
-        """Mock the connection manager for strategy pattern tests."""
-        with patch("server.realtime.connection_manager.connection_manager") as mock_cm:
-            mock_cm.broadcast_global = AsyncMock()
-            mock_cm.send_personal_message = AsyncMock()
-            mock_cm._canonical_room_id.return_value = "test_room"
-            mock_cm.room_subscriptions = {"test_room": {"player1", "player2"}}
-            mock_cm.online_players = {
-                "player1": {"current_room_id": "test_room"},
-                "player2": {"current_room_id": "test_room"},
-            }
-            yield mock_cm
+        """Return a mock connection manager for strategy-level tests."""
+        mock_cm = MagicMock()
+        mock_cm.broadcast_global = AsyncMock()
+        mock_cm.send_personal_message = AsyncMock()
+        mock_cm._canonical_room_id.return_value = "test_room"
+        mock_cm.room_subscriptions = {"test_room": {"player1", "player2"}}
+        mock_cm.online_players = {
+            "player1": {"current_room_id": "test_room"},
+            "player2": {"current_room_id": "test_room"},
+        }
+        return mock_cm
 
     @pytest.mark.asyncio
     async def test_room_based_channels_say(self, nats_handler, mock_connection_manager):
         """Test room-based channel broadcasting (say)."""
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager
 
         with patch.object(nats_handler, "_broadcast_to_room_with_filtering") as mock_broadcast:
             await nats_handler._broadcast_by_channel_type("say", chat_event, "test_room", "", "", "sender1")
@@ -88,6 +75,7 @@ class TestChannelBroadcastingStrategies:
     async def test_room_based_channels_local(self, nats_handler, mock_connection_manager):
         """Test room-based channel broadcasting (local)."""
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager
 
         with patch.object(nats_handler, "_broadcast_to_room_with_filtering") as mock_broadcast:
             await nats_handler._broadcast_by_channel_type("local", chat_event, "test_room", "", "", "sender1")
@@ -98,6 +86,7 @@ class TestChannelBroadcastingStrategies:
     async def test_room_based_channels_emote(self, nats_handler, mock_connection_manager):
         """Test room-based channel broadcasting (emote)."""
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager
 
         with patch.object(nats_handler, "_broadcast_to_room_with_filtering") as mock_broadcast:
             await nats_handler._broadcast_by_channel_type("emote", chat_event, "test_room", "", "", "sender1")
@@ -108,6 +97,7 @@ class TestChannelBroadcastingStrategies:
     async def test_room_based_channels_pose(self, nats_handler, mock_connection_manager):
         """Test room-based channel broadcasting (pose)."""
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager
 
         with patch.object(nats_handler, "_broadcast_to_room_with_filtering") as mock_broadcast:
             await nats_handler._broadcast_by_channel_type("pose", chat_event, "test_room", "", "", "sender1")
@@ -118,6 +108,7 @@ class TestChannelBroadcastingStrategies:
     async def test_room_based_channels_missing_room_id(self, nats_handler, mock_connection_manager):
         """Test room-based channels with missing room_id."""
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager
 
         with patch.object(nats_handler, "_broadcast_to_room_with_filtering") as mock_broadcast:
             await nats_handler._broadcast_by_channel_type("say", chat_event, "", "", "", "sender1")
@@ -129,6 +120,7 @@ class TestChannelBroadcastingStrategies:
     async def test_global_channel(self, nats_handler, mock_connection_manager_strategy):
         """Test global channel broadcasting."""
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager_strategy
 
         await nats_handler._broadcast_by_channel_type("global", chat_event, "", "", "", "sender1")
 
@@ -138,6 +130,7 @@ class TestChannelBroadcastingStrategies:
     async def test_party_channel_with_party_id(self, nats_handler, mock_connection_manager):
         """Test party channel broadcasting with party_id."""
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager
 
         await nats_handler._broadcast_by_channel_type("party", chat_event, "", "party123", "", "sender1")
 
@@ -148,6 +141,7 @@ class TestChannelBroadcastingStrategies:
     async def test_party_channel_missing_party_id(self, nats_handler, mock_connection_manager):
         """Test party channel broadcasting without party_id."""
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager
 
         await nats_handler._broadcast_by_channel_type("party", chat_event, "", "", "", "sender1")
 
@@ -157,6 +151,7 @@ class TestChannelBroadcastingStrategies:
     async def test_whisper_channel_with_target(self, nats_handler, mock_connection_manager_strategy):
         """Test whisper channel broadcasting with target player."""
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager_strategy
 
         await nats_handler._broadcast_by_channel_type("whisper", chat_event, "", "", "target1", "sender1")
 
@@ -166,6 +161,7 @@ class TestChannelBroadcastingStrategies:
     async def test_whisper_channel_missing_target(self, nats_handler, mock_connection_manager_strategy):
         """Test whisper channel broadcasting without target player."""
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager_strategy
 
         await nats_handler._broadcast_by_channel_type("whisper", chat_event, "", "", "", "sender1")
 
@@ -176,6 +172,7 @@ class TestChannelBroadcastingStrategies:
     async def test_system_channel(self, nats_handler, mock_connection_manager_strategy):
         """Test system channel broadcasting."""
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager_strategy
 
         await nats_handler._broadcast_by_channel_type("system", chat_event, "", "", "", "sender1")
 
@@ -185,6 +182,7 @@ class TestChannelBroadcastingStrategies:
     async def test_admin_channel(self, nats_handler, mock_connection_manager_strategy):
         """Test admin channel broadcasting."""
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager_strategy
 
         await nats_handler._broadcast_by_channel_type("admin", chat_event, "", "", "", "sender1")
 
@@ -194,6 +192,7 @@ class TestChannelBroadcastingStrategies:
     async def test_unknown_channel_type(self, nats_handler, mock_connection_manager_strategy):
         """Test unknown channel type handling."""
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager_strategy
 
         await nats_handler._broadcast_by_channel_type("unknown", chat_event, "", "", "", "sender1")
 
@@ -205,6 +204,7 @@ class TestChannelBroadcastingStrategies:
     async def test_broadcast_to_room_with_filtering(self, nats_handler, mock_connection_manager):
         """Test room broadcasting with filtering through strategy pattern."""
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager
 
         # Mock the filtering methods
         with (
@@ -221,6 +221,7 @@ class TestChannelBroadcastingStrategies:
     async def test_broadcast_to_room_filter_out_sender(self, nats_handler, mock_connection_manager):
         """Test that sender is filtered out from room broadcasts through strategy pattern."""
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager
 
         # Mock the filtering methods
         with (
@@ -244,6 +245,7 @@ class TestChannelBroadcastingStrategies:
     async def test_broadcast_to_room_filter_out_muted_players(self, nats_handler, mock_connection_manager):
         """Test that muted players are filtered out from room broadcasts through strategy pattern."""
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager
 
         # Mock the filtering methods - player2 is muted
         def mock_is_muted(player_id, sender_id):
@@ -263,6 +265,7 @@ class TestChannelBroadcastingStrategies:
     async def test_broadcast_to_room_filter_out_players_not_in_room(self, nats_handler, mock_connection_manager):
         """Test that players not in the room are filtered out through strategy pattern."""
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager
 
         # Mock the filtering methods - player2 is not in room
         def mock_is_in_room(player_id, room_id):
@@ -282,6 +285,7 @@ class TestChannelBroadcastingStrategies:
     async def test_error_handling_in_broadcast(self, nats_handler, mock_connection_manager):
         """Test error handling during broadcasting."""
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager
 
         # Make broadcast_global raise an exception
         mock_connection_manager.broadcast_global.side_effect = Exception("Broadcast failed")
@@ -293,6 +297,7 @@ class TestChannelBroadcastingStrategies:
     async def test_error_handling_in_room_broadcast(self, nats_handler, mock_connection_manager):
         """Test error handling during room broadcasting."""
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager
 
         # Make _broadcast_to_room_with_filtering raise an exception
         with patch.object(
@@ -334,17 +339,18 @@ class TestChannelBroadcastingStrategiesLegacy:
 
     @pytest.fixture
     def mock_connection_manager(self):
-        """Mock the connection manager."""
-        with patch("server.realtime.connection_manager.connection_manager") as mock_cm:
-            mock_cm.broadcast_global = AsyncMock()
-            mock_cm.send_personal_message = AsyncMock()
-            yield mock_cm
+        """Return a mock connection manager for legacy strategy tests."""
+        mock_cm = MagicMock()
+        mock_cm.broadcast_global = AsyncMock()
+        mock_cm.send_personal_message = AsyncMock()
+        return mock_cm
 
     @pytest.mark.asyncio
     async def test_room_based_channel_strategy_say(self, mock_nats_handler, mock_connection_manager):
         """Test RoomBasedChannelStrategy for say channel."""
         strategy = RoomBasedChannelStrategy("say")
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        mock_nats_handler.connection_manager = mock_connection_manager
 
         await strategy.broadcast(chat_event, "test_room", "", "", "sender1", mock_nats_handler)
 
@@ -357,6 +363,7 @@ class TestChannelBroadcastingStrategiesLegacy:
         """Test RoomBasedChannelStrategy with missing room_id."""
         strategy = RoomBasedChannelStrategy("local")
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        mock_nats_handler.connection_manager = mock_connection_manager
 
         await strategy.broadcast(chat_event, "", "", "", "sender1", mock_nats_handler)
 
@@ -368,6 +375,7 @@ class TestChannelBroadcastingStrategiesLegacy:
         """Test GlobalChannelStrategy."""
         strategy = GlobalChannelStrategy()
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        mock_nats_handler.connection_manager = mock_connection_manager
 
         await strategy.broadcast(chat_event, "", "", "", "sender1", mock_nats_handler)
 
@@ -378,6 +386,7 @@ class TestChannelBroadcastingStrategiesLegacy:
         """Test PartyChannelStrategy with party_id."""
         strategy = PartyChannelStrategy()
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        mock_nats_handler.connection_manager = mock_connection_manager
 
         await strategy.broadcast(chat_event, "", "party123", "", "sender1", mock_nats_handler)
 
@@ -389,6 +398,7 @@ class TestChannelBroadcastingStrategiesLegacy:
         """Test PartyChannelStrategy without party_id."""
         strategy = PartyChannelStrategy()
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        mock_nats_handler.connection_manager = mock_connection_manager
 
         await strategy.broadcast(chat_event, "", "", "", "sender1", mock_nats_handler)
 
@@ -399,6 +409,7 @@ class TestChannelBroadcastingStrategiesLegacy:
         """Test WhisperChannelStrategy with target player."""
         strategy = WhisperChannelStrategy()
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        mock_nats_handler.connection_manager = mock_connection_manager
 
         await strategy.broadcast(chat_event, "", "", "target1", "sender1", mock_nats_handler)
 
@@ -409,6 +420,7 @@ class TestChannelBroadcastingStrategiesLegacy:
         """Test WhisperChannelStrategy without target player."""
         strategy = WhisperChannelStrategy()
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        mock_nats_handler.connection_manager = mock_connection_manager
 
         await strategy.broadcast(chat_event, "", "", "", "sender1", mock_nats_handler)
 
@@ -420,6 +432,7 @@ class TestChannelBroadcastingStrategiesLegacy:
         """Test SystemAdminChannelStrategy for system channel."""
         strategy = SystemAdminChannelStrategy("system")
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        mock_nats_handler.connection_manager = mock_connection_manager
 
         await strategy.broadcast(chat_event, "", "", "", "sender1", mock_nats_handler)
 
@@ -430,6 +443,7 @@ class TestChannelBroadcastingStrategiesLegacy:
         """Test SystemAdminChannelStrategy for admin channel."""
         strategy = SystemAdminChannelStrategy("admin")
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        mock_nats_handler.connection_manager = mock_connection_manager
 
         await strategy.broadcast(chat_event, "", "", "", "sender1", mock_nats_handler)
 
@@ -440,6 +454,7 @@ class TestChannelBroadcastingStrategiesLegacy:
         """Test UnknownChannelStrategy."""
         strategy = UnknownChannelStrategy("unknown")
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        mock_nats_handler.connection_manager = mock_connection_manager
 
         await strategy.broadcast(chat_event, "", "", "", "sender1", mock_nats_handler)
 
@@ -535,11 +550,11 @@ class TestStrategyIntegration:
 
     @pytest.fixture
     def mock_connection_manager(self):
-        """Mock the connection manager."""
-        with patch("server.realtime.connection_manager.connection_manager") as mock_cm:
-            mock_cm.broadcast_global = AsyncMock()
-            mock_cm.send_personal_message = AsyncMock()
-            yield mock_cm
+        """Return a mock connection manager for integration tests."""
+        mock_cm = MagicMock()
+        mock_cm.broadcast_global = AsyncMock()
+        mock_cm.send_personal_message = AsyncMock()
+        return mock_cm
 
     @pytest.mark.asyncio
     async def test_strategy_integration_with_nats_handler(self, mock_connection_manager):
@@ -555,6 +570,7 @@ class TestStrategyIntegration:
 
         # Test room-based channel
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager
 
         await nats_handler._broadcast_by_channel_type("say", chat_event, "test_room", "", "", "sender1")
 
@@ -574,6 +590,7 @@ class TestStrategyIntegration:
 
         # Test global channel
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager
 
         await nats_handler._broadcast_by_channel_type("global", chat_event, "", "", "", "sender1")
 
@@ -591,6 +608,7 @@ class TestStrategyIntegration:
 
         # Test whisper channel
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager
 
         await nats_handler._broadcast_by_channel_type("whisper", chat_event, "", "", "target1", "sender1")
 
@@ -608,6 +626,7 @@ class TestStrategyIntegration:
 
         # Test unknown channel
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
+        nats_handler.connection_manager = mock_connection_manager
 
         # Should not raise exception
         await nats_handler._broadcast_by_channel_type("unknown", chat_event, "", "", "", "sender1")

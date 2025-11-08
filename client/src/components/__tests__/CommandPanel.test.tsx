@@ -5,15 +5,24 @@ import { vi } from 'vitest';
 import { CommandPanel } from '../panels/CommandPanel';
 
 // Mock the child components to isolate testing
-vi.mock('../../config/channels', () => ({
-  AVAILABLE_CHANNELS: [
+vi.mock('../../config/channels', () => {
+  const baseChannels = [
     { id: 'say', name: 'Say', shortcut: 'say' },
     { id: 'local', name: 'Local', shortcut: 'local' },
     { id: 'global', name: 'Global', shortcut: 'g' },
     { id: 'whisper', name: 'Whisper', shortcut: 'whisper' },
-  ],
-  DEFAULT_CHANNEL: 'say',
-}));
+  ];
+  const allChannel = { id: 'all', name: 'All Messages' };
+
+  return {
+    AVAILABLE_CHANNELS: baseChannels,
+    ALL_MESSAGES_CHANNEL: allChannel,
+    CHAT_CHANNEL_OPTIONS: [allChannel, ...baseChannels],
+    DEFAULT_CHANNEL: 'all',
+    getChannelById: (channelId: string) =>
+      channelId === allChannel.id ? allChannel : baseChannels.find(channel => channel.id === channelId),
+  };
+});
 
 vi.mock('../ui/ChannelSelector', () => ({
   ChannelSelector: ({

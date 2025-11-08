@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { AVAILABLE_CHANNELS, DEFAULT_CHANNEL } from '../../config/channels';
+import { ALL_MESSAGES_CHANNEL, CHAT_CHANNEL_OPTIONS, DEFAULT_CHANNEL } from '../../config/channels';
 import { ChannelSelector } from '../ui/ChannelSelector';
 import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
 import { LogoutButton } from '../ui/LogoutButton';
@@ -29,7 +29,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
   isLoggingOut = false,
   placeholder = "Enter game command (e.g., 'look', 'inventory', 'go north')...",
   selectedChannel = DEFAULT_CHANNEL,
-  // onChannelSelect removed - not used in current implementation
+  onChannelSelect,
 }) => {
   const [commandInput, setCommandInput] = useState('');
 
@@ -47,9 +47,6 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
       },
     });
   }
-  // historyIndex removed - not used in current implementation
-  // showSuggestions removed - not used in current implementation
-  const [currentChannel, setCurrentChannel] = useState(selectedChannel);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Focus input on mount
@@ -70,11 +67,6 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [onLogout, disabled, isConnected]);
-
-  // Update current channel when prop changes
-  useEffect(() => {
-    setCurrentChannel(selectedChannel);
-  }, [selectedChannel]);
 
   const handleCommandSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,13 +108,20 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
     const firstWord = command.split(/\s+/)[0].toLowerCase();
     const isStandaloneCommand = standaloneCommands.includes(firstWord);
 
+    const effectiveChannel = selectedChannel === ALL_MESSAGES_CHANNEL.id ? 'say' : selectedChannel;
+
     // If the command doesn't start with a slash and we're not on the 'say' channel,
     // prepend the channel command ONLY if:
     // 1. The command doesn't already start with the channel name
     // 2. The command is NOT a standalone system command
     // 3. The current channel is NOT 'local' (to prevent /l prefix on combat commands)
-    if (!command.startsWith('/') && currentChannel !== 'say' && currentChannel !== 'local' && !isStandaloneCommand) {
-      const channel = AVAILABLE_CHANNELS.find(c => c.id === currentChannel);
+    if (
+      !command.startsWith('/') &&
+      effectiveChannel !== 'say' &&
+      effectiveChannel !== 'local' &&
+      !isStandaloneCommand
+    ) {
+      const channel = CHAT_CHANNEL_OPTIONS.find(c => c.id === effectiveChannel);
       // Don't prepend if command already starts with the channel name
       const commandLower = command.toLowerCase();
       const channelName = channel?.id || '';
@@ -144,33 +143,6 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
     }
   };
 
-  // handleKeyDown removed - not used in current implementation
-  // TODO: Implement keyboard navigation for command history
-
-  // handleHistoryClick removed - not used in current implementation
-  // TODO: Implement clickable command history
-
-  // handleChannelSelect removed - not used in current implementation
-  // TODO: Implement channel selection callback
-
-  // formatTimestamp removed - not used in current implementation
-  // TODO: Implement timestamp formatting for command history
-
-  // getChannelQuickCommands removed - not used in current implementation
-  // TODO: Implement channel-specific quick commands
-
-  // quickCommands removed - not used in current implementation
-  // TODO: Implement quick command buttons
-
-  // commonCommands removed - not used in current implementation
-  // TODO: Implement command suggestions with common commands
-
-  // getSuggestions removed - not used in current implementation
-  // TODO: Implement command suggestions
-
-  // suggestions removed - not used in current implementation
-  // TODO: Implement command suggestions
-
   return (
     <div
       className="command-panel h-full flex flex-col bg-mythos-terminal-surface border border-gray-700 rounded"
@@ -184,9 +156,11 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
         </div>
         <div className="flex items-center space-x-2">
           <ChannelSelector
-            channels={AVAILABLE_CHANNELS}
-            selectedChannel={currentChannel}
-            onChannelSelect={setCurrentChannel}
+            channels={CHAT_CHANNEL_OPTIONS}
+            selectedChannel={selectedChannel}
+            onChannelSelect={channelId => {
+              onChannelSelect?.(channelId);
+            }}
             disabled={disabled || !isConnected}
           />
           <TerminalButton

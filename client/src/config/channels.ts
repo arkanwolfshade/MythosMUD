@@ -57,8 +57,20 @@ export const AVAILABLE_CHANNELS: Channel[] = [
   },
 ];
 
+// Special channel that represents the aggregate view across all channels
+export const ALL_MESSAGES_CHANNEL: Channel = {
+  id: 'all',
+  name: 'All Messages',
+  description: 'View every chat message across all channels',
+  icon: MythosIcons.chat,
+  color: 'text-mythos-terminal-primary',
+};
+
+// Aggregate list used by channel selectors across the client
+export const CHAT_CHANNEL_OPTIONS: Channel[] = [ALL_MESSAGES_CHANNEL, ...AVAILABLE_CHANNELS];
+
 // Default channel to use when no channel is selected
-export const DEFAULT_CHANNEL = 'local';
+export const DEFAULT_CHANNEL = ALL_MESSAGES_CHANNEL.id;
 
 // Channel groups for organization
 export const CHANNEL_GROUPS = {
@@ -70,7 +82,7 @@ export const CHANNEL_GROUPS = {
 
 // Helper function to get channel by ID
 export const getChannelById = (channelId: string): Channel | undefined => {
-  return AVAILABLE_CHANNELS.find(channel => channel.id === channelId);
+  return CHAT_CHANNEL_OPTIONS.find(channel => channel.id === channelId);
 };
 
 // Helper function to get enabled channels only

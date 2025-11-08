@@ -6,7 +6,7 @@ provides services to API endpoints, ensuring proper separation of concerns
 and testable architecture.
 """
 
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
@@ -51,25 +51,31 @@ class TestServiceDependencyInjection:
             app = create_app()
 
             # Manually set up app state since lifespan won't run in tests
+            # AI Agent: Post-migration - use ApplicationContainer for dependency injection
+            from pathlib import Path
+
+            from server.events.event_bus import EventBus
             from server.game.chat_service import ChatService
             from server.game.player_service import PlayerService
             from server.game.room_service import RoomService
-            from server.realtime.connection_manager import connection_manager
-            from server.realtime.event_handler import get_real_time_event_handler
+            from server.realtime.connection_manager import ConnectionManager
+            from server.realtime.event_handler import RealTimeEventHandler
             from server.services.user_manager import UserManager
 
             # Set up app state manually
             app.state.persistence = mock_persistence
             app.state.player_service = PlayerService(mock_persistence)
             app.state.room_service = RoomService(mock_persistence)
-            from pathlib import Path
 
             # Use absolute path to prevent nested server/server/ directory creation
             test_user_mgmt_path = Path(__file__).parent.parent.parent.parent / "data" / "unit_test" / "user_management"
             app.state.user_manager = UserManager(data_dir=test_user_mgmt_path)
-            app.state.event_handler = get_real_time_event_handler()
-            app.state.event_bus = app.state.event_handler.event_bus
-            app.state.connection_manager = connection_manager
+
+            # AI Agent: Create new instances instead of using globals
+            event_bus = EventBus()
+            app.state.event_handler = RealTimeEventHandler(event_bus)
+            app.state.event_bus = event_bus
+            app.state.connection_manager = ConnectionManager()
             app.state.nats_service = mock_nats
             app.state.chat_service = ChatService(
                 persistence=mock_persistence,
@@ -77,6 +83,10 @@ class TestServiceDependencyInjection:
                 player_service=app.state.player_service,
                 nats_service=mock_nats,
             )
+
+            # Create mock connection manager (container expects instance)
+            connection_manager = MagicMock()
+            connection_manager.persistence = mock_persistence
 
             # Use the comprehensive mock container and update with real/mocked services
             mock_application_container.persistence = mock_persistence

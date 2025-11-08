@@ -49,6 +49,11 @@ class UserManager:
 
         logger.info("UserManager initialized with JSON file persistence")
 
+    @staticmethod
+    def _normalize_player_id(player_id: Any) -> str:
+        """Normalize player identifiers to string form."""
+        return str(player_id)
+
     def add_admin(self, player_id: str, player_name: str | None = None):
         """
         Add a player as an admin.
@@ -57,6 +62,8 @@ class UserManager:
             player_id: Player ID
             player_name: Player name for logging
         """
+        player_id = self._normalize_player_id(player_id)
+
         try:
             # Update database
             from ..persistence import get_persistence
@@ -95,6 +102,8 @@ class UserManager:
             player_id: Player ID
             player_name: Player name for logging
         """
+        player_id = self._normalize_player_id(player_id)
+
         try:
             # Update database
             from ..persistence import get_persistence
@@ -140,6 +149,14 @@ class UserManager:
         Returns:
             True if player is admin
         """
+        raw_player_id = player_id
+        player_id = self._normalize_player_id(player_id)
+
+        # Normalize admin cache entry if necessary
+        if raw_player_id != player_id and raw_player_id in self._admin_players:
+            self._admin_players.discard(raw_player_id)
+            self._admin_players.add(player_id)
+
         # Check in-memory cache first
         if player_id in self._admin_players:
             return True
@@ -193,6 +210,19 @@ class UserManager:
         Returns:
             True if mute was applied successfully
         """
+        raw_muter_id = muter_id
+        raw_target_id = target_id
+        muter_id = self._normalize_player_id(muter_id)
+        target_id = self._normalize_player_id(target_id)
+
+        # Normalize existing dictionary keys if they were stored with non-string identifiers
+        if raw_muter_id != muter_id and raw_muter_id in self._player_mutes:
+            self._player_mutes[muter_id] = self._player_mutes.pop(raw_muter_id)
+        if muter_id not in self._player_mutes:
+            self._player_mutes[muter_id] = {}
+        if raw_target_id != target_id and raw_target_id in self._player_mutes[muter_id]:
+            self._player_mutes[muter_id][target_id] = self._player_mutes[muter_id].pop(raw_target_id)
+
         try:
             # Check if target is admin (immune to mutes)
             if self.is_admin(target_id):
@@ -200,9 +230,6 @@ class UserManager:
                 return False
 
             # Initialize player mutes if needed
-            if muter_id not in self._player_mutes:
-                self._player_mutes[muter_id] = {}
-
             # Calculate mute expiry
             expiry_time = None
             if duration_minutes:
@@ -271,6 +298,27 @@ class UserManager:
         Returns:
             True if unmute was successful
         """
+        raw_unmuter_id = unmuter_id
+        raw_target_id = target_id
+        unmuter_id = self._normalize_player_id(unmuter_id)
+        target_id = self._normalize_player_id(target_id)
+
+        # Normalize keys if they were stored as non-strings
+        if raw_unmuter_id != unmuter_id and raw_unmuter_id in self._player_mutes:
+            self._player_mutes[unmuter_id] = self._player_mutes.pop(raw_unmuter_id)
+        if unmuter_id not in self._player_mutes:
+            self._player_mutes[unmuter_id] = {}
+        if raw_target_id != target_id and raw_target_id in self._player_mutes[unmuter_id]:
+            self._player_mutes[unmuter_id][target_id] = self._player_mutes[unmuter_id].pop(raw_target_id)
+
+        raw_unmuter_id = unmuter_id
+        raw_target_id = target_id
+        unmuter_id = self._normalize_player_id(unmuter_id)
+        target_id = self._normalize_player_id(target_id)
+
+        if raw_target_id != target_id and raw_target_id in self._global_mutes:
+            self._global_mutes[target_id] = self._global_mutes.pop(raw_target_id)
+
         try:
             # Load unmuter's mute data to ensure it's available
             self.load_player_mutes(unmuter_id)
@@ -340,11 +388,16 @@ class UserManager:
         Returns:
             True if mute was applied successfully
         """
+        raw_player_id = player_id
+        player_id = self._normalize_player_id(player_id)
+
+        if raw_player_id != player_id and raw_player_id in self._channel_mutes:
+            self._channel_mutes[player_id] = self._channel_mutes.pop(raw_player_id)
+        if player_id not in self._channel_mutes:
+            self._channel_mutes[player_id] = {}
+
         try:
             # Initialize channel mutes if needed
-            if player_id not in self._channel_mutes:
-                self._channel_mutes[player_id] = {}
-
             # Calculate mute expiry
             expiry_time = None
             if duration_minutes:
@@ -407,6 +460,12 @@ class UserManager:
         Returns:
             True if unmute was successful
         """
+        raw_player_id = player_id
+        player_id = self._normalize_player_id(player_id)
+
+        if raw_player_id != player_id and raw_player_id in self._channel_mutes:
+            self._channel_mutes[player_id] = self._channel_mutes.pop(raw_player_id)
+
         try:
             # Check if channel mute exists
             if player_id in self._channel_mutes and channel in self._channel_mutes[player_id]:
@@ -459,6 +518,13 @@ class UserManager:
         Returns:
             True if mute was applied successfully
         """
+        raw_target_id = target_id
+        muter_id = self._normalize_player_id(muter_id)
+        target_id = self._normalize_player_id(target_id)
+
+        if raw_target_id != target_id and raw_target_id in self._global_mutes:
+            self._global_mutes[target_id] = self._global_mutes.pop(raw_target_id)
+
         try:
             # Check if target is admin (immune to mutes)
             if self.is_admin(target_id):
@@ -580,9 +646,21 @@ class UserManager:
         Returns:
             True if target is muted by player
         """
+        raw_player_id = player_id
+        raw_target_id = target_id
+        player_id = self._normalize_player_id(player_id)
+        target_id = self._normalize_player_id(target_id)
+
         try:
             # Load player's mute data to ensure it's available
             self.load_player_mutes(player_id)
+
+            if raw_player_id != player_id and raw_player_id in self._player_mutes:
+                self._player_mutes[player_id] = self._player_mutes.pop(raw_player_id)
+            if player_id not in self._player_mutes:
+                return False
+            if raw_target_id != target_id and raw_target_id in self._player_mutes[player_id]:
+                self._player_mutes[player_id][target_id] = self._player_mutes[player_id].pop(raw_target_id)
 
             # Check if mute exists and is not expired
             if player_id in self._player_mutes and target_id in self._player_mutes[player_id]:
@@ -615,7 +693,13 @@ class UserManager:
         Returns:
             True if channel is muted by player
         """
+        raw_player_id = player_id
+        player_id = self._normalize_player_id(player_id)
+
         try:
+            if raw_player_id != player_id and raw_player_id in self._channel_mutes:
+                self._channel_mutes[player_id] = self._channel_mutes.pop(raw_player_id)
+
             # Check if channel mute exists and is not expired
             if player_id in self._channel_mutes and channel in self._channel_mutes[player_id]:
                 mute_info = self._channel_mutes[player_id][channel]
@@ -646,7 +730,13 @@ class UserManager:
         Returns:
             True if player is globally muted
         """
+        raw_player_id = player_id
+        player_id = self._normalize_player_id(player_id)
+
         try:
+            if raw_player_id != player_id and raw_player_id in self._global_mutes:
+                self._global_mutes[player_id] = self._global_mutes.pop(raw_player_id)
+
             # Check if global mute exists and is not expired
             if player_id in self._global_mutes:
                 mute_info = self._global_mutes[player_id]
@@ -683,6 +773,9 @@ class UserManager:
         Returns:
             True if player can send message
         """
+        sender_id = self._normalize_player_id(sender_id)
+        target_id = self._normalize_player_id(target_id) if target_id is not None else None
+
         try:
             # Admins can always send messages
             if self.is_admin(sender_id):
@@ -716,6 +809,8 @@ class UserManager:
         Returns:
             Dictionary with mute information
         """
+        player_id = self._normalize_player_id(player_id)
+
         try:
             mutes: dict[str, dict[str, Any]] = {"player_mutes": {}, "channel_mutes": {}, "global_mutes": {}}
 
@@ -764,6 +859,12 @@ class UserManager:
         """
         # Only check if player is in any global mutes
         # Personal mutes should not prevent the muted player from sending messages
+        raw_player_id = player_id
+        player_id = self._normalize_player_id(player_id)
+
+        if raw_player_id != player_id and raw_player_id in self._global_mutes:
+            self._global_mutes[player_id] = self._global_mutes.pop(raw_player_id)
+
         if player_id in self._global_mutes:
             return True
 
@@ -779,6 +880,12 @@ class UserManager:
         Returns:
             List of tuples (muter_name, mute_type)
         """
+        raw_player_id = player_id
+        player_id = self._normalize_player_id(player_id)
+
+        if raw_player_id != player_id and raw_player_id in self._global_mutes:
+            self._global_mutes[player_id] = self._global_mutes.pop(raw_player_id)
+
         muted_by = []
 
         # Check global mutes
@@ -859,6 +966,7 @@ class UserManager:
 
     def _get_player_mute_file(self, player_id: str) -> Path:
         """Get the mute data file path for a specific player."""
+        player_id = self._normalize_player_id(player_id)
         return self.data_dir / f"mutes_{player_id}.json"
 
     def load_player_mutes(self, player_id: str) -> bool:
@@ -871,6 +979,8 @@ class UserManager:
         Returns:
             True if data was loaded successfully, False otherwise
         """
+        player_id = self._normalize_player_id(player_id)
+
         try:
             mute_file = self._get_player_mute_file(player_id)
 
@@ -940,6 +1050,8 @@ class UserManager:
         Returns:
             True if data was saved successfully, False otherwise
         """
+        player_id = self._normalize_player_id(player_id)
+
         try:
             mute_file = self._get_player_mute_file(player_id)
 
@@ -1027,18 +1139,28 @@ class UserManager:
             )
             return False
 
-    def cleanup_player_mutes(self, player_id: str) -> bool:
+    def cleanup_player_mutes(self, player_id: str, *, delete_file: bool = False) -> bool:
         """
-        Remove mute data for a player from memory and delete their file.
+        Remove mute data for a player from memory and optionally delete their file.
         Called when a player logs out or is deleted.
 
         Args:
             player_id: Player ID to cleanup
+            delete_file: Whether to delete the persisted mute file. Defaults to False.
 
         Returns:
             True if cleanup was successful, False otherwise
         """
+        raw_player_id = player_id
+        player_id = self._normalize_player_id(player_id)
+
         try:
+            if raw_player_id != player_id:
+                self._player_mutes.pop(raw_player_id, None)
+                self._channel_mutes.pop(raw_player_id, None)
+                self._global_mutes.pop(raw_player_id, None)
+                self._admin_players.discard(raw_player_id)
+
             # Remove from memory
             if player_id in self._player_mutes:
                 del self._player_mutes[player_id]
@@ -1052,10 +1174,11 @@ class UserManager:
             if player_id in self._admin_players:
                 self._admin_players.remove(player_id)
 
-            # Delete file
-            mute_file = self._get_player_mute_file(player_id)
-            if mute_file.exists():
-                mute_file.unlink()
+            if delete_file:
+                # Delete file only when explicitly requested (e.g., account deletion)
+                mute_file = self._get_player_mute_file(player_id)
+                if mute_file.exists():
+                    mute_file.unlink()
 
             logger.info("Player mute data cleaned up")
             return True

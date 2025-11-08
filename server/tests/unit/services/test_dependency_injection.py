@@ -53,25 +53,32 @@ class TestServiceDependencyInjection:
             app = create_app()
 
             # Manually set up app state since lifespan won't run in tests
+            # AI Agent: Post-migration - use ApplicationContainer for dependency injection
+            from pathlib import Path
+
+            from server.events.event_bus import EventBus
             from server.game.chat_service import ChatService
             from server.game.player_service import PlayerService
             from server.game.room_service import RoomService
-            from server.realtime.connection_manager import connection_manager
-            from server.realtime.event_handler import get_real_time_event_handler
+            from server.realtime.connection_manager import ConnectionManager
+            from server.realtime.event_handler import RealTimeEventHandler
             from server.services.user_manager import UserManager
 
             # Set up app state manually
             app.state.persistence = mock_persistence
             app.state.player_service = PlayerService(mock_persistence)
             app.state.room_service = RoomService(mock_persistence)
-            from pathlib import Path
 
             # Get project root for absolute path (server/tests/test_*.py -> project root)
             # Path: server/tests/unit/services/test_dependency_injection.py -> server/tests/unit/services -> server/tests/unit -> server/tests -> server -> project root
             project_root = Path(__file__).parent.parent.parent.parent.parent
             app.state.user_manager = UserManager(data_dir=project_root / "data" / "unit_test" / "user_management")
-            app.state.event_handler = get_real_time_event_handler()
-            app.state.event_bus = app.state.event_handler.event_bus
+
+            # AI Agent: Create new instances instead of using globals
+            event_bus = EventBus()
+            connection_manager = ConnectionManager()
+            app.state.event_handler = RealTimeEventHandler(event_bus)
+            app.state.event_bus = event_bus
             app.state.connection_manager = connection_manager
             app.state.nats_service = mock_nats
             app.state.chat_service = ChatService(
@@ -88,7 +95,7 @@ class TestServiceDependencyInjection:
             mock_application_container.event_bus = app.state.event_bus
             mock_application_container.user_manager = app.state.user_manager
             mock_application_container.nats_service = mock_nats
-            mock_application_container.connection_manager = connection_manager
+            mock_application_container.connection_manager = connection_manager  # AI: Use local instance, not global
             app.state.container = mock_application_container
 
             return app

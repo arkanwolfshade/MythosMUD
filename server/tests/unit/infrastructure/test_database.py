@@ -203,14 +203,13 @@ class TestInitDB:
         mock_engine.begin = MagicMock(return_value=mock_context_manager)
 
         with patch("server.database.get_engine", return_value=mock_engine):
-            # Mock the connection manager to prevent unawaited coroutines
-            with patch("server.realtime.connection_manager.connection_manager"):
-                await init_db()
+            # AI Agent: connection_manager no longer a module-level global - patch removed
+            await init_db()
 
-                # Verify that create_all was called
-                mock_conn.run_sync.assert_called_once()
-                call_args = mock_conn.run_sync.call_args[0]
-                assert call_args[0] == metadata.create_all
+            # Verify that create_all was called
+            mock_conn.run_sync.assert_called_once()
+            call_args = mock_conn.run_sync.call_args[0]
+            assert call_args[0] == metadata.create_all
 
     @pytest.mark.asyncio
     @pytest.mark.filterwarnings("ignore:coroutine.*was never awaited:RuntimeWarning")
@@ -231,19 +230,18 @@ class TestInitDB:
         mock_engine.begin = MagicMock(return_value=mock_context_manager)
 
         with patch("server.database.get_engine", return_value=mock_engine):
-            # Mock the global connection_manager instance to avoid creating unawaited coroutines
-            with patch("server.realtime.connection_manager.connection_manager"):
-                # Mock the specific imports that init_db makes
-                with patch("server.models.invite.Invite"):
-                    with patch("server.models.npc.NPCDefinition"):
-                        with patch("server.models.npc.NPCSpawnRule"):
-                            with patch("server.models.player.Player"):
-                                with patch("server.models.user.User"):
-                                    with patch("server.models.invite.Invite"):
-                                        # ARCHITECTURE FIX: setup_relationships deleted - relationships now in models
-                                        # Mock the configure_mappers function
-                                        with patch("sqlalchemy.orm.configure_mappers"):
-                                            await init_db()
+            # AI Agent: connection_manager no longer a module-level global - patch removed
+            # Mock the specific imports that init_db makes
+            with patch("server.models.invite.Invite"):
+                with patch("server.models.npc.NPCDefinition"):
+                    with patch("server.models.npc.NPCSpawnRule"):
+                        with patch("server.models.player.Player"):
+                            with patch("server.models.user.User"):
+                                with patch("server.models.invite.Invite"):
+                                    # ARCHITECTURE FIX: setup_relationships deleted - relationships now in models
+                                    # Mock the configure_mappers function
+                                    with patch("sqlalchemy.orm.configure_mappers"):
+                                        await init_db()
 
                 # Test passes if no exceptions are raised during init_db
 

@@ -85,7 +85,7 @@ class NPCDiedEvent(BaseEvent):
 
     combat_id: UUID
     room_id: str
-    npc_id: UUID
+    npc_id: str | UUID  # AI Agent: Accept both string IDs (from lifecycle) and UUIDs (from combat)
     npc_name: str
     xp_reward: int
 

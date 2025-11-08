@@ -105,13 +105,22 @@ vi.mock('../src/utils/ansiToHtml', () => ({
   ansiToHtmlWithBreaks: (text: string) => text.replace(/\n/g, '<br>'),
 }));
 
-vi.mock('../src/config/channels', () => ({
-  AVAILABLE_CHANNELS: [
+vi.mock('../src/config/channels', () => {
+  const baseChannels = [
     { id: 'local', name: 'Local', shortcut: 'l' },
     { id: 'global', name: 'Global', shortcut: 'g' },
-  ],
-  DEFAULT_CHANNEL: 'local',
-}));
+  ];
+  const allChannel = { id: 'all', name: 'All Messages' };
+
+  return {
+    AVAILABLE_CHANNELS: baseChannels,
+    ALL_MESSAGES_CHANNEL: allChannel,
+    CHAT_CHANNEL_OPTIONS: [allChannel, ...baseChannels],
+    DEFAULT_CHANNEL: 'all',
+    getChannelById: (channelId: string) =>
+      channelId === allChannel.id ? allChannel : baseChannels.find(channel => channel.id === channelId),
+  };
+});
 
 describe('GameTerminal Integration', () => {
   const mockMessages = [

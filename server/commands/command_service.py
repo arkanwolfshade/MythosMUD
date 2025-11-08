@@ -230,13 +230,18 @@ class CommandService:
                     "parsed_command": parsed_command,  # Include the full parsed command object
                 }
 
-                # Add command-specific data based on the parsed command
-                if hasattr(parsed_command, "message"):
-                    command_data["message"] = parsed_command.message
-                if hasattr(parsed_command, "direction"):
-                    command_data["direction"] = parsed_command.direction
-                if hasattr(parsed_command, "target"):
-                    command_data["target"] = parsed_command.target
+                # Merge parsed command fields (use Pydantic model_dump for completeness)
+                try:
+                    parsed_fields = parsed_command.model_dump(exclude_none=True)
+                except AttributeError:
+                    parsed_fields = {
+                        key: getattr(parsed_command, key)
+                        for key in dir(parsed_command)
+                        if not key.startswith("_")
+                        and not callable(getattr(parsed_command, key))
+                        and key not in command_data
+                    }
+                command_data.update(parsed_fields)
 
                 assert handler is not None  # Type narrowing for mypy
                 result = await handler(command_data, current_user, request, alias_storage, player_name)

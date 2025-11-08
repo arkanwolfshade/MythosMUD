@@ -24,7 +24,6 @@ class TestDependencyInjection:
         AI: ARCHITECTURE CHANGE - Updated to use container-based DI
         """
 
-
         # Create mock request with real container
         mock_request = Mock(spec=Request)
         mock_request.app = container_test_client.app
@@ -42,7 +41,6 @@ class TestDependencyInjection:
 
         AI: ARCHITECTURE CHANGE - Updated to use container-based DI
         """
-
 
         # Create mock request with real container
         mock_request = Mock(spec=Request)
@@ -76,7 +74,6 @@ class TestDependencyInjection:
         AI: ARCHITECTURE CHANGE - Updated to use container-based TestClient
         """
 
-
         # Create mock request with real container
         mock_request = Mock(spec=Request)
         mock_request.app = container_test_client.app
@@ -93,7 +90,6 @@ class TestDependencyInjection:
 
         AI: ARCHITECTURE CHANGE - Updated to use container-based TestClient
         """
-
 
         # Create mock request with real container
         mock_request = Mock(spec=Request)

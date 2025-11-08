@@ -26,11 +26,21 @@ class TestWebSocketMessageHandler:
 
     @pytest.fixture
     def mock_connection_manager(self):
-        """Mock the connection manager."""
-        with patch("server.realtime.websocket_handler.connection_manager") as mock_cm:
-            mock_cm._get_player.return_value = MagicMock()
-            mock_cm._get_player.return_value.current_room_id = "test_room"
+        """Provide a mock connection manager attached to the FastAPI app state."""
+        from server.main import app as fastapi_app
+
+        original_container = getattr(fastapi_app.state, "container", None)
+        mock_container = MagicMock()
+        mock_cm = MagicMock()
+        mock_cm._get_player.return_value = MagicMock()
+        mock_cm._get_player.return_value.current_room_id = "test_room"
+        mock_container.connection_manager = mock_cm
+        fastapi_app.state.container = mock_container
+
+        try:
             yield mock_cm
+        finally:
+            fastapi_app.state.container = original_container
 
     @pytest.mark.asyncio
     async def test_handle_command_message(self, mock_websocket, mock_connection_manager):

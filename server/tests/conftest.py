@@ -516,10 +516,11 @@ def test_client(mock_application_container):
 
     from fastapi.testclient import TestClient
 
+    from ..events.event_bus import EventBus
     from ..game.player_service import PlayerService
     from ..main import app
     from ..persistence import get_persistence, reset_persistence
-    from ..realtime.event_handler import get_real_time_event_handler
+    from ..realtime.event_handler import RealTimeEventHandler
     from .scripts.init_test_db import init_test_database
 
     # Reset persistence to ensure fresh state
@@ -528,9 +529,11 @@ def test_client(mock_application_container):
     # Initialize the test database to ensure it exists and is accessible
     init_test_database()
 
-    # Initialize the app state manually for tests
-    app.state.event_handler = get_real_time_event_handler()
-    app.state.persistence = get_persistence(event_bus=app.state.event_handler.event_bus)
+    # AI Agent: Create event handler directly (no longer using global factory)
+    #           Post-migration: RealTimeEventHandler uses dependency injection
+    event_bus = EventBus()
+    app.state.event_handler = RealTimeEventHandler(event_bus=event_bus)
+    app.state.persistence = get_persistence(event_bus=event_bus)
 
     # Create real PlayerService with real persistence
     player_service = PlayerService(app.state.persistence)
@@ -555,9 +558,10 @@ async def async_test_client():
     """Create an async test client with properly initialized app state for async tests."""
     from httpx import AsyncClient
 
+    from ..events.event_bus import EventBus
     from ..main import app
     from ..persistence import get_persistence, reset_persistence
-    from ..realtime.event_handler import get_real_time_event_handler
+    from ..realtime.event_handler import RealTimeEventHandler
     from .scripts.init_test_db import init_test_database
 
     # Reset persistence to ensure fresh state
@@ -566,9 +570,11 @@ async def async_test_client():
     # Initialize the test database to ensure it exists and is accessible
     init_test_database()
 
-    # Initialize the app state manually for tests
-    app.state.event_handler = get_real_time_event_handler()
-    app.state.persistence = get_persistence(event_bus=app.state.event_handler.event_bus)
+    # AI Agent: Create event handler directly (no longer using global factory)
+    #           Post-migration: RealTimeEventHandler uses dependency injection
+    event_bus = EventBus()
+    app.state.event_handler = RealTimeEventHandler(event_bus=event_bus)
+    app.state.persistence = get_persistence(event_bus=event_bus)
 
     async with AsyncClient(app=app, base_url="http://test") as client:
         yield client

@@ -5,7 +5,7 @@ Tests the FastAPI application, endpoints, logging setup, and game tick functiona
 """
 
 import uuid
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
 from fastapi import FastAPI
@@ -364,19 +364,21 @@ class TestEndpoints:
 
     def test_get_game_status(self, client):
         """Test getting game status."""
-        with patch("server.api.game.connection_manager") as mock_connection_manager:
-            mock_connection_manager.get_active_connection_count.return_value = 5
-            mock_connection_manager.player_websockets = {"player1": "conn1", "player2": "conn2"}
-            mock_connection_manager.room_subscriptions = {"room1": {"player1"}}
+        # AI Agent: Configure the connection_manager directly on client app state
+        mock_connection_manager = MagicMock()
+        mock_connection_manager.get_active_connection_count.return_value = 5
+        mock_connection_manager.player_websockets = {"player1": "conn1", "player2": "conn2"}
+        mock_connection_manager.room_subscriptions = {"room1": {"player1"}}
+        client.app.state.container.connection_manager = mock_connection_manager
 
-            response = client.get("/game/status")
+        response = client.get("/game/status")
 
-            assert response.status_code == 200
-            data = response.json()
-            assert data["active_connections"] == 5
-            assert data["active_players"] == 2
-            assert data["room_subscriptions"] == 1
-            assert "server_time" in data
+        assert response.status_code == 200
+        data = response.json()
+        assert data["active_connections"] == 5
+        assert data["active_players"] == 2
+        assert data["room_subscriptions"] == 1
+        assert "server_time" in data
 
 
 class TestWebSocketEndpoints:

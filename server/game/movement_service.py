@@ -284,7 +284,7 @@ class MovementService:
         # Check if player is in combat - players cannot move during combat
         # As noted in the Pnakotic Manuscripts, entities engaged in mortal combat
         # must not escape through dimensional gateways until the conflict is resolved
-        self._logger.critical(
+        self._logger.debug(
             "COMBAT CHECK: Starting combat validation",
             player_id=player_id,
             has_combat_service=bool(self._player_combat_service),
@@ -298,11 +298,11 @@ class MovementService:
                 # Convert player_id string to UUID if needed
                 try:
                     player_uuid = UUID(player_id)
-                    self._logger.critical("COMBAT CHECK: Player ID is valid UUID", player_uuid=str(player_uuid))
+                    self._logger.debug("COMBAT CHECK: Player ID is valid UUID", player_uuid=str(player_uuid))
                 except (ValueError, AttributeError):
                     # If player_id is not a valid UUID, it might be a name
                     # Get the player to retrieve their UUID
-                    self._logger.critical(
+                    self._logger.debug(
                         "COMBAT CHECK: Player ID not UUID, fetching from persistence", player_id=player_id
                     )
                     player = self._persistence.get_player(player_id)
@@ -310,14 +310,14 @@ class MovementService:
                         # Convert player_id to UUID (handle Column[str] from SQLAlchemy)
                         try:
                             player_uuid = UUID(str(player.player_id))
-                            self._logger.critical(
+                            self._logger.debug(
                                 "COMBAT CHECK: Got UUID from player object", player_uuid=str(player_uuid)
                             )
                         except (ValueError, AttributeError, TypeError):
                             player_uuid = None
-                            self._logger.critical("COMBAT CHECK: Failed to convert player.player_id to UUID")
+                            self._logger.warning("COMBAT CHECK: Failed to convert player.player_id to UUID")
                     else:
-                        self._logger.critical(
+                        self._logger.warning(
                             "Unable to convert player_id to UUID for combat check",
                             player_id=player_id,
                             player_found=bool(player),
@@ -328,13 +328,13 @@ class MovementService:
 
                 if player_uuid:
                     # Use synchronous combat check - no async complications
-                    self._logger.critical(
+                    self._logger.debug(
                         "COMBAT CHECK: About to check combat state",
                         player_uuid=str(player_uuid),
                         service=type(self._player_combat_service).__name__,
                     )
                     is_in_combat = self._player_combat_service.is_player_in_combat_sync(player_uuid)
-                    self._logger.critical(
+                    self._logger.debug(
                         "COMBAT CHECK: Combat state result",
                         player_id=player_id,
                         player_uuid=str(player_uuid),
@@ -342,7 +342,7 @@ class MovementService:
                     )
 
                     if is_in_combat:
-                        self._logger.critical(
+                        self._logger.warning(
                             "COMBAT CHECK: BLOCKING MOVEMENT - Player is in combat",
                             player_id=player_id,
                             from_room=from_room_id,
@@ -350,12 +350,12 @@ class MovementService:
                         )
                         return False
                     else:
-                        self._logger.critical("COMBAT CHECK: Player not in combat, allowing movement")
+                        self._logger.debug("COMBAT CHECK: Player not in combat, allowing movement")
                 else:
-                    self._logger.critical("COMBAT CHECK: No player_uuid, allowing movement by default")
+                    self._logger.warning("COMBAT CHECK: No player_uuid, allowing movement by default")
 
             except Exception as e:
-                self._logger.critical(
+                self._logger.warning(
                     "COMBAT CHECK: Exception during combat check, allowing movement",
                     player_id=player_id,
                     error=str(e),
@@ -363,7 +363,7 @@ class MovementService:
                 )
                 # On error, allow movement to prevent blocking players
         else:
-            self._logger.critical("COMBAT CHECK: No combat service available, allowing movement by default")
+            self._logger.warning("COMBAT CHECK: No combat service available, allowing movement by default")
 
         # Check if rooms exist
         from_room = self._persistence.get_room(from_room_id)

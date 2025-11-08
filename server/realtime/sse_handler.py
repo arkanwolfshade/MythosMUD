@@ -11,22 +11,29 @@ from collections.abc import AsyncGenerator
 
 from ..error_types import ErrorMessages, ErrorType, create_sse_error_response
 from ..logging.enhanced_logging_config import get_logger
-from .connection_manager import connection_manager
 from .envelope import build_event, sse_line
+
+# AI Agent: Don't import app at module level - causes circular import!
+#           Import locally in functions instead
 
 logger = get_logger(__name__)
 
 
-async def game_event_stream(player_id: str, session_id: str | None = None) -> AsyncGenerator[str, None]:
+async def game_event_stream(
+    player_id: str, session_id: str | None = None, connection_manager=None
+) -> AsyncGenerator[str, None]:
     """
     Generate a stream of game events for a player.
 
     Args:
         player_id: The player's ID
         session_id: Optional session ID for dual connection management
+        connection_manager: ConnectionManager instance (injected from endpoint)
 
     Yields:
         str: SSE event data
+
+    AI Agent: connection_manager now injected as parameter instead of global import
     """
     # Convert player_id to string to ensure JSON serialization compatibility
     player_id_str = str(player_id)
@@ -125,6 +132,12 @@ async def send_game_event(player_id: str, event_type: str, data: dict) -> None:
         data: The event data
     """
     try:
+        # AI Agent: Access connection_manager via app.state.container (no longer a global)
+        #           Import locally to avoid circular import
+        from ..main import app
+
+        connection_manager = app.state.container.connection_manager
+
         # Convert player_id to string to ensure JSON serialization compatibility
         player_id_str = str(player_id)
         await connection_manager.send_personal_message(
@@ -145,6 +158,11 @@ async def broadcast_game_event(event_type: str, data: dict, exclude_player: str 
         exclude_player: Player ID to exclude from broadcast
     """
     try:
+        # AI Agent: Access connection_manager via app.state.container (no longer a global)
+        #           Import locally to avoid circular import
+        from ..main import app
+
+        connection_manager = app.state.container.connection_manager
         await connection_manager.broadcast_global(build_event(event_type, data), exclude_player)
 
     except Exception as e:
@@ -162,6 +180,11 @@ async def send_room_event(room_id: str, event_type: str, data: dict, exclude_pla
         exclude_player: Player ID to exclude from broadcast
     """
     try:
+        # AI Agent: Access connection_manager via app.state.container (no longer a global)
+        #           Import locally to avoid circular import
+        from ..main import app
+
+        connection_manager = app.state.container.connection_manager
         await connection_manager.broadcast_to_room(
             room_id, build_event(event_type, data, room_id=room_id), exclude_player
         )

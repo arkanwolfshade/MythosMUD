@@ -20,7 +20,7 @@ from playwright.async_api import async_playwright
 pytestmark = [
     pytest.mark.slow,
     pytest.mark.e2e,
-    pytest.mark.skip(reason="E2E tests require running servers. Run with: pytest -m e2e --runxfail")
+    pytest.mark.skip(reason="E2E tests require running servers. Run with: pytest -m e2e --runxfail"),
 ]
 
 

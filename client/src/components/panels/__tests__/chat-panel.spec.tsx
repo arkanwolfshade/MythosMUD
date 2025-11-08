@@ -3,13 +3,22 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { DEFAULT_CHANNEL } from '../../../config/channels';
 
 // Mock the dependencies
-vi.mock('../src/config/channels', () => ({
-  AVAILABLE_CHANNELS: [
+vi.mock('../src/config/channels', () => {
+  const baseChannels = [
     { id: 'local', name: 'Local', shortcut: 'l' },
     { id: 'global', name: 'Global', shortcut: 'g' },
-  ],
-  DEFAULT_CHANNEL: 'local',
-}));
+  ];
+  const allChannel = { id: 'all', name: 'All Messages' };
+
+  return {
+    AVAILABLE_CHANNELS: baseChannels,
+    ALL_MESSAGES_CHANNEL: allChannel,
+    CHAT_CHANNEL_OPTIONS: [allChannel, ...baseChannels],
+    DEFAULT_CHANNEL: 'all',
+    getChannelById: (channelId: string) =>
+      channelId === allChannel.id ? allChannel : baseChannels.find(channel => channel.id === channelId),
+  };
+});
 
 vi.mock('../src/components/ui/EldritchIcon', () => ({
   EldritchIcon: ({

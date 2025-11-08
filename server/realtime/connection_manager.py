@@ -1875,10 +1875,31 @@ class ConnectionManager:
                     # Send initial game_state event to the player
                     await self._send_initial_game_state(player_id, player, room_id)
 
-                    # Note: Removed duplicate player_entered_game event generation
-                    # The room.player_entered() call above already triggers PlayerEnteredRoom events
-                    # which are handled by the RealTimeEventHandler to create "enters the room" messages
-                    # This eliminates duplicate "has entered the game" messages
+                    # Broadcast a structured entry event to other occupants (excluding the newcomer)
+                    try:
+                        from .envelope import build_event
+
+                        entered_event = build_event(
+                            "player_entered_game",
+                            {
+                                "player_id": player_id,
+                                "player_name": getattr(player, "name", player_id),
+                            },
+                            room_id=room_id,
+                        )
+                        logger.info(
+                            "Broadcasting player_entered_game event",
+                            player_id=player_id,
+                            room_id=room_id,
+                        )
+                        await self.broadcast_to_room(room_id, entered_event, exclude_player=player_id)
+                    except Exception as broadcast_error:  # pragma: no cover - defensive logging
+                        logger.error(
+                            "Failed to broadcast player_entered_game event",
+                            player_id=player_id,
+                            room_id=room_id,
+                            error=str(broadcast_error),
+                        )
 
                 logger.info("Player presence tracked as connected (new connection)", player_id=player_id)
             else:
@@ -3267,5 +3288,13 @@ class ConnectionManager:
             logger.error("Error handling PlayerLeftRoom event", error=str(e), exc_info=True)
 
 
-# Global connection manager instance
-connection_manager = ConnectionManager()
+# AI Agent: Global singleton removed - use ApplicationContainer.connection_manager instead
+# Migration complete: All production code now uses dependency injection via container
+#
+# IMPORTANT: Tests must update fixtures to use container.connection_manager
+# Importing `connection_manager` as a global will NO LONGER WORK
+#
+# If you see "NameError: name 'connection_manager' is not defined":
+# - In production code: Get from request.app.state.container.connection_manager
+# - In tests: Create container and use container.connection_manager
+# - In services: Accept as constructor parameter

@@ -8,7 +8,7 @@ of our forbidden knowledge transmission protocols.
 """
 
 import json
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
 from fastapi import WebSocket, WebSocketDisconnect
@@ -40,17 +40,19 @@ class TestWebSocketConnection:
     @pytest.fixture
     def mock_connection_manager(self):
         """Create a mock connection manager."""
-        with patch("server.realtime.websocket_handler.connection_manager") as mock_cm:
-            mock_cm.connect_websocket = AsyncMock(return_value=True)
-            mock_cm.disconnect_websocket = AsyncMock()
-            mock_cm._get_player = Mock()
-            mock_cm.mark_player_seen = Mock()
-            mock_cm.persistence = Mock()
-            mock_cm.get_room_occupants = Mock(return_value=[])
-            mock_cm.broadcast_to_room = AsyncMock()
-            mock_cm.subscribe_to_room = AsyncMock()
-            mock_cm.unsubscribe_from_room = AsyncMock()
-            yield mock_cm
+        mock_cm = MagicMock()
+        mock_cm.connect_websocket = AsyncMock(return_value=True)
+        mock_cm.disconnect_websocket = AsyncMock()
+        mock_cm._get_player = Mock()
+        mock_cm.mark_player_seen = Mock()
+        mock_cm.persistence = Mock()
+        mock_cm.get_room_occupants = Mock(return_value=[])
+        mock_cm.broadcast_to_room = AsyncMock()
+        mock_cm.broadcast_global = AsyncMock()
+        mock_cm.subscribe_to_room = AsyncMock()
+        mock_cm.unsubscribe_from_room = AsyncMock()
+        mock_cm.message_queue = MagicMock()
+        return mock_cm
 
     @pytest.fixture
     def mock_user_manager(self):
@@ -98,7 +100,12 @@ class TestWebSocketConnection:
         mock_websocket.receive_text.side_effect = [json.dumps({"type": "ping", "data": {}}), WebSocketDisconnect()]
 
         # Execute
-        await handle_websocket_connection(mock_websocket, player_id, session_id)
+        await handle_websocket_connection(
+            mock_websocket,
+            player_id,
+            session_id,
+            connection_manager=mock_connection_manager,
+        )
 
         # Verify
         mock_connection_manager.connect_websocket.assert_called_once_with(mock_websocket, player_id, session_id)
@@ -121,7 +128,11 @@ class TestWebSocketConnection:
         mock_connection_manager.connect_websocket.return_value = False
 
         # Execute
-        await handle_websocket_connection(mock_websocket, player_id)
+        await handle_websocket_connection(
+            mock_websocket,
+            player_id,
+            connection_manager=mock_connection_manager,
+        )
 
         # Verify
         mock_connection_manager.connect_websocket.assert_called_once_with(mock_websocket, player_id, None)
@@ -160,7 +171,12 @@ class TestWebSocketConnection:
         mock_websocket.receive_text.side_effect = ["invalid json", WebSocketDisconnect()]
 
         # Execute
-        await handle_websocket_connection(mock_websocket, player_id)
+        await handle_websocket_connection(
+            mock_websocket,
+            player_id,
+            session_id=None,
+            connection_manager=mock_connection_manager,
+        )
 
         # Verify error response was sent
         error_calls = [call for call in mock_websocket.send_json.call_args_list if call[0][0].get("type") == "error"]
@@ -246,6 +262,20 @@ class TestGameCommandHandling:
         websocket.send_json = AsyncMock()
         return websocket
 
+    @pytest.fixture(autouse=True)
+    def configure_app_container(self):
+        """Ensure the FastAPI app has a mock container with a connection manager."""
+        from server.main import app as fastapi_app
+
+        original_container = getattr(fastapi_app.state, "container", None)
+        mock_container = MagicMock()
+        mock_container.connection_manager = MagicMock()
+        fastapi_app.state.container = mock_container
+        try:
+            yield mock_container.connection_manager
+        finally:
+            fastapi_app.state.container = original_container
+
     @pytest.mark.asyncio
     async def test_handle_game_command_success(self, mock_websocket):
         """Test successful game command handling."""
@@ -307,11 +337,22 @@ class TestWebSocketCommandProcessing:
 
     @pytest.fixture
     def mock_connection_manager(self):
-        """Create a mock connection manager."""
-        with patch("server.realtime.websocket_handler.connection_manager") as mock_cm:
-            mock_cm._get_player = Mock()
-            mock_cm.persistence = Mock()
+        """Create a mock connection manager and attach it to the FastAPI app state."""
+        from server.main import app as fastapi_app
+
+        original_container = getattr(fastapi_app.state, "container", None)
+        mock_container = MagicMock()
+        mock_cm = MagicMock()
+        mock_cm._get_player = Mock()
+        mock_cm.persistence = Mock()
+        mock_cm.app = Mock()
+        mock_container.connection_manager = mock_cm
+        fastapi_app.state.container = mock_container
+
+        try:
             yield mock_cm
+        finally:
+            fastapi_app.state.container = original_container
 
     @pytest.mark.asyncio
     async def test_process_websocket_command_look_success(self, mock_connection_manager):
@@ -482,10 +523,20 @@ class TestChatMessageHandling:
     @pytest.fixture
     def mock_connection_manager(self):
         """Create a mock connection manager."""
-        with patch("server.realtime.websocket_handler.connection_manager") as mock_cm:
-            mock_cm._get_player = Mock()
-            mock_cm.broadcast_to_room = AsyncMock()
+        from server.main import app as fastapi_app
+
+        original_container = getattr(fastapi_app.state, "container", None)
+        mock_container = MagicMock()
+        mock_cm = MagicMock()
+        mock_cm._get_player = Mock()
+        mock_cm.broadcast_to_room = AsyncMock()
+        mock_container.connection_manager = mock_cm
+        fastapi_app.state.container = mock_container
+
+        try:
             yield mock_cm
+        finally:
+            fastapi_app.state.container = original_container
 
     @pytest.mark.asyncio
     async def test_handle_chat_message_success(self, mock_websocket, mock_connection_manager):
@@ -530,14 +581,24 @@ class TestRoomUpdateBroadcasting:
     @pytest.fixture
     def mock_connection_manager(self):
         """Create a mock connection manager."""
-        with patch("server.realtime.websocket_handler.connection_manager") as mock_cm:
-            mock_cm._get_player = Mock()
-            mock_cm.persistence = Mock()
-            mock_cm.get_room_occupants = Mock(return_value=[])
-            mock_cm.broadcast_to_room = AsyncMock()
-            mock_cm.subscribe_to_room = AsyncMock()
-            mock_cm.unsubscribe_from_room = AsyncMock()
+        from server.main import app as fastapi_app
+
+        original_container = getattr(fastapi_app.state, "container", None)
+        mock_container = MagicMock()
+        mock_cm = MagicMock()
+        mock_cm._get_player = Mock()
+        mock_cm.persistence = Mock()
+        mock_cm.get_room_occupants = Mock(return_value=[])
+        mock_cm.broadcast_to_room = AsyncMock()
+        mock_cm.subscribe_to_room = AsyncMock()
+        mock_cm.unsubscribe_from_room = AsyncMock()
+        mock_container.connection_manager = mock_cm
+        fastapi_app.state.container = mock_container
+
+        try:
             yield mock_cm
+        finally:
+            fastapi_app.state.container = original_container
 
     @pytest.mark.asyncio
     async def test_broadcast_room_update_success(self, mock_connection_manager):

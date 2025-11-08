@@ -332,7 +332,9 @@ async def login_user(
     if has_character and player:
         import uuid
 
-        from ..realtime.connection_manager import connection_manager
+        # AI Agent: Get connection_manager from container instead of global import
+        #           Use http_request (the FastAPI Request), not request (the LoginRequest body)
+        connection_manager = http_request.app.state.container.connection_manager
 
         # Generate a new session ID for this login
         new_session_id = f"login_{uuid.uuid4().hex[:8]}"

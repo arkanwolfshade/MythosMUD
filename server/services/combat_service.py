@@ -697,14 +697,49 @@ class CombatService:
             # Publish death event if target died
             if target_died and target.participant_type == CombatParticipantType.NPC:
                 logger.info("Creating NPCDiedEvent", target_name=target.name)
+
+                # AI Agent: CRITICAL FIX - Resolve UUID back to original string ID for lifecycle manager
+                #           Combat uses random UUIDs for NPCs, but lifecycle_manager uses string IDs.
+                #           Without this mapping, NPCs won't be queued for respawn!
+                original_npc_id = str(target.participant_id)  # Default to UUID string (will fail respawn!)
+                if self._npc_combat_integration_service and hasattr(
+                    self._npc_combat_integration_service, "_uuid_to_string_id_mapping"
+                ):
+                    uuid_mapping = self._npc_combat_integration_service._uuid_to_string_id_mapping
+                    if target.participant_id in uuid_mapping:
+                        original_npc_id = uuid_mapping[target.participant_id]
+                        logger.info(
+                            "Resolved UUID to original NPC ID for death event",
+                            uuid=target.participant_id,
+                            original_id=original_npc_id,
+                        )
+                    else:
+                        # AI Agent: CRITICAL - UUID not in mapping means NPC won't queue for respawn!
+                        #           This is a severe error that breaks the respawn system.
+                        logger.error(
+                            "UUID not found in mapping - NPC WILL NOT RESPAWN!",
+                            uuid=target.participant_id,
+                            npc_name=target.name,
+                            combat_id=combat.combat_id,
+                            available_mappings=list(uuid_mapping.keys()),
+                        )
+                else:
+                    # AI Agent: CRITICAL - No NPC combat integration service means NO respawns!
+                    logger.error(
+                        "NPC combat integration service not available - NPC WILL NOT RESPAWN!",
+                        uuid=target.participant_id,
+                        npc_name=target.name,
+                        combat_id=combat.combat_id,
+                    )
+
                 death_event = NPCDiedEvent(
                     combat_id=combat.combat_id,
                     room_id=combat.room_id,
-                    npc_id=target.participant_id,
+                    npc_id=original_npc_id,  # Use resolved string ID
                     npc_name=target.name,
                     xp_reward=result.xp_awarded or 0,
                 )
-                logger.info("Publishing NPCDiedEvent", death_event=death_event)
+                logger.info("Publishing NPCDiedEvent", death_event=death_event, original_npc_id=original_npc_id)
                 await self._combat_event_publisher.publish_npc_died(death_event)
                 logger.info("NPCDiedEvent published successfully")
 
@@ -777,6 +812,7 @@ class CombatService:
                 },
             )
             await self._combat_event_publisher.publish_combat_ended(ended_event)
+            logger.debug("Combat ended event published", combat_id=combat_id)
         except Exception as e:
             logger.error("Error publishing combat ended event", error=str(e), exc_info=True)
 
@@ -896,19 +932,46 @@ class CombatService:
             # Update player HP using proper methods
             stats = player.get_stats()
             old_hp = stats.get("current_health", 100)
+
+            # AI Agent: CRITICAL DEBUG - Log stats BEFORE modification to diagnose persistence bug
+            logger.debug(
+                "Stats before HP update",
+                player_id=player_id,
+                raw_stats=player.stats,
+                parsed_stats=stats,
+                current_health_in_stats=stats.get("current_health"),
+            )
+
             stats["current_health"] = current_hp
             player.set_stats(stats)
+
+            # AI Agent: CRITICAL DEBUG - Log stats AFTER modification but BEFORE save
+            logger.debug(
+                "Stats after HP update, before save",
+                player_id=player_id,
+                raw_stats_after_set=player.stats,
+                new_current_health=current_hp,
+            )
 
             # Save player to database
             await persistence.async_save_player(player)
 
-            logger.info(
-                "Player HP persisted to database",
-                player_id=player_id,
-                player_name=player.name,
-                old_hp=old_hp,
-                new_hp=current_hp,
-            )
+            # AI Agent: CRITICAL DEBUG - Verify save by reading back immediately
+            verification_player = await persistence.async_get_player(str(player_id))
+            if verification_player:
+                verification_stats = verification_player.get_stats()
+                verification_hp = verification_stats.get("current_health", -999)
+                logger.info(
+                    "Player HP persisted to database - VERIFICATION",
+                    player_id=player_id,
+                    player_name=player.name,
+                    old_hp=old_hp,
+                    new_hp=current_hp,
+                    verified_hp_from_db=verification_hp,
+                    save_successful=verification_hp == current_hp,
+                )
+            else:
+                logger.error("Could not verify player save - player not found after save", player_id=player_id)
 
             # Publish HP update event for real-time UI updates
             await self._publish_player_hp_update_event(player_id, old_hp, current_hp, stats.get("max_health", 100))

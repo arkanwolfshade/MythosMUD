@@ -70,10 +70,8 @@ class GlobalChannelStrategy(ChannelBroadcastingStrategy):
         self, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str, nats_handler
     ) -> None:
         """Broadcast global message to all connected players."""
-        # Import here to avoid circular imports
-        from ..realtime.connection_manager import connection_manager
-
-        await connection_manager.broadcast_global(chat_event, exclude_player=sender_id)
+        # AI Agent: Use connection_manager from nats_handler (injected dependency)
+        await nats_handler.connection_manager.broadcast_global(chat_event, exclude_player=sender_id)
         logger.debug("Broadcasted global message", sender_id=sender_id)
 
 
@@ -99,10 +97,8 @@ class WhisperChannelStrategy(ChannelBroadcastingStrategy):
     ) -> None:
         """Send whisper message to specific player."""
         if target_player_id:
-            # Import here to avoid circular imports
-            from ..realtime.connection_manager import connection_manager
-
-            await connection_manager.send_personal_message(target_player_id, chat_event)
+            # AI Agent: Use connection_manager from nats_handler (injected dependency)
+            await nats_handler.connection_manager.send_personal_message(target_player_id, chat_event)
             logger.debug(
                 "Sent whisper message",
                 sender_id=sender_id,
@@ -128,10 +124,8 @@ class SystemAdminChannelStrategy(ChannelBroadcastingStrategy):
         self, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str, nats_handler
     ) -> None:
         """Broadcast system/admin message to all players."""
-        # Import here to avoid circular imports
-        from ..realtime.connection_manager import connection_manager
-
-        await connection_manager.broadcast_global(chat_event, exclude_player=sender_id)
+        # AI Agent: Use connection_manager from nats_handler (injected dependency)
+        await nats_handler.connection_manager.broadcast_global(chat_event, exclude_player=sender_id)
         logger.debug("Broadcasted message", channel_type=self.channel_type, sender_id=sender_id)
 
 

@@ -141,6 +141,11 @@ class ChatService:
 
         logger.info("ChatService initialized with NATS integration and AI-ready logging")
 
+    @staticmethod
+    def _normalize_player_id(player_id: Any) -> str:
+        """Normalize player identifiers to string form."""
+        return str(player_id)
+
     def _build_nats_subject(self, chat_message: ChatMessage, room_id: str | None) -> str:
         """
         Build NATS subject using standardized patterns or fallback to legacy construction.
@@ -235,6 +240,7 @@ class ChatService:
             Dictionary with success status and message details
         """
 
+        player_id = self._normalize_player_id(player_id)
         logger.debug("=== CHAT SERVICE DEBUG: send_say_message called ===", player_id=player_id, message=message)
         logger.debug("Processing say message")
 
@@ -365,6 +371,7 @@ class ChatService:
         Returns:
             Dictionary with success status and message details
         """
+        player_id = self._normalize_player_id(player_id)
         logger.debug(
             "=== CHAT SERVICE DEBUG: send_local_message called ===",
             player_id=player_id,
@@ -492,7 +499,8 @@ class ChatService:
         Returns:
             Dictionary with success status and message details
         """
-        logger.debug("=== CHAT SERVICE DEBUG: send_global_message called ===")
+        player_id = self._normalize_player_id(player_id)
+        logger.debug("=== CHAT SERVICE DEBUG: send_global_message called ===", player_id=player_id, message=message)
         logger.debug("Processing global message")
 
         # Validate input
@@ -624,7 +632,8 @@ class ChatService:
         Returns:
             Dictionary with success status and message details
         """
-        logger.debug("=== CHAT SERVICE DEBUG: send_system_message called ===")
+        player_id = self._normalize_player_id(player_id)
+        logger.debug("=== CHAT SERVICE DEBUG: send_system_message called ===", player_id=player_id, message=message)
         logger.debug("Processing system message")
 
         # Validate input
@@ -741,6 +750,9 @@ class ChatService:
         Returns:
             Dictionary with success status and message details
         """
+        sender_id = self._normalize_player_id(sender_id)
+        target_id = self._normalize_player_id(target_id)
+
         logger.debug(
             "=== CHAT SERVICE DEBUG: send_whisper_message called ===", sender_id=sender_id, target_id=target_id
         )
@@ -781,9 +793,9 @@ class ChatService:
 
         # Create chat message
         chat_message = ChatMessage(
-            sender_id=str(sender_id),
+            sender_id=sender_id,
             sender_name=sender_name,
-            target_id=str(target_id),
+            target_id=target_id,
             target_name=getattr(target_obj, "name", "UnknownPlayer"),
             channel="whisper",
             content=message,
@@ -876,6 +888,7 @@ class ChatService:
         Returns:
             Dictionary with success status and message details
         """
+        player_id = self._normalize_player_id(player_id)
         logger.debug("=== CHAT SERVICE DEBUG: send_emote_message called ===", player_id=player_id, action=action)
         logger.debug("Processing emote message")
 
@@ -1010,6 +1023,7 @@ class ChatService:
         Returns:
             Dictionary with success status and message details
         """
+        player_id = self._normalize_player_id(player_id)
         logger.debug("=== CHAT SERVICE DEBUG: set_player_pose called ===", player_id=player_id, pose=pose)
 
         # Validate input
@@ -1070,6 +1084,7 @@ class ChatService:
         Returns:
             Current pose description or None if no pose set
         """
+        player_id = self._normalize_player_id(player_id)
         return self._player_poses.get(player_id)
 
     def clear_player_pose(self, player_id: str) -> bool:
@@ -1082,6 +1097,7 @@ class ChatService:
         Returns:
             True if pose was cleared, False if no pose was set
         """
+        player_id = self._normalize_player_id(player_id)
         if player_id in self._player_poses:
             del self._player_poses[player_id]
             return True
@@ -1123,6 +1139,7 @@ class ChatService:
         Returns:
             Dictionary with success status and message details
         """
+        player_id = self._normalize_player_id(player_id)
         logger.debug(
             "=== CHAT SERVICE DEBUG: send_predefined_emote called ===", player_id=player_id, emote_command=emote_command
         )
@@ -1324,102 +1341,121 @@ class ChatService:
 
     async def mute_channel(self, player_id: str, channel: str) -> bool:
         """Mute a specific channel for a player."""
-        # Get player name for logging
-        player = await self.player_service.get_player_by_id(player_id)
-        player_name = player.name if player else player_id
+        player_id_str = self._normalize_player_id(player_id)
 
-        success = self.user_manager.mute_channel(player_id, player_name, channel)
+        # Get player name for logging
+        player = await self.player_service.get_player_by_id(player_id_str)
+        player_name = player.name if player else player_id_str
+
+        success = self.user_manager.mute_channel(player_id_str, player_name, channel)
         if success:
-            logger.info("Player muted channel", player_id=player_id, channel=channel)
+            logger.info("Player muted channel", player_id=player_id_str, channel=channel)
         return bool(success)
 
     async def unmute_channel(self, player_id: str, channel: str) -> bool:
         """Unmute a specific channel for a player."""
-        # Get player name for logging
-        player = await self.player_service.get_player_by_id(player_id)
-        player_name = player.name if player else player_id
+        player_id_str = self._normalize_player_id(player_id)
 
-        success = self.user_manager.unmute_channel(player_id, player_name, channel)
+        # Get player name for logging
+        player = await self.player_service.get_player_by_id(player_id_str)
+        player_name = player.name if player else player_id_str
+
+        success = self.user_manager.unmute_channel(player_id_str, player_name, channel)
         if success:
-            logger.info("Player unmuted channel", player_id=player_id, channel=channel)
+            logger.info("Player unmuted channel", player_id=player_id_str, channel=channel)
         return bool(success)
 
     def is_channel_muted(self, player_id: str, channel: str) -> bool:
         """Check if a channel is muted for a player."""
-        return bool(self.user_manager.is_channel_muted(player_id, channel))
+        player_id_str = self._normalize_player_id(player_id)
+        return bool(self.user_manager.is_channel_muted(player_id_str, channel))
 
     async def mute_player(self, muter_id: str, target_player_name: str) -> bool:
         """Mute a specific player for another player."""
         # Get muter name for logging
-        muter = await self.player_service.get_player_by_id(muter_id)
-        muter_name = muter.name if muter else muter_id
+        muter_id_str = self._normalize_player_id(muter_id)
+        muter = await self.player_service.get_player_by_id(muter_id_str)
+        muter_name = muter.name if muter else muter_id_str
 
         # Resolve target player name to ID
         target_player = await self.player_service.resolve_player_name(target_player_name)
         if not target_player:
             return False
 
-        success = self.user_manager.mute_player(muter_id, muter_name, target_player.id, target_player_name)
+        target_id_str = self._normalize_player_id(target_player.id)
+
+        success = self.user_manager.mute_player(muter_id_str, muter_name, target_id_str, target_player_name)
         if success:
-            logger.info("Player muted another player", muter_id=muter_id, target=target_player_name)
+            logger.info("Player muted another player", muter_id=muter_id_str, target=target_player_name)
         return bool(success)
 
     async def unmute_player(self, muter_id: str, target_player_name: str) -> bool:
         """Unmute a specific player for another player."""
         # Get muter name for logging
-        muter = await self.player_service.get_player_by_id(muter_id)
-        muter_name = muter.name if muter else muter_id
+        muter_id_str = self._normalize_player_id(muter_id)
+        muter = await self.player_service.get_player_by_id(muter_id_str)
+        muter_name = muter.name if muter else muter_id_str
 
         # Resolve target player name to ID
         target_player = await self.player_service.resolve_player_name(target_player_name)
         if not target_player:
             return False
 
-        success = self.user_manager.unmute_player(muter_id, muter_name, target_player.id, target_player_name)
+        target_id_str = self._normalize_player_id(target_player.id)
+
+        success = self.user_manager.unmute_player(muter_id_str, muter_name, target_id_str, target_player_name)
         if success:
-            logger.info("Player unmuted another player", muter_id=muter_id, target=target_player_name)
+            logger.info("Player unmuted another player", muter_id=muter_id_str, target=target_player_name)
         return bool(success)
 
     def is_player_muted(self, muter_id: str, target_player_id: str) -> bool:
         """Check if a player is muted by another player."""
-        return bool(self.user_manager.is_player_muted(muter_id, target_player_id))
+        muter_id_str = self._normalize_player_id(muter_id)
+        target_id_str = self._normalize_player_id(target_player_id)
+        return bool(self.user_manager.is_player_muted(muter_id_str, target_id_str))
 
     async def mute_global(
         self, muter_id: str, target_player_name: str, duration_minutes: int | None = None, reason: str = ""
     ) -> bool:
         """Apply a global mute to a player (cannot use any chat channels)."""
         # Get muter name for logging
-        muter = await self.player_service.get_player_by_id(muter_id)
-        muter_name = muter.name if muter else muter_id
+        muter_id_str = self._normalize_player_id(muter_id)
+        muter = await self.player_service.get_player_by_id(muter_id_str)
+        muter_name = muter.name if muter else muter_id_str
 
         # Resolve target player name to ID
         target_player = await self.player_service.resolve_player_name(target_player_name)
         if not target_player:
             return False
 
+        target_id_str = self._normalize_player_id(target_player.id)
+
         success = self.user_manager.mute_global(
-            muter_id, muter_name, target_player.id, target_player_name, duration_minutes, reason
+            muter_id_str, muter_name, target_id_str, target_player_name, duration_minutes, reason
         )
         if success:
             logger.info(
-                "Player globally muted", muter_id=muter_id, target=target_player_name, duration=duration_minutes
+                "Player globally muted", muter_id=muter_id_str, target=target_player_name, duration=duration_minutes
             )
         return bool(success)
 
     async def unmute_global(self, unmuter_id: str, target_player_name: str) -> bool:
         """Remove a global mute from a player."""
         # Get unmuter name for logging
-        unmuter = await self.player_service.get_player_by_id(unmuter_id)
-        unmuter_name = unmuter.name if unmuter else unmuter_id
+        unmuter_id_str = self._normalize_player_id(unmuter_id)
+        unmuter = await self.player_service.get_player_by_id(unmuter_id_str)
+        unmuter_name = unmuter.name if unmuter else unmuter_id_str
 
         # Resolve target player name to ID
         target_player = await self.player_service.resolve_player_name(target_player_name)
         if not target_player:
             return False
 
-        success = self.user_manager.unmute_global(unmuter_id, unmuter_name, target_player.id, target_player_name)
+        target_id_str = self._normalize_player_id(target_player.id)
+
+        success = self.user_manager.unmute_global(unmuter_id_str, unmuter_name, target_id_str, target_player_name)
         if success:
-            logger.info("Player globally unmuted", unmuter_id=unmuter_id, target=target_player_name)
+            logger.info("Player globally unmuted", unmuter_id=unmuter_id_str, target=target_player_name)
         return bool(success)
 
     def is_globally_muted(self, player_id: str) -> bool:

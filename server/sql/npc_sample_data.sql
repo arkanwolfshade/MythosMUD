@@ -79,10 +79,10 @@ VALUES (
         'A physician at the Arkham Sanitarium who has seen too much. He occasionally needs help with patients who exhibit... unusual symptoms.',
         'quest_giver',
         'sanitarium',
-        'earth_arkhamcity_sanitarium_room_doctors_office_001',
-        0,
+        'earth_arkhamcity_sanitarium_room_foyer_entrance_001',
         1,
-        0.9,
+        1,
+        1.0,
         '{"health": 85, "sanity": 45, "intelligence": 17, "charisma": 13, "strength": 10, "dexterity": 12}',
         '{"quest_types": ["medical_research", "patient_observation", "supply_delivery"], "greeting": "I need someone with a strong constitution...", "farewell": "Be careful out there. The world is not as it seems."}',
         '{"ai_enabled": false, "ai_model": null, "fallback_behavior": "deterministic_quest_giver"}'

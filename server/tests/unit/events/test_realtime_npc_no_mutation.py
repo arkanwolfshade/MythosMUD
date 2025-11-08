@@ -7,6 +7,8 @@ the handler should only broadcast updates. This guards against duplicate
 Arkham case studies.
 """
 
+from unittest.mock import MagicMock
+
 from server.events.event_bus import EventBus
 from server.events.event_types import NPCEnteredRoom, NPCLeftRoom
 from server.realtime.event_handler import RealTimeEventHandler
@@ -42,7 +44,8 @@ class _FakePersistence:
 
 def test_event_handler_does_not_mutate_room_on_npc_events() -> None:
     event_bus = EventBus()
-    handler = RealTimeEventHandler(event_bus=event_bus)
+    connection_manager = MagicMock()
+    handler = RealTimeEventHandler(event_bus=event_bus, connection_manager=connection_manager)
 
     fake_room = _FakeRoom()
     handler.connection_manager.persistence = _FakePersistence(fake_room)

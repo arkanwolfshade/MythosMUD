@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { debugLogger } from '../utils/debugLogger';
 import { DraggablePanel } from './DraggablePanel';
@@ -6,6 +6,7 @@ import { RoomInfoPanel } from './RoomInfoPanel';
 import { ChatPanel } from './panels/ChatPanel';
 import { CommandPanel } from './panels/CommandPanel';
 import { GameLogPanel } from './panels/GameLogPanel';
+import { DEFAULT_CHANNEL } from '../config/channels';
 
 interface Player {
   name: string;
@@ -109,6 +110,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
 }) => {
   // MOTD is now handled by the interstitial screen in App.tsx
   const debug = debugLogger('GameTerminal');
+  const [selectedChatChannel, setSelectedChatChannel] = useState(DEFAULT_CHANNEL);
 
   // Responsive panel sizing based on viewport
   useEffect(() => {
@@ -181,6 +183,8 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
               onClearMessages={onClearMessages}
               onDownloadLogs={onDownloadLogs}
               isConnected={isConnected}
+              selectedChannel={selectedChatChannel}
+              onChannelSelect={setSelectedChatChannel}
             />
           </DraggablePanel>
 
@@ -225,6 +229,8 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
               onSendCommand={onSendCommand}
               onClearHistory={onClearHistory}
               onLogout={onLogout}
+              selectedChannel={selectedChatChannel}
+              onChannelSelect={setSelectedChatChannel}
               isConnected={isConnected}
               isLoggingOut={isLoggingOut}
               disabled={isMortallyWounded || isDead}

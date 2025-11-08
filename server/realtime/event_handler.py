@@ -19,7 +19,7 @@ from ..logging.enhanced_logging_config import get_logger
 from ..services.chat_logger import chat_logger
 from ..services.player_combat_service import PlayerXPAwardEvent
 from ..services.room_sync_service import get_room_sync_service
-from .connection_manager import _get_npc_name_from_instance, connection_manager
+from .connection_manager import _get_npc_name_from_instance
 
 
 class RealTimeEventHandler:
@@ -32,17 +32,21 @@ class RealTimeEventHandler:
     layer.
     """
 
-    def __init__(self, event_bus: EventBus | None = None, task_registry: Any | None = None) -> None:
+    def __init__(
+        self, event_bus: EventBus | None = None, task_registry: Any | None = None, connection_manager=None
+    ) -> None:
         """
         Initialize the real-time event handler.
 
         Args:
-            event_bus: Optional EventBus instance. If None, will get the global
-                instance.
+            event_bus: Optional EventBus instance. If None, will get the global instance.
             task_registry: Optional TaskRegistry instance for current lifecycle task tracking
+            connection_manager: ConnectionManager instance (injected dependency)
+
+        AI Agent: connection_manager now injected as parameter instead of using global import
         """
         self.event_bus = event_bus or EventBus()
-        self.connection_manager = connection_manager
+        self.connection_manager = connection_manager  # AI Agent: Injected dependency
         self._logger = get_logger("RealTimeEventHandler")
         self._sequence_counter = 0
 
@@ -907,27 +911,5 @@ class RealTimeEventHandler:
             self._logger.error("Error handling player respawn event", error=str(e), exc_info=True)
 
 
-# Global instance
-real_time_event_handler: RealTimeEventHandler | None = None
-
-
-def get_real_time_event_handler(
-    event_bus: EventBus | None = None, task_registry: Any | None = None
-) -> RealTimeEventHandler:
-    """
-    Get the global RealTimeEventHandler instance.
-
-    Args:
-        event_bus: Optional EventBus instance. If None, will get the global instance.
-        task_registry: Optional TaskRegistry instance for task lifecycle tracking
-
-    Returns:
-        RealTimeEventHandler: The global event handler instance
-    """
-    global real_time_event_handler
-    if real_time_event_handler is None:
-        real_time_event_handler = RealTimeEventHandler(event_bus=event_bus, task_registry=task_registry)
-    # If we've passed a task_registry after init, update the instance
-    elif task_registry and not real_time_event_handler.task_registry:
-        real_time_event_handler.task_registry = task_registry
-    return real_time_event_handler
+# AI Agent: Global singleton removed - use ApplicationContainer.real_time_event_handler instead
+# Migration complete: All code now uses dependency injection via container

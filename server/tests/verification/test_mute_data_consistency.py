@@ -20,10 +20,10 @@ class TestMuteDataConsistency:
         self.mock_nats_service = MagicMock(spec=NATSService)
         self.mock_connection_manager = MagicMock()
         self.handler = NATSMessageHandler(self.mock_nats_service)
+        self.handler.connection_manager = self.mock_connection_manager
 
-    @patch("server.realtime.nats_message_handler.connection_manager")
     @patch("server.services.user_manager.user_manager")
-    def test_mute_data_not_shared_between_user_manager_instances(self, mock_user_manager, mock_connection_manager):
+    def test_mute_data_not_shared_between_user_manager_instances(self, mock_user_manager):
         """Test that mute data loaded in one UserManager instance is not available in another."""
         # Simulate the scenario where mute data was loaded in ChatService but not in NATSMessageHandler
         # The UserManager instance in NATSMessageHandler doesn't have the mute data loaded
@@ -38,9 +38,8 @@ class TestMuteDataConsistency:
         # Should return False because the UserManager instance doesn't have the mute data
         assert result is False
 
-    @patch("server.realtime.nats_message_handler.connection_manager")
     @patch("server.services.user_manager.user_manager")
-    def test_mute_data_loading_timing_issue(self, mock_user_manager, mock_connection_manager):
+    def test_mute_data_loading_timing_issue(self, mock_user_manager):
         """Test that mute data loading timing can cause inconsistent results."""
         # Simulate mute data not being loaded yet
         mock_user_manager._player_mutes = None
@@ -54,9 +53,8 @@ class TestMuteDataConsistency:
         # Should return False because mute data isn't available
         assert result is False
 
-    @patch("server.realtime.nats_message_handler.connection_manager")
     @patch("server.services.user_manager.user_manager")
-    def test_load_player_mutes_called_during_filtering(self, mock_user_manager, mock_connection_manager):
+    def test_load_player_mutes_called_during_filtering(self, mock_user_manager):
         """Test that load_player_mutes is called during mute filtering."""
         # Set up mute data
         mock_user_manager._player_mutes = {
@@ -75,9 +73,8 @@ class TestMuteDataConsistency:
         # Verify load_player_mutes was called (this is good - it ensures data is loaded)
         mock_user_manager.load_player_mutes.assert_called_once_with("receiver_1")
 
-    @patch("server.realtime.nats_message_handler.connection_manager")
     @patch("server.services.user_manager.user_manager")
-    def test_mute_data_consistency_across_message_types(self, mock_user_manager, mock_connection_manager):
+    def test_mute_data_consistency_across_message_types(self, mock_user_manager):
         """Test that mute data is consistent across different message types."""
         # Set up mute data
         mock_user_manager._player_mutes = {
@@ -96,9 +93,8 @@ class TestMuteDataConsistency:
         # Verify the user manager was called for each check
         assert mock_user_manager.is_player_muted.call_count == len(channels)
 
-    @patch("server.realtime.nats_message_handler.connection_manager")
     @patch("server.services.user_manager.user_manager")
-    def test_user_manager_instance_creation_overhead(self, mock_user_manager, mock_connection_manager):
+    def test_user_manager_instance_creation_overhead(self, mock_user_manager):
         """Test that creating new UserManager instances for each mute check is inefficient."""
         # Set up mute data
         mock_user_manager._player_mutes = {
@@ -119,9 +115,8 @@ class TestMuteDataConsistency:
         # Verify the user manager was called for each check
         assert mock_user_manager.is_player_muted.call_count == len(receiver_ids)
 
-    @patch("server.realtime.nats_message_handler.connection_manager")
     @patch("server.services.user_manager.user_manager")
-    def test_mute_data_loading_failure_handling(self, mock_user_manager, mock_connection_manager):
+    def test_mute_data_loading_failure_handling(self, mock_user_manager):
         """Test that mute data loading failures are handled gracefully."""
         # Simulate mute data loading failure
         mock_user_manager.load_player_mutes.side_effect = Exception("Database error")
@@ -136,9 +131,8 @@ class TestMuteDataConsistency:
         # Should return False (not muted) when loading fails
         assert result is False
 
-    @patch("server.realtime.nats_message_handler.connection_manager")
     @patch("server.services.user_manager.user_manager")
-    def test_global_mute_consistency(self, mock_user_manager, mock_connection_manager):
+    def test_global_mute_consistency(self, mock_user_manager):
         """Test that global mute data is consistent across UserManager instances."""
         # Set up global mute data
         mock_user_manager._player_mutes = {}
@@ -152,9 +146,8 @@ class TestMuteDataConsistency:
         # Should return True because sender is globally muted
         assert result is True
 
-    @patch("server.realtime.nats_message_handler.connection_manager")
     @patch("server.services.user_manager.user_manager")
-    def test_admin_override_consistency(self, mock_user_manager, mock_connection_manager):
+    def test_admin_override_consistency(self, mock_user_manager):
         """Test that admin override for global mutes is consistent."""
         # Set up global mute with admin receiver
         mock_user_manager._player_mutes = {}

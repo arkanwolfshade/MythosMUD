@@ -11,7 +11,6 @@ must reach all who bear witness to the cosmic horror unfolding.
 from typing import Any
 
 from server.logging.enhanced_logging_config import get_logger
-from server.realtime.connection_manager import connection_manager
 from server.realtime.envelope import build_event
 from server.services.combat_messaging_service import CombatMessagingService
 
@@ -26,9 +25,60 @@ class CombatMessagingIntegration:
     using the existing real-time messaging infrastructure.
     """
 
-    def __init__(self):
-        """Initialize the combat messaging integration service."""
+    def __init__(self, connection_manager=None):
+        """
+        Initialize the combat messaging integration service.
+
+        Args:
+            connection_manager: ConnectionManager instance for broadcasting events
+
+        AI Agent: connection_manager injected via constructor to eliminate global singleton
+        """
         self.messaging_service = CombatMessagingService()
+        self._connection_manager = None
+        if connection_manager is not None:
+            self.connection_manager = connection_manager
+
+    def _resolve_connection_manager_from_container(self):
+        """
+        Lazily resolve the connection manager from the application container.
+
+        Returns:
+            ConnectionManager: The resolved connection manager instance
+
+        Raises:
+            RuntimeError: If the container or connection manager is unavailable
+        """
+        try:
+            from server.container import ApplicationContainer
+
+            container = ApplicationContainer.get_instance()
+            connection_manager = getattr(container, "connection_manager", None)
+            if connection_manager is None:
+                raise RuntimeError("Application container does not have an initialized connection_manager")
+            return connection_manager
+        except Exception as exc:
+            logger.error(
+                "Failed to resolve connection manager from container",
+                error=str(exc),
+            )
+            raise RuntimeError("Connection manager is not available") from exc
+
+    @property
+    def connection_manager(self):
+        """
+        Return the connection manager, resolving it from the application container if needed.
+        """
+        if self._connection_manager is None:
+            self._connection_manager = self._resolve_connection_manager_from_container()
+        return self._connection_manager
+
+    @connection_manager.setter
+    def connection_manager(self, value):
+        """
+        Explicitly set the connection manager (primarily used in tests).
+        """
+        self._connection_manager = value
 
     async def broadcast_combat_start(
         self,
@@ -78,7 +128,7 @@ class CombatMessagingIntegration:
         )
 
         # Broadcast to all players in the room
-        broadcast_stats = await connection_manager.broadcast_to_room(room_id, combat_start_event)
+        broadcast_stats = await self.connection_manager.broadcast_to_room(room_id, combat_start_event)
 
         logger.debug(
             "Combat start broadcast completed",
@@ -146,7 +196,9 @@ class CombatMessagingIntegration:
         )
 
         # Broadcast to all players in the room (excluding attacker)
-        broadcast_stats = await connection_manager.broadcast_to_room(room_id, attack_event, exclude_player=attacker_id)
+        broadcast_stats = await self.connection_manager.broadcast_to_room(
+            room_id, attack_event, exclude_player=attacker_id
+        )
 
         # Send personal message to the attacker
         personal_message = messages.get(
@@ -167,7 +219,7 @@ class CombatMessagingIntegration:
         )
 
         try:
-            await connection_manager.send_personal_message(attacker_id, personal_event)
+            await self.connection_manager.send_personal_message(attacker_id, personal_event)
         except Exception as e:
             logger.warning(
                 "Failed to send personal combat message to attacker",
@@ -230,7 +282,7 @@ class CombatMessagingIntegration:
         )
 
         # Broadcast to all players in the room
-        broadcast_stats = await connection_manager.broadcast_to_room(room_id, death_event)
+        broadcast_stats = await self.connection_manager.broadcast_to_room(room_id, death_event)
 
         logger.debug(
             "Combat death broadcast completed",
@@ -282,7 +334,7 @@ class CombatMessagingIntegration:
         )
 
         # Broadcast to all players in the room
-        broadcast_stats = await connection_manager.broadcast_to_room(room_id, combat_end_event)
+        broadcast_stats = await self.connection_manager.broadcast_to_room(room_id, combat_end_event)
 
         logger.debug(
             "Combat end broadcast completed",
@@ -328,7 +380,7 @@ class CombatMessagingIntegration:
         )
 
         # Send personal message to the player
-        delivery_status = await connection_manager.send_personal_message(player_id, error_event)
+        delivery_status = await self.connection_manager.send_personal_message(player_id, error_event)
 
         logger.debug(
             "Combat error broadcast completed",
@@ -403,12 +455,12 @@ class CombatMessagingIntegration:
 
         # Send personal message to the player
         try:
-            await connection_manager.send_personal_message(player_id, personal_event)
+            await self.connection_manager.send_personal_message(player_id, personal_event)
         except Exception as e:
             logger.warning("Failed to send mortally wounded message to player", player_id=player_id, error=str(e))
 
         # Broadcast to all other players in the room
-        broadcast_stats = await connection_manager.broadcast_to_room(room_id, room_event, exclude_player=player_id)
+        broadcast_stats = await self.connection_manager.broadcast_to_room(room_id, room_event, exclude_player=player_id)
 
         logger.debug("Player mortally wounded broadcast completed", room_id=room_id, broadcast_stats=broadcast_stats)
 
@@ -471,12 +523,12 @@ class CombatMessagingIntegration:
 
         # Send personal message to the player
         try:
-            await connection_manager.send_personal_message(player_id, personal_event)
+            await self.connection_manager.send_personal_message(player_id, personal_event)
         except Exception as e:
             logger.warning("Failed to send death message to player", player_id=player_id, error=str(e))
 
         # Broadcast to all other players in the room
-        broadcast_stats = await connection_manager.broadcast_to_room(room_id, room_event, exclude_player=player_id)
+        broadcast_stats = await self.connection_manager.broadcast_to_room(room_id, room_event, exclude_player=player_id)
 
         logger.debug("Player death broadcast completed", room_id=room_id, broadcast_stats=broadcast_stats)
 
@@ -530,12 +582,12 @@ class CombatMessagingIntegration:
 
         # Send personal message to the player
         try:
-            await connection_manager.send_personal_message(player_id, personal_event)
+            await self.connection_manager.send_personal_message(player_id, personal_event)
         except Exception as e:
             logger.warning("Failed to send respawn message to player", player_id=player_id, error=str(e))
 
         # Broadcast to all other players in the room
-        broadcast_stats = await connection_manager.broadcast_to_room(room_id, room_event, exclude_player=player_id)
+        broadcast_stats = await self.connection_manager.broadcast_to_room(room_id, room_event, exclude_player=player_id)
 
         logger.debug("Player respawn broadcast completed", room_id=room_id, broadcast_stats=broadcast_stats)
 
@@ -574,7 +626,7 @@ class CombatMessagingIntegration:
 
         # Send personal message to the player
         try:
-            delivery_status = await connection_manager.send_personal_message(player_id, decay_event)
+            delivery_status = await self.connection_manager.send_personal_message(player_id, decay_event)
         except Exception as e:
             logger.warning("Failed to send HP decay message to player", player_id=player_id, error=str(e))
             delivery_status = {"success": False, "error": str(e)}

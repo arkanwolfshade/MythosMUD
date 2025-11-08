@@ -61,7 +61,10 @@ async def get_metrics(current_user: dict = Depends(verify_admin_access)) -> dict
     AI: For monitoring dashboards and alerting systems.
     """
     try:
-        from ..realtime.nats_message_handler import nats_message_handler
+        # AI Agent: Access nats_message_handler via app.state.container (no longer a global)
+        from ..main import app
+
+        nats_message_handler = app.state.container.nats_message_handler
         from ..services.nats_service import nats_service
 
         # Get base metrics from collector
@@ -109,7 +112,10 @@ async def get_metrics_summary(current_user: dict = Depends(verify_admin_access))
         summary = metrics_collector.get_summary()
 
         # Add DLQ count
-        from ..realtime.nats_message_handler import nats_message_handler
+        # AI Agent: Access nats_message_handler via app.state.container (no longer a global)
+        from ..main import app
+
+        nats_message_handler = app.state.container.nats_message_handler
 
         if nats_message_handler:
             dlq_count = nats_message_handler.dead_letter_queue.get_statistics().get("total_messages", 0)
@@ -168,7 +174,10 @@ async def get_dlq_messages(limit: int = 100, current_user: dict = Depends(verify
     AI: For incident investigation and manual message replay.
     """
     try:
-        from ..realtime.nats_message_handler import nats_message_handler
+        # AI Agent: Access nats_message_handler via app.state.container (no longer a global)
+        from ..main import app
+
+        nats_message_handler = app.state.container.nats_message_handler
 
         if not nats_message_handler:
             return {"messages": [], "count": 0}
@@ -204,7 +213,10 @@ async def reset_circuit_breaker(current_user: dict = Depends(verify_admin_access
     AI: Emergency admin action - use when you know service is healthy.
     """
     try:
-        from ..realtime.nats_message_handler import nats_message_handler
+        # AI Agent: Access nats_message_handler via app.state.container (no longer a global)
+        from ..main import app
+
+        nats_message_handler = app.state.container.nats_message_handler
 
         if not nats_message_handler:
             raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="NATS handler not available")
@@ -240,7 +252,10 @@ async def replay_dlq_message(filepath: str, current_user: dict = Depends(verify_
     AI: For manual incident recovery - use after fixing underlying issue.
     """
     try:
-        from ..realtime.nats_message_handler import nats_message_handler
+        # AI Agent: Access nats_message_handler via app.state.container (no longer a global)
+        from ..main import app
+
+        nats_message_handler = app.state.container.nats_message_handler
 
         if not nats_message_handler:
             raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="NATS handler not available")
@@ -324,7 +339,10 @@ async def delete_dlq_message(filepath: str, current_user: dict = Depends(verify_
     AI: For discarding permanently failed or invalid messages.
     """
     try:
-        from ..realtime.nats_message_handler import nats_message_handler
+        # AI Agent: Access nats_message_handler via app.state.container (no longer a global)
+        from ..main import app
+
+        nats_message_handler = app.state.container.nats_message_handler
 
         if not nats_message_handler:
             raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="NATS handler not available")

@@ -8,11 +8,10 @@ game status, broadcasting, and real-time game state management.
 import datetime
 from typing import Any
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 
 from ..auth.dependencies import get_current_superuser
 from ..logging.enhanced_logging_config import get_logger
-from ..realtime.connection_manager import connection_manager
 
 logger = get_logger(__name__)
 
@@ -23,9 +22,12 @@ logger.info("Game API router initialized", prefix="/game")
 
 
 @game_router.get("/status")
-def get_game_status() -> dict[str, Any]:
+def get_game_status(request: Request) -> dict[str, Any]:
     """Get current game status and connection information."""
     logger.debug("Game status requested")
+
+    # AI Agent: Get connection_manager from container instead of global import
+    connection_manager = request.app.state.container.connection_manager
 
     status_data = {
         "active_connections": connection_manager.get_active_connection_count(),
@@ -46,6 +48,7 @@ def get_game_status() -> dict[str, Any]:
 
 @game_router.post("/broadcast")
 async def broadcast_message(
+    request: Request,
     message: str,
     current_user: Any = Depends(get_current_superuser),
 ) -> dict[str, str | int | dict[str, Any]]:
@@ -60,6 +63,9 @@ async def broadcast_message(
         admin_id=str(current_user.id),
         message=message,
     )
+
+    # AI Agent: Get connection_manager from container instead of global import
+    connection_manager = request.app.state.container.connection_manager
 
     # Broadcast to all connected players via connection manager
     # Use broadcast_global_event to send a system broadcast

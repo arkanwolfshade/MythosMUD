@@ -68,7 +68,13 @@ class NPCCombatIntegrationService:
         # CRITICAL: Production code must pass shared instance to prevent state desynchronization!
         if player_combat_service is not None:
             self._player_combat_service = player_combat_service
-            logger.info("Using shared PlayerCombatService instance", instance_id=id(player_combat_service))
+            # CRITICAL FIX: Update the shared PlayerCombatService's NPC combat integration service reference
+            # so it can access the UUID-to-XP mapping for XP calculations
+            self._player_combat_service._npc_combat_integration_service = self
+            logger.info(
+                "Using shared PlayerCombatService instance and updated NPC combat integration reference",
+                instance_id=id(player_combat_service),
+            )
         else:
             # Only create new instance for testing - pass self for UUID mapping access
             self._player_combat_service = PlayerCombatService(self._persistence, self.event_bus, self)

@@ -196,7 +196,8 @@ class PlayerService:
         Returns:
             PlayerRead: The player data, or None if not found
         """
-        logger.debug("Getting player by ID")
+        player_id = str(player_id)
+        logger.debug("Getting player by ID", player_id=player_id)
 
         player = await self.persistence.async_get_player(player_id)
         if not player:

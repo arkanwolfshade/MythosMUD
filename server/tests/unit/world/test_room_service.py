@@ -579,19 +579,21 @@ class TestRoomServiceLayer:
 
     @pytest.mark.asyncio
     async def test_get_room_occupants_success(self):
-        """Test successful room occupants retrieval."""
+        """Test successful room occupants retrieval (players + NPCs)."""
         # Mock room data with Room object
         mock_room = Mock()
         mock_room.get_players.return_value = ["player1", "player2"]
+        mock_room.get_npcs.return_value = ["npc1"]  # AI Agent: Mock get_npcs() to return list, not Mock
         self.mock_persistence.async_get_room.return_value = mock_room
 
         # Get room occupants
         result = await self.room_service.get_room_occupants("test_room")
 
-        # Verify result
-        assert result == ["player1", "player2"]
+        # Verify result includes both players and NPCs
+        assert result == ["player1", "player2", "npc1"]
         self.mock_persistence.async_get_room.assert_called_once_with("test_room")
         mock_room.get_players.assert_called_once()
+        mock_room.get_npcs.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_get_room_occupants_dict_response(self):

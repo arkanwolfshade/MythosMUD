@@ -323,27 +323,5 @@ class EventPublisher:
         logger.info("EventPublisher sequence number reset")
 
 
-# Global EventPublisher instance
-event_publisher = None
-
-
-def get_event_publisher(
-    nats_service: Any = None, subject_manager: NATSSubjectManager | None = None
-) -> EventPublisher | None:
-    """
-    Get or create the global EventPublisher instance.
-
-    Args:
-        nats_service: NATS service instance (optional, for testing)
-        subject_manager: Optional subject manager for standardized subjects
-
-    Returns:
-        EventPublisher instance or None if nats_service not provided
-
-    AI: subject_manager parameter added for standardized subject patterns.
-    AI: Legacy code without subject_manager will still work but use deprecated patterns.
-    """
-    global event_publisher
-    if event_publisher is None and nats_service is not None:
-        event_publisher = EventPublisher(nats_service, subject_manager=subject_manager)
-    return event_publisher
+# AI Agent: Global singleton removed - use ApplicationContainer.event_publisher instead
+# Migration complete: All code now uses dependency injection via container
