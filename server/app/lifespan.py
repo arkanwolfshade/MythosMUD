@@ -292,6 +292,7 @@ async def lifespan(app: FastAPI):
         room_service=container.persistence,  # Persistence layer provides room service functionality
         player_service=container.player_service,
         nats_service=nats_service,
+        user_manager_instance=container.user_manager,
         subject_manager=subject_manager,
     )
 

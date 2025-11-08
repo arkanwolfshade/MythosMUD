@@ -1139,13 +1139,14 @@ class UserManager:
             )
             return False
 
-    def cleanup_player_mutes(self, player_id: str) -> bool:
+    def cleanup_player_mutes(self, player_id: str, *, delete_file: bool = False) -> bool:
         """
-        Remove mute data for a player from memory and delete their file.
+        Remove mute data for a player from memory and optionally delete their file.
         Called when a player logs out or is deleted.
 
         Args:
             player_id: Player ID to cleanup
+            delete_file: Whether to delete the persisted mute file. Defaults to False.
 
         Returns:
             True if cleanup was successful, False otherwise
@@ -1173,10 +1174,11 @@ class UserManager:
             if player_id in self._admin_players:
                 self._admin_players.remove(player_id)
 
-            # Delete file
-            mute_file = self._get_player_mute_file(player_id)
-            if mute_file.exists():
-                mute_file.unlink()
+            if delete_file:
+                # Delete file only when explicitly requested (e.g., account deletion)
+                mute_file = self._get_player_mute_file(player_id)
+                if mute_file.exists():
+                    mute_file.unlink()
 
             logger.info("Player mute data cleaned up")
             return True

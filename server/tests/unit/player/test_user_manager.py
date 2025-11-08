@@ -713,6 +713,22 @@ class TestUserManager:
         assert result is True
         assert "player_001" not in self.user_manager._player_mutes
         assert "player_001" not in self.user_manager._admin_players
+        assert mute_file.exists()
+
+    def test_cleanup_player_mutes_delete_file(self):
+        """Test cleanup of player mutes with file deletion."""
+        # Add test data and persist to file
+        self.user_manager.mute_player(
+            muter_id="player_001", muter_name="MuterPlayer", target_id="player_002", target_name="TargetPlayer"
+        )
+        self.user_manager.save_player_mutes("player_001")
+
+        mute_file = self.user_manager._get_player_mute_file("player_001")
+        assert mute_file.exists()
+
+        result = self.user_manager.cleanup_player_mutes("player_001", delete_file=True)
+
+        assert result is True
         assert not mute_file.exists()
 
     def test_cleanup_player_mutes_with_exception(self):

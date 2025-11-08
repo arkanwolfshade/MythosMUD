@@ -6,7 +6,7 @@ It replaces the previous Redis message handler with NATS-based messaging.
 """
 
 from datetime import UTC, datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from ..logging.enhanced_logging_config import get_logger
 from ..middleware.metrics_collector import metrics_collector
@@ -17,6 +17,9 @@ from ..realtime.nats_retry_handler import NATSRetryHandler
 
 logger = get_logger("communications.nats_message_handler")
 
+if TYPE_CHECKING:
+    from ..services.user_manager import UserManager
+
 
 class NATSMessageHandler:
     """
@@ -26,7 +29,13 @@ class NATSMessageHandler:
     them to the appropriate WebSocket clients based on room and channel.
     """
 
-    def __init__(self, nats_service, subject_manager=None, connection_manager=None):
+    def __init__(
+        self,
+        nats_service,
+        subject_manager=None,
+        connection_manager=None,
+        user_manager: "UserManager | None" = None,
+    ):
         """
         Initialize NATS message handler with error boundaries.
 
@@ -34,6 +43,7 @@ class NATSMessageHandler:
             nats_service: NATS service instance for subscribing to subjects
             subject_manager: NATSSubjectManager instance for standardized subscription patterns
             connection_manager: ConnectionManager instance for broadcasting to WebSocket clients
+            user_manager: UserManager instance used for mute lookups (defaults to global singleton)
 
         AI: Initializes retry handler, DLQ, and circuit breaker for resilience.
         AI Agent: connection_manager injected via constructor to eliminate global singleton dependency
@@ -42,11 +52,12 @@ class NATSMessageHandler:
         self.nats_service = nats_service
         self.subject_manager = subject_manager
         self.connection_manager = connection_manager  # AI Agent: Injected dependency, not global
-        self.subscriptions = {}
+        self.user_manager = user_manager
+        self.subscriptions: dict[str, bool] = {}
 
         # Sub-zone subscription tracking for local channels
-        self.subzone_subscriptions = {}  # subzone -> subscription_count
-        self.player_subzone_subscriptions = {}  # player_id -> subzone
+        self.subzone_subscriptions: dict[str, int] = {}  # subzone -> subscription_count
+        self.player_subzone_subscriptions: dict[str, str] = {}  # player_id -> subzone
 
         # NEW: Error boundary components (CRITICAL-4)
         # AI: These components work together to provide resilient message delivery
@@ -502,8 +513,7 @@ class NATSMessageHandler:
                 target_count=len(targets),
             )
 
-            # Use the global UserManager instance for all mute checks to improve efficiency
-            from ..services.user_manager import user_manager
+            user_manager = self._get_user_manager()
 
             logger.debug(
                 "=== BROADCAST FILTERING DEBUG: Created UserManager instance ===",
@@ -669,6 +679,15 @@ class NATSMessageHandler:
                 channel=channel,
             )
 
+    def _get_user_manager(self) -> "UserManager":
+        """Return the user manager instance to use for mute lookups."""
+        if self.user_manager is not None:
+            return self.user_manager
+
+        from ..services.user_manager import user_manager as global_user_manager
+
+        return global_user_manager
+
     def _is_player_in_room(self, player_id: str, room_id: str) -> bool:
         """
         Check if a player is currently in the specified room.
@@ -733,8 +752,7 @@ class NATSMessageHandler:
         )
 
         try:
-            # Use the global UserManager instance to check mute status
-            from ..services.user_manager import user_manager
+            user_manager = self._get_user_manager()
 
             logger.debug(
                 "=== MUTE FILTERING DEBUG: UserManager created ===",

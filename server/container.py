@@ -310,6 +310,8 @@ class ApplicationContainer:
 
                 user_management_dir = project_root / "data" / self.config.logging.environment / "user_management"
                 self.user_manager = UserManager(data_dir=user_management_dir)
+                if self.nats_message_handler is not None:
+                    self.nats_message_handler.user_manager = self.user_manager
                 logger.info("Game services initialized")
 
                 # Phase 8: Caching services (optional, may fail gracefully)
