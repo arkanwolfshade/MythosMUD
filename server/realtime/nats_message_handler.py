@@ -21,6 +21,23 @@ if TYPE_CHECKING:
     from ..services.user_manager import UserManager
 
 
+# Legacy compatibility: several test suites patch the module-level `connection_manager`
+# attribute directly. The runtime now injects the connection manager via dependency
+# injection, but we preserve this attribute so those tests can continue to operate.
+connection_manager: Any | None = None
+
+
+def set_global_connection_manager(manager: Any | None) -> None:
+    """
+    Update the module-level connection_manager reference for legacy compatibility.
+
+    Args:
+        manager: Connection manager instance to expose (or None to clear)
+    """
+    global connection_manager
+    connection_manager = manager
+
+
 class NATSMessageHandler:
     """
     Handler for processing NATS messages and broadcasting to WebSocket clients.

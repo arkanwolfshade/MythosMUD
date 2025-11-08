@@ -3298,3 +3298,39 @@ class ConnectionManager:
 # - In production code: Get from request.app.state.container.connection_manager
 # - In tests: Create container and use container.connection_manager
 # - In services: Accept as constructor parameter
+
+
+# --------------------------------------------------------------------------- #
+# Legacy compatibility helpers
+# --------------------------------------------------------------------------- #
+
+# NOTE: Several existing tests (and some legacy modules) still patch the module-level
+# `connection_manager` attribute for dependency injection. The refactored runtime now
+# resolves the connection manager through the application container, but we preserve
+# this attribute so those tests can continue to function without extensive rewrites.
+connection_manager: "ConnectionManager | None" = None
+
+
+def set_global_connection_manager(manager: "ConnectionManager | None") -> None:
+    """
+    Update the legacy module-level connection_manager reference.
+
+    Args:
+        manager: ConnectionManager instance to expose (or None to clear)
+    """
+    global connection_manager
+    connection_manager = manager
+
+
+def get_global_connection_manager() -> "ConnectionManager":
+    """
+    Retrieve the legacy module-level connection manager, creating a default instance
+    when the container has not yet initialized.
+
+    Returns:
+        ConnectionManager: The module-level connection manager instance
+    """
+    global connection_manager
+    if connection_manager is None:
+        connection_manager = ConnectionManager()
+    return connection_manager

@@ -238,7 +238,8 @@ class ApplicationContainer:
 
                 # Phase 6: Real-time communication
                 logger.debug("Initializing real-time communication...")
-                from .realtime.connection_manager import ConnectionManager
+                from .realtime import nats_message_handler as nats_module
+                from .realtime.connection_manager import ConnectionManager, set_global_connection_manager
                 from .realtime.event_handler import RealTimeEventHandler
                 from .services.nats_service import NATSService
 
@@ -252,6 +253,7 @@ class ApplicationContainer:
 
                 # Initialize connection manager FIRST (needed by other services)
                 self.connection_manager = ConnectionManager()
+                set_global_connection_manager(self.connection_manager)
                 self.connection_manager.persistence = self.persistence
                 self.connection_manager._event_bus = self.event_bus
 
@@ -286,6 +288,9 @@ class ApplicationContainer:
                     self.event_publisher = None
                     self.nats_message_handler = None
                     logger.info("NATS-dependent services skipped (NATS disabled or not connected)")
+
+                # Ensure legacy module-level reference is updated for tests and legacy imports
+                nats_module.set_global_connection_manager(self.connection_manager)
 
                 logger.info("Real-time communication initialized")
 
