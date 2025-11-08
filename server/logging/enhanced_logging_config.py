@@ -5,6 +5,7 @@ This module provides an enhanced logging system with MDC (Mapped Diagnostic
 Context), correlation IDs, security sanitization, and performance optimizations.
 """
 
+import json
 import logging
 import os
 import sys
@@ -24,6 +25,9 @@ from structlog.stdlib import BoundLogger, LoggerFactory
 
 # Module-level logger for internal use
 logger = structlog.get_logger(__name__)
+
+_LOGGING_INITIALIZED = False
+_LOGGING_SIGNATURE: str | None = None
 
 
 def _resolve_log_base(log_base: str) -> Path:
@@ -655,14 +659,33 @@ def _setup_enhanced_file_logging(
     # This will be called after configure_enhanced_structlog() completes
 
 
-def setup_enhanced_logging(config: dict[str, Any], player_service: Any = None) -> None:
+def setup_enhanced_logging(
+    config: dict[str, Any],
+    player_service: Any = None,
+    *,
+    force_reconfigure: bool = False,
+) -> None:
     """
     Set up enhanced logging configuration with MDC and security features.
 
     Args:
         config: Server configuration dictionary
         player_service: Optional player service for GUID-to-name conversion
+        force_reconfigure: When True, tear down existing handlers before reconfiguring
     """
+    global _LOGGING_INITIALIZED
+    global _LOGGING_SIGNATURE
+
+    config_signature = json.dumps(config, sort_keys=True, default=str)
+
+    if _LOGGING_INITIALIZED and not force_reconfigure:
+        setup_logger = get_logger("server.logging.setup")
+        setup_logger.debug(
+            "setup_enhanced_logging skipped; logging system already initialized",
+            config_signature=_LOGGING_SIGNATURE,
+        )
+        return
+
     logging_config = config.get("logging", {})
     environment = logging_config.get("environment", detect_environment())
     log_level = logging_config.get("level", "INFO")
@@ -693,6 +716,9 @@ def setup_enhanced_logging(config: dict[str, Any], player_service: Any = None) -
         security_sanitization=True,
         correlation_ids=True,
     )
+
+    _LOGGING_INITIALIZED = True
+    _LOGGING_SIGNATURE = config_signature
 
 
 def _configure_enhanced_uvicorn_logging() -> None:
@@ -879,3 +905,41 @@ def update_logging_with_player_service(player_service: Any) -> None:
     # Log that the enhancement has been applied
     structured_logger = cast(Any, get_logger("server.logging"))
     structured_logger.info("Logging system enhanced with PlayerGuidFormatter", player_service_available=True)
+
+
+def log_exception_once(
+    logger: BoundLogger,
+    level: str,
+    message: str,
+    *,
+    exc: Exception | None = None,
+    mark_logged: bool = True,
+    **kwargs: Any,
+) -> None:
+    """
+    Log an exception once, respecting exceptions that have already been logged.
+
+    Args:
+        logger: Structlog bound logger instance.
+        level: Logging level to use (for example, "error" or "warning").
+        message: Log message to emit.
+        exc: Optional exception to include in the log entry.
+        mark_logged: When True, mark the exception as logged to prevent duplicates.
+        **kwargs: Additional key-value pairs for structured logging.
+    """
+    if exc is not None:
+        already_logged = getattr(exc, "already_logged", False)
+        if already_logged:
+            return
+        kwargs.setdefault("error_type", type(exc).__name__)
+        kwargs.setdefault("error", str(exc))
+
+    log_method = getattr(logger, level.lower(), logger.error)
+    log_method(message, **kwargs)
+
+    if exc is not None and mark_logged:
+        marker = getattr(exc, "mark_logged", None)
+        if callable(marker):
+            marker()
+        else:
+            cast(Any, exc)._already_logged = True

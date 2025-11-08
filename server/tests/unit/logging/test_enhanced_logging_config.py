@@ -4,6 +4,7 @@ Tests for enhanced logging configuration.
 
 from unittest.mock import Mock, patch
 
+from server.exceptions import LoggedException
 from server.logging.enhanced_logging_config import (
     add_correlation_id,
     add_request_context,
@@ -11,7 +12,9 @@ from server.logging.enhanced_logging_config import (
     clear_request_context,
     get_current_context,
     get_enhanced_logger,
+    log_exception_once,
     sanitize_sensitive_data,
+    setup_enhanced_logging,
 )
 
 
@@ -106,3 +109,42 @@ class TestEnhancedLoggingConfig:
         """Test that current context is retrieved correctly."""
         context = get_current_context()
         assert isinstance(context, dict)
+
+    @patch("server.logging.enhanced_logging_config._configure_enhanced_uvicorn_logging")
+    @patch("server.logging.enhanced_logging_config.configure_enhanced_structlog")
+    @patch("server.logging.enhanced_logging_config.get_logger")
+    def test_setup_enhanced_logging_is_idempotent(self, mock_get_logger, mock_configure_structlog, mock_uvicorn):
+        """Multiple invocations should not add duplicate handlers."""
+        from server.logging import enhanced_logging_config as logging_config
+
+        info_logger = Mock()
+        debug_logger = Mock()
+        mock_get_logger.side_effect = [info_logger, debug_logger]
+
+        logging_config._LOGGING_INITIALIZED = False
+        logging_config._LOGGING_SIGNATURE = None
+
+        config = {"logging": {"environment": "local", "level": "INFO", "log_base": "logs"}}
+
+        setup_enhanced_logging(config)
+        setup_enhanced_logging(config)
+
+        assert mock_configure_structlog.call_count == 1
+        assert mock_uvicorn.call_count == 1
+        assert info_logger.info.call_count == 1
+        assert debug_logger.debug.call_count == 1
+
+        # Reset for downstream tests
+        logging_config._LOGGING_INITIALIZED = False
+        logging_config._LOGGING_SIGNATURE = None
+
+    def test_log_exception_once_marks_logged_exceptions(self):
+        """Ensure log_exception_once honors logged exception markers."""
+        logger = Mock()
+        error = LoggedException("ritual failure")
+
+        log_exception_once(logger, "error", "First log", exc=error)
+        log_exception_once(logger, "error", "Second log", exc=error)
+
+        logger.error.assert_called_once()
+        assert error.already_logged is True

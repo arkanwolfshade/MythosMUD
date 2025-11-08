@@ -23,7 +23,7 @@ from fastapi.security import HTTPBearer
 from .app.factory import create_app
 from .auth.users import get_current_user
 from .config import get_config
-from .logging.enhanced_logging_config import get_logger, setup_enhanced_logging
+from .logging.enhanced_logging_config import get_logger, log_exception_once, setup_enhanced_logging
 from .logging.log_aggregator import get_log_aggregator
 from .middleware.correlation_middleware import CorrelationMiddleware
 from .monitoring.exception_tracker import get_exception_tracker
@@ -49,9 +49,6 @@ async def enhanced_lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     log_aggregator = None
 
     try:
-        config = get_config()
-        setup_enhanced_logging(config.dict())
-
         get_performance_monitor()
         get_exception_tracker()
         get_monitoring_dashboard()
@@ -68,7 +65,14 @@ async def enhanced_lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         yield
 
     except Exception as error:
-        logger.error("Failed to initialize enhanced systems", error=str(error), exc_info=True)
+        log_exception_once(
+            logger,
+            "error",
+            "Failed to initialize enhanced systems",
+            exc=error,
+            lifespan_phase="startup",
+            exc_info=True,
+        )
         raise
     finally:
         try:
@@ -76,7 +80,14 @@ async def enhanced_lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
                 log_aggregator.shutdown()
                 logger.info("Enhanced systems shutdown complete")
         except Exception as error:
-            logger.error("Error during enhanced systems shutdown", error=str(error), exc_info=True)
+            log_exception_once(
+                logger,
+                "error",
+                "Error during enhanced systems shutdown",
+                exc=error,
+                lifespan_phase="shutdown",
+                exc_info=True,
+            )
 
 
 def setup_monitoring_endpoints(app: FastAPI) -> None:
@@ -161,10 +172,6 @@ def setup_monitoring_endpoints(app: FastAPI) -> None:
 
 def main() -> FastAPI:
     """Main entry point for the MythosMUD server."""
-    # Set up logging based on configuration
-    config = get_config()
-    setup_enhanced_logging(config.to_legacy_dict())
-
     logger.info("Starting MythosMUD server...")
     app = create_app()
 
