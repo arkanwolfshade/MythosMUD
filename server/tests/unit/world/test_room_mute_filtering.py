@@ -1,9 +1,10 @@
 """
 Tests for mute filtering across all room-based message types.
 
-This module tests that mute filtering works consistently across all room-based
-channels: say, local, emote, and pose. It verifies that the fix implemented
-in _broadcast_to_room_with_filtering() applies to all room-based message types.
+This module ensures that server-side mute filtering works consistently across
+room-based channels. Personal mutes should suppress local, emote, and pose
+messages while leaving the say channel untouched so muted players still see
+spoken dialogue.
 """
 
 import uuid
@@ -56,18 +57,25 @@ class TestRoomBasedMuteFiltering:
         }
 
     @pytest.mark.asyncio
-    async def test_say_message_mute_filtering(self) -> None:
-        """Test that say messages are properly filtered when sender is muted."""
+    async def test_say_message_bypasses_personal_mute(self) -> None:
+        """Say channel should ignore personal mutes so messages still reach muted receivers."""
         chat_event = self.create_chat_event("say", "Hello everyone!")
         self._prepare_connection_manager()
 
         with (
             patch.object(self.handler, "_is_player_in_room", return_value=True),
-            patch.object(self.handler, "_is_player_muted_by_receiver_with_user_manager", return_value=True),
+            patch.object(self.handler, "_is_player_muted_by_receiver_with_user_manager") as mock_mute_check,
         ):
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "say")
 
-        self.mock_connection_manager.send_personal_message.assert_called_once_with(self.sender_id, chat_event)
+        # Say channel bypasses mute checks entirely
+        mock_mute_check.assert_not_called()
+
+        expected_calls = [
+            call(self.receiver_id, chat_event),
+            call(self.sender_id, chat_event),
+        ]
+        self.mock_connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
 
     @pytest.mark.asyncio
     async def test_local_message_mute_filtering(self) -> None:
@@ -135,9 +143,10 @@ class TestRoomBasedMuteFiltering:
             self.mock_connection_manager.send_personal_message.reset_mock()
 
     @pytest.mark.asyncio
-    async def test_room_based_channels_use_same_filtering_logic(self) -> None:
-        """Test that all room-based channels use the same filtering logic."""
-        channels = ["say", "local", "emote", "pose"]
+    async def test_room_based_channels_apply_mute_filter_where_expected(self) -> None:
+        """Room-based channels except say should invoke mute filtering."""
+        mute_sensitive_channels = ["local", "emote", "pose"]
+        bypass_channels = ["say"]
         self._prepare_connection_manager()
 
         with (
@@ -146,18 +155,23 @@ class TestRoomBasedMuteFiltering:
                 self.handler, "_is_player_muted_by_receiver_with_user_manager", return_value=True
             ) as mock_mute_check,
         ):
-            for channel in channels:
+            for channel in mute_sensitive_channels:
                 chat_event = self.create_chat_event(channel, f"Test {channel} message")
                 await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, channel)
                 mock_mute_check.assert_called_with(ANY, self.receiver_id, self.sender_id)
                 mock_mute_check.reset_mock()
+
+            for channel in bypass_channels:
+                chat_event = self.create_chat_event(channel, f"Test {channel} message")
+                await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, channel)
+                mock_mute_check.assert_not_called()
 
     @pytest.mark.asyncio
     async def test_room_based_channels_handle_multiple_receivers(self) -> None:
         """Test that room-based channels handle multiple receivers correctly."""
         receiver_ids = [str(uuid.uuid4()) for _ in range(3)]
         all_player_ids = {self.sender_id, *receiver_ids}
-        chat_event = self.create_chat_event("say", "Hello everyone!")
+        chat_event = self.create_chat_event("local", "Hello everyone!")
 
         self._prepare_connection_manager(all_player_ids)
 
@@ -169,7 +183,7 @@ class TestRoomBasedMuteFiltering:
             patch.object(self.handler, "_is_player_in_room", return_value=True),
             patch.object(self.handler, "_is_player_muted_by_receiver_with_user_manager", side_effect=mute_check),
         ):
-            await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "say")
+            await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "local")
 
         expected_calls = [call(receiver_id, chat_event) for receiver_id in receiver_ids[1:]]
         self.mock_connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
@@ -179,14 +193,14 @@ class TestRoomBasedMuteFiltering:
     @pytest.mark.asyncio
     async def test_room_based_channels_echo_sender_even_when_muted(self) -> None:
         """Test that the sender still receives an echo even when everyone else filters them out."""
-        chat_event = self.create_chat_event("say", "Hello everyone!")
+        chat_event = self.create_chat_event("local", "Hello everyone!")
         self._prepare_connection_manager()
 
         with (
             patch.object(self.handler, "_is_player_in_room", return_value=True),
             patch.object(self.handler, "_is_player_muted_by_receiver_with_user_manager", return_value=True),
         ):
-            await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "say")
+            await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "local")
 
         self.mock_connection_manager.send_personal_message.assert_called_once_with(self.sender_id, chat_event)
 

@@ -54,7 +54,7 @@ class TestMultiplePlayersMuting:
 
     @pytest.mark.asyncio
     async def test_multiple_players_muting_same_sender_say(self):
-        """Test that multiple players muting the same sender works for say messages."""
+        """Say channel should ignore personal mutes so everyone in the room hears the message."""
         chat_event = self.create_chat_event("say", "Hello everyone!")
 
         # AI Agent: Use mock from setup_method (injected via constructor)
@@ -64,36 +64,11 @@ class TestMultiplePlayersMuting:
 
         # Mock player in room check
         with patch.object(self.handler, "_is_player_in_room", return_value=True):
-            # Mock mute check - muted receivers have muted sender, unmuted receivers haven't
-            def mock_mute_check(user_manager, receiver_id, sender_id):
-                return receiver_id in self.muted_receivers
+            await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "say")
 
-            with patch.object(
-                self.handler, "_is_player_muted_by_receiver_with_user_manager", side_effect=mock_mute_check
-            ):
-                # Execute
-                await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "say")
-
-                # Verify that only unmuted receivers got the message
-                expected_calls = [call(receiver_id, chat_event) for receiver_id in self.unmuted_receivers]
-                expected_calls.append(call(self.sender_id, chat_event))
-                self.mock_connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
-
-                # Verify muted receivers didn't get the message
-                muted_calls = [
-                    call
-                    for call in self.mock_connection_manager.send_personal_message.call_args_list
-                    if call[0][0] in self.muted_receivers
-                ]
-                assert len(muted_calls) == 0
-
-                # Verify sender didn't get their own message
-                sender_calls = [
-                    recorded_call
-                    for recorded_call in self.mock_connection_manager.send_personal_message.call_args_list
-                    if recorded_call.args[0] == self.sender_id
-                ]
-                assert len(sender_calls) == 1
+        expected_calls = [call(player_id, chat_event) for player_id in self.all_players]
+        self.mock_connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
+        assert self.mock_connection_manager.send_personal_message.await_count == len(self.all_players)
 
     @pytest.mark.asyncio
     async def test_multiple_players_muting_same_sender_emote(self):
@@ -203,7 +178,7 @@ class TestMultiplePlayersMuting:
     @pytest.mark.asyncio
     async def test_all_players_muting_same_sender(self):
         """Test scenario where all players have muted the same sender."""
-        chat_event = self.create_chat_event("say", "Hello everyone!")
+        chat_event = self.create_chat_event("local", "Hello everyone!")
 
         # AI Agent: Use mock from setup_method (injected via constructor)
         self.mock_connection_manager.room_subscriptions = {self.room_id: set(self.all_players)}
@@ -220,7 +195,7 @@ class TestMultiplePlayersMuting:
                 self.handler, "_is_player_muted_by_receiver_with_user_manager", side_effect=mock_mute_check
             ):
                 # Execute
-                await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "say")
+                await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "local")
 
                 # Only sender should receive the echo
                 self.mock_connection_manager.send_personal_message.assert_called_once_with(self.sender_id, chat_event)
@@ -228,7 +203,7 @@ class TestMultiplePlayersMuting:
     @pytest.mark.asyncio
     async def test_partial_muting_with_mixed_room_status(self):
         """Test partial muting where some players are not in the room."""
-        chat_event = self.create_chat_event("say", "Hello everyone!")
+        chat_event = self.create_chat_event("local", "Hello everyone!")
 
         # Some players are in the room, some are not
         players_in_room = [self.sender_id] + self.muted_receivers[:2] + self.unmuted_receivers[:1]
@@ -254,7 +229,7 @@ class TestMultiplePlayersMuting:
                 self.handler, "_is_player_muted_by_receiver_with_user_manager", side_effect=mock_mute_check
             ):
                 # Execute
-                await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "say")
+                await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "local")
 
                 # Verify that only unmuted players who are in the room got the message
                 expected_recipients = [pid for pid in self.unmuted_receivers if pid in players_in_room]
@@ -281,7 +256,7 @@ class TestMultiplePlayersMuting:
     @pytest.mark.asyncio
     async def test_user_manager_efficiency_with_multiple_mutes(self):
         """Test that UserManager is used efficiently when multiple players have muted the same sender."""
-        chat_event = self.create_chat_event("say", "Hello everyone!")
+        chat_event = self.create_chat_event("local", "Hello everyone!")
 
         # AI Agent: Use mock from setup_method (injected via constructor)
         self.mock_connection_manager.room_subscriptions = {self.room_id: set(self.all_players)}
@@ -301,7 +276,7 @@ class TestMultiplePlayersMuting:
                 with patch("server.services.user_manager.user_manager") as mock_user_manager:
                     # Execute
                     await self.handler._broadcast_to_room_with_filtering(
-                        self.room_id, chat_event, self.sender_id, "say"
+                        self.room_id, chat_event, self.sender_id, "local"
                     )
 
                     # Verify that mute data was pre-loaded for all receivers

@@ -554,6 +554,7 @@ class NATSMessageHandler:
 
             # Filter players based on their current room and mute status
             filtered_targets = []
+            mute_sensitive_channels = {"local", "emote", "pose"}
             for player_id in targets:
                 logger.debug(
                     "=== BROADCAST FILTERING DEBUG: Processing target player ===",
@@ -593,18 +594,39 @@ class NATSMessageHandler:
                     )
                     continue
 
-                # Check if the receiving player has muted the sender using the shared UserManager instance
-                is_muted = self._is_player_muted_by_receiver_with_user_manager(user_manager, player_id, sender_id)
-                logger.debug(
-                    "=== BROADCAST FILTERING DEBUG: Mute check result ===",
-                    room_id=room_id,
-                    sender_id=sender_id,
-                    target_player_id=player_id,
-                    is_muted=is_muted,
-                    channel=channel,
-                )
+                should_apply_mute = channel in mute_sensitive_channels
+                is_muted = False
 
-                if is_muted:
+                if should_apply_mute:
+                    # Check if the receiving player has muted the sender using the shared UserManager instance
+                    is_muted = self._is_player_muted_by_receiver_with_user_manager(user_manager, player_id, sender_id)
+                    logger.debug(
+                        "=== BROADCAST FILTERING DEBUG: Mute check result ===",
+                        room_id=room_id,
+                        sender_id=sender_id,
+                        target_player_id=player_id,
+                        is_muted=is_muted,
+                        channel=channel,
+                    )
+
+                    if channel in {"emote", "pose"}:
+                        logger.info(
+                            "Emote mute filtering evaluation",
+                            receiver_id=player_id,
+                            sender_id=sender_id,
+                            is_muted=is_muted,
+                            channel=channel,
+                        )
+                else:
+                    logger.debug(
+                        "=== BROADCAST FILTERING DEBUG: Mute check skipped for channel ===",
+                        room_id=room_id,
+                        sender_id=sender_id,
+                        target_player_id=player_id,
+                        channel=channel,
+                    )
+
+                if should_apply_mute and is_muted:
                     logger.debug(
                         "Filtered out message due to mute",
                         receiver_id=player_id,
