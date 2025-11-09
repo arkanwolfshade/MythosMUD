@@ -23,6 +23,7 @@ from ..models.health import (
     HealthStatus,
     ServerComponent,
 )
+from ..realtime.connection_manager import resolve_connection_manager
 
 logger = get_logger(__name__)
 
@@ -118,13 +119,17 @@ class HealthService:
         try:
             # AI Agent: Use injected connection_manager instead of global import
             if not self.connection_manager:
-                logger.warning("Connection manager not available for health check")
-                return {
-                    # AI Agent: UNKNOWN doesn't exist, using UNHEALTHY as fallback
-                    "status": HealthStatus.UNHEALTHY,
-                    "active_connections": 0,
-                    "connection_rate": 0.0,
-                }
+                fallback_manager = resolve_connection_manager()
+                if fallback_manager:
+                    self.connection_manager = fallback_manager
+                else:
+                    logger.warning("Connection manager not available for health check")
+                    return {
+                        "status": HealthStatus.UNHEALTHY,
+                        "active_connections": 0,
+                        "max_connections": 0,
+                        "connection_rate_per_minute": 0.0,
+                    }
 
             memory_stats = self.connection_manager.get_memory_stats()
             connections_data = memory_stats.get("connections", {})

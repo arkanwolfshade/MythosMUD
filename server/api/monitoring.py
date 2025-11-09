@@ -21,10 +21,26 @@ from ..exceptions import LoggedHTTPException
 from ..game.movement_monitor import get_movement_monitor
 from ..models.health import HealthErrorResponse, HealthResponse, HealthStatus
 from ..persistence import get_persistence
+from ..realtime.connection_manager import resolve_connection_manager, set_global_connection_manager
 from ..services.health_service import get_health_service
 from ..utils.error_logging import create_context_from_request
 
 monitoring_router = APIRouter(prefix="/monitoring", tags=["monitoring"])
+
+
+def _resolve_connection_manager_from_request(request: Request):
+    """
+    Resolve a connection manager for routes that require it, preferring the container-managed
+    instance while remaining compatible with legacy module-level injection used in tests.
+    """
+    container = getattr(request.app.state, "container", None)
+    candidate = getattr(container, "connection_manager", None) if container else None
+    manager = resolve_connection_manager(candidate)
+    if manager is not None:
+        set_global_connection_manager(manager)
+    if manager is None:
+        raise RuntimeError("Connection manager is not configured")
+    return manager
 
 
 class MetricsResponse(BaseModel):
@@ -239,7 +255,7 @@ async def get_memory_stats(request: Request) -> MemoryStatsResponse:
         import datetime
 
         # AI Agent: Get connection_manager from container instead of global import
-        connection_manager = request.app.state.container.connection_manager
+        connection_manager = _resolve_connection_manager_from_request(request)
         memory_stats = connection_manager.get_memory_stats()
         memory_stats["timestamp"] = datetime.datetime.now(datetime.UTC).isoformat()
 
@@ -259,7 +275,7 @@ async def get_memory_alerts(request: Request) -> MemoryAlertsResponse:
         import datetime
 
         # AI Agent: Get connection_manager from container instead of global import
-        connection_manager = request.app.state.container.connection_manager
+        connection_manager = _resolve_connection_manager_from_request(request)
         alerts = connection_manager.get_memory_alerts()
 
         return MemoryAlertsResponse(
@@ -278,7 +294,7 @@ async def force_memory_cleanup(request: Request) -> dict[str, str]:
     """Force immediate memory cleanup (admin only)."""
     try:
         # AI Agent: Get connection_manager from container instead of global import
-        connection_manager = request.app.state.container.connection_manager
+        connection_manager = _resolve_connection_manager_from_request(request)
         await connection_manager.force_cleanup()
         return {"message": "Memory cleanup completed successfully"}
     except Exception as e:
@@ -294,7 +310,7 @@ async def get_dual_connection_stats(request: Request) -> DualConnectionStatsResp
     """Get comprehensive dual connection statistics."""
     try:
         # AI Agent: Get connection_manager from container instead of global import
-        connection_manager = request.app.state.container.connection_manager
+        connection_manager = _resolve_connection_manager_from_request(request)
         dual_connection_stats = connection_manager.get_dual_connection_stats()
         return DualConnectionStatsResponse(**dual_connection_stats)
     except Exception as e:
@@ -310,7 +326,7 @@ async def get_performance_stats(request: Request) -> PerformanceStatsResponse:
     """Get connection performance statistics."""
     try:
         # AI Agent: Get connection_manager from container instead of global import
-        connection_manager = request.app.state.container.connection_manager
+        connection_manager = _resolve_connection_manager_from_request(request)
         performance_stats = connection_manager.get_performance_stats()
         return PerformanceStatsResponse(**performance_stats)
     except Exception as e:
@@ -326,7 +342,7 @@ async def get_connection_health_stats(request: Request) -> ConnectionHealthStats
     """Get connection health statistics."""
     try:
         # AI Agent: Get connection_manager from container instead of global import
-        connection_manager = request.app.state.container.connection_manager
+        connection_manager = _resolve_connection_manager_from_request(request)
         health_stats = connection_manager.get_connection_health_stats()
         return ConnectionHealthStatsResponse(**health_stats)
     except Exception as e:
@@ -341,7 +357,7 @@ async def get_connection_health_stats(request: Request) -> ConnectionHealthStats
 async def get_health_status(request: Request) -> HealthResponse | JSONResponse:
     """Get comprehensive system health status."""
     try:
-        connection_manager = request.app.state.container.connection_manager
+        connection_manager = _resolve_connection_manager_from_request(request)
         health_service = get_health_service(connection_manager=connection_manager)
         health_response = health_service.get_health_status()
 

@@ -216,18 +216,26 @@ class UserManager:
         target_id = self._normalize_player_id(target_id)
 
         # Normalize existing dictionary keys if they were stored with non-string identifiers
+        muter_mutes = None
         if raw_muter_id != muter_id and raw_muter_id in self._player_mutes:
-            self._player_mutes[muter_id] = self._player_mutes.pop(raw_muter_id)
-        if muter_id not in self._player_mutes:
-            self._player_mutes[muter_id] = {}
-        if raw_target_id != target_id and raw_target_id in self._player_mutes[muter_id]:
-            self._player_mutes[muter_id][target_id] = self._player_mutes[muter_id].pop(raw_target_id)
+            muter_mutes = self._player_mutes.pop(raw_muter_id)
+            self._player_mutes[muter_id] = muter_mutes
+        else:
+            muter_mutes = self._player_mutes.get(muter_id)
 
         try:
             # Check if target is admin (immune to mutes)
             if self.is_admin(target_id):
                 logger.warning("Attempted to mute admin player")
                 return False
+
+            # Initialize player mutes if needed (only after admin immunity check)
+            if muter_mutes is None:
+                muter_mutes = {}
+                self._player_mutes[muter_id] = muter_mutes
+
+            if raw_target_id != target_id and raw_target_id in muter_mutes:
+                muter_mutes[target_id] = muter_mutes.pop(raw_target_id)
 
             # Initialize player mutes if needed
             # Calculate mute expiry
@@ -247,7 +255,7 @@ class UserManager:
                 "is_permanent": duration_minutes is None,
             }
 
-            self._player_mutes[muter_id][target_id] = mute_info
+            muter_mutes[target_id] = mute_info
 
             # Log the mute for AI processing
             self.chat_logger.log_player_muted(

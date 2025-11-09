@@ -6,6 +6,7 @@ It replaces the previous Redis message handler with NATS-based messaging.
 """
 
 from datetime import UTC, datetime
+from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any
 
 from ..logging.enhanced_logging_config import get_logger
@@ -14,6 +15,11 @@ from ..realtime.circuit_breaker import CircuitBreaker, CircuitBreakerOpen
 from ..realtime.dead_letter_queue import DeadLetterMessage, DeadLetterQueue
 from ..realtime.envelope import build_event
 from ..realtime.nats_retry_handler import NATSRetryHandler
+from .connection_manager import (
+    get_global_connection_manager as _get_global_connection_manager,
+)
+from .connection_manager import resolve_connection_manager as _resolve_connection_manager
+from .connection_manager import set_global_connection_manager as _set_connection_manager_bridge
 
 logger = get_logger("communications.nats_message_handler")
 
@@ -21,10 +27,34 @@ if TYPE_CHECKING:
     from ..services.user_manager import UserManager
 
 
-# Legacy compatibility: several test suites patch the module-level `connection_manager`
-# attribute directly. The runtime now injects the connection manager via dependency
-# injection, but we preserve this attribute so those tests can continue to operate.
-connection_manager: Any | None = None
+# Legacy compatibility scaffolding --------------------------------------------------
+# Several older test suites still patch module-level attributes instead of using the
+# container injector. We expose a placeholder object whose methods can be monkey
+# patched while the runtime falls back to the live connection manager when present.
+
+
+SUPPRESS_ECHO_MESSAGE_IDS: set[str] = set()
+
+
+async def _not_configured_async(*_args: Any, **_kwargs: Any) -> None:
+    """
+    Placeholder coroutine used when no connection manager has been registered.
+
+    Human reader: ensures legacy tests that patch individual methods still have a
+    concrete attribute to override instead of encountering AttributeError.
+    """
+    raise RuntimeError("Connection manager has not been configured")
+
+
+_LEGACY_CONNECTION_MANAGER_STUB = SimpleNamespace(
+    broadcast_global=_not_configured_async,
+    broadcast_global_event=_not_configured_async,
+    broadcast_room_event=_not_configured_async,
+    send_personal_message=_not_configured_async,
+)
+
+# The module-level attribute defaults to a stub so unittest.patch can locate members.
+connection_manager: Any = _LEGACY_CONNECTION_MANAGER_STUB
 
 
 def set_global_connection_manager(manager: Any | None) -> None:
@@ -35,7 +65,9 @@ def set_global_connection_manager(manager: Any | None) -> None:
         manager: Connection manager instance to expose (or None to clear)
     """
     global connection_manager
-    connection_manager = manager
+    connection_manager = manager if manager is not None else _LEGACY_CONNECTION_MANAGER_STUB
+    # Keep the runtime bridge in sync so both modules expose the same instance.
+    _set_connection_manager_bridge(manager)
 
 
 class NATSMessageHandler:
@@ -68,7 +100,7 @@ class NATSMessageHandler:
         logger.info("NATSMessageHandler __init__ called - ENHANCED LOGGING TEST")
         self.nats_service = nats_service
         self.subject_manager = subject_manager
-        self.connection_manager = connection_manager  # AI Agent: Injected dependency, not global
+        self._connection_manager = connection_manager  # AI Agent: Injected dependency, not global
         self.user_manager = user_manager
         self.subscriptions: dict[str, bool] = {}
 
@@ -91,6 +123,29 @@ class NATSMessageHandler:
             circuit_failure_threshold=5,
             # DLQ path is environment-aware via DeadLetterQueue initialization
         )
+
+    @property
+    def connection_manager(self):
+        # Prefer explicitly injected manager
+        resolved = _resolve_connection_manager(self._connection_manager)
+        if resolved is not None:
+            return resolved
+
+        # Next honour module-level patches applied in legacy tests
+        if connection_manager is not _LEGACY_CONNECTION_MANAGER_STUB:
+            return _resolve_connection_manager(connection_manager)
+
+        # Finally consult the connection_manager module's global reference
+        fallback = _resolve_connection_manager(_get_global_connection_manager())
+        if fallback is not None:
+            return fallback
+
+        # No concrete manager available; return the stub so patched methods remain usable
+        return _LEGACY_CONNECTION_MANAGER_STUB
+
+    @connection_manager.setter
+    def connection_manager(self, value):
+        self._connection_manager = value
 
     async def start(self, enable_event_subscriptions: bool = True):
         """
@@ -571,7 +626,7 @@ class NATSMessageHandler:
 
             # Filter players based on their current room and mute status
             filtered_targets = []
-            mute_sensitive_channels = {"local", "emote", "pose"}
+            mute_sensitive_channels = {"local", "emote", "pose", "say", "whisper", "global", "system", "admin"}
             for player_id in targets:
                 logger.debug(
                     "=== BROADCAST FILTERING DEBUG: Processing target player ===",
@@ -681,23 +736,51 @@ class NATSMessageHandler:
                 )
                 await self.connection_manager.send_personal_message(player_id, chat_event)
 
-            # Always echo message back to sender so they see it in the chat pane
-            try:
-                await self.connection_manager.send_personal_message(sender_id, chat_event)
+            # Echo emotes/poses back to the sender so they see their own action
+            event_type = chat_event.get("event_type") or chat_event.get("type")
+            chat_event_data = chat_event.get("data") if isinstance(chat_event, dict) else {}
+            # When messages originate from the local node, the chat service marks that the sender already received a copy.
+            sender_already_notified = False
+            message_id = None
+            if isinstance(chat_event_data, dict):
+                message_id = chat_event_data.get("id")
                 logger.debug(
-                    "=== BROADCAST FILTERING DEBUG: Echoed message to sender ===",
-                    room_id=room_id,
-                    sender_id=sender_id,
-                    channel=channel,
+                    "=== BROADCAST FILTERING DEBUG: Chat event data keys ===",
+                    data_keys=list(chat_event_data.keys()),
+                    message_id=message_id,
+                    suppress_registry_hit=message_id in SUPPRESS_ECHO_MESSAGE_IDS if message_id else False,
                 )
-            except Exception as echo_error:
-                logger.warning(
-                    "Failed to echo message to sender",
-                    sender_id=sender_id,
-                    room_id=room_id,
-                    channel=channel,
-                    error=str(echo_error),
-                )
+                sender_already_notified = bool(chat_event_data.get("echo_sent"))
+                if message_id in SUPPRESS_ECHO_MESSAGE_IDS:
+                    sender_already_notified = True
+                    SUPPRESS_ECHO_MESSAGE_IDS.discard(message_id)
+
+            should_echo_sender = channel in {"emote", "pose"} and event_type == "chat_message"
+
+            needs_sender_echo = False
+            if should_echo_sender:
+                if filtered_targets:
+                    needs_sender_echo = True
+                elif not sender_already_notified:
+                    needs_sender_echo = True
+
+            if needs_sender_echo:
+                try:
+                    await self.connection_manager.send_personal_message(sender_id, chat_event)
+                    logger.debug(
+                        "=== BROADCAST FILTERING DEBUG: Echoed message to sender ===",
+                        room_id=room_id,
+                        sender_id=sender_id,
+                        channel=channel,
+                    )
+                except Exception as echo_error:
+                    logger.warning(
+                        "Failed to echo message to sender",
+                        sender_id=sender_id,
+                        room_id=room_id,
+                        channel=channel,
+                        error=str(echo_error),
+                    )
 
             logger.info(
                 "Room message broadcasted with server-side filtering",

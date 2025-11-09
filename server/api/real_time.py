@@ -14,6 +14,7 @@ from fastapi.responses import StreamingResponse
 from ..auth_utils import decode_access_token
 from ..exceptions import LoggedHTTPException
 from ..persistence import get_persistence
+from ..realtime.connection_manager import resolve_connection_manager, set_global_connection_manager
 from ..realtime.sse_handler import game_event_stream
 from ..realtime.websocket_handler import handle_websocket_connection
 from ..utils.error_logging import create_context_from_request, create_context_from_websocket
@@ -23,6 +24,23 @@ from ..utils.error_logging import create_context_from_request, create_context_fr
 
 # Create real-time router
 realtime_router = APIRouter(prefix="/api", tags=["realtime"])
+
+
+def _resolve_connection_manager_from_state(state) -> Any:
+    container = getattr(state, "container", None)
+    candidate = getattr(container, "connection_manager", None) if container else None
+    manager = resolve_connection_manager(candidate)
+    if manager is not None:
+        set_global_connection_manager(manager)
+    return manager
+
+
+def _ensure_connection_manager(state) -> Any:
+    connection_manager = _resolve_connection_manager_from_state(state)
+    if connection_manager is None:
+        raise HTTPException(status_code=503, detail="Service temporarily unavailable")
+    set_global_connection_manager(connection_manager)
+    return connection_manager
 
 
 @realtime_router.get("/events/{player_id}")
@@ -43,18 +61,12 @@ async def sse_events(player_id: str, request: Request) -> StreamingResponse:
         "Access-Control-Allow-Headers": "Cache-Control",
     }
 
-    # Readiness gate: require persistence to be initialized
-    # AI Agent: Get connection_manager from container instead of global import
-    try:
-        connection_manager = request.app.state.container.connection_manager
-        if getattr(connection_manager, "persistence", None) is None:
-            raise HTTPException(status_code=503, detail="Service temporarily unavailable")
-    except Exception as e:
-        # If connection manager is unavailable, return 503
-        raise HTTPException(status_code=503, detail="Service temporarily unavailable") from e
+    connection_manager = _ensure_connection_manager(request.app.state)
+    if getattr(connection_manager, "persistence", None) is None:
+        raise HTTPException(status_code=503, detail="Service temporarily unavailable")
 
     return StreamingResponse(
-        game_event_stream(player_id, session_id, connection_manager),
+        game_event_stream(player_id, session_id),
         media_type="text/event-stream",
         headers=headers,
     )
@@ -94,18 +106,12 @@ async def sse_events_token(request: Request) -> StreamingResponse:
         "Access-Control-Allow-Headers": "Cache-Control",
     }
 
-    # Readiness gate for token-authenticated SSE as well
-    # AI Agent: Access connection_manager via app.state.container (no longer a module export)
-    #           Import locally to avoid circular import with main.py
-    from ..main import app
-
-    _cm = app.state.container.connection_manager
-
-    if getattr(_cm, "persistence", None) is None:
+    connection_manager = _ensure_connection_manager(request.app.state)
+    if getattr(connection_manager, "persistence", None) is None:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
 
     return StreamingResponse(
-        game_event_stream(player_id, session_id, _cm),
+        game_event_stream(player_id, session_id),
         media_type="text/event-stream",
         headers=headers,
     )
@@ -121,22 +127,13 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
 
     logger = get_logger(__name__)
 
-    # Readiness gate: if persistence not ready, close with 1013 (Try Again Later)
-    try:
-        # AI Agent: Access connection_manager via app.state.container (no longer a module export)
-        #           Import locally to avoid circular import with main.py
-        from ..main import app
-
-        _cm = app.state.container.connection_manager
-
-        if getattr(_cm, "persistence", None) is None:
-            # CRITICAL FIX: Must accept WebSocket before closing or sending messages
-            await websocket.accept()
-            await websocket.send_json({"type": "error", "message": "Service temporarily unavailable"})
-            await websocket.close(code=1013)
-            return
-    except Exception:
-        pass
+    connection_manager = _resolve_connection_manager_from_state(websocket.app.state)
+    if connection_manager is None or getattr(connection_manager, "persistence", None) is None:
+        # CRITICAL FIX: Must accept WebSocket before closing or sending messages
+        await websocket.accept()
+        await websocket.send_json({"type": "error", "message": "Service temporarily unavailable"})
+        await websocket.close(code=1013)
+        return
 
     # Accept token via WebSocket subprotocol (preferred) or query token (fallback)
     token = websocket.query_params.get("token")
@@ -190,9 +187,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
     logger.info("WebSocket connection attempt", player_id=player_id, session_id=session_id)
 
     try:
-        # AI Agent: Get connection_manager from container and pass to handler
-        connection_manager = websocket.app.state.container.connection_manager
-        await handle_websocket_connection(websocket, player_id, session_id, connection_manager)
+        await handle_websocket_connection(websocket, player_id, session_id)
     except Exception as e:
         logger.error("Error in WebSocket endpoint", player_id=player_id, error=str(e), exc_info=True)
         raise
@@ -208,8 +203,7 @@ async def get_player_connections(player_id: str, request: Request) -> dict[str, 
 
     logger = get_logger(__name__)
 
-    # AI Agent: Get connection_manager from container instead of global import
-    connection_manager = request.app.state.container.connection_manager
+    connection_manager = _ensure_connection_manager(request.app.state)
 
     # Get connection information
     presence_info = connection_manager.get_player_presence_info(player_id)
@@ -249,8 +243,7 @@ async def handle_new_game_session(player_id: str, request: Request) -> dict[str,
 
     logger = get_logger(__name__)
 
-    # AI Agent: Get connection_manager from container instead of global import
-    connection_manager = request.app.state.container.connection_manager
+    connection_manager = _ensure_connection_manager(request.app.state)
 
     try:
         # Get new session ID from request body
@@ -292,8 +285,7 @@ async def get_connection_statistics(request: Request) -> dict[str, Any]:
 
     logger = get_logger(__name__)
 
-    # AI Agent: Get connection_manager from container instead of global import
-    connection_manager = request.app.state.container.connection_manager
+    connection_manager = _ensure_connection_manager(request.app.state)
 
     # Get various statistics
     presence_stats = connection_manager.get_presence_statistics()
@@ -332,18 +324,12 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None
     )
 
     try:
-        # Readiness gate for compatibility route as well
-        # AI Agent: Get connection_manager from container instead of global import
-        try:
-            connection_manager = websocket.app.state.container.connection_manager
-            if getattr(connection_manager, "persistence", None) is None:
-                # CRITICAL FIX: Must accept WebSocket before closing or sending messages
-                await websocket.accept()
-                await websocket.send_json({"type": "error", "message": "Service temporarily unavailable"})
-                await websocket.close(code=1013)
-                return
-        except Exception:
-            pass
+        connection_manager = _resolve_connection_manager_from_state(websocket.app.state)
+        if connection_manager is None or getattr(connection_manager, "persistence", None) is None:
+            await websocket.accept()
+            await websocket.send_json({"type": "error", "message": "Service temporarily unavailable"})
+            await websocket.close(code=1013)
+            return
 
         token = websocket.query_params.get("token")
         resolved_player_id = player_id
@@ -354,7 +340,7 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None
             player = persistence.get_player_by_user_id(user_id)
             if player:
                 resolved_player_id = str(player.player_id)
-        await handle_websocket_connection(websocket, resolved_player_id, session_id, connection_manager)
+        await handle_websocket_connection(websocket, resolved_player_id, session_id)
     except Exception as e:
         logger.error("Error in WebSocket endpoint", player_id=player_id, error=str(e), exc_info=True)
         raise
