@@ -36,6 +36,12 @@ if TYPE_CHECKING:
 
 SUPPRESS_ECHO_MESSAGE_IDS: set[str] = set()
 
+# Human reader: Centralize channel policy sets to keep mute filtering consistent with
+# the teachings of the Arkham communications thesis.
+# AI reader: Shared constants ensure mute/echo logic stays synchronized across helpers.
+MUTE_SENSITIVE_CHANNELS = frozenset({"local", "emote", "pose", "whisper", "global", "system", "admin"})
+ECHO_SENDER_CHANNELS = frozenset({"say", "local", "emote", "pose"})
+
 
 async def _not_configured_async(*_args: Any, **_kwargs: Any) -> None:
     """
@@ -627,7 +633,7 @@ class NATSMessageHandler:
 
             # Filter players based on their current room and mute status
             filtered_targets = []
-            mute_sensitive_channels = {"local", "emote", "pose", "whisper", "global", "system", "admin"}
+            mute_sensitive_channels = MUTE_SENSITIVE_CHANNELS
             for player_id in targets:
                 logger.debug(
                     "=== BROADCAST FILTERING DEBUG: Processing target player ===",
@@ -756,8 +762,7 @@ class NATSMessageHandler:
                     sender_already_notified = True
                     SUPPRESS_ECHO_MESSAGE_IDS.discard(message_id)
 
-            echo_sender_channels = {"say", "local", "emote", "pose"}
-            should_echo_sender = channel in echo_sender_channels and event_type == "chat_message"
+            should_echo_sender = channel in ECHO_SENDER_CHANNELS and event_type == "chat_message"
 
             needs_sender_echo = False
             if should_echo_sender:
