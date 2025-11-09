@@ -134,11 +134,15 @@ class NATSMessageHandler:
     @property
     def connection_manager(self):
         # Prefer explicitly injected manager
-        resolved = _resolve_connection_manager(self._connection_manager)
-        if resolved is not None:
-            return resolved
+        if self._connection_manager is not None:
+            resolved = _resolve_connection_manager(self._connection_manager)
+            if resolved is not None:
+                return resolved
 
-        # Next honour module-level patches applied in legacy tests
+        # Next honour module-level patches applied in legacy tests. This check runs
+        # before consulting the bridged global instance so that `unittest.patch`
+        # continues to behave the same way even if another test has already wired
+        # up the real connection manager via ``set_global_connection_manager``.
         if connection_manager is not _LEGACY_CONNECTION_MANAGER_STUB:
             return _resolve_connection_manager(connection_manager)
 
