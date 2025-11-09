@@ -139,10 +139,7 @@ class NATSMessageHandler:
             if resolved is not None:
                 return resolved
 
-        # Next honour module-level patches applied in legacy tests. This check runs
-        # before consulting the bridged global instance so that `unittest.patch`
-        # continues to behave the same way even if another test has already wired
-        # up the real connection manager via ``set_global_connection_manager``.
+        # Next honour module-level bridges applied via set_global_connection_manager.
         if connection_manager is not _LEGACY_CONNECTION_MANAGER_STUB:
             return _resolve_connection_manager(connection_manager)
 
