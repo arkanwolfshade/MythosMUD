@@ -39,8 +39,8 @@ SUPPRESS_ECHO_MESSAGE_IDS: set[str] = set()
 # Human reader: Centralize channel policy sets to keep mute filtering consistent with
 # the teachings of the Arkham communications thesis.
 # AI reader: Shared constants ensure mute/echo logic stays synchronized across helpers.
-MUTE_SENSITIVE_CHANNELS = frozenset({"local", "emote", "pose", "whisper", "global", "system", "admin"})
-ECHO_SENDER_CHANNELS = frozenset({"say", "local", "emote", "pose"})
+MUTE_SENSITIVE_CHANNELS = frozenset({"say", "local", "emote", "pose", "whisper", "global", "system", "admin"})
+ECHO_SENDER_CHANNELS = frozenset({"local", "emote", "pose"})
 
 
 async def _not_configured_async(*_args: Any, **_kwargs: Any) -> None:
