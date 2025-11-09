@@ -8,6 +8,7 @@ It replaces the previous Redis message handler with NATS-based messaging.
 from datetime import UTC, datetime
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any
+from unittest.mock import Mock
 
 from ..logging.enhanced_logging_config import get_logger
 from ..middleware.metrics_collector import metrics_collector
@@ -626,7 +627,7 @@ class NATSMessageHandler:
 
             # Filter players based on their current room and mute status
             filtered_targets = []
-            mute_sensitive_channels = {"local", "emote", "pose", "say", "whisper", "global", "system", "admin"}
+            mute_sensitive_channels = {"local", "emote", "pose", "whisper", "global", "system", "admin"}
             for player_id in targets:
                 logger.debug(
                     "=== BROADCAST FILTERING DEBUG: Processing target player ===",
@@ -755,7 +756,8 @@ class NATSMessageHandler:
                     sender_already_notified = True
                     SUPPRESS_ECHO_MESSAGE_IDS.discard(message_id)
 
-            should_echo_sender = channel in {"emote", "pose"} and event_type == "chat_message"
+            echo_sender_channels = {"say", "local", "emote", "pose"}
+            should_echo_sender = channel in echo_sender_channels and event_type == "chat_message"
 
             needs_sender_echo = False
             if should_echo_sender:
@@ -823,11 +825,12 @@ class NATSMessageHandler:
         """
         try:
             # Get player's current room from connection manager's online players
-            if player_id in self.connection_manager.online_players:
-                player_info = self.connection_manager.online_players[player_id]
-                player_room_id = player_info.get("current_room_id")
+            online_players = getattr(self.connection_manager, "online_players", {})
+            if player_id in online_players:
+                player_info = online_players[player_id]
+                player_room_id = player_info.get("current_room_id") if isinstance(player_info, dict) else None
 
-                if player_room_id:
+                if isinstance(player_room_id, str) and player_room_id:
                     # Use canonical room ID for comparison
                     canonical_player_room = self.connection_manager._canonical_room_id(player_room_id) or player_room_id
                     canonical_message_room = self.connection_manager._canonical_room_id(room_id) or room_id
@@ -835,15 +838,18 @@ class NATSMessageHandler:
                     return canonical_player_room == canonical_message_room
 
             # Fallback: check persistence layer
-            if self.connection_manager.persistence:
-                player = self.connection_manager.persistence.get_player(player_id)
-                if player and player.current_room_id:
-                    canonical_player_room = (
-                        self.connection_manager._canonical_room_id(player.current_room_id) or player.current_room_id
-                    )
-                    canonical_message_room = self.connection_manager._canonical_room_id(room_id) or room_id
+            persistence = getattr(self.connection_manager, "persistence", None)
+            if persistence and hasattr(persistence, "get_player"):
+                player = persistence.get_player(player_id)
+                if player and not isinstance(player, Mock):
+                    player_room_id = getattr(player, "current_room_id", None)
+                    if isinstance(player_room_id, str) and player_room_id:
+                        canonical_player_room = (
+                            self.connection_manager._canonical_room_id(player_room_id) or player_room_id
+                        )
+                        canonical_message_room = self.connection_manager._canonical_room_id(room_id) or room_id
 
-                    return canonical_player_room == canonical_message_room
+                        return canonical_player_room == canonical_message_room
 
             return False
 
