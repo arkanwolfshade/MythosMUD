@@ -28,6 +28,22 @@ class TestAliasStorage:
         # Remove temporary directory
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
+    @staticmethod
+    def _alias_dump(name: str, command: str) -> dict:
+        """Helper to create a serialized alias using the canonical model."""
+        return Alias(name=name, command=command).model_dump()
+
+    def _write_alias_file(self, player_name: str, aliases: list[dict]) -> Path:
+        """Write a serialized alias payload to disk."""
+        payload = {"version": "1.0", "aliases": aliases}
+        file_path = self.storage._get_alias_file_path(player_name)
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(file_path, "w", encoding="utf-8") as alias_file:
+            json.dump(payload, alias_file)
+
+        return file_path
+
     def test_init_creates_directory(self):
         """Test that __init__ creates the storage directory."""
         # Create a new storage instance with a new directory
@@ -54,24 +70,7 @@ class TestAliasStorage:
     def test_load_alias_data_existing_file(self):
         """Test loading alias data from existing file."""
         # Create a test alias file
-        test_data = {
-            "version": "1.0",
-            "aliases": [
-                {
-                    "name": "n",
-                    "command": "go north",
-                    "version": "1.0",
-                    "created_at": "2024-01-01T00:00:00+00:00",
-                    "updated_at": "2024-01-01T00:00:00+00:00",
-                }
-            ],
-        }
-
-        file_path = self.storage._get_alias_file_path("testplayer")
-        file_path.parent.mkdir(parents=True, exist_ok=True)
-
-        with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(test_data, f)
+        self._write_alias_file("testplayer", [self._alias_dump("n", "go north")])
 
         data = self.storage._load_alias_data("testplayer")
 
@@ -96,18 +95,7 @@ class TestAliasStorage:
 
     def test_save_alias_data_success(self):
         """Test successfully saving alias data."""
-        test_data = {
-            "version": "1.0",
-            "aliases": [
-                {
-                    "name": "n",
-                    "command": "go north",
-                    "version": "1.0",
-                    "created_at": "2024-01-01T00:00:00+00:00",
-                    "updated_at": "2024-01-01T00:00:00+00:00",
-                }
-            ],
-        }
+        test_data = {"version": "1.0", "aliases": [self._alias_dump("n", "go north")]}
 
         result = self.storage._save_alias_data("testplayer", test_data)
 
@@ -149,31 +137,7 @@ class TestAliasStorage:
     def test_get_player_aliases_with_data(self):
         """Test getting aliases for a player with existing aliases."""
         # Create test alias data
-        test_data = {
-            "version": "1.0",
-            "aliases": [
-                {
-                    "name": "n",
-                    "command": "go north",
-                    "version": "1.0",
-                    "created_at": "2024-01-01T00:00:00+00:00",
-                    "updated_at": "2024-01-01T00:00:00+00:00",
-                },
-                {
-                    "name": "s",
-                    "command": "go south",
-                    "version": "1.0",
-                    "created_at": "2024-01-01T00:00:00+00:00",
-                    "updated_at": "2024-01-01T00:00:00+00:00",
-                },
-            ],
-        }
-
-        file_path = self.storage._get_alias_file_path("testplayer")
-        file_path.parent.mkdir(parents=True, exist_ok=True)
-
-        with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(test_data, f)
+        self._write_alias_file("testplayer", [self._alias_dump("n", "go north"), self._alias_dump("s", "go south")])
 
         aliases = self.storage.get_player_aliases("testplayer")
 
@@ -186,35 +150,20 @@ class TestAliasStorage:
     def test_get_player_aliases_invalid_data(self):
         """Test getting aliases with invalid alias data."""
         # Create test data with invalid alias
-        test_data = {
+        payload = {
             "version": "1.0",
-            "aliases": [
-                {
-                    "name": "n",
-                    "command": "go north",
-                    "version": "1.0",
-                    "created_at": "2024-01-01T00:00:00+00:00",
-                    "updated_at": "2024-01-01T00:00:00+00:00",
-                },
-                {
-                    "name": "invalid",  # Missing required fields
-                    "command": "go invalid",
-                },
-            ],
+            "aliases": [self._alias_dump("n", "go north"), {"name": "invalid alias", "command": "go invalid"}],
         }
-
         file_path = self.storage._get_alias_file_path("testplayer")
         file_path.parent.mkdir(parents=True, exist_ok=True)
 
         with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(test_data, f)
+            json.dump(payload, f)
 
         aliases = self.storage.get_player_aliases("testplayer")
 
-        # The current implementation is more lenient and accepts both aliases
-        # So we'll test that it doesn't crash and returns some aliases
-        assert len(aliases) >= 1
-        assert any(alias.name == "n" for alias in aliases)
+        # Invalid schema now results in discarding the payload entirely
+        assert aliases == []
 
     def test_save_player_aliases(self):
         """Test saving player aliases."""
@@ -465,3 +414,43 @@ class TestAliasStorage:
 
         # The backup method might not work as expected, so just test it doesn't crash
         assert isinstance(result, bool)
+
+    def test_load_alias_data_schema_invalid_returns_default(self):
+        """Schema-invalid alias bundles are discarded during load."""
+        invalid_payload = {
+            "version": "1.0",
+            "aliases": [
+                {
+                    "name": "bad alias",  # spaces violate naming convention
+                    "command": "say hello",
+                }
+            ],
+        }
+
+        file_path = self.storage._get_alias_file_path("schema_invalid_player")
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(invalid_payload, f)
+
+        data = self.storage._load_alias_data("schema_invalid_player")
+
+        assert data == {"version": "1.0", "aliases": []}
+
+    def test_save_alias_data_schema_invalid_aborts_write(self):
+        """Schema-invalid alias bundles are not persisted to disk."""
+        invalid_payload = {
+            "version": "1.0",
+            "aliases": [
+                {
+                    "name": "invalid alias",  # invalid due to whitespace
+                    "command": "go south",
+                }
+            ],
+        }
+
+        player_name = "invalid_save_player"
+        result = self.storage._save_alias_data(player_name, invalid_payload)
+
+        assert result is False
+        assert not self.storage._get_alias_file_path(player_name).exists()

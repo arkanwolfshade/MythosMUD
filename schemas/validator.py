@@ -27,19 +27,21 @@ class SchemaValidator:
     to ensure consistent validation of room data.
     """
 
-    def __init__(self, schema_path: str | None = None):
+    def __init__(self, schema_path: str | None = None, schema_name: str = "unified"):
         """
         Initialize the schema validator.
 
         Args:
             schema_path: Path to the JSON schema file. If None, uses the default
                         unified room schema from the schemas directory.
+            schema_name: Logical name of the schema, used for logging context.
         """
         if schema_path is None:
             # Use the default unified schema from the schemas directory
             self.schema_path = Path(__file__).parent / "unified_room_schema.json"
         else:
             self.schema_path = Path(schema_path)
+        self.schema_name = schema_name
         self.schema = None
         self._load_schema()
 
@@ -56,12 +58,12 @@ class SchemaValidator:
         except json.JSONDecodeError as e:
             raise ValueError(f"Invalid schema file: {e}") from e
 
-    def validate_room(self, room_data: dict[str, Any], file_path: str = "") -> list[str]:
+    def validate_data(self, data: dict[str, Any], file_path: str = "") -> list[str]:
         """
-        Validate a single room against the schema.
+        Validate a JSON document against the loaded schema.
 
         Args:
-            room_data: Room data to validate
+            data: Data to validate
             file_path: Optional file path for error reporting
 
         Returns:
@@ -73,7 +75,7 @@ class SchemaValidator:
         errors = []
 
         try:
-            validate(instance=room_data, schema=self.schema)
+            validate(instance=data, schema=self.schema)
         except ValidationError as e:
             # Format validation error for better readability
             path = " -> ".join(str(p) for p in e.path) if e.path else "root"
@@ -83,6 +85,19 @@ class SchemaValidator:
             errors.append(error_msg)
 
         return errors
+
+    def validate_room(self, room_data: dict[str, Any], file_path: str = "") -> list[str]:
+        """
+        Validate a single room against the schema.
+
+        Args:
+            room_data: Room data to validate
+            file_path: Optional file path for error reporting
+
+        Returns:
+            List of validation error messages (empty if valid)
+        """
+        return self.validate_data(room_data, file_path)
 
     def validate_room_file(self, file_path: Path) -> list[str]:
         """
@@ -123,6 +138,32 @@ class SchemaValidator:
                 validation_results[room_id] = errors
 
         return validation_results
+
+    def validate_alias_bundle(self, alias_data: dict[str, Any], file_path: str = "") -> list[str]:
+        """
+        Validate a serialized alias bundle against the alias schema.
+
+        Args:
+            alias_data: Alias bundle data to validate.
+            file_path: Optional file path for error reporting.
+
+        Returns:
+            List of validation error messages (empty if valid).
+        """
+        return self.validate_data(alias_data, file_path)
+
+    def validate_emote_file(self, emote_data: dict[str, Any], file_path: str = "") -> list[str]:
+        """
+        Validate emote definition data against the emote schema.
+
+        Args:
+            emote_data: Emote data to validate.
+            file_path: Optional file path for error reporting.
+
+        Returns:
+            List of validation error messages (empty if valid).
+        """
+        return self.validate_data(emote_data, file_path)
 
     def get_exit_target(self, exit_data: Any) -> str | None:
         """
@@ -193,13 +234,15 @@ def create_validator(schema_name: str = "unified") -> SchemaValidator:
     """
     schemas_dir = Path(__file__).parent
 
-    if schema_name == "unified":
-        schema_path = schemas_dir / "unified_room_schema.json"
-    elif schema_name == "room":
-        schema_path = schemas_dir / "room_schema.json"
-    elif schema_name == "intersection":
-        schema_path = schemas_dir / "intersection_schema.json"
-    else:
+    schema_map = {
+        "unified": schemas_dir / "unified_room_schema.json",
+        "room": schemas_dir / "room_schema.json",
+        "intersection": schemas_dir / "intersection_schema.json",
+        "alias": schemas_dir / "alias_schema.json",
+        "emote": schemas_dir / "emote_schema.json",
+    }
+
+    if schema_name not in schema_map:
         raise ValueError(f"Unknown schema name: {schema_name}")
 
-    return SchemaValidator(str(schema_path))
+    return SchemaValidator(str(schema_map[schema_name]), schema_name=schema_name)

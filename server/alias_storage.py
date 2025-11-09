@@ -9,11 +9,45 @@ import json
 import os
 from datetime import datetime
 from pathlib import Path
+from typing import TYPE_CHECKING, Any, Optional
 
 from .logging.enhanced_logging_config import get_logger
 from .models import Alias
 
 logger = get_logger(__name__)
+
+if TYPE_CHECKING:  # pragma: no cover - type checking only
+    from schemas.validator import SchemaValidator
+
+
+_ALIAS_VALIDATOR: Optional["SchemaValidator"] = None
+_ALIAS_VALIDATOR_IMPORT_FAILED = False
+
+
+def _get_alias_validator() -> Optional["SchemaValidator"]:
+    """Lazily instantiate and cache the alias schema validator."""
+    global _ALIAS_VALIDATOR, _ALIAS_VALIDATOR_IMPORT_FAILED
+
+    if _ALIAS_VALIDATOR is not None:
+        return _ALIAS_VALIDATOR
+
+    if _ALIAS_VALIDATOR_IMPORT_FAILED:
+        return None
+
+    try:
+        from schemas.validator import create_validator
+    except ImportError as exc:  # pragma: no cover - environment without schemas package
+        logger.warning("Alias schema validator unavailable", error=str(exc))
+        _ALIAS_VALIDATOR_IMPORT_FAILED = True
+        return None
+
+    try:
+        _ALIAS_VALIDATOR = create_validator("alias")
+    except Exception as exc:  # pragma: no cover - defensive logging path
+        logger.warning("Alias schema validator creation failed", error=str(exc))
+        _ALIAS_VALIDATOR = None
+
+    return _ALIAS_VALIDATOR
 
 
 class AliasStorage:
@@ -52,7 +86,18 @@ class AliasStorage:
         try:
             with open(file_path, encoding="utf-8") as f:
                 data = json.load(f)
-                return data
+
+            validation_errors = self._validate_alias_payload(data, file_path)
+            if validation_errors:
+                logger.error(
+                    "Alias schema validation failed",
+                    player_name=player_name,
+                    file_path=str(file_path),
+                    errors=validation_errors,
+                )
+                return {"version": "1.0", "aliases": []}
+
+            return data
         except (OSError, json.JSONDecodeError) as e:
             # Log error and return default structure
             logger.error("Error loading alias data", player_name=player_name, error=str(e))
@@ -64,6 +109,16 @@ class AliasStorage:
 
         # Ensure directory exists
         file_path.parent.mkdir(parents=True, exist_ok=True)
+
+        validation_errors = self._validate_alias_payload(data, file_path)
+        if validation_errors:
+            logger.error(
+                "Aborting alias save due to schema validation failure",
+                player_name=player_name,
+                file_path=str(file_path),
+                errors=validation_errors,
+            )
+            return False
 
         try:
             with open(file_path, "w", encoding="utf-8") as f:
@@ -264,3 +319,19 @@ class AliasStorage:
         except OSError as e:
             logger.error("Error creating backup", player_name=player_name, error=str(e))
             return False
+
+    def _validate_alias_payload(self, data: dict[str, Any], file_path: Path) -> list[str]:
+        """
+        Validate alias payload against the shared schema when available.
+
+        Args:
+            data: Alias payload to validate.
+            file_path: Location of the payload for logging context.
+
+        Returns:
+            List of schema validation error strings. Empty if schema is unavailable or the data is valid.
+        """
+        validator = _get_alias_validator()
+        if validator is None:
+            return []
+        return validator.validate_alias_bundle(data, str(file_path))

@@ -9,12 +9,46 @@ to appropriate messages for both the player and room occupants.
 import json
 import os
 from pathlib import Path
+from typing import TYPE_CHECKING, Optional
 
 from ..exceptions import ValidationError
 from ..logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
+
+if TYPE_CHECKING:  # pragma: no cover - type checking only
+    from schemas.validator import SchemaValidator
+
+
+_EMOTE_VALIDATOR: Optional["SchemaValidator"] = None
+_EMOTE_VALIDATOR_IMPORT_FAILED = False
+
+
+def _get_emote_validator() -> Optional["SchemaValidator"]:
+    """Lazily instantiate and cache the emote schema validator."""
+    global _EMOTE_VALIDATOR, _EMOTE_VALIDATOR_IMPORT_FAILED
+
+    if _EMOTE_VALIDATOR is not None:
+        return _EMOTE_VALIDATOR
+
+    if _EMOTE_VALIDATOR_IMPORT_FAILED:
+        return None
+
+    try:
+        from schemas.validator import create_validator
+    except ImportError as exc:  # pragma: no cover - environment without schemas package
+        logger.warning("Emote schema validator unavailable", error=str(exc))
+        _EMOTE_VALIDATOR_IMPORT_FAILED = True
+        return None
+
+    try:
+        _EMOTE_VALIDATOR = create_validator("emote")
+    except Exception as exc:  # pragma: no cover - defensive logging path
+        logger.warning("Emote schema validator creation failed", error=str(exc))
+        _EMOTE_VALIDATOR = None
+
+    return _EMOTE_VALIDATOR
 
 
 class EmoteService:
@@ -67,6 +101,28 @@ class EmoteService:
 
             with open(self.emote_file_path, encoding="utf-8") as f:
                 data = json.load(f)
+
+            validation_errors = self._validate_emote_payload(data)
+            if validation_errors:
+                logger.error(
+                    "Emote schema validation failed",
+                    file_path=str(self.emote_file_path),
+                    errors=validation_errors,
+                )
+                context = create_error_context()
+                context.metadata["emote_file_path"] = str(self.emote_file_path)
+                context.metadata["operation"] = "load_emotes"
+                context.metadata["schema_errors"] = validation_errors
+                log_and_raise(
+                    ValidationError,
+                    f"Emote schema validation failed for {self.emote_file_path}",
+                    context=context,
+                    details={
+                        "emote_file_path": str(self.emote_file_path),
+                        "validation_errors": validation_errors,
+                    },
+                    user_friendly="Failed to load emote definitions",
+                )
 
             self.emotes = data.get("emotes", {})
 
@@ -176,3 +232,18 @@ class EmoteService:
         """Reload emote definitions from the file."""
         logger.info("Reloading emote definitions")
         self._load_emotes()
+
+    def _validate_emote_payload(self, data: dict) -> list[str]:
+        """
+        Validate emote definitions against the shared schema when available.
+
+        Args:
+            data: Emote payload to validate.
+
+        Returns:
+            List of schema validation errors. Empty if schema is unavailable or data is valid.
+        """
+        validator = _get_emote_validator()
+        if validator is None:
+            return []
+        return validator.validate_emote_file(data, str(self.emote_file_path))

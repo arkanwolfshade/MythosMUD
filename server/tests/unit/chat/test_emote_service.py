@@ -137,6 +137,27 @@ class TestEmoteService:
 
         assert "Failed to load emotes" in str(exc_info.value)
 
+    def test_emote_service_schema_validation_failure(self):
+        """Schema-invalid emote bundles raise ValidationError during load."""
+        invalid_data = {
+            "emotes": {
+                "broken": {
+                    "self_message": "You do something indescribable.",
+                    # Missing {player_name} placeholder violates schema
+                    "other_message": "Someone does something indescribable.",
+                }
+            }
+        }
+
+        invalid_file = Path(self.temp_dir) / "invalid_schema.json"
+        with open(invalid_file, "w", encoding="utf-8") as f:
+            json.dump(invalid_data, f)
+
+        with pytest.raises(ValidationError) as exc_info:
+            EmoteService(emote_file_path=str(invalid_file))
+
+        assert "Emote schema validation failed" in str(exc_info.value)
+
     def test_is_emote_alias(self):
         """Test checking if a command is an emote alias."""
         service = EmoteService(emote_file_path=str(self.emote_file))
