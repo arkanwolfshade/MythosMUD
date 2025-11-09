@@ -3319,6 +3319,10 @@ _ASYNC_METHODS_REQUIRING_COMPAT: set[str] = {
     "check_connection_health",
     "connect_sse",
     "cleanup_orphaned_data",
+    "broadcast_room_event",
+    "broadcast_global_event",
+    "broadcast_global",
+    "send_personal_message",
 }
 
 

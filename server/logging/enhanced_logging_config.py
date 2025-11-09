@@ -530,6 +530,7 @@ def _setup_enhanced_file_logging(
             # Fallback to standard handler on any detection error
             handler_class = RotatingFileHandler
 
+        log_path.parent.mkdir(parents=True, exist_ok=True)
         handler = handler_class(
             log_path,
             maxBytes=max_bytes,
@@ -575,6 +576,7 @@ def _setup_enhanced_file_logging(
     except Exception:
         handler_class = RotatingFileHandler
 
+    console_log_path.parent.mkdir(parents=True, exist_ok=True)
     console_handler = handler_class(
         console_log_path,
         maxBytes=max_bytes,
@@ -610,6 +612,7 @@ def _setup_enhanced_file_logging(
     except Exception:
         handler_class = RotatingFileHandler
 
+    errors_log_path.parent.mkdir(parents=True, exist_ok=True)
     errors_handler = handler_class(
         errors_log_path,
         maxBytes=max_bytes,
@@ -641,6 +644,7 @@ def _setup_enhanced_file_logging(
     # This ensures ALL error-level logs from ANY module are captured
     # AI Agent: This fixes the observability gap where critical errors in combat,
     # persistence, and game mechanics were being silently suppressed
+    errors_log_path.parent.mkdir(parents=True, exist_ok=True)
     global_errors_handler = handler_class(
         errors_log_path,  # Same file as errors_handler
         maxBytes=max_bytes,
