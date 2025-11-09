@@ -162,6 +162,7 @@ venv.bak/
 !.env.example
 !*.env.example
 !env.*.example
+.act.secrets
 
 # Spyder project settings
 .spyderproject
