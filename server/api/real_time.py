@@ -344,9 +344,9 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None
             player = persistence.get_player_by_user_id(user_id)
             if player:
                 resolved_player_id = str(player.player_id)
-            await handle_websocket_connection(
-                websocket, resolved_player_id, session_id, connection_manager=connection_manager
-            )
+        await handle_websocket_connection(
+            websocket, resolved_player_id, session_id, connection_manager=connection_manager
+        )
     except Exception as e:
         logger.error("Error in WebSocket endpoint", player_id=player_id, error=str(e), exc_info=True)
         raise
