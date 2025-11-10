@@ -1,11 +1,11 @@
 # ACT Configuration for MythosMUD CI Testing
 # This configuration tells ACT to use our custom Dockerfile for testing
 
-# Use our custom CI test image for ubuntu-latest runners
--P ubuntu-latest=mythosmud-ci-test:latest
+# Use our custom GitHub runner parity image for ubuntu-latest runners
+-P ubuntu-latest=mythosmud-gha-runner:latest
 
-# Enable verbose logging
---verbose
+# Default secret file (copy .act.secrets.example to .act.secrets and populate)
+--secret-file .act.secrets
 
 # Use Docker buildx for building images
 --use-gitignore=true

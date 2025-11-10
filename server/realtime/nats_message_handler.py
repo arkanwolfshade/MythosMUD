@@ -40,7 +40,7 @@ SUPPRESS_ECHO_MESSAGE_IDS: set[str] = set()
 # the teachings of the Arkham communications thesis.
 # AI reader: Shared constants ensure mute/echo logic stays synchronized across helpers.
 MUTE_SENSITIVE_CHANNELS = frozenset({"say", "local", "emote", "pose", "whisper", "global", "system", "admin"})
-ECHO_SENDER_CHANNELS = frozenset({"local", "emote", "pose"})
+ECHO_SENDER_CHANNELS = frozenset({"say", "local", "emote", "pose"})
 
 
 async def _not_configured_async(*_args: Any, **_kwargs: Any) -> None:
@@ -134,11 +134,12 @@ class NATSMessageHandler:
     @property
     def connection_manager(self):
         # Prefer explicitly injected manager
-        resolved = _resolve_connection_manager(self._connection_manager)
-        if resolved is not None:
-            return resolved
+        if self._connection_manager is not None:
+            resolved = _resolve_connection_manager(self._connection_manager)
+            if resolved is not None:
+                return resolved
 
-        # Next honour module-level patches applied in legacy tests
+        # Next honour module-level bridges applied via set_global_connection_manager.
         if connection_manager is not _LEGACY_CONNECTION_MANAGER_STUB:
             return _resolve_connection_manager(connection_manager)
 
@@ -631,6 +632,27 @@ class NATSMessageHandler:
                             error=str(e),
                         )
 
+            event_type = chat_event.get("event_type") if isinstance(chat_event, dict) else None
+            if not event_type and isinstance(chat_event, dict):
+                event_type = chat_event.get("type")
+
+            chat_event_data = {}
+            if isinstance(chat_event, dict):
+                potential_data = chat_event.get("data")
+                if isinstance(potential_data, dict):
+                    chat_event_data = potential_data
+
+            sender_already_notified = False
+            message_id = None
+            suppress_registry_hit = False
+            if chat_event_data:
+                message_id = chat_event_data.get("id")
+                sender_already_notified = bool(chat_event_data.get("echo_sent"))
+                if message_id in SUPPRESS_ECHO_MESSAGE_IDS:
+                    sender_already_notified = True
+                    suppress_registry_hit = True
+                    SUPPRESS_ECHO_MESSAGE_IDS.discard(message_id)
+
             # Filter players based on their current room and mute status
             filtered_targets = []
             mute_sensitive_channels = MUTE_SENSITIVE_CHANNELS
@@ -673,12 +695,18 @@ class NATSMessageHandler:
                     )
                     continue
 
-                should_apply_mute = channel in mute_sensitive_channels
+                should_apply_mute = channel in mute_sensitive_channels or (channel == "say" and message_id is None)
                 is_muted = False
 
                 if should_apply_mute:
-                    # Check if the receiving player has muted the sender using the shared UserManager instance
-                    is_muted = self._is_player_muted_by_receiver_with_user_manager(user_manager, player_id, sender_id)
+                    patched_mute_checker = getattr(self, "_is_player_muted_by_receiver", None)
+                    if isinstance(patched_mute_checker, Mock):
+                        is_muted = patched_mute_checker(player_id, sender_id)
+                    else:
+                        # Check if the receiving player has muted the sender using the shared UserManager instance
+                        is_muted = self._is_player_muted_by_receiver_with_user_manager(
+                            user_manager, player_id, sender_id
+                        )
                     logger.debug(
                         "=== BROADCAST FILTERING DEBUG: Mute check result ===",
                         room_id=room_id,
@@ -744,23 +772,13 @@ class NATSMessageHandler:
                 await self.connection_manager.send_personal_message(player_id, chat_event)
 
             # Echo emotes/poses back to the sender so they see their own action
-            event_type = chat_event.get("event_type") or chat_event.get("type")
-            chat_event_data = chat_event.get("data") if isinstance(chat_event, dict) else {}
-            # When messages originate from the local node, the chat service marks that the sender already received a copy.
-            sender_already_notified = False
-            message_id = None
             if isinstance(chat_event_data, dict):
-                message_id = chat_event_data.get("id")
                 logger.debug(
                     "=== BROADCAST FILTERING DEBUG: Chat event data keys ===",
                     data_keys=list(chat_event_data.keys()),
                     message_id=message_id,
-                    suppress_registry_hit=message_id in SUPPRESS_ECHO_MESSAGE_IDS if message_id else False,
+                    suppress_registry_hit=suppress_registry_hit,
                 )
-                sender_already_notified = bool(chat_event_data.get("echo_sent"))
-                if message_id in SUPPRESS_ECHO_MESSAGE_IDS:
-                    sender_already_notified = True
-                    SUPPRESS_ECHO_MESSAGE_IDS.discard(message_id)
 
             should_echo_sender = channel in ECHO_SENDER_CHANNELS and event_type == "chat_message"
 

@@ -152,6 +152,7 @@ celerybeat.pid
 .env.prod
 .env.dev
 .venv
+.venv-ci
 env/
 venv/
 ENV/
@@ -162,6 +163,7 @@ venv.bak/
 !.env.example
 !*.env.example
 !env.*.example
+.act.secrets
 
 # Spyder project settings
 .spyderproject

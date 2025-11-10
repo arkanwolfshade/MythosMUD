@@ -16,6 +16,8 @@ jobs:
     env:
       ACTIONS_STEP_DEBUG: true
       ACTIONS_RUNNER_DEBUG: true
+      UV_PROJECT_ENVIRONMENT: .venv-ci
+      UV_LINK_MODE: copy
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
@@ -38,17 +40,17 @@ jobs:
       - name: Install dependencies
         run: |
           uv venv
-          source .venv/bin/activate
+          source .venv-ci/bin/activate
           uv pip install -e .
           uv pip install -e ".[dev]"
       - name: Install Playwright browsers
         run: |
-          source .venv/bin/activate
+          source .venv-ci/bin/activate
           playwright install chromium
           playwright install-deps
       - name: Initialize test database
         run: |
-          source .venv/bin/activate
+          source .venv-ci/bin/activate
           # Set test environment variables for database initialization
           # CRITICAL: Use approved database locations per DATABASE PLACEMENT RULES
           export DATABASE_URL="sqlite+aiosqlite:///data/unit_test/players/unit_test_players.db"
@@ -61,7 +63,7 @@ jobs:
           python server/tests/scripts/init_test_db.py
       - name: Verify test database
         run: |
-          source .venv/bin/activate
+          source .venv-ci/bin/activate
           # Set test environment variables for database verification
           # CRITICAL: Use approved database locations per DATABASE PLACEMENT RULES
           export DATABASE_URL="sqlite+aiosqlite:///data/unit_test/players/unit_test_players.db"
@@ -74,16 +76,16 @@ jobs:
           python server/tests/scripts/verify_test_db.py
       - name: Lint with ruff
         run: |
-          source .venv/bin/activate
+          source .venv-ci/bin/activate
           python -m ruff check --line-length=120 server/
       - name: Type check with mypy
         run: |
-          source .venv/bin/activate
+          source .venv-ci/bin/activate
           # Use pre-commit to run mypy with identical config to local development
           pre-commit run mypy --all-files
       - name: Run tests with coverage
         run: |
-          source .venv/bin/activate
+          source .venv-ci/bin/activate
           # Set test environment variables for pytest
           # CRITICAL: Use approved database locations per DATABASE PLACEMENT RULES
           export DATABASE_URL="sqlite+aiosqlite:///data/unit_test/players/unit_test_players.db"
@@ -96,22 +98,24 @@ jobs:
           python -m pytest server/tests/ --cov=server --cov-report=xml --cov-report=html --cov-fail-under=80 -v --tb=short
       - name: Cache benchmark (LRU cache)
         run: |
-          source .venv/bin/activate
+          source .venv-ci/bin/activate
           python scripts/bench_cache.py
       - name: Cache benchmark (NPC cache)
         run: |
-          source .venv/bin/activate
+          source .venv-ci/bin/activate
           python scripts/bench_cache_npc.py
       - name: Cache benchmark (Profession cache)
         run: |
-          source .venv/bin/activate
+          source .venv-ci/bin/activate
           python scripts/bench_cache_professions.py
       - name: Upload performance metrics
+        if: ${{ !env.ACT }}
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: perf-metrics
           path: artifacts/perf/
       - name: Upload coverage report
+        if: ${{ !env.ACT }}
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: coverage-html
