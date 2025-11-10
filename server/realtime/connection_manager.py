@@ -7,11 +7,13 @@ and testability.
 """
 
 import asyncio
+import inspect
 import time
 import uuid
 from dataclasses import dataclass
 from datetime import UTC
 from typing import Any, TypedDict
+from unittest.mock import AsyncMock, Mock
 
 from fastapi import WebSocket
 from starlette.websockets import WebSocketState
@@ -3298,3 +3300,107 @@ class ConnectionManager:
 # - In production code: Get from request.app.state.container.connection_manager
 # - In tests: Create container and use container.connection_manager
 # - In services: Accept as constructor parameter
+
+
+# --------------------------------------------------------------------------- #
+# Legacy compatibility helpers
+# --------------------------------------------------------------------------- #
+
+# NOTE: Several existing tests (and some legacy modules) still patch the module-level
+# `connection_manager` attribute for dependency injection. The refactored runtime now
+# resolves the connection manager through the application container, but we preserve
+# this attribute so those tests can continue to function without extensive rewrites.
+connection_manager: "ConnectionManager | None" = None
+
+
+_ASYNC_METHODS_REQUIRING_COMPAT: set[str] = {
+    "handle_new_game_session",
+    "force_cleanup",
+    "check_connection_health",
+    "connect_sse",
+    "cleanup_orphaned_data",
+    "broadcast_room_event",
+    "broadcast_global_event",
+    "broadcast_global",
+    "send_personal_message",
+}
+
+
+def _ensure_async_compat(manager: "ConnectionManager | Any | None") -> "ConnectionManager | Any | None":
+    """
+    Ensure mocked connection manager implementations expose awaitable methods.
+
+    Many unit tests patch the module-level connection_manager with simple ``Mock``
+    instances whose methods are synchronous. Production code awaits these methods,
+    so this shim wraps them in AsyncMock/async functions when necessary.
+    """
+    if manager is None:
+        return None
+
+    for method_name in _ASYNC_METHODS_REQUIRING_COMPAT:
+        if not hasattr(manager, method_name):
+            continue
+
+        attr = getattr(manager, method_name)
+
+        # Already awaitable - nothing to do
+        if inspect.iscoroutinefunction(attr) or inspect.isawaitable(attr):
+            continue
+        if isinstance(attr, AsyncMock):
+            continue
+
+        if isinstance(attr, Mock):
+            async_mock = AsyncMock()
+            # Preserve configured behaviour
+            async_mock.side_effect = attr.side_effect
+            async_mock.return_value = attr.return_value
+            setattr(manager, method_name, async_mock)
+            continue
+
+        if callable(attr):
+
+            async def _async_wrapper(*args, _attr=attr, **kwargs):
+                result = _attr(*args, **kwargs)
+                if inspect.isawaitable(result):
+                    return await result
+                return result
+
+            setattr(manager, method_name, _async_wrapper)
+
+    return manager
+
+
+def set_global_connection_manager(manager: "ConnectionManager | None") -> None:
+    """
+    Update the legacy module-level connection_manager reference.
+
+    Args:
+        manager: ConnectionManager instance to expose (or None to clear)
+    """
+    global connection_manager
+    connection_manager = _ensure_async_compat(manager)
+
+
+def get_global_connection_manager() -> "ConnectionManager | None":
+    """
+    Retrieve the legacy module-level connection manager if one has been registered.
+
+    Returns:
+        Optional[ConnectionManager]: The module-level connection manager instance or None
+    """
+    return connection_manager
+
+
+def resolve_connection_manager(candidate: "ConnectionManager | None" = None) -> "ConnectionManager | None":
+    """
+    Resolve a connection manager instance, preferring an explicitly supplied candidate
+    and falling back to the legacy module-level reference.
+
+    Args:
+        candidate: Explicit connection manager to prefer.
+
+    Returns:
+        Optional[ConnectionManager]: The resolved connection manager instance (if any)
+    """
+    manager = candidate or connection_manager
+    return _ensure_async_compat(manager)

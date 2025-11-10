@@ -50,7 +50,28 @@ class ErrorContext:
         }
 
 
-class MythosMUDError(Exception):
+class LoggedException(Exception):
+    """
+    Marker base class indicating an exception has already produced a log entry.
+    """
+
+    __slots__ = ("_already_logged",)
+
+    def __init__(self, *args: Any, already_logged: bool = False) -> None:
+        super().__init__(*args)
+        self._already_logged = already_logged
+
+    def mark_logged(self) -> None:
+        """Mark this exception instance as already logged."""
+        self._already_logged = True
+
+    @property
+    def already_logged(self) -> bool:
+        """Return True if this exception instance has already been logged."""
+        return self._already_logged
+
+
+class MythosMUDError(LoggedException):
     """
     Base exception for all MythosMUD errors.
 
@@ -74,7 +95,7 @@ class MythosMUDError(Exception):
             details: Additional error details
             user_friendly: User-friendly error message
         """
-        super().__init__(message)
+        LoggedException.__init__(self, message)
         self.message = message
         self.context = context or ErrorContext()
         self.details = details or {}
@@ -83,6 +104,7 @@ class MythosMUDError(Exception):
 
         # Log the error with context
         self._log_error()
+        self.mark_logged()
 
     def _log_error(self) -> None:
         """Log the error with structured context."""
@@ -242,7 +264,7 @@ def create_error_context(**kwargs: Any) -> ErrorContext:
     return ErrorContext(**kwargs)
 
 
-class LoggedHTTPException(HTTPException):
+class LoggedHTTPException(HTTPException, LoggedException):
     """
     HTTPException with automatic logging.
 
@@ -266,7 +288,8 @@ class LoggedHTTPException(HTTPException):
             context: Error context information
             logger_name: Specific logger name to use (defaults to current module)
         """
-        super().__init__(status_code=status_code, detail=detail)
+        HTTPException.__init__(self, status_code=status_code, detail=detail)
+        LoggedException.__init__(self)
 
         # Use specified logger or default to current module logger
         error_logger = get_logger(logger_name) if logger_name else logger
@@ -288,6 +311,8 @@ class LoggedHTTPException(HTTPException):
         except (OSError, PermissionError, RuntimeError) as log_err:
             # Avoid test failures due to file handler rotation issues on Windows
             logger.debug("Suppressed logging backend error during HTTP error logging", error=str(log_err))
+        else:
+            self.mark_logged()
 
 
 def handle_exception(exc: Exception, context: ErrorContext | None = None) -> MythosMUDError:

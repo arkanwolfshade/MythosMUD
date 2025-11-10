@@ -478,6 +478,9 @@ def mock_application_container():
     container.event_bus = Mock()
     container.event_handler = Mock()
     container.connection_manager = Mock()
+    container.connection_manager.handle_new_game_session = AsyncMock(
+        return_value={"success": True, "connections_disconnected": 0, "errors": []}
+    )
 
     # Business services
     container.player_service = Mock()

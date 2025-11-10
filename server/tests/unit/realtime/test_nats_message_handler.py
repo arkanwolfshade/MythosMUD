@@ -261,60 +261,76 @@ class TestNATSMessageHandler:
         """Test broadcasting global messages."""
         chat_event = {"event_type": "chat_message", "data": {"message": "Hello"}}
 
-        with patch("server.realtime.connection_manager.connection_manager", self.mock_connection_manager):
-            await self.handler._broadcast_by_channel_type("global", chat_event, None, None, None, "player_001")
+        self.handler.connection_manager = self.mock_connection_manager
 
+        try:
+            await self.handler._broadcast_by_channel_type("global", chat_event, None, None, None, "player_001")
             self.mock_connection_manager.broadcast_global.assert_called_once_with(
                 chat_event, exclude_player="player_001"
             )
+        finally:
+            self.handler.connection_manager = None
 
     @pytest.mark.asyncio
     async def test_broadcast_by_channel_type_whisper(self):
         """Test broadcasting whisper messages."""
         chat_event = {"event_type": "chat_message", "data": {"message": "Hello"}}
 
-        with patch("server.realtime.connection_manager.connection_manager", self.mock_connection_manager):
+        self.handler.connection_manager = self.mock_connection_manager
+
+        try:
             await self.handler._broadcast_by_channel_type(
                 "whisper", chat_event, None, None, "target_player", "player_001"
             )
-
             self.mock_connection_manager.send_personal_message.assert_called_once_with("target_player", chat_event)
+        finally:
+            self.handler.connection_manager = None
 
     @pytest.mark.asyncio
     async def test_broadcast_by_channel_type_system(self):
         """Test broadcasting system messages."""
         chat_event = {"event_type": "chat_message", "data": {"message": "Hello"}}
 
-        with patch("server.realtime.connection_manager.connection_manager", self.mock_connection_manager):
-            await self.handler._broadcast_by_channel_type("system", chat_event, None, None, None, "player_001")
+        self.handler.connection_manager = self.mock_connection_manager
 
+        try:
+            await self.handler._broadcast_by_channel_type("system", chat_event, None, None, None, "player_001")
             self.mock_connection_manager.broadcast_global.assert_called_once_with(
                 chat_event, exclude_player="player_001"
             )
+        finally:
+            self.handler.connection_manager = None
 
     @pytest.mark.asyncio
     async def test_broadcast_by_channel_type_admin(self):
         """Test broadcasting admin messages."""
         chat_event = {"event_type": "chat_message", "data": {"message": "Hello"}}
 
-        with patch("server.realtime.connection_manager.connection_manager", self.mock_connection_manager):
-            await self.handler._broadcast_by_channel_type("admin", chat_event, None, None, None, "player_001")
+        self.handler.connection_manager = self.mock_connection_manager
 
+        try:
+            await self.handler._broadcast_by_channel_type("admin", chat_event, None, None, None, "player_001")
             self.mock_connection_manager.broadcast_global.assert_called_once_with(
                 chat_event, exclude_player="player_001"
             )
+        finally:
+            self.handler.connection_manager = None
 
     @pytest.mark.asyncio
     async def test_broadcast_by_channel_type_unknown(self):
         """Test broadcasting unknown channel type."""
         chat_event = {"event_type": "chat_message", "data": {"message": "Hello"}}
 
-        with patch("server.realtime.connection_manager.connection_manager", self.mock_connection_manager):
+        self.handler.connection_manager = self.mock_connection_manager
+
+        try:
             await self.handler._broadcast_by_channel_type("unknown", chat_event, None, None, None, "player_001")
 
             # Should not call any broadcast methods
             self.mock_connection_manager.broadcast_global.assert_not_called()
             self.mock_connection_manager.send_personal_message.assert_not_called()
+        finally:
+            self.handler.connection_manager = None
 
     @pytest.mark.asyncio
     async def test_broadcast_by_channel_type_with_exception(self):

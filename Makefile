@@ -84,9 +84,17 @@ test-client-e2e:
 # CI/CD Workflow
 # ----------------------------------------------------------------------------
 
+ACT_RUNNER_IMAGE := mythosmud-gha-runner:latest
+ACT_RUNNER_DOCKERFILE := Dockerfile.github-runner
+
 test-comprehensive: setup-test-env
-	@echo "Running COMPREHENSIVE test suite (all tests, ~30 min)..."
-	cd $(PROJECT_ROOT) && uv run pytest server/tests/ -v --tb=short
+	@echo "Running COMPREHENSIVE test suite via act (mirrors CI workflows)..."
+	@if not exist "$(PROJECT_ROOT)\\.act.secrets" ( \
+		echo ERROR: Missing $(PROJECT_ROOT)\\.act.secrets. Copy .act.secrets.example and populate secrets before running act. & \
+		exit 1 )
+	cd $(PROJECT_ROOT) && docker build -t $(ACT_RUNNER_IMAGE) -f $(ACT_RUNNER_DOCKERFILE) .
+	cd $(PROJECT_ROOT) && act --env ACT=1 --env UV_PROJECT_ENVIRONMENT=.venv-ci --env UV_LINK_MODE=copy -W .github/workflows/ci.yml -j backend
+	cd $(PROJECT_ROOT) && act --reuse --env ACT=1 --env UV_PROJECT_ENVIRONMENT=.venv-ci --env UV_LINK_MODE=copy -W .github/workflows/ci.yml -j frontend
 
 test-coverage: setup-test-env
 	@echo "Generating coverage report..."

@@ -328,7 +328,7 @@ The `scripts/` directory contains PowerShell and Python utility scripts for mana
 **Make Commands:**
 
 - `make test` - Run all tests from project root
-- `make test-server` - Run server tests only
+- `make test-comprehensive` - Run server tests only
 - `make test-client` - Run client unit tests only (Vitest)
 - `make test-client-runtime` - Run automated E2E tests (Playwright)
 - `make lint` - Run linting for both server and client

@@ -40,10 +40,11 @@ class ChatMessage:
         self.target_id = target_id
         self.target_name = target_name
         self.timestamp = datetime.now(UTC)
+        self.echo_sent = False
 
     def to_dict(self) -> dict[str, Any]:
         """Convert message to dictionary for serialization."""
-        result = {
+        result: dict[str, Any] = {
             "id": self.id,
             "sender_id": self.sender_id,
             "sender_name": self.sender_name,
@@ -57,6 +58,10 @@ class ChatMessage:
             result["target_id"] = self.target_id
         if self.target_name:
             result["target_name"] = self.target_name
+
+        # Indicate metadata flags when present
+        if getattr(self, "echo_sent", False):
+            result["echo_sent"] = True
 
         return result
 
@@ -355,7 +360,26 @@ class ChatService:
             return {"success": False, "error": "Chat system temporarily unavailable"}
         logger.debug("=== CHAT SERVICE DEBUG: NATS publishing completed ===")
 
-        return {"success": True, "message": chat_message.to_dict(), "room_id": room_id}
+        chat_message.echo_sent = True
+        message_dict = chat_message.to_dict()
+
+        try:
+            from server.realtime.nats_message_handler import SUPPRESS_ECHO_MESSAGE_IDS
+        except Exception as import_error:  # pragma: no cover - defensive against circular import edge cases
+            logger.debug(
+                "=== CHAT SERVICE DEBUG: Failed to register echo suppression token ===",
+                error=str(import_error),
+                message_id=chat_message.id,
+            )
+        else:
+            SUPPRESS_ECHO_MESSAGE_IDS.add(chat_message.id)
+            logger.debug(
+                "=== CHAT SERVICE DEBUG: Registered echo suppression token ===",
+                message_id=chat_message.id,
+                token_count=len(SUPPRESS_ECHO_MESSAGE_IDS),
+            )
+
+        return {"success": True, "message": message_dict, "room_id": room_id}
 
     async def send_local_message(self, player_id: str, message: str) -> dict[str, Any]:
         """
@@ -483,7 +507,31 @@ class ChatService:
             return {"success": False, "error": "Chat system temporarily unavailable"}
         logger.debug("=== CHAT SERVICE DEBUG: NATS publishing completed ===")
 
-        return {"success": True, "message": chat_message.to_dict(), "room_id": room_id}
+        chat_message.echo_sent = True
+        message_dict = chat_message.to_dict()
+        message_dict["echo_sent"] = True
+        logger.debug(
+            "=== CHAT SERVICE DEBUG: Emote message response payload ===",
+            payload_keys=list(message_dict.keys()),
+        )
+        # Register the message ID so the broadcasting layer can suppress duplicate echoes when no recipients exist.
+        try:
+            from server.realtime.nats_message_handler import SUPPRESS_ECHO_MESSAGE_IDS
+        except Exception as import_error:  # pragma: no cover - defensive guard for import cycles
+            logger.debug(
+                "=== CHAT SERVICE DEBUG: Failed to register echo suppression token ===",
+                error=str(import_error),
+                message_id=chat_message.id,
+            )
+        else:
+            SUPPRESS_ECHO_MESSAGE_IDS.add(chat_message.id)
+            logger.debug(
+                "=== CHAT SERVICE DEBUG: Registered echo suppression token ===",
+                message_id=chat_message.id,
+                token_count=len(SUPPRESS_ECHO_MESSAGE_IDS),
+            )
+
+        return {"success": True, "message": message_dict, "room_id": room_id}
 
     async def send_global_message(self, player_id: str, message: str) -> dict[str, Any]:
         """
@@ -1007,7 +1055,26 @@ class ChatService:
             return {"success": False, "error": "Chat system temporarily unavailable"}
         logger.debug("=== CHAT SERVICE DEBUG: NATS publishing completed ===")
 
-        return {"success": True, "message": chat_message.to_dict(), "room_id": room_id}
+        chat_message.echo_sent = True
+        message_dict = chat_message.to_dict()
+
+        try:
+            from server.realtime.nats_message_handler import SUPPRESS_ECHO_MESSAGE_IDS
+        except Exception as import_error:  # pragma: no cover - defensive against circular import edge cases
+            logger.debug(
+                "=== CHAT SERVICE DEBUG: Failed to register echo suppression token ===",
+                error=str(import_error),
+                message_id=chat_message.id,
+            )
+        else:
+            SUPPRESS_ECHO_MESSAGE_IDS.add(chat_message.id)
+            logger.debug(
+                "=== CHAT SERVICE DEBUG: Registered echo suppression token ===",
+                message_id=chat_message.id,
+                token_count=len(SUPPRESS_ECHO_MESSAGE_IDS),
+            )
+
+        return {"success": True, "message": message_dict, "room_id": room_id}
 
     # In-memory storage for player poses (not persisted to database)
     _player_poses: dict[str, str] = {}

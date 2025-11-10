@@ -57,6 +57,10 @@ MythosMUD implements comprehensive security measures to protect users and data:
 
 #### Authentication & Authorization
 
+- Always verify user permissions before allowing access to resources
+- Never trust client-side validation alone
+- Implement rate limiting for authentication endpoints
+- Use secure session management practices
 - **Argon2 Password Hashing**: Industry-leading password protection with configurable parameters
 - **JWT Token Authentication**: Secure, stateless authentication with proper expiration
 - **Invite-Only System**: Controlled access with database-backed invite management
@@ -113,13 +117,6 @@ When contributing to MythosMUD, please follow these security guidelines:
 - Always validate and sanitize user input on the server side
 - Use parameterized queries for all database operations
 - Implement proper error handling without exposing sensitive information
-
-### Authentication & Authorization
-
-- Always verify user permissions before allowing access to resources
-- Never trust client-side validation alone
-- Implement rate limiting for authentication endpoints
-- Use secure session management practices
 
 ### Data Handling
 

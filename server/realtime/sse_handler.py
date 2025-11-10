@@ -35,6 +35,13 @@ async def game_event_stream(
 
     AI Agent: connection_manager now injected as parameter instead of global import
     """
+    if connection_manager is None:
+        from .connection_manager import resolve_connection_manager
+
+        connection_manager = resolve_connection_manager()
+        if connection_manager is None:
+            raise RuntimeError("Connection manager not available for SSE stream")
+
     # Convert player_id to string to ensure JSON serialization compatibility
     player_id_str = str(player_id)
 

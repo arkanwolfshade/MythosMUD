@@ -289,7 +289,7 @@ Follow these guidelines when writing code:
 make test
 
 # Run specific test categories
-make test-server        # Server tests only
+make test        # Server tests only
 make test-client        # Client unit tests
 make test-client-runtime # Client E2E tests
 
@@ -844,7 +844,7 @@ TOTAL                                    1234     89    93%
 make test
 
 # Run server tests only
-make test-server
+make test
 
 # Run client unit tests (Vitest)
 make test-client
@@ -860,10 +860,10 @@ uv run pytest tests/unit/game/test_combat.py -v
 uv run pytest tests/unit/game/test_combat.py::TestCombatSystem::test_calculate_damage_basic -v
 
 # Run with verbose output
-make test-server PYTEST_ARGS="-v"
+make test PYTEST_ARGS="-v"
 
 # Run with debug output
-make test-server PYTEST_ARGS="-vv -s"
+make test PYTEST_ARGS="-vv -s"
 ```
 
 **Test Execution Notes**:

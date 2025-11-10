@@ -149,6 +149,11 @@ class TestMonitoringAPIEndpoints:
 
         return manager
 
+    @pytest.fixture
+    def mock_conn_manager(self, mock_connection_manager):
+        """Legacy alias for mock_connection_manager fixture."""
+        return mock_connection_manager
+
     def test_get_dual_connection_stats_success(self, client, mock_connection_manager):
         """Test successful retrieval of dual connection statistics."""
         container = MagicMock()

@@ -175,6 +175,31 @@ config = {
 setup_enhanced_logging(config)
 ```
 
+> ℹ️ **Idempotent setup** – `setup_enhanced_logging` configures handlers once per process.
+> Subsequent calls are ignored unless you pass `force_reconfigure=True`.
+
+### **Logging Exceptions Only Once**
+
+Use `log_exception_once` to avoid duplicate log entries when exceptions are re-raised through the catacombs of control flow:
+
+```python
+from server.logging.enhanced_logging_config import get_logger, log_exception_once
+
+logger = get_logger("server.combat.resolver")
+
+try:
+    resolve_combat_round()
+except MythosMUDError as exc:
+    log_exception_once(
+        logger,
+        "error",
+        "Combat round failed",
+        exc=exc,
+        encounter_id=encounter.id,
+    )
+    raise
+```
+
 ### **Monitoring Dashboard**
 
 ```python

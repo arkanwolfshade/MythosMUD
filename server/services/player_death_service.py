@@ -12,7 +12,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.events.event_types import PlayerDiedEvent, PlayerHPDecayEvent
-from server.logging.enhanced_logging_config import get_logger
+from server.logging.enhanced_logging_config import get_logger, log_exception_once
 from server.models.player import Player
 
 logger = get_logger(__name__)
@@ -80,7 +80,13 @@ class PlayerDeathService:
             return mortally_wounded
 
         except Exception as e:
-            logger.error("Error retrieving mortally wounded players", error=str(e), exc_info=True)
+            log_exception_once(
+                logger,
+                "error",
+                "Error retrieving mortally wounded players",
+                exc=e,
+                exc_info=True,
+            )
             return []
 
     async def process_mortally_wounded_tick(self, player_id: str, session: AsyncSession) -> bool:
@@ -146,7 +152,14 @@ class PlayerDeathService:
             return True
 
         except Exception as e:
-            logger.error("Error processing HP decay for player", player_id=player_id, error=str(e), exc_info=True)
+            log_exception_once(
+                logger,
+                "error",
+                "Error processing HP decay for player",
+                exc=e,
+                exc_info=True,
+                player_id=player_id,
+            )
             await session.rollback()
             return False
 
@@ -195,11 +208,13 @@ class PlayerDeathService:
                     await self._player_combat_service.clear_player_combat_state(player_uuid)
                     logger.info("Cleared combat state for deceased player", player_id=player_id)
                 except Exception as e:
-                    logger.error(
+                    log_exception_once(
+                        logger,
+                        "error",
                         "Error clearing combat state for deceased player",
-                        player_id=player_id,
-                        error=str(e),
+                        exc=e,
                         exc_info=True,
+                        player_id=player_id,
                     )
 
             # Commit any pending changes using async API
@@ -219,6 +234,13 @@ class PlayerDeathService:
             return True
 
         except Exception as e:
-            logger.error("Error handling player death", player_id=player_id, error=str(e), exc_info=True)
+            log_exception_once(
+                logger,
+                "error",
+                "Error handling player death",
+                exc=e,
+                exc_info=True,
+                player_id=player_id,
+            )
             await session.rollback()
             return False
