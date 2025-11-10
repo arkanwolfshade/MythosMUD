@@ -161,24 +161,27 @@ class TestTeleportEffectMessages:
 
     def test_create_teleport_effect_message_arrival(self):
         """Test creating arrival teleport effect message."""
-        message = create_teleport_effect_message("TestPlayer", "arrival")
+        message = create_teleport_effect_message("TestPlayer", "arrival", teleport_type="teleport")
 
         assert "TestPlayer" in message
-        assert "materializes" in message.lower() or "appears" in message.lower()
+        lowered = message.lower()
+        assert "arrives" in lowered or "appears" in lowered or "materializes" in lowered
 
     def test_create_teleport_effect_message_departure(self):
         """Test creating departure teleport effect message."""
-        message = create_teleport_effect_message("TestPlayer", "departure")
+        message = create_teleport_effect_message("TestPlayer", "departure", teleport_type="teleport")
 
         assert "TestPlayer" in message
-        assert "departs" in message.lower() or "vanishes" in message.lower()
+        lowered = message.lower()
+        assert "disappears" in lowered or "vanishes" in lowered or "leaves" in lowered
 
     def test_create_teleport_effect_message_invalid_type(self):
         """Test creating teleport effect message with invalid type."""
-        message = create_teleport_effect_message("TestPlayer", "invalid")
+        message = create_teleport_effect_message("TestPlayer", "invalid", teleport_type="teleport")
 
         # Should return a default message
         assert "TestPlayer" in message
+        assert "mysterious forces" in message.lower()
 
 
 class TestTeleportCommand:
@@ -307,7 +310,10 @@ class TestTeleportCommand:
             get_player_by_name=AsyncMock(return_value=admin_player),
             update_player_location=AsyncMock(return_value=True),
         )
-        app_state = SimpleNamespace(player_service=player_service)
+        app_state = SimpleNamespace(
+            player_service=player_service,
+            connection_manager=MagicMock(),
+        )
         mock_request.app = SimpleNamespace(state=app_state)
         mock_alias_storage = MagicMock()
 
@@ -323,7 +329,7 @@ class TestGotoCommand:
     """Test goto command functionality."""
 
     @pytest.mark.asyncio
-    async def test_handle_goto_command_success(self):
+    async def test_handle_goto_command_success(self, monkeypatch):
         """Test successful goto command execution."""
         command_data = {"command_type": "goto", "target_player": "TestPlayer"}
 
@@ -359,6 +365,11 @@ class TestGotoCommand:
         mock_persistence = MagicMock()
         mock_app.state.persistence = mock_persistence
 
+        # Patch async helpers that depend on global app state
+        monkeypatch.setattr(admin_commands, "broadcast_room_update", AsyncMock())
+        monkeypatch.setattr(admin_commands, "broadcast_teleport_effects", AsyncMock())
+        monkeypatch.setattr(admin_commands, "notify_player_of_teleport", AsyncMock())
+
         mock_alias_storage = MagicMock()
 
         result = await handle_goto_command(
@@ -367,7 +378,7 @@ class TestGotoCommand:
 
         # Should return success message (current implementation bypasses confirmation)
         assert "result" in result
-        assert "successfully teleported" in result["result"].lower()
+        assert result["result"] == "You teleport to TestPlayer's location."
         assert "TestPlayer" in result["result"]
 
     @pytest.mark.asyncio
@@ -432,7 +443,7 @@ class TestTeleportConfirmation:
     """Test teleport confirmation functionality."""
 
     @pytest.mark.asyncio
-    async def test_confirm_teleport_command_success(self):
+    async def test_confirm_teleport_command_success(self, monkeypatch):
         """Test successful teleport confirmation execution."""
         command_data = {"command_type": "confirm_teleport", "target_player": "TestPlayer"}
         mock_current_user = {"username": "admin_user"}
@@ -470,6 +481,10 @@ class TestTeleportConfirmation:
         mock_persistence.save_player = MagicMock()
         mock_app.state.persistence = mock_persistence
 
+        monkeypatch.setattr(admin_commands, "broadcast_room_update", AsyncMock())
+        monkeypatch.setattr(admin_commands, "broadcast_teleport_effects", AsyncMock())
+        monkeypatch.setattr(admin_commands, "notify_player_of_teleport", AsyncMock())
+
         mock_alias_storage = MagicMock()
 
         result = await handle_confirm_teleport_command(
@@ -481,7 +496,7 @@ class TestTeleportConfirmation:
         assert "TestPlayer" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_confirm_goto_command_success(self):
+    async def test_confirm_goto_command_success(self, monkeypatch):
         """Test successful goto confirmation execution."""
         command_data = {"command_type": "confirm_goto", "target_player": "TestPlayer"}
         mock_current_user = {"username": "admin_user"}
@@ -517,6 +532,10 @@ class TestTeleportConfirmation:
         mock_persistence = MagicMock()
         mock_persistence.save_player = MagicMock()
         mock_app.state.persistence = mock_persistence
+
+        monkeypatch.setattr(admin_commands, "broadcast_room_update", AsyncMock())
+        monkeypatch.setattr(admin_commands, "broadcast_teleport_effects", AsyncMock())
+        monkeypatch.setattr(admin_commands, "notify_player_of_teleport", AsyncMock())
 
         mock_alias_storage = MagicMock()
 
