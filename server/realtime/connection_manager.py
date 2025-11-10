@@ -131,6 +131,9 @@ class ConnectionManager:
         self.online_players: dict[str, dict[str, Any]] = {}
         # player_id -> last seen unix timestamp
         self.last_seen: dict[str, float] = {}
+        # Throttled persistence updates for last_active timestamps
+        self.last_active_update_interval: float = 60.0
+        self.last_active_update_times: dict[str, float] = {}
         # Track players currently being disconnected to prevent duplicate events
         self.disconnecting_players: set[str] = set()
         self.disconnect_lock = asyncio.Lock()
@@ -597,6 +600,7 @@ class ConnectionManager:
                     # Clean up last seen data
                     if player_id in self.last_seen:
                         del self.last_seen[player_id]
+                    self.last_active_update_times.pop(player_id, None)
 
                 logger.info("WebSocket disconnected", player_id=player_id)
 
@@ -688,6 +692,7 @@ class ConnectionManager:
                 self.message_queue.remove_player_messages(player_id)
                 if player_id in self.last_seen:
                     del self.last_seen[player_id]
+                self.last_active_update_times.pop(player_id, None)
                 # Remove from room subscriptions
                 self.room_manager.remove_player_from_all_rooms(player_id)
                 logger.info("Player has no remaining connections, cleaned up player data", player_id=player_id)
@@ -1032,6 +1037,7 @@ class ConnectionManager:
             self.message_queue.remove_player_messages(player_id)
             if player_id in self.last_seen:
                 del self.last_seen[player_id]
+            self.last_active_update_times.pop(player_id, None)
 
             # Remove from room subscriptions
             self.room_manager.remove_player_from_all_rooms(player_id)
@@ -1138,6 +1144,7 @@ class ConnectionManager:
                 # Clean up last seen data
                 if player_id in self.last_seen:
                     del self.last_seen[player_id]
+                self.last_active_update_times.pop(player_id, None)
 
                 # Only track disconnection if it's not a force disconnect
                 if not is_force_disconnect:
@@ -1155,7 +1162,23 @@ class ConnectionManager:
     def mark_player_seen(self, player_id: str):
         """Update last-seen timestamp for a player."""
         try:
-            self.last_seen[player_id] = time.time()
+            now_ts = time.time()
+            self.last_seen[player_id] = now_ts
+
+            if self.persistence:
+                last_update = self.last_active_update_times.get(player_id, 0.0)
+                if now_ts - last_update >= self.last_active_update_interval:
+                    from datetime import UTC, datetime
+
+                    try:
+                        self.persistence.update_player_last_active(player_id, datetime.now(UTC))
+                        self.last_active_update_times[player_id] = now_ts
+                    except Exception as update_error:
+                        logger.warning(
+                            "Failed to persist last_active update",
+                            player_id=player_id,
+                            error=str(update_error),
+                        )
         except Exception as e:
             logger.error("Error marking player seen", player_id=player_id, error=str(e))
 
@@ -1188,6 +1211,7 @@ class ConnectionManager:
                 # forget last_seen entry
                 if pid in self.last_seen:
                     del self.last_seen[pid]
+                self.last_active_update_times.pop(pid, None)
                 # Clean up other references
                 self.rate_limiter.remove_player_data(pid)
                 self.message_queue.remove_player_messages(pid)
@@ -2009,6 +2033,7 @@ class ConnectionManager:
                 del self.online_players[player_id]
             if player_id in self.last_seen:
                 del self.last_seen[player_id]
+            self.last_active_update_times.pop(player_id, None)
             self.rate_limiter.remove_player_data(player_id)
             self.message_queue.remove_player_messages(player_id)
 
