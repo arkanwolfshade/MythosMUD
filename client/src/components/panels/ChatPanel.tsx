@@ -65,10 +65,11 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   onDownloadLogs,
   disabled = false,
   isConnected = true,
-  selectedChannel = DEFAULT_CHANNEL,
+  selectedChannel = ALL_MESSAGES_CHANNEL.id,
   onChannelSelect,
 }) => {
   const [clearedChannels, setClearedChannels] = useState<Record<string, number>>({});
+  const [isHistoryVisible, setIsHistoryVisible] = useState(false);
 
   const normalizedSelectedChannel = selectedChannel ?? DEFAULT_CHANNEL;
 
@@ -170,6 +171,10 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     }
   };
 
+  const toggleHistory = () => {
+    setIsHistoryVisible(prev => !prev);
+  };
+
   return (
     <div className="h-full flex flex-col font-mono">
       {/* Chat Header */}
@@ -253,6 +258,22 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         </div>
       </div>
 
+      {/* Chat History Toggle */}
+      <div className="p-2 border-b border-gray-700 bg-mythos-terminal-background" data-testid="chat-history-toggle">
+        <button className="text-xs text-mythos-terminal-primary" onClick={toggleHistory} type="button">
+          Chat History
+        </button>
+        <select
+          className="ml-2 text-xs bg-mythos-terminal-surface border border-gray-700 rounded px-1"
+          value={isHistoryVisible ? 'all' : 'current'}
+          onChange={event => setIsHistoryVisible(event.target.value === 'all')}
+        >
+          <option value="current">Current</option>
+          <option value="all">All</option>
+        </select>
+        <span className="ml-2 text-xs text-mythos-terminal-text-secondary">Messages: {filteredMessages.length}</span>
+      </div>
+
       {/* Chat Filter Summary */}
       <div className="p-2 border-b border-gray-700 bg-mythos-terminal-background">
         <div className="flex items-center justify-between">
@@ -326,23 +347,17 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                   onContextMenu={e => {
                     e.preventDefault();
                     // TODO: Implement user ignore functionality
-                    // const username = message.aliasChain?.[0]?.original.split(' ')[0];
-                    // if (username && !isUserIgnored(username)) {
-                    //   if (confirm(`Ignore messages from ${username}?`)) {
-                    //     addIgnoredUser(username);
-                    //   }
-                    // }
                   }}
-                  title="Right-click for options"
                 >
                   {message.isHtml ? (
                     <span
+                      title="Right-click for options"
                       dangerouslySetInnerHTML={{
                         __html: message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text),
                       }}
                     />
                   ) : (
-                    <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                    <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }} title="Right-click for options">
                       {message.rawText ?? message.text}
                     </span>
                   )}

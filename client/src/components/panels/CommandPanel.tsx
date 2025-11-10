@@ -32,6 +32,9 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
   onChannelSelect,
 }) => {
   const [commandInput, setCommandInput] = useState('');
+  const isControlled = onChannelSelect !== undefined || selectedChannel !== undefined;
+  const [uncontrolledChannel, setUncontrolledChannel] = useState(selectedChannel ?? DEFAULT_CHANNEL);
+  const currentChannel = isControlled ? (selectedChannel ?? DEFAULT_CHANNEL) : uncontrolledChannel;
 
   // Debug logging for isConnected prop
   if (import.meta.env.MODE === 'development') {
@@ -108,7 +111,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
     const firstWord = command.split(/\s+/)[0].toLowerCase();
     const isStandaloneCommand = standaloneCommands.includes(firstWord);
 
-    const effectiveChannel = selectedChannel === ALL_MESSAGES_CHANNEL.id ? 'say' : selectedChannel;
+    const effectiveChannel = currentChannel === ALL_MESSAGES_CHANNEL.id ? 'say' : currentChannel;
 
     // If the command doesn't start with a slash and we're not on the 'say' channel,
     // prepend the channel command ONLY if:
@@ -157,8 +160,11 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
         <div className="flex items-center space-x-2">
           <ChannelSelector
             channels={CHAT_CHANNEL_OPTIONS}
-            selectedChannel={selectedChannel}
+            selectedChannel={currentChannel}
             onChannelSelect={channelId => {
+              if (!isControlled) {
+                setUncontrolledChannel(channelId);
+              }
               onChannelSelect?.(channelId);
             }}
             disabled={disabled || !isConnected}

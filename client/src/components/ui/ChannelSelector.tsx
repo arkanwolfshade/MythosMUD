@@ -49,6 +49,20 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
 
   return (
     <div className={`relative ${className}`}>
+      <select
+        data-testid="channel-selector"
+        value={selectedChannel}
+        onChange={e => handleChannelSelect(e.target.value)}
+        disabled={disabled}
+        className="sr-only"
+      >
+        {channels.map(channel => (
+          <option key={channel.id} value={channel.id} disabled={channel.disabled}>
+            {channel.name}
+          </option>
+        ))}
+      </select>
+
       {/* Backdrop to close dropdown when clicking outside - positioned BEFORE dropdown */}
       {isOpen && <div className="fixed inset-0 z-10" onClick={handleBackdropClick} data-testid="dropdown-backdrop" />}
 

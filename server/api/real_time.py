@@ -127,7 +127,9 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
 
     logger = get_logger(__name__)
 
-    connection_manager = _resolve_connection_manager_from_state(websocket.app.state)
+    websocket_app = getattr(websocket, "app", None)
+    websocket_state = getattr(websocket_app, "state", None)
+    connection_manager = _resolve_connection_manager_from_state(websocket_state)
     if connection_manager is None or getattr(connection_manager, "persistence", None) is None:
         # CRITICAL FIX: Must accept WebSocket before closing or sending messages
         await websocket.accept()
@@ -187,7 +189,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
     logger.info("WebSocket connection attempt", player_id=player_id, session_id=session_id)
 
     try:
-        await handle_websocket_connection(websocket, player_id, session_id)
+        await handle_websocket_connection(websocket, player_id, session_id, connection_manager=connection_manager)
     except Exception as e:
         logger.error("Error in WebSocket endpoint", player_id=player_id, error=str(e), exc_info=True)
         raise
@@ -324,7 +326,9 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None
     )
 
     try:
-        connection_manager = _resolve_connection_manager_from_state(websocket.app.state)
+        websocket_app = getattr(websocket, "app", None)
+        websocket_state = getattr(websocket_app, "state", None)
+        connection_manager = _resolve_connection_manager_from_state(websocket_state)
         if connection_manager is None or getattr(connection_manager, "persistence", None) is None:
             await websocket.accept()
             await websocket.send_json({"type": "error", "message": "Service temporarily unavailable"})
@@ -340,7 +344,9 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None
             player = persistence.get_player_by_user_id(user_id)
             if player:
                 resolved_player_id = str(player.player_id)
-        await handle_websocket_connection(websocket, resolved_player_id, session_id)
+            await handle_websocket_connection(
+                websocket, resolved_player_id, session_id, connection_manager=connection_manager
+            )
     except Exception as e:
         logger.error("Error in WebSocket endpoint", player_id=player_id, error=str(e), exc_info=True)
         raise

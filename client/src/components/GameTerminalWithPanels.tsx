@@ -84,6 +84,7 @@ interface ChatMessage {
   isCompleteHtml?: boolean;
   messageType?: string;
   channel?: string;
+  type?: string;
   aliasChain?: Array<{
     original: string;
     expanded: string;
@@ -92,12 +93,40 @@ interface ChatMessage {
   rawText?: string;
 }
 
+const resolveChatTypeFromChannel = (channel: string): string => {
+  switch (channel) {
+    case 'whisper':
+      return 'whisper';
+    case 'shout':
+      return 'shout';
+    case 'emote':
+      return 'emote';
+    case 'party':
+    case 'tell':
+      return 'tell';
+    case 'system':
+    case 'game':
+      return 'system';
+    case 'local':
+    case 'say':
+    default:
+      return 'say';
+  }
+};
+
 const sanitizeChatMessageForState = (message: ChatMessage): ChatMessage => {
-  const rawText = message.rawText ?? message.text;
+  const rawText = (message as ChatMessage & { rawText?: string }).rawText ?? message.text;
   const sanitizedText = message.isHtml ? inputSanitizer.sanitizeIncomingHtml(rawText) : rawText;
+
+  const existingType = message.type ?? 'system';
+  const existingChannel = (message as { channel?: string }).channel ?? 'system';
+  const messageType = (message as { messageType?: string }).messageType ?? (existingType as unknown as string);
 
   return {
     ...message,
+    type: existingType,
+    messageType,
+    channel: existingChannel,
     rawText,
     text: sanitizedText,
   };
@@ -390,7 +419,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 timestamp: event.timestamp,
                 isHtml: false,
                 messageType: 'system' as const,
-                channel: 'room' as const,
+                type: 'system' as const,
+                channel: 'system' as const,
               };
 
               updates.messages.push(chatMessage);
@@ -415,7 +445,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 timestamp: event.timestamp,
                 isHtml: false,
                 messageType: 'system' as const,
-                channel: 'room' as const,
+                type: 'system' as const,
+                channel: 'system' as const,
               };
 
               updates.messages.push(chatMessage);
@@ -475,7 +506,11 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 timestamp: event.timestamp,
                 isHtml: isHtml || false,
                 messageType: messageTypeResult.type,
-                channel: messageTypeResult.channel,
+                channel: messageTypeResult.channel ?? 'game',
+                type:
+                  messageTypeResult.type === 'system'
+                    ? 'system'
+                    : resolveChatTypeFromChannel(messageTypeResult.channel ?? 'game'),
               };
 
               // Enhanced logging for debugging
@@ -525,6 +560,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 timestamp: event.timestamp,
                 isHtml: false,
                 messageType: 'system',
+                type: 'system' as const,
+                channel: 'system' as const,
               };
               logger.info('GameTerminalWithPanels', 'Processing player left game', {
                 playerName,
@@ -582,6 +619,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 isHtml: false,
                 messageType: messageType,
                 channel: channel,
+                type: resolveChatTypeFromChannel(channel),
               };
 
               updates.messages.push(chatMessage);
@@ -682,7 +720,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 timestamp: event.timestamp,
                 isHtml: false,
                 messageType: 'system' as const,
-                channel: channel || ('system' as const),
+                type: 'system' as const,
+                channel: (channel || 'system') as const,
               };
 
               updates.messages.push(chatMessage);
@@ -715,7 +754,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 timestamp: event.timestamp,
                 isHtml: false,
                 messageType: 'system' as const,
-                channel: channel || ('system' as const),
+                type: 'system' as const,
+                channel: (channel || 'system') as const,
               };
 
               updates.messages.push(chatMessage);
@@ -752,6 +792,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 timestamp: event.timestamp,
                 isHtml: false,
                 messageType: 'system',
+                type: 'system' as const,
+                channel: 'system' as const,
               };
 
               if (!updates.messages) {
@@ -776,6 +818,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               timestamp: event.timestamp,
               isHtml: false,
               messageType: 'system' as const,
+              type: 'system' as const,
+              channel: 'system' as const,
             };
 
             if (!updates.messages) {
@@ -871,7 +915,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               timestamp: event.timestamp,
               isHtml: false,
               messageType: 'combat' as const,
-              channel: 'combat' as const,
+              type: 'combat' as const,
+              channel: 'game' as const,
             };
 
             if (!updates.messages) {
@@ -917,7 +962,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               timestamp: event.timestamp,
               isHtml: false,
               messageType: 'combat' as const,
-              channel: 'combat' as const,
+              type: 'combat' as const,
+              channel: 'game' as const,
             };
 
             if (!updates.messages) {
@@ -954,7 +1000,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               timestamp: event.timestamp,
               isHtml: false,
               messageType: 'combat' as const,
-              channel: 'combat' as const,
+              type: 'combat' as const,
+              channel: 'game' as const,
             };
 
             if (!updates.messages) {
@@ -979,7 +1026,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               timestamp: event.timestamp,
               isHtml: false,
               messageType: 'combat' as const,
-              channel: 'combat' as const,
+              type: 'combat' as const,
+              channel: 'game' as const,
             };
 
             if (!updates.messages) {
