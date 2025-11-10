@@ -224,12 +224,14 @@ export function useGameConnection(options: UseGameConnectionOptions) {
 
   // Main connect function
   const connect = useCallback(() => {
-    setAutoConnectPending(true);
+    const shouldStartConnection = !isConnectionEstablished && !isConnectionInProgress;
 
-    if (!isConnectionEstablished && !isConnectionInProgress) {
+    if (shouldStartConnection) {
+      setAutoConnectPending(true);
       logger.info('GameConnection', 'Starting connection sequence');
       startConnection();
     } else {
+      setAutoConnectPending(false);
       logger.debug('GameConnection', 'Connection already in progress');
     }
 
@@ -255,18 +257,20 @@ export function useGameConnection(options: UseGameConnectionOptions) {
   }, [connect]);
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (!authToken) {
-        disconnect();
-      } else {
-        connect();
-      }
-    }, 0);
+    if (!authToken) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- disconnect updates local state when auth changes
+      disconnect();
+      return;
+    }
 
-    return () => {
-      clearTimeout(timeoutId);
-    };
+    connect();
   }, [authToken, connect, disconnect]);
+
+  useEffect(() => {
+    return () => {
+      disconnect();
+    };
+  }, [disconnect]);
 
   // Send command through WebSocket
   const sendCommand = useCallback(

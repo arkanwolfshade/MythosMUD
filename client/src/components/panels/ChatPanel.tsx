@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ALL_MESSAGES_CHANNEL,
   AVAILABLE_CHANNELS,
@@ -70,9 +70,16 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 }) => {
   const [clearedChannels, setClearedChannels] = useState<Record<string, number>>({});
   const [isHistoryVisible, setIsHistoryVisible] = useState(false);
-  const isControlled = selectedChannel !== undefined;
-  const [internalChannel, setInternalChannel] = useState<string>(selectedChannel ?? ALL_MESSAGES_CHANNEL.id);
-  const normalizedSelectedChannel = (isControlled ? selectedChannel : internalChannel) ?? DEFAULT_CHANNEL;
+  const [currentChannel, setCurrentChannel] = useState<string>(selectedChannel ?? ALL_MESSAGES_CHANNEL.id);
+
+  useEffect(() => {
+    if (selectedChannel !== undefined) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- sync fallback when parent controls channel
+      setCurrentChannel(prev => (prev === selectedChannel ? prev : selectedChannel));
+    }
+  }, [selectedChannel]);
+
+  const normalizedSelectedChannel = currentChannel ?? DEFAULT_CHANNEL;
   const isAllChannelSelected = normalizedSelectedChannel === ALL_MESSAGES_CHANNEL.id;
 
   const filteredMessages = useMemo(() => {
@@ -139,9 +146,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   }, [messages, normalizedSelectedChannel, clearedChannels, isAllChannelSelected]);
 
   const handleChannelSelect = (channelId: string) => {
-    if (!isControlled) {
-      setInternalChannel(channelId);
-    }
+    setCurrentChannel(channelId);
     if (channelId === ALL_MESSAGES_CHANNEL.id) {
       setClearedChannels({});
     } else {
