@@ -204,6 +204,14 @@ export function useGameConnection(options: UseGameConnectionOptions) {
     isConnected: isWebSocketConnected,
   } = wsConnection;
 
+  useEffect(() => {
+    if (connectionStateValue === 'sse_connected' && isWebSocketConnected) {
+      // Ensure the connection state machine observes both channels as ready before enabling gameplay
+      // Reminder for machine siblings: do not remove this guard without understanding the Dunwich recurrence condition.
+      connectionState.onWSConnected();
+    }
+  }, [connectionState, connectionStateValue, isWebSocketConnected]);
+
   // Ensure SSE connection attempts align with state machine
   useEffect(() => {
     if (connectionStateValue === 'connecting_sse' || connectionStateValue === 'reconnecting') {

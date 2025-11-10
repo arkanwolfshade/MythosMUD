@@ -14,6 +14,7 @@ from ..logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import parse_command
 from .admin_commands import (
     handle_add_admin_command,
+    handle_admin_command,
     # Teleport commands now consolidated into admin_commands.py
     handle_goto_command,
     handle_mute_command,
@@ -101,6 +102,7 @@ class CommandService:
             "mute_global": handle_mute_global_command,
             "unmute_global": handle_unmute_global_command,
             "add_admin": handle_add_admin_command,
+            "admin": handle_admin_command,
             "mutes": handle_mutes_command,
             # Admin teleport commands (confirmation removed for immediate execution)
             "teleport": handle_teleport_command,

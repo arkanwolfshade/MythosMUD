@@ -10,6 +10,7 @@ from pydantic import ValidationError as PydanticValidationError
 from server.exceptions import ValidationError as MythosValidationError
 from server.models.command import (
     AddAdminCommand,
+    AdminCommand,
     AliasCommand,
     AliasesCommand,
     CommandType,
@@ -24,6 +25,7 @@ from server.models.command import (
     MutesCommand,
     PoseCommand,
     SayCommand,
+    TeleportCommand,
     UnaliasCommand,
     UnmuteCommand,
     UnmuteGlobalCommand,
@@ -255,6 +257,28 @@ class TestCommandModels:
         cmd = MutesCommand()
         assert cmd.command_type == CommandType.MUTES
 
+    def test_teleport_command_with_direction(self):
+        """Test TeleportCommand with optional direction."""
+        cmd = TeleportCommand(player_name="testuser", direction=Direction.EAST)
+        assert cmd.command_type == CommandType.TELEPORT
+        assert cmd.player_name == "testuser"
+        assert cmd.direction == Direction.EAST
+
+    def test_teleport_command_invalid_direction(self):
+        """Test TeleportCommand rejects invalid directions."""
+        with pytest.raises(PydanticValidationError):
+            TeleportCommand(player_name="testuser", direction="invalid")
+
+    def test_admin_command_status(self):
+        """Test AdminCommand status subcommand creation."""
+        cmd = AdminCommand(subcommand="status")
+        assert cmd.command_type == CommandType.ADMIN
+        assert cmd.subcommand == "status"
+        assert cmd.args == []
+
+        with pytest.raises(PydanticValidationError):
+            AdminCommand(subcommand="invalid")
+
 
 class TestCommandParser:
     """Test CommandParser functionality."""
@@ -381,6 +405,20 @@ class TestCommandParser:
         cmd = self.parser.parse_command("help look")
         assert isinstance(cmd, HelpCommand)
         assert cmd.topic == "look"
+
+    def test_parse_admin_status_command(self):
+        """Test parsing admin status command."""
+        cmd = self.parser.parse_command("admin status")
+        assert isinstance(cmd, AdminCommand)
+        assert cmd.subcommand == "status"
+        assert cmd.args == []
+
+    def test_parse_teleport_command_with_direction(self):
+        """Test parsing teleport command with optional direction."""
+        cmd = self.parser.parse_command("teleport Ithaqua east")
+        assert isinstance(cmd, TeleportCommand)
+        assert cmd.player_name == "Ithaqua"
+        assert str(cmd.direction) == Direction.EAST.value
 
     def test_parse_mute_command(self):
         """Test parsing mute command."""

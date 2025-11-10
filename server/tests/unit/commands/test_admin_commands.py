@@ -5,13 +5,17 @@ This module tests the admin teleport functionality including command validation,
 player lookup, teleportation logic, and security checks.
 """
 
+import uuid
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
+import server.commands.admin_commands as admin_commands
 from server.commands.admin_commands import (
     create_teleport_effect_message,
     get_online_player_by_display_name,
+    handle_admin_command,
     handle_confirm_goto_command,
     handle_confirm_teleport_command,
     handle_goto_command,
@@ -92,6 +96,66 @@ class TestOnlinePlayerLookup:
         mock_connection_manager.get_online_player_by_display_name.assert_called_once_with("testplayer")
 
 
+class TestAdminStatusCommand:
+    """Test admin status subcommand handling."""
+
+    @pytest.mark.asyncio
+    async def test_handle_admin_status_active(self, monkeypatch):
+        """Ensure admin status command reports active privileges."""
+        command_data = {"command_type": "admin", "subcommand": "status", "args": []}
+        mock_request = MagicMock()
+        mock_app = MagicMock()
+        mock_request.app = mock_app
+        mock_app.state = SimpleNamespace()
+
+        player_record = SimpleNamespace(name="ArkanWolfshade", id=uuid.uuid4(), is_admin=True)
+        mock_player_service = MagicMock()
+        mock_player_service.resolve_player_name = AsyncMock(return_value=player_record)
+        mock_app.state.player_service = mock_player_service
+
+        mock_user_manager = MagicMock()
+        mock_user_manager.is_admin.return_value = True
+        mock_app.state.user_manager = mock_user_manager
+
+        dummy_logger = MagicMock()
+        monkeypatch.setattr(admin_commands, "get_admin_actions_logger", lambda: dummy_logger)
+
+        result = await handle_admin_command(
+            command_data, {"username": "ArkanWolfshade"}, mock_request, None, "ArkanWolfshade"
+        )
+
+        assert "Admin privileges: Active" in result["result"]
+        assert "- Database record: Active" in result["result"]
+        dummy_logger.log_admin_command.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_handle_admin_status_inactive(self, monkeypatch):
+        """Ensure admin status command reports inactive privileges for non-admins."""
+        command_data = {"command_type": "admin", "subcommand": "status", "args": []}
+        mock_request = MagicMock()
+        mock_app = MagicMock()
+        mock_request.app = mock_app
+        mock_app.state = SimpleNamespace()
+
+        player_record = SimpleNamespace(name="Ithaqua", id=uuid.uuid4(), is_admin=False)
+        mock_player_service = MagicMock()
+        mock_player_service.resolve_player_name = AsyncMock(return_value=player_record)
+        mock_app.state.player_service = mock_player_service
+
+        mock_user_manager = MagicMock()
+        mock_user_manager.is_admin.return_value = False
+        mock_app.state.user_manager = mock_user_manager
+
+        dummy_logger = MagicMock()
+        monkeypatch.setattr(admin_commands, "get_admin_actions_logger", lambda: dummy_logger)
+
+        result = await handle_admin_command(command_data, {"username": "Ithaqua"}, mock_request, None, "Ithaqua")
+
+        assert "Admin privileges: Inactive" in result["result"]
+        assert "- Database record: Inactive" in result["result"]
+        dummy_logger.log_admin_command.assert_called_once()
+
+
 class TestTeleportEffectMessages:
     """Test teleport effect message creation."""
 
@@ -135,19 +199,17 @@ class TestTeleportCommand:
         mock_request.app = mock_app
 
         # Mock player service
-        mock_player_service = MagicMock()
+        mock_player_service = SimpleNamespace(update_player_location=AsyncMock(return_value=True))
         mock_admin_player = MagicMock()
         mock_admin_player.is_admin = True
         mock_admin_player.current_room_id = "admin_room"
-        mock_player_service.get_player_by_name.return_value = mock_admin_player
 
         # Mock target player
         mock_target_player = MagicMock()
         mock_target_player.current_room_id = "target_room"
-        mock_player_service.get_player_by_name.side_effect = (
-            lambda name: mock_admin_player if name == "admin_user" else mock_target_player
+        mock_player_service.get_player_by_name = AsyncMock(
+            side_effect=lambda name: mock_admin_player if name == "admin_user" else mock_target_player
         )
-
         mock_app.state.player_service = mock_player_service
 
         # Mock connection manager
@@ -172,7 +234,7 @@ class TestTeleportCommand:
 
         # Should return success message (current implementation bypasses confirmation)
         assert "result" in result
-        assert "successfully teleported" in result["result"].lower()
+        assert "you teleport testplayer to your location" in result["result"].lower()
         assert "TestPlayer" in result["result"]
 
     @pytest.mark.asyncio
@@ -185,10 +247,10 @@ class TestTeleportCommand:
         mock_request.app = mock_app
 
         # Mock player service with non-admin player
-        mock_player_service = MagicMock()
+        mock_player_service = SimpleNamespace(update_player_location=AsyncMock(return_value=True))
         mock_regular_player = MagicMock()
         mock_regular_player.is_admin = False
-        mock_player_service.get_player_by_name.return_value = mock_regular_player
+        mock_player_service.get_player_by_name = AsyncMock(return_value=mock_regular_player)
         mock_app.state.player_service = mock_player_service
 
         mock_alias_storage = MagicMock()
@@ -210,11 +272,11 @@ class TestTeleportCommand:
         mock_request.app = mock_app
 
         # Mock player service with admin player
-        mock_player_service = MagicMock()
+        mock_player_service = SimpleNamespace(update_player_location=AsyncMock(return_value=True))
         mock_admin_player = MagicMock()
         mock_admin_player.is_admin = True
-        mock_player_service.get_player_by_name.side_effect = (
-            lambda name: mock_admin_player if name == "admin_user" else None
+        mock_player_service.get_player_by_name = AsyncMock(
+            side_effect=lambda name: mock_admin_player if name == "admin_user" else None
         )
         mock_app.state.player_service = mock_player_service
 
@@ -238,6 +300,15 @@ class TestTeleportCommand:
         command_data = {"command_type": "teleport"}
         mock_current_user = {"username": "admin_user"}
         mock_request = MagicMock()
+        admin_player = MagicMock()
+        admin_player.is_admin = True
+        admin_player.current_room_id = "admin_room"
+        player_service = SimpleNamespace(
+            get_player_by_name=AsyncMock(return_value=admin_player),
+            update_player_location=AsyncMock(return_value=True),
+        )
+        app_state = SimpleNamespace(player_service=player_service)
+        mock_request.app = SimpleNamespace(state=app_state)
         mock_alias_storage = MagicMock()
 
         result = await handle_teleport_command(
@@ -262,7 +333,7 @@ class TestGotoCommand:
         mock_request.app = mock_app
 
         # Mock player service with admin player
-        mock_player_service = MagicMock()
+        mock_player_service = SimpleNamespace(update_player_location=AsyncMock(return_value=True))
         mock_admin_player = MagicMock()
         mock_admin_player.is_admin = True
         mock_admin_player.current_room_id = "admin_room"
@@ -270,8 +341,8 @@ class TestGotoCommand:
         # Mock target player
         mock_target_player = MagicMock()
         mock_target_player.current_room_id = "target_room"
-        mock_player_service.get_player_by_name.side_effect = (
-            lambda name: mock_admin_player if name == "admin_user" else mock_target_player
+        mock_player_service.get_player_by_name = AsyncMock(
+            side_effect=lambda name: mock_admin_player if name == "admin_user" else mock_target_player
         )
         mock_app.state.player_service = mock_player_service
 
@@ -309,10 +380,10 @@ class TestGotoCommand:
         mock_request.app = mock_app
 
         # Mock player service with non-admin player
-        mock_player_service = MagicMock()
+        mock_player_service = SimpleNamespace()
         mock_regular_player = MagicMock()
         mock_regular_player.is_admin = False
-        mock_player_service.get_player_by_name.return_value = mock_regular_player
+        mock_player_service.get_player_by_name = AsyncMock(return_value=mock_regular_player)
         mock_app.state.player_service = mock_player_service
 
         mock_alias_storage = MagicMock()
@@ -334,11 +405,11 @@ class TestGotoCommand:
         mock_request.app = mock_app
 
         # Mock player service with admin player
-        mock_player_service = MagicMock()
+        mock_player_service = SimpleNamespace(update_player_location=AsyncMock(return_value=True))
         mock_admin_player = MagicMock()
         mock_admin_player.is_admin = True
-        mock_player_service.get_player_by_name.side_effect = (
-            lambda name: mock_admin_player if name == "admin_user" else None
+        mock_player_service.get_player_by_name = AsyncMock(
+            side_effect=lambda name: mock_admin_player if name == "admin_user" else None
         )
         mock_app.state.player_service = mock_player_service
 
@@ -370,7 +441,7 @@ class TestTeleportConfirmation:
         mock_request.app = mock_app
 
         # Mock player service with admin player
-        mock_player_service = MagicMock()
+        mock_player_service = SimpleNamespace(update_player_location=AsyncMock(return_value=True))
         mock_admin_player = MagicMock()
         mock_admin_player.is_admin = True
         mock_admin_player.current_room_id = "admin_room"
@@ -378,8 +449,8 @@ class TestTeleportConfirmation:
         # Mock target player
         mock_target_player = MagicMock()
         mock_target_player.current_room_id = "target_room"
-        mock_player_service.get_player_by_name.side_effect = (
-            lambda name: mock_admin_player if name == "admin_user" else mock_target_player
+        mock_player_service.get_player_by_name = AsyncMock(
+            side_effect=lambda name: mock_admin_player if name == "admin_user" else mock_target_player
         )
         mock_app.state.player_service = mock_player_service
 
@@ -419,7 +490,7 @@ class TestTeleportConfirmation:
         mock_request.app = mock_app
 
         # Mock player service with admin player
-        mock_player_service = MagicMock()
+        mock_player_service = SimpleNamespace(update_player_location=AsyncMock(return_value=True))
         mock_admin_player = MagicMock()
         mock_admin_player.is_admin = True
         mock_admin_player.current_room_id = "admin_room"
@@ -427,8 +498,8 @@ class TestTeleportConfirmation:
         # Mock target player
         mock_target_player = MagicMock()
         mock_target_player.current_room_id = "target_room"
-        mock_player_service.get_player_by_name.side_effect = (
-            lambda name: mock_admin_player if name == "admin_user" else mock_target_player
+        mock_player_service.get_player_by_name = AsyncMock(
+            side_effect=lambda name: mock_admin_player if name == "admin_user" else mock_target_player
         )
         mock_app.state.player_service = mock_player_service
 
@@ -467,10 +538,10 @@ class TestTeleportConfirmation:
         mock_request.app = mock_app
 
         # Mock player service with non-admin player
-        mock_player_service = MagicMock()
+        mock_player_service = SimpleNamespace(update_player_location=AsyncMock(return_value=True))
         mock_regular_player = MagicMock()
         mock_regular_player.is_admin = False
-        mock_player_service.get_player_by_name.return_value = mock_regular_player
+        mock_player_service.get_player_by_name = AsyncMock(return_value=mock_regular_player)
         mock_app.state.player_service = mock_player_service
 
         mock_alias_storage = MagicMock()
@@ -492,11 +563,11 @@ class TestTeleportConfirmation:
         mock_request.app = mock_app
 
         # Mock player service with admin player
-        mock_player_service = MagicMock()
+        mock_player_service = SimpleNamespace(update_player_location=AsyncMock(return_value=True))
         mock_admin_player = MagicMock()
         mock_admin_player.is_admin = True
-        mock_player_service.get_player_by_name.side_effect = (
-            lambda name: mock_admin_player if name == "admin_user" else None
+        mock_player_service.get_player_by_name = AsyncMock(
+            side_effect=lambda name: mock_admin_player if name == "admin_user" else None
         )
         mock_app.state.player_service = mock_player_service
 

@@ -142,13 +142,19 @@ class PlayerCombatService:
             True if player is in combat, False otherwise
         """
         result = player_id in self._player_combat_states
-        logger.critical(
-            "COMBAT SERVICE: Sync combat check",
-            player_id=str(player_id),
-            is_in_combat=result,
-            total_players_in_combat=len(self._player_combat_states),
-            combat_states=str(list(self._player_combat_states.keys())),
-        )
+        if result:
+            logger.critical(
+                "Combat movement violation detected",
+                player_id=str(player_id),
+                total_players_in_combat=len(self._player_combat_states),
+                combat_states=str(list(self._player_combat_states.keys())),
+            )
+        else:
+            logger.debug(
+                "Combat sync check cleared",
+                player_id=str(player_id),
+                total_players_in_combat=len(self._player_combat_states),
+            )
         return result
 
     async def is_player_in_combat(self, player_id: UUID) -> bool:
