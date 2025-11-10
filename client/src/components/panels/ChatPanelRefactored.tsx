@@ -49,83 +49,75 @@ export const ChatPanelRefactored: React.FC<ChatPanelRefactoredProps> = ({
   const [chatFilter, setChatFilter] = useState<string>('current');
   const [clearedChannels, setClearedChannels] = useState<Record<string, number>>({});
 
+  const normalizedSelectedChannel = selectedChannel ?? DEFAULT_CHANNEL;
+  const isAllChannelSelected = normalizedSelectedChannel === DEFAULT_CHANNEL;
+  const nonSystemMessages = useMemo(() => messages.filter(message => message.messageType !== 'system'), [messages]);
+
   // Calculate chat statistics
+  const channelMessages = useMemo(() => {
+    if (isAllChannelSelected) {
+      return nonSystemMessages;
+    }
+
+    return nonSystemMessages.filter(message => {
+      const messageChannel = message.channel || extractChannelFromMessage(message.text) || normalizedSelectedChannel;
+      return messageChannel === normalizedSelectedChannel;
+    });
+  }, [nonSystemMessages, normalizedSelectedChannel, isAllChannelSelected]);
+
   const chatStats = {
-    currentChannelMessages: messages.filter(message => {
-      const messageChannel = message.channel || extractChannelFromMessage(message.text) || selectedChannel;
-      return messageChannel === selectedChannel;
-    }).length,
-    totalMessages: messages.length,
+    currentChannelMessages: channelMessages.length,
+    totalMessages: nonSystemMessages.length,
   };
 
   // Compute unread counts using useMemo instead of effect
   const unreadCounts = useMemo(() => {
+    if (isAllChannelSelected) {
+      return {};
+    }
+
     const counts: Record<string, number> = {};
 
-    messages.forEach((message, index) => {
+    nonSystemMessages.forEach((message, index) => {
       // Handle both 'chat' and 'command' messages that contain chat content
       if (message.messageType === 'chat' || (message.messageType === 'command' && isChatContent(message.text))) {
-        const channelId = message.channel || extractChannelFromMessage(message.text) || selectedChannel;
+        const channelId = message.channel || extractChannelFromMessage(message.text) || normalizedSelectedChannel;
         // Count messages for other channels that are after the "cleared" point
-        if (channelId !== selectedChannel && index >= (clearedChannels[channelId] || 0)) {
+        if (channelId !== normalizedSelectedChannel && index >= (clearedChannels[channelId] || 0)) {
           counts[channelId] = (counts[channelId] || 0) + 1;
         }
       }
     });
 
     return counts;
-  }, [messages, selectedChannel, clearedChannels]);
+  }, [nonSystemMessages, normalizedSelectedChannel, clearedChannels, isAllChannelSelected]);
 
   // Filter messages - simplified for display only
-  const getFilteredMessages = () => {
-    return messages;
-  };
+  const filteredMessages = useMemo(() => {
+    if (chatFilter === 'all' || isAllChannelSelected) {
+      return nonSystemMessages;
+    }
+
+    return nonSystemMessages.filter(message => {
+      const isChatMessage =
+        message.messageType === 'chat' || (message.messageType === 'command' && isChatContent(message.text));
+
+      if (!isChatMessage) {
+        return false;
+      }
+
+      const messageChannel = message.channel || extractChannelFromMessage(message.text) || 'local';
+      return messageChannel === normalizedSelectedChannel;
+    });
+  }, [chatFilter, nonSystemMessages, normalizedSelectedChannel, isAllChannelSelected]);
 
   const handleChannelSelect = (channelId: string) => {
     // Mark this channel as "seen" at current message index
-    setClearedChannels(prev => ({ ...prev, [channelId]: messages.length }));
+    setClearedChannels(prev => ({ ...prev, [channelId]: nonSystemMessages.length }));
     onChannelSelect?.(channelId);
   };
 
   // Filter messages by channel and moderation settings
-  const filteredMessages = getFilteredMessages().filter(message => {
-    // Always exclude system messages from Chat Panel - they belong in Game Log Panel
-    if (message.messageType === 'system') {
-      return false;
-    }
-
-    if (chatFilter === 'all') return true;
-    if (chatFilter === 'current') {
-      // Filter for current channel messages - handle both 'chat' and 'command' messages with chat content
-      const isChatMessage =
-        message.messageType === 'chat' || (message.messageType === 'command' && isChatContent(message.text));
-
-      // If it's a chat message, also check if it belongs to the current channel
-      if (isChatMessage) {
-        const messageChannel = message.channel || extractChannelFromMessage(message.text) || 'local';
-        return messageChannel === selectedChannel;
-      }
-
-      return false;
-    }
-    return true;
-  });
-
-  // Debug logging for final filtered messages
-  console.log('🔍 ChatPanel Final Filtered Messages:', {
-    totalMessages: messages.length,
-    filteredCount: filteredMessages.length,
-    chatFilter,
-    selectedChannel,
-    filteredMessages: filteredMessages.map(m => ({
-      text: m.text.substring(0, 50) + (m.text.length > 50 ? '...' : ''),
-      messageType: m.messageType,
-      channel: m.channel,
-      timestamp: m.timestamp,
-    })),
-    timestamp: new Date().toISOString(),
-  });
-
   return (
     <div className="h-full flex flex-col font-mono">
       <ChatHeader onClearMessages={onClearMessages} onDownloadLogs={onDownloadLogs} />

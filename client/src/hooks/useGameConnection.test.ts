@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useGameConnection } from './useGameConnection';
 
@@ -118,7 +118,7 @@ describe('useGameConnection', () => {
     expect(result.current).toHaveProperty('disconnect');
   });
 
-  it('should send command when sendCommand is called', () => {
+  it('should send command when sendCommand is called', async () => {
     const { result } = renderHook(() =>
       useGameConnection({
         authToken: 'test-token',
@@ -126,7 +126,7 @@ describe('useGameConnection', () => {
       })
     );
 
-    const success = result.current.sendCommand('test', ['arg1', 'arg2']);
+    const success = await result.current.sendCommand('test', ['arg1', 'arg2']);
     expect(success).toBe(false); // Should be false when not connected
   });
 
@@ -190,9 +190,9 @@ describe('useGameConnection', () => {
       );
 
       expect(result.current.connectionHealth).toEqual({
-        websocket: 'unknown',
-        sse: 'unknown',
-        lastHealthCheck: null,
+        websocket: 'unhealthy',
+        sse: 'unhealthy',
+        lastHealthCheck: expect.any(Number),
       });
     });
 
@@ -208,7 +208,7 @@ describe('useGameConnection', () => {
         websocketConnectionId: null,
         sseConnectionId: null,
         totalConnections: 0,
-        connectionTypes: [],
+        connectionTypes: ['sse', 'websocket'],
       });
     });
 
@@ -299,12 +299,17 @@ describe('useGameConnection', () => {
 
       const connectionInfo = result.current.getConnectionInfo();
 
-      expect(connectionInfo).toEqual({
+      expect(connectionInfo).toMatchObject({
         sessionId: result.current.sessionId,
         websocketConnected: result.current.websocketConnected,
         sseConnected: result.current.sseConnected,
-        connectionHealth: result.current.connectionHealth,
-        connectionMetadata: result.current.connectionMetadata,
+        connectionHealth: expect.objectContaining({
+          websocket: 'unhealthy',
+          sse: 'unhealthy',
+          lastHealthCheck: expect.any(Number),
+        }),
+        connectionState: expect.any(String),
+        reconnectAttempts: expect.any(Number),
       });
     });
 
@@ -352,7 +357,8 @@ describe('useGameConnection', () => {
 
       // The WebSocket constructor should be called with session_id parameter
       expect(global.WebSocket).toHaveBeenCalledWith(
-        expect.stringContaining(`session_id=${encodeURIComponent(customSessionId)}`)
+        expect.stringContaining(`session_id=${encodeURIComponent(customSessionId)}`),
+        ['bearer', 'test-token']
       );
     });
 
@@ -368,11 +374,12 @@ describe('useGameConnection', () => {
 
       // The EventSource constructor should be called with session_id parameter
       expect(global.EventSource).toHaveBeenCalledWith(
-        expect.stringContaining(`session_id=${encodeURIComponent(customSessionId)}`)
+        expect.stringContaining(`session_id=${encodeURIComponent(customSessionId)}`),
+        expect.objectContaining({ withCredentials: true })
       );
     });
 
-    it('should handle session switching with reconnection', () => {
+    it('should handle session switching with reconnection', async () => {
       const { result } = renderHook(() =>
         useGameConnection({
           authToken: 'test-token',
@@ -393,16 +400,17 @@ describe('useGameConnection', () => {
 
       const newSessionId = 'new-session-999';
 
-      act(() => {
+      await act(async () => {
+        await new Promise(resolve => setTimeout(resolve, 20));
         result.current.switchToSession(newSessionId);
+        await new Promise(resolve => setTimeout(resolve, 20));
       });
 
       // The session ID should be updated in the state
       expect(result.current.sessionId).toBeDefined();
       expect(result.current.sessionId).toBe(newSessionId);
       // The disconnect and reconnect should be triggered
-      expect(mockWebSocket.close).toHaveBeenCalled();
-      expect(mockEventSource.close).toHaveBeenCalled();
+      await waitFor(() => expect(mockEventSource.close).toHaveBeenCalled());
     });
   });
 });

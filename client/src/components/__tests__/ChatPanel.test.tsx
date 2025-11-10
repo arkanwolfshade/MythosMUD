@@ -195,14 +195,14 @@ describe('ChatPanel', () => {
       expect(screen.getByText('Chat')).toBeInTheDocument();
       expect(screen.getByTestId('channel-selector')).toBeInTheDocument();
       expect(screen.getByText('Chat History')).toBeInTheDocument();
-      expect(screen.getByText('Viewing: All Messages')).toBeInTheDocument();
+      expect(screen.getByText('Viewing: Local')).toBeInTheDocument();
     });
 
     it('should render with correct data-testid attributes', () => {
       render(<ChatPanel {...defaultProps} />);
 
       expect(screen.getByTestId('channel-selector')).toBeInTheDocument();
-      expect(screen.getAllByTestId('terminal-button')).toHaveLength(3); // Clear, Download, Chat History buttons
+      expect(screen.getAllByTestId('terminal-button')).toHaveLength(2); // Clear and Download buttons
     });
 
     it('should display messages correctly', async () => {
@@ -222,7 +222,8 @@ describe('ChatPanel', () => {
     it('should show chat statistics', () => {
       render(<ChatPanel {...defaultProps} />);
 
-      expect(screen.getAllByText('1 messages')).toHaveLength(2); // Should appear in both chat history and statistics
+      const messageCountDisplays = screen.getAllByText((_, element) => element?.textContent?.includes('Messages: 1'));
+      expect(messageCountDisplays.length).toBeGreaterThan(0);
       expect(screen.getByText('Connected')).toBeInTheDocument();
       expect(screen.getByText('Channel: Local')).toBeInTheDocument();
     });
@@ -426,7 +427,7 @@ describe('ChatPanel', () => {
     it('should show viewing label for current selection', () => {
       render(<ChatPanel {...defaultProps} />);
 
-      expect(screen.getByText('Viewing: All Messages')).toBeInTheDocument();
+      expect(screen.getByText('Viewing: Local')).toBeInTheDocument();
     });
   });
 

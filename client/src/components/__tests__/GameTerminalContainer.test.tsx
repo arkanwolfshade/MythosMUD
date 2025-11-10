@@ -1,12 +1,12 @@
 import { render, screen } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useGameTerminal } from '../../hooks/useGameTerminal';
 import { ChatMessage } from '../../stores/gameStore';
 import { GameTerminalContainer } from '../GameTerminalContainer';
 
 // Mock the useGameTerminal hook
-vi.mock('../../hooks/useGameTerminal', () => ({
-  useGameTerminal: vi.fn(() => ({
+function createDefaultGameTerminalState() {
+  return {
     // Connection state
     isConnected: true,
     isConnecting: false,
@@ -51,7 +51,13 @@ vi.mock('../../hooks/useGameTerminal', () => ({
     onClearMessages: vi.fn(),
     onClearHistory: vi.fn(),
     onDownloadLogs: vi.fn(),
-  })),
+  };
+}
+
+const useGameTerminalMock = vi.hoisted(() => vi.fn(createDefaultGameTerminalState));
+
+vi.mock('../../hooks/useGameTerminal', () => ({
+  useGameTerminal: useGameTerminalMock,
 }));
 
 // Mock the presentation component
@@ -99,10 +105,8 @@ describe('GameTerminalContainer', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
+    useGameTerminalMock.mockImplementation(createDefaultGameTerminalState);
+    mockUseGameTerminal.mockImplementation(createDefaultGameTerminalState);
   });
 
   describe('Rendering', () => {

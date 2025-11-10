@@ -32,7 +32,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
   onChannelSelect,
 }) => {
   const [commandInput, setCommandInput] = useState('');
-  const isControlled = onChannelSelect !== undefined || selectedChannel !== undefined;
+  const isControlled = onChannelSelect !== undefined;
   const [uncontrolledChannel, setUncontrolledChannel] = useState(selectedChannel ?? DEFAULT_CHANNEL);
   const currentChannel = isControlled ? (selectedChannel ?? DEFAULT_CHANNEL) : uncontrolledChannel;
 

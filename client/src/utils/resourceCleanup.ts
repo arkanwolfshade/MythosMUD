@@ -138,8 +138,10 @@ export class ResourceManager {
 
     // Close all EventSource connections
     this.eventSources.forEach(eventSource => {
-      if (eventSource.readyState === EventSource.OPEN || eventSource.readyState === EventSource.CONNECTING) {
-        eventSource.close();
+      const readyState = typeof eventSource.readyState === 'number' ? eventSource.readyState : undefined;
+      // In some test environments the static EventSource constants are undefined.
+      if (readyState === undefined || readyState === 0 || readyState === 1) {
+        eventSource.close?.();
       }
     });
     this.eventSources.clear();

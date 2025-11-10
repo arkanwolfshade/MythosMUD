@@ -3,7 +3,7 @@
  */
 
 import '@testing-library/jest-dom';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { GameTerminalWithPanels } from '../GameTerminalWithPanels';
@@ -41,6 +41,11 @@ describe('GameTerminalWithPanels - Combat Events', () => {
 
   const renderTerminal = (playerName = defaultPlayerName) =>
     render(<GameTerminalWithPanels playerName={playerName} authToken="test-token" />);
+
+  const findMessageContainer = (text: string) => {
+    const messageContainers = screen.queryAllByTestId('chat-message');
+    return messageContainers.find(container => within(container).queryByText(text));
+  };
 
   const sendStatusUpdate = (playerName: string, options: { inCombat?: 'Yes' | 'No'; health?: string } = {}) => {
     const { inCombat = 'No', health = '100/100' } = options;
@@ -199,9 +204,9 @@ describe('GameTerminalWithPanels - Combat Events', () => {
       },
     });
 
-    await waitFor(() =>
-      expect(screen.getByText('Sanitarium Patient attacks you for 10 damage! (90/100 HP)')).toBeInTheDocument()
-    );
+    await waitFor(() => {
+      expect(findMessageContainer('Sanitarium Patient attacks you for 10 damage! (90/100 HP)')).toBeDefined();
+    });
     expect(getInfoValue('Health:')).toHaveTextContent('90');
   });
 
@@ -227,11 +232,11 @@ describe('GameTerminalWithPanels - Combat Events', () => {
       },
     });
 
-    await waitFor(() =>
+    await waitFor(() => {
       expect(
-        screen.getByText('Sanitarium Patient attacks ArkanWolfshade for 10 damage! (90/100 HP)')
-      ).toBeInTheDocument()
-    );
+        findMessageContainer('Sanitarium Patient attacks ArkanWolfshade for 10 damage! (90/100 HP)')
+      ).toBeDefined();
+    });
     expect(getInfoValue('Health:')).toHaveTextContent('100');
   });
 });

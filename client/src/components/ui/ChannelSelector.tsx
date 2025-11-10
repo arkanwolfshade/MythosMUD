@@ -102,7 +102,10 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
 
       {/* Dropdown Menu - positioned AFTER backdrop but with higher z-index */}
       {isOpen && !disabled && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-mythos-terminal-surface border border-gray-700 rounded shadow-lg z-30 max-h-60 overflow-y-auto">
+        <div
+          className="absolute top-full left-0 right-0 mt-1 bg-mythos-terminal-surface border border-gray-700 rounded shadow-lg z-30 max-h-60 overflow-y-auto"
+          data-testid="channel-dropdown"
+        >
           {channels.map(channel => (
             <button
               key={channel.id}

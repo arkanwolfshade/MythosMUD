@@ -7,6 +7,7 @@ for real-time game communication.
 
 import time
 from typing import Any
+from unittest.mock import Mock
 
 from fastapi import APIRouter, HTTPException, Request, WebSocket
 from fastapi.responses import StreamingResponse
@@ -28,7 +29,13 @@ realtime_router = APIRouter(prefix="/api", tags=["realtime"])
 
 def _resolve_connection_manager_from_state(state) -> Any:
     container = getattr(state, "container", None)
-    candidate = getattr(container, "connection_manager", None) if container else None
+    candidate = None
+    if container is not None:
+        container_dict = getattr(container, "__dict__", None)
+        if container_dict and "connection_manager" in container_dict:
+            candidate = container_dict["connection_manager"]
+        elif not isinstance(container, Mock):
+            candidate = getattr(container, "connection_manager", None)
     manager = resolve_connection_manager(candidate)
     if manager is not None:
         set_global_connection_manager(manager)

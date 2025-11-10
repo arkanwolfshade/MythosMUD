@@ -65,13 +65,15 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   onDownloadLogs,
   disabled = false,
   isConnected = true,
-  selectedChannel = ALL_MESSAGES_CHANNEL.id,
+  selectedChannel,
   onChannelSelect,
 }) => {
   const [clearedChannels, setClearedChannels] = useState<Record<string, number>>({});
   const [isHistoryVisible, setIsHistoryVisible] = useState(false);
-
-  const normalizedSelectedChannel = selectedChannel ?? DEFAULT_CHANNEL;
+  const isControlled = selectedChannel !== undefined;
+  const [internalChannel, setInternalChannel] = useState<string>(selectedChannel ?? ALL_MESSAGES_CHANNEL.id);
+  const normalizedSelectedChannel = (isControlled ? selectedChannel : internalChannel) ?? DEFAULT_CHANNEL;
+  const isAllChannelSelected = normalizedSelectedChannel === ALL_MESSAGES_CHANNEL.id;
 
   const filteredMessages = useMemo(() => {
     return messages.filter(message => {
@@ -79,12 +81,18 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         return false;
       }
 
-      if (normalizedSelectedChannel === ALL_MESSAGES_CHANNEL.id) {
+      if (isAllChannelSelected) {
         return true;
       }
 
-      if (message.messageType === 'command' || message.messageType === 'error') {
-        return true;
+      if (message.messageType === 'command') {
+        return false;
+      }
+
+      const messageChannel = message.channel || extractChannelFromMessage(message.text) || 'local';
+
+      if (message.messageType === 'error') {
+        return messageChannel === normalizedSelectedChannel;
       }
 
       const isChatMessage = message.messageType === 'chat' || isChatContent(message.text);
@@ -92,23 +100,27 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         return false;
       }
 
-      const messageChannel = message.channel || extractChannelFromMessage(message.text) || 'local';
-
       if (messageChannel === 'whisper') {
-        return true;
+        return normalizedSelectedChannel === 'whisper';
       }
 
       return messageChannel === normalizedSelectedChannel;
     });
-  }, [messages, normalizedSelectedChannel]);
+  }, [messages, normalizedSelectedChannel, isAllChannelSelected]);
+
+  const historyEligibleMessages = useMemo(
+    () => messages.filter(message => message.messageType !== 'system'),
+    [messages]
+  );
+  const visibleMessages = isHistoryVisible ? historyEligibleMessages : filteredMessages;
 
   const chatStats = {
     currentChannelMessages: filteredMessages.length,
-    totalMessages: messages.filter(message => message.messageType !== 'system').length,
+    totalMessages: historyEligibleMessages.length,
   };
 
   const unreadCounts = useMemo(() => {
-    if (normalizedSelectedChannel === ALL_MESSAGES_CHANNEL.id) {
+    if (isAllChannelSelected) {
       return {};
     }
 
@@ -124,13 +136,16 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     });
 
     return counts;
-  }, [messages, normalizedSelectedChannel, clearedChannels]);
+  }, [messages, normalizedSelectedChannel, clearedChannels, isAllChannelSelected]);
 
   const handleChannelSelect = (channelId: string) => {
+    if (!isControlled) {
+      setInternalChannel(channelId);
+    }
     if (channelId === ALL_MESSAGES_CHANNEL.id) {
       setClearedChannels({});
     } else {
-      setClearedChannels(prev => ({ ...prev, [channelId]: messages.length }));
+      setClearedChannels(prev => ({ ...prev, [channelId]: historyEligibleMessages.length }));
     }
     onChannelSelect?.(channelId);
   };
@@ -271,7 +286,9 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
           <option value="current">Current</option>
           <option value="all">All</option>
         </select>
-        <span className="ml-2 text-xs text-mythos-terminal-text-secondary">Messages: {filteredMessages.length}</span>
+        <span className="ml-2 text-xs text-mythos-terminal-text-secondary">
+          Messages: {isHistoryVisible ? historyEligibleMessages.length : filteredMessages.length}
+        </span>
       </div>
 
       {/* Chat Filter Summary */}
@@ -294,7 +311,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         aria-label="Chat Messages"
         style={{ minHeight: '200px' }}
       >
-        {filteredMessages.length === 0 ? (
+        {visibleMessages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
             <div className="text-center space-y-2">
               <EldritchIcon name={MythosIcons.chat} size={32} variant="secondary" className="mx-auto opacity-50" />
@@ -305,7 +322,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
           </div>
         ) : (
           <div className="space-y-3">
-            {filteredMessages.map((message, index) => (
+            {visibleMessages.map((message, index) => (
               <div
                 key={index}
                 className="message p-3 bg-mythos-terminal-surface border border-gray-700 rounded transition-all duration-300 hover:border-mythos-terminal-primary/30 hover:shadow-lg animate-fade-in"

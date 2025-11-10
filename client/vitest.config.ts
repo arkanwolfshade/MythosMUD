@@ -8,6 +8,15 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
     exclude: ['tests/**/*', '**/*.spec.ts', '**/*.spec.tsx', 'node_modules/**/*'],
+    pool: 'threads',
+    maxConcurrency: 1,
+    poolOptions: {
+      threads: {
+        singleThread: true,
+        maxThreads: 1,
+        minThreads: 1,
+      },
+    },
     coverage: {
       provider: 'v8',
       enabled: true,
