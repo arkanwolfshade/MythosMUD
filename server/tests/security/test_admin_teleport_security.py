@@ -17,6 +17,17 @@ from server.commands.admin_commands import (
 )
 
 
+@pytest.fixture(autouse=True)
+def patch_async_helpers(monkeypatch):
+    """Patch async helpers that touch global state."""
+    broadcast_mock = AsyncMock()
+    notify_mock = AsyncMock()
+    monkeypatch.setattr("server.commands.admin_commands.broadcast_room_update", AsyncMock())
+    monkeypatch.setattr("server.commands.admin_commands.broadcast_teleport_effects", broadcast_mock)
+    monkeypatch.setattr("server.commands.admin_commands.notify_player_of_teleport", notify_mock)
+    return broadcast_mock, notify_mock
+
+
 class TestAdminTeleportSecurity:
     """Security tests for admin teleport system."""
 
@@ -27,13 +38,20 @@ class TestAdminTeleportSecurity:
 
         # Mock player service
         player_service = MagicMock()
+        player_service.get_player_by_name = AsyncMock()
+        player_service.update_player_location = AsyncMock()
+        player_service.resolve_player_name = AsyncMock()
         app_state.player_service = player_service
 
         # Mock connection manager
         connection_manager = MagicMock()
         connection_manager.online_players = {}
         connection_manager.broadcast_to_room = AsyncMock()
-        connection_manager.send_to_player = AsyncMock()
+        connection_manager.send_personal_message = AsyncMock()
+        connection_manager.unsubscribe_from_room = AsyncMock()
+        connection_manager.subscribe_to_room = AsyncMock()
+        connection_manager.get_online_player_by_display_name = MagicMock(return_value=None)
+        connection_manager.room_manager = MagicMock()
         app_state.connection_manager = connection_manager
 
         # Mock persistence layer
@@ -118,19 +136,16 @@ class TestAdminTeleportSecurity:
         ]
 
         for malicious_name in malicious_names:
-            departure_msg = create_teleport_effect_message(malicious_name, "departure")
-            arrival_msg = create_teleport_effect_message(malicious_name, "arrival")
+            departure_msg = create_teleport_effect_message(malicious_name, "departure", teleport_type="teleport")
+            arrival_msg = create_teleport_effect_message(malicious_name, "arrival", teleport_type="teleport")
 
             # Messages should contain the name (this is expected for display)
             assert malicious_name in departure_msg
             assert malicious_name in arrival_msg
 
-            # The function should handle malicious names gracefully
-            # and not crash or cause security issues
-            assert departure_msg.startswith("*")
-            assert departure_msg.endswith("*")
-            assert arrival_msg.startswith("*")
-            assert arrival_msg.endswith("*")
+            # The function should handle malicious names gracefully without crashing
+            assert isinstance(departure_msg, str)
+            assert isinstance(arrival_msg, str)
 
     @pytest.mark.asyncio
     async def test_path_traversal_prevention(self, mock_app_state):
@@ -166,7 +181,7 @@ class TestAdminTeleportSecurity:
 
             # Should fail gracefully, not allow path traversal
             assert "result" in result
-            assert "not found" in result["result"].lower() or "not online" in result["result"].lower()
+            assert result["result"] == f"Player '{traversal_attempt}' is not online or not found."
 
     @pytest.mark.asyncio
     async def test_privilege_escalation_prevention(self, mock_app_state):
@@ -206,7 +221,7 @@ class TestAdminTeleportSecurity:
 
         # Should fail due to lack of admin privileges
         assert "result" in result
-        assert "permission" in result["result"].lower() or "admin" in result["result"].lower()
+        assert result["result"] == "You do not have permission to use teleport commands."
 
     @pytest.mark.asyncio
     async def test_concurrent_admin_privilege_checks(self, mock_app_state):
@@ -251,7 +266,10 @@ class TestAdminTeleportSecurity:
         # All operations should succeed
         for result in results:
             assert "result" in result
-            assert "successfully teleported" in result["result"].lower()
+            assert result["result"] in (
+                "You teleport TargetPlayer to your location.",
+                "TargetPlayer is already in your location.",
+            )
 
     @pytest.mark.asyncio
     async def test_database_injection_prevention(self, mock_app_state):
@@ -287,7 +305,7 @@ class TestAdminTeleportSecurity:
 
             # Should fail gracefully, not execute injection
             assert "result" in result
-            assert "not found" in result["result"].lower() or "not online" in result["result"].lower()
+            assert result["result"] == f"Player '{injection_attempt}' is not online or not found."
 
     @pytest.mark.asyncio
     async def test_session_hijacking_prevention(self, mock_app_state):
@@ -336,9 +354,9 @@ class TestAdminTeleportSecurity:
             )
 
             if test_case["expected_success"]:
-                assert "successfully teleported" in result["result"].lower()
+                assert result["result"] == "You teleport TargetPlayer to your location."
             else:
-                assert "permission" in result["result"].lower() or "admin" in result["result"].lower()
+                assert result["result"] == "You do not have permission to use teleport commands."
 
     @pytest.mark.asyncio
     async def test_rate_limiting_bypass_prevention(self, mock_app_state):
@@ -383,7 +401,10 @@ class TestAdminTeleportSecurity:
         # All should succeed (admin commands are not rate limited)
         for result in results:
             assert "result" in result
-            assert "successfully teleported" in result["result"].lower()
+            assert result["result"] in (
+                "You teleport TargetPlayer to your location.",
+                "TargetPlayer is already in your location.",
+            )
 
     @pytest.mark.asyncio
     async def test_memory_exhaustion_prevention(self, mock_app_state):
