@@ -23,6 +23,19 @@ interface MessagePattern {
   channelExtractor?: RegExp;
 }
 
+const CARDINAL_REGEX = '(north|south|east|west|up|down|northeast|northwest|southeast|southwest)';
+const TELEPORT_DEPARTURE_PATTERN = new RegExp(`^You teleport \\w+ to the ${CARDINAL_REGEX}\\.?$`, 'i');
+const PLAYER_LEAVES_PATTERN = new RegExp(`^\\w+ leaves the room(?: heading ${CARDINAL_REGEX})?\\.?$`, 'i');
+const PLAYER_ENTERS_PATTERN = new RegExp(`^\\w+ enters the room(?: from the ${CARDINAL_REGEX})?\\.?$`, 'i');
+const PLAYER_TELEPORTED_PATTERN = new RegExp(`^You are teleported to the ${CARDINAL_REGEX} by \\w+\\.?$`, 'i');
+const TELEPORT_EFFECT_VARIANTS = [
+  'disappears in a ripple of distorted air',
+  'arrives in a shimmer of eldritch energy',
+  'vanishes in a flash of pale light',
+  'appears beside you in a rush of displaced air',
+].join('|');
+const TELEPORT_EFFECT_PATTERN = new RegExp(`^\\w+ (${TELEPORT_EFFECT_VARIANTS})\\.?$`, 'i');
+
 // Chat patterns - messages that should appear in ChatPanel
 const CHAT_PATTERNS: MessagePattern[] = [
   // Channel-specific chat messages with brackets
@@ -79,6 +92,12 @@ const SYSTEM_PATTERNS: MessagePattern[] = [
   { pattern: /has entered the game\.?$/i, type: 'system' },
   { pattern: /has left the game\.?$/i, type: 'system' },
   { pattern: /^You are now in /i, type: 'system' },
+  // Teleportation and room transition messaging
+  { pattern: TELEPORT_DEPARTURE_PATTERN, type: 'system' },
+  { pattern: PLAYER_LEAVES_PATTERN, type: 'system' },
+  { pattern: PLAYER_ENTERS_PATTERN, type: 'system' },
+  { pattern: PLAYER_TELEPORTED_PATTERN, type: 'system' },
+  { pattern: TELEPORT_EFFECT_PATTERN, type: 'system' },
   // Combat messages - should appear in Game Log only
   { pattern: /^You (attack|punch|kick|strike|hit|smack|thump) /i, type: 'system' },
   // Room descriptions - MOST RELIABLE PATTERN: Contains "Exits:" anywhere in the message

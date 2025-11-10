@@ -574,6 +574,62 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             }
             break;
           }
+          case 'system': {
+            const rawMessage = typeof event.data?.message === 'string' ? event.data.message : '';
+            const message = rawMessage.trim();
+
+            if (!message) {
+              logger.warn('GameTerminalWithPanels', 'System event missing message payload', {
+                event_data_keys: event.data ? Object.keys(event.data) : [],
+                sequence_number: event.sequence_number,
+              });
+              break;
+            }
+
+            const systemMessage = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: Boolean(event.data?.is_html),
+              messageType: 'system' as const,
+              type: 'system' as const,
+              channel: 'system' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(systemMessage);
+            break;
+          }
+          case 'player_entered_room':
+          case 'player_left_room': {
+            const rawMessage = typeof event.data?.message === 'string' ? event.data.message : '';
+            const message = rawMessage.trim();
+
+            if (!message) {
+              logger.debug('GameTerminalWithPanels', 'Room transition event missing message content', {
+                eventType,
+                sequenceNumber: event.sequence_number,
+                dataKeys: event.data ? Object.keys(event.data) : [],
+              });
+              break;
+            }
+
+            const systemMessage = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system' as const,
+              type: 'system' as const,
+              channel: 'system' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(systemMessage);
+            break;
+          }
           case 'player_entered_game': {
             const playerName = event.data.player_name as string;
             if (playerName) {

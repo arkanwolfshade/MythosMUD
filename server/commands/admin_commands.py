@@ -306,6 +306,7 @@ async def broadcast_teleport_effects(
     *,
     direction: str | None = None,
     arrival_direction: str | None = None,
+    target_player_id: str | None = None,
 ) -> None:
     """
     Broadcast teleport visual effects to players in affected rooms.
@@ -349,8 +350,12 @@ async def broadcast_teleport_effects(
                 room_id=to_room_id,
                 connection_manager=connection_manager,
             )
-            await connection_manager.broadcast_to_room(from_room_id, departure_event)
-            await connection_manager.broadcast_to_room(to_room_id, arrival_event)
+            await connection_manager.broadcast_to_room(
+                from_room_id, departure_event, exclude_player=str(target_player_id) if target_player_id else None
+            )
+            await connection_manager.broadcast_to_room(
+                to_room_id, arrival_event, exclude_player=str(target_player_id) if target_player_id else None
+            )
 
         logger.debug(
             "Teleport effects broadcast", player_name=player_name, from_room_id=from_room_id, to_room_id=to_room_id
@@ -840,8 +845,83 @@ async def handle_teleport_command(
                 logger.error("Failed to update target player location", target_player_name=target_player_name)
                 return {"result": f"Failed to teleport {target_player_name}: database update failed."}
 
-            target_player_info["room_id"] = target_room_id
             target_player.current_room_id = target_room_id
+
+            target_player_identifier = (
+                target_player_info.get("player_id")
+                or getattr(target_player, "player_id", None)
+                or getattr(target_player, "id", None)
+            )
+            if target_player_identifier is not None:
+                target_player_identifier = str(target_player_identifier)
+                target_player_info["current_room_id"] = target_room_id
+
+                online_record = connection_manager.online_players.get(target_player_identifier)
+                if online_record is not None:
+                    online_record["current_room_id"] = target_room_id
+
+                try:
+                    connection_manager.room_manager.remove_room_occupant(
+                        target_player_identifier, original_room_id
+                    )
+                except Exception as exc:
+                    logger.debug(
+                        "Failed to remove teleport target from prior room occupants",
+                        player_id=target_player_identifier,
+                        room_id=original_room_id,
+                        error=str(exc),
+                    )
+
+                try:
+                    connection_manager.room_manager.add_room_occupant(
+                        target_player_identifier, target_room_id
+                    )
+                except Exception as exc:
+                    logger.debug(
+                        "Failed to add teleport target to destination room occupants",
+                        player_id=target_player_identifier,
+                        room_id=target_room_id,
+                        error=str(exc),
+                    )
+
+                try:
+                    connection_manager.room_manager.reconcile_room_presence(
+                        original_room_id, connection_manager.online_players
+                    )
+                    connection_manager.room_manager.reconcile_room_presence(
+                        target_room_id, connection_manager.online_players
+                    )
+                except Exception as exc:
+                    logger.debug(
+                        "Failed to reconcile room presence after teleport",
+                        player_id=target_player_identifier,
+                        error=str(exc),
+                    )
+
+                if persistence:
+                    try:
+                        source_room = persistence.get_room(original_room_id)
+                        if source_room:
+                            source_room.player_left(target_player_identifier)
+                    except Exception as exc:
+                        logger.debug(
+                            "Failed to mark teleport target as leaving source room",
+                            player_id=target_player_identifier,
+                            room_id=original_room_id,
+                            error=str(exc),
+                        )
+
+                    try:
+                        destination_room = persistence.get_room(target_room_id)
+                        if destination_room:
+                            destination_room.player_entered(target_player_identifier)
+                    except Exception as exc:
+                        logger.debug(
+                            "Failed to mark teleport target as entering destination room",
+                            player_id=target_player_identifier,
+                            room_id=target_room_id,
+                            error=str(exc),
+                        )
 
             await broadcast_room_update(target_player_info["player_id"], target_room_id)
 
@@ -858,6 +938,7 @@ async def handle_teleport_command(
                 "teleport",
                 direction=direction_value,
                 arrival_direction=arrival_direction,
+                target_player_id=str(target_player_info.get("player_id")) if target_player_info else None,
             )
 
             if direction_value:
@@ -1026,6 +1107,7 @@ async def handle_goto_command(
             "goto",
             direction=None,
             arrival_direction=None,
+            target_player_id=str(admin_player_info.get("player_id")) if admin_player_info else None,
         )
 
         await notify_player_of_teleport(
@@ -1182,6 +1264,7 @@ async def handle_confirm_teleport_command(
             "teleport",
             direction=None,
             arrival_direction=None,
+            target_player_id=str(target_player_info.get("player_id")) if target_player_info else None,
         )
 
         await notify_player_of_teleport(
@@ -1330,6 +1413,7 @@ async def handle_confirm_goto_command(
             "goto",
             direction=None,
             arrival_direction=None,
+            target_player_id=str(admin_player_info.get("player_id")) if admin_player_info else None,
         )
 
         # Log the successful goto action
