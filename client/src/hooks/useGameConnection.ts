@@ -103,7 +103,7 @@ function gameConnectionReducer(state: GameConnectionState, action: GameConnectio
         error: action.payload ? null : state.error,
       };
       // Debug logging for SSE connection state changes
-      if (process.env.NODE_ENV === 'development') {
+      if (import.meta.env.MODE === 'development') {
         console.debug('SSE_CONNECTED reducer', {
           action: action.type,
           payload: action.payload,
@@ -126,7 +126,7 @@ function gameConnectionReducer(state: GameConnectionState, action: GameConnectio
         error: action.payload ? null : state.error,
       };
       // Debug logging for WebSocket connection state changes
-      if (process.env.NODE_ENV === 'development') {
+      if (import.meta.env.MODE === 'development') {
         console.debug('WEBSOCKET_CONNECTED reducer', {
           action: action.type,
           payload: action.payload,

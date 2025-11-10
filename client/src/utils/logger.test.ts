@@ -72,9 +72,8 @@ describe('ClientLogger', () => {
 
   describe('logging methods', () => {
     it('should log debug messages in development', () => {
-      // Set NODE_ENV to development for this test
-      const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = 'development';
+      const originalMode = import.meta.env.MODE;
+      vi.stubEnv('MODE', 'development');
 
       logger.debug('TestComponent', 'Debug message', { test: 'data' });
 
@@ -88,8 +87,7 @@ describe('ClientLogger', () => {
       });
       expect(debugEntry?.timestamp).toBeDefined();
 
-      // Restore original environment
-      process.env.NODE_ENV = originalEnv;
+      vi.stubEnv('MODE', originalMode);
     });
 
     it('should log info messages', () => {
@@ -130,9 +128,8 @@ describe('ClientLogger', () => {
     });
 
     it('should add entries to log buffer', () => {
-      // Set NODE_ENV to development for this test
-      const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = 'development';
+      const originalMode = import.meta.env.MODE;
+      vi.stubEnv('MODE', 'development');
 
       logger.debug('Test', 'Debug message');
       logger.info('Test', 'Info message');
@@ -150,8 +147,7 @@ describe('ClientLogger', () => {
       expect(warnEntry).toBeDefined();
       expect(errorEntry).toBeDefined();
 
-      // Restore original environment
-      process.env.NODE_ENV = originalEnv;
+      vi.stubEnv('MODE', originalMode);
     });
   });
 

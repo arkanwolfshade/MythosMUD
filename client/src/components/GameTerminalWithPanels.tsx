@@ -89,7 +89,19 @@ interface ChatMessage {
     expanded: string;
     alias_name: string;
   }>;
+  rawText?: string;
 }
+
+const sanitizeChatMessageForState = (message: ChatMessage): ChatMessage => {
+  const rawText = message.rawText ?? message.text;
+  const sanitizedText = message.isHtml ? inputSanitizer.sanitizeIncomingHtml(rawText) : rawText;
+
+  return {
+    ...message,
+    rawText,
+    text: sanitizedText,
+  };
+};
 
 interface GameState {
   player: Player | null;
@@ -412,7 +424,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
           }
           case 'command_response': {
             // Debug logging for command response events
-            if (process.env.NODE_ENV === 'development') {
+            if (import.meta.env.MODE === 'development') {
               console.debug('command_response case MATCHED!', {
                 eventType: eventType,
                 eventData: event.data,
@@ -1278,6 +1290,10 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
       });
 
       // Apply all updates in a single state update
+      if (updates.messages) {
+        updates.messages = updates.messages.map(sanitizeChatMessageForState);
+      }
+
       if (Object.keys(updates).length > 0) {
         logger.info('GameTerminalWithPanels', 'Applying state updates', {
           updateKeys: Object.keys(updates),
@@ -1344,12 +1360,12 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
     console.log('GameTerminalWithPanels: handleConnectionLoss called, onLogout:', !!onLogout);
 
     // Add connection lost message
-    const connectionLostMessage: ChatMessage = {
+    const connectionLostMessage: ChatMessage = sanitizeChatMessageForState({
       text: 'Connection to server lost. Returning to login screen...',
       timestamp: new Date().toISOString(),
       messageType: 'system',
       isHtml: false,
-    };
+    });
 
     // Add message to state and wait for it to render before logout
     setGameState(prev => ({
@@ -1527,12 +1543,12 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
         });
 
         // Add error message
-        const errorMessage: ChatMessage = {
+        const errorMessage: ChatMessage = sanitizeChatMessageForState({
           text: `Respawn failed: ${errorData.detail || 'Unknown error'}`,
           timestamp: new Date().toISOString(),
           messageType: 'error',
           isHtml: false,
-        };
+        });
 
         setGameState(prev => ({
           ...prev,
@@ -1569,12 +1585,12 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
       }));
 
       // Add respawn message
-      const respawnMessage: ChatMessage = {
-        text: respawnData.message || 'You have been resurrected',
+      const respawnMessage: ChatMessage = sanitizeChatMessageForState({
+        text: 'You feel a chilling wind as your form reconstitutes in Arkham General Hospital...',
         timestamp: new Date().toISOString(),
         messageType: 'system',
         isHtml: false,
-      };
+      });
 
       setGameState(prev => ({
         ...prev,
@@ -1584,12 +1600,12 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
       logger.error('GameTerminalWithPanels', 'Error calling respawn API', { error });
 
       // Add error message
-      const errorMessage: ChatMessage = {
-        text: 'Failed to respawn. Please try again.',
+      const errorMessage: ChatMessage = sanitizeChatMessageForState({
+        text: 'Failed to respawn due to network error. Please try again.',
         timestamp: new Date().toISOString(),
         messageType: 'error',
         isHtml: false,
-      };
+      });
 
       setGameState(prev => ({
         ...prev,
@@ -1602,12 +1618,12 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
 
   const handleLogout = () => {
     // Add logout confirmation message before logout (only once)
-    const logoutMessage: ChatMessage = {
-      text: 'You have been logged out',
+    const logoutMessage: ChatMessage = sanitizeChatMessageForState({
+      text: 'You have been logged out of the MythosMUD server.',
       timestamp: new Date().toISOString(),
       messageType: 'system', // System message appears in GameLogPanel
       isHtml: false,
-    };
+    });
 
     // Add message to state and wait for it to render before logout
     setGameState(prev => ({

@@ -45,6 +45,7 @@ interface ChatMessage {
     expanded: string;
     alias_name: string;
   }>;
+  rawText?: string; // Added for plain text messages
 }
 
 interface ChatPanelProps {
@@ -321,14 +322,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                   className={`message-text ${getFontSizeClass()} leading-relaxed ${getMessageClass(
                     message.messageType
                   )}`}
-                  data-message-text={message.text}
-                  dangerouslySetInnerHTML={{
-                    __html: message.isHtml
-                      ? message.isCompleteHtml
-                        ? message.text
-                        : ansiToHtmlWithBreaks(message.text)
-                      : message.text,
-                  }}
+                  data-message-text={message.rawText ?? message.text}
                   onContextMenu={e => {
                     e.preventDefault();
                     // TODO: Implement user ignore functionality
@@ -340,7 +334,19 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                     // }
                   }}
                   title="Right-click for options"
-                />
+                >
+                  {message.isHtml ? (
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text),
+                      }}
+                    />
+                  ) : (
+                    <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                      {message.rawText ?? message.text}
+                    </span>
+                  )}
+                </div>
               </div>
             ))}
           </div>

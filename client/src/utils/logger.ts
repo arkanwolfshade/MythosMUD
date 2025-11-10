@@ -75,7 +75,8 @@ class ClientLogger {
       entry.level === 'ERROR' ? 'error' : entry.level === 'WARN' ? 'warn' : entry.level === 'DEBUG' ? 'debug' : 'log';
 
     // Only log to console in development or if explicitly enabled
-    if (process.env.NODE_ENV === 'development' || entry.level === 'ERROR' || entry.level === 'WARN') {
+    const isDev = import.meta.env.MODE === 'development';
+    if (isDev || entry.level === 'ERROR' || entry.level === 'WARN') {
       console[consoleMethod](
         `[${entry.timestamp}] [${entry.level}] [${entry.component}] ${entry.message}`,
         entry.data || ''
@@ -85,7 +86,7 @@ class ClientLogger {
 
   debug(component: string, message: string, data?: unknown) {
     // Only log debug messages in development
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.MODE === 'development') {
       this.addToBuffer(this.createLogEntry('DEBUG', component, message, data));
     }
   }

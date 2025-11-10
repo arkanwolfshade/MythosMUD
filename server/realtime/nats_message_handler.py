@@ -780,7 +780,9 @@ class NATSMessageHandler:
                     suppress_registry_hit=suppress_registry_hit,
                 )
 
-            should_echo_sender = channel in ECHO_SENDER_CHANNELS and event_type == "chat_message"
+            should_echo_sender = (
+                channel in ECHO_SENDER_CHANNELS and event_type == "chat_message" and message_id is not None
+            )
 
             needs_sender_echo = False
             if should_echo_sender:

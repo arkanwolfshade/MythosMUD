@@ -34,7 +34,7 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
   const [commandInput, setCommandInput] = useState('');
 
   // Debug logging for isConnected prop
-  if (process.env.NODE_ENV === 'development') {
+  if (import.meta.env.MODE === 'development') {
     console.debug('CommandPanel received isConnected prop', {
       isConnected,
       disabled,

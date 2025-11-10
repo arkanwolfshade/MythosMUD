@@ -89,19 +89,22 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, index }) => {
       {/* Message Content */}
       <div
         className={`${getFontSizeClass()} leading-relaxed ${getMessageClass(message.messageType)}`}
-        dangerouslySetInnerHTML={{
-          __html: message.isHtml
-            ? message.isCompleteHtml
-              ? message.text
-              : ansiToHtmlWithBreaks(message.text)
-            : message.text,
-        }}
         onContextMenu={e => {
           e.preventDefault();
           // Context menu functionality would go here
         }}
         title="Right-click to ignore user"
-      />
+      >
+        {message.isHtml ? (
+          <span
+            dangerouslySetInnerHTML={{
+              __html: message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text),
+            }}
+          />
+        ) : (
+          <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{message.rawText ?? message.text}</span>
+        )}
+      </div>
     </div>
   );
 };
