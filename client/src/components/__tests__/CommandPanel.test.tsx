@@ -617,9 +617,8 @@ describe('CommandPanel', () => {
 
   describe('Development Debug Logging', () => {
     it('should log debug information in development mode', () => {
-      // Set NODE_ENV to development for this test
-      const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = 'development';
+      const originalMode = import.meta.env.MODE;
+      vi.stubEnv('MODE', 'development');
 
       render(<CommandPanel {...defaultProps} />);
 
@@ -638,8 +637,7 @@ describe('CommandPanel', () => {
         })
       );
 
-      // Restore original environment
-      process.env.NODE_ENV = originalEnv;
+      vi.stubEnv('MODE', originalMode);
     });
   });
 

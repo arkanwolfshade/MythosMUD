@@ -352,6 +352,36 @@ export const inputSanitizer = {
 
     return DOMPurify.sanitize(message, config).substring(0, 500); // Limit message length
   },
+
+  /**
+   * Sanitize incoming plain text from the server for safe display.
+   */
+  sanitizeIncomingPlainText(message: string): string {
+    if (!message || typeof message !== 'string') {
+      return '';
+    }
+
+    return message.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  },
+
+  /**
+   * Sanitize server-provided HTML fragments for safe display while preserving basic formatting.
+   */
+  sanitizeIncomingHtml(html: string): string {
+    if (!html || typeof html !== 'string') {
+      return '';
+    }
+
+    const config = {
+      ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'br', 'p', 'span', 'div', 'ul', 'ol', 'li', 'code', 'pre'],
+      ALLOWED_ATTR: ['class'],
+      ALLOW_DATA_ATTR: false,
+      ALLOW_UNKNOWN_PROTOCOLS: false,
+      SAFE_FOR_TEMPLATES: true,
+    } as DOMPurify.Config;
+
+    return DOMPurify.sanitize(html, config);
+  },
 };
 
 /**
