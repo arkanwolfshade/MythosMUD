@@ -37,10 +37,14 @@ Tests that players don't see stale/previous game state information when connecti
 // Navigate to client
 await mcp_playwright_browser_navigate({url: "http://localhost:5173"});
 
-// Login as AW
-await mcp_playwright_browser_type({element: "Username input field", ref: "username-input", text: "ArkanWolfshade"});
-await mcp_playwright_browser_type({element: "Password input field", ref: "password-input", text: "Cthulhu1"});
-await mcp_playwright_browser_click({element: "Login button", ref: "login-button"});
+// Login as AW (confirm refs via browser_snapshot; current refs: username=e9, password=e10, login button=e11)
+await mcp_playwright_browser_type({element: "Username input field", ref: "e9", text: "ArkanWolfshade"});
+await mcp_playwright_browser_type({element: "Password input field", ref: "e10", text: "Cthulhu1"});
+await mcp_playwright_browser_click({element: "Login button", ref: "e11"});
+
+// Wait for MOTD screen and enter the realm (current continue ref: e59)
+await mcp_playwright_browser_wait_for({text: "Continue", time: 30});
+await mcp_playwright_browser_click({element: "Continue button", ref: "e59"});
 
 // Wait for game terminal
 await mcp_playwright_browser_wait_for({text: "Welcome to MythosMUD"});
@@ -79,10 +83,14 @@ console.log('AW messages:', awMessages);
 await mcp_playwright_browser_tab_new({url: "http://localhost:5173"});
 await mcp_playwright_browser_tab_select({index: 1});
 
-// Login as Ithaqua
-await mcp_playwright_browser_type({element: "Username input field", ref: "username-input", text: "Ithaqua"});
-await mcp_playwright_browser_type({element: "Password input field", ref: "password-input", text: "Cthulhu1"});
-await mcp_playwright_browser_click({element: "Login button", ref: "login-button"});
+// Login as Ithaqua (confirm refs via browser_snapshot; current refs: username=e9, password=e10, login button=e11)
+await mcp_playwright_browser_type({element: "Username input field", ref: "e9", text: "Ithaqua"});
+await mcp_playwright_browser_type({element: "Password input field", ref: "e10", text: "Cthulhu1"});
+await mcp_playwright_browser_click({element: "Login button", ref: "e11"});
+
+// Wait for MOTD screen and enter the realm (current continue ref: e59)
+await mcp_playwright_browser_wait_for({text: "Continue", time: 30});
+await mcp_playwright_browser_click({element: "Continue button", ref: "e59"});
 
 // Wait for game terminal
 await mcp_playwright_browser_wait_for({text: "Welcome to MythosMUD"});

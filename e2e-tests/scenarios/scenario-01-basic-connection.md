@@ -72,17 +72,17 @@ await mcp_playwright_browser_wait_for({time: 10});
 // Wait for login form (use configurable timeout)
 await mcp_playwright_browser_wait_for({text: "Username", time: 30});
 
-// Fill login form for AW
-await mcp_playwright_browser_type({element: "Username input field", ref: "username-input", text: "ArkanWolfshade"});
-await mcp_playwright_browser_type({element: "Password input field", ref: "password-input", text: "Cthulhu1"});
-await mcp_playwright_browser_click({element: "Login button", ref: "login-button"});
+// Fill login form for AW (confirm refs via browser_snapshot; current refs: username=e9, password=e10, login button=e11)
+await mcp_playwright_browser_type({element: "Username input field", ref: "e9", text: "ArkanWolfshade"});
+await mcp_playwright_browser_type({element: "Password input field", ref: "e10", text: "Cthulhu1"});
+await mcp_playwright_browser_click({element: "Login button", ref: "e11"});
 
 // Wait for login processing
 await mcp_playwright_browser_wait_for({time: 15});
 
-// Wait for MOTD screen and click Continue to enter game
+// Wait for MOTD screen and click Continue to enter game (current continue ref: e59)
 await mcp_playwright_browser_wait_for({text: "Continue", time: 30});
-await mcp_playwright_browser_click({element: "Continue button", ref: "continue-button"});
+await mcp_playwright_browser_click({element: "Continue button", ref: "e59"});
 
 // Wait for game interface to load
 await mcp_playwright_browser_wait_for({text: "Chat", time: 30});
@@ -112,17 +112,17 @@ await mcp_playwright_browser_tab_select({index: 1});
 // Wait for tab switch to complete
 await mcp_playwright_browser_wait_for({time: 5});
 
-// Fill login form for Ithaqua
-await mcp_playwright_browser_type({element: "Username input field", ref: "username-input", text: "Ithaqua"});
-await mcp_playwright_browser_type({element: "Password input field", ref: "password-input", text: "Cthulhu1"});
-await mcp_playwright_browser_click({element: "Login button", ref: "login-button"});
+// Fill login form for Ithaqua (confirm refs via browser_snapshot; current refs: username=e9, password=e10, login button=e11)
+await mcp_playwright_browser_type({element: "Username input field", ref: "e9", text: "Ithaqua"});
+await mcp_playwright_browser_type({element: "Password input field", ref: "e10", text: "Cthulhu1"});
+await mcp_playwright_browser_click({element: "Login button", ref: "e11"});
 
 // Wait for login processing
 await mcp_playwright_browser_wait_for({time: 15});
 
-// Wait for MOTD screen and click Continue to enter game
+// Wait for MOTD screen and click Continue to enter game (current continue ref: e59)
 await mcp_playwright_browser_wait_for({text: "Continue", time: 30});
-await mcp_playwright_browser_click({element: "Continue button", ref: "continue-button"});
+await mcp_playwright_browser_click({element: "Continue button", ref: "e59"});
 
 // Wait for game interface to load
 await mcp_playwright_browser_wait_for({text: "Chat", time: 30});
