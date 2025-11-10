@@ -92,9 +92,15 @@ export function useSSEConnection(options: SSEConnectionOptions): SSEConnectionRe
       const sseSessionId = sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const params = new URLSearchParams();
       params.set('session_id', sseSessionId);
+      if (authToken) {
+        params.set('token', authToken);
+      }
       const sseUrl = `/api/events?${params.toString()}`;
 
-      logger.info('SSEConnection', 'Connecting to SSE', { url: sseUrl });
+      logger.info('SSEConnection', 'Connecting to SSE', {
+        sessionId: sseSessionId,
+        hasToken: Boolean(authToken),
+      });
 
       const eventSourceCtor = EventSource as unknown as EventSourceConstructor;
       const eventSourceOptions: EventSourceInit = { withCredentials: true };
