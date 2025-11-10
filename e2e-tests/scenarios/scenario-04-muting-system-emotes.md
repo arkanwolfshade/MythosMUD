@@ -55,15 +55,15 @@ await mcp_playwright_browser_type({element: "Command input field", ref: "command
 await mcp_playwright_browser_press_key({key: "Enter"});
 
 // Wait for mute confirmation EXACTLY as written below
-await mcp_playwright_browser_wait_for({text: "You have muted Ithaqua"});
+await mcp_playwright_browser_wait_for({text: "You have muted Ithaqua permanently."});
 ```
 
-**VALIDATION**: Did you type "mute Ithaqua" exactly? Did you wait for "You have muted Ithaqua" exactly?
+**VALIDATION**: Did you type "mute Ithaqua" exactly? Did you wait for "You have muted Ithaqua permanently." exactly?
 
 **RESULT DOCUMENTATION**:
 - Command executed: "mute Ithaqua"
 - Response received: [document actual response]
-- Expected result: "You have muted Ithaqua"
+- Expected result: "You have muted Ithaqua permanently."
 - Match: [yes/no]
 
 **Expected Result**: AW successfully mutes Ithaqua and receives confirmation

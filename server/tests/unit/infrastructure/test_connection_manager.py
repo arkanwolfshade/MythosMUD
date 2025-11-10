@@ -2291,6 +2291,24 @@ class TestConnectionManagerComprehensive:
             connection_manager.mark_player_seen("test_player")
             # Should not raise exception
 
+    def test_mark_player_seen_updates_persistence_throttled(self, connection_manager):
+        """Ensure mark_player_seen updates persistence on interval and throttles duplicate updates."""
+        mock_persistence = Mock()
+        connection_manager.persistence = mock_persistence
+        mock_persistence.update_player_last_active = Mock()
+        connection_manager.last_active_update_interval = 60.0
+
+        with patch("server.realtime.connection_manager.time.time", side_effect=[1000.0, 1000.0, 1065.0]):
+            connection_manager.mark_player_seen("test_player")
+            connection_manager.mark_player_seen("test_player")
+            connection_manager.mark_player_seen("test_player")
+
+        assert mock_persistence.update_player_last_active.call_count == 2
+        first_call, second_call = mock_persistence.update_player_last_active.call_args_list
+        assert first_call.args[0] == "test_player"
+        assert second_call.args[0] == "test_player"
+        assert connection_manager.last_active_update_times["test_player"] == 1065.0
+
     def test_prune_stale_players(self, connection_manager):
         """Test pruning stale players."""
         # Add some players with different timestamps
@@ -2299,12 +2317,14 @@ class TestConnectionManagerComprehensive:
         connection_manager.online_players["recent_player"] = {"player_id": "recent_player"}
         connection_manager.online_players["stale_player"] = {"player_id": "stale_player"}
         connection_manager.room_occupants["test_room"] = {"recent_player", "stale_player"}
+        connection_manager.last_active_update_times["stale_player"] = 0.0
 
         connection_manager.prune_stale_players(max_age_seconds=90)
 
         assert "recent_player" in connection_manager.online_players
         assert "stale_player" not in connection_manager.online_players
         assert "stale_player" not in connection_manager.last_seen
+        assert "stale_player" not in connection_manager.last_active_update_times
 
     def test_prune_stale_players_exception(self, connection_manager):
         """Test pruning stale players with exception."""

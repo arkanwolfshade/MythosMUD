@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useGameTerminal } from '../../hooks/useGameTerminal';
 import { GameTerminalProvider } from '../GameTerminalContext';
 import {
@@ -12,9 +12,9 @@ import {
 } from '../hooks/useGameTerminalContext';
 
 // Mock the useGameTerminal hook
-vi.mock('../../hooks/useGameTerminal', () => ({
-  useGameTerminal: vi.fn(() => ({
-    // Connection state
+function createDefaultGameTerminalState() {
+  // Connection state
+  return {
     isConnected: true,
     isConnecting: false,
     error: null,
@@ -58,7 +58,12 @@ vi.mock('../../hooks/useGameTerminal', () => ({
     onClearMessages: vi.fn(),
     onClearHistory: vi.fn(),
     onDownloadLogs: vi.fn(),
-  })),
+  };
+}
+
+const useGameTerminalMock = vi.hoisted(() => vi.fn(createDefaultGameTerminalState));
+vi.mock('../../hooks/useGameTerminal', () => ({
+  useGameTerminal: useGameTerminalMock,
 }));
 
 // Test component that uses the context
@@ -168,10 +173,8 @@ describe('GameTerminalContext', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockUseGameTerminal = vi.mocked(useGameTerminal);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
+    useGameTerminalMock.mockImplementation(createDefaultGameTerminalState);
+    mockUseGameTerminal.mockImplementation(createDefaultGameTerminalState);
   });
 
   describe('GameTerminalProvider', () => {
@@ -258,14 +261,16 @@ describe('GameTerminalContext', () => {
       expect(screen.getByTestId('is-connected')).toHaveTextContent('connected');
     });
 
-    it('should throw error when used outside provider', () => {
-      expect(() => {
-        render(
-          <ErrorBoundary>
-            <TestComponent />
-          </ErrorBoundary>
-        );
-      }).toThrow('useGameTerminalContext must be used within a GameTerminalProvider');
+    it('should surface error when used outside provider', () => {
+      render(
+        <ErrorBoundary>
+          <TestComponent />
+        </ErrorBoundary>
+      );
+
+      expect(screen.getByTestId('error-boundary')).toHaveTextContent(
+        'useGameTerminalContext must be used within a GameTerminalProvider'
+      );
     });
   });
 
@@ -281,14 +286,16 @@ describe('GameTerminalContext', () => {
       expect(screen.getByTestId('connection-error')).toHaveTextContent('no error');
     });
 
-    it('should throw error when used outside provider', () => {
-      expect(() => {
-        render(
-          <ErrorBoundary>
-            <ConnectionTestComponent />
-          </ErrorBoundary>
-        );
-      }).toThrow('useGameTerminalContext must be used within a GameTerminalProvider');
+    it('should surface error when used outside provider', () => {
+      render(
+        <ErrorBoundary>
+          <ConnectionTestComponent />
+        </ErrorBoundary>
+      );
+
+      expect(screen.getByTestId('error-boundary')).toHaveTextContent(
+        'useGameTerminalContext must be used within a GameTerminalProvider'
+      );
     });
   });
 
@@ -305,14 +312,16 @@ describe('GameTerminalContext', () => {
       expect(screen.getByTestId('session-authenticated')).toHaveTextContent('authenticated');
     });
 
-    it('should throw error when used outside provider', () => {
-      expect(() => {
-        render(
-          <ErrorBoundary>
-            <SessionTestComponent />
-          </ErrorBoundary>
-        );
-      }).toThrow('useGameTerminalContext must be used within a GameTerminalProvider');
+    it('should surface error when used outside provider', () => {
+      render(
+        <ErrorBoundary>
+          <SessionTestComponent />
+        </ErrorBoundary>
+      );
+
+      expect(screen.getByTestId('error-boundary')).toHaveTextContent(
+        'useGameTerminalContext must be used within a GameTerminalProvider'
+      );
     });
   });
 
@@ -330,14 +339,16 @@ describe('GameTerminalContext', () => {
       expect(screen.getByTestId('game-commands-count')).toHaveTextContent('3');
     });
 
-    it('should throw error when used outside provider', () => {
-      expect(() => {
-        render(
-          <ErrorBoundary>
-            <GameStateTestComponent />
-          </ErrorBoundary>
-        );
-      }).toThrow('useGameTerminalContext must be used within a GameTerminalProvider');
+    it('should surface error when used outside provider', () => {
+      render(
+        <ErrorBoundary>
+          <GameStateTestComponent />
+        </ErrorBoundary>
+      );
+
+      expect(screen.getByTestId('error-boundary')).toHaveTextContent(
+        'useGameTerminalContext must be used within a GameTerminalProvider'
+      );
     });
   });
 
@@ -433,14 +444,16 @@ describe('GameTerminalContext', () => {
       expect(mockOnDownloadLogs).toHaveBeenCalled();
     });
 
-    it('should throw error when used outside provider', () => {
-      expect(() => {
-        render(
-          <ErrorBoundary>
-            <GameActionsTestComponent />
-          </ErrorBoundary>
-        );
-      }).toThrow('useGameTerminalContext must be used within a GameTerminalProvider');
+    it('should surface error when used outside provider', () => {
+      render(
+        <ErrorBoundary>
+          <GameActionsTestComponent />
+        </ErrorBoundary>
+      );
+
+      expect(screen.getByTestId('error-boundary')).toHaveTextContent(
+        'useGameTerminalContext must be used within a GameTerminalProvider'
+      );
     });
   });
 

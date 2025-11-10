@@ -49,6 +49,20 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
 
   return (
     <div className={`relative ${className}`}>
+      <select
+        data-testid="channel-selector"
+        value={selectedChannel}
+        onChange={e => handleChannelSelect(e.target.value)}
+        disabled={disabled}
+        className="sr-only"
+      >
+        {channels.map(channel => (
+          <option key={channel.id} value={channel.id} disabled={channel.disabled}>
+            {channel.name}
+          </option>
+        ))}
+      </select>
+
       {/* Backdrop to close dropdown when clicking outside - positioned BEFORE dropdown */}
       {isOpen && <div className="fixed inset-0 z-10" onClick={handleBackdropClick} data-testid="dropdown-backdrop" />}
 
@@ -88,7 +102,10 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
 
       {/* Dropdown Menu - positioned AFTER backdrop but with higher z-index */}
       {isOpen && !disabled && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-mythos-terminal-surface border border-gray-700 rounded shadow-lg z-30 max-h-60 overflow-y-auto">
+        <div
+          className="absolute top-full left-0 right-0 mt-1 bg-mythos-terminal-surface border border-gray-700 rounded shadow-lg z-30 max-h-60 overflow-y-auto"
+          data-testid="channel-dropdown"
+        >
           {channels.map(channel => (
             <button
               key={channel.id}

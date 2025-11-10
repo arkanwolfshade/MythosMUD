@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ALL_MESSAGES_CHANNEL,
   AVAILABLE_CHANNELS,
@@ -65,12 +65,22 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   onDownloadLogs,
   disabled = false,
   isConnected = true,
-  selectedChannel = DEFAULT_CHANNEL,
+  selectedChannel,
   onChannelSelect,
 }) => {
   const [clearedChannels, setClearedChannels] = useState<Record<string, number>>({});
+  const [isHistoryVisible, setIsHistoryVisible] = useState(false);
+  const [currentChannel, setCurrentChannel] = useState<string>(selectedChannel ?? ALL_MESSAGES_CHANNEL.id);
 
-  const normalizedSelectedChannel = selectedChannel ?? DEFAULT_CHANNEL;
+  useEffect(() => {
+    if (selectedChannel !== undefined) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- sync fallback when parent controls channel
+      setCurrentChannel(prev => (prev === selectedChannel ? prev : selectedChannel));
+    }
+  }, [selectedChannel]);
+
+  const normalizedSelectedChannel = currentChannel ?? DEFAULT_CHANNEL;
+  const isAllChannelSelected = normalizedSelectedChannel === ALL_MESSAGES_CHANNEL.id;
 
   const filteredMessages = useMemo(() => {
     return messages.filter(message => {
@@ -78,12 +88,18 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         return false;
       }
 
-      if (normalizedSelectedChannel === ALL_MESSAGES_CHANNEL.id) {
+      if (isAllChannelSelected) {
         return true;
       }
 
-      if (message.messageType === 'command' || message.messageType === 'error') {
-        return true;
+      if (message.messageType === 'command') {
+        return false;
+      }
+
+      const messageChannel = message.channel || extractChannelFromMessage(message.text) || 'local';
+
+      if (message.messageType === 'error') {
+        return messageChannel === normalizedSelectedChannel;
       }
 
       const isChatMessage = message.messageType === 'chat' || isChatContent(message.text);
@@ -91,23 +107,27 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         return false;
       }
 
-      const messageChannel = message.channel || extractChannelFromMessage(message.text) || 'local';
-
       if (messageChannel === 'whisper') {
-        return true;
+        return normalizedSelectedChannel === 'whisper';
       }
 
       return messageChannel === normalizedSelectedChannel;
     });
-  }, [messages, normalizedSelectedChannel]);
+  }, [messages, normalizedSelectedChannel, isAllChannelSelected]);
+
+  const historyEligibleMessages = useMemo(
+    () => messages.filter(message => message.messageType !== 'system'),
+    [messages]
+  );
+  const visibleMessages = isHistoryVisible ? historyEligibleMessages : filteredMessages;
 
   const chatStats = {
     currentChannelMessages: filteredMessages.length,
-    totalMessages: messages.filter(message => message.messageType !== 'system').length,
+    totalMessages: historyEligibleMessages.length,
   };
 
   const unreadCounts = useMemo(() => {
-    if (normalizedSelectedChannel === ALL_MESSAGES_CHANNEL.id) {
+    if (isAllChannelSelected) {
       return {};
     }
 
@@ -123,13 +143,14 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     });
 
     return counts;
-  }, [messages, normalizedSelectedChannel, clearedChannels]);
+  }, [messages, normalizedSelectedChannel, clearedChannels, isAllChannelSelected]);
 
   const handleChannelSelect = (channelId: string) => {
+    setCurrentChannel(channelId);
     if (channelId === ALL_MESSAGES_CHANNEL.id) {
       setClearedChannels({});
     } else {
-      setClearedChannels(prev => ({ ...prev, [channelId]: messages.length }));
+      setClearedChannels(prev => ({ ...prev, [channelId]: historyEligibleMessages.length }));
     }
     onChannelSelect?.(channelId);
   };
@@ -168,6 +189,10 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       default:
         return 'text-mythos-terminal-text';
     }
+  };
+
+  const toggleHistory = () => {
+    setIsHistoryVisible(prev => !prev);
   };
 
   return (
@@ -253,6 +278,24 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         </div>
       </div>
 
+      {/* Chat History Toggle */}
+      <div className="p-2 border-b border-gray-700 bg-mythos-terminal-background" data-testid="chat-history-toggle">
+        <button className="text-xs text-mythos-terminal-primary" onClick={toggleHistory} type="button">
+          Chat History
+        </button>
+        <select
+          className="ml-2 text-xs bg-mythos-terminal-surface border border-gray-700 rounded px-1"
+          value={isHistoryVisible ? 'all' : 'current'}
+          onChange={event => setIsHistoryVisible(event.target.value === 'all')}
+        >
+          <option value="current">Current</option>
+          <option value="all">All</option>
+        </select>
+        <span className="ml-2 text-xs text-mythos-terminal-text-secondary">
+          Messages: {isHistoryVisible ? historyEligibleMessages.length : filteredMessages.length}
+        </span>
+      </div>
+
       {/* Chat Filter Summary */}
       <div className="p-2 border-b border-gray-700 bg-mythos-terminal-background">
         <div className="flex items-center justify-between">
@@ -273,7 +316,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         aria-label="Chat Messages"
         style={{ minHeight: '200px' }}
       >
-        {filteredMessages.length === 0 ? (
+        {visibleMessages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
             <div className="text-center space-y-2">
               <EldritchIcon name={MythosIcons.chat} size={32} variant="secondary" className="mx-auto opacity-50" />
@@ -284,7 +327,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
           </div>
         ) : (
           <div className="space-y-3">
-            {filteredMessages.map((message, index) => (
+            {visibleMessages.map((message, index) => (
               <div
                 key={index}
                 className="message p-3 bg-mythos-terminal-surface border border-gray-700 rounded transition-all duration-300 hover:border-mythos-terminal-primary/30 hover:shadow-lg animate-fade-in"
@@ -326,23 +369,17 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
                   onContextMenu={e => {
                     e.preventDefault();
                     // TODO: Implement user ignore functionality
-                    // const username = message.aliasChain?.[0]?.original.split(' ')[0];
-                    // if (username && !isUserIgnored(username)) {
-                    //   if (confirm(`Ignore messages from ${username}?`)) {
-                    //     addIgnoredUser(username);
-                    //   }
-                    // }
                   }}
-                  title="Right-click for options"
                 >
                   {message.isHtml ? (
                     <span
+                      title="Right-click for options"
                       dangerouslySetInnerHTML={{
                         __html: message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text),
                       }}
                     />
                   ) : (
-                    <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                    <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }} title="Right-click for options">
                       {message.rawText ?? message.text}
                     </span>
                   )}

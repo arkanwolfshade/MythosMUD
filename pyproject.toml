@@ -58,6 +58,7 @@ dev = [
     "mypy>=1.13.0",  # Static type checking
     "types-requests>=2.32.0",  # Type stubs for requests
     "types-python-dateutil>=2.9.0.20251108",  # Type stubs for dateutil
+    "types-bleach>=6.3.0.20251029",  # Type stubs for bleach
     "semgrep>=1.142.1",  # Static analysis for security and best practices
     "websocket-client>=1.9.0",  # WebSocket client for testing connection termination
 ]
@@ -271,4 +272,5 @@ dev = [
     "semgrep>=1.142.1", # Static analysis for security and best practices
     "websocket-client>=1.9.0", # WebSocket client for testing connection termination
     "pytest-xdist>=3.8.0",
+    "types-bleach>=6.3.0.20251029",
 ]

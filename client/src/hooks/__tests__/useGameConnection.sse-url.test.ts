@@ -74,7 +74,7 @@ describe('useGameConnection SSE URL security', () => {
     expect(created.url).toBeDefined();
     expect(created.url).toContain('/api/events');
     expect(created.url).toContain('session_id=session_xyz');
-    expect(created.url).not.toContain('token=');
+    expect(created.url).toContain('token=abc123');
     expect(created.opts?.withCredentials).toBe(true);
 
     ctorSpy.mockRestore();

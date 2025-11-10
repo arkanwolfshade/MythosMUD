@@ -43,6 +43,7 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
 
   const resourceManager = useResourceCleanup();
   const websocketRef = useRef<WebSocket | null>(null);
+  const lastWebSocketRef = useRef<WebSocket | null>(null);
   const pingIntervalRef = useRef<number | null>(null);
   const reconnectTimerRef = useRef<number | null>(null);
   const manualDisconnectRef = useRef<boolean>(false);
@@ -84,12 +85,15 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
       reconnectTimerRef.current = null;
     }
 
-    // Close WebSocket
-    if (websocketRef.current) {
+    const socketToClose = websocketRef.current ?? lastWebSocketRef.current;
+    if (socketToClose) {
       logger.debug('WebSocketConnection', 'Disconnecting WebSocket');
 
-      websocketRef.current.close();
-      websocketRef.current = null;
+      socketToClose.close();
+      if (socketToClose === websocketRef.current) {
+        websocketRef.current = null;
+      }
+      lastWebSocketRef.current = null;
       setIsConnected(false);
 
       if (hasEverConnectedRef.current) {
@@ -165,6 +169,7 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
 
       const ws = new WebSocket(wsUrl, protocols);
       websocketRef.current = ws;
+      lastWebSocketRef.current = ws;
 
       ws.onopen = () => {
         logger.info('WebSocketConnection', 'WebSocket connected successfully');

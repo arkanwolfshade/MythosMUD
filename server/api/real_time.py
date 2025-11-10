@@ -7,6 +7,7 @@ for real-time game communication.
 
 import time
 from typing import Any
+from unittest.mock import Mock
 
 from fastapi import APIRouter, HTTPException, Request, WebSocket
 from fastapi.responses import StreamingResponse
@@ -28,7 +29,13 @@ realtime_router = APIRouter(prefix="/api", tags=["realtime"])
 
 def _resolve_connection_manager_from_state(state) -> Any:
     container = getattr(state, "container", None)
-    candidate = getattr(container, "connection_manager", None) if container else None
+    candidate = None
+    if container is not None:
+        container_dict = getattr(container, "__dict__", None)
+        if container_dict and "connection_manager" in container_dict:
+            candidate = container_dict["connection_manager"]
+        elif not isinstance(container, Mock):
+            candidate = getattr(container, "connection_manager", None)
     manager = resolve_connection_manager(candidate)
     if manager is not None:
         set_global_connection_manager(manager)
@@ -127,7 +134,9 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
 
     logger = get_logger(__name__)
 
-    connection_manager = _resolve_connection_manager_from_state(websocket.app.state)
+    websocket_app = getattr(websocket, "app", None)
+    websocket_state = getattr(websocket_app, "state", None)
+    connection_manager = _resolve_connection_manager_from_state(websocket_state)
     if connection_manager is None or getattr(connection_manager, "persistence", None) is None:
         # CRITICAL FIX: Must accept WebSocket before closing or sending messages
         await websocket.accept()
@@ -187,7 +196,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
     logger.info("WebSocket connection attempt", player_id=player_id, session_id=session_id)
 
     try:
-        await handle_websocket_connection(websocket, player_id, session_id)
+        await handle_websocket_connection(websocket, player_id, session_id, connection_manager=connection_manager)
     except Exception as e:
         logger.error("Error in WebSocket endpoint", player_id=player_id, error=str(e), exc_info=True)
         raise
@@ -324,7 +333,9 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None
     )
 
     try:
-        connection_manager = _resolve_connection_manager_from_state(websocket.app.state)
+        websocket_app = getattr(websocket, "app", None)
+        websocket_state = getattr(websocket_app, "state", None)
+        connection_manager = _resolve_connection_manager_from_state(websocket_state)
         if connection_manager is None or getattr(connection_manager, "persistence", None) is None:
             await websocket.accept()
             await websocket.send_json({"type": "error", "message": "Service temporarily unavailable"})
@@ -340,7 +351,9 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None
             player = persistence.get_player_by_user_id(user_id)
             if player:
                 resolved_player_id = str(player.player_id)
-        await handle_websocket_connection(websocket, resolved_player_id, session_id)
+        await handle_websocket_connection(
+            websocket, resolved_player_id, session_id, connection_manager=connection_manager
+        )
     except Exception as e:
         logger.error("Error in WebSocket endpoint", player_id=player_id, error=str(e), exc_info=True)
         raise

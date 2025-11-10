@@ -158,6 +158,9 @@ class CommandProcessor:
         if hasattr(validated_command, "alias_name"):
             command_data["alias_name"] = validated_command.alias_name
 
+        if hasattr(validated_command, "subcommand"):
+            command_data["subcommand"] = validated_command.subcommand
+
         if hasattr(validated_command, "alias_command"):
             command_data["alias_command"] = validated_command.alias_command
 

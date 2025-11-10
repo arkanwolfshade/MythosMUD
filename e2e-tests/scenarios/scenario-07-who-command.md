@@ -144,8 +144,8 @@ await mcp_playwright_browser_tab_select({index: 0});
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "go east"});
 await mcp_playwright_browser_press_key({key: "Enter"});
 
-// Wait for movement confirmation
-await mcp_playwright_browser_wait_for({text: "You move east"});
+// Wait for the hallway description that replaces the older "You move east" text
+await mcp_playwright_browser_wait_for({text: "Eastern Hallway - Section 1"});
 
 // Use who command again
 await mcp_playwright_browser_type({element: "Command input field", ref: "command-input", text: "who"});
@@ -155,7 +155,7 @@ await mcp_playwright_browser_press_key({key: "Enter"});
 await mcp_playwright_browser_wait_for({text: "Online Players:"});
 ```
 
-**Expected Result**: AW receives updated who command response
+**Expected Result**: AW receives updated who command response (hallway description displayed)
 
 ### Step 7: Verify Updated Location Information
 
@@ -170,14 +170,15 @@ await mcp_playwright_browser_wait_for({text: "Ithaqua"});
 // Check for updated location information
 const awMessagesUpdated = await mcp_playwright_browser_evaluate({function: "() => Array.from(document.querySelectorAll('.message')).map(el => el.textContent.trim())"});
 const seesUpdatedLocation = awMessagesUpdated.some(msg =>
-  msg.includes('earth_arkhamcity_sanitarium_room_east_001') ||
-  msg.includes('Arkham City Sanitarium - East Room')
+  msg.includes('earth_arkhamcity_sanitarium_room_hallway_001') ||
+  msg.includes('Arkhamcity: Sanitarium: Room Hallway 001') ||
+  msg.includes('Eastern Hallway - Section 1')
 );
 console.log('AW sees updated location information:', seesUpdatedLocation);
 console.log('AW updated messages:', awMessagesUpdated);
 ```
 
-**Expected Result**: AW sees updated location information reflecting the room change
+**Expected Result**: AW sees updated location information reflecting the hallway change
 
 ### Step 8: Test Who Command Format
 

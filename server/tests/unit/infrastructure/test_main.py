@@ -391,11 +391,17 @@ class TestWebSocketEndpoints:
         mock_websocket.query_params = {}
 
         # Patch at the point of use in server.api.real_time
-        with patch("server.api.real_time.handle_websocket_connection") as mock_handler:
+        with (
+            patch("server.api.real_time._resolve_connection_manager_from_state") as mock_resolve,
+            patch("server.api.real_time.handle_websocket_connection") as mock_handler,
+        ):
+            mock_resolve.return_value = Mock(persistence=Mock())
             from server.api.real_time import websocket_endpoint_route
 
             await websocket_endpoint_route(mock_websocket, "testplayer")
-            mock_handler.assert_called_once_with(mock_websocket, "testplayer", None)
+            mock_handler.assert_called_once_with(
+                mock_websocket, "testplayer", None, connection_manager=mock_resolve.return_value
+            )
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_route_invalid_token(self):
@@ -404,11 +410,17 @@ class TestWebSocketEndpoints:
         mock_websocket.query_params = {"token": "invalid_token"}
 
         # Patch at the point of use in server.api.real_time
-        with patch("server.api.real_time.handle_websocket_connection") as mock_handler:
+        with (
+            patch("server.api.real_time._resolve_connection_manager_from_state") as mock_resolve,
+            patch("server.api.real_time.handle_websocket_connection") as mock_handler,
+        ):
+            mock_resolve.return_value = Mock(persistence=Mock())
             from server.api.real_time import websocket_endpoint_route
 
             await websocket_endpoint_route(mock_websocket, "testplayer")
-            mock_handler.assert_called_once_with(mock_websocket, "testplayer", None)
+            mock_handler.assert_called_once_with(
+                mock_websocket, "testplayer", None, connection_manager=mock_resolve.return_value
+            )
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_route_token_mismatch(self):
@@ -417,11 +429,17 @@ class TestWebSocketEndpoints:
         mock_websocket.query_params = {"token": "valid_token"}
 
         # Patch at the point of use in server.api.real_time
-        with patch("server.api.real_time.handle_websocket_connection") as mock_handler:
+        with (
+            patch("server.api.real_time._resolve_connection_manager_from_state") as mock_resolve,
+            patch("server.api.real_time.handle_websocket_connection") as mock_handler,
+        ):
+            mock_resolve.return_value = Mock(persistence=Mock())
             from server.api.real_time import websocket_endpoint_route
 
             await websocket_endpoint_route(mock_websocket, "testplayer")
-            mock_handler.assert_called_once_with(mock_websocket, "testplayer", None)
+            mock_handler.assert_called_once_with(
+                mock_websocket, "testplayer", None, connection_manager=mock_resolve.return_value
+            )
 
 
 class TestSSEEndpoints:

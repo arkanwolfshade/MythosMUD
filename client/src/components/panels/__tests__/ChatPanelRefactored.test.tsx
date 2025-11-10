@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { DEFAULT_CHANNEL } from '../../../config/channels';
 import { ChatMessage } from '../../../stores/gameStore';
@@ -205,8 +205,9 @@ describe('ChatPanelRefactored', () => {
 
       render(<ChatPanelRefactored {...defaultProps} messages={messages} />);
 
-      expect(screen.getByText('Chat message')).toBeInTheDocument();
-      expect(screen.queryByText('System message')).not.toBeInTheDocument();
+      const messageList = screen.getByTestId('chat-messages-list');
+      expect(within(messageList).getByText('Chat message')).toBeInTheDocument();
+      expect(within(messageList).queryByText('System message')).not.toBeInTheDocument();
     });
 
     it('should filter messages by current channel', () => {
@@ -229,8 +230,9 @@ describe('ChatPanelRefactored', () => {
 
       render(<ChatPanelRefactored {...defaultProps} messages={messages} selectedChannel="local" />);
 
-      expect(screen.getByText('Local message')).toBeInTheDocument();
-      expect(screen.queryByText('Global message')).not.toBeInTheDocument();
+      const messageList = screen.getByTestId('chat-messages-list');
+      expect(within(messageList).getByText('Local message')).toBeInTheDocument();
+      expect(within(messageList).queryByText('Global message')).not.toBeInTheDocument();
     });
 
     it('should show all messages when filter is set to "all"', () => {
@@ -256,8 +258,9 @@ describe('ChatPanelRefactored', () => {
       // Change filter to "all"
       fireEvent.change(screen.getByRole('combobox'), { target: { value: 'all' } });
 
-      expect(screen.getByText('Local message')).toBeInTheDocument();
-      expect(screen.getByText('Global message')).toBeInTheDocument();
+      const messageList = screen.getByTestId('chat-messages-list');
+      expect(within(messageList).getByText('Local message')).toBeInTheDocument();
+      expect(within(messageList).getByText('Global message')).toBeInTheDocument();
     });
   });
 

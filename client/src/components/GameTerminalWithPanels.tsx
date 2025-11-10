@@ -84,6 +84,7 @@ interface ChatMessage {
   isCompleteHtml?: boolean;
   messageType?: string;
   channel?: string;
+  type?: string;
   aliasChain?: Array<{
     original: string;
     expanded: string;
@@ -92,15 +93,85 @@ interface ChatMessage {
   rawText?: string;
 }
 
+const resolveChatTypeFromChannel = (channel: string): string => {
+  switch (channel) {
+    case 'whisper':
+      return 'whisper';
+    case 'shout':
+      return 'shout';
+    case 'emote':
+      return 'emote';
+    case 'party':
+    case 'tell':
+      return 'tell';
+    case 'system':
+    case 'game':
+      return 'system';
+    case 'local':
+    case 'say':
+    default:
+      return 'say';
+  }
+};
+
 const sanitizeChatMessageForState = (message: ChatMessage): ChatMessage => {
-  const rawText = message.rawText ?? message.text;
+  const rawText = (message as ChatMessage & { rawText?: string }).rawText ?? message.text;
   const sanitizedText = message.isHtml ? inputSanitizer.sanitizeIncomingHtml(rawText) : rawText;
+
+  const existingType = message.type ?? 'system';
+  const existingChannel = (message as { channel?: string }).channel ?? 'system';
+  const messageType = (message as { messageType?: string }).messageType ?? (existingType as unknown as string);
 
   return {
     ...message,
+    type: existingType,
+    messageType,
+    channel: existingChannel,
     rawText,
     text: sanitizedText,
   };
+};
+
+const normalizeName = (value: unknown): string | null => {
+  if (typeof value !== 'string') {
+    return null;
+  }
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed.toLowerCase() : null;
+};
+
+type CombatParticipant = {
+  name?: string;
+  [key: string]: unknown;
+};
+
+const isPlayerCombatParticipant = (
+  player: Player | null,
+  participants: Record<string, CombatParticipant> | undefined,
+  turnOrder: string[] | undefined
+): boolean => {
+  if (!player) {
+    return false;
+  }
+
+  const playerName = normalizeName(player.name);
+  if (!playerName) {
+    return false;
+  }
+
+  const participantList = participants ? Object.values(participants) : [];
+  if (participantList.some(participant => normalizeName(participant?.name) === playerName)) {
+    return true;
+  }
+
+  if (turnOrder && participants) {
+    return turnOrder.some(id => {
+      const participant = participants[id];
+      return participant ? normalizeName(participant.name) === playerName : false;
+    });
+  }
+
+  return false;
 };
 
 interface GameState {
@@ -148,6 +219,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   const currentMessagesRef = useRef<ChatMessage[]>([]);
   const currentRoomRef = useRef<Room | null>(null);
   const currentPlayerRef = useRef<Player | null>(null);
+  const activeCombatIdRef = useRef<string | null>(null);
 
   // Keep the refs in sync with the state
   useEffect(() => {
@@ -390,7 +462,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 timestamp: event.timestamp,
                 isHtml: false,
                 messageType: 'system' as const,
-                channel: 'room' as const,
+                type: 'system' as const,
+                channel: 'system' as const,
               };
 
               updates.messages.push(chatMessage);
@@ -415,7 +488,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 timestamp: event.timestamp,
                 isHtml: false,
                 messageType: 'system' as const,
-                channel: 'room' as const,
+                type: 'system' as const,
+                channel: 'system' as const,
               };
 
               updates.messages.push(chatMessage);
@@ -475,7 +549,11 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 timestamp: event.timestamp,
                 isHtml: isHtml || false,
                 messageType: messageTypeResult.type,
-                channel: messageTypeResult.channel,
+                channel: messageTypeResult.channel ?? 'game',
+                type:
+                  messageTypeResult.type === 'system'
+                    ? 'system'
+                    : resolveChatTypeFromChannel(messageTypeResult.channel ?? 'game'),
               };
 
               // Enhanced logging for debugging
@@ -494,6 +572,62 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
 
               updates.messages.push(chatMessage);
             }
+            break;
+          }
+          case 'system': {
+            const rawMessage = typeof event.data?.message === 'string' ? event.data.message : '';
+            const message = rawMessage.trim();
+
+            if (!message) {
+              logger.warn('GameTerminalWithPanels', 'System event missing message payload', {
+                event_data_keys: event.data ? Object.keys(event.data) : [],
+                sequence_number: event.sequence_number,
+              });
+              break;
+            }
+
+            const systemMessage = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: Boolean(event.data?.is_html),
+              messageType: 'system' as const,
+              type: 'system' as const,
+              channel: 'system' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(systemMessage);
+            break;
+          }
+          case 'player_entered_room':
+          case 'player_left_room': {
+            const rawMessage = typeof event.data?.message === 'string' ? event.data.message : '';
+            const message = rawMessage.trim();
+
+            if (!message) {
+              logger.debug('GameTerminalWithPanels', 'Room transition event missing message content', {
+                eventType,
+                sequenceNumber: event.sequence_number,
+                dataKeys: event.data ? Object.keys(event.data) : [],
+              });
+              break;
+            }
+
+            const systemMessage = {
+              text: message,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system' as const,
+              type: 'system' as const,
+              channel: 'system' as const,
+            };
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+            updates.messages.push(systemMessage);
             break;
           }
           case 'player_entered_game': {
@@ -525,6 +659,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 timestamp: event.timestamp,
                 isHtml: false,
                 messageType: 'system',
+                type: 'system' as const,
+                channel: 'system' as const,
               };
               logger.info('GameTerminalWithPanels', 'Processing player left game', {
                 playerName,
@@ -582,6 +718,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 isHtml: false,
                 messageType: messageType,
                 channel: channel,
+                type: resolveChatTypeFromChannel(channel),
               };
 
               updates.messages.push(chatMessage);
@@ -682,7 +819,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 timestamp: event.timestamp,
                 isHtml: false,
                 messageType: 'system' as const,
-                channel: channel || ('system' as const),
+                type: 'system' as const,
+                channel: channel || 'system',
               };
 
               updates.messages.push(chatMessage);
@@ -715,7 +853,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 timestamp: event.timestamp,
                 isHtml: false,
                 messageType: 'system' as const,
-                channel: channel || ('system' as const),
+                type: 'system' as const,
+                channel: channel || 'system',
               };
 
               updates.messages.push(chatMessage);
@@ -752,6 +891,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 timestamp: event.timestamp,
                 isHtml: false,
                 messageType: 'system',
+                type: 'system' as const,
+                channel: 'system' as const,
               };
 
               if (!updates.messages) {
@@ -776,6 +917,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               timestamp: event.timestamp,
               isHtml: false,
               messageType: 'system' as const,
+              type: 'system' as const,
+              channel: 'system' as const,
             };
 
             if (!updates.messages) {
@@ -852,9 +995,14 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               targetMaxHp,
             });
 
-            // For npc_attacked events, attacker_name is the NPC and npc_name is the player
-            // We want to show "Dr. Francis Morgan attacks you for 10 damage! (90/100 HP)"
-            const message = `${attackerName} attacks you for ${damage} damage! (${targetCurrentHp}/${targetMaxHp} HP)`;
+            // For npc_attacked events, attacker_name is the NPC and npc_name is the target player
+            const playerName = normalizeName(currentPlayerRef.current?.name);
+            const targetNameNormalized = normalizeName(npcName);
+            const isTargeted = !!playerName && targetNameNormalized === playerName;
+
+            const message = isTargeted
+              ? `${attackerName} attacks you for ${damage} damage! (${targetCurrentHp}/${targetMaxHp} HP)`
+              : `${attackerName} attacks ${npcName || 'their target'} for ${damage} damage! (${targetCurrentHp}/${targetMaxHp} HP)`;
 
             // Check for duplicate npc_attacked events
             // Look for any message that contains the same attack message
@@ -871,7 +1019,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               timestamp: event.timestamp,
               isHtml: false,
               messageType: 'combat' as const,
-              channel: 'combat' as const,
+              type: 'combat' as const,
+              channel: 'game' as const,
             };
 
             if (!updates.messages) {
@@ -880,7 +1029,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             updates.messages.push(messageObj);
 
             // BUGFIX: Update player health in Status panel when taking damage
-            if (currentPlayerRef.current && currentPlayerRef.current.stats) {
+            if (isTargeted && currentPlayerRef.current && currentPlayerRef.current.stats) {
               updates.player = {
                 ...currentPlayerRef.current,
                 stats: {
@@ -917,7 +1066,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               timestamp: event.timestamp,
               isHtml: false,
               messageType: 'combat' as const,
-              channel: 'combat' as const,
+              type: 'combat' as const,
+              channel: 'game' as const,
             };
 
             if (!updates.messages) {
@@ -954,7 +1104,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               timestamp: event.timestamp,
               isHtml: false,
               messageType: 'combat' as const,
-              channel: 'combat' as const,
+              type: 'combat' as const,
+              channel: 'game' as const,
             };
 
             if (!updates.messages) {
@@ -979,7 +1130,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               timestamp: event.timestamp,
               isHtml: false,
               messageType: 'combat' as const,
-              channel: 'combat' as const,
+              type: 'combat' as const,
+              channel: 'game' as const,
             };
 
             if (!updates.messages) {
@@ -1026,7 +1178,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
           case 'combat_started': {
             console.log('🔍 DEBUG: combat_started event received!', event);
             const combatId = event.data.combat_id as string;
-            const turnOrder = event.data.turn_order as string[];
+            const turnOrder = Array.isArray(event.data.turn_order) ? (event.data.turn_order as string[]) : [];
+            const participants = event.data.participants as Record<string, CombatParticipant> | undefined;
 
             // Check if we've already processed this combat_started event
             // Look for any message that contains "Combat has begun!" and the same turn order
@@ -1062,8 +1215,12 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             }
             updates.messages.push(messageObj);
 
-            // Update player combat status immediately
-            if (currentPlayerRef.current) {
+            // Update player combat status only if they are part of this combat
+            if (
+              currentPlayerRef.current &&
+              isPlayerCombatParticipant(currentPlayerRef.current, participants, turnOrder)
+            ) {
+              activeCombatIdRef.current = combatId;
               updates.player = {
                 ...currentPlayerRef.current,
                 in_combat: true,
@@ -1105,8 +1262,14 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             }
             updates.messages.push(messageObj);
 
-            // Update player combat status immediately
-            if (currentPlayerRef.current) {
+            // Update player combat status immediately when the player was involved
+            const combatId = event.data.combat_id as string | undefined;
+            const playerWasInCombat = currentPlayerRef.current?.in_combat;
+            const shouldUpdate =
+              currentPlayerRef.current && (combatId ? activeCombatIdRef.current === combatId : playerWasInCombat);
+
+            if (shouldUpdate && currentPlayerRef.current) {
+              activeCombatIdRef.current = combatId ? null : activeCombatIdRef.current;
               updates.player = {
                 ...currentPlayerRef.current,
                 in_combat: false,

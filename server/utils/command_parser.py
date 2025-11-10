@@ -14,11 +14,13 @@ from ..exceptions import ValidationError as MythosValidationError
 from ..logging.enhanced_logging_config import get_logger
 from ..models.command import (
     AddAdminCommand,
+    AdminCommand,
     AliasCommand,
     AliasesCommand,
     AttackCommand,
     Command,
     CommandType,
+    Direction,
     EmoteCommand,
     GoCommand,
     GotoCommand,
@@ -84,6 +86,7 @@ class CommandParser:
             CommandType.MUTE_GLOBAL.value: self._create_mute_global_command,
             CommandType.UNMUTE_GLOBAL.value: self._create_unmute_global_command,
             CommandType.ADD_ADMIN.value: self._create_add_admin_command,
+            CommandType.ADMIN.value: self._create_admin_command,
             CommandType.MUTES.value: self._create_mutes_command,
             CommandType.TELEPORT.value: self._create_teleport_command,
             CommandType.GOTO.value: self._create_goto_command,
@@ -563,6 +566,30 @@ class CommandParser:
 
         return AddAdminCommand(player_name=args[0])
 
+    def _create_admin_command(self, args: list[str]) -> AdminCommand:
+        """Create AdminCommand from arguments."""
+        if not args:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError, "Admin command requires a subcommand", context=context, logger_name=__name__
+            )
+
+        subcommand = args[0].lower()
+        remaining_args = args[1:]
+
+        if subcommand == "status" and remaining_args:
+            context = create_error_context()
+            context.metadata = {"args": args, "subcommand": subcommand}
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Admin status command does not accept additional arguments",
+                context=context,
+                logger_name=__name__,
+            )
+
+        return AdminCommand(subcommand=subcommand, args=remaining_args)
+
     def _create_mutes_command(self, args: list[str]) -> MutesCommand:
         """Create MutesCommand from arguments."""
         if args:
@@ -581,8 +608,35 @@ class CommandParser:
             log_and_raise_enhanced(
                 MythosValidationError, "Teleport command requires a player name", context=context, logger_name=__name__
             )
+
         player_name = args[0]
-        return TeleportCommand(player_name=player_name)
+        direction = None
+
+        if len(args) > 1:
+            if len(args) > 2:
+                context = create_error_context()
+                context.metadata = {"args": args}
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Teleport command accepts at most one direction argument",
+                    context=context,
+                    logger_name=__name__,
+                )
+            raw_direction = args[1].lower()
+            try:
+                direction = Direction(raw_direction)
+            except ValueError as error:
+                context = create_error_context()
+                context.metadata = {"args": args, "direction": raw_direction}
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Teleport command direction must be a valid Mythos cardinal or intercardinal direction",
+                    context=context,
+                    logger_name=__name__,
+                    error=error,
+                )
+
+        return TeleportCommand(player_name=player_name, direction=direction)
 
     def _create_goto_command(self, args: list[str]) -> GotoCommand:
         """Create GotoCommand from arguments."""

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { vi } from 'vitest';
 import { Channel, ChannelSelector } from '../ChannelSelector';
 import { MythosIcons } from '../EldritchIcon';
@@ -80,8 +80,9 @@ describe('ChannelSelector', () => {
   it('renders the selected channel correctly', () => {
     render(<ChannelSelector {...defaultProps} />);
 
-    expect(screen.getByText('Say')).toBeInTheDocument();
-    expect(screen.getByText('/say')).toBeInTheDocument();
+    const triggerButton = screen.getByRole('button');
+    expect(within(triggerButton).getByText('Say')).toBeInTheDocument();
+    expect(within(triggerButton).getByText('/say')).toBeInTheDocument();
     expect(screen.getByTestId('icon-chat')).toBeInTheDocument();
   });
 
@@ -92,9 +93,10 @@ describe('ChannelSelector', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(screen.getByText('Local')).toBeInTheDocument();
-      expect(screen.getByText('Global')).toBeInTheDocument();
-      expect(screen.getByText('Whisper')).toBeInTheDocument();
+      const dropdown = screen.getByTestId('channel-dropdown');
+      expect(within(dropdown).getByText('Local')).toBeInTheDocument();
+      expect(within(dropdown).getByText('Global')).toBeInTheDocument();
+      expect(within(dropdown).getByText('Whisper')).toBeInTheDocument();
     });
   });
 
@@ -106,7 +108,8 @@ describe('ChannelSelector', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      const localButton = screen.getByText('Local');
+      const dropdown = screen.getByTestId('channel-dropdown');
+      const localButton = within(dropdown).getByText('Local');
       fireEvent.click(localButton);
     });
 
@@ -121,14 +124,13 @@ describe('ChannelSelector', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      const localButton = screen.getByText('Local');
+      const dropdown = screen.getByTestId('channel-dropdown');
+      const localButton = within(dropdown).getByText('Local');
       fireEvent.click(localButton);
     });
 
-    // Verify dropdown is closed after selection
     await waitFor(() => {
-      expect(screen.queryByText('Global')).not.toBeInTheDocument();
-      expect(screen.queryByText('Whisper')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('channel-dropdown')).not.toBeInTheDocument();
     });
   });
 
@@ -139,7 +141,8 @@ describe('ChannelSelector', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(screen.getByText('Local')).toBeInTheDocument();
+      const dropdown = screen.getByTestId('channel-dropdown');
+      expect(within(dropdown).getByText('Local')).toBeInTheDocument();
     });
 
     // Click the backdrop to close the dropdown
@@ -147,7 +150,7 @@ describe('ChannelSelector', () => {
     fireEvent.click(backdrop);
 
     await waitFor(() => {
-      expect(screen.queryByText('Local')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('channel-dropdown')).not.toBeInTheDocument();
     });
   });
 
@@ -165,7 +168,8 @@ describe('ChannelSelector', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      const whisperButton = screen.getByText('Whisper').closest('button');
+      const dropdown = screen.getByTestId('channel-dropdown');
+      const whisperButton = within(dropdown).getByText('Whisper').closest('button');
       expect(whisperButton).not.toBeDisabled();
     });
   });
@@ -177,9 +181,10 @@ describe('ChannelSelector', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(screen.getByText('Speak to players in the same room')).toBeInTheDocument();
-      expect(screen.getByText('Chat with players in the same sub-zone')).toBeInTheDocument();
-      expect(screen.getByText('Chat with all players on the server')).toBeInTheDocument();
+      const dropdown = screen.getByTestId('channel-dropdown');
+      expect(within(dropdown).getByText('Speak to players in the same room')).toBeInTheDocument();
+      expect(within(dropdown).getByText('Chat with players in the same sub-zone')).toBeInTheDocument();
+      expect(within(dropdown).getByText('Chat with all players on the server')).toBeInTheDocument();
     });
   });
 
@@ -191,7 +196,8 @@ describe('ChannelSelector', () => {
 
     await waitFor(() => {
       // Find the Local button in the dropdown (not the main button)
-      const dropdownButtons = screen.getAllByRole('button');
+      const dropdown = screen.getByTestId('channel-dropdown');
+      const dropdownButtons = within(dropdown).getAllByRole('button');
       const localDropdownButton = dropdownButtons.find(
         btn => btn.textContent?.includes('Local') && btn.textContent?.includes('Chat with players in the same sub-zone')
       );
@@ -226,8 +232,8 @@ describe('ChannelSelector', () => {
 
     fireEvent.click(button);
 
-    // Should not show any dropdown items
-    expect(screen.queryByRole('button', { name: /Local/ })).not.toBeInTheDocument();
+    const dropdown = screen.getByTestId('channel-dropdown');
+    expect(within(dropdown).queryAllByRole('button')).toHaveLength(0);
   });
 
   it('handles channel without shortcut', () => {
@@ -243,7 +249,8 @@ describe('ChannelSelector', () => {
 
     render(<ChannelSelector {...defaultProps} channels={channelsWithoutShortcut} selectedChannel="custom" />);
 
-    expect(screen.getByText('Custom')).toBeInTheDocument();
+    const triggerButton = screen.getByRole('button');
+    expect(within(triggerButton).getByText('Custom')).toBeInTheDocument();
     expect(screen.queryByText('/custom')).not.toBeInTheDocument();
   });
 });

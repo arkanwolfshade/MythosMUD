@@ -2,6 +2,7 @@ import os
 import sqlite3
 import threading
 from collections.abc import Callable
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 from uuid import UUID
 
@@ -403,6 +404,61 @@ class PersistenceLayer:
                 context=context,
                 details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
                 user_friendly="Failed to save player",
+            )
+
+    def update_player_last_active(self, player_id: str, last_active: datetime | None = None) -> None:
+        """
+        Update the last_active timestamp for a player.
+
+        Args:
+            player_id: ID or name of the player to update
+            last_active: Timestamp to persist (defaults to current UTC time)
+        """
+        context = create_error_context()
+        context.metadata["operation"] = "update_player_last_active"
+        context.metadata["player_id"] = player_id
+
+        try:
+            with self._lock, sqlite3.connect(self.db_path) as conn:
+                try:
+                    if last_active is None:
+                        last_active = datetime.now(UTC)
+
+                    # Ensure timestamp is timezone-aware in UTC, then serialize
+                    if last_active.tzinfo is None:
+                        last_active = last_active.replace(tzinfo=UTC)
+
+                    last_active_iso = last_active.isoformat()
+                    player_id_str = str(player_id) if player_id else None
+
+                    conn.execute(
+                        "UPDATE players SET last_active = ? WHERE player_id = ? OR name = ?",
+                        (last_active_iso, player_id_str, player_id),
+                    )
+                    conn.commit()
+                except sqlite3.Error as e:
+                    log_and_raise(
+                        DatabaseError,
+                        f"Database error updating last_active for player '{player_id}': {e}",
+                        context=context,
+                        details={"player_id": player_id, "error": str(e)},
+                        user_friendly="Failed to update player activity",
+                    )
+        except OSError as e:
+            log_and_raise(
+                DatabaseError,
+                f"File system error updating last_active for player '{player_id}': {e}",
+                context=context,
+                details={"player_id": player_id, "error": str(e)},
+                user_friendly="Failed to update player activity - file system error",
+            )
+        except Exception as e:
+            log_and_raise(
+                DatabaseError,
+                f"Unexpected error updating last_active for player '{player_id}': {e}",
+                context=context,
+                details={"player_id": player_id, "error": str(e)},
+                user_friendly="Failed to update player activity",
             )
 
     def list_players(self) -> list[Player]:

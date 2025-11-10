@@ -196,7 +196,9 @@ class TestWebSocketEndpoint:
             await websocket_endpoint(mock_websocket)
 
             # Verify handle_websocket_connection was called with correct parameters
-            mock_handle.assert_called_once_with(mock_websocket, "test_player_id", None)
+            mock_handle.assert_called_once_with(
+                mock_websocket, "test_player_id", None, connection_manager=mock_connection_manager
+            )
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_subprotocol_token(self):
@@ -227,7 +229,9 @@ class TestWebSocketEndpoint:
 
             # Ensure decode was invoked with token extracted from header
             mock_decode.assert_called_once_with("test_token_from_header")
-            mock_handle.assert_called_once_with(mock_websocket, "player_from_header", None)
+            mock_handle.assert_called_once_with(
+                mock_websocket, "player_from_header", None, connection_manager=mock_connection_manager
+            )
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_success_with_player_id_fallback(self):
@@ -259,7 +263,9 @@ class TestWebSocketEndpoint:
             await websocket_endpoint(mock_websocket)
 
             # Verify handle_websocket_connection was called with player_id from query params
-            mock_handle.assert_called_once_with(mock_websocket, "test_player_id", None)
+            mock_handle.assert_called_once_with(
+                mock_websocket, "test_player_id", None, connection_manager=mock_connection_manager
+            )
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_no_token_no_player_id(self):
@@ -395,7 +401,9 @@ class TestWebSocketEndpointRoute:
             await websocket_endpoint_route(mock_websocket, "path_player_id")
 
             # Verify handle_websocket_connection was called with resolved player_id
-            mock_handle.assert_called_once_with(mock_websocket, "resolved_player_id", None)
+            mock_handle.assert_called_once_with(
+                mock_websocket, "resolved_player_id", None, connection_manager=mock_connection_manager
+            )
             mock_logger.info.assert_called_once_with(
                 "WebSocket (compat) connection attempt", player_id="path_player_id", session_id=None
             )
@@ -427,7 +435,9 @@ class TestWebSocketEndpointRoute:
             await websocket_endpoint_route(mock_websocket, "path_player_id")
 
             # Verify handle_websocket_connection was called with path player_id
-            mock_handle.assert_called_once_with(mock_websocket, "path_player_id", None)
+            mock_handle.assert_called_once_with(
+                mock_websocket, "path_player_id", None, connection_manager=mock_connection_manager
+            )
             mock_logger.info.assert_called_once_with(
                 "WebSocket (compat) connection attempt", player_id="path_player_id", session_id=None
             )
@@ -459,7 +469,9 @@ class TestWebSocketEndpointRoute:
             await websocket_endpoint_route(mock_websocket, "path_player_id")
 
             # Verify handle_websocket_connection was called with path player_id (fallback)
-            mock_handle.assert_called_once_with(mock_websocket, "path_player_id", None)
+            mock_handle.assert_called_once_with(
+                mock_websocket, "path_player_id", None, connection_manager=mock_connection_manager
+            )
             mock_logger.info.assert_called_once_with(
                 "WebSocket (compat) connection attempt", player_id="path_player_id", session_id=None
             )
@@ -495,7 +507,9 @@ class TestWebSocketEndpointRoute:
             await websocket_endpoint_route(mock_websocket, "path_player_id")
 
             # Verify handle_websocket_connection was called with path player_id (fallback)
-            mock_handle.assert_called_once_with(mock_websocket, "path_player_id", None)
+            mock_handle.assert_called_once_with(
+                mock_websocket, "path_player_id", None, connection_manager=mock_connection_manager
+            )
             mock_logger.info.assert_called_once_with(
                 "WebSocket (compat) connection attempt", player_id="path_player_id", session_id=None
             )

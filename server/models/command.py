@@ -64,6 +64,7 @@ class CommandType(str, Enum):
     MUTE_GLOBAL = "mute_global"
     UNMUTE_GLOBAL = "unmute_global"
     ADD_ADMIN = "add_admin"
+    ADMIN = "admin"
     MUTES = "mutes"
     # Admin teleport commands (confirmation removed for immediate execution)
     TELEPORT = "teleport"
@@ -363,17 +364,48 @@ class MutesCommand(BaseCommand):
     command_type: Literal[CommandType.MUTES] = CommandType.MUTES
 
 
+class AdminCommand(BaseCommand):
+    """Command for administrative utilities with subcommands."""
+
+    command_type: Literal[CommandType.ADMIN] = CommandType.ADMIN
+    subcommand: str = Field(..., min_length=1, max_length=30, description="Admin subcommand to execute")
+    args: list[str] = Field(default_factory=list, description="Additional arguments for admin subcommands")
+
+    @field_validator("subcommand")
+    @classmethod
+    def validate_subcommand(cls, v: str) -> str:
+        """Validate and normalize admin subcommand names."""
+        allowed_subcommands = {"status"}
+        normalized = v.lower()
+        if normalized not in allowed_subcommands:
+            raise ValueError(f"Invalid admin subcommand: {v}. Allowed subcommands: {sorted(allowed_subcommands)}")
+        return normalized
+
+
 class TeleportCommand(BaseCommand):
     """Command for teleporting a player to the admin's location."""
 
     command_type: Literal[CommandType.TELEPORT] = CommandType.TELEPORT
     player_name: str = Field(..., min_length=1, max_length=50, description="Player to teleport")
+    direction: Direction | None = Field(
+        default=None, description="Optional direction to send the player relative to the admin's location"
+    )
 
     @field_validator("player_name")
     @classmethod
     def validate_player_name_field(cls, v):
         """Validate player name format using centralized validation."""
         return validate_player_name(v)
+
+    @field_validator("direction")
+    @classmethod
+    def validate_direction_field(cls, v):
+        """Ensure provided direction is part of the allowed set."""
+        if v is None:
+            return v
+        if v not in Direction:
+            raise ValueError(f"Invalid direction: {v}. Must be one of: {list(Direction)}")
+        return v
 
 
 class GotoCommand(BaseCommand):
