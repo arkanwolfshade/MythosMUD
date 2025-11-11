@@ -14,11 +14,11 @@
   - [x] 2.4 Update seeded databases (`unit_test`, `local`, `e2e_test`) to include the new table and default rows
   - [x] 2.5 Verify all tests pass
 
-- [ ] 3. Integrate JSON schema validation runtime
-  - [ ] 3.1 Write tests asserting invalid payloads are rejected with diagnostics
-  - [ ] 3.2 Implement schema loader/cache and validation hooks in persistence layer
-  - [ ] 3.3 Add structured logging for schema validation failures
-  - [ ] 3.4 Verify all tests pass
+- [x] 3. Integrate JSON schema validation runtime
+  - [x] 3.1 Write tests asserting invalid payloads are rejected with diagnostics
+  - [x] 3.2 Implement schema loader/cache and validation hooks in persistence layer
+  - [x] 3.3 Add structured logging for schema validation failures
+  - [x] 3.4 Verify all tests pass
 
 - [ ] 4. Construct inventory service stacking logic
   - [ ] 4.1 Write tests for stacking, splitting, and capacity enforcement

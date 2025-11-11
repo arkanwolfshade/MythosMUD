@@ -135,6 +135,24 @@ class Player(Base):
         """Set player status effects from list."""
         self.status_effects = json.dumps(status_effects)  # type: ignore[assignment]
 
+    def get_equipped_items(self) -> dict[str, Any]:
+        """Return equipped items mapping."""
+        equipped = getattr(self, "_equipped_items", None)
+        if equipped is None:
+            return {}
+        if isinstance(equipped, str):
+            try:
+                equipped_dict = cast(dict[str, Any], json.loads(equipped))
+            except (TypeError, json.JSONDecodeError):
+                equipped_dict = {}
+            self._equipped_items = equipped_dict
+            return equipped_dict
+        return cast(dict[str, Any], equipped)
+
+    def set_equipped_items(self, equipped: dict[str, Any]) -> None:
+        """Assign equipped items mapping."""
+        self._equipped_items = equipped
+
     def add_experience(self, amount: int) -> None:
         """Add experience points to the player."""
         self.experience_points += amount  # type: ignore[assignment]
