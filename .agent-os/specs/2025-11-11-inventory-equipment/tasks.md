@@ -7,12 +7,12 @@
   - [x] 1.2 Draft round-trip serialization/deserialization tests against JSON schema
   - [x] 1.3 Verify all tests pass
 
-- [ ] 2. Implement persistence migration
-  - [ ] 2.1 Write tests validating migration idempotence and row creation per player
-  - [ ] 2.2 Create SQLite migration script establishing `player_inventories`
-  - [ ] 2.3 Update verification script to enforce table presence before startup
-  - [ ] 2.4 Update seeded databases (`unit_test`, `local`, `e2e_test`) to include the new table and default rows
-  - [ ] 2.5 Verify all tests pass
+- [x] 2. Implement persistence migration
+  - [x] 2.1 Write tests validating migration idempotence and row creation per player
+  - [x] 2.2 Create SQLite migration script establishing `player_inventories`
+  - [x] 2.3 Update verification script to enforce table presence before startup
+  - [x] 2.4 Update seeded databases (`unit_test`, `local`, `e2e_test`) to include the new table and default rows
+  - [x] 2.5 Verify all tests pass
 
 - [ ] 3. Integrate JSON schema validation runtime
   - [ ] 3.1 Write tests asserting invalid payloads are rejected with diagnostics
