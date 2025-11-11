@@ -173,6 +173,31 @@ async def handle_go_command(
         logger.warning("Go command failed - current room not found", player=player_name, room_id=room_id)
         return {"result": "You can't go that way"}
 
+    # Enforce posture requirements before attempting movement
+    position = "standing"
+    if hasattr(player, "get_stats"):
+        try:
+            stats = player.get_stats() or {}
+            position = str(stats.get("position", "standing") or "standing").lower()
+        except Exception as exc:  # pragma: no cover - defensive logging path
+            logger.warning(
+                "Failed to read player stats during go command",
+                player=player_name,
+                error=str(exc),
+                room_id=room_id,
+            )
+            position = "standing"
+
+    if position != "standing":
+        logger.info(
+            "Movement blocked - player not standing",
+            player=player_name,
+            position=position,
+            direction=direction,
+            room_id=room_id,
+        )
+        return {"result": "You need to stand up before moving."}
+
     exits = room.exits
     target_room_id = exits.get(direction)
     if not target_room_id:

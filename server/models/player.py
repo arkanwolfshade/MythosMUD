@@ -44,7 +44,7 @@ class Player(Base):
     stats = Column(
         Text(),
         nullable=False,
-        default='{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100}',
+        default='{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100, "position": "standing"}',
     )
     inventory = Column(Text(), nullable=False, default="[]")
     status_effects = Column(Text(), nullable=False, default="[]")
@@ -80,9 +80,9 @@ class Player(Base):
     def get_stats(self) -> dict[str, Any]:
         """Get player stats as dictionary."""
         try:
-            return cast(dict[str, Any], json.loads(cast(str, self.stats)))
+            stats = cast(dict[str, Any], json.loads(cast(str, self.stats)))
         except (json.JSONDecodeError, TypeError):
-            return {
+            stats = {
                 "strength": 10,
                 "dexterity": 10,
                 "constitution": 10,
@@ -95,7 +95,19 @@ class Player(Base):
                 "corruption": 0,
                 "cult_affiliation": 0,
                 "current_health": 100,
+                "position": "standing",
             }
+            return stats
+
+        if "position" not in stats:
+            stats["position"] = "standing"
+            try:
+                self.set_stats(stats)
+            except Exception:
+                # Fallback silently if persistence update fails during read-time normalization
+                pass
+
+        return stats
 
     def set_stats(self, stats: dict[str, Any]) -> None:
         """Set player stats from dictionary."""

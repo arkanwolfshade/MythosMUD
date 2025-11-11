@@ -18,8 +18,10 @@ interface StatusPanelContextType {
       fear?: number;
       corruption?: number;
       cult_affiliation?: number;
+      position?: string;
     };
     level?: number;
+    position?: string;
   } | null;
   isConnected: boolean;
   isConnecting: boolean;

@@ -44,6 +44,8 @@ class TestConnectionManagerComprehensive:
         player.name = "TestPlayer"
         player.level = 5
         player.current_room_id = "test_room_001"
+        player.get_stats.return_value = {"position": "standing"}
+        player.set_stats = Mock()
         return player
 
     @pytest.fixture
@@ -1568,6 +1570,7 @@ class TestConnectionManagerComprehensive:
         player_info = connection_manager.online_players["test_player"]
         assert player_info["connection_types"] == {"websocket"}
         assert player_info["total_connections"] == 0  # No actual connections yet, just tracking
+        assert player_info["position"] == "standing"
 
     @pytest.mark.asyncio
     async def test_track_player_connected_additional_connection(
@@ -1596,6 +1599,7 @@ class TestConnectionManagerComprehensive:
         player_info = connection_manager.online_players["test_player"]
         assert player_info["connection_types"] == {"websocket", "sse"}
         assert player_info["total_connections"] == 2
+        assert player_info["position"] == "standing"
 
     @pytest.mark.asyncio
     async def test_track_player_connected_broadcasts_player_entered_event(
@@ -1661,6 +1665,7 @@ class TestConnectionManagerComprehensive:
             "player_name": "Test Player",
             "connection_types": {"websocket", "sse"},
             "total_connections": 3,
+            "position": "standing",
         }
 
         # Disconnect one connection type
@@ -1689,6 +1694,7 @@ class TestConnectionManagerComprehensive:
             "player_name": "Test Player",
             "connection_types": {"websocket"},
             "total_connections": 1,
+            "position": "standing",
         }
 
         # Remove the connection
@@ -1713,6 +1719,7 @@ class TestConnectionManagerComprehensive:
             "connected_at": 1234567890,
             "current_room_id": "room_001",
             "level": 5,
+            "position": "standing",
         }
         connection_manager.last_seen["test_player"] = 1234567891
 
@@ -1756,6 +1763,7 @@ class TestConnectionManagerComprehensive:
             "player_id": "test_player",
             "connection_types": {"websocket", "sse"},
             "total_connections": 2,
+            "position": "standing",
         }
 
         # Validate presence
@@ -1774,6 +1782,7 @@ class TestConnectionManagerComprehensive:
             "player_id": "test_player",
             "connection_types": {"websocket"},
             "total_connections": 1,
+            "position": "standing",
         }
 
         # Validate presence
@@ -1797,6 +1806,7 @@ class TestConnectionManagerComprehensive:
             "player_id": "test_player",
             "connection_types": {"websocket", "sse"},
             "total_connections": 1,  # Wrong count
+            "position": "standing",
         }
 
         # Validate presence
@@ -1827,11 +1837,19 @@ class TestConnectionManagerComprehensive:
         # Add some players with different connection types
         # Player 1: WebSocket only
         connection_manager.player_websockets["player1"] = ["conn1"]
-        connection_manager.online_players["player1"] = {"connection_types": {"websocket"}, "total_connections": 1}
+        connection_manager.online_players["player1"] = {
+            "connection_types": {"websocket"},
+            "total_connections": 1,
+            "position": "standing",
+        }
 
         # Player 2: SSE only
         connection_manager.active_sse_connections["player2"] = ["conn2"]
-        connection_manager.online_players["player2"] = {"connection_types": {"sse"}, "total_connections": 1}
+        connection_manager.online_players["player2"] = {
+            "connection_types": {"sse"},
+            "total_connections": 1,
+            "position": "standing",
+        }
 
         # Player 3: Dual connection
         connection_manager.player_websockets["player3"] = ["conn3"]
@@ -1839,6 +1857,7 @@ class TestConnectionManagerComprehensive:
         connection_manager.online_players["player3"] = {
             "connection_types": {"websocket", "sse"},
             "total_connections": 2,
+            "position": "standing",
         }
 
         # Get statistics
@@ -2314,8 +2333,8 @@ class TestConnectionManagerComprehensive:
         # Add some players with different timestamps
         connection_manager.last_seen["recent_player"] = time.time()
         connection_manager.last_seen["stale_player"] = time.time() - 200  # 200 seconds ago
-        connection_manager.online_players["recent_player"] = {"player_id": "recent_player"}
-        connection_manager.online_players["stale_player"] = {"player_id": "stale_player"}
+        connection_manager.online_players["recent_player"] = {"player_id": "recent_player", "position": "standing"}
+        connection_manager.online_players["stale_player"] = {"player_id": "stale_player", "position": "standing"}
         connection_manager.room_occupants["test_room"] = {"recent_player", "stale_player"}
         connection_manager.last_active_update_times["stale_player"] = 0.0
 
@@ -2702,7 +2721,7 @@ class TestConnectionManagerComprehensive:
         mock_persistence.get_player.return_value = mock_player
 
         # Setup player in online players and room
-        connection_manager.online_players["test_player"] = {"player_id": "test_player"}
+        connection_manager.online_players["test_player"] = {"player_id": "test_player", "position": "standing"}
         connection_manager.room_occupants["test_room_001"] = {"test_player"}
 
         await connection_manager._track_player_disconnected("test_player")
@@ -2723,27 +2742,27 @@ class TestConnectionManagerComprehensive:
     def test_get_online_players(self, connection_manager):
         """Test getting online players."""
         # Setup some online players
-        connection_manager.online_players["player1"] = {"player_id": "player1"}
-        connection_manager.online_players["player2"] = {"player_id": "player2"}
+        connection_manager.online_players["player1"] = {"player_id": "player1", "position": "standing"}
+        connection_manager.online_players["player2"] = {"player_id": "player2", "position": "standing"}
 
         result = connection_manager.get_online_players()
 
         assert len(result) == 2
-        assert {"player_id": "player1"} in result
-        assert {"player_id": "player2"} in result
+        result_ids = {player["player_id"] for player in result}
+        assert result_ids == {"player1", "player2"}
 
     def test_get_room_occupants(self, connection_manager):
         """Test getting room occupants."""
         # Setup room occupants
         connection_manager.room_occupants["test_room"] = {"player1", "player2"}
-        connection_manager.online_players["player1"] = {"player_id": "player1"}
-        connection_manager.online_players["player2"] = {"player_id": "player2"}
+        connection_manager.online_players["player1"] = {"player_id": "player1", "position": "standing"}
+        connection_manager.online_players["player2"] = {"player_id": "player2", "position": "standing"}
 
         result = connection_manager.get_room_occupants("test_room")
 
         assert len(result) == 2
-        assert {"player_id": "player1"} in result
-        assert {"player_id": "player2"} in result
+        result_ids = {player["player_id"] for player in result}
+        assert result_ids == {"player1", "player2"}
 
     def test_get_room_occupants_empty(self, connection_manager):
         """Test getting room occupants for empty room."""
@@ -2755,13 +2774,14 @@ class TestConnectionManagerComprehensive:
         """Test that offline players are filtered from room occupants."""
         # Setup room occupants with offline player
         connection_manager.room_occupants["test_room"] = {"player1", "player2"}
-        connection_manager.online_players["player1"] = {"player_id": "player1"}
+        connection_manager.online_players["player1"] = {"player_id": "player1", "position": "standing"}
         # player2 is not in online_players (offline)
 
         result = connection_manager.get_room_occupants("test_room")
 
         assert len(result) == 1
-        assert {"player_id": "player1"} in result
+        result_ids = {player["player_id"] for player in result}
+        assert result_ids == {"player1"}
 
     @pytest.mark.asyncio
     async def test_send_initial_game_state(self, connection_manager, mock_player, mock_persistence):
@@ -2774,7 +2794,11 @@ class TestConnectionManagerComprehensive:
 
         # Setup room occupants
         connection_manager.room_occupants["test_room_001"] = {"other_player"}
-        connection_manager.online_players["other_player"] = {"player_id": "other_player", "name": "OtherPlayer"}
+        connection_manager.online_players["other_player"] = {
+            "player_id": "other_player",
+            "name": "OtherPlayer",
+            "position": "standing",
+        }
 
         with patch.object(connection_manager, "send_personal_message", new_callable=AsyncMock) as mock_send:
             await connection_manager._send_initial_game_state("test_player", mock_player, "test_room_001")
@@ -2796,7 +2820,7 @@ class TestConnectionManagerComprehensive:
         """Test reconciling room presence."""
         # Setup room with online and offline players
         connection_manager.room_occupants["test_room"] = {"online_player", "offline_player"}
-        connection_manager.online_players["online_player"] = {"player_id": "online_player"}
+        connection_manager.online_players["online_player"] = {"player_id": "online_player", "position": "standing"}
 
         connection_manager._reconcile_room_presence("test_room")
 

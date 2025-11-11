@@ -13,6 +13,7 @@ from ..config import get_config
 from ..exceptions import DatabaseError, ValidationError
 from ..logging.enhanced_logging_config import get_logger
 from ..models import Stats
+from ..models.game import PositionState
 from ..models.player import Player
 from ..schemas.player import PlayerRead
 from ..utils.enhanced_error_logging import create_error_context, log_and_raise_enhanced
@@ -796,6 +797,17 @@ class PlayerService:
             if hasattr(status_effects, "__await__"):
                 status_effects = await status_effects
 
+            position_value = stats.get("position", PositionState.STANDING.value)
+            try:
+                position_state = PositionState(position_value)
+            except ValueError:
+                logger.warning(
+                    "Invalid position value on player stats, defaulting to standing",
+                    player_id=getattr(player, "player_id", None),
+                    position_value=position_value,
+                )
+                position_state = PositionState.STANDING
+
             return PlayerRead(
                 id=player.player_id,
                 user_id=player.user_id,
@@ -814,12 +826,25 @@ class PlayerService:
                 last_active=player.last_active,
                 is_admin=bool(player.is_admin),  # Convert integer to boolean
                 in_combat=in_combat,
+                position=position_state,
             )
         else:  # Dictionary
             # Check if player is a Mock by checking for MagicMock type
             if "Mock" in str(type(player).__name__):
                 # In tests, return the Mock directly
                 return player
+
+            stats_data = player["stats"]
+            position_value = stats_data.get("position", PositionState.STANDING.value)
+            try:
+                position_state = PositionState(position_value)
+            except ValueError:
+                logger.warning(
+                    "Invalid position value on player stats dict, defaulting to standing",
+                    player_id=player.get("player_id"),
+                    position_value=position_value,
+                )
+                position_state = PositionState.STANDING
 
             return PlayerRead(
                 id=player["player_id"],
@@ -839,4 +864,5 @@ class PlayerService:
                 last_active=player["last_active"],
                 is_admin=bool(player.get("is_admin", 0)),  # Convert integer to boolean with default
                 in_combat=in_combat,
+                position=position_state,
             )

@@ -23,7 +23,7 @@ export interface ParsedPlayerData {
   fear?: number;
   corruption?: number;
   occult_knowledge?: number;
-  pose?: string;
+  position?: string;
   in_combat?: boolean;
   xp?: number;
 }
@@ -41,8 +41,9 @@ export interface PlayerWithProfession {
     fear: number;
     corruption: number;
     occult_knowledge: number;
+    position?: string;
   };
-  pose?: string;
+  position?: string;
   in_combat?: boolean;
   xp?: number;
 }
@@ -104,8 +105,8 @@ export function parseStatusResponse(statusResponse: string): ParsedPlayerData {
       if (!isNaN(occult)) {
         playerData.occult_knowledge = occult;
       }
-    } else if (line.startsWith('Pose:')) {
-      playerData.pose = line.replace('Pose:', '').trim();
+    } else if (line.startsWith('Position:')) {
+      playerData.position = line.replace('Position:', '').trim().toLowerCase();
     } else if (line.startsWith('In Combat:')) {
       const combatStatus = line.replace('In Combat:', '').trim();
       playerData.in_combat = combatStatus === 'Yes';
@@ -140,13 +141,10 @@ export function convertToPlayerInterface(parsedData: ParsedPlayerData): PlayerWi
       fear: parsedData.fear || 0,
       corruption: parsedData.corruption || 0,
       occult_knowledge: parsedData.occult_knowledge || 0,
+      position: parsedData.position,
     },
+    position: parsedData.position,
   };
-
-  // Add pose if present
-  if (parsedData.pose) {
-    player.pose = parsedData.pose;
-  }
 
   // Add combat status if present
   if (parsedData.in_combat !== undefined) {

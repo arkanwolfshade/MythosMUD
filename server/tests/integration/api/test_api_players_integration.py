@@ -116,7 +116,7 @@ class TestPlayerAPIIntegration:
             current_room_id="earth_arkhamcity_northside_intersection_derby_high",
             experience_points=0,
             level=1,
-            stats='{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100}',
+            stats='{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100, "position": "standing"}',
             inventory="[]",
             status_effects="[]",
             is_admin=0,
@@ -169,6 +169,31 @@ class TestPlayerAPIIntegration:
 
         # Assert
         assert response.status_code in [200, 401]
+
+    def test_get_player_includes_position(self, container_test_client, mock_persistence_for_api, sample_player_data):
+        """Ensure player API response exposes posture information."""
+        from server.auth.users import get_current_user
+
+        player_id = str(uuid.uuid4())
+        mock_persistence_for_api.async_get_player.return_value = sample_player_data
+
+        async def override_current_user():
+            user = Mock()
+            user.id = sample_player_data.player_id
+            user.username = sample_player_data.name
+            return user
+
+        app = container_test_client.app
+        app.dependency_overrides[get_current_user] = override_current_user
+
+        try:
+            response = container_test_client.get(f"/api/players/{player_id}")
+            assert response.status_code == 200
+            payload = response.json()
+            assert payload["position"] == "standing"
+            assert payload["stats"]["position"] == "standing"
+        finally:
+            app.dependency_overrides.pop(get_current_user, None)
 
     def test_get_player_by_name_success(self, container_test_client, mock_persistence_for_api, sample_player_data):
         """Test successful player retrieval by name via API."""

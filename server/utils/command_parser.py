@@ -27,6 +27,7 @@ from ..models.command import (
     HelpCommand,
     InventoryCommand,
     KickCommand,
+    LieCommand,
     LocalCommand,
     LogoutCommand,
     LookCommand,
@@ -40,6 +41,8 @@ from ..models.command import (
     ReplyCommand,
     SayCommand,
     ShutdownCommand,
+    SitCommand,
+    StandCommand,
     StatusCommand,
     StrikeCommand,
     SystemCommand,
@@ -48,6 +51,7 @@ from ..models.command import (
     UnmuteCommand,
     UnmuteGlobalCommand,
     WhisperCommand,
+    WhoamiCommand,
     WhoCommand,
 )
 from .enhanced_error_logging import create_error_context, log_and_raise_enhanced
@@ -93,9 +97,13 @@ class CommandParser:
             # Utility commands
             CommandType.WHO.value: self._create_who_command,
             CommandType.STATUS.value: self._create_status_command,
+            CommandType.WHOAMI.value: self._create_whoami_command,
             CommandType.INVENTORY.value: self._create_inventory_command,
             CommandType.QUIT.value: self._create_quit_command,
             CommandType.LOGOUT.value: self._create_logout_command,
+            CommandType.SIT.value: self._create_sit_command,
+            CommandType.STAND.value: self._create_stand_command,
+            CommandType.LIE.value: self._create_lie_command,
             # Communication commands
             CommandType.WHISPER.value: self._create_whisper_command,
             CommandType.REPLY.value: self._create_reply_command,
@@ -664,6 +672,16 @@ class CommandParser:
             )
         return StatusCommand()
 
+    def _create_whoami_command(self, args: list[str]) -> WhoamiCommand:
+        """Create WhoamiCommand from arguments."""
+        if args:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError, "Whoami command takes no arguments", context=context, logger_name=__name__
+            )
+        return WhoamiCommand()
+
     def _create_inventory_command(self, args: list[str]) -> InventoryCommand:
         """Create InventoryCommand from arguments."""
         if args:
@@ -689,6 +707,43 @@ class CommandParser:
         # Logout command ignores arguments (like quit command)
         # This allows for commands like "logout force now" to work
         return LogoutCommand()
+
+    def _create_sit_command(self, args: list[str]) -> SitCommand:
+        """Create SitCommand from arguments."""
+        if args:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError, "Sit command takes no arguments", context=context, logger_name=__name__
+            )
+        return SitCommand()
+
+    def _create_stand_command(self, args: list[str]) -> StandCommand:
+        """Create StandCommand from arguments."""
+        if args:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError, "Stand command takes no arguments", context=context, logger_name=__name__
+            )
+        return StandCommand()
+
+    def _create_lie_command(self, args: list[str]) -> LieCommand:
+        """Create LieCommand from arguments."""
+        modifier: str | None = None
+        if args:
+            if len(args) == 1 and args[0].lower() == "down":
+                modifier = "down"
+            else:
+                context = create_error_context()
+                context.metadata = {"args": args}
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Usage: lie [down]",
+                    context=context,
+                    logger_name=__name__,
+                )
+        return LieCommand(modifier=modifier)
 
     def _create_shutdown_command(self, args: list[str]) -> ShutdownCommand:
         """
@@ -800,6 +855,9 @@ class CommandParser:
             "aliases": "List your command aliases",
             "unalias": "Remove a command alias",
             "help": "Show this help information",
+            "sit": "Sit down and adopt a seated posture",
+            "stand": "Return to a standing posture",
+            "lie": "Lie down (optionally use 'lie down')",
         }
 
         if command_name:
@@ -902,8 +960,12 @@ def get_command_help(command_type: str | None = None) -> str:
             CommandType.MUTES.value: "mutes - Show your mute status",
             CommandType.WHO.value: "who [player] - List online players with optional filtering",
             CommandType.STATUS.value: "status - Show your character status",
+            CommandType.WHOAMI.value: "whoami - Show your personal status (alias of status)",
             CommandType.INVENTORY.value: "inventory - Show your inventory",
             CommandType.QUIT.value: "quit - Quit the game",
+            CommandType.SIT.value: "sit - Sit down and adopt a seated posture",
+            CommandType.STAND.value: "stand - Return to a standing posture",
+            CommandType.LIE.value: "lie [down] - Lie down on the ground",
         }
 
         return help_texts.get(command_type, f"No help available for: {command_type}")
@@ -932,8 +994,12 @@ Available Commands:
 - mutes - Show your mute status
 - who [player] - List online players with optional filtering
 - status - Show your character status
+- whoami - Show your personal status (alias of status)
 - inventory - Show your inventory
 - quit - Quit the game
+- sit - Sit down and adopt a seated posture
+- stand - Return to a standing posture
+- lie [down] - Lie down on the ground
 
 Directions: north, south, east, west
 Use 'help <command>' for detailed information about a specific command.

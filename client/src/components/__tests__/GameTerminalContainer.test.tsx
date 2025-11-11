@@ -23,7 +23,7 @@ function createDefaultGameTerminalState() {
     player: {
       id: 'player-1',
       name: 'TestPlayer',
-      stats: { current_health: 100, sanity: 80 },
+      stats: { current_health: 100, sanity: 80, position: 'standing' },
       level: 5,
     },
     room: {
@@ -200,7 +200,7 @@ describe('GameTerminalContainer', () => {
         player: {
           id: 'player-1',
           name: 'TestPlayer',
-          stats: { current_health: 100, sanity: 80 },
+          stats: { current_health: 100, sanity: 80, position: 'standing' },
           level: 5,
         },
         room: {

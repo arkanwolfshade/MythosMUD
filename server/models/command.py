@@ -72,9 +72,13 @@ class CommandType(str, Enum):
     # Utility commands
     WHO = "who"
     STATUS = "status"
+    WHOAMI = "whoami"
     INVENTORY = "inventory"
     QUIT = "quit"
     LOGOUT = "logout"
+    SIT = "sit"
+    STAND = "stand"
+    LIE = "lie"
     # Communication commands
     WHISPER = "whisper"
     REPLY = "reply"
@@ -446,6 +450,12 @@ class StatusCommand(BaseCommand):
     command_type: Literal[CommandType.STATUS] = CommandType.STATUS
 
 
+class WhoamiCommand(BaseCommand):
+    """Command for viewing the caller's status (alias of status)."""
+
+    command_type: Literal[CommandType.WHOAMI] = CommandType.WHOAMI
+
+
 class InventoryCommand(BaseCommand):
     """Command for viewing player inventory."""
 
@@ -462,6 +472,37 @@ class LogoutCommand(BaseCommand):
     """Command for logging out of the game."""
 
     command_type: Literal[CommandType.LOGOUT] = CommandType.LOGOUT
+
+
+class SitCommand(BaseCommand):
+    """Command for taking a seated position."""
+
+    command_type: Literal[CommandType.SIT] = CommandType.SIT
+
+
+class StandCommand(BaseCommand):
+    """Command for returning to a standing posture."""
+
+    command_type: Literal[CommandType.STAND] = CommandType.STAND
+
+
+class LieCommand(BaseCommand):
+    """Command for lying down (optionally expressed as 'lie down')."""
+
+    command_type: Literal[CommandType.LIE] = CommandType.LIE
+    modifier: str | None = Field(default=None, description="Optional modifier such as 'down'")
+
+    @field_validator("modifier")
+    @classmethod
+    def validate_modifier(cls, value: str | None) -> str | None:
+        """Validate optional modifier for the lie command."""
+        if value is None:
+            return value
+        normalized = value.strip().lower()
+        allowed_modifiers = {"down"}
+        if normalized not in allowed_modifiers:
+            raise ValueError(f"Invalid modifier for lie command: {value}")
+        return normalized
 
 
 class ShutdownCommand(BaseCommand):
@@ -598,6 +639,9 @@ Command = (
     | InventoryCommand
     | QuitCommand
     | LogoutCommand
+    | SitCommand
+    | StandCommand
+    | LieCommand
     | ShutdownCommand
     | WhisperCommand
     | ReplyCommand

@@ -156,7 +156,7 @@ class MovementService:
                     self._logger.info("Player ID resolved", player_name=player_id, player_id=resolved_player_id)
 
                 # Step 2: Validate the move
-                if not self._validate_movement(str(resolved_player_id), from_room_id, to_room_id):
+                if not self._validate_movement(player, from_room_id, to_room_id):
                     duration_ms = (time.time() - start_time) * 1000
                     monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
                     return False
@@ -261,18 +261,27 @@ class MovementService:
                     user_friendly="Movement failed",
                 )
 
-    def _validate_movement(self, player_id: str, from_room_id: str, to_room_id: str) -> bool:
+    def _validate_movement(self, player_obj, from_room_id: str, to_room_id: str) -> bool:
         """
         Validate that a movement operation is allowed.
 
         Args:
-            player_id: The ID of the player to move
+            player_obj: The player instance requesting movement
             from_room_id: The ID of the room the player is leaving
             to_room_id: The ID of the room the player is entering
 
         Returns:
             True if the movement is valid, False otherwise
         """
+        if not player_obj:
+            self._logger.error(
+                "POSITION CHECK: Player object missing during validation",
+                from_room=from_room_id,
+                to_room=to_room_id,
+            )
+            return False
+
+        player_id = str(getattr(player_obj, "player_id", "")) or str(player_obj)
         self._logger.info(
             "VALIDATION START: Checking movement",
             player_id=player_id,
@@ -364,6 +373,32 @@ class MovementService:
                 # On error, allow movement to prevent blocking players
         else:
             self._logger.warning("COMBAT CHECK: No combat service available, allowing movement by default")
+
+        # Check player posture to ensure only standing characters may relocate
+        posture = "standing"
+        if hasattr(player_obj, "get_stats"):
+            try:
+                stats = player_obj.get_stats() or {}
+                posture = str(stats.get("position", "standing") or "standing").lower()
+            except Exception as exc:  # pragma: no cover - defensive logging path
+                self._logger.warning(
+                    "POSITION CHECK: Failed to load player stats",
+                    player_id=player_id,
+                    error=str(exc),
+                    from_room=from_room_id,
+                    to_room=to_room_id,
+                )
+                posture = "standing"
+
+        if posture not in {"standing"}:
+            self._logger.info(
+                "POSITION CHECK: Movement blocked due to posture",
+                player_id=player_id,
+                posture=posture,
+                from_room=from_room_id,
+                to_room=to_room_id,
+            )
+            return False
 
         # Check if rooms exist
         from_room = self._persistence.get_room(from_room_id)
