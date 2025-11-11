@@ -20,11 +20,11 @@
   - [x] 3.3 Add structured logging for schema validation failures
   - [x] 3.4 Verify all tests pass
 
-- [ ] 4. Construct inventory service stacking logic
-  - [ ] 4.1 Write tests for stacking, splitting, and capacity enforcement
-  - [ ] 4.2 Implement stacking algorithms with slot management helpers
-  - [ ] 4.3 Verify thread-safety or atomic mutation assumptions with docstrings/tests
-  - [ ] 4.4 Verify all tests pass
+- [x] 4. Construct inventory service stacking logic
+  - [x] 4.1 Write tests for stacking, splitting, and capacity enforcement
+  - [x] 4.2 Implement stacking algorithms with slot management helpers
+  - [x] 4.3 Verify thread-safety or atomic mutation assumptions with docstrings/tests
+  - [x] 4.4 Verify all tests pass
 
 - [ ] 5. Implement dupe protection and concurrency guards
   - [ ] 5.1 Write tests simulating double-execution and race conditions

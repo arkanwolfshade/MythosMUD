@@ -6,6 +6,13 @@ including direct WebSocket broadcasting, chat services, and other real-time feat
 """
 
 from .admin_auth_service import AdminAuthService, admin_auth_service, get_admin_auth_service
+from .inventory_service import (
+    InventoryCapacityError,
+    InventoryService,
+    InventoryServiceError,
+    InventorySplitError,
+    InventoryValidationError,
+)
 from .npc_instance_service import NPCInstanceService, get_npc_instance_service, initialize_npc_instance_service
 from .npc_service import NPCService, npc_service
 
@@ -18,4 +25,9 @@ __all__ = [
     "AdminAuthService",
     "get_admin_auth_service",
     "admin_auth_service",
+    "InventoryService",
+    "InventoryServiceError",
+    "InventoryValidationError",
+    "InventoryCapacityError",
+    "InventorySplitError",
 ]
