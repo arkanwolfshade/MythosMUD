@@ -19,6 +19,17 @@ from server.commands.admin_commands import (
 )
 
 
+@pytest.fixture(autouse=True)
+def patch_broadcast_room_update(monkeypatch):
+    """Patch broadcast_room_update to avoid requiring full app container."""
+    async_mock = AsyncMock()
+    monkeypatch.setattr(
+        "server.commands.admin_commands.broadcast_room_update",
+        async_mock,
+    )
+    return async_mock
+
+
 class TestAdminTeleportIntegration:
     """Integration tests for complete admin teleport workflow."""
 
@@ -29,13 +40,20 @@ class TestAdminTeleportIntegration:
 
         # Mock player service
         player_service = MagicMock()
+        player_service.get_player_by_name = AsyncMock()
+        player_service.update_player_location = AsyncMock()
+        player_service.resolve_player_name = AsyncMock()
         app_state.player_service = player_service
 
         # Mock connection manager
         connection_manager = MagicMock()
         connection_manager.online_players = {}
         connection_manager.broadcast_to_room = AsyncMock()
-        connection_manager.send_to_player = AsyncMock()
+        connection_manager.send_personal_message = AsyncMock()
+        connection_manager.unsubscribe_from_room = AsyncMock()
+        connection_manager.subscribe_to_room = AsyncMock()
+        connection_manager.get_online_player_by_display_name = MagicMock(return_value=None)
+        connection_manager.room_manager = MagicMock()
         app_state.connection_manager = connection_manager
 
         # Mock persistence layer
@@ -84,6 +102,11 @@ class TestAdminTeleportIntegration:
         mock_app_state.connection_manager.online_players = {
             "target_id": {"player_name": "TargetPlayer", "room_id": "target_room"}
         }
+        mock_app_state.connection_manager.get_online_player_by_display_name.return_value = {
+            "player_id": "target_id",
+            "player_name": "TargetPlayer",
+            "room_id": "target_room",
+        }
 
         mock_alias_storage = MagicMock()
 
@@ -94,7 +117,7 @@ class TestAdminTeleportIntegration:
 
         # Should return success message (current implementation bypasses confirmation)
         assert "result" in result
-        assert "successfully teleported" in result["result"].lower()
+        assert result["result"] == "You teleport TargetPlayer to your location."
         assert "TargetPlayer" in result["result"]
 
         # Verify player service was called to update location
@@ -104,7 +127,7 @@ class TestAdminTeleportIntegration:
         assert mock_app_state.connection_manager.broadcast_to_room.call_count == 2
 
         # Verify target player was notified
-        mock_app_state.connection_manager.send_to_player.assert_called_once()
+        mock_app_state.connection_manager.send_personal_message.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_complete_goto_workflow_success(self, mock_app_state, mock_admin_player, mock_target_player):
@@ -128,6 +151,11 @@ class TestAdminTeleportIntegration:
             "target_id": {"player_name": "TargetPlayer", "room_id": "target_room"},
             "admin_id": {"player_name": "AdminUser", "room_id": "admin_room"},
         }
+        mock_app_state.connection_manager.get_online_player_by_display_name.side_effect = lambda name: {
+            "player_id": "target_id" if name == "TargetPlayer" else "admin_id",
+            "player_name": name,
+            "room_id": "target_room" if name == "TargetPlayer" else "admin_room",
+        }
 
         mock_alias_storage = MagicMock()
 
@@ -136,7 +164,7 @@ class TestAdminTeleportIntegration:
 
         # Should return success message (current implementation bypasses confirmation)
         assert "result" in result
-        assert "successfully teleported" in result["result"].lower()
+        assert result["result"] == "You teleport to TargetPlayer's location."
         assert "TargetPlayer" in result["result"]
 
         # Verify player service was called to update location
@@ -224,6 +252,11 @@ class TestAdminTeleportIntegration:
         mock_app_state.connection_manager.online_players = {
             "target_id": {"player_name": "TargetPlayer", "room_id": "admin_room"}
         }
+        mock_app_state.connection_manager.get_online_player_by_display_name.return_value = {
+            "player_id": "target_id",
+            "player_name": "TargetPlayer",
+            "room_id": "admin_room",
+        }
 
         mock_alias_storage = MagicMock()
 
@@ -254,13 +287,14 @@ class TestAdminTeleportIntegration:
         mock_app_state.connection_manager.online_players = {
             "target_id": {"player_name": "TargetPlayer", "room_id": "target_room"}
         }
+        mock_app_state.connection_manager.get_online_player_by_display_name.return_value = {
+            "player_id": "target_id",
+            "player_name": "TargetPlayer",
+            "room_id": "target_room",
+        }
 
-        # Mock player service to return False when database error occurs
-        def mock_update_location_with_error(player_name, new_room_id):
-            # Simulate database error by raising an exception
-            raise Exception("Database error")
-
-        mock_app_state.player_service.update_player_location.side_effect = mock_update_location_with_error
+        # Mock player service to raise when database error occurs
+        mock_app_state.player_service.update_player_location.side_effect = Exception("Database error")
 
         mock_alias_storage = MagicMock()
 
@@ -293,6 +327,11 @@ class TestAdminTeleportIntegration:
         # Mock connection manager with online target
         mock_app_state.connection_manager.online_players = {
             "target_id": {"player_name": "TargetPlayer", "room_id": "target_room"}
+        }
+        mock_app_state.connection_manager.get_online_player_by_display_name.return_value = {
+            "player_id": "target_id",
+            "player_name": "TargetPlayer",
+            "room_id": "target_room",
         }
 
         # Mock connection manager error
@@ -352,6 +391,11 @@ class TestAdminTeleportIntegration:
             mock_app_state.connection_manager.online_players = {
                 "target_id": {"player_name": "TargetPlayer", "room_id": "target_room"}
             }
+            mock_app_state.connection_manager.get_online_player_by_display_name.return_value = {
+                "player_id": "target_id",
+                "player_name": "TargetPlayer",
+                "room_id": "target_room",
+            }
 
             mock_alias_storage = MagicMock()
 
@@ -407,6 +451,11 @@ class TestAdminTeleportIntegration:
             "target1_id": {"player_name": "Target1", "room_id": "room_1"},
             "target2_id": {"player_name": "Target2", "room_id": "room_2"},
         }
+        mock_app_state.connection_manager.get_online_player_by_display_name.side_effect = lambda name: {
+            "player_id": f"{name.lower()}_id",
+            "player_name": name,
+            "room_id": "room_1" if name == "Target1" else "room_2" if name == "Target2" else "admin_room",
+        }
 
         mock_request = MagicMock()
         mock_request.app = MagicMock()
@@ -461,7 +510,12 @@ class TestAdminTeleportIntegration:
         }
 
         # Mock various error conditions
-        mock_app_state.connection_manager.send_to_player.side_effect = Exception("Notification error")
+        mock_app_state.connection_manager.send_personal_message.side_effect = Exception("Notification error")
+        mock_app_state.connection_manager.get_online_player_by_display_name.return_value = {
+            "player_id": "target_id",
+            "player_name": "TargetPlayer",
+            "room_id": "target_room",
+        }
 
         mock_alias_storage = MagicMock()
 

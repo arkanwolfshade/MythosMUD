@@ -861,9 +861,7 @@ async def handle_teleport_command(
                     online_record["current_room_id"] = target_room_id
 
                 try:
-                    connection_manager.room_manager.remove_room_occupant(
-                        target_player_identifier, original_room_id
-                    )
+                    connection_manager.room_manager.remove_room_occupant(target_player_identifier, original_room_id)
                 except Exception as exc:
                     logger.debug(
                         "Failed to remove teleport target from prior room occupants",
@@ -873,9 +871,7 @@ async def handle_teleport_command(
                     )
 
                 try:
-                    connection_manager.room_manager.add_room_occupant(
-                        target_player_identifier, target_room_id
-                    )
+                    connection_manager.room_manager.add_room_occupant(target_player_identifier, target_room_id)
                 except Exception as exc:
                     logger.debug(
                         "Failed to add teleport target to destination room occupants",

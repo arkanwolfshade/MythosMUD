@@ -32,7 +32,7 @@ Use the file-creator subagent to create file: tasks.md inside of the current fea
 
 <task_structure>
   <major_tasks>
-    - count: 1-5
+    - count: 1-10
     - format: numbered checklist
     - grouping: by feature or component
   </major_tasks>
@@ -45,24 +45,26 @@ Use the file-creator subagent to create file: tasks.md inside of the current fea
 </task_structure>
 
 <task_template>
-  ## Tasks
 
-  - [ ] 1. [MAJOR_TASK_DESCRIPTION]
-    - [ ] 1.1 Write tests for [COMPONENT]
-    - [ ] 1.2 [IMPLEMENTATION_STEP]
-    - [ ] 1.3 [IMPLEMENTATION_STEP]
-    - [ ] 1.4 Verify all tests pass
+## Tasks
 
-  - [ ] 2. [MAJOR_TASK_DESCRIPTION]
-    - [ ] 2.1 Write tests for [COMPONENT]
-    - [ ] 2.2 [IMPLEMENTATION_STEP]
+- [ ] 1. [MAJOR_TASK_DESCRIPTION]
+  - [ ] 1.1 Write tests for [COMPONENT]
+  - [ ] 1.2 [IMPLEMENTATION_STEP]
+  - [ ] 1.3 [IMPLEMENTATION_STEP]
+  - [ ] 1.4 Verify all tests pass
+
+- [ ] 2. [MAJOR_TASK_DESCRIPTION]
+  - [ ] 2.1 Write tests for [COMPONENT]
+  - [ ] 2.2 [IMPLEMENTATION_STEP]
 </task_template>
 
 <ordering_principles>
-  - Consider technical dependencies
-  - Follow TDD approach
-  - Group related functionality
-  - Build incrementally
+
+- Consider technical dependencies
+- Follow TDD approach
+- Group related functionality
+- Build incrementally
 </ordering_principles>
 
 </step>
