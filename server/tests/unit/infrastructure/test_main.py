@@ -121,13 +121,14 @@ class TestEndpoints:
             mock_player.user_id = "550e8400-e29b-41d4-a716-446655440001"
             mock_player.experience_points = 0
             mock_player.level = 1
-            mock_player.stats = {"health": 100, "sanity": 90}
+            mock_player.stats = {"health": 100, "sanity": 90, "position": "standing"}
             mock_player.inventory = []
             mock_player.status_effects = []
             mock_player.created_at = "2024-01-01T00:00:00Z"
             mock_player.last_active = "2024-01-01T00:00:00Z"
             mock_player.is_admin = False
             mock_player.in_combat = False
+            mock_player.position = "standing"
             # Add profession fields that are now required by PlayerRead schema
             mock_player.profession_id = 0
             mock_player.profession_name = "Scholar"
@@ -187,6 +188,7 @@ class TestEndpoints:
                 "level": 1,
                 "is_admin": False,
                 "in_combat": False,
+                "position": "standing",
                 # Add profession fields that are now required by PlayerRead schema
                 "profession_id": 0,
                 "profession_name": "Scholar",
@@ -207,6 +209,7 @@ class TestEndpoints:
                 "level": 1,
                 "is_admin": False,
                 "in_combat": False,
+                "position": "standing",
                 # Add profession fields that are now required by PlayerRead schema
                 "profession_id": 0,
                 "profession_name": "Scholar",
@@ -249,6 +252,7 @@ class TestEndpoints:
             "level": 1,
             "is_admin": False,
             "in_combat": False,
+            "position": "standing",
             # Add profession fields that are now required by PlayerRead schema
             "profession_id": 0,
             "profession_name": "Scholar",
@@ -295,6 +299,7 @@ class TestEndpoints:
             "level": 1,
             "is_admin": False,
             "in_combat": False,
+            "position": "standing",
         }
         with patch.object(
             client.app.state.persistence, "async_get_player_by_name", new_callable=AsyncMock

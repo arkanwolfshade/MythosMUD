@@ -379,7 +379,13 @@ class MovementService:
         if hasattr(player_obj, "get_stats"):
             try:
                 stats = player_obj.get_stats() or {}
-                posture = str(stats.get("position", "standing") or "standing").lower()
+                if not isinstance(stats, dict):
+                    stats = {}
+                posture_value = stats.get("position", "standing")
+                if isinstance(posture_value, str):
+                    posture = posture_value.lower()
+                else:
+                    posture = "standing"
             except Exception as exc:  # pragma: no cover - defensive logging path
                 self._logger.warning(
                     "POSITION CHECK: Failed to load player stats",
