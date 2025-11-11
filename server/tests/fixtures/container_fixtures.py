@@ -342,6 +342,7 @@ def player_factory():
             "corruption": 0,
             "cult_affiliation": 0,
             "current_health": 100,
+            "position": "standing",
         }
 
         if stats:

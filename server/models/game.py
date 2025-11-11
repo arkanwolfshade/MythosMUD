@@ -40,6 +40,14 @@ class StatusEffectType(str, Enum):
     INSANE = "insane"
 
 
+class PositionState(str, Enum):
+    """Permitted posture states for a character."""
+
+    STANDING = "standing"
+    SITTING = "sitting"
+    LYING = "lying"
+
+
 class StatusEffect(BaseModel):
     """Represents a status effect applied to a character."""
 
@@ -104,6 +112,8 @@ class Stats(BaseModel):
 
     # Current health (can be modified)
     current_health: int = Field(ge=0, default=100, description="Current health points")
+
+    position: PositionState = Field(default=PositionState.STANDING, description="Current body posture")
 
     def __init__(self, **data: Any) -> None:
         """Initialize Stats with proper random number generation."""

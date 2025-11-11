@@ -17,6 +17,8 @@ AI: Tracks performance metrics for optimization and monitoring.
 """
 
 import re
+from collections import deque
+from collections.abc import Iterable
 from typing import Any
 
 
@@ -203,7 +205,7 @@ class SubjectManagerMetrics:
         self.validation_count = 0
         self.validation_success_count = 0
         self.validation_failure_count = 0
-        self.validation_times: list[float] = []  # Rolling window of last 1000 times
+        self.validation_times: deque[float] = deque(maxlen=1000)  # Rolling window of last 1000 times
 
         # Cache metrics
         self.cache_hits = 0
@@ -213,7 +215,7 @@ class SubjectManagerMetrics:
         self.build_count = 0
         self.build_success_count = 0
         self.build_failure_count = 0
-        self.build_times: list[float] = []  # Rolling window of last 1000 times
+        self.build_times: deque[float] = deque(maxlen=1000)  # Rolling window of last 1000 times
 
         # Error metrics
         self.pattern_not_found_errors = 0
@@ -241,8 +243,6 @@ class SubjectManagerMetrics:
             self.cache_misses += 1
 
         self.validation_times.append(duration)
-        if len(self.validation_times) > 1000:
-            self.validation_times = self.validation_times[-1000:]
 
     def record_build(self, duration: float, success: bool):
         """
@@ -259,8 +259,6 @@ class SubjectManagerMetrics:
             self.build_failure_count += 1
 
         self.build_times.append(duration)
-        if len(self.build_times) > 1000:
-            self.build_times = self.build_times[-1000:]
 
     def record_error(self, error_type: str):
         """
@@ -316,7 +314,7 @@ class SubjectManagerMetrics:
         }
 
     @staticmethod
-    def _calculate_percentile(times: list[float], percentile: float) -> float:
+    def _calculate_percentile(times: Iterable[float], percentile: float) -> float:
         """
         Calculate percentile from list of times.
 

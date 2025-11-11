@@ -72,6 +72,7 @@ describe('GameTerminal Panel Sizing', () => {
       stats: {
         current_health: 100,
         sanity: 80,
+        position: 'standing',
       },
     },
     messages: [{ text: 'Welcome to MythosMUD', timestamp: '2024-01-01T00:00:00Z', isHtml: false }],
@@ -147,5 +148,12 @@ describe('GameTerminal Panel Sizing', () => {
 
     // Game log should be to the right of chat
     expect(gameLogPosition.x).toBeGreaterThan(chatPosition.x);
+  });
+
+  test('status panel displays current position', () => {
+    render(<GameTerminal {...defaultProps} />);
+
+    expect(screen.getByText('Position:')).toBeInTheDocument();
+    expect(screen.getByText('Standing')).toBeInTheDocument();
   });
 });

@@ -1822,6 +1822,20 @@ class ConnectionManager:
             # Check if player is already tracked as online
             is_new_connection = player_id not in self.online_players
 
+            # Determine current player position from stats (defaults to standing)
+            position = "standing"
+            if hasattr(player, "get_stats"):
+                try:
+                    stats = player.get_stats()
+                    if isinstance(stats, dict):
+                        position = stats.get("position", "standing")
+                except Exception as exc:
+                    logger.warning(
+                        "Failed to load player stats during connection",
+                        player_id=player_id,
+                        error=str(exc),
+                    )
+
             # Type annotation for player_info to help mypy
             connection_types_set: set[str] = set()
             player_info: dict[str, Any] = {
@@ -1832,6 +1846,7 @@ class ConnectionManager:
                 "connected_at": time.time(),
                 "connection_types": connection_types_set,
                 "total_connections": 0,
+                "position": position,
             }
 
             # If player is already online, update existing info
@@ -1840,6 +1855,7 @@ class ConnectionManager:
                 player_info["connected_at"] = existing_info.get("connected_at", time.time())
                 existing_types = existing_info.get("connection_types", set())
                 player_info["connection_types"] = existing_types if isinstance(existing_types, set) else set()
+                player_info["position"] = existing_info.get("position", player_info["position"])
 
             # Add the new connection type
             connection_types_for_player = player_info["connection_types"]

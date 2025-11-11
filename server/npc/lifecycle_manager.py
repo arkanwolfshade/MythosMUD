@@ -216,7 +216,7 @@ class NPCLifecycleManager:
         Args:
             npc_id: ID of the NPC that died
         """
-        current_time = time.time()
+        current_time = time.monotonic()
         self.death_suppression[npc_id] = current_time
         logger.info(
             f"Recorded death of NPC {npc_id}, suppressing respawn for {self.death_suppression_duration} seconds"
@@ -236,7 +236,7 @@ class NPCLifecycleManager:
             return False
 
         death_time = self.death_suppression[npc_id]
-        current_time = time.time()
+        current_time = time.monotonic()
         suppression_elapsed = current_time - death_time
 
         if suppression_elapsed >= self.death_suppression_duration:

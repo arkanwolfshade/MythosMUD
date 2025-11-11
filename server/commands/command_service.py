@@ -48,6 +48,7 @@ from .communication_commands import (
 )
 from .exploration_commands import handle_go_command, handle_look_command
 from .npc_admin_commands import handle_npc_command
+from .position_commands import handle_lie_command, handle_sit_command, handle_stand_command
 from .system_commands import handle_help_command
 from .utility_commands import (
     handle_emote_command,
@@ -56,6 +57,7 @@ from .utility_commands import (
     handle_quit_command,
     handle_status_command,
     handle_who_command,
+    handle_whoami_command,
 )
 
 logger = get_logger(__name__)
@@ -111,10 +113,15 @@ class CommandService:
             "shutdown": handle_shutdown_command,
             # Utility commands
             "who": handle_who_command,
+            "whoami": handle_whoami_command,
             "quit": handle_quit_command,
             "logout": handle_logout_command,
             "status": handle_status_command,
             "inventory": handle_inventory_command,
+            # Position commands
+            "sit": handle_sit_command,
+            "stand": handle_stand_command,
+            "lie": handle_lie_command,
             # NPC Admin commands
             "npc": handle_npc_command,
             # Combat commands

@@ -314,23 +314,40 @@ async def handle_logout_command(
         app = request.app if request else None
         persistence = app.state.persistence if app else None
 
+        connection_manager = app.state.connection_manager if app else None
+
         if persistence:
             try:
                 player = persistence.get_player_by_name(get_username_from_user(current_user))
                 if player:
+                    # Synchronize current position from in-memory presence tracking
+                    position_value: str | None = None
+                    player_identifier = getattr(player, "player_id", None)
+                    if connection_manager:
+                        player_info = None
+                        if player_identifier:
+                            player_info = connection_manager.online_players.get(str(player_identifier))
+                        if not player_info:
+                            player_info = connection_manager.get_online_player_by_display_name(player_name)
+                        if player_info:
+                            position_value = player_info.get("position")
+
+                    if position_value:
+                        stats = player.get_stats()
+                        if stats.get("position") != position_value:
+                            stats["position"] = position_value
+                            player.set_stats(stats)
+
                     from datetime import UTC, datetime
 
                     player.last_active = datetime.now(UTC)
                     persistence.save_player(player)
                     logger.info("Player logout - updated last active")
-            except (OSError, ValueError, TypeError) as e:
+            except Exception as e:
                 logger.error("Error updating last active on logout", error=str(e), error_type=type(e).__name__)
 
         # Disconnect player from all connections
         try:
-            app = request.app if request else None
-            connection_manager = app.state.connection_manager if app else None
-
             if connection_manager:
                 await connection_manager.force_disconnect_player(player_name)
                 logger.info("Player disconnected from all connections")
@@ -436,10 +453,15 @@ async def handle_status_command(
         else:
             logger.debug("No combat service available")
 
+        # Determine current posture
+        position_value = str(stats.get("position", "standing")).lower()
+        position_label = position_value.replace("_", " ").capitalize()
+
         # Build status information
         status_lines = [
             f"Name: {player.name}",
             f"Location: {room_name}",
+            f"Position: {position_label}",
             f"Health: {stats.get('current_health', 100)}/{stats.get('max_health', 100)}",
             f"Sanity: {stats.get('sanity', 100)}/{stats.get('max_sanity', 100)}",
             f"XP: {player.experience_points}",
@@ -464,16 +486,30 @@ async def handle_status_command(
         if stats.get("occult_knowledge", 0) > 0:
             status_lines.append(f"Occult Knowledge: {stats.get('occult_knowledge', 0)}")
 
-        # Add pose if set
-        if hasattr(player, "pose") and player.pose:
-            status_lines.append(f"Pose: {player.pose}")
-
         result = "\n".join(status_lines)
         logger.debug("Status command successful")
         return {"result": result}
     except Exception as e:
         logger.error("Status command error")
         return {"result": f"Error retrieving status information: {str(e)}"}
+
+
+async def handle_whoami_command(
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+) -> dict[str, str]:
+    """
+    Handle the whoami command as an alias for status.
+
+    Mirrors handle_status_command while providing additional logging context.
+    """
+    logger.debug("Processing whoami command as status alias", player=player_name)
+
+    result = await handle_status_command(command_data, current_user, request, alias_storage, player_name)
+    # Annotate response to clarify alias usage
+    if "result" in result and isinstance(result["result"], str):
+        result["result"] = result["result"]
+    logger.debug("Whoami command completed", player=player_name)
+    return result
 
 
 async def handle_inventory_command(

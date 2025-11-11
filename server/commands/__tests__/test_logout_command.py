@@ -37,17 +37,21 @@ class TestLogoutCommand:
         # Mock the persistence layer
         mock_player = MagicMock()
         mock_player.name = "testplayer"
+        mock_player.player_id = "player-123"
+        mock_player.get_stats.return_value = {"position": "standing"}
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
         mock_request.app.state.persistence.save_player = AsyncMock()
 
         # Mock the connection manager
         mock_connection_manager = MagicMock()
         mock_connection_manager.force_disconnect_player = AsyncMock()
+        mock_connection_manager.online_players = {}
+        mock_connection_manager.get_online_player_by_display_name.return_value = None
         mock_request.app.state.connection_manager = mock_connection_manager
 
         # Execute logout command
         result = await handle_logout_command(
-            args=[],
+            command_data={"args": []},
             current_user=mock_current_user,
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -70,6 +74,33 @@ class TestLogoutCommand:
         mock_connection_manager.force_disconnect_player.assert_called_once_with("testplayer")
 
     @pytest.mark.asyncio
+    async def test_logout_command_persists_position(self, mock_request, mock_current_user, mock_alias_storage):
+        """Ensure logout syncs in-memory position back to persistence."""
+        mock_player = MagicMock()
+        mock_player.name = "testplayer"
+        mock_player.player_id = "player-123"
+        mock_player.get_stats.return_value = {"position": "standing"}
+        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+        mock_request.app.state.persistence.save_player = AsyncMock()
+
+        mock_connection_manager = MagicMock()
+        mock_connection_manager.force_disconnect_player = AsyncMock()
+        mock_connection_manager.online_players = {"player-123": {"position": "sitting"}}
+        mock_connection_manager.get_online_player_by_display_name.return_value = None
+        mock_request.app.state.connection_manager = mock_connection_manager
+
+        await handle_logout_command(
+            command_data={"args": []},
+            current_user=mock_current_user,
+            request=mock_request,
+            alias_storage=mock_alias_storage,
+            player_name="testplayer",
+        )
+
+        mock_player.set_stats.assert_called_once_with({"position": "sitting"})
+        mock_request.app.state.persistence.save_player.assert_called_once_with(mock_player)
+
+    @pytest.mark.asyncio
     async def test_logout_command_no_persistence(self, mock_current_user, mock_alias_storage):
         """Test logout command when persistence is not available."""
         mock_request = MagicMock()
@@ -77,7 +108,7 @@ class TestLogoutCommand:
 
         # Execute logout command
         result = await handle_logout_command(
-            args=[],
+            command_data={"args": []},
             current_user=mock_current_user,
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -99,11 +130,13 @@ class TestLogoutCommand:
         # Mock the connection manager
         mock_connection_manager = MagicMock()
         mock_connection_manager.force_disconnect_player = AsyncMock()
+        mock_connection_manager.online_players = {}
+        mock_connection_manager.get_online_player_by_display_name.return_value = None
         mock_request.app.state.connection_manager = mock_connection_manager
 
         # Execute logout command
         result = await handle_logout_command(
-            args=[],
+            command_data={"args": []},
             current_user=mock_current_user,
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -131,11 +164,13 @@ class TestLogoutCommand:
         # Mock the connection manager to raise an error
         mock_connection_manager = MagicMock()
         mock_connection_manager.force_disconnect_player = AsyncMock(side_effect=Exception("Connection error"))
+        mock_connection_manager.online_players = {}
+        mock_connection_manager.get_online_player_by_display_name.return_value = None
         mock_request.app.state.connection_manager = mock_connection_manager
 
         # Execute logout command
         result = await handle_logout_command(
-            args=[],
+            command_data={"args": []},
             current_user=mock_current_user,
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -160,11 +195,13 @@ class TestLogoutCommand:
         # Mock the connection manager
         mock_connection_manager = MagicMock()
         mock_connection_manager.force_disconnect_player = AsyncMock()
+        mock_connection_manager.online_players = {}
+        mock_connection_manager.get_online_player_by_display_name.return_value = None
         mock_request.app.state.connection_manager = mock_connection_manager
 
         # Execute logout command with arguments
         result = await handle_logout_command(
-            args=["force", "now"],
+            command_data={"args": ["force", "now"]},
             current_user=mock_current_user,
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -184,11 +221,13 @@ class TestLogoutCommand:
         # Mock the connection manager
         mock_connection_manager = MagicMock()
         mock_connection_manager.force_disconnect_player = AsyncMock()
+        mock_connection_manager.online_players = {}
+        mock_connection_manager.get_online_player_by_display_name.return_value = None
         mock_request.app.state.connection_manager = mock_connection_manager
 
         # Execute logout command
         result = await handle_logout_command(
-            args=[],
+            command_data={"args": []},
             current_user=mock_current_user,
             request=mock_request,
             alias_storage=mock_alias_storage,
@@ -213,11 +252,13 @@ class TestLogoutCommand:
         # Mock the connection manager to raise an error
         mock_connection_manager = MagicMock()
         mock_connection_manager.force_disconnect_player = AsyncMock(side_effect=Exception("Connection error"))
+        mock_connection_manager.online_players = {}
+        mock_connection_manager.get_online_player_by_display_name.return_value = None
         mock_request.app.state.connection_manager = mock_connection_manager
 
         # Execute logout command
         result = await handle_logout_command(
-            args=[],
+            command_data={"args": []},
             current_user=mock_current_user,
             request=mock_request,
             alias_storage=mock_alias_storage,

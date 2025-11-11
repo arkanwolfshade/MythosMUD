@@ -18,9 +18,11 @@ export interface Player {
     fear?: number;
     corruption?: number;
     cult_affiliation?: number;
+    position?: string;
   };
   level?: number;
   experience?: number;
+  position?: string;
   inventory?: Array<{
     id: string;
     name: string;

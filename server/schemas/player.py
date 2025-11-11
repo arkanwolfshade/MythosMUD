@@ -11,6 +11,8 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from ..models.game import PositionState
+
 
 class PlayerBase(BaseModel):
     """Base player schema with common fields."""
@@ -61,6 +63,7 @@ class PlayerRead(PlayerBase):
     last_active: datetime = Field(..., description="Player last active timestamp")
     is_admin: bool = Field(default=False, description="Whether player has admin privileges")
     in_combat: bool = Field(default=False, description="Whether player is currently in combat")
+    position: PositionState = Field(default=PositionState.STANDING, description="Current body posture")
 
     model_config = ConfigDict(
         from_attributes=True,

@@ -116,6 +116,8 @@ class TestCommunicationCommands:
         # Mock player data
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
+        mock_player.get_stats.return_value = {"position": "standing"}
+        mock_player.get_stats.return_value = {"position": "standing"}
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         # Mock room data
@@ -195,6 +197,8 @@ class TestCommunicationCommands:
         # Mock player data
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
+        mock_player.get_stats.return_value = {"position": "standing"}
+        mock_player.get_stats.return_value = {"position": "standing"}
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         # Mock room data
@@ -223,6 +227,8 @@ class TestCommunicationCommands:
         # Mock player data
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
+        mock_player.get_stats.return_value = {"position": "standing"}
+        mock_player.get_stats.return_value = {"position": "standing"}
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         # Mock room data
@@ -257,6 +263,7 @@ class TestCommunicationCommands:
         # Mock player data
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
+        mock_player.get_stats.return_value = {"position": "standing"}
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         # Mock room data
@@ -732,6 +739,7 @@ class TestMovementAndExplorationCommands:
         # Mock player data
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
+        mock_player.get_stats.return_value = {"position": "standing"}
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         # Mock room not found
@@ -754,6 +762,7 @@ class TestMovementAndExplorationCommands:
         # Mock player data
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
+        mock_player.get_stats.return_value = {"position": "standing"}
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         # Mock room data with no north exit
@@ -780,6 +789,7 @@ class TestMovementAndExplorationCommands:
         # Mock player data
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
+        mock_player.get_stats.return_value = {"position": "standing"}
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         # Mock room data with invalid target
@@ -802,6 +812,32 @@ class TestMovementAndExplorationCommands:
 
         assert "result" in result
         assert "you can't go that way" in result["result"].lower()
+
+    @pytest.mark.asyncio
+    async def test_process_command_go_blocked_when_not_standing(self):
+        """Test go command blocks movement when player is not standing."""
+        mock_request = Mock()
+        mock_request.app.state.persistence = Mock()
+        mock_alias_storage = Mock()
+        mock_alias_storage.get_alias.return_value = None
+        current_user = {"username": "testuser"}
+
+        mock_player = Mock()
+        mock_player.current_room_id = "test_room_001"
+        mock_player.get_stats.return_value = {"position": "sitting"}
+        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+
+        mock_room = Mock(spec=Room)
+        mock_room.name = "Test Room"
+        mock_room.description = "A test room"
+        mock_room.exits = {"north": "room2"}
+        mock_request.app.state.persistence.get_room.return_value = mock_room
+
+        result = await process_command("go", ["north"], current_user, mock_request, mock_alias_storage, "testuser")
+
+        assert "result" in result
+        assert "stand" in result["result"].lower()
+        mock_player.get_stats.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_process_command_look_no_persistence(self):

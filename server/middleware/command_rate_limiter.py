@@ -8,6 +8,7 @@ AI: Uses sliding window algorithm for accurate rate limiting without fixed time 
 """
 
 from collections import defaultdict
+from collections.abc import Callable
 from datetime import UTC, datetime, timedelta
 
 from ..logging.enhanced_logging_config import get_logger
@@ -27,7 +28,12 @@ class CommandRateLimiter:
     at bucket transitions.
     """
 
-    def __init__(self, max_commands: int = 10, window_seconds: int = 1):
+    def __init__(
+        self,
+        max_commands: int = 10,
+        window_seconds: int = 1,
+        now_provider: Callable[[], datetime] | None = None,
+    ):
         """
         Initialize command rate limiter.
 
@@ -41,6 +47,7 @@ class CommandRateLimiter:
         self.max_commands = max_commands
         self.window = timedelta(seconds=window_seconds)
         self.player_timestamps: dict[str, list[datetime]] = defaultdict(list)
+        self._now_provider = now_provider or (lambda: datetime.now(UTC))
 
         logger.info("CommandRateLimiter initialized", max_commands=max_commands, window_seconds=window_seconds)
 
@@ -61,7 +68,7 @@ class CommandRateLimiter:
 
         AI: This is the primary rate limit check - call before processing commands.
         """
-        now = datetime.now(UTC)
+        now = self._now_provider()
         cutoff = now - self.window
 
         # Remove old timestamps outside the sliding window
@@ -107,7 +114,7 @@ class CommandRateLimiter:
         # Find oldest timestamp
         oldest = min(self.player_timestamps[player_name])
         reset_time = oldest + self.window
-        now = datetime.now(UTC)
+        now = self._now_provider()
 
         wait = (reset_time - now).total_seconds()
         return max(0.0, wait)
@@ -124,7 +131,7 @@ class CommandRateLimiter:
 
         AI: Useful for UI/UX to show player their remaining quota.
         """
-        now = datetime.now(UTC)
+        now = self._now_provider()
         cutoff = now - self.window
 
         # Count recent commands
@@ -169,7 +176,7 @@ class CommandRateLimiter:
 
         AI: Useful for monitoring and detecting coordinated attacks.
         """
-        now = datetime.now(UTC)
+        now = self._now_provider()
         cutoff = now - self.window
 
         active_players = 0

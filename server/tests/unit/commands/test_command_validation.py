@@ -18,6 +18,7 @@ from server.models.command import (
     EmoteCommand,
     GoCommand,
     HelpCommand,
+    LieCommand,
     LookCommand,
     MeCommand,
     MuteCommand,
@@ -25,10 +26,14 @@ from server.models.command import (
     MutesCommand,
     PoseCommand,
     SayCommand,
+    SitCommand,
+    StandCommand,
+    StatusCommand,
     TeleportCommand,
     UnaliasCommand,
     UnmuteCommand,
     UnmuteGlobalCommand,
+    WhoamiCommand,
 )
 from server.utils.command_parser import CommandParser, get_command_help, parse_command, validate_command_safety
 
@@ -147,6 +152,38 @@ class TestCommandModels:
         cmd = PoseCommand(pose="stands tall and proud")
         assert cmd.command_type == CommandType.POSE
         assert cmd.pose == "stands tall and proud"
+
+    def test_sit_command_model(self):
+        """Test SitCommand creation."""
+        cmd = SitCommand()
+        assert cmd.command_type == CommandType.SIT
+
+    def test_stand_command_model(self):
+        """Test StandCommand creation."""
+        cmd = StandCommand()
+        assert cmd.command_type == CommandType.STAND
+
+    def test_lie_command_model(self):
+        """Test LieCommand creation with optional modifier."""
+        cmd = LieCommand()
+        assert cmd.command_type == CommandType.LIE
+        assert cmd.modifier is None
+
+        cmd = LieCommand(modifier="down")
+        assert cmd.modifier == "down"
+
+        with pytest.raises(PydanticValidationError):
+            LieCommand(modifier="sideways")
+
+    def test_status_command_model(self):
+        """Test StatusCommand creation."""
+        cmd = StatusCommand()
+        assert cmd.command_type == CommandType.STATUS
+
+    def test_whoami_command_model(self):
+        """Test WhoamiCommand creation."""
+        cmd = WhoamiCommand()
+        assert cmd.command_type == CommandType.WHOAMI
 
     def test_alias_command_valid(self):
         """Test valid AliasCommand creation."""
@@ -369,6 +406,59 @@ class TestCommandParser:
         assert isinstance(cmd, PoseCommand)
         assert cmd.pose == "stands tall"
 
+    def test_parse_status_and_whoami_commands(self):
+        """Test parsing status and whoami commands."""
+        cmd = self.parser.parse_command("status")
+        assert isinstance(cmd, StatusCommand)
+
+        cmd = self.parser.parse_command("/whoami")
+        assert isinstance(cmd, WhoamiCommand)
+
+        with pytest.raises(MythosValidationError):
+            self.parser.parse_command("status now")
+
+        with pytest.raises(MythosValidationError):
+            self.parser.parse_command("whoami please")
+
+    def test_parse_sit_command(self):
+        """Test parsing sit command."""
+        cmd = self.parser.parse_command("sit")
+        assert isinstance(cmd, SitCommand)
+
+        cmd = self.parser.parse_command("/sit")
+        assert isinstance(cmd, SitCommand)
+
+        with pytest.raises(MythosValidationError):
+            self.parser.parse_command("sit now")
+
+    def test_parse_stand_command(self):
+        """Test parsing stand command."""
+        cmd = self.parser.parse_command("stand")
+        assert isinstance(cmd, StandCommand)
+
+        cmd = self.parser.parse_command("/stand")
+        assert isinstance(cmd, StandCommand)
+
+        with pytest.raises(MythosValidationError):
+            self.parser.parse_command("stand quickly")
+
+    def test_parse_lie_command(self):
+        """Test parsing lie command with optional modifier."""
+        cmd = self.parser.parse_command("lie")
+        assert isinstance(cmd, LieCommand)
+        assert cmd.modifier is None
+
+        cmd = self.parser.parse_command("lie down")
+        assert isinstance(cmd, LieCommand)
+        assert cmd.modifier == "down"
+
+        cmd = self.parser.parse_command("/lie down")
+        assert isinstance(cmd, LieCommand)
+        assert cmd.modifier == "down"
+
+        with pytest.raises(MythosValidationError):
+            self.parser.parse_command("lie sideways")
+
     def test_parse_alias_command(self):
         """Test parsing alias command."""
         # View alias
@@ -525,6 +615,11 @@ class TestCommandSafety:
             "pose stands tall",
             "alias n go north",
             "help look",
+            "sit",
+            "stand",
+            "lie down",
+            "whoami",
+            "status",
         ]
 
         for command in valid_commands:
@@ -558,6 +653,10 @@ class TestCommandHelp:
         assert "look [direction]" in help_text
         assert "go <direction>" in help_text
         assert "say <message>" in help_text
+        assert "sit - Sit down and adopt a seated posture" in help_text
+        assert "stand - Return to a standing posture" in help_text
+        assert "lie [down] - Lie down on the ground" in help_text
+        assert "whoami - Show your personal status (alias of status)" in help_text
 
     def test_get_command_help_specific(self):
         """Test getting specific command help."""
@@ -566,6 +665,18 @@ class TestCommandHelp:
 
         help_text = get_command_help("say")
         assert "say <message> - Say something to other players" in help_text
+
+        help_text = get_command_help("sit")
+        assert "sit - Sit down and adopt a seated posture" in help_text
+
+        help_text = get_command_help("stand")
+        assert "stand - Return to a standing posture" in help_text
+
+        help_text = get_command_help("lie")
+        assert "lie [down] - Lie down on the ground" in help_text
+
+        help_text = get_command_help("whoami")
+        assert "whoami - Show your personal status (alias of status)" in help_text
 
     def test_get_command_help_unknown(self):
         """Test getting help for unknown command."""

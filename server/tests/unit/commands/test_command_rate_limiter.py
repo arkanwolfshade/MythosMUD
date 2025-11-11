@@ -8,10 +8,24 @@ AI: Tests sliding window rate limiting for command spam prevention.
 """
 
 import time
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
 from server.middleware.command_rate_limiter import CommandRateLimiter
+
+
+class FakeClock:
+    """Deterministic clock for rate limiter tests."""
+
+    def __init__(self, initial: datetime | None = None):
+        self._current = initial or datetime.now(UTC)
+
+    def advance(self, seconds: float) -> None:
+        self._current += timedelta(seconds=seconds)
+
+    def now(self) -> datetime:
+        return self._current
 
 
 class TestCommandRateLimiter:
@@ -152,10 +166,10 @@ class TestCommandRateLimiter:
         # Old entry should be cleaned up
         assert limiter.get_remaining_commands("player1") == 4  # Only 1 command in window
 
-    @pytest.mark.slow
     def test_sliding_window_accuracy(self):
         """Sliding window accurately tracks commands over time."""
-        limiter = CommandRateLimiter(max_commands=3, window_seconds=2)
+        clock = FakeClock()
+        limiter = CommandRateLimiter(max_commands=3, window_seconds=2, now_provider=clock.now)
 
         # Time 0: 3 commands
         limiter.is_allowed("player1")
@@ -166,13 +180,13 @@ class TestCommandRateLimiter:
         assert limiter.is_allowed("player1") is False
 
         # Wait 1 second
-        time.sleep(1.0)
+        clock.advance(1.0)
 
         # Still should be blocked (all 3 still in 2-second window)
         assert limiter.is_allowed("player1") is False
 
         # Wait another 1.5 seconds (total 2.5s from start)
-        time.sleep(1.5)
+        clock.advance(1.5)
 
         # Now should be allowed (old commands outside window)
         assert limiter.is_allowed("player1") is True

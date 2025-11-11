@@ -21,6 +21,7 @@ from server.commands.utility_commands import (
     handle_quit_command,
     handle_status_command,
     handle_who_command,
+    handle_whoami_command,
 )
 from server.exceptions import ValidationError
 
@@ -460,7 +461,6 @@ class TestStatusCommand:
         player = MagicMock()
         player.name = "testuser"
         player.current_room_id = "room_123"
-        player.pose = "adjusting spectacles"
 
         # Create a proper stats dictionary that get_stats() should return
         stats_dict = {
@@ -478,6 +478,7 @@ class TestStatusCommand:
             "wisdom": 10,
             "charisma": 10,
             "cult_affiliation": 0,
+            "position": "sitting",
         }
 
         # Mock the get_stats method to return the dictionary
@@ -522,10 +523,10 @@ class TestStatusCommand:
         assert "Location: Miskatonic University Library" in result["result"]
         assert "Health: 85/100" in result["result"]
         assert "Sanity: 75/100" in result["result"]
+        assert "Position: Sitting" in result["result"]
         assert "Fear: 15" in result["result"]
         assert "Corruption: 5" in result["result"]
         assert "Occult Knowledge: 25" in result["result"]
-        assert "Pose: adjusting spectacles" in result["result"]
 
     @pytest.mark.asyncio
     async def test_status_command_no_persistence(self, mock_request, mock_alias_storage):
@@ -577,6 +578,7 @@ class TestStatusCommand:
         )
 
         assert "Location: Unknown location" in result["result"]
+        assert "Position: Sitting" in result["result"]
 
     @pytest.mark.asyncio
     async def test_status_command_no_current_room(
@@ -597,6 +599,7 @@ class TestStatusCommand:
         )
 
         assert "Location: Unknown location" in result["result"]
+        assert "Position: Sitting" in result["result"]
 
     @pytest.mark.asyncio
     async def test_status_command_minimal_stats(
@@ -610,8 +613,6 @@ class TestStatusCommand:
         player = MagicMock()
         player.name = "testuser"
         player.current_room_id = "room_123"
-        player.pose = None
-
         # Create a proper stats dictionary that get_stats() should return
         stats_dict = {
             "current_health": 100,
@@ -628,6 +629,7 @@ class TestStatusCommand:
             "wisdom": 10,
             "charisma": 10,
             "cult_affiliation": 0,
+            "position": "standing",
         }
 
         # Mock the get_stats method to return the dictionary
@@ -645,6 +647,7 @@ class TestStatusCommand:
 
         assert "Name: testuser" in result["result"]
         assert "Location: Miskatonic University Library" in result["result"]
+        assert "Position: Standing" in result["result"]
         assert "Health: 100/100" in result["result"]
         assert "Sanity: 100/100" in result["result"]
         # Should not include fear, corruption, or occult knowledge when they are 0
@@ -652,6 +655,34 @@ class TestStatusCommand:
         assert "Corruption:" not in result["result"]
         assert "Occult Knowledge:" not in result["result"]
         assert "Pose:" not in result["result"]
+
+    @pytest.mark.asyncio
+    async def test_whoami_command_alias(
+        self, mock_request, mock_alias_storage, mock_persistence, mock_player, mock_room, mock_combat_service
+    ):
+        """Ensure whoami command mirrors status output."""
+        mock_request.app.state.persistence = mock_persistence
+        mock_request.app.state.combat_service = mock_combat_service
+        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_room.return_value = mock_room
+
+        status_result = await handle_status_command(
+            command_data={"args": []},
+            current_user={"username": "testuser"},
+            request=mock_request,
+            alias_storage=mock_alias_storage,
+            player_name="testuser",
+        )
+
+        whoami_result = await handle_whoami_command(
+            command_data={"args": []},
+            current_user={"username": "testuser"},
+            request=mock_request,
+            alias_storage=mock_alias_storage,
+            player_name="testuser",
+        )
+
+        assert whoami_result == status_result
 
     @pytest.mark.asyncio
     async def test_status_command_persistence_exception(self, mock_request, mock_alias_storage, mock_persistence):

@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS players (
     player_id TEXT PRIMARY KEY NOT NULL,
     user_id TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL,
-    stats TEXT NOT NULL DEFAULT '{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100}',
+    stats TEXT NOT NULL DEFAULT '{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100, "position": "standing"}',
     inventory TEXT NOT NULL DEFAULT '[]',
     status_effects TEXT NOT NULL DEFAULT '[]',
     current_room_id TEXT NOT NULL DEFAULT 'earth_arkhamcity_sanitarium_room_foyer_001',

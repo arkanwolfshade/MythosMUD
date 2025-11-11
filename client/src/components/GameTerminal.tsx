@@ -1,12 +1,20 @@
 import React, { useEffect, useState } from 'react';
 
+import { DEFAULT_CHANNEL } from '../config/channels';
 import { debugLogger } from '../utils/debugLogger';
 import { DraggablePanel } from './DraggablePanel';
 import { RoomInfoPanel } from './RoomInfoPanel';
 import { ChatPanel } from './panels/ChatPanel';
 import { CommandPanel } from './panels/CommandPanel';
 import { GameLogPanel } from './panels/GameLogPanel';
-import { DEFAULT_CHANNEL } from '../config/channels';
+
+const formatPosture = (value?: string): string => {
+  if (!value) {
+    return '';
+  }
+  const spaced = value.replace(/_/g, ' ');
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+};
 
 interface Player {
   name: string;
@@ -27,6 +35,7 @@ interface Player {
     fear?: number;
     corruption?: number;
     cult_affiliation?: number;
+    position?: string;
   };
   level?: number;
   xp?: number;
@@ -291,6 +300,12 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
                 <span className="text-base text-mythos-terminal-text-secondary">Player:</span>
                 <span className="text-base text-mythos-terminal-text">{playerName}</span>
               </div>
+              {player?.stats?.position && (
+                <div className="flex items-center justify-between">
+                  <span className="text-base text-mythos-terminal-text-secondary">Position:</span>
+                  <span className="text-base text-mythos-terminal-text">{formatPosture(player.stats.position)}</span>
+                </div>
+              )}
               {player?.profession_name && (
                 <div className="border-t border-mythos-terminal-border pt-2">
                   <h5 className="text-sm text-mythos-terminal-primary font-bold mb-1">Profession:</h5>
