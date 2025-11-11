@@ -6,6 +6,12 @@ including direct WebSocket broadcasting, chat services, and other real-time feat
 """
 
 from .admin_auth_service import AdminAuthService, admin_auth_service, get_admin_auth_service
+from .equipment_service import (
+    EquipmentCapacityError,
+    EquipmentService,
+    EquipmentServiceError,
+    SlotValidationError,
+)
 from .inventory_mutation_guard import InventoryMutationGuard, MutationDecision
 from .inventory_service import (
     InventoryCapacityError,
@@ -26,6 +32,10 @@ __all__ = [
     "AdminAuthService",
     "get_admin_auth_service",
     "admin_auth_service",
+    "EquipmentService",
+    "EquipmentServiceError",
+    "SlotValidationError",
+    "EquipmentCapacityError",
     "InventoryService",
     "InventoryServiceError",
     "InventoryValidationError",

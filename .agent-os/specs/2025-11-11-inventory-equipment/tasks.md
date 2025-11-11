@@ -32,11 +32,11 @@
   - [x] 5.3 Log anomaly detections with moderation-friendly metadata
   - [x] 5.4 Verify all tests pass
 
-- [ ] 6. Build equip/unequip service helpers
-  - [ ] 6.1 Write tests for slot validation, auto-swaps, and overflow handling
-  - [ ] 6.2 Implement equip/unequip helpers consuming stacking services
-  - [ ] 6.3 Ensure metadata propagation for equipped items
-  - [ ] 6.4 Verify all tests pass
+- [x] 6. Build equip/unequip service helpers
+  - [x] 6.1 Write tests for slot validation, auto-swaps, and overflow handling
+  - [x] 6.2 Implement equip/unequip helpers consuming stacking services
+  - [x] 6.3 Ensure metadata propagation for equipped items
+  - [x] 6.4 Verify all tests pass
 
 - [ ] 7. Implement player command handlers
   - [ ] 7.1 Write tests for `inventory`, `pickup`, `drop`, `equip`, and `unequip` commands
