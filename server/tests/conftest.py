@@ -48,6 +48,10 @@ from dotenv import load_dotenv
 
 from server.logging.enhanced_logging_config import get_logger
 
+pytest_plugins = [
+    "server.tests.fixtures.inventory_fixtures",
+]
+
 logger = get_logger(__name__)
 
 # Import Windows-specific logging fixes

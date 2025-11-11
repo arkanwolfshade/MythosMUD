@@ -2,10 +2,10 @@
 
 ## Tasks
 
-- [ ] 1. Baseline inventory persistence tests
-  - [ ] 1.1 Author pytest fixtures covering empty, partial, and full inventories
-  - [ ] 1.2 Draft round-trip serialization/deserialization tests against JSON schema
-  - [ ] 1.3 Verify all tests pass
+- [x] 1. Baseline inventory persistence tests
+  - [x] 1.1 Author pytest fixtures covering empty, partial, and full inventories
+  - [x] 1.2 Draft round-trip serialization/deserialization tests against JSON schema
+  - [x] 1.3 Verify all tests pass
 
 - [ ] 2. Implement persistence migration
   - [ ] 2.1 Write tests validating migration idempotence and row creation per player
