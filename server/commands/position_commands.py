@@ -58,10 +58,15 @@ async def _handle_position_change(
     result = position_service.change_position(target_player_name, desired_position)
 
     room_message: str | None = None
+    player_update: dict[str, str | None] | None = None
     if result.get("success"):
         previous_position = result.get("previous_position")
         player_display_name = result.get("player_display_name", target_player_name)
         room_message = _format_room_posture_message(player_display_name, previous_position, result["position"])
+        player_update = {
+            "position": result["position"],
+            "previous_position": previous_position,
+        }
 
         player_id = result.get("player_id")
         room_id = result.get("room_id")
@@ -111,6 +116,10 @@ async def _handle_position_change(
         "position": result["position"],
         "changed": result["success"],
         "room_message": room_message,
+        "player_update": player_update,
+        "game_log_message": result["message"],
+        "game_log_channel": "game-log",
+        "suppress_chat": True,
     }
 
 

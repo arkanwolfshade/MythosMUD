@@ -84,6 +84,10 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
   const filteredMessages = useMemo(() => {
     return messages.filter(message => {
+      if (message.channel === 'game-log') {
+        return false;
+      }
+
       if (message.messageType === 'system') {
         return false;
       }

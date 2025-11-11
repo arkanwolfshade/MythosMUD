@@ -74,6 +74,11 @@ async def test_sit_command_updates_persistence_and_connection(mock_request, mock
     assert result["position"] == "sitting"
     assert result["changed"] is True
     assert "seated" in (result["room_message"] or "")
+    assert result["suppress_chat"] is True
+    assert result["game_log_message"] == "You settle into a seated position."
+    assert result["game_log_channel"] == "game-log"
+    assert result["player_update"]["position"] == "sitting"
+    assert result["player_update"]["previous_position"] == "standing"
 
     alias_calls = {call.args[1] for call in baseline_alias_storage.create_alias.call_args_list}
     assert alias_calls == {"sit", "stand", "lie"}
@@ -116,6 +121,10 @@ async def test_stand_command_no_change_skips_persistence(mock_request, mock_play
     assert result["position"] == "standing"
     assert result["changed"] is False
     assert result["room_message"] is None
+    assert result["suppress_chat"] is True
+    assert result["game_log_message"] == "You are already standing."
+    assert result["game_log_channel"] == "game-log"
+    assert result["player_update"] is None
     assert alias_storage.create_alias.call_count == 0
     broadcast_mock = mock_request.app.state.connection_manager.broadcast_to_room
     assert broadcast_mock.await_count == 0
@@ -143,6 +152,11 @@ async def test_lie_command_accepts_down_modifier(mock_request, mock_player, base
     assert result["position"] == "lying"
     assert result["changed"] is True
     assert "lies" in (result["room_message"] or "")
+    assert result["suppress_chat"] is True
+    assert result["game_log_message"] == "You stretch out and lie down."
+    assert result["game_log_channel"] == "game-log"
+    assert result["player_update"]["position"] == "lying"
+    assert result["player_update"]["previous_position"] == "standing"
 
     broadcast_mock = mock_request.app.state.connection_manager.broadcast_to_room
     broadcast_mock.assert_awaited_once()
@@ -171,5 +185,9 @@ async def test_position_command_handles_missing_persistence(mock_request, baseli
     assert result["position"] == "sitting"
     assert result["changed"] is False
     assert result["room_message"] is None
+    assert result["suppress_chat"] is True
+    assert result["game_log_message"] == "Position changes are currently unavailable."
+    assert result["game_log_channel"] == "game-log"
+    assert result["player_update"] is None
     broadcast_mock = mock_request.app.state.connection_manager.broadcast_to_room
     assert broadcast_mock.await_count == 0

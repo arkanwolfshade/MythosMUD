@@ -93,6 +93,8 @@ interface ChatMessage {
   rawText?: string;
 }
 
+const GAME_LOG_CHANNEL = 'game-log';
+
 const resolveChatTypeFromChannel = (channel: string): string => {
   switch (channel) {
     case 'whisper':
@@ -497,10 +499,9 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             break;
           }
           case 'command_response': {
-            // Debug logging for command response events
             if (import.meta.env.MODE === 'development') {
               console.debug('command_response case MATCHED!', {
-                eventType: eventType,
+                eventType,
                 eventData: event.data,
                 eventDataKeys: Object.keys(event.data || {}),
                 eventDataValues: Object.values(event.data || {}),
@@ -510,16 +511,51 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 timestamp: new Date().toISOString(),
               });
             }
-            const message = event.data.result as string;
-            const isHtml = event.data.is_html as boolean;
+
+            const suppressChat = Boolean(event.data?.suppress_chat);
+            const message = typeof event.data?.result === 'string' ? (event.data.result as string) : '';
+            const isHtml = Boolean(event.data?.is_html);
+            const playerUpdate = event.data?.player_update as
+              | { position?: string; previous_position?: string }
+              | undefined;
+            const explicitPosition =
+              typeof event.data?.position === 'string' ? (event.data.position as string) : undefined;
+            const newPosition = playerUpdate?.position || explicitPosition;
+            const gameLogChannel =
+              typeof event.data?.game_log_channel === 'string' && event.data.game_log_channel
+                ? (event.data.game_log_channel as string)
+                : GAME_LOG_CHANNEL;
+            const gameLogMessage =
+              (typeof event.data?.game_log_message === 'string' && event.data.game_log_message.length > 0
+                ? (event.data.game_log_message as string)
+                : undefined) || message;
+
             logger.info('GameTerminalWithPanels', 'Processing command response', {
               hasMessage: !!message,
               messageLength: message?.length || 0,
               isHtml,
+              suppressChat,
               currentMessageCount: currentMessagesRef.current.length,
+              hasPlayerUpdate: !!playerUpdate,
             });
+
+            if (newPosition) {
+              const currentPlayer = currentPlayerRef.current;
+              const basePlayer = updates.player ?? (currentPlayer ? { ...currentPlayer } : undefined);
+              const statsSource = basePlayer?.stats ?? currentPlayer?.stats;
+              if (basePlayer || currentPlayer) {
+                updates.player = {
+                  ...(basePlayer ?? currentPlayer ?? {}),
+                  position: newPosition,
+                  stats: {
+                    ...(statsSource ?? {}),
+                    position: newPosition,
+                  },
+                } as Player;
+              }
+            }
+
             if (message) {
-              // Check if this is a status command response and parse player data
               if (message.includes('Name:') && message.includes('Health:') && message.includes('Sanity:')) {
                 try {
                   const parsedPlayerData = parseStatusResponse(message);
@@ -540,14 +576,17 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                   });
                 }
               }
+            }
 
-              // Use intelligent message type categorization
+            const shouldEmitChat = !suppressChat && message;
+            const messageForLog = gameLogMessage;
+
+            if (shouldEmitChat) {
               const messageTypeResult = determineMessageType(message);
-
               const chatMessage = {
                 text: message,
                 timestamp: event.timestamp,
-                isHtml: isHtml || false,
+                isHtml,
                 messageType: messageTypeResult.type,
                 channel: messageTypeResult.channel ?? 'game',
                 type:
@@ -556,22 +595,45 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                     : resolveChatTypeFromChannel(messageTypeResult.channel ?? 'game'),
               };
 
-              // Enhanced logging for debugging
-              logger.info('GameTerminalWithPanels', 'Creating chat message', {
-                messageText: message.substring(0, 100) + (message.length > 100 ? '...' : ''),
-                messageType: messageTypeResult.type,
-                channel: messageTypeResult.channel,
-                timestamp: event.timestamp,
-                isHtml: isHtml || false,
-                messageLength: message.length,
-              });
-
               if (!updates.messages) {
                 updates.messages = [...currentMessagesRef.current];
               }
 
               updates.messages.push(chatMessage);
+            } else if (messageForLog) {
+              if (!updates.messages) {
+                updates.messages = [...currentMessagesRef.current];
+              }
+
+              updates.messages.push({
+                text: messageForLog,
+                timestamp: event.timestamp,
+                isHtml,
+                messageType: 'system',
+                channel: gameLogChannel,
+                type: 'system',
+              });
             }
+            break;
+          }
+          case 'player_posture_change': {
+            const roomMessage = typeof event.data?.message === 'string' ? event.data.message : '';
+            if (!roomMessage) {
+              break;
+            }
+
+            if (!updates.messages) {
+              updates.messages = [...currentMessagesRef.current];
+            }
+
+            updates.messages.push({
+              text: roomMessage,
+              timestamp: event.timestamp,
+              isHtml: false,
+              messageType: 'system',
+              channel: GAME_LOG_CHANNEL,
+              type: 'system',
+            });
             break;
           }
           case 'system': {
