@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import copy
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, TypedDict, cast
+
+from .inventory_mutation_guard import InventoryMutationGuard
 
 
 class InventoryServiceError(Exception):
@@ -46,6 +48,7 @@ class InventoryService:
     """
 
     max_slots: int = 20
+    mutation_guard: InventoryMutationGuard = field(default_factory=InventoryMutationGuard)
 
     def add_stack(
         self,
@@ -129,6 +132,21 @@ class InventoryService:
         split_stack = self._clone_with_quantity(source_stack, split_quantity)
         normalized_inventory.insert(slot_index + 1, split_stack)
         return normalized_inventory
+
+    def begin_mutation(self, player_id: str, token: str | None):
+        """
+        Acquire a guarded mutation context for the given player.
+
+        Returns a context manager decision that should be used via:
+
+            with service.begin_mutation(player_id, token) as decision:
+                if decision.should_apply:
+                    ...
+
+        This pattern ensures per-player serialization and idempotent behaviour.
+        """
+
+        return self.mutation_guard.acquire(player_id, token)
 
     def _clone_stack(self, stack: Mapping[str, Any]) -> InventoryStack:
         try:

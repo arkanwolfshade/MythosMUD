@@ -6,6 +6,7 @@ import copy
 
 import pytest
 
+from server.services.inventory_mutation_guard import InventoryMutationGuard
 from server.services.inventory_service import (
     InventoryCapacityError,
     InventoryService,
@@ -126,3 +127,11 @@ def test_add_stack_is_pure_function(partial_inventory):
     service.add_stack(partial_inventory, incoming)
 
     assert partial_inventory == frozen
+
+
+def test_begin_mutation_delegates_to_guard():
+    guard = InventoryMutationGuard()
+    service = InventoryService(mutation_guard=guard)
+
+    with service.begin_mutation("investigator-5", "unique-token") as decision:
+        assert decision.should_apply

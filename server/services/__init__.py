@@ -6,6 +6,7 @@ including direct WebSocket broadcasting, chat services, and other real-time feat
 """
 
 from .admin_auth_service import AdminAuthService, admin_auth_service, get_admin_auth_service
+from .inventory_mutation_guard import InventoryMutationGuard, MutationDecision
 from .inventory_service import (
     InventoryCapacityError,
     InventoryService,
@@ -30,4 +31,6 @@ __all__ = [
     "InventoryValidationError",
     "InventoryCapacityError",
     "InventorySplitError",
+    "InventoryMutationGuard",
+    "MutationDecision",
 ]

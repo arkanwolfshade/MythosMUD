@@ -26,11 +26,11 @@
   - [x] 4.3 Verify thread-safety or atomic mutation assumptions with docstrings/tests
   - [x] 4.4 Verify all tests pass
 
-- [ ] 5. Implement dupe protection and concurrency guards
-  - [ ] 5.1 Write tests simulating double-execution and race conditions
-  - [ ] 5.2 Add atomic command guards and idempotent execution pathways
-  - [ ] 5.3 Log anomaly detections with moderation-friendly metadata
-  - [ ] 5.4 Verify all tests pass
+- [x] 5. Implement dupe protection and concurrency guards
+  - [x] 5.1 Write tests simulating double-execution and race conditions
+  - [x] 5.2 Add atomic command guards and idempotent execution pathways
+  - [x] 5.3 Log anomaly detections with moderation-friendly metadata
+  - [x] 5.4 Verify all tests pass
 
 - [ ] 6. Build equip/unequip service helpers
   - [ ] 6.1 Write tests for slot validation, auto-swaps, and overflow handling
