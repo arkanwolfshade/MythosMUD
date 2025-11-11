@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mythosmud.local/specs/2025-11-11/inventory-schema.json",
+  "title": "MythosMUD Player Inventory Payload",
+  "description": "Validation schema for inventory_json and equipped_json columns persisted per player. Inventory entries are ordered slots (0-19); equipped entries are keyed by slot type.",
+  "type": "object",
+  "required": [
+    "inventory",
+    "equipped"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "inventory": {
+      "$ref": "#/$defs/inventoryArray"
+    },
+    "equipped": {
+      "$ref": "#/$defs/equippedMap"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Optional payload version for future migrations; defaults to 1 when absent."
+    }
+  },
+  "$defs": {
+    "inventoryArray": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "$ref": "#/$defs/itemStack"
+      },
+      "description": "Ordered inventory slots; shortness implies empty trailing slots."
+    },
+    "equippedMap": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[a-z_][a-z0-9_]*$": {
+          "$ref": "#/$defs/equippedStack"
+        }
+      },
+      "description": "Mapping of slot type identifiers (e.g., head, chest, left_hand) to equipped item stacks."
+    },
+    "itemStack": {
+      "type": "object",
+      "required": [
+        "item_id",
+        "item_name",
+        "slot_type",
+        "quantity"
+      ],
+      "additionalProperties": {
+        "type": [
+          "string",
+          "number",
+          "integer",
+          "boolean",
+          "object",
+          "array",
+          "null"
+        ]
+      },
+      "properties": {
+        "item_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stable identifier referencing the canonical item definition."
+        },
+        "item_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Display name rendered to players."
+        },
+        "slot_type": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Primary slot affinity (e.g., backpack, head, left_hand)."
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Stack count occupying the slot."
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Optional structured metadata (e.g., durability, attunement).",
+          "additionalProperties": true
+        }
+      }
+    },
+    "equippedStack": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/itemStack"
+        },
+        {
+          "required": [
+            "quantity"
+          ],
+          "properties": {
+            "quantity": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1,
+              "description": "Equipped items must occupy exactly one unit; stacks should remain in inventory."
+            }
+          }
+        }
+      ],
+      "description": "Equipped item record derived from the primary stack definition."
+    }
+  }
+}
