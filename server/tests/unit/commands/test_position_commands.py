@@ -82,6 +82,8 @@ async def test_sit_command_updates_persistence_and_connection(mock_request, mock
 
     alias_calls = {call.args[1] for call in baseline_alias_storage.create_alias.call_args_list}
     assert alias_calls == {"sit", "stand", "lie"}
+    alias_command_values = {call.args[2] for call in baseline_alias_storage.create_alias.call_args_list}
+    assert alias_command_values == {"/sit", "/stand", "/lie"}
 
     broadcast_mock = mock_request.app.state.connection_manager.broadcast_to_room
     broadcast_mock.assert_awaited_once()
@@ -102,9 +104,9 @@ async def test_stand_command_no_change_skips_persistence(mock_request, mock_play
 
     alias_storage = MagicMock()
     alias_storage.get_alias.side_effect = [
-        Alias(name="sit", command="sit"),
-        Alias(name="stand", command="stand"),
-        Alias(name="lie", command="lie"),
+        Alias(name="sit", command="/sit"),
+        Alias(name="stand", command="/stand"),
+        Alias(name="lie", command="/lie"),
     ]
 
     result = await handle_stand_command(

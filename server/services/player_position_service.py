@@ -32,7 +32,7 @@ _POSITION_MESSAGES: dict[str, dict[str, str]] = {
     },
 }
 
-_DEFAULT_ALIAS_MAP = {"sit": "sit", "stand": "stand", "lie": "lie"}
+_DEFAULT_ALIAS_MAP = {"sit": "/sit", "stand": "/stand", "lie": "/lie"}
 
 
 class PlayerPositionService:
