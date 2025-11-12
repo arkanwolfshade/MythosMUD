@@ -12,6 +12,7 @@ from .alias import Alias
 from .game import AttributeType, Stats, StatusEffect, StatusEffectType
 from .health import HealthErrorResponse, HealthResponse, HealthStatus
 from .invite import Invite
+from .item import ItemComponentState, ItemInstance, ItemPrototype
 from .npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
 from .player import Player
 from .user import User
@@ -24,6 +25,9 @@ __all__ = [
     "Player",
     "Invite",
     "Alias",
+    "ItemPrototype",
+    "ItemInstance",
+    "ItemComponentState",
     "Stats",
     "AttributeType",
     "StatusEffect",

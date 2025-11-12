@@ -15,10 +15,10 @@
   - [x] 2.4 Verify Playwright scenarios and regression suites pass
 
 - [ ] 3. Phase 2 – Persistence & Database Provisioning
-  - [ ] 3.1 Write tests for migrations, seed scripts, and CRUD operations
-  - [ ] 3.2 Create Alembic migration and environment-specific SQLite databases
-  - [ ] 3.3 Seed equip-slot coverage and validate deterministic IDs
-  - [ ] 3.4 Verify all persistence tests and Playwright regressions pass
+  - [x] 3.1 Write tests for migrations, seed scripts, and CRUD operations
+  - [x] 3.2 Create Alembic migration and environment-specific SQLite databases
+  - [x] 3.3 Seed equip-slot coverage and validate deterministic IDs
+  - [x] 3.4 Verify all persistence tests and Playwright regressions pass
 
 - [ ] 4. Phase 3 – Administrative Summon Command
   - [ ] 4.1 Write tests for summon command parsing, permissions, and stubs
