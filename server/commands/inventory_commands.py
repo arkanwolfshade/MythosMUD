@@ -26,6 +26,9 @@ logger = get_logger(__name__)
 
 DEFAULT_SLOT_CAPACITY = 20
 
+_SHARED_INVENTORY_SERVICE = InventoryService()
+_SHARED_EQUIPMENT_SERVICE = EquipmentService(inventory_service=_SHARED_INVENTORY_SERVICE)
+
 
 def _resolve_state(request: Any) -> tuple[Any, Any]:
     app = getattr(request, "app", None)
@@ -401,56 +404,72 @@ async def handle_equip_command(
     target_slot = command_data.get("target_slot")
     selected_stack = deepcopy(inventory[index - 1])
 
-    inventory_service = InventoryService()
-    equipment_service = EquipmentService(inventory_service=inventory_service)
+    inventory_service = _SHARED_INVENTORY_SERVICE
+    equipment_service = _SHARED_EQUIPMENT_SERVICE
+    mutation_token = command_data.get("mutation_token")
 
     previous_inventory = _clone_inventory(player)
     previous_equipped = deepcopy(player.get_equipped_items())
 
-    try:
-        new_inventory, new_equipped = equipment_service.equip_from_inventory(
-            inventory,
-            player.get_equipped_items(),
-            slot_index=index - 1,
-            target_slot=target_slot,
-        )
-    except (SlotValidationError, EquipmentCapacityError, InventoryCapacityError) as exc:
-        logger.info(
-            "Equip rejected",
-            player=player.name,
-            player_id=str(player.player_id),
-            reason=str(exc),
-            requested_slot=target_slot,
-            inventory_index=index,
-            room_id=room_id,
-        )
-        return {"result": str(exc)}
+    with inventory_service.begin_mutation(str(player.player_id), mutation_token) as decision:
+        if not decision.should_apply:
+            logger.info(
+                "Equip suppressed by mutation guard",
+                player=player.name,
+                player_id=str(player.player_id),
+                requested_slot=target_slot,
+                inventory_index=index,
+                room_id=room_id,
+                mutation_token=mutation_token,
+            )
+            return {"result": "That action is already being processed."}
 
-    player.set_inventory(cast(list[dict[str, Any]], new_inventory))
-    player.set_equipped_items(cast(dict[str, Any], new_equipped))
+        try:
+            new_inventory, new_equipped = equipment_service.equip_from_inventory(
+                inventory,
+                player.get_equipped_items(),
+                slot_index=index - 1,
+                target_slot=target_slot,
+            )
+        except (SlotValidationError, EquipmentCapacityError, InventoryCapacityError) as exc:
+            logger.info(
+                "Equip rejected",
+                player=player.name,
+                player_id=str(player.player_id),
+                reason=str(exc),
+                requested_slot=target_slot,
+                inventory_index=index,
+                room_id=room_id,
+            )
+            return {"result": str(exc)}
 
-    persist_error = _persist_player(persistence, player)
-    if persist_error:
-        player.set_inventory(previous_inventory)
-        player.set_equipped_items(previous_equipped)
-        return persist_error
+        player.set_inventory(cast(list[dict[str, Any]], new_inventory))
+        player.set_equipped_items(cast(dict[str, Any], new_equipped))
+
+        persist_error = _persist_player(persistence, player)
+        if persist_error:
+            player.set_inventory(previous_inventory)
+            player.set_equipped_items(previous_equipped)
+            return persist_error
 
     equipped_slot: str | None = None
     equipped_item: InventoryStack | None = None
 
     preferred_slot = target_slot or selected_stack.get("slot_type")
-    if preferred_slot and preferred_slot in new_equipped:
+    equipped_mapping = player.get_equipped_items()
+
+    if preferred_slot and preferred_slot in equipped_mapping:
         equipped_slot = preferred_slot
-        equipped_item = new_equipped.get(preferred_slot)
+        equipped_item = equipped_mapping.get(preferred_slot)
     else:
-        for slot_name, item in new_equipped.items():
+        for slot_name, item in equipped_mapping.items():
             if item.get("item_id") == selected_stack.get("item_id"):
                 equipped_slot = slot_name
                 equipped_item = item
                 break
 
     if equipped_slot is None:
-        equipped_slot = preferred_slot or next(iter(new_equipped.keys()), "unknown")
+        equipped_slot = preferred_slot or next(iter(equipped_mapping.keys()), "unknown")
 
     fallback_item: dict[str, Any] = {}
     item_payload: dict[str, Any] = cast(dict[str, Any], equipped_item) if equipped_item is not None else fallback_item
@@ -484,6 +503,7 @@ async def handle_equip_command(
         item_id=item_payload.get("item_id"),
         slot=equipped_slot,
         room_id=room_id,
+        mutation_token=mutation_token,
     )
     return {
         "result": f"You equip {item_name}.",
@@ -511,37 +531,50 @@ async def handle_unequip_command(
     if not isinstance(slot, str) or not slot:
         return {"result": "Usage: unequip <slot>"}
 
-    inventory_service = InventoryService()
-    equipment_service = EquipmentService(inventory_service=inventory_service)
+    inventory_service = _SHARED_INVENTORY_SERVICE
+    equipment_service = _SHARED_EQUIPMENT_SERVICE
+    mutation_token = command_data.get("mutation_token")
 
     previous_inventory = _clone_inventory(player)
     previous_equipped = deepcopy(player.get_equipped_items())
 
-    try:
-        new_inventory, new_equipped = equipment_service.unequip_to_inventory(
-            player.get_inventory(),
-            player.get_equipped_items(),
-            slot_type=slot,
-        )
-    except (SlotValidationError, EquipmentCapacityError, InventoryCapacityError) as exc:
-        logger.info(
-            "Unequip rejected",
-            player=player.name,
-            player_id=str(player.player_id),
-            reason=str(exc),
-            slot=slot,
-            room_id=str(player.current_room_id),
-        )
-        return {"result": str(exc)}
+    with inventory_service.begin_mutation(str(player.player_id), mutation_token) as decision:
+        if not decision.should_apply:
+            logger.info(
+                "Unequip suppressed by mutation guard",
+                player=player.name,
+                player_id=str(player.player_id),
+                slot=slot,
+                room_id=str(player.current_room_id),
+                mutation_token=mutation_token,
+            )
+            return {"result": "That action is already being processed."}
 
-    player.set_inventory(cast(list[dict[str, Any]], new_inventory))
-    player.set_equipped_items(cast(dict[str, Any], new_equipped))
+        try:
+            new_inventory, new_equipped = equipment_service.unequip_to_inventory(
+                player.get_inventory(),
+                player.get_equipped_items(),
+                slot_type=slot,
+            )
+        except (SlotValidationError, EquipmentCapacityError, InventoryCapacityError) as exc:
+            logger.info(
+                "Unequip rejected",
+                player=player.name,
+                player_id=str(player.player_id),
+                reason=str(exc),
+                slot=slot,
+                room_id=str(player.current_room_id),
+            )
+            return {"result": str(exc)}
 
-    persist_error = _persist_player(persistence, player)
-    if persist_error:
-        player.set_inventory(previous_inventory)
-        player.set_equipped_items(previous_equipped)
-        return persist_error
+        player.set_inventory(cast(list[dict[str, Any]], new_inventory))
+        player.set_equipped_items(cast(dict[str, Any], new_equipped))
+
+        persist_error = _persist_player(persistence, player)
+        if persist_error:
+            player.set_inventory(previous_inventory)
+            player.set_equipped_items(previous_equipped)
+            return persist_error
 
     unequipped_item = previous_equipped.get(slot, {})
     item_name = unequipped_item.get("item_name") or unequipped_item.get("item_id", "item")
@@ -575,6 +608,7 @@ async def handle_unequip_command(
         slot=slot,
         item_id=unequipped_item.get("item_id"),
         room_id=room_id,
+        mutation_token=mutation_token,
     )
     return {
         "result": f"You remove {item_name} from {slot}.",

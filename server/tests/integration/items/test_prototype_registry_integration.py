@@ -10,7 +10,7 @@ def write_payload(directory: Path, name: str, payload: dict):
     return file_path
 
 
-def test_registry_emits_observability_warning_for_malformed_payload(tmp_path: Path, capsys):
+def test_registry_emits_observability_warning_for_malformed_payload(tmp_path: Path, caplog):
     valid = {
         "prototype_id": "artifact.miskatonic.codex",
         "name": "Codex of Whispered Secrets",
@@ -43,8 +43,8 @@ def test_registry_emits_observability_warning_for_malformed_payload(tmp_path: Pa
     write_payload(tmp_path, "valid_codex", valid)
     write_payload(tmp_path, "malformed_codex", malformed)
 
-    registry = PrototypeRegistry.load_from_path(tmp_path)
-    captured = capsys.readouterr().out
+    with caplog.at_level("WARNING"):
+        registry = PrototypeRegistry.load_from_path(tmp_path)
 
-    assert "invalid prototype payload" in captured
+    assert any("invalid prototype payload" in record.message for record in caplog.records)
     assert registry.invalid_entries()[0]["prototype_id"] == "artifact.miskatonic.corrupted"

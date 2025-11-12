@@ -1,4 +1,5 @@
 import logging
+from copy import deepcopy
 from typing import Protocol, cast
 from unittest.mock import AsyncMock, MagicMock
 
@@ -81,6 +82,8 @@ async def test_inventory_command_renders_inventory_and_equipped(command_context)
     player.set_inventory(
         [
             {
+                "item_instance_id": "instance-tonic_laudanum",
+                "prototype_id": "tonic_laudanum",
                 "item_id": "tonic_laudanum",
                 "item_name": "Laudanum Tonic",
                 "slot_type": "backpack",
@@ -88,6 +91,8 @@ async def test_inventory_command_renders_inventory_and_equipped(command_context)
                 "metadata": {"dose_ml": 10},
             },
             {
+                "item_instance_id": "instance-lantern_battered",
+                "prototype_id": "lantern_battered",
                 "item_id": "lantern_battered",
                 "item_name": "Battered Lantern",
                 "slot_type": "left_hand",
@@ -98,6 +103,8 @@ async def test_inventory_command_renders_inventory_and_equipped(command_context)
     player.set_equipped_items(
         {
             "head": {
+                "item_instance_id": "instance-obsidian_helm",
+                "prototype_id": "obsidian_helm",
                 "item_id": "obsidian_helm",
                 "item_name": "Obsidian Helm",
                 "slot_type": "head",
@@ -129,6 +136,8 @@ async def test_pickup_command_transfers_room_item(command_context):
     player_room_id = cast(str, player.current_room_id)
 
     drop_stack = {
+        "item_instance_id": "instance-eldritch_relic",
+        "prototype_id": "eldritch_relic",
         "item_id": "eldritch_relic",
         "item_name": "Eldritch Relic",
         "slot_type": "backpack",
@@ -146,8 +155,9 @@ async def test_pickup_command_transfers_room_item(command_context):
 
     inventory = player.get_inventory()
     assert len(inventory) == 1
-    assert inventory[0]["item_id"] == "eldritch_relic"
+    assert inventory[0]["prototype_id"] == "eldritch_relic"
     assert inventory[0]["quantity"] == 1
+    assert "item_instance_id" in inventory[0]
 
     remaining_drop = room_manager.list_room_drops(player_room_id)
     assert remaining_drop[0]["quantity"] == 1
@@ -164,6 +174,8 @@ async def test_drop_command_moves_item_to_room(command_context):
     player.set_inventory(
         [
             {
+                "item_instance_id": "instance-eldritch_relic",
+                "prototype_id": "eldritch_relic",
                 "item_id": "eldritch_relic",
                 "item_name": "Eldritch Relic",
                 "slot_type": "backpack",
@@ -189,6 +201,7 @@ async def test_drop_command_moves_item_to_room(command_context):
     drops = room_manager.list_room_drops(player_room_id)
     assert len(drops) == 1
     assert drops[0]["quantity"] == 2
+    assert drops[0]["prototype_id"] == "eldritch_relic"
 
     persistence.save_player.assert_called_once_with(player)
     assert "You drop 2x Eldritch Relic" in result["result"]
@@ -207,6 +220,8 @@ async def test_drop_command_logs_structured_success(
     player.set_inventory(
         [
             {
+                "item_instance_id": "instance-eldritch_relic",
+                "prototype_id": "eldritch_relic",
                 "item_id": "eldritch_relic",
                 "item_name": "Eldritch Relic",
                 "slot_type": "backpack",
@@ -264,6 +279,8 @@ async def test_pickup_command_logs_capacity_failure(
     player_room_id = cast(str, player.current_room_id)
 
     drop_stack = {
+        "item_instance_id": "instance-obsidian_amulet",
+        "prototype_id": "obsidian_amulet",
         "item_id": "obsidian_amulet",
         "item_name": "Obsidian Amulet",
         "slot_type": "backpack",
@@ -312,6 +329,8 @@ async def test_equip_command_moves_item_to_equipped(command_context):
     player.set_inventory(
         [
             {
+                "item_instance_id": "instance-lantern_battered",
+                "prototype_id": "lantern_battered",
                 "item_id": "lantern_battered",
                 "item_name": "Battered Lantern",
                 "slot_type": "left_hand",
@@ -340,6 +359,39 @@ async def test_equip_command_moves_item_to_equipped(command_context):
 
 
 @pytest.mark.asyncio
+async def test_equip_command_duplicate_token_suppresses_second_attempt(command_context):
+    request, persistence, connection_manager, room_manager, alias_storage = command_context
+
+    player = make_player()
+    starting_inventory = [
+        {
+            "item_instance_id": "instance-lantern_battered",
+            "prototype_id": "lantern_battered",
+            "item_id": "lantern_battered",
+            "item_name": "Battered Lantern",
+            "slot_type": "left_hand",
+            "quantity": 1,
+        }
+    ]
+    player.set_inventory(deepcopy(starting_inventory))
+    persistence.get_player_by_name.return_value = player
+    player_name = cast(str, player.name)
+
+    command = {"index": 1, "target_slot": None, "mutation_token": "token-equip-1"}
+
+    first_result = await handle_equip_command(command, {"username": player_name}, request, alias_storage, player_name)
+    assert "You equip Battered Lantern" in first_result["result"]
+
+    player.set_inventory(deepcopy(starting_inventory))
+    player.set_equipped_items({})
+    persistence.save_player.reset_mock()
+
+    second_result = await handle_equip_command(command, {"username": player_name}, request, alias_storage, player_name)
+    assert second_result["result"] == "That action is already being processed."
+    persistence.save_player.assert_not_called()
+
+
+@pytest.mark.asyncio
 async def test_unequip_command_returns_item_to_inventory(command_context):
     request, persistence, connection_manager, room_manager, alias_storage = command_context
 
@@ -348,6 +400,8 @@ async def test_unequip_command_returns_item_to_inventory(command_context):
     player.set_equipped_items(
         {
             "head": {
+                "item_instance_id": "instance-obsidian_helm",
+                "prototype_id": "obsidian_helm",
                 "item_id": "obsidian_helm",
                 "item_name": "Obsidian Helm",
                 "slot_type": "head",
@@ -373,3 +427,35 @@ async def test_unequip_command_returns_item_to_inventory(command_context):
     persistence.save_player.assert_called_once_with(player)
     assert "You remove Obsidian Helm" in result["result"]
     connection_manager.broadcast_to_room.assert_awaited()
+
+
+@pytest.mark.asyncio
+async def test_unequip_command_duplicate_token_suppresses_second_attempt(command_context):
+    request, persistence, connection_manager, room_manager, alias_storage = command_context
+
+    player = make_player()
+    equipped_payload = {
+        "item_instance_id": "instance-obsidian_helm",
+        "prototype_id": "obsidian_helm",
+        "item_id": "obsidian_helm",
+        "item_name": "Obsidian Helm",
+        "slot_type": "head",
+        "quantity": 1,
+    }
+    player.set_inventory([])
+    player.set_equipped_items({"head": equipped_payload})
+    persistence.get_player_by_name.return_value = player
+    player_name = cast(str, player.name)
+
+    command = {"slot": "head", "mutation_token": "token-unequip-1"}
+
+    first_result = await handle_unequip_command(command, {"username": player_name}, request, alias_storage, player_name)
+    assert "You remove Obsidian Helm" in first_result["result"]
+
+    player.set_inventory([])
+    player.set_equipped_items({"head": equipped_payload})
+    persistence.save_player.reset_mock()
+
+    second_result = await handle_unequip_command(command, {"username": player_name}, request, alias_storage, player_name)
+    assert second_result["result"] == "That action is already being processed."
+    persistence.save_player.assert_not_called()

@@ -43,7 +43,7 @@ def test_registry_loads_valid_prototypes(tmp_path: Path, valid_payload: dict):
     assert result.name == "Codex of Whispered Secrets"
 
 
-def test_registry_skips_invalid_prototypes_and_logs_warning(tmp_path: Path, capsys):
+def test_registry_skips_invalid_prototypes_and_logs_warning(tmp_path: Path, caplog):
     valid = {
         "prototype_id": "weapon.eldritch.dagger",
         "name": "Eldritch Dagger",
@@ -65,11 +65,11 @@ def test_registry_skips_invalid_prototypes_and_logs_warning(tmp_path: Path, caps
     write_prototype(tmp_path, "valid_dagger", valid)
     write_prototype(tmp_path, "invalid_dagger", invalid)
 
-    registry = PrototypeRegistry.load_from_path(tmp_path)
-    captured = capsys.readouterr().out
+    with caplog.at_level("WARNING"):
+        registry = PrototypeRegistry.load_from_path(tmp_path)
 
     assert registry.get("weapon.eldritch.dagger").name == "Eldritch Dagger"
-    assert "invalid prototype payload" in captured
+    assert any("invalid prototype payload" in record.message for record in caplog.records)
     assert registry.invalid_entries()[0]["prototype_id"] == "invalid_dagger"
 
 

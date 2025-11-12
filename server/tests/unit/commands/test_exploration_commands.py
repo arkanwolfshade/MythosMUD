@@ -33,12 +33,16 @@ async def test_handle_look_command_includes_room_drops():
 
     room_manager.list_room_drops.return_value = [
         {
+            "item_instance_id": "instance-sigil_elder_sign",
+            "prototype_id": "sigil_elder_sign",
             "item_id": "sigil_elder_sign",
             "item_name": "Elder Sign Token",
             "slot_type": "backpack",
             "quantity": 1,
         },
         {
+            "item_instance_id": "instance-phial_ichor",
+            "prototype_id": "phial_ichor",
             "item_id": "phial_ichor",
             "item_name": "Phial of Viscid Ichor",
             "slot_type": "belt",

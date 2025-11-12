@@ -620,7 +620,14 @@ class TestRoomUpdateBroadcasting:
         mock_room.to_dict = Mock(return_value={"id": "room_1", "name": "Test Room"})
         mock_connection_manager.persistence.get_room.return_value = mock_room
         drop_payload = [
-            {"item_id": "obsidian_amulet", "item_name": "Obsidian Amulet", "slot_type": "neck", "quantity": 1}
+            {
+                "item_instance_id": "instance-obsidian_amulet",
+                "prototype_id": "obsidian_amulet",
+                "item_id": "obsidian_amulet",
+                "item_name": "Obsidian Amulet",
+                "slot_type": "neck",
+                "quantity": 1,
+            }
         ]
         mock_connection_manager.room_manager.list_room_drops.return_value = drop_payload
 

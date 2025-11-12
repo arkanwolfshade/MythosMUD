@@ -24,6 +24,8 @@ def test_add_stack_merges_matching_payload(partial_inventory):
     original_snapshot = copy.deepcopy(partial_inventory)
 
     incoming = {
+        "item_instance_id": "instance-tonic_laudanum-new",
+        "prototype_id": "tonic_laudanum",
         "item_id": "tonic_laudanum",
         "item_name": "Laudanum Tonic",
         "slot_type": "backpack",
@@ -34,8 +36,10 @@ def test_add_stack_merges_matching_payload(partial_inventory):
     updated = service.add_stack(partial_inventory, incoming)
 
     assert len(updated) == len(partial_inventory)
-    laudanum_stack = next(item for item in updated if item["item_id"] == "tonic_laudanum")
+    laudanum_stack = next(item for item in updated if item["prototype_id"] == "tonic_laudanum")
     assert laudanum_stack["quantity"] == 5
+    # merge should retain original stack instance identifier
+    assert laudanum_stack["item_instance_id"] == "instance-tonic_laudanum"
     assert partial_inventory == original_snapshot  # input not mutated
 
 
@@ -43,6 +47,8 @@ def test_add_stack_creates_new_slot_when_metadata_differs(partial_inventory):
     service = build_service()
 
     incoming = {
+        "item_instance_id": "instance-tonic_laudanum-variant",
+        "prototype_id": "tonic_laudanum",
         "item_id": "tonic_laudanum",
         "item_name": "Laudanum Tonic",
         "slot_type": "backpack",
@@ -62,6 +68,8 @@ def test_add_stack_raises_when_inventory_full(full_inventory):
     service = build_service()
 
     incoming = {
+        "item_instance_id": "instance-verdict_journal",
+        "prototype_id": "verdict_journal",
         "item_id": "verdict_journal",
         "item_name": "Journal of Judgements",
         "slot_type": "backpack",
@@ -84,7 +92,8 @@ def test_split_stack_creates_new_stack_and_preserves_original_inventory(partial_
     split_segment = updated[3]
     assert first_segment["quantity"] == 3
     assert split_segment["quantity"] == 2
-    assert split_segment["item_id"] == first_segment["item_id"]
+    assert split_segment["prototype_id"] == first_segment["prototype_id"]
+    assert split_segment["item_instance_id"] == first_segment["item_instance_id"]
     assert partial_inventory == original_snapshot  # original inventory untouched
 
 
@@ -118,6 +127,8 @@ def test_add_stack_is_pure_function(partial_inventory):
     frozen = copy.deepcopy(partial_inventory)
 
     incoming = {
+        "item_instance_id": "instance-mysterious_sand",
+        "prototype_id": "mysterious_sand",
         "item_id": "mysterious_sand",
         "item_name": "Vial of Desert Sand",
         "slot_type": "backpack",

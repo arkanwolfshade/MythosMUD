@@ -27,6 +27,8 @@ class InventorySplitError(InventoryServiceError):
 
 
 class InventoryStackRequired(TypedDict):
+    item_instance_id: str
+    prototype_id: str
     item_id: str
     item_name: str
     slot_type: str
@@ -35,6 +37,9 @@ class InventoryStackRequired(TypedDict):
 
 class InventoryStack(InventoryStackRequired, total=False):
     metadata: dict[str, Any]
+    flags: list[str]
+    origin: dict[str, Any]
+    created_at: str
 
 
 @dataclass(frozen=True)
@@ -150,7 +155,11 @@ class InventoryService:
 
     def _clone_stack(self, stack: Mapping[str, Any]) -> InventoryStack:
         try:
-            item_id = cast(str, stack["item_id"])
+            raw_instance_id = stack.get("item_instance_id") or stack.get("item_id")
+            if not raw_instance_id:
+                raise KeyError("item_instance_id")
+            item_instance_id = cast(str, raw_instance_id)
+            prototype_id = cast(str, stack.get("prototype_id") or stack.get("item_id"))
             item_name = cast(str, stack["item_name"])
             slot_type = cast(str, stack["slot_type"])
             quantity = int(stack["quantity"])
@@ -163,7 +172,9 @@ class InventoryService:
             raise InventoryValidationError("Quantity must be a positive integer.")
 
         clone: InventoryStack = {
-            "item_id": item_id,
+            "item_instance_id": item_instance_id,
+            "prototype_id": prototype_id,
+            "item_id": prototype_id,
             "item_name": item_name,
             "slot_type": slot_type,
             "quantity": quantity,
@@ -174,6 +185,22 @@ class InventoryService:
             if not isinstance(metadata, dict):
                 raise InventoryValidationError("Metadata must be a mapping when provided.")
             clone["metadata"] = copy.deepcopy(metadata)
+
+        flags = stack.get("flags")
+        if flags is not None:
+            if not isinstance(flags, list):
+                raise InventoryValidationError("Flags must be provided as a list when present.")
+            clone["flags"] = copy.deepcopy(flags)
+
+        origin = stack.get("origin")
+        if origin is not None:
+            if not isinstance(origin, dict):
+                raise InventoryValidationError("Origin metadata must be a mapping when provided.")
+            clone["origin"] = copy.deepcopy(origin)
+
+        created_at = stack.get("created_at")
+        if created_at is not None:
+            clone["created_at"] = str(created_at)
 
         return clone
 
@@ -186,7 +213,7 @@ class InventoryService:
 
     @staticmethod
     def _can_merge(existing: InventoryStack, incoming: InventoryStack) -> bool:
-        if existing["item_id"] != incoming["item_id"]:
+        if existing["prototype_id"] != incoming["prototype_id"]:
             return False
         if existing["slot_type"] != incoming["slot_type"]:
             return False

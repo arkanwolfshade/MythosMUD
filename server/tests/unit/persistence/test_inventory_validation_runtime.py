@@ -79,10 +79,18 @@ def test_save_player_with_oversized_inventory_rejected(
     persistence = PersistenceLayer(db_path=str(db_path))
     player = build_player("oversized-player", user_id)
 
-    invalid_inventory = [
-        {"item_id": f"token_{idx}", "item_name": f"Token {idx}", "slot_type": "backpack", "quantity": 1}
-        for idx in range(25)
-    ]
+    invalid_inventory = []
+    for idx in range(25):
+        invalid_inventory.append(
+            {
+                "item_instance_id": f"instance-token_{idx}",
+                "prototype_id": f"token_{idx}",
+                "item_id": f"token_{idx}",
+                "item_name": f"Token {idx}",
+                "slot_type": "backpack",
+                "quantity": 1,
+            }
+        )
     player.set_inventory(invalid_inventory)
 
     capsys.readouterr()
@@ -124,6 +132,8 @@ def test_save_player_with_invalid_equipped_payload_rejected(
     player.set_equipped_items(
         {
             "head": {
+                "item_instance_id": "instance-crown_of_tindalos",
+                "prototype_id": "crown_of_tindalos",
                 "item_id": "crown_of_tindalos",
                 "item_name": "Crown of Tindalos",
                 "slot_type": "head",
@@ -169,10 +179,18 @@ def test_loading_player_with_corrupt_inventory_raises(
     player.set_inventory([])
     persistence.save_player(player)
 
-    oversized_payload = [
-        {"item_id": f"specimen_{idx}", "item_name": f"Specimen {idx}", "slot_type": "backpack", "quantity": 1}
-        for idx in range(30)
-    ]
+    oversized_payload = []
+    for idx in range(30):
+        oversized_payload.append(
+            {
+                "item_instance_id": f"instance-specimen_{idx}",
+                "prototype_id": f"specimen_{idx}",
+                "item_id": f"specimen_{idx}",
+                "item_name": f"Specimen {idx}",
+                "slot_type": "backpack",
+                "quantity": 1,
+            }
+        )
     with sqlite3.connect(db_path) as conn:
         conn.execute(
             """

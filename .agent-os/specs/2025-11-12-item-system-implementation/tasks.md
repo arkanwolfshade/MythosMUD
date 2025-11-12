@@ -8,11 +8,11 @@
   - [x] 1.3 Integrate observability for malformed prototype reporting
   - [x] 1.4 Verify unit and integration tests pass
 
-- [ ] 2. Phase 1 – Item Factory & Guarded Integration
-  - [ ] 2.1 Write tests for item factory creation and mutation guard usage
-  - [ ] 2.2 Implement item factory, inventory service updates, and component hooks
-  - [ ] 2.3 Execute integration tests for equip/unequip flows
-  - [ ] 2.4 Verify Playwright scenarios and regression suites pass
+- [x] 2. Phase 1 – Item Factory & Guarded Integration
+  - [x] 2.1 Write tests for item factory creation and mutation guard usage
+  - [x] 2.2 Implement item factory, inventory service updates, and component hooks
+  - [x] 2.3 Execute integration tests for equip/unequip flows
+  - [x] 2.4 Verify Playwright scenarios and regression suites pass
 
 - [ ] 3. Phase 2 – Persistence & Database Provisioning
   - [ ] 3.1 Write tests for migrations, seed scripts, and CRUD operations
