@@ -38,11 +38,11 @@
   - [x] 6.3 Ensure metadata propagation for equipped items
   - [x] 6.4 Verify all tests pass
 
-- [ ] 7. Implement player command handlers
-  - [ ] 7.1 Write tests for `inventory`, `pickup`, `drop`, `equip`, and `unequip` commands
-  - [ ] 7.2 Integrate command handlers with services and validation
-  - [ ] 7.3 Confirm rate limiting and argument validation paths
-  - [ ] 7.4 Verify all tests pass
+- [x] 7. Implement player command handlers
+  - [x] 7.1 Write tests for `inventory`, `pickup`, `drop`, `equip`, and `unequip` commands
+  - [x] 7.2 Integrate command handlers with services and validation
+  - [x] 7.3 Confirm rate limiting and argument validation paths
+  - [x] 7.4 Verify all tests pass
 
 - [ ] 8. Update room rendering for dropped items
   - [ ] 8.1 Write tests for room description formatting and client rendering

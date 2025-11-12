@@ -74,6 +74,10 @@ class CommandType(str, Enum):
     STATUS = "status"
     WHOAMI = "whoami"
     INVENTORY = "inventory"
+    PICKUP = "pickup"
+    DROP = "drop"
+    EQUIP = "equip"
+    UNEQUIP = "unequip"
     QUIT = "quit"
     LOGOUT = "logout"
     SIT = "sit"
@@ -457,9 +461,58 @@ class WhoamiCommand(BaseCommand):
 
 
 class InventoryCommand(BaseCommand):
-    """Command for viewing player inventory."""
+    """Command for showing player inventory."""
 
     command_type: Literal[CommandType.INVENTORY] = CommandType.INVENTORY
+
+
+class PickupCommand(BaseCommand):
+    """Command for picking up items from room drops."""
+
+    command_type: Literal[CommandType.PICKUP] = CommandType.PICKUP
+    index: int = Field(..., ge=1, description="Index of the room drop to collect")
+    quantity: int | None = Field(None, ge=1, description="Quantity to pick up (defaults to full stack)")
+
+
+class DropCommand(BaseCommand):
+    """Command for dropping items from inventory into the room."""
+
+    command_type: Literal[CommandType.DROP] = CommandType.DROP
+    index: int = Field(..., ge=1, description="Index of the inventory slot to drop")
+    quantity: int | None = Field(None, ge=1, description="Quantity to drop (defaults to full stack)")
+
+
+class EquipCommand(BaseCommand):
+    """Command for equipping an item from inventory."""
+
+    command_type: Literal[CommandType.EQUIP] = CommandType.EQUIP
+    index: int = Field(..., ge=1, description="Inventory slot index to equip")
+    target_slot: str | None = Field(None, max_length=30, description="Optional slot override")
+
+    @field_validator("target_slot")
+    @classmethod
+    def validate_slot(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        normalized = value.strip().lower()
+        if not normalized:
+            raise ValueError("Slot cannot be empty")
+        return normalized
+
+
+class UnequipCommand(BaseCommand):
+    """Command for unequipping an item back to inventory."""
+
+    command_type: Literal[CommandType.UNEQUIP] = CommandType.UNEQUIP
+    slot: str = Field(..., min_length=1, max_length=30, description="Slot to unequip")
+
+    @field_validator("slot")
+    @classmethod
+    def validate_slot(cls, value: str) -> str:
+        normalized = value.strip().lower()
+        if not normalized:
+            raise ValueError("Slot cannot be empty")
+        return normalized
 
 
 class QuitCommand(BaseCommand):
@@ -637,6 +690,10 @@ Command = (
     | WhoCommand
     | StatusCommand
     | InventoryCommand
+    | PickupCommand
+    | DropCommand
+    | EquipCommand
+    | UnequipCommand
     | QuitCommand
     | LogoutCommand
     | SitCommand

@@ -21,7 +21,9 @@ from ..models.command import (
     Command,
     CommandType,
     Direction,
+    DropCommand,
     EmoteCommand,
+    EquipCommand,
     GoCommand,
     GotoCommand,
     HelpCommand,
@@ -35,6 +37,7 @@ from ..models.command import (
     MuteCommand,
     MuteGlobalCommand,
     MutesCommand,
+    PickupCommand,
     PoseCommand,
     PunchCommand,
     QuitCommand,
@@ -48,6 +51,7 @@ from ..models.command import (
     SystemCommand,
     TeleportCommand,
     UnaliasCommand,
+    UnequipCommand,
     UnmuteCommand,
     UnmuteGlobalCommand,
     WhisperCommand,
@@ -99,6 +103,10 @@ class CommandParser:
             CommandType.STATUS.value: self._create_status_command,
             CommandType.WHOAMI.value: self._create_whoami_command,
             CommandType.INVENTORY.value: self._create_inventory_command,
+            CommandType.PICKUP.value: self._create_pickup_command,
+            CommandType.DROP.value: self._create_drop_command,
+            CommandType.EQUIP.value: self._create_equip_command,
+            CommandType.UNEQUIP.value: self._create_unequip_command,
             CommandType.QUIT.value: self._create_quit_command,
             CommandType.LOGOUT.value: self._create_logout_command,
             CommandType.SIT.value: self._create_sit_command,
@@ -692,6 +700,101 @@ class CommandParser:
             )
         return InventoryCommand()
 
+    def _create_pickup_command(self, args: list[str]) -> PickupCommand:
+        """Create pickup command."""
+
+        if not args:
+            context = create_error_context()
+            log_and_raise_enhanced(
+                MythosValidationError, "Usage: pickup <item-number> [quantity]", context=context, logger_name=__name__
+            )
+
+        try:
+            index = int(args[0])
+        except ValueError:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(MythosValidationError, "Item number must be an integer", context=context, logger_name=__name__)
+
+        quantity = None
+        if len(args) > 1:
+            try:
+                quantity = int(args[1])
+            except ValueError:
+                context = create_error_context()
+                context.metadata = {"args": args}
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Quantity must be an integer",
+                    context=context,
+                    logger_name=__name__,
+                )
+
+        return PickupCommand(index=index, quantity=quantity)
+
+    def _create_drop_command(self, args: list[str]) -> DropCommand:
+        """Create drop command."""
+
+        if not args:
+            context = create_error_context()
+            log_and_raise_enhanced(
+                MythosValidationError, "Usage: drop <inventory-number> [quantity]", context=context, logger_name=__name__
+            )
+
+        try:
+            index = int(args[0])
+        except ValueError:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(MythosValidationError, "Inventory index must be an integer", context=context, logger_name=__name__)
+
+        quantity = None
+        if len(args) > 1:
+            try:
+                quantity = int(args[1])
+            except ValueError:
+                context = create_error_context()
+                context.metadata = {"args": args}
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Quantity must be an integer",
+                    context=context,
+                    logger_name=__name__,
+                )
+
+        return DropCommand(index=index, quantity=quantity)
+
+    def _create_equip_command(self, args: list[str]) -> EquipCommand:
+        """Create equip command."""
+
+        if not args:
+            context = create_error_context()
+            log_and_raise_enhanced(
+                MythosValidationError, "Usage: equip <inventory-number> [slot]", context=context, logger_name=__name__
+            )
+
+        try:
+            index = int(args[0])
+        except ValueError:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(MythosValidationError, "Inventory index must be an integer", context=context, logger_name=__name__)
+
+        target_slot = args[1] if len(args) > 1 else None
+        return EquipCommand(index=index, target_slot=target_slot)
+
+    def _create_unequip_command(self, args: list[str]) -> UnequipCommand:
+        """Create unequip command."""
+
+        if not args:
+            context = create_error_context()
+            log_and_raise_enhanced(
+                MythosValidationError, "Usage: unequip <slot>", context=context, logger_name=__name__
+            )
+
+        slot = args[0]
+        return UnequipCommand(slot=slot)
+
     def _create_quit_command(self, args: list[str]) -> QuitCommand:
         """Create QuitCommand from arguments."""
         if args:
@@ -962,6 +1065,10 @@ def get_command_help(command_type: str | None = None) -> str:
             CommandType.STATUS.value: "status - Show your character status",
             CommandType.WHOAMI.value: "whoami - Show your personal status (alias of status)",
             CommandType.INVENTORY.value: "inventory - Show your inventory",
+            CommandType.PICKUP.value: "pickup <item-number> [quantity] - Pick up a room item",
+            CommandType.DROP.value: "drop <inventory-number> [quantity] - Drop an inventory item",
+            CommandType.EQUIP.value: "equip <inventory-number> [slot] - Equip an item",
+            CommandType.UNEQUIP.value: "unequip <slot> - Unequip an item",
             CommandType.QUIT.value: "quit - Quit the game",
             CommandType.SIT.value: "sit - Sit down and adopt a seated posture",
             CommandType.STAND.value: "stand - Return to a standing posture",

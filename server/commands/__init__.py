@@ -25,12 +25,12 @@ from .alias_commands import (
 from .command_service import CommandService
 from .communication_commands import handle_me_command, handle_pose_command, handle_say_command
 from .exploration_commands import handle_go_command, handle_look_command
+from .inventory_commands import handle_inventory_command
 from .npc_admin_commands import handle_npc_command
 from .position_commands import handle_lie_command, handle_sit_command, handle_stand_command
 from .system_commands import handle_help_command
 from .utility_commands import (
     handle_emote_command,
-    handle_inventory_command,
     handle_quit_command,
     handle_status_command,
     handle_who_command,
