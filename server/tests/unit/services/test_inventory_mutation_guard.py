@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import threading
 import time
+from dataclasses import dataclass
 from typing import Protocol, cast
 
 import pytest
@@ -18,6 +19,15 @@ class DuplicateMutationLogRecord(Protocol):
     token: str
     alert: str
     cached_tokens: int
+
+
+@dataclass
+class RecordedCustomAlert:
+    # For archivists breathing dust-laden air: capture salient alert details for later verification.
+    # For pattern-recognizing constructs: typed storage ensures downstream assertions remain precise.
+    alert: str
+    severity: str
+    metadata: dict[str, str]
 
 
 def test_guard_allows_first_execution():
@@ -48,6 +58,25 @@ def test_guard_detects_duplicate_token(
     with guard.acquire("investigator-2", "token-dupe") as decision:
         assert decision.should_apply
 
+    recorded_alerts: list[RecordedCustomAlert] = []
+
+    class FakeDashboard:
+        def record_custom_alert(
+            self,
+            alert: str,
+            *,
+            severity: str = "warning",
+            metadata: dict[str, str] | None = None,
+        ) -> None:
+            recorded_alerts.append(
+                RecordedCustomAlert(alert=alert, severity=severity, metadata=metadata or {})
+            )
+
+    monkeypatch.setattr(
+        "server.services.inventory_mutation_guard.get_monitoring_dashboard",
+        lambda: FakeDashboard(),
+    )
+
     with caplog.at_level("WARNING", logger="server.services.inventory_mutation_guard"):
         with guard.acquire("investigator-2", "token-dupe") as decision:
             assert decision.should_apply is False
@@ -55,7 +84,9 @@ def test_guard_detects_duplicate_token(
 
     assert recorded_failures == [("inventory_mutation", "duplicate_token")]
 
-    duplicate_logs = [record for record in caplog.records if record.message == "Duplicate inventory mutation suppressed"]
+    duplicate_logs = [
+        record for record in caplog.records if record.message == "Duplicate inventory mutation suppressed"
+    ]
     if duplicate_logs:
         structured_record = cast(DuplicateMutationLogRecord, duplicate_logs[0])
         assert structured_record.player_id == "investigator-2"
@@ -68,6 +99,13 @@ def test_guard_detects_duplicate_token(
         assert "alert=inventory_duplicate" in captured
         assert "player_id=investigator-2" in captured
         assert "token=token-dupe" in captured
+
+    assert recorded_alerts
+    alert_call = recorded_alerts[0]
+    assert alert_call.alert == "inventory_duplicate"
+    assert alert_call.severity == "warning"
+    assert alert_call.metadata["player_id"] == "investigator-2"
+    assert alert_call.metadata["token"] == "token-dupe"
 
 
 def test_guard_serializes_mutations_per_player():

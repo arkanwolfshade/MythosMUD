@@ -240,6 +240,50 @@ class MonitoringDashboard:
 
         return new_alerts
 
+    def record_custom_alert(
+        self,
+        alert_type: str,
+        *,
+        severity: str = "warning",
+        message: str,
+        metadata: dict[str, Any] | None = None,
+    ) -> Alert:
+        """
+        Record a custom alert emitted by subsystems.
+
+        Args:
+            alert_type: Identifier for the alert source.
+            severity: Alert severity (info, warning, critical, etc.).
+            message: Human readable alert description.
+            metadata: Optional structured metadata for responders.
+
+        Returns:
+            The recorded `Alert` instance.
+        """
+
+        alert = Alert(
+            alert_id=f"{alert_type}_{datetime.now(UTC).timestamp()}",
+            alert_type=alert_type,
+            severity=severity,
+            message=message,
+            timestamp=datetime.now(UTC),
+            metadata=metadata or {},
+        )
+        self.alerts.append(alert)
+
+        log_with_context(
+            logger,
+            severity,
+            f"Custom alert recorded: {alert_type}",
+            alert_id=alert.alert_id,
+            alert_type=alert_type,
+            severity=severity,
+            alert_message=message,
+            metadata=metadata or {},
+        )
+
+        return alert
+
     def resolve_alert(self, alert_id: str) -> bool:
         """
         Resolve an alert.

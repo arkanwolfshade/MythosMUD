@@ -79,7 +79,9 @@ def _render_inventory(inventory: list[dict[str, Any]], equipped: dict[str, Any])
     slots_used = len(inventory)
     remaining = max(DEFAULT_SLOT_CAPACITY - slots_used, 0)
 
-    lines: list[str] = [f"You are carrying {slots_used} / {DEFAULT_SLOT_CAPACITY} slots. Remaining capacity: {remaining}."]
+    lines: list[str] = [
+        f"You are carrying {slots_used} / {DEFAULT_SLOT_CAPACITY} slots. Remaining capacity: {remaining}."
+    ]
 
     if inventory:
         for index, stack in enumerate(inventory, start=1):
@@ -186,7 +188,12 @@ async def handle_pickup_command(
 
     room_manager = getattr(connection_manager, "room_manager", None)
     if not room_manager:
-        logger.warning("Pickup attempted without room manager", player=player.name)
+        logger.warning(
+            "Pickup attempted without room manager",
+            player=player.name,
+            player_id=str(player.player_id),
+            room_id=player.current_room_id,
+        )
         return {"result": "Room inventory is unavailable."}
 
     index = command_data.get("index")
@@ -215,7 +222,13 @@ async def handle_pickup_command(
         updated_inventory = inventory_service.add_stack(previous_inventory, extracted_stack)
     except (InventoryCapacityError, InventoryValidationError) as exc:
         room_manager.add_room_drop(room_id, extracted_stack)
-        logger.info("Pickup rejected", player=player.name, reason=str(exc))
+        logger.info(
+            "Pickup rejected",
+            player=player.name,
+            player_id=str(player.player_id),
+            reason=str(exc),
+            room_id=room_id,
+        )
         return {"result": f"You cannot pick that up: {str(exc)}"}
 
     player.set_inventory(cast(list[dict[str, Any]], updated_inventory))
@@ -251,6 +264,7 @@ async def handle_pickup_command(
     logger.info(
         "Item picked up",
         player=player.name,
+        player_id=str(player.player_id),
         item_id=extracted_stack.get("item_id"),
         quantity=quantity,
         room_id=room_id,
@@ -279,7 +293,12 @@ async def handle_drop_command(
 
     room_manager = getattr(connection_manager, "room_manager", None)
     if not room_manager:
-        logger.warning("Drop attempted without room manager", player=player.name)
+        logger.warning(
+            "Drop attempted without room manager",
+            player=player.name,
+            player_id=str(player.player_id),
+            room_id=player.current_room_id,
+        )
         return {"result": "Room inventory is unavailable."}
 
     room_id = str(player.current_room_id)
@@ -343,6 +362,7 @@ async def handle_drop_command(
     logger.info(
         "Item dropped",
         player=player.name,
+        player_id=str(player.player_id),
         item_id=drop_stack.get("item_id"),
         quantity=quantity,
         room_id=room_id,
@@ -395,7 +415,15 @@ async def handle_equip_command(
             target_slot=target_slot,
         )
     except (SlotValidationError, EquipmentCapacityError, InventoryCapacityError) as exc:
-        logger.info("Equip rejected", player=player.name, reason=str(exc))
+        logger.info(
+            "Equip rejected",
+            player=player.name,
+            player_id=str(player.player_id),
+            reason=str(exc),
+            requested_slot=target_slot,
+            inventory_index=index,
+            room_id=room_id,
+        )
         return {"result": str(exc)}
 
     player.set_inventory(cast(list[dict[str, Any]], new_inventory))
@@ -425,9 +453,7 @@ async def handle_equip_command(
         equipped_slot = preferred_slot or next(iter(new_equipped.keys()), "unknown")
 
     fallback_item: dict[str, Any] = {}
-    item_payload: dict[str, Any] = (
-        cast(dict[str, Any], equipped_item) if equipped_item is not None else fallback_item
-    )
+    item_payload: dict[str, Any] = cast(dict[str, Any], equipped_item) if equipped_item is not None else fallback_item
 
     item_name = item_payload.get("item_name") or item_payload.get("item_id", "item")
 
@@ -454,8 +480,10 @@ async def handle_equip_command(
     logger.info(
         "Item equipped",
         player=player.name,
+        player_id=str(player.player_id),
         item_id=item_payload.get("item_id"),
         slot=equipped_slot,
+        room_id=room_id,
     )
     return {
         "result": f"You equip {item_name}.",
@@ -496,7 +524,14 @@ async def handle_unequip_command(
             slot_type=slot,
         )
     except (SlotValidationError, EquipmentCapacityError, InventoryCapacityError) as exc:
-        logger.info("Unequip rejected", player=player.name, reason=str(exc))
+        logger.info(
+            "Unequip rejected",
+            player=player.name,
+            player_id=str(player.player_id),
+            reason=str(exc),
+            slot=slot,
+            room_id=str(player.current_room_id),
+        )
         return {"result": str(exc)}
 
     player.set_inventory(cast(list[dict[str, Any]], new_inventory))
@@ -533,7 +568,14 @@ async def handle_unequip_command(
         exclude_player=str(player.player_id) if getattr(player, "player_id", None) else None,
     )
 
-    logger.info("Item unequipped", player=player.name, slot=slot, item_id=unequipped_item.get("item_id"))
+    logger.info(
+        "Item unequipped",
+        player=player.name,
+        player_id=str(player.player_id),
+        slot=slot,
+        item_id=unequipped_item.get("item_id"),
+        room_id=room_id,
+    )
     return {
         "result": f"You remove {item_name} from {slot}.",
         "room_message": f"{player.name} removes {item_name} from {slot}.",

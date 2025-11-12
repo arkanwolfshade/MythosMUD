@@ -42,6 +42,7 @@ import sys
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock
+from urllib.parse import urlparse
 
 import pytest
 from dotenv import load_dotenv
@@ -77,6 +78,84 @@ except ImportError:
 # This ensures that test-specific database URLs are loaded before any modules
 # that depend on them are imported
 project_root = Path(__file__).parent.parent.parent
+
+
+def _sqlite_url_to_path(url: str) -> Path:
+    """
+    Convert a sqlite+aiosqlite URL to a Path object.
+
+    Args:
+        url: Database URL in sqlite+aiosqlite format.
+
+    Returns:
+        Absolute Path corresponding to the database file.
+    """
+
+    if not url.startswith("sqlite+aiosqlite:///"):
+        raise ValueError(f"Unsupported sqlite URL format: {url}")
+
+    parsed = urlparse(url)
+    # urlparse preserves the absolute portion in parsed.path
+    path_str = parsed.path
+
+    # On Windows, urlparse will keep the drive letter in the path (e.g. /E:/path)
+    if path_str.startswith("/") and len(path_str) > 2 and path_str[2] == ":":
+        path_str = path_str[1:]
+
+    if path_str.startswith("/") and not (len(path_str) > 2 and path_str[2] == ":"):
+        path = (project_root / path_str.lstrip("/")).resolve()
+    else:
+        path = Path(path_str)
+        if not path.is_absolute():
+            path = (project_root / path).resolve()
+
+    return path
+
+
+def _configure_database_urls(worker_id: str | None = None, apply_worker_suffix: bool = True) -> tuple[Path, Path]:
+    """
+    Ensure DATABASE_URL and DATABASE_NPC_URL point to absolute paths, adding a worker-specific
+    suffix for NPC databases when pytest-xdist is active.
+
+    Returns:
+        Tuple containing the resolved primary database Path and NPC database Path.
+    """
+
+    if worker_id is None:
+        worker_id = os.environ.get("PYTEST_XDIST_WORKER")
+
+    database_url = os.getenv("DATABASE_URL")
+    if database_url:
+        test_db_path = _sqlite_url_to_path(database_url)
+    else:
+        test_db_path = (project_root / "data" / "unit_test" / "players" / "unit_test_players.db").resolve()
+
+    test_db_path.parent.mkdir(parents=True, exist_ok=True)
+    os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
+    print(f"[OK] Set DATABASE_URL to: {os.environ['DATABASE_URL']}")
+
+    npc_database_url = os.getenv("DATABASE_NPC_URL")
+    if npc_database_url:
+        base_npc_path = _sqlite_url_to_path(npc_database_url)
+    else:
+        base_npc_path = (project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db").resolve()
+
+    if apply_worker_suffix and worker_id and worker_id != "master":
+        worker_specific_name = f"{base_npc_path.stem}_{worker_id}{base_npc_path.suffix}"
+        npc_db_path = base_npc_path.with_name(worker_specific_name)
+    else:
+        npc_db_path = base_npc_path
+
+    npc_db_path.parent.mkdir(parents=True, exist_ok=True)
+    os.environ["DATABASE_NPC_URL"] = f"sqlite+aiosqlite:///{npc_db_path}"
+    if npc_db_path == base_npc_path:
+        print(f"[OK] Set DATABASE_NPC_URL to: {os.environ['DATABASE_NPC_URL']}")
+    else:
+        print(f"[OK] Set worker-scoped DATABASE_NPC_URL to: {os.environ['DATABASE_NPC_URL']}")
+
+    return test_db_path, npc_db_path
+
+
 TEST_ENV_PATH = project_root / "server" / "tests" / ".env.unit_test"
 EXAMPLE_ENV_PATH = project_root / "env.unit_test.example"
 
@@ -121,6 +200,21 @@ def validate_test_environment():
         raise
 
 
+def pytest_configure_node(node):
+    """Provide worker-specific configuration for pytest-xdist nodes."""
+    try:
+        base_npc_path = _sqlite_url_to_path(os.environ["DATABASE_NPC_URL"])
+    except KeyError:
+        base_npc_path = (project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db").resolve()
+
+    worker_id = getattr(node, "workerid", None) or getattr(node, "id", None)
+    if worker_id is None:
+        worker_id = node.workerinput.get("workerid", "worker")
+
+    worker_path = base_npc_path.with_name(f"{base_npc_path.stem}_{worker_id}{base_npc_path.suffix}")
+    node.workerinput["MYTHOSMUD_WORKER_NPC_DB_PATH"] = str(worker_path)
+
+
 # Validate test environment before proceeding
 try:
     validate_test_environment()
@@ -162,42 +256,7 @@ os.environ.setdefault("MYTHOSMUD_DISABLE_PROCESS_EXIT", "1")
 # This must happen before any database modules are imported
 
 # Ensure DATABASE_URL is set with absolute path
-database_url = os.getenv("DATABASE_URL")
-if database_url:
-    # Convert relative paths to absolute paths
-    if database_url.startswith("sqlite+aiosqlite:///") and not database_url.startswith("sqlite+aiosqlite:///E:"):
-        # Extract the relative path and make it absolute
-        relative_path = database_url.replace("sqlite+aiosqlite:///", "")
-        absolute_path = project_root / relative_path
-        absolute_path.parent.mkdir(parents=True, exist_ok=True)
-        os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{absolute_path}"
-        print(f"[OK] Converted DATABASE_URL to absolute path: {os.environ['DATABASE_URL']}")
-else:
-    # Use absolute path to ensure database is created in the correct location
-    test_db_path = project_root / "data" / "unit_test" / "players" / "unit_test_players.db"
-    test_db_path.parent.mkdir(parents=True, exist_ok=True)
-    os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
-    print(f"[OK] Set DATABASE_URL to: {os.environ['DATABASE_URL']}")
-
-# Ensure DATABASE_NPC_URL is set with absolute path
-npc_database_url = os.getenv("DATABASE_NPC_URL")
-if npc_database_url:
-    # Convert relative paths to absolute paths
-    if npc_database_url.startswith("sqlite+aiosqlite:///") and not npc_database_url.startswith(
-        "sqlite+aiosqlite:///E:"
-    ):
-        # Extract the relative path and make it absolute
-        relative_path = npc_database_url.replace("sqlite+aiosqlite:///", "")
-        absolute_path = project_root / relative_path
-        absolute_path.parent.mkdir(parents=True, exist_ok=True)
-        os.environ["DATABASE_NPC_URL"] = f"sqlite+aiosqlite:///{absolute_path}"
-        print(f"[OK] Converted DATABASE_NPC_URL to absolute path: {os.environ['DATABASE_NPC_URL']}")
-else:
-    # Use absolute path to ensure NPC database is created in the correct location
-    test_npc_db_path = project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db"
-    test_npc_db_path.parent.mkdir(parents=True, exist_ok=True)
-    os.environ["DATABASE_NPC_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
-    print(f"[OK] Set DATABASE_NPC_URL to: {os.environ['DATABASE_NPC_URL']}")
+TEST_DB_PATH, TEST_NPC_DB_PATH = _configure_database_urls()
 
 # Ensure we're using the correct path for test logs (matches .env.unit_test)
 test_logs_dir = project_root / "logs" / "unit_test"
@@ -301,45 +360,21 @@ def pytest_configure(config):
     # CRITICAL: Disable process termination during tests to prevent test suite crashes
     os.environ.setdefault("MYTHOSMUD_DISABLE_PROCESS_EXIT", "1")
 
-    # Get the project root (two levels up from this file)
-    project_root = Path(__file__).parent.parent.parent
+    worker_id = None
+    worker_input = getattr(config, "workerinput", None)
+    worker_path_override = None
+    apply_worker_suffix = True
+    if worker_input:
+        worker_id = worker_input.get("workerid")
+        if worker_id:
+            os.environ["PYTEST_XDIST_WORKER"] = worker_id
+        worker_path_override = worker_input.get("MYTHOSMUD_WORKER_NPC_DB_PATH")
+        if worker_path_override:
+            os.environ["DATABASE_NPC_URL"] = f"sqlite+aiosqlite:///{worker_path_override}"
+            apply_worker_suffix = False
 
-    # Only set DATABASE_URL if not already set by .env.unit_test
-    # Ensure DATABASE_URL is set with absolute path
-    database_url = os.getenv("DATABASE_URL")
-    if database_url:
-        # Convert relative paths to absolute paths
-        if database_url.startswith("sqlite+aiosqlite:///") and not database_url.startswith("sqlite+aiosqlite:///E:"):
-            # Extract the relative path and make it absolute
-            relative_path = database_url.replace("sqlite+aiosqlite:///", "")
-            absolute_path = project_root / relative_path
-            absolute_path.parent.mkdir(parents=True, exist_ok=True)
-            os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{absolute_path}"
-            print(f"[OK] Converted DATABASE_URL to absolute path: {os.environ['DATABASE_URL']}")
-    else:
-        # Use absolute path to ensure database is created in the correct location
-        test_db_path = project_root / "data" / "unit_test" / "players" / "unit_test_players.db"
-        test_db_path.parent.mkdir(parents=True, exist_ok=True)
-        os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
-
-    # Ensure DATABASE_NPC_URL is set with absolute path
-    npc_database_url = os.getenv("DATABASE_NPC_URL")
-    if npc_database_url:
-        # Convert relative paths to absolute paths
-        if npc_database_url.startswith("sqlite+aiosqlite:///") and not npc_database_url.startswith(
-            "sqlite+aiosqlite:///E:"
-        ):
-            # Extract the relative path and make it absolute
-            relative_path = npc_database_url.replace("sqlite+aiosqlite:///", "")
-            absolute_path = project_root / relative_path
-            absolute_path.parent.mkdir(parents=True, exist_ok=True)
-            os.environ["DATABASE_NPC_URL"] = f"sqlite+aiosqlite:///{absolute_path}"
-            print(f"[OK] Converted DATABASE_NPC_URL to absolute path: {os.environ['DATABASE_NPC_URL']}")
-    else:
-        # Use absolute path to ensure NPC database is created in the correct location
-        test_npc_db_path = project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db"
-        test_npc_db_path.parent.mkdir(parents=True, exist_ok=True)
-        os.environ["DATABASE_NPC_URL"] = f"sqlite+aiosqlite:///{test_npc_db_path}"
+    global TEST_DB_PATH, TEST_NPC_DB_PATH
+    TEST_DB_PATH, TEST_NPC_DB_PATH = _configure_database_urls(worker_id, apply_worker_suffix=apply_worker_suffix)
 
     # Ensure we're using the correct path for test logs (matches .env.unit_test)
     test_logs_dir = project_root / "logs" / "unit_test"
@@ -356,7 +391,7 @@ def test_env_vars():
     """Provide test environment variables."""
     return {
         "MYTHOSMUD_SECRET_KEY": os.getenv("MYTHOSMUD_SECRET_KEY", "test-secret-key-for-development"),
-        "DATABASE_URL": os.getenv("DATABASE_URL", f"sqlite+aiosqlite:///{test_db_path}"),
+        "DATABASE_URL": os.environ["DATABASE_URL"],
         "MYTHOSMUD_JWT_SECRET": os.getenv("MYTHOSMUD_JWT_SECRET", "test-jwt-secret-for-development"),
         "MYTHOSMUD_RESET_TOKEN_SECRET": os.getenv(
             "MYTHOSMUD_RESET_TOKEN_SECRET", "test-reset-token-secret-for-development"
@@ -377,11 +412,7 @@ def test_database():
 
     # Return the database path from environment variable
     test_db_url = os.getenv("DATABASE_URL")
-    if test_db_url.startswith("sqlite+aiosqlite:///"):
-        db_path = test_db_url.replace("sqlite+aiosqlite:///", "")
-        return db_path
-    else:
-        raise ValueError(f"Unsupported database URL format: {test_db_url}")
+    return str(_sqlite_url_to_path(test_db_url))
 
 
 @pytest.fixture(scope="session")
@@ -393,51 +424,30 @@ def test_npc_database():
     # Get the NPC test database path
     from server.tests.scripts.init_npc_test_db import init_npc_test_database
 
-    npc_test_db_path = project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db"
+    npc_test_db_path = TEST_NPC_DB_PATH
 
-    # Check if database exists and has proper schema before deciding to recreate
-    should_recreate = True
+    # Always recreate worker-scoped NPC databases to guarantee consistent schema
     if npc_test_db_path.exists():
-        try:
-            # Check if the database has the expected schema by querying sqlite_master
-            import sqlite3
+        for attempt in range(3):
+            try:
+                os.unlink(npc_test_db_path)
+                break
+            except PermissionError:
+                if attempt < 2:
+                    time.sleep(0.1)
+                else:
+                    raise
 
-            conn = sqlite3.connect(str(npc_test_db_path))
-            cursor = conn.cursor()
-            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='npc_definitions'")
-            result = cursor.fetchone()
-            conn.close()
+    init_npc_test_database()
 
-            if result:
-                # Database exists and has the expected schema, don't recreate
-                should_recreate = False
-        except Exception:
-            # If we can't check the schema, assume we need to recreate
-            should_recreate = True
-
-    if should_recreate:
-        # Remove existing database file to ensure clean state
-        # Handle Windows file locking with retry logic
+    try:
+        yield str(npc_test_db_path)
+    finally:
         if npc_test_db_path.exists():
-            for attempt in range(3):
-                try:
-                    os.unlink(npc_test_db_path)
-                    break
-                except PermissionError:
-                    if attempt < 2:
-                        time.sleep(0.1)  # Brief delay before retry
-                    else:
-                        # If we can't delete it, let init_npc_test_database recreate it
-                        pass
-
-        # Initialize the NPC test database with schema
-        init_npc_test_database()
-
-    # The SQLAlchemy metadata initialization will happen when the NPC database
-    # module is imported and the engine is created. We don't need to call
-    # init_npc_db() here as it's meant for runtime initialization.
-
-    return str(npc_test_db_path)
+            try:
+                os.unlink(npc_test_db_path)
+            except PermissionError:
+                pass
 
 
 @pytest.fixture(autouse=True)  # Enable automatic use for all tests
@@ -1142,6 +1152,13 @@ def pytest_sessionstart(session):
 
 def pytest_sessionfinish(session, exitstatus):
     """Called after whole test run finished, right before returning the exit status to the system."""
+    npc_dir = project_root / "data" / "unit_test" / "npcs"
+    for path in npc_dir.glob("unit_test_npcs_gw*.db"):
+        try:
+            path.unlink()
+        except OSError:
+            pass
+
     # Clean up any remaining test loops
     TestSessionBoundaryEnforcement.enforce_session_boundaries()
 

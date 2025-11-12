@@ -11,6 +11,7 @@ from time import monotonic
 
 from server.logging.enhanced_logging_config import get_logger
 from server.middleware.metrics_collector import metrics_collector
+from server.monitoring.monitoring_dashboard import get_monitoring_dashboard
 
 logger = get_logger(__name__)
 
@@ -80,6 +81,17 @@ class InventoryMutationGuard:
                         cached_tokens=len(state.recent_tokens),
                     )
                     metrics_collector.record_message_failed("inventory_mutation", "duplicate_token")
+                    dashboard = get_monitoring_dashboard()
+                    dashboard.record_custom_alert(
+                        "inventory_duplicate",
+                        severity="warning",
+                        message=f"Duplicate inventory mutation suppressed for player {player_id}",
+                        metadata={
+                            "player_id": player_id,
+                            "token": token,
+                            "cached_tokens": len(state.recent_tokens),
+                        },
+                    )
                     decision = MutationDecision(should_apply=False, duplicate=True)
                     yield decision
                     return

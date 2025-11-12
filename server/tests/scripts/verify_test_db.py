@@ -49,9 +49,7 @@ def verify_test_database():
         if inventory_rows != len(players):
             print("❌ player_inventories row count mismatch!")
             return
-        cursor = conn.execute(
-            "SELECT inventory_json, equipped_json FROM player_inventories LIMIT 1"
-        )
+        cursor = conn.execute("SELECT inventory_json, equipped_json FROM player_inventories LIMIT 1")
         row = cursor.fetchone()
         if row:
             print(f"  Sample inventory payloads: inventory={row[0]}, equipped={row[1]}")

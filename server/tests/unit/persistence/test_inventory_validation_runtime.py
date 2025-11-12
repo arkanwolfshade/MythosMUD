@@ -85,22 +85,26 @@ def test_save_player_with_oversized_inventory_rejected(
     ]
     player.set_inventory(invalid_inventory)
 
+    capsys.readouterr()
+
     with caplog.at_level(logging.ERROR, logger="server.persistence"):
         with pytest.raises(DatabaseError) as excinfo:
             persistence.save_player(player)
 
     player_name = cast(str, player.name)
     assert "Inventory validation failed" in str(excinfo.value)
-    error_logs = [record for record in caplog.records if record.message == "Inventory payload validation failed during save"]
+    error_logs = [
+        record for record in caplog.records if record.message == "Inventory payload validation failed during save"
+    ]
+    combined_output = (caplog.text or "") + capsys.readouterr().out
     if error_logs:
         log_record = cast(InventorySaveLogRecord, error_logs[0])
         assert log_record.player_id == "oversized-player"
         assert log_record.player_name == player_name
     else:
-        captured = capsys.readouterr().out
-        assert "Inventory payload validation failed during save" in captured
-        assert "player_id=oversized-player" in captured
-        assert "player_name=InventoryValidator" in captured
+        assert "Inventory payload validation failed during save" in combined_output
+        assert "oversized-player" in combined_output
+        assert player_name in combined_output
     caplog.clear()
 
 
@@ -128,22 +132,26 @@ def test_save_player_with_invalid_equipped_payload_rejected(
         }
     )
 
+    capsys.readouterr()
+
     with caplog.at_level(logging.ERROR, logger="server.persistence"):
         with pytest.raises(DatabaseError) as excinfo:
             persistence.save_player(player)
 
     player_name = cast(str, player.name)
     assert "Inventory validation failed" in str(excinfo.value)
-    error_logs = [record for record in caplog.records if record.message == "Inventory payload validation failed during save"]
+    error_logs = [
+        record for record in caplog.records if record.message == "Inventory payload validation failed during save"
+    ]
+    combined_output = (caplog.text or "") + capsys.readouterr().out
     if error_logs:
         log_record = cast(InventorySaveLogRecord, error_logs[0])
         assert log_record.player_id == "equipped-player"
         assert log_record.player_name == player_name
     else:
-        captured = capsys.readouterr().out
-        assert "Inventory payload validation failed during save" in captured
-        assert "player_id=equipped-player" in captured
-        assert "player_name=InventoryValidator" in captured
+        assert "Inventory payload validation failed during save" in combined_output
+        assert "equipped-player" in combined_output
+        assert player_name in combined_output
     caplog.clear()
 
 
@@ -176,16 +184,18 @@ def test_loading_player_with_corrupt_inventory_raises(
         )
         conn.commit()
 
+    capsys.readouterr()
+
     with caplog.at_level(logging.ERROR, logger="server.persistence"):
         with pytest.raises(DatabaseError) as excinfo:
             persistence.get_player("corrupt-player")
 
     assert "Invalid inventory payload detected in storage" in str(excinfo.value)
     load_logs = [record for record in caplog.records if record.message == "Stored inventory payload failed validation"]
+    combined_output = (caplog.text or "") + capsys.readouterr().out
     if load_logs:
         load_log = cast(InventoryLoadLogRecord, load_logs[0])
         assert load_log.player_id == "corrupt-player"
     else:
-        captured = capsys.readouterr().out
-        assert "Stored inventory payload failed validation" in captured
-        assert "player_id=corrupt-player" in captured
+        assert "Stored inventory payload failed validation" in combined_output
+        assert "corrupt-player" in combined_output

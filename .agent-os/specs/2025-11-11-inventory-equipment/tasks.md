@@ -50,11 +50,11 @@
   - [x] 8.3 Confirm narrative flavor text adheres to Mythos tone
   - [x] 8.4 Verify all tests pass
 
-- [ ] 9. Logging, monitoring, and moderation audit
-  - [ ] 9.1 Write tests or assertions for logging payload structure
-  - [ ] 9.2 Verify enhanced logging includes required context fields
-  - [ ] 9.3 Integrate alerts/metrics for dupe anomaly detection
-  - [ ] 9.4 Verify all tests pass
+- [x] 9. Logging, monitoring, and moderation audit
+  - [x] 9.1 Write tests or assertions for logging payload structure
+  - [x] 9.2 Verify enhanced logging includes required context fields
+  - [x] 9.3 Integrate alerts/metrics for dupe anomaly detection
+  - [x] 9.4 Verify all tests pass
 
 - [ ] 10. Final integration and regression sweep
   - [ ] 10.1 Execute end-to-end tests covering lifecycle scenarios

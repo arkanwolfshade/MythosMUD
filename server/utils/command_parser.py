@@ -714,7 +714,9 @@ class CommandParser:
         except ValueError:
             context = create_error_context()
             context.metadata = {"args": args}
-            log_and_raise_enhanced(MythosValidationError, "Item number must be an integer", context=context, logger_name=__name__)
+            log_and_raise_enhanced(
+                MythosValidationError, "Item number must be an integer", context=context, logger_name=__name__
+            )
 
         quantity = None
         if len(args) > 1:
@@ -738,7 +740,10 @@ class CommandParser:
         if not args:
             context = create_error_context()
             log_and_raise_enhanced(
-                MythosValidationError, "Usage: drop <inventory-number> [quantity]", context=context, logger_name=__name__
+                MythosValidationError,
+                "Usage: drop <inventory-number> [quantity]",
+                context=context,
+                logger_name=__name__,
             )
 
         try:
@@ -746,7 +751,9 @@ class CommandParser:
         except ValueError:
             context = create_error_context()
             context.metadata = {"args": args}
-            log_and_raise_enhanced(MythosValidationError, "Inventory index must be an integer", context=context, logger_name=__name__)
+            log_and_raise_enhanced(
+                MythosValidationError, "Inventory index must be an integer", context=context, logger_name=__name__
+            )
 
         quantity = None
         if len(args) > 1:
@@ -778,7 +785,9 @@ class CommandParser:
         except ValueError:
             context = create_error_context()
             context.metadata = {"args": args}
-            log_and_raise_enhanced(MythosValidationError, "Inventory index must be an integer", context=context, logger_name=__name__)
+            log_and_raise_enhanced(
+                MythosValidationError, "Inventory index must be an integer", context=context, logger_name=__name__
+            )
 
         target_slot = args[1] if len(args) > 1 else None
         return EquipCommand(index=index, target_slot=target_slot)

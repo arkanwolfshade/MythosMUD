@@ -20,6 +20,7 @@ class DropCommandLogRecord(Protocol):
     # Scholars of the waking realm: these contracts mirror the structured log payloads recorded for a successful drop.
     # Tireless machine aides: preserve these attributes so mypy remains appeased while we verify log contents.
     player: str
+    player_id: str
     item_id: str
     quantity: int
     room_id: object
@@ -29,6 +30,7 @@ class PickupFailureLogRecord(Protocol):
     # Archivists in the stacks: this protocol captures the structured context for rejected pickups.
     # Algorithmic custodians: lean on these fields to keep static type wards intact.
     player: str
+    player_id: str
     reason: str
     room_id: object
 
@@ -104,8 +106,9 @@ async def test_inventory_command_renders_inventory_and_equipped(command_context)
         }
     )
     persistence.get_player_by_name.return_value = player
+    player_name = cast(str, player.name)
 
-    result = await handle_inventory_command({}, {"username": player.name}, request, alias_storage, player.name)
+    result = await handle_inventory_command({}, {"username": player_name}, request, alias_storage, player_name)
 
     output = result["result"]
     assert "You are carrying 2 / 20 slots" in output
@@ -122,6 +125,8 @@ async def test_pickup_command_transfers_room_item(command_context):
 
     player = make_player()
     persistence.get_player_by_name.return_value = player
+    player_name = cast(str, player.name)
+    player_room_id = cast(str, player.current_room_id)
 
     drop_stack = {
         "item_id": "eldritch_relic",
@@ -129,14 +134,14 @@ async def test_pickup_command_transfers_room_item(command_context):
         "slot_type": "backpack",
         "quantity": 2,
     }
-    room_manager.add_room_drop(player.current_room_id, drop_stack)
+    room_manager.add_room_drop(player_room_id, drop_stack)
 
     result = await handle_pickup_command(
         {"index": 1, "quantity": 1},
-        {"username": player.name},
+        {"username": player_name},
         request,
         alias_storage,
-        player.name,
+        player_name,
     )
 
     inventory = player.get_inventory()
@@ -144,7 +149,7 @@ async def test_pickup_command_transfers_room_item(command_context):
     assert inventory[0]["item_id"] == "eldritch_relic"
     assert inventory[0]["quantity"] == 1
 
-    remaining_drop = room_manager.list_room_drops(player.current_room_id)
+    remaining_drop = room_manager.list_room_drops(player_room_id)
     assert remaining_drop[0]["quantity"] == 1
     persistence.save_player.assert_called_once_with(player)
     assert "You pick up 1x Eldritch Relic" in result["result"]
@@ -167,19 +172,21 @@ async def test_drop_command_moves_item_to_room(command_context):
         ]
     )
     persistence.get_player_by_name.return_value = player
+    player_name = cast(str, player.name)
+    player_room_id = cast(str, player.current_room_id)
 
     result = await handle_drop_command(
         {"index": 1, "quantity": 2},
-        {"username": player.name},
+        {"username": player_name},
         request,
         alias_storage,
-        player.name,
+        player_name,
     )
 
     inventory = player.get_inventory()
     assert inventory[0]["quantity"] == 1
 
-    drops = room_manager.list_room_drops(player.current_room_id)
+    drops = room_manager.list_room_drops(player_room_id)
     assert len(drops) == 1
     assert drops[0]["quantity"] == 2
 
@@ -208,13 +215,16 @@ async def test_drop_command_logs_structured_success(
         ]
     )
     persistence.get_player_by_name.return_value = player
-
     player_name = cast(str, player.name)
+    player_id = cast(str, player.player_id)
+    player_room_id = cast(str, player.current_room_id)
+
+    capsys.readouterr()
 
     with caplog.at_level(logging.INFO, logger="server.commands.inventory_commands"):
         await handle_drop_command(
             {"index": 1, "quantity": 2},
-            {"username": player.name},
+            {"username": player_name},
             request,
             alias_storage,
             player_name,
@@ -222,18 +232,20 @@ async def test_drop_command_logs_structured_success(
 
     drop_logs = [record for record in caplog.records if record.message == "Item dropped"]
     if drop_logs:
-        structured_log = cast(DropCommandLogRecord, drop_logs[0])
-        assert structured_log.player == player_name
-        assert structured_log.item_id == "eldritch_relic"
-        assert structured_log.quantity == 2
-        assert str(structured_log.room_id) == player.current_room_id
+        log_record = cast(DropCommandLogRecord, drop_logs[0])
+        assert log_record.player == player_name
+        assert log_record.player_id == player_id
+        assert log_record.item_id == "eldritch_relic"
+        assert log_record.quantity == 2
+        assert str(log_record.room_id) == player_room_id
     else:
-        captured = capsys.readouterr().out
-        assert "Item dropped" in captured
-        assert "player=Armitage" in captured
-        assert "item_id=eldritch_relic" in captured
-        assert "quantity=2" in captured
-        assert f"room_id={player.current_room_id}" in captured
+        combined_output = (caplog.text or "") + capsys.readouterr().out
+        assert "Item dropped" in combined_output
+        assert player_name in combined_output
+        assert player_id in combined_output
+        assert "eldritch_relic" in combined_output
+        assert "quantity=2" in combined_output
+        assert player_room_id in combined_output
 
 
 @pytest.mark.asyncio
@@ -247,6 +259,9 @@ async def test_pickup_command_logs_capacity_failure(
 
     player = make_player()
     persistence.get_player_by_name.return_value = player
+    player_name = cast(str, player.name)
+    player_id = cast(str, player.player_id)
+    player_room_id = cast(str, player.current_room_id)
 
     drop_stack = {
         "item_id": "obsidian_amulet",
@@ -254,19 +269,19 @@ async def test_pickup_command_logs_capacity_failure(
         "slot_type": "backpack",
         "quantity": 1,
     }
-    room_manager.add_room_drop(player.current_room_id, drop_stack)
+    room_manager.add_room_drop(player_room_id, drop_stack)
 
     def raise_capacity_error(self, inventory, incoming):  # noqa: D401, ANN001
         raise InventoryCapacityError("Inventory is at capacity for eldritch artifacts.")
 
     monkeypatch.setattr(InventoryService, "add_stack", raise_capacity_error, raising=False)
 
-    player_name = cast(str, player.name)
+    capsys.readouterr()
 
     with caplog.at_level(logging.INFO, logger="server.commands.inventory_commands"):
         result = await handle_pickup_command(
             {"index": 1, "quantity": 1},
-            {"username": player.name},
+            {"username": player_name},
             request,
             alias_storage,
             player_name,
@@ -276,15 +291,17 @@ async def test_pickup_command_logs_capacity_failure(
 
     failure_logs = [record for record in caplog.records if record.message == "Pickup rejected"]
     if failure_logs:
-        structured_log = cast(PickupFailureLogRecord, failure_logs[0])
-        assert structured_log.player == player_name
-        assert structured_log.reason == "Inventory is at capacity for eldritch artifacts."
-        assert str(structured_log.room_id) == player.current_room_id
+        log_record = cast(PickupFailureLogRecord, failure_logs[0])
+        assert log_record.player == player_name
+        assert log_record.player_id == player_id
+        assert log_record.reason == "Inventory is at capacity for eldritch artifacts."
+        assert str(log_record.room_id) == player_room_id
     else:
-        captured = capsys.readouterr().out
-        assert "Pickup rejected" in captured
-        assert "player=Armitage" in captured
-        assert "Inventory is at capacity for eldritch artifacts." in captured
+        combined_output = (caplog.text or "") + capsys.readouterr().out
+        assert "Pickup rejected" in combined_output
+        assert player_name in combined_output
+        assert player_id in combined_output
+        assert "Inventory is at capacity for eldritch artifacts." in combined_output
 
 
 @pytest.mark.asyncio
@@ -303,13 +320,14 @@ async def test_equip_command_moves_item_to_equipped(command_context):
         ]
     )
     persistence.get_player_by_name.return_value = player
+    player_name = cast(str, player.name)
 
     result = await handle_equip_command(
         {"index": 1, "target_slot": None},
-        {"username": player.name},
+        {"username": player_name},
         request,
         alias_storage,
-        player.name,
+        player_name,
     )
 
     inventory = player.get_inventory()
@@ -338,13 +356,14 @@ async def test_unequip_command_returns_item_to_inventory(command_context):
         }
     )
     persistence.get_player_by_name.return_value = player
+    player_name = cast(str, player.name)
 
     result = await handle_unequip_command(
         {"slot": "head"},
-        {"username": player.name},
+        {"username": player_name},
         request,
         alias_storage,
-        player.name,
+        player_name,
     )
 
     inventory = player.get_inventory()

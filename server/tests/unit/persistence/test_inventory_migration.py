@@ -67,14 +67,10 @@ def test_migration_creates_table_and_rows(legacy_database: Path):
     migrate_player_inventories(legacy_database)
 
     with sqlite3.connect(legacy_database) as conn:
-        tables = {
-            row[0] for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
-        }
+        tables = {row[0] for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
         assert "player_inventories" in tables
 
-        columns = [
-            row[1] for row in conn.execute("PRAGMA table_info(player_inventories)")
-        ]
+        columns = [row[1] for row in conn.execute("PRAGMA table_info(player_inventories)")]
         assert columns == ["player_id", "inventory_json", "equipped_json", "created_at"]
 
         player_count = conn.execute("SELECT COUNT(*) FROM players").fetchone()[0]
