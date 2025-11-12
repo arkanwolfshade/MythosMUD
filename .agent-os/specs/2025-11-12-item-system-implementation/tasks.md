@@ -2,11 +2,11 @@
 
 ## Tasks
 
-- [ ] 1. Phase 0 – Prototype Registry & Schema
-  - [ ] 1.1 Write tests for prototype schema validation and registry lookups
-  - [ ] 1.2 Implement JSON schema, validation CLI, and registry service
-  - [ ] 1.3 Integrate observability for malformed prototype reporting
-  - [ ] 1.4 Verify unit and integration tests pass
+- [x] 1. Phase 0 – Prototype Registry & Schema
+  - [x] 1.1 Write tests for prototype schema validation and registry lookups
+  - [x] 1.2 Implement JSON schema, validation CLI, and registry service
+  - [x] 1.3 Integrate observability for malformed prototype reporting
+  - [x] 1.4 Verify unit and integration tests pass
 
 - [ ] 2. Phase 1 – Item Factory & Guarded Integration
   - [ ] 2.1 Write tests for item factory creation and mutation guard usage
