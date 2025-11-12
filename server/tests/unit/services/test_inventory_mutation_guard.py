@@ -68,9 +68,7 @@ def test_guard_detects_duplicate_token(
             severity: str = "warning",
             metadata: dict[str, str] | None = None,
         ) -> None:
-            recorded_alerts.append(
-                RecordedCustomAlert(alert=alert, severity=severity, metadata=metadata or {})
-            )
+            recorded_alerts.append(RecordedCustomAlert(alert=alert, severity=severity, metadata=metadata or {}))
 
     monkeypatch.setattr(
         "server.services.inventory_mutation_guard.get_monitoring_dashboard",

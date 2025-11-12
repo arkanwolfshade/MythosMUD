@@ -56,7 +56,7 @@
   - [x] 9.3 Integrate alerts/metrics for dupe anomaly detection
   - [x] 9.4 Verify all tests pass
 
-- [ ] 10. Final integration and regression sweep
-  - [ ] 10.1 Execute end-to-end tests covering lifecycle scenarios
-  - [ ] 10.2 Run `make format`, `make my`, `make lint`, `make test`, and review coverage thresholds
-  - [ ] 10.3 Update documentation and TASKS.local.md with outcomes
+- [x] 10. Final integration and regression sweep
+  - [x] 10.1 Execute end-to-end tests covering lifecycle scenarios
+  - [x] 10.2 Run `make format`, `make my`, `make lint`, `make test`, and review coverage thresholds
+  - [x] 10.3 Update documentation and TASKS.local.md with outcomes
