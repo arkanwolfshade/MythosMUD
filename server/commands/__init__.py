@@ -17,6 +17,7 @@ from .admin_commands import (
     handle_unmute_global_command,
 )
 from .admin_shutdown_command import handle_shutdown_command
+from .admin_summon_command import handle_summon_command
 from .alias_commands import (
     handle_alias_command,
     handle_aliases_command,
@@ -60,6 +61,7 @@ __all__ = [
     "handle_unmute_global_command",
     "handle_add_admin_command",
     "handle_mutes_command",
+    "handle_summon_command",
     # Admin teleport commands
     "handle_teleport_command",
     "handle_goto_command",

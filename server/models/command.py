@@ -5,6 +5,7 @@ This module provides type-safe command models with comprehensive validation
 to prevent command injection and ensure data integrity.
 """
 
+import re
 from enum import Enum
 from typing import Literal
 
@@ -93,6 +94,7 @@ class CommandType(str, Enum):
     PUNCH = "punch"
     KICK = "kick"
     STRIKE = "strike"
+    SUMMON = "summon"
 
 
 class BaseCommand(BaseModel):
@@ -388,6 +390,31 @@ class AdminCommand(BaseCommand):
         if normalized not in allowed_subcommands:
             raise ValueError(f"Invalid admin subcommand: {v}. Allowed subcommands: {sorted(allowed_subcommands)}")
         return normalized
+
+
+class SummonCommand(BaseCommand):
+    """Administrative command for summoning prototypes into the current room."""
+
+    command_type: Literal[CommandType.SUMMON] = CommandType.SUMMON
+    prototype_id: str = Field(..., min_length=1, max_length=120, description="Prototype identifier to conjure")
+    quantity: int = Field(
+        default=1,
+        ge=1,
+        le=5,
+        description="Number of instances to summon (capped to prevent ritual abuse).",
+    )
+    target_type: Literal["item", "npc"] = Field(
+        default="item",
+        description="Hint for whether the summon should create items or NPCs.",
+    )
+
+    @field_validator("prototype_id")
+    @classmethod
+    def validate_prototype_id(cls, value: str) -> str:
+        candidate = value.strip()
+        if not re.match(r"^[a-zA-Z0-9._-]+$", candidate):
+            raise ValueError("Prototype ID must contain only letters, numbers, dots, underscores, or hyphens.")
+        return candidate
 
 
 class TeleportCommand(BaseCommand):

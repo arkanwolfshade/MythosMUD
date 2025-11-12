@@ -50,6 +50,7 @@ SLASH_COMMANDS = {
     "aliases",
     "unalias",
     "npc",
+    "summon",
 }
 
 

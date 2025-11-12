@@ -29,6 +29,7 @@ from server.models.command import (
     SitCommand,
     StandCommand,
     StatusCommand,
+    SummonCommand,
     TeleportCommand,
     UnaliasCommand,
     UnmuteCommand,
@@ -315,6 +316,63 @@ class TestCommandModels:
 
         with pytest.raises(PydanticValidationError):
             AdminCommand(subcommand="invalid")
+
+    def test_summon_command_defaults(self):
+        """Test SummonCommand defaults."""
+        cmd = SummonCommand(prototype_id="artifact.miskatonic.codex")
+        assert cmd.command_type == CommandType.SUMMON
+        assert cmd.prototype_id == "artifact.miskatonic.codex"
+        assert cmd.quantity == 1
+        assert cmd.target_type == "item"
+
+    def test_summon_command_with_quantity_and_target(self):
+        """Test SummonCommand with explicit quantity and target type."""
+        cmd = SummonCommand(prototype_id="weapon.sword.longsword", quantity=3, target_type="npc")
+        assert cmd.quantity == 3
+        assert cmd.target_type == "npc"
+
+    @pytest.mark.parametrize("value", [0, -1, 9])
+    def test_summon_command_invalid_quantity(self, value):
+        """Summon quantity must be within allowed bounds."""
+        with pytest.raises(PydanticValidationError):
+            SummonCommand(prototype_id="artifact.miskatonic.codex", quantity=value)
+
+    def test_summon_command_invalid_target_type(self):
+        """Summon target type must be item or npc."""
+        with pytest.raises(PydanticValidationError):
+            SummonCommand(prototype_id="artifact.miskatonic.codex", target_type="spirit")
+
+    def test_parse_summon_command_defaults(self):
+        """Test parsing summon command with defaults."""
+        parser = CommandParser()
+        cmd = parser.parse_command("/summon artifact.miskatonic.codex")
+        assert isinstance(cmd, SummonCommand)
+        assert cmd.prototype_id == "artifact.miskatonic.codex"
+        assert cmd.quantity == 1
+        assert cmd.target_type == "item"
+
+    def test_parse_summon_command_with_quantity(self):
+        """Test parsing summon command with explicit quantity."""
+        parser = CommandParser()
+        cmd = parser.parse_command("/summon weapon.sword.longsword 2")
+        assert isinstance(cmd, SummonCommand)
+        assert cmd.quantity == 2
+        assert cmd.target_type == "item"
+
+    def test_parse_summon_command_with_target_type(self):
+        """Test parsing summon command with target hints."""
+        parser = CommandParser()
+        cmd = parser.parse_command("/summon npc.waking_terror npc 3")
+        assert isinstance(cmd, SummonCommand)
+        assert cmd.prototype_id == "npc.waking_terror"
+        assert cmd.quantity == 3
+        assert cmd.target_type == "npc"
+
+    def test_parse_summon_command_invalid_arguments(self):
+        """Test summon command rejects invalid arguments."""
+        parser = CommandParser()
+        with pytest.raises(MythosValidationError):
+            parser.parse_command("/summon artifact.codex not_a_number")
 
 
 class TestCommandParser:

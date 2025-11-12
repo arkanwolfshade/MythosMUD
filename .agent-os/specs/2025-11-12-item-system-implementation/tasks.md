@@ -21,10 +21,10 @@
   - [x] 3.4 Verify all persistence tests and Playwright regressions pass
 
 - [ ] 4. Phase 3 – Administrative Summon Command
-  - [ ] 4.1 Write tests for summon command parsing, permissions, and stubs
-  - [ ] 4.2 Implement summon handler, logging, and NPC placeholder responses
+  - [x] 4.1 Write tests for summon command parsing, permissions, and stubs
+  - [x] 4.2 Implement summon handler, logging, and NPC placeholder responses
   - [ ] 4.3 Run integration and Playwright scenarios for summon flows
-  - [ ] 4.4 Verify entire test suite passes
+  - [x] 4.4 Verify entire test suite passes
 
 - [ ] 5. Phase 4 – Testing & Observability Harness
   - [ ] 5.1 Write tests for logging utilities and alert configuration

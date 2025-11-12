@@ -25,6 +25,7 @@ from .admin_commands import (
     handle_unmute_global_command,
 )
 from .admin_shutdown_command import handle_shutdown_command
+from .admin_summon_command import handle_summon_command
 from .alias_commands import (
     handle_alias_command,
     handle_aliases_command,
@@ -112,6 +113,7 @@ class CommandService:
             "add_admin": handle_add_admin_command,
             "admin": handle_admin_command,
             "mutes": handle_mutes_command,
+            "summon": handle_summon_command,
             # Admin teleport commands (confirmation removed for immediate execution)
             "teleport": handle_teleport_command,
             "goto": handle_goto_command,

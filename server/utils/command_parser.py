@@ -6,7 +6,7 @@ injection and ensure type safety.
 """
 
 import re
-from typing import Any
+from typing import Any, Literal, cast
 
 from pydantic import ValidationError as PydanticValidationError
 
@@ -48,6 +48,7 @@ from ..models.command import (
     StandCommand,
     StatusCommand,
     StrikeCommand,
+    SummonCommand,
     SystemCommand,
     TeleportCommand,
     UnaliasCommand,
@@ -95,6 +96,7 @@ class CommandParser:
             CommandType.UNMUTE_GLOBAL.value: self._create_unmute_global_command,
             CommandType.ADD_ADMIN.value: self._create_add_admin_command,
             CommandType.ADMIN.value: self._create_admin_command,
+            CommandType.SUMMON.value: self._create_summon_command,
             CommandType.MUTES.value: self._create_mutes_command,
             CommandType.TELEPORT.value: self._create_teleport_command,
             CommandType.GOTO.value: self._create_goto_command,
@@ -606,6 +608,68 @@ class CommandParser:
 
         return AdminCommand(subcommand=subcommand, args=remaining_args)
 
+    def _create_summon_command(self, args: list[str]) -> SummonCommand:
+        """Create SummonCommand from arguments."""
+        if not args:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: summon <prototype_id> [quantity] [item|npc]",
+                context=context,
+                logger_name=__name__,
+            )
+
+        prototype_id = args[0]
+        quantity: int | None = None
+        target_type: Literal["item", "npc"] | None = None
+
+        for token in args[1:]:
+            lowered = token.lower()
+            if lowered in {"item", "npc"} and target_type is None:
+                target_type = cast(Literal["item", "npc"], lowered)
+                continue
+            if quantity is None:
+                try:
+                    parsed_quantity = int(token)
+                except ValueError as error:
+                    context = create_error_context()
+                    context.metadata = {"args": args, "invalid_token": token}
+                    log_and_raise_enhanced(
+                        MythosValidationError,
+                        "Usage: summon <prototype_id> [quantity] [item|npc]",
+                        context=context,
+                        logger_name=__name__,
+                        error=error,
+                    )
+                if parsed_quantity <= 0:
+                    context = create_error_context()
+                    context.metadata = {"args": args, "invalid_quantity": parsed_quantity}
+                    log_and_raise_enhanced(
+                        MythosValidationError,
+                        "Summon quantity must be a positive number.",
+                        context=context,
+                        logger_name=__name__,
+                    )
+                quantity = parsed_quantity
+                continue
+
+            # Extra positional argument that we don't recognise.
+            context = create_error_context()
+            context.metadata = {"args": args, "unexpected_token": token}
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: summon <prototype_id> [quantity] [item|npc]",
+                context=context,
+                logger_name=__name__,
+            )
+
+        return SummonCommand(
+            prototype_id=prototype_id,
+            quantity=quantity if quantity is not None else 1,
+            target_type=target_type if target_type is not None else "item",
+        )
+
     def _create_mutes_command(self, args: list[str]) -> MutesCommand:
         """Create MutesCommand from arguments."""
         if args:
@@ -967,6 +1031,7 @@ class CommandParser:
             "aliases": "List your command aliases",
             "unalias": "Remove a command alias",
             "help": "Show this help information",
+            "summon": "Admin command: /summon <prototype_id> [quantity] [item|npc]",
             "sit": "Sit down and adopt a seated posture",
             "stand": "Return to a standing posture",
             "lie": "Lie down (optionally use 'lie down')",
@@ -1070,6 +1135,7 @@ def get_command_help(command_type: str | None = None) -> str:
             CommandType.UNMUTE_GLOBAL.value: "unmute_global <player> - Globally unmute a player",
             CommandType.ADD_ADMIN.value: "add_admin <player> - Make a player an admin",
             CommandType.MUTES.value: "mutes - Show your mute status",
+            CommandType.SUMMON.value: "summon <prototype_id> [quantity] [item|npc] - Admin: conjure items or NPCs",
             CommandType.WHO.value: "who [player] - List online players with optional filtering",
             CommandType.STATUS.value: "status - Show your character status",
             CommandType.WHOAMI.value: "whoami - Show your personal status (alias of status)",
@@ -1108,6 +1174,7 @@ Available Commands:
 - unmute_global <player> - Globally unmute a player
 - add_admin <player> - Make a player an admin
 - mutes - Show your mute status
+- summon <prototype_id> [quantity] [item|npc] - Admin: conjure items or NPCs
 - who [player] - List online players with optional filtering
 - status - Show your character status
 - whoami - Show your personal status (alias of status)

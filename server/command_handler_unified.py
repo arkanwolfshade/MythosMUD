@@ -135,6 +135,7 @@ def _should_treat_as_emote(command: str) -> bool:
         "mutes",
         "unmute",
         "admin",
+        "summon",
         "pose",
         "tell",
         "whisper",
