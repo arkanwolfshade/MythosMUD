@@ -37,7 +37,20 @@ INJECTION_PATTERNS = [
 ]
 
 # Commands that traditionally use slash prefix in modern interfaces
-SLASH_COMMANDS = {"help", "who", "quit", "look", "go", "say", "me", "pose", "alias", "aliases", "unalias", "npc"}
+SLASH_COMMANDS = {
+    "help",
+    "who",
+    "quit",
+    "look",
+    "go",
+    "say",
+    "me",
+    "pose",
+    "alias",
+    "aliases",
+    "unalias",
+    "npc",
+}
 
 
 def sanitize_unicode_input(text: str) -> str:
