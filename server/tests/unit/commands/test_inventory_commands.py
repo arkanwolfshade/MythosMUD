@@ -167,6 +167,89 @@ async def test_pickup_command_transfers_room_item(command_context):
 
 
 @pytest.mark.asyncio
+async def test_pickup_command_supports_fuzzy_name_lookup(command_context):
+    request, persistence, connection_manager, room_manager, alias_storage = command_context
+
+    player = make_player()
+    persistence.get_player_by_name.return_value = player
+    player_name = cast(str, player.name)
+    player_room_id = cast(str, player.current_room_id)
+
+    room_manager.add_room_drop(
+        player_room_id,
+        {
+            "item_instance_id": "instance-clockwork-crown",
+            "prototype_id": "equipment.head.clockwork_crown",
+            "item_id": "equipment.head.clockwork_crown",
+            "item_name": "Clockwork Aether Crown",
+            "slot_type": "head",
+            "quantity": 1,
+        },
+    )
+    room_manager.add_room_drop(
+        player_room_id,
+        {
+            "item_instance_id": "instance-spare-tonic",
+            "prototype_id": "consumable.tonic_generic",
+            "item_id": "consumable.tonic_generic",
+            "item_name": "Generic Tonic",
+            "slot_type": "backpack",
+            "quantity": 2,
+        },
+    )
+
+    result = await handle_pickup_command(
+        {"search_term": "crown"},
+        {"username": player_name},
+        request,
+        alias_storage,
+        player_name,
+    )
+
+    inventory = player.get_inventory()
+    assert len(inventory) == 1
+    assert inventory[0]["item_id"] == "equipment.head.clockwork_crown"
+    assert result["result"].startswith("You pick up 1x Clockwork Aether Crown")
+    remaining_drop = room_manager.list_room_drops(player_room_id)
+    assert len(remaining_drop) == 1
+    assert remaining_drop[0]["item_id"] == "consumable.tonic_generic"
+
+
+@pytest.mark.asyncio
+async def test_pickup_command_reports_missing_fuzzy_match(command_context):
+    request, persistence, connection_manager, room_manager, alias_storage = command_context
+
+    player = make_player()
+    persistence.get_player_by_name.return_value = player
+    player_name = cast(str, player.name)
+    player_room_id = cast(str, player.current_room_id)
+
+    room_manager.add_room_drop(
+        player_room_id,
+        {
+            "item_instance_id": "instance-spare-tonic",
+            "prototype_id": "consumable.tonic_generic",
+            "item_id": "consumable.tonic_generic",
+            "item_name": "Generic Tonic",
+            "slot_type": "backpack",
+            "quantity": 1,
+        },
+    )
+
+    result = await handle_pickup_command(
+        {"search_term": "eldritch"},
+        {"username": player_name},
+        request,
+        alias_storage,
+        player_name,
+    )
+
+    assert result["result"] == "There is no item here matching 'eldritch'."
+    assert room_manager.list_room_drops(player_room_id)[0]["item_id"] == "consumable.tonic_generic"
+    persistence.save_player.assert_not_called()
+
+
+@pytest.mark.asyncio
 async def test_drop_command_moves_item_to_room(command_context):
     request, persistence, connection_manager, room_manager, alias_storage = command_context
 
@@ -359,6 +442,74 @@ async def test_equip_command_moves_item_to_equipped(command_context):
 
 
 @pytest.mark.asyncio
+async def test_equip_command_accepts_fuzzy_name(command_context):
+    request, persistence, connection_manager, _room_manager, alias_storage = command_context
+
+    player = make_player()
+    player.set_inventory(
+        [
+            {
+                "item_instance_id": "instance-lantern_battered",
+                "prototype_id": "lantern_battered",
+                "item_id": "lantern_battered",
+                "item_name": "Battered Lantern",
+                "slot_type": "left_hand",
+                "quantity": 1,
+            }
+        ]
+    )
+    persistence.get_player_by_name.return_value = player
+    player_name = cast(str, player.name)
+
+    result = await handle_equip_command(
+        {"index": None, "search_term": "lantern", "target_slot": None},
+        {"username": player_name},
+        request,
+        alias_storage,
+        player_name,
+    )
+
+    assert "You equip Battered Lantern" in result["result"]
+    assert player.get_inventory() == []
+    assert player.get_equipped_items()["left_hand"]["item_name"] == "Battered Lantern"
+    connection_manager.broadcast_to_room.assert_awaited()
+
+
+@pytest.mark.asyncio
+async def test_equip_command_reports_missing_fuzzy_match(command_context):
+    request, persistence, connection_manager, _room_manager, alias_storage = command_context
+
+    player = make_player()
+    player.set_inventory(
+        [
+            {
+                "item_instance_id": "instance-tonic",
+                "prototype_id": "tonic_laudanum",
+                "item_id": "tonic_laudanum",
+                "item_name": "Laudanum Tonic",
+                "slot_type": "backpack",
+                "quantity": 1,
+            }
+        ]
+    )
+    persistence.get_player_by_name.return_value = player
+    player_name = cast(str, player.name)
+
+    result = await handle_equip_command(
+        {"index": None, "search_term": "lantern", "target_slot": None},
+        {"username": player_name},
+        request,
+        alias_storage,
+        player_name,
+    )
+
+    assert result["result"] == "You do not have an item matching 'lantern'."
+    assert player.get_inventory()[0]["item_name"] == "Laudanum Tonic"
+    persistence.save_player.assert_not_called()
+    connection_manager.broadcast_to_room.assert_not_called()
+
+
+@pytest.mark.asyncio
 async def test_equip_command_duplicate_token_suppresses_second_attempt(command_context):
     request, persistence, connection_manager, room_manager, alias_storage = command_context
 
@@ -456,6 +607,8 @@ async def test_unequip_command_duplicate_token_suppresses_second_attempt(command
     player.set_equipped_items({"head": equipped_payload})
     persistence.save_player.reset_mock()
 
-    second_result = await handle_unequip_command(command, {"username": player_name}, request, alias_storage, player_name)
+    second_result = await handle_unequip_command(
+        command, {"username": player_name}, request, alias_storage, player_name
+    )
     assert second_result["result"] == "That action is already being processed."
     persistence.save_player.assert_not_called()

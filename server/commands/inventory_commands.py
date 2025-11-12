@@ -30,6 +30,104 @@ _SHARED_INVENTORY_SERVICE = InventoryService()
 _SHARED_EQUIPMENT_SERVICE = EquipmentService(inventory_service=_SHARED_INVENTORY_SERVICE)
 
 
+def _match_room_drop_by_name(drop_list: list[dict[str, Any]], search_term: str) -> int | None:
+    """
+    Resolve a room drop index using Lovecraftian-grade fuzzy matching heuristics.
+
+    Human collaborators: we prefer exact identifiers, then courteous prefix matches, before falling back
+    to substring containment—echoing the cataloguing rites described in Dr. Wilmarth's Restricted Archives.
+    Agentic aides: return a zero-based index for the best candidate or None if no alignment is found.
+    """
+
+    normalized = search_term.strip().lower()
+    if not normalized:
+        return None
+
+    def _extract(stack: dict[str, Any], key: str) -> str | None:
+        value = stack.get(key)
+        if isinstance(value, str):
+            stripped = value.strip()
+            return stripped if stripped else None
+        return None
+
+    candidates: list[tuple[int, str | None, str | None, str | None]] = []
+    for idx, stack in enumerate(drop_list):
+        item_name = _extract(stack, "item_name")
+        item_id = _extract(stack, "item_id")
+        prototype_id = _extract(stack, "prototype_id")
+        candidates.append((idx, item_name, item_id, prototype_id))
+
+    for idx, item_name, item_id, prototype_id in candidates:
+        for candidate in (item_name, item_id, prototype_id):
+            if candidate and candidate.lower() == normalized:
+                return idx
+
+    for idx, item_name, _item_id, _prototype_id in candidates:
+        if item_name and item_name.lower().startswith(normalized):
+            return idx
+
+    for idx, _item_name, item_id, prototype_id in candidates:
+        for candidate in (item_id, prototype_id):
+            if candidate and candidate.lower().startswith(normalized):
+                return idx
+
+    for idx, item_name, item_id, prototype_id in candidates:
+        for candidate in (item_name, item_id, prototype_id):
+            if candidate and normalized in candidate.lower():
+                return idx
+
+    return None
+
+
+def _match_inventory_item_by_name(inventory: list[dict[str, Any]], search_term: str) -> int | None:
+    """
+    Resolve an inventory index from a fuzzy name search.
+
+    Human scholars: this mirrors the ritual we employ for room drops, prioritising exact designations
+    before leaning on sympathetic naming. Agentic aides: return a zero-based index when the augury aligns,
+    otherwise yield None.
+    """
+
+    normalized = search_term.strip().lower()
+    if not normalized:
+        return None
+
+    def _extract(stack: dict[str, Any], key: str) -> str | None:
+        value = stack.get(key)
+        if isinstance(value, str):
+            stripped = value.strip()
+            return stripped if stripped else None
+        return None
+
+    candidates: list[tuple[int, str | None, str | None, str | None]] = []
+    for idx, stack in enumerate(inventory):
+        item_name = _extract(stack, "item_name")
+        item_id = _extract(stack, "item_id")
+        prototype_id = _extract(stack, "prototype_id")
+        candidates.append((idx, item_name, item_id, prototype_id))
+
+    for idx, item_name, item_id, prototype_id in candidates:
+        for candidate in (item_name, item_id, prototype_id):
+            if candidate and candidate.lower() == normalized:
+                return idx
+
+    for idx, item_name, _item_id, _prototype_id in candidates:
+        if item_name and item_name.lower().startswith(normalized):
+            return idx
+
+    for idx, _item_name, item_id, prototype_id in candidates:
+        for candidate in (item_id, prototype_id):
+            if candidate and candidate.lower().startswith(normalized):
+                return idx
+
+    for idx, item_name, item_id, prototype_id in candidates:
+        for candidate in (item_name, item_id, prototype_id):
+            if candidate and normalized in candidate.lower():
+                return idx
+
+    return None
+
+
 def _resolve_state(request: Any) -> tuple[Any, Any]:
     app = getattr(request, "app", None)
     state = getattr(app, "state", None)
@@ -199,22 +297,48 @@ async def handle_pickup_command(
         )
         return {"result": "Room inventory is unavailable."}
 
-    index = command_data.get("index")
-    if not isinstance(index, int) or index < 1:
-        return {"result": "Usage: pickup <item-number> [quantity]"}
-
     desired_quantity = command_data.get("quantity")
     room_id = str(player.current_room_id)
     drop_list = room_manager.list_room_drops(room_id)
-    if index > len(drop_list):
-        return {"result": "There is no such item to pick up."}
+
+    index = command_data.get("index")
+    search_term = command_data.get("search_term")
+    resolved_index_zero: int | None = None
+
+    if isinstance(index, int) and index >= 1:
+        if index > len(drop_list):
+            return {"result": "There is no such item to pick up."}
+        resolved_index_zero = index - 1
+    elif isinstance(search_term, str) and search_term.strip():
+        match_index = _match_room_drop_by_name(drop_list, search_term)
+        if match_index is None:
+            logger.info(
+                "No matching room drop found for pickup",
+                player=player.name,
+                player_id=str(player.player_id),
+                search_term=search_term,
+                room_id=room_id,
+            )
+            return {"result": f"There is no item here matching '{search_term}'."}
+        resolved_index_zero = match_index
+        index = match_index + 1
+        logger.debug(
+            "Pickup resolved via fuzzy search",
+            player=player.name,
+            player_id=str(player.player_id),
+            room_id=room_id,
+            search_term=search_term,
+            resolved_index=index,
+        )
+    else:
+        return {"result": "Usage: pickup <item-number|item-name> [quantity]"}
 
     if desired_quantity is None:
-        desired_quantity = int(drop_list[index - 1].get("quantity", 1))
+        desired_quantity = int(drop_list[resolved_index_zero].get("quantity", 1))
     if desired_quantity <= 0:
         return {"result": "Quantity must be a positive number."}
 
-    extracted_stack = room_manager.take_room_drop(room_id, index - 1, desired_quantity)
+    extracted_stack = room_manager.take_room_drop(room_id, resolved_index_zero, desired_quantity)
     if not extracted_stack:
         return {"result": "That item is no longer available."}
 
@@ -392,17 +516,42 @@ async def handle_equip_command(
     if error or not player:
         return error or {"result": "Player information not found."}
 
-    index = command_data.get("index")
-    if not isinstance(index, int) or index < 1:
-        return {"result": "Usage: equip <inventory-number> [slot]"}
-
     inventory = player.get_inventory()
     room_id = str(player.current_room_id)
-    if index > len(inventory):
-        return {"result": "You do not have an item in that slot."}
-
+    index = command_data.get("index")
+    search_term = command_data.get("search_term")
     target_slot = command_data.get("target_slot")
-    selected_stack = deepcopy(inventory[index - 1])
+
+    resolved_index_zero: int | None = None
+
+    if isinstance(index, int) and index >= 1:
+        if index > len(inventory):
+            return {"result": "You do not have an item in that slot."}
+        resolved_index_zero = index - 1
+    elif isinstance(search_term, str) and search_term.strip():
+        match_index = _match_inventory_item_by_name(inventory, search_term)
+        if match_index is None:
+            logger.info(
+                "No matching inventory item found for equip",
+                player=player.name,
+                player_id=str(player.player_id),
+                search_term=search_term,
+                room_id=room_id,
+            )
+            return {"result": f"You do not have an item matching '{search_term}'."}
+        resolved_index_zero = match_index
+        logger.debug(
+            "Equip resolved via fuzzy search",
+            player=player.name,
+            player_id=str(player.player_id),
+            room_id=room_id,
+            search_term=search_term,
+            inventory_index=match_index + 1,
+        )
+    else:
+        return {"result": "Usage: equip <inventory-number|item-name> [slot]"}
+
+    selected_stack = deepcopy(inventory[resolved_index_zero])
 
     inventory_service = _SHARED_INVENTORY_SERVICE
     equipment_service = _SHARED_EQUIPMENT_SERVICE
@@ -428,7 +577,7 @@ async def handle_equip_command(
             new_inventory, new_equipped = equipment_service.equip_from_inventory(
                 inventory,
                 player.get_equipped_items(),
-                slot_index=index - 1,
+                slot_index=resolved_index_zero,
                 target_slot=target_slot,
             )
         except (SlotValidationError, EquipmentCapacityError, InventoryCapacityError) as exc:

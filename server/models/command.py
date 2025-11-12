@@ -497,8 +497,29 @@ class PickupCommand(BaseCommand):
     """Command for picking up items from room drops."""
 
     command_type: Literal[CommandType.PICKUP] = CommandType.PICKUP
-    index: int = Field(..., ge=1, description="Index of the room drop to collect")
+    index: int | None = Field(
+        None,
+        ge=1,
+        description="Index of the room drop to collect (1-based).",
+    )
+    search_term: str | None = Field(
+        None,
+        min_length=1,
+        max_length=120,
+        description="Name fragment or prototype identifier for fuzzy selection.",
+    )
     quantity: int | None = Field(None, ge=1, description="Quantity to pick up (defaults to full stack)")
+
+    def model_post_init(self, __context: object) -> None:
+        super().model_post_init(__context)
+        if self.index is None and (self.search_term is None or not self.search_term.strip()):
+            raise ValueError("Pickup command requires an item number or name.")
+
+        if self.search_term is not None:
+            stripped = self.search_term.strip()
+            if not stripped:
+                raise ValueError("Pickup search term cannot be empty.")
+            object.__setattr__(self, "search_term", stripped)
 
 
 class DropCommand(BaseCommand):
@@ -513,8 +534,29 @@ class EquipCommand(BaseCommand):
     """Command for equipping an item from inventory."""
 
     command_type: Literal[CommandType.EQUIP] = CommandType.EQUIP
-    index: int = Field(..., ge=1, description="Inventory slot index to equip")
+    index: int | None = Field(
+        None,
+        ge=1,
+        description="Inventory slot index to equip (1-based).",
+    )
+    search_term: str | None = Field(
+        None,
+        min_length=1,
+        max_length=120,
+        description="Name fragment or prototype identifier to resolve inventory item.",
+    )
     target_slot: str | None = Field(None, max_length=30, description="Optional slot override")
+
+    def model_post_init(self, __context: object) -> None:
+        super().model_post_init(__context)
+        if self.index is None and (self.search_term is None or not self.search_term.strip()):
+            raise ValueError("Equip command requires an item number or name.")
+
+        if self.search_term is not None:
+            stripped = self.search_term.strip()
+            if not stripped:
+                raise ValueError("Equip search term cannot be empty.")
+            object.__setattr__(self, "search_term", stripped)
 
     @field_validator("target_slot")
     @classmethod

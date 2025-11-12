@@ -155,6 +155,15 @@ class CommandProcessor:
         if hasattr(validated_command, "quantity"):
             command_data["quantity"] = validated_command.quantity
 
+        if hasattr(validated_command, "prototype_id"):
+            command_data["prototype_id"] = validated_command.prototype_id
+
+        if hasattr(validated_command, "target_type"):
+            command_data["target_type"] = validated_command.target_type
+
+        if hasattr(validated_command, "search_term"):
+            command_data["search_term"] = validated_command.search_term
+
         if hasattr(validated_command, "action"):
             command_data["action"] = validated_command.action
 

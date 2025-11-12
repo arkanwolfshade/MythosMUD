@@ -765,38 +765,94 @@ class CommandParser:
         return InventoryCommand()
 
     def _create_pickup_command(self, args: list[str]) -> PickupCommand:
-        """Create pickup command."""
+        """Create pickup command supporting numeric indices or fuzzy names."""
 
         if not args:
             context = create_error_context()
             log_and_raise_enhanced(
-                MythosValidationError, "Usage: pickup <item-number> [quantity]", context=context, logger_name=__name__
+                MythosValidationError,
+                "Usage: pickup <item-number|item-name> [quantity]",
+                context=context,
+                logger_name=__name__,
             )
 
-        try:
-            index = int(args[0])
-        except ValueError:
+        quantity: int | None = None
+        selector_tokens = list(args)
+
+        if len(selector_tokens) > 1:
+            potential_quantity = selector_tokens[-1]
+            try:
+                quantity_candidate = int(potential_quantity)
+            except ValueError:
+                quantity_candidate = None
+
+            if quantity_candidate is not None:
+                if quantity_candidate <= 0:
+                    context = create_error_context()
+                    context.metadata = {"args": args, "quantity": quantity_candidate}
+                    log_and_raise_enhanced(
+                        MythosValidationError,
+                        "Quantity must be a positive integer.",
+                        context=context,
+                        logger_name=__name__,
+                    )
+                quantity = quantity_candidate
+                selector_tokens = selector_tokens[:-1]
+
+        if not selector_tokens:
             context = create_error_context()
             context.metadata = {"args": args}
             log_and_raise_enhanced(
-                MythosValidationError, "Item number must be an integer", context=context, logger_name=__name__
+                MythosValidationError,
+                "Usage: pickup <item-number|item-name> [quantity]",
+                context=context,
+                logger_name=__name__,
             )
 
-        quantity = None
-        if len(args) > 1:
-            try:
-                quantity = int(args[1])
-            except ValueError:
+        primary_token = selector_tokens[0]
+        index: int | None = None
+        search_term: str | None = None
+
+        try:
+            index_candidate = int(primary_token)
+        except ValueError:
+            index_candidate = None
+
+        if index_candidate is not None:
+            if index_candidate <= 0:
                 context = create_error_context()
-                context.metadata = {"args": args}
+                context.metadata = {"args": args, "index": index_candidate}
                 log_and_raise_enhanced(
                     MythosValidationError,
-                    "Quantity must be an integer",
+                    "Item number must be a positive integer.",
                     context=context,
                     logger_name=__name__,
                 )
 
-        return PickupCommand(index=index, quantity=quantity)
+            if len(selector_tokens) > 1:
+                context = create_error_context()
+                context.metadata = {"args": args}
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Usage: pickup <item-number|item-name> [quantity]",
+                    context=context,
+                    logger_name=__name__,
+                )
+
+            index = index_candidate
+        else:
+            search_term = " ".join(selector_tokens).strip()
+            if not search_term:
+                context = create_error_context()
+                context.metadata = {"args": args}
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Pickup item name cannot be empty.",
+                    context=context,
+                    logger_name=__name__,
+                )
+
+        return PickupCommand(index=index, search_term=search_term, quantity=quantity)
 
     def _create_drop_command(self, args: list[str]) -> DropCommand:
         """Create drop command."""
@@ -841,20 +897,77 @@ class CommandParser:
         if not args:
             context = create_error_context()
             log_and_raise_enhanced(
-                MythosValidationError, "Usage: equip <inventory-number> [slot]", context=context, logger_name=__name__
+                MythosValidationError,
+                "Usage: equip <inventory-number|item-name> [slot]",
+                context=context,
+                logger_name=__name__,
             )
+
+        selector_tokens = list(args)
+        index: int | None = None
+        search_term: str | None = None
+        target_slot: str | None = None
+
+        def _maybe_extract_slot(tokens: list[str]) -> tuple[list[str], str | None]:
+            if not tokens:
+                return tokens, None
+
+            possible_slot = tokens[-1]
+            normalized = possible_slot.lower()
+            known_slots = {
+                "head",
+                "torso",
+                "legs",
+                "feet",
+                "hands",
+                "left_hand",
+                "right_hand",
+                "main_hand",
+                "off_hand",
+                "accessory",
+                "ring",
+                "amulet",
+                "belt",
+                "backpack",
+                "waist",
+                "neck",
+            }
+            if normalized in known_slots:
+                return tokens[:-1], possible_slot
+            return tokens, None
 
         try:
-            index = int(args[0])
+            index_candidate = int(selector_tokens[0])
         except ValueError:
-            context = create_error_context()
-            context.metadata = {"args": args}
-            log_and_raise_enhanced(
-                MythosValidationError, "Inventory index must be an integer", context=context, logger_name=__name__
-            )
+            index_candidate = None
 
-        target_slot = args[1] if len(args) > 1 else None
-        return EquipCommand(index=index, target_slot=target_slot)
+        if index_candidate is not None:
+            if index_candidate <= 0:
+                context = create_error_context()
+                context.metadata = {"args": args, "index": index_candidate}
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Inventory index must be a positive integer.",
+                    context=context,
+                    logger_name=__name__,
+                )
+            index = index_candidate
+            target_slot = selector_tokens[1] if len(selector_tokens) > 1 else None
+        else:
+            trimmed_tokens, inferred_slot = _maybe_extract_slot(selector_tokens)
+            search_term = " ".join(trimmed_tokens or selector_tokens).strip()
+            if not search_term:
+                context = create_error_context()
+                context.metadata = {"args": args}
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Equip item name cannot be empty.",
+                    context=context,
+                    logger_name=__name__,
+                )
+            target_slot = inferred_slot
+
+        return EquipCommand(index=index, search_term=search_term, target_slot=target_slot)
 
     def _create_unequip_command(self, args: list[str]) -> UnequipCommand:
         """Create unequip command."""

@@ -4,9 +4,10 @@ Param(
 
 $ErrorActionPreference = "Stop"
 
-$root = Split-Path -Parent $PSScriptRoot
-$schemaPath = Join-Path $root "server\sql\items_schema.sql"
-$seedPath = Join-Path $root "server\sql\items_seed_data.sql"
+$scriptsRoot = Split-Path -Parent $PSScriptRoot
+$repoRoot = Split-Path -Parent $scriptsRoot
+$schemaPath = Join-Path $repoRoot "server\sql\items_schema.sql"
+$seedPath = Join-Path $repoRoot "server\sql\items_seed_data.sql"
 
 if (-not (Test-Path $schemaPath)) {
     Write-Error "Schema file not found at $schemaPath"
@@ -17,9 +18,9 @@ if (-not (Test-Path $seedPath)) {
 }
 
 $targets = @(
-    @{ Path = Join-Path $root "data\local\items\local_items.db"; ApplySeed = $true },
-    @{ Path = Join-Path $root "data\e2e_test\items\e2e_items.db"; ApplySeed = $true },
-    @{ Path = Join-Path $root "data\unit_test_test\items\unit_test_items.db"; ApplySeed = $true }
+    @{ Path = Join-Path $repoRoot "data\local\items\local_items.db"; ApplySeed = $true },
+    @{ Path = Join-Path $repoRoot "data\e2e_test\items\e2e_items.db"; ApplySeed = $true },
+    @{ Path = Join-Path $repoRoot "data\unit_test_test\items\unit_test_items.db"; ApplySeed = $true }
 )
 
 foreach ($target in $targets) {
