@@ -476,6 +476,44 @@ async def test_equip_command_accepts_fuzzy_name(command_context):
 
 
 @pytest.mark.asyncio
+async def test_equip_command_normalizes_slot_type(command_context):
+    request, persistence, connection_manager, _room_manager, alias_storage = command_context
+
+    player = make_player()
+    player.set_inventory(
+        [
+            {
+                "item_instance_id": "instance-clockwork_crown",
+                "prototype_id": "equipment.head.clockwork_crown",
+                "item_id": "equipment.head.clockwork_crown",
+                "item_name": "Clockwork Aether Crown",
+                "slot_type": "HEAD",
+                "quantity": 1,
+            }
+        ]
+    )
+    persistence.get_player_by_name.return_value = player
+    player_name = cast(str, player.name)
+
+    persistence.save_player.reset_mock()
+
+    result = await handle_equip_command(
+        {"index": 1, "target_slot": "HEAD"},
+        {"username": player_name},
+        request,
+        alias_storage,
+        player_name,
+    )
+
+    assert "You equip Clockwork Aether Crown" in result["result"]
+    equipped = player.get_equipped_items()
+    assert "head" in equipped
+    assert equipped["head"]["slot_type"] == "head"
+    persistence.save_player.assert_called_once_with(player)
+    connection_manager.broadcast_to_room.assert_awaited()
+
+
+@pytest.mark.asyncio
 async def test_equip_command_reports_missing_fuzzy_match(command_context):
     request, persistence, connection_manager, _room_manager, alias_storage = command_context
 

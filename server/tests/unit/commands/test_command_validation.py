@@ -222,6 +222,11 @@ class TestCommandModels:
         assert cmd.search_term == "clockwork crown"
         assert cmd.target_slot is None
 
+    def test_equip_command_normalizes_target_slot(self):
+        """Test EquipCommand normalizes provided slot names."""
+        cmd = EquipCommand(index=1, target_slot="HEAD")
+        assert cmd.target_slot == "head"
+
     def test_equip_command_model_requires_selector(self):
         """Test EquipCommand enforces selector validation."""
         with pytest.raises(PydanticValidationError):
@@ -614,6 +619,13 @@ class TestCommandParser:
         assert isinstance(cmd, EquipCommand)
         assert cmd.index == 2
         assert cmd.search_term is None
+        assert cmd.target_slot == "head"
+
+    def test_parse_equip_command_by_index_uppercase_slot(self):
+        """Test parsing equip command normalizes uppercase slot names."""
+        cmd = self.parser.parse_command("equip 1 HEAD")
+        assert isinstance(cmd, EquipCommand)
+        assert cmd.index == 1
         assert cmd.target_slot == "head"
 
     def test_parse_equip_command_by_name(self):

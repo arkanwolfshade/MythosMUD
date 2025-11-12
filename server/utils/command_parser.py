@@ -913,7 +913,7 @@ class CommandParser:
                 return tokens, None
 
             possible_slot = tokens[-1]
-            normalized = possible_slot.lower()
+            normalized = possible_slot.strip().lower()
             known_slots = {
                 "head",
                 "torso",
@@ -933,7 +933,7 @@ class CommandParser:
                 "neck",
             }
             if normalized in known_slots:
-                return tokens[:-1], possible_slot
+                return tokens[:-1], normalized
             return tokens, None
 
         try:
@@ -952,7 +952,8 @@ class CommandParser:
                     logger_name=__name__,
                 )
             index = index_candidate
-            target_slot = selector_tokens[1] if len(selector_tokens) > 1 else None
+            if len(selector_tokens) > 1:
+                target_slot = selector_tokens[1].strip().lower()
         else:
             trimmed_tokens, inferred_slot = _maybe_extract_slot(selector_tokens)
             search_term = " ".join(trimmed_tokens or selector_tokens).strip()

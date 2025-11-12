@@ -128,6 +128,15 @@ def _match_inventory_item_by_name(inventory: list[dict[str, Any]], search_term: 
     return None
 
 
+def _normalize_slot_name(slot: str | None) -> str | None:
+    """Normalize equipment slot identifiers to lowercase snake_case."""
+
+    if slot is None:
+        return None
+    normalized = slot.strip().lower()
+    return normalized or None
+
+
 def _resolve_state(request: Any) -> tuple[Any, Any]:
     app = getattr(request, "app", None)
     state = getattr(app, "state", None)
@@ -517,10 +526,17 @@ async def handle_equip_command(
         return error or {"result": "Player information not found."}
 
     inventory = player.get_inventory()
+    for stack_entry in inventory:
+        if isinstance(stack_entry, dict):
+            current_slot = stack_entry.get("slot_type")
+            normalized_slot = _normalize_slot_name(current_slot)
+            if normalized_slot:
+                stack_entry["slot_type"] = normalized_slot
+
     room_id = str(player.current_room_id)
     index = command_data.get("index")
     search_term = command_data.get("search_term")
-    target_slot = command_data.get("target_slot")
+    target_slot = _normalize_slot_name(command_data.get("target_slot"))
 
     resolved_index_zero: int | None = None
 
@@ -552,6 +568,10 @@ async def handle_equip_command(
         return {"result": "Usage: equip <inventory-number|item-name> [slot]"}
 
     selected_stack = deepcopy(inventory[resolved_index_zero])
+    if isinstance(selected_stack, dict):
+        normalized_selected_slot = _normalize_slot_name(selected_stack.get("slot_type"))
+        if normalized_selected_slot:
+            selected_stack["slot_type"] = normalized_selected_slot
 
     inventory_service = _SHARED_INVENTORY_SERVICE
     equipment_service = _SHARED_EQUIPMENT_SERVICE
@@ -592,8 +612,23 @@ async def handle_equip_command(
             )
             return {"result": str(exc)}
 
+        for stack in new_inventory:
+            if isinstance(stack, dict):
+                normalized_stack_slot = _normalize_slot_name(stack.get("slot_type"))
+                if normalized_stack_slot:
+                    stack["slot_type"] = normalized_stack_slot
+
+        normalized_equipped: dict[str, InventoryStack] = {}
+        for slot_name, stack in new_equipped.items():
+            normalized_slot_name = _normalize_slot_name(slot_name) or slot_name
+            if isinstance(stack, dict):
+                normalized_stack_slot = _normalize_slot_name(stack.get("slot_type"))
+                if normalized_stack_slot:
+                    stack["slot_type"] = normalized_stack_slot
+            normalized_equipped[normalized_slot_name] = stack
+
         player.set_inventory(cast(list[dict[str, Any]], new_inventory))
-        player.set_equipped_items(cast(dict[str, Any], new_equipped))
+        player.set_equipped_items(cast(dict[str, Any], normalized_equipped))
 
         persist_error = _persist_player(persistence, player)
         if persist_error:
