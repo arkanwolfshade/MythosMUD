@@ -44,11 +44,11 @@
   - [x] 7.3 Confirm rate limiting and argument validation paths
   - [x] 7.4 Verify all tests pass
 
-- [ ] 8. Update room rendering for dropped items
-  - [ ] 8.1 Write tests for room description formatting and client rendering
-  - [ ] 8.2 Implement room state updates and description augmentation
-  - [ ] 8.3 Confirm narrative flavor text adheres to Mythos tone
-  - [ ] 8.4 Verify all tests pass
+- [x] 8. Update room rendering for dropped items
+  - [x] 8.1 Write tests for room description formatting and client rendering
+  - [x] 8.2 Implement room state updates and description augmentation
+  - [x] 8.3 Confirm narrative flavor text adheres to Mythos tone
+  - [x] 8.4 Verify all tests pass
 
 - [ ] 9. Logging, monitoring, and moderation audit
   - [ ] 9.1 Write tests or assertions for logging payload structure
@@ -60,4 +60,3 @@
   - [ ] 10.1 Execute end-to-end tests covering lifecycle scenarios
   - [ ] 10.2 Run `make format`, `make my`, `make lint`, `make test`, and review coverage thresholds
   - [ ] 10.3 Update documentation and TASKS.local.md with outcomes
-  - [ ] 10.4 Verify all tests pass
