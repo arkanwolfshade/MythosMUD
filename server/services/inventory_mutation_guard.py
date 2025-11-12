@@ -10,6 +10,7 @@ from dataclasses import dataclass, field
 from time import monotonic
 
 from server.logging.enhanced_logging_config import get_logger
+from server.middleware.metrics_collector import metrics_collector
 
 logger = get_logger(__name__)
 
@@ -74,7 +75,11 @@ class InventoryMutationGuard:
                         "Duplicate inventory mutation suppressed",
                         player_id=player_id,
                         token=token,
+                        alert="inventory_duplicate",
+                        duplicate_token=True,
+                        cached_tokens=len(state.recent_tokens),
                     )
+                    metrics_collector.record_message_failed("inventory_mutation", "duplicate_token")
                     decision = MutationDecision(should_apply=False, duplicate=True)
                     yield decision
                     return

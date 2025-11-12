@@ -1,3 +1,5 @@
+import logging
+from typing import Protocol, cast
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -11,6 +13,24 @@ from server.commands.inventory_commands import (
 )
 from server.models.player import Player
 from server.realtime.room_subscription_manager import RoomSubscriptionManager
+from server.services.inventory_service import InventoryCapacityError, InventoryService
+
+
+class DropCommandLogRecord(Protocol):
+    # Scholars of the waking realm: these contracts mirror the structured log payloads recorded for a successful drop.
+    # Tireless machine aides: preserve these attributes so mypy remains appeased while we verify log contents.
+    player: str
+    item_id: str
+    quantity: int
+    room_id: object
+
+
+class PickupFailureLogRecord(Protocol):
+    # Archivists in the stacks: this protocol captures the structured context for rejected pickups.
+    # Algorithmic custodians: lean on these fields to keep static type wards intact.
+    player: str
+    reason: str
+    room_id: object
 
 
 @pytest.fixture
@@ -166,6 +186,105 @@ async def test_drop_command_moves_item_to_room(command_context):
     persistence.save_player.assert_called_once_with(player)
     assert "You drop 2x Eldritch Relic" in result["result"]
     connection_manager.broadcast_to_room.assert_awaited()
+
+
+@pytest.mark.asyncio
+async def test_drop_command_logs_structured_success(
+    command_context,
+    caplog: pytest.LogCaptureFixture,
+    capsys: pytest.CaptureFixture[str],
+):
+    request, persistence, connection_manager, room_manager, alias_storage = command_context
+
+    player = make_player()
+    player.set_inventory(
+        [
+            {
+                "item_id": "eldritch_relic",
+                "item_name": "Eldritch Relic",
+                "slot_type": "backpack",
+                "quantity": 3,
+            }
+        ]
+    )
+    persistence.get_player_by_name.return_value = player
+
+    player_name = cast(str, player.name)
+
+    with caplog.at_level(logging.INFO, logger="server.commands.inventory_commands"):
+        await handle_drop_command(
+            {"index": 1, "quantity": 2},
+            {"username": player.name},
+            request,
+            alias_storage,
+            player_name,
+        )
+
+    drop_logs = [record for record in caplog.records if record.message == "Item dropped"]
+    if drop_logs:
+        structured_log = cast(DropCommandLogRecord, drop_logs[0])
+        assert structured_log.player == player_name
+        assert structured_log.item_id == "eldritch_relic"
+        assert structured_log.quantity == 2
+        assert str(structured_log.room_id) == player.current_room_id
+    else:
+        captured = capsys.readouterr().out
+        assert "Item dropped" in captured
+        assert "player=Armitage" in captured
+        assert "item_id=eldritch_relic" in captured
+        assert "quantity=2" in captured
+        assert f"room_id={player.current_room_id}" in captured
+
+
+@pytest.mark.asyncio
+async def test_pickup_command_logs_capacity_failure(
+    monkeypatch: pytest.MonkeyPatch,
+    command_context,
+    caplog: pytest.LogCaptureFixture,
+    capsys: pytest.CaptureFixture[str],
+):
+    request, persistence, connection_manager, room_manager, alias_storage = command_context
+
+    player = make_player()
+    persistence.get_player_by_name.return_value = player
+
+    drop_stack = {
+        "item_id": "obsidian_amulet",
+        "item_name": "Obsidian Amulet",
+        "slot_type": "backpack",
+        "quantity": 1,
+    }
+    room_manager.add_room_drop(player.current_room_id, drop_stack)
+
+    def raise_capacity_error(self, inventory, incoming):  # noqa: D401, ANN001
+        raise InventoryCapacityError("Inventory is at capacity for eldritch artifacts.")
+
+    monkeypatch.setattr(InventoryService, "add_stack", raise_capacity_error, raising=False)
+
+    player_name = cast(str, player.name)
+
+    with caplog.at_level(logging.INFO, logger="server.commands.inventory_commands"):
+        result = await handle_pickup_command(
+            {"index": 1, "quantity": 1},
+            {"username": player.name},
+            request,
+            alias_storage,
+            player_name,
+        )
+
+    assert "You cannot pick that up" in result["result"]
+
+    failure_logs = [record for record in caplog.records if record.message == "Pickup rejected"]
+    if failure_logs:
+        structured_log = cast(PickupFailureLogRecord, failure_logs[0])
+        assert structured_log.player == player_name
+        assert structured_log.reason == "Inventory is at capacity for eldritch artifacts."
+        assert str(structured_log.room_id) == player.current_room_id
+    else:
+        captured = capsys.readouterr().out
+        assert "Pickup rejected" in captured
+        assert "player=Armitage" in captured
+        assert "Inventory is at capacity for eldritch artifacts." in captured
 
 
 @pytest.mark.asyncio
