@@ -573,15 +573,37 @@ class UnequipCommand(BaseCommand):
     """Command for unequipping an item back to inventory."""
 
     command_type: Literal[CommandType.UNEQUIP] = CommandType.UNEQUIP
-    slot: str = Field(..., min_length=1, max_length=30, description="Slot to unequip")
+    slot: str | None = Field(
+        default=None,
+        min_length=1,
+        max_length=30,
+        description="Slot to unequip (optional when providing item name).",
+    )
+    search_term: str | None = Field(
+        default=None,
+        min_length=1,
+        max_length=120,
+        description="Name fragment identifying the equipped item to remove.",
+    )
 
-    @field_validator("slot")
-    @classmethod
-    def validate_slot(cls, value: str) -> str:
-        normalized = value.strip().lower()
-        if not normalized:
-            raise ValueError("Slot cannot be empty")
-        return normalized
+    def model_post_init(self, __context: object) -> None:
+        super().model_post_init(__context)
+        if (self.slot is None or not self.slot.strip()) and (
+            self.search_term is None or not self.search_term.strip()
+        ):
+            raise ValueError("Unequip command requires a slot or item name.")
+
+        if self.slot is not None:
+            normalized = self.slot.strip().lower()
+            if not normalized:
+                raise ValueError("Slot cannot be empty")
+            object.__setattr__(self, "slot", normalized)
+
+        if self.search_term is not None:
+            stripped = self.search_term.strip()
+            if not stripped:
+                raise ValueError("Unequip item name cannot be empty.")
+            object.__setattr__(self, "search_term", stripped)
 
 
 class QuitCommand(BaseCommand):

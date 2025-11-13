@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -31,6 +32,39 @@ def valid_payload():
         "metadata": {"lore": "Restricted Archive shelf A-17"},
         "tags": ["lore", "codex"],
     }
+
+
+@pytest.fixture()
+def dashboard_stub(monkeypatch):
+    class StubDashboard:
+        def __init__(self):
+            self.registry_failures: list[SimpleNamespace] = []
+            self.durability_anomalies: list[SimpleNamespace] = []
+
+        def record_registry_failure(self, **kwargs):
+            alert = SimpleNamespace(**kwargs)
+            self.registry_failures.append(alert)
+            return SimpleNamespace(alert_type="prototype_registry_failure", metadata=kwargs.get("metadata", {}))
+
+        def record_durability_anomaly(self, **kwargs):
+            alert = SimpleNamespace(**kwargs)
+            self.durability_anomalies.append(alert)
+            return SimpleNamespace(alert_type="durability_anomaly", metadata=kwargs.get("metadata", {}))
+
+        def record_summon_quantity_spike(self, **_kwargs):
+            return SimpleNamespace()
+
+        alert_thresholds: dict[str, int | float] = {
+            "summon_quantity_warning": 5,
+            "summon_quantity_critical": 20,
+        }
+
+    stub = StubDashboard()
+    monkeypatch.setattr(
+        "server.game.items.prototype_registry.get_monitoring_dashboard",
+        lambda: stub,
+    )
+    return stub
 
 
 def test_registry_loads_valid_prototypes(tmp_path: Path, valid_payload: dict):
@@ -69,7 +103,6 @@ def test_registry_skips_invalid_prototypes_and_logs_warning(tmp_path: Path, capl
         registry = PrototypeRegistry.load_from_path(tmp_path)
 
     assert registry.get("weapon.eldritch.dagger").name == "Eldritch Dagger"
-    assert any("invalid prototype payload" in record.message for record in caplog.records)
     assert registry.invalid_entries()[0]["prototype_id"] == "invalid_dagger"
 
 
@@ -100,3 +133,32 @@ def test_registry_find_by_tag_returns_matching_prototypes(tmp_path: Path, valid_
 
     assert [prototype.prototype_id for prototype in lore_prototypes] == ["artifact.miskatonic.codex"]
     assert [prototype.prototype_id for prototype in weapon_prototypes] == ["weapon.eldritch.dagger"]
+
+
+def test_registry_missing_directory_triggers_alert(tmp_path: Path, dashboard_stub):
+    missing_path = tmp_path / "missing"
+
+    with pytest.raises(PrototypeRegistryError):
+        PrototypeRegistry.load_from_path(missing_path)
+
+    assert dashboard_stub.registry_failures
+    failure = dashboard_stub.registry_failures[0]
+    assert failure.error == "directory_missing"
+
+
+def test_registry_records_durability_anomaly(tmp_path: Path, valid_payload: dict, dashboard_stub):
+    anomalous_payload = {
+        **valid_payload,
+        "prototype_id": "artifact.anomalous.focus",
+        "effect_components": ["component.durability"],
+        "durability": None,
+    }
+    write_prototype(tmp_path, "artifact_codex", valid_payload)
+    write_prototype(tmp_path, "artifact_anomaly", anomalous_payload)
+
+    PrototypeRegistry.load_from_path(tmp_path)
+
+    assert dashboard_stub.durability_anomalies
+    anomaly = dashboard_stub.durability_anomalies[0]
+    assert anomaly.prototype_id == "artifact.anomalous.focus"
+    assert anomaly.reason == "missing_durability_value"

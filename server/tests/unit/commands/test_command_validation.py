@@ -34,6 +34,7 @@ from server.models.command import (
     SummonCommand,
     TeleportCommand,
     UnaliasCommand,
+    UnequipCommand,
     UnmuteCommand,
     UnmuteGlobalCommand,
     WhoamiCommand,
@@ -231,6 +232,24 @@ class TestCommandModels:
         """Test EquipCommand enforces selector validation."""
         with pytest.raises(PydanticValidationError):
             EquipCommand()
+
+    def test_unequip_command_model_with_slot(self):
+        """Test UnequipCommand normalizes slot identifiers."""
+        cmd = UnequipCommand(slot="HEAD")
+        assert cmd.command_type == CommandType.UNEQUIP
+        assert cmd.slot == "head"
+        assert cmd.search_term is None
+
+    def test_unequip_command_model_with_search_term(self):
+        """Test UnequipCommand accepts fuzzy selectors."""
+        cmd = UnequipCommand(search_term="Clockwork Crown")
+        assert cmd.slot is None
+        assert cmd.search_term == "Clockwork Crown"
+
+    def test_unequip_command_model_requires_selector(self):
+        """Test UnequipCommand requires slot or name."""
+        with pytest.raises(PydanticValidationError):
+            UnequipCommand()
 
     def test_alias_command_valid(self):
         """Test valid AliasCommand creation."""
@@ -648,6 +667,25 @@ class TestCommandParser:
         """Test equip command rejects malformed selectors."""
         with pytest.raises(MythosValidationError):
             self.parser.parse_command("equip")
+
+    def test_parse_unequip_command_by_slot(self):
+        """Test parsing unequip command with slot identifier."""
+        cmd = self.parser.parse_command("unequip HEAD")
+        assert isinstance(cmd, UnequipCommand)
+        assert cmd.slot == "head"
+        assert cmd.search_term is None
+
+    def test_parse_unequip_command_by_name(self):
+        """Test parsing unequip command with item name."""
+        cmd = self.parser.parse_command("unequip Clockwork Crown")
+        assert isinstance(cmd, UnequipCommand)
+        assert cmd.slot is None
+        assert cmd.search_term == "Clockwork Crown"
+
+    def test_parse_unequip_command_invalid(self):
+        """Test unequip command rejects empty arguments."""
+        with pytest.raises(MythosValidationError):
+            self.parser.parse_command("unequip")
 
     def test_parse_unalias_command(self):
         """Test parsing unalias command."""

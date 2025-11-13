@@ -976,11 +976,47 @@ class CommandParser:
         if not args:
             context = create_error_context()
             log_and_raise_enhanced(
-                MythosValidationError, "Usage: unequip <slot>", context=context, logger_name=__name__
+                MythosValidationError,
+                "Usage: unequip <slot|item-name>",
+                context=context,
+                logger_name=__name__,
             )
 
-        slot = args[0]
-        return UnequipCommand(slot=slot)
+        candidate = " ".join(args).strip()
+        if not candidate:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: unequip <slot|item-name>",
+                context=context,
+                logger_name=__name__,
+            )
+
+        normalized = candidate.lower()
+        known_slots = {
+            "head",
+            "torso",
+            "legs",
+            "feet",
+            "hands",
+            "left_hand",
+            "right_hand",
+            "main_hand",
+            "off_hand",
+            "accessory",
+            "ring",
+            "amulet",
+            "belt",
+            "backpack",
+            "waist",
+            "neck",
+        }
+
+        if normalized in known_slots:
+            return UnequipCommand(slot=candidate)
+
+        return UnequipCommand(search_term=candidate)
 
     def _create_quit_command(self, args: list[str]) -> QuitCommand:
         """Create QuitCommand from arguments."""

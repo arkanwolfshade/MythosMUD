@@ -137,6 +137,55 @@ def _normalize_slot_name(slot: str | None) -> str | None:
     return normalized or None
 
 
+def _match_equipped_item_by_name(equipped: Mapping[str, Mapping[str, Any]], search_term: str) -> str | None:
+    """
+    Resolve an equipped slot identifier via fuzzy item name search.
+
+    Scholars: we invoke the same sympathetic naming rites used for inventory and room drops.
+    Agents: return the normalized slot key when a match is found; otherwise None.
+    """
+
+    normalized_term = search_term.strip().lower()
+    if not normalized_term:
+        return None
+
+    candidates: list[tuple[str, str | None, str | None, str | None]] = []
+    for slot_name, stack in equipped.items():
+        item_name = stack.get("item_name")
+        item_id = stack.get("item_id")
+        prototype_id = stack.get("prototype_id")
+        def _clean(value: str | None) -> str | None:
+            if isinstance(value, str):
+                stripped = value.strip()
+                return stripped if stripped else None
+            return None
+        candidates.append(
+            (
+                _normalize_slot_name(slot_name) or slot_name,
+                _clean(item_name),
+                _clean(item_id),
+                _clean(prototype_id),
+            )
+        )
+
+    for slot_key, item_name, item_id, prototype_id in candidates:
+        for candidate in (item_name, item_id, prototype_id):
+            if candidate and candidate.lower() == normalized_term:
+                return slot_key
+
+    for slot_key, item_name, item_id, prototype_id in candidates:
+        for candidate in (item_name, item_id, prototype_id):
+            if candidate and candidate.lower().startswith(normalized_term):
+                return slot_key
+
+    for slot_key, item_name, item_id, prototype_id in candidates:
+        for candidate in (item_name, item_id, prototype_id):
+            if candidate and normalized_term in candidate.lower():
+                return slot_key
+
+    return None
+
+
 def _resolve_state(request: Any) -> tuple[Any, Any]:
     app = getattr(request, "app", None)
     state = getattr(app, "state", None)
@@ -712,8 +761,11 @@ async def handle_unequip_command(
         return error or {"result": "Player information not found."}
 
     slot = command_data.get("slot")
-    if not isinstance(slot, str) or not slot:
-        return {"result": "Usage: unequip <slot>"}
+    search_term = command_data.get("search_term")
+    normalized_slot = _normalize_slot_name(slot) if isinstance(slot, str) else None
+
+    if normalized_slot is None and not (isinstance(search_term, str) and search_term.strip()):
+        return {"result": "Usage: unequip <slot|item-name>"}
 
     inventory_service = _SHARED_INVENTORY_SERVICE
     equipment_service = _SHARED_EQUIPMENT_SERVICE
@@ -721,6 +773,20 @@ async def handle_unequip_command(
 
     previous_inventory = _clone_inventory(player)
     previous_equipped = deepcopy(player.get_equipped_items())
+    equipped_mapping = player.get_equipped_items()
+
+    resolved_slot: str | None = None
+    if normalized_slot and normalized_slot in equipped_mapping:
+        resolved_slot = normalized_slot
+
+    if resolved_slot is None and isinstance(search_term, str) and search_term.strip():
+        match_slot = _match_equipped_item_by_name(equipped_mapping, search_term)
+        if match_slot is None:
+            return {"result": f"You do not have an equipped item matching '{search_term}'."}
+        resolved_slot = match_slot
+
+    if resolved_slot is None:
+        return {"result": "You do not have an item equipped in that slot."}
 
     with inventory_service.begin_mutation(str(player.player_id), mutation_token) as decision:
         if not decision.should_apply:
@@ -728,7 +794,7 @@ async def handle_unequip_command(
                 "Unequip suppressed by mutation guard",
                 player=player.name,
                 player_id=str(player.player_id),
-                slot=slot,
+                slot=resolved_slot,
                 room_id=str(player.current_room_id),
                 mutation_token=mutation_token,
             )
@@ -738,7 +804,7 @@ async def handle_unequip_command(
             new_inventory, new_equipped = equipment_service.unequip_to_inventory(
                 player.get_inventory(),
                 player.get_equipped_items(),
-                slot_type=slot,
+                slot_type=resolved_slot,
             )
         except (SlotValidationError, EquipmentCapacityError, InventoryCapacityError) as exc:
             logger.info(
@@ -746,13 +812,28 @@ async def handle_unequip_command(
                 player=player.name,
                 player_id=str(player.player_id),
                 reason=str(exc),
-                slot=slot,
+                slot=resolved_slot,
                 room_id=str(player.current_room_id),
             )
             return {"result": str(exc)}
 
+        for stack_entry in new_inventory:
+            if isinstance(stack_entry, dict):
+                normalized_stack_slot = _normalize_slot_name(stack_entry.get("slot_type"))
+                if normalized_stack_slot:
+                    stack_entry["slot_type"] = normalized_stack_slot
+
+        normalized_equipped: dict[str, InventoryStack] = {}
+        for slot_name, stack in new_equipped.items():
+            normalized_slot_name = _normalize_slot_name(slot_name) or slot_name
+            if isinstance(stack, dict):
+                normalized_stack_slot = _normalize_slot_name(stack.get("slot_type"))
+                if normalized_stack_slot:
+                    stack["slot_type"] = normalized_stack_slot
+            normalized_equipped[normalized_slot_name] = stack
+
         player.set_inventory(cast(list[dict[str, Any]], new_inventory))
-        player.set_equipped_items(cast(dict[str, Any], new_equipped))
+        player.set_equipped_items(cast(dict[str, Any], normalized_equipped))
 
         persist_error = _persist_player(persistence, player)
         if persist_error:
@@ -760,7 +841,7 @@ async def handle_unequip_command(
             player.set_equipped_items(previous_equipped)
             return persist_error
 
-    unequipped_item = previous_equipped.get(slot, {})
+    unequipped_item = previous_equipped.get(resolved_slot, {})
     item_name = unequipped_item.get("item_name") or unequipped_item.get("item_id", "item")
 
     room_id = str(player.current_room_id)
@@ -771,7 +852,7 @@ async def handle_unequip_command(
             "player_name": player.name,
             "item_id": unequipped_item.get("item_id"),
             "item_name": item_name,
-            "slot": slot,
+            "slot": resolved_slot,
         },
         room_id=room_id,
         player_id=str(player.player_id),
@@ -789,15 +870,15 @@ async def handle_unequip_command(
         "Item unequipped",
         player=player.name,
         player_id=str(player.player_id),
-        slot=slot,
+        slot=resolved_slot,
         item_id=unequipped_item.get("item_id"),
         room_id=room_id,
         mutation_token=mutation_token,
     )
     return {
-        "result": f"You remove {item_name} from {slot}.",
-        "room_message": f"{player.name} removes {item_name} from {slot}.",
-        "game_log_message": f"{player.name} unequipped {item_name} from {slot}",
+        "result": f"You remove {item_name} from {resolved_slot}.",
+        "room_message": f"{player.name} removes {item_name} from {resolved_slot}.",
+        "game_log_message": f"{player.name} unequipped {item_name} from {resolved_slot}",
         "game_log_channel": "game-log",
     }
 

@@ -84,6 +84,8 @@ class MonitoringDashboard:
             "warning_rate": 10.0,  # 10% warning rate threshold
             "response_time": 1000.0,  # 1 second response time threshold
             "exception_rate": 1.0,  # 1% exception rate threshold
+            "summon_quantity_warning": 5,
+            "summon_quantity_critical": 20,
         }
 
         logger.info("Monitoring dashboard initialized")
@@ -283,6 +285,99 @@ class MonitoringDashboard:
         )
 
         return alert
+
+    def record_registry_failure(
+        self,
+        *,
+        source: str,
+        error: str,
+        metadata: dict[str, Any] | None = None,
+        severity: str | None = None,
+    ) -> Alert:
+        """
+        Record an alert related to prototype registry loading.
+
+        Args:
+            source: Which subsystem encountered the failure.
+            error: Short error code such as 'directory_missing' or 'validation_error'.
+            metadata: Optional structured metadata.
+            severity: Override severity (defaults to warning unless failure is critical).
+        """
+
+        alert_metadata = {"source": source, "error": error}
+        if metadata:
+            alert_metadata.update(metadata)
+
+        resolved_severity = severity or ("critical" if error == "directory_missing" else "warning")
+
+        return self.record_custom_alert(
+            "prototype_registry_failure",
+            severity=resolved_severity,
+            message=f"Prototype registry failure detected ({error})",
+            metadata=alert_metadata,
+        )
+
+    def record_summon_quantity_spike(
+        self,
+        *,
+        admin_name: str,
+        prototype_id: str | None,
+        quantity: int,
+        metadata: dict[str, Any] | None = None,
+    ) -> Alert:
+        """
+        Record an alert when administrative summon quantities exceed thresholds.
+        """
+
+        warning_threshold = int(self.alert_thresholds.get("summon_quantity_warning", 5))
+        critical_threshold = int(self.alert_thresholds.get("summon_quantity_critical", 20))
+        severity = "info"
+        if quantity >= critical_threshold:
+            severity = "critical"
+        elif quantity >= warning_threshold:
+            severity = "warning"
+
+        alert_metadata = {
+            "admin": admin_name,
+            "prototype_id": prototype_id,
+            "quantity": quantity,
+        }
+        if metadata:
+            alert_metadata.update(metadata)
+
+        return self.record_custom_alert(
+            "summon_quantity_spike",
+            severity=severity,
+            message=f"Summon quantity spike detected ({quantity} requested by {admin_name})",
+            metadata=alert_metadata,
+        )
+
+    def record_durability_anomaly(
+        self,
+        *,
+        prototype_id: str,
+        durability: int | None,
+        reason: str,
+        metadata: dict[str, Any] | None = None,
+    ) -> Alert:
+        """
+        Record an alert for durability anomalies on item prototypes.
+        """
+
+        alert_metadata = {
+            "prototype_id": prototype_id,
+            "durability": durability,
+            "reason": reason,
+        }
+        if metadata:
+            alert_metadata.update(metadata)
+
+        return self.record_custom_alert(
+            "durability_anomaly",
+            severity="warning",
+            message=f"Durability anomaly detected for {prototype_id} ({reason})",
+            metadata=alert_metadata,
+        )
 
     def resolve_alert(self, alert_id: str) -> bool:
         """

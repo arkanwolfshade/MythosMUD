@@ -10,6 +10,7 @@ from ..commands.inventory_commands import _broadcast_room_event, _resolve_player
 from ..game.items.item_factory import ItemFactoryError
 from ..logging.admin_actions_logger import get_admin_actions_logger
 from ..logging.enhanced_logging_config import get_logger
+from ..monitoring.monitoring_dashboard import get_monitoring_dashboard
 from ..realtime.envelope import build_event
 
 logger = get_logger(__name__)
@@ -42,6 +43,7 @@ async def handle_summon_command(
     prototype_registry = getattr(state, "prototype_registry", None)
     room_manager = getattr(connection_manager, "room_manager", None)
     admin_logger = get_admin_actions_logger()
+    dashboard = get_monitoring_dashboard()
 
     player_name_value = cast(str, player.name)
 
@@ -52,6 +54,10 @@ async def handle_summon_command(
             command="summon",
             success=False,
             error_message="Item services unavailable",
+            additional_data={
+                "source": "admin_summon",
+                "summoned_by": player_name_value,
+            },
         )
         return {"result": "The summoning matrix is offline. Try again once prototype services are restored."}
 
@@ -62,6 +68,10 @@ async def handle_summon_command(
             command="summon",
             success=False,
             error_message="Room inventory unavailable",
+            additional_data={
+                "source": "admin_summon",
+                "summoned_by": player_name_value,
+            },
         )
         return {"result": "Room inventory is unavailable; the ritual cannot anchor the summoned item."}
 
@@ -69,6 +79,14 @@ async def handle_summon_command(
     quantity = int(command_data.get("quantity", 1))
     target_type = command_data.get("target_type", "item")
     room_id = str(player.current_room_id)
+
+    if quantity >= int(dashboard.alert_thresholds.get("summon_quantity_warning", 5)):
+        dashboard.record_summon_quantity_spike(
+            admin_name=player_name_value,
+            prototype_id=prototype_id,
+            quantity=quantity,
+            metadata={"room_id": room_id, "target_type": target_type},
+        )
 
     if target_type == "npc":
         message = (
@@ -80,7 +98,14 @@ async def handle_summon_command(
             command="summon",
             success=False,
             error_message="NPC summon stub invoked",
-            additional_data={"prototype_id": prototype_id, "target_type": target_type},
+            additional_data={
+                "prototype_id": prototype_id,
+                "target_type": target_type,
+                "quantity": quantity,
+                "source": "admin_summon",
+                "summoned_by": player_name_value,
+                "room_id": room_id,
+            },
         )
         return {"result": message}
 
@@ -102,7 +127,14 @@ async def handle_summon_command(
             command="summon",
             success=False,
             error_message=str(exc),
-            additional_data={"prototype_id": prototype_id, "target_type": target_type},
+            additional_data={
+                "prototype_id": prototype_id,
+                "target_type": target_type,
+                "quantity": quantity,
+                "source": "admin_summon",
+                "summoned_by": player_name_value,
+                "room_id": room_id,
+            },
         )
         return {"result": f"Summoning failed: {exc}"}
 
@@ -120,6 +152,7 @@ async def handle_summon_command(
             "item_id": stack.get("item_id"),
             "item_name": item_name,
             "quantity": quantity,
+            "summoned_by": player_name_value,
         },
         room_id=room_id,
         player_id=str(getattr(player, "player_id", "")),
@@ -141,6 +174,9 @@ async def handle_summon_command(
             "prototype_id": prototype_id,
             "quantity": quantity,
             "room_id": room_id,
+            "source": "admin_summon",
+            "summoned_by": player_name_value,
+            "target_type": target_type,
         },
     )
 
@@ -150,6 +186,8 @@ async def handle_summon_command(
         prototype_id=prototype_id,
         quantity=quantity,
         room_id=room_id,
+        summoned_by=player_name_value,
+        target_type=target_type,
     )
 
     return {"result": f"You summon {quantity}x {item_name} into {room_id}."}

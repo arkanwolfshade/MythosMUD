@@ -8,6 +8,7 @@ from pydantic import ValidationError
 
 from server.game.items.models import ItemPrototypeModel
 from server.logging.enhanced_logging_config import get_logger
+from server.monitoring.monitoring_dashboard import get_monitoring_dashboard
 
 logger = get_logger(__name__)
 
@@ -26,7 +27,13 @@ class PrototypeRegistry:
     @classmethod
     def load_from_path(cls, directory: Path | str) -> PrototypeRegistry:
         directory_path = Path(directory)
+        dashboard = get_monitoring_dashboard()
         if not directory_path.exists():
+            dashboard.record_registry_failure(
+                source="prototype_registry",
+                error="directory_missing",
+                metadata={"path": str(directory_path)},
+            )
             raise PrototypeRegistryError(f"Prototype directory not found: {directory_path}")
 
         prototypes: dict[str, ItemPrototypeModel] = {}
@@ -41,6 +48,11 @@ class PrototypeRegistry:
                     prototype_id=json_file.stem,
                     file_path=str(json_file),
                     error=str(exc),
+                )
+                dashboard.record_registry_failure(
+                    source="prototype_registry",
+                    error="json_decode_error",
+                    metadata={"file_path": str(json_file), "error": str(exc)},
                 )
                 continue
 
@@ -60,7 +72,24 @@ class PrototypeRegistry:
                         "errors": exc.errors(),
                     }
                 )
+                dashboard.record_registry_failure(
+                    source="prototype_registry",
+                    error="validation_error",
+                    metadata={
+                        "prototype_id": payload.get("prototype_id") or json_file.stem,
+                        "file_path": str(json_file),
+                    },
+                )
                 continue
+
+            effect_components = list(getattr(prototype, "effect_components", []))
+            if "component.durability" in effect_components and getattr(prototype, "durability", None) is None:
+                dashboard.record_durability_anomaly(
+                    prototype_id=prototype.prototype_id,
+                    durability=None,
+                    reason="missing_durability_value",
+                    metadata={"file_path": str(json_file)},
+                )
 
             prototypes[prototype.prototype_id] = prototype
 

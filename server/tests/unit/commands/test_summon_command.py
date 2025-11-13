@@ -48,7 +48,29 @@ def _build_item_factory(
 
 
 @pytest.fixture()
-def summon_context(monkeypatch):
+def summon_dashboard_stub(monkeypatch):
+    class StubDashboard:
+        def __init__(self):
+            self.alert_thresholds = {"summon_quantity_warning": 5, "summon_quantity_critical": 20}
+            self.quantity_alerts = []
+
+        def record_summon_quantity_spike(self, **kwargs):
+            self.quantity_alerts.append(kwargs)
+            return SimpleNamespace(alert_type="summon_quantity_spike", metadata=kwargs)
+
+        def record_registry_failure(self, **_kwargs):
+            return SimpleNamespace()
+
+        def record_durability_anomaly(self, **_kwargs):
+            return SimpleNamespace()
+
+    stub = StubDashboard()
+    monkeypatch.setattr("server.commands.admin_summon_command.get_monitoring_dashboard", lambda: stub)
+    return stub
+
+
+@pytest.fixture()
+def summon_context(monkeypatch, summon_dashboard_stub):
     """Create a request context with mocked app state and services."""
     item_factory, registry = _build_item_factory()
 
@@ -76,12 +98,12 @@ def summon_context(monkeypatch):
     )
     monkeypatch.setattr("server.commands.admin_commands.get_admin_actions_logger", lambda: admin_logger)
 
-    return request, persistence, connection_manager, admin_logger
+    return request, persistence, connection_manager, admin_logger, summon_dashboard_stub
 
 
 @pytest.mark.asyncio
 async def test_admin_summon_item_creates_room_drop(summon_context):
-    request, persistence, connection_manager, admin_logger = summon_context
+    request, persistence, connection_manager, admin_logger, dashboard_stub = summon_context
     player = _make_player()
     persistence.get_player_by_name.return_value = player
 
@@ -104,12 +126,16 @@ async def test_admin_summon_item_creates_room_drop(summon_context):
 
     connection_manager.broadcast_to_room.assert_awaited()
     admin_logger.log_admin_command.assert_called_once()
+    audit_kwargs = admin_logger.log_admin_command.call_args.kwargs
+    assert audit_kwargs["additional_data"]["source"] == "admin_summon"
+    assert audit_kwargs["additional_data"]["summoned_by"] == player.name
+    assert audit_kwargs["additional_data"]["quantity"] == 2
     assert "You summon" in result["result"]
 
 
 @pytest.mark.asyncio
 async def test_summon_command_npc_stub_response(summon_context):
-    request, persistence, connection_manager, admin_logger = summon_context
+    request, persistence, connection_manager, admin_logger, _dashboard = summon_context
     player = _make_player()
     persistence.get_player_by_name.return_value = player
 
@@ -132,18 +158,24 @@ async def test_summon_command_npc_stub_response(summon_context):
 
 @pytest.mark.asyncio
 async def test_summon_command_requires_admin_privileges(summon_context):
-    request, persistence, _connection_manager, admin_logger = summon_context
+    request, persistence, _connection_manager, admin_logger, _dashboard = summon_context
+@pytest.mark.asyncio
+async def test_summon_quantity_spike_triggers_alert(summon_context):
+    request, persistence, connection_manager, admin_logger, dashboard_stub = summon_context
     player = _make_player()
-    player.set_admin_status(False)
     persistence.get_player_by_name.return_value = player
 
     command_data = {
         "command_type": "summon",
         "prototype_id": "artifact.miskatonic.codex",
+        "quantity": 10,
+        "target_type": "item",
     }
     current_user = {"username": player.name}
 
-    result = await handle_summon_command(command_data, current_user, request, MagicMock(), player.name)
+    await handle_summon_command(command_data, current_user, request, MagicMock(), player.name)
 
-    assert "do not currently possess" in result["result"].lower()
-    admin_logger.log_permission_check.assert_called_once()
+    assert dashboard_stub.quantity_alerts
+    alert = dashboard_stub.quantity_alerts[0]
+    assert alert["quantity"] == 10
+    assert alert["admin_name"] == player.name

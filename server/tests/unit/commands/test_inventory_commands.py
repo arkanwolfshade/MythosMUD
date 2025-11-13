@@ -602,7 +602,7 @@ async def test_unequip_command_returns_item_to_inventory(command_context):
     player_name = cast(str, player.name)
 
     result = await handle_unequip_command(
-        {"slot": "head"},
+        {"slot": "HEAD"},
         {"username": player_name},
         request,
         alias_storage,
@@ -650,3 +650,73 @@ async def test_unequip_command_duplicate_token_suppresses_second_attempt(command
     )
     assert second_result["result"] == "That action is already being processed."
     persistence.save_player.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_unequip_command_accepts_fuzzy_name(command_context):
+    request, persistence, connection_manager, _room_manager, alias_storage = command_context
+
+    player = make_player()
+    player.set_inventory([])
+    player.set_equipped_items(
+        {
+            "head": {
+                "item_instance_id": "instance-clockwork_crown",
+                "prototype_id": "equipment.head.clockwork_crown",
+                "item_id": "equipment.head.clockwork_crown",
+                "item_name": "Clockwork Aether Crown",
+                "slot_type": "head",
+                "quantity": 1,
+            }
+        }
+    )
+    persistence.get_player_by_name.return_value = player
+    player_name = cast(str, player.name)
+
+    result = await handle_unequip_command(
+        {"slot": None, "search_term": "Crown"},
+        {"username": player_name},
+        request,
+        alias_storage,
+        player_name,
+    )
+
+    assert "You remove Clockwork Aether Crown" in result["result"]
+    assert len(player.get_inventory()) == 1
+    assert player.get_equipped_items() == {}
+    connection_manager.broadcast_to_room.assert_awaited()
+
+
+@pytest.mark.asyncio
+async def test_unequip_command_reports_missing_fuzzy_match(command_context):
+    request, persistence, connection_manager, _room_manager, alias_storage = command_context
+
+    player = make_player()
+    player.set_inventory([])
+    player.set_equipped_items(
+        {
+            "head": {
+                "item_instance_id": "instance-clockwork_crown",
+                "prototype_id": "equipment.head.clockwork_crown",
+                "item_id": "equipment.head.clockwork_crown",
+                "item_name": "Clockwork Aether Crown",
+                "slot_type": "head",
+                "quantity": 1,
+            }
+        }
+    )
+    persistence.get_player_by_name.return_value = player
+    player_name = cast(str, player.name)
+
+    result = await handle_unequip_command(
+        {"slot": None, "search_term": "amulet"},
+        {"username": player_name},
+        request,
+        alias_storage,
+        player_name,
+    )
+
+    assert result["result"] == "You do not have an equipped item matching 'amulet'."
+    assert player.get_equipped_items()["head"]["item_name"] == "Clockwork Aether Crown"
+    persistence.save_player.assert_not_called()
+    connection_manager.broadcast_to_room.assert_not_called()
