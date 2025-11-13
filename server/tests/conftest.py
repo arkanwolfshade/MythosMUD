@@ -111,7 +111,8 @@ def _sqlite_url_to_path(url: str) -> Path:
         if path_str_normalized.startswith(project_root_str):
             path = path.resolve()
         elif len(path.parts) > 1 and path.parts[1] in {"data", "logs"}:
-            path = (project_root_resolved / Path(*path.parts[1:])).resolve()
+            rel_from_root = Path(*path.parts[1:])
+            path = (project_root_resolved / rel_from_root).resolve()
         else:
             path = path.resolve()
     else:
