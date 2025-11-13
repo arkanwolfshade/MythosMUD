@@ -115,9 +115,7 @@ async def lifespan(app: FastAPI):
                     try:
                         prototype_count = len(entries)
                     except TypeError:
-                        logger.debug(
-                            "Item registry returned non-iterable entries; defaulting prototype count to zero"
-                        )
+                        logger.debug("Item registry returned non-iterable entries; defaulting prototype count to zero")
             else:
                 logger.debug("Item prototype registry missing 'all' method; defaulting prototype count to zero")
         logger.info("Item services ready", prototype_count=prototype_count)

@@ -26,8 +26,8 @@
   - [ ] 4.3 Run integration and Playwright scenarios for summon flows
   - [x] 4.4 Verify entire test suite passes
 
-- [ ] 5. Phase 4 – Testing & Observability Harness
-  - [ ] 5.1 Write tests for logging utilities and alert configuration
-  - [ ] 5.2 Implement monitoring alerts, audit enhancements, and runbooks
-  - [ ] 5.3 Execute smoke tests simulating alert conditions
-  - [ ] 5.4 Verify global test suites and observability checks pass
+- [x] 5. Phase 4 – Testing & Observability Harness
+  - [x] 5.1 Write tests for logging utilities and alert configuration
+  - [x] 5.2 Implement monitoring alerts, audit enhancements, and runbooks
+  - [x] 5.3 Execute smoke tests simulating alert conditions
+  - [x] 5.4 Verify global test suites and observability checks pass
