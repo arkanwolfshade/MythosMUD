@@ -552,6 +552,7 @@ def test_client(mock_application_container):
     event_bus = EventBus()
     app.state.event_handler = RealTimeEventHandler(event_bus=event_bus)
     app.state.persistence = get_persistence(event_bus=event_bus)
+    app.state.server_shutdown_pending = False
 
     # Create real PlayerService with real persistence
     player_service = PlayerService(app.state.persistence)
@@ -568,7 +569,9 @@ def test_client(mock_application_container):
     app.state.event_bus = app.state.event_handler.event_bus
     app.state.player_service = player_service
 
-    return TestClient(app)
+    client = TestClient(app)
+    client.app.state.server_shutdown_pending = False
+    return client
 
 
 @pytest.fixture
@@ -593,8 +596,10 @@ async def async_test_client():
     event_bus = EventBus()
     app.state.event_handler = RealTimeEventHandler(event_bus=event_bus)
     app.state.persistence = get_persistence(event_bus=event_bus)
+    app.state.server_shutdown_pending = False
 
     async with AsyncClient(app=app, base_url="http://test") as client:
+        client.app.state.server_shutdown_pending = False
         yield client
 
 

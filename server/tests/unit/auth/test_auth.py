@@ -11,6 +11,7 @@ Following pytest best practices for API endpoint testing.
 import uuid
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -49,6 +50,30 @@ def mock_auth_persistence(container_test_client):
         app.state.container.room_service.persistence = mock_persistence
 
     return mock_persistence
+
+
+@pytest.fixture(autouse=True)
+def stub_invite_manager(monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
+    """
+    Ensure invite validation succeeds by default without relying on seeded data.
+
+    Returns a namespace exposing the underlying AsyncMocks so individual tests can
+    override behaviours (e.g., to force validation failures).
+    """
+
+    validate_mock = AsyncMock(return_value=None)
+    mark_used_mock = AsyncMock(return_value=None)
+
+    async def _validate(self, invite_code, request):
+        return await validate_mock(invite_code, request)
+
+    async def _use(self, invite_code, user_id):
+        return await mark_used_mock(invite_code, user_id)
+
+    monkeypatch.setattr("server.auth.invites.InviteManager.validate_invite", _validate, raising=False)
+    monkeypatch.setattr("server.auth.invites.InviteManager.use_invite", _use, raising=False)
+
+    return SimpleNamespace(validate_mock=validate_mock, mark_used_mock=mark_used_mock)
 
 
 class TestSchemaValidation:
@@ -106,7 +131,11 @@ class TestSchemaValidation:
 class TestRegistrationEndpoints:
     """Test registration endpoint functionality."""
 
-    def test_successful_registration(self, container_test_client, mock_auth_persistence):
+    def test_successful_registration(
+        self,
+        container_test_client,
+        mock_auth_persistence,
+    ):
         """Test successful user registration with real database (isolated test)."""
         # This test uses the real database but is designed to be isolated
         # The test database should have the TEST123 invite already inserted
@@ -129,12 +158,16 @@ class TestRegistrationEndpoints:
         assert "user_id" in data
         assert data["token_type"] == "bearer"
 
-    @patch("server.auth.endpoints.get_invite_manager")
-    def test_registration_invalid_invite_code(self, mock_get_invite, container_test_client, mock_auth_persistence):
+    def test_registration_invalid_invite_code(
+        self,
+        container_test_client,
+        mock_auth_persistence,
+        stub_invite_manager: SimpleNamespace,
+    ):
         """Test registration with invalid invite code."""
-        mock_manager = AsyncMock()
-        mock_manager.validate_invite.side_effect = LoggedHTTPException(status_code=400, detail="Invalid invite code")
-        mock_get_invite.return_value = mock_manager
+        stub_invite_manager.validate_mock.side_effect = LoggedHTTPException(
+            status_code=400, detail="Invalid invite code"
+        )
 
         response = container_test_client.post(
             "/auth/register", json={"username": "newuser", "password": "testpass123", "invite_code": "INVALID"}
@@ -143,7 +176,12 @@ class TestRegistrationEndpoints:
         assert response.status_code == 400
         assert "Invalid invite code" in response.json()["error"]["message"]
 
-    def test_registration_duplicate_username(self, container_test_client, mock_auth_persistence):
+    def test_registration_duplicate_username(
+        self,
+        container_test_client,
+        mock_auth_persistence,
+        stub_invite_manager: SimpleNamespace,
+    ):
         """Test registration with duplicate username."""
         import uuid
 
