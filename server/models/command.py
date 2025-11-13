@@ -588,9 +588,7 @@ class UnequipCommand(BaseCommand):
 
     def model_post_init(self, __context: object) -> None:
         super().model_post_init(__context)
-        if (self.slot is None or not self.slot.strip()) and (
-            self.search_term is None or not self.search_term.strip()
-        ):
+        if (self.slot is None or not self.slot.strip()) and (self.search_term is None or not self.search_term.strip()):
             raise ValueError("Unequip command requires a slot or item name.")
 
         if self.slot is not None:

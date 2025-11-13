@@ -94,7 +94,7 @@ async def handle_summon_command(
             "Please use the `npc spawn` command while we finish tuning the containment wards."
         )
         admin_logger.log_admin_command(
-        admin_name=player_name_value,
+            admin_name=player_name_value,
             command="summon",
             success=False,
             error_message="NPC summon stub invoked",

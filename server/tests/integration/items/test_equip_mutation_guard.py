@@ -59,9 +59,7 @@ def test_unequip_flow_respects_mutation_guard():
 
     with inventory_service.begin_mutation("investigator-2", "token-unequip") as decision:
         assert decision.should_apply
-        new_inventory, new_equipped = equipment_service.unequip_to_inventory(
-            inventory, equipped, slot_type="head"
-        )
+        new_inventory, new_equipped = equipment_service.unequip_to_inventory(inventory, equipped, slot_type="head")
 
     assert len(new_inventory) == 1
     assert new_equipped == {}

@@ -47,30 +47,22 @@ class ItemPrototype(Base):
     weight: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
     base_value: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     durability: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    flags: Mapped[list[str]] = mapped_column(
-        MutableList.as_mutable(JSON), nullable=False, default=list
-    )
-    wear_slots: Mapped[list[str]] = mapped_column(
-        MutableList.as_mutable(JSON), nullable=False, default=list
-    )
+    flags: Mapped[list[str]] = mapped_column(MutableList.as_mutable(JSON), nullable=False, default=list)
+    wear_slots: Mapped[list[str]] = mapped_column(MutableList.as_mutable(JSON), nullable=False, default=list)
     stacking_rules: Mapped[dict[str, int | str | float]] = mapped_column(
         MutableDict.as_mutable(JSON), nullable=False, default=dict
     )
     usage_restrictions: Mapped[dict[str, object]] = mapped_column(
         MutableDict.as_mutable(JSON), nullable=False, default=dict
     )
-    effect_components: Mapped[list[str]] = mapped_column(
-        MutableList.as_mutable(JSON), nullable=False, default=list
-    )
+    effect_components: Mapped[list[str]] = mapped_column(MutableList.as_mutable(JSON), nullable=False, default=list)
     metadata_payload: Mapped[dict[str, object]] = mapped_column(
         "metadata",
         MutableDict.as_mutable(JSON),
         nullable=False,
         default=dict,
     )
-    tags: Mapped[list[str]] = mapped_column(
-        MutableList.as_mutable(JSON), nullable=False, default=list
-    )
+    tags: Mapped[list[str]] = mapped_column(MutableList.as_mutable(JSON), nullable=False, default=list)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
@@ -105,9 +97,7 @@ class ItemInstance(Base):
     location_context: Mapped[str | None] = mapped_column(String(255), nullable=True)
     quantity: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     condition: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    flags_override: Mapped[list[str]] = mapped_column(
-        MutableList.as_mutable(JSON), nullable=False, default=list
-    )
+    flags_override: Mapped[list[str]] = mapped_column(MutableList.as_mutable(JSON), nullable=False, default=list)
     binding_state: Mapped[str | None] = mapped_column(String(32), nullable=True)
     attunement_state: Mapped[dict[str, object]] = mapped_column(
         MutableDict.as_mutable(JSON), nullable=False, default=dict

@@ -154,11 +154,13 @@ def _match_equipped_item_by_name(equipped: Mapping[str, Mapping[str, Any]], sear
         item_name = stack.get("item_name")
         item_id = stack.get("item_id")
         prototype_id = stack.get("prototype_id")
+
         def _clean(value: str | None) -> str | None:
             if isinstance(value, str):
                 stripped = value.strip()
                 return stripped if stripped else None
             return None
+
         candidates.append(
             (
                 _normalize_slot_name(slot_name) or slot_name,

@@ -93,9 +93,7 @@ def summon_context(monkeypatch, summon_dashboard_stub):
     admin_logger = MagicMock()
     admin_logger.log_admin_command = MagicMock()
     admin_logger.log_permission_check = MagicMock()
-    monkeypatch.setattr(
-        "server.commands.admin_summon_command.get_admin_actions_logger", lambda: admin_logger
-    )
+    monkeypatch.setattr("server.commands.admin_summon_command.get_admin_actions_logger", lambda: admin_logger)
     monkeypatch.setattr("server.commands.admin_commands.get_admin_actions_logger", lambda: admin_logger)
 
     return request, persistence, connection_manager, admin_logger, summon_dashboard_stub
@@ -159,6 +157,8 @@ async def test_summon_command_npc_stub_response(summon_context):
 @pytest.mark.asyncio
 async def test_summon_command_requires_admin_privileges(summon_context):
     request, persistence, _connection_manager, admin_logger, _dashboard = summon_context
+
+
 @pytest.mark.asyncio
 async def test_summon_quantity_spike_triggers_alert(summon_context):
     request, persistence, connection_manager, admin_logger, dashboard_stub = summon_context
