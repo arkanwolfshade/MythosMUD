@@ -192,6 +192,7 @@ async def lifespan(app: FastAPI):
 
     # Initialize combat services (not yet in container - Phase 2 migration)
     # TODO: Move these to container in Phase 2
+    from ..services.passive_sanity_flux_service import PassiveSanityFluxService
     from ..services.player_combat_service import PlayerCombatService
     from ..services.player_death_service import PlayerDeathService
     from ..services.player_respawn_service import PlayerRespawnService
@@ -211,6 +212,12 @@ async def lifespan(app: FastAPI):
         event_bus=container.event_bus, player_combat_service=app.state.player_combat_service
     )
     logger.info("Player respawn service initialized")
+
+    app.state.passive_sanity_flux_service = PassiveSanityFluxService(
+        persistence=container.persistence,
+        performance_monitor=container.performance_monitor,
+    )
+    logger.info("Passive sanity flux service initialized")
 
     # Initialize NPC startup spawning
     from ..services.npc_startup_service import get_npc_startup_service
@@ -485,6 +492,20 @@ async def game_tick_loop(app: FastAPI):
                                             player.current_room_id,
                                             session,
                                         )
+
+                            if hasattr(app.state, "passive_sanity_flux_service"):
+                                try:
+                                    await app.state.passive_sanity_flux_service.process_tick(
+                                        session=session,
+                                        tick_count=tick_count,
+                                        now=datetime.datetime.now(datetime.UTC),
+                                    )
+                                except Exception as san_flux_error:
+                                    logger.error(
+                                        "Error processing passive SAN flux",
+                                        tick_count=tick_count,
+                                        error=str(san_flux_error),
+                                    )
 
                             # Also check for players already at death threshold who need limbo transition
                             # This handles players who died but haven't been moved to limbo yet

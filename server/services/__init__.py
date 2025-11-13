@@ -22,6 +22,7 @@ from .inventory_service import (
 )
 from .npc_instance_service import NPCInstanceService, get_npc_instance_service, initialize_npc_instance_service
 from .npc_service import NPCService, npc_service
+from .passive_sanity_flux_service import PassiveFluxContext, PassiveSanityFluxService
 
 __all__ = [
     "NPCService",
@@ -43,4 +44,6 @@ __all__ = [
     "InventorySplitError",
     "InventoryMutationGuard",
     "MutationDecision",
+    "PassiveSanityFluxService",
+    "PassiveFluxContext",
 ]

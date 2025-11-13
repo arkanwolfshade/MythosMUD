@@ -8,11 +8,11 @@
   - [x] 1.3 Implement repository/service layer for SAN adjustments and liability tracking
   - [x] 1.4 Verify all tests pass
 
-- [ ] 2. Build passive SAN flux scheduler and telemetry
-  - [ ] 2.1 Write scheduler unit tests covering passive gain/drain scenarios
-  - [ ] 2.2 Extend tick loop to apply environment/time modifiers and adaptive resistance
-  - [ ] 2.3 Emit structured logging and metrics for passive SAN changes
-  - [ ] 2.4 Verify all tests pass
+- [x] 2. Build passive SAN flux scheduler and telemetry
+  - [x] 2.1 Write scheduler unit tests covering passive gain/drain scenarios
+  - [x] 2.2 Extend tick loop to apply environment/time modifiers and adaptive resistance
+  - [x] 2.3 Emit structured logging and metrics for passive SAN changes
+  - [x] 2.4 Verify all tests pass
 
 - [ ] 3. Integrate active SAN loss and recovery hooks
   - [ ] 3.1 Write tests for encounter-driven SAN loss, recovery actions, and liability triggers
