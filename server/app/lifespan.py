@@ -10,6 +10,7 @@ eliminating the previous pattern of manually initializing and managing services 
 
 import asyncio
 import datetime
+from collections.abc import Iterable
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -98,8 +99,27 @@ async def lifespan(app: FastAPI):
         logger.warning("Item factory unavailable during startup; summon command will be disabled")
     else:
         prototype_count = 0
-        if container.item_prototype_registry is not None:
-            prototype_count = sum(1 for _ in container.item_prototype_registry.all())
+        registry = container.item_prototype_registry
+        if registry is not None:
+            all_method = getattr(registry, "all", None)
+            if callable(all_method):
+                entries = all_method()
+                if asyncio.iscoroutine(entries):
+                    try:
+                        entries = await entries
+                    except Exception:  # noqa: BLE001
+                        entries = None
+                if isinstance(entries, Iterable):
+                    prototype_count = sum(1 for _ in entries)
+                elif entries is not None:
+                    try:
+                        prototype_count = len(entries)
+                    except TypeError:
+                        logger.debug(
+                            "Item registry returned non-iterable entries; defaulting prototype count to zero"
+                        )
+            else:
+                logger.debug("Item prototype registry missing 'all' method; defaulting prototype count to zero")
         logger.info("Item services ready", prototype_count=prototype_count)
 
     # AI Agent: Use container instance instead of global singleton

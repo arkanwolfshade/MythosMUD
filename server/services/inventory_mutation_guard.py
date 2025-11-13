@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import inspect
 import threading
 from collections import OrderedDict
-from collections.abc import Iterator
+from collections.abc import Iterator, Mapping
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from time import monotonic
+from typing import cast
 
 from server.logging.enhanced_logging_config import get_logger
 from server.middleware.metrics_collector import metrics_collector
@@ -82,16 +84,40 @@ class InventoryMutationGuard:
                     )
                     metrics_collector.record_message_failed("inventory_mutation", "duplicate_token")
                     dashboard = get_monitoring_dashboard()
-                    dashboard.record_custom_alert(
-                        "inventory_duplicate",
-                        severity="warning",
-                        message=f"Duplicate inventory mutation suppressed for player {player_id}",
-                        metadata={
-                            "player_id": player_id,
-                            "token": token,
-                            "cached_tokens": len(state.recent_tokens),
-                        },
-                    )
+                    alert_metadata = {
+                        "player_id": player_id,
+                        "token": token,
+                        "cached_tokens": len(state.recent_tokens),
+                    }
+                    record_custom_alert = getattr(dashboard, "record_custom_alert", None)
+                    if callable(record_custom_alert):
+                        try:
+                            parameters: Mapping[str, inspect.Parameter]
+                            parameters = inspect.signature(record_custom_alert).parameters
+                        except (TypeError, ValueError):
+                            parameters = cast(Mapping[str, inspect.Parameter], {})
+                        try:
+                            if "message" in parameters:
+                                record_custom_alert(
+                                    "inventory_duplicate",
+                                    severity="warning",
+                                    message=f"Duplicate inventory mutation suppressed for player {player_id}",
+                                    metadata=alert_metadata,
+                                )
+                            else:
+                                # Legacy signature compatibility: (alert_type, *, severity=..., metadata=...)
+                                record_custom_alert(
+                                    "inventory_duplicate",
+                                    severity="warning",
+                                    metadata=alert_metadata,
+                                )
+                        except TypeError:
+                            # Fallback to safest keyword invocation if signature introspection was misleading
+                            record_custom_alert(
+                                "inventory_duplicate",
+                                severity="warning",
+                                metadata=alert_metadata,
+                            )
                     decision = MutationDecision(should_apply=False, duplicate=True)
                     yield decision
                     return
