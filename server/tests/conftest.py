@@ -200,6 +200,7 @@ def validate_test_environment():
         raise
 
 
+@pytest.hookimpl(optionalhook=True)
 def pytest_configure_node(node):
     """Provide worker-specific configuration for pytest-xdist nodes."""
     try:
