@@ -25,6 +25,7 @@ from .admin_commands import (
     handle_unmute_global_command,
 )
 from .admin_shutdown_command import handle_shutdown_command
+from .admin_summon_command import handle_summon_command
 from .alias_commands import (
     handle_alias_command,
     handle_aliases_command,
@@ -47,12 +48,18 @@ from .communication_commands import (
     handle_whisper_command,
 )
 from .exploration_commands import handle_go_command, handle_look_command
+from .inventory_commands import (
+    handle_drop_command,
+    handle_equip_command,
+    handle_inventory_command,
+    handle_pickup_command,
+    handle_unequip_command,
+)
 from .npc_admin_commands import handle_npc_command
 from .position_commands import handle_lie_command, handle_sit_command, handle_stand_command
 from .system_commands import handle_help_command
 from .utility_commands import (
     handle_emote_command,
-    handle_inventory_command,
     handle_logout_command,
     handle_quit_command,
     handle_status_command,
@@ -106,6 +113,7 @@ class CommandService:
             "add_admin": handle_add_admin_command,
             "admin": handle_admin_command,
             "mutes": handle_mutes_command,
+            "summon": handle_summon_command,
             # Admin teleport commands (confirmation removed for immediate execution)
             "teleport": handle_teleport_command,
             "goto": handle_goto_command,
@@ -118,6 +126,10 @@ class CommandService:
             "logout": handle_logout_command,
             "status": handle_status_command,
             "inventory": handle_inventory_command,
+            "pickup": handle_pickup_command,
+            "drop": handle_drop_command,
+            "equip": handle_equip_command,
+            "unequip": handle_unequip_command,
             # Position commands
             "sit": handle_sit_command,
             "stand": handle_stand_command,

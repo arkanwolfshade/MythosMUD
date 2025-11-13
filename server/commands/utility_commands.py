@@ -512,69 +512,6 @@ async def handle_whoami_command(
     return result
 
 
-async def handle_inventory_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
-) -> dict[str, str]:
-    """
-    Handle the inventory command for showing player inventory.
-
-    Args:
-        command_data: Command data dictionary containing args and other info
-        current_user: Current user information
-        request: FastAPI request object
-        alias_storage: Alias storage instance
-        player_name: Player name for logging
-
-    Returns:
-        dict: Inventory command result
-    """
-    # Extract args from command_data
-    args: list = command_data.get("args", [])
-
-    logger.debug("Processing inventory command", player=player_name)
-
-    app = request.app if request else None
-    persistence = app.state.persistence if app else None
-
-    if not persistence:
-        logger.warning("Inventory command failed - no persistence layer")
-        return {"result": "Inventory information is not available."}
-
-    try:
-        player = persistence.get_player_by_name(get_username_from_user(current_user))
-        if not player:
-            logger.warning("Inventory command failed - player not found")
-            return {"result": "Player information not found."}
-
-        if player.inventory:
-            item_list = []
-            for item in player.inventory:
-                item_desc = f"{item.name}"
-                if hasattr(item, "description"):
-                    description = item.description if item.description else "No description"
-                    item_desc += f" - {description}"
-                else:
-                    item_desc += " - No description"
-                item_list.append(item_desc)
-
-            result = "You are carrying:\n" + "\n".join(item_list)
-            logger.debug("Inventory command successful", player=player_name, count=len(player.inventory))
-            return {"result": result}
-        else:
-            logger.debug("Empty inventory", player=player_name)
-            return {"result": "You are not carrying anything."}
-    except Exception as e:
-        logger.error(
-            "Inventory command error",
-            player=player_name,
-            args=args,
-            error_type=type(e).__name__,
-            error_message=str(e),
-            exc_info=True,
-        )
-        return {"result": f"Error retrieving inventory: {str(e)}"}
-
-
 async def handle_emote_command(
     command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
 ) -> dict[str, str]:

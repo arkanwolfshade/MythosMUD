@@ -73,6 +73,14 @@ CREATE TABLE IF NOT EXISTS players (
     FOREIGN KEY (profession_id) REFERENCES professions(id)
 );
 
+-- Player inventories table for JSON payload storage
+CREATE TABLE IF NOT EXISTS player_inventories (
+    player_id TEXT PRIMARY KEY REFERENCES players(player_id) ON DELETE CASCADE,
+    inventory_json TEXT NOT NULL DEFAULT '[]',
+    equipped_json TEXT NOT NULL DEFAULT '{}',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Invites table for invite-only registration
 CREATE TABLE IF NOT EXISTS invites (
     id TEXT PRIMARY KEY NOT NULL,
@@ -94,6 +102,7 @@ CREATE INDEX IF NOT EXISTS idx_players_name ON players(name);
 CREATE INDEX IF NOT EXISTS idx_players_user_id ON players(user_id);
 CREATE INDEX IF NOT EXISTS idx_players_is_admin ON players(is_admin);
 CREATE INDEX IF NOT EXISTS idx_players_profession_id ON players(profession_id);
+CREATE INDEX IF NOT EXISTS idx_player_inventories_player_id ON player_inventories(player_id);
 CREATE INDEX IF NOT EXISTS idx_invites_code ON invites(invite_code);
 CREATE INDEX IF NOT EXISTS idx_invites_used_by_user_id ON invites(used_by_user_id);
 """
@@ -117,6 +126,7 @@ async def init_database(db_path: str, db_name: str):
     async with aiosqlite.connect(db_path) as db:
         # Drop existing tables
         await db.execute("DROP TABLE IF EXISTS invites")
+        await db.execute("DROP TABLE IF EXISTS player_inventories")
         await db.execute("DROP TABLE IF EXISTS players")
         await db.execute("DROP TABLE IF EXISTS users")
 

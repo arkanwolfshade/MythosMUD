@@ -1,0 +1,131 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ItemPrototype",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "prototype_id",
+    "name",
+    "short_description",
+    "long_description",
+    "item_type",
+    "weight",
+    "base_value",
+    "flags",
+    "wear_slots",
+    "effect_components",
+    "stacking_rules",
+    "usage_restrictions",
+    "metadata",
+    "tags"
+  ],
+  "properties": {
+    "prototype_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "short_description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "long_description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "item_type": {
+      "type": "string",
+      "enum": [
+        "consumable",
+        "equipment",
+        "artifact",
+        "container",
+        "quest",
+        "environment",
+        "currency"
+      ]
+    },
+    "weight": {
+      "type": "number",
+      "minimum": 0
+    },
+    "base_value": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "durability": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "flags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "MAGICAL",
+          "CURSED",
+          "NO_DROP",
+          "NO_SALE",
+          "SOULBOUND",
+          "GLOW",
+          "QUEST_ITEM",
+          "CONSUMABLE"
+        ]
+      },
+      "uniqueItems": false
+    },
+    "wear_slots": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "HEAD",
+          "TORSO",
+          "LEGS",
+          "MAIN_HAND",
+          "OFF_HAND",
+          "FEET",
+          "HANDS",
+          "ACCESSORY",
+          "RING",
+          "AMULET",
+          "BELT"
+        ]
+      },
+      "uniqueItems": false
+    },
+    "usage_restrictions": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "stacking_rules": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "effect_components": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

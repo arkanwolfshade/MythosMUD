@@ -149,6 +149,21 @@ class CommandProcessor:
             if command_data["command_type"] in ["attack", "punch", "kick", "strike"]:
                 command_data["target_player"] = validated_command.target
 
+        if hasattr(validated_command, "index"):
+            command_data["index"] = validated_command.index
+
+        if hasattr(validated_command, "quantity"):
+            command_data["quantity"] = validated_command.quantity
+
+        if hasattr(validated_command, "prototype_id"):
+            command_data["prototype_id"] = validated_command.prototype_id
+
+        if hasattr(validated_command, "target_type"):
+            command_data["target_type"] = validated_command.target_type
+
+        if hasattr(validated_command, "search_term"):
+            command_data["search_term"] = validated_command.search_term
+
         if hasattr(validated_command, "action"):
             command_data["action"] = validated_command.action
 
@@ -175,6 +190,12 @@ class CommandProcessor:
 
         if hasattr(validated_command, "filter_name"):
             command_data["filter_name"] = validated_command.filter_name
+
+        if hasattr(validated_command, "target_slot"):
+            command_data["target_slot"] = validated_command.target_slot
+
+        if hasattr(validated_command, "slot"):
+            command_data["slot"] = validated_command.slot
 
         # Extract args field for commands that need it (like shutdown)
         if hasattr(validated_command, "args"):

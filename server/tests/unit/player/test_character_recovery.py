@@ -6,6 +6,31 @@ before completing character creation.
 """
 
 import uuid
+from types import SimpleNamespace
+from unittest.mock import AsyncMock
+
+import pytest
+
+
+@pytest.fixture(autouse=True)
+def stub_invite_manager(monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
+    """
+    Override invite validation methods so character recovery flow does not depend on seeded invites.
+    """
+
+    validate_mock = AsyncMock(return_value=None)
+    use_mock = AsyncMock(return_value=None)
+
+    async def _validate(self, invite_code, request):
+        return await validate_mock(invite_code, request)
+
+    async def _use(self, invite_code, user_id):
+        return await use_mock(invite_code, user_id)
+
+    monkeypatch.setattr("server.auth.invites.InviteManager.validate_invite", _validate, raising=False)
+    monkeypatch.setattr("server.auth.invites.InviteManager.use_invite", _use, raising=False)
+
+    return SimpleNamespace(validate_mock=validate_mock, use_mock=use_mock)
 
 
 class TestCharacterRecoveryFlow:
@@ -53,6 +78,7 @@ class TestCharacterRecoveryFlow:
 
     def test_user_with_character_goes_to_game(self, test_client):
         """Test that a user with a character goes directly to the game."""
+        test_client.app.state.server_shutdown_pending = False
         # Step 1: Register a user
         unique_username = f"game_test_{uuid.uuid4().hex[:8]}"
 

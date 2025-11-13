@@ -12,6 +12,7 @@ from fastapi import WebSocket, WebSocketDisconnect
 
 from ..error_types import ErrorMessages, ErrorType, create_websocket_error_response
 from ..logging.enhanced_logging_config import get_logger
+from ..utils.room_renderer import build_room_drop_summary, clone_room_drops
 from .envelope import build_event
 
 # AI Agent: Don't import app at module level - causes circular import!
@@ -829,6 +830,16 @@ async def broadcast_room_update(player_id: str, room_id: str) -> None:
 
         room_data = convert_uuids_to_strings(room_data)
 
+        room_drops: list[dict[str, Any]] = []
+        room_manager = getattr(connection_manager, "room_manager", None)
+        if room_manager and hasattr(room_manager, "list_room_drops"):
+            try:
+                room_drops = clone_room_drops(room_manager.list_room_drops(room_id))
+            except Exception as exc:  # pragma: no cover - defensive logging path
+                logger.debug("Failed to collect room drops for broadcast", room_id=room_id, error=str(exc))
+
+        drop_summary = build_room_drop_summary(room_drops)
+
         update_event = build_event(
             "room_update",
             {
@@ -836,6 +847,8 @@ async def broadcast_room_update(player_id: str, room_id: str) -> None:
                 "entities": [],
                 "occupants": occupant_names,
                 "occupant_count": len(occupant_names),
+                "room_drops": room_drops,
+                "drop_summary": drop_summary,
             },
             player_id=player_id,
             room_id=room_id,

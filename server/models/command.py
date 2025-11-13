@@ -5,6 +5,7 @@ This module provides type-safe command models with comprehensive validation
 to prevent command injection and ensure data integrity.
 """
 
+import re
 from enum import Enum
 from typing import Literal
 
@@ -74,6 +75,10 @@ class CommandType(str, Enum):
     STATUS = "status"
     WHOAMI = "whoami"
     INVENTORY = "inventory"
+    PICKUP = "pickup"
+    DROP = "drop"
+    EQUIP = "equip"
+    UNEQUIP = "unequip"
     QUIT = "quit"
     LOGOUT = "logout"
     SIT = "sit"
@@ -89,6 +94,7 @@ class CommandType(str, Enum):
     PUNCH = "punch"
     KICK = "kick"
     STRIKE = "strike"
+    SUMMON = "summon"
 
 
 class BaseCommand(BaseModel):
@@ -386,6 +392,31 @@ class AdminCommand(BaseCommand):
         return normalized
 
 
+class SummonCommand(BaseCommand):
+    """Administrative command for summoning prototypes into the current room."""
+
+    command_type: Literal[CommandType.SUMMON] = CommandType.SUMMON
+    prototype_id: str = Field(..., min_length=1, max_length=120, description="Prototype identifier to conjure")
+    quantity: int = Field(
+        default=1,
+        ge=1,
+        le=5,
+        description="Number of instances to summon (capped to prevent ritual abuse).",
+    )
+    target_type: Literal["item", "npc"] = Field(
+        default="item",
+        description="Hint for whether the summon should create items or NPCs.",
+    )
+
+    @field_validator("prototype_id")
+    @classmethod
+    def validate_prototype_id(cls, value: str) -> str:
+        candidate = value.strip()
+        if not re.match(r"^[a-zA-Z0-9._-]+$", candidate):
+            raise ValueError("Prototype ID must contain only letters, numbers, dots, underscores, or hyphens.")
+        return candidate
+
+
 class TeleportCommand(BaseCommand):
     """Command for teleporting a player to the admin's location."""
 
@@ -457,9 +488,120 @@ class WhoamiCommand(BaseCommand):
 
 
 class InventoryCommand(BaseCommand):
-    """Command for viewing player inventory."""
+    """Command for showing player inventory."""
 
     command_type: Literal[CommandType.INVENTORY] = CommandType.INVENTORY
+
+
+class PickupCommand(BaseCommand):
+    """Command for picking up items from room drops."""
+
+    command_type: Literal[CommandType.PICKUP] = CommandType.PICKUP
+    index: int | None = Field(
+        None,
+        ge=1,
+        description="Index of the room drop to collect (1-based).",
+    )
+    search_term: str | None = Field(
+        None,
+        min_length=1,
+        max_length=120,
+        description="Name fragment or prototype identifier for fuzzy selection.",
+    )
+    quantity: int | None = Field(None, ge=1, description="Quantity to pick up (defaults to full stack)")
+
+    def model_post_init(self, __context: object) -> None:
+        super().model_post_init(__context)
+        if self.index is None and (self.search_term is None or not self.search_term.strip()):
+            raise ValueError("Pickup command requires an item number or name.")
+
+        if self.search_term is not None:
+            stripped = self.search_term.strip()
+            if not stripped:
+                raise ValueError("Pickup search term cannot be empty.")
+            object.__setattr__(self, "search_term", stripped)
+
+
+class DropCommand(BaseCommand):
+    """Command for dropping items from inventory into the room."""
+
+    command_type: Literal[CommandType.DROP] = CommandType.DROP
+    index: int = Field(..., ge=1, description="Index of the inventory slot to drop")
+    quantity: int | None = Field(None, ge=1, description="Quantity to drop (defaults to full stack)")
+
+
+class EquipCommand(BaseCommand):
+    """Command for equipping an item from inventory."""
+
+    command_type: Literal[CommandType.EQUIP] = CommandType.EQUIP
+    index: int | None = Field(
+        None,
+        ge=1,
+        description="Inventory slot index to equip (1-based).",
+    )
+    search_term: str | None = Field(
+        None,
+        min_length=1,
+        max_length=120,
+        description="Name fragment or prototype identifier to resolve inventory item.",
+    )
+    target_slot: str | None = Field(None, max_length=30, description="Optional slot override")
+
+    def model_post_init(self, __context: object) -> None:
+        super().model_post_init(__context)
+        if self.index is None and (self.search_term is None or not self.search_term.strip()):
+            raise ValueError("Equip command requires an item number or name.")
+
+        if self.search_term is not None:
+            stripped = self.search_term.strip()
+            if not stripped:
+                raise ValueError("Equip search term cannot be empty.")
+            object.__setattr__(self, "search_term", stripped)
+
+    @field_validator("target_slot")
+    @classmethod
+    def validate_slot(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        normalized = value.strip().lower()
+        if not normalized:
+            raise ValueError("Slot cannot be empty")
+        return normalized
+
+
+class UnequipCommand(BaseCommand):
+    """Command for unequipping an item back to inventory."""
+
+    command_type: Literal[CommandType.UNEQUIP] = CommandType.UNEQUIP
+    slot: str | None = Field(
+        default=None,
+        min_length=1,
+        max_length=30,
+        description="Slot to unequip (optional when providing item name).",
+    )
+    search_term: str | None = Field(
+        default=None,
+        min_length=1,
+        max_length=120,
+        description="Name fragment identifying the equipped item to remove.",
+    )
+
+    def model_post_init(self, __context: object) -> None:
+        super().model_post_init(__context)
+        if (self.slot is None or not self.slot.strip()) and (self.search_term is None or not self.search_term.strip()):
+            raise ValueError("Unequip command requires a slot or item name.")
+
+        if self.slot is not None:
+            normalized = self.slot.strip().lower()
+            if not normalized:
+                raise ValueError("Slot cannot be empty")
+            object.__setattr__(self, "slot", normalized)
+
+        if self.search_term is not None:
+            stripped = self.search_term.strip()
+            if not stripped:
+                raise ValueError("Unequip item name cannot be empty.")
+            object.__setattr__(self, "search_term", stripped)
 
 
 class QuitCommand(BaseCommand):
@@ -637,6 +779,10 @@ Command = (
     | WhoCommand
     | StatusCommand
     | InventoryCommand
+    | PickupCommand
+    | DropCommand
+    | EquipCommand
+    | UnequipCommand
     | QuitCommand
     | LogoutCommand
     | SitCommand

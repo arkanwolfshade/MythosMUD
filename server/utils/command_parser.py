@@ -6,7 +6,7 @@ injection and ensure type safety.
 """
 
 import re
-from typing import Any
+from typing import Any, Literal, cast
 
 from pydantic import ValidationError as PydanticValidationError
 
@@ -21,7 +21,9 @@ from ..models.command import (
     Command,
     CommandType,
     Direction,
+    DropCommand,
     EmoteCommand,
+    EquipCommand,
     GoCommand,
     GotoCommand,
     HelpCommand,
@@ -35,6 +37,7 @@ from ..models.command import (
     MuteCommand,
     MuteGlobalCommand,
     MutesCommand,
+    PickupCommand,
     PoseCommand,
     PunchCommand,
     QuitCommand,
@@ -45,9 +48,11 @@ from ..models.command import (
     StandCommand,
     StatusCommand,
     StrikeCommand,
+    SummonCommand,
     SystemCommand,
     TeleportCommand,
     UnaliasCommand,
+    UnequipCommand,
     UnmuteCommand,
     UnmuteGlobalCommand,
     WhisperCommand,
@@ -91,6 +96,7 @@ class CommandParser:
             CommandType.UNMUTE_GLOBAL.value: self._create_unmute_global_command,
             CommandType.ADD_ADMIN.value: self._create_add_admin_command,
             CommandType.ADMIN.value: self._create_admin_command,
+            CommandType.SUMMON.value: self._create_summon_command,
             CommandType.MUTES.value: self._create_mutes_command,
             CommandType.TELEPORT.value: self._create_teleport_command,
             CommandType.GOTO.value: self._create_goto_command,
@@ -99,6 +105,10 @@ class CommandParser:
             CommandType.STATUS.value: self._create_status_command,
             CommandType.WHOAMI.value: self._create_whoami_command,
             CommandType.INVENTORY.value: self._create_inventory_command,
+            CommandType.PICKUP.value: self._create_pickup_command,
+            CommandType.DROP.value: self._create_drop_command,
+            CommandType.EQUIP.value: self._create_equip_command,
+            CommandType.UNEQUIP.value: self._create_unequip_command,
             CommandType.QUIT.value: self._create_quit_command,
             CommandType.LOGOUT.value: self._create_logout_command,
             CommandType.SIT.value: self._create_sit_command,
@@ -598,6 +608,68 @@ class CommandParser:
 
         return AdminCommand(subcommand=subcommand, args=remaining_args)
 
+    def _create_summon_command(self, args: list[str]) -> SummonCommand:
+        """Create SummonCommand from arguments."""
+        if not args:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: summon <prototype_id> [quantity] [item|npc]",
+                context=context,
+                logger_name=__name__,
+            )
+
+        prototype_id = args[0]
+        quantity: int | None = None
+        target_type: Literal["item", "npc"] | None = None
+
+        for token in args[1:]:
+            lowered = token.lower()
+            if lowered in {"item", "npc"} and target_type is None:
+                target_type = cast(Literal["item", "npc"], lowered)
+                continue
+            if quantity is None:
+                try:
+                    parsed_quantity = int(token)
+                except ValueError as error:
+                    context = create_error_context()
+                    context.metadata = {"args": args, "invalid_token": token}
+                    log_and_raise_enhanced(
+                        MythosValidationError,
+                        "Usage: summon <prototype_id> [quantity] [item|npc]",
+                        context=context,
+                        logger_name=__name__,
+                        error=error,
+                    )
+                if parsed_quantity <= 0:
+                    context = create_error_context()
+                    context.metadata = {"args": args, "invalid_quantity": parsed_quantity}
+                    log_and_raise_enhanced(
+                        MythosValidationError,
+                        "Summon quantity must be a positive number.",
+                        context=context,
+                        logger_name=__name__,
+                    )
+                quantity = parsed_quantity
+                continue
+
+            # Extra positional argument that we don't recognise.
+            context = create_error_context()
+            context.metadata = {"args": args, "unexpected_token": token}
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: summon <prototype_id> [quantity] [item|npc]",
+                context=context,
+                logger_name=__name__,
+            )
+
+        return SummonCommand(
+            prototype_id=prototype_id,
+            quantity=quantity if quantity is not None else 1,
+            target_type=target_type if target_type is not None else "item",
+        )
+
     def _create_mutes_command(self, args: list[str]) -> MutesCommand:
         """Create MutesCommand from arguments."""
         if args:
@@ -691,6 +763,260 @@ class CommandParser:
                 MythosValidationError, "Inventory command takes no arguments", context=context, logger_name=__name__
             )
         return InventoryCommand()
+
+    def _create_pickup_command(self, args: list[str]) -> PickupCommand:
+        """Create pickup command supporting numeric indices or fuzzy names."""
+
+        if not args:
+            context = create_error_context()
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: pickup <item-number|item-name> [quantity]",
+                context=context,
+                logger_name=__name__,
+            )
+
+        quantity: int | None = None
+        selector_tokens = list(args)
+
+        if len(selector_tokens) > 1:
+            potential_quantity = selector_tokens[-1]
+            try:
+                quantity_candidate = int(potential_quantity)
+            except ValueError:
+                quantity_candidate = None
+
+            if quantity_candidate is not None:
+                if quantity_candidate <= 0:
+                    context = create_error_context()
+                    context.metadata = {"args": args, "quantity": quantity_candidate}
+                    log_and_raise_enhanced(
+                        MythosValidationError,
+                        "Quantity must be a positive integer.",
+                        context=context,
+                        logger_name=__name__,
+                    )
+                quantity = quantity_candidate
+                selector_tokens = selector_tokens[:-1]
+
+        if not selector_tokens:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: pickup <item-number|item-name> [quantity]",
+                context=context,
+                logger_name=__name__,
+            )
+
+        primary_token = selector_tokens[0]
+        index: int | None = None
+        search_term: str | None = None
+
+        try:
+            index_candidate = int(primary_token)
+        except ValueError:
+            index_candidate = None
+
+        if index_candidate is not None:
+            if index_candidate <= 0:
+                context = create_error_context()
+                context.metadata = {"args": args, "index": index_candidate}
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Item number must be a positive integer.",
+                    context=context,
+                    logger_name=__name__,
+                )
+
+            if len(selector_tokens) > 1:
+                context = create_error_context()
+                context.metadata = {"args": args}
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Usage: pickup <item-number|item-name> [quantity]",
+                    context=context,
+                    logger_name=__name__,
+                )
+
+            index = index_candidate
+        else:
+            search_term = " ".join(selector_tokens).strip()
+            if not search_term:
+                context = create_error_context()
+                context.metadata = {"args": args}
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Pickup item name cannot be empty.",
+                    context=context,
+                    logger_name=__name__,
+                )
+
+        return PickupCommand(index=index, search_term=search_term, quantity=quantity)
+
+    def _create_drop_command(self, args: list[str]) -> DropCommand:
+        """Create drop command."""
+
+        if not args:
+            context = create_error_context()
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: drop <inventory-number> [quantity]",
+                context=context,
+                logger_name=__name__,
+            )
+
+        try:
+            index = int(args[0])
+        except ValueError:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError, "Inventory index must be an integer", context=context, logger_name=__name__
+            )
+
+        quantity = None
+        if len(args) > 1:
+            try:
+                quantity = int(args[1])
+            except ValueError:
+                context = create_error_context()
+                context.metadata = {"args": args}
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Quantity must be an integer",
+                    context=context,
+                    logger_name=__name__,
+                )
+
+        return DropCommand(index=index, quantity=quantity)
+
+    def _create_equip_command(self, args: list[str]) -> EquipCommand:
+        """Create equip command."""
+
+        if not args:
+            context = create_error_context()
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: equip <inventory-number|item-name> [slot]",
+                context=context,
+                logger_name=__name__,
+            )
+
+        selector_tokens = list(args)
+        index: int | None = None
+        search_term: str | None = None
+        target_slot: str | None = None
+
+        def _maybe_extract_slot(tokens: list[str]) -> tuple[list[str], str | None]:
+            if not tokens:
+                return tokens, None
+
+            possible_slot = tokens[-1]
+            normalized = possible_slot.strip().lower()
+            known_slots = {
+                "head",
+                "torso",
+                "legs",
+                "feet",
+                "hands",
+                "left_hand",
+                "right_hand",
+                "main_hand",
+                "off_hand",
+                "accessory",
+                "ring",
+                "amulet",
+                "belt",
+                "backpack",
+                "waist",
+                "neck",
+            }
+            if normalized in known_slots:
+                return tokens[:-1], normalized
+            return tokens, None
+
+        try:
+            index_candidate = int(selector_tokens[0])
+        except ValueError:
+            index_candidate = None
+
+        if index_candidate is not None:
+            if index_candidate <= 0:
+                context = create_error_context()
+                context.metadata = {"args": args, "index": index_candidate}
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Inventory index must be a positive integer.",
+                    context=context,
+                    logger_name=__name__,
+                )
+            index = index_candidate
+            if len(selector_tokens) > 1:
+                target_slot = selector_tokens[1].strip().lower()
+        else:
+            trimmed_tokens, inferred_slot = _maybe_extract_slot(selector_tokens)
+            search_term = " ".join(trimmed_tokens or selector_tokens).strip()
+            if not search_term:
+                context = create_error_context()
+                context.metadata = {"args": args}
+                log_and_raise_enhanced(
+                    MythosValidationError,
+                    "Equip item name cannot be empty.",
+                    context=context,
+                    logger_name=__name__,
+                )
+            target_slot = inferred_slot
+
+        return EquipCommand(index=index, search_term=search_term, target_slot=target_slot)
+
+    def _create_unequip_command(self, args: list[str]) -> UnequipCommand:
+        """Create unequip command."""
+
+        if not args:
+            context = create_error_context()
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: unequip <slot|item-name>",
+                context=context,
+                logger_name=__name__,
+            )
+
+        candidate = " ".join(args).strip()
+        if not candidate:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: unequip <slot|item-name>",
+                context=context,
+                logger_name=__name__,
+            )
+
+        normalized = candidate.lower()
+        known_slots = {
+            "head",
+            "torso",
+            "legs",
+            "feet",
+            "hands",
+            "left_hand",
+            "right_hand",
+            "main_hand",
+            "off_hand",
+            "accessory",
+            "ring",
+            "amulet",
+            "belt",
+            "backpack",
+            "waist",
+            "neck",
+        }
+
+        if normalized in known_slots:
+            return UnequipCommand(slot=candidate)
+
+        return UnequipCommand(search_term=candidate)
 
     def _create_quit_command(self, args: list[str]) -> QuitCommand:
         """Create QuitCommand from arguments."""
@@ -855,6 +1181,7 @@ class CommandParser:
             "aliases": "List your command aliases",
             "unalias": "Remove a command alias",
             "help": "Show this help information",
+            "summon": "Admin command: /summon <prototype_id> [quantity] [item|npc]",
             "sit": "Sit down and adopt a seated posture",
             "stand": "Return to a standing posture",
             "lie": "Lie down (optionally use 'lie down')",
@@ -958,10 +1285,15 @@ def get_command_help(command_type: str | None = None) -> str:
             CommandType.UNMUTE_GLOBAL.value: "unmute_global <player> - Globally unmute a player",
             CommandType.ADD_ADMIN.value: "add_admin <player> - Make a player an admin",
             CommandType.MUTES.value: "mutes - Show your mute status",
+            CommandType.SUMMON.value: "summon <prototype_id> [quantity] [item|npc] - Admin: conjure items or NPCs",
             CommandType.WHO.value: "who [player] - List online players with optional filtering",
             CommandType.STATUS.value: "status - Show your character status",
             CommandType.WHOAMI.value: "whoami - Show your personal status (alias of status)",
             CommandType.INVENTORY.value: "inventory - Show your inventory",
+            CommandType.PICKUP.value: "pickup <item-number> [quantity] - Pick up a room item",
+            CommandType.DROP.value: "drop <inventory-number> [quantity] - Drop an inventory item",
+            CommandType.EQUIP.value: "equip <inventory-number> [slot] - Equip an item",
+            CommandType.UNEQUIP.value: "unequip <slot> - Unequip an item",
             CommandType.QUIT.value: "quit - Quit the game",
             CommandType.SIT.value: "sit - Sit down and adopt a seated posture",
             CommandType.STAND.value: "stand - Return to a standing posture",
@@ -992,6 +1324,7 @@ Available Commands:
 - unmute_global <player> - Globally unmute a player
 - add_admin <player> - Make a player an admin
 - mutes - Show your mute status
+- summon <prototype_id> [quantity] [item|npc] - Admin: conjure items or NPCs
 - who [player] - List online players with optional filtering
 - status - Show your character status
 - whoami - Show your personal status (alias of status)

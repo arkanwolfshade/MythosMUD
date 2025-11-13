@@ -16,6 +16,7 @@ from server.models.command import (
     CommandType,
     Direction,
     EmoteCommand,
+    EquipCommand,
     GoCommand,
     HelpCommand,
     LieCommand,
@@ -24,13 +25,16 @@ from server.models.command import (
     MuteCommand,
     MuteGlobalCommand,
     MutesCommand,
+    PickupCommand,
     PoseCommand,
     SayCommand,
     SitCommand,
     StandCommand,
     StatusCommand,
+    SummonCommand,
     TeleportCommand,
     UnaliasCommand,
+    UnequipCommand,
     UnmuteCommand,
     UnmuteGlobalCommand,
     WhoamiCommand,
@@ -185,6 +189,68 @@ class TestCommandModels:
         cmd = WhoamiCommand()
         assert cmd.command_type == CommandType.WHOAMI
 
+    def test_pickup_command_model_with_index(self):
+        """Test PickupCommand accepts numeric selectors."""
+        cmd = PickupCommand(index=3)
+        assert cmd.command_type == CommandType.PICKUP
+        assert cmd.index == 3
+        assert cmd.search_term is None
+
+    def test_pickup_command_model_with_search_term(self):
+        """Test PickupCommand accepts fuzzy selectors."""
+        cmd = PickupCommand(search_term="clockwork crown", quantity=2)
+        assert cmd.index is None
+        assert cmd.search_term == "clockwork crown"
+        assert cmd.quantity == 2
+
+    def test_pickup_command_model_requires_selector(self):
+        """Test PickupCommand enforces selector validation."""
+        with pytest.raises(PydanticValidationError):
+            PickupCommand()
+
+    def test_equip_command_model_with_index(self):
+        """Test EquipCommand accepts numeric selectors."""
+        cmd = EquipCommand(index=2, target_slot="head")
+        assert cmd.command_type == CommandType.EQUIP
+        assert cmd.index == 2
+        assert cmd.search_term is None
+        assert cmd.target_slot == "head"
+
+    def test_equip_command_model_with_search_term(self):
+        """Test EquipCommand accepts fuzzy selectors."""
+        cmd = EquipCommand(search_term="clockwork crown")
+        assert cmd.index is None
+        assert cmd.search_term == "clockwork crown"
+        assert cmd.target_slot is None
+
+    def test_equip_command_normalizes_target_slot(self):
+        """Test EquipCommand normalizes provided slot names."""
+        cmd = EquipCommand(index=1, target_slot="HEAD")
+        assert cmd.target_slot == "head"
+
+    def test_equip_command_model_requires_selector(self):
+        """Test EquipCommand enforces selector validation."""
+        with pytest.raises(PydanticValidationError):
+            EquipCommand()
+
+    def test_unequip_command_model_with_slot(self):
+        """Test UnequipCommand normalizes slot identifiers."""
+        cmd = UnequipCommand(slot="HEAD")
+        assert cmd.command_type == CommandType.UNEQUIP
+        assert cmd.slot == "head"
+        assert cmd.search_term is None
+
+    def test_unequip_command_model_with_search_term(self):
+        """Test UnequipCommand accepts fuzzy selectors."""
+        cmd = UnequipCommand(search_term="Clockwork Crown")
+        assert cmd.slot is None
+        assert cmd.search_term == "Clockwork Crown"
+
+    def test_unequip_command_model_requires_selector(self):
+        """Test UnequipCommand requires slot or name."""
+        with pytest.raises(PydanticValidationError):
+            UnequipCommand()
+
     def test_alias_command_valid(self):
         """Test valid AliasCommand creation."""
         # View alias
@@ -315,6 +381,63 @@ class TestCommandModels:
 
         with pytest.raises(PydanticValidationError):
             AdminCommand(subcommand="invalid")
+
+    def test_summon_command_defaults(self):
+        """Test SummonCommand defaults."""
+        cmd = SummonCommand(prototype_id="artifact.miskatonic.codex")
+        assert cmd.command_type == CommandType.SUMMON
+        assert cmd.prototype_id == "artifact.miskatonic.codex"
+        assert cmd.quantity == 1
+        assert cmd.target_type == "item"
+
+    def test_summon_command_with_quantity_and_target(self):
+        """Test SummonCommand with explicit quantity and target type."""
+        cmd = SummonCommand(prototype_id="weapon.sword.longsword", quantity=3, target_type="npc")
+        assert cmd.quantity == 3
+        assert cmd.target_type == "npc"
+
+    @pytest.mark.parametrize("value", [0, -1, 9])
+    def test_summon_command_invalid_quantity(self, value):
+        """Summon quantity must be within allowed bounds."""
+        with pytest.raises(PydanticValidationError):
+            SummonCommand(prototype_id="artifact.miskatonic.codex", quantity=value)
+
+    def test_summon_command_invalid_target_type(self):
+        """Summon target type must be item or npc."""
+        with pytest.raises(PydanticValidationError):
+            SummonCommand(prototype_id="artifact.miskatonic.codex", target_type="spirit")
+
+    def test_parse_summon_command_defaults(self):
+        """Test parsing summon command with defaults."""
+        parser = CommandParser()
+        cmd = parser.parse_command("/summon artifact.miskatonic.codex")
+        assert isinstance(cmd, SummonCommand)
+        assert cmd.prototype_id == "artifact.miskatonic.codex"
+        assert cmd.quantity == 1
+        assert cmd.target_type == "item"
+
+    def test_parse_summon_command_with_quantity(self):
+        """Test parsing summon command with explicit quantity."""
+        parser = CommandParser()
+        cmd = parser.parse_command("/summon weapon.sword.longsword 2")
+        assert isinstance(cmd, SummonCommand)
+        assert cmd.quantity == 2
+        assert cmd.target_type == "item"
+
+    def test_parse_summon_command_with_target_type(self):
+        """Test parsing summon command with target hints."""
+        parser = CommandParser()
+        cmd = parser.parse_command("/summon npc.waking_terror npc 3")
+        assert isinstance(cmd, SummonCommand)
+        assert cmd.prototype_id == "npc.waking_terror"
+        assert cmd.quantity == 3
+        assert cmd.target_type == "npc"
+
+    def test_parse_summon_command_invalid_arguments(self):
+        """Test summon command rejects invalid arguments."""
+        parser = CommandParser()
+        with pytest.raises(MythosValidationError):
+            parser.parse_command("/summon artifact.codex not_a_number")
 
 
 class TestCommandParser:
@@ -477,6 +600,92 @@ class TestCommandParser:
         """Test parsing aliases command."""
         cmd = self.parser.parse_command("aliases")
         assert isinstance(cmd, AliasesCommand)
+
+    def test_parse_pickup_command_by_index(self):
+        """Test parsing pickup command using numeric index."""
+        cmd = self.parser.parse_command("pickup 2")
+        assert isinstance(cmd, PickupCommand)
+        assert cmd.index == 2
+        assert cmd.search_term is None
+        assert cmd.quantity is None
+
+    def test_parse_pickup_command_by_name(self):
+        """Test parsing pickup command using fuzzy selector."""
+        cmd = self.parser.parse_command("pickup Clockwork Crown")
+        assert isinstance(cmd, PickupCommand)
+        assert cmd.index is None
+        assert cmd.search_term == "Clockwork Crown"
+
+    def test_parse_pickup_command_by_name_with_quantity(self):
+        """Test parsing pickup command with fuzzy selector and quantity."""
+        cmd = self.parser.parse_command("pickup clockwork 3")
+        assert isinstance(cmd, PickupCommand)
+        assert cmd.index is None
+        assert cmd.search_term == "clockwork"
+        assert cmd.quantity == 3
+
+    def test_parse_pickup_command_invalid_arguments(self):
+        """Test pickup command rejects malformed selectors."""
+        with pytest.raises(MythosValidationError):
+            self.parser.parse_command("pickup")
+
+        with pytest.raises(MythosValidationError):
+            self.parser.parse_command("pickup 1 telescope")
+
+    def test_parse_equip_command_by_index(self):
+        """Test parsing equip command with numeric index."""
+        cmd = self.parser.parse_command("equip 2 head")
+        assert isinstance(cmd, EquipCommand)
+        assert cmd.index == 2
+        assert cmd.search_term is None
+        assert cmd.target_slot == "head"
+
+    def test_parse_equip_command_by_index_uppercase_slot(self):
+        """Test parsing equip command normalizes uppercase slot names."""
+        cmd = self.parser.parse_command("equip 1 HEAD")
+        assert isinstance(cmd, EquipCommand)
+        assert cmd.index == 1
+        assert cmd.target_slot == "head"
+
+    def test_parse_equip_command_by_name(self):
+        """Test parsing equip command with fuzzy selector."""
+        cmd = self.parser.parse_command("equip Clockwork Crown")
+        assert isinstance(cmd, EquipCommand)
+        assert cmd.index is None
+        assert cmd.search_term == "Clockwork Crown"
+        assert cmd.target_slot is None
+
+    def test_parse_equip_command_by_name_with_slot(self):
+        """Test parsing equip command with fuzzy selector and slot."""
+        cmd = self.parser.parse_command("equip Clockwork Crown head")
+        assert isinstance(cmd, EquipCommand)
+        assert cmd.index is None
+        assert cmd.search_term == "Clockwork Crown"
+        assert cmd.target_slot == "head"
+
+    def test_parse_equip_command_invalid_arguments(self):
+        """Test equip command rejects malformed selectors."""
+        with pytest.raises(MythosValidationError):
+            self.parser.parse_command("equip")
+
+    def test_parse_unequip_command_by_slot(self):
+        """Test parsing unequip command with slot identifier."""
+        cmd = self.parser.parse_command("unequip HEAD")
+        assert isinstance(cmd, UnequipCommand)
+        assert cmd.slot == "head"
+        assert cmd.search_term is None
+
+    def test_parse_unequip_command_by_name(self):
+        """Test parsing unequip command with item name."""
+        cmd = self.parser.parse_command("unequip Clockwork Crown")
+        assert isinstance(cmd, UnequipCommand)
+        assert cmd.slot is None
+        assert cmd.search_term == "Clockwork Crown"
+
+    def test_parse_unequip_command_invalid(self):
+        """Test unequip command rejects empty arguments."""
+        with pytest.raises(MythosValidationError):
+            self.parser.parse_command("unequip")
 
     def test_parse_unalias_command(self):
         """Test parsing unalias command."""

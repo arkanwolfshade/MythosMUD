@@ -1,9 +1,10 @@
+import json
 import os
 import sqlite3
 import threading
 from collections.abc import Callable
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, TypedDict, cast
 from uuid import UUID
 
 from server.logging.enhanced_logging_config import get_logger
@@ -11,6 +12,7 @@ from server.logging.enhanced_logging_config import get_logger
 from .exceptions import DatabaseError, ValidationError
 from .models.player import Player
 from .models.room import Room
+from .schemas.inventory_schema import InventorySchemaValidationError, validate_inventory_payload
 from .utils.error_logging import create_error_context, log_and_raise
 from .world_loader import ROOMS_BASE_PATH
 
@@ -29,6 +31,14 @@ class PersistenceError(Exception):
 
 class UniqueConstraintError(PersistenceError):
     pass
+
+
+class InventoryPayload(TypedDict):
+    """Structured representation of player inventory persistence payload."""
+
+    inventory: list[dict[str, Any]]
+    equipped: dict[str, Any]
+    version: int
 
 
 # --- Hook Decorator ---
@@ -200,6 +210,124 @@ class PersistenceLayer:
             func(*args, **kwargs)
         # TODO: Support async hooks in the future
 
+    def _prepare_inventory_payload(self, player: Player) -> tuple[str, str]:
+        """Validate and serialize inventory payload for storage."""
+        inventory_raw: Any = player.get_inventory()
+        if isinstance(inventory_raw, str):
+            try:
+                inventory_raw = json.loads(inventory_raw)
+            except (TypeError, json.JSONDecodeError) as exc:
+                raise InventorySchemaValidationError(f"Invalid inventory JSON: {exc}") from exc
+
+        if not isinstance(inventory_raw, list):
+            raise InventorySchemaValidationError("Inventory payload must be an array of stacks")
+
+        equipped_raw: Any = player.get_equipped_items() or {}
+        if isinstance(equipped_raw, str):
+            try:
+                equipped_raw = json.loads(equipped_raw)
+            except (TypeError, json.JSONDecodeError) as exc:
+                raise InventorySchemaValidationError(f"Invalid equipped JSON: {exc}") from exc
+
+        if not isinstance(equipped_raw, dict):
+            raise InventorySchemaValidationError("Equipped payload must be an object")
+
+        payload_dict: dict[str, Any] = {
+            "inventory": cast(list[dict[str, Any]], inventory_raw),
+            "equipped": cast(dict[str, Any], equipped_raw),
+            "version": 1,
+        }
+        validate_inventory_payload(payload_dict)
+        payload = cast(InventoryPayload, payload_dict)
+
+        inventory_json = json.dumps(payload["inventory"])
+        equipped_json = json.dumps(payload["equipped"])
+        player.inventory = cast(Any, inventory_json)  # keep ORM column in sync
+        player.set_equipped_items(payload["equipped"])
+        return inventory_json, equipped_json
+
+    def _ensure_inventory_row(
+        self, conn: sqlite3.Connection, player_id: str, inventory_json: str, equipped_json: str
+    ) -> None:
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO player_inventories (player_id, inventory_json, equipped_json)
+            VALUES (?, ?, ?)
+            """,
+            (player_id, inventory_json, equipped_json),
+        )
+
+    def _load_player_inventory(self, conn: sqlite3.Connection, player: Player) -> None:
+        cursor = conn.execute(
+            """
+            SELECT inventory_json, equipped_json
+            FROM player_inventories
+            WHERE player_id = ?
+            """,
+            (player.player_id,),
+        )
+        row = cursor.fetchone()
+        if row is None:
+            default_inventory = "[]"
+            default_equipped = "{}"
+            self._ensure_inventory_row(conn, str(player.player_id), default_inventory, default_equipped)
+            inventory_json = default_inventory
+            equipped_json = default_equipped
+        else:
+            inventory_column = cast(str | None, row[0])
+            equipped_column = cast(str | None, row[1])
+            inventory_json = inventory_column if inventory_column is not None else "[]"
+            equipped_json = equipped_column if equipped_column is not None else "{}"
+
+        try:
+            inventory_raw: Any = json.loads(inventory_json)
+            equipped_raw: Any = json.loads(equipped_json)
+        except (TypeError, json.JSONDecodeError) as exc:
+            logger.error(
+                "Stored inventory payload failed to deserialize",
+                player_id=str(player.player_id),
+                error=str(exc),
+            )
+            context = create_error_context()
+            context.metadata["operation"] = "load_player_inventory"
+            context.metadata["player_id"] = str(player.player_id)
+            log_and_raise(
+                DatabaseError,
+                "Failed to deserialize stored inventory payload",
+                context=context,
+                details={"error": str(exc)},
+                user_friendly="Player inventory data is corrupted",
+            )
+
+        raw_payload: dict[str, Any] = {
+            "inventory": inventory_raw,
+            "equipped": equipped_raw,
+            "version": 1,
+        }
+        try:
+            validate_inventory_payload(raw_payload)
+        except InventorySchemaValidationError as exc:
+            logger.error(
+                "Stored inventory payload failed validation",
+                player_id=str(player.player_id),
+                error=str(exc),
+            )
+            context = create_error_context()
+            context.metadata["operation"] = "load_player_inventory"
+            context.metadata["player_id"] = str(player.player_id)
+            log_and_raise(
+                DatabaseError,
+                "Invalid inventory payload detected in storage",
+                context=context,
+                details={"error": str(exc)},
+                user_friendly="Player inventory data is invalid",
+            )
+
+        validated_payload = cast(InventoryPayload, raw_payload)
+        sanitized_inventory_json = json.dumps(validated_payload["inventory"])
+        player.inventory = cast(Any, sanitized_inventory_json)
+        player.set_equipped_items(validated_payload["equipped"])
+
     # --- Room Cache (Loaded at Startup) ---
     def _load_room_cache(self):
         """Load rooms from JSON files using world_loader and convert to Room objects."""
@@ -247,6 +375,7 @@ class PersistenceLayer:
                     player = Player(**player_data)
                     # Validate and fix room placement if needed
                     self.validate_and_fix_player_room(player)
+                    self._load_player_inventory(conn, player)
                     return player
                 return None
         except sqlite3.Error as e:
@@ -276,6 +405,7 @@ class PersistenceLayer:
                     player = Player(**player_data)
                     # Validate and fix room placement if needed
                     self.validate_and_fix_player_room(player)
+                    self._load_player_inventory(conn, player)
                     return player
                 return None
         except sqlite3.Error as e:
@@ -305,6 +435,7 @@ class PersistenceLayer:
                     player = Player(**player_data)
                     # Validate and fix room placement if needed
                     self.validate_and_fix_player_room(player)
+                    self._load_player_inventory(conn, player)
                     return player
                 return None
         except sqlite3.Error as e:
@@ -347,6 +478,36 @@ class PersistenceLayer:
                     player_id_str = str(player.player_id) if player.player_id else None
                     user_id_str = str(player.user_id) if player.user_id else None
 
+                    if player_id_str is None:
+                        log_and_raise(
+                            DatabaseError,
+                            "Player ID is required before persistence save",
+                            context=context,
+                            details={"player_name": player.name},
+                            user_friendly="Failed to save player",
+                        )
+
+                    try:
+                        inventory_json, equipped_json = self._prepare_inventory_payload(player)
+                    except InventorySchemaValidationError as exc:
+                        logger.error(
+                            "Inventory payload validation failed during save",
+                            player_id=player_id_str,
+                            player_name=player.name,
+                            error=str(exc),
+                        )
+                        log_and_raise(
+                            DatabaseError,
+                            f"Inventory validation failed: {exc}",
+                            context=context,
+                            details={
+                                "player_name": player.name,
+                                "player_id": player_id_str,
+                                "error": str(exc),
+                            },
+                            user_friendly="Player inventory data is invalid",
+                        )
+
                     conn.execute(
                         """
                         INSERT OR REPLACE INTO players (
@@ -359,7 +520,7 @@ class PersistenceLayer:
                             user_id_str,
                             player.name,
                             player.stats,
-                            player.inventory,
+                            inventory_json,
                             player.status_effects,
                             player.current_room_id,
                             player.experience_points,
@@ -370,6 +531,7 @@ class PersistenceLayer:
                             last_active,
                         ),
                     )
+                    self._ensure_inventory_row(conn, player_id_str, inventory_json, equipped_json)
                     conn.commit()
                     self._log(f"Saved player {player.name}")
                     self._run_hooks("after_save_player", player)
@@ -476,6 +638,7 @@ class PersistenceLayer:
                     player = Player(**player_data)
                     # Validate and fix room placement if needed
                     self.validate_and_fix_player_room(player)
+                    self._load_player_inventory(conn, player)
                     players.append(player)
                 return players
         except sqlite3.Error as e:
@@ -504,6 +667,7 @@ class PersistenceLayer:
                     player = Player(**player_data)
                     # Validate and fix room placement if needed
                     self.validate_and_fix_player_room(player)
+                    self._load_player_inventory(conn, player)
                     players.append(player)
                 return players
         except sqlite3.Error as e:

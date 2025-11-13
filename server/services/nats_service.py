@@ -719,6 +719,9 @@ class NATSService:
             for connection in self.connection_pool:
                 try:
                     await connection.close()
+                except asyncio.CancelledError:
+                    logger.warning("NATS connection close cancelled during shutdown", connection=str(connection))
+                    continue
                 except Exception as e:
                     logger.warning("Error closing pool connection", error=str(e))
 

@@ -9,13 +9,18 @@ from typing import Any
 from ..alias_storage import AliasStorage
 from ..logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
+from ..utils.room_renderer import build_room_drop_summary, clone_room_drops, format_room_drop_lines
 
 logger = get_logger(__name__)
 
 
 async def handle_look_command(
-    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
-) -> dict[str, str]:
+    command_data: dict,
+    current_user: dict,
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
+) -> dict[str, Any]:
     """
     Handle the look command for examining surroundings.
 
@@ -27,7 +32,7 @@ async def handle_look_command(
         player_name: Player name for logging
 
     Returns:
-        dict: Look command result
+        dict: Look command result, including rendered text and room drop metadata
     """
     logger.debug("Processing look command", player=player_name, args=command_data)
 
@@ -48,6 +53,16 @@ async def handle_look_command(
     if not room:
         logger.warning("Look command failed - room not found", player=player_name, room_id=room_id)
         return {"result": "You see nothing special."}
+
+    connection_manager = getattr(app.state, "connection_manager", None) if app else None
+    room_manager = getattr(connection_manager, "room_manager", None) if connection_manager else None
+    room_drops: list[dict[str, Any]] = []
+    if room_manager and hasattr(room_manager, "list_room_drops"):
+        try:
+            drops = room_manager.list_room_drops(str(room_id))
+            room_drops = clone_room_drops(drops)
+        except Exception as exc:  # pragma: no cover - defensive logging path
+            logger.debug("Failed to list room drops", player=player_name, room_id=room_id, error=str(exc))
 
     # Extract direction and target from command_data
     direction = command_data.get("direction")
@@ -125,7 +140,17 @@ async def handle_look_command(
     valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
     exit_list = ", ".join(valid_exits) if valid_exits else "none"
     logger.debug("Looked at current room", player=player_name, room_id=room_id, exits=valid_exits)
-    return {"result": f"{name}\n{desc}\n\nExits: {exit_list}"}
+
+    drop_lines = format_room_drop_lines(room_drops)
+    drop_summary = build_room_drop_summary(room_drops)
+    lines = [name, desc, "", *drop_lines, "", f"Exits: {exit_list}"]
+    rendered = "\n".join(lines)
+
+    return {
+        "result": rendered,
+        "drop_summary": drop_summary,
+        "room_drops": room_drops,
+    }
 
 
 async def handle_go_command(

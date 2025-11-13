@@ -5,6 +5,10 @@ This module provides room subscription functionality for tracking
 which players are subscribed to which rooms and managing room occupants.
 """
 
+from __future__ import annotations
+
+from collections.abc import Mapping
+from copy import deepcopy
 from typing import Any
 
 from ..logging.enhanced_logging_config import get_logger
@@ -28,6 +32,8 @@ class RoomSubscriptionManager:
         self.room_occupants: dict[str, set[str]] = {}
         # Reference to persistence layer (set during initialization)
         self.persistence: Any | None = None
+        # Non-persistent room drops (room_id -> list of stacks)
+        self.room_drops: dict[str, list[dict[str, Any]]] = {}
 
     def set_persistence(self, persistence: Any) -> None:
         """Set the persistence layer reference."""
@@ -98,6 +104,130 @@ class RoomSubscriptionManager:
         except Exception as e:
             logger.error("Error getting subscribers for room", room_id=room_id, error=str(e))
             return set()
+
+    def list_room_drops(self, room_id: str) -> list[dict[str, Any]]:
+        """
+        Retrieve current room drops as a defensive copy for callers.
+
+        Args:
+            room_id: The room identifier.
+
+        Returns:
+            A deep copy of the drop stacks to prevent accidental mutation.
+        """
+        try:
+            canonical_id = self._canonical_room_id(room_id) or room_id
+            stacks = self.room_drops.get(canonical_id, [])
+            return [deepcopy(stack) for stack in stacks]
+        except Exception as exc:  # pragma: no cover - defensive logging
+            logger.error("Error listing room drops", room_id=room_id, error=str(exc))
+            return []
+
+    def add_room_drop(self, room_id: str, stack: Mapping[str, Any]) -> None:
+        """
+        Append an item stack to the room drop ledger.
+
+        Args:
+            room_id: The room receiving the drop.
+            stack: Mapping describing the dropped item stack.
+        """
+        canonical_id = self._canonical_room_id(room_id) or room_id
+        try:
+            drop_stack = dict(stack)
+            quantity = int(drop_stack.get("quantity", 1))
+            if quantity <= 0:
+                raise ValueError("Quantity must be positive for room drops.")
+
+            self.room_drops.setdefault(canonical_id, []).append(drop_stack)
+            logger.info(
+                "Room drop recorded",
+                room_id=canonical_id,
+                item_id=drop_stack.get("item_id"),
+                quantity=quantity,
+            )
+        except Exception as exc:
+            logger.error("Failed adding room drop", room_id=canonical_id, error=str(exc))
+
+    def take_room_drop(self, room_id: str, index: int, quantity: int) -> dict[str, Any] | None:
+        """
+        Remove quantity of a drop entry, returning the removed stack.
+
+        Args:
+            room_id: Room identifier.
+            index: Zero-based drop index.
+            quantity: Quantity to remove.
+
+        Returns:
+            Detached stack representing the removed items, or None if unavailable.
+        """
+        canonical_id = self._canonical_room_id(room_id) or room_id
+        try:
+            if quantity <= 0:
+                raise ValueError("Quantity must be positive when taking room drops.")
+
+            drop_list = self.room_drops.get(canonical_id)
+            if not drop_list or not (0 <= index < len(drop_list)):
+                return None
+
+            stack = drop_list[index]
+            available = int(stack.get("quantity", 1))
+            removed = deepcopy(stack)
+            if quantity >= available:
+                removed_quantity = available
+                drop_list.pop(index)
+            else:
+                removed_quantity = quantity
+                stack["quantity"] = available - quantity
+                removed["quantity"] = quantity
+
+            if not drop_list:
+                self.room_drops.pop(canonical_id, None)
+
+            removed["quantity"] = removed_quantity
+            logger.info(
+                "Room drop retrieved",
+                room_id=canonical_id,
+                item_id=removed.get("item_id"),
+                quantity=removed_quantity,
+            )
+            return removed
+        except Exception as exc:
+            logger.error("Failed retrieving room drop", room_id=canonical_id, error=str(exc))
+            return None
+
+    def adjust_room_drop(self, room_id: str, index: int, quantity: int) -> bool:
+        """
+        Adjust quantity for an existing drop entry; removing entry when zero.
+
+        Args:
+            room_id: Room identifier.
+            index: Zero-based drop index.
+            quantity: New quantity for stack (zero removes stack).
+
+        Returns:
+            True if adjustment applied, False otherwise.
+        """
+        canonical_id = self._canonical_room_id(room_id) or room_id
+        try:
+            drop_list = self.room_drops.get(canonical_id)
+            if drop_list is None or not (0 <= index < len(drop_list)) or quantity < 0:
+                return False
+
+            if quantity == 0:
+                drop_list.pop(index)
+            else:
+                drop_list[index]["quantity"] = quantity
+
+            if drop_list:
+                self.room_drops[canonical_id] = drop_list
+            else:
+                self.room_drops.pop(canonical_id, None)
+
+            logger.debug("Room drop adjusted", room_id=canonical_id, index=index, quantity=quantity)
+            return True
+        except Exception as exc:
+            logger.error("Failed adjusting room drop", room_id=canonical_id, error=str(exc))
+            return False
 
     def add_room_occupant(self, player_id: str, room_id: str) -> bool:
         """

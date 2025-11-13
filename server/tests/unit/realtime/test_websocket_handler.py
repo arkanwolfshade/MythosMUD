@@ -592,6 +592,7 @@ class TestRoomUpdateBroadcasting:
         mock_cm.broadcast_to_room = AsyncMock()
         mock_cm.subscribe_to_room = AsyncMock()
         mock_cm.unsubscribe_from_room = AsyncMock()
+        mock_cm.room_manager = MagicMock()
         mock_container.connection_manager = mock_cm
         fastapi_app.state.container = mock_container
 
@@ -618,12 +619,26 @@ class TestRoomUpdateBroadcasting:
         mock_room.get_occupant_count = Mock(return_value=0)
         mock_room.to_dict = Mock(return_value={"id": "room_1", "name": "Test Room"})
         mock_connection_manager.persistence.get_room.return_value = mock_room
+        drop_payload = [
+            {
+                "item_instance_id": "instance-obsidian_amulet",
+                "prototype_id": "obsidian_amulet",
+                "item_id": "obsidian_amulet",
+                "item_name": "Obsidian Amulet",
+                "slot_type": "neck",
+                "quantity": 1,
+            }
+        ]
+        mock_connection_manager.room_manager.list_room_drops.return_value = drop_payload
 
         # Execute
         await broadcast_room_update(player_id, room_id)
 
         # Verify
         mock_connection_manager.broadcast_to_room.assert_called_once()
+        _, sent_event = mock_connection_manager.broadcast_to_room.call_args[0]
+        assert sent_event["data"]["room_drops"] == drop_payload
+        assert "Scattered upon the floor" in sent_event["data"]["drop_summary"]
 
     @pytest.mark.asyncio
     async def test_broadcast_room_update_no_persistence(self, mock_connection_manager):

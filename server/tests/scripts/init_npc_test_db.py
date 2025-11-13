@@ -5,6 +5,7 @@ This module provides functions to initialize the test database specifically
 for NPC testing scenarios with schema and seed data from the local database.
 """
 
+import os
 import sqlite3
 from pathlib import Path
 
@@ -87,20 +88,35 @@ def populate_npc_data(conn, npc_definitions, npc_spawn_rules):
     print(f"  [OK] Populated {len(npc_spawn_rules)} NPC spawn rules")
 
 
+def _resolve_target_path() -> Path:
+    """Determine the NPC test database path from environment configuration."""
+
+    env_url = os.getenv("DATABASE_NPC_URL")
+    project_root = Path(__file__).parent.parent.parent.parent
+
+    if env_url and env_url.startswith("sqlite+aiosqlite:///"):
+        path_str = env_url.replace("sqlite+aiosqlite:///", "")
+        if path_str.startswith("/") and not (len(path_str) > 2 and path_str[2] == ":"):
+            return (project_root / path_str.lstrip("/")).resolve()
+        candidate = Path(path_str)
+        if not candidate.is_absolute():
+            return (project_root / candidate).resolve()
+        return candidate.resolve()
+
+    return (project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db").resolve()
+
+
 def init_npc_test_database():
     """Initialize the NPC test database with schema and test data."""
 
-    # NPC Test database path - use project root relative path
-    project_root = Path(__file__).parent.parent.parent.parent
-    NPC_TEST_DB_PATH = project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db"
-
-    print(f"Initializing NPC test database at: {NPC_TEST_DB_PATH}")
+    npc_test_db_path = _resolve_target_path()
+    print(f"Initializing NPC test database at: {npc_test_db_path}")
 
     # Ensure the data directory exists
-    NPC_TEST_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+    npc_test_db_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Create database and schema
-    with sqlite3.connect(NPC_TEST_DB_PATH) as conn:
+    with sqlite3.connect(npc_test_db_path) as conn:
         conn.execute("PRAGMA foreign_keys = ON")
         conn.executescript(load_npc_schema())
         conn.commit()

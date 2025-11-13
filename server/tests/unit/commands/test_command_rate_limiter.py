@@ -86,18 +86,18 @@ class TestCommandRateLimiter:
         # Since we just issued a command, it should be close to window_seconds
         assert wait_time > 0  # Not zero, but should be small since we're not limited
 
-    @pytest.mark.slow
     def test_rate_limit_resets_after_window(self):
         """Rate limit resets after time window passes."""
-        limiter = CommandRateLimiter(max_commands=2, window_seconds=1)
+        clock = FakeClock()
+        limiter = CommandRateLimiter(max_commands=2, window_seconds=1, now_provider=clock.now)
 
         # Use up the limit
         assert limiter.is_allowed("player1") is True
         assert limiter.is_allowed("player1") is True
         assert limiter.is_allowed("player1") is False
 
-        # Wait for window to pass
-        time.sleep(1.1)
+        # Advance beyond window
+        clock.advance(1.1)
 
         # Should be allowed again
         assert limiter.is_allowed("player1") is True
@@ -154,13 +154,13 @@ class TestCommandRateLimiter:
 
         assert remaining == 8  # 10 max - 2 used
 
-    @pytest.mark.slow
     def test_cleanup_old_entries(self):
         """Old entries are cleaned up automatically."""
-        limiter = CommandRateLimiter(max_commands=5, window_seconds=1)
+        clock = FakeClock()
+        limiter = CommandRateLimiter(max_commands=5, window_seconds=1, now_provider=clock.now)
 
         limiter.is_allowed("player1")
-        time.sleep(1.1)
+        clock.advance(1.1)
         limiter.is_allowed("player1")
 
         # Old entry should be cleaned up

@@ -8,6 +8,8 @@ This module provides utilities for setting up test databases with sample data.
 import sqlite3
 from pathlib import Path
 
+from server.scripts.player_inventory_migration import migrate_player_inventories
+
 # Test database path - use project root relative path
 # from server/tests/scripts -> server/tests -> server -> project_root
 project_root = Path(__file__).parent.parent.parent.parent
@@ -181,6 +183,9 @@ def init_test_database():
         conn.commit()
 
     print(f"[OK] Loaded {len(SAMPLE_PLAYERS)} sample test players")
+
+    # Ensure player_inventories table exists and is populated
+    migrate_player_inventories(TEST_DB_PATH)
 
     # Insert sample test invites into database
     with sqlite3.connect(TEST_DB_PATH) as conn:

@@ -30,8 +30,13 @@ USAGE:
 """
 
 import asyncio
+import json
+import os
+import sqlite3
 import threading
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
+from urllib.parse import urlparse
 
 if TYPE_CHECKING:
     from .app.task_registry import TaskRegistry
@@ -41,6 +46,8 @@ if TYPE_CHECKING:
     from .config.models import AppConfig
     from .database import DatabaseManager
     from .events.event_bus import EventBus
+    from .game.items.item_factory import ItemFactory
+    from .game.items.prototype_registry import PrototypeRegistry
     from .game.player_service import PlayerService
     from .game.room_service import RoomService
     from .logging.log_aggregator import LogAggregator
@@ -124,6 +131,10 @@ class ApplicationContainer:
         self.exception_tracker: ExceptionTracker | None = None
         self.monitoring_dashboard: MonitoringDashboard | None = None
         self.log_aggregator: LogAggregator | None = None
+
+        # Item system services
+        self.item_prototype_registry: PrototypeRegistry | None = None
+        self.item_factory: ItemFactory | None = None
 
         # Initialization state
         self._initialized: bool = False
@@ -304,8 +315,6 @@ class ApplicationContainer:
                 self.room_service = RoomService(persistence=self.persistence)
 
                 # UserManager requires environment-aware data directory
-                from pathlib import Path
-
                 current_file = Path(__file__).resolve()
                 project_root = current_file.parent
                 while project_root.parent != project_root:
@@ -318,6 +327,9 @@ class ApplicationContainer:
                 if self.nats_message_handler is not None:
                     self.nats_message_handler.user_manager = self.user_manager
                 logger.info("Game services initialized")
+
+                # Initialize item prototype registry and factory
+                self._initialize_item_services(project_root)
 
                 # Phase 8: Caching services (optional, may fail gracefully)
                 logger.debug("Initializing caching services...")
@@ -369,6 +381,166 @@ class ApplicationContainer:
                 # Cleanup on failure
                 await self.shutdown()
                 raise RuntimeError(f"Failed to initialize application container: {e}") from e
+
+    def _initialize_item_services(self, project_root: Path) -> None:
+        """Load item prototypes and create the shared item factory."""
+        from .game.items.item_factory import ItemFactory
+        from .game.items.models import ItemPrototypeModel
+        from .game.items.prototype_registry import PrototypeRegistry
+
+        item_db_path = self._resolve_item_database_path(project_root)
+        if item_db_path is None:
+            logger.warning("Item database path could not be resolved; item services will remain unavailable")
+            self.item_prototype_registry = None
+            self.item_factory = None
+            return
+
+        if not item_db_path.exists():
+            logger.warning("Item database not found; item services unavailable", item_db=str(item_db_path))
+            self.item_prototype_registry = None
+            self.item_factory = None
+            return
+
+        prototypes: dict[str, ItemPrototypeModel] = {}
+        invalid_entries: list[dict[str, Any]] = []
+
+        try:
+            with sqlite3.connect(item_db_path) as connection:
+                connection.row_factory = sqlite3.Row
+                rows = connection.execute(
+                    """
+                    SELECT
+                        prototype_id,
+                        name,
+                        short_description,
+                        long_description,
+                        item_type,
+                        weight,
+                        base_value,
+                        durability,
+                        flags,
+                        wear_slots,
+                        stacking_rules,
+                        usage_restrictions,
+                        effect_components,
+                        metadata,
+                        tags
+                    FROM item_prototypes
+                    """
+                ).fetchall()
+
+                for row in rows:
+                    payload = {
+                        "prototype_id": row["prototype_id"],
+                        "name": row["name"],
+                        "short_description": row["short_description"],
+                        "long_description": row["long_description"],
+                        "item_type": row["item_type"],
+                        "weight": row["weight"],
+                        "base_value": row["base_value"],
+                        "durability": row["durability"],
+                        "flags": self._decode_json_column(row["flags"], list),
+                        "wear_slots": self._decode_json_column(row["wear_slots"], list),
+                        "stacking_rules": self._decode_json_column(row["stacking_rules"], dict),
+                        "usage_restrictions": self._decode_json_column(row["usage_restrictions"], dict),
+                        "effect_components": self._decode_json_column(row["effect_components"], list),
+                        "metadata": self._decode_json_column(row["metadata"], dict),
+                        "tags": self._decode_json_column(row["tags"], list),
+                    }
+
+                    try:
+                        prototype = ItemPrototypeModel.model_validate(payload)
+                        prototypes[prototype.prototype_id] = prototype
+                    except Exception as exc:  # noqa: BLE001 - validation errors vary
+                        logger.warning(
+                            "Invalid item prototype skipped during initialization",
+                            prototype_id=payload.get("prototype_id"),
+                            error=str(exc),
+                        )
+                        invalid_entries.append(
+                            {
+                                "prototype_id": payload.get("prototype_id"),
+                                "error": str(exc),
+                            }
+                        )
+
+            registry = PrototypeRegistry(prototypes, invalid_entries)
+            self.item_prototype_registry = registry
+            self.item_factory = ItemFactory(registry)
+
+            logger.info(
+                "Item services initialized",
+                prototype_count=len(prototypes),
+                invalid_count=len(invalid_entries),
+                item_db=str(item_db_path),
+            )
+        except sqlite3.Error as exc:
+            logger.error("Failed to load item prototypes from database", error=str(exc), item_db=str(item_db_path))
+            self.item_prototype_registry = None
+            self.item_factory = None
+
+    def _decode_json_column(self, value: Any, expected_type: type) -> Any:
+        """Decode a JSON column value, returning the type's default on failure."""
+        if value is None or value == "":
+            return expected_type()
+        if isinstance(value, (list, dict)):
+            return value
+        try:
+            decoded = json.loads(value)
+            if isinstance(decoded, expected_type):
+                return decoded
+            if expected_type is list:
+                return list(decoded)
+            if expected_type is dict:
+                return dict(decoded)
+            return decoded
+        except Exception:  # noqa: BLE001
+            logger.warning("Failed to decode JSON column; using default value", column_value=value)
+            return expected_type()
+
+    def _resolve_item_database_path(self, project_root: Path) -> Path | None:
+        """Resolve the path to the item prototype database based on configuration and overrides."""
+        override = os.environ.get("ITEM_DATABASE_URL") or os.environ.get("ITEM_DATABASE_PATH")
+        if override:
+            normalized = self._normalize_path_from_url_or_path(override, project_root)
+            if normalized:
+                return normalized
+
+        if not self.config:
+            return None
+
+        environment = getattr(self.config.logging, "environment", "local")
+        env_map = {
+            "local": Path("data") / "local" / "items" / "local_items.db",
+            "e2e_test": Path("data") / "e2e_test" / "items" / "e2e_items.db",
+            "unit_test": Path("data") / "unit_test_test" / "items" / "unit_test_items.db",
+        }
+
+        relative = env_map.get(environment)
+        if relative is None:
+            relative = Path("data") / environment / "items" / f"{environment}_items.db"
+
+        return (project_root / relative).resolve()
+
+    def _normalize_path_from_url_or_path(self, raw: str, project_root: Path) -> Path | None:
+        """Normalize an item database override into a filesystem path."""
+        try:
+            if "://" in raw:
+                parsed = urlparse(raw)
+                if parsed.scheme.startswith("sqlite"):
+                    path_str = parsed.path
+                    if path_str.startswith("/") and len(path_str) > 3 and path_str[2] == ":":
+                        path_str = path_str.lstrip("/")
+                    return Path(path_str).resolve()
+                return Path(parsed.path or "").resolve()
+
+            path = Path(raw)
+            if not path.is_absolute():
+                path = (project_root / path).resolve()
+            return path
+        except Exception as exc:  # noqa: BLE001
+            logger.error("Failed to normalize item database override", override=raw, error=str(exc))
+            return None
 
     async def shutdown(self) -> None:
         """
