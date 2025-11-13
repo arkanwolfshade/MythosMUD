@@ -13,7 +13,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from ..logging.enhanced_logging_config import get_logger
-from ..models.sanity import PlayerSanity, SanityAdjustmentLog
+from ..models.sanity import (
+    PlayerSanity,
+    SanityAdjustmentLog,
+    SanityCooldown,
+    SanityExposureState,
+)
 
 logger = get_logger(__name__)
 
@@ -136,6 +141,60 @@ class SanityRepository:
         self._session.add(log_entry)
         await self._session.flush()
         return log_entry
+
+    async def get_exposure_state(
+        self, player_id: str, entity_archetype: str
+    ) -> SanityExposureState | None:
+        stmt: Select[tuple[SanityExposureState]] = select(SanityExposureState).where(
+            SanityExposureState.player_id == player_id,
+            SanityExposureState.entity_archetype == entity_archetype,
+        )
+        result = await self._session.execute(stmt)
+        return result.scalar_one_or_none()
+
+    async def increment_exposure_state(
+        self, player_id: str, entity_archetype: str
+    ) -> SanityExposureState:
+        exposure = await self.get_exposure_state(player_id, entity_archetype)
+        if exposure is None:
+            exposure = SanityExposureState(
+                player_id=player_id,
+                entity_archetype=entity_archetype,
+                encounter_count=1,
+                last_encounter_at=_utc_now(),
+            )
+            self._session.add(exposure)
+        else:
+            exposure.encounter_count += 1
+            exposure.last_encounter_at = _utc_now()
+        await self._session.flush()
+        return exposure
+
+    async def get_cooldown(
+        self, player_id: str, action_code: str
+    ) -> SanityCooldown | None:
+        stmt: Select[tuple[SanityCooldown]] = select(SanityCooldown).where(
+            SanityCooldown.player_id == player_id,
+            SanityCooldown.action_code == action_code,
+        )
+        result = await self._session.execute(stmt)
+        return result.scalar_one_or_none()
+
+    async def set_cooldown(
+        self, player_id: str, action_code: str, expires_at: datetime
+    ) -> SanityCooldown:
+        cooldown = await self.get_cooldown(player_id, action_code)
+        if cooldown is None:
+            cooldown = SanityCooldown(
+                player_id=player_id,
+                action_code=action_code,
+                cooldown_expires_at=expires_at,
+            )
+            self._session.add(cooldown)
+        else:
+            cooldown.cooldown_expires_at = expires_at
+        await self._session.flush()
+        return cooldown
 
 
 @dataclass
@@ -283,6 +342,22 @@ class SanityService:
     async def get_player_sanity(self, player_id: str) -> PlayerSanity:
         """Retrieve the player's sanity record, creating it if needed."""
         return await self._repo.get_or_create_player_sanity(player_id)
+
+    async def increment_exposure_state(
+        self, player_id: str, entity_archetype: str
+    ) -> SanityExposureState:
+        """Increment encounter count for a player/entity archetype exposure."""
+        return await self._repo.increment_exposure_state(player_id, entity_archetype)
+
+    async def get_cooldown(self, player_id: str, action_code: str) -> SanityCooldown | None:
+        """Retrieve cooldown record for a specific action."""
+        return await self._repo.get_cooldown(player_id, action_code)
+
+    async def set_cooldown(
+        self, player_id: str, action_code: str, expires_at: datetime
+    ) -> SanityCooldown:
+        """Set or update an action cooldown."""
+        return await self._repo.set_cooldown(player_id, action_code, expires_at)
 
     def _worsened_tier(self, previous_tier: Tier, new_tier: Tier) -> bool:
         return TIER_ORDER.index(new_tier) > TIER_ORDER.index(previous_tier)

@@ -14,11 +14,11 @@
   - [x] 2.3 Emit structured logging and metrics for passive SAN changes
   - [x] 2.4 Verify all tests pass
 
-- [ ] 3. Integrate active SAN loss and recovery hooks
-  - [ ] 3.1 Write tests for encounter-driven SAN loss, recovery actions, and liability triggers
-  - [ ] 3.2 Wire SAN adjustments into combat, exploration, ritual learning, and death/sanitarium flows
-  - [ ] 3.3 Implement recovery endpoints (`pray`, `meditate`, `group solace`, `therapy`, `folk tonic`)
-  - [ ] 3.4 Verify all tests pass
+- [x] 3. Integrate active SAN loss and recovery hooks
+  - [x] 3.1 Write tests for encounter-driven SAN loss, recovery actions, and liability triggers
+  - [x] 3.2 Wire SAN adjustments into combat, exploration, ritual learning, and death/sanitarium flows
+  - [x] 3.3 Implement recovery endpoints (`pray`, `meditate`, `group solace`, `therapy`, `folk tonic`)
+  - [x] 3.4 Verify all tests pass
 
 - [ ] 4. Deliver client UX for SAN feedback and hallucinations
   - [ ] 4.1 Write frontend tests for SAN indicators, hallucination prompts, and rescue messaging

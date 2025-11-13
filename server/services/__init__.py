@@ -5,6 +5,13 @@ This package contains various services for handling game functionality,
 including direct WebSocket broadcasting, chat services, and other real-time features.
 """
 
+from .active_sanity_service import (
+    ActiveSanityService,
+    SanityActionError,
+    SanityActionOnCooldownError,
+    UnknownEncounterCategoryError,
+    UnknownSanityActionError,
+)
 from .admin_auth_service import AdminAuthService, admin_auth_service, get_admin_auth_service
 from .equipment_service import (
     EquipmentCapacityError,
@@ -46,4 +53,9 @@ __all__ = [
     "MutationDecision",
     "PassiveSanityFluxService",
     "PassiveFluxContext",
+    "ActiveSanityService",
+    "SanityActionError",
+    "SanityActionOnCooldownError",
+    "UnknownSanityActionError",
+    "UnknownEncounterCategoryError",
 ]

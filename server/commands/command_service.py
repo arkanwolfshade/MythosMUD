@@ -57,6 +57,13 @@ from .inventory_commands import (
 )
 from .npc_admin_commands import handle_npc_command
 from .position_commands import handle_lie_command, handle_sit_command, handle_stand_command
+from .sanity_recovery_commands import (
+    handle_folk_tonic_command,
+    handle_group_solace_command,
+    handle_meditate_command,
+    handle_pray_command,
+    handle_therapy_command,
+)
 from .system_commands import handle_help_command
 from .utility_commands import (
     handle_emote_command,
@@ -141,6 +148,12 @@ class CommandService:
             "punch": handle_punch_command,
             "kick": handle_kick_command,
             "strike": handle_strike_command,
+            # Sanity recovery rites
+            "pray": handle_pray_command,
+            "meditate": handle_meditate_command,
+            "group_solace": handle_group_solace_command,
+            "therapy": handle_therapy_command,
+            "folk_tonic": handle_folk_tonic_command,
         }
 
     async def process_validated_command(
