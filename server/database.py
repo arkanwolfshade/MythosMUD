@@ -362,6 +362,12 @@ async def init_db() -> None:
         # from server.models.npc import NPCDefinition, NPCSpawnRule  # noqa: F401
         from server.models.invite import Invite  # noqa: F401
         from server.models.player import Player  # noqa: F401
+        from server.models.sanity import (  # noqa: F401
+            PlayerSanity,
+            SanityAdjustmentLog,
+            SanityCooldown,
+            SanityExposureState,
+        )
         from server.models.user import User  # noqa: F401
 
         logger.debug("Configuring SQLAlchemy mappers")

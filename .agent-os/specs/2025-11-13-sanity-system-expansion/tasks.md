@@ -2,11 +2,11 @@
 
 ## Tasks
 
-- [ ] 1. Implement sanity data model and persistence
-  - [ ] 1.1 Write database migration tests for new sanity tables and constraints
-  - [ ] 1.2 Add SQLAlchemy models for `player_sanity`, `sanity_adjustment_log`, `sanity_exposure_state`, and `sanity_cooldowns`
-  - [ ] 1.3 Implement repository/service layer for SAN adjustments and liability tracking
-  - [ ] 1.4 Verify all tests pass
+- [x] 1. Implement sanity data model and persistence
+  - [x] 1.1 Write database migration tests for new sanity tables and constraints
+  - [x] 1.2 Add SQLAlchemy models for `player_sanity`, `sanity_adjustment_log`, `sanity_exposure_state`, and `sanity_cooldowns`
+  - [x] 1.3 Implement repository/service layer for SAN adjustments and liability tracking
+  - [x] 1.4 Verify all tests pass
 
 - [ ] 2. Build passive SAN flux scheduler and telemetry
   - [ ] 2.1 Write scheduler unit tests covering passive gain/drain scenarios

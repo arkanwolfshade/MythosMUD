@@ -17,6 +17,12 @@ from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
 # Forward references for type checking (resolves circular imports)
 # Note: SQLAlchemy will resolve string references via shared registry at runtime
 if TYPE_CHECKING:
+    from .sanity import (
+        PlayerSanity,
+        SanityAdjustmentLog,
+        SanityCooldown,
+        SanityExposureState,
+    )
     from .user import User
 
 
@@ -219,3 +225,30 @@ class Player(Base):
         current_health = stats.get("current_health", 100)
         max_health = 100  # Could be made configurable
         return float((current_health / max_health) * 100)
+
+    sanity: Mapped["PlayerSanity"] = relationship(
+        "PlayerSanity",
+        back_populates="player",
+        uselist=False,
+        cascade="all, delete-orphan",
+        single_parent=True,
+    )
+
+    sanity_adjustments: Mapped[list["SanityAdjustmentLog"]] = relationship(
+        "SanityAdjustmentLog",
+        back_populates="player",
+        cascade="all, delete-orphan",
+        order_by="desc(SanityAdjustmentLog.created_at)",
+    )
+
+    sanity_exposures: Mapped[list["SanityExposureState"]] = relationship(
+        "SanityExposureState",
+        back_populates="player",
+        cascade="all, delete-orphan",
+    )
+
+    sanity_cooldowns: Mapped[list["SanityCooldown"]] = relationship(
+        "SanityCooldown",
+        back_populates="player",
+        cascade="all, delete-orphan",
+    )
