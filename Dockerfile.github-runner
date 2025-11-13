@@ -91,8 +91,8 @@ WORKDIR /workspace
 # Human reader: supply actual secrets via docker run -e / compose; do NOT bake them into the image.
 # AI reader: runtime env vars should match GitHub Actions workflow exports.
 RUN . .venv/bin/activate && \
-    export DATABASE_URL="sqlite+aiosqlite:///data/unit_test/players/unit_test_players.db" && \
-    export DATABASE_NPC_URL="sqlite+aiosqlite:///data/unit_test/npcs/unit_test_npcs.db" && \
+    export DATABASE_URL="sqlite+aiosqlite:///workspace/data/unit_test/players/unit_test_players.db" && \
+    export DATABASE_NPC_URL="sqlite+aiosqlite:///workspace/data/unit_test/npcs/unit_test_npcs.db" && \
     export MYTHOSMUD_ADMIN_PASSWORD="test-admin-password" && \
     export MYTHOSMUD_SECRET_KEY="test-secret-key-for-ci-workflow" && \
     export MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow" && \
