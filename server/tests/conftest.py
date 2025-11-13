@@ -102,12 +102,21 @@ def _sqlite_url_to_path(url: str) -> Path:
     if path_str.startswith("/") and len(path_str) > 2 and path_str[2] == ":":
         path_str = path_str[1:]
 
-    if path_str.startswith("/") and not (len(path_str) > 2 and path_str[2] == ":"):
-        path = (project_root / path_str.lstrip("/")).resolve()
+    path = Path(path_str)
+    if path.is_absolute():
+        project_root_resolved = project_root.resolve()
+        path_str_normalized = str(path).replace("\\", "/")
+        project_root_str = str(project_root_resolved).replace("\\", "/")
+
+        if path_str_normalized.startswith(project_root_str):
+            path = path.resolve()
+        elif len(path.parts) > 1 and path.parts[1] in {"data", "logs"}:
+            rel_from_root = Path(*path.parts[1:])
+            path = (project_root_resolved / rel_from_root).resolve()
+        else:
+            path = path.resolve()
     else:
-        path = Path(path_str)
-        if not path.is_absolute():
-            path = (project_root / path).resolve()
+        path = (project_root / path).resolve()
 
     return path
 
