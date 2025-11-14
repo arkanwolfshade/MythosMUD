@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { DEFAULT_CHANNEL } from '../config/channels';
 import { debugLogger } from '../utils/debugLogger';
@@ -7,6 +7,8 @@ import { RoomInfoPanel } from './RoomInfoPanel';
 import { ChatPanel } from './panels/ChatPanel';
 import { CommandPanel } from './panels/CommandPanel';
 import { GameLogPanel } from './panels/GameLogPanel';
+import { SanityMeter, HallucinationTicker, RescueStatusBanner } from './sanity';
+import type { SanityStatus, HallucinationMessage, RescueState } from '../types/sanity';
 
 const formatPosture = (value?: string): string => {
   if (!value) {
@@ -65,11 +67,14 @@ interface ChatMessage {
   isHtml: boolean;
   isCompleteHtml?: boolean;
   messageType?: string;
+  channel?: string;
+  rawText?: string;
   aliasChain?: Array<{
     original: string;
     expanded: string;
     alias_name: string;
   }>;
+  tags?: string[];
 }
 
 interface GameTerminalProps {
@@ -82,6 +87,11 @@ interface GameTerminalProps {
   player: Player | null;
   messages: ChatMessage[];
   commandHistory: string[];
+  sanityStatus: SanityStatus | null;
+  hallucinations: HallucinationMessage[];
+  rescueState: RescueState | null;
+  onDismissHallucination?: (id: string) => void;
+  onDismissRescue?: () => void;
   onConnect: () => void;
   onDisconnect: () => void;
   onLogout: () => void;
@@ -105,6 +115,11 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
   player,
   messages,
   commandHistory,
+  sanityStatus,
+  hallucinations,
+  rescueState,
+  onDismissHallucination,
+  onDismissRescue,
   onConnect: _onConnect,
   onDisconnect: _onDisconnect,
   onLogout,
@@ -120,6 +135,25 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
   // MOTD is now handled by the interstitial screen in App.tsx
   const debug = debugLogger('GameTerminal');
   const [selectedChatChannel, setSelectedChatChannel] = useState(DEFAULT_CHANNEL);
+
+  const derivedSanityStatus = useMemo<SanityStatus | null>(() => {
+    if (sanityStatus) {
+      return sanityStatus;
+    }
+
+    if (player?.stats?.sanity !== undefined) {
+      return {
+        current: player.stats.sanity,
+        max: 100,
+        tier: 'lucid',
+        liabilities: [],
+      };
+    }
+
+    return null;
+  }, [player, sanityStatus]);
+
+  const recentHallucinations = useMemo(() => hallucinations.slice(0, 3), [hallucinations]);
 
   // Responsive panel sizing based on viewport
   useEffect(() => {
@@ -171,6 +205,12 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
       </div>
 
       {/* MOTD is now handled by the interstitial screen in App.tsx */}
+
+      {rescueState && rescueState.status !== 'idle' && (
+        <div className="absolute left-0 right-0 top-12 z-20 px-4">
+          <RescueStatusBanner state={rescueState} onDismiss={onDismissRescue} />
+        </div>
+      )}
 
       {/* Main Content Area with Responsive Panel Layout */}
       <div className="game-terminal-container">
@@ -333,10 +373,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
                     <span className="text-base text-mythos-terminal-text-secondary">Health:</span>
                     <span className="text-base text-mythos-terminal-text">{player.stats.current_health}</span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-base text-mythos-terminal-text-secondary">Sanity:</span>
-                    <span className="text-base text-mythos-terminal-text">{player.stats.sanity}</span>
-                  </div>
+                  <SanityMeter status={derivedSanityStatus} className="mt-2" />
                   <div className="flex items-center justify-between">
                     <span className="text-base text-mythos-terminal-text-secondary">XP:</span>
                     <span className="text-base text-mythos-terminal-text">{player.xp || 0}</span>
@@ -419,6 +456,11 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
                   </div>
                 </>
               )}
+              <HallucinationTicker
+                hallucinations={recentHallucinations}
+                onDismiss={onDismissHallucination}
+                className="border-t border-mythos-terminal-border/60 pt-3"
+              />
             </div>
           </DraggablePanel>
         </div>

@@ -60,6 +60,7 @@ export interface ChatMessage {
   sender?: string;
   target?: string;
   [key: string]: unknown;
+  tags?: string[];
 }
 
 export interface GameLogEntry {

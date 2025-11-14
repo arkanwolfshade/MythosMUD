@@ -20,11 +20,11 @@
   - [x] 3.3 Implement recovery endpoints (`pray`, `meditate`, `group solace`, `therapy`, `folk tonic`)
   - [x] 3.4 Verify all tests pass
 
-- [ ] 4. Deliver client UX for SAN feedback and hallucinations
-  - [ ] 4.1 Write frontend tests for SAN indicators, hallucination prompts, and rescue messaging
-  - [ ] 4.2 Render hallucinated mobs, command misfires, and distorted chat in the terminal UI
-  - [ ] 4.3 Surface rescue progress and sanitarium transitions with accessible cues
-  - [ ] 4.4 Verify all tests pass
+- [x] 4. Deliver client UX for SAN feedback and hallucinations
+  - [x] 4.1 Write frontend tests for SAN indicators, hallucination prompts, and rescue messaging
+  - [x] 4.2 Render hallucinated mobs, command misfires, and distorted chat in the terminal UI
+  - [x] 4.3 Surface rescue progress and sanitarium transitions with accessible cues
+  - [x] 4.4 Verify all tests pass
 
 - [ ] 5. Implement catatonia rescue and sanitarium workflows
   - [ ] 5.1 Write integration tests for `ground` command, catatonia transitions, and sanitarium respawn
