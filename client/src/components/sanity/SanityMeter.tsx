@@ -61,7 +61,12 @@ export const SanityMeter = memo<SanityMeterProps>(({ status, className }) => {
   }
 
   const tierMetadata = TIER_DESCRIPTIONS[status.tier];
-  const percentage = Math.max(0, Math.min(100, Math.round((status.current / status.max) * 100)));
+  const isNegativeRange = status.current < 0;
+  const minValue = isNegativeRange ? -100 : 0;
+  const maxValue = isNegativeRange ? 0 : Math.max(1, status.max);
+  const boundedCurrent = Math.max(minValue, Math.min(maxValue, status.current));
+  const range = maxValue - minValue || 1;
+  const percentage = Math.max(0, Math.min(100, Math.round(((boundedCurrent - minValue) / range) * 100)));
   const deltaDisplay = formatChange(status.lastChange?.delta);
   const reason = status.lastChange?.reason?.replace(/_/g, ' ');
 
@@ -89,10 +94,10 @@ export const SanityMeter = memo<SanityMeterProps>(({ status, className }) => {
       <div
         className="relative h-2.5 overflow-hidden rounded bg-mythos-terminal-border"
         role="meter"
-        aria-valuemin={0}
-        aria-valuemax={status.max}
+        aria-valuemin={minValue}
+        aria-valuemax={maxValue}
         aria-valuenow={status.current}
-        aria-valuetext={`${percentage}%`}
+        aria-valuetext={`${status.current} SAN`}
       >
         <div
           className={`${tierMetadata.barClass} h-full transition-all duration-500 ease-out`}
