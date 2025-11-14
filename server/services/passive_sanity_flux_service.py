@@ -16,7 +16,7 @@ from ..logging.enhanced_logging_config import get_logger
 from ..models.player import Player
 from ..models.sanity import PlayerSanity
 from ..persistence import PersistenceLayer
-from ..services.sanity_service import SanityService, SanityUpdateResult
+from ..services.sanity_service import CatatoniaObserverProtocol, SanityService, SanityUpdateResult
 
 try:
     from ..monitoring.performance_monitor import PerformanceMonitor
@@ -84,6 +84,7 @@ class PassiveSanityFluxService:
         adaptive_window_minutes: int = 10,
         context_resolver: Callable[[Player, datetime], PassiveFluxContext] | None = None,
         now_provider: Callable[[], datetime] | None = None,
+        catatonia_observer: CatatoniaObserverProtocol | None = None,
     ) -> None:
         self._persistence = persistence
         self._performance_monitor = performance_monitor
@@ -93,6 +94,7 @@ class PassiveSanityFluxService:
         self._epsilon = 1e-6
         self._context_resolver = context_resolver
         self._now_provider = now_provider or (lambda: datetime.now(UTC))
+        self._catatonia_observer = catatonia_observer
 
         self._residuals: dict[str, float] = {}
         self._player_room_tracker: dict[str, dict[str, Any]] = {}
@@ -114,7 +116,7 @@ class PassiveSanityFluxService:
         timestamp = now or self._now_provider()
         processed_player_ids: set[str] = set()
         adjustments: list[SanityUpdateResult] = []
-        sanity_service = SanityService(session)
+        sanity_service = SanityService(session, catatonia_observer=self._catatonia_observer)
 
         try:
             players = await self._load_players(session)

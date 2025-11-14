@@ -17,8 +17,10 @@ from fastapi import FastAPI
 from sqlalchemy import select
 
 from ..container import ApplicationContainer
+from ..database import get_async_session
 from ..logging.enhanced_logging_config import get_logger, update_logging_with_player_service
 from ..realtime.sse_handler import broadcast_game_event
+from ..services.catatonia_registry import CatatoniaRegistry
 
 logger = get_logger("server.lifespan")
 TICK_INTERVAL = 1.0  # seconds
@@ -213,9 +215,34 @@ async def lifespan(app: FastAPI):
     )
     logger.info("Player respawn service initialized")
 
+    async def _sanitarium_failover(player_id: str, current_san: int) -> None:
+        """Failover callback that relocates catatonic players to the sanitarium."""
+
+        async for session in get_async_session():
+            try:
+                await app.state.player_respawn_service.move_player_to_limbo(player_id, "catatonia_failover", session)
+                await app.state.player_respawn_service.respawn_player(player_id, session)
+                logger.info(
+                    "Catatonia failover completed",
+                    player_id=player_id,
+                    san=current_san,
+                )
+            except Exception as exc:  # pragma: no cover - defensive
+                logger.error(
+                    "Catatonia failover failed",
+                    player_id=player_id,
+                    error=str(exc),
+                )
+            # The generator only yields once; return ensures we exit after handling the first session.
+            return
+
+    app.state.catatonia_registry = CatatoniaRegistry(failover_callback=_sanitarium_failover)
+    logger.info("Catatonia registry initialized")
+
     app.state.passive_sanity_flux_service = PassiveSanityFluxService(
         persistence=container.persistence,
         performance_monitor=container.performance_monitor,
+        catatonia_observer=app.state.catatonia_registry,
     )
     logger.info("Passive sanity flux service initialized")
 

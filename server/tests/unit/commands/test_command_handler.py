@@ -398,6 +398,23 @@ class TestUnifiedCommandHandler:
         assert "result" in result
 
     @pytest.mark.asyncio
+    async def test_process_command_unified_blocks_catatonic_players(self, mock_user, mock_request):
+        """Catatonic players should be prevented from issuing most commands."""
+
+        with patch("server.command_handler_unified.command_rate_limiter") as mock_rate_limiter:
+            mock_rate_limiter.is_allowed.return_value = True
+
+            with patch(
+                "server.command_handler_unified._check_catatonia_block",
+                new_callable=AsyncMock,
+            ) as mock_check:
+                mock_check.return_value = (True, "Your body lies unresponsive, trapped in catatonia.")
+
+                result = await process_command_unified("look", mock_user, mock_request, player_name="testuser")
+
+        assert "catatonia" in result["result"].lower()
+
+    @pytest.mark.asyncio
     async def test_websocket_request_context_creation(self, mock_persistence, mock_event_bus, mock_user):
         """Test WebSocket request context creation."""
         # Create a mock app state with the required components

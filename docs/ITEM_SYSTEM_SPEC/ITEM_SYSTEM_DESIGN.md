@@ -214,7 +214,7 @@ ItemComponentState
 - Provision dedicated SQLite schemas for each environment:
   - `/data/e2e_test/items/e2e_items.db`
   - `/data/local_test/items/local_items.db`
-  - `/data/unit_test_test/items/unit_test_items.db`
+  - `/data/unit_test/items/unit_test_items.db`
 - Seed initial data so every equip slot has at least two representative item prototypes (ensuring coverage for armor, weapons, accessories, etc.) once the databases are created.
 
 ## Validation & Security

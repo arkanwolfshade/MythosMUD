@@ -84,6 +84,7 @@ class CommandType(str, Enum):
     SIT = "sit"
     STAND = "stand"
     LIE = "lie"
+    GROUND = "ground"
     # Communication commands
     WHISPER = "whisper"
     REPLY = "reply"
@@ -647,6 +648,19 @@ class LieCommand(BaseCommand):
         return normalized
 
 
+class GroundCommand(BaseCommand):
+    """Command for grounding a catatonic ally back to lucidity."""
+
+    command_type: Literal[CommandType.GROUND] = CommandType.GROUND
+    target_player: str = Field(..., min_length=1, max_length=50, description="Player to stabilise")
+
+    @field_validator("target_player")
+    @classmethod
+    def validate_target_player(cls, value: str) -> str:
+        """Validate the target player name using shared validation rules."""
+        return validate_player_name(value)
+
+
 class ShutdownCommand(BaseCommand):
     """
     Command for shutting down the server (admin only).
@@ -788,6 +802,7 @@ Command = (
     | SitCommand
     | StandCommand
     | LieCommand
+    | GroundCommand
     | ShutdownCommand
     | WhisperCommand
     | ReplyCommand

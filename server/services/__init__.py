@@ -13,6 +13,7 @@ from .active_sanity_service import (
     UnknownSanityActionError,
 )
 from .admin_auth_service import AdminAuthService, admin_auth_service, get_admin_auth_service
+from .catatonia_registry import CatatoniaRegistry
 from .equipment_service import (
     EquipmentCapacityError,
     EquipmentService,
@@ -58,4 +59,5 @@ __all__ = [
     "SanityActionOnCooldownError",
     "UnknownSanityActionError",
     "UnknownEncounterCategoryError",
+    "CatatoniaRegistry",
 ]

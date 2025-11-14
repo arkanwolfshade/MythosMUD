@@ -44,8 +44,10 @@ async def _perform_recovery_action(
     if not room_id:
         return {"result": "Without a locus in space, the ritual dissipates into meaningless static."}
 
+    catatonia_observer = getattr(app.state, "catatonia_registry", None) if app else None
+
     async for session in get_async_session():
-        service = ActiveSanityService(session)
+        service = ActiveSanityService(session, catatonia_observer=catatonia_observer)
         try:
             result = await service.perform_recovery_action(
                 player_id=str(player.player_id),
@@ -90,9 +92,7 @@ async def _perform_recovery_action(
                 f"You complete the {action_code.replace('_', ' ')} rite. "
                 f"Stability shifts {sign}{delta}, settling at {new_total}/100."
             )
-            lore_note = (
-                "Archivist's Aside: record this moment; resilience is born in repeated discipline."
-            )
+            lore_note = "Archivist's Aside: record this moment; resilience is born in repeated discipline."
             return {"result": f"{narrative}\n{lore_note}"}
 
     return {"result": "The rite fizzles before contact is made with the numinous."}

@@ -26,8 +26,13 @@
   - [x] 4.3 Surface rescue progress and sanitarium transitions with accessible cues
   - [x] 4.4 Verify all tests pass
 
-- [ ] 5. Implement catatonia rescue and sanitarium workflows
-  - [ ] 5.1 Write integration tests for `ground` command, catatonia transitions, and sanitarium respawn
-  - [ ] 5.2 Add server-side handling for rescue channeling, failure conditions, and liability escalation
-  - [ ] 5.3 Ensure sanitarium debrief and therapy limits hook into existing NPC systems
-  - [ ] 5.4 Verify all tests pass
+- [x] 5. Implement catatonia rescue and sanitarium workflows
+  - [x] 5.1 Write integration tests for `ground` command, catatonia transitions, and sanitarium respawn
+  - [x] 5.2 Add server-side handling for rescue channeling, failure conditions, and liability escalation
+  - [x] 5.3 Ensure sanitarium debrief and therapy limits hook into existing NPC systems
+  - [x] 5.4 Verify all tests pass
+
+- [ ] 6. Implement client-side UI for SAN indicators, hallucination prompts, and rescue messaging
+  - [ ] 6.1 Implement client-side UI for SAN indicators, hallucination prompts, and rescue messaging
+  - [ ] 6.2 Write scenario tests (e2e-tests\scenarios\sanity-system-expansion) for catatonia rescue and sanitarium workflows
+  - [ ] 6.3 Verify all tests pass

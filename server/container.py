@@ -513,7 +513,7 @@ class ApplicationContainer:
         env_map = {
             "local": Path("data") / "local" / "items" / "local_items.db",
             "e2e_test": Path("data") / "e2e_test" / "items" / "e2e_items.db",
-            "unit_test": Path("data") / "unit_test_test" / "items" / "unit_test_items.db",
+            "unit_test": Path("data") / "unit_test" / "items" / "unit_test_items.db",
         }
 
         relative = env_map.get(environment)

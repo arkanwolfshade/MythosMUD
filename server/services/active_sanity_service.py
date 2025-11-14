@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..logging.enhanced_logging_config import get_logger
 from ..models.sanity import SanityExposureState
-from .sanity_service import SanityService
+from .sanity_service import CatatoniaObserverProtocol, SanityService
 
 logger = get_logger(__name__)
 
@@ -72,9 +72,10 @@ class ActiveSanityService:
         session: AsyncSession,
         *,
         now_provider: Callable[[], datetime] | None = None,
+        catatonia_observer: CatatoniaObserverProtocol | None = None,
     ) -> None:
         self._session = session
-        self._sanity_service = SanityService(session)
+        self._sanity_service = SanityService(session, catatonia_observer=catatonia_observer)
         self._now_provider = now_provider or (lambda: datetime.now(UTC))
 
     async def apply_encounter_sanity_loss(
@@ -92,9 +93,7 @@ class ActiveSanityService:
         if profile is None:
             raise UnknownEncounterCategoryError(category)
 
-        exposure: SanityExposureState = await self._sanity_service.increment_exposure_state(
-            player_id, entity_archetype
-        )
+        exposure: SanityExposureState = await self._sanity_service.increment_exposure_state(player_id, entity_archetype)
         encounter_count = exposure.encounter_count
 
         if encounter_count == 1:

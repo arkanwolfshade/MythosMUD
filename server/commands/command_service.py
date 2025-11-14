@@ -57,6 +57,7 @@ from .inventory_commands import (
 )
 from .npc_admin_commands import handle_npc_command
 from .position_commands import handle_lie_command, handle_sit_command, handle_stand_command
+from .rescue_commands import handle_ground_command
 from .sanity_recovery_commands import (
     handle_folk_tonic_command,
     handle_group_solace_command,
@@ -154,6 +155,7 @@ class CommandService:
             "group_solace": handle_group_solace_command,
             "therapy": handle_therapy_command,
             "folk_tonic": handle_folk_tonic_command,
+            "ground": handle_ground_command,
         }
 
     async def process_validated_command(

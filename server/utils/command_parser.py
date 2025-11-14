@@ -26,6 +26,7 @@ from ..models.command import (
     EquipCommand,
     GoCommand,
     GotoCommand,
+    GroundCommand,
     HelpCommand,
     InventoryCommand,
     KickCommand,
@@ -114,6 +115,7 @@ class CommandParser:
             CommandType.SIT.value: self._create_sit_command,
             CommandType.STAND.value: self._create_stand_command,
             CommandType.LIE.value: self._create_lie_command,
+            CommandType.GROUND.value: self._create_ground_command,
             # Communication commands
             CommandType.WHISPER.value: self._create_whisper_command,
             CommandType.REPLY.value: self._create_reply_command,
@@ -1071,6 +1073,32 @@ class CommandParser:
                 )
         return LieCommand(modifier=modifier)
 
+    def _create_ground_command(self, args: list[str]) -> GroundCommand:
+        """Create GroundCommand from arguments."""
+
+        if not args:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: ground <player>",
+                context=context,
+                logger_name=__name__,
+            )
+
+        target = " ".join(args).strip()
+        if not target:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: ground <player>",
+                context=context,
+                logger_name=__name__,
+            )
+
+        return GroundCommand(target_player=target)
+
     def _create_shutdown_command(self, args: list[str]) -> ShutdownCommand:
         """
         Create ShutdownCommand from arguments.
@@ -1185,6 +1213,7 @@ class CommandParser:
             "sit": "Sit down and adopt a seated posture",
             "stand": "Return to a standing posture",
             "lie": "Lie down (optionally use 'lie down')",
+            "ground": "Stabilise a catatonic ally back to lucidity",
         }
 
         if command_name:
