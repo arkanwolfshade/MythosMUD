@@ -18,11 +18,12 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 
 - **JSON schedule ingestion**
   - Create schema files in `schemas/calendar/holiday.schema.json` and `schemas/calendar/schedule.schema.json`.
-  - Source data from `data/calendar/holidays.json` and `data/calendar/schedules/<category>.json`.
+  - Source data from `data/calendar/holidays.json` (pre-populated with Catholic/Islamic/Jewish/neo-pagan entries plus Mythos cult stubs such as Sevenfold Tide Offering, Equinox Serpent Vigil, Ghoulmarket Convocation) and `data/calendar/schedules/<category>.json`.
   - Enforce validations with `pydantic` models under `server/schemas/calendar.py`:
     - Fields: `id`, `name`, `tradition`, `month`, `day`, `duration_hours` (clamped to 48), `season`, `bonus_tags`.
     - Fixed lunar mapping: encode predetermined Mythos month/day for historically movable feasts.
   - Add CLI validator `scripts/validate_calendar.py` to check JSON via pytest-friendly exit codes.
+  - Treat `docs/MYTHOS_HOLIDAY_CANDIDATES.md` as the canonical reference catalog for faction observances; unit tests should load this document to ensure listed IDs appear in JSON.
 
 - **System integrations**
   - **NPC behavior**: Extend relevant services (`server/game/npc_*`) to subscribe to `mythos.hour.tick` for shift changes (shop open/close, patrols).

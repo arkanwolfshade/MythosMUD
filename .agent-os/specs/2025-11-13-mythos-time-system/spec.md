@@ -19,7 +19,7 @@ The service exposes conversion helpers, hour-level tick notifications, and persi
 
 As a narrative designer, I want to author holiday and schedule definitions in JSON, so that I can add Catholic, Muslim, Jewish, and neo-pagan observances (bounded to the first two Mythos days) without code changes.
 
-The engine ingests validated JSON, generates hourly trigger windows, and rotates full events each time the compressed calendar reaches the configured dates.
+The engine ingests validated JSON, generates hourly trigger windows, and rotates full events each time the compressed calendar reaches the configured dates. Mythos-specific cult calendars sourced from `docs/MYTHOS_HOLIDAY_CANDIDATES.md` provide additional faction content.
 
 ### Player Explorer
 
@@ -44,3 +44,4 @@ The UI renders a Mythos clock, banner notifications for active holidays, and ico
 
 1. Hourly-accurate Mythos timekeeping that can be integration-tested by simulating server restarts and verifying resumed schedules.
 2. End-to-end demos (Playwright + pytest) proving holiday JSON ingestion, NPC schedule shifts, and client UI time displays under compressed cycles.
+3. Curated holiday references and seed data: `docs/MYTHOS_HOLIDAY_CANDIDATES.md` outlining cult observances plus companion entries in `data/calendar/holidays.json` (e.g., Innsmouth Tide Offering, Feast of Yig, Ghoulmarket Convocation) ready for schema validation.
