@@ -29,6 +29,7 @@ from .utils.alias_graph import AliasGraph
 from .utils.audit_logger import audit_logger
 from .utils.command_parser import get_username_from_user
 from .utils.command_processor import get_command_processor
+from .utils.player_cache import cache_player, get_cached_player
 from .validators.command_validator import CommandValidator
 
 logger = get_logger(__name__)
@@ -624,7 +625,15 @@ async def _check_catatonia_block(player_name: str, command: str, request: Reques
     if persistence is None:
         return False, None
 
-    player = persistence.get_player_by_name(player_name)
+    player = get_cached_player(request, player_name)
+    if player is None:
+        try:
+            player = persistence.get_player_by_name(player_name)
+        except Exception:  # pragma: no cover - defensive
+            logger.exception("Failed to load player for catatonia check", player=player_name)
+            return False, None
+        cache_player(request, player_name, player)
+
     if not player:
         return False, None
 

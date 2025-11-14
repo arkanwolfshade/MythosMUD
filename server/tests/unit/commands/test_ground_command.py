@@ -5,6 +5,7 @@ from __future__ import annotations
 import uuid
 from datetime import UTC, datetime
 from types import SimpleNamespace
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -175,22 +176,29 @@ async def test_ground_command_emits_rescue_updates(session_factory):
 
         with patch("server.commands.rescue_commands.get_async_session", fake_get_async_session):
             with patch(
-                "server.commands.rescue_commands.send_rescue_update_event",
+                "server.services.sanity_event_dispatcher.send_rescue_update_event",
                 new_callable=AsyncMock,
             ) as mock_rescue_event:
-                await handle_ground_command(command_data, current_user, request, None, "rescuer")
+                with patch("server.commands.rescue_commands.send_rescue_update_event", mock_rescue_event):
+                    with patch("server.services.sanity_service.send_rescue_update_event", mock_rescue_event):
+                        await handle_ground_command(command_data, current_user, request, None, "rescuer")
 
         statuses = [call.kwargs.get("status") for call in mock_rescue_event.await_args_list]
         assert statuses.count("channeling") == 2
         assert statuses.count("success") == 3  # Two explicit messages + sanity service resolution
 
+        def _call_target(call: Any) -> str | None:
+            if call.args:
+                return call.args[0]
+            return call.kwargs.get("player_id")
+
         channel_targets = {
-            call.args[0] for call in mock_rescue_event.await_args_list if call.kwargs.get("status") == "channeling"
+            _call_target(call) for call in mock_rescue_event.await_args_list if call.kwargs.get("status") == "channeling"
         }
         assert channel_targets == {victim.player_id, rescuer.player_id}
 
         success_targets = [
-            call.args[0] for call in mock_rescue_event.await_args_list if call.kwargs.get("status") == "success"
+            _call_target(call) for call in mock_rescue_event.await_args_list if call.kwargs.get("status") == "success"
         ]
         assert success_targets.count(rescuer.player_id) == 1
         assert success_targets.count(victim.player_id) == 2

@@ -163,7 +163,7 @@ Structural config is already in `server/server_config.unit_test.yaml` (in git).
 ### For Unit Testing
 1. Create `server/tests/.env.unit_test` from `server/tests/env.unit_test.example`
 2. Defaults work fine - no editing needed
-3. Run `make test-server` - uses `server_config.unit_test.yaml` + `.env.unit_test`
+3. Run `make test` - uses `server_config.unit_test.yaml` + `.env.unit_test`
 
 ### For E2E Testing
 1. Run `./scripts/start_e2e_test.ps1` - uses `server_config.e2e_test.yaml`

@@ -59,7 +59,7 @@ cp server/tests/env.unit_test.example server/tests/.env.unit_test
 # No editing needed - defaults work!
 
 # Run tests
-make test-server
+make test
 ```
 
 **Files Used**:
@@ -155,7 +155,7 @@ For each environment, configuration is loaded in this order (highest to lowest p
 
 ```powershell
 # Unit tests (uses server_config.unit_test.yaml + .env.unit_test)
-make test-server
+make test
 
 # E2E tests (uses server_config.e2e_test.yaml + .env.e2e_test)
 .\scripts\start_e2e_test.ps1  # Terminal 1

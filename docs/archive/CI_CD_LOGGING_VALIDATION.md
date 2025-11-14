@@ -48,7 +48,7 @@ jobs:
       - name: Run tests with enhanced logging
         run: |
           make test
-          make test-server
+          make test-comprehensive
 
       - name: Generate logging coverage report
         run: |

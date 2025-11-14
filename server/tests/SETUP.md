@@ -63,8 +63,8 @@ Once the environment is set up, you can run tests:
 # Run all tests (automatically sets up environment)
 make test
 
-# Run only server tests (automatically sets up environment)
-make test-server
+# Run only server tests (use PYTEST_ADDOPTS to narrow scope if needed)
+make test
 
 # Run specific test file
 uv run pytest server/tests/unit/commands/test_utility_commands.py -v

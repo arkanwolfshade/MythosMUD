@@ -49,10 +49,10 @@ grep -r "pass  # Placeholder" server/tests
 **Verification:**
 ```bash
 # Before
-make test-server | tee test_before.log
+make test-comprehensive | tee test_before.log
 
 # After removal
-make test-server | tee test_after.log
+make test-comprehensive | tee test_after.log
 
 # Verify same pass count
 diff test_before.log test_after.log

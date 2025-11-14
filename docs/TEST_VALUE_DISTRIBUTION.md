@@ -508,7 +508,7 @@ BEFORE                          AFTER
 uv run pytest server/tests --collect-only -q > baseline_test_count.txt
 
 # Execution time
-make test-server 2>&1 | tee baseline_time.log
+make test-comprehensive 2>&1 | tee baseline_time.log
 
 # Coverage
 make coverage > baseline_coverage.txt
@@ -604,7 +604,7 @@ git checkout -b test-optimization-phase1
 # (edit files)
 
 # 3. Run tests
-make test-server
+make test-comprehensive
 
 # 4. Check coverage
 make coverage

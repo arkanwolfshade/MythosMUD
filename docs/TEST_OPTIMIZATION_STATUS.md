@@ -188,7 +188,7 @@
 - Document any coverage changes
 
 ### Test Execution Verification
-- Run `make test-server` after each phase
+- Run `make test` after each phase
 - Verify test count reduction
 - Verify no new failures introduced
 - Document execution time changes

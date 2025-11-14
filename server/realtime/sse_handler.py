@@ -19,6 +19,29 @@ from .envelope import build_event, sse_line
 logger = get_logger(__name__)
 
 
+def _connection_manager_from_app():
+    """Best-effort helper to fetch the connection manager from FastAPI app state."""
+    try:
+        from ..main import app
+    except Exception:  # pragma: no cover - defensive, during import issues
+        return None
+
+    state = getattr(app, "state", None)
+    container = getattr(state, "container", None)
+    return getattr(container, "connection_manager", None) if container else None
+
+
+def _resolve_connection_manager():
+    """Resolve a connection manager from app state or the legacy global helper."""
+    manager = _connection_manager_from_app()
+    if manager is not None:
+        return manager
+
+    from .connection_manager import resolve_connection_manager  # Local import to avoid cycles
+
+    return resolve_connection_manager()
+
+
 async def game_event_stream(
     player_id: str, session_id: str | None = None, connection_manager=None
 ) -> AsyncGenerator[str, None]:
@@ -139,12 +162,9 @@ async def send_game_event(player_id: str, event_type: str, data: dict) -> None:
         data: The event data
     """
     try:
-        # AI Agent: Access connection_manager via app.state.container (no longer a global)
-        #           Import locally to avoid circular import
-        from ..main import app
-
-        connection_manager = app.state.container.connection_manager
-
+        connection_manager = _resolve_connection_manager()
+        if connection_manager is None:
+            raise RuntimeError("Connection manager not available")
         # Convert player_id to string to ensure JSON serialization compatibility
         player_id_str = str(player_id)
         await connection_manager.send_personal_message(
@@ -165,11 +185,9 @@ async def broadcast_game_event(event_type: str, data: dict, exclude_player: str 
         exclude_player: Player ID to exclude from broadcast
     """
     try:
-        # AI Agent: Access connection_manager via app.state.container (no longer a global)
-        #           Import locally to avoid circular import
-        from ..main import app
-
-        connection_manager = app.state.container.connection_manager
+        connection_manager = _resolve_connection_manager()
+        if connection_manager is None:
+            raise RuntimeError("Connection manager not available")
         await connection_manager.broadcast_global(build_event(event_type, data), exclude_player)
 
     except Exception as e:
@@ -187,13 +205,13 @@ async def send_room_event(room_id: str, event_type: str, data: dict, exclude_pla
         exclude_player: Player ID to exclude from broadcast
     """
     try:
-        # AI Agent: Access connection_manager via app.state.container (no longer a global)
-        #           Import locally to avoid circular import
-        from ..main import app
-
-        connection_manager = app.state.container.connection_manager
+        connection_manager = _resolve_connection_manager()
+        if connection_manager is None:
+            raise RuntimeError("Connection manager not available")
         await connection_manager.broadcast_to_room(
-            room_id, build_event(event_type, data, room_id=room_id), exclude_player
+            room_id,
+            build_event(event_type, data, room_id=room_id),
+            exclude_player,
         )
 
     except Exception as e:
