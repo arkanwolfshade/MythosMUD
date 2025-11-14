@@ -157,7 +157,11 @@ def test_resolve_context_prefers_sanity_override():
         persistence=_StubPersistence(),
         sanity_rate_overrides=overrides,
     )
-    player_stub = type("PlayerStub", (), {"player_id": "player-override", "current_room_id": "earth_arkhamcity_sanitarium_room_foyer_001"})
+    player_stub = type(
+        "PlayerStub",
+        (),
+        {"player_id": "player-override", "current_room_id": "earth_arkhamcity_sanitarium_room_foyer_001"},
+    )
 
     context = flux_service._resolve_context(player_stub, datetime.now(UTC))
     assert math.isclose(context.base_flux, 1.25)

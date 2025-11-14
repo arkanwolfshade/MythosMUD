@@ -226,9 +226,7 @@ async def test_apply_sanity_adjustment_emits_success_rescue_update_on_recovery(s
                 reason_code="ground_rescue",
             )
 
-        success_calls = [
-            call for call in mock_rescue_event.await_args_list if call.kwargs.get("status") == "success"
-        ]
+        success_calls = [call for call in mock_rescue_event.await_args_list if call.kwargs.get("status") == "success"]
         assert success_calls
         # The first success call should target the recovering player
         assert success_calls[0].args[0] == player.player_id
