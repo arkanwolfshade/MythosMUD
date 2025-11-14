@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import json
 import uuid
+from datetime import UTC, datetime
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from sqlalchemy import select, text
@@ -156,3 +158,77 @@ async def test_liability_stacks_and_clearing(session_factory):
         sanity_row = await service.get_player_sanity(player.player_id)
         liabilities = decode_liabilities(sanity_row.liabilities)
         assert not liabilities
+
+
+@pytest.mark.asyncio
+async def test_apply_sanity_adjustment_emits_failover_rescue_update(session_factory):
+    session_maker = session_factory
+    async with session_maker() as session:
+        player = await create_player(session, "catatonic")
+        session.add(
+            PlayerSanity(
+                player_id=player.player_id,
+                current_san=-99,
+                current_tier="catatonic",
+                catatonia_entered_at=datetime(2025, 1, 1, tzinfo=UTC),
+            )
+        )
+        await session.flush()
+
+        observer = MagicMock()
+        observer.on_catatonia_entered = MagicMock()
+        observer.on_catatonia_cleared = MagicMock()
+        observer.on_sanitarium_failover = MagicMock()
+
+        service = SanityService(session, catatonia_observer=observer)
+
+        with patch(
+            "server.services.sanity_service.send_rescue_update_event",
+            new_callable=AsyncMock,
+        ) as mock_rescue_event:
+            await service.apply_sanity_adjustment(
+                player.player_id,
+                -5,
+                reason_code="passive_flux",
+            )
+
+        observer.on_sanitarium_failover.assert_called_once()
+        assert observer.on_sanitarium_failover.call_args.kwargs["player_id"] == player.player_id
+
+        statuses = [call.kwargs.get("status") for call in mock_rescue_event.await_args_list]
+        assert "sanitarium" in statuses
+
+
+@pytest.mark.asyncio
+async def test_apply_sanity_adjustment_emits_success_rescue_update_on_recovery(session_factory):
+    session_maker = session_factory
+    async with session_maker() as session:
+        player = await create_player(session, "recovery")
+        session.add(
+            PlayerSanity(
+                player_id=player.player_id,
+                current_san=-10,
+                current_tier="catatonic",
+                catatonia_entered_at=datetime(2025, 1, 1, tzinfo=UTC),
+            )
+        )
+        await session.flush()
+
+        service = SanityService(session)
+
+        with patch(
+            "server.services.sanity_service.send_rescue_update_event",
+            new_callable=AsyncMock,
+        ) as mock_rescue_event:
+            await service.apply_sanity_adjustment(
+                player.player_id,
+                20,
+                reason_code="ground_rescue",
+            )
+
+        success_calls = [
+            call for call in mock_rescue_event.await_args_list if call.kwargs.get("status") == "success"
+        ]
+        assert success_calls
+        # The first success call should target the recovering player
+        assert success_calls[0].args[0] == player.player_id

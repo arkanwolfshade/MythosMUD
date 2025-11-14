@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import { DEFAULT_CHANNEL } from '../config/channels';
 import { debugLogger } from '../utils/debugLogger';
@@ -8,7 +8,10 @@ import { ChatPanel } from './panels/ChatPanel';
 import { CommandPanel } from './panels/CommandPanel';
 import { GameLogPanel } from './panels/GameLogPanel';
 import { SanityMeter, HallucinationTicker, RescueStatusBanner } from './sanity';
+import { HealthMeter } from './health';
 import type { SanityStatus, HallucinationMessage, RescueState } from '../types/sanity';
+import type { HealthStatus } from '../types/health';
+import { determineHealthTier } from '../types/health';
 
 const formatPosture = (value?: string): string => {
   if (!value) {
@@ -26,7 +29,9 @@ interface Player {
   profession_flavor_text?: string;
   stats?: {
     current_health: number;
+    max_health?: number;
     sanity: number;
+    max_sanity?: number;
     strength?: number;
     dexterity?: number;
     constitution?: number;
@@ -43,6 +48,26 @@ interface Player {
   xp?: number;
   in_combat?: boolean;
 }
+
+const buildHealthStatus = (
+  player: Player | null,
+  lastChange: HealthStatus['lastChange'] | undefined
+): HealthStatus | null => {
+  const stats = player?.stats;
+  if (!stats || stats.current_health === undefined) {
+    return null;
+  }
+
+  const maxHealth = stats.max_health ?? 100;
+  return {
+    current: stats.current_health,
+    max: maxHealth,
+    tier: determineHealthTier(stats.current_health, maxHealth),
+    lastChange,
+    posture: stats.position,
+    inCombat: player?.in_combat ?? false,
+  };
+};
 
 interface Room {
   id: string;
@@ -88,6 +113,7 @@ interface GameTerminalProps {
   messages: ChatMessage[];
   commandHistory: string[];
   sanityStatus: SanityStatus | null;
+  healthStatus?: HealthStatus | null;
   hallucinations: HallucinationMessage[];
   rescueState: RescueState | null;
   onDismissHallucination?: (id: string) => void;
@@ -116,6 +142,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
   messages,
   commandHistory,
   sanityStatus,
+  healthStatus,
   hallucinations,
   rescueState,
   onDismissHallucination,
@@ -135,6 +162,8 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
   // MOTD is now handled by the interstitial screen in App.tsx
   const debug = debugLogger('GameTerminal');
   const [selectedChatChannel, setSelectedChatChannel] = useState(DEFAULT_CHANNEL);
+  const [healthChange, setHealthChange] = useState<HealthStatus['lastChange']>();
+  const previousHealthRef = useRef<number | null>(null);
 
   const derivedSanityStatus = useMemo<SanityStatus | null>(() => {
     if (sanityStatus) {
@@ -152,6 +181,47 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
 
     return null;
   }, [player, sanityStatus]);
+
+  const derivedHealthStatus = useMemo<HealthStatus | null>(() => {
+    if (healthStatus) {
+      return healthStatus;
+    }
+    return buildHealthStatus(player, healthChange);
+  }, [healthStatus, player, healthChange]);
+
+  useEffect(() => {
+    if (!healthStatus) {
+      return;
+    }
+    previousHealthRef.current = healthStatus.current;
+  }, [healthStatus]);
+
+  /* eslint-disable react-hooks/set-state-in-effect -- health change derives from server snapshots */
+  useEffect(() => {
+    if (healthStatus) {
+      return;
+    }
+
+    const currentHealth = player?.stats?.current_health;
+    if (typeof currentHealth !== 'number') {
+      previousHealthRef.current = null;
+      setHealthChange(undefined);
+      return;
+    }
+
+    if (previousHealthRef.current !== null && previousHealthRef.current !== currentHealth) {
+      const delta = currentHealth - previousHealthRef.current;
+      const reason = player?.in_combat ? 'combat' : undefined;
+      setHealthChange({
+        delta,
+        reason,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    previousHealthRef.current = currentHealth;
+  }, [player, healthStatus]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const recentHallucinations = useMemo(() => hallucinations.slice(0, 3), [hallucinations]);
 
@@ -369,10 +439,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
               )}
               {player?.stats && (
                 <>
-                  <div className="flex items-center justify-between">
-                    <span className="text-base text-mythos-terminal-text-secondary">Health:</span>
-                    <span className="text-base text-mythos-terminal-text">{player.stats.current_health}</span>
-                  </div>
+                  <HealthMeter status={derivedHealthStatus} />
                   <SanityMeter status={derivedSanityStatus} className="mt-2" />
                   <div className="flex items-center justify-between">
                     <span className="text-base text-mythos-terminal-text-secondary">XP:</span>

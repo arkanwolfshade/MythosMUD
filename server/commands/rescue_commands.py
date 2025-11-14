@@ -9,6 +9,7 @@ from ..alias_storage import AliasStorage
 from ..database import get_async_session
 from ..logging.enhanced_logging_config import get_logger
 from ..models.sanity import PlayerSanity
+from ..services.sanity_event_dispatcher import send_rescue_update_event
 from ..services.sanity_service import SanityService
 from ..utils.command_parser import get_username_from_user
 
@@ -52,14 +53,34 @@ async def handle_ground_command(
     if not rescuer_room or rescuer_room != target_room:
         return {"result": f"{target_name} is not within reach to be grounded."}
 
+    target_player_id = str(target.player_id)
+    rescuer_player_id = str(rescuer.player_id)
+
     async for session in get_async_session():
-        sanity_record = await session.get(PlayerSanity, str(target.player_id))
+        sanity_record = await session.get(PlayerSanity, target_player_id)
         if sanity_record is None:
             logger.warning("Ground command missing sanity record", target_id=target.player_id)
             return {"result": "The target's aura cannot be located among the ledgers of the mind."}
 
         if sanity_record.current_tier != "catatonic":
             return {"result": f"{target_name} isn't catatonic and needs no grounding."}
+
+        await send_rescue_update_event(
+            target_player_id,
+            status="channeling",
+            rescuer_name=rescuer_username,
+            target_name=target_name,
+            message=f"{rescuer_username} kneels beside you and begins the grounding ritual.",
+            progress=10.0,
+        )
+        await send_rescue_update_event(
+            rescuer_player_id,
+            status="channeling",
+            rescuer_name=rescuer_username,
+            target_name=target_name,
+            message=f"You steady {target_name} and begin channeling focus.",
+            progress=10.0,
+        )
 
         delta = 1 - sanity_record.current_san
         if delta <= 0:
@@ -68,7 +89,7 @@ async def handle_ground_command(
         service = SanityService(session, catatonia_observer=registry)
         try:
             result = await service.apply_sanity_adjustment(
-                str(target.player_id),
+                target_player_id,
                 delta,
                 reason_code="ground_rescue",
                 metadata={
@@ -87,6 +108,20 @@ async def handle_ground_command(
                 target=target_name,
                 error=str(exc),
             )
+            await send_rescue_update_event(
+                target_player_id,
+                status="failed",
+                rescuer_name=rescuer_username,
+                target_name=target_name,
+                message="The void resists grounding; the ritual falters.",
+            )
+            await send_rescue_update_event(
+                rescuer_player_id,
+                status="failed",
+                rescuer_name=rescuer_username,
+                target_name=target_name,
+                message="Your focus shatters; the grounding ritual fails to take hold.",
+            )
             return {"result": "Eldritch interference scatters your grounding ritual. Try again shortly."}
 
     if registry and hasattr(registry, "on_catatonia_cleared"):
@@ -97,6 +132,22 @@ async def handle_ground_command(
         rescuer=rescuer_username,
         target=target_name,
         new_san=result.new_san,
+    )
+
+    await send_rescue_update_event(
+        target_player_id,
+        status="success",
+        current_san=result.new_san,
+        rescuer_name=rescuer_username,
+        target_name=target_name,
+        message=f"{rescuer_username} anchors your mind. Stability steadies at {result.new_san}/100.",
+    )
+    await send_rescue_update_event(
+        rescuer_player_id,
+        status="success",
+        rescuer_name=rescuer_username,
+        target_name=target_name,
+        message=f"{target_name} steadies at {result.new_san}/100 SAN.",
     )
 
     narrative = (

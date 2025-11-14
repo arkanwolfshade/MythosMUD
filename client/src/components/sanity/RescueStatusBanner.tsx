@@ -50,6 +50,8 @@ export const RescueStatusBanner = memo<RescueStatusBannerProps>(({ state, onDism
       className={`relative flex flex-col gap-2 rounded px-4 py-3 text-sm text-mythos-terminal-text shadow-lg ${style.container} ${className ?? ''}`}
       role="status"
       aria-live="assertive"
+      data-testid="rescue-status-banner"
+      data-status={state.status}
     >
       <div className="flex items-start justify-between gap-3">
         <div>

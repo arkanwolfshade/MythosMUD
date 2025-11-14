@@ -137,3 +137,29 @@ async def test_companion_bonus_accumulates(session_factory):
         companion_residual = flux_service._residuals.get(player.player_id, 0.0)
         assert abs(companion_residual) < 1e-5
         assert refreshed.current_san >= 61  # companion support created net gain
+
+
+def test_resolve_context_prefers_sanity_override():
+    class _StubRoom:
+        def __init__(self):
+            self.id = "earth_arkhamcity_sanitarium_room_foyer_001"
+            self.environment = "indoors"
+            self.plane = "earth"
+            self.zone = "arkhamcity"
+            self.sub_zone = "sanitarium"
+
+    class _StubPersistence:
+        def get_room(self, room_id: str):
+            return _StubRoom()
+
+    overrides = {"earth|arkhamcity|sanitarium": 1.25}
+    flux_service = PassiveSanityFluxService(
+        persistence=_StubPersistence(),
+        sanity_rate_overrides=overrides,
+    )
+    player_stub = type("PlayerStub", (), {"player_id": "player-override", "current_room_id": "earth_arkhamcity_sanitarium_room_foyer_001"})
+
+    context = flux_service._resolve_context(player_stub, datetime.now(UTC))
+    assert math.isclose(context.base_flux, 1.25)
+    assert context.source.startswith("sanity_rule:")
+    assert context.metadata.get("sanity_rate_override") is True

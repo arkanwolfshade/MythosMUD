@@ -5,7 +5,7 @@ from __future__ import annotations
 import uuid
 from datetime import UTC, datetime
 from types import SimpleNamespace
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -134,6 +134,66 @@ async def test_ground_command_revives_catatonic_player(session_factory):
         assert refreshed.current_san == 1
         assert refreshed.current_tier == "deranged"
         assert refreshed.catatonia_entered_at is None
+
+
+@pytest.mark.asyncio
+async def test_ground_command_emits_rescue_updates(session_factory):
+    """Ensure both participants receive rescue_update events throughout the ritual."""
+
+    session_maker = session_factory
+    async with session_maker() as session:
+        rescuer = await create_player(session, name="rescuer", sanity=40, tier="uneasy")
+        victim = await create_player(session, name="victim", sanity=-20, tier="catatonic")
+
+        record = await session.get(PlayerSanity, victim.player_id)
+        assert record is not None
+        record.current_san = -20
+        record.current_tier = "catatonic"
+        record.catatonia_entered_at = datetime(2025, 1, 1, tzinfo=UTC)
+        await session.commit()
+
+        persistence = MagicMock()
+        persistence.get_player_by_name.side_effect = lambda name: {
+            "rescuer": SimpleNamespace(
+                player_id=rescuer.player_id,
+                name="rescuer",
+                current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
+            ),
+            "victim": SimpleNamespace(
+                player_id=victim.player_id,
+                name="victim",
+                current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
+            ),
+        }[name]
+        request = build_request(persistence)
+
+        async def fake_get_async_session():
+            yield session
+
+        command_data = {"command_type": "ground", "target_player": "victim"}
+        current_user = {"username": "rescuer"}
+
+        with patch("server.commands.rescue_commands.get_async_session", fake_get_async_session):
+            with patch(
+                "server.commands.rescue_commands.send_rescue_update_event",
+                new_callable=AsyncMock,
+            ) as mock_rescue_event:
+                await handle_ground_command(command_data, current_user, request, None, "rescuer")
+
+        statuses = [call.kwargs.get("status") for call in mock_rescue_event.await_args_list]
+        assert statuses.count("channeling") == 2
+        assert statuses.count("success") == 3  # Two explicit messages + sanity service resolution
+
+        channel_targets = {
+            call.args[0] for call in mock_rescue_event.await_args_list if call.kwargs.get("status") == "channeling"
+        }
+        assert channel_targets == {victim.player_id, rescuer.player_id}
+
+        success_targets = [
+            call.args[0] for call in mock_rescue_event.await_args_list if call.kwargs.get("status") == "success"
+        ]
+        assert success_targets.count(rescuer.player_id) == 1
+        assert success_targets.count(victim.player_id) == 2
 
 
 @pytest.mark.asyncio

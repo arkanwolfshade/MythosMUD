@@ -17,6 +17,7 @@ from ..models.player import Player
 from ..models.sanity import PlayerSanity
 from ..persistence import PersistenceLayer
 from ..services.sanity_service import CatatoniaObserverProtocol, SanityService, SanityUpdateResult
+from ..world_loader import load_hierarchical_world
 
 try:
     from ..monitoring.performance_monitor import PerformanceMonitor
@@ -85,6 +86,7 @@ class PassiveSanityFluxService:
         context_resolver: Callable[[Player, datetime], PassiveFluxContext] | None = None,
         now_provider: Callable[[], datetime] | None = None,
         catatonia_observer: CatatoniaObserverProtocol | None = None,
+        sanity_rate_overrides: dict[str, float] | None = None,
     ) -> None:
         self._persistence = persistence
         self._performance_monitor = performance_monitor
@@ -95,6 +97,9 @@ class PassiveSanityFluxService:
         self._context_resolver = context_resolver
         self._now_provider = now_provider or (lambda: datetime.now(UTC))
         self._catatonia_observer = catatonia_observer
+        self._sanity_rate_overrides = (
+            sanity_rate_overrides if sanity_rate_overrides is not None else self._load_sanity_rate_overrides()
+        )
 
         self._residuals: dict[str, float] = {}
         self._player_room_tracker: dict[str, dict[str, Any]] = {}
@@ -245,6 +250,12 @@ class PassiveSanityFluxService:
             elif room.environment in environment_defaults:
                 base_flux = self._lookup_profile(environment_defaults[room.environment], period)
                 profile_source = f"environment:{room.environment}"
+
+            override_flux, override_source = self._lookup_world_override_flux(room)
+            if override_flux is not None:
+                base_flux = override_flux
+                profile_source = override_source or profile_source
+                metadata["sanity_rate_override"] = True
         else:
             metadata["zone"] = None
             metadata["sub_zone"] = None
@@ -376,6 +387,88 @@ class PassiveSanityFluxService:
                 normalized["room_overrides"][key] = _normalize_profile(profile)
 
         return normalized
+
+    def _load_sanity_rate_overrides(self) -> dict[str, float]:
+        overrides: dict[str, float] = {}
+        try:
+            world_data = load_hierarchical_world(enable_schema_validation=False)
+        except Exception as exc:  # pragma: no cover - defensive
+            logger.warning("Could not load world data for sanity rate overrides", error=str(exc))
+            return overrides
+
+        for path, config in world_data.get("zone_configs", {}).items():
+            rate = self._extract_sanity_rate(config)
+            if rate is None:
+                continue
+            plane, zone, _ = self._parse_hierarchy_path(path)
+            key = self._build_override_key(plane, zone, None)
+            overrides[key] = self._rate_to_flux(rate)
+
+        for path, config in world_data.get("subzone_configs", {}).items():
+            rate = self._extract_sanity_rate(config)
+            if rate is None:
+                continue
+            plane, zone, sub_zone = self._parse_hierarchy_path(path)
+            key = self._build_override_key(plane, zone, sub_zone)
+            overrides[key] = self._rate_to_flux(rate)
+
+        if overrides:
+            logger.info("Loaded sanity rate overrides", count=len(overrides))
+        else:
+            logger.info("No sanity rate overrides discovered in world data")
+        return overrides
+
+    @staticmethod
+    def _extract_sanity_rate(config: dict[str, Any]) -> float | None:
+        special_rules = config.get("special_rules")
+        if not isinstance(special_rules, dict):
+            return None
+        value = special_rules.get("sanity_drain_rate")
+        if isinstance(value, (int, float)):
+            return float(value)
+        return None
+
+    @staticmethod
+    def _parse_hierarchy_path(path: str) -> tuple[str | None, str | None, str | None]:
+        parts = path.split("/")
+        plane = parts[0] if len(parts) > 0 else None
+        zone = parts[1] if len(parts) > 1 else None
+        sub_zone = parts[2] if len(parts) > 2 else None
+        return plane, zone, sub_zone
+
+    @staticmethod
+    def _build_override_key(plane: str | None, zone: str | None, sub_zone: str | None) -> str:
+        plane_part = (plane or "*").lower()
+        zone_part = (zone or "*").lower()
+        sub_zone_part = (sub_zone or "*").lower()
+        return f"{plane_part}|{zone_part}|{sub_zone_part}"
+
+    @staticmethod
+    def _rate_to_flux(rate: float) -> float:
+        return -float(rate)
+
+    def _lookup_world_override_flux(self, room: Any) -> tuple[float | None, str | None]:
+        if not self._sanity_rate_overrides:
+            return None, None
+
+        keys = [
+            self._build_override_key(
+                getattr(room, "plane", None), getattr(room, "zone", None), getattr(room, "sub_zone", None)
+            ),
+            self._build_override_key(getattr(room, "plane", None), getattr(room, "zone", None), None),
+            self._build_override_key(getattr(room, "plane", None), None, None),
+        ]
+        sources = [
+            f"sanity_rule:{getattr(room, 'plane', '')}/{getattr(room, 'zone', '')}/{getattr(room, 'sub_zone', '')}",
+            f"sanity_rule:{getattr(room, 'plane', '')}/{getattr(room, 'zone', '')}",
+            f"sanity_rule:{getattr(room, 'plane', '')}",
+        ]
+
+        for key, source in zip(keys, sources, strict=False):
+            flux = self._sanity_rate_overrides.get(key)
+            if flux is not None:
+                return flux, source
+        return None, None
 
 
 __all__ = ["PassiveSanityFluxService", "PassiveFluxContext"]

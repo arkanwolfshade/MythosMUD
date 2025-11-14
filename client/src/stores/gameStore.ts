@@ -7,7 +7,9 @@ export interface Player {
   name: string;
   stats: {
     current_health: number;
+    max_health?: number;
     sanity: number;
+    max_sanity?: number;
     strength?: number;
     dexterity?: number;
     constitution?: number;

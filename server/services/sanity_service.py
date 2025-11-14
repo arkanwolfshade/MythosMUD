@@ -13,11 +13,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from ..logging.enhanced_logging_config import get_logger
-from ..models.sanity import (
-    PlayerSanity,
-    SanityAdjustmentLog,
-    SanityCooldown,
-    SanityExposureState,
+from ..models.sanity import PlayerSanity, SanityAdjustmentLog, SanityCooldown, SanityExposureState
+from .sanity_event_dispatcher import (
+    send_catatonia_event,
+    send_rescue_update_event,
+    send_sanity_change_event,
 )
 
 logger = get_logger(__name__)
@@ -272,6 +272,12 @@ class SanityService:
                         entered_at=entered_at,
                         current_san=new_san,
                     )
+                await send_catatonia_event(
+                    player_id=player_id,
+                    current_san=new_san,
+                    message="Your senses collapse into static; only allies can reach you now.",
+                    status="catatonic",
+                )
         else:
             if record.catatonia_entered_at is not None:
                 resolved_at = _utc_now()
@@ -287,6 +293,12 @@ class SanityService:
                         player_id=player_id,
                         resolved_at=resolved_at,
                     )
+                await send_rescue_update_event(
+                    player_id=player_id,
+                    status="success",
+                    current_san=new_san,
+                    message="Consciousness steadies; the grounding ritual completes.",
+                )
 
         if new_san <= -100 and previous_san > -100 and self._catatonia_observer:
             logger.error(
@@ -296,7 +308,14 @@ class SanityService:
                 san=new_san,
             )
             self._catatonia_observer.on_sanitarium_failover(player_id=player_id, current_san=new_san)
+            await send_rescue_update_event(
+                player_id=player_id,
+                status="sanitarium",
+                current_san=new_san,
+                message="Orderlies whisk you to Arkham Sanitarium for observation.",
+            )
 
+        metadata_map = self._coerce_metadata_dict(metadata)
         metadata_payload = self._normalize_metadata(metadata)
         await self._repo.add_adjustment_log(player_id, delta, reason_code, metadata_payload, location_id)
 
@@ -315,6 +334,25 @@ class SanityService:
                     liabilities_added.append(liability_added)
 
         await self._session.flush()
+
+        if delta != 0 or previous_tier != new_tier:
+            await send_sanity_change_event(
+                player_id=player_id,
+                current_san=new_san,
+                delta=delta,
+                tier=new_tier,
+                liabilities=decode_liabilities(record.liabilities),
+                reason=reason_code,
+                source=str(
+                    metadata_map.get("source")
+                    or metadata_map.get("encounter_category")
+                    or metadata_map.get("environment")
+                    or location_id
+                    or ""
+                ).strip()
+                or None,
+                metadata=metadata_map if metadata_map else None,
+            )
 
         logger.info(
             "Sanity adjustment applied",
@@ -436,3 +474,18 @@ class SanityService:
             if code not in existing:
                 return code
         return LIABILITY_CATALOG[0] if LIABILITY_CATALOG else None
+
+    def _coerce_metadata_dict(self, metadata: dict[str, Any] | str | None) -> dict[str, Any]:
+        """Best-effort conversion of metadata payloads into dictionaries."""
+        if metadata is None:
+            return {}
+        if isinstance(metadata, dict):
+            return metadata
+        if isinstance(metadata, str):
+            try:
+                parsed = json.loads(metadata)
+            except json.JSONDecodeError:
+                return {}
+            if isinstance(parsed, dict):
+                return parsed
+        return {}

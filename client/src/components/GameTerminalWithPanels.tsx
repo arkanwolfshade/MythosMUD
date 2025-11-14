@@ -11,7 +11,9 @@ import {
   createHallucinationEntry,
   createRescueState,
 } from '../utils/sanityEventUtils';
+import { buildHealthStatusFromEvent, buildHealthChangeMessage } from '../utils/healthEventUtils';
 import type { SanityStatus, HallucinationMessage, RescueState } from '../types/sanity';
+import type { HealthStatus } from '../types/health';
 
 // Import GameEvent interface from useGameConnection
 interface GameEvent {
@@ -48,7 +50,9 @@ interface Player {
   profession_flavor_text?: string;
   stats?: {
     current_health: number;
+    max_health?: number;
     sanity: number;
+    max_sanity?: number;
     strength?: number;
     dexterity?: number;
     constitution?: number;
@@ -211,6 +215,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   const [deathLocation, setDeathLocation] = useState<string>('Unknown Location');
   const [isRespawning, setIsRespawning] = useState(false);
   const [sanityStatus, setSanityStatus] = useState<SanityStatus | null>(null);
+  const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
   const [hallucinationFeed, setHallucinationFeed] = useState<HallucinationMessage[]>([]);
   const [rescueState, setRescueState] = useState<RescueState | null>(null);
 
@@ -234,6 +239,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   const currentPlayerRef = useRef<Player | null>(null);
   const activeCombatIdRef = useRef<string | null>(null);
   const sanityStatusRef = useRef<SanityStatus | null>(null);
+  const healthStatusRef = useRef<HealthStatus | null>(null);
+  const rescueStateRef = useRef<RescueState | null>(null);
   const rescueTimeoutRef = useRef<number | null>(null);
 
   // Keep the refs in sync with the state
@@ -257,6 +264,29 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   useEffect(() => {
     sanityStatusRef.current = sanityStatus;
   }, [sanityStatus]);
+
+  useEffect(() => {
+    healthStatusRef.current = healthStatus;
+  }, [healthStatus]);
+
+  useEffect(() => {
+    rescueStateRef.current = rescueState;
+
+    if (import.meta.env.DEV) {
+      (window as typeof window & { __MYTHOS_RESCUE_STATE?: RescueState | null }).__MYTHOS_RESCUE_STATE = rescueState;
+    }
+
+    if (rescueState) {
+      logger.info('GameTerminalWithPanels', 'Rescue state updated', {
+        status: rescueState.status,
+        rescuer: rescueState.rescuerName,
+        target: rescueState.targetName,
+        progress: rescueState.progress,
+      });
+    } else {
+      logger.info('GameTerminalWithPanels', 'Rescue state cleared');
+    }
+  }, [rescueState]);
 
   useEffect(() => {
     const interval = window.setInterval(() => {
@@ -434,6 +464,20 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
           }
         };
 
+        const applyHealthToPlayer = (healthValue: number, maxHealth?: number) => {
+          const basePlayer = updates.player ?? currentPlayerRef.current;
+          if (basePlayer) {
+            updates.player = {
+              ...basePlayer,
+              stats: {
+                ...basePlayer.stats,
+                current_health: healthValue,
+                ...(typeof maxHealth === 'number' && Number.isFinite(maxHealth) ? { max_health: maxHealth } : {}),
+              },
+            };
+          }
+        };
+
         switch (eventType) {
           case 'game_state': {
             const playerData = event.data.player as Player;
@@ -535,6 +579,48 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
                 channel: 'system',
                 isHtml: false,
                 tags: ['sanity'],
+              })
+            );
+
+            const tierIsCatatonic = updatedStatus.tier === 'catatonic';
+            const hasActiveRescueState = rescueStateRef.current && rescueStateRef.current.status !== 'idle';
+
+            if (tierIsCatatonic && (!hasActiveRescueState || rescueStateRef.current?.status === 'catatonic')) {
+              const fallbackState = createRescueState(
+                {
+                  status: 'catatonic',
+                  current_san: updatedStatus.current,
+                  message: 'Your senses collapse into static; only allies can reach you now.',
+                },
+                event.timestamp
+              );
+              setRescueState(fallbackState);
+            } else if (!tierIsCatatonic && rescueStateRef.current?.status === 'catatonic') {
+              setRescueState(null);
+            }
+
+            break;
+          }
+          case 'player_hp_updated':
+          case 'playerhpupdated': {
+            const { status: updatedHealthStatus, delta } = buildHealthStatusFromEvent(
+              healthStatusRef.current,
+              event.data,
+              event.timestamp
+            );
+
+            setHealthStatus(updatedHealthStatus);
+            applyHealthToPlayer(updatedHealthStatus.current, updatedHealthStatus.max);
+
+            const messageText = buildHealthChangeMessage(updatedHealthStatus, delta, event.data);
+            appendMessage(
+              sanitizeChatMessageForState({
+                text: `[Health] ${messageText}`,
+                timestamp: event.timestamp,
+                messageType: 'system',
+                channel: 'system',
+                isHtml: false,
+                tags: ['health'],
               })
             );
             break;
@@ -1683,26 +1769,28 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             const nextState = createRescueState(event.data, event.timestamp);
             setRescueState(nextState);
 
-            let messageText = nextState.message;
-            if (!messageText) {
+            const statusPreface = (() => {
               switch (nextState.status) {
                 case 'channeling':
-                  messageText = `Rescue ritual ${
+                  return `Rescue ritual ${
                     typeof nextState.progress === 'number' ? `${Math.round(nextState.progress)}%` : 'underway'
                   }${nextState.rescuerName ? ` by ${nextState.rescuerName}` : ''}.`;
-                  break;
                 case 'success':
-                  messageText = 'Rescue ritual succeeds. Consciousness stabilizes.';
-                  break;
+                  return 'Rescue ritual succeeds. Consciousness stabilizes.';
                 case 'failed':
-                  messageText = 'Rescue ritual falters. The void resists grounding.';
-                  break;
+                  return 'Rescue ritual falters. The void resists grounding.';
                 case 'sanitarium':
-                  messageText = 'Caretakers escort the target to Arkham Sanitarium for observation.';
-                  break;
+                  return 'Rescue ritual diverts to Arkham Sanitarium for observation.';
+                case 'catatonic':
+                  return 'Catatonia grips your senses; only allies can intervene.';
                 default:
-                  messageText = undefined;
+                  return undefined;
               }
+            })();
+
+            let messageText = nextState.message?.trim();
+            if (statusPreface) {
+              messageText = messageText ? `${statusPreface} ${messageText}` : statusPreface;
             }
 
             if (typeof event.data?.current_san === 'number') {
@@ -2110,6 +2198,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
         messages={gameState.messages}
         commandHistory={gameState.commandHistory}
         sanityStatus={sanityStatus}
+        healthStatus={healthStatus}
         hallucinations={hallucinationFeed}
         rescueState={rescueState}
         onDismissHallucination={handleDismissHallucination}
