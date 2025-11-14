@@ -32,7 +32,7 @@
   - [x] 5.3 Ensure sanitarium debrief and therapy limits hook into existing NPC systems
   - [x] 5.4 Verify all tests pass
 
-- [ ] 6. Implement client-side UI for SAN indicators, hallucination prompts, and rescue messaging
-  - [ ] 6.1 Implement client-side UI for SAN indicators, hallucination prompts, and rescue messaging
-  - [ ] 6.2 Write scenario tests (e2e-tests\scenarios\sanity-system-expansion) for catatonia rescue and sanitarium workflows
-  - [ ] 6.3 Verify all tests pass
+- [x] 6. Implement client-side UI for SAN indicators, hallucination prompts, and rescue messaging
+  - [x] 6.1 Implement client-side UI for SAN indicators, hallucination prompts, and rescue messaging
+  - [x] 6.2 Write scenario tests (e2e-tests\scenarios\sanity-system-expansion) for catatonia rescue and sanitarium workflows
+  - [x] 6.3 Verify all tests pass
