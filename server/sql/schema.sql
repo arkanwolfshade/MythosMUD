@@ -113,3 +113,48 @@ CREATE INDEX IF NOT EXISTS idx_invites_used_by_user_id ON invites(used_by_user_i
 -- Create case-insensitive unique constraints
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username_unique ON users(username COLLATE NOCASE);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_players_name_unique ON players(name COLLATE NOCASE);
+-- Sanity tracking tables
+CREATE TABLE IF NOT EXISTS player_sanity (
+    player_id TEXT PRIMARY KEY REFERENCES players(player_id) ON DELETE CASCADE,
+    current_san INTEGER NOT NULL DEFAULT 100 CHECK (
+        current_san BETWEEN -100 AND 100
+    ),
+    current_tier TEXT NOT NULL DEFAULT 'lucid' CHECK (
+        current_tier IN (
+            'lucid',
+            'uneasy',
+            'fractured',
+            'deranged',
+            'catatonic'
+        )
+    ),
+    liabilities TEXT NOT NULL DEFAULT '[]',
+    last_updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    catatonia_entered_at DATETIME NULL
+);
+CREATE INDEX IF NOT EXISTS idx_player_sanity_tier ON player_sanity(current_tier);
+CREATE TABLE IF NOT EXISTS sanity_adjustment_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    player_id TEXT NOT NULL REFERENCES players(player_id) ON DELETE CASCADE,
+    delta INTEGER NOT NULL,
+    reason_code TEXT NOT NULL,
+    metadata TEXT NOT NULL DEFAULT '{}',
+    location_id TEXT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_sanity_adjustment_player_created ON sanity_adjustment_log(player_id, created_at);
+CREATE TABLE IF NOT EXISTS sanity_exposure_state (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    player_id TEXT NOT NULL REFERENCES players(player_id) ON DELETE CASCADE,
+    entity_archetype TEXT NOT NULL,
+    encounter_count INTEGER NOT NULL DEFAULT 0,
+    last_encounter_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (player_id, entity_archetype)
+);
+CREATE TABLE IF NOT EXISTS sanity_cooldowns (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    player_id TEXT NOT NULL REFERENCES players(player_id) ON DELETE CASCADE,
+    action_code TEXT NOT NULL,
+    cooldown_expires_at DATETIME NOT NULL,
+    UNIQUE (player_id, action_code)
+);
