@@ -92,7 +92,7 @@ Since the `mythosmud_data` repository is private, the GitHub Actions workflows n
 1. **Personal Access Token (PAT)**: Required for accessing private repositories
 2. **Token Configuration**: Use `${{ secrets.MYTHOSMUD_PAT }}` in checkout actions
 3. **Submodule checkout**: Configure `submodules: recursive` in checkout action
-4. **Credential rewrite**: Before checkout, run a guarded shell step that rewrites the exact submodule URL (`https://github.com/arkanwolfshade/mythosmud_data.git`) with your PAT (optionally add the no-suffix variant too). Do *not* rewrite the entire `arkanwolfshade` org, or the main repo checkout will start using the PAT and fail. Guard the step with an env var populated from `${{ secrets.MYTHOSMUD_PAT }}` so forks without the secret still succeed.
+4. **Use a PAT with checkout**: The simplest pattern is to create a fine-grained PAT (`PRIVATE_SUBMODULE_PAT`) that has read access to `arkanwolfshade/mythosmud_data` and pass it to `actions/checkout` via the `token` input. This lets checkout clone both the main repo and the private submodule in one step without hand-written rewrites.
 
 ### PAT Requirements
 
@@ -125,21 +125,10 @@ permissions:
 jobs:
   build:
     steps:
-      - name: Configure private submodule access
-        env:
-          PRIVATE_SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT }}
-          SUBMODULE_URL: https://github.com/arkanwolfshade/mythosmud_data.git
-        run: |
-          if [ -z "$PRIVATE_SUBMODULE_PAT" ]; then
-            echo "No MYTHOSMUD_PAT provided; skipping."
-            exit 0
-          fi
-          echo "::add-mask::$PRIVATE_SUBMODULE_PAT"
-          git config --global url."https://$PRIVATE_SUBMODULE_PAT:x-oauth-basic@${SUBMODULE_URL#https://}".insteadOf "$SUBMODULE_URL"
-          git config --global url."https://$PRIVATE_SUBMODULE_PAT:x-oauth-basic@github.com/arkanwolfshade/mythosmud_data".insteadOf "https://github.com/arkanwolfshade/mythosmud_data"
       - uses: actions/checkout@v5
         with:
           submodules: recursive
+          token: ${{ secrets.PRIVATE_SUBMODULE_PAT }}
 ```
 
 ## Troubleshooting
