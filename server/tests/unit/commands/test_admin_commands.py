@@ -185,10 +185,14 @@ class TestAdminTimeCommand:
                 )
 
             def get_state_snapshot(self):
-                return SimpleNamespace(real_timestamp=datetime.now(UTC), mythos_timestamp=datetime(1930, 1, 1, tzinfo=UTC))
+                return SimpleNamespace(
+                    real_timestamp=datetime.now(UTC), mythos_timestamp=datetime(1930, 1, 1, tzinfo=UTC)
+                )
 
             def get_last_freeze_state(self):
-                return SimpleNamespace(real_timestamp=datetime.now(UTC), mythos_timestamp=datetime(1930, 1, 1, tzinfo=UTC))
+                return SimpleNamespace(
+                    real_timestamp=datetime.now(UTC), mythos_timestamp=datetime(1930, 1, 1, tzinfo=UTC)
+                )
 
         holiday_service = MagicMock()
         holiday_service.get_active_holiday_names.return_value = ["Innsmouth Tide Offering"]

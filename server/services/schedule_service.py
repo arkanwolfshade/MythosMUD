@@ -49,9 +49,7 @@ class ScheduleService:
 
         hour = mythos_dt.hour
         active = [
-            entry
-            for entry in self._entries
-            if day_name in entry.days and entry.start_hour <= hour < entry.end_hour
+            entry for entry in self._entries if day_name in entry.days and entry.start_hour <= hour < entry.end_hour
         ]
         logger.debug(
             "Resolved schedule entries",

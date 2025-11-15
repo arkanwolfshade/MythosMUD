@@ -546,9 +546,7 @@ async def handle_time_command(
     clock_line = chronicle.format_clock(mythos_dt)
     date_line = f"{components.day_name}, {components.month_name} {components.day_of_month}, {components.year}"
     week_line = f"Week {components.week_of_month} of {components.month_name}"
-    holiday_line = (
-        f"Active Holidays: {', '.join(active_holidays)}" if active_holidays else "Active Holidays: None"
-    )
+    holiday_line = f"Active Holidays: {', '.join(active_holidays)}" if active_holidays else "Active Holidays: None"
 
     lines = [
         "--- MYTHOS TIME ---",

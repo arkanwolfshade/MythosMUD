@@ -747,9 +747,7 @@ class TestTimeCommand:
         fake_chronicle = self.FakeChronicle()
         monkeypatch.setattr(utility_commands, "get_mythos_chronicle", lambda: fake_chronicle)
 
-        request = SimpleNamespace(
-            app=SimpleNamespace(state=SimpleNamespace(holiday_service=self.FakeHolidayService()))
-        )
+        request = SimpleNamespace(app=SimpleNamespace(state=SimpleNamespace(holiday_service=self.FakeHolidayService())))
 
         result = await handle_time_command({}, {}, request, None, "testuser")
 

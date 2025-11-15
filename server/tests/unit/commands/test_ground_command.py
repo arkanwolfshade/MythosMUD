@@ -193,7 +193,9 @@ async def test_ground_command_emits_rescue_updates(session_factory):
             return call.kwargs.get("player_id")
 
         channel_targets = {
-            _call_target(call) for call in mock_rescue_event.await_args_list if call.kwargs.get("status") == "channeling"
+            _call_target(call)
+            for call in mock_rescue_event.await_args_list
+            if call.kwargs.get("status") == "channeling"
         }
         assert channel_targets == {victim.player_id, rescuer.player_id}
 
