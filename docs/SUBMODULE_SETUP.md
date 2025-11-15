@@ -92,7 +92,7 @@ Since the `mythosmud_data` repository is private, the GitHub Actions workflows n
 1. **Personal Access Token (PAT)**: Required for accessing private repositories
 2. **Token Configuration**: Use `${{ secrets.MYTHOSMUD_PAT }}` in checkout actions
 3. **Submodule checkout**: Configure `submodules: recursive` in checkout action
-4. **Credential rewrite**: Before checkout, run a guarded shell step that rewrites only the `https://github.com/arkanwolfshade/mythosmud_data` URL with your PAT (do *not* rewrite the entire `arkanwolfshade` org, or the main repo checkout will start using the PAT and fail). Guard the step with an env var populated from `${{ secrets.MYTHOSMUD_PAT }}` so forks without the secret still succeed.
+4. **Credential rewrite**: Before checkout, run a guarded shell step that rewrites the exact submodule URL (`https://github.com/arkanwolfshade/mythosmud_data.git`) with your PAT (optionally add the no-suffix variant too). Do *not* rewrite the entire `arkanwolfshade` org, or the main repo checkout will start using the PAT and fail. Guard the step with an env var populated from `${{ secrets.MYTHOSMUD_PAT }}` so forks without the secret still succeed.
 
 ### PAT Requirements
 
@@ -128,7 +128,7 @@ jobs:
       - name: Configure private submodule access
         env:
           PRIVATE_SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT }}
-          SUBMODULE_URL: https://github.com/arkanwolfshade/mythosmud_data
+          SUBMODULE_URL: https://github.com/arkanwolfshade/mythosmud_data.git
         run: |
           if [ -z "$PRIVATE_SUBMODULE_PAT" ]; then
             echo "No MYTHOSMUD_PAT provided; skipping."
@@ -136,6 +136,7 @@ jobs:
           fi
           echo "::add-mask::$PRIVATE_SUBMODULE_PAT"
           git config --global url."https://$PRIVATE_SUBMODULE_PAT:x-oauth-basic@${SUBMODULE_URL#https://}".insteadOf "$SUBMODULE_URL"
+          git config --global url."https://$PRIVATE_SUBMODULE_PAT:x-oauth-basic@github.com/arkanwolfshade/mythosmud_data".insteadOf "https://github.com/arkanwolfshade/mythosmud_data"
       - uses: actions/checkout@v5
         with:
           submodules: recursive

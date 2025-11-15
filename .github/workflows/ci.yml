@@ -28,7 +28,7 @@ jobs:
         shell: bash
         env:
           PRIVATE_SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT }}
-          SUBMODULE_URL: https://github.com/arkanwolfshade/mythosmud_data
+          SUBMODULE_URL: https://github.com/arkanwolfshade/mythosmud_data.git
         run: |
           if [ -z "$PRIVATE_SUBMODULE_PAT" ]; then
             echo "No MYTHOSMUD_PAT provided; skipping private submodule configuration."
@@ -36,6 +36,8 @@ jobs:
           fi
           echo "::add-mask::$PRIVATE_SUBMODULE_PAT"
           git config --global url."https://$PRIVATE_SUBMODULE_PAT:x-oauth-basic@${SUBMODULE_URL#https://}".insteadOf "$SUBMODULE_URL"
+          # Some Git versions canonicalize the URL without .git; provide that mapping too.
+          git config --global url."https://$PRIVATE_SUBMODULE_PAT:x-oauth-basic@github.com/arkanwolfshade/mythosmud_data".insteadOf "https://github.com/arkanwolfshade/mythosmud_data"
 
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -154,7 +156,7 @@ jobs:
         shell: bash
         env:
           PRIVATE_SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT }}
-          SUBMODULE_URL: https://github.com/arkanwolfshade/mythosmud_data
+          SUBMODULE_URL: https://github.com/arkanwolfshade/mythosmud_data.git
         run: |
           if [ -z "$PRIVATE_SUBMODULE_PAT" ]; then
             echo "No MYTHOSMUD_PAT provided; skipping private submodule configuration."
@@ -162,6 +164,7 @@ jobs:
           fi
           echo "::add-mask::$PRIVATE_SUBMODULE_PAT"
           git config --global url."https://$PRIVATE_SUBMODULE_PAT:x-oauth-basic@${SUBMODULE_URL#https://}".insteadOf "$SUBMODULE_URL"
+          git config --global url."https://$PRIVATE_SUBMODULE_PAT:x-oauth-basic@github.com/arkanwolfshade/mythosmud_data".insteadOf "https://github.com/arkanwolfshade/mythosmud_data"
 
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
