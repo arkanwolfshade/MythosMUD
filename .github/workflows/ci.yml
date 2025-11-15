@@ -158,6 +158,7 @@ jobs:
         env:
           PRIVATE_SUBMODULE_PAT: ${{ secrets.MYTHOSMUD_PAT }}
           SUBMODULE_URL: https://github.com/arkanwolfshade/mythosmud_data.git
+        working-directory: ${{ github.workspace }}
         run: |
           if [ -z "$PRIVATE_SUBMODULE_PAT" ]; then
             echo "No MYTHOSMUD_PAT provided; skipping private submodule configuration."
