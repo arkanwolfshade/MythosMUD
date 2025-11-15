@@ -97,6 +97,9 @@ class ChronicleLike(Protocol):
     def get_current_mythos_datetime(self) -> datetime:  # pragma: no cover - Protocol definition
         ...
 
+    def format_clock(self, mythos_dt: datetime | None = None) -> str:  # pragma: no cover - Protocol definition
+        ...
+
 
 class MythosChronicle:
     """Authoritative converter between real and Mythos time."""

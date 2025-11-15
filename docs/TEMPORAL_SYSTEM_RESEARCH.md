@@ -109,6 +109,18 @@
   - Integration tests covering scheduler triggers around day/night transitions and holiday recurrence rotation.
   - Load-test scenario to ensure accelerated cycling doesn’t overload logging or event queues (simulate multiple Mythos days in quick succession).
 
+## 4. Client HUD Implementation
+
+- **Chronicle bootstrap**
+  - The client now calls `/game/time` once after authentication to hydrate the HUD immediately instead of waiting for the next hour tick.
+  - The response mirrors the broadcast payload so designers can experiment with calendar data without reconnecting.
+- **Mythos hour broadcasts**
+  - `MythosTimeEventConsumer` publishes `mythos_time_update` SSE packets every accelerated hour (and whenever a holiday/schedule transition occurs) via `broadcast_game_event`.
+  - Each payload includes clock string, date line, daypart, season, schedule summaries, and serialized holiday metadata.
+- **HUD rendering**
+  - `MythosTimeHud` displays connection state, formatted Mythos time, and contextual cues (daypart/season/witching-hour flag).
+  - Active holidays render through `HolidayBanner`, using tradition-specific palettes and badge lists for `bonus_tags`.
+  - When the daypart or holiday roster changes, `GameTerminalWithPanels` injects atmospheric system messages (e.g., witching hour warnings, holiday start/end notifications) so log archives capture the state shifts.
 ---
 [^1]: <https://www.mudconnect.com/mudfaq/mudfaq-p4.html>
 [^2]: <https://wotmud.fandom.com/wiki/Calendar>

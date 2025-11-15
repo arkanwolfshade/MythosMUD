@@ -14,6 +14,8 @@ import {
 import { buildHealthStatusFromEvent, buildHealthChangeMessage } from '../utils/healthEventUtils';
 import type { SanityStatus, HallucinationMessage, RescueState } from '../types/sanity';
 import type { HealthStatus } from '../types/health';
+import type { MythosTimePayload, MythosTimeState } from '../types/mythosTime';
+import { DAYPART_MESSAGES, buildMythosTimeState } from '../utils/mythosTime';
 
 // Import GameEvent interface from useGameConnection
 interface GameEvent {
@@ -218,6 +220,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
   const [hallucinationFeed, setHallucinationFeed] = useState<HallucinationMessage[]>([]);
   const [rescueState, setRescueState] = useState<RescueState | null>(null);
+  const [, setMythosTime] = useState<MythosTimeState | null>(null);
 
   // Memory monitoring for this component
   const { detector } = useMemoryMonitor('GameTerminalWithPanels');
@@ -241,6 +244,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   const sanityStatusRef = useRef<SanityStatus | null>(null);
   const healthStatusRef = useRef<HealthStatus | null>(null);
   const rescueStateRef = useRef<RescueState | null>(null);
+  const lastDaypartRef = useRef<string | null>(null);
+  const lastHolidayIdsRef = useRef<string[]>([]);
   const rescueTimeoutRef = useRef<number | null>(null);
 
   // Keep the refs in sync with the state
@@ -287,6 +292,44 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
       logger.info('GameTerminalWithPanels', 'Rescue state cleared');
     }
   }, [rescueState]);
+
+  useEffect(() => {
+    if (typeof fetch !== 'function') {
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    const bootstrapMythosTime = async () => {
+      try {
+        const headers: HeadersInit = { Accept: 'application/json' };
+        if (authToken) {
+          headers.Authorization = `Bearer ${authToken}`;
+        }
+        const origin =
+          typeof window === 'undefined' || !window.location?.origin ? 'http://localhost' : window.location.origin;
+        const response = await fetch(new URL('/game/time', origin).toString(), { headers });
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const payload = (await response.json()) as MythosTimePayload;
+        if (cancelled) {
+          return;
+        }
+        const nextState = buildMythosTimeState(payload);
+        setMythosTime(nextState);
+        lastDaypartRef.current = nextState.daypart;
+        lastHolidayIdsRef.current = nextState.active_holidays.map(h => h.id);
+      } catch (error) {
+        logger.warn('GameTerminalWithPanels', 'Failed to bootstrap Mythos time', { error: String(error) });
+      }
+    };
+
+    bootstrapMythosTime();
+    return () => {
+      cancelled = true;
+    };
+  }, [authToken]);
 
   useEffect(() => {
     const interval = window.setInterval(() => {
@@ -1810,6 +1853,60 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               );
             }
 
+            break;
+          }
+          case 'mythos_time_update': {
+            const payload = event.data as MythosTimePayload;
+            if (!payload || !payload.mythos_clock) {
+              break;
+            }
+
+            const nextState = buildMythosTimeState(payload);
+            setMythosTime(nextState);
+
+            const previousDaypart = lastDaypartRef.current;
+            if (previousDaypart && previousDaypart !== nextState.daypart) {
+              const description =
+                DAYPART_MESSAGES[nextState.daypart] ?? `The Mythos clock shifts into the ${nextState.daypart} watch.`;
+              appendMessage(
+                sanitizeChatMessageForState({
+                  text: `[Time] ${description}`,
+                  timestamp: event.timestamp,
+                  messageType: 'system',
+                  channel: 'system',
+                })
+              );
+            }
+            lastDaypartRef.current = nextState.daypart;
+
+            const currentHolidayIds = nextState.active_holidays.map(holiday => holiday.id);
+            const previousHolidayIds = lastHolidayIdsRef.current;
+            const newHolidays = nextState.active_holidays.filter(holiday => !previousHolidayIds.includes(holiday.id));
+            const endedHolidays = previousHolidayIds.filter(id => !currentHolidayIds.includes(id));
+
+            if (newHolidays.length > 0) {
+              appendMessage(
+                sanitizeChatMessageForState({
+                  text: `[Holiday] ${newHolidays.map(h => h.name).join(', ')} takes hold across Arkham.`,
+                  timestamp: event.timestamp,
+                  messageType: 'system',
+                  channel: 'system',
+                })
+              );
+            }
+
+            if (endedHolidays.length > 0) {
+              appendMessage(
+                sanitizeChatMessageForState({
+                  text: `[Holiday] ${endedHolidays.join(', ')} recedes into memory.`,
+                  timestamp: event.timestamp,
+                  messageType: 'system',
+                  channel: 'system',
+                })
+              );
+            }
+
+            lastHolidayIdsRef.current = currentHolidayIds;
             break;
           }
           default: {

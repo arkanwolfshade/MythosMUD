@@ -4,6 +4,9 @@ from datetime import UTC, datetime
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
+from unittest.mock import AsyncMock, patch
+
+import pytest
 
 from server.events.event_bus import EventBus
 from server.events.event_types import MythosHourTickEvent
@@ -22,6 +25,10 @@ class DummyChronicle:
 
     def get_calendar_components(self, mythos_dt: datetime | None = None):
         return SimpleNamespace(daypart="day")
+
+    def format_clock(self, mythos_dt: datetime | None = None) -> str:
+        target = mythos_dt or self._dt
+        return target.strftime("%H:%M Mythos")
 
 
 class DummyRoomService:
@@ -74,7 +81,8 @@ def _schedule_collection() -> ScheduleCollection:
     )
 
 
-def test_time_event_consumer_updates_room_and_npc_state() -> None:
+@pytest.mark.asyncio
+async def test_time_event_consumer_updates_room_and_npc_state() -> None:
     event_bus = EventBus()
     chronicle = DummyChronicle(datetime(1930, 1, 1, 23, tzinfo=UTC))
     holiday_service = HolidayService(chronicle=chronicle, collection=_holiday_collection(), data_path="unused")
@@ -105,7 +113,15 @@ def test_time_event_consumer_updates_room_and_npc_state() -> None:
         active_holidays=[],
     )
 
-    consumer._handle_tick(event)  # Direct invocation for unit test
+    with patch(
+        "server.time.time_event_consumer.broadcast_game_event", new=AsyncMock()
+    ) as mock_broadcast:  # Prevent network usage
+        await consumer._handle_tick(event)  # Direct invocation for unit test
 
     assert room_service.environment_state["daypart"] == "witching"
     assert npc_manager.active_schedule_ids == ["night_watch_patrol"]
+    mock_broadcast.assert_awaited_once()
+    assert mock_broadcast.await_args is not None
+    payload = mock_broadcast.await_args.args[1]
+    assert payload["daypart"] == "witching"
+    assert payload["active_holidays"][0]["name"] == "Witching Observance"

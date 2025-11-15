@@ -26,8 +26,8 @@
   - [x] 4.3 Update NPC, room, and admin modules to subscribe to chronicle events
   - [x] 4.4 Verify all tests pass
 
-- [ ] 5. Update client UI/UX and end-to-end coverage
-  - [ ] 5.1 Write UI/unit and Playwright tests for Mythos clock, banners, and commands
-  - [ ] 5.2 Implement HUD updates, notification hooks, and command outputs
-  - [ ] 5.3 Extend docs, runbooks, and CI (lint/test) to cover new assets
-  - [ ] 5.4 Verify all tests pass
+- [x] 5. Update client UI/UX and end-to-end coverage
+  - [x] 5.1 Write UI/unit and Playwright tests for Mythos clock, banners, and commands
+  - [x] 5.2 Implement HUD updates, notification hooks, and command outputs
+  - [x] 5.3 Extend docs, runbooks, and CI (lint/test) to cover new assets
+  - [x] 5.4 Verify all tests pass

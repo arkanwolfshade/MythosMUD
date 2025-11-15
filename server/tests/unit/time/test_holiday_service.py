@@ -13,6 +13,10 @@ class StubChronicle:
     def get_current_mythos_datetime(self) -> datetime:
         return self._dt
 
+    def format_clock(self, mythos_dt: datetime | None = None) -> str:
+        target = mythos_dt or self._dt
+        return target.strftime("%H:%M Mythos")
+
 
 def _collection() -> HolidayCollection:
     return HolidayCollection(

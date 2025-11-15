@@ -174,6 +174,10 @@ describe('GameTerminal', () => {
       },
     ],
     commandHistory: ['look', 'inventory', 'status'],
+    sanityStatus: null,
+    healthStatus: null,
+    hallucinations: [],
+    rescueState: null,
     onConnect: vi.fn(),
     onDisconnect: vi.fn(),
     onLogout: vi.fn(),
@@ -182,6 +186,10 @@ describe('GameTerminal', () => {
     onSendChatMessage: vi.fn(),
     onClearMessages: vi.fn(),
     onClearHistory: vi.fn(),
+    isLoggingOut: false,
+    isMortallyWounded: false,
+    isDead: false,
+    mythosTime: null,
   };
 
   beforeEach(() => {
@@ -205,26 +213,23 @@ describe('GameTerminal', () => {
     it('should display connection status in header', () => {
       render(<GameTerminal {...defaultProps} />);
 
-      const connectionStatus = screen.getByText('Connection:');
-      const statusValue = connectionStatus.parentElement?.querySelector('span:last-child');
-      expect(statusValue).toHaveTextContent('Connected');
-      expect(screen.getByText('Player: TestPlayer')).toBeInTheDocument();
+      const banner = screen.getByTestId('connection-banner');
+      expect(banner).toHaveTextContent('Connected');
+      expect(banner).toHaveTextContent('Player: TestPlayer');
     });
 
     it('should display disconnected status when not connected', () => {
       render(<GameTerminal {...defaultProps} isConnected={false} isConnecting={false} />);
 
-      const connectionStatus = screen.getByText('Connection:');
-      const statusValue = connectionStatus.parentElement?.querySelector('span:last-child');
-      expect(statusValue).toHaveTextContent('Disconnected');
+      const banner = screen.getByTestId('connection-banner');
+      expect(banner).toHaveTextContent('Disconnected');
     });
 
     it('should display connecting status when connecting', () => {
-      render(<GameTerminal {...defaultProps} isConnected={false} isConnecting={true} />);
+      render(<GameTerminal {...defaultProps} isConnected={false} isConnecting />);
 
-      const connectionStatus = screen.getByText('Connection:');
-      const statusValue = connectionStatus.parentElement?.querySelector('span:last-child');
-      expect(statusValue).toHaveTextContent('Connecting...');
+      const banner = screen.getByTestId('connection-banner');
+      expect(banner).toHaveTextContent('Connecting');
     });
 
     it('should display error message when error exists', () => {

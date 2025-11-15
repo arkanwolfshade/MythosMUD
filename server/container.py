@@ -34,6 +34,7 @@ import json
 import os
 import sqlite3
 import threading
+from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
@@ -262,10 +263,23 @@ class ApplicationContainer:
 
                 from .time.tick_scheduler import MythosTickScheduler
 
+                holiday_service = self.holiday_service
+
+                def _resolve_hourly_holidays(mythos_dt: datetime) -> list[str]:
+                    if not holiday_service:
+                        return []
+                    try:
+                        active = holiday_service.refresh_active(mythos_dt)
+                        return [entry.name for entry in active]
+                    except Exception as exc:  # pragma: no cover - defensive logging
+                        logger.warning("Failed to resolve holiday window for tick scheduler", error=str(exc))
+                        return []
+
                 self.mythos_tick_scheduler = MythosTickScheduler(
                     chronicle=get_mythos_chronicle(),
                     event_bus=self.event_bus,
                     task_registry=self.task_registry,
+                    holiday_resolver=_resolve_hourly_holidays,
                 )
                 logger.info("Mythos tick scheduler prepared")
 

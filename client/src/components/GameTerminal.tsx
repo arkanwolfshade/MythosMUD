@@ -12,6 +12,8 @@ import { HealthMeter } from './health';
 import type { SanityStatus, HallucinationMessage, RescueState } from '../types/sanity';
 import type { HealthStatus } from '../types/health';
 import { determineHealthTier } from '../types/health';
+import type { MythosTimeState } from '../types/mythosTime';
+import { HolidayBanner, MythosTimeHud } from './MythosTimeHud';
 
 const formatPosture = (value?: string): string => {
   if (!value) {
@@ -129,6 +131,7 @@ interface GameTerminalProps {
   onClearHistory: () => void;
   isMortallyWounded?: boolean;
   isDead?: boolean;
+  mythosTime?: MythosTimeState | null;
 }
 
 export const GameTerminal: React.FC<GameTerminalProps> = ({
@@ -158,6 +161,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
   onSendChatMessage,
   onClearMessages,
   onClearHistory,
+  mythosTime = null,
 }) => {
   // MOTD is now handled by the interstitial screen in App.tsx
   const debug = debugLogger('GameTerminal');
@@ -251,36 +255,34 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
       style={{ minHeight: '100vh', width: '100%' }}
     >
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 h-12 bg-mythos-terminal-surface border-b border-gray-700 flex items-center justify-between px-4 z-10">
-        {/* Connection Status */}
-        <div className="connection-status">
-          {/* Temporarily disabled EldritchIcon to test WebSocket connection */}
-          {/* <EldritchIcon name={MythosIcons.connection} size={20} variant={isConnected ? 'success' : 'error'} /> */}
-          <span className={`status-text ${isConnected ? 'connected' : 'disconnected'}`}>
-            {isConnected ? 'Connected' : 'Disconnected'}
-          </span>
-        </div>
-        <div className="flex items-center gap-4 text-base">
-          <span className="text-mythos-terminal-text-secondary">Player: {playerName}</span>
-          <span
-            className={`px-2 py-1 rounded text-sm ${isConnected ? 'bg-mythos-terminal-success text-black' : 'bg-mythos-terminal-error text-white'}`}
-          >
-            {isConnected ? 'Connected' : isConnecting ? 'Connecting...' : 'Disconnected'}
-          </span>
-          {error && <span className="text-mythos-terminal-error text-sm">{error}</span>}
-          {reconnectAttempts > 0 && (
-            <span className="text-mythos-terminal-warning text-sm">Reconnect: {reconnectAttempts}</span>
-          )}
+      <div className="absolute top-0 left-0 right-0 z-10 border-b border-gray-800 bg-mythos-terminal-surface/95 px-4 py-2">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-wrap items-center gap-3" data-testid="connection-banner">
+            <span className={`text-sm font-semibold ${isConnected ? 'text-green-300' : 'text-red-300'}`}>
+              {isConnected ? 'Connected' : isConnecting ? 'Connecting…' : 'Disconnected'}
+            </span>
+            <span className="text-sm text-mythos-terminal-text-secondary">Player: {playerName}</span>
+            {error && <span className="text-sm text-mythos-terminal-error">{error}</span>}
+            {reconnectAttempts > 0 && (
+              <span className="text-sm text-mythos-terminal-warning">Reconnect: {reconnectAttempts}</span>
+            )}
+          </div>
+          <MythosTimeHud mythosTime={mythosTime} />
         </div>
       </div>
 
       {/* MOTD is now handled by the interstitial screen in App.tsx */}
 
-      {rescueState && rescueState.status !== 'idle' && (
-        <div className="absolute left-0 right-0 top-12 z-20 px-4">
-          <RescueStatusBanner state={rescueState} onDismiss={onDismissRescue} />
+      {(rescueState && rescueState.status !== 'idle') || (mythosTime && mythosTime.active_holidays.length > 0) ? (
+        <div className="absolute left-0 right-0 top-12 z-20 px-4 space-y-2">
+          {rescueState && rescueState.status !== 'idle' && (
+            <RescueStatusBanner state={rescueState} onDismiss={onDismissRescue} />
+          )}
+          {mythosTime && mythosTime.active_holidays.length > 0 && (
+            <HolidayBanner holidays={mythosTime.active_holidays} />
+          )}
         </div>
-      )}
+      ) : null}
 
       {/* Main Content Area with Responsive Panel Layout */}
       <div className="game-terminal-container">
