@@ -18,6 +18,13 @@ jobs:
       ACTIONS_RUNNER_DEBUG: true
       UV_PROJECT_ENVIRONMENT: .venv-ci
       UV_LINK_MODE: copy
+      DATABASE_URL: sqlite+aiosqlite:///${{ github.workspace }}/data/unit_test/players/unit_test_players.db
+      DATABASE_NPC_URL: sqlite+aiosqlite:///${{ github.workspace }}/data/unit_test/npcs/unit_test_npcs.db
+      MYTHOSMUD_ADMIN_PASSWORD: ${{ secrets.MYTHOSMUD_ADMIN_PASSWORD_CI }}
+      MYTHOSMUD_SECRET_KEY: ${{ secrets.MYTHOSMUD_SECRET_KEY_CI }}
+      MYTHOSMUD_JWT_SECRET: ${{ secrets.MYTHOSMUD_JWT_SECRET_CI }}
+      MYTHOSMUD_RESET_TOKEN_SECRET: ${{ secrets.MYTHOSMUD_RESET_TOKEN_SECRET_CI }}
+      MYTHOSMUD_VERIFICATION_TOKEN_SECRET: ${{ secrets.MYTHOSMUD_VERIFICATION_TOKEN_SECRET_CI }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
@@ -52,28 +59,10 @@ jobs:
       - name: Initialize test database
         run: |
           source .venv-ci/bin/activate
-          # Set test environment variables for database initialization
-          # CRITICAL: Use approved database locations per DATABASE PLACEMENT RULES
-          export DATABASE_URL="sqlite+aiosqlite:///${GITHUB_WORKSPACE}/data/unit_test/players/unit_test_players.db"
-          export DATABASE_NPC_URL="sqlite+aiosqlite:///${GITHUB_WORKSPACE}/data/unit_test/npcs/unit_test_npcs.db"
-          export MYTHOSMUD_ADMIN_PASSWORD="test-admin-password"
-          export MYTHOSMUD_SECRET_KEY="test-secret-key-for-ci-workflow"
-          export MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow"
-          export MYTHOSMUD_RESET_TOKEN_SECRET="test-reset-token-secret-for-ci-workflow"
-          export MYTHOSMUD_VERIFICATION_TOKEN_SECRET="test-verification-token-secret-for-ci-workflow"
           python server/tests/scripts/init_test_db.py
       - name: Verify test database
         run: |
           source .venv-ci/bin/activate
-          # Set test environment variables for database verification
-          # CRITICAL: Use approved database locations per DATABASE PLACEMENT RULES
-          export DATABASE_URL="sqlite+aiosqlite:///${GITHUB_WORKSPACE}/data/unit_test/players/unit_test_players.db"
-          export DATABASE_NPC_URL="sqlite+aiosqlite:///${GITHUB_WORKSPACE}/data/unit_test/npcs/unit_test_npcs.db"
-          export MYTHOSMUD_ADMIN_PASSWORD="test-admin-password"
-          export MYTHOSMUD_SECRET_KEY="test-secret-key-for-ci-workflow"
-          export MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow"
-          export MYTHOSMUD_RESET_TOKEN_SECRET="test-reset-token-secret-for-ci-workflow"
-          export MYTHOSMUD_VERIFICATION_TOKEN_SECRET="test-verification-token-secret-for-ci-workflow"
           python server/tests/scripts/verify_test_db.py
       - name: Lint with ruff
         run: |
@@ -87,16 +76,7 @@ jobs:
       - name: Run tests with coverage
         run: |
           source .venv-ci/bin/activate
-          # Set test environment variables for pytest
-          # CRITICAL: Use approved database locations per DATABASE PLACEMENT RULES
-          export DATABASE_URL="sqlite+aiosqlite:///${GITHUB_WORKSPACE}/data/unit_test/players/unit_test_players.db"
-          export DATABASE_NPC_URL="sqlite+aiosqlite:///${GITHUB_WORKSPACE}/data/unit_test/npcs/unit_test_npcs.db"
-          export MYTHOSMUD_ADMIN_PASSWORD="test-admin-password"
-          export MYTHOSMUD_SECRET_KEY="test-secret-key-for-ci-workflow"
-          export MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow"
-          export MYTHOSMUD_RESET_TOKEN_SECRET="test-reset-token-secret-for-ci-workflow"
-          export MYTHOSMUD_VERIFICATION_TOKEN_SECRET="test-verification-token-secret-for-ci-workflow"
-          python -m pytest server/tests/ --cov=server --cov-report=xml --cov-report=html --cov-fail-under=80 -v --tb=short
+          make test-ci
       - name: Cache benchmark (LRU cache)
         run: |
           source .venv-ci/bin/activate
