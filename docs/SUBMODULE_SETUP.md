@@ -92,6 +92,7 @@ Since the `mythosmud_data` repository is private, the GitHub Actions workflows n
 1. **Personal Access Token (PAT)**: Required for accessing private repositories
 2. **Token Configuration**: Use `${{ secrets.MYTHOSMUD_PAT }}` in checkout actions
 3. **Submodule checkout**: Configure `submodules: recursive` in checkout action
+4. **Use a PAT with checkout**: The simplest pattern is to create a fine-grained PAT (`PRIVATE_SUBMODULE_PAT`) that has read access to `arkanwolfshade/mythosmud_data` and pass it to `actions/checkout` via the `token` input. This lets checkout clone both the main repo and the private submodule in one step without hand-written rewrites.
 
 ### PAT Requirements
 
@@ -127,7 +128,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           submodules: recursive
-          token: ${{ secrets.MYTHOSMUD_PAT }}
+          token: ${{ secrets.PRIVATE_SUBMODULE_PAT }}
 ```
 
 ## Troubleshooting

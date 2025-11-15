@@ -277,7 +277,7 @@ grep -r "HTTP_422_UNPROCESSABLE_ENTITY" server/
 
 1. **Run Full Test Suite**
    ```bash
-   make test-server 2>&1 | grep "warnings in"
+   make test-comprehensive 2>&1 | grep "warnings in"
    # Verify reduction from 4,221 to ~220
    ```
 
@@ -355,7 +355,7 @@ cd server
 uv run pytest -v -o addopts="" 2>&1 | grep "Warning:" | sort | uniq -c
 
 # Run full test suite
-make test-server
+make test-comprehensive
 
 # Run specific test categories
 uv run pytest server/tests/unit -v

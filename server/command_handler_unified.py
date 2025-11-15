@@ -20,13 +20,16 @@ from .alias_storage import AliasStorage
 from .auth.users import get_current_user
 from .commands.command_service import CommandService
 from .config import get_config
+from .database import get_async_session
 from .exceptions import ValidationError
 from .logging.enhanced_logging_config import get_logger
 from .middleware.command_rate_limiter import command_rate_limiter
+from .models.sanity import PlayerSanity
 from .utils.alias_graph import AliasGraph
 from .utils.audit_logger import audit_logger
 from .utils.command_parser import get_username_from_user
 from .utils.command_processor import get_command_processor
+from .utils.player_cache import cache_player, get_cached_player
 from .validators.command_validator import CommandValidator
 
 logger = get_logger(__name__)
@@ -40,6 +43,7 @@ command_processor = get_command_processor()
 # Configuration
 MAX_COMMAND_LENGTH = get_config().game.max_command_length
 MAX_EXPANDED_COMMAND_LENGTH = CommandValidator.MAX_EXPANDED_COMMAND_LENGTH
+CATATONIA_ALLOWED_COMMANDS = {"help", "who", "status"}
 
 
 class CommandRequest(BaseModel):
@@ -313,6 +317,10 @@ async def process_command_unified(
         args=args,
         original_command=command_line,
     )
+
+    block_catatonia, catatonia_message = await _check_catatonia_block(player_name, cmd, request)
+    if block_catatonia:
+        return {"result": catatonia_message}
 
     # Step 5: Handle alias management commands first (don't expand these)
     if cmd in ["alias", "aliases", "unalias"]:
@@ -600,3 +608,58 @@ def get_help_content(command_name: str | None = None) -> str:
     from .help.help_content import get_help_content as get_help_content_new
 
     return get_help_content_new(command_name)
+
+
+async def _check_catatonia_block(player_name: str, command: str, request: Request) -> tuple[bool, str | None]:
+    """Determine whether to block command execution due to catatonia."""
+
+    if command in CATATONIA_ALLOWED_COMMANDS:
+        return False, None
+
+    app = getattr(request, "app", None)
+    state = getattr(app, "state", None) if app else None
+    if state is None:
+        return False, None
+
+    persistence = getattr(state, "persistence", None)
+    if persistence is None:
+        return False, None
+
+    player = get_cached_player(request, player_name)
+    if player is None:
+        try:
+            player = persistence.get_player_by_name(player_name)
+        except Exception:  # pragma: no cover - defensive
+            logger.exception("Failed to load player for catatonia check", player=player_name)
+            return False, None
+        cache_player(request, player_name, player)
+
+    if not player:
+        return False, None
+
+    player_id = getattr(player, "player_id", None)
+    if not player_id:
+        return False, None
+
+    registry = getattr(state, "__dict__", {}).get("catatonia_registry")
+    if registry is not None and hasattr(registry, "is_catatonic"):
+        try:
+            if registry.is_catatonic(str(player_id)):
+                logger.info("Catatonic player command blocked via registry", player=player_name, command=command)
+                return (
+                    True,
+                    "Your body lies unresponsive, trapped in catatonia. Another must ground you.",
+                )
+        except Exception:  # pragma: no cover - defensive
+            logger.exception("Catatonia registry lookup failed", player=player_name)
+
+    async for session in get_async_session():
+        sanity_record = await session.get(PlayerSanity, str(player_id))
+        if sanity_record and sanity_record.current_tier == "catatonic":
+            logger.info("Catatonic player command blocked", player=player_name, command=command)
+            return (
+                True,
+                "Your body lies unresponsive, trapped in catatonia. Another must ground you.",
+            )
+
+    return False, None

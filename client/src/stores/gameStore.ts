@@ -7,7 +7,9 @@ export interface Player {
   name: string;
   stats: {
     current_health: number;
+    max_health?: number;
     sanity: number;
+    max_sanity?: number;
     strength?: number;
     dexterity?: number;
     constitution?: number;
@@ -60,6 +62,7 @@ export interface ChatMessage {
   sender?: string;
   target?: string;
   [key: string]: unknown;
+  tags?: string[];
 }
 
 export interface GameLogEntry {

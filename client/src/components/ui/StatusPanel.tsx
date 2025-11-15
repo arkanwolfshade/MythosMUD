@@ -7,7 +7,9 @@ interface StatusPanelContextType {
     name: string;
     stats: {
       current_health: number;
+      max_health?: number;
       sanity: number;
+      max_sanity?: number;
       strength?: number;
       dexterity?: number;
       constitution?: number;
@@ -109,12 +111,16 @@ export const PlayerName: React.FC = () => {
 export const HealthStat: React.FC = () => {
   const { player } = useStatusPanel();
 
-  if (!player?.stats?.current_health) return null;
+  if (player?.stats?.current_health === undefined) return null;
+
+  const maxHealth = player.stats.max_health ?? 100;
 
   return (
     <div className="flex items-center justify-between">
       <span className="text-base text-mythos-terminal-text-secondary">Health:</span>
-      <span className="text-base text-mythos-terminal-text">{player.stats.current_health}</span>
+      <span className="text-base text-mythos-terminal-text">
+        {player.stats.current_health} / {maxHealth}
+      </span>
     </div>
   );
 };

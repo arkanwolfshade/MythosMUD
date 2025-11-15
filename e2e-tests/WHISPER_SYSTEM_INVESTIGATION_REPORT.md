@@ -383,7 +383,7 @@ async def test_whisper_subject_without_target_id():
 **Command:**
 
 ```bash
-make test-server
+make test
 ```
 
 **Expected Results:**
@@ -1159,7 +1159,8 @@ CHAT_EMOTE_ROOM_SUB = "chat.emote.room.*"
 
 ```bash
 # Run all chat service unit tests
-make test-server -k test_chat_service
+# (Set PYTEST_ADDOPTS="-k test_chat_service" beforehand to scope the run)
+make test
 
 # Run specific whisper subject test
 pytest server/tests/unit/game/test_chat_service_whisper_subject.py -v
@@ -1172,7 +1173,8 @@ pytest server/tests/unit/game/test_chat_service_whisper_subject.py -v
 pytest server/tests/integration/test_chat_service_subject_migration.py -v
 
 # Run full integration test suite
-make test-server -k integration
+# (Set PYTEST_ADDOPTS="-k integration" beforehand to scope the run)
+make test
 ```
 
 #### Level 3: E2E Tests
@@ -1234,7 +1236,7 @@ make test-server -k integration
 
 - ✅ Fix applied to `chat_service.py` line 212
 - ✅ Regression test created and passing
-- ✅ All existing tests pass (`make test-server`)
+- ✅ All existing tests pass (`make test`)
 - ✅ No linting errors (`make lint`)
 - ✅ Changes committed to version control
 

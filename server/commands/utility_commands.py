@@ -9,6 +9,7 @@ from typing import Any
 from ..alias_storage import AliasStorage
 from ..logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
+from ..utils.player_cache import cache_player, get_cached_player
 
 logger = get_logger(__name__)
 
@@ -316,35 +317,42 @@ async def handle_logout_command(
 
         connection_manager = app.state.connection_manager if app else None
 
-        if persistence:
+        lookup_name = player_name or get_username_from_user(current_user)
+        player = get_cached_player(request, lookup_name)
+
+        if persistence and player is None:
             try:
-                player = persistence.get_player_by_name(get_username_from_user(current_user))
-                if player:
-                    # Synchronize current position from in-memory presence tracking
-                    position_value: str | None = None
-                    player_identifier = getattr(player, "player_id", None)
-                    if connection_manager:
-                        player_info = None
-                        if player_identifier:
-                            player_info = connection_manager.online_players.get(str(player_identifier))
-                        if not player_info:
-                            player_info = connection_manager.get_online_player_by_display_name(player_name)
-                        if player_info:
-                            position_value = player_info.get("position")
-
-                    if position_value:
-                        stats = player.get_stats()
-                        if stats.get("position") != position_value:
-                            stats["position"] = position_value
-                            player.set_stats(stats)
-
-                    from datetime import UTC, datetime
-
-                    player.last_active = datetime.now(UTC)
-                    persistence.save_player(player)
-                    logger.info("Player logout - updated last active")
+                player = persistence.get_player_by_name(lookup_name)
+                cache_player(request, lookup_name, player)
             except Exception as e:
                 logger.error("Error updating last active on logout", error=str(e), error_type=type(e).__name__)
+                player = None
+
+        if player:
+            # Synchronize current position from in-memory presence tracking
+            position_value: str | None = None
+            player_identifier = getattr(player, "player_id", None)
+            if connection_manager:
+                player_info = None
+                if player_identifier:
+                    player_info = connection_manager.online_players.get(str(player_identifier))
+                if not player_info:
+                    player_info = connection_manager.get_online_player_by_display_name(player_name)
+                if player_info:
+                    position_value = player_info.get("position")
+
+            if position_value:
+                stats = player.get_stats()
+                if stats.get("position") != position_value:
+                    stats["position"] = position_value
+                    player.set_stats(stats)
+
+            if persistence:
+                from datetime import UTC, datetime
+
+                player.last_active = datetime.now(UTC)
+                persistence.save_player(player)
+                logger.info("Player logout - updated last active")
 
         # Disconnect player from all connections
         try:

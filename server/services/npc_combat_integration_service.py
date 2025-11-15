@@ -12,11 +12,13 @@ entities they encounter in our world.
 from typing import Any
 from uuid import UUID, uuid4
 
+from ..database import get_async_session
 from ..events.event_bus import EventBus
 from ..game.mechanics import GameMechanicsService
 from ..logging.enhanced_logging_config import get_logger
 from ..models.combat import CombatParticipantType
 from ..persistence import get_persistence
+from .active_sanity_service import ActiveSanityService, UnknownEncounterCategoryError
 from .combat_event_publisher import CombatEventPublisher
 from .combat_messaging_integration import CombatMessagingIntegration
 from .combat_service import CombatService
@@ -167,6 +169,7 @@ class NPCCombatIntegrationService:
                 return False
 
             # Store combat memory - NPC remembers who attacked it
+            first_engagement = npc_id not in self._npc_combat_memory
             self._npc_combat_memory[npc_id] = player_id
 
             # Convert string IDs to UUIDs for combat service
@@ -189,6 +192,8 @@ class NPCCombatIntegrationService:
                         npc_id=npc_id,
                         has_definition=bool(npc_definition),
                     )
+                    if npc_definition and first_engagement:
+                        await self._apply_encounter_sanity_effect(player_id, npc_id, npc_definition, room_id)
                     if npc_definition:
                         base_stats = npc_definition.get_base_stats()
                         logger.debug(
@@ -578,3 +583,102 @@ class NPCCombatIntegrationService:
             mapping_size=len(self._uuid_to_string_id_mapping),
         )
         return result
+
+    async def _apply_encounter_sanity_effect(
+        self,
+        player_id: str,
+        npc_id: str,
+        npc_definition: Any | None,
+        room_id: str,
+    ) -> None:
+        """Apply sanity loss when a player engages an eldritch entity."""
+
+        definition_name: str | None = None
+        if npc_definition is not None:
+            potential_name = getattr(npc_definition, "name", None)
+            if isinstance(potential_name, str) and potential_name.strip():
+                definition_name = potential_name
+
+        archetype = definition_name or npc_id
+        category = self._resolve_sanity_category(npc_definition)
+
+        async for session in get_async_session():
+            service = ActiveSanityService(session)
+            try:
+                await service.apply_encounter_sanity_loss(
+                    player_id=str(player_id),
+                    entity_archetype=str(archetype),
+                    category=category,
+                    location_id=room_id,
+                )
+                await session.commit()
+            except UnknownEncounterCategoryError:
+                await session.rollback()
+                logger.warning(
+                    "Encounter SAN category unavailable, defaulting to disturbing",
+                    npc_id=npc_id,
+                    provided_category=category,
+                )
+                try:
+                    await service.apply_encounter_sanity_loss(
+                        player_id=str(player_id),
+                        entity_archetype=str(archetype),
+                        category="disturbing",
+                        location_id=room_id,
+                    )
+                    await session.commit()
+                except Exception as nested_exc:  # pragma: no cover - defensive logging
+                    await session.rollback()
+                    logger.error(
+                        "Failed to apply fallback encounter sanity loss",
+                        npc_id=npc_id,
+                        player_id=player_id,
+                        error=str(nested_exc),
+                    )
+            except Exception as exc:  # pragma: no cover - defensive logging
+                await session.rollback()
+                logger.error(
+                    "Active encounter sanity adjustment failed",
+                    npc_id=npc_id,
+                    player_id=player_id,
+                    room_id=room_id,
+                    error=str(exc),
+                )
+            else:
+                logger.info(
+                    "Applied encounter sanity loss",
+                    npc_id=npc_id,
+                    player_id=player_id,
+                    archetype=archetype,
+                    category=category,
+                )
+            break
+
+    def _resolve_sanity_category(self, npc_definition: Any | None) -> str:
+        """Determine encounter category based on NPC definition metadata."""
+
+        if npc_definition is None:
+            return "disturbing"
+
+        try:
+            base_stats = npc_definition.get_base_stats()
+        except Exception:
+            base_stats = {}
+
+        try:
+            behavior_config = npc_definition.get_behavior_config()
+        except Exception:
+            behavior_config = {}
+
+        for source in (base_stats, behavior_config):
+            if isinstance(source, dict):
+                category = source.get("sanity_category") or source.get("mythos_tier")
+                if isinstance(category, str):
+                    return category.lower()
+
+        npc_type = getattr(npc_definition, "npc_type", "")
+        if npc_type == "aggressive_mob":
+            return "horrific"
+        if npc_type == "passive_mob":
+            return "disturbing"
+        return "disturbing"

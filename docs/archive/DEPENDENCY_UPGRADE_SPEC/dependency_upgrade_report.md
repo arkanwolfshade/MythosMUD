@@ -184,7 +184,7 @@ uv pip install importlib-metadata==8.7.0
 
 ### Post-Upgrade Testing
 1. **Unit Tests**: `make test` (from project root)
-2. **Integration Tests**: `make test-server`
+2. **Integration Tests**: `make test`
 3. **Client Tests**: `cd client && npm test`
 4. **Linting**: `make lint`
 5. **Manual Testing**: Key user flows

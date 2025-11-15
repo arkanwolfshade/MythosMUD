@@ -29,6 +29,7 @@ from .exploration_commands import handle_go_command, handle_look_command
 from .inventory_commands import handle_inventory_command
 from .npc_admin_commands import handle_npc_command
 from .position_commands import handle_lie_command, handle_sit_command, handle_stand_command
+from .rescue_commands import handle_ground_command
 from .system_commands import handle_help_command
 from .utility_commands import (
     handle_emote_command,
@@ -77,6 +78,8 @@ __all__ = [
     "handle_sit_command",
     "handle_stand_command",
     "handle_lie_command",
+    # Rescue commands
+    "handle_ground_command",
     # NPC Admin commands
     "handle_npc_command",
 ]

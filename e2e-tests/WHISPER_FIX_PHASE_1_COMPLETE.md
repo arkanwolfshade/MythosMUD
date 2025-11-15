@@ -47,7 +47,7 @@ return f"chat.whisper.player.{target_id}"
 ---
 
 ### ✅ Task 1.3: Run Unit Tests
-**Command:** `make test-server`
+**Command:** `make test`
 
 **Results:**
 - ✅ Regression tests created and ready for integration into test suite

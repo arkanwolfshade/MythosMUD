@@ -20,7 +20,7 @@ if (-not (Test-Path $seedPath)) {
 $targets = @(
     @{ Path = Join-Path $repoRoot "data\local\items\local_items.db"; ApplySeed = $true },
     @{ Path = Join-Path $repoRoot "data\e2e_test\items\e2e_items.db"; ApplySeed = $true },
-    @{ Path = Join-Path $repoRoot "data\unit_test_test\items\unit_test_items.db"; ApplySeed = $true }
+    @{ Path = Join-Path $repoRoot "data\unit_test\items\unit_test_items.db"; ApplySeed = $true }
 )
 
 foreach ($target in $targets) {

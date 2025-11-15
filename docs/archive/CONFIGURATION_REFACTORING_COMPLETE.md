@@ -90,7 +90,7 @@ cp server/tests/env.unit_test.example server/tests/.env.unit_test
 # 2. No editing needed - defaults work!
 
 # 3. Run tests
-make test-server
+make test
 ```
 
 pytest will automatically:

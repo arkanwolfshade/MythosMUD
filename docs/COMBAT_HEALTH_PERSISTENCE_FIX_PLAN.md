@@ -278,7 +278,7 @@ logger = get_logger(__name__)
 Run the new test suite to verify the fix:
 
 ```bash
-make test-server
+make test
 ```
 
 Expected results:

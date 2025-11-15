@@ -18,7 +18,7 @@ server/server_config.unit_test.yaml  ← Structural config (committed)
 server/tests/.env.unit_test          ← Secrets (NOT committed)
 server/tests/env.unit_test.example   ← Template (committed)
 ```
-**Startup**: Automatic via `conftest.py` when running `make test-server`
+**Startup**: Automatic via `conftest.py` when running `make test`
 
 ### Tuple 3: E2E Testing 🎭
 ```
@@ -102,7 +102,7 @@ cp env.e2e_test.example .env.e2e_test
 .\scripts\start_local.ps1
 
 # Run unit tests
-make test-server
+make test
 
 # Run E2E tests
 .\scripts\start_e2e_test.ps1  # Terminal 1

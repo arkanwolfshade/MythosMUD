@@ -178,8 +178,20 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
     }
   };
 
-  const getMessageClass = (messageType?: string): string => {
-    switch (messageType) {
+  const getMessageClass = (message: ChatMessage): string => {
+    if (message.tags?.includes('hallucination')) {
+      return 'text-fuchsia-300 italic';
+    }
+
+    if (message.tags?.includes('command-misfire')) {
+      return 'text-mythos-terminal-warning font-semibold';
+    }
+
+    if (message.tags?.includes('rescue')) {
+      return 'text-mythos-terminal-primary font-semibold';
+    }
+
+    switch (message.messageType) {
       case 'emote':
         return 'text-mythos-terminal-primary italic';
       case 'system':
@@ -366,9 +378,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
 
                 {/* Message Content */}
                 <div
-                  className={`message-text ${getFontSizeClass()} leading-relaxed ${getMessageClass(
-                    message.messageType
-                  )}`}
+                  className={`message-text ${getFontSizeClass()} leading-relaxed ${getMessageClass(message)}`}
                   data-message-text={message.rawText ?? message.text}
                   onContextMenu={e => {
                     e.preventDefault();

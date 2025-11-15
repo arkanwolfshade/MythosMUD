@@ -149,6 +149,9 @@ class CommandProcessor:
             if command_data["command_type"] in ["attack", "punch", "kick", "strike"]:
                 command_data["target_player"] = validated_command.target
 
+        if hasattr(validated_command, "target_player"):
+            command_data["target_player"] = validated_command.target_player
+
         if hasattr(validated_command, "index"):
             command_data["index"] = validated_command.index
 

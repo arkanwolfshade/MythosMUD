@@ -11,7 +11,7 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
   - Columns: `id` (PRIMARY KEY AUTOINCREMENT), `item_instance_id` (TEXT, FOREIGN KEY → `item_instances.item_instance_id` ON DELETE CASCADE), `component_id` (TEXT NOT NULL), `state_payload` (JSON/TEXT NOT NULL), `updated_at` (DATETIME DEFAULT CURRENT_TIMESTAMP).
   - Indexes: composite index `(item_instance_id, component_id)`.
 - Environment-specific databases:
-  - Instantiate SQLite files at `/data/e2e_test/items/e2e_items.db`, `/data/local_test/items/local_items.db`, `/data/unit_test_test/items/unit_test_items.db`.
+  - Instantiate SQLite files at `/data/e2e_test/items/e2e_items.db`, `/data/local_test/items/local_items.db`, `/data/unit_test/items/unit_test_items.db`.
   - Synchronize schema migrations across all three via shared Alembic configuration or `uv`-driven migration script.
 
 ## Seed Data Specifications

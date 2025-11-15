@@ -246,7 +246,7 @@ async def test_websocket_connection():
 
 #### 1. Run Complete Test Suite
 ```bash
-make test-server
+make test-comprehensive
 ```
 **Target:** < 50 warnings remaining
 
@@ -336,7 +336,7 @@ uv run pytest tests/path/to/test_file.py -v -o addopts=""
 ### Verify Fixes
 ```bash
 # Run full suite and check warning count
-make test-server 2>&1 | grep "warnings in"
+make test-comprehensive 2>&1 | grep "warnings in"
 ```
 
 ---

@@ -21,6 +21,7 @@ describe('StatusPanel Compound Component', () => {
       name: 'TestPlayer',
       stats: {
         current_health: 100,
+        max_health: 100,
         sanity: 80,
         strength: 10,
         dexterity: 12,
@@ -128,7 +129,7 @@ describe('StatusPanel Compound Component', () => {
       );
 
       expect(screen.getByText('Health:')).toBeInTheDocument();
-      expect(screen.getByText('100')).toBeInTheDocument();
+      expect(screen.getByText('100 / 100')).toBeInTheDocument();
     });
 
     it('should not display when player has no stats', () => {

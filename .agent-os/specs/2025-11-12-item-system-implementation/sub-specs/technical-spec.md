@@ -25,7 +25,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 ## Phase 2 – Persistence & Database Provisioning
 
 - Introduce Alembic migration for `item_instances` and `item_component_states` tables, aligning with proposed data model.
-- Provision SQLite databases at `/data/e2e_test/items/e2e_items.db`, `/data/local_test/items/local_items.db`, and `/data/unit_test_test/items/unit_test_items.db`; scripts respect COPPA storage rules.
+- Provision SQLite databases at `/data/e2e_test/items/e2e_items.db`, `/data/local_test/items/local_items.db`, and `/data/unit_test/items/unit_test_items.db`; scripts respect COPPA storage rules.
 - Seed each database with at least two prototypes per equip slot (head, torso, legs, main hand, off hand, accessory, etc.) using CLI utilities, ensuring deterministic IDs for test assertions.
 - Testing:
   - Unit: migration helpers, seed script validations, CRUD operations on SQLAlchemy models.

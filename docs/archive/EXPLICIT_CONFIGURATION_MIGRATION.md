@@ -81,7 +81,7 @@ $env:MYTHOSMUD_CONFIG_PATH = "E:\projects\GitHub\MythosMUD\server\server_config.
 ### Unit Testing
 ```powershell
 # Just run tests - conftest.py handles configuration
-make test-server
+make test
 
 # Or:
 cd server
