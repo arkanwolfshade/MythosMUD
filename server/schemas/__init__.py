@@ -7,11 +7,16 @@ This package contains all Pydantic schemas including:
 - Invite schemas (custom invite system)
 """
 
+from .calendar import HolidayCollection, HolidayEntry, ScheduleCollection, ScheduleEntry
 from .invite import InviteCreate, InviteRead, InviteUpdate
 from .player import PlayerCreate, PlayerRead, PlayerUpdate
 from .user import UserCreate, UserRead, UserUpdate
 
 __all__ = [
+    "HolidayCollection",
+    "HolidayEntry",
+    "ScheduleCollection",
+    "ScheduleEntry",
     "UserCreate",
     "UserRead",
     "UserUpdate",

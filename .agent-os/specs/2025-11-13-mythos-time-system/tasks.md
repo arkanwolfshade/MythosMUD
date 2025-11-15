@@ -14,11 +14,11 @@
   - [x] 2.3 Provide helper APIs (e.g., witching hour checks) for dependent modules
   - [x] 2.4 Verify all tests pass
 
-- [ ] 3. Create calendar schemas and JSON ingestion pipeline
-  - [ ] 3.1 Write validation tests covering holiday JSON and CLI validator behavior
-  - [ ] 3.2 Define schema files and Pydantic models for holidays and schedules
-  - [ ] 3.3 Build JSON loaders plus CLI validator referencing `docs/MYTHOS_HOLIDAY_CANDIDATES.md`
-  - [ ] 3.4 Verify all tests pass
+- [x] 3. Create calendar schemas and JSON ingestion pipeline
+  - [x] 3.1 Write validation tests covering holiday JSON and CLI validator behavior
+  - [x] 3.2 Define schema files and Pydantic models for holidays and schedules
+  - [x] 3.3 Build JSON loaders plus CLI validator referencing `docs/MYTHOS_HOLIDAY_CANDIDATES.md`
+  - [x] 3.4 Verify all tests pass
 
 - [ ] 4. Integrate system consumers (NPCs, environment, holiday service, admin tooling)
   - [ ] 4.1 Write tests for NPC schedule shifts, lighting changes, and `/admin/time`
