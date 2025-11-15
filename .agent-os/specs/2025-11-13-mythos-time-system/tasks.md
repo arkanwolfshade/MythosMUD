@@ -20,11 +20,11 @@
   - [x] 3.3 Build JSON loaders plus CLI validator referencing `docs/MYTHOS_HOLIDAY_CANDIDATES.md`
   - [x] 3.4 Verify all tests pass
 
-- [ ] 4. Integrate system consumers (NPCs, environment, holiday service, admin tooling)
-  - [ ] 4.1 Write tests for NPC schedule shifts, lighting changes, and `/admin/time`
-  - [ ] 4.2 Implement holiday service managing active bonuses and 48-hour limits
-  - [ ] 4.3 Update NPC, room, and admin modules to subscribe to chronicle events
-  - [ ] 4.4 Verify all tests pass
+- [x] 4. Integrate system consumers (NPCs, environment, holiday service, admin tooling)
+  - [x] 4.1 Write tests for NPC schedule shifts, lighting changes, and `/admin/time`
+  - [x] 4.2 Implement holiday service managing active bonuses and 48-hour limits
+  - [x] 4.3 Update NPC, room, and admin modules to subscribe to chronicle events
+  - [x] 4.4 Verify all tests pass
 
 - [ ] 5. Update client UI/UX and end-to-end coverage
   - [ ] 5.1 Write UI/unit and Playwright tests for Mythos clock, banners, and commands

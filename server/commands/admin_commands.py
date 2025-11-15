@@ -14,6 +14,7 @@ from ..logging.admin_actions_logger import get_admin_actions_logger
 from ..logging.enhanced_logging_config import get_logger
 from ..realtime.envelope import build_event
 from ..realtime.websocket_handler import broadcast_room_update
+from ..time.time_service import get_mythos_chronicle
 from ..utils.command_parser import get_username_from_user
 
 logger = get_logger(__name__)
@@ -45,6 +46,8 @@ async def handle_admin_command(
 
     if subcommand == "status":
         return await _handle_admin_status_command(command_data, current_user, request, alias_storage, player_name)
+    if subcommand == "time":
+        return await _handle_admin_time_command(command_data, current_user, request, alias_storage, player_name)
 
     logger.warning("Unknown admin subcommand requested", player_name=player_name, subcommand=subcommand)
     return {"result": f"Unknown admin subcommand '{subcommand}'."}
@@ -151,6 +154,52 @@ async def _handle_admin_status_command(
         )
 
     return {"result": result_text}
+
+
+async def _handle_admin_time_command(
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+) -> dict[str, str]:
+    """Expose current Mythos time metadata, active holidays, and freeze diagnostics."""
+
+    app = request.app if request else None
+    chronicle = get_mythos_chronicle()
+    mythos_dt = chronicle.get_current_mythos_datetime()
+    components = chronicle.get_calendar_components(mythos_dt)
+
+    holiday_service = getattr(app.state, "holiday_service", None) if app and hasattr(app, "state") else None
+    active_holidays: list[str] = []
+    upcoming: list[str] = []
+    if holiday_service:
+        try:
+            holiday_service.refresh_active(mythos_dt)
+            active_holidays = holiday_service.get_active_holiday_names()
+            upcoming = holiday_service.get_upcoming_summary()
+        except Exception as exc:
+            logger.warning("Admin time command failed to refresh holiday state", error=str(exc))
+
+    last_freeze = chronicle.get_last_freeze_state()
+    if last_freeze:
+        freeze_line = (
+            f"Last freeze: {last_freeze.real_timestamp.isoformat()} (Mythos {last_freeze.mythos_timestamp.isoformat()})"
+        )
+    else:
+        freeze_line = "Last freeze: no recorded freeze events"
+
+    active_text = ", ".join(active_holidays) if active_holidays else "None active"
+    upcoming_lines = upcoming or ["No upcoming holidays recorded"]
+
+    lines = [
+        "MYTHOS TEMPORAL STATUS",
+        "",
+        f"Current Mythos time: {mythos_dt.strftime('%Y-%m-%d %H:%M')} ({components.daypart}, {components.season})",
+        f"Week {components.week_of_month} of {components.month_name}, day {components.day_of_week + 1} ({components.day_name})",
+        f"Active holidays: {active_text}",
+        "Next triggers:",
+    ]
+    lines.extend([f"- {entry}" for entry in upcoming_lines])
+    lines.append(freeze_line)
+
+    return {"result": "\n".join(lines)}
 
 
 # --- Admin Permission Validation ---

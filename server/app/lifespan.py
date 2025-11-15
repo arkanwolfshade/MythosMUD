@@ -21,6 +21,8 @@ from ..database import get_async_session
 from ..logging.enhanced_logging_config import get_logger, update_logging_with_player_service
 from ..realtime.sse_handler import broadcast_game_event
 from ..services.catatonia_registry import CatatoniaRegistry
+from ..time.time_event_consumer import MythosTimeEventConsumer
+from ..time.time_service import get_mythos_chronicle
 
 logger = get_logger("server.lifespan")
 TICK_INTERVAL = 1.0  # seconds
@@ -93,6 +95,8 @@ async def lifespan(app: FastAPI):
     app.state.player_service = container.player_service
     app.state.room_service = container.room_service
     app.state.user_manager = container.user_manager
+    app.state.holiday_service = container.holiday_service
+    app.state.schedule_service = container.schedule_service
     app.state.room_cache_service = container.room_cache_service
     app.state.profession_cache_service = container.profession_cache_service
     app.state.prototype_registry = container.item_prototype_registry
@@ -245,6 +249,24 @@ async def lifespan(app: FastAPI):
         catatonia_observer=app.state.catatonia_registry,
     )
     logger.info("Passive sanity flux service initialized")
+
+    if (
+        container.event_bus
+        and container.holiday_service
+        and container.schedule_service
+        and app.state.npc_lifecycle_manager
+    ):
+        app.state.mythos_time_consumer = MythosTimeEventConsumer(
+            event_bus=container.event_bus,
+            chronicle=get_mythos_chronicle(),
+            holiday_service=container.holiday_service,
+            schedule_service=container.schedule_service,
+            room_service=container.room_service,
+            npc_lifecycle_manager=app.state.npc_lifecycle_manager,
+        )
+        logger.info("Mythos time consumer initialized and subscribed to hour ticks")
+    else:
+        logger.warning("Mythos time consumer not initialized due to missing dependencies")
 
     # Initialize NPC startup spawning
     from ..services.npc_startup_service import get_npc_startup_service

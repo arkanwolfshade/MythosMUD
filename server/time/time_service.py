@@ -8,7 +8,7 @@ import threading
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Protocol
 
 from prometheus_client import Counter
 
@@ -86,6 +86,18 @@ def _ensure_utc(value: datetime) -> datetime:
     return value.astimezone(UTC)
 
 
+class ChronicleLike(Protocol):
+    """
+    Minimal chronicle contract required by downstream systems.
+
+    The canonical MythosChronicle implements many more behaviors, but most consumers only
+    need the accelerated timestamp for scheduling calculations or diagnostics.
+    """
+
+    def get_current_mythos_datetime(self) -> datetime:  # pragma: no cover - Protocol definition
+        ...
+
+
 class MythosChronicle:
     """Authoritative converter between real and Mythos time."""
 
@@ -98,6 +110,7 @@ class MythosChronicle:
         self._state_file = Path(state_path) if state_path else Path(self._config.state_file)
         self._state_lock = threading.RLock()
         self._state = self._load_state()
+        self._last_freeze_state: ChronicleState | None = self._state
         logger.debug(
             "Mythos chronicle initialized",
             compression_ratio=self._compression_ratio,
@@ -250,6 +263,7 @@ class MythosChronicle:
         new_state = ChronicleState(real_timestamp=now_real, mythos_timestamp=mythos_now)
         with self._state_lock:
             self._persist_state(new_state)
+            self._last_freeze_state = new_state
             MYTHOS_FREEZE_COUNTER.inc()
             logger.info(
                 "Mythos chronicle frozen",
@@ -257,6 +271,12 @@ class MythosChronicle:
                 mythos_timestamp=new_state.mythos_timestamp.isoformat(),
             )
             return new_state
+
+    def get_last_freeze_state(self) -> ChronicleState | None:
+        """Return the most recent freeze snapshot, if any."""
+
+        with self._state_lock:
+            return self._last_freeze_state
 
     def _load_state(self) -> ChronicleState:
         """Load the chronicle state from disk or initialize from config defaults."""

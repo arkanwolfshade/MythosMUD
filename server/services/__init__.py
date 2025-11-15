@@ -20,6 +20,7 @@ from .equipment_service import (
     EquipmentServiceError,
     SlotValidationError,
 )
+from .holiday_service import HolidayService
 from .inventory_mutation_guard import InventoryMutationGuard, MutationDecision
 from .inventory_service import (
     InventoryCapacityError,
@@ -31,6 +32,7 @@ from .inventory_service import (
 from .npc_instance_service import NPCInstanceService, get_npc_instance_service, initialize_npc_instance_service
 from .npc_service import NPCService, npc_service
 from .passive_sanity_flux_service import PassiveFluxContext, PassiveSanityFluxService
+from .schedule_service import ScheduleService
 
 __all__ = [
     "NPCService",
@@ -60,4 +62,6 @@ __all__ = [
     "UnknownSanityActionError",
     "UnknownEncounterCategoryError",
     "CatatoniaRegistry",
+    "HolidayService",
+    "ScheduleService",
 ]

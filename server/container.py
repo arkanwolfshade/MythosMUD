@@ -57,7 +57,9 @@ if TYPE_CHECKING:
     from .persistence import PersistenceLayer
     from .realtime.connection_manager import ConnectionManager
     from .realtime.event_handler import RealTimeEventHandler
+    from .services.holiday_service import HolidayService
     from .services.nats_service import NATSService
+    from .services.schedule_service import ScheduleService
     from .services.user_manager import UserManager
     from .time.tick_scheduler import MythosTickScheduler
 
@@ -132,6 +134,10 @@ class ApplicationContainer:
         self.exception_tracker: ExceptionTracker | None = None
         self.monitoring_dashboard: MonitoringDashboard | None = None
         self.log_aggregator: LogAggregator | None = None
+
+        # Temporal services
+        self.holiday_service: HolidayService | None = None
+        self.schedule_service: ScheduleService | None = None
 
         # Mythos timekeeping
         self.mythos_tick_scheduler: MythosTickScheduler | None = None
@@ -242,8 +248,19 @@ class ApplicationContainer:
                 self.event_bus = EventBus()  # EventBus doesn't accept task_registry parameter
                 logger.info("Event system initialized")
 
-                from .time.tick_scheduler import MythosTickScheduler
+                from .services.holiday_service import HolidayService
+                from .services.schedule_service import ScheduleService
                 from .time.time_service import get_mythos_chronicle
+
+                self.holiday_service = HolidayService(chronicle=get_mythos_chronicle())
+                self.schedule_service = ScheduleService()
+                logger.info(
+                    "Temporal schedule and holiday services initialized",
+                    holiday_count=len(self.holiday_service.collection.holidays),
+                    schedule_entries=self.schedule_service.entry_count if self.schedule_service else 0,
+                )
+
+                from .time.tick_scheduler import MythosTickScheduler
 
                 self.mythos_tick_scheduler = MythosTickScheduler(
                     chronicle=get_mythos_chronicle(),

@@ -5,6 +5,7 @@ This module handles all room-related business logic including
 room information retrieval and room state management.
 """
 
+from collections.abc import Sequence
 from typing import Any
 
 from ..logging.enhanced_logging_config import get_logger
@@ -19,6 +20,11 @@ class RoomService:
         """Initialize the room service with a persistence layer and optional cache service."""
         self.persistence = persistence
         self.room_cache = room_cache_service
+        self._environment_state: dict[str, Any] = {
+            "daypart": "day",
+            "is_daytime": True,
+            "active_holidays": [],
+        }
         logger.info("RoomService initialized with caching")
 
     async def get_room(self, room_id: str) -> dict[str, Any] | None:
@@ -387,6 +393,47 @@ class RoomService:
             "Comprehensive room info retrieved", room_id=room_id, occupant_count=len(occupants), exit_count=len(exits)
         )
         return room_info
+
+    # --- Mythos time integration ---
+
+    def update_environment_state(
+        self,
+        *,
+        daypart: str,
+        is_daytime: bool,
+        active_holidays: Sequence[str],
+    ) -> None:
+        """Update environment metadata used for lighting and descriptive text."""
+
+        self._environment_state = {
+            "daypart": daypart,
+            "is_daytime": is_daytime,
+            "active_holidays": list(active_holidays),
+        }
+        logger.debug(
+            "Room environment state updated",
+            daypart=daypart,
+            is_daytime=is_daytime,
+            active_holiday_count=len(active_holidays),
+        )
+
+    def get_environment_state(self) -> dict[str, Any]:
+        """Return the most recent environment metadata."""
+
+        return dict(self._environment_state)
+
+    def describe_lighting(self) -> str:
+        """Return a simple textual description of the current lighting conditions."""
+
+        daypart = self._environment_state.get("daypart", "day")
+        mapping = {
+            "day": "Sunlight filters through Arkham's crooked streets.",
+            "dawn": "First light paints the asylum windows in pale gold.",
+            "dusk": "Lanterns sputter awake as shadows lengthen.",
+            "night": "Only stray gaslights hold back the night.",
+            "witching": "Reality thins and even the lamps refuse to glow.",
+        }
+        return mapping.get(daypart, "The atmosphere shifts with unseen tides.")
 
     def search_rooms_by_name(self, search_term: str) -> list[dict[str, Any]]:
         """

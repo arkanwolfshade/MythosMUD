@@ -6,6 +6,7 @@ player lookup, teleportation logic, and security checks.
 """
 
 import uuid
+from datetime import UTC, datetime
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock
 
@@ -154,6 +155,53 @@ class TestAdminStatusCommand:
         assert "Admin privileges: Inactive" in result["result"]
         assert "- Database record: Inactive" in result["result"]
         dummy_logger.log_admin_command.assert_called_once()
+
+
+class TestAdminTimeCommand:
+    """Test admin time diagnostics."""
+
+    @pytest.mark.asyncio
+    async def test_handle_admin_time_command(self, monkeypatch):
+        command_data = {"command_type": "admin", "subcommand": "time", "args": []}
+        mock_request = MagicMock()
+        app_state = SimpleNamespace()
+        mock_request.app = SimpleNamespace(state=app_state)
+
+        class FakeChronicle:
+            def get_current_mythos_datetime(self):
+                return datetime(1930, 1, 1, 10, tzinfo=UTC)
+
+            def get_calendar_components(self, mythos_dt=None):
+                return SimpleNamespace(
+                    month_name="January",
+                    day_of_month=1,
+                    week_of_month=1,
+                    day_of_week=0,
+                    day_name="Primus",
+                    daypart="day",
+                    season="winter",
+                    is_daytime=True,
+                    is_witching_hour=False,
+                )
+
+            def get_state_snapshot(self):
+                return SimpleNamespace(real_timestamp=datetime.now(UTC), mythos_timestamp=datetime(1930, 1, 1, tzinfo=UTC))
+
+            def get_last_freeze_state(self):
+                return SimpleNamespace(real_timestamp=datetime.now(UTC), mythos_timestamp=datetime(1930, 1, 1, tzinfo=UTC))
+
+        holiday_service = MagicMock()
+        holiday_service.get_active_holiday_names.return_value = ["Innsmouth Tide Offering"]
+        holiday_service.get_upcoming_summary.return_value = ["03/05 - Feast of Yig"]
+        app_state.holiday_service = holiday_service
+
+        monkeypatch.setattr(admin_commands, "get_mythos_chronicle", lambda: FakeChronicle())
+
+        result = await handle_admin_command(command_data, {"username": "Admin"}, mock_request, None, "Admin")
+
+        assert "MYTHOS TEMPORAL STATUS" in result["result"]
+        assert "Innsmouth Tide Offering" in result["result"]
+        assert "Feast of Yig" in result["result"]
 
 
 class TestTeleportEffectMessages:
