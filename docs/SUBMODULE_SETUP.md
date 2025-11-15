@@ -140,7 +140,6 @@ jobs:
       - uses: actions/checkout@v5
         with:
           submodules: recursive
-          token: ${{ secrets.MYTHOSMUD_PAT }}
 ```
 
 ## Troubleshooting
