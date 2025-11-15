@@ -24,6 +24,13 @@ jobs:
         with:
           egress-policy: audit
 
+      - name: Configure private submodule access
+        if: ${{ secrets.MYTHOSMUD_PAT != '' }}
+        shell: bash
+        run: |
+          echo "::add-mask::${{ secrets.MYTHOSMUD_PAT }}"
+          git config --global url."https://${{ secrets.MYTHOSMUD_PAT }}:x-oauth-basic@github.com/arkanwolfshade/".insteadOf "https://github.com/arkanwolfshade/"
+
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           submodules: recursive
@@ -136,6 +143,13 @@ jobs:
         uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
         with:
           egress-policy: audit
+
+      - name: Configure private submodule access
+        if: ${{ secrets.MYTHOSMUD_PAT != '' }}
+        shell: bash
+        run: |
+          echo "::add-mask::${{ secrets.MYTHOSMUD_PAT }}"
+          git config --global url."https://${{ secrets.MYTHOSMUD_PAT }}:x-oauth-basic@github.com/arkanwolfshade/".insteadOf "https://github.com/arkanwolfshade/"
 
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:

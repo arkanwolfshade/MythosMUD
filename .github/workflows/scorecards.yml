@@ -41,6 +41,13 @@ jobs:
         with:
           egress-policy: audit
 
+      - name: Configure private submodule access
+        if: ${{ secrets.MYTHOSMUD_PAT != '' }}
+        shell: bash
+        run: |
+          echo "::add-mask::${{ secrets.MYTHOSMUD_PAT }}"
+          git config --global url."https://${{ secrets.MYTHOSMUD_PAT }}:x-oauth-basic@github.com/arkanwolfshade/".insteadOf "https://github.com/arkanwolfshade/"
+
       - name: "Checkout code"
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:

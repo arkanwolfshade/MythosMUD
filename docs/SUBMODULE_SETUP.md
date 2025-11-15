@@ -92,6 +92,7 @@ Since the `mythosmud_data` repository is private, the GitHub Actions workflows n
 1. **Personal Access Token (PAT)**: Required for accessing private repositories
 2. **Token Configuration**: Use `${{ secrets.MYTHOSMUD_PAT }}` in checkout actions
 3. **Submodule checkout**: Configure `submodules: recursive` in checkout action
+4. **Credential rewrite**: Before checkout, configure git to rewrite `https://github.com/arkanwolfshade/` URLs so the PAT is injected automatically. This prevents unauthenticated `git submodule` fetches in hardened runners.
 
 ### PAT Requirements
 
@@ -124,6 +125,11 @@ permissions:
 jobs:
   build:
     steps:
+      - name: Configure private submodule access
+        if: ${{ secrets.MYTHOSMUD_PAT != '' }}
+        run: |
+          echo "::add-mask::${{ secrets.MYTHOSMUD_PAT }}"
+          git config --global url."https://${{ secrets.MYTHOSMUD_PAT }}:x-oauth-basic@github.com/arkanwolfshade/".insteadOf "https://github.com/arkanwolfshade/"
       - uses: actions/checkout@v5
         with:
           submodules: recursive
