@@ -33,6 +33,7 @@ from server.models.command import (
     StatusCommand,
     SummonCommand,
     TeleportCommand,
+    TimeCommand,
     UnaliasCommand,
     UnequipCommand,
     UnmuteCommand,
@@ -183,6 +184,11 @@ class TestCommandModels:
         """Test StatusCommand creation."""
         cmd = StatusCommand()
         assert cmd.command_type == CommandType.STATUS
+
+    def test_time_command_model(self):
+        """Test TimeCommand creation."""
+        cmd = TimeCommand()
+        assert cmd.command_type == CommandType.TIME
 
     def test_whoami_command_model(self):
         """Test WhoamiCommand creation."""
@@ -537,11 +543,17 @@ class TestCommandParser:
         cmd = self.parser.parse_command("/whoami")
         assert isinstance(cmd, WhoamiCommand)
 
+        time_cmd = self.parser.parse_command("time")
+        assert isinstance(time_cmd, TimeCommand)
+
         with pytest.raises(MythosValidationError):
             self.parser.parse_command("status now")
 
         with pytest.raises(MythosValidationError):
             self.parser.parse_command("whoami please")
+
+        with pytest.raises(MythosValidationError):
+            self.parser.parse_command("time please")
 
     def test_parse_sit_command(self):
         """Test parsing sit command."""
@@ -829,6 +841,7 @@ class TestCommandSafety:
             "lie down",
             "whoami",
             "status",
+            "time",
         ]
 
         for command in valid_commands:
@@ -866,6 +879,7 @@ class TestCommandHelp:
         assert "stand - Return to a standing posture" in help_text
         assert "lie [down] - Lie down on the ground" in help_text
         assert "whoami - Show your personal status (alias of status)" in help_text
+        assert "time - Show the current Mythos time" in help_text
 
     def test_get_command_help_specific(self):
         """Test getting specific command help."""
@@ -886,6 +900,9 @@ class TestCommandHelp:
 
         help_text = get_command_help("whoami")
         assert "whoami - Show your personal status (alias of status)" in help_text
+
+        help_text = get_command_help("time")
+        assert "time - Show the current Mythos time" in help_text
 
     def test_get_command_help_unknown(self):
         """Test getting help for unknown command."""
@@ -929,3 +946,6 @@ class TestIntegration:
         """Test help system integration."""
         help_text = get_command_help("look")
         assert "Look around or in a specific direction" in help_text
+
+        help_text = get_command_help("time")
+        assert "Show the current Mythos time" in help_text

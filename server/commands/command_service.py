@@ -71,6 +71,7 @@ from .utility_commands import (
     handle_logout_command,
     handle_quit_command,
     handle_status_command,
+    handle_time_command,
     handle_who_command,
     handle_whoami_command,
 )
@@ -133,6 +134,7 @@ class CommandService:
             "quit": handle_quit_command,
             "logout": handle_logout_command,
             "status": handle_status_command,
+            "time": handle_time_command,
             "inventory": handle_inventory_command,
             "pickup": handle_pickup_command,
             "drop": handle_drop_command,

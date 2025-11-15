@@ -7,10 +7,12 @@ to ensure robust error handling and edge case coverage.
 """
 
 from datetime import UTC, datetime, timedelta
+from types import SimpleNamespace
 from unittest.mock import MagicMock
 
 import pytest
 
+from server.commands import utility_commands
 from server.commands.utility_commands import (
     filter_players_by_name,
     format_player_entry,
@@ -19,10 +21,12 @@ from server.commands.utility_commands import (
     handle_emote_command,
     handle_quit_command,
     handle_status_command,
+    handle_time_command,
     handle_who_command,
     handle_whoami_command,
 )
 from server.exceptions import ValidationError
+from server.time.time_service import MythosCalendarComponents
 
 
 class TestGetUsernameFromUser:
@@ -698,6 +702,73 @@ class TestStatusCommand:
         )
 
         assert "Error retrieving status information: Database error" in result["result"]
+
+
+class TestTimeCommand:
+    """Test the time command handler."""
+
+    class FakeChronicle:
+        def __init__(self) -> None:
+            self._dt = datetime(1930, 1, 15, 14, 30, tzinfo=UTC)
+
+        def get_current_mythos_datetime(self) -> datetime:
+            return self._dt
+
+        def get_calendar_components(self, mythos_dt: datetime) -> MythosCalendarComponents:
+            return MythosCalendarComponents(
+                mythos_datetime=mythos_dt,
+                year=1930,
+                month=1,
+                month_name="January",
+                day_of_month=15,
+                week_of_month=3,
+                day_of_week=2,
+                day_name="Tertius",
+                season="winter",
+                is_daytime=True,
+                is_witching_hour=False,
+                daypart="afternoon",
+            )
+
+        def format_clock(self, mythos_dt: datetime | None = None) -> str:
+            return "14:30 Mythos"
+
+    class FakeHolidayService:
+        def refresh_active(self, mythos_dt: datetime) -> None:
+            self.last_refresh = mythos_dt
+
+        def get_active_holiday_names(self) -> list[str]:
+            return ["Feast of Yig"]
+
+    @pytest.mark.asyncio
+    async def test_time_command_reports_clock_and_holidays(self, monkeypatch):
+        """Ensure the time command returns formatted Mythos time information."""
+
+        fake_chronicle = self.FakeChronicle()
+        monkeypatch.setattr(utility_commands, "get_mythos_chronicle", lambda: fake_chronicle)
+
+        request = SimpleNamespace(
+            app=SimpleNamespace(state=SimpleNamespace(holiday_service=self.FakeHolidayService()))
+        )
+
+        result = await handle_time_command({}, {}, request, None, "testuser")
+
+        assert "14:30 Mythos" in result["result"]
+        assert "Feast of Yig" in result["result"]
+
+    @pytest.mark.asyncio
+    async def test_time_command_without_holiday_service(self, monkeypatch):
+        """Ensure the time command handles missing holiday services gracefully."""
+
+        fake_chronicle = self.FakeChronicle()
+        monkeypatch.setattr(utility_commands, "get_mythos_chronicle", lambda: fake_chronicle)
+
+        request = SimpleNamespace(app=SimpleNamespace(state=SimpleNamespace(holiday_service=None)))
+
+        result = await handle_time_command({}, {}, request, None, "testuser")
+
+        assert "14:30 Mythos" in result["result"]
+        assert "Active Holidays: None" in result["result"]
 
 
 class TestEmoteCommand:

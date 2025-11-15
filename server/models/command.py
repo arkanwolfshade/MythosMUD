@@ -85,6 +85,7 @@ class CommandType(str, Enum):
     STAND = "stand"
     LIE = "lie"
     GROUND = "ground"
+    TIME = "time"
     # Communication commands
     WHISPER = "whisper"
     REPLY = "reply"
@@ -480,6 +481,12 @@ class StatusCommand(BaseCommand):
     """Command for viewing player status."""
 
     command_type: Literal[CommandType.STATUS] = CommandType.STATUS
+
+
+class TimeCommand(BaseCommand):
+    """Command for viewing the current Mythos time."""
+
+    command_type: Literal[CommandType.TIME] = CommandType.TIME
 
 
 class WhoamiCommand(BaseCommand):

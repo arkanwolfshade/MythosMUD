@@ -52,6 +52,7 @@ from ..models.command import (
     SummonCommand,
     SystemCommand,
     TeleportCommand,
+    TimeCommand,
     UnaliasCommand,
     UnequipCommand,
     UnmuteCommand,
@@ -104,6 +105,7 @@ class CommandParser:
             # Utility commands
             CommandType.WHO.value: self._create_who_command,
             CommandType.STATUS.value: self._create_status_command,
+            CommandType.TIME.value: self._create_time_command,
             CommandType.WHOAMI.value: self._create_whoami_command,
             CommandType.INVENTORY.value: self._create_inventory_command,
             CommandType.PICKUP.value: self._create_pickup_command,
@@ -746,6 +748,16 @@ class CommandParser:
             )
         return StatusCommand()
 
+    def _create_time_command(self, args: list[str]) -> TimeCommand:
+        """Create TimeCommand from arguments."""
+        if args:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError, "Time command takes no arguments", context=context, logger_name=__name__
+            )
+        return TimeCommand()
+
     def _create_whoami_command(self, args: list[str]) -> WhoamiCommand:
         """Create WhoamiCommand from arguments."""
         if args:
@@ -1214,6 +1226,7 @@ class CommandParser:
             "stand": "Return to a standing posture",
             "lie": "Lie down (optionally use 'lie down')",
             "ground": "Stabilise a catatonic ally back to lucidity",
+            "time": "Show the current Mythos time",
         }
 
         if command_name:
@@ -1317,6 +1330,7 @@ def get_command_help(command_type: str | None = None) -> str:
             CommandType.SUMMON.value: "summon <prototype_id> [quantity] [item|npc] - Admin: conjure items or NPCs",
             CommandType.WHO.value: "who [player] - List online players with optional filtering",
             CommandType.STATUS.value: "status - Show your character status",
+            CommandType.TIME.value: "time - Show the current Mythos time",
             CommandType.WHOAMI.value: "whoami - Show your personal status (alias of status)",
             CommandType.INVENTORY.value: "inventory - Show your inventory",
             CommandType.PICKUP.value: "pickup <item-number> [quantity] - Pick up a room item",
@@ -1356,6 +1370,7 @@ Available Commands:
 - summon <prototype_id> [quantity] [item|npc] - Admin: conjure items or NPCs
 - who [player] - List online players with optional filtering
 - status - Show your character status
+- time - Show the current Mythos time
 - whoami - Show your personal status (alias of status)
 - inventory - Show your inventory
 - quit - Quit the game
