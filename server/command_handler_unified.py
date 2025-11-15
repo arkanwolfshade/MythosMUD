@@ -43,7 +43,7 @@ command_processor = get_command_processor()
 # Configuration
 MAX_COMMAND_LENGTH = get_config().game.max_command_length
 MAX_EXPANDED_COMMAND_LENGTH = CommandValidator.MAX_EXPANDED_COMMAND_LENGTH
-CATATONIA_ALLOWED_COMMANDS = {"help", "who", "status"}
+CATATONIA_ALLOWED_COMMANDS = {"help", "who", "status", "time"}
 
 
 class CommandRequest(BaseModel):
@@ -131,6 +131,7 @@ def _should_treat_as_emote(command: str) -> bool:
         "logout",
         "help",
         "who",
+        "time",
         "emote",
         "alias",
         "aliases",

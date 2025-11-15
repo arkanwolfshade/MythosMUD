@@ -1,6 +1,6 @@
 # MythosMUD Makefile
 
-.PHONY: help clean lint format test test-fast test-fast-serial test-comprehensive test-coverage test-client test-client-e2e test-e2e test-slow coverage build install run semgrep semgrep-autofix mypy lint-sqlalchemy setup-test-env
+.PHONY: help clean lint format test test-fast test-fast-serial test-ci test-comprehensive test-coverage test-client test-client-e2e test-e2e test-slow coverage build install run semgrep semgrep-autofix mypy lint-sqlalchemy setup-test-env
 
 # Determine project root for worktree contexts
 PROJECT_ROOT := $(shell python -c "import os; print(os.path.dirname(os.getcwd()) if 'MythosMUD-' in os.getcwd() else os.getcwd())")
@@ -86,6 +86,11 @@ test-client-e2e:
 
 ACT_RUNNER_IMAGE := mythosmud-gha-runner:latest
 ACT_RUNNER_DOCKERFILE := Dockerfile.github-runner
+
+test-ci:
+	@echo "Running CI test suite (coverage enforced)..."
+	cd $(PROJECT_ROOT) && uv run pytest server/tests/ --cov=server \
+		--cov-report=xml --cov-report=html --cov-fail-under=80 -v --tb=short
 
 test-comprehensive: setup-test-env
 	@echo "Running COMPREHENSIVE test suite via act (mirrors CI workflows)..."

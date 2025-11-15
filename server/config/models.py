@@ -10,6 +10,7 @@ the seepage of secrets into unintended dimensions."
 
 import json
 import os
+from datetime import UTC, datetime
 from typing import Any
 
 from pydantic import AliasChoices, Field, field_validator, model_validator
@@ -385,6 +386,35 @@ class ChatConfig(BaseSettings):
     model_config = {"env_prefix": "CHAT_", "case_sensitive": False, "extra": "ignore"}
 
 
+class TimeConfig(BaseSettings):
+    """Temporal compression configuration for the MythosChronicle."""
+
+    compression_ratio: float = Field(default=9.6, description="Mythos hours per real hour")
+    real_epoch_utc: datetime = Field(
+        default_factory=lambda: datetime(2025, 1, 1, tzinfo=UTC),
+        description="Reference UTC timestamp anchoring real time calculations",
+    )
+    mythos_epoch: datetime = Field(
+        default_factory=lambda: datetime(1930, 1, 1, tzinfo=UTC),
+        description="Reference Mythos timestamp paired with the real epoch",
+    )
+    state_file: str = Field(
+        default="data/system/time_state.json",
+        description="Filesystem path used to persist the chronicle state between restarts",
+    )
+
+    @field_validator("compression_ratio")
+    @classmethod
+    def validate_compression_ratio(cls, value: float) -> float:
+        """Ensure we never divide by zero or run the chronicle backward."""
+
+        if value <= 0:
+            raise ValueError("compression_ratio must be greater than zero")
+        return value
+
+    model_config = {"env_prefix": "TIME_", "case_sensitive": False, "extra": "ignore"}
+
+
 class CORSConfig(BaseSettings):
     """Cross-origin resource sharing configuration."""
 
@@ -710,6 +740,7 @@ class AppConfig(BaseSettings):
     logging: LoggingConfig = Field(default_factory=LoggingConfig)  # type: ignore[arg-type]
     game: GameConfig = Field(default_factory=GameConfig)  # type: ignore[arg-type]
     chat: ChatConfig = Field(default_factory=ChatConfig)
+    time: TimeConfig = Field(default_factory=TimeConfig)
     cors: CORSConfig = Field(default_factory=CORSConfig)
     default_player_stats: PlayerStatsConfig = Field(default_factory=PlayerStatsConfig)
 

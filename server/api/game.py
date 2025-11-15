@@ -12,6 +12,7 @@ from fastapi import APIRouter, Depends, Request
 
 from ..auth.dependencies import get_current_superuser
 from ..logging.enhanced_logging_config import get_logger
+from ..time.time_service import get_mythos_chronicle
 
 logger = get_logger(__name__)
 
@@ -94,3 +95,60 @@ async def broadcast_message(
         "broadcaster": current_user.username,
         "broadcast_stats": broadcast_stats,
     }
+
+
+def _serialize_holiday(entry: Any) -> dict[str, Any]:
+    """Convert a holiday entry into a JSON-friendly payload."""
+
+    return {
+        "id": getattr(entry, "id", ""),
+        "name": getattr(entry, "name", ""),
+        "tradition": getattr(entry, "tradition", ""),
+        "season": getattr(entry, "season", ""),
+        "duration_hours": getattr(entry, "duration_hours", 24),
+        "bonus_tags": list(getattr(entry, "bonus_tags", []) or []),
+        "notes": getattr(entry, "notes", None),
+    }
+
+
+@game_router.get("/time")
+def get_mythos_time(request: Request) -> dict[str, Any]:
+    """Return the current Mythos calendar metadata for HUD initialization."""
+
+    chronicle = get_mythos_chronicle()
+    mythos_dt = chronicle.get_current_mythos_datetime()
+    components = chronicle.get_calendar_components(mythos_dt)
+
+    container = getattr(request.app.state, "container", None)
+    holiday_service = getattr(container, "holiday_service", None) if container else None
+
+    active_holidays: list[dict[str, Any]] = []
+    upcoming_holidays: list[dict[str, Any]] = []
+
+    if holiday_service:
+        try:
+            active_entries = holiday_service.refresh_active(mythos_dt)
+            active_holidays = [_serialize_holiday(entry) for entry in active_entries]
+            upcoming_entries = holiday_service.get_upcoming_holidays(3)
+            upcoming_holidays = [_serialize_holiday(entry) for entry in upcoming_entries]
+        except Exception as exc:  # pragma: no cover - defensive logging
+            logger.warning("Failed to build holiday payload for /game/time", error=str(exc))
+
+    payload = {
+        "mythos_datetime": components.mythos_datetime.isoformat(),
+        "mythos_clock": chronicle.format_clock(components.mythos_datetime),
+        "month_name": components.month_name,
+        "day_of_month": components.day_of_month,
+        "day_name": components.day_name,
+        "week_of_month": components.week_of_month,
+        "season": components.season,
+        "daypart": components.daypart,
+        "is_daytime": components.is_daytime,
+        "is_witching_hour": components.is_witching_hour,
+        "server_timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
+        "active_holidays": active_holidays,
+        "upcoming_holidays": upcoming_holidays,
+    }
+
+    logger.debug("Mythos time payload generated", **{k: payload[k] for k in ("mythos_clock", "daypart", "season")})
+    return payload

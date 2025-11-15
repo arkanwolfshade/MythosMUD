@@ -96,7 +96,7 @@
   - Expose formatted strings for UI (`format_mythos_clock`, `format_mythos_calendar`).
 - **Configuration & persistence**
   - Persist epoch anchor (e.g., 2025-01-01 00:00 UTC ↔ Mythos Year 100, January 1 00:00) in config to keep deployments deterministic.
-  - Store holiday metadata in `data/calendar/holidays.json`, capturing Gregorian anchor date, Mythos month/day names, recurrence flags, and optional “prime cycle” decorators.
+- Store holiday metadata in `data/<environment>/calendar/holidays.json` (e.g., `data/local/calendar/holidays.json`), capturing Gregorian anchor date, Mythos month/day names, recurrence flags, and optional “prime cycle” decorators.
   - Cache frequently used conversions with structlog-aware tracing (`get_logger` from enhanced logging).
 - **Integration points**
   - **Event scheduler**: extend existing task registry (`server/app/task_registry.py`) with Mythos-aware cron expressions so designers can schedule on Mythos midnight, equinox markers, etc.
@@ -109,6 +109,18 @@
   - Integration tests covering scheduler triggers around day/night transitions and holiday recurrence rotation.
   - Load-test scenario to ensure accelerated cycling doesn’t overload logging or event queues (simulate multiple Mythos days in quick succession).
 
+## 4. Client HUD Implementation
+
+- **Chronicle bootstrap**
+  - The client now calls `/game/time` once after authentication to hydrate the HUD immediately instead of waiting for the next hour tick.
+  - The response mirrors the broadcast payload so designers can experiment with calendar data without reconnecting.
+- **Mythos hour broadcasts**
+  - `MythosTimeEventConsumer` publishes `mythos_time_update` SSE packets every accelerated hour (and whenever a holiday/schedule transition occurs) via `broadcast_game_event`.
+  - Each payload includes clock string, date line, daypart, season, schedule summaries, and serialized holiday metadata.
+- **HUD rendering**
+  - `MythosTimeHud` displays connection state, formatted Mythos time, and contextual cues (daypart/season/witching-hour flag).
+  - Active holidays render through `HolidayBanner`, using tradition-specific palettes and badge lists for `bonus_tags`.
+  - When the daypart or holiday roster changes, `GameTerminalWithPanels` injects atmospheric system messages (e.g., witching hour warnings, holiday start/end notifications) so log archives capture the state shifts.
 ---
 [^1]: <https://www.mudconnect.com/mudfaq/mudfaq-p4.html>
 [^2]: <https://wotmud.fandom.com/wiki/Calendar>

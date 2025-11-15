@@ -379,3 +379,24 @@ class PlayerRespawnedEvent(BaseEvent):
         """Initialize the event with proper type."""
         super().__post_init__()
         self.event_type = "PlayerRespawnedEvent"
+
+
+@dataclass
+class MythosHourTickEvent(BaseEvent):
+    """Event fired when the accelerated Mythos clock rolls over to a new hour."""
+
+    mythos_datetime: datetime
+    month_name: str
+    day_of_month: int
+    week_of_month: int
+    day_of_week: int
+    day_name: str
+    season: str
+    is_daytime: bool
+    is_witching_hour: bool
+    daypart: str
+    active_holidays: list[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+        self.event_type = "MythosHourTickEvent"

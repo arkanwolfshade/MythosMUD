@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.mythosmud.local/calendar/holiday.schema.json",
+  "title": "MythosMUD Holiday Collection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["holidays"],
+  "properties": {
+    "holidays": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/holiday" }
+    }
+  },
+  "$defs": {
+    "holiday": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "tradition",
+        "month",
+        "day",
+        "duration_hours",
+        "season",
+        "bonus_tags"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$",
+          "minLength": 3
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tradition": {
+          "type": "string",
+          "enum": ["catholic", "islamic", "jewish", "neo_pagan", "mythos"]
+        },
+        "month": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        },
+        "day": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30
+        },
+        "duration_hours": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 48
+        },
+        "season": {
+          "type": "string",
+          "enum": ["winter", "spring", "summer", "autumn"]
+        },
+        "bonus_tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9_\\-]+$"
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

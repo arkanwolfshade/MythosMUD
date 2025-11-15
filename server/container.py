@@ -34,6 +34,7 @@ import json
 import os
 import sqlite3
 import threading
+from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
@@ -57,10 +58,19 @@ if TYPE_CHECKING:
     from .persistence import PersistenceLayer
     from .realtime.connection_manager import ConnectionManager
     from .realtime.event_handler import RealTimeEventHandler
+    from .services.holiday_service import HolidayService
     from .services.nats_service import NATSService
+    from .services.schedule_service import ScheduleService
     from .services.user_manager import UserManager
+    from .time.tick_scheduler import MythosTickScheduler
 
 from .logging.enhanced_logging_config import get_logger
+from .utils.project_paths import (
+    get_calendar_paths_for_environment,
+    get_environment_data_dir,
+    get_project_root,
+    normalize_environment,
+)
 
 logger = get_logger(__name__)
 
@@ -132,6 +142,13 @@ class ApplicationContainer:
         self.monitoring_dashboard: MonitoringDashboard | None = None
         self.log_aggregator: LogAggregator | None = None
 
+        # Temporal services
+        self.holiday_service: HolidayService | None = None
+        self.schedule_service: ScheduleService | None = None
+
+        # Mythos timekeeping
+        self.mythos_tick_scheduler: MythosTickScheduler | None = None
+
         # Item system services
         self.item_prototype_registry: PrototypeRegistry | None = None
         self.item_factory: ItemFactory | None = None
@@ -139,6 +156,7 @@ class ApplicationContainer:
         # Initialization state
         self._initialized: bool = False
         self._initialization_lock = asyncio.Lock()
+        self._project_root: Path | None = None
 
         logger.info("ApplicationContainer created (not yet initialized)")
 
@@ -210,6 +228,8 @@ class ApplicationContainer:
 
                 self.config = get_config()
                 logger.info("Configuration loaded", environment=self.config.logging.environment)
+                project_root = self._get_project_root()
+                normalized_environment = normalize_environment(self.config.logging.environment)
 
                 # Phase 2: Database infrastructure
                 logger.debug("Initializing database infrastructure...")
@@ -237,6 +257,48 @@ class ApplicationContainer:
 
                 self.event_bus = EventBus()  # EventBus doesn't accept task_registry parameter
                 logger.info("Event system initialized")
+
+                from .services.holiday_service import HolidayService
+                from .services.schedule_service import ScheduleService
+                from .time.time_service import get_mythos_chronicle
+
+                holidays_path, schedules_dir = get_calendar_paths_for_environment(normalized_environment)
+                self.holiday_service = HolidayService(
+                    chronicle=get_mythos_chronicle(),
+                    data_path=holidays_path,
+                    environment=normalized_environment,
+                )
+                self.schedule_service = ScheduleService(
+                    schedule_dir=schedules_dir,
+                    environment=normalized_environment,
+                )
+                logger.info(
+                    "Temporal schedule and holiday services initialized",
+                    holiday_count=len(self.holiday_service.collection.holidays),
+                    schedule_entries=self.schedule_service.entry_count if self.schedule_service else 0,
+                )
+
+                from .time.tick_scheduler import MythosTickScheduler
+
+                holiday_service = self.holiday_service
+
+                def _resolve_hourly_holidays(mythos_dt: datetime) -> list[str]:
+                    if not holiday_service:
+                        return []
+                    try:
+                        active = holiday_service.refresh_active(mythos_dt)
+                        return [entry.name for entry in active]
+                    except Exception as exc:  # pragma: no cover - defensive logging
+                        logger.warning("Failed to resolve holiday window for tick scheduler", error=str(exc))
+                        return []
+
+                self.mythos_tick_scheduler = MythosTickScheduler(
+                    chronicle=get_mythos_chronicle(),
+                    event_bus=self.event_bus,
+                    task_registry=self.task_registry,
+                    holiday_resolver=_resolve_hourly_holidays,
+                )
+                logger.info("Mythos tick scheduler prepared")
 
                 # Phase 5: Persistence layer (both sync and async versions)
                 logger.debug("Initializing persistence layer...")
@@ -315,14 +377,7 @@ class ApplicationContainer:
                 self.room_service = RoomService(persistence=self.persistence)
 
                 # UserManager requires environment-aware data directory
-                current_file = Path(__file__).resolve()
-                project_root = current_file.parent
-                while project_root.parent != project_root:
-                    if (project_root / "pyproject.toml").exists():
-                        break
-                    project_root = project_root.parent
-
-                user_management_dir = project_root / "data" / self.config.logging.environment / "user_management"
+                user_management_dir = get_environment_data_dir(normalized_environment) / "user_management"
                 self.user_manager = UserManager(data_dir=user_management_dir)
                 if self.nats_message_handler is not None:
                     self.nats_message_handler.user_manager = self.user_manager
@@ -600,6 +655,13 @@ class ApplicationContainer:
         except Exception as e:
             logger.error("Error during ApplicationContainer shutdown", error=str(e), exc_info=True)
             # Don't re-raise - best effort cleanup
+
+    def _get_project_root(self) -> Path:
+        """Return and cache the repository root directory."""
+
+        if self._project_root is None:
+            self._project_root = get_project_root()
+        return self._project_root
 
     def get_service(self, service_name: str):
         """

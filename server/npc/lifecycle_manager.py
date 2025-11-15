@@ -12,6 +12,7 @@ have proper birth, existence, and eventual return to the void.
 """
 
 import time
+from collections.abc import Sequence
 from enum import Enum
 from typing import Any
 
@@ -21,6 +22,7 @@ from server.models.npc import NPCDefinition
 from server.npc.behaviors import NPCBase
 from server.npc.population_control import NPCPopulationController
 from server.npc.spawning_service import NPCSpawningService
+from server.schemas.calendar import ScheduleEntry
 
 from ..logging.enhanced_logging_config import get_logger
 from ..persistence import get_persistence
@@ -187,6 +189,7 @@ class NPCLifecycleManager:
         self.active_npcs: dict[str, NPCBase] = {}
         self.respawn_queue: dict[str, dict[str, Any]] = {}  # npc_id -> respawn_data
         self.death_suppression: dict[str, float] = {}  # npc_id -> death_timestamp
+        self.active_schedule_ids: list[str] = []
 
         # Configuration - Import values from NPCMaintenanceConfig for consistency
         # AI Agent: CRITICAL FIX - Use configuration values instead of hardcoded values
@@ -335,6 +338,15 @@ class NPCLifecycleManager:
 
         except Exception as e:
             logger.error("Error handling NPC death event", npc_id=event.npc_id, error=str(e))
+
+    def apply_schedule_state(self, schedules: Sequence[ScheduleEntry]) -> None:
+        """Record the schedule categories currently active for NPC routines."""
+
+        self.active_schedule_ids = [entry.id for entry in schedules]
+        logger.debug(
+            "NPC schedule state updated",
+            active_schedule_ids=self.active_schedule_ids,
+        )
 
     def spawn_npc(self, definition: NPCDefinition, room_id: str, reason: str = "manual") -> str | None:
         """
