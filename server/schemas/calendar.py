@@ -22,7 +22,7 @@ _MYTHOS_WEEKDAYS = ["Primus", "Secundus", "Tertius", "Quartus", "Quintus", "Sext
 
 
 class HolidayEntry(BaseModel):
-    """Single holiday definition loaded from data/calendar/holidays.json."""
+    """Single holiday definition loaded from data/<env>/calendar/holidays.json."""
 
     id: str = Field(pattern=r"^[a-z0-9_]+$", min_length=3)
     name: str
@@ -84,7 +84,7 @@ class HolidayCollection(BaseModel):
 
 
 class ScheduleEntry(BaseModel):
-    """Single schedule block describing routine availability."""
+    """Single schedule block describing routine availability (`data/<env>/calendar/schedules/*.json`)."""
 
     id: str = Field(pattern=r"^[a-z0-9_]+$", min_length=3)
     name: str

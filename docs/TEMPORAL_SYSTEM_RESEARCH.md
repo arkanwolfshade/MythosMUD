@@ -96,7 +96,7 @@
   - Expose formatted strings for UI (`format_mythos_clock`, `format_mythos_calendar`).
 - **Configuration & persistence**
   - Persist epoch anchor (e.g., 2025-01-01 00:00 UTC ↔ Mythos Year 100, January 1 00:00) in config to keep deployments deterministic.
-  - Store holiday metadata in `data/calendar/holidays.json`, capturing Gregorian anchor date, Mythos month/day names, recurrence flags, and optional “prime cycle” decorators.
+- Store holiday metadata in `data/<environment>/calendar/holidays.json` (e.g., `data/local/calendar/holidays.json`), capturing Gregorian anchor date, Mythos month/day names, recurrence flags, and optional “prime cycle” decorators.
   - Cache frequently used conversions with structlog-aware tracing (`get_logger` from enhanced logging).
 - **Integration points**
   - **Event scheduler**: extend existing task registry (`server/app/task_registry.py`) with Mythos-aware cron expressions so designers can schedule on Mythos midnight, equinox markers, etc.

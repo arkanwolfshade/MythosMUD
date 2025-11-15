@@ -6,6 +6,7 @@ from pathlib import Path
 from server.logging.enhanced_logging_config import get_logger
 from server.schemas.calendar import HolidayCollection, HolidayEntry
 from server.time.time_service import ChronicleLike
+from server.utils.project_paths import get_calendar_paths_for_environment, normalize_environment
 
 logger = get_logger(__name__)
 
@@ -23,19 +24,33 @@ class HolidayService:
         self,
         *,
         chronicle: ChronicleLike,
-        data_path: Path | str = Path("data/calendar/holidays.json"),
+        data_path: Path | str | None = None,
         collection: HolidayCollection | None = None,
+        environment: str | None = None,
     ) -> None:
         self._chronicle = chronicle
-        self._data_path = Path(data_path)
-        self._collection = collection or HolidayCollection.load_file(self._data_path)
+        self._environment = normalize_environment(environment)
+
+        resolved_data_path: Path | None = Path(data_path) if data_path is not None else None
+        if resolved_data_path is None and collection is None:
+            resolved_data_path = get_calendar_paths_for_environment(self._environment)[0]
+        self._data_path = resolved_data_path
+
+        if collection is None:
+            if self._data_path is None:
+                raise ValueError("A data_path must be provided when collection is omitted.")
+            self._collection = HolidayCollection.load_file(self._data_path)
+        else:
+            self._collection = collection
+
         self._collection.ensure_unique_ids()
         self._active_started: dict[str, datetime] = {}
         self._last_refresh: datetime | None = None
         logger.info(
             "Holiday service initialized",
             holiday_count=len(self._collection.holidays),
-            data_path=str(self._data_path),
+            data_path=str(self._data_path) if self._data_path else "<collection-provided>",
+            environment=self._environment,
         )
 
     def refresh_active(self, mythos_dt: datetime | None = None) -> list[HolidayEntry]:

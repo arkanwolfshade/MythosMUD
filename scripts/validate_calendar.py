@@ -16,6 +16,11 @@ from server.schemas.calendar import (  # noqa: E402  # pylint: disable=wrong-imp
     extract_observance_ids,
     load_schedule_directory,
 )
+from server.utils.project_paths import (  # noqa: E402  # pylint: disable=wrong-import-position
+    get_calendar_paths_for_environment,
+    get_project_root,
+    normalize_environment,
+)
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -23,20 +28,26 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--holidays",
         type=Path,
-        default=Path("data/calendar/holidays.json"),
-        help="Path to holidays JSON file (default: data/calendar/holidays.json)",
+        default=None,
+        help="Path to holidays JSON file (default: derived from --environment)",
     )
     parser.add_argument(
         "--schedules-dir",
         type=Path,
-        default=Path("data/calendar/schedules"),
-        help="Directory containing schedule JSON files (default: data/calendar/schedules)",
+        default=None,
+        help="Directory containing schedule JSON files (default: derived from --environment)",
     )
     parser.add_argument(
         "--doc",
         type=Path,
-        default=Path("docs/MYTHOS_HOLIDAY_CANDIDATES.md"),
+        default=get_project_root() / "docs" / "MYTHOS_HOLIDAY_CANDIDATES.md",
         help="Markdown document used to cross-check holiday coverage.",
+    )
+    parser.add_argument(
+        "--environment",
+        choices=["local", "unit_test", "e2e_test", "production"],
+        default="local",
+        help="Environment whose data directory should be validated (default: local).",
     )
     parser.add_argument("--quiet", action="store_true", help="Suppress success output.")
     return parser.parse_args(argv)
@@ -50,8 +61,13 @@ def load_document_ids(doc_path: Path) -> set[str]:
 
 def run_validation(args: argparse.Namespace) -> int:
     errors: list[str] = []
+    normalized_env = normalize_environment(args.environment)
+    default_holidays, default_schedules = get_calendar_paths_for_environment(normalized_env)
+    holidays_path = args.holidays or default_holidays
+    schedules_dir = args.schedules_dir or default_schedules
+
     try:
-        holidays = HolidayCollection.load_file(args.holidays)
+        holidays = HolidayCollection.load_file(holidays_path)
         holidays.ensure_unique_ids()
     except (FileNotFoundError, ValidationError, ValueError) as exc:
         errors.append(f"Holidays validation failed: {exc}")
@@ -66,7 +82,7 @@ def run_validation(args: argparse.Namespace) -> int:
                 errors.append(f"Holiday JSON missing entries referenced in documentation: {', '.join(sorted(missing))}")
 
     try:
-        schedule_files = load_schedule_directory(args.schedules_dir)
+        schedule_files = load_schedule_directory(schedules_dir)
     except FileNotFoundError as exc:
         errors.append(str(exc))
     else:

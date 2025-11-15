@@ -6,9 +6,10 @@ import sys
 from pathlib import Path
 
 from server.schemas.calendar import HolidayCollection
+from server.utils.project_paths import get_environment_data_dir, get_project_root
 
-REPO_ROOT = Path(__file__).resolve().parents[4]
-DATA_DIR = REPO_ROOT / "data" / "calendar"
+REPO_ROOT = get_project_root()
+DATA_DIR = get_environment_data_dir("unit_test") / "calendar"
 DOC_PATH = REPO_ROOT / "docs" / "MYTHOS_HOLIDAY_CANDIDATES.md"
 
 

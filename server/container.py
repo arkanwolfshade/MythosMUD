@@ -65,6 +65,12 @@ if TYPE_CHECKING:
     from .time.tick_scheduler import MythosTickScheduler
 
 from .logging.enhanced_logging_config import get_logger
+from .utils.project_paths import (
+    get_calendar_paths_for_environment,
+    get_environment_data_dir,
+    get_project_root,
+    normalize_environment,
+)
 
 logger = get_logger(__name__)
 
@@ -150,6 +156,7 @@ class ApplicationContainer:
         # Initialization state
         self._initialized: bool = False
         self._initialization_lock = asyncio.Lock()
+        self._project_root: Path | None = None
 
         logger.info("ApplicationContainer created (not yet initialized)")
 
@@ -221,6 +228,8 @@ class ApplicationContainer:
 
                 self.config = get_config()
                 logger.info("Configuration loaded", environment=self.config.logging.environment)
+                project_root = self._get_project_root()
+                normalized_environment = normalize_environment(self.config.logging.environment)
 
                 # Phase 2: Database infrastructure
                 logger.debug("Initializing database infrastructure...")
@@ -253,8 +262,16 @@ class ApplicationContainer:
                 from .services.schedule_service import ScheduleService
                 from .time.time_service import get_mythos_chronicle
 
-                self.holiday_service = HolidayService(chronicle=get_mythos_chronicle())
-                self.schedule_service = ScheduleService()
+                holidays_path, schedules_dir = get_calendar_paths_for_environment(normalized_environment)
+                self.holiday_service = HolidayService(
+                    chronicle=get_mythos_chronicle(),
+                    data_path=holidays_path,
+                    environment=normalized_environment,
+                )
+                self.schedule_service = ScheduleService(
+                    schedule_dir=schedules_dir,
+                    environment=normalized_environment,
+                )
                 logger.info(
                     "Temporal schedule and holiday services initialized",
                     holiday_count=len(self.holiday_service.collection.holidays),
@@ -360,14 +377,7 @@ class ApplicationContainer:
                 self.room_service = RoomService(persistence=self.persistence)
 
                 # UserManager requires environment-aware data directory
-                current_file = Path(__file__).resolve()
-                project_root = current_file.parent
-                while project_root.parent != project_root:
-                    if (project_root / "pyproject.toml").exists():
-                        break
-                    project_root = project_root.parent
-
-                user_management_dir = project_root / "data" / self.config.logging.environment / "user_management"
+                user_management_dir = get_environment_data_dir(normalized_environment) / "user_management"
                 self.user_manager = UserManager(data_dir=user_management_dir)
                 if self.nats_message_handler is not None:
                     self.nats_message_handler.user_manager = self.user_manager
@@ -645,6 +655,13 @@ class ApplicationContainer:
         except Exception as e:
             logger.error("Error during ApplicationContainer shutdown", error=str(e), exc_info=True)
             # Don't re-raise - best effort cleanup
+
+    def _get_project_root(self) -> Path:
+        """Return and cache the repository root directory."""
+
+        if self._project_root is None:
+            self._project_root = get_project_root()
+        return self._project_root
 
     def get_service(self, service_name: str):
         """
