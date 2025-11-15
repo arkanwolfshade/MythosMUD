@@ -59,6 +59,7 @@ if TYPE_CHECKING:
     from .realtime.event_handler import RealTimeEventHandler
     from .services.nats_service import NATSService
     from .services.user_manager import UserManager
+    from .time.tick_scheduler import MythosTickScheduler
 
 from .logging.enhanced_logging_config import get_logger
 
@@ -131,6 +132,9 @@ class ApplicationContainer:
         self.exception_tracker: ExceptionTracker | None = None
         self.monitoring_dashboard: MonitoringDashboard | None = None
         self.log_aggregator: LogAggregator | None = None
+
+        # Mythos timekeeping
+        self.mythos_tick_scheduler: MythosTickScheduler | None = None
 
         # Item system services
         self.item_prototype_registry: PrototypeRegistry | None = None
@@ -237,6 +241,16 @@ class ApplicationContainer:
 
                 self.event_bus = EventBus()  # EventBus doesn't accept task_registry parameter
                 logger.info("Event system initialized")
+
+                from .time.tick_scheduler import MythosTickScheduler
+                from .time.time_service import get_mythos_chronicle
+
+                self.mythos_tick_scheduler = MythosTickScheduler(
+                    chronicle=get_mythos_chronicle(),
+                    event_bus=self.event_bus,
+                    task_registry=self.task_registry,
+                )
+                logger.info("Mythos tick scheduler prepared")
 
                 # Phase 5: Persistence layer (both sync and async versions)
                 logger.debug("Initializing persistence layer...")

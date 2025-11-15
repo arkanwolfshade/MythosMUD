@@ -285,6 +285,11 @@ async def lifespan(app: FastAPI):
     main_loop = asyncio.get_running_loop()
     container.event_bus.set_main_loop(main_loop)
 
+    if container.mythos_tick_scheduler is not None:
+        await container.mythos_tick_scheduler.start()
+        app.state.mythos_tick_scheduler = container.mythos_tick_scheduler
+        logger.info("Mythos tick scheduler running")
+
     logger.info("Real-time event handler initialized")
 
     # Initialize NATS-dependent services (NATS already initialized in container)
@@ -395,6 +400,13 @@ async def lifespan(app: FastAPI):
                 await app.state.connection_manager.force_cleanup()
             except Exception as e:
                 logger.error("Error during connection manager cleanup", error=str(e))
+
+        if hasattr(app.state, "mythos_tick_scheduler") and app.state.mythos_tick_scheduler:
+            logger.info("Stopping Mythos tick scheduler")
+            try:
+                await app.state.mythos_tick_scheduler.stop()
+            except Exception as e:
+                logger.error("Error stopping Mythos tick scheduler", error=str(e))
 
         # Phase 3: TaskRegistry shutdown coordination
         if container.task_registry:

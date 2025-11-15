@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import calendar
 import json
 import os
 import tempfile
@@ -29,6 +30,22 @@ MYTHOS_FREEZE_COUNTER = Counter(
     "Total number of freeze events captured for deterministic resume operations",
 )
 
+_MYTHOS_WEEKDAY_NAMES = ["Primus", "Secundus", "Tertius", "Quartus", "Quintus", "Sextus"]
+_SEASON_BY_MONTH = {
+    12: "winter",
+    1: "winter",
+    2: "winter",
+    3: "spring",
+    4: "spring",
+    5: "spring",
+    6: "summer",
+    7: "summer",
+    8: "summer",
+    9: "autumn",
+    10: "autumn",
+    11: "autumn",
+}
+
 
 @dataclass(frozen=True)
 class ChronicleState:
@@ -41,6 +58,24 @@ class ChronicleState:
 
     real_timestamp: datetime
     mythos_timestamp: datetime
+
+
+@dataclass(frozen=True)
+class MythosCalendarComponents:
+    """Structured view of the accelerated calendar for downstream systems."""
+
+    mythos_datetime: datetime
+    year: int
+    month: int
+    month_name: str
+    day_of_month: int
+    week_of_month: int
+    day_of_week: int
+    day_name: str
+    season: str
+    is_daytime: bool
+    is_witching_hour: bool
+    daypart: str
 
 
 def _ensure_utc(value: datetime) -> datetime:
@@ -128,6 +163,57 @@ class MythosChronicle:
 
         target = mythos_dt or self.get_current_mythos_datetime()
         return target.strftime("%H:%M Mythos")
+
+    def get_calendar_components(self, mythos_dt: datetime | None = None) -> MythosCalendarComponents:
+        """Return normalized calendar metadata for the supplied Mythos timestamp."""
+
+        normalized = _ensure_utc(mythos_dt or self.get_current_mythos_datetime())
+        day_of_month = normalized.day
+        week_of_month = ((day_of_month - 1) // 6) + 1
+        day_of_week = (day_of_month - 1) % 6
+        components = MythosCalendarComponents(
+            mythos_datetime=normalized,
+            year=normalized.year,
+            month=normalized.month,
+            month_name=calendar.month_name[normalized.month],
+            day_of_month=day_of_month,
+            week_of_month=week_of_month,
+            day_of_week=day_of_week,
+            day_name=_MYTHOS_WEEKDAY_NAMES[day_of_week],
+            season=_season_for_month(normalized.month),
+            is_daytime=self.is_daytime(normalized),
+            is_witching_hour=self.is_witching_hour(normalized),
+            daypart=self.get_daypart(normalized),
+        )
+        return components
+
+    def is_witching_hour(self, mythos_dt: datetime | None = None) -> bool:
+        """Return True when the timestamp falls within the 23:00–01:00 witching window."""
+
+        target = _ensure_utc(mythos_dt or self.get_current_mythos_datetime())
+        hour = target.hour
+        return hour == 23 or hour == 0
+
+    def is_daytime(self, mythos_dt: datetime | None = None) -> bool:
+        """Return True when the timestamp is between dawn (06:00) and dusk (18:00)."""
+
+        target = _ensure_utc(mythos_dt or self.get_current_mythos_datetime())
+        return 6 <= target.hour < 18
+
+    def get_daypart(self, mythos_dt: datetime | None = None) -> str:
+        """Return a coarse textual descriptor for the given timestamp."""
+
+        target = _ensure_utc(mythos_dt or self.get_current_mythos_datetime())
+        hour = target.hour
+        if self.is_witching_hour(target):
+            return "witching"
+        if 5 <= hour < 7:
+            return "dawn"
+        if 18 <= hour < 20:
+            return "dusk"
+        if self.is_daytime(target):
+            return "day"
+        return "night"
 
     def advance_mythos(self, delta_hours: float) -> ChronicleState:
         """
@@ -228,3 +314,9 @@ def get_mythos_chronicle() -> MythosChronicle:
     """Convenience wrapper mirroring other service access patterns."""
 
     return MythosChronicle.get_instance()
+
+
+def _season_for_month(month: int) -> str:
+    """Return the lore-friendly season label for the provided month number."""
+
+    return _SEASON_BY_MONTH.get(month, "unknown")

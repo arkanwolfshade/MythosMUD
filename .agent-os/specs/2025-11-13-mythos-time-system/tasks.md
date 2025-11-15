@@ -8,11 +8,11 @@
   - [x] 1.3 Integrate Prometheus metrics and structured logging for chronicle operations
   - [x] 1.4 Verify all tests pass
 
-- [ ] 2. Implement hourly tick engine and scheduler integration
-  - [ ] 2.1 Write integration tests for hourly tick emissions and event payloads
-  - [ ] 2.2 Wire chronicle into task registry and EventBus for `mythos.hour.tick`
-  - [ ] 2.3 Provide helper APIs (e.g., witching hour checks) for dependent modules
-  - [ ] 2.4 Verify all tests pass
+- [x] 2. Implement hourly tick engine and scheduler integration
+  - [x] 2.1 Write integration tests for hourly tick emissions and event payloads
+  - [x] 2.2 Wire chronicle into task registry and EventBus for `mythos.hour.tick`
+  - [x] 2.3 Provide helper APIs (e.g., witching hour checks) for dependent modules
+  - [x] 2.4 Verify all tests pass
 
 - [ ] 3. Create calendar schemas and JSON ingestion pipeline
   - [ ] 3.1 Write validation tests covering holiday JSON and CLI validator behavior
