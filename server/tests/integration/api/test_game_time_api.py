@@ -4,21 +4,17 @@ from datetime import UTC, datetime
 from types import SimpleNamespace
 from unittest.mock import Mock
 
-from fastapi.testclient import TestClient
+import pytest
 
 from server.api import game
-from server.main import app
 
 
 class TestGameTimeApi:
     """Integration coverage for the /game/time endpoint."""
 
-    def setup_method(self) -> None:
-        self.client = TestClient(app)
-
-    def teardown_method(self) -> None:
-        if hasattr(app.state, "container"):
-            delattr(app.state, "container")
+    @pytest.fixture(autouse=True)
+    def _setup_client(self, container_test_client):
+        self.client = container_test_client
 
     def test_game_time_endpoint_returns_calendar_payload(self, monkeypatch) -> None:
         """Ensure the endpoint surfaces formatted Mythos time metadata."""
@@ -52,13 +48,12 @@ class TestGameTimeApi:
             notes="Serpentine reverence",
         )
 
-        app.state.container = SimpleNamespace(
-            holiday_service=SimpleNamespace(
-                refresh_active=lambda _dt: [holiday_entry],
-                get_upcoming_holidays=lambda count=3: [holiday_entry],
-                get_active_holiday_names=lambda: [holiday_entry.name],
-                get_upcoming_summary=lambda count=3: ["01/06 - Feast of Yig"],
-            )
+        # Patch the container's holiday service exposed on the client app
+        self.client.app.state.container.holiday_service = SimpleNamespace(
+            refresh_active=lambda _dt: [holiday_entry],
+            get_upcoming_holidays=lambda count=3: [holiday_entry],
+            get_active_holiday_names=lambda: [holiday_entry.name],
+            get_upcoming_summary=lambda count=3: ["01/06 - Feast of Yig"],
         )
 
         response = self.client.get("/game/time")

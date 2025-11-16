@@ -15,9 +15,7 @@ from datetime import UTC, datetime
 from unittest.mock import Mock
 
 import pytest
-from fastapi.testclient import TestClient
 
-from server.app.factory import create_app
 from server.events.event_types import PlayerEnteredRoom
 from server.models.room import Room
 from server.services.room_sync_service import RoomSyncService
@@ -342,10 +340,9 @@ class TestIntegrationScenarios:
     """Integration test scenarios for room synchronization."""
 
     @pytest.fixture
-    def client(self):
-        """Create a test client."""
-        app = create_app()
-        return TestClient(app)
+    def client(self, container_test_client):
+        """Create a test client with ApplicationContainer initialized."""
+        return container_test_client
 
     @pytest.fixture
     def room_sync_service(self):
