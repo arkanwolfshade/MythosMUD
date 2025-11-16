@@ -214,6 +214,35 @@ def container_test_client():
 
         logger.info("TestClient created with container services")
 
+        # CRITICAL: Dispose database engines and reset singletons before creating TestClient
+        # TestClient creates its own event loop for each request, and asyncpg connections
+        # must be created in the same loop they're used in
+        # We'll dispose them here and reset singletons so engines are recreated lazily
+        # in TestClient's loop when needed
+        try:
+            if container.database_manager and container.database_manager.engine:
+                loop.run_until_complete(container.database_manager.close())
+        except Exception as e:
+            logger.warning("Error disposing database engine before TestClient creation", error=str(e))
+
+        try:
+            from server.npc_database import close_npc_db
+            loop.run_until_complete(close_npc_db())
+        except Exception as e:
+            logger.warning("Error disposing NPC database engine before TestClient creation", error=str(e))
+
+        # Reset DatabaseManager singleton so it gets recreated in TestClient's loop
+        from server.database import DatabaseManager
+        DatabaseManager.reset_instance()
+
+        # Reset NPC database global state
+        import server.npc_database
+        server.npc_database._npc_engine = None
+        server.npc_database._npc_async_session_maker = None
+        server.npc_database._npc_database_url = None
+
+        # Now create TestClient - it will create its own loop for each request
+        # and engines will be recreated lazily when needed in that loop
         client = TestClient(app)
 
         yield client

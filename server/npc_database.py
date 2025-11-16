@@ -33,6 +33,7 @@ logger = get_logger(__name__)
 _npc_engine: AsyncEngine | None = None
 _npc_async_session_maker: async_sessionmaker | None = None
 _npc_database_url: str | None = None
+_npc_creation_loop_id: int | None = None  # Track which loop created the NPC engine
 
 
 def _initialize_npc_database() -> None:
@@ -129,6 +130,14 @@ def _initialize_npc_database() -> None:
     )
 
     logger.info("NPC Database session maker created")
+    # Track the event loop that created this engine
+    try:
+        loop = asyncio.get_running_loop()
+        global _npc_creation_loop_id
+        _npc_creation_loop_id = id(loop)
+    except RuntimeError:
+        # No running loop - that's okay, we'll track it as None
+        _npc_creation_loop_id = None
 
 
 def get_npc_engine() -> AsyncEngine | None:
@@ -141,8 +150,44 @@ def get_npc_engine() -> AsyncEngine | None:
     Raises:
         ValidationError: If NPC database cannot be initialized
     """
+    global _npc_engine, _npc_async_session_maker, _npc_creation_loop_id
+
     if _npc_engine is None:
         _initialize_npc_database()
+
+    # CRITICAL: Check if we're in a different event loop than when engine was created
+    # asyncpg connections must be created in the same loop they're used in
+    try:
+        current_loop = asyncio.get_running_loop()
+        current_loop_id = id(current_loop)
+        if _npc_creation_loop_id is not None and current_loop_id != _npc_creation_loop_id:
+            logger.warning(
+                "Event loop changed, disposing and recreating NPC database engine",
+                old_loop_id=_npc_creation_loop_id,
+                new_loop_id=current_loop_id,
+            )
+            # Dispose old engine (best effort, may fail if loop is closed)
+            try:
+                if _npc_engine is not None:
+                    # Try to dispose, but don't wait for it if loop is closed
+                    try:
+                        loop = asyncio.get_running_loop()
+                        if not loop.is_closed():
+                            # Schedule disposal, but don't block
+                            asyncio.create_task(_npc_engine.dispose())
+                    except RuntimeError:
+                        # Loop is closed or not running - just set to None
+                        pass
+            except Exception as e:
+                logger.warning("Error disposing NPC engine during loop change", error=str(e))
+            # Reset and recreate in current loop
+            _npc_engine = None
+            _npc_async_session_maker = None
+            _initialize_npc_database()
+    except RuntimeError:
+        # No running loop - that's okay, engine will be created when needed
+        pass
+
     return _npc_engine
 
 

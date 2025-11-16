@@ -54,6 +54,7 @@ class DatabaseManager:
         self.session_maker: async_sessionmaker | None = None
         self.database_url: str | None = None
         self._initialized: bool = False
+        self._creation_loop_id: int | None = None  # Track which loop created the engine
 
     @classmethod
     def get_instance(cls) -> "DatabaseManager":
@@ -158,6 +159,13 @@ class DatabaseManager:
 
         logger.info("Database session maker created")
         self._initialized = True
+        # Track the event loop that created this engine
+        try:
+            loop = asyncio.get_running_loop()
+            self._creation_loop_id = id(loop)
+        except RuntimeError:
+            # No running loop - that's okay, we'll track it as None
+            self._creation_loop_id = None
 
     def get_engine(self) -> AsyncEngine:
         """
@@ -176,6 +184,41 @@ class DatabaseManager:
             logger.warning("Engine is None after initialization, attempting re-initialization")
             self._initialized = False  # Force re-initialization
             self._initialize_database()
+
+        # CRITICAL: Check if we're in a different event loop than when engine was created
+        # asyncpg connections must be created in the same loop they're used in
+        try:
+            current_loop = asyncio.get_running_loop()
+            current_loop_id = id(current_loop)
+            if self._creation_loop_id is not None and current_loop_id != self._creation_loop_id:
+                logger.warning(
+                    "Event loop changed, disposing and recreating database engine",
+                    old_loop_id=self._creation_loop_id,
+                    new_loop_id=current_loop_id,
+                )
+                # Dispose old engine (best effort, may fail if loop is closed)
+                try:
+                    if self.engine is not None:
+                        # Try to dispose, but don't wait for it if loop is closed
+                        try:
+                            loop = asyncio.get_running_loop()
+                            if not loop.is_closed():
+                                # Schedule disposal, but don't block
+                                asyncio.create_task(self.engine.dispose())
+                        except RuntimeError:
+                            # Loop is closed or not running - just set to None
+                            pass
+                except Exception as e:
+                    logger.warning("Error disposing engine during loop change", error=str(e))
+                # Reset and recreate in current loop
+                self.engine = None
+                self.session_maker = None
+                self._initialized = False
+                self._initialize_database()
+        except RuntimeError:
+            # No running loop - that's okay, engine will be created when needed
+            pass
+
         assert self.engine is not None, "Database engine not initialized"
         return self.engine
 
