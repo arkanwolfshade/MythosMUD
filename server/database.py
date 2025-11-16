@@ -11,9 +11,8 @@ CRITICAL: Database initialization is LAZY and requires configuration to be loade
 import threading
 from collections.abc import AsyncGenerator
 from pathlib import Path
-from typing import Any
 
-from sqlalchemy import event, text
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -24,7 +23,6 @@ from sqlalchemy.pool import NullPool, StaticPool
 
 from .exceptions import ValidationError
 from .logging.enhanced_logging_config import get_logger
-from .metadata import metadata
 from .utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
@@ -117,68 +115,34 @@ class DatabaseManager:
                     user_friendly="Database cannot be initialized: configuration not loaded or invalid",
                 )
 
-        # Handle database_url - could be a path, SQLite URL, or PostgreSQL URL
-        if database_url.startswith("postgresql"):
-            # PostgreSQL URL (postgresql+asyncpg:// or postgresql://)
-            if not database_url.startswith("postgresql+asyncpg"):
-                # Convert postgresql:// to postgresql+asyncpg:// for async support
-                self.database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
-            else:
-                self.database_url = database_url
-            logger.info("Using PostgreSQL database URL from environment", database_url=self.database_url)
-            is_postgres = True
-        elif database_url.startswith("sqlite"):
-            # Already a full SQLite URL (from environment variable)
-            self.database_url = database_url
-            logger.info("Using SQLite database URL from environment", database_url=self.database_url)
-            is_postgres = False
+        # PostgreSQL-only: Verify we have a PostgreSQL URL
+        if not database_url.startswith("postgresql"):
+            log_and_raise(
+                ValidationError,
+                f"Unsupported database URL: {database_url}. Only PostgreSQL is supported.",
+                context=context,
+                user_friendly="Database configuration error - PostgreSQL required",
+            )
+
+        # PostgreSQL URL (postgresql+asyncpg:// or postgresql://)
+        if not database_url.startswith("postgresql+asyncpg"):
+            # Convert postgresql:// to postgresql+asyncpg:// for async support
+            self.database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
         else:
-            # It's a path from YAML - convert to absolute path and construct SQLite URL
-            db_path_obj = Path(database_url).resolve()
-            self.database_url = f"sqlite+aiosqlite:///{db_path_obj}"
-            logger.info("Database URL configured from YAML", database_url=self.database_url, db_path=str(db_path_obj))
-            is_postgres = False
+            self.database_url = database_url
+        logger.info("Using PostgreSQL database URL from environment", database_url=self.database_url)
 
         # Determine pool class based on database URL
-        # Use NullPool for tests to prevent SQLite file locking issues
-        # PostgreSQL uses connection pooling, so use NullPool for tests only
+        # Use NullPool for tests, StaticPool for production
         pool_class = NullPool if "test" in self.database_url else StaticPool
 
-        # Create async engine with database-specific configuration
-        if is_postgres:
-            # PostgreSQL configuration
-            self.engine = create_async_engine(
-                self.database_url,
-                echo=False,
-                poolclass=pool_class,
-                pool_pre_ping=True,
-                # PostgreSQL-specific: no connect_args needed for asyncpg
-            )
-        else:
-            # SQLite configuration
-            self.engine = create_async_engine(
-                self.database_url,
-                echo=False,
-                poolclass=pool_class,
-                pool_pre_ping=True,
-                connect_args={
-                    "check_same_thread": False,
-                    "timeout": 30,
-                },
-            )
-
-            # Enable foreign key constraints for SQLite
-            @event.listens_for(self.engine.sync_engine, "connect")
-            def set_sqlite_pragma(dbapi_connection: Any, connection_record: Any) -> None:
-                """Enable foreign key constraints for SQLite connections."""
-                conn_str = str(dbapi_connection)
-                conn_type = str(type(dbapi_connection))
-
-                # Check both the connection string and type for sqlite (case-insensitive)
-                if "sqlite" in conn_str.lower() or "sqlite" in conn_type.lower():
-                    cursor = dbapi_connection.cursor()
-                    cursor.execute("PRAGMA foreign_keys=ON")
-                    cursor.close()
+        # Create async engine with PostgreSQL configuration
+        self.engine = create_async_engine(
+            self.database_url,
+            echo=False,
+            poolclass=pool_class,
+            pool_pre_ping=True,
+        )
 
         logger.info("Database engine created", pool_class=pool_class.__name__)
 
@@ -261,10 +225,7 @@ class DatabaseManager:
             # This should never be reached due to log_and_raise above
             raise RuntimeError("Unreachable code")
 
-        if database_url.startswith("sqlite+aiosqlite:///"):
-            db_path = database_url.replace("sqlite+aiosqlite:///", "")
-            return Path(db_path)
-        elif database_url.startswith("postgresql"):
+        if database_url.startswith("postgresql"):
             # PostgreSQL doesn't have a file path
             return None
         else:
@@ -382,14 +343,23 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
 
 async def init_db() -> None:
     """
-    Initialize database with all tables.
+    Initialize database connection and verify configuration.
 
-    Creates all tables defined in the metadata.
+    NOTE: DDL (table creation) is NOT managed by this function.
+    All database schema must be created via SQL scripts in db/schema/
+    and applied using database management scripts (e.g., psql).
+
+    This function only:
+    - Initializes the database engine and session maker
+    - Configures SQLAlchemy mappers for ORM relationships
+    - Verifies database connectivity
+
+    To create tables, use the SQL scripts in db/schema/ directory.
     """
     context = create_error_context()
     context.metadata["operation"] = "init_db"
 
-    logger.info("Initializing database")
+    logger.info("Initializing database connection")
 
     try:
         # Import all models to ensure they're registered with metadata
@@ -400,7 +370,6 @@ async def init_db() -> None:
         # CRITICAL: Import ALL models that use metadata before configure_mappers()
         # This allows SQLAlchemy to resolve string references in relationships
         # Do NOT import NPC models here - they use npc_metadata, not metadata
-        # from server.models.npc import NPCDefinition, NPCSpawnRule  # noqa: F401
         from server.models.invite import Invite  # noqa: F401
         from server.models.player import Player  # noqa: F401
         from server.models.sanity import (  # noqa: F401
@@ -416,34 +385,15 @@ async def init_db() -> None:
         # String references resolved via SQLAlchemy registry after all models imported
         configure_mappers()
 
+        # Initialize engine to verify connectivity
         engine = get_engine()  # Initialize if needed
-        database_url = get_database_url()
-        is_postgres = database_url and database_url.startswith("postgresql")
 
+        # Verify database connectivity with a simple query
         async with engine.begin() as conn:
-            logger.info("Creating database tables")
-            await conn.run_sync(metadata.create_all)
-            # Enable foreign key constraints for SQLite only
-            if not is_postgres:
-                await conn.execute(text("PRAGMA foreign_keys = ON"))
+            await conn.execute(text("SELECT 1"))
+            logger.info("Database connection verified successfully")
 
-            # MIGRATION: Add respawn_room_id column if it doesn't exist
-            # This handles existing databases that were created before this column was added
-            try:
-                # Check if column exists by attempting to select it
-                result = await conn.execute(text("SELECT respawn_room_id FROM players LIMIT 1"))
-                result.fetchone()  # Consume result (already resolved, not awaitable)
-            except Exception:
-                # Column doesn't exist, add it
-                logger.info("Adding respawn_room_id column to players table (migration)")
-                await conn.execute(
-                    text(
-                        "ALTER TABLE players ADD COLUMN respawn_room_id TEXT DEFAULT 'earth_arkhamcity_sanitarium_room_foyer_001'"
-                    )
-                )
-                logger.info("Migration completed: respawn_room_id column added")
-
-            logger.info("Database tables created successfully")
+        logger.info("Database initialization complete - DDL must be applied separately via SQL scripts")
     except Exception as e:
         context.metadata["error_type"] = type(e).__name__
         context.metadata["error_message"] = str(e)
@@ -495,13 +445,11 @@ def get_database_path() -> Path | None:
         url = _database_url
         if not url:
             raise ValidationError("Database URL is None")
-        if url.startswith("sqlite+aiosqlite:///"):
-            return Path(url.replace("sqlite+aiosqlite:///", ""))
-        elif url.startswith("postgresql"):
+        if url.startswith("postgresql"):
             # PostgreSQL doesn't have a file path
             return None
         # Unsupported URL schemes should raise
-        raise ValidationError(f"Unsupported database URL: {url}")
+        raise ValidationError(f"Unsupported database URL: {url}. Only PostgreSQL is supported.")
 
     return get_database_manager().get_database_path()
 

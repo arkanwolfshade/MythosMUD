@@ -1,23 +1,20 @@
 """
 Async persistence layer for MythosMUD.
 
-This module provides an async version of the persistence layer using aiosqlite
-for true async database operations without blocking the event loop.
+This module provides an async version of the persistence layer using asyncpg
+for true async PostgreSQL database operations without blocking the event loop.
 """
 
 import json
 import os
-import sqlite3
 from typing import Any
 
-import aiosqlite
 import asyncpg
 
 from .exceptions import DatabaseError, ValidationError
 from .logging.enhanced_logging_config import get_logger
 from .models.player import Player
 from .models.profession import Profession
-from .postgres_adapter import is_postgres_url
 from .utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
@@ -25,10 +22,9 @@ logger = get_logger(__name__)
 
 class AsyncPersistenceLayer:
     """
-    Async persistence layer using aiosqlite for true async database operations.
+    Async persistence layer using asyncpg for true async PostgreSQL operations.
 
-    This replaces the sync sqlite3 operations in persistence.py with async
-    operations that don't block the event loop.
+    This provides async database operations that don't block the event loop.
     """
 
     def __init__(self, db_path: str | None = None, log_path: str | None = None, event_bus=None):
@@ -53,8 +49,16 @@ class AsyncPersistenceLayer:
         self.log_path = log_path
         self._event_bus = event_bus
         self._logger = get_logger(__name__)
-        # Detect if we're using PostgreSQL
-        self._is_postgres = is_postgres_url(self.db_path) if self.db_path else False
+        # PostgreSQL-only: Verify we have a PostgreSQL URL
+        if self.db_path and not self.db_path.startswith("postgresql"):
+            context = create_error_context()
+            context.metadata["operation"] = "async_persistence_init"
+            log_and_raise(
+                ValidationError,
+                f"Unsupported database URL: {self.db_path}. Only PostgreSQL is supported.",
+                context=context,
+                user_friendly="Database configuration error - PostgreSQL required",
+            )
         self._load_room_cache()
 
     def _load_room_cache(self) -> None:
@@ -89,40 +93,27 @@ class AsyncPersistenceLayer:
         context.metadata["player_name"] = name
 
         try:
-            if self._is_postgres:
-                # PostgreSQL connection
-                # Parse URL: postgresql+asyncpg://user:pass@host:port/db
-                url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
-                    "postgresql+psycopg2://", "postgresql://"
-                )
-                conn = await asyncpg.connect(url)
-                row_dict = None
-                try:
-                    row = await conn.fetchrow("SELECT * FROM players WHERE name = $1", name)
-                    if row:
-                        row_dict = dict(row)
-                finally:
-                    await conn.close()
-                if row_dict:
-                    player_data = self._convert_row_to_player_data(row_dict)
-                    player = Player(**player_data)
-                    self.validate_and_fix_player_room(player)
-                    return player
-                return None
-            else:
-                async with aiosqlite.connect(self.db_path) as conn:
-                    conn.row_factory = aiosqlite.Row
-                    cursor = await conn.execute("SELECT * FROM players WHERE name = ?", (name,))
-                    row = await cursor.fetchone()
-
+            # PostgreSQL connection
+            # Parse URL: postgresql+asyncpg://user:pass@host:port/db
+            url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
+                "postgresql+psycopg2://", "postgresql://"
+            )
+            conn = await asyncpg.connect(url)
+            row_dict = None
+            try:
+                row = await conn.fetchrow("SELECT * FROM players WHERE name = $1", name)
                 if row:
-                    player_data = self._convert_row_to_player_data(row)
-                    player = Player(**player_data)
-                    self.validate_and_fix_player_room(player)
-                    return player
-                return None
+                    row_dict = dict(row)
+            finally:
+                await conn.close()
+            if row_dict:
+                player_data = self._convert_row_to_player_data(row_dict)
+                player = Player(**player_data)
+                self.validate_and_fix_player_room(player)
+                return player
+            return None
 
-        except sqlite3.Error as e:
+        except Exception as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player by name '{name}': {e}",
@@ -139,19 +130,25 @@ class AsyncPersistenceLayer:
         context.metadata["player_id"] = player_id
 
         try:
-            async with aiosqlite.connect(self.db_path) as conn:
-                conn.row_factory = aiosqlite.Row
-                cursor = await conn.execute("SELECT * FROM players WHERE player_id = ?", (player_id,))
-                row = await cursor.fetchone()
-
+            # PostgreSQL connection
+            url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
+                "postgresql+psycopg2://", "postgresql://"
+            )
+            conn = await asyncpg.connect(url)
+            try:
+                # asyncpg uses $1, $2, etc. for parameters
+                row = await conn.fetchrow("SELECT * FROM players WHERE player_id = $1", player_id)
                 if row:
-                    player_data = self._convert_row_to_player_data(row)
+                    row_dict = dict(row)
+                    player_data = self._convert_row_to_player_data(row_dict)
                     player = Player(**player_data)
                     self.validate_and_fix_player_room(player)
                     return player
                 return None
+            finally:
+                await conn.close()
 
-        except sqlite3.Error as e:
+        except Exception as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player by ID '{player_id}': {e}",
@@ -167,19 +164,25 @@ class AsyncPersistenceLayer:
         context.metadata["user_id"] = user_id
 
         try:
-            async with aiosqlite.connect(self.db_path) as conn:
-                conn.row_factory = aiosqlite.Row
-                cursor = await conn.execute("SELECT * FROM players WHERE user_id = ?", (user_id,))
-                row = await cursor.fetchone()
-
+            # PostgreSQL connection
+            url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
+                "postgresql+psycopg2://", "postgresql://"
+            )
+            conn = await asyncpg.connect(url)
+            try:
+                # asyncpg uses $1, $2, etc. for parameters
+                row = await conn.fetchrow("SELECT * FROM players WHERE user_id = $1", user_id)
                 if row:
-                    player_data = self._convert_row_to_player_data(row)
+                    row_dict = dict(row)
+                    player_data = self._convert_row_to_player_data(row_dict)
                     player = Player(**player_data)
                     self.validate_and_fix_player_room(player)
                     return player
                 return None
+            finally:
+                await conn.close()
 
-        except sqlite3.Error as e:
+        except Exception as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player by user ID '{user_id}': {e}",
@@ -196,41 +199,55 @@ class AsyncPersistenceLayer:
         context.metadata["player_id"] = str(player.player_id)
 
         try:
-            async with aiosqlite.connect(self.db_path) as conn:
-                # Enable foreign key constraints
-                await conn.execute("PRAGMA foreign_keys=ON")
-
+            # PostgreSQL connection
+            url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
+                "postgresql+psycopg2://", "postgresql://"
+            )
+            conn = await asyncpg.connect(url)
+            try:
                 # Convert player to database format
                 player_data = self._convert_player_to_db_data(player)
 
-                # Use INSERT OR REPLACE for upsert behavior
+                # Use INSERT ... ON CONFLICT for upsert behavior (PostgreSQL)
                 await conn.execute(
-                    """INSERT OR REPLACE INTO players
+                    """INSERT INTO players
                         (player_id, user_id, name, current_room_id, profession_id,
                          experience_points, level, stats, inventory, status_effects,
                          created_at, last_active, is_admin)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                    (
-                        str(player_data["player_id"]),
-                        str(player_data["user_id"]),
-                        player_data["name"],
-                        player_data["current_room_id"],
-                        player_data["profession_id"],
-                        player_data["experience_points"],
-                        player_data["level"],
-                        json.dumps(player_data["stats"]),
-                        json.dumps(player_data["inventory"]),
-                        json.dumps(player_data["status_effects"]),
-                        player_data["created_at"],
-                        player_data["last_active"],
-                        player_data["is_admin"],
-                    ),
+                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+                        ON CONFLICT (player_id) DO UPDATE SET
+                        user_id = EXCLUDED.user_id,
+                        name = EXCLUDED.name,
+                        current_room_id = EXCLUDED.current_room_id,
+                        profession_id = EXCLUDED.profession_id,
+                        experience_points = EXCLUDED.experience_points,
+                        level = EXCLUDED.level,
+                        stats = EXCLUDED.stats,
+                        inventory = EXCLUDED.inventory,
+                        status_effects = EXCLUDED.status_effects,
+                        created_at = EXCLUDED.created_at,
+                        last_active = EXCLUDED.last_active,
+                        is_admin = EXCLUDED.is_admin""",
+                    str(player_data["player_id"]),
+                    str(player_data["user_id"]),
+                    player_data["name"],
+                    player_data["current_room_id"],
+                    player_data["profession_id"],
+                    player_data["experience_points"],
+                    player_data["level"],
+                    json.dumps(player_data["stats"]),
+                    json.dumps(player_data["inventory"]),
+                    json.dumps(player_data["status_effects"]),
+                    player_data["created_at"],
+                    player_data["last_active"],
+                    player_data["is_admin"],
                 )
 
-                await conn.commit()
                 self._logger.debug("Player saved successfully", player_id=str(player.player_id))
+            finally:
+                await conn.close()
 
-        except sqlite3.IntegrityError as e:
+        except asyncpg.IntegrityConstraintViolationError as e:
             log_and_raise(
                 DatabaseError,
                 f"Unique constraint error saving player: {e}",
@@ -238,21 +255,13 @@ class AsyncPersistenceLayer:
                 details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
                 user_friendly="Player name already exists",
             )
-        except sqlite3.Error as e:
+        except asyncpg.PostgresError as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error saving player: {e}",
                 context=context,
                 details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
                 user_friendly="Failed to save player",
-            )
-        except OSError as e:
-            log_and_raise(
-                DatabaseError,
-                f"File system error saving player: {e}",
-                context=context,
-                details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
-                user_friendly="Failed to save player - file system error",
             )
         except Exception as e:
             log_and_raise(
@@ -269,15 +278,19 @@ class AsyncPersistenceLayer:
         context.metadata["operation"] = "async_list_players"
 
         try:
-            async with aiosqlite.connect(self.db_path) as conn:
-                conn.row_factory = aiosqlite.Row
-                cursor = await conn.execute("SELECT * FROM players")
-                rows = await cursor.fetchall()
+            # PostgreSQL connection
+            url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
+                "postgresql+psycopg2://", "postgresql://"
+            )
+            conn = await asyncpg.connect(url)
+            try:
+                rows = await conn.fetch("SELECT * FROM players")
 
                 players = []
                 for row in rows:
                     try:
-                        player_data = self._convert_row_to_player_data(row)
+                        row_dict = dict(row)
+                        player_data = self._convert_row_to_player_data(row_dict)
                         player = Player(**player_data)
                         self.validate_and_fix_player_room(player)
                         players.append(player)
@@ -286,13 +299,15 @@ class AsyncPersistenceLayer:
                             "Error converting player data",
                             error=str(e),
                             error_type=type(e).__name__,
-                            row_id=dict(row).get("player_id"),
+                            row_id=dict(row).get("player_id") if row else None,
                         )
                         continue
 
                 return players
+            finally:
+                await conn.close()
 
-        except sqlite3.Error as e:
+        except asyncpg.PostgresError as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error listing players: {e}",
@@ -308,15 +323,19 @@ class AsyncPersistenceLayer:
         context.metadata["room_id"] = room_id
 
         try:
-            async with aiosqlite.connect(self.db_path) as conn:
-                conn.row_factory = aiosqlite.Row
-                cursor = await conn.execute("SELECT * FROM players WHERE current_room_id = ?", (room_id,))
-                rows = await cursor.fetchall()
+            # PostgreSQL connection
+            url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
+                "postgresql+psycopg2://", "postgresql://"
+            )
+            conn = await asyncpg.connect(url)
+            try:
+                rows = await conn.fetch("SELECT * FROM players WHERE current_room_id = $1", room_id)
 
                 players = []
                 for row in rows:
                     try:
-                        player_data = self._convert_row_to_player_data(row)
+                        row_dict = dict(row)
+                        player_data = self._convert_row_to_player_data(row_dict)
                         player = Player(**player_data)
                         self.validate_and_fix_player_room(player)
                         players.append(player)
@@ -325,13 +344,15 @@ class AsyncPersistenceLayer:
                             "Error converting player data",
                             error=str(e),
                             error_type=type(e).__name__,
-                            row_id=dict(row).get("player_id"),
+                            row_id=dict(row).get("player_id") if row else None,
                         )
                         continue
 
                 return players
+            finally:
+                await conn.close()
 
-        except sqlite3.Error as e:
+        except asyncpg.PostgresError as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error getting players in room: {e}",
@@ -347,35 +368,49 @@ class AsyncPersistenceLayer:
         context.metadata["player_count"] = len(players)
 
         try:
-            async with aiosqlite.connect(self.db_path) as conn:
-                # Enable foreign key constraints
-                await conn.execute("PRAGMA foreign_keys=ON")
-
+            # PostgreSQL connection
+            url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
+                "postgresql+psycopg2://", "postgresql://"
+            )
+            conn = await asyncpg.connect(url)
+            try:
                 for player in players:
                     try:
                         player_data = self._convert_player_to_db_data(player)
 
+                        # Use INSERT ... ON CONFLICT for upsert behavior (PostgreSQL)
                         await conn.execute(
-                            """INSERT OR REPLACE INTO players
+                            """INSERT INTO players
                         (player_id, user_id, name, current_room_id, profession_id,
                          experience_points, level, stats, inventory, status_effects,
                          created_at, last_active, is_admin)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                            (
-                                str(player_data["player_id"]),
-                                str(player_data["user_id"]),
-                                player_data["name"],
-                                player_data["current_room_id"],
-                                player_data["profession_id"],
-                                player_data["experience_points"],
-                                player_data["level"],
-                                json.dumps(player_data["stats"]),
-                                json.dumps(player_data["inventory"]),
-                                json.dumps(player_data["status_effects"]),
-                                player_data["created_at"],
-                                player_data["last_active"],
-                                player_data["is_admin"],
-                            ),
+                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+                        ON CONFLICT (player_id) DO UPDATE SET
+                        user_id = EXCLUDED.user_id,
+                        name = EXCLUDED.name,
+                        current_room_id = EXCLUDED.current_room_id,
+                        profession_id = EXCLUDED.profession_id,
+                        experience_points = EXCLUDED.experience_points,
+                        level = EXCLUDED.level,
+                        stats = EXCLUDED.stats,
+                        inventory = EXCLUDED.inventory,
+                        status_effects = EXCLUDED.status_effects,
+                        created_at = EXCLUDED.created_at,
+                        last_active = EXCLUDED.last_active,
+                        is_admin = EXCLUDED.is_admin""",
+                            str(player_data["player_id"]),
+                            str(player_data["user_id"]),
+                            player_data["name"],
+                            player_data["current_room_id"],
+                            player_data["profession_id"],
+                            player_data["experience_points"],
+                            player_data["level"],
+                            json.dumps(player_data["stats"]),
+                            json.dumps(player_data["inventory"]),
+                            json.dumps(player_data["status_effects"]),
+                            player_data["created_at"],
+                            player_data["last_active"],
+                            player_data["is_admin"],
                         )
                     except (ValueError, TypeError, KeyError) as e:
                         self._logger.warning(
@@ -386,10 +421,11 @@ class AsyncPersistenceLayer:
                         )
                         continue
 
-                await conn.commit()
                 self._logger.debug("Players saved successfully", player_count=len(players))
+            finally:
+                await conn.close()
 
-        except sqlite3.Error as e:
+        except asyncpg.PostgresError as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error saving players: {e}",
@@ -405,32 +441,37 @@ class AsyncPersistenceLayer:
         context.metadata["player_id"] = player_id
 
         try:
-            async with aiosqlite.connect(self.db_path) as conn:
-                # Enable foreign key constraints
-                await conn.execute("PRAGMA foreign_keys=ON")
-
+            # PostgreSQL connection
+            url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
+                "postgresql+psycopg2://", "postgresql://"
+            )
+            conn = await asyncpg.connect(url)
+            try:
                 # First check if player exists
-                cursor = await conn.execute("SELECT name FROM players WHERE player_id = ?", (player_id,))
-                row = await cursor.fetchone()
+                row = await conn.fetchrow("SELECT name FROM players WHERE player_id = $1", player_id)
 
                 if not row:
                     self._logger.warning("Player not found for deletion", player_id=player_id)
                     return False
 
+                player_name = row["name"]
+
                 # Delete the player
-                cursor = await conn.execute("DELETE FROM players WHERE player_id = ?", (player_id,))
-                deleted_count = cursor.rowcount
+                deleted_count = await conn.execute("DELETE FROM players WHERE player_id = $1", player_id)
 
-                await conn.commit()
+                # asyncpg.execute returns status string like "DELETE 1", parse count
+                deleted_int = int(deleted_count.split()[-1]) if deleted_count.split()[-1].isdigit() else 0
 
-                if deleted_count > 0:
-                    self._logger.info("Player deleted successfully", player_id=player_id, player_name=row[0])
+                if deleted_int > 0:
+                    self._logger.info("Player deleted successfully", player_id=player_id, player_name=player_name)
                     return True
                 else:
                     self._logger.warning("No player was deleted", player_id=player_id)
                     return False
+            finally:
+                await conn.close()
 
-        except sqlite3.Error as e:
+        except asyncpg.PostgresError as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error deleting player: {e}",
@@ -445,15 +486,19 @@ class AsyncPersistenceLayer:
         context.metadata["operation"] = "async_get_professions"
 
         try:
-            async with aiosqlite.connect(self.db_path) as conn:
-                conn.row_factory = aiosqlite.Row
-                cursor = await conn.execute("SELECT * FROM professions WHERE is_available = 1 ORDER BY id")
-                rows = await cursor.fetchall()
+            # PostgreSQL connection
+            url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
+                "postgresql+psycopg2://", "postgresql://"
+            )
+            conn = await asyncpg.connect(url)
+            try:
+                rows = await conn.fetch("SELECT * FROM professions WHERE is_available = true ORDER BY id")
 
                 professions = []
                 for row in rows:
                     try:
-                        profession_data = self._convert_row_to_profession_data(row)
+                        row_dict = dict(row)
+                        profession_data = self._convert_row_to_profession_data(row_dict)
                         profession = Profession(**profession_data)
                         professions.append(profession)
                     except (ValueError, TypeError, KeyError) as e:
@@ -461,13 +506,15 @@ class AsyncPersistenceLayer:
                             "Error converting profession data",
                             error=str(e),
                             error_type=type(e).__name__,
-                            row_id=dict(row).get("id"),
+                            row_id=dict(row).get("id") if row else None,
                         )
                         continue
 
                 return professions
+            finally:
+                await conn.close()
 
-        except sqlite3.Error as e:
+        except asyncpg.PostgresError as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving professions: {e}",
@@ -483,18 +530,24 @@ class AsyncPersistenceLayer:
         context.metadata["profession_id"] = profession_id
 
         try:
-            async with aiosqlite.connect(self.db_path) as conn:
-                conn.row_factory = aiosqlite.Row
-                cursor = await conn.execute("SELECT * FROM professions WHERE id = ?", (profession_id,))
-                row = await cursor.fetchone()
+            # PostgreSQL connection
+            url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
+                "postgresql+psycopg2://", "postgresql://"
+            )
+            conn = await asyncpg.connect(url)
+            try:
+                row = await conn.fetchrow("SELECT * FROM professions WHERE id = $1", profession_id)
 
                 if row:
-                    profession_data = self._convert_row_to_profession_data(row)
+                    row_dict = dict(row)
+                    profession_data = self._convert_row_to_profession_data(row_dict)
                     profession = Profession(**profession_data)
                     return profession
                 return None
+            finally:
+                await conn.close()
 
-        except sqlite3.Error as e:
+        except asyncpg.PostgresError as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving profession: {e}",
@@ -503,11 +556,10 @@ class AsyncPersistenceLayer:
                 user_friendly="Failed to retrieve profession",
             )
 
-    def _convert_row_to_player_data(self, row: aiosqlite.Row | dict[str, Any]) -> dict[str, Any]:
+    def _convert_row_to_player_data(self, row: dict[str, Any]) -> dict[str, Any]:
         """Convert a database row to player data dictionary.
 
-        Accepts both aiosqlite.Row (SQLite) and dict (PostgreSQL asyncpg).
-        Both types support dictionary-style access via __getitem__.
+        Accepts dict from PostgreSQL asyncpg (dict-like row objects).
         """
         # AI Agent: CRITICAL FIX - Do NOT pre-parse JSON fields!
         #           Player model expects stats/inventory/status_effects as JSON STRINGS,
@@ -551,8 +603,11 @@ class AsyncPersistenceLayer:
             "is_admin": int(player.is_admin) if hasattr(player, "is_admin") and player.is_admin is not None else 0,
         }
 
-    def _convert_row_to_profession_data(self, row: aiosqlite.Row) -> dict[str, Any]:
-        """Convert a database row to profession data dictionary."""
+    def _convert_row_to_profession_data(self, row: dict[str, Any]) -> dict[str, Any]:
+        """Convert a database row to profession data dictionary.
+
+        Accepts dict from PostgreSQL asyncpg (dict-like row objects).
+        """
         return {
             "id": row["id"],
             "name": row["name"],

@@ -1,6 +1,5 @@
 import json
 import os
-import sqlite3
 import threading
 from collections.abc import Callable
 from contextlib import contextmanager
@@ -13,7 +12,7 @@ from server.logging.enhanced_logging_config import get_logger
 from .exceptions import DatabaseError, ValidationError
 from .models.player import Player
 from .models.room import Room
-from .postgres_adapter import connect_postgres, is_postgres_url
+from .postgres_adapter import connect_postgres
 from .schemas.inventory_schema import InventorySchemaValidationError, validate_inventory_payload
 from .utils.error_logging import create_error_context, log_and_raise
 from .world_loader import ROOMS_BASE_PATH
@@ -145,8 +144,16 @@ class PersistenceLayer:
         self._lock = threading.RLock()
         self._logger = self._setup_logger()
         self._event_bus = event_bus
-        # Detect if we're using PostgreSQL
-        self._is_postgres = is_postgres_url(self.db_path) if self.db_path else False
+        # PostgreSQL-only: Verify we have a PostgreSQL URL
+        if self.db_path and not self.db_path.startswith("postgresql"):
+            context = create_error_context()
+            context.metadata["operation"] = "persistence_init"
+            log_and_raise(
+                ValidationError,
+                f"Unsupported database URL: {self.db_path}. Only PostgreSQL is supported.",
+                context=context,
+                user_friendly="Database configuration error - PostgreSQL required",
+            )
         # TODO: Load config for SQL logging verbosity
         self._load_room_cache()
 
@@ -161,21 +168,15 @@ class PersistenceLayer:
 
     @contextmanager
     def _get_connection(self):
-        """Get a database connection context manager (SQLite or PostgreSQL)."""
-        if self._is_postgres:
-            conn = connect_postgres(self.db_path)
-            try:
-                yield conn
-            finally:
-                conn.close()
-        else:
-            with sqlite3.connect(self.db_path) as conn:
-                yield conn
+        """Get a PostgreSQL database connection context manager."""
+        conn = connect_postgres(self.db_path)
+        try:
+            yield conn
+        finally:
+            conn.close()
 
     def _convert_insert_or_replace(self, query: str, table_name: str, primary_key: str) -> str:
-        """Convert SQLite INSERT OR REPLACE to PostgreSQL INSERT ... ON CONFLICT."""
-        if not self._is_postgres:
-            return query
+        """Convert INSERT OR REPLACE to PostgreSQL INSERT ... ON CONFLICT."""
         # Convert INSERT OR REPLACE to PostgreSQL UPSERT syntax
         if "INSERT OR REPLACE" in query.upper():
             # Replace INSERT OR REPLACE with INSERT
@@ -199,12 +200,12 @@ class PersistenceLayer:
                     return insert_part + values_part + conflict_clause
         return query
 
-    def _convert_row_to_player_data(self, row: sqlite3.Row | Any) -> dict:
+    def _convert_row_to_player_data(self, row: Any) -> dict:
         """
-        Convert SQLite row data to proper types for Player constructor.
+        Convert database row data to proper types for Player constructor.
 
         Args:
-            row: SQLite Row object from query result
+            row: Database row object from query result (PostgreSQL PostgresRow)
 
         Returns:
             dict: Data with proper types for Player constructor
@@ -294,7 +295,7 @@ class PersistenceLayer:
     def _ensure_inventory_row(self, conn: Any, player_id: str, inventory_json: str, equipped_json: str) -> None:
         insert_query = """
             INSERT OR REPLACE INTO player_inventories (player_id, inventory_json, equipped_json)
-            VALUES (?, ?, ?)
+            VALUES (%s, %s, %s)
             """
         insert_query = self._convert_insert_or_replace(insert_query, "player_inventories", "player_id")
         conn.execute(
@@ -307,7 +308,7 @@ class PersistenceLayer:
             """
             SELECT inventory_json, equipped_json
             FROM player_inventories
-            WHERE player_id = ?
+            WHERE player_id = %s
             """,
             (player.player_id,),
         )
@@ -413,9 +414,8 @@ class PersistenceLayer:
 
         try:
             with self._lock, self._get_connection() as conn:
-                if not self._is_postgres:
-                    conn.row_factory = sqlite3.Row
-                row = conn.execute("SELECT * FROM players WHERE name = ?", (name,)).fetchone()
+                # PostgreSQL uses %s placeholders, not ?
+                row = conn.execute("SELECT * FROM players WHERE name = %s", (name,)).fetchone()
                 if row:
                     player_data = self._convert_row_to_player_data(row)
                     player = Player(**player_data)
@@ -424,7 +424,7 @@ class PersistenceLayer:
                     self._load_player_inventory(conn, player)
                     return player
                 return None
-        except (sqlite3.Error, Exception) as e:
+        except Exception as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player by name '{name}': {e}",
@@ -442,10 +442,9 @@ class PersistenceLayer:
 
         try:
             with self._lock, self._get_connection() as conn:
-                conn.row_factory = sqlite3.Row
-                # Convert player_id to string to ensure SQLite compatibility
+                # PostgreSQL uses %s placeholders, not ?
                 player_id_str = str(player_id) if player_id else None
-                row = conn.execute("SELECT * FROM players WHERE player_id = ?", (player_id_str,)).fetchone()
+                row = conn.execute("SELECT * FROM players WHERE player_id = %s", (player_id_str,)).fetchone()
                 if row:
                     player_data = self._convert_row_to_player_data(row)
                     player = Player(**player_data)
@@ -454,7 +453,7 @@ class PersistenceLayer:
                     self._load_player_inventory(conn, player)
                     return player
                 return None
-        except sqlite3.Error as e:
+        except Exception as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player by ID '{player_id}': {e}",
@@ -472,10 +471,9 @@ class PersistenceLayer:
 
         try:
             with self._lock, self._get_connection() as conn:
-                conn.row_factory = sqlite3.Row
-                # Convert user_id to string to ensure SQLite compatibility
+                # PostgreSQL uses %s placeholders, not ?
                 user_id_str = str(user_id) if user_id else None
-                row = conn.execute("SELECT * FROM players WHERE user_id = ?", (user_id_str,)).fetchone()
+                row = conn.execute("SELECT * FROM players WHERE user_id = %s", (user_id_str,)).fetchone()
                 if row:
                     player_data = self._convert_row_to_player_data(row)
                     player = Player(**player_data)
@@ -484,7 +482,7 @@ class PersistenceLayer:
                     self._load_player_inventory(conn, player)
                     return player
                 return None
-        except sqlite3.Error as e:
+        except Exception as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player by user ID '{user_id}': {e}",
@@ -558,7 +556,7 @@ class PersistenceLayer:
                         INSERT OR REPLACE INTO players (
                             player_id, user_id, name, stats, inventory, status_effects,
                             current_room_id, experience_points, level, is_admin, profession_id, created_at, last_active
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         """
                     insert_query = self._convert_insert_or_replace(insert_query, "players", "player_id")
                     conn.execute(
@@ -583,22 +581,25 @@ class PersistenceLayer:
                     conn.commit()
                     self._log(f"Saved player {player.name}")
                     self._run_hooks("after_save_player", player)
-                except sqlite3.IntegrityError as e:
-                    log_and_raise(
-                        DatabaseError,
-                        f"Unique constraint error saving player: {e}",
-                        context=context,
-                        details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
-                        user_friendly="Player name already exists",
-                    )
-                except sqlite3.Error as e:
-                    log_and_raise(
-                        DatabaseError,
-                        f"Database error saving player: {e}",
-                        context=context,
-                        details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
-                        user_friendly="Failed to save player",
-                    )
+                except Exception as e:
+                    # PostgreSQL raises psycopg2.IntegrityError for constraint violations
+                    # Check if it's an integrity error by examining the error message
+                    if "duplicate key" in str(e).lower() or "unique constraint" in str(e).lower():
+                        log_and_raise(
+                            DatabaseError,
+                            f"Unique constraint error saving player: {e}",
+                            context=context,
+                            details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
+                            user_friendly="Player name already exists",
+                        )
+                    else:
+                        log_and_raise(
+                            DatabaseError,
+                            f"Database error saving player: {e}",
+                            context=context,
+                            details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
+                            user_friendly="Failed to save player",
+                        )
         except OSError as e:
             log_and_raise(
                 DatabaseError,
@@ -642,11 +643,11 @@ class PersistenceLayer:
                     player_id_str = str(player_id) if player_id else None
 
                     conn.execute(
-                        "UPDATE players SET last_active = ? WHERE player_id = ? OR name = ?",
+                        "UPDATE players SET last_active = %s WHERE player_id = %s OR name = %s",
                         (last_active_iso, player_id_str, player_id),
                     )
                     conn.commit()
-                except sqlite3.Error as e:
+                except Exception as e:
                     log_and_raise(
                         DatabaseError,
                         f"Database error updating last_active for player '{player_id}': {e}",
@@ -678,7 +679,6 @@ class PersistenceLayer:
 
         try:
             with self._lock, self._get_connection() as conn:
-                conn.row_factory = sqlite3.Row
                 rows = conn.execute("SELECT * FROM players").fetchall()
                 players = []
                 for row in rows:
@@ -689,7 +689,7 @@ class PersistenceLayer:
                     self._load_player_inventory(conn, player)
                     players.append(player)
                 return players
-        except sqlite3.Error as e:
+        except Exception as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error listing players: {e}",
@@ -707,8 +707,8 @@ class PersistenceLayer:
 
         try:
             with self._lock, self._get_connection() as conn:
-                conn.row_factory = sqlite3.Row
-                rows = conn.execute("SELECT * FROM players WHERE current_room_id = ?", (room_id,)).fetchall()
+                # PostgreSQL uses %s placeholders, not ?
+                rows = conn.execute("SELECT * FROM players WHERE current_room_id = %s", (room_id,)).fetchall()
                 players = []
                 for row in rows:
                     player_data = self._convert_row_to_player_data(row)
@@ -718,7 +718,7 @@ class PersistenceLayer:
                     self._load_player_inventory(conn, player)
                     players.append(player)
                 return players
-        except sqlite3.Error as e:
+        except Exception as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving players in room '{room_id}': {e}",
@@ -762,7 +762,7 @@ class PersistenceLayer:
                             INSERT OR REPLACE INTO players (
                                 player_id, user_id, name, stats, inventory, status_effects,
                                 current_room_id, experience_points, level, is_admin, profession_id, created_at, last_active
-                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                             """
                         insert_query = self._convert_insert_or_replace(insert_query, "players", "player_id")
                         conn.execute(
@@ -786,22 +786,25 @@ class PersistenceLayer:
                     conn.commit()
                     self._log(f"Batch saved {len(players)} players.")
                     self._run_hooks("after_save_players", players)
-                except sqlite3.IntegrityError as e:
-                    log_and_raise(
-                        DatabaseError,
-                        f"Batch unique constraint error: {e}",
-                        context=context,
-                        details={"player_count": len(players), "error": str(e)},
-                        user_friendly="Failed to save players - duplicate data",
-                    )
-                except sqlite3.Error as e:
-                    log_and_raise(
-                        DatabaseError,
-                        f"Database error in batch save: {e}",
-                        context=context,
-                        details={"player_count": len(players), "error": str(e)},
-                        user_friendly="Failed to save players",
-                    )
+                except Exception as e:
+                    # PostgreSQL raises psycopg2.IntegrityError for constraint violations
+                    # Check if it's an integrity error by examining the error message
+                    if "duplicate key" in str(e).lower() or "unique constraint" in str(e).lower():
+                        log_and_raise(
+                            DatabaseError,
+                            f"Batch unique constraint error: {e}",
+                            context=context,
+                            details={"player_count": len(players), "error": str(e)},
+                            user_friendly="Failed to save players - duplicate data",
+                        )
+                    else:
+                        log_and_raise(
+                            DatabaseError,
+                            f"Database error in batch save: {e}",
+                            context=context,
+                            details={"player_count": len(players), "error": str(e)},
+                            user_friendly="Failed to save players",
+                        )
         except Exception as e:
             log_and_raise(
                 DatabaseError,
@@ -824,16 +827,17 @@ class PersistenceLayer:
         Raises:
             PersistenceError: If deletion fails due to database constraints or errors
         """
-        with self._lock, sqlite3.connect(self.db_path) as conn:
+        with self._lock, self._get_connection() as conn:
             try:
                 # First check if player exists
-                cursor = conn.execute("SELECT player_id FROM players WHERE player_id = ?", (player_id,))
+                # PostgreSQL uses %s placeholders, not ?
+                cursor = conn.execute("SELECT player_id FROM players WHERE player_id = %s", (player_id,))
                 if not cursor.fetchone():
                     self._log("Delete attempted for non-existent player")
                     return False
 
                 # Delete the player (foreign key constraints will handle related data)
-                cursor = conn.execute("DELETE FROM players WHERE player_id = ?", (player_id,))
+                cursor = conn.execute("DELETE FROM players WHERE player_id = %s", (player_id,))
                 conn.commit()
 
                 if cursor.rowcount > 0:
@@ -844,7 +848,7 @@ class PersistenceLayer:
                     self._log("No rows affected when deleting player")
                     return False
 
-            except sqlite3.Error as e:
+            except Exception as e:
                 context = create_error_context()
                 context.metadata["operation"] = "delete_player"
                 context.metadata["player_id"] = player_id
@@ -865,8 +869,7 @@ class PersistenceLayer:
 
         try:
             with self._lock, self._get_connection() as conn:
-                conn.row_factory = sqlite3.Row
-                rows = conn.execute("SELECT * FROM professions WHERE is_available = 1 ORDER BY id").fetchall()
+                rows = conn.execute("SELECT * FROM professions WHERE is_available = true ORDER BY id").fetchall()
 
                 professions = []
                 for row in rows:
@@ -878,7 +881,7 @@ class PersistenceLayer:
                     professions.append(profession)
 
                 return professions
-        except sqlite3.Error as e:
+        except Exception as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving professions: {e}",
@@ -896,8 +899,8 @@ class PersistenceLayer:
 
         try:
             with self._lock, self._get_connection() as conn:
-                conn.row_factory = sqlite3.Row
-                row = conn.execute("SELECT * FROM professions WHERE id = ?", (profession_id,)).fetchone()
+                # PostgreSQL uses %s placeholders, not ?
+                row = conn.execute("SELECT * FROM professions WHERE id = %s", (profession_id,)).fetchone()
 
                 if row:
                     profession_data = dict(row)
@@ -907,7 +910,7 @@ class PersistenceLayer:
                     profession = Profession(**profession_data)
                     return profession
                 return None
-        except sqlite3.Error as e:
+        except Exception as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving profession {profession_id}: {e}",
@@ -1324,15 +1327,16 @@ class PersistenceLayer:
             # AI Agent: This prevents race conditions by updating ONLY this field
             # without loading/saving the entire player object which might have stale data
             with self._lock, self._get_connection() as conn:
+                # PostgreSQL JSONB path format: array of path elements
                 cursor = conn.execute(
                     f"""
                     UPDATE players
-                    SET stats = json_set(
-                        stats,
-                        '$.{field_name}',
-                        CAST(json_extract(stats, '$.{field_name}') + ? AS INTEGER)
-                    )
-                    WHERE player_id = ?
+                    SET stats = jsonb_set(
+                        stats::jsonb,
+                        '{{{{{field_name}}}}}',
+                        to_jsonb((stats->>'{field_name}')::integer + %s)
+                    )::text
+                    WHERE player_id = %s
                     """,
                     (delta, player_id_str),
                 )

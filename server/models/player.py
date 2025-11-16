@@ -10,6 +10,7 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, relationship
 
 from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
@@ -40,8 +41,8 @@ class Player(Base):
     # Primary key - TEXT (matches database schema)
     player_id = Column(String(length=255), primary_key=True)
 
-    # Foreign key to users table
-    user_id = Column(String(length=255), ForeignKey("users.id"), unique=True, nullable=False)
+    # Foreign key to users table - use UUID to match users.id (UUID type in PostgreSQL)
+    user_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), unique=True, nullable=False)
 
     # Player information
     name = Column(String(length=50), unique=True, nullable=False, index=True)

@@ -417,7 +417,12 @@ def pytest_configure(config):
             os.environ["PYTEST_XDIST_WORKER"] = worker_id
         worker_path_override = worker_input.get("MYTHOSMUD_WORKER_NPC_DB_PATH")
         if worker_path_override:
-            os.environ["DATABASE_NPC_URL"] = f"sqlite+aiosqlite:///{worker_path_override}"
+            # Check if it's already a PostgreSQL URL (from pytest_configure_node)
+            if _is_postgres_url(worker_path_override):
+                os.environ["DATABASE_NPC_URL"] = worker_path_override
+            else:
+                # Legacy SQLite path (should not happen with PostgreSQL-only)
+                os.environ["DATABASE_NPC_URL"] = f"sqlite+aiosqlite:///{worker_path_override}"
             apply_worker_suffix = False
 
     global TEST_DB_PATH, TEST_NPC_DB_PATH

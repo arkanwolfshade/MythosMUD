@@ -18,9 +18,9 @@ from server.database import (
     get_engine,
     get_session_maker,
     init_db,
-    metadata,
 )
 from server.exceptions import ValidationError
+from server.metadata import metadata
 
 
 class TestDatabaseConfiguration:

@@ -23,7 +23,6 @@ from sqlalchemy.pool import NullPool, StaticPool
 
 from .exceptions import ValidationError
 from .logging.enhanced_logging_config import get_logger
-from .npc_metadata import npc_metadata
 from .utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
@@ -218,14 +217,23 @@ async def get_npc_session() -> AsyncGenerator[AsyncSession, None]:
 
 async def init_npc_db():
     """
-    Initialize NPC database with all tables.
+    Initialize NPC database connection and verify configuration.
 
-    Creates all tables defined in the NPC metadata.
+    NOTE: DDL (table creation) is NOT managed by this function.
+    All database schema must be created via SQL scripts in db/schema/
+    and applied using database management scripts (e.g., psql).
+
+    This function only:
+    - Initializes the NPC database engine and session maker
+    - Configures SQLAlchemy mappers for ORM relationships
+    - Verifies database connectivity
+
+    To create tables, use the SQL scripts in db/schema/ directory.
     """
     context = create_error_context()
     context.metadata["operation"] = "init_npc_db"
 
-    logger.info("Initializing NPC database")
+    logger.info("Initializing NPC database connection")
 
     try:
         # Import all NPC models to ensure they're registered with metadata
@@ -236,18 +244,15 @@ async def init_npc_db():
         logger.debug("Configuring NPC SQLAlchemy mappers")
         configure_mappers()
 
+        # Initialize engine to verify connectivity
         engine = get_npc_engine()  # Initialize if needed
-        async with engine.begin() as conn:
-            # For unit tests, ensure a clean slate each run
-            if _npc_database_url and "unit_test" in _npc_database_url:
-                logger.info("Dropping NPC database tables for clean unit test state")
-                await conn.run_sync(npc_metadata.drop_all)
 
-            logger.info("Creating NPC database tables")
-            await conn.run_sync(npc_metadata.create_all)
-            # Enable foreign key constraints for SQLite
-            await conn.execute(text("PRAGMA foreign_keys = ON"))
-            logger.info("NPC database tables created successfully")
+        # Verify database connectivity with a simple query
+        async with engine.begin() as conn:
+            await conn.execute(text("SELECT 1"))
+            logger.info("NPC database connection verified successfully")
+
+        logger.info("NPC database initialization complete - DDL must be applied separately via SQL scripts")
     except Exception as e:
         context.metadata["error_type"] = type(e).__name__
         context.metadata["error_message"] = str(e)
