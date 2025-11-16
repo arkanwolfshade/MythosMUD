@@ -219,47 +219,46 @@ class TestProfessionDatabaseSchema:
 
     @pytest.fixture
     def db_engine(self):
-        """Create an in-memory SQLite database for schema testing."""
-        engine = create_engine("sqlite:///:memory:", echo=False)
-
-        # Create the professions table
-        with engine.connect() as conn:
-            conn.execute(
-                text("""
-                CREATE TABLE professions (
-                    id INTEGER PRIMARY KEY,
-                    name TEXT NOT NULL UNIQUE,
-                    description TEXT NOT NULL,
-                    flavor_text TEXT NOT NULL,
-                    stat_requirements TEXT NOT NULL,
-                    mechanical_effects TEXT NOT NULL,
-                    is_available BOOLEAN NOT NULL DEFAULT 1
-                )
-            """)
+        """Create a PostgreSQL database connection for schema testing."""
+        import os
+        database_url = os.getenv("DATABASE_URL")
+        if not database_url or not database_url.startswith("postgresql"):
+            raise ValueError(
+                "DATABASE_URL must be set to a PostgreSQL URL. "
+                "SQLite is no longer supported."
             )
-            conn.execute(text("CREATE INDEX idx_professions_available ON professions(is_available)"))
-            conn.commit()
-
+        # Convert async URL to sync URL for create_engine
+        sync_url = database_url.replace("+asyncpg", "")
+        engine = create_engine(sync_url, echo=False)
+        # Professions table should already exist from DDL - no need to create
         return engine
 
     def test_professions_table_creation(self, db_engine):
         """Test that the professions table is created with correct schema."""
         with db_engine.connect() as conn:
-            # Check that the table exists
+            # Check that the table exists (PostgreSQL)
             result = conn.execute(
                 text("""
-                SELECT name FROM sqlite_master
-                WHERE type='table' AND name='professions'
+                SELECT table_name
+                FROM information_schema.tables
+                WHERE table_schema = 'public' AND table_name = 'professions'
             """)
             )
             table_exists = result.fetchone() is not None
             assert table_exists
 
-            # Check table structure
-            result = conn.execute(text("PRAGMA table_info(professions)"))
+            # Check table structure (PostgreSQL)
+            result = conn.execute(
+                text("""
+                SELECT column_name, data_type
+                FROM information_schema.columns
+                WHERE table_schema = 'public' AND table_name = 'professions'
+                ORDER BY ordinal_position
+            """)
+            )
             columns = result.fetchall()
 
-            column_names = [col[1] for col in columns]
+            column_names = [col[0] for col in columns]
             expected_columns = [
                 "id",
                 "name",

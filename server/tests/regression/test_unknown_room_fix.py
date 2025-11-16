@@ -6,7 +6,10 @@ are automatically moved to the configured default starting room, as described
 in the dimensional mapping protocols of the Pnakotic Manuscripts.
 """
 
+import os
 from unittest.mock import Mock, patch
+
+import pytest
 
 from server.models import Player
 from server.persistence import PersistenceLayer
@@ -15,10 +18,17 @@ from server.persistence import PersistenceLayer
 class TestUnknownRoomFix:
     """Test suite for unknown room validation and fixing."""
 
-    def test_validate_and_fix_player_room_valid_room(self):
+    @pytest.fixture
+    def persistence(self):
+        """Create a persistence layer instance for testing."""
+        database_url = os.getenv("DATABASE_URL")
+        if not database_url or not database_url.startswith("postgresql"):
+            pytest.skip("DATABASE_URL not set or not PostgreSQL")
+        return PersistenceLayer(database_url, "test.log")
+
+    def test_validate_and_fix_player_room_valid_room(self, persistence):
         """Test that players in valid rooms are not moved."""
         # Arrange
-        persistence = PersistenceLayer(":memory:", "test.log")
         persistence.get_room = Mock(return_value=Mock())  # Room exists
 
         player = Player(name="TestPlayer", current_room_id="valid_room_123")
@@ -31,10 +41,9 @@ class TestUnknownRoomFix:
         assert player.current_room_id == "valid_room_123"  # Room unchanged
         persistence.get_room.assert_called_once_with("valid_room_123")
 
-    def test_validate_and_fix_player_room_invalid_room(self):
+    def test_validate_and_fix_player_room_invalid_room(self, persistence):
         """Test that players in invalid rooms are moved to default room."""
         # Arrange
-        persistence = PersistenceLayer(":memory:", "test.log")
         persistence.get_room = Mock(return_value=None)  # Room doesn't exist
 
         # Mock config to return expected default room
@@ -53,10 +62,9 @@ class TestUnknownRoomFix:
             assert result is True
             assert player.current_room_id == expected_room
 
-    def test_validate_and_fix_player_room_fallback_default(self):
+    def test_validate_and_fix_player_room_fallback_default(self, persistence):
         """Test that fallback default room is used if config is missing."""
         # Arrange
-        persistence = PersistenceLayer(":memory:", "test.log")
         persistence.get_room = Mock(return_value=None)  # Room doesn't exist
 
         # Mock config to fail, forcing fallback to hardcoded default
@@ -71,10 +79,9 @@ class TestUnknownRoomFix:
             assert result is True
             assert player.current_room_id == expected_room
 
-    def test_validate_and_fix_player_room_config_error(self):
+    def test_validate_and_fix_player_room_config_error(self, persistence):
         """Test that fallback default room is used if config loading fails."""
         # Arrange
-        persistence = PersistenceLayer(":memory:", "test.log")
         persistence.get_room = Mock(return_value=None)  # Room doesn't exist
 
         # Mock config to raise an exception

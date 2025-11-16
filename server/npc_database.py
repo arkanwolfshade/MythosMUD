@@ -11,8 +11,9 @@ CRITICAL: Database initialization is LAZY and requires configuration to be loade
 import os
 from collections.abc import AsyncGenerator
 from pathlib import Path
+from typing import Any
 
-from sqlalchemy import event, text
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -92,8 +93,19 @@ def _initialize_npc_database() -> None:
     logger.info("Using NPC database URL from configuration", npc_database_url=_npc_database_url)
 
     # Determine pool class based on database URL
-    # Use NullPool for tests to prevent SQLite file locking issues
+    # Use NullPool for tests
     pool_class = NullPool if "test" in _npc_database_url else StaticPool
+
+    # PostgreSQL connection args (no SQLite-specific args)
+    connect_args: dict[str, Any] = {}
+    if not _npc_database_url.startswith("postgresql"):
+        log_and_raise(
+            ValidationError,
+            f"Unsupported database URL: {_npc_database_url}. Only PostgreSQL is supported.",
+            context=context,
+            details={"database_url": _npc_database_url},
+            user_friendly="NPC database configuration error - PostgreSQL required",
+        )
 
     # Create async engine for NPC database
     _npc_engine = create_async_engine(
@@ -101,28 +113,8 @@ def _initialize_npc_database() -> None:
         echo=False,
         poolclass=pool_class,
         pool_pre_ping=True,
-        connect_args={
-            "check_same_thread": False,
-            "timeout": 30,
-        },
+        connect_args=connect_args,
     )
-
-    # Enable foreign key constraints for SQLite
-    @event.listens_for(_npc_engine.sync_engine, "connect")
-    def set_sqlite_pragma(dbapi_connection, connection_record):
-        """Enable foreign key constraints for SQLite connections."""
-        conn_str = str(dbapi_connection)
-        conn_type = str(type(dbapi_connection))
-        logger.debug("NPC database connect event fired", conn_type=conn_type, conn_str=conn_str[:100])
-
-        # Check both the connection string and type for sqlite
-        if "sqlite" in conn_str.lower() or "sqlite" in conn_type.lower():
-            cursor = dbapi_connection.cursor()
-            cursor.execute("PRAGMA foreign_keys=ON")
-            cursor.close()
-            logger.debug("Foreign keys enabled for NPC database connection")
-        else:
-            logger.warning("Skipping PRAGMA for non-SQLite connection", conn_type=conn_type)
 
     logger.info("NPC Database engine created", pool_class=pool_class.__name__)
 

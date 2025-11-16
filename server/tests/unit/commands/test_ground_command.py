@@ -10,7 +10,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy.pool import StaticPool
 
 from server.commands.rescue_commands import handle_ground_command
 from server.models.base import Base
@@ -21,16 +20,18 @@ from server.models.user import User
 
 @pytest.fixture
 async def session_factory():
-    """Provide an in-memory SQLite session factory for tests."""
+    """Provide a PostgreSQL session factory for tests."""
 
-    engine = create_async_engine(
-        "sqlite+aiosqlite:///:memory:",
-        future=True,
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
-    )
+    import os
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url or not database_url.startswith("postgresql"):
+        raise ValueError(
+            "DATABASE_URL must be set to a PostgreSQL URL. "
+            "SQLite is no longer supported."
+        )
+    engine = create_async_engine(database_url, future=True)
     async with engine.begin() as conn:
-        await conn.exec_driver_sql("PRAGMA foreign_keys=ON")
+        # PostgreSQL always enforces foreign keys - no PRAGMA needed
         await conn.run_sync(Base.metadata.create_all)
 
     factory = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)

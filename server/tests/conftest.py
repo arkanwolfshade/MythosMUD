@@ -422,7 +422,15 @@ def pytest_configure(config):
                 os.environ["DATABASE_NPC_URL"] = worker_path_override
             else:
                 # Legacy SQLite path (should not happen with PostgreSQL-only)
-                os.environ["DATABASE_NPC_URL"] = f"sqlite+aiosqlite:///{worker_path_override}"
+                # PostgreSQL only - use same database URL
+                database_url = os.environ.get("DATABASE_URL")
+                if database_url:
+                    os.environ["DATABASE_NPC_URL"] = database_url
+                else:
+                    raise ValueError(
+                        "DATABASE_URL environment variable is required when using worker path override. "
+                        "Please set it in server/tests/.env.unit_test to a PostgreSQL URL."
+                    )
             apply_worker_suffix = False
 
     global TEST_DB_PATH, TEST_NPC_DB_PATH

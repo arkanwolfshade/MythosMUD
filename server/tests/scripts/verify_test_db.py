@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Verify the test database was created correctly."""
+"""
+Verify the test database was created correctly.
+
+⚠️ DEPRECATED: This script is SQLite-only and is no longer used.
+The project now uses PostgreSQL exclusively. This script is kept for reference only.
+"""
 
 import os
 import sqlite3
@@ -15,7 +20,11 @@ if not TEST_DATABASE_URL:
 if TEST_DATABASE_URL.startswith("sqlite+aiosqlite:///"):
     TEST_DB_PATH = Path(TEST_DATABASE_URL.replace("sqlite+aiosqlite:///", ""))
 else:
-    raise ValueError(f"Unsupported database URL format: {TEST_DATABASE_URL}")
+    raise ValueError(
+        f"This script only supports SQLite. "
+        f"Current database URL: {TEST_DATABASE_URL}. "
+        f"Use PostgreSQL verification tools instead."
+    )
 
 
 def verify_test_database():

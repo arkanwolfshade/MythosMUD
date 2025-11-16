@@ -156,3 +156,50 @@ CREATE TABLE IF NOT EXISTS item_component_states (
     UNIQUE (item_instance_id, component_id)
 );
 CREATE INDEX IF NOT EXISTS idx_item_component_states_instance_id ON item_component_states(item_instance_id);
+
+-- NPC Definitions (runtime) - matches SQLAlchemy model
+CREATE TABLE IF NOT EXISTS npc_definitions (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    npc_type VARCHAR(20) NOT NULL CHECK (npc_type IN ('shopkeeper', 'quest_giver', 'passive_mob', 'aggressive_mob')),
+    sub_zone_id VARCHAR(50) NOT NULL,
+    room_id VARCHAR(50),
+    required_npc BOOLEAN NOT NULL DEFAULT FALSE,
+    max_population INTEGER NOT NULL DEFAULT 1,
+    spawn_probability REAL NOT NULL DEFAULT 1.0,
+    base_stats TEXT NOT NULL DEFAULT '{}',
+    behavior_config TEXT NOT NULL DEFAULT '{}',
+    ai_integration_stub TEXT NOT NULL DEFAULT '{}',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_npc_definitions_sub_zone ON npc_definitions(sub_zone_id);
+CREATE INDEX IF NOT EXISTS idx_npc_definitions_type ON npc_definitions(npc_type);
+CREATE INDEX IF NOT EXISTS idx_npc_definitions_required ON npc_definitions(required_npc);
+CREATE INDEX IF NOT EXISTS idx_npc_definitions_name ON npc_definitions(name);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_npc_definitions_name_sub_zone ON npc_definitions(name, sub_zone_id);
+
+-- NPC Spawn Rules (runtime)
+CREATE TABLE IF NOT EXISTS npc_spawn_rules (
+    id SERIAL PRIMARY KEY,
+    npc_definition_id INTEGER NOT NULL REFERENCES npc_definitions(id) ON DELETE CASCADE,
+    sub_zone_id VARCHAR(50) NOT NULL,
+    min_population INTEGER DEFAULT 0,
+    max_population INTEGER DEFAULT 999,
+    spawn_conditions TEXT NOT NULL DEFAULT '{}'
+);
+CREATE INDEX IF NOT EXISTS idx_npc_spawn_rules_sub_zone ON npc_spawn_rules(sub_zone_id);
+CREATE INDEX IF NOT EXISTS idx_npc_spawn_rules_npc_def ON npc_spawn_rules(npc_definition_id);
+
+-- NPC Relationships (runtime)
+CREATE TABLE IF NOT EXISTS npc_relationships (
+    id SERIAL PRIMARY KEY,
+    npc_id_1 INTEGER NOT NULL REFERENCES npc_definitions(id) ON DELETE CASCADE,
+    npc_id_2 INTEGER NOT NULL REFERENCES npc_definitions(id) ON DELETE CASCADE,
+    relationship_type VARCHAR(20) NOT NULL CHECK (relationship_type IN ('ally', 'enemy', 'neutral', 'follower')),
+    relationship_strength REAL DEFAULT 0.5,
+    UNIQUE(npc_id_1, npc_id_2)
+);
+CREATE INDEX IF NOT EXISTS idx_npc_relationships_npc1 ON npc_relationships(npc_id_1);
+CREATE INDEX IF NOT EXISTS idx_npc_relationships_npc2 ON npc_relationships(npc_id_2);

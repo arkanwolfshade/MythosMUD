@@ -152,11 +152,26 @@ async def verify_database(db_path: str, db_name: str):
         table_names = [table[0] for table in tables]
         logger.info("Database tables verified", db_name=db_name, tables=table_names)
 
-        # Check users table schema
-        cursor = await db.execute("PRAGMA table_info(users)")
-        columns = await cursor.fetchall()
-        column_names = [col[1] for col in columns]
-        logger.info("Users table structure verified", db_name=db_name, columns=column_names)
+        # Check users table schema (PostgreSQL)
+        # Note: This script may be SQLite-specific - verify database type first
+        if "sqlite" in db_path.lower() or "sqlite" in str(db):
+            cursor = await db.execute("PRAGMA table_info(users)")
+            columns = await cursor.fetchall()
+            column_names = [col[1] for col in columns]
+            logger.info("Users table structure verified", db_name=db_name, columns=column_names)
+        else:
+            # PostgreSQL - use information_schema
+            cursor = await db.execute(
+                """
+                SELECT column_name
+                FROM information_schema.columns
+                WHERE table_schema = 'public' AND table_name = 'users'
+                ORDER BY ordinal_position
+                """
+            )
+            columns = await cursor.fetchall()
+            column_names = [col[0] for col in columns]
+            logger.info("Users table structure verified", db_name=db_name, columns=column_names)
 
 
 async def main():
