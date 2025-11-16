@@ -650,6 +650,14 @@ class ApplicationContainer:
                 except Exception as e:
                     logger.error("Error closing database connections", error=str(e))
 
+            # 5. Close NPC database connections
+            try:
+                from .npc_database import close_npc_db
+                await close_npc_db()
+                logger.debug("NPC database connections closed")
+            except Exception as e:
+                logger.error("Error closing NPC database connections", error=str(e))
+
             logger.info("ApplicationContainer shutdown complete")
 
         except Exception as e:

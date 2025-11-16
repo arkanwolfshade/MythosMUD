@@ -8,6 +8,7 @@ CRITICAL: Database initialization is LAZY and requires configuration to be loade
          The system will FAIL LOUDLY if configuration is not properly set.
 """
 
+import asyncio
 import os
 from collections.abc import AsyncGenerator
 from pathlib import Path
@@ -265,9 +266,29 @@ async def close_npc_db():
     logger.info("Closing NPC database connections")
     try:
         engine = get_npc_engine()  # Initialize if needed
-        await engine.dispose()
-        logger.info("NPC database connections closed")
+        if engine is not None:
+            try:
+                # Check if event loop is still running before disposing
+                try:
+                    loop = asyncio.get_running_loop()
+                    if loop.is_closed():
+                        logger.warning("Event loop is closed, skipping NPC engine disposal")
+                        return
+                except RuntimeError:
+                    # No running loop - that's okay, we can still try to dispose
+                    pass
+
+                await engine.dispose()
+                logger.info("NPC database connections closed")
+            except (RuntimeError, AttributeError) as e:
+                # Event loop is closed or proactor is None - log and continue (don't raise)
+                logger.warning("Error disposing NPC database engine (event loop may be closed)", error=str(e))
+                return  # Don't raise for closed event loop
+            except Exception as e:
+                logger.error("Unexpected error disposing NPC database engine", error=str(e))
+                # Don't raise - best effort cleanup
     except Exception as e:
+        # Only log, don't raise - best effort cleanup
         context.metadata["error_type"] = type(e).__name__
         context.metadata["error_message"] = str(e)
         logger.error(
@@ -276,7 +297,7 @@ async def close_npc_db():
             error=str(e),
             error_type=type(e).__name__,
         )
-        raise
+        # Don't raise - allow cleanup to continue
 
 
 def get_npc_database_path() -> Path:

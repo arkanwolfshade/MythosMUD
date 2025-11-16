@@ -32,9 +32,19 @@ class AsyncPersistenceLayer:
         if db_path:
             self.db_path = db_path
         elif os.environ.get("DATABASE_URL"):
-            from .database import get_database_path
+            from .database import get_database_url
 
-            self.db_path = str(get_database_path())
+            database_url = get_database_url()  # PostgreSQL returns URL, not path
+            if database_url is None:
+                context = create_error_context()
+                context.metadata["operation"] = "async_persistence_init"
+                log_and_raise(
+                    ValidationError,
+                    "Failed to retrieve database URL",
+                    context=context,
+                    user_friendly="Database configuration error",
+                )
+            self.db_path = database_url
         else:
             context = create_error_context()
             context.metadata["operation"] = "async_persistence_init"
@@ -50,7 +60,16 @@ class AsyncPersistenceLayer:
         self._event_bus = event_bus
         self._logger = get_logger(__name__)
         # PostgreSQL-only: Verify we have a PostgreSQL URL
-        if self.db_path and not self.db_path.startswith("postgresql"):
+        if not self.db_path:
+            context = create_error_context()
+            context.metadata["operation"] = "async_persistence_init"
+            log_and_raise(
+                ValidationError,
+                "DATABASE_URL is None - database not configured",
+                context=context,
+                user_friendly="Database configuration is missing",
+            )
+        if not self.db_path.startswith("postgresql"):
             context = create_error_context()
             context.metadata["operation"] = "async_persistence_init"
             log_and_raise(

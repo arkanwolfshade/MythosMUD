@@ -8,6 +8,7 @@ CRITICAL: Database initialization is LAZY and requires configuration to be loade
          The system will FAIL LOUDLY if configuration is not properly set.
 """
 
+import asyncio
 import threading
 from collections.abc import AsyncGenerator
 from pathlib import Path
@@ -170,6 +171,11 @@ class DatabaseManager:
         """
         if not self._initialized:
             self._initialize_database()
+        # Double-check: if initialization didn't set engine, try again
+        if self.engine is None:
+            logger.warning("Engine is None after initialization, attempting re-initialization")
+            self._initialized = False  # Force re-initialization
+            self._initialize_database()
         assert self.engine is not None, "Database engine not initialized"
         return self.engine
 
@@ -245,8 +251,37 @@ class DatabaseManager:
     async def close(self) -> None:
         """Close database connections."""
         if self.engine is not None:
-            await self.engine.dispose()
-            logger.info("Database connections closed")
+            # Store engine in local variable for type narrowing
+            engine = self.engine
+            try:
+                # Check if event loop is still running before disposing
+                try:
+                    loop = asyncio.get_running_loop()
+                    if loop.is_closed():
+                        logger.warning("Event loop is closed, skipping engine disposal")
+                        self.engine = None
+                        self._initialized = False  # Reset initialization flag
+                        return
+                except RuntimeError:
+                    # No running loop - that's okay, we can still try to dispose
+                    pass
+
+                await engine.dispose()
+                logger.info("Database connections closed")
+            except (RuntimeError, AttributeError) as e:
+                # Event loop is closed or proactor is None - log and continue
+                logger.warning("Error disposing database engine (event loop may be closed)", error=str(e))
+                # Set engine to None to prevent further use
+                self.engine = None
+                self._initialized = False  # Reset initialization flag
+            except Exception as e:
+                logger.error("Unexpected error disposing database engine", error=str(e))
+                # Set engine to None to prevent further use
+                self.engine = None
+                self._initialized = False  # Reset initialization flag
+        else:
+            # Engine already None, but reset flag if it was initialized
+            self._initialized = False
 
 
 # DEPRECATED: Module-level global removed - use ApplicationContainer instead

@@ -98,10 +98,31 @@ async def test_container():
         logger.info("ApplicationContainer initialized for test")
         yield container
     finally:
-        # Cleanup: Shutdown container
+        # Cleanup: Shutdown container and dispose all database connections
         logger.info("Shutting down ApplicationContainer after test")
         try:
             await container.shutdown()
+
+            # CRITICAL: Wait for all async cleanup to complete
+            # This ensures database connections are fully disposed before test ends
+            try:
+                loop = asyncio.get_running_loop()
+                pending_tasks = [task for task in asyncio.all_tasks(loop) if not task.done()]
+                if pending_tasks:
+                    logger.debug("Waiting for pending tasks to complete", task_count=len(pending_tasks))
+                    # Give tasks a short time to complete
+                    try:
+                        await asyncio.wait_for(asyncio.gather(*pending_tasks, return_exceptions=True), timeout=2.0)
+                    except TimeoutError:
+                        logger.warning("Some tasks did not complete in time, cancelling", task_count=len(pending_tasks))
+                        for task in pending_tasks:
+                            if not task.done():
+                                task.cancel()
+                        # Wait briefly for cancellations
+                        await asyncio.gather(*pending_tasks, return_exceptions=True)
+            except RuntimeError:
+                # No running loop - that's okay, cleanup already happened
+                pass
         except Exception as e:
             logger.error("Error during container shutdown in test", error=str(e))
 
@@ -197,14 +218,46 @@ def container_test_client():
 
         yield client
 
-        # Cleanup: Shutdown container
+        # Cleanup: Shutdown container and dispose all database connections
         logger.info("Shutting down container after test")
-        loop.run_until_complete(container.shutdown())
+        try:
+            # Shutdown container (disposes database engines)
+            loop.run_until_complete(container.shutdown())
+
+            # CRITICAL: Wait for all async cleanup to complete before closing loop
+            # This ensures database connections are fully disposed
+            pending_tasks = [task for task in asyncio.all_tasks(loop) if not task.done()]
+            if pending_tasks:
+                logger.debug("Waiting for pending tasks to complete", task_count=len(pending_tasks))
+                # Give tasks a short time to complete, then cancel remaining ones
+                try:
+                    loop.run_until_complete(asyncio.wait_for(asyncio.gather(*pending_tasks, return_exceptions=True), timeout=2.0))
+                except TimeoutError:
+                    logger.warning("Some tasks did not complete in time, cancelling", task_count=len(pending_tasks))
+                    for task in pending_tasks:
+                        if not task.done():
+                            task.cancel()
+                    # Wait briefly for cancellations
+                    try:
+                        loop.run_until_complete(asyncio.gather(*pending_tasks, return_exceptions=True))
+                    except Exception:
+                        pass  # Ignore errors during cancellation
+        except Exception as e:
+            logger.error("Error during container shutdown", error=str(e))
     finally:
         # Cleanup: Close event loop and reset to None
         # AI: This prevents "Event loop is closed" errors in subsequent tests
         # by ensuring asyncio.get_event_loop() doesn't return a closed loop
-        loop.close()
+        # Only close if loop is not already closed
+        if not loop.is_closed():
+            try:
+                # Cancel any remaining tasks before closing
+                pending = [task for task in asyncio.all_tasks(loop) if not task.done()]
+                for task in pending:
+                    task.cancel()
+                loop.close()
+            except Exception as e:
+                logger.warning("Error closing event loop", error=str(e))
         asyncio.set_event_loop(None)
 
 
