@@ -138,26 +138,26 @@ celerybeat.pid
 # .env.local
 # .env.production
 # Environment files (CRITICAL: Never commit actual environment files with secrets)
-.env
-.env.*
-.env.prod
-.env.development
-.env.dev
-.env.local
-.env.e2e_test
-.env.test
-.env.unit_test
-.env.local
-.env.production
-.env.prod
-.env.dev
-.venv
-.venv-ci
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+# .env
+# .env.*
+# .env.prod
+# .env.development
+# .env.dev
+# .env.local
+# .env.e2e_test
+# .env.test
+# .env.unit_test
+# .env.local
+# .env.production
+# .env.prod
+# .env.dev
+# .venv
+# .venv-ci
+# env/
+# venv/
+# ENV/
+# env.bak/
+# venv.bak/
 
 # Allow example environment files ONLY (never actual secrets)
 !.env.example
