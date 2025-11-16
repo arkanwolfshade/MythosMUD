@@ -5,8 +5,6 @@ This module tests the database connection, session management,
 and initialization functionality in database.py.
 """
 
-import tempfile
-from pathlib import Path
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
@@ -28,13 +26,12 @@ from server.exceptions import ValidationError
 class TestDatabaseConfiguration:
     """Test database configuration constants and setup."""
 
-    def test_database_path_default(self):
-        """Test default database path from configuration."""
-        # The actual value set by conftest.py uses an absolute path
-        # Check that it contains the expected path components (handle both Windows and Unix paths)
-        # Test environment sets DATABASE_URL to data/unit_test/players/unit_test_players.db
+    def test_database_path_postgresql(self):
+        """Test database path for PostgreSQL (returns None)."""
+        # PostgreSQL doesn't have a file path
         db_path = get_database_path()
-        assert "data/unit_test/players/unit_test_players.db" in str(db_path).replace("\\", "/")
+        # For PostgreSQL, this should be None
+        assert db_path is None
 
     def test_metadata_exists(self):
         """Test that metadata is properly initialized."""
@@ -45,8 +42,8 @@ class TestDatabaseConfiguration:
         """Test that engine is properly initialized."""
         engine = get_engine()
         assert engine is not None
-        # Engine should be created with aiosqlite
-        assert "aiosqlite" in str(engine.url)
+        # Engine should be created with asyncpg for PostgreSQL
+        assert "postgresql" in str(engine.url) or "asyncpg" in str(engine.url)
 
     def test_session_maker_initialization(self):
         """Test that session maker is properly initialized."""
@@ -58,41 +55,15 @@ class TestDatabaseConfiguration:
 class TestGetDatabasePath:
     """Test database path extraction functionality."""
 
-    def test_get_database_path_sqlite(self):
-        """Test getting database path for SQLite URL."""
-        # Patch the private _database_url variable after initialization
-        with patch("server.database._database_url", "sqlite+aiosqlite:///path/to/db.db"):
+    def test_get_database_path_postgresql(self):
+        """Test getting database path for PostgreSQL URL (returns None)."""
+        with patch("server.database._database_url", "postgresql+asyncpg://postgres:pass@localhost/mythos_unit"):
             result = get_database_path()
-
-            assert isinstance(result, Path)
-            assert result.as_posix() == "path/to/db.db"
-
-    def test_get_database_path_with_relative_path(self):
-        """Test getting database path with relative path."""
-        with patch("server.database._database_url", "sqlite+aiosqlite:///./relative/path.db"):
-            result = get_database_path()
-
-            assert isinstance(result, Path)
-            assert result.as_posix() == "relative/path.db"
-
-    def test_get_database_path_with_absolute_path(self):
-        """Test getting database path with absolute path."""
-        with patch("server.database._database_url", "sqlite+aiosqlite:////absolute/path.db"):
-            result = get_database_path()
-
-            assert isinstance(result, Path)
-            assert result.as_posix() == "/absolute/path.db"
-
-    def test_get_database_path_unsupported_url(self):
-        """Test getting database path with unsupported URL."""
-        with patch("server.database._database_url", "postgresql://user:pass@localhost/db"):
-            with pytest.raises(ValidationError) as exc_info:
-                get_database_path()
-
-            assert "Unsupported database URL" in str(exc_info.value)
+            # PostgreSQL doesn't have a file path
+            assert result is None
 
     def test_get_database_path_mysql_url(self):
-        """Test getting database path with MySQL URL."""
+        """Test getting database path with MySQL URL (unsupported)."""
         with patch("server.database._database_url", "mysql://user:pass@localhost/db"):
             with pytest.raises(ValidationError) as exc_info:
                 get_database_path()
@@ -103,36 +74,12 @@ class TestGetDatabasePath:
 class TestEnsureDatabaseDirectory:
     """Test database directory creation functionality."""
 
-    def test_ensure_database_directory_creates_parent(self):
-        """Test that database directory is created if it doesn't exist."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            db_path = Path(temp_dir) / "nonexistent" / "subdir" / "db.db"
-
-            with patch("server.database.get_database_path", return_value=db_path):
-                ensure_database_directory()
-
-                assert db_path.parent.exists()
-
-    def test_ensure_database_directory_existing(self):
-        """Test that database directory creation works with existing directory."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            db_path = Path(temp_dir) / "existing" / "db.db"
-            db_path.parent.mkdir(parents=True)
-
-            with patch("server.database.get_database_path", return_value=db_path):
-                ensure_database_directory()
-
-                assert db_path.parent.exists()
-
-    def test_ensure_database_directory_nested(self):
-        """Test that deeply nested database directories are created."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            db_path = Path(temp_dir) / "level1" / "level2" / "level3" / "db.db"
-
-            with patch("server.database.get_database_path", return_value=db_path):
-                ensure_database_directory()
-
-                assert db_path.parent.exists()
+    def test_ensure_database_directory_postgresql(self):
+        """Test that ensure_database_directory skips for PostgreSQL (no file path)."""
+        with patch("server.database.get_database_path", return_value=None):
+            # Should not raise an error, just skip directory creation
+            ensure_database_directory()
+            # No assertions needed - function should complete without error
 
 
 class TestGetAsyncSession:
@@ -335,16 +282,12 @@ class TestDatabaseIntegration:
                 await close_db()
                 mock_mgr.close.assert_called_once()
 
-    def test_database_path_integration(self):
-        """Test database path integration with directory creation."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            db_path = Path(temp_dir) / "test" / "db.db"
-
-            with patch("server.database.get_database_path", return_value=db_path):
-                ensure_database_directory()
-
-                assert db_path.parent.exists()
-                assert str(db_path.parent) == str(Path(temp_dir) / "test")
+    def test_database_path_integration_postgresql(self):
+        """Test database path integration with PostgreSQL (no file path)."""
+        with patch("server.database.get_database_path", return_value=None):
+            # PostgreSQL doesn't need directory creation
+            ensure_database_directory()
+            # Should complete without error
 
     @pytest.mark.asyncio
     async def test_session_integration(self):
@@ -389,10 +332,9 @@ class TestEdgeCases:
         assert len(sessions) >= 1
         assert all(isinstance(s, AsyncSession) for s in sessions)
 
-    def test_ensure_database_directory_permissions(self):
-        """Test database directory creation with permission issues."""
-        with patch("pathlib.Path.mkdir") as mock_mkdir:
-            mock_mkdir.side_effect = PermissionError("Permission denied")
-
-            with pytest.raises(PermissionError):
-                ensure_database_directory()
+    def test_ensure_database_directory_postgresql_skip(self):
+        """Test that ensure_database_directory skips for PostgreSQL."""
+        # PostgreSQL returns None, so directory creation is skipped
+        with patch("server.database.get_database_path", return_value=None):
+            # Should not raise any errors
+            ensure_database_directory()

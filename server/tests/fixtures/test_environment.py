@@ -71,16 +71,26 @@ class Environment:
 
     async def _setup_database(self):
         """Set up test database"""
-        self.database_path = os.path.join(self.temp_dir, "unit_test_players.db")
-        self.npc_database_path = os.path.join(self.temp_dir, "test_npcs.db")
+        # Check if we're using PostgreSQL from environment
+        existing_db_url = os.getenv("DATABASE_URL", "")
+        existing_npc_url = os.getenv("DATABASE_NPC_URL", "")
 
-        # Create database directory
-        os.makedirs(os.path.dirname(self.database_path), exist_ok=True)
-        os.makedirs(os.path.dirname(self.npc_database_path), exist_ok=True)
+        if not existing_db_url:
+            raise ValueError(
+                "DATABASE_URL environment variable is required. PostgreSQL is required - SQLite is no longer supported."
+            )
 
-        # Set environment variable for database URL
-        os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{self.database_path}"
-        os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{self.npc_database_path}"
+        if not existing_db_url.startswith("postgresql"):
+            raise ValueError(
+                f"Unsupported database URL: {existing_db_url}. Only PostgreSQL (postgresql+asyncpg://) is supported."
+            )
+
+        # PostgreSQL - use URLs from environment, no file paths needed
+        self.database_path = None
+        self.npc_database_path = None
+        # URLs are already set in environment, just ensure DATABASE_NPC_URL is set
+        if not existing_npc_url:
+            os.environ["DATABASE_NPC_URL"] = existing_db_url  # Use same DB for NPCs
 
         try:
             # Recreate database engine with new URL using the new getter-based API
@@ -103,7 +113,13 @@ class Environment:
 
             # Initialize main database (will read from DATABASE_URL environment variable)
             await init_db()
-            self.logger.info("Database setup complete", db_path=self.database_path)
+            if self.database_path:
+                self.logger.info("Database setup complete", db_path=self.database_path)
+            else:
+                self.logger.info(
+                    "Database setup complete",
+                    database_url=existing_db_url[:50] + "..." if len(existing_db_url) > 50 else existing_db_url,
+                )
 
             # Recreate NPC database engine with new URL using the new getter-based API
             import server.npc_database
@@ -126,7 +142,13 @@ class Environment:
             from server.npc_database import init_npc_db
 
             await init_npc_db()
-            self.logger.info("NPC Database setup complete", npc_db_path=self.npc_database_path)
+            if self.npc_database_path:
+                self.logger.info("NPC Database setup complete", npc_db_path=self.npc_database_path)
+            else:
+                npc_url = os.getenv("DATABASE_NPC_URL", existing_db_url)
+                self.logger.info(
+                    "NPC Database setup complete", database_url=npc_url[:50] + "..." if len(npc_url) > 50 else npc_url
+                )
         except Exception as e:
             self.logger.error("Database setup failed", error=str(e))
             # For tests, we can continue without a real database

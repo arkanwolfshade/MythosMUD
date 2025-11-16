@@ -121,13 +121,23 @@ def _sqlite_url_to_path(url: str) -> Path:
     return path
 
 
-def _configure_database_urls(worker_id: str | None = None, apply_worker_suffix: bool = True) -> tuple[Path, Path]:
+def _is_postgres_url(url: str) -> bool:
+    """Check if a database URL is PostgreSQL."""
+    return url.startswith("postgresql") or url.startswith("postgresql+asyncpg") or url.startswith("postgresql+psycopg2")
+
+
+def _configure_database_urls(
+    worker_id: str | None = None, apply_worker_suffix: bool = True
+) -> tuple[Path | None, Path | None]:
     """
-    Ensure DATABASE_URL and DATABASE_NPC_URL point to absolute paths, adding a worker-specific
-    suffix for NPC databases when pytest-xdist is active.
+    Configure DATABASE_URL and DATABASE_NPC_URL for tests.
+
+    For PostgreSQL URLs, keeps them as-is. For SQLite URLs, converts to absolute paths
+    and adds worker-specific suffixes for NPC databases when pytest-xdist is active.
 
     Returns:
-        Tuple containing the resolved primary database Path and NPC database Path.
+        Tuple containing the resolved primary database Path (or None for PostgreSQL)
+        and NPC database Path (or None for PostgreSQL).
     """
 
     if worker_id is None:
@@ -135,32 +145,44 @@ def _configure_database_urls(worker_id: str | None = None, apply_worker_suffix: 
 
     database_url = os.getenv("DATABASE_URL")
     if database_url:
-        test_db_path = _sqlite_url_to_path(database_url)
+        if _is_postgres_url(database_url):
+            # PostgreSQL URL - keep as-is, no path conversion needed
+            print(f"[OK] Using PostgreSQL DATABASE_URL: {database_url[:50]}...")
+            test_db_path = None
+        else:
+            raise ValueError(
+                f"Unsupported database URL format: {database_url}. "
+                "Only PostgreSQL (postgresql+asyncpg://) is supported."
+            )
     else:
-        test_db_path = (project_root / "data" / "unit_test" / "players" / "unit_test_players.db").resolve()
-
-    test_db_path.parent.mkdir(parents=True, exist_ok=True)
-    os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{test_db_path}"
-    print(f"[OK] Set DATABASE_URL to: {os.environ['DATABASE_URL']}")
+        raise ValueError(
+            "DATABASE_URL environment variable is required. "
+            "Please set it in server/tests/.env.unit_test to a PostgreSQL URL."
+        )
 
     npc_database_url = os.getenv("DATABASE_NPC_URL")
     if npc_database_url:
-        base_npc_path = _sqlite_url_to_path(npc_database_url)
+        if _is_postgres_url(npc_database_url):
+            # PostgreSQL URL - keep as-is, no path conversion needed
+            print(f"[OK] Using PostgreSQL DATABASE_NPC_URL: {npc_database_url[:50]}...")
+            npc_db_path = None
+        else:
+            raise ValueError(
+                f"Unsupported database URL format: {npc_database_url}. "
+                "Only PostgreSQL (postgresql+asyncpg://) is supported."
+            )
     else:
-        base_npc_path = (project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db").resolve()
-
-    if apply_worker_suffix and worker_id and worker_id != "master":
-        worker_specific_name = f"{base_npc_path.stem}_{worker_id}{base_npc_path.suffix}"
-        npc_db_path = base_npc_path.with_name(worker_specific_name)
-    else:
-        npc_db_path = base_npc_path
-
-    npc_db_path.parent.mkdir(parents=True, exist_ok=True)
-    os.environ["DATABASE_NPC_URL"] = f"sqlite+aiosqlite:///{npc_db_path}"
-    if npc_db_path == base_npc_path:
-        print(f"[OK] Set DATABASE_NPC_URL to: {os.environ['DATABASE_NPC_URL']}")
-    else:
-        print(f"[OK] Set worker-scoped DATABASE_NPC_URL to: {os.environ['DATABASE_NPC_URL']}")
+        # Default to same database as main database for PostgreSQL
+        if test_db_path is None:
+            # Both are PostgreSQL - use same URL
+            os.environ["DATABASE_NPC_URL"] = database_url
+            npc_db_path = None
+            print("[OK] Set DATABASE_NPC_URL to same as DATABASE_URL (PostgreSQL)")
+        else:
+            raise ValueError(
+                "DATABASE_NPC_URL environment variable is required. "
+                "Please set it in server/tests/.env.unit_test to a PostgreSQL URL."
+            )
 
     return test_db_path, npc_db_path
 
@@ -213,16 +235,31 @@ def validate_test_environment():
 def pytest_configure_node(node):
     """Provide worker-specific configuration for pytest-xdist nodes."""
     try:
-        base_npc_path = _sqlite_url_to_path(os.environ["DATABASE_NPC_URL"])
+        npc_url = os.environ["DATABASE_NPC_URL"]
+        if not _is_postgres_url(npc_url):
+            raise ValueError(
+                f"Unsupported database URL format: {npc_url}. Only PostgreSQL (postgresql+asyncpg://) is supported."
+            )
+        # PostgreSQL - no path manipulation needed
+        base_npc_path = None
     except KeyError:
-        base_npc_path = (project_root / "data" / "unit_test" / "npcs" / "unit_test_npcs.db").resolve()
+        raise ValueError(
+            "DATABASE_NPC_URL environment variable is required for pytest-xdist workers. "
+            "Please set it in server/tests/.env.unit_test to a PostgreSQL URL."
+        ) from None
 
     worker_id = getattr(node, "workerid", None) or getattr(node, "id", None)
     if worker_id is None:
         worker_id = node.workerinput.get("workerid", "worker")
 
-    worker_path = base_npc_path.with_name(f"{base_npc_path.stem}_{worker_id}{base_npc_path.suffix}")
-    node.workerinput["MYTHOSMUD_WORKER_NPC_DB_PATH"] = str(worker_path)
+    # PostgreSQL uses shared database, no worker-specific paths needed
+    if base_npc_path is None:
+        # For PostgreSQL, all workers use the same database URL
+        node.workerinput["MYTHOSMUD_WORKER_NPC_DB_PATH"] = npc_url
+    else:
+        # SQLite path manipulation (should not reach here with PostgreSQL-only)
+        worker_path = base_npc_path.with_name(f"{base_npc_path.stem}_{worker_id}{base_npc_path.suffix}")
+        node.workerinput["MYTHOSMUD_WORKER_NPC_DB_PATH"] = str(worker_path)
 
 
 # Validate test environment before proceeding

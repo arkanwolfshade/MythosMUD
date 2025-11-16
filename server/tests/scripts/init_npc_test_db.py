@@ -25,7 +25,12 @@ def load_npc_schema():
 
 
 def get_npc_seed_data():
-    """Extract seed data from the local NPC database."""
+    """
+    Extract seed data from the local NPC database.
+
+    NOTE: This script is deprecated - we now use PostgreSQL exclusively.
+    This function will not work as SQLite databases are no longer used.
+    """
     project_root = Path(__file__).parent.parent.parent.parent
     local_db = project_root / "data" / "local" / "npcs" / "local_npcs.db"
 

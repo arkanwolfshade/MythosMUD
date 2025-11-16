@@ -117,45 +117,68 @@ class DatabaseManager:
                     user_friendly="Database cannot be initialized: configuration not loaded or invalid",
                 )
 
-        # Handle database_url - could be a path or a full SQLite URL
-        if database_url.startswith("sqlite"):
+        # Handle database_url - could be a path, SQLite URL, or PostgreSQL URL
+        if database_url.startswith("postgresql"):
+            # PostgreSQL URL (postgresql+asyncpg:// or postgresql://)
+            if not database_url.startswith("postgresql+asyncpg"):
+                # Convert postgresql:// to postgresql+asyncpg:// for async support
+                self.database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+            else:
+                self.database_url = database_url
+            logger.info("Using PostgreSQL database URL from environment", database_url=self.database_url)
+            is_postgres = True
+        elif database_url.startswith("sqlite"):
             # Already a full SQLite URL (from environment variable)
             self.database_url = database_url
-            logger.info("Using database URL from environment", database_url=self.database_url)
+            logger.info("Using SQLite database URL from environment", database_url=self.database_url)
+            is_postgres = False
         else:
             # It's a path from YAML - convert to absolute path and construct SQLite URL
             db_path_obj = Path(database_url).resolve()
             self.database_url = f"sqlite+aiosqlite:///{db_path_obj}"
             logger.info("Database URL configured from YAML", database_url=self.database_url, db_path=str(db_path_obj))
+            is_postgres = False
 
         # Determine pool class based on database URL
         # Use NullPool for tests to prevent SQLite file locking issues
+        # PostgreSQL uses connection pooling, so use NullPool for tests only
         pool_class = NullPool if "test" in self.database_url else StaticPool
 
-        # Create async engine
-        self.engine = create_async_engine(
-            self.database_url,
-            echo=False,
-            poolclass=pool_class,
-            pool_pre_ping=True,
-            connect_args={
-                "check_same_thread": False,
-                "timeout": 30,
-            },
-        )
+        # Create async engine with database-specific configuration
+        if is_postgres:
+            # PostgreSQL configuration
+            self.engine = create_async_engine(
+                self.database_url,
+                echo=False,
+                poolclass=pool_class,
+                pool_pre_ping=True,
+                # PostgreSQL-specific: no connect_args needed for asyncpg
+            )
+        else:
+            # SQLite configuration
+            self.engine = create_async_engine(
+                self.database_url,
+                echo=False,
+                poolclass=pool_class,
+                pool_pre_ping=True,
+                connect_args={
+                    "check_same_thread": False,
+                    "timeout": 30,
+                },
+            )
 
-        # Enable foreign key constraints for SQLite
-        @event.listens_for(self.engine.sync_engine, "connect")
-        def set_sqlite_pragma(dbapi_connection: Any, connection_record: Any) -> None:
-            """Enable foreign key constraints for SQLite connections."""
-            conn_str = str(dbapi_connection)
-            conn_type = str(type(dbapi_connection))
+            # Enable foreign key constraints for SQLite
+            @event.listens_for(self.engine.sync_engine, "connect")
+            def set_sqlite_pragma(dbapi_connection: Any, connection_record: Any) -> None:
+                """Enable foreign key constraints for SQLite connections."""
+                conn_str = str(dbapi_connection)
+                conn_type = str(type(dbapi_connection))
 
-            # Check both the connection string and type for sqlite (case-insensitive)
-            if "sqlite" in conn_str.lower() or "sqlite" in conn_type.lower():
-                cursor = dbapi_connection.cursor()
-                cursor.execute("PRAGMA foreign_keys=ON")
-                cursor.close()
+                # Check both the connection string and type for sqlite (case-insensitive)
+                if "sqlite" in conn_str.lower() or "sqlite" in conn_type.lower():
+                    cursor = dbapi_connection.cursor()
+                    cursor.execute("PRAGMA foreign_keys=ON")
+                    cursor.close()
 
         logger.info("Database engine created", pool_class=pool_class.__name__)
 
@@ -215,12 +238,14 @@ class DatabaseManager:
             self._initialize_database()
         return self.database_url
 
-    def get_database_path(self) -> Path:
+    def get_database_path(self) -> Path | None:
         """
-        Get the database file path.
+        Get the database file path (SQLite only).
+
+        For PostgreSQL, returns None as there is no file path.
 
         Returns:
-            Path: Path to the database file
+            Path | None: Path to the database file (SQLite) or None (PostgreSQL)
         """
         database_url = self.get_database_url()
 
@@ -239,6 +264,9 @@ class DatabaseManager:
         if database_url.startswith("sqlite+aiosqlite:///"):
             db_path = database_url.replace("sqlite+aiosqlite:///", "")
             return Path(db_path)
+        elif database_url.startswith("postgresql"):
+            # PostgreSQL doesn't have a file path
+            return None
         else:
             context = create_error_context()
             context.metadata["operation"] = "get_database_path"
@@ -300,6 +328,19 @@ def get_session_maker() -> async_sessionmaker:
         ValidationError: If database cannot be initialized
     """
     return get_database_manager().get_session_maker()
+
+
+def get_database_url() -> str | None:
+    """
+    Get the database URL, initializing if necessary.
+
+    Returns:
+        str | None: The database URL, or None if not configured
+
+    Raises:
+        ValidationError: If database cannot be initialized
+    """
+    return get_database_manager().get_database_url()
 
 
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
@@ -376,11 +417,15 @@ async def init_db() -> None:
         configure_mappers()
 
         engine = get_engine()  # Initialize if needed
+        database_url = get_database_url()
+        is_postgres = database_url and database_url.startswith("postgresql")
+
         async with engine.begin() as conn:
             logger.info("Creating database tables")
             await conn.run_sync(metadata.create_all)
-            # Enable foreign key constraints for SQLite
-            await conn.execute(text("PRAGMA foreign_keys = ON"))
+            # Enable foreign key constraints for SQLite only
+            if not is_postgres:
+                await conn.execute(text("PRAGMA foreign_keys = ON"))
 
             # MIGRATION: Add respawn_room_id column if it doesn't exist
             # This handles existing databases that were created before this column was added
@@ -436,12 +481,14 @@ async def close_db() -> None:
         raise RuntimeError("Failed to close database connections") from e
 
 
-def get_database_path() -> Path:
+def get_database_path() -> Path | None:
     """
-    Get the database file path.
+    Get the database file path (SQLite only).
+
+    For PostgreSQL, returns None as there is no file path.
 
     Returns:
-        Path: Path to the database file
+        Path | None: Path to the database file (SQLite) or None (PostgreSQL)
     """
     # Test override path handling without requiring initialization
     if _database_url is not None:
@@ -450,6 +497,9 @@ def get_database_path() -> Path:
             raise ValidationError("Database URL is None")
         if url.startswith("sqlite+aiosqlite:///"):
             return Path(url.replace("sqlite+aiosqlite:///", ""))
+        elif url.startswith("postgresql"):
+            # PostgreSQL doesn't have a file path
+            return None
         # Unsupported URL schemes should raise
         raise ValidationError(f"Unsupported database URL: {url}")
 
@@ -457,6 +507,7 @@ def get_database_path() -> Path:
 
 
 def ensure_database_directory() -> None:
-    """Ensure database directory exists."""
+    """Ensure database directory exists (SQLite only)."""
     db_path = get_database_path()
-    db_path.parent.mkdir(parents=True, exist_ok=True)
+    if db_path is not None:
+        db_path.parent.mkdir(parents=True, exist_ok=True)

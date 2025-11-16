@@ -3,6 +3,7 @@ import os
 import sqlite3
 import threading
 from collections.abc import Callable
+from contextlib import contextmanager
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, TypedDict, cast
 from uuid import UUID
@@ -12,6 +13,7 @@ from server.logging.enhanced_logging_config import get_logger
 from .exceptions import DatabaseError, ValidationError
 from .models.player import Player
 from .models.room import Room
+from .postgres_adapter import connect_postgres, is_postgres_url
 from .schemas.inventory_schema import InventorySchemaValidationError, validate_inventory_payload
 from .utils.error_logging import create_error_context, log_and_raise
 from .world_loader import ROOMS_BASE_PATH
@@ -120,10 +122,11 @@ class PersistenceLayer:
         if db_path:
             self.db_path = db_path
         elif os.environ.get("DATABASE_URL"):
-            # Derive database path from DATABASE_URL
-            from .database import get_database_path
-
-            self.db_path = str(get_database_path())
+            # Use DATABASE_URL directly (could be PostgreSQL or SQLite)
+            # Type assertion: we've already checked it's not None above
+            database_url = os.environ.get("DATABASE_URL")
+            assert database_url is not None, "DATABASE_URL should not be None here"
+            self.db_path = database_url
         else:
             context = create_error_context()
             context.metadata["operation"] = "persistence_init"
@@ -142,6 +145,8 @@ class PersistenceLayer:
         self._lock = threading.RLock()
         self._logger = self._setup_logger()
         self._event_bus = event_bus
+        # Detect if we're using PostgreSQL
+        self._is_postgres = is_postgres_url(self.db_path) if self.db_path else False
         # TODO: Load config for SQL logging verbosity
         self._load_room_cache()
 
@@ -154,7 +159,47 @@ class PersistenceLayer:
     def _log(self, msg: str):
         self._logger.info(msg)
 
-    def _convert_row_to_player_data(self, row: sqlite3.Row) -> dict:
+    @contextmanager
+    def _get_connection(self):
+        """Get a database connection context manager (SQLite or PostgreSQL)."""
+        if self._is_postgres:
+            conn = connect_postgres(self.db_path)
+            try:
+                yield conn
+            finally:
+                conn.close()
+        else:
+            with sqlite3.connect(self.db_path) as conn:
+                yield conn
+
+    def _convert_insert_or_replace(self, query: str, table_name: str, primary_key: str) -> str:
+        """Convert SQLite INSERT OR REPLACE to PostgreSQL INSERT ... ON CONFLICT."""
+        if not self._is_postgres:
+            return query
+        # Convert INSERT OR REPLACE to PostgreSQL UPSERT syntax
+        if "INSERT OR REPLACE" in query.upper():
+            # Replace INSERT OR REPLACE with INSERT
+            query = query.replace("INSERT OR REPLACE", "INSERT")
+            # Find the VALUES clause
+            values_idx = query.upper().find("VALUES")
+            if values_idx != -1:
+                # Extract columns from the INSERT statement
+                insert_part = query[:values_idx]
+                values_part = query[values_idx:]
+                # Find column list
+                col_start = insert_part.find("(")
+                col_end = insert_part.find(")", col_start)
+                if col_start != -1 and col_end != -1:
+                    columns_str = insert_part[col_start + 1 : col_end]
+                    columns = [col.strip() for col in columns_str.split(",")]
+                    # Build ON CONFLICT clause
+                    conflict_clause = f" ON CONFLICT ({primary_key}) DO UPDATE SET "
+                    update_parts = [f"{col} = EXCLUDED.{col}" for col in columns if col != primary_key]
+                    conflict_clause += ", ".join(update_parts)
+                    return insert_part + values_part + conflict_clause
+        return query
+
+    def _convert_row_to_player_data(self, row: sqlite3.Row | Any) -> dict:
         """
         Convert SQLite row data to proper types for Player constructor.
 
@@ -246,18 +291,18 @@ class PersistenceLayer:
         player.set_equipped_items(payload["equipped"])
         return inventory_json, equipped_json
 
-    def _ensure_inventory_row(
-        self, conn: sqlite3.Connection, player_id: str, inventory_json: str, equipped_json: str
-    ) -> None:
-        conn.execute(
-            """
+    def _ensure_inventory_row(self, conn: Any, player_id: str, inventory_json: str, equipped_json: str) -> None:
+        insert_query = """
             INSERT OR REPLACE INTO player_inventories (player_id, inventory_json, equipped_json)
             VALUES (?, ?, ?)
-            """,
+            """
+        insert_query = self._convert_insert_or_replace(insert_query, "player_inventories", "player_id")
+        conn.execute(
+            insert_query,
             (player_id, inventory_json, equipped_json),
         )
 
-    def _load_player_inventory(self, conn: sqlite3.Connection, player: Player) -> None:
+    def _load_player_inventory(self, conn: Any, player: Player) -> None:
         cursor = conn.execute(
             """
             SELECT inventory_json, equipped_json
@@ -367,8 +412,9 @@ class PersistenceLayer:
         context.metadata["player_name"] = name
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
-                conn.row_factory = sqlite3.Row
+            with self._lock, self._get_connection() as conn:
+                if not self._is_postgres:
+                    conn.row_factory = sqlite3.Row
                 row = conn.execute("SELECT * FROM players WHERE name = ?", (name,)).fetchone()
                 if row:
                     player_data = self._convert_row_to_player_data(row)
@@ -378,7 +424,7 @@ class PersistenceLayer:
                     self._load_player_inventory(conn, player)
                     return player
                 return None
-        except sqlite3.Error as e:
+        except (sqlite3.Error, Exception) as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player by name '{name}': {e}",
@@ -395,7 +441,7 @@ class PersistenceLayer:
         context.metadata["player_id"] = player_id
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
+            with self._lock, self._get_connection() as conn:
                 conn.row_factory = sqlite3.Row
                 # Convert player_id to string to ensure SQLite compatibility
                 player_id_str = str(player_id) if player_id else None
@@ -425,7 +471,7 @@ class PersistenceLayer:
         context.metadata["user_id"] = user_id
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
+            with self._lock, self._get_connection() as conn:
                 conn.row_factory = sqlite3.Row
                 # Convert user_id to string to ensure SQLite compatibility
                 user_id_str = str(user_id) if user_id else None
@@ -456,7 +502,7 @@ class PersistenceLayer:
         context.metadata["player_id"] = str(player.player_id)
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
+            with self._lock, self._get_connection() as conn:
                 try:
                     # Handle datetime fields that might be strings
                     created_at = None
@@ -508,13 +554,15 @@ class PersistenceLayer:
                             user_friendly="Player inventory data is invalid",
                         )
 
-                    conn.execute(
-                        """
+                    insert_query = """
                         INSERT OR REPLACE INTO players (
                             player_id, user_id, name, stats, inventory, status_effects,
                             current_room_id, experience_points, level, is_admin, profession_id, created_at, last_active
                         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                        """,
+                        """
+                    insert_query = self._convert_insert_or_replace(insert_query, "players", "player_id")
+                    conn.execute(
+                        insert_query,
                         (
                             player_id_str,
                             user_id_str,
@@ -581,7 +629,7 @@ class PersistenceLayer:
         context.metadata["player_id"] = player_id
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
+            with self._lock, self._get_connection() as conn:
                 try:
                     if last_active is None:
                         last_active = datetime.now(UTC)
@@ -629,7 +677,7 @@ class PersistenceLayer:
         context.metadata["operation"] = "list_players"
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
+            with self._lock, self._get_connection() as conn:
                 conn.row_factory = sqlite3.Row
                 rows = conn.execute("SELECT * FROM players").fetchall()
                 players = []
@@ -658,7 +706,7 @@ class PersistenceLayer:
         context.metadata["room_id"] = room_id
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
+            with self._lock, self._get_connection() as conn:
                 conn.row_factory = sqlite3.Row
                 rows = conn.execute("SELECT * FROM players WHERE current_room_id = ?", (room_id,)).fetchall()
                 players = []
@@ -687,7 +735,7 @@ class PersistenceLayer:
         context.metadata["player_count"] = len(players)
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
+            with self._lock, self._get_connection() as conn:
                 try:
                     for player in players:
                         # Handle datetime fields that might be strings
@@ -710,13 +758,15 @@ class PersistenceLayer:
                         player_id_str = str(player.player_id) if player.player_id else None
                         user_id_str = str(player.user_id) if player.user_id else None
 
-                        conn.execute(
-                            """
+                        insert_query = """
                             INSERT OR REPLACE INTO players (
                                 player_id, user_id, name, stats, inventory, status_effects,
                                 current_room_id, experience_points, level, is_admin, profession_id, created_at, last_active
                             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                            """,
+                            """
+                        insert_query = self._convert_insert_or_replace(insert_query, "players", "player_id")
+                        conn.execute(
+                            insert_query,
                             (
                                 player_id_str,
                                 user_id_str,
@@ -814,7 +864,7 @@ class PersistenceLayer:
         context.metadata["operation"] = "get_all_professions"
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
+            with self._lock, self._get_connection() as conn:
                 conn.row_factory = sqlite3.Row
                 rows = conn.execute("SELECT * FROM professions WHERE is_available = 1 ORDER BY id").fetchall()
 
@@ -845,7 +895,7 @@ class PersistenceLayer:
         context.metadata["profession_id"] = profession_id
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
+            with self._lock, self._get_connection() as conn:
                 conn.row_factory = sqlite3.Row
                 row = conn.execute("SELECT * FROM professions WHERE id = ?", (profession_id,)).fetchone()
 
@@ -1273,7 +1323,7 @@ class PersistenceLayer:
             # Execute atomic field update using SQLite json_set()
             # AI Agent: This prevents race conditions by updating ONLY this field
             # without loading/saving the entire player object which might have stale data
-            with self._lock, sqlite3.connect(self.db_path) as conn:
+            with self._lock, self._get_connection() as conn:
                 cursor = conn.execute(
                     f"""
                     UPDATE players

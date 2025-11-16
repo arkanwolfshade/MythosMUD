@@ -11,11 +11,13 @@ import sqlite3
 from typing import Any
 
 import aiosqlite
+import asyncpg
 
 from .exceptions import DatabaseError, ValidationError
 from .logging.enhanced_logging_config import get_logger
 from .models.player import Player
 from .models.profession import Profession
+from .postgres_adapter import is_postgres_url
 from .utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
@@ -51,6 +53,8 @@ class AsyncPersistenceLayer:
         self.log_path = log_path
         self._event_bus = event_bus
         self._logger = get_logger(__name__)
+        # Detect if we're using PostgreSQL
+        self._is_postgres = is_postgres_url(self.db_path) if self.db_path else False
         self._load_room_cache()
 
     def _load_room_cache(self) -> None:
@@ -85,10 +89,31 @@ class AsyncPersistenceLayer:
         context.metadata["player_name"] = name
 
         try:
-            async with aiosqlite.connect(self.db_path) as conn:
-                conn.row_factory = aiosqlite.Row
-                cursor = await conn.execute("SELECT * FROM players WHERE name = ?", (name,))
-                row = await cursor.fetchone()
+            if self._is_postgres:
+                # PostgreSQL connection
+                # Parse URL: postgresql+asyncpg://user:pass@host:port/db
+                url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
+                    "postgresql+psycopg2://", "postgresql://"
+                )
+                conn = await asyncpg.connect(url)
+                row_dict = None
+                try:
+                    row = await conn.fetchrow("SELECT * FROM players WHERE name = $1", name)
+                    if row:
+                        row_dict = dict(row)
+                finally:
+                    await conn.close()
+                if row_dict:
+                    player_data = self._convert_row_to_player_data(row_dict)
+                    player = Player(**player_data)
+                    self.validate_and_fix_player_room(player)
+                    return player
+                return None
+            else:
+                async with aiosqlite.connect(self.db_path) as conn:
+                    conn.row_factory = aiosqlite.Row
+                    cursor = await conn.execute("SELECT * FROM players WHERE name = ?", (name,))
+                    row = await cursor.fetchone()
 
                 if row:
                     player_data = self._convert_row_to_player_data(row)
@@ -478,8 +503,12 @@ class AsyncPersistenceLayer:
                 user_friendly="Failed to retrieve profession",
             )
 
-    def _convert_row_to_player_data(self, row: aiosqlite.Row) -> dict[str, Any]:
-        """Convert a database row to player data dictionary."""
+    def _convert_row_to_player_data(self, row: aiosqlite.Row | dict[str, Any]) -> dict[str, Any]:
+        """Convert a database row to player data dictionary.
+
+        Accepts both aiosqlite.Row (SQLite) and dict (PostgreSQL asyncpg).
+        Both types support dictionary-style access via __getitem__.
+        """
         # AI Agent: CRITICAL FIX - Do NOT pre-parse JSON fields!
         #           Player model expects stats/inventory/status_effects as JSON STRINGS,
         #           not dicts. The Player.get_stats() method handles parsing.

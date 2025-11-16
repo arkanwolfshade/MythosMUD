@@ -2,6 +2,9 @@
 """
 Test database initialization for MythosMUD.
 
+DEPRECATED: This script is for SQLite initialization only.
+We now use PostgreSQL exclusively. SQLite databases have been renamed to .bak extension.
+
 This module provides utilities for setting up test databases with sample data.
 """
 
@@ -12,6 +15,7 @@ from server.scripts.player_inventory_migration import migrate_player_inventories
 
 # Test database path - use project root relative path
 # from server/tests/scripts -> server/tests -> server -> project_root
+# NOTE: This script is deprecated - we now use PostgreSQL exclusively.
 project_root = Path(__file__).parent.parent.parent.parent
 TEST_DB_PATH = project_root / "data" / "unit_test" / "players" / "unit_test_players.db"
 
