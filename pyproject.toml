@@ -26,7 +26,6 @@ dependencies = [
     "pre-commit>=4.4.0",
     "pytest>=8.4.2",
     "pytest-cov>=7.0.0",
-    "aiosqlite>=0.21.0",
     "psycopg2-binary>=2.9.9",
     "asyncpg>=0.29.0",
     "pytest-asyncio>=1.2.0",
@@ -56,7 +55,6 @@ dev = [
     "pytest-asyncio>=1.2.0",
     "debugpy>=1.8.15",
     "ruff>=0.14.4",
-    "aiosqlite>=0.21.0",
     "pre-commit>=4.4.0",
     "mypy>=1.13.0",  # Static type checking
     "types-requests>=2.32.0",  # Type stubs for requests
@@ -118,7 +116,6 @@ known_third_party = [
     "structlog",
     "fastapi_users",
     "pytest",
-    "aiosqlite",
     "jsonschema",
     "bleach",
     "tqdm",
@@ -221,6 +218,7 @@ exclude = [
     "^monitoring/",
     "^server/alembic/",
     "^server/test_who_command_direct.py$",
+    "^server/tests/scripts/",  # Test scripts - may contain legacy SQLite code
 ]
 
 # Per-module options - Third-party libraries without stubs or with incomplete stubs
@@ -237,7 +235,6 @@ module = [
     "jose.*",
     "faker.*",
     "dotenv.*",
-    "aiosqlite.*",
     "jsonschema.*",
     "pwdlib.*",
     "alembic.*",

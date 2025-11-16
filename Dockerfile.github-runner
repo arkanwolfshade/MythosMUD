@@ -7,7 +7,7 @@ FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Human reader: install baseline system packages required for Python/Node builds,
-# sqlite usage, and Playwright runtime dependencies used in CI.
+# PostgreSQL client libraries, and Playwright runtime dependencies used in CI.
 # AI reader: keep package list minimal and aligned with workflow requirements.
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -21,8 +21,8 @@ RUN apt-get update && \
         python3.12-venv \
         python3.12-dev \
         python3-pip \
-        sqlite3 \
-        libsqlite3-dev \
+        postgresql-client \
+        libpq-dev \
         libssl-dev \
         libffi-dev \
         libnss3 \
@@ -90,16 +90,16 @@ WORKDIR /workspace
 # Initialize and verify test databases to mirror CI preparation steps.
 # Human reader: supply actual secrets via docker run -e / compose; do NOT bake them into the image.
 # AI reader: runtime env vars should match GitHub Actions workflow exports.
+# NOTE: PostgreSQL databases must be initialized via DDL scripts, not Python initialization.
+# Database initialization should happen in CI workflow, not in Docker image build.
 RUN . .venv/bin/activate && \
-    export DATABASE_URL="sqlite+aiosqlite:///workspace/data/unit_test/players/unit_test_players.db" && \
-    export DATABASE_NPC_URL="sqlite+aiosqlite:///workspace/data/unit_test/npcs/unit_test_npcs.db" && \
+    export DATABASE_URL="postgresql+asyncpg://postgres:postgres@localhost:5432/mythos_unit" && \
+    export DATABASE_NPC_URL="postgresql+asyncpg://postgres:postgres@localhost:5432/mythos_unit" && \
     export MYTHOSMUD_ADMIN_PASSWORD="test-admin-password" && \
     export MYTHOSMUD_SECRET_KEY="test-secret-key-for-ci-workflow" && \
     export MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow" && \
     export MYTHOSMUD_RESET_TOKEN_SECRET="test-reset-token-secret-for-ci-workflow" && \
-    export MYTHOSMUD_VERIFICATION_TOKEN_SECRET="test-verification-token-secret-for-ci-workflow" && \
-    python server/tests/scripts/init_test_db.py && \
-    python server/tests/scripts/verify_test_db.py
+    export MYTHOSMUD_VERIFICATION_TOKEN_SECRET="test-verification-token-secret-for-ci-workflow"
 
 # Default shell for interactive troubleshooting.
 CMD ["/bin/bash"]

@@ -21,14 +21,16 @@ class TestProfessionModel:
 
     @pytest.fixture
     def db_session(self):
-        """Create an in-memory SQLite database for testing."""
-        engine = create_engine("sqlite:///:memory:", echo=False)
+        """Create a PostgreSQL database session for testing."""
+        import os
 
-        # Create tables
-        from server.metadata import metadata
-
-        metadata.create_all(engine)
-
+        database_url = os.getenv("DATABASE_URL")
+        if not database_url or not database_url.startswith("postgresql"):
+            raise ValueError("DATABASE_URL must be set to a PostgreSQL URL. SQLite is no longer supported.")
+        # Convert async URL to sync URL for create_engine
+        sync_url = database_url.replace("+asyncpg", "")
+        engine = create_engine(sync_url, echo=False)
+        # Professions table should already exist from DDL - no need to create
         Session = sessionmaker(bind=engine)
         session = Session()
         yield session
@@ -221,12 +223,10 @@ class TestProfessionDatabaseSchema:
     def db_engine(self):
         """Create a PostgreSQL database connection for schema testing."""
         import os
+
         database_url = os.getenv("DATABASE_URL")
         if not database_url or not database_url.startswith("postgresql"):
-            raise ValueError(
-                "DATABASE_URL must be set to a PostgreSQL URL. "
-                "SQLite is no longer supported."
-            )
+            raise ValueError("DATABASE_URL must be set to a PostgreSQL URL. SQLite is no longer supported.")
         # Convert async URL to sync URL for create_engine
         sync_url = database_url.replace("+asyncpg", "")
         engine = create_engine(sync_url, echo=False)

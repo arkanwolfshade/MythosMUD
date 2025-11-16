@@ -8,11 +8,12 @@ are properly logged with appropriate context information.
 
 import json
 import os
-import sqlite3
 import tempfile
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
+from psycopg2 import IntegrityError as PGIntegrityError
+from psycopg2 import OperationalError as PGOperationalError
 
 from server.exceptions import DatabaseError, ValidationError
 from server.models.player import Player
@@ -27,26 +28,16 @@ class TestPersistenceErrorLogging:
         # Reset persistence singleton
         reset_persistence()
 
-        # Create temporary database
-        self.temp_db = tempfile.NamedTemporaryFile(delete=False, suffix=".db")
-        self.temp_db.close()
+        # Use PostgreSQL from environment - SQLite is no longer supported
+        database_url = os.getenv("DATABASE_URL")
+        if not database_url or not database_url.startswith("postgresql"):
+            pytest.skip("DATABASE_URL must be set to a PostgreSQL URL. SQLite is no longer supported.")
 
-        # Set environment variable for database URL
-        os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{self.temp_db.name}"
-
-        # Create persistence layer
+        # Create persistence layer (will use PostgreSQL from environment)
         self.persistence = get_persistence()
 
     def teardown_method(self):
         """Clean up test environment."""
-        # Clean up temporary database
-        if os.path.exists(self.temp_db.name):
-            os.unlink(self.temp_db.name)
-
-        # Reset environment
-        if "DATABASE_URL" in os.environ:
-            del os.environ["DATABASE_URL"]
-
         # Reset persistence singleton
         reset_persistence()
 
@@ -71,7 +62,8 @@ class TestPersistenceErrorLogging:
         with patch("server.world_loader.load_hierarchical_world", side_effect=Exception("World load failed")):
             with pytest.raises(DatabaseError) as exc_info:
                 # This will trigger room cache loading during initialization
-                PersistenceLayer(db_path=self.temp_db.name)
+                # Use PostgreSQL from environment - SQLite is no longer supported
+                PersistenceLayer()
 
         # Verify error context
         assert "Room cache load failed" in str(exc_info.value)
@@ -83,11 +75,15 @@ class TestPersistenceErrorLogging:
         # Create a player
         player = Player(name="TestPlayer", user_id="test-user-id", player_id="test-player-id")
 
-        # Mock database to raise IntegrityError
-        with patch("sqlite3.connect") as mock_connect:
+        # Mock PostgreSQL connection to raise IntegrityError
+        with patch("server.postgres_adapter.connect_postgres") as mock_connect:
             mock_conn = Mock()
-            mock_connect.return_value.__enter__.return_value = mock_conn
-            mock_conn.execute.side_effect = sqlite3.IntegrityError("UNIQUE constraint failed")
+            mock_conn.__enter__ = Mock(return_value=mock_conn)
+            mock_conn.__exit__ = Mock(return_value=None)
+            mock_conn.cursor.return_value.__enter__.return_value.execute.side_effect = PGIntegrityError(
+                "UNIQUE constraint failed"
+            )
+            mock_connect.return_value = mock_conn
 
             with pytest.raises(DatabaseError) as exc_info:
                 self.persistence.save_player(player)
@@ -106,11 +102,15 @@ class TestPersistenceErrorLogging:
             Player(name="Player2", user_id="user2", player_id="player2"),
         ]
 
-        # Mock database to raise IntegrityError
-        with patch("sqlite3.connect") as mock_connect:
+        # Mock PostgreSQL connection to raise IntegrityError
+        with patch("server.postgres_adapter.connect_postgres") as mock_connect:
             mock_conn = Mock()
-            mock_connect.return_value.__enter__.return_value = mock_conn
-            mock_conn.execute.side_effect = sqlite3.IntegrityError("UNIQUE constraint failed")
+            mock_conn.__enter__ = Mock(return_value=mock_conn)
+            mock_conn.__exit__ = Mock(return_value=None)
+            mock_conn.cursor.return_value.__enter__.return_value.execute.side_effect = PGIntegrityError(
+                "UNIQUE constraint failed"
+            )
+            mock_connect.return_value = mock_conn
 
             with pytest.raises(DatabaseError) as exc_info:
                 self.persistence.save_players(players)
@@ -122,11 +122,15 @@ class TestPersistenceErrorLogging:
 
     def test_delete_player_database_error_logging(self):
         """Test error logging for player deletion database errors."""
-        # Mock database to raise Error
-        with patch("sqlite3.connect") as mock_connect:
+        # Mock PostgreSQL connection to raise OperationalError
+        with patch("server.postgres_adapter.connect_postgres") as mock_connect:
             mock_conn = Mock()
-            mock_connect.return_value.__enter__.return_value = mock_conn
-            mock_conn.execute.side_effect = sqlite3.Error("Database locked")
+            mock_conn.__enter__ = Mock(return_value=mock_conn)
+            mock_conn.__exit__ = Mock(return_value=None)
+            mock_conn.cursor.return_value.__enter__.return_value.execute.side_effect = PGOperationalError(
+                "Database locked"
+            )
+            mock_connect.return_value = mock_conn
 
             with pytest.raises(DatabaseError) as exc_info:
                 self.persistence.delete_player("test-player-id")
@@ -172,14 +176,13 @@ class TestDatabaseErrorLogging:
 
     def setup_method(self):
         """Set up test environment."""
-        # Create temporary database
-        self.temp_db = tempfile.NamedTemporaryFile(delete=False, suffix=".db")
-        self.temp_db.close()
+        # No setup needed - tests use PostgreSQL from environment
+        pass
 
     def teardown_method(self):
         """Clean up test environment."""
-        if os.path.exists(self.temp_db.name):
-            os.unlink(self.temp_db.name)
+        # No cleanup needed
+        pass
 
     def test_database_config_without_url(self):
         """Test database configuration error when DATABASE_URL is not set."""

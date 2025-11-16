@@ -40,14 +40,14 @@ class TestNPCDatabaseInitialization:
 
         with patch("server.config.get_config") as mock_get_config:
             mock_config = MagicMock()
-            mock_config.database.npc_url = "sqlite+aiosqlite:///data/npcs/test_npcs.db"
+            mock_config.database.npc_url = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
             mock_get_config.return_value = mock_config
 
             _initialize_npc_database()
 
             assert npc_db._npc_engine is not None
             assert npc_db._npc_async_session_maker is not None
-            assert npc_db._npc_database_url == "sqlite+aiosqlite:///data/npcs/test_npcs.db"
+            assert npc_db._npc_database_url == "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
 
         # Clean up
         npc_db._npc_engine = None
@@ -61,7 +61,7 @@ class TestNPCDatabaseInitialization:
         # Set up as already initialized
         npc_db._npc_engine = MagicMock(spec=AsyncEngine)
         npc_db._npc_async_session_maker = MagicMock()
-        npc_db._npc_database_url = "sqlite+aiosqlite:///data/npcs/test_npcs.db"
+        npc_db._npc_database_url = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
 
         # Should return early without doing anything
         _initialize_npc_database()
@@ -124,7 +124,7 @@ class TestGetNPCEngine:
 
         with patch("server.config.get_config") as mock_get_config:
             mock_config = MagicMock()
-            mock_config.database.npc_url = "sqlite+aiosqlite:///data/npcs/test_npcs.db"
+            mock_config.database.npc_url = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
             mock_get_config.return_value = mock_config
 
             engine = get_npc_engine()
@@ -164,7 +164,7 @@ class TestGetNPCSessionMaker:
 
         with patch("server.config.get_config") as mock_get_config:
             mock_config = MagicMock()
-            mock_config.database.npc_url = "sqlite+aiosqlite:///data/npcs/test_npcs.db"
+            mock_config.database.npc_url = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
             mock_get_config.return_value = mock_config
 
             session_maker = get_npc_session_maker()
@@ -275,7 +275,7 @@ class TestInitNPCDB:
 
         npc_db._npc_engine = mock_engine
         npc_db._npc_async_session_maker = MagicMock()
-        npc_db._npc_database_url = "sqlite+aiosqlite:///data/npcs/test_npcs.db"
+        npc_db._npc_database_url = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
 
         with patch("sqlalchemy.orm.configure_mappers"):
             await init_npc_db()
@@ -320,7 +320,7 @@ class TestCloseNPCDB:
         mock_engine = AsyncMock(spec=AsyncEngine)
         npc_db._npc_engine = mock_engine
         npc_db._npc_async_session_maker = MagicMock()
-        npc_db._npc_database_url = "sqlite+aiosqlite:///data/npcs/test_npcs.db"
+        npc_db._npc_database_url = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
 
         await close_npc_db()
 
@@ -357,7 +357,7 @@ class TestGetNPCDatabasePath:
         """Test getting database path for SQLite URL."""
         import server.npc_database as npc_db
 
-        npc_db._npc_database_url = "sqlite+aiosqlite:///data/npcs/test_npcs.db"
+        npc_db._npc_database_url = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
 
         path = get_npc_database_path()
 
@@ -376,7 +376,7 @@ class TestGetNPCDatabasePath:
 
         with patch("server.config.get_config") as mock_get_config:
             mock_config = MagicMock()
-            mock_config.database.npc_url = "sqlite+aiosqlite:///data/npcs/test_npcs.db"
+            mock_config.database.npc_url = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
             mock_get_config.return_value = mock_config
 
             path = get_npc_database_path()
@@ -411,7 +411,7 @@ class TestEnsureNPCDatabaseDirectory:
         """Test that ensure_npc_database_directory creates directory."""
         import server.npc_database as npc_db
 
-        npc_db._npc_database_url = "sqlite+aiosqlite:///data/npcs/test_npcs.db"
+        npc_db._npc_database_url = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
 
         with patch.object(Path, "mkdir") as mock_mkdir:
             ensure_npc_database_directory()
@@ -435,7 +435,7 @@ class TestSQLitePragmaListener:
 
         with patch("server.config.get_config") as mock_get_config:
             mock_config = MagicMock()
-            mock_config.database.npc_url = "sqlite+aiosqlite:///data/npcs/test_npcs.db"
+            mock_config.database.npc_url = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
             mock_get_config.return_value = mock_config
 
             _initialize_npc_database()
@@ -463,10 +463,8 @@ class TestSQLitePragmaListener:
         # Initialize with SQLite URL (the default behavior)
         with patch("server.config.get_config") as mock_get_config:
             mock_config = MagicMock()
-            # Use a test database URL that contains "test"
-            # Use absolute path to prevent nested server/server/ directory creation
-            test_db_path = Path(__file__).parent.parent.parent.parent / "data" / "unit_test" / "npcs" / "test_npcs.db"
-            mock_config.database.npc_url = f"sqlite+aiosqlite:///{test_db_path}"
+            # Use PostgreSQL URL for testing
+            mock_config.database.npc_url = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
             mock_get_config.return_value = mock_config
 
             _initialize_npc_database()
@@ -493,7 +491,7 @@ class TestNPCDatabaseIntegration:
 
         with patch("server.config.get_config") as mock_get_config:
             mock_config = MagicMock()
-            mock_config.database.npc_url = "sqlite+aiosqlite:///data/npcs/test_npcs.db"
+            mock_config.database.npc_url = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
             mock_get_config.return_value = mock_config
 
             # Get engine

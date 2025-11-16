@@ -61,6 +61,36 @@ async def test_container():
     from server.container import ApplicationContainer
 
     logger.info("Creating ApplicationContainer for test")
+
+    # CRITICAL: Ensure test environment variables are loaded before config initialization
+    import os
+    from pathlib import Path
+
+    from dotenv import load_dotenv
+
+    # Load test environment file explicitly to ensure variables are set
+    test_env_path = Path(__file__).parent.parent.parent / "tests" / ".env.unit_test"
+    if test_env_path.exists():
+        load_dotenv(test_env_path, override=True)
+        logger.info("Loaded test environment file", env_path=str(test_env_path))
+    else:
+        logger.warning("Test environment file not found", env_path=str(test_env_path))
+
+    # Verify DATABASE_URL is set before proceeding
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url:
+        raise ValueError(
+            "DATABASE_URL environment variable is not set. "
+            "Please ensure server/tests/.env.unit_test exists and contains DATABASE_URL."
+        )
+    if not database_url.startswith("postgresql"):
+        raise ValueError(f"DATABASE_URL must be a PostgreSQL URL, got: {database_url}. SQLite is no longer supported.")
+
+    # CRITICAL: Reset config cache to ensure fresh environment variables are loaded
+    from server.config import reset_config
+
+    reset_config()
+
     container = ApplicationContainer()
 
     try:
@@ -104,6 +134,35 @@ def container_test_client():
     from server.container import ApplicationContainer
 
     logger.info("Creating TestClient with ApplicationContainer")
+
+    # CRITICAL: Ensure test environment variables are loaded before config initialization
+    import os
+    from pathlib import Path
+
+    from dotenv import load_dotenv
+
+    # Load test environment file explicitly to ensure variables are set
+    test_env_path = Path(__file__).parent.parent.parent / "tests" / ".env.unit_test"
+    if test_env_path.exists():
+        load_dotenv(test_env_path, override=True)
+        logger.info("Loaded test environment file", env_path=str(test_env_path))
+    else:
+        logger.warning("Test environment file not found", env_path=str(test_env_path))
+
+    # Verify DATABASE_URL is set before proceeding
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url:
+        raise ValueError(
+            "DATABASE_URL environment variable is not set. "
+            "Please ensure server/tests/.env.unit_test exists and contains DATABASE_URL."
+        )
+    if not database_url.startswith("postgresql"):
+        raise ValueError(f"DATABASE_URL must be a PostgreSQL URL, got: {database_url}. SQLite is no longer supported.")
+
+    # CRITICAL: Reset config cache to ensure fresh environment variables are loaded
+    from server.config import reset_config
+
+    reset_config()
 
     # Create new event loop for container initialization
     loop = asyncio.new_event_loop()

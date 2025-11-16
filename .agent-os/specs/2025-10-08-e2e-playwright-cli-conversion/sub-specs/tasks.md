@@ -11,12 +11,15 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ## Phase 1: Infrastructure Setup (Week 1, Day 1-2)
 
 ### Task 1.1: Create Playwright Runtime Configuration
+
 **Estimated Effort**: 2 hours
 **Dependencies**: None
 **Files to Create**:
+
 - `client/tests/e2e/playwright.runtime.config.ts`
 
 **Requirements**:
+
 - Configure 30-second default timeout
 - Set base URL to `http://localhost:5173`
 - Enable trace collection on first retry
@@ -27,6 +30,7 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 - Configure HTML reporter output: `playwright-report/runtime/`
 
 **Acceptance Criteria**:
+
 - [ ] Configuration file created and properly typed
 - [ ] Can run `npx playwright test --config=tests/e2e/playwright.runtime.config.ts` successfully
 - [ ] Server auto-starts for local development
@@ -35,14 +39,17 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ---
 
 ### Task 1.2: Create Test Fixtures - Database Utilities
+
 **Estimated Effort**: 4 hours
 **Dependencies**: Task 1.1
 **Files to Create**:
+
 - `client/tests/e2e/runtime/fixtures/database.ts`
 - `client/tests/e2e/runtime/global-setup.ts`
 - `client/tests/e2e/runtime/global-teardown.ts`
 
 **Requirements**:
+
 - Implement `seedTestDatabase()` function
 - Implement `cleanupTestDatabase()` function
 - Implement `createDatabaseSchema()` function
@@ -52,6 +59,7 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 - Configure global setup/teardown hooks
 
 **Acceptance Criteria**:
+
 - [ ] Database seeding creates all baseline test players
 - [ ] Password hashing matches production Argon2 configuration
 - [ ] Cleanup resets player positions and stats
@@ -62,12 +70,15 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ---
 
 ### Task 1.3: Create Test Fixtures - Authentication Helpers
+
 **Estimated Effort**: 3 hours
 **Dependencies**: Task 1.2
 **Files to Create**:
+
 - `client/tests/e2e/runtime/fixtures/auth.ts`
 
 **Requirements**:
+
 - Implement `loginAsPlayer(page, username, password)` function
   - Navigate to login page
   - Fill username and password fields
@@ -84,6 +95,7 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 - Handle login failures gracefully
 
 **Acceptance Criteria**:
+
 - [ ] `loginAsPlayer()` successfully logs in test players
 - [ ] Login function handles MOTD screen transition
 - [ ] Login function verifies game interface loaded
@@ -93,12 +105,15 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ---
 
 ### Task 1.4: Create Test Fixtures - Player Utilities
+
 **Estimated Effort**: 2 hours
 **Dependencies**: Task 1.2
 **Files to Create**:
+
 - `client/tests/e2e/runtime/fixtures/player.ts`
 
 **Requirements**:
+
 - Implement `getPlayerLocation(page)` function
 - Implement `sendCommand(page, command)` function
 - Implement `waitForMessage(page, messageText, timeout)` function
@@ -107,6 +122,7 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 - Implement message filtering utilities
 
 **Acceptance Criteria**:
+
 - [ ] Can retrieve player location from UI
 - [ ] Can send commands via command input
 - [ ] Can wait for specific messages with timeout
@@ -116,12 +132,15 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ---
 
 ### Task 1.5: Create Test Fixtures - Test Data Constants
+
 **Estimated Effort**: 1 hour
 **Dependencies**: None
 **Files to Create**:
+
 - `client/tests/e2e/runtime/fixtures/test-data.ts`
 
 **Requirements**:
+
 - Export test player credentials
 - Export test room IDs
 - Export test message templates
@@ -129,6 +148,7 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 - Export timeout configurations
 
 **Acceptance Criteria**:
+
 - [ ] All test constants defined and exported
 - [ ] Constants match values used in scenarios
 - [ ] TypeScript types defined for all constants
@@ -136,12 +156,15 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ---
 
 ### Task 1.6: Update package.json Scripts
+
 **Estimated Effort**: 30 minutes
 **Dependencies**: Task 1.1
 **Files to Modify**:
+
 - `client/package.json`
 
 **Requirements**:
+
 - Add `test:e2e:runtime` script
 - Add `test:e2e:runtime:headed` script
 - Add `test:e2e:runtime:debug` script
@@ -149,6 +172,7 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 - Add `test:e2e:runtime:server` script with server tag filtering
 
 **Acceptance Criteria**:
+
 - [ ] All npm scripts execute successfully
 - [ ] Scripts use correct config file path
 - [ ] Debug and UI modes work for local testing
@@ -158,12 +182,15 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ## Phase 2: Category A - Full Conversion (Week 1, Day 3-5)
 
 ### Task 2.1: Convert Scenario 11 - Local Channel Errors
+
 **Estimated Effort**: 4 hours
 **Dependencies**: Phase 1 complete
 **Files to Create**:
+
 - `client/tests/e2e/runtime/error-handling/local-channel-errors.spec.ts`
 
 **Test Cases to Implement**:
+
 1. Empty local message rejection
 2. Invalid command syntax error
 3. Long message (>500 chars) rejection
@@ -174,6 +201,7 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 8. System stability after errors
 
 **Acceptance Criteria**:
+
 - [ ] All 8 test cases pass successfully
 - [ ] Error messages match expected text
 - [ ] Tests complete in <2 minutes total
@@ -182,12 +210,15 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ---
 
 ### Task 2.2: Convert Scenario 14 - Whisper Errors
+
 **Estimated Effort**: 4 hours
 **Dependencies**: Task 2.1 (reuse patterns)
 **Files to Create**:
+
 - `client/tests/e2e/runtime/error-handling/whisper-errors.spec.ts`
 
 **Test Cases to Implement**:
+
 1. Non-existent player error
 2. Empty whisper message rejection
 3. Invalid command syntax
@@ -200,6 +231,7 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 10. System stability verification
 
 **Acceptance Criteria**:
+
 - [ ] All 10 test cases pass successfully
 - [ ] Error messages are clear and informative
 - [ ] Tests complete in <2 minutes total
@@ -207,12 +239,15 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ---
 
 ### Task 2.3: Convert Scenario 15 - Whisper Rate Limiting
+
 **Estimated Effort**: 5 hours
 **Dependencies**: Task 2.2
 **Files to Create**:
+
 - `client/tests/e2e/runtime/error-handling/whisper-rate-limiting.spec.ts`
 
 **Test Cases to Implement**:
+
 1. Normal whisper rate (1-3 messages) success
 2. Per-recipient rate limit (3 whispers/min to same player)
 3. Global rate limit (5 whispers/min total)
@@ -221,6 +256,7 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 6. System stability under rate limiting
 
 **Acceptance Criteria**:
+
 - [ ] All 6 test cases pass successfully
 - [ ] Rate limit enforcement is accurate
 - [ ] 60-second reset test completes successfully
@@ -229,12 +265,15 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ---
 
 ### Task 2.4: Convert Scenario 18 - Whisper Logging
+
 **Estimated Effort**: 4 hours
 **Dependencies**: Task 2.2
 **Files to Create**:
+
 - `client/tests/e2e/runtime/admin/whisper-logging.spec.ts`
 
 **Test Cases to Implement**:
+
 1. Admin log access with `admin whisper logs`
 2. Non-admin log access denial
 3. Log content verification
@@ -243,6 +282,7 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 6. Log format and structure verification
 
 **Acceptance Criteria**:
+
 - [ ] All 6 test cases pass successfully
 - [ ] Admin permission checks work correctly
 - [ ] Log content matches expected format
@@ -251,12 +291,15 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ---
 
 ### Task 2.5: Convert Scenario 20 - Logout Errors
+
 **Estimated Effort**: 5 hours
 **Dependencies**: Task 2.1 (reuse error patterns)
 **Files to Create**:
+
 - `client/tests/e2e/runtime/error-handling/logout-errors.spec.ts`
 
 **Test Cases to Implement**:
+
 1. Network error during logout (simulated offline)
 2. Server error during logout (fetch failure)
 3. Session expiry during logout
@@ -267,6 +310,7 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 8. System stability after errors
 
 **Acceptance Criteria**:
+
 - [ ] All 8 test cases pass successfully
 - [ ] Network simulation works correctly
 - [ ] Error recovery is properly tested
@@ -275,12 +319,15 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ---
 
 ### Task 2.6: Convert Scenario 21 - Logout Accessibility
+
 **Estimated Effort**: 6 hours
 **Dependencies**: Task 1.3
 **Files to Create**:
+
 - `client/tests/e2e/runtime/accessibility/logout-accessibility.spec.ts`
 
 **Test Cases to Implement**:
+
 1. ARIA attributes verification (aria-label, role, tabindex)
 2. Keyboard navigation (Tab to focus)
 3. Keyboard activation (Enter to activate)
@@ -293,6 +340,7 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 10. Accessibility summary verification
 
 **Acceptance Criteria**:
+
 - [ ] All 10 test cases pass successfully
 - [ ] ARIA attributes meet WCAG 2.1 AA standards
 - [ ] Keyboard navigation works without mouse
@@ -304,12 +352,15 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ## Phase 3: Category B - Partial Conversion (Week 2, Day 1-3)
 
 ### Task 3.1: Convert Scenario 7 - Who Command (Automated Portion)
+
 **Estimated Effort**: 3 hours
 **Dependencies**: Phase 2 complete
 **Files to Create**:
+
 - `client/tests/e2e/runtime/integration/who-command.spec.ts`
 
 **Automated Test Cases**:
+
 1. Command output format verification
 2. Location information display
 3. Single player visibility (self in list)
@@ -317,10 +368,12 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 5. Response time <2 seconds
 
 **MCP Portion Remains**:
+
 - Multiple online players visibility
 - Real-time player list updates
 
 **Acceptance Criteria**:
+
 - [ ] Automated tests cover single-player functionality
 - [ ] Output format matches expected structure
 - [ ] MCP scenario updated to focus on multi-player aspects only
@@ -328,12 +381,15 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ---
 
 ### Task 3.2: Convert Scenario 19 - Logout Button (Automated Portion)
+
 **Estimated Effort**: 3 hours
 **Dependencies**: Task 2.5
 **Files to Create**:
+
 - `client/tests/e2e/runtime/integration/logout-button.spec.ts`
 
 **Automated Test Cases**:
+
 1. Button visibility and accessibility
 2. Click functionality
 3. Logout confirmation message
@@ -342,10 +398,12 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 6. Button styling verification
 
 **MCP Portion Remains**:
+
 - Logout message broadcasting to other players
 - Multi-player session termination
 
 **Acceptance Criteria**:
+
 - [ ] Automated tests cover single-player logout flow
 - [ ] Button UI state changes are tested
 - [ ] MCP scenario simplified to focus on broadcasting only
@@ -353,12 +411,15 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ---
 
 ### Task 3.3: Convert Scenario 12 - Local Channel Integration (Automated Portion)
+
 **Estimated Effort**: 4 hours
 **Dependencies**: Task 2.1
 **Files to Create**:
+
 - `client/tests/e2e/runtime/integration/local-channel-integration.spec.ts`
 
 **Automated Test Cases**:
+
 1. Player management integration (player lookup works)
 2. Location tracking integration (current room verified)
 3. Error handling integration (errors properly displayed)
@@ -366,10 +427,12 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 5. Authentication integration (token validated)
 
 **MCP Portion Remains**:
+
 - Message broadcasting verification
 - Real-time delivery to multiple players
 
 **Acceptance Criteria**:
+
 - [ ] Integration points tested independently
 - [ ] System stability verified
 - [ ] MCP scenario focuses on message delivery only
@@ -377,12 +440,15 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ---
 
 ### Task 3.4: Convert Scenario 17 - Whisper Integration (Automated Portion)
+
 **Estimated Effort**: 4 hours
 **Dependencies**: Task 2.2
 **Files to Create**:
+
 - `client/tests/e2e/runtime/integration/whisper-integration.spec.ts`
 
 **Automated Test Cases**:
+
 1. Player management integration
 2. Authentication integration
 3. Rate limiting integration
@@ -391,10 +457,12 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 6. Performance integration (multiple messages)
 
 **MCP Portion Remains**:
+
 - Cross-player message delivery
 - Real-time whisper notifications
 
 **Acceptance Criteria**:
+
 - [ ] Integration points verified independently
 - [ ] Rate limiting works correctly in integration
 - [ ] MCP scenario simplified for message delivery only
@@ -404,9 +472,11 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ## Phase 4: MCP Scenario Refactoring (Week 2, Day 4-5)
 
 ### Task 4.1: Refactor MCP Scenarios for Focused Execution
+
 **Estimated Effort**: 6 hours
 **Dependencies**: Phase 3 complete
 **Files to Modify**:
+
 - `e2e-tests/scenarios/scenario-01-basic-connection.md`
 - `e2e-tests/scenarios/scenario-02-clean-game-state.md`
 - `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
@@ -420,6 +490,7 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 - `e2e-tests/scenarios/scenario-16-whisper-movement.md`
 
 **Requirements**:
+
 - Add "REQUIRES MULTI-PLAYER" marker to scenario titles
 - Remove redundant verification steps covered by automated tests
 - Simplify execution guards
@@ -428,6 +499,7 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 - Add cross-references to automated tests where applicable
 
 **Acceptance Criteria**:
+
 - [ ] All 11 scenarios clearly marked as multi-player required
 - [ ] Redundant steps removed
 - [ ] Time estimates updated
@@ -436,14 +508,17 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ---
 
 ### Task 4.2: Update MCP Playbook Documentation
+
 **Estimated Effort**: 2 hours
 **Dependencies**: Task 4.1
 **Files to Modify**:
+
 - `e2e-tests/MULTIPLAYER_TEST_RULES.md`
 - `e2e-tests/CLEANUP.md`
 - `e2e-tests/TESTING_APPROACH.md`
 
 **Requirements**:
+
 - Update scenario count (21 -> 11 MCP scenarios)
 - Add reference to automated Playwright CLI tests
 - Update execution time estimates
@@ -451,6 +526,7 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 - Update cleanup procedures for new test structure
 
 **Acceptance Criteria**:
+
 - [ ] Documentation accurately reflects new structure
 - [ ] Clear guidance on automated vs MCP tests
 - [ ] Execution time estimates updated
@@ -460,12 +536,15 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ## Phase 5: CI/CD Integration (Week 3, Day 1-2)
 
 ### Task 5.1: Create GitHub Actions Workflow for E2E Tests
+
 **Estimated Effort**: 4 hours
 **Dependencies**: Phase 2 complete
 **Files to Create**:
+
 - `.github/workflows/e2e-runtime-tests.yml`
 
 **Requirements**:
+
 - Configure workflow to run on PR creation and updates
 - Set up Node.js v18 and Python 3.11
 - Install dependencies (npm, uv)
@@ -477,6 +556,7 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 - Fail workflow if tests fail
 
 **Acceptance Criteria**:
+
 - [ ] Workflow runs successfully on PR creation
 - [ ] Server starts and health check passes
 - [ ] Tests execute and results are reported
@@ -486,19 +566,23 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ---
 
 ### Task 5.2: Update Existing CI Workflows
+
 **Estimated Effort**: 2 hours
 **Dependencies**: Task 5.1
 **Files to Modify**:
+
 - `.github/workflows/ci.yml` (if exists)
 - `.github/workflows/test.yml` (if exists)
 
 **Requirements**:
+
 - Add E2E runtime tests to existing CI pipeline
 - Ensure proper job dependencies
 - Configure caching for Playwright browsers
 - Set up parallel execution where possible
 
 **Acceptance Criteria**:
+
 - [ ] E2E tests integrated into existing CI
 - [ ] Job dependencies configured correctly
 - [ ] Browser caching works (faster CI runs)
@@ -506,21 +590,25 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ---
 
 ### Task 5.3: Update Makefile Targets
+
 **Estimated Effort**: 1 hour
 **Dependencies**: Phase 2 complete
 **Files to Modify**:
+
 - `Makefile`
 
 **Requirements**:
+
 - Add `test-client-runtime` target
-- Add `test-server-runtime` target
+- Add `test-compehensive` target
 - Add `test-runtime` target
 - Update `test` target to include runtime tests
 - Add target documentation
 
 **Acceptance Criteria**:
+
 - [ ] `make test-client-runtime` runs successfully
-- [ ] `make test-server-runtime` starts server and runs tests
+- [ ] `make test-comprehensive` starts server and runs tests
 - [ ] `make test-runtime` runs all runtime tests
 - [ ] `make test` includes runtime tests
 
@@ -529,12 +617,15 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ## Phase 6: Documentation & Validation (Week 3, Day 3-5)
 
 ### Task 6.1: Create Testing Guide Documentation
+
 **Estimated Effort**: 4 hours
 **Dependencies**: Phase 5 complete
 **Files to Create**:
+
 - `docs/E2E_TESTING_GUIDE.md`
 
 **Requirements**:
+
 - Explain automated vs MCP testing decision criteria
 - Provide commands for running tests locally
 - Document test data seeding and cleanup
@@ -543,6 +634,7 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 - Document CI/CD integration and test reporting
 
 **Acceptance Criteria**:
+
 - [ ] Documentation is comprehensive and clear
 - [ ] Examples provided for common tasks
 - [ ] Troubleshooting guide covers major issues
@@ -550,12 +642,15 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ---
 
 ### Task 6.2: Create Scenario Conversion Migration Guide
+
 **Estimated Effort**: 2 hours
 **Dependencies**: Phase 4 complete
 **Files to Create**:
+
 - `docs/SCENARIO_CONVERSION_GUIDE.md`
 
 **Requirements**:
+
 - Document which scenarios were converted and why
 - Explain conversion criteria (Category A, B, C)
 - Provide before/after comparisons
@@ -563,6 +658,7 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 - Document MCP scenarios that remain
 
 **Acceptance Criteria**:
+
 - [ ] Clear explanation of conversion decisions
 - [ ] Benefits quantified (time, cost, reliability)
 - [ ] Easy reference for future conversions
@@ -570,19 +666,23 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ---
 
 ### Task 6.3: Update Main README
+
 **Estimated Effort**: 1 hour
 **Dependencies**: Task 6.1
 **Files to Modify**:
+
 - `README.md`
 - `client/README.md`
 
 **Requirements**:
+
 - Add section on E2E testing
 - Document new test commands
 - Reference testing guide
 - Update testing badge (if applicable)
 
 **Acceptance Criteria**:
+
 - [ ] README includes E2E testing information
 - [ ] Commands documented clearly
 - [ ] Links to detailed guides provided
@@ -590,9 +690,11 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 ---
 
 ### Task 6.4: Validate Full Test Suite
+
 **Estimated Effort**: 4 hours
 **Dependencies**: All previous tasks
 **Testing Activities**:
+
 - Run full automated test suite locally
 - Run full automated test suite in CI
 - Run remaining MCP scenarios manually
@@ -603,6 +705,7 @@ Tasks are organized into 5 phases with estimated effort and dependencies clearly
 - Performance validation (total runtime <5 minutes)
 
 **Acceptance Criteria**:
+
 - [ ] All automated tests pass consistently (3+ runs)
 - [ ] CI integration works without manual intervention
 - [ ] MCP scenarios still execute correctly

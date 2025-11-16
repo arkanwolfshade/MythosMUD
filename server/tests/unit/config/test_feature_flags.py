@@ -22,8 +22,8 @@ class TestFeatureFlagSystem:
         """Set up test environment variables."""
         # Set required environment variables
         monkeypatch.setenv("SERVER_PORT", "54731")
-        monkeypatch.setenv("DATABASE_URL", "sqlite+aiosqlite:///test.db")
-        monkeypatch.setenv("DATABASE_NPC_URL", "sqlite+aiosqlite:///test_npcs.db")
+        monkeypatch.setenv("DATABASE_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
+        monkeypatch.setenv("DATABASE_NPC_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
         monkeypatch.setenv("MYTHOSMUD_ADMIN_PASSWORD", "test_admin_pass")
         monkeypatch.setenv("LOGGING_ENVIRONMENT", "unit_test")
         monkeypatch.setenv("GAME_ALIASES_DIR", "data/unit_test/players/aliases")
@@ -128,8 +128,8 @@ class TestCombatConfigurationManagement:
         """Set up test environment variables."""
         # Set required environment variables
         monkeypatch.setenv("SERVER_PORT", "54731")
-        monkeypatch.setenv("DATABASE_URL", "sqlite+aiosqlite:///test.db")
-        monkeypatch.setenv("DATABASE_NPC_URL", "sqlite+aiosqlite:///test_npcs.db")
+        monkeypatch.setenv("DATABASE_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
+        monkeypatch.setenv("DATABASE_NPC_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
         monkeypatch.setenv("MYTHOSMUD_ADMIN_PASSWORD", "test_admin_pass")
         monkeypatch.setenv("LOGGING_ENVIRONMENT", "unit_test")
         monkeypatch.setenv("GAME_ALIASES_DIR", "data/unit_test/players/aliases")
@@ -223,8 +223,8 @@ class TestCombatMonitoringConfiguration:
         """Set up test environment variables."""
         # Set required environment variables
         monkeypatch.setenv("SERVER_PORT", "54731")
-        monkeypatch.setenv("DATABASE_URL", "sqlite+aiosqlite:///test.db")
-        monkeypatch.setenv("DATABASE_NPC_URL", "sqlite+aiosqlite:///test_npcs.db")
+        monkeypatch.setenv("DATABASE_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
+        monkeypatch.setenv("DATABASE_NPC_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
         monkeypatch.setenv("MYTHOSMUD_ADMIN_PASSWORD", "test_admin_pass")
         monkeypatch.setenv("LOGGING_ENVIRONMENT", "unit_test")
         monkeypatch.setenv("GAME_ALIASES_DIR", "data/unit_test/players/aliases")
@@ -300,8 +300,8 @@ class TestCombatConfigurationIntegration:
         """Set up test environment variables."""
         # Set required environment variables
         monkeypatch.setenv("SERVER_PORT", "54731")
-        monkeypatch.setenv("DATABASE_URL", "sqlite+aiosqlite:///test.db")
-        monkeypatch.setenv("DATABASE_NPC_URL", "sqlite+aiosqlite:///test_npcs.db")
+        monkeypatch.setenv("DATABASE_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
+        monkeypatch.setenv("DATABASE_NPC_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
         monkeypatch.setenv("MYTHOSMUD_ADMIN_PASSWORD", "test_admin_pass")
         monkeypatch.setenv("LOGGING_ENVIRONMENT", "unit_test")
         monkeypatch.setenv("GAME_ALIASES_DIR", "data/unit_test/players/aliases")
@@ -406,8 +406,8 @@ class TestCombatConfigurationEdgeCases:
         """Set up test environment variables."""
         # Set required environment variables
         monkeypatch.setenv("SERVER_PORT", "54731")
-        monkeypatch.setenv("DATABASE_URL", "sqlite+aiosqlite:///test.db")
-        monkeypatch.setenv("DATABASE_NPC_URL", "sqlite+aiosqlite:///test_npcs.db")
+        monkeypatch.setenv("DATABASE_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
+        monkeypatch.setenv("DATABASE_NPC_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
         monkeypatch.setenv("MYTHOSMUD_ADMIN_PASSWORD", "test_admin_pass")
         monkeypatch.setenv("LOGGING_ENVIRONMENT", "unit_test")
         monkeypatch.setenv("GAME_ALIASES_DIR", "data/test/aliases")

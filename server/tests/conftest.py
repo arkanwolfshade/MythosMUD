@@ -42,7 +42,6 @@ import sys
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock
-from urllib.parse import urlparse
 
 import pytest
 from dotenv import load_dotenv
@@ -80,45 +79,7 @@ except ImportError:
 project_root = Path(__file__).parent.parent.parent
 
 
-def _sqlite_url_to_path(url: str) -> Path:
-    """
-    Convert a sqlite+aiosqlite URL to a Path object.
-
-    Args:
-        url: Database URL in sqlite+aiosqlite format.
-
-    Returns:
-        Absolute Path corresponding to the database file.
-    """
-
-    if not url.startswith("sqlite+aiosqlite:///"):
-        raise ValueError(f"Unsupported sqlite URL format: {url}")
-
-    parsed = urlparse(url)
-    # urlparse preserves the absolute portion in parsed.path
-    path_str = parsed.path
-
-    # On Windows, urlparse will keep the drive letter in the path (e.g. /E:/path)
-    if path_str.startswith("/") and len(path_str) > 2 and path_str[2] == ":":
-        path_str = path_str[1:]
-
-    path = Path(path_str)
-    if path.is_absolute():
-        project_root_resolved = project_root.resolve()
-        path_str_normalized = str(path).replace("\\", "/")
-        project_root_str = str(project_root_resolved).replace("\\", "/")
-
-        if path_str_normalized.startswith(project_root_str):
-            path = path.resolve()
-        elif len(path.parts) > 1 and path.parts[1] in {"data", "logs"}:
-            rel_from_root = Path(*path.parts[1:])
-            path = (project_root_resolved / rel_from_root).resolve()
-        else:
-            path = path.resolve()
-    else:
-        path = (project_root / path).resolve()
-
-    return path
+# REMOVED: _sqlite_url_to_path - SQLite is no longer supported
 
 
 def _is_postgres_url(url: str) -> bool:
@@ -465,14 +426,12 @@ def test_env_vars():
 @pytest.fixture(scope="session")
 def test_database():
     """Initialize test database with proper schema."""
-    from server.tests.scripts.init_test_db import init_test_database
-
-    # Initialize the test database
-    init_test_database()
-
-    # Return the database path from environment variable
+    # PostgreSQL databases are managed via DDL scripts, not Python initialization
+    # Just return the PostgreSQL URL from environment
     test_db_url = os.getenv("DATABASE_URL")
-    return str(_sqlite_url_to_path(test_db_url))
+    if not test_db_url or not test_db_url.startswith("postgresql"):
+        raise ValueError("DATABASE_URL must be set to a PostgreSQL URL. SQLite is no longer supported.")
+    return test_db_url
 
 
 @pytest.fixture(scope="session")
@@ -515,6 +474,10 @@ def ensure_test_db_ready(test_database):
     """Ensure test database is ready for each test."""
     # This fixture runs automatically for each test
     # The test_database fixture ensures the database is initialized
+    # Reset config cache to ensure fresh environment variables are loaded
+    from ..config import reset_config
+
+    reset_config()
     # Reset persistence to ensure fresh instance with new environment variables
     from ..persistence import reset_persistence
 
@@ -598,13 +561,12 @@ def test_client(mock_application_container):
     from ..main import app
     from ..persistence import get_persistence, reset_persistence
     from ..realtime.event_handler import RealTimeEventHandler
-    from .scripts.init_test_db import init_test_database
 
     # Reset persistence to ensure fresh state
     reset_persistence()
 
-    # Initialize the test database to ensure it exists and is accessible
-    init_test_database()
+    # PostgreSQL databases are initialized via DDL scripts, not Python initialization
+    # The database should already exist and be accessible via DATABASE_URL environment variable
 
     # AI Agent: Create event handler directly (no longer using global factory)
     #           Post-migration: RealTimeEventHandler uses dependency injection
@@ -642,13 +604,12 @@ async def async_test_client():
     from ..main import app
     from ..persistence import get_persistence, reset_persistence
     from ..realtime.event_handler import RealTimeEventHandler
-    from .scripts.init_test_db import init_test_database
 
     # Reset persistence to ensure fresh state
     reset_persistence()
 
-    # Initialize the test database to ensure it exists and is accessible
-    init_test_database()
+    # PostgreSQL databases are initialized via DDL scripts, not Python initialization
+    # The database should already exist and be accessible via DATABASE_URL environment variable
 
     # AI Agent: Create event handler directly (no longer using global factory)
     #           Post-migration: RealTimeEventHandler uses dependency injection

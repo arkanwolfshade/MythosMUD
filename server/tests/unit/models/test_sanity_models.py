@@ -23,12 +23,10 @@ from server.models.user import User
 
 def build_engine():
     import os
+
     database_url = os.getenv("DATABASE_URL")
     if not database_url or not database_url.startswith("postgresql"):
-        raise ValueError(
-            "DATABASE_URL must be set to a PostgreSQL URL. "
-            "SQLite is no longer supported."
-        )
+        raise ValueError("DATABASE_URL must be set to a PostgreSQL URL. SQLite is no longer supported.")
     # Convert async URL to sync URL for create_engine
     sync_url = database_url.replace("+asyncpg", "")
     engine = create_engine(sync_url, future=True)

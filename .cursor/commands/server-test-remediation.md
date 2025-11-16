@@ -13,7 +13,7 @@
 - **Test Runner**: pytest with uv for Python dependency management
 - **Test Database**: SQLite test database in `server/tests/data/players/`
 - **Test Environment**: Isolated test environment with test-specific configuration
-- **Command**: `make test-server` (runs server-side Python tests only)
+- **Command**: `make test` (runs server-side Python tests only)
 - **Coverage Target**: Minimum 80% code coverage
 - **Test Execution**: Serial execution (not parallel) for database tests
 
@@ -32,7 +32,7 @@
 
 ### 1. Initial Assessment
 
-**EXECUTE**: `make test-server`
+**EXECUTE**: `make test`
 **ANALYZE**: Parse output for failure patterns
 **CATEGORIZE**: Match failures to categories below
 **DOCUMENT**: Record findings before proceeding
@@ -132,7 +132,7 @@ For each command execution:
 **Example Pattern:**
 
 ```text
-EXECUTE: make test-server
+EXECUTE: make test
 ANALYZE: Parse output for failure patterns
 CATEGORIZE: Match failures to categories below
 DOCUMENT: Record findings before proceeding
@@ -336,7 +336,7 @@ logging:
 
 ### 6. Quality Assurance Checklist
 
-- [ ] All test failures resolved (run `make test-server` again)
+- [ ] All test failures resolved (run `make test` again)
 - [ ] Test database properly cleaned and initialized
 - [ ] Environment variables correctly set for test mode
 - [ ] Test coverage maintained above 80%
@@ -447,7 +447,7 @@ echo $DATABASE_URL
 
 **Before declaring success:**
 
-1. **FINAL TEST**: `make test-server` (must pass completely)
+1. **FINAL TEST**: `make test` (must pass completely)
 2. **COVERAGE CHECK**: `make coverage` (must be ≥80%)
 3. **LINT CHECK**: `make lint` (must pass)
 4. **FULL SUITE**: `make test` (must pass)
@@ -455,7 +455,7 @@ echo $DATABASE_URL
 
 **Success Criteria:**
 
-- [ ] All server tests pass (`make test-server` exits 0)
+- [ ] All server tests pass (`make test` exits 0)
 - [ ] Coverage ≥80% (`make coverage` shows green)
 - [ ] No linting errors (`make lint` passes)
 - [ ] Full test suite passes (`make test` passes)
@@ -465,7 +465,7 @@ echo $DATABASE_URL
 
 ```bash
 # Verify all tests pass
-make test-server
+make test
 
 # Check test coverage
 make coverage
@@ -544,7 +544,7 @@ NEXT: [Next step or verification needed]
 **Correct Pattern:**
 
 ```text
-run_terminal_cmd: make test-server
+run_terminal_cmd: make test
 → Analyze output for failure patterns
 → Use grep tool to search for specific error types
 → Use read_file tool to examine test files
@@ -554,7 +554,7 @@ run_terminal_cmd: make test-server
 **Incorrect Pattern:**
 
 ```text
-❌ "You should run make test-server"
+❌ "You should run make test"
 ❌ "Try checking the database"
 ❌ "Look at the error logs"
 ```
@@ -562,7 +562,7 @@ run_terminal_cmd: make test-server
 **Correct Pattern:**
 
 ```text
-✅ Execute: make test-server
+✅ Execute: make test
 ✅ Search: grep "DatabaseError" server/tests/logs/
 ✅ Read: server/tests/test_database.py
 ✅ Fix: search_replace in identified file
@@ -586,7 +586,7 @@ run_terminal_cmd: make test-server
 
 ## Success Criteria
 
-- `make test-server` exits with code 0
+- `make test` exits with code 0
 - All test cases pass with proper assertions
 - Test coverage maintained above 80%
 - No test data leakage or interdependencies

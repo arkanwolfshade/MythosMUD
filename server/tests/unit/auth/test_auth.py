@@ -10,7 +10,6 @@ Following pytest best practices for API endpoint testing.
 
 import uuid
 from datetime import UTC, datetime, timedelta
-from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -527,19 +526,25 @@ class TestInviteManagementEndpoints:
 
     def test_database_connection(self, container_test_client, mock_auth_persistence):
         """Test that the database connection and invite table work."""
-        import sqlite3
+        import os
 
-        # Check if we can access the test database
-        # Use absolute path for test database (correct path in data/unit_test)
-        # Path: server/tests/unit/auth/test_auth.py -> server/tests/unit/auth -> server/tests/unit -> server/tests -> server -> project root
-        project_root = Path(__file__).parent.parent.parent.parent.parent
-        db_path = project_root / "data" / "unit_test" / "players" / "unit_test_players.db"
-        with sqlite3.connect(db_path) as conn:
-            cursor = conn.execute("SELECT COUNT(*) FROM invites")
-            count = cursor.fetchone()[0]
+        from sqlalchemy import create_engine, text
+
+        # Use PostgreSQL from environment - SQLite is no longer supported
+        database_url = os.getenv("DATABASE_URL")
+        if not database_url or not database_url.startswith("postgresql"):
+            pytest.skip("DATABASE_URL must be set to a PostgreSQL URL. SQLite is no longer supported.")
+
+        # Convert async URL to sync URL for create_engine
+        sync_url = database_url.replace("+asyncpg", "")
+        engine = create_engine(sync_url)
+
+        with engine.connect() as conn:
+            result = conn.execute(text("SELECT COUNT(*) FROM invites"))
+            count = result.fetchone()[0]
             assert count >= 0  # Should have at least 0 invites
 
             # Check if TEST123 invite exists
-            cursor = conn.execute("SELECT * FROM invites WHERE invite_code = 'TEST123'")
-            invite = cursor.fetchone()
+            result = conn.execute(text("SELECT * FROM invites WHERE invite_code = 'TEST123'"))
+            invite = result.fetchone()
             assert invite is not None, "TEST123 invite should exist in test database"

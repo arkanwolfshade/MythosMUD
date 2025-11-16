@@ -92,19 +92,19 @@ class DatabaseConfig(BaseSettings):
     @field_validator("url", "npc_url")
     @classmethod
     def validate_database_url(cls, v: str) -> str:
-        """Validate database URL format."""
+        """Validate database URL format - PostgreSQL only."""
         logger.debug("Validating database URL", url_length=len(v) if v else 0)
         if not v:
             logger.error("Database URL validation failed - empty URL")
             raise ValueError("Database URL cannot be empty")
-        # Accept both sqlite:/// and sqlite+aiosqlite:/// formats
-        if not (v.startswith("sqlite") or v.startswith("postgresql")):
+        # PostgreSQL only - SQLite is no longer supported
+        if not v.startswith("postgresql"):
             logger.error(
                 "Database URL validation failed - invalid protocol",
                 url_preview=v[:50] if len(v) > 50 else v,
-                expected_protocols=["sqlite", "postgresql"],
+                expected_protocol="postgresql",
             )
-            raise ValueError("Database URL must start with 'sqlite' or 'postgresql'")
+            raise ValueError("Database URL must start with 'postgresql'. SQLite is no longer supported.")
         logger.debug("Database URL validation successful", url_preview=v[:50] if len(v) > 50 else v)
         return v
 

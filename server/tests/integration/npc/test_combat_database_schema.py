@@ -37,8 +37,7 @@ class TestCombatDatabaseSchema:
             columns = [row[0] for row in result.fetchall()]
 
             assert "base_stats" in columns
-            # Note: behavior_config may not exist in new schema - check attributes instead
-            assert "attributes" in columns
+            assert "behavior_config" in columns
 
     @pytest.mark.asyncio
     async def test_base_stats_json_structure(self):

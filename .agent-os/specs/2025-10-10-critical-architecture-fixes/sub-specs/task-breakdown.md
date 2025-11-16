@@ -378,7 +378,7 @@ This is the task breakdown for the spec detailed in @.agent-os/specs/2025-10-10-
 **Day 5: Sprint 2 Integration & Deployment** (8 hours)
 
 1. **Run Full Test Suite** (1 hour)
-   - Run backend tests: `make test-server`
+   - Run backend tests: `make test-compehensive`
    - Run frontend tests: `cd client && npm test`
    - Run E2E tests
    - Verify all tests pass
