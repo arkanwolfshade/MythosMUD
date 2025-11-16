@@ -1139,10 +1139,6 @@ async def handle_goto_command(
         if target_player_identifier:
             await broadcast_room_update(str(target_player_identifier), target_room_id)
 
-        target_player_identifier = getattr(target_player, "player_id", getattr(target_player, "id", None))
-        if target_player_identifier:
-            await broadcast_room_update(str(target_player_identifier), target_room_id)
-
         # Broadcast visual effects
         await broadcast_teleport_effects(
             connection_manager,
@@ -1153,14 +1149,6 @@ async def handle_goto_command(
             direction=None,
             arrival_direction=None,
             target_player_id=str(admin_player_info.get("player_id")) if admin_player_info else None,
-        )
-
-        await notify_player_of_teleport(
-            connection_manager,
-            target_player_name,
-            player_name,
-            "teleported_to",
-            message=f"{player_name} appears at your location.",
         )
 
         await notify_player_of_teleport(
