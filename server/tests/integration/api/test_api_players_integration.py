@@ -227,7 +227,7 @@ class TestPlayerAPIIntegration:
 
         # Act
         response = container_test_client.post(
-            "/api/players/test-player-id/sanity-loss", params={"amount": 10, "source": "test"}
+            "/api/players/test-player-id/sanity-loss", json={"amount": 10, "source": "test"}
         )
 
         # Assert
@@ -241,7 +241,7 @@ class TestPlayerAPIIntegration:
 
         # Act
         response = container_test_client.post(
-            "/api/players/test-player-id/fear", params={"amount": 5, "source": "test"}
+            "/api/players/test-player-id/fear", json={"amount": 5, "source": "test"}
         )
 
         # Assert
@@ -255,7 +255,7 @@ class TestPlayerAPIIntegration:
 
         # Act
         response = container_test_client.post(
-            "/api/players/test-player-id/corruption", params={"amount": 3, "source": "test"}
+            "/api/players/test-player-id/corruption", json={"amount": 3, "source": "test"}
         )
 
         # Assert
@@ -269,7 +269,7 @@ class TestPlayerAPIIntegration:
 
         # Act
         response = container_test_client.post(
-            "/api/players/test-player-id/occult-knowledge", params={"amount": 2, "source": "test"}
+            "/api/players/test-player-id/occult-knowledge", json={"amount": 2, "source": "test"}
         )
 
         # Assert
@@ -282,7 +282,7 @@ class TestPlayerAPIIntegration:
         mock_persistence_for_api.heal_player.return_value = None
 
         # Act
-        response = container_test_client.post("/api/players/test-player-id/heal", params={"amount": 20})
+        response = container_test_client.post("/api/players/test-player-id/heal", json={"amount": 20})
 
         # Assert
         assert response.status_code in [200, 401]
@@ -295,7 +295,7 @@ class TestPlayerAPIIntegration:
 
         # Act
         response = container_test_client.post(
-            "/api/players/test-player-id/damage", params={"amount": 15, "damage_type": "physical"}
+            "/api/players/test-player-id/damage", json={"amount": 15, "damage_type": "physical"}
         )
 
         # Assert

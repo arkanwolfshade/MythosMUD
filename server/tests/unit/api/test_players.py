@@ -14,7 +14,13 @@ import pytest
 from fastapi import HTTPException
 
 from server.api.players import (
+    CorruptionRequest,
     CreateCharacterRequest,
+    DamageRequest,
+    FearRequest,
+    HealRequest,
+    OccultKnowledgeRequest,
+    SanityLossRequest,
     apply_corruption,
     apply_fear,
     apply_sanity_loss,
@@ -326,7 +332,8 @@ class TestPlayerEffects:
         mock_service.apply_sanity_loss.return_value = {"message": "Applied 10 sanity loss to TestPlayer"}
         mock_player_service_dep.return_value = mock_service
 
-        result = await apply_sanity_loss("test-player-id", 10, mock_request, "test", mock_current_user, mock_service)
+        request_data = SanityLossRequest(amount=10, source="test")
+        result = await apply_sanity_loss("test-player-id", request_data, mock_request, mock_current_user, mock_service)
 
         assert "Applied 10 sanity loss to TestPlayer" in result["message"]
         mock_service.apply_sanity_loss.assert_called_once_with("test-player-id", 10, "test")
@@ -347,7 +354,8 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         with pytest.raises(LoggedHTTPException) as exc_info:
-            await apply_sanity_loss("nonexistent-id", 10, mock_request, "test", mock_current_user, mock_service)
+            request_data = SanityLossRequest(amount=10, source="test")
+            await apply_sanity_loss("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -367,7 +375,8 @@ class TestPlayerEffects:
         mock_service.apply_fear.return_value = {"message": "Applied 5 fear to TestPlayer"}
         mock_player_service_dep.return_value = mock_service
 
-        result = await apply_fear("test-player-id", 5, mock_request, "test", mock_current_user, mock_service)
+        request_data = FearRequest(amount=5, source="test")
+        result = await apply_fear("test-player-id", request_data, mock_request, mock_current_user, mock_service)
 
         assert "Applied 5 fear to TestPlayer" in result["message"]
         mock_service.apply_fear.assert_called_once_with("test-player-id", 5, "test")
@@ -388,7 +397,8 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         with pytest.raises(LoggedHTTPException) as exc_info:
-            await apply_fear("nonexistent-id", 5, mock_request, "test", mock_current_user, mock_service)
+            request_data = FearRequest(amount=5, source="test")
+            await apply_fear("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -408,7 +418,8 @@ class TestPlayerEffects:
         mock_service.apply_corruption.return_value = {"message": "Applied 3 corruption to TestPlayer"}
         mock_player_service_dep.return_value = mock_service
 
-        result = await apply_corruption("test-player-id", 3, mock_request, "test", mock_current_user, mock_service)
+        request_data = CorruptionRequest(amount=3, source="test")
+        result = await apply_corruption("test-player-id", request_data, mock_request, mock_current_user, mock_service)
 
         assert "Applied 3 corruption to TestPlayer" in result["message"]
         mock_service.apply_corruption.assert_called_once_with("test-player-id", 3, "test")
@@ -429,7 +440,8 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         with pytest.raises(LoggedHTTPException) as exc_info:
-            await apply_corruption("nonexistent-id", 3, mock_request, "test", mock_current_user, mock_service)
+            request_data = CorruptionRequest(amount=3, source="test")
+            await apply_corruption("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -449,7 +461,8 @@ class TestPlayerEffects:
         mock_service.gain_occult_knowledge.return_value = {"message": "Gained 2 occult knowledge for TestPlayer"}
         mock_player_service_dep.return_value = mock_service
 
-        result = await gain_occult_knowledge("test-player-id", 2, mock_request, "test", mock_current_user, mock_service)
+        request_data = OccultKnowledgeRequest(amount=2, source="test")
+        result = await gain_occult_knowledge("test-player-id", request_data, mock_request, mock_current_user, mock_service)
 
         assert "Gained 2 occult knowledge for TestPlayer" in result["message"]
         mock_service.gain_occult_knowledge.assert_called_once_with("test-player-id", 2, "test")
@@ -470,7 +483,8 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         with pytest.raises(LoggedHTTPException) as exc_info:
-            await gain_occult_knowledge("nonexistent-id", 2, mock_request, "test", mock_current_user, mock_service)
+            request_data = OccultKnowledgeRequest(amount=2, source="test")
+            await gain_occult_knowledge("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -490,7 +504,8 @@ class TestPlayerEffects:
         mock_service.heal_player.return_value = {"message": "Healed TestPlayer for 20 health"}
         mock_player_service_dep.return_value = mock_service
 
-        result = await heal_player("test-player-id", 20, mock_current_user, mock_request, mock_service)
+        request_data = HealRequest(amount=20)
+        result = await heal_player("test-player-id", request_data, mock_request, mock_current_user, mock_service)
 
         assert "Healed TestPlayer for 20 health" in result["message"]
         mock_service.heal_player.assert_called_once_with("test-player-id", 20)
@@ -511,7 +526,8 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         with pytest.raises(LoggedHTTPException) as exc_info:
-            await heal_player("nonexistent-id", 20, mock_current_user, mock_request, mock_service)
+            request_data = HealRequest(amount=20)
+            await heal_player("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -531,7 +547,8 @@ class TestPlayerEffects:
         mock_service.damage_player.return_value = {"message": "Damaged TestPlayer for 15 physical damage"}
         mock_player_service_dep.return_value = mock_service
 
-        result = await damage_player("test-player-id", 15, mock_request, "physical", mock_current_user, mock_service)
+        request_data = DamageRequest(amount=15, damage_type="physical")
+        result = await damage_player("test-player-id", request_data, mock_request, mock_current_user, mock_service)
 
         assert "Damaged TestPlayer for 15 physical damage" in result["message"]
         mock_service.damage_player.assert_called_once_with("test-player-id", 15, "physical")
@@ -552,7 +569,8 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         with pytest.raises(LoggedHTTPException) as exc_info:
-            await damage_player("nonexistent-id", 15, mock_request, "physical", mock_current_user, mock_service)
+            request_data = DamageRequest(amount=15, damage_type="physical")
+            await damage_player("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)

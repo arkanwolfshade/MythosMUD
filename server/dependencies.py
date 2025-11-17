@@ -20,6 +20,7 @@ from fastapi import Depends, Request
 from .container import ApplicationContainer
 from .game.player_service import PlayerService
 from .game.room_service import RoomService
+from .game.stats_generator import StatsGenerator
 from .logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -122,7 +123,20 @@ def get_room_service(request: Request) -> RoomService:
     return container.room_service
 
 
+def get_stats_generator() -> StatsGenerator:
+    """
+    Get a StatsGenerator instance via dependency injection.
+
+    StatsGenerator is stateless and can be safely reused across requests.
+
+    Returns:
+        StatsGenerator: A StatsGenerator instance
+    """
+    return StatsGenerator()
+
+
 # Dependency injection type aliases for use in route handlers
 ContainerDep = Depends(get_container)
 PlayerServiceDep = Depends(get_player_service)
 RoomServiceDep = Depends(get_room_service)
+StatsGeneratorDep = Depends(get_stats_generator)

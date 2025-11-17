@@ -8,16 +8,16 @@ creation, retrieval, listing, and deletion of player characters.
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from ..auth.users import get_current_active_user, get_current_user
-from ..dependencies import PlayerServiceDep
+from ..dependencies import PlayerServiceDep, StatsGeneratorDep
 from ..error_types import ErrorMessages
 from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError, create_error_context
 from ..game.player_service import PlayerService
 from ..game.stats_generator import StatsGenerator
 from ..logging.enhanced_logging_config import get_logger
-from ..models import Player, Stats
+from ..models import Stats
 from ..models.user import User
 from ..schemas.player import PlayerRead
 from ..utils.error_logging import create_context_from_request
@@ -41,10 +41,75 @@ class RollStatsRequest(BaseModel):
     profession_id: int | None = None
 
 
+class SanityLossRequest(BaseModel):
+    """Request model for applying sanity loss."""
+
+    amount: int = Field(..., ge=0, le=100, description="Amount of sanity to lose (0-100)")
+    source: str = Field(default="unknown", description="Source of sanity loss")
+
+
+class FearRequest(BaseModel):
+    """Request model for applying fear."""
+
+    amount: int = Field(..., ge=0, le=100, description="Amount of fear to apply (0-100)")
+    source: str = Field(default="unknown", description="Source of fear")
+
+
+class CorruptionRequest(BaseModel):
+    """Request model for applying corruption."""
+
+    amount: int = Field(..., ge=0, le=100, description="Amount of corruption to apply (0-100)")
+    source: str = Field(default="unknown", description="Source of corruption")
+
+
+class OccultKnowledgeRequest(BaseModel):
+    """Request model for gaining occult knowledge."""
+
+    amount: int = Field(..., ge=0, le=100, description="Amount of occult knowledge to gain (0-100)")
+    source: str = Field(default="unknown", description="Source of occult knowledge")
+
+
+class HealRequest(BaseModel):
+    """Request model for healing a player."""
+
+    amount: int = Field(..., ge=0, le=1000, description="Amount of health to restore (0-1000)")
+
+
+class DamageRequest(BaseModel):
+    """Request model for damaging a player."""
+
+    amount: int = Field(..., ge=0, le=1000, description="Amount of damage to apply (0-1000)")
+    damage_type: str = Field(default="physical", description="Type of damage")
+
+
 logger = get_logger(__name__)
 
 # Create player router
 player_router = APIRouter(prefix="/api/players", tags=["players"])
+
+
+def _create_error_context(
+    request: Request, current_user: User | None, **metadata: Any
+) -> Any:  # Returns ErrorContext from utils.error_logging
+    """
+    Create error context from request and user.
+
+    Helper function to reduce duplication in exception handling.
+
+    Args:
+        request: FastAPI Request object
+        current_user: Current user or None
+        **metadata: Additional metadata to add to context
+
+    Returns:
+        ErrorContext: Error context with request and user information
+    """
+
+    context = create_context_from_request(request)
+    if current_user:
+        context.user_id = str(current_user.id)
+    context.metadata.update(metadata)
+    return context
 
 
 @player_router.post("/", response_model=PlayerRead)
@@ -54,16 +119,13 @@ async def create_player(
     starting_room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> PlayerRead:
+) -> dict[str, Any]:
     """Create a new player character."""
     try:
-        return await player_service.create_player(name, profession_id=0, starting_room_id=starting_room_id)
+        player = await player_service.create_player(name, profession_id=0, starting_room_id=starting_room_id)
+        return player.model_dump()
     except ValidationError:
-        context = create_context_from_request(request)
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["player_name"] = name
-        context.metadata["starting_room_id"] = starting_room_id
+        context = _create_error_context(request, current_user, player_name=name, starting_room_id=starting_room_id)
         raise LoggedHTTPException(status_code=400, detail=ErrorMessages.INVALID_INPUT, context=context) from None
 
 
@@ -72,21 +134,25 @@ async def list_players(
     request: Request,
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> list[PlayerRead]:
+) -> list[dict[str, Any]]:
     """Get a list of all players."""
     result = await player_service.list_players()
-    assert isinstance(result, list)
-    return result
+    if not isinstance(result, list):
+        raise RuntimeError(
+            f"Expected list from player_service.list_players(), got {type(result).__name__}"
+        )
+    # Convert all PlayerRead objects to dicts
+    return [player.model_dump() for player in result]
 
 
 @player_router.get("/available-classes")
 async def get_available_classes(
     current_user: User = Depends(get_current_user),
+    stats_generator: StatsGenerator = StatsGeneratorDep,
 ) -> dict[str, Any]:
     """
     Get information about all available character classes and their prerequisites.
     """
-    stats_generator = StatsGenerator()
 
     class_info = {}
     for class_name, prerequisites in stats_generator.CLASS_PREREQUISITES.items():
@@ -104,17 +170,14 @@ async def get_player(
     request: Request,
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> PlayerRead:
+) -> dict[str, Any]:
     """Get a specific player by ID."""
     player = await player_service.get_player_by_id(player_id)
     if not player:
-        context = create_context_from_request(request)
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["requested_player_id"] = player_id
+        context = _create_error_context(request, current_user, requested_player_id=player_id)
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
 
-    return player
+    return player.model_dump()
 
 
 @player_router.get("/name/{player_name}", response_model=PlayerRead)
@@ -123,17 +186,14 @@ async def get_player_by_name(
     request: Request,
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> PlayerRead:
+) -> dict[str, Any]:
     """Get a specific player by name."""
     player = await player_service.get_player_by_name(player_name)
     if not player:
-        context = create_context_from_request(request)
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["requested_player_name"] = player_name
+        context = _create_error_context(request, current_user, requested_player_name=player_name)
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
 
-    return player
+    return player.model_dump()
 
 
 @player_router.delete("/{player_id}")
@@ -147,18 +207,12 @@ async def delete_player(
     try:
         success, message = await player_service.delete_player(player_id)
         if not success:
-            context = create_context_from_request(request)
-            if current_user:
-                context.user_id = str(current_user.id)
-            context.metadata["requested_player_id"] = player_id
+            context = _create_error_context(request, current_user, requested_player_id=player_id)
             raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context)
 
         return {"message": message}
     except ValidationError as e:
-        context = create_context_from_request(request)
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["requested_player_id"] = player_id
+        context = _create_error_context(request, current_user, requested_player_id=player_id)
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
@@ -166,131 +220,126 @@ async def delete_player(
 @player_router.post("/{player_id}/sanity-loss")
 async def apply_sanity_loss(
     player_id: str,
-    amount: int,
+    request_data: SanityLossRequest,
     request: Request,
-    source: str = "unknown",
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
 ) -> dict[str, str]:
     """Apply sanity loss to a player."""
     try:
-        result = await player_service.apply_sanity_loss(player_id, amount, source)
-        assert isinstance(result, dict)
+        result = await player_service.apply_sanity_loss(player_id, request_data.amount, request_data.source)
+        if not isinstance(result, dict):
+            raise RuntimeError(
+                f"Expected dict from player_service.apply_sanity_loss(), got {type(result).__name__}"
+            )
         return result
     except ValidationError as e:
-        context = create_context_from_request(request)
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["requested_player_id"] = player_id
+        context = _create_error_context(request, current_user, requested_player_id=player_id)
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
 @player_router.post("/{player_id}/fear")
 async def apply_fear(
     player_id: str,
-    amount: int,
+    request_data: FearRequest,
     request: Request,
-    source: str = "unknown",
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
 ) -> dict[str, str]:
     """Apply fear to a player."""
     try:
-        result = await player_service.apply_fear(player_id, amount, source)
-        assert isinstance(result, dict)
+        result = await player_service.apply_fear(player_id, request_data.amount, request_data.source)
+        if not isinstance(result, dict):
+            raise RuntimeError(
+                f"Expected dict from player_service.apply_fear(), got {type(result).__name__}"
+            )
         return result
     except ValidationError as e:
-        context = create_context_from_request(request)
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["requested_player_id"] = player_id
+        context = _create_error_context(request, current_user, requested_player_id=player_id)
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
 @player_router.post("/{player_id}/corruption")
 async def apply_corruption(
     player_id: str,
-    amount: int,
+    request_data: CorruptionRequest,
     request: Request,
-    source: str = "unknown",
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
 ) -> dict[str, str]:
     """Apply corruption to a player."""
     try:
-        result = await player_service.apply_corruption(player_id, amount, source)
-        assert isinstance(result, dict)
+        result = await player_service.apply_corruption(player_id, request_data.amount, request_data.source)
+        if not isinstance(result, dict):
+            raise RuntimeError(
+                f"Expected dict from player_service.apply_corruption(), got {type(result).__name__}"
+            )
         return result
     except ValidationError as e:
-        context = create_context_from_request(request)
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["requested_player_id"] = player_id
+        context = _create_error_context(request, current_user, requested_player_id=player_id)
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
 @player_router.post("/{player_id}/occult-knowledge")
 async def gain_occult_knowledge(
     player_id: str,
-    amount: int,
+    request_data: OccultKnowledgeRequest,
     request: Request,
-    source: str = "unknown",
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
 ) -> dict[str, str]:
     """Gain occult knowledge (with sanity loss)."""
     try:
-        result = await player_service.gain_occult_knowledge(player_id, amount, source)
-        assert isinstance(result, dict)
+        result = await player_service.gain_occult_knowledge(player_id, request_data.amount, request_data.source)
+        if not isinstance(result, dict):
+            raise RuntimeError(
+                f"Expected dict from player_service.gain_occult_knowledge(), got {type(result).__name__}"
+            )
         return result
     except ValidationError as e:
-        context = create_context_from_request(request)
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["requested_player_id"] = player_id
+        context = _create_error_context(request, current_user, requested_player_id=player_id)
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
 @player_router.post("/{player_id}/heal")
 async def heal_player(
     player_id: str,
-    amount: int,
+    request_data: HealRequest,
     request: Request,
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
 ) -> dict[str, str]:
     """Heal a player's health."""
     try:
-        result = await player_service.heal_player(player_id, amount)
-        assert isinstance(result, dict)
+        result = await player_service.heal_player(player_id, request_data.amount)
+        if not isinstance(result, dict):
+            raise RuntimeError(
+                f"Expected dict from player_service.heal_player(), got {type(result).__name__}"
+            )
         return result
     except ValidationError as e:
-        context = create_context_from_request(request)
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["requested_player_id"] = player_id
+        context = _create_error_context(request, current_user, requested_player_id=player_id)
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
 @player_router.post("/{player_id}/damage")
 async def damage_player(
     player_id: str,
-    amount: int,
+    request_data: DamageRequest,
     request: Request,
-    damage_type: str = "physical",
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
 ) -> dict[str, str]:
     """Damage a player's health."""
     try:
-        result = await player_service.damage_player(player_id, amount, damage_type)
-        assert isinstance(result, dict)
+        result = await player_service.damage_player(player_id, request_data.amount, request_data.damage_type)
+        if not isinstance(result, dict):
+            raise RuntimeError(
+                f"Expected dict from player_service.damage_player(), got {type(result).__name__}"
+            )
         return result
     except ValidationError as e:
-        context = create_context_from_request(request)
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["requested_player_id"] = player_id
+        context = _create_error_context(request, current_user, requested_player_id=player_id)
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
@@ -298,6 +347,7 @@ async def damage_player(
 async def respawn_player(
     request: Request,
     current_user: User = Depends(get_current_active_user),
+    player_service: PlayerService = PlayerServiceDep,
 ) -> dict[str, Any]:
     """
     Respawn a dead player at their respawn location with full HP.
@@ -321,96 +371,53 @@ async def respawn_player(
     logger.info("Respawn request received", user_id=current_user.id, username=current_user.username)
 
     try:
-        # Get player data
         async for session in get_async_session():
             try:
-                # Look up player by user_id (not primary key player_id)
-                from sqlalchemy import select
+                # Get respawn service from app.state
+                respawn_service = request.app.state.player_respawn_service
+                persistence = get_persistence()
 
-                result = await session.execute(select(Player).where(Player.user_id == str(current_user.id)))
-                player = result.scalar_one_or_none()
-                if not player:
-                    context = create_context_from_request(request)
-                    context.user_id = str(current_user.id)
-                    raise LoggedHTTPException(status_code=404, detail="Player not found", context=context)
-
-                # Verify player is dead
-                if not player.is_dead():
-                    context = create_context_from_request(request)
-                    context.user_id = str(current_user.id)
-                    context.metadata["player_hp"] = player.get_stats().get("current_health", 0)
+                # Use service layer method to handle respawn logic
+                return await player_service.respawn_player_by_user_id(
+                    user_id=str(current_user.id),
+                    session=session,
+                    respawn_service=respawn_service,
+                    persistence=persistence,
+                )
+            except ValidationError as e:
+                # Convert ValidationError to appropriate HTTPException
+                context = _create_error_context(request, current_user)
+                if "not found" in str(e).lower():
+                    raise LoggedHTTPException(status_code=404, detail="Player not found", context=context) from e
+                elif "must be dead" in str(e).lower():
                     raise LoggedHTTPException(
                         status_code=403,
                         detail="Player must be dead to respawn (HP must be -10 or below)",
                         context=context,
-                    )
-
-                # BUGFIX #244: Use shared respawn service instance from app.state
-                # This ensures player_combat_service is available for clearing combat state
-                # As documented in "Service Lifecycle and State Management" - Dr. Armitage, 1930
-                respawn_service = request.app.state.player_respawn_service
-
-                # Respawn the player
-                success = await respawn_service.respawn_player(str(player.player_id), session)
-
-                if not success:
-                    logger.error("Respawn failed", player_id=player.player_id)
-                    raise LoggedHTTPException(
-                        status_code=500, detail="Failed to respawn player", context=create_context_from_request(request)
-                    )
-
-                # Get respawn room data
-                persistence = get_persistence()
-                respawn_room_id = player.current_room_id  # Updated by respawn_player
-                room = persistence.get_room(str(respawn_room_id))
-
-                if not room:
-                    logger.warning("Respawn room not found", respawn_room_id=respawn_room_id)
-                    room_data = {"id": respawn_room_id, "name": "Unknown Room"}
+                    ) from e
                 else:
-                    room_data = room.to_dict()
-
-                # Get updated player state
-                updated_stats = player.get_stats()
-
-                logger.info("Player respawned successfully", player_id=player.player_id, respawn_room=respawn_room_id)
-
-                return {
-                    "success": True,
-                    "player": {
-                        "id": player.player_id,
-                        "name": player.name,
-                        "hp": updated_stats.get("current_health", 100),
-                        "max_hp": 100,
-                        "current_room_id": respawn_room_id,
-                    },
-                    "room": room_data,
-                    "message": "You have been resurrected and returned to the waking world",
-                }
-
+                    raise LoggedHTTPException(
+                        status_code=500, detail="Failed to respawn player", context=context
+                    ) from e
             except LoggedHTTPException:
                 raise
             except Exception as e:
                 logger.error("Error in respawn endpoint", error=str(e), exc_info=True)
-                context = create_context_from_request(request)
-                if current_user:
-                    context.user_id = str(current_user.id)
+                context = _create_error_context(request, current_user)
                 raise LoggedHTTPException(
                     status_code=500, detail="Failed to process respawn request", context=context
                 ) from e
 
         # This should never be reached, but mypy needs it
         raise LoggedHTTPException(
-            status_code=500, detail="No database session available", context=create_context_from_request(request)
+            status_code=500, detail="No database session available", context=_create_error_context(request, current_user)
         )
 
     except LoggedHTTPException:
         raise
     except Exception as e:
         logger.error("Unexpected error in respawn endpoint", error=str(e), exc_info=True)
-        context = create_context_from_request(request)
-        if current_user:
-            context.user_id = str(current_user.id)
+        context = _create_error_context(request, current_user)
         raise LoggedHTTPException(status_code=500, detail="Unexpected error during respawn", context=context) from e
 
 
@@ -424,6 +431,7 @@ async def roll_character_stats(
     profession_id: int | None = None,
     current_user: User = Depends(get_current_user),
     timeout_seconds: float = 1.0,
+    stats_generator: StatsGenerator = StatsGeneratorDep,
 ) -> dict[str, Any]:
     """
     Roll random stats for character creation.
@@ -467,7 +475,6 @@ async def roll_character_stats(
             context=context,
         ) from e
 
-    stats_generator = StatsGenerator()
     try:
         if profession_id is not None:
             # Use profession-based stat rolling
@@ -524,7 +531,7 @@ async def create_character_with_stats(
     request: Request,
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
-) -> PlayerRead:
+) -> dict[str, Any]:
     """
     Create a new character with specific stats.
 
@@ -548,17 +555,14 @@ async def create_character_with_stats(
 
     # Check if user is authenticated
     if not current_user:
-        context = create_context_from_request(request)
+        context = _create_error_context(request, current_user)
         raise LoggedHTTPException(status_code=401, detail=ErrorMessages.AUTHENTICATION_REQUIRED, context=context)
 
     # Apply rate limiting
     try:
         character_creation_limiter.enforce_rate_limit(str(current_user.id))
     except RateLimitError as e:
-        context = create_context_from_request(request)
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["rate_limit_type"] = "character_creation"
+        context = _create_error_context(request, current_user, rate_limit_type="character_creation")
         raise LoggedHTTPException(
             status_code=429,
             detail="Rate limit exceeded",
@@ -568,11 +572,9 @@ async def create_character_with_stats(
     try:
         # Validate that character name matches username
         if request_data.name != current_user.username:
-            context = create_context_from_request(request)
-            if current_user:
-                context.user_id = str(current_user.id)
-            context.metadata["character_name"] = request_data.name
-            context.metadata["username"] = current_user.username
+            context = _create_error_context(
+                request, current_user, character_name=request_data.name, username=current_user.username
+            )
             raise LoggedHTTPException(status_code=400, detail=ErrorMessages.INVALID_INPUT, context=context)
 
         # Convert dict to Stats object
@@ -607,22 +609,16 @@ async def create_character_with_stats(
 
         logger.info("Character created successfully", character_name=request_data.name, user_id=current_user.id)
 
-        # player is already a PlayerRead from the service layer
-        return player
+        # Convert PlayerRead to dict for better performance
+        return player.model_dump()
     except HTTPException:
         # Re-raise HTTPExceptions without modification
         raise
     except ValueError as e:
-        context = create_context_from_request(request)
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["operation"] = "create_character"
+        context = _create_error_context(request, current_user, operation="create_character")
         raise LoggedHTTPException(status_code=400, detail=ErrorMessages.INVALID_INPUT, context=context) from e
     except Exception as e:
-        context = create_context_from_request(request)
-        if current_user:
-            context.user_id = str(current_user.id)
-        context.metadata["operation"] = "create_character"
+        context = _create_error_context(request, current_user, operation="create_character")
         raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context) from e
 
 
@@ -631,13 +627,13 @@ async def validate_character_stats(
     stats: dict,
     class_name: str | None = None,
     current_user: User = Depends(get_current_user),
+    stats_generator: StatsGenerator = StatsGeneratorDep,
 ) -> dict[str, Any]:
     """
     Validate character stats against class prerequisites.
 
     This endpoint checks if the provided stats meet the requirements for a given class.
     """
-    stats_generator = StatsGenerator()
 
     try:
         # Convert dict to Stats object

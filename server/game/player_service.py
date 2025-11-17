@@ -7,8 +7,15 @@ creation, retrieval, validation, and state management.
 
 import datetime
 import uuid
+from typing import TYPE_CHECKING, Any
 
 from ..alias_storage import AliasStorage
+
+if TYPE_CHECKING:
+    from sqlalchemy.ext.asyncio import AsyncSession
+
+    from ..persistence import PersistenceLayer
+    from ..services.player_respawn_service import PlayerRespawnService
 from ..config import get_config
 from ..exceptions import DatabaseError, ValidationError
 from ..logging.enhanced_logging_config import get_logger
@@ -736,6 +743,110 @@ class PlayerService:
         await self.persistence.async_damage_player(player, amount, damage_type)
         logger.info("Player damaged successfully", player_id=player_id, amount=amount, damage_type=damage_type)
         return {"message": f"Damaged {player.name} for {amount} {damage_type} damage"}
+
+    async def respawn_player_by_user_id(
+        self,
+        user_id: str,
+        session: "AsyncSession",
+        respawn_service: "PlayerRespawnService",
+        persistence: "PersistenceLayer",
+    ) -> dict[str, Any]:
+        """
+        Respawn a dead player by user ID.
+
+        This method handles the complete respawn flow:
+        1. Gets player by user_id
+        2. Verifies player is dead
+        3. Calls respawn service to respawn player
+        4. Gets respawn room data
+        5. Returns structured response
+
+        Args:
+            user_id: The user ID to respawn
+            session: Database session for player data access
+            respawn_service: PlayerRespawnService instance
+            persistence: PersistenceLayer for room data access
+
+        Returns:
+            dict: Respawn response with player and room data
+
+        Raises:
+            ValidationError: If player not found or not dead
+        """
+        from sqlalchemy import select
+
+        # Look up player by user_id (not primary key player_id)
+        result = await session.execute(select(Player).where(Player.user_id == user_id))
+        player = result.scalar_one_or_none()
+        if not player:
+            context = create_error_context()
+            context.metadata["operation"] = "respawn_player_by_user_id"
+            context.metadata["user_id"] = user_id
+            log_and_raise_enhanced(
+                ValidationError,
+                "Player not found for respawn",
+                context=context,
+                details={"user_id": user_id},
+                user_friendly="Player not found",
+            )
+
+        # Verify player is dead
+        if not player.is_dead():
+            context = create_error_context()
+            context.metadata["operation"] = "respawn_player_by_user_id"
+            context.metadata["user_id"] = user_id
+            context.metadata["player_hp"] = player.get_stats().get("current_health", 0)
+            log_and_raise_enhanced(
+                ValidationError,
+                "Player must be dead to respawn (HP must be -10 or below)",
+                context=context,
+                details={"user_id": user_id, "player_hp": player.get_stats().get("current_health", 0)},
+                user_friendly="Player must be dead to respawn",
+            )
+
+        # Respawn the player
+        success = await respawn_service.respawn_player(str(player.player_id), session)
+        if not success:
+            logger.error("Respawn failed", player_id=player.player_id)
+            context = create_error_context()
+            context.metadata["operation"] = "respawn_player_by_user_id"
+            context.metadata["user_id"] = user_id
+            context.metadata["player_id"] = str(player.player_id)
+            log_and_raise_enhanced(
+                ValidationError,
+                "Failed to respawn player",
+                context=context,
+                details={"user_id": user_id, "player_id": str(player.player_id)},
+                user_friendly="Respawn failed",
+            )
+
+        # Get respawn room data
+        respawn_room_id = player.current_room_id  # Updated by respawn_player
+        room = persistence.get_room(str(respawn_room_id))
+
+        if not room:
+            logger.warning("Respawn room not found", respawn_room_id=respawn_room_id)
+            room_data = {"id": respawn_room_id, "name": "Unknown Room"}
+        else:
+            room_data = room.to_dict()
+
+        # Get updated player state
+        updated_stats = player.get_stats()
+
+        logger.info("Player respawned successfully", player_id=player.player_id, respawn_room=respawn_room_id)
+
+        return {
+            "success": True,
+            "player": {
+                "id": player.player_id,
+                "name": player.name,
+                "hp": updated_stats.get("current_health", 100),
+                "max_hp": 100,
+                "current_room_id": respawn_room_id,
+            },
+            "room": room_data,
+            "message": "You have been resurrected and returned to the waking world",
+        }
 
     async def _convert_player_to_schema(self, player) -> PlayerRead:
         """

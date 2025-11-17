@@ -17,7 +17,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..database import get_async_session
 from ..exceptions import LoggedHTTPException
 from ..logging.enhanced_logging_config import get_logger
-from ..models.invite import Invite
 from ..models.user import User
 from ..schemas.invite import InviteRead
 from ..utils.error_logging import create_context_from_request
@@ -442,13 +441,16 @@ async def list_invites(
 async def create_invite(
     current_user: User = Depends(get_current_superuser),
     invite_manager: InviteManager = Depends(get_invite_manager),
-) -> Invite:  # FastAPI response_model handles conversion to InviteRead
+) -> dict[str, Any]:  # Return dict for better performance
     """
     Create a new invite code.
 
     This endpoint creates a new invite code for user registration.
     """
-    return await invite_manager.create_invite()
+    invite = await invite_manager.create_invite()
+    # Convert SQLAlchemy model to Pydantic schema, then to dict
+    invite_read = InviteRead.model_validate(invite)
+    return invite_read.model_dump()
 
 
 # Note: FastAPI Users authentication endpoints are included in app/factory.py
