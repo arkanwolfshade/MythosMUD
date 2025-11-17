@@ -446,6 +446,7 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
             )
             try:
                 await session.rollback()
+                logger.debug("Database session rolled back after error")
             except Exception as rollback_error:
                 logger.error(
                     "Failed to rollback database session",
@@ -453,7 +454,10 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
                     rollback_error=str(rollback_error),
                 )
             raise
-        # Session is automatically closed by the async context manager
+        finally:
+            # Session is automatically closed by the async context manager
+            # Log session closure for monitoring (debug level to avoid noise)
+            logger.debug("Database session closed")
 
 
 async def init_db() -> None:

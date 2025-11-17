@@ -29,8 +29,9 @@ class Invite(Base):
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     invite_code = Column(String, unique=True, nullable=False, index=True)
-    created_by_user_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), nullable=True)
-    used_by_user_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), nullable=True)
+    # Add indexes on foreign keys for query performance
+    created_by_user_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), nullable=True, index=True)
+    used_by_user_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), nullable=True, index=True)
     # is_active: True means invite is available, False means used
     is_active = Column(Boolean, default=True, nullable=False)
     expires_at = Column(DateTime, nullable=False)

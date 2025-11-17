@@ -581,7 +581,10 @@ class PersistenceLayer:
         try:
             with self._lock, self._get_connection() as conn:
                 # PostgreSQL uses %s placeholders, not ?
-                row = conn.execute(f"SELECT {PLAYER_COLUMNS} FROM players WHERE name = %s", (name,)).fetchone()
+                # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
+                query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE name = %s"
+                row = conn.execute(query, (name,)).fetchone()
                 if row:
                     player_data = self._convert_row_to_player_data(row)
                     player = Player(**player_data)
@@ -609,10 +612,11 @@ class PersistenceLayer:
         try:
             with self._lock, self._get_connection() as conn:
                 # PostgreSQL uses %s placeholders, not ?
+                # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
                 player_id_str = str(player_id) if player_id else None
-                row = conn.execute(
-                    f"SELECT {PLAYER_COLUMNS} FROM players WHERE player_id = %s", (player_id_str,)
-                ).fetchone()
+                query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE player_id = %s"
+                row = conn.execute(query, (player_id_str,)).fetchone()
                 if row:
                     player_data = self._convert_row_to_player_data(row)
                     player = Player(**player_data)
@@ -640,10 +644,11 @@ class PersistenceLayer:
         try:
             with self._lock, self._get_connection() as conn:
                 # PostgreSQL uses %s placeholders, not ?
+                # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
                 user_id_str = str(user_id) if user_id else None
-                row = conn.execute(
-                    f"SELECT {PLAYER_COLUMNS} FROM players WHERE user_id = %s", (user_id_str,)
-                ).fetchone()
+                query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE user_id = %s"
+                row = conn.execute(query, (user_id_str,)).fetchone()
                 if row:
                     player_data = self._convert_row_to_player_data(row)
                     player = Player(**player_data)
@@ -846,7 +851,10 @@ class PersistenceLayer:
 
         try:
             with self._lock, self._get_connection() as conn:
-                rows = conn.execute(f"SELECT {PLAYER_COLUMNS} FROM players").fetchall()
+                # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
+                query = f"SELECT {PLAYER_COLUMNS} FROM players"
+                rows = conn.execute(query).fetchall()
                 players = []
                 for row in rows:
                     player_data = self._convert_row_to_player_data(row)
@@ -876,9 +884,10 @@ class PersistenceLayer:
             with self._lock, self._get_connection() as conn:
                 # PostgreSQL uses %s placeholders, not ?
                 # Get all players in a room for message broadcasting. Uses index on current_room_id.
-                rows = conn.execute(
-                    f"SELECT {PLAYER_COLUMNS} FROM players WHERE current_room_id = %s", (room_id,)
-                ).fetchall()
+                # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
+                query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE current_room_id = %s"
+                rows = conn.execute(query, (room_id,)).fetchall()
                 players = []
                 for row in rows:
                     player_data = self._convert_row_to_player_data(row)
@@ -1036,9 +1045,10 @@ class PersistenceLayer:
 
         try:
             with self._lock, self._get_connection() as conn:
-                rows = conn.execute(
-                    f"SELECT {PROFESSION_COLUMNS} FROM professions WHERE is_available = true ORDER BY id"
-                ).fetchall()
+                # NOTE: PROFESSION_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
+                query = f"SELECT {PROFESSION_COLUMNS} FROM professions WHERE is_available = true ORDER BY id"
+                rows = conn.execute(query).fetchall()
 
                 professions = []
                 for row in rows:
@@ -1069,9 +1079,10 @@ class PersistenceLayer:
         try:
             with self._lock, self._get_connection() as conn:
                 # PostgreSQL uses %s placeholders, not ?
-                row = conn.execute(
-                    f"SELECT {PROFESSION_COLUMNS} FROM professions WHERE id = %s", (profession_id,)
-                ).fetchone()
+                # NOTE: PROFESSION_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
+                query = f"SELECT {PROFESSION_COLUMNS} FROM professions WHERE id = %s"
+                row = conn.execute(query, (profession_id,)).fetchone()
 
                 if row:
                     profession_data = dict(row)
@@ -1519,19 +1530,26 @@ class PersistenceLayer:
             # Execute atomic field update using PostgreSQL jsonb_set()
             # AI Agent: This prevents race conditions by updating ONLY this field
             # without loading/saving the entire player object which might have stale data
+            # SECURITY NOTE: field_name is validated against strict whitelist (lines 1501-1517)
+            # before reaching this point. The whitelist validation is the security control.
+            # PostgreSQL's jsonb_set() requires the path as a text array (ARRAY['field_name']),
+            # which cannot be directly parameterized. Since field_name is validated against
+            # a fixed set of allowed values, using it in the array constructor is safe.
+            # The value access (stats->>%s) is still parameterized for defense in depth.
             with self._lock, self._get_connection() as conn:
                 # PostgreSQL JSONB path format: array of path elements
+                # jsonb_set() requires path as text array, which we construct from validated field_name
                 cursor = conn.execute(
                     f"""
                     UPDATE players
                     SET stats = jsonb_set(
                         stats::jsonb,
-                        '{{{{{field_name}}}}}',
-                        to_jsonb((stats->>'{field_name}')::integer + %s)
+                        ARRAY['{field_name}']::text[],
+                        to_jsonb((stats->>%s)::integer + %s)
                     )::text
                     WHERE player_id = %s
                     """,
-                    (delta, player_id_str),
+                    (field_name, delta, player_id_str),
                 )
 
                 if cursor.rowcount == 0:

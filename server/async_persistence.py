@@ -16,6 +16,7 @@ from .logging.enhanced_logging_config import get_logger
 from .models.player import Player
 from .models.profession import Profession
 from .utils.error_logging import create_error_context, log_and_raise
+from .utils.retry import retry_with_backoff
 
 logger = get_logger(__name__)
 
@@ -170,6 +171,7 @@ class AsyncPersistenceLayer:
             self._pool = None
             self._logger.info("Closed asyncpg connection pool")
 
+    @retry_with_backoff(max_attempts=3, initial_delay=1.0, max_delay=10.0)
     async def get_player_by_name(self, name: str) -> Player | None:
         """Get a player by name using async database operations."""
         context = create_error_context()
@@ -179,7 +181,10 @@ class AsyncPersistenceLayer:
         try:
             pool = await self._get_pool()
             async with pool.acquire() as conn:
-                row = await conn.fetchrow(f"SELECT {PLAYER_COLUMNS} FROM players WHERE name = $1", name)
+                # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
+                query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE name = $1"
+                row = await conn.fetchrow(query, name)
                 if row:
                     row_dict = dict(row)
                     player_data = self._convert_row_to_player_data(row_dict)
@@ -204,6 +209,7 @@ class AsyncPersistenceLayer:
                 user_friendly="Failed to retrieve player information",
             )
 
+    @retry_with_backoff(max_attempts=3, initial_delay=1.0, max_delay=10.0)
     async def get_player_by_id(self, player_id: str) -> Player | None:
         """Get a player by ID using async database operations."""
         context = create_error_context()
@@ -215,7 +221,10 @@ class AsyncPersistenceLayer:
             pool = await self._get_pool()
             async with pool.acquire() as conn:
                 # asyncpg uses $1, $2, etc. for parameters
-                row = await conn.fetchrow(f"SELECT {PLAYER_COLUMNS} FROM players WHERE player_id = $1", player_id)
+                # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
+                query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE player_id = $1"
+                row = await conn.fetchrow(query, player_id)
                 if row:
                     row_dict = dict(row)
                     player_data = self._convert_row_to_player_data(row_dict)
@@ -250,7 +259,10 @@ class AsyncPersistenceLayer:
             pool = await self._get_pool()
             async with pool.acquire() as conn:
                 # asyncpg uses $1, $2, etc. for parameters
-                row = await conn.fetchrow(f"SELECT {PLAYER_COLUMNS} FROM players WHERE user_id = $1", user_id)
+                # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
+                query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE user_id = $1"
+                row = await conn.fetchrow(query, user_id)
                 if row:
                     row_dict = dict(row)
                     player_data = self._convert_row_to_player_data(row_dict)
@@ -275,6 +287,7 @@ class AsyncPersistenceLayer:
                 user_friendly="Failed to retrieve player information",
             )
 
+    @retry_with_backoff(max_attempts=3, initial_delay=1.0, max_delay=10.0)
     async def save_player(self, player: Player) -> None:
         """Save a player using async database operations."""
         context = create_error_context()
@@ -358,7 +371,10 @@ class AsyncPersistenceLayer:
         try:
             pool = await self._get_pool()
             async with pool.acquire() as conn:
-                rows = await conn.fetch(f"SELECT {PLAYER_COLUMNS} FROM players")
+                # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
+                query = f"SELECT {PLAYER_COLUMNS} FROM players"
+                rows = await conn.fetch(query)
 
                 players = []
                 for row in rows:
@@ -398,7 +414,10 @@ class AsyncPersistenceLayer:
             # Get all players in a room for message broadcasting. Uses index on current_room_id.
             pool = await self._get_pool()
             async with pool.acquire() as conn:
-                rows = await conn.fetch(f"SELECT {PLAYER_COLUMNS} FROM players WHERE current_room_id = $1", room_id)
+                # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
+                query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE current_room_id = $1"
+                rows = await conn.fetch(query, room_id)
 
                 players = []
                 for row in rows:
@@ -557,9 +576,10 @@ class AsyncPersistenceLayer:
         try:
             pool = await self._get_pool()
             async with pool.acquire() as conn:
-                rows = await conn.fetch(
-                    f"SELECT {PROFESSION_COLUMNS} FROM professions WHERE is_available = true ORDER BY id"
-                )
+                # NOTE: PROFESSION_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
+                query = f"SELECT {PROFESSION_COLUMNS} FROM professions WHERE is_available = true ORDER BY id"
+                rows = await conn.fetch(query)
 
                 professions = []
                 for row in rows:
@@ -597,7 +617,10 @@ class AsyncPersistenceLayer:
         try:
             pool = await self._get_pool()
             async with pool.acquire() as conn:
-                row = await conn.fetchrow(f"SELECT {PROFESSION_COLUMNS} FROM professions WHERE id = $1", profession_id)
+                # NOTE: PROFESSION_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
+                query = f"SELECT {PROFESSION_COLUMNS} FROM professions WHERE id = $1"
+                row = await conn.fetchrow(query, profession_id)
 
                 if row:
                     row_dict = dict(row)

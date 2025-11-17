@@ -774,9 +774,12 @@ class PlayerService:
             ValidationError: If player not found or not dead
         """
         from sqlalchemy import select
+        from sqlalchemy.orm import selectinload
 
         # Look up player by user_id (not primary key player_id)
-        result = await session.execute(select(Player).where(Player.user_id == user_id))
+        # Eagerly load user relationship to prevent N+1 queries
+        stmt = select(Player).options(selectinload(Player.user)).where(Player.user_id == user_id)
+        result = await session.execute(stmt)
         player = result.scalar_one_or_none()
         if not player:
             context = create_error_context()

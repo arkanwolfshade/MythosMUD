@@ -263,6 +263,7 @@ async def get_npc_session() -> AsyncGenerator[AsyncSession, None]:
             )
             try:
                 await session.rollback()
+                logger.debug("NPC database session rolled back after error")
             except Exception as rollback_error:
                 logger.error(
                     "Failed to rollback NPC database session",
@@ -270,6 +271,10 @@ async def get_npc_session() -> AsyncGenerator[AsyncSession, None]:
                     rollback_error=str(rollback_error),
                 )
             raise
+        finally:
+            # Session is automatically closed by the async context manager
+            # Log session closure for monitoring (debug level to avoid noise)
+            logger.debug("NPC database session closed")
 
 
 async def init_npc_db():

@@ -43,7 +43,8 @@ class Player(Base):
     player_id = Column(String(length=255), primary_key=True)
 
     # Foreign key to users table - use UUID to match users.id (UUID type in PostgreSQL)
-    user_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), unique=True, nullable=False)
+    # Explicit index=True for clarity (unique=True already creates index, but explicit is better)
+    user_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), unique=True, nullable=False, index=True)
 
     # Player information
     name = Column(String(length=50), unique=True, nullable=False, index=True)
@@ -72,8 +73,8 @@ class Player(Base):
     # Using simple string reference - SQLAlchemy resolves via registry after all models imported
     user: Mapped["User"] = relationship("User", back_populates="player", overlaps="player")
 
-    # Profession
-    profession_id = Column(Integer(), default=0, nullable=False)
+    # Profession - add index for queries filtering by profession
+    profession_id = Column(Integer(), default=0, nullable=False, index=True)
 
     # Timestamps (persist naive UTC)
     created_at = Column(DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
