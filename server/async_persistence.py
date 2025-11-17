@@ -20,6 +20,8 @@ from .utils.error_logging import create_error_context, log_and_raise
 logger = get_logger(__name__)
 
 # Player table columns for explicit SELECT queries (avoids SELECT * anti-pattern)
+# SECURITY NOTE: These are compile-time constants, not user input. F-strings using these
+# are safe from SQL injection because column names are validated at code level, not runtime.
 PLAYER_COLUMNS = (
     "player_id, user_id, name, current_room_id, profession_id, "
     "experience_points, level, stats, inventory, status_effects, "
@@ -27,6 +29,8 @@ PLAYER_COLUMNS = (
 )
 
 # Profession table columns for explicit SELECT queries
+# SECURITY NOTE: This is a compile-time constant, not user input. F-strings using this
+# are safe from SQL injection because column names are validated at code level, not runtime.
 PROFESSION_COLUMNS = "id, name, description, flavor_text, is_available"
 
 
@@ -126,13 +130,37 @@ class AsyncPersistenceLayer:
         """Get or create connection pool for async database operations."""
         if self._pool is None:
             url = self._normalize_url()
-            self._pool = await asyncpg.create_pool(
-                url,
-                min_size=1,
-                max_size=10,
-                command_timeout=60,
-            )
-            self._logger.info("Created asyncpg connection pool", pool_size=10)
+            try:
+                # Get pool configuration from config system
+                from .config import get_config
+
+                config = get_config()
+                min_size = config.database.asyncpg_pool_min_size
+                max_size = config.database.asyncpg_pool_max_size
+                command_timeout = config.database.asyncpg_command_timeout
+
+                self._pool = await asyncpg.create_pool(
+                    url,
+                    min_size=min_size,
+                    max_size=max_size,
+                    command_timeout=command_timeout,
+                )
+                self._logger.info(
+                    "Created asyncpg connection pool",
+                    pool_min_size=min_size,
+                    pool_max_size=max_size,
+                    command_timeout=command_timeout,
+                )
+            except asyncpg.PostgresError as e:
+                context = create_error_context()
+                context.metadata["operation"] = "create_connection_pool"
+                log_and_raise(
+                    DatabaseError,
+                    f"Failed to create database connection pool: {e}",
+                    context=context,
+                    details={"database_url": url[:50], "error": str(e)},
+                    user_friendly="Database connection failed",
+                )
         return self._pool
 
     async def close(self) -> None:
@@ -450,13 +478,25 @@ class AsyncPersistenceLayer:
                                 player_data["is_admin"],
                             )
                         except (ValueError, TypeError, KeyError) as e:
+                            # Data validation errors: log and continue with other players
+                            # These are non-critical errors that don't require transaction rollback
                             self._logger.warning(
-                                "Error saving player",
+                                "Error saving player (data validation error)",
                                 error=str(e),
                                 error_type=type(e).__name__,
                                 player_id=str(player.player_id),
                             )
                             continue
+                        except asyncpg.PostgresError as e:
+                            # Database errors: re-raise to trigger transaction rollback
+                            # This ensures atomicity - either all players save or none
+                            self._logger.error(
+                                "Database error saving player in batch",
+                                error=str(e),
+                                error_type=type(e).__name__,
+                                player_id=str(player.player_id),
+                            )
+                            raise  # This will rollback the entire transaction
 
                 self._logger.debug("Players saved successfully", player_count=len(players))
 

@@ -89,10 +89,15 @@ class DatabaseConfig(BaseSettings):
     url: str = Field(..., description="Primary database URL (required)")
     npc_url: str = Field(..., description="NPC database URL (required)")
 
-    # Connection pool configuration
+    # Connection pool configuration (SQLAlchemy)
     pool_size: int = Field(default=5, description="Number of connections to maintain in pool")
     max_overflow: int = Field(default=10, description="Additional connections that can be created beyond pool_size")
     pool_timeout: int = Field(default=30, description="Seconds to wait for connection from pool")
+
+    # AsyncPG connection pool configuration
+    asyncpg_pool_min_size: int = Field(default=1, description="Minimum connections in asyncpg pool")
+    asyncpg_pool_max_size: int = Field(default=10, description="Maximum connections in asyncpg pool")
+    asyncpg_command_timeout: int = Field(default=60, description="Command timeout for asyncpg operations (seconds)")
 
     @field_validator("url", "npc_url")
     @classmethod
@@ -113,7 +118,7 @@ class DatabaseConfig(BaseSettings):
         logger.debug("Database URL validation successful", url_preview=v[:50] if len(v) > 50 else v)
         return v
 
-    @field_validator("pool_size", "max_overflow", "pool_timeout")
+    @field_validator("pool_size", "max_overflow", "pool_timeout", "asyncpg_pool_min_size", "asyncpg_pool_max_size", "asyncpg_command_timeout")
     @classmethod
     def validate_pool_config(cls, v: int) -> int:
         """Validate pool configuration values are positive."""

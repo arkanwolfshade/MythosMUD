@@ -1152,8 +1152,14 @@ class ConnectionManager:
                         loop = asyncio.get_running_loop()
                         loop.create_task(self._check_and_process_disconnect(player_id))
                     except RuntimeError:
-                        # No running loop in this thread; execute synchronously
-                        asyncio.run(self._check_and_process_disconnect(player_id))
+                        # No running loop - log warning and skip to avoid nested event loop errors
+                        # asyncio.run() cannot be called from within a running event loop
+                        logger.warning(
+                            "No event loop available for disconnect processing",
+                            player_id=player_id,
+                        )
+                        # Skip disconnect processing when no event loop is available
+                        # This is safe because force_disconnect already cleaned up the connection
 
             logger.info("SSE disconnected", player_id=player_id)
         except Exception as e:

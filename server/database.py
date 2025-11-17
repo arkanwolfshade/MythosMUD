@@ -225,19 +225,30 @@ class DatabaseManager:
                                 # Try to dispose synchronously if possible, but don't block
                                 # Note: dispose() is async, but we can't await here
                                 # The engine will be cleaned up when the loop closes
+                                logger.debug(
+                                    "Old engine will be garbage collected",
+                                    old_loop_id=self._creation_loop_id,
+                                )
                                 pass  # Let the old engine be garbage collected
                         except RuntimeError:
                             # Loop is closed or not running - just set to None
+                            logger.debug("Old loop is closed, skipping engine disposal")
                             pass
                 except Exception as e:
-                    logger.warning("Error disposing engine during loop change", error=str(e))
+                    logger.warning(
+                        "Error disposing engine during loop change",
+                        error=str(e),
+                        error_type=type(e).__name__,
+                    )
                 # Reset and recreate in current loop
+                logger.info("Recreating database engine for new event loop")
                 self.engine = None
                 self.session_maker = None
                 self._initialized = False
                 self._initialize_database()
         except RuntimeError:
             # No running loop - that's okay, engine will be created when needed
+            logger.debug("No running event loop, engine will be created when needed")
             pass
 
         assert self.engine is not None, "Database engine not initialized"

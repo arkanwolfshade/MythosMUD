@@ -619,6 +619,14 @@ class ApplicationContainer:
                 except Exception as e:
                     logger.error("Error closing database connections", error=str(e))
 
+            # 4.5. Close async persistence connection pool
+            if self.async_persistence is not None:
+                try:
+                    await self.async_persistence.close()
+                    logger.debug("Async persistence connection pool closed")
+                except Exception as e:
+                    logger.error("Error closing async persistence pool", error=str(e))
+
             # 5. Close NPC database connections
             try:
                 from .npc_database import close_npc_db

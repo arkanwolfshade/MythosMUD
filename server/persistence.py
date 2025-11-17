@@ -1,3 +1,4 @@
+import asyncio
 import json
 import os
 import threading
@@ -121,8 +122,24 @@ def reset_persistence():
 # --- PersistenceLayer Class ---
 class PersistenceLayer:
     """
+    Synchronous persistence layer using psycopg2 for PostgreSQL operations.
+
     Unified persistence layer for all game data (players, rooms, inventory, etc.).
     Thread-safe, supports hooks, context management, and batch operations.
+
+    MIGRATION NOTE: This class uses synchronous database operations (psycopg2).
+    For async code paths, prefer using AsyncPersistenceLayer instead.
+
+    DEPRECATION WARNING:
+    - Async methods (async_*) in this class delegate to sync methods using asyncio.to_thread()
+    - This prevents event loop blocking but adds overhead
+    - New async code should use AsyncPersistenceLayer directly
+    - Legacy sync code can continue using this class
+
+    USAGE GUIDELINES:
+    - Sync code: Use PersistenceLayer methods directly
+    - Async code: Use AsyncPersistenceLayer for better performance
+    - Async wrappers: Use async_* methods only when migrating legacy code
     """
 
     _hooks: dict[str, list[Callable]] = {}
@@ -1321,14 +1338,14 @@ class PersistenceLayer:
             damage_type: Type of damage
 
         Note:
-            Currently delegates to synchronous method. The underlying persistence
-            layer uses PostgreSQL via psycopg2 (synchronous driver). For true async
-            operations, use the async_persistence layer methods instead.
+            Uses asyncio.to_thread() to run blocking synchronous operations in a thread pool,
+            preventing event loop blocking. The underlying persistence layer uses PostgreSQL
+            via psycopg2 (synchronous driver). For true async operations, use the
+            async_persistence layer methods instead.
         """
-        # Since the underlying operations are synchronous (psycopg2),
-        # we call the sync version directly
-        # For true async operations, use async_persistence layer methods
-        self.damage_player(player, amount, damage_type)
+        # Use asyncio.to_thread() to run blocking operations in thread pool
+        # This prevents blocking the event loop during database operations
+        await asyncio.to_thread(self.damage_player, player, amount, damage_type)
 
     async def async_heal_player(self, player: Player, amount: int) -> None:
         """
@@ -1341,14 +1358,17 @@ class PersistenceLayer:
             amount: Amount of healing to apply
 
         Note:
-            Currently delegates to synchronous method. The underlying persistence
-            layer uses PostgreSQL via psycopg2 (synchronous driver). For true async
-            operations, use the async_persistence layer methods instead.
+            Uses asyncio.to_thread() to run blocking synchronous operations in a thread pool,
+            preventing event loop blocking. The underlying persistence layer uses PostgreSQL
+            via psycopg2 (synchronous driver). For true async operations, use the
+            async_persistence layer methods instead.
+
+        DEPRECATION: This async wrapper exists for backward compatibility. New async code
+        should use AsyncPersistenceLayer directly for better performance.
         """
-        # Since the underlying operations are synchronous (psycopg2),
-        # we call the sync version directly
-        # For true async operations, use async_persistence layer methods
-        self.heal_player(player, amount)
+        # Use asyncio.to_thread() to run blocking operations in thread pool
+        # This prevents blocking the event loop during database operations
+        await asyncio.to_thread(self.heal_player, player, amount)
 
     def gain_experience(self, player: Player, amount: int, source: str = "unknown") -> None:
         """
@@ -1429,14 +1449,17 @@ class PersistenceLayer:
             source: Source of the XP for logging purposes
 
         Note:
-            Currently delegates to synchronous method. The underlying persistence
-            layer uses PostgreSQL via psycopg2 (synchronous driver). For true async
-            operations, use the async_persistence layer methods instead.
+            Uses asyncio.to_thread() to run blocking synchronous operations in a thread pool,
+            preventing event loop blocking. The underlying persistence layer uses PostgreSQL
+            via psycopg2 (synchronous driver). For true async operations, use the
+            async_persistence layer methods instead.
+
+        DEPRECATION: This async wrapper exists for backward compatibility. New async code
+        should use AsyncPersistenceLayer directly for better performance.
         """
-        # Since the underlying operations are synchronous (psycopg2),
-        # we call the sync version directly
-        # For true async operations, use async_persistence layer methods
-        self.gain_experience(player, amount, source)
+        # Use asyncio.to_thread() to run blocking operations in thread pool
+        # This prevents blocking the event loop during database operations
+        await asyncio.to_thread(self.gain_experience, player, amount, source)
 
     def update_player_stat_field(
         self, player_id: str | UUID, field_name: str, delta: int | float, reason: str = ""
