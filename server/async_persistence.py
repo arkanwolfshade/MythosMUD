@@ -1,17 +1,16 @@
 """
 Async persistence layer for MythosMUD.
 
-This module provides an async version of the persistence layer using asyncpg
+This module provides an async version of the persistence layer using SQLAlchemy ORM
 for true async PostgreSQL database operations without blocking the event loop.
 """
 
 import json
-import os
-from typing import Any
 
-import asyncpg
+from sqlalchemy import select
 
-from .exceptions import DatabaseError, ValidationError
+from .database import get_async_session
+from .exceptions import DatabaseError
 from .logging.enhanced_logging_config import get_logger
 from .models.player import Player
 from .models.profession import Profession
@@ -20,80 +19,22 @@ from .utils.retry import retry_with_backoff
 
 logger = get_logger(__name__)
 
-# Player table columns for explicit SELECT queries (avoids SELECT * anti-pattern)
-# SECURITY NOTE: These are compile-time constants, not user input. F-strings using these
-# are safe from SQL injection because column names are validated at code level, not runtime.
-PLAYER_COLUMNS = (
-    "player_id, user_id, name, current_room_id, profession_id, "
-    "experience_points, level, stats, inventory, status_effects, "
-    "created_at, last_active, is_admin"
-)
-
-# Profession table columns for explicit SELECT queries
-# SECURITY NOTE: This is a compile-time constant, not user input. F-strings using this
-# are safe from SQL injection because column names are validated at code level, not runtime.
-PROFESSION_COLUMNS = "id, name, description, flavor_text, is_available"
-
 
 class AsyncPersistenceLayer:
     """
-    Async persistence layer using asyncpg for true async PostgreSQL operations.
+    Async persistence layer using SQLAlchemy ORM for true async PostgreSQL operations.
 
     This provides async database operations that don't block the event loop.
+    Uses SQLAlchemy ORM with async sessions for type-safe, maintainable queries.
     """
 
     def __init__(self, db_path: str | None = None, log_path: str | None = None, event_bus=None):
         """Initialize the async persistence layer."""
-        if db_path:
-            self.db_path = db_path
-        elif os.environ.get("DATABASE_URL"):
-            from .database import get_database_url
-
-            database_url = get_database_url()  # PostgreSQL returns URL, not path
-            if database_url is None:
-                context = create_error_context()
-                context.metadata["operation"] = "async_persistence_init"
-                log_and_raise(
-                    ValidationError,
-                    "Failed to retrieve database URL",
-                    context=context,
-                    user_friendly="Database configuration error",
-                )
-            self.db_path = database_url
-        else:
-            context = create_error_context()
-            context.metadata["operation"] = "async_persistence_init"
-            log_and_raise(
-                ValidationError,
-                "DATABASE_URL environment variable must be set",
-                context=context,
-                details={"config_file": "server/env.example"},
-                user_friendly="Database configuration is missing",
-            )
-
+        # db_path parameter kept for backward compatibility but not used
+        # Database connection is managed by SQLAlchemy via get_async_session()
         self.log_path = log_path
         self._event_bus = event_bus
         self._logger = get_logger(__name__)
-        self._pool: asyncpg.Pool | None = None
-        # PostgreSQL-only: Verify we have a PostgreSQL URL
-        if not self.db_path:
-            context = create_error_context()
-            context.metadata["operation"] = "async_persistence_init"
-            log_and_raise(
-                ValidationError,
-                "DATABASE_URL is None - database not configured",
-                context=context,
-                user_friendly="Database configuration is missing",
-            )
-        if not self.db_path.startswith("postgresql"):
-            context = create_error_context()
-            context.metadata["operation"] = "async_persistence_init"
-            log_and_raise(
-                ValidationError,
-                f"Unsupported database URL: {self.db_path}. Only PostgreSQL is supported.",
-                context=context,
-                user_friendly="Database configuration error - PostgreSQL required",
-            )
         self._load_room_cache()
 
     def _load_room_cache(self) -> None:
@@ -121,78 +62,33 @@ class AsyncPersistenceLayer:
             self._logger.error("Unexpected error loading room cache", error=str(e))
             self._room_cache = {}
 
-    def _normalize_url(self) -> str:
-        """Normalize database URL for asyncpg connection."""
-        return self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
-            "postgresql+psycopg2://", "postgresql://"
-        )
-
-    async def _get_pool(self) -> asyncpg.Pool:
-        """Get or create connection pool for async database operations."""
-        if self._pool is None:
-            url = self._normalize_url()
-            try:
-                # Get pool configuration from config system
-                from .config import get_config
-
-                config = get_config()
-                min_size = config.database.asyncpg_pool_min_size
-                max_size = config.database.asyncpg_pool_max_size
-                command_timeout = config.database.asyncpg_command_timeout
-
-                self._pool = await asyncpg.create_pool(
-                    url,
-                    min_size=min_size,
-                    max_size=max_size,
-                    command_timeout=command_timeout,
-                )
-                self._logger.info(
-                    "Created asyncpg connection pool",
-                    pool_min_size=min_size,
-                    pool_max_size=max_size,
-                    command_timeout=command_timeout,
-                )
-            except asyncpg.PostgresError as e:
-                context = create_error_context()
-                context.metadata["operation"] = "create_connection_pool"
-                log_and_raise(
-                    DatabaseError,
-                    f"Failed to create database connection pool: {e}",
-                    context=context,
-                    details={"database_url": url[:50], "error": str(e)},
-                    user_friendly="Database connection failed",
-                )
-        return self._pool
-
     async def close(self) -> None:
-        """Close connection pool and cleanup resources."""
-        if self._pool is not None:
-            await self._pool.close()
-            self._pool = None
-            self._logger.info("Closed asyncpg connection pool")
+        """Close and cleanup resources.
+
+        Note: SQLAlchemy async sessions are managed by the session context manager,
+        so no explicit cleanup is needed here. This method is kept for backward compatibility.
+        """
+        self._logger.debug("AsyncPersistenceLayer.close() called - no cleanup needed (sessions managed by context)")
 
     @retry_with_backoff(max_attempts=3, initial_delay=1.0, max_delay=10.0)
     async def get_player_by_name(self, name: str) -> Player | None:
-        """Get a player by name using async database operations."""
+        """Get a player by name using SQLAlchemy ORM."""
         context = create_error_context()
         context.metadata["operation"] = "async_get_player_by_name"
         context.metadata["player_name"] = name
 
         try:
-            pool = await self._get_pool()
-            async with pool.acquire() as conn:
-                # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
-                # Future: Migrate to SQLAlchemy ORM for better query construction
-                query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE name = $1"
-                row = await conn.fetchrow(query, name)
-                if row:
-                    row_dict = dict(row)
-                    player_data = self._convert_row_to_player_data(row_dict)
-                    player = Player(**player_data)
+            async for session in get_async_session():
+                stmt = select(Player).where(Player.name == name)
+                result = await session.execute(stmt)
+                player = result.scalar_one_or_none()
+                if player:
                     self.validate_and_fix_player_room(player)
                     return player
+                return None
+                # Explicit return after loop to satisfy mypy
             return None
-        except asyncpg.PostgresError as e:
+        except Exception as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player by name '{name}': {e}",
@@ -200,46 +96,26 @@ class AsyncPersistenceLayer:
                 details={"player_name": name, "error": str(e)},
                 user_friendly="Failed to retrieve player information",
             )
-        except Exception as e:
-            log_and_raise(
-                DatabaseError,
-                f"Unexpected error retrieving player by name '{name}': {e}",
-                context=context,
-                details={"player_name": name, "error": str(e)},
-                user_friendly="Failed to retrieve player information",
-            )
 
     @retry_with_backoff(max_attempts=3, initial_delay=1.0, max_delay=10.0)
     async def get_player_by_id(self, player_id: str) -> Player | None:
-        """Get a player by ID using async database operations."""
+        """Get a player by ID using SQLAlchemy ORM."""
         context = create_error_context()
         context.metadata["operation"] = "async_get_player_by_id"
         player_id = str(player_id)
         context.metadata["player_id"] = player_id
 
         try:
-            pool = await self._get_pool()
-            async with pool.acquire() as conn:
-                # asyncpg uses $1, $2, etc. for parameters
-                # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
-                # Future: Migrate to SQLAlchemy ORM for better query construction
-                query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE player_id = $1"
-                row = await conn.fetchrow(query, player_id)
-                if row:
-                    row_dict = dict(row)
-                    player_data = self._convert_row_to_player_data(row_dict)
-                    player = Player(**player_data)
+            async for session in get_async_session():
+                stmt = select(Player).where(Player.player_id == player_id)
+                result = await session.execute(stmt)
+                player = result.scalar_one_or_none()
+                if player:
                     self.validate_and_fix_player_room(player)
                     return player
                 return None
-        except asyncpg.PostgresError as e:
-            log_and_raise(
-                DatabaseError,
-                f"Database error retrieving player by ID '{player_id}': {e}",
-                context=context,
-                details={"player_id": player_id, "error": str(e)},
-                user_friendly="Failed to retrieve player information",
-            )
+                # Explicit return after loop to satisfy mypy
+            return None
         except Exception as e:
             log_and_raise(
                 DatabaseError,
@@ -250,34 +126,22 @@ class AsyncPersistenceLayer:
             )
 
     async def get_player_by_user_id(self, user_id: str) -> Player | None:
-        """Get a player by user ID using async database operations."""
+        """Get a player by user ID using SQLAlchemy ORM."""
         context = create_error_context()
         context.metadata["operation"] = "async_get_player_by_user_id"
         context.metadata["user_id"] = user_id
 
         try:
-            pool = await self._get_pool()
-            async with pool.acquire() as conn:
-                # asyncpg uses $1, $2, etc. for parameters
-                # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
-                # Future: Migrate to SQLAlchemy ORM for better query construction
-                query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE user_id = $1"
-                row = await conn.fetchrow(query, user_id)
-                if row:
-                    row_dict = dict(row)
-                    player_data = self._convert_row_to_player_data(row_dict)
-                    player = Player(**player_data)
+            async for session in get_async_session():
+                stmt = select(Player).where(Player.user_id == user_id)
+                result = await session.execute(stmt)
+                player = result.scalar_one_or_none()
+                if player:
                     self.validate_and_fix_player_room(player)
                     return player
                 return None
-        except asyncpg.PostgresError as e:
-            log_and_raise(
-                DatabaseError,
-                f"Database error retrieving player by user ID '{user_id}': {e}",
-                context=context,
-                details={"user_id": user_id, "error": str(e)},
-                user_friendly="Failed to retrieve player information",
-            )
+                # Explicit return after loop to satisfy mypy
+            return None
         except Exception as e:
             log_and_raise(
                 DatabaseError,
@@ -289,64 +153,25 @@ class AsyncPersistenceLayer:
 
     @retry_with_backoff(max_attempts=3, initial_delay=1.0, max_delay=10.0)
     async def save_player(self, player: Player) -> None:
-        """Save a player using async database operations."""
+        """Save a player using SQLAlchemy ORM (upsert behavior via merge)."""
         context = create_error_context()
         context.metadata["operation"] = "async_save_player"
         context.metadata["player_name"] = player.name
         context.metadata["player_id"] = str(player.player_id)
 
         try:
-            pool = await self._get_pool()
-            async with pool.acquire() as conn:
-                # Convert player to database format
-                player_data = self._convert_player_to_db_data(player)
-
-                # Use INSERT ... ON CONFLICT for upsert behavior (PostgreSQL)
-                await conn.execute(
-                    """INSERT INTO players
-                        (player_id, user_id, name, current_room_id, profession_id,
-                         experience_points, level, stats, inventory, status_effects,
-                         created_at, last_active, is_admin)
-                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-                        ON CONFLICT (player_id) DO UPDATE SET
-                        user_id = EXCLUDED.user_id,
-                        name = EXCLUDED.name,
-                        current_room_id = EXCLUDED.current_room_id,
-                        profession_id = EXCLUDED.profession_id,
-                        experience_points = EXCLUDED.experience_points,
-                        level = EXCLUDED.level,
-                        stats = EXCLUDED.stats,
-                        inventory = EXCLUDED.inventory,
-                        status_effects = EXCLUDED.status_effects,
-                        created_at = EXCLUDED.created_at,
-                        last_active = EXCLUDED.last_active,
-                        is_admin = EXCLUDED.is_admin""",
-                    str(player_data["player_id"]),
-                    str(player_data["user_id"]),
-                    player_data["name"],
-                    player_data["current_room_id"],
-                    player_data["profession_id"],
-                    player_data["experience_points"],
-                    player_data["level"],
-                    json.dumps(player_data["stats"]),
-                    json.dumps(player_data["inventory"]),
-                    json.dumps(player_data["status_effects"]),
-                    player_data["created_at"],
-                    player_data["last_active"],
-                    player_data["is_admin"],
-                )
-
+            async for session in get_async_session():
+                # SQLAlchemy ORM handles JSON serialization automatically via Column[Text] types
+                # Player model's stats, inventory, and status_effects are Column[str] that store JSON
+                # The ORM will persist the current Column values, which are already JSON strings
+                # Use merge() for upsert behavior - inserts if new, updates if exists
+                await session.merge(player)
+                await session.commit()
                 self._logger.debug("Player saved successfully", player_id=str(player.player_id))
-
-        except asyncpg.IntegrityConstraintViolationError as e:
-            log_and_raise(
-                DatabaseError,
-                f"Unique constraint error saving player: {e}",
-                context=context,
-                details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
-                user_friendly="Player name already exists",
-            )
-        except asyncpg.PostgresError as e:
+                return
+            # Explicit return after loop to satisfy mypy
+            return
+        except Exception as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error saving player: {e}",
@@ -354,48 +179,24 @@ class AsyncPersistenceLayer:
                 details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
                 user_friendly="Failed to save player",
             )
-        except Exception as e:
-            log_and_raise(
-                DatabaseError,
-                f"Unexpected error saving player: {e}",
-                context=context,
-                details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
-                user_friendly="Failed to save player",
-            )
 
     async def list_players(self) -> list[Player]:
-        """List all players using async database operations."""
+        """List all players using SQLAlchemy ORM."""
         context = create_error_context()
         context.metadata["operation"] = "async_list_players"
 
         try:
-            pool = await self._get_pool()
-            async with pool.acquire() as conn:
-                # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
-                # Future: Migrate to SQLAlchemy ORM for better query construction
-                query = f"SELECT {PLAYER_COLUMNS} FROM players"
-                rows = await conn.fetch(query)
-
-                players = []
-                for row in rows:
-                    try:
-                        row_dict = dict(row)
-                        player_data = self._convert_row_to_player_data(row_dict)
-                        player = Player(**player_data)
-                        self.validate_and_fix_player_room(player)
-                        players.append(player)
-                    except (ValueError, TypeError, KeyError) as e:
-                        self._logger.warning(
-                            "Error converting player data",
-                            error=str(e),
-                            error_type=type(e).__name__,
-                            row_id=dict(row).get("player_id") if row else None,
-                        )
-                        continue
-
+            async for session in get_async_session():
+                stmt = select(Player)
+                result = await session.execute(stmt)
+                players = list(result.scalars().all())
+                # Validate and fix room for each player
+                for player in players:
+                    self.validate_and_fix_player_room(player)
                 return players
-
-        except asyncpg.PostgresError as e:
+                # Explicit return after loop to satisfy mypy
+            return []
+        except Exception as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error listing players: {e}",
@@ -405,40 +206,23 @@ class AsyncPersistenceLayer:
             )
 
     async def get_players_in_room(self, room_id: str) -> list[Player]:
-        """Get all players in a specific room using async database operations."""
+        """Get all players in a specific room using SQLAlchemy ORM."""
         context = create_error_context()
         context.metadata["operation"] = "async_get_players_in_room"
         context.metadata["room_id"] = room_id
 
         try:
-            # Get all players in a room for message broadcasting. Uses index on current_room_id.
-            pool = await self._get_pool()
-            async with pool.acquire() as conn:
-                # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
-                # Future: Migrate to SQLAlchemy ORM for better query construction
-                query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE current_room_id = $1"
-                rows = await conn.fetch(query, room_id)
-
-                players = []
-                for row in rows:
-                    try:
-                        row_dict = dict(row)
-                        player_data = self._convert_row_to_player_data(row_dict)
-                        player = Player(**player_data)
-                        self.validate_and_fix_player_room(player)
-                        players.append(player)
-                    except (ValueError, TypeError, KeyError) as e:
-                        self._logger.warning(
-                            "Error converting player data",
-                            error=str(e),
-                            error_type=type(e).__name__,
-                            row_id=dict(row).get("player_id") if row else None,
-                        )
-                        continue
-
+            async for session in get_async_session():
+                stmt = select(Player).where(Player.current_room_id == room_id)
+                result = await session.execute(stmt)
+                players = list(result.scalars().all())
+                # Validate and fix room for each player
+                for player in players:
+                    self.validate_and_fix_player_room(player)
                 return players
-
-        except asyncpg.PostgresError as e:
+                # Explicit return after loop to satisfy mypy
+            return []
+        except Exception as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error getting players in room: {e}",
@@ -448,78 +232,36 @@ class AsyncPersistenceLayer:
             )
 
     async def save_players(self, players: list[Player]) -> None:
-        """Save multiple players using async database operations."""
+        """Save multiple players using SQLAlchemy ORM in a single transaction."""
         context = create_error_context()
         context.metadata["operation"] = "async_save_players"
         context.metadata["player_count"] = len(players)
 
         try:
-            # Batch save multiple players in a single transaction for atomicity.
-            pool = await self._get_pool()
-            async with pool.acquire() as conn:
-                async with conn.transaction():  # Explicit transaction for atomicity
-                    for player in players:
-                        try:
-                            player_data = self._convert_player_to_db_data(player)
+            async for session in get_async_session():
+                # Batch save in a single transaction for atomicity
+                # SQLAlchemy ORM handles JSON serialization automatically via Column[Text] types
+                for player in players:
+                    try:
+                        # Use merge() for upsert behavior
+                        await session.merge(player)
+                    except (ValueError, TypeError, KeyError) as e:
+                        # Data validation errors: log and continue with other players
+                        self._logger.warning(
+                            "Error saving player (data validation error)",
+                            error=str(e),
+                            error_type=type(e).__name__,
+                            player_id=str(player.player_id),
+                        )
+                        continue
 
-                            # Use INSERT ... ON CONFLICT for upsert behavior (PostgreSQL)
-                            await conn.execute(
-                                """INSERT INTO players
-                        (player_id, user_id, name, current_room_id, profession_id,
-                         experience_points, level, stats, inventory, status_effects,
-                         created_at, last_active, is_admin)
-                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-                        ON CONFLICT (player_id) DO UPDATE SET
-                        user_id = EXCLUDED.user_id,
-                        name = EXCLUDED.name,
-                        current_room_id = EXCLUDED.current_room_id,
-                        profession_id = EXCLUDED.profession_id,
-                        experience_points = EXCLUDED.experience_points,
-                        level = EXCLUDED.level,
-                        stats = EXCLUDED.stats,
-                        inventory = EXCLUDED.inventory,
-                        status_effects = EXCLUDED.status_effects,
-                        created_at = EXCLUDED.created_at,
-                        last_active = EXCLUDED.last_active,
-                        is_admin = EXCLUDED.is_admin""",
-                                str(player_data["player_id"]),
-                                str(player_data["user_id"]),
-                                player_data["name"],
-                                player_data["current_room_id"],
-                                player_data["profession_id"],
-                                player_data["experience_points"],
-                                player_data["level"],
-                                json.dumps(player_data["stats"]),
-                                json.dumps(player_data["inventory"]),
-                                json.dumps(player_data["status_effects"]),
-                                player_data["created_at"],
-                                player_data["last_active"],
-                                player_data["is_admin"],
-                            )
-                        except (ValueError, TypeError, KeyError) as e:
-                            # Data validation errors: log and continue with other players
-                            # These are non-critical errors that don't require transaction rollback
-                            self._logger.warning(
-                                "Error saving player (data validation error)",
-                                error=str(e),
-                                error_type=type(e).__name__,
-                                player_id=str(player.player_id),
-                            )
-                            continue
-                        except asyncpg.PostgresError as e:
-                            # Database errors: re-raise to trigger transaction rollback
-                            # This ensures atomicity - either all players save or none
-                            self._logger.error(
-                                "Database error saving player in batch",
-                                error=str(e),
-                                error_type=type(e).__name__,
-                                player_id=str(player.player_id),
-                            )
-                            raise  # This will rollback the entire transaction
-
+                # Commit all players in a single transaction
+                await session.commit()
                 self._logger.debug("Players saved successfully", player_count=len(players))
-
-        except asyncpg.PostgresError as e:
+                return
+            # Explicit return after loop to satisfy mypy
+            return
+        except Exception as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error saving players: {e}",
@@ -529,37 +271,33 @@ class AsyncPersistenceLayer:
             )
 
     async def delete_player(self, player_id: str) -> bool:
-        """Delete a player using async database operations."""
+        """Delete a player using SQLAlchemy ORM."""
         context = create_error_context()
         context.metadata["operation"] = "async_delete_player"
         context.metadata["player_id"] = player_id
 
         try:
-            pool = await self._get_pool()
-            async with pool.acquire() as conn:
+            async for session in get_async_session():
                 # First check if player exists
-                row = await conn.fetchrow("SELECT name FROM players WHERE player_id = $1", player_id)
+                stmt = select(Player).where(Player.player_id == player_id)
+                result = await session.execute(stmt)
+                player = result.scalar_one_or_none()
 
-                if not row:
+                if not player:
                     self._logger.warning("Player not found for deletion", player_id=player_id)
                     return False
 
-                player_name = row["name"]
+                player_name = player.name
 
-                # Delete the player
-                deleted_count = await conn.execute("DELETE FROM players WHERE player_id = $1", player_id)
+                # Delete the player using ORM
+                await session.delete(player)
+                await session.commit()
 
-                # asyncpg.execute returns status string like "DELETE 1", parse count
-                deleted_int = int(deleted_count.split()[-1]) if deleted_count.split()[-1].isdigit() else 0
-
-                if deleted_int > 0:
-                    self._logger.info("Player deleted successfully", player_id=player_id, player_name=player_name)
-                    return True
-                else:
-                    self._logger.warning("No player was deleted", player_id=player_id)
-                    return False
-
-        except asyncpg.PostgresError as e:
+                self._logger.info("Player deleted successfully", player_id=player_id, player_name=player_name)
+                return True
+                # Explicit return after loop to satisfy mypy
+            return False
+        except Exception as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error deleting player: {e}",
@@ -569,37 +307,22 @@ class AsyncPersistenceLayer:
             )
 
     async def get_professions(self) -> list[Profession]:
-        """Get all available professions using async database operations."""
+        """Get all available professions using SQLAlchemy ORM."""
         context = create_error_context()
         context.metadata["operation"] = "async_get_professions"
 
         try:
-            pool = await self._get_pool()
-            async with pool.acquire() as conn:
-                # NOTE: PROFESSION_COLUMNS is a compile-time constant, so f-string is safe
-                # Future: Migrate to SQLAlchemy ORM for better query construction
-                query = f"SELECT {PROFESSION_COLUMNS} FROM professions WHERE is_available = true ORDER BY id"
-                rows = await conn.fetch(query)
-
-                professions = []
-                for row in rows:
-                    try:
-                        row_dict = dict(row)
-                        profession_data = self._convert_row_to_profession_data(row_dict)
-                        profession = Profession(**profession_data)
-                        professions.append(profession)
-                    except (ValueError, TypeError, KeyError) as e:
-                        self._logger.warning(
-                            "Error converting profession data",
-                            error=str(e),
-                            error_type=type(e).__name__,
-                            row_id=dict(row).get("id") if row else None,
-                        )
-                        continue
-
+            async for session in get_async_session():
+                # SQLAlchemy Column supports == comparison even with type annotations
+                # The type annotation is for runtime value access, not query construction
+                # At runtime, Profession.is_available is a Column, not a bool
+                stmt = select(Profession).where(Profession.is_available == True).order_by(Profession.id)  # type: ignore[arg-type]  # noqa: E712
+                result = await session.execute(stmt)
+                professions = list(result.scalars().all())
                 return professions
-
-        except asyncpg.PostgresError as e:
+                # Explicit return after loop to satisfy mypy
+            return []
+        except Exception as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving professions: {e}",
@@ -609,27 +332,20 @@ class AsyncPersistenceLayer:
             )
 
     async def get_profession_by_id(self, profession_id: int) -> Profession | None:
-        """Get a profession by ID using async database operations."""
+        """Get a profession by ID using SQLAlchemy ORM."""
         context = create_error_context()
         context.metadata["operation"] = "async_get_profession_by_id"
         context.metadata["profession_id"] = profession_id
 
         try:
-            pool = await self._get_pool()
-            async with pool.acquire() as conn:
-                # NOTE: PROFESSION_COLUMNS is a compile-time constant, so f-string is safe
-                # Future: Migrate to SQLAlchemy ORM for better query construction
-                query = f"SELECT {PROFESSION_COLUMNS} FROM professions WHERE id = $1"
-                row = await conn.fetchrow(query, profession_id)
-
-                if row:
-                    row_dict = dict(row)
-                    profession_data = self._convert_row_to_profession_data(row_dict)
-                    profession = Profession(**profession_data)
-                    return profession
-                return None
-
-        except asyncpg.PostgresError as e:
+            async for session in get_async_session():
+                stmt = select(Profession).where(Profession.id == profession_id)
+                result = await session.execute(stmt)
+                profession = result.scalar_one_or_none()
+                return profession
+                # Explicit return after loop to satisfy mypy
+            return None
+        except Exception as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving profession: {e}",
@@ -637,80 +353,6 @@ class AsyncPersistenceLayer:
                 details={"profession_id": profession_id, "error": str(e)},
                 user_friendly="Failed to retrieve profession",
             )
-
-    def _convert_row_to_player_data(self, row: dict[str, Any]) -> dict[str, Any]:
-        """Convert a database row to player data dictionary.
-
-        Accepts dict from PostgreSQL asyncpg (dict-like row objects).
-        """
-        # AI Agent: CRITICAL FIX - Do NOT pre-parse JSON fields!
-        #           Player model expects stats/inventory/status_effects as JSON STRINGS,
-        #           not dicts. The Player.get_stats() method handles parsing.
-        #           Pre-parsing causes get_stats() to fail and return default values.
-        return {
-            "player_id": row["player_id"],
-            "user_id": row["user_id"],
-            "name": row["name"],
-            "current_room_id": row["current_room_id"],
-            "profession_id": row["profession_id"],
-            "experience_points": row["experience_points"],
-            "level": row["level"],
-            "stats": row["stats"] or "{}",  # Keep as JSON string, not dict!
-            "inventory": row["inventory"] or "[]",  # Keep as JSON string, not dict!
-            "status_effects": row["status_effects"] or "[]",  # Keep as JSON string, not dict!
-            "created_at": row["created_at"],
-            "last_active": row["last_active"],
-            "is_admin": bool(row["is_admin"]),
-        }
-
-    def _convert_player_to_db_data(self, player: Player) -> dict[str, Any]:
-        """Convert a player object to database data dictionary."""
-        # Ensure datetime objects are naive (no timezone) for PostgreSQL TIMESTAMP WITHOUT TIME ZONE
-        # asyncpg expects datetime objects, not ISO strings
-        created_at = player.created_at
-        if created_at and hasattr(created_at, "tzinfo") and created_at.tzinfo is not None:
-            # Convert timezone-aware datetime to naive UTC
-            from datetime import UTC
-
-            created_at = created_at.astimezone(UTC).replace(tzinfo=None)
-
-        last_active = player.last_active
-        if last_active and hasattr(last_active, "tzinfo") and last_active.tzinfo is not None:
-            # Convert timezone-aware datetime to naive UTC
-            from datetime import UTC
-
-            last_active = last_active.astimezone(UTC).replace(tzinfo=None)
-
-        return {
-            "player_id": str(player.player_id),
-            "user_id": str(player.user_id),
-            "name": player.name,
-            "current_room_id": player.current_room_id,
-            "profession_id": player.profession_id,
-            "experience_points": player.experience_points,
-            "level": player.level,
-            "stats": player.get_stats(),
-            "inventory": player.get_inventory(),
-            "status_effects": player.get_status_effects(),
-            "created_at": created_at,  # Pass datetime object directly to asyncpg
-            "last_active": last_active,  # Pass datetime object directly to asyncpg
-            "is_admin": int(bool(player.is_admin))
-            if hasattr(player, "is_admin") and player.is_admin is not None
-            else 0,
-        }
-
-    def _convert_row_to_profession_data(self, row: dict[str, Any]) -> dict[str, Any]:
-        """Convert a database row to profession data dictionary.
-
-        Accepts dict from PostgreSQL asyncpg (dict-like row objects).
-        """
-        return {
-            "id": row["id"],
-            "name": row["name"],
-            "description": row["description"],
-            "flavor_text": row["flavor_text"],
-            "is_available": bool(row["is_available"]),
-        }
 
     def validate_and_fix_player_room(self, player: Player) -> None:
         """Validate and fix player room if needed."""

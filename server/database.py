@@ -204,44 +204,18 @@ class DatabaseManager:
 
         # CRITICAL: Check if we're in a different event loop than when engine was created
         # asyncpg connections must be created in the same loop they're used in
+        # If the event loop changes, we need to recreate the engine for the new loop
         try:
             current_loop = asyncio.get_running_loop()
             current_loop_id = id(current_loop)
             if self._creation_loop_id is not None and current_loop_id != self._creation_loop_id:
                 logger.warning(
-                    "Event loop changed, disposing and recreating database engine",
+                    "Event loop changed, recreating database engine",
                     old_loop_id=self._creation_loop_id,
                     new_loop_id=current_loop_id,
                 )
-                # Dispose old engine (best effort, may fail if loop is closed)
-                # CRITICAL: Don't try to dispose if loop is closed - just set to None
-                # asyncpg will handle cleanup when the loop closes
-                try:
-                    if self.engine is not None:
-                        # Check if loop is still valid before attempting disposal
-                        try:
-                            loop = asyncio.get_running_loop()
-                            if not loop.is_closed():
-                                # Try to dispose synchronously if possible, but don't block
-                                # Note: dispose() is async, but we can't await here
-                                # The engine will be cleaned up when the loop closes
-                                logger.debug(
-                                    "Old engine will be garbage collected",
-                                    old_loop_id=self._creation_loop_id,
-                                )
-                                pass  # Let the old engine be garbage collected
-                        except RuntimeError:
-                            # Loop is closed or not running - just set to None
-                            logger.debug("Old loop is closed, skipping engine disposal")
-                            pass
-                except Exception as e:
-                    logger.warning(
-                        "Error disposing engine during loop change",
-                        error=str(e),
-                        error_type=type(e).__name__,
-                    )
-                # Reset and recreate in current loop
-                logger.info("Recreating database engine for new event loop")
+                # asyncpg will handle cleanup of old engine when the old loop closes
+                # We just need to recreate for the new loop
                 self.engine = None
                 self.session_maker = None
                 self._initialized = False

@@ -57,10 +57,7 @@ def is_transient_error(error: Exception) -> bool:
         if "OperationalError" in error_type or "InterfaceError" in error_type:
             # Check error message for transient indicators
             error_msg = str(error).lower()
-            if any(
-                indicator in error_msg
-                for indicator in ["connection", "timeout", "network", "temporary", "retry"]
-            ):
+            if any(indicator in error_msg for indicator in ["connection", "timeout", "network", "temporary", "retry"]):
                 return True
 
     return False
@@ -75,6 +72,16 @@ def retry_with_backoff(
 ) -> Callable[[F], F]:
     """
     Decorator to retry a function with exponential backoff on transient errors.
+
+    This decorator automatically detects whether the decorated function is async or sync
+    and uses the appropriate sleep mechanism:
+    - Async functions: Uses `asyncio.sleep()` (non-blocking)
+    - Sync functions: Uses `time.sleep()` (blocking, but only called from sync contexts)
+
+    USAGE GUIDELINES:
+    - Async functions: Safe to use in async contexts, will not block the event loop
+    - Sync functions: Should ONLY be called from sync contexts. If called from async,
+      wrap with `asyncio.to_thread()` at the call site to avoid blocking.
 
     Args:
         max_attempts: Maximum number of retry attempts (default: 3)

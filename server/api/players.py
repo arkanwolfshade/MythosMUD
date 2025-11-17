@@ -13,7 +13,7 @@ from pydantic import BaseModel, Field, field_validator
 from ..auth.users import get_current_active_user, get_current_user
 from ..dependencies import PlayerServiceDep, StatsGeneratorDep
 from ..error_types import ErrorMessages
-from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError, create_error_context
+from ..exceptions import ErrorContext, LoggedHTTPException, RateLimitError, ValidationError, create_error_context
 from ..game.player_service import PlayerService
 from ..game.stats_generator import StatsGenerator
 from ..logging.enhanced_logging_config import get_logger
@@ -112,9 +112,7 @@ logger = get_logger(__name__)
 player_router = APIRouter(prefix="/api/players", tags=["players"])
 
 
-def _create_error_context(
-    request: Request, current_user: User | None, **metadata: Any
-) -> Any:  # Returns ErrorContext from utils.error_logging
+def _create_error_context(request: Request, current_user: User | None, **metadata: Any) -> ErrorContext:
     """
     Create error context from request and user.
 
@@ -414,8 +412,13 @@ async def respawn_player(
             except LoggedHTTPException:
                 raise
             except Exception as e:
-                logger.error("Error in respawn endpoint", error=str(e), exc_info=True)
-                context = _create_error_context(request, current_user)
+                context = _create_error_context(request, current_user, operation="respawn_player")
+                logger.error(
+                    "Error in respawn endpoint",
+                    error=str(e),
+                    exc_info=True,
+                    context=context.to_dict(),
+                )
                 raise LoggedHTTPException(
                     status_code=500, detail="Failed to process respawn request", context=context
                 ) from e
@@ -430,8 +433,13 @@ async def respawn_player(
     except LoggedHTTPException:
         raise
     except Exception as e:
-        logger.error("Unexpected error in respawn endpoint", error=str(e), exc_info=True)
-        context = _create_error_context(request, current_user)
+        context = _create_error_context(request, current_user, operation="respawn_player")
+        logger.error(
+            "Unexpected error in respawn endpoint",
+            error=str(e),
+            exc_info=True,
+            context=context.to_dict(),
+        )
         raise LoggedHTTPException(status_code=500, detail="Unexpected error during respawn", context=context) from e
 
 

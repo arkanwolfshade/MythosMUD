@@ -126,22 +126,85 @@ class PersistenceLayer:
     Unified persistence layer for all game data (players, rooms, inventory, etc.).
     Thread-safe, supports hooks, context management, and batch operations.
 
-    MIGRATION NOTE: This class uses synchronous database operations (psycopg2).
-    For async code paths, prefer using AsyncPersistenceLayer instead.
+    DUAL-LAYER PERSISTENCE ARCHITECTURE:
+
+    This codebase maintains two persistence layers to support both synchronous
+    and asynchronous code paths:
+
+    1. PersistenceLayer (this class):
+       - Synchronous operations using psycopg2
+       - Used by legacy sync code
+       - Thread-safe with locks
+       - Provides async_* wrapper methods that use asyncio.to_thread()
+
+    2. AsyncPersistenceLayer (server/async_persistence.py):
+       - Asynchronous operations using asyncpg
+       - Used by new async code
+       - Non-blocking, event-loop friendly
+       - Better performance for async contexts
+
+    MIGRATION STRATEGY:
+
+    Phase 1 (Current): Dual-layer support
+    - Legacy sync code uses PersistenceLayer directly
+    - New async code uses AsyncPersistenceLayer
+    - Async wrappers (async_*) available for gradual migration
+    - Both layers share the same database schema
+
+    Phase 2 (Future): Full async migration
+    - Migrate all sync code to async
+    - Deprecate PersistenceLayer sync methods
+    - Standardize on AsyncPersistenceLayer
+    - Remove async_* wrapper methods
+
+    Timeline: TBD - Migration will be gradual to avoid breaking changes
+
+    USAGE GUIDELINES:
+
+    For Sync Code:
+    - Use PersistenceLayer methods directly
+    - Example: persistence.get_player(player_id)
+    - Thread-safe, can be called from any thread
+
+    For Async Code:
+    - Use AsyncPersistenceLayer for best performance
+    - Example: await async_persistence.get_player_by_id(player_id)
+    - Non-blocking, event-loop friendly
+
+    For Migration:
+    - Use async_* wrapper methods during transition
+    - Example: await persistence.async_get_player(player_id)
+    - Wraps sync method with asyncio.to_thread() - adds overhead
+    - Temporary solution - migrate to AsyncPersistenceLayer when possible
 
     DEPRECATION WARNING:
     - Async methods (async_*) in this class delegate to sync methods using asyncio.to_thread()
     - This prevents event loop blocking but adds overhead
     - New async code should use AsyncPersistenceLayer directly
     - Legacy sync code can continue using this class
-
-    USAGE GUIDELINES:
-    - Sync code: Use PersistenceLayer methods directly
-    - Async code: Use AsyncPersistenceLayer for better performance
-    - Async wrappers: Use async_* methods only when migrating legacy code
     """
 
     _hooks: dict[str, list[Callable]] = {}
+
+    # Mapping dictionary for field names to PostgreSQL array literals
+    # SECURITY: This provides an additional safety layer beyond whitelist validation
+    # Each field name maps to its PostgreSQL ARRAY literal, preventing any possibility
+    # of SQL injection even if validation is bypassed
+    FIELD_NAME_TO_ARRAY: dict[str, str] = {
+        "current_health": "ARRAY['current_health']::text[]",
+        "experience_points": "ARRAY['experience_points']::text[]",
+        "sanity": "ARRAY['sanity']::text[]",
+        "occult_knowledge": "ARRAY['occult_knowledge']::text[]",
+        "fear": "ARRAY['fear']::text[]",
+        "corruption": "ARRAY['corruption']::text[]",
+        "cult_affiliation": "ARRAY['cult_affiliation']::text[]",
+        "strength": "ARRAY['strength']::text[]",
+        "dexterity": "ARRAY['dexterity']::text[]",
+        "constitution": "ARRAY['constitution']::text[]",
+        "intelligence": "ARRAY['intelligence']::text[]",
+        "wisdom": "ARRAY['wisdom']::text[]",
+        "charisma": "ARRAY['charisma']::text[]",
+    }
 
     def __init__(self, db_path: str | None = None, log_path: str | None = None, event_bus=None):
         # Use environment variable for database path - require it to be set
@@ -1509,42 +1572,32 @@ class PersistenceLayer:
             player_id_str = str(player_id)
 
             # Validate field name (whitelist approach for security)
-            allowed_fields = {
-                "current_health",
-                "experience_points",
-                "sanity",
-                "occult_knowledge",
-                "fear",
-                "corruption",
-                "cult_affiliation",
-                "strength",
-                "dexterity",
-                "constitution",
-                "intelligence",
-                "wisdom",
-                "charisma",
-            }
-            if field_name not in allowed_fields:
+            # Use the mapping dictionary as the source of truth for allowed fields
+            if field_name not in self.FIELD_NAME_TO_ARRAY:
+                allowed_fields = set(self.FIELD_NAME_TO_ARRAY.keys())
                 raise ValueError(f"Invalid stat field name: {field_name}. Must be one of {allowed_fields}")
+
+            # Get the PostgreSQL array literal from the mapping dictionary
+            # SECURITY: This provides defense in depth - even if validation is bypassed,
+            # the field name cannot be injected into SQL since we use a pre-defined mapping
+            array_literal = self.FIELD_NAME_TO_ARRAY[field_name]
 
             # Execute atomic field update using PostgreSQL jsonb_set()
             # AI Agent: This prevents race conditions by updating ONLY this field
             # without loading/saving the entire player object which might have stale data
-            # SECURITY NOTE: field_name is validated against strict whitelist (lines 1501-1517)
-            # before reaching this point. The whitelist validation is the security control.
-            # PostgreSQL's jsonb_set() requires the path as a text array (ARRAY['field_name']),
-            # which cannot be directly parameterized. Since field_name is validated against
-            # a fixed set of allowed values, using it in the array constructor is safe.
-            # The value access (stats->>%s) is still parameterized for defense in depth.
+            # SECURITY NOTE: field_name is validated against FIELD_NAME_TO_ARRAY dictionary
+            # and the array literal is retrieved from the mapping, providing multiple layers
+            # of protection against SQL injection. The value access (stats->>%s) is still
+            # parameterized for additional defense in depth.
             with self._lock, self._get_connection() as conn:
                 # PostgreSQL JSONB path format: array of path elements
-                # jsonb_set() requires path as text array, which we construct from validated field_name
+                # jsonb_set() requires path as text array, which we get from the mapping dictionary
                 cursor = conn.execute(
                     f"""
                     UPDATE players
                     SET stats = jsonb_set(
                         stats::jsonb,
-                        ARRAY['{field_name}']::text[],
+                        {array_literal},
                         to_jsonb((stats->>%s)::integer + %s)
                     )::text
                     WHERE player_id = %s

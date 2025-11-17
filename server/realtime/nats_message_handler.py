@@ -248,7 +248,6 @@ class NATSMessageHandler:
 
         logger.info("Finished _subscribe_to_standardized_chat_subjects", debug=True)
 
-
     async def _subscribe_to_subject(self, subject: str):
         """
         Subscribe to a specific NATS subject.

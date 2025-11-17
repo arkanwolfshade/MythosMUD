@@ -246,7 +246,12 @@ class NATSService:
                 connect_options["tls"] = ssl_context
                 logger.info("TLS enabled for NATS connection", verify=self.config.tls_verify)
 
-            logger.info("Connecting to NATS server", url=nats_url, tls_enabled=self.config.tls_enabled, state=self.state_machine.current_state.id)
+            logger.info(
+                "Connecting to NATS server",
+                url=nats_url,
+                tls_enabled=self.config.tls_enabled,
+                state=self.state_machine.current_state.id,
+            )
 
             # Connect to NATS
             self.nc = await nats.connect(nats_url, **connect_options)
@@ -555,7 +560,9 @@ class NATSService:
                         try:
                             await msg.nak()
                         except Exception as nak_error:
-                            logger.error("Failed to negatively acknowledge message", error=str(nak_error), subject=subject)
+                            logger.error(
+                                "Failed to negatively acknowledge message", error=str(nak_error), subject=subject
+                            )
                 except Exception as e:
                     logger.error("Error handling NATS message", error=str(e), subject=subject)
                     # Negatively acknowledge on processing failure (if manual ack enabled)
@@ -563,7 +570,9 @@ class NATSService:
                         try:
                             await msg.nak()
                         except Exception as nak_error:
-                            logger.error("Failed to negatively acknowledge message", error=str(nak_error), subject=subject)
+                            logger.error(
+                                "Failed to negatively acknowledge message", error=str(nak_error), subject=subject
+                            )
 
             # Subscribe to subject
             subscription = await self.nc.subscribe(subject, cb=message_handler)

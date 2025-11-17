@@ -498,28 +498,26 @@ class RealTimeEventHandler:
             import asyncio
 
             try:
-                loop = asyncio.get_event_loop()
-                if loop.is_running():
-                    # Schedule the async operation to run later
-                    if self.task_registry:
-                        self.task_registry.register_task(
-                            self._send_room_occupants_update(event.room_id),
-                            f"event_handler/room_occupants_{event.room_id}",
-                            "event_handler",
-                        )
-                    else:
-                        # Task 4.4: Replace with tracked task creation to prevent memory leaks
-                        tracked_manager = get_global_tracked_manager()
-                        tracked_manager.create_tracked_task(
-                            self._send_room_occupants_update(event.room_id),
-                            task_name=f"event_handler/room_occupants_{event.room_id}",
-                            task_type="event_handler",
-                        )
+                # Use get_running_loop() instead of deprecated get_event_loop()
+                # get_running_loop() raises RuntimeError if no loop is running
+                _ = asyncio.get_running_loop()  # Verify loop exists
+                # Schedule the async operation to run later
+                if self.task_registry:
+                    self.task_registry.register_task(
+                        self._send_room_occupants_update(event.room_id),
+                        f"event_handler/room_occupants_{event.room_id}",
+                        "event_handler",
+                    )
                 else:
-                    # If no event loop is running, just log that we can't broadcast
-                    self._logger.debug("No event loop available for room occupants update broadcast")
+                    # Task 4.4: Replace with tracked task creation to prevent memory leaks
+                    tracked_manager = get_global_tracked_manager()
+                    tracked_manager.create_tracked_task(
+                        self._send_room_occupants_update(event.room_id),
+                        task_name=f"event_handler/room_occupants_{event.room_id}",
+                        task_type="event_handler",
+                    )
             except RuntimeError:
-                # No event loop available, just log that we can't broadcast
+                # No running event loop - log and skip async operation
                 self._logger.debug("No event loop available for room occupants update broadcast")
 
             self._logger.debug("Processed NPC entered event", npc_id=event.npc_id, room_id=event.room_id)
@@ -554,28 +552,26 @@ class RealTimeEventHandler:
             import asyncio
 
             try:
-                loop = asyncio.get_event_loop()
-                if loop.is_running():
-                    # Schedule the async operation to run later
-                    if self.task_registry:
-                        self.task_registry.register_task(
-                            self._send_room_occupants_update(event.room_id),
-                            f"event_handler/room_occupants_{event.room_id}",
-                            "event_handler",
-                        )
-                    else:
-                        # Task 4.4: Replace with tracked task creation to prevent memory leaks
-                        tracked_manager = get_global_tracked_manager()
-                        tracked_manager.create_tracked_task(
-                            self._send_room_occupants_update(event.room_id),
-                            task_name=f"event_handler/room_occupants_{event.room_id}",
-                            task_type="event_handler",
-                        )
+                # Use get_running_loop() instead of deprecated get_event_loop()
+                # get_running_loop() raises RuntimeError if no loop is running
+                _ = asyncio.get_running_loop()  # Verify loop exists
+                # Schedule the async operation to run later
+                if self.task_registry:
+                    self.task_registry.register_task(
+                        self._send_room_occupants_update(event.room_id),
+                        f"event_handler/room_occupants_{event.room_id}",
+                        "event_handler",
+                    )
                 else:
-                    # If no event loop is running, just log that we can't broadcast
-                    self._logger.debug("No event loop available for room occupants update broadcast")
+                    # Task 4.4: Replace with tracked task creation to prevent memory leaks
+                    tracked_manager = get_global_tracked_manager()
+                    tracked_manager.create_tracked_task(
+                        self._send_room_occupants_update(event.room_id),
+                        task_name=f"event_handler/room_occupants_{event.room_id}",
+                        task_type="event_handler",
+                    )
             except RuntimeError:
-                # No event loop available, just log that we can't broadcast
+                # No running event loop - log and skip async operation
                 self._logger.debug("No event loop available for room occupants update broadcast")
 
             self._logger.debug("Processed NPC left event", npc_id=event.npc_id, room_id=event.room_id)
@@ -731,25 +727,27 @@ class RealTimeEventHandler:
 
                 # Schedule the async message send
                 try:
-                    loop = asyncio.get_event_loop()
-                    if loop.is_running():
-                        # Create a task to send the message
-                        if self.task_registry:
-                            self.task_registry.register_task(
-                                self.connection_manager.send_personal_message(player_id, message_event),
-                                f"event_handler/room_message_{room_id}_{player_id}",
-                                "event_handler",
-                            )
-                        else:
-                            from ..async_utils.tracked_task_manager import get_global_tracked_manager
+                    # Use get_running_loop() instead of deprecated get_event_loop()
+                    # get_running_loop() raises RuntimeError if no loop is running
+                    _ = asyncio.get_running_loop()  # Verify loop exists
+                    # Create a task to send the message
+                    if self.task_registry:
+                        self.task_registry.register_task(
+                            self.connection_manager.send_personal_message(player_id, message_event),
+                            f"event_handler/room_message_{room_id}_{player_id}",
+                            "event_handler",
+                        )
+                    else:
+                        from ..async_utils.tracked_task_manager import get_global_tracked_manager
 
-                            tracked_manager = get_global_tracked_manager()
-                            tracked_manager.create_tracked_task(
-                                self.connection_manager.send_personal_message(player_id, message_event),
-                                task_name=f"event_handler/room_message_{room_id}_{player_id}",
-                                task_type="event_handler",
-                            )
+                        tracked_manager = get_global_tracked_manager()
+                        tracked_manager.create_tracked_task(
+                            self.connection_manager.send_personal_message(player_id, message_event),
+                            task_name=f"event_handler/room_message_{room_id}_{player_id}",
+                            task_type="event_handler",
+                        )
                 except RuntimeError:
+                    # No running event loop - log and skip async operation
                     self._logger.debug("No event loop available for room message broadcast")
 
         except Exception as e:

@@ -77,9 +77,13 @@ class TestSQLInjectionPrevention:
         malicious_delta = "10; DROP TABLE players; --"
 
         # This should fail with a type error, not execute SQL
+        # malicious_delta is a string, but update_player_stat_field expects int | float
         with pytest.raises((TypeError, ValueError)):
             persistence.update_player_stat_field(
-                str(player.player_id), "current_health", malicious_delta, "test"  # type: ignore[arg-type]
+                str(player.player_id),
+                "current_health",
+                malicious_delta,  # type: ignore[arg-type]  # Intentionally passing wrong type to test type checking
+                "test",
             )
 
     def test_get_player_by_name_parameterized(self, persistence: PersistenceLayer):
