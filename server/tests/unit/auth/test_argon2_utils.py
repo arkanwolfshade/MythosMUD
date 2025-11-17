@@ -244,15 +244,38 @@ class TestArgon2CustomHasher:
 class TestArgon2ErrorHandling:
     """Test Argon2 error handling."""
 
-    def test_hash_password_invalid_type(self):
-        """Test hashing with invalid password type."""
+    def test_hash_password_invalid_type_int(self):
+        """Test hashing with invalid password type (int)."""
         with pytest.raises(AuthenticationError):
             hash_password(123)
 
-    def test_verify_password_invalid_types(self):
-        """Test verification with invalid types."""
-        assert verify_password(123, "hash") is False
+    def test_hash_password_invalid_type_none(self):
+        """Test hashing with invalid password type (None)."""
+        with pytest.raises(AuthenticationError):
+            hash_password(None)
+
+    def test_hash_password_invalid_type_list(self):
+        """Test hashing with invalid password type (list)."""
+        with pytest.raises(AuthenticationError):
+            hash_password(["password"])
+
+    def test_verify_password_invalid_password_type_int(self):
+        """Test verification with invalid password type (int)."""
+        hashed = hash_password("test")
+        assert verify_password(123, hashed) is False
+
+    def test_verify_password_invalid_password_type_none(self):
+        """Test verification with invalid password type (None)."""
+        hashed = hash_password("test")
+        assert verify_password(None, hashed) is False
+
+    def test_verify_password_invalid_hash_type_int(self):
+        """Test verification with invalid hash type (int)."""
         assert verify_password("password", 123) is False
+
+    def test_verify_password_invalid_hash_type_none(self):
+        """Test verification with invalid hash type (None)."""
+        assert verify_password("password", None) is False
 
 
 class TestArgon2Security:
@@ -356,3 +379,144 @@ class TestArgon2NonArgon2HashHandling:
         result = get_hash_info(malformed_hash)
         # Should still parse what it can or return a dict with string values
         assert result is None or isinstance(result, dict)
+
+
+class TestArgon2ParameterValidation:
+    """Test Argon2 parameter validation."""
+
+    def test_create_hasher_time_cost_too_low(self):
+        """Test creating hasher with time_cost too low."""
+        with pytest.raises(ValueError, match="time_cost must be between 1 and 10"):
+            create_hasher_with_params(time_cost=0)
+
+    def test_create_hasher_time_cost_too_high(self):
+        """Test creating hasher with time_cost too high."""
+        with pytest.raises(ValueError, match="time_cost must be between 1 and 10"):
+            create_hasher_with_params(time_cost=11)
+
+    def test_create_hasher_time_cost_negative(self):
+        """Test creating hasher with negative time_cost."""
+        with pytest.raises(ValueError, match="time_cost must be between 1 and 10"):
+            create_hasher_with_params(time_cost=-1)
+
+    def test_create_hasher_memory_cost_too_low(self):
+        """Test creating hasher with memory_cost too low."""
+        with pytest.raises(ValueError, match="memory_cost must be between 1024 and 1048576"):
+            create_hasher_with_params(memory_cost=1023)
+
+    def test_create_hasher_memory_cost_too_high(self):
+        """Test creating hasher with memory_cost too high."""
+        with pytest.raises(ValueError, match="memory_cost must be between 1024 and 1048576"):
+            create_hasher_with_params(memory_cost=1048577)
+
+    def test_create_hasher_parallelism_too_low(self):
+        """Test creating hasher with parallelism too low."""
+        with pytest.raises(ValueError, match="parallelism must be between 1 and 16"):
+            create_hasher_with_params(parallelism=0)
+
+    def test_create_hasher_parallelism_too_high(self):
+        """Test creating hasher with parallelism too high."""
+        with pytest.raises(ValueError, match="parallelism must be between 1 and 16"):
+            create_hasher_with_params(parallelism=17)
+
+    def test_create_hasher_hash_len_too_low(self):
+        """Test creating hasher with hash_len too low."""
+        with pytest.raises(ValueError, match="hash_len must be between 16 and 64"):
+            create_hasher_with_params(hash_len=15)
+
+    def test_create_hasher_hash_len_too_high(self):
+        """Test creating hasher with hash_len too high."""
+        with pytest.raises(ValueError, match="hash_len must be between 16 and 64"):
+            create_hasher_with_params(hash_len=65)
+
+    def test_create_hasher_valid_boundary_values(self):
+        """Test creating hasher with valid boundary values."""
+        # Test minimum values
+        hasher_min = create_hasher_with_params(time_cost=1, memory_cost=1024, parallelism=1, hash_len=16)
+        assert hasher_min is not None
+
+        # Test maximum values
+        hasher_max = create_hasher_with_params(time_cost=10, memory_cost=1048576, parallelism=16, hash_len=64)
+        assert hasher_max is not None
+
+
+class TestArgon2EnvironmentVariables:
+    """Test Argon2 environment variable configuration."""
+
+    def test_env_var_time_cost_override(self, monkeypatch):
+        """Test that ARGON2_TIME_COST env var overrides default."""
+        monkeypatch.setenv("ARGON2_TIME_COST", "5")
+        # Need to reload the module to pick up the new env var
+        import importlib
+
+        import server.auth.argon2_utils
+
+        importlib.reload(server.auth.argon2_utils)
+        assert server.auth.argon2_utils.TIME_COST == 5
+
+    def test_env_var_memory_cost_override(self, monkeypatch):
+        """Test that ARGON2_MEMORY_COST env var overrides default."""
+        monkeypatch.setenv("ARGON2_MEMORY_COST", "131072")
+        import importlib
+
+        import server.auth.argon2_utils
+
+        importlib.reload(server.auth.argon2_utils)
+        assert server.auth.argon2_utils.MEMORY_COST == 131072
+
+    def test_env_var_parallelism_override(self, monkeypatch):
+        """Test that ARGON2_PARALLELISM env var overrides default."""
+        monkeypatch.setenv("ARGON2_PARALLELISM", "2")
+        import importlib
+
+        import server.auth.argon2_utils
+
+        importlib.reload(server.auth.argon2_utils)
+        assert server.auth.argon2_utils.PARALLELISM == 2
+
+    def test_env_var_hash_length_override(self, monkeypatch):
+        """Test that ARGON2_HASH_LENGTH env var overrides default."""
+        monkeypatch.setenv("ARGON2_HASH_LENGTH", "64")
+        import importlib
+
+        import server.auth.argon2_utils
+
+        importlib.reload(server.auth.argon2_utils)
+        assert server.auth.argon2_utils.HASH_LENGTH == 64
+
+    def test_env_var_invalid_time_cost(self, monkeypatch):
+        """Test that invalid ARGON2_TIME_COST raises ValueError."""
+        monkeypatch.setenv("ARGON2_TIME_COST", "20")
+        import importlib
+
+        import server.auth.argon2_utils
+
+        with pytest.raises(ValueError, match="ARGON2_TIME_COST must be between 1 and 10"):
+            importlib.reload(server.auth.argon2_utils)
+
+    def test_env_var_invalid_memory_cost(self, monkeypatch):
+        """Test that invalid ARGON2_MEMORY_COST raises ValueError."""
+        monkeypatch.setenv("ARGON2_MEMORY_COST", "500")
+        import importlib
+
+        import server.auth.argon2_utils
+
+        with pytest.raises(ValueError, match="ARGON2_MEMORY_COST must be between 1024 and 1048576"):
+            importlib.reload(server.auth.argon2_utils)
+
+    def test_env_var_missing_uses_defaults(self, monkeypatch):
+        """Test that missing env vars use defaults."""
+        # Remove all Argon2 env vars
+        monkeypatch.delenv("ARGON2_TIME_COST", raising=False)
+        monkeypatch.delenv("ARGON2_MEMORY_COST", raising=False)
+        monkeypatch.delenv("ARGON2_PARALLELISM", raising=False)
+        monkeypatch.delenv("ARGON2_HASH_LENGTH", raising=False)
+        import importlib
+
+        import server.auth.argon2_utils
+
+        importlib.reload(server.auth.argon2_utils)
+        assert server.auth.argon2_utils.TIME_COST == 3
+        assert server.auth.argon2_utils.MEMORY_COST == 65536
+        assert server.auth.argon2_utils.PARALLELISM == 1
+        assert server.auth.argon2_utils.HASH_LENGTH == 32

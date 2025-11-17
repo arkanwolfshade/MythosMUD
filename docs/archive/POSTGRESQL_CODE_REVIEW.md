@@ -1,6 +1,6 @@
 # PostgreSQL Code Review - feature/sqlite-to-postgresql Branch
 
-**Review Date:** 2025-01-27
+**Review Date:** 2025-11-17
 **Reviewer:** AI Code Review Agent
 **Branch:** feature/sqlite-to-postgresql
 **Base:** main
@@ -19,17 +19,20 @@ This review identified **8 critical issues**, **5 performance issues**, and **3 
 **Location:** Multiple files use `SELECT *` instead of specifying columns
 
 **Files Affected:**
+
 - `server/async_persistence.py` (lines 123, 159, 193, 306, 351, 514, 558)
 - `server/persistence.py` (lines 556, 585, 614, 820, 849, 1010, 1041)
 
 **Issue:**
 PostgreSQL best practices explicitly state: "Avoid using `SELECT *` and specify only the necessary columns." Using `SELECT *`:
+
 - Transfers unnecessary data over the network
 - Prevents query optimization
 - Makes code brittle to schema changes
 - Can expose sensitive columns unintentionally
 
 **Example:**
+
 ```python
 # ❌ WRONG - server/async_persistence.py:123
 row = await conn.fetchrow("SELECT * FROM players WHERE name = $1", name)
@@ -59,11 +62,13 @@ Replace all `SELECT *` queries with explicit column lists. Consider creating hel
 The `current_room_id` column in the `players` table is frequently queried (used in `get_players_in_room()` operations) but has no index. This causes full table scans on every room query.
 
 **Evidence:**
+
 - Query pattern: `SELECT * FROM players WHERE current_room_id = $1` (async_persistence.py:351)
 - Query pattern: `SELECT * FROM players WHERE current_room_id = %s` (persistence.py:849)
 - No index exists: `grep` found no index on `current_room_id`
 
 **Current Schema:**
+
 ```sql
 CREATE INDEX IF NOT EXISTS idx_players_name ON players(name);
 CREATE INDEX IF NOT EXISTS idx_players_user_id ON players(user_id);
@@ -74,6 +79,7 @@ CREATE INDEX IF NOT EXISTS idx_players_profession_id ON players(profession_id);
 
 **Recommendation:**
 Add index to `db/schema/04_runtime_tables.sql`:
+
 ```sql
 CREATE INDEX IF NOT EXISTS idx_players_current_room_id ON players(current_room_id);
 ```
@@ -91,6 +97,7 @@ CREATE INDEX IF NOT EXISTS idx_players_current_room_id ON players(current_room_i
 Every database operation creates a new connection and closes it immediately. This is extremely inefficient and violates PostgreSQL connection management best practices.
 
 **Evidence:**
+
 ```python
 # ❌ WRONG - Creates new connection for EVERY operation
 async def get_player_by_name(self, name: str) -> Player | None:
@@ -103,6 +110,7 @@ async def get_player_by_name(self, name: str) -> Player | None:
 ```
 
 This pattern is repeated in:
+
 - `get_player_by_name()` (line 120)
 - `get_player_by_id()` (line 156)
 - `get_player_by_user_id()` (line 190)
@@ -118,11 +126,13 @@ This pattern is repeated in:
 "Use connection pooling to reduce the overhead of establishing new connections."
 
 **Recommendation:**
+
 1. Use asyncpg connection pool instead of creating connections per operation
 2. Implement connection reuse pattern similar to `PostgresConnectionPool` in `postgres_adapter.py`
 3. Consider using SQLAlchemy's async session management (already available via `DatabaseManager`)
 
 **Example Fix:**
+
 ```python
 class AsyncPersistenceLayer:
     def __init__(self, ...):
@@ -159,12 +169,14 @@ class AsyncPersistenceLayer:
 Some operations that should be transactional are not explicitly wrapped in transactions. PostgreSQL best practices state: "Use explicit transactions to ensure data consistency and atomicity."
 
 **Evidence:**
+
 - `save_players()` in `async_persistence.py` (line 383) saves multiple players in a loop without a transaction
 - If one player save fails, previous saves are not rolled back
 - No explicit `BEGIN`/`COMMIT`/`ROLLBACK` in async operations
 
 **Recommendation:**
 Wrap multi-step operations in explicit transactions:
+
 ```python
 async def save_players(self, players: list[Player]) -> None:
     pool = await self._get_pool()
@@ -188,6 +200,7 @@ The `respawn_room_id` column has no index. While not currently queried, if respa
 
 **Recommendation:**
 Add index proactively:
+
 ```sql
 CREATE INDEX IF NOT EXISTS idx_players_respawn_room_id ON players(respawn_room_id);
 ```
@@ -205,6 +218,7 @@ CREATE INDEX IF NOT EXISTS idx_players_respawn_room_id ON players(respawn_room_i
 The `save_players()` method saves players one-by-one in a loop. This creates N queries instead of a single batch operation.
 
 **Current Code:**
+
 ```python
 for player in players:
     await conn.execute("INSERT INTO players ... ON CONFLICT ...")
@@ -215,6 +229,7 @@ for player in players:
 
 **Recommendation:**
 Use PostgreSQL's `COPY` or batch insert with `executemany()`:
+
 ```python
 # Option 1: Use executemany for batch operations
 await conn.executemany(
@@ -238,6 +253,7 @@ await conn.executemany(
 PostgreSQL best practices recommend: "Use `EXPLAIN ANALYZE` to analyze query execution plans and identify performance bottlenecks." There's no query performance monitoring or slow query logging.
 
 **Recommendation:**
+
 1. Enable PostgreSQL's `log_min_duration_statement` for slow query logging
 2. Add query timing in application code
 3. Consider using `pg_stat_statements` extension for query analysis
@@ -255,6 +271,7 @@ PostgreSQL best practices recommend: "Use `EXPLAIN ANALYZE` to analyze query exe
 PostgreSQL automatically creates indexes on primary keys, but foreign keys should also be indexed for optimal performance. Some foreign keys are indexed (e.g., `idx_players_user_id`), but we should verify all are covered.
 
 **Current State:**
+
 - ✅ `user_id` has index: `idx_players_user_id`
 - ✅ `profession_id` has index: `idx_players_profession_id`
 - ❓ Need to verify all foreign keys have indexes
@@ -271,6 +288,7 @@ Audit all foreign key columns and ensure they have indexes. PostgreSQL doesn't a
 **Location:** `server/database.py:147-153`
 
 **Current Configuration:**
+
 ```python
 pool_kwargs.update({
     "pool_size": 5,
@@ -283,6 +301,7 @@ pool_kwargs.update({
 Pool size may be too small for high-concurrency scenarios. No configuration option to adjust based on environment.
 
 **Recommendation:**
+
 - Make pool size configurable via environment variables
 - Consider increasing default for production
 - Document pool sizing guidelines
@@ -298,6 +317,7 @@ No explicit connection timeout configuration. PostgreSQL best practices recommen
 
 **Recommendation:**
 Add connection timeout configuration:
+
 ```python
 self._pool = await asyncpg.create_pool(
     url,
@@ -335,6 +355,7 @@ PostgreSQL best practices state: "Use clear and concise comments to explain comp
 
 **Recommendation:**
 Add comments to complex queries explaining business logic:
+
 ```python
 # Get all players in a room for broadcasting messages
 # Uses index on current_room_id for optimal performance
@@ -352,6 +373,7 @@ asyncpg supports prepared statement caching, but it's not being used. This can i
 
 **Recommendation:**
 Use asyncpg's prepared statement support for frequently executed queries:
+
 ```python
 # Prepare statement once
 stmt = await conn.prepare("SELECT ... FROM players WHERE name = $1")
@@ -364,18 +386,21 @@ row = await stmt.fetchrow(name)
 
 ## Summary of Recommendations
 
-### Immediate Actions (Critical):
+### Immediate Actions (Critical)
+
 1. ✅ Add index on `current_room_id` column
 2. ✅ Replace all `SELECT *` with explicit column lists
 3. ✅ Implement connection pooling in `AsyncPersistenceLayer`
 4. ✅ Add explicit transactions to multi-step operations
 
-### High Priority:
+### High Priority
+
 5. ✅ Add index on `respawn_room_id` (proactive)
 6. ✅ Optimize `save_players()` to use batch operations
 7. ✅ Add query performance monitoring
 
-### Medium Priority:
+### Medium Priority
+
 8. ✅ Audit and add indexes for all foreign keys
 9. ✅ Make connection pool size configurable
 10. ✅ Add connection timeout configuration
@@ -398,6 +423,7 @@ row = await stmt.fetchrow(name)
 ## Testing Recommendations
 
 After implementing fixes, test:
+
 1. Query performance with `EXPLAIN ANALYZE`
 2. Connection pool behavior under load
 3. Transaction rollback scenarios
