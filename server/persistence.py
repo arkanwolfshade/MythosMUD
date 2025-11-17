@@ -7,6 +7,8 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, TypedDict, cast
 from uuid import UUID
 
+import psycopg2
+
 from server.logging.enhanced_logging_config import get_logger
 
 from .exceptions import DatabaseError, ValidationError
@@ -20,6 +22,16 @@ if TYPE_CHECKING:
     from .models.profession import Profession
 
 logger = get_logger(__name__)
+
+# Player table columns for explicit SELECT queries (avoids SELECT * anti-pattern)
+PLAYER_COLUMNS = (
+    "player_id, user_id, name, current_room_id, profession_id, "
+    "experience_points, level, stats, inventory, status_effects, "
+    "created_at, last_active, is_admin"
+)
+
+# Profession table columns for explicit SELECT queries
+PROFESSION_COLUMNS = "id, name, description, flavor_text, is_available"
 
 
 # --- Custom Exceptions ---
@@ -553,7 +565,7 @@ class PersistenceLayer:
         try:
             with self._lock, self._get_connection() as conn:
                 # PostgreSQL uses %s placeholders, not ?
-                row = conn.execute("SELECT * FROM players WHERE name = %s", (name,)).fetchone()
+                row = conn.execute(f"SELECT {PLAYER_COLUMNS} FROM players WHERE name = %s", (name,)).fetchone()
                 if row:
                     player_data = self._convert_row_to_player_data(row)
                     player = Player(**player_data)
@@ -562,7 +574,7 @@ class PersistenceLayer:
                     self._load_player_inventory(conn, player)
                     return player
                 return None
-        except Exception as e:
+        except psycopg2.Error as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player by name '{name}': {e}",
@@ -582,7 +594,9 @@ class PersistenceLayer:
             with self._lock, self._get_connection() as conn:
                 # PostgreSQL uses %s placeholders, not ?
                 player_id_str = str(player_id) if player_id else None
-                row = conn.execute("SELECT * FROM players WHERE player_id = %s", (player_id_str,)).fetchone()
+                row = conn.execute(
+                    f"SELECT {PLAYER_COLUMNS} FROM players WHERE player_id = %s", (player_id_str,)
+                ).fetchone()
                 if row:
                     player_data = self._convert_row_to_player_data(row)
                     player = Player(**player_data)
@@ -591,7 +605,7 @@ class PersistenceLayer:
                     self._load_player_inventory(conn, player)
                     return player
                 return None
-        except Exception as e:
+        except psycopg2.Error as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player by ID '{player_id}': {e}",
@@ -611,7 +625,9 @@ class PersistenceLayer:
             with self._lock, self._get_connection() as conn:
                 # PostgreSQL uses %s placeholders, not ?
                 user_id_str = str(user_id) if user_id else None
-                row = conn.execute("SELECT * FROM players WHERE user_id = %s", (user_id_str,)).fetchone()
+                row = conn.execute(
+                    f"SELECT {PLAYER_COLUMNS} FROM players WHERE user_id = %s", (user_id_str,)
+                ).fetchone()
                 if row:
                     player_data = self._convert_row_to_player_data(row)
                     player = Player(**player_data)
@@ -620,7 +636,7 @@ class PersistenceLayer:
                     self._load_player_inventory(conn, player)
                     return player
                 return None
-        except Exception as e:
+        except psycopg2.Error as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player by user ID '{user_id}': {e}",
@@ -719,25 +735,22 @@ class PersistenceLayer:
                     conn.commit()
                     self._log(f"Saved player {player.name}")
                     self._run_hooks("after_save_player", player)
-                except Exception as e:
-                    # PostgreSQL raises psycopg2.IntegrityError for constraint violations
-                    # Check if it's an integrity error by examining the error message
-                    if "duplicate key" in str(e).lower() or "unique constraint" in str(e).lower():
-                        log_and_raise(
-                            DatabaseError,
-                            f"Unique constraint error saving player: {e}",
-                            context=context,
-                            details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
-                            user_friendly="Player name already exists",
-                        )
-                    else:
-                        log_and_raise(
-                            DatabaseError,
-                            f"Database error saving player: {e}",
-                            context=context,
-                            details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
-                            user_friendly="Failed to save player",
-                        )
+                except psycopg2.IntegrityError as e:
+                    log_and_raise(
+                        DatabaseError,
+                        f"Unique constraint error saving player: {e}",
+                        context=context,
+                        details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
+                        user_friendly="Player name already exists",
+                    )
+                except psycopg2.Error as e:
+                    log_and_raise(
+                        DatabaseError,
+                        f"Database error saving player: {e}",
+                        context=context,
+                        details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
+                        user_friendly="Failed to save player",
+                    )
         except OSError as e:
             log_and_raise(
                 DatabaseError,
@@ -817,7 +830,7 @@ class PersistenceLayer:
 
         try:
             with self._lock, self._get_connection() as conn:
-                rows = conn.execute("SELECT * FROM players").fetchall()
+                rows = conn.execute(f"SELECT {PLAYER_COLUMNS} FROM players").fetchall()
                 players = []
                 for row in rows:
                     player_data = self._convert_row_to_player_data(row)
@@ -827,7 +840,7 @@ class PersistenceLayer:
                     self._load_player_inventory(conn, player)
                     players.append(player)
                 return players
-        except Exception as e:
+        except psycopg2.Error as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error listing players: {e}",
@@ -846,7 +859,10 @@ class PersistenceLayer:
         try:
             with self._lock, self._get_connection() as conn:
                 # PostgreSQL uses %s placeholders, not ?
-                rows = conn.execute("SELECT * FROM players WHERE current_room_id = %s", (room_id,)).fetchall()
+                # Get all players in a room for message broadcasting. Uses index on current_room_id.
+                rows = conn.execute(
+                    f"SELECT {PLAYER_COLUMNS} FROM players WHERE current_room_id = %s", (room_id,)
+                ).fetchall()
                 players = []
                 for row in rows:
                     player_data = self._convert_row_to_player_data(row)
@@ -856,7 +872,7 @@ class PersistenceLayer:
                     self._load_player_inventory(conn, player)
                     players.append(player)
                 return players
-        except Exception as e:
+        except psycopg2.Error as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving players in room '{room_id}': {e}",
@@ -924,25 +940,22 @@ class PersistenceLayer:
                     conn.commit()
                     self._log(f"Batch saved {len(players)} players.")
                     self._run_hooks("after_save_players", players)
-                except Exception as e:
-                    # PostgreSQL raises psycopg2.IntegrityError for constraint violations
-                    # Check if it's an integrity error by examining the error message
-                    if "duplicate key" in str(e).lower() or "unique constraint" in str(e).lower():
-                        log_and_raise(
-                            DatabaseError,
-                            f"Batch unique constraint error: {e}",
-                            context=context,
-                            details={"player_count": len(players), "error": str(e)},
-                            user_friendly="Failed to save players - duplicate data",
-                        )
-                    else:
-                        log_and_raise(
-                            DatabaseError,
-                            f"Database error in batch save: {e}",
-                            context=context,
-                            details={"player_count": len(players), "error": str(e)},
-                            user_friendly="Failed to save players",
-                        )
+                except psycopg2.IntegrityError as e:
+                    log_and_raise(
+                        DatabaseError,
+                        f"Batch unique constraint error: {e}",
+                        context=context,
+                        details={"player_count": len(players), "error": str(e)},
+                        user_friendly="Failed to save players - duplicate data",
+                    )
+                except psycopg2.Error as e:
+                    log_and_raise(
+                        DatabaseError,
+                        f"Database error in batch save: {e}",
+                        context=context,
+                        details={"player_count": len(players), "error": str(e)},
+                        user_friendly="Failed to save players",
+                    )
         except Exception as e:
             log_and_raise(
                 DatabaseError,
@@ -1007,7 +1020,9 @@ class PersistenceLayer:
 
         try:
             with self._lock, self._get_connection() as conn:
-                rows = conn.execute("SELECT * FROM professions WHERE is_available = true ORDER BY id").fetchall()
+                rows = conn.execute(
+                    f"SELECT {PROFESSION_COLUMNS} FROM professions WHERE is_available = true ORDER BY id"
+                ).fetchall()
 
                 professions = []
                 for row in rows:
@@ -1019,7 +1034,7 @@ class PersistenceLayer:
                     professions.append(profession)
 
                 return professions
-        except Exception as e:
+        except psycopg2.Error as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving professions: {e}",
@@ -1038,7 +1053,9 @@ class PersistenceLayer:
         try:
             with self._lock, self._get_connection() as conn:
                 # PostgreSQL uses %s placeholders, not ?
-                row = conn.execute("SELECT * FROM professions WHERE id = %s", (profession_id,)).fetchone()
+                row = conn.execute(
+                    f"SELECT {PROFESSION_COLUMNS} FROM professions WHERE id = %s", (profession_id,)
+                ).fetchone()
 
                 if row:
                     profession_data = dict(row)
@@ -1048,7 +1065,7 @@ class PersistenceLayer:
                     profession = Profession(**profession_data)
                     return profession
                 return None
-        except Exception as e:
+        except psycopg2.Error as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving profession {profession_id}: {e}",

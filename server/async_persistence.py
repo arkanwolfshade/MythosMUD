@@ -19,6 +19,16 @@ from .utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
 
+# Player table columns for explicit SELECT queries (avoids SELECT * anti-pattern)
+PLAYER_COLUMNS = (
+    "player_id, user_id, name, current_room_id, profession_id, "
+    "experience_points, level, stats, inventory, status_effects, "
+    "created_at, last_active, is_admin"
+)
+
+# Profession table columns for explicit SELECT queries
+PROFESSION_COLUMNS = "id, name, description, flavor_text, is_available"
+
 
 class AsyncPersistenceLayer:
     """
@@ -59,6 +69,7 @@ class AsyncPersistenceLayer:
         self.log_path = log_path
         self._event_bus = event_bus
         self._logger = get_logger(__name__)
+        self._pool: asyncpg.Pool | None = None
         # PostgreSQL-only: Verify we have a PostgreSQL URL
         if not self.db_path:
             context = create_error_context()
@@ -105,6 +116,32 @@ class AsyncPersistenceLayer:
             self._logger.error("Unexpected error loading room cache", error=str(e))
             self._room_cache = {}
 
+    def _normalize_url(self) -> str:
+        """Normalize database URL for asyncpg connection."""
+        return self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
+            "postgresql+psycopg2://", "postgresql://"
+        )
+
+    async def _get_pool(self) -> asyncpg.Pool:
+        """Get or create connection pool for async database operations."""
+        if self._pool is None:
+            url = self._normalize_url()
+            self._pool = await asyncpg.create_pool(
+                url,
+                min_size=1,
+                max_size=10,
+                command_timeout=60,
+            )
+            self._logger.info("Created asyncpg connection pool", pool_size=10)
+        return self._pool
+
+    async def close(self) -> None:
+        """Close connection pool and cleanup resources."""
+        if self._pool is not None:
+            await self._pool.close()
+            self._pool = None
+            self._logger.info("Closed asyncpg connection pool")
+
     async def get_player_by_name(self, name: str) -> Player | None:
         """Get a player by name using async database operations."""
         context = create_error_context()
@@ -112,30 +149,28 @@ class AsyncPersistenceLayer:
         context.metadata["player_name"] = name
 
         try:
-            # PostgreSQL connection
-            # Parse URL: postgresql+asyncpg://user:pass@host:port/db
-            url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
-                "postgresql+psycopg2://", "postgresql://"
-            )
-            conn = await asyncpg.connect(url)
-            row_dict = None
-            try:
-                row = await conn.fetchrow("SELECT * FROM players WHERE name = $1", name)
+            pool = await self._get_pool()
+            async with pool.acquire() as conn:
+                row = await conn.fetchrow(f"SELECT {PLAYER_COLUMNS} FROM players WHERE name = $1", name)
                 if row:
                     row_dict = dict(row)
-            finally:
-                await conn.close()
-            if row_dict:
-                player_data = self._convert_row_to_player_data(row_dict)
-                player = Player(**player_data)
-                self.validate_and_fix_player_room(player)
-                return player
+                    player_data = self._convert_row_to_player_data(row_dict)
+                    player = Player(**player_data)
+                    self.validate_and_fix_player_room(player)
+                    return player
             return None
-
-        except Exception as e:
+        except asyncpg.PostgresError as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player by name '{name}': {e}",
+                context=context,
+                details={"player_name": name, "error": str(e)},
+                user_friendly="Failed to retrieve player information",
+            )
+        except Exception as e:
+            log_and_raise(
+                DatabaseError,
+                f"Unexpected error retrieving player by name '{name}': {e}",
                 context=context,
                 details={"player_name": name, "error": str(e)},
                 user_friendly="Failed to retrieve player information",
@@ -149,14 +184,10 @@ class AsyncPersistenceLayer:
         context.metadata["player_id"] = player_id
 
         try:
-            # PostgreSQL connection
-            url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
-                "postgresql+psycopg2://", "postgresql://"
-            )
-            conn = await asyncpg.connect(url)
-            try:
+            pool = await self._get_pool()
+            async with pool.acquire() as conn:
                 # asyncpg uses $1, $2, etc. for parameters
-                row = await conn.fetchrow("SELECT * FROM players WHERE player_id = $1", player_id)
+                row = await conn.fetchrow(f"SELECT {PLAYER_COLUMNS} FROM players WHERE player_id = $1", player_id)
                 if row:
                     row_dict = dict(row)
                     player_data = self._convert_row_to_player_data(row_dict)
@@ -164,9 +195,14 @@ class AsyncPersistenceLayer:
                     self.validate_and_fix_player_room(player)
                     return player
                 return None
-            finally:
-                await conn.close()
-
+        except asyncpg.PostgresError as e:
+            log_and_raise(
+                DatabaseError,
+                f"Database error retrieving player by ID '{player_id}': {e}",
+                context=context,
+                details={"player_id": player_id, "error": str(e)},
+                user_friendly="Failed to retrieve player information",
+            )
         except Exception as e:
             log_and_raise(
                 DatabaseError,
@@ -183,14 +219,10 @@ class AsyncPersistenceLayer:
         context.metadata["user_id"] = user_id
 
         try:
-            # PostgreSQL connection
-            url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
-                "postgresql+psycopg2://", "postgresql://"
-            )
-            conn = await asyncpg.connect(url)
-            try:
+            pool = await self._get_pool()
+            async with pool.acquire() as conn:
                 # asyncpg uses $1, $2, etc. for parameters
-                row = await conn.fetchrow("SELECT * FROM players WHERE user_id = $1", user_id)
+                row = await conn.fetchrow(f"SELECT {PLAYER_COLUMNS} FROM players WHERE user_id = $1", user_id)
                 if row:
                     row_dict = dict(row)
                     player_data = self._convert_row_to_player_data(row_dict)
@@ -198,9 +230,14 @@ class AsyncPersistenceLayer:
                     self.validate_and_fix_player_room(player)
                     return player
                 return None
-            finally:
-                await conn.close()
-
+        except asyncpg.PostgresError as e:
+            log_and_raise(
+                DatabaseError,
+                f"Database error retrieving player by user ID '{user_id}': {e}",
+                context=context,
+                details={"user_id": user_id, "error": str(e)},
+                user_friendly="Failed to retrieve player information",
+            )
         except Exception as e:
             log_and_raise(
                 DatabaseError,
@@ -218,12 +255,8 @@ class AsyncPersistenceLayer:
         context.metadata["player_id"] = str(player.player_id)
 
         try:
-            # PostgreSQL connection
-            url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
-                "postgresql+psycopg2://", "postgresql://"
-            )
-            conn = await asyncpg.connect(url)
-            try:
+            pool = await self._get_pool()
+            async with pool.acquire() as conn:
                 # Convert player to database format
                 player_data = self._convert_player_to_db_data(player)
 
@@ -263,8 +296,6 @@ class AsyncPersistenceLayer:
                 )
 
                 self._logger.debug("Player saved successfully", player_id=str(player.player_id))
-            finally:
-                await conn.close()
 
         except asyncpg.IntegrityConstraintViolationError as e:
             log_and_raise(
@@ -297,13 +328,9 @@ class AsyncPersistenceLayer:
         context.metadata["operation"] = "async_list_players"
 
         try:
-            # PostgreSQL connection
-            url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
-                "postgresql+psycopg2://", "postgresql://"
-            )
-            conn = await asyncpg.connect(url)
-            try:
-                rows = await conn.fetch("SELECT * FROM players")
+            pool = await self._get_pool()
+            async with pool.acquire() as conn:
+                rows = await conn.fetch(f"SELECT {PLAYER_COLUMNS} FROM players")
 
                 players = []
                 for row in rows:
@@ -323,8 +350,6 @@ class AsyncPersistenceLayer:
                         continue
 
                 return players
-            finally:
-                await conn.close()
 
         except asyncpg.PostgresError as e:
             log_and_raise(
@@ -342,13 +367,10 @@ class AsyncPersistenceLayer:
         context.metadata["room_id"] = room_id
 
         try:
-            # PostgreSQL connection
-            url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
-                "postgresql+psycopg2://", "postgresql://"
-            )
-            conn = await asyncpg.connect(url)
-            try:
-                rows = await conn.fetch("SELECT * FROM players WHERE current_room_id = $1", room_id)
+            # Get all players in a room for message broadcasting. Uses index on current_room_id.
+            pool = await self._get_pool()
+            async with pool.acquire() as conn:
+                rows = await conn.fetch(f"SELECT {PLAYER_COLUMNS} FROM players WHERE current_room_id = $1", room_id)
 
                 players = []
                 for row in rows:
@@ -368,8 +390,6 @@ class AsyncPersistenceLayer:
                         continue
 
                 return players
-            finally:
-                await conn.close()
 
         except asyncpg.PostgresError as e:
             log_and_raise(
@@ -387,19 +407,17 @@ class AsyncPersistenceLayer:
         context.metadata["player_count"] = len(players)
 
         try:
-            # PostgreSQL connection
-            url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
-                "postgresql+psycopg2://", "postgresql://"
-            )
-            conn = await asyncpg.connect(url)
-            try:
-                for player in players:
-                    try:
-                        player_data = self._convert_player_to_db_data(player)
+            # Batch save multiple players in a single transaction for atomicity.
+            pool = await self._get_pool()
+            async with pool.acquire() as conn:
+                async with conn.transaction():  # Explicit transaction for atomicity
+                    for player in players:
+                        try:
+                            player_data = self._convert_player_to_db_data(player)
 
-                        # Use INSERT ... ON CONFLICT for upsert behavior (PostgreSQL)
-                        await conn.execute(
-                            """INSERT INTO players
+                            # Use INSERT ... ON CONFLICT for upsert behavior (PostgreSQL)
+                            await conn.execute(
+                                """INSERT INTO players
                         (player_id, user_id, name, current_room_id, profession_id,
                          experience_points, level, stats, inventory, status_effects,
                          created_at, last_active, is_admin)
@@ -417,32 +435,30 @@ class AsyncPersistenceLayer:
                         created_at = EXCLUDED.created_at,
                         last_active = EXCLUDED.last_active,
                         is_admin = EXCLUDED.is_admin""",
-                            str(player_data["player_id"]),
-                            str(player_data["user_id"]),
-                            player_data["name"],
-                            player_data["current_room_id"],
-                            player_data["profession_id"],
-                            player_data["experience_points"],
-                            player_data["level"],
-                            json.dumps(player_data["stats"]),
-                            json.dumps(player_data["inventory"]),
-                            json.dumps(player_data["status_effects"]),
-                            player_data["created_at"],
-                            player_data["last_active"],
-                            player_data["is_admin"],
-                        )
-                    except (ValueError, TypeError, KeyError) as e:
-                        self._logger.warning(
-                            "Error saving player",
-                            error=str(e),
-                            error_type=type(e).__name__,
-                            player_id=str(player.player_id),
-                        )
-                        continue
+                                str(player_data["player_id"]),
+                                str(player_data["user_id"]),
+                                player_data["name"],
+                                player_data["current_room_id"],
+                                player_data["profession_id"],
+                                player_data["experience_points"],
+                                player_data["level"],
+                                json.dumps(player_data["stats"]),
+                                json.dumps(player_data["inventory"]),
+                                json.dumps(player_data["status_effects"]),
+                                player_data["created_at"],
+                                player_data["last_active"],
+                                player_data["is_admin"],
+                            )
+                        except (ValueError, TypeError, KeyError) as e:
+                            self._logger.warning(
+                                "Error saving player",
+                                error=str(e),
+                                error_type=type(e).__name__,
+                                player_id=str(player.player_id),
+                            )
+                            continue
 
                 self._logger.debug("Players saved successfully", player_count=len(players))
-            finally:
-                await conn.close()
 
         except asyncpg.PostgresError as e:
             log_and_raise(
@@ -460,12 +476,8 @@ class AsyncPersistenceLayer:
         context.metadata["player_id"] = player_id
 
         try:
-            # PostgreSQL connection
-            url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
-                "postgresql+psycopg2://", "postgresql://"
-            )
-            conn = await asyncpg.connect(url)
-            try:
+            pool = await self._get_pool()
+            async with pool.acquire() as conn:
                 # First check if player exists
                 row = await conn.fetchrow("SELECT name FROM players WHERE player_id = $1", player_id)
 
@@ -487,8 +499,6 @@ class AsyncPersistenceLayer:
                 else:
                     self._logger.warning("No player was deleted", player_id=player_id)
                     return False
-            finally:
-                await conn.close()
 
         except asyncpg.PostgresError as e:
             log_and_raise(
@@ -505,13 +515,11 @@ class AsyncPersistenceLayer:
         context.metadata["operation"] = "async_get_professions"
 
         try:
-            # PostgreSQL connection
-            url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
-                "postgresql+psycopg2://", "postgresql://"
-            )
-            conn = await asyncpg.connect(url)
-            try:
-                rows = await conn.fetch("SELECT * FROM professions WHERE is_available = true ORDER BY id")
+            pool = await self._get_pool()
+            async with pool.acquire() as conn:
+                rows = await conn.fetch(
+                    f"SELECT {PROFESSION_COLUMNS} FROM professions WHERE is_available = true ORDER BY id"
+                )
 
                 professions = []
                 for row in rows:
@@ -530,8 +538,6 @@ class AsyncPersistenceLayer:
                         continue
 
                 return professions
-            finally:
-                await conn.close()
 
         except asyncpg.PostgresError as e:
             log_and_raise(
@@ -549,13 +555,9 @@ class AsyncPersistenceLayer:
         context.metadata["profession_id"] = profession_id
 
         try:
-            # PostgreSQL connection
-            url = self.db_path.replace("postgresql+asyncpg://", "postgresql://").replace(
-                "postgresql+psycopg2://", "postgresql://"
-            )
-            conn = await asyncpg.connect(url)
-            try:
-                row = await conn.fetchrow("SELECT * FROM professions WHERE id = $1", profession_id)
+            pool = await self._get_pool()
+            async with pool.acquire() as conn:
+                row = await conn.fetchrow(f"SELECT {PROFESSION_COLUMNS} FROM professions WHERE id = $1", profession_id)
 
                 if row:
                     row_dict = dict(row)
@@ -563,8 +565,6 @@ class AsyncPersistenceLayer:
                     profession = Profession(**profession_data)
                     return profession
                 return None
-            finally:
-                await conn.close()
 
         except asyncpg.PostgresError as e:
             log_and_raise(

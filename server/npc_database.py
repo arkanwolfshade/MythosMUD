@@ -114,11 +114,13 @@ def _initialize_npc_database() -> None:
     else:
         # For production, use default AsyncAdaptedQueuePool with configured pool size
         # AsyncAdaptedQueuePool is automatically used by create_async_engine()
+        # Get pool configuration from config (NPC database uses same pool settings as main database)
+        config = get_config()
         pool_kwargs.update(
             {
-                "pool_size": 5,  # Number of connections to maintain
-                "max_overflow": 10,  # Additional connections that can be created
-                "pool_timeout": 30,  # Seconds to wait for connection from pool
+                "pool_size": config.database.pool_size,
+                "max_overflow": config.database.max_overflow,
+                "pool_timeout": config.database.pool_timeout,
             }
         )
 

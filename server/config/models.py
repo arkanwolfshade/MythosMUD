@@ -89,6 +89,11 @@ class DatabaseConfig(BaseSettings):
     url: str = Field(..., description="Primary database URL (required)")
     npc_url: str = Field(..., description="NPC database URL (required)")
 
+    # Connection pool configuration
+    pool_size: int = Field(default=5, description="Number of connections to maintain in pool")
+    max_overflow: int = Field(default=10, description="Additional connections that can be created beyond pool_size")
+    pool_timeout: int = Field(default=30, description="Seconds to wait for connection from pool")
+
     @field_validator("url", "npc_url")
     @classmethod
     def validate_database_url(cls, v: str) -> str:
@@ -106,6 +111,14 @@ class DatabaseConfig(BaseSettings):
             )
             raise ValueError("Database URL must start with 'postgresql'. SQLite is no longer supported.")
         logger.debug("Database URL validation successful", url_preview=v[:50] if len(v) > 50 else v)
+        return v
+
+    @field_validator("pool_size", "max_overflow", "pool_timeout")
+    @classmethod
+    def validate_pool_config(cls, v: int) -> int:
+        """Validate pool configuration values are positive."""
+        if v < 1:
+            raise ValueError("Pool configuration values must be at least 1")
         return v
 
     model_config = {"env_prefix": "DATABASE_", "case_sensitive": False, "extra": "ignore"}
