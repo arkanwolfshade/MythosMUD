@@ -48,7 +48,7 @@ class Player(Base):
     # Player information
     name = Column(String(length=50), unique=True, nullable=False, index=True)
 
-    # Game data stored as JSON in TEXT fields (SQLite compatible)
+    # Game data stored as JSON in TEXT fields
     stats = Column(
         Text(),
         nullable=False,
@@ -70,9 +70,7 @@ class Player(Base):
 
     # ARCHITECTURE FIX Phase 3.1: Relationships defined directly in model (no circular imports)
     # Using simple string reference - SQLAlchemy resolves via registry after all models imported
-    user: Mapped["User"] = relationship(
-        "User", back_populates="player", overlaps="player"
-    )  # SQLite doesn't have BOOLEAN, use INTEGER
+    user: Mapped["User"] = relationship("User", back_populates="player", overlaps="player")
 
     # Profession
     profession_id = Column(Integer(), default=0, nullable=False)

@@ -29,10 +29,10 @@ class Invite(Base):
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     invite_code = Column(String, unique=True, nullable=False, index=True)
-    # Use UUID for foreign keys to match users.id (UUID type in PostgreSQL)
     created_by_user_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), nullable=True)
     used_by_user_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), nullable=True)
-    used = Column(Boolean, default=False, nullable=False)
+    # is_active: True means invite is available, False means used
+    is_active = Column(Boolean, default=True, nullable=False)
     expires_at = Column(DateTime, nullable=False)
     # Store datetimes in database as naive UTC for PostgreSQL TIMESTAMP WITHOUT TIME ZONE compatibility.
     created_at = Column(DateTime, default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
@@ -43,11 +43,11 @@ class Invite(Base):
         "User", foreign_keys=[created_by_user_id], back_populates="created_invites"
     )
     used_by_user: Mapped["User | None"] = relationship(
-        "User", foreign_keys=[used_by_user_id], back_populates="used_invite"
+        "User", foreign_keys=[used_by_user_id], back_populates="used_invite", uselist=False
     )
 
     def __repr__(self) -> str:
-        return f"<Invite(id='{self.id}', code='{self.invite_code}', used={self.used})>"
+        return f"<Invite(id='{self.id}', code='{self.invite_code}', is_active={self.is_active})>"
 
     def is_expired(self) -> bool:
         """Check if the invite has expired. Handles naive timestamps as UTC."""
@@ -60,12 +60,12 @@ class Invite(Base):
         return bool(now_utc > expires_at_utc)
 
     def is_valid(self) -> bool:
-        """Check if the invite is valid (not used and not expired)."""
-        return not self.used and not self.is_expired()
+        """Check if the invite is valid (active and not expired)."""
+        return bool(self.is_active) and not self.is_expired()
 
     def use_invite(self, user_id: str) -> None:
         """Mark this invite as used by a specific user."""
-        self.used = True  # type: ignore[assignment]
+        self.is_active = False  # type: ignore[assignment]  # Mark as used (inactive)
         self.used_by_user_id = user_id  # type: ignore[assignment]
 
     @classmethod

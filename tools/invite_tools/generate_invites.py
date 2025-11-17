@@ -12,16 +12,28 @@ import sys
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
+# Load environment variables from .env.local
+from dotenv import load_dotenv
+
+project_root = Path(__file__).parent.parent.parent
+env_file = project_root / ".env.local"
+if env_file.exists():
+    load_dotenv(env_file)
+else:
+    # Try .env as fallback
+    env_file = project_root / ".env"
+    if env_file.exists():
+        load_dotenv(env_file)
+
 # Add server directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "server"))
 
 # Now import server modules
-from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import text  # noqa: E402
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine  # noqa: E402
+from sqlalchemy.orm import sessionmaker  # noqa: E402
 
-from server.config import get_config
-from server.models.invite import Invite
+from server.config import get_config  # noqa: E402
 
 # Mythos-themed words and concepts for invite codes
 MYTHOS_WORDS = [
@@ -155,12 +167,13 @@ def generate_invite_code():
 async def generate_unique_codes(count=100, expires_in_days: int = 30):
     """Generate a list of unique invite codes and store them in the database."""
     config = get_config()
-    engine = create_async_engine(config["database_url"])
+    engine = create_async_engine(config.database.url)
     async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
     async with async_session() as session:
         # Get existing codes to avoid duplicates
-        result = await session.execute(text("SELECT invite_code FROM invites"))
+        # Note: Database column is 'code', not 'invite_code' (schema mismatch)
+        result = await session.execute(text("SELECT code FROM invites"))
         existing_codes = {row[0] for row in result.fetchall()}
 
         codes: set[str] = set()
@@ -176,43 +189,71 @@ async def generate_unique_codes(count=100, expires_in_days: int = 30):
         if not codes:
             return []
 
-        # Create invite records
-        invites = []
-        for code in codes:
-            invite = Invite(
-                invite_code=code,
-                # Persist naive UTC for DB
-                expires_at=(datetime.now(UTC) + timedelta(days=expires_in_days)).replace(tzinfo=None),
-            )
-            invites.append(invite)
+        # Create invite records using raw SQL to match database schema
+        # Database has: id (UUID), code, created_by_user, is_active, created_at, expires_at
+        import uuid
 
-        # Add all invites to session
-        session.add_all(invites)
+        invites_data = []
+        for code in codes:
+            expires_at = (datetime.now(UTC) + timedelta(days=expires_in_days)).replace(tzinfo=None)
+            invites_data.append(
+                {
+                    "id": str(uuid.uuid4()),
+                    "code": code,
+                    "is_active": True,
+                    "expires_at": expires_at,
+                }
+            )
+
+        # Insert using raw SQL to match actual database schema
+        for invite_data in invites_data:
+            await session.execute(
+                text("""
+                    INSERT INTO invites (id, code, is_active, expires_at, created_at)
+                    VALUES (:id, :code, :is_active, :expires_at, CURRENT_TIMESTAMP)
+                """),
+                invite_data,
+            )
+
         await session.commit()
 
         return list(codes)
 
 
 async def main():
-    """Generate 200 invite codes and store them in the database."""
-    print("Generating 200 unique Mythos-themed invite codes...")
+    """Generate invite codes and store them in the database."""
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Generate Mythos-themed invite codes")
+    parser.add_argument(
+        "--count",
+        type=int,
+        default=10,
+        help="Number of invite codes to generate (default: 10)",
+    )
+    parser.add_argument(
+        "--expires-days",
+        type=int,
+        default=30,
+        help="Number of days until expiration (default: 30)",
+    )
+    args = parser.parse_args()
+
+    print(f"Generating {args.count} unique Mythos-themed invite codes...")
 
     # Generate new codes and store them
-    new_codes = await generate_unique_codes(200)
+    new_codes = await generate_unique_codes(args.count, expires_in_days=args.expires_days)
 
     if not new_codes:
-        print("❌ Failed to generate unique codes (may already exist)")
+        print("Failed to generate unique codes (may already exist)")
         return
 
-    print(f"✓ Generated and stored {len(new_codes)} new invite codes in database")
+    print(f"Generated and stored {len(new_codes)} new invite codes in database")
 
-    # Show some examples
-    print("\nExample invite codes:")
-    for i, code in enumerate(new_codes[:10], 1):
+    # Show all generated codes
+    print("\nGenerated invite codes:")
+    for i, code in enumerate(new_codes, 1):
         print(f"  {i:2d}. {code}")
-
-    if len(new_codes) > 10:
-        print(f"  ... and {len(new_codes) - 10} more")
 
 
 if __name__ == "__main__":

@@ -353,21 +353,6 @@ class TestCloseNPCDB:
 class TestGetNPCDatabasePath:
     """Test getting NPC database path."""
 
-    def test_get_npc_database_path_sqlite(self):
-        """Test getting database path for SQLite URL."""
-        import server.npc_database as npc_db
-
-        npc_db._npc_database_url = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
-
-        path = get_npc_database_path()
-
-        assert isinstance(path, Path)
-        # Use Path comparison to handle OS-specific separators
-        assert path == Path("data/npcs/test_npcs.db")
-
-        # Clean up
-        npc_db._npc_database_url = None
-
     def test_get_npc_database_path_initializes_if_needed(self):
         """Test that get_npc_database_path initializes database if not initialized."""
         import server.npc_database as npc_db
@@ -419,62 +404,6 @@ class TestEnsureNPCDatabaseDirectory:
             mock_mkdir.assert_called_once_with(parents=True, exist_ok=True)
 
         # Clean up
-        npc_db._npc_database_url = None
-
-
-class TestSQLitePragmaListener:
-    """Test SQLite pragma listener."""
-
-    def test_set_sqlite_pragma_for_sqlite_connection(self):
-        """Test that foreign keys are enabled for SQLite connections."""
-        import server.npc_database as npc_db
-
-        npc_db._npc_engine = None
-        npc_db._npc_async_session_maker = None
-        npc_db._npc_database_url = None
-
-        with patch("server.config.get_config") as mock_get_config:
-            mock_config = MagicMock()
-            mock_config.database.npc_url = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
-            mock_get_config.return_value = mock_config
-
-            _initialize_npc_database()
-
-            # Check that the listener was registered
-            assert npc_db._npc_engine is not None
-
-        # Clean up
-        npc_db._npc_engine = None
-        npc_db._npc_async_session_maker = None
-        npc_db._npc_database_url = None
-
-    def test_set_sqlite_pragma_non_sqlite_connection(self):
-        """Test that non-SQLite connections skip PRAGMA setting."""
-        # This tests the warning path when connection is not SQLite
-        # Since we can't easily test the actual event listener without a real connection,
-        # we'll test the logic indirectly through initialization with different URLs
-
-        import server.npc_database as npc_db
-
-        npc_db._npc_engine = None
-        npc_db._npc_async_session_maker = None
-        npc_db._npc_database_url = None
-
-        # Initialize with SQLite URL (the default behavior)
-        with patch("server.config.get_config") as mock_get_config:
-            mock_config = MagicMock()
-            # Use PostgreSQL URL for testing
-            mock_config.database.npc_url = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
-            mock_get_config.return_value = mock_config
-
-            _initialize_npc_database()
-
-            # Verify engine was created with NullPool (for test databases)
-            assert npc_db._npc_engine is not None
-
-        # Clean up
-        npc_db._npc_engine = None
-        npc_db._npc_async_session_maker = None
         npc_db._npc_database_url = None
 
 

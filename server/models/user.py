@@ -47,7 +47,7 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
 
     # User status fields (is_active, is_superuser, is_verified are inherited from base)
 
-    # Timestamps (persist naive UTC for SQLite)
+    # Timestamps (persist naive UTC)
     # Using Mapped[] with Column for compatibility with existing schema
     created_at: Mapped[datetime] = mapped_column(
         DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False

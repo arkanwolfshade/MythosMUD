@@ -1,17 +1,15 @@
 /**
  * Global Setup for Runtime E2E Tests
  *
- * Runs once before all tests to seed the test database.
- * This ensures all tests have access to baseline test players.
+ * Runs once before all tests.
+ * Note: Database seeding is now handled by the PostgreSQL test database.
  */
-
-import { seedTestDatabase } from './fixtures/database';
 
 async function globalSetup() {
   console.log('\n🔧 Running global setup for runtime E2E tests...\n');
 
   try {
-    await seedTestDatabase();
+    // Database seeding is handled by PostgreSQL test database
     console.log('\n✅ Global setup complete\n');
   } catch (error) {
     console.error('\n❌ Global setup failed:', error);

@@ -393,7 +393,7 @@ async def list_invites(
         {
             "id": str(invite.id),
             "invite_code": invite.invite_code,
-            "used": invite.used,
+            "is_active": invite.is_active,
             "used_by_user_id": str(invite.used_by_user_id) if invite.used_by_user_id else None,
             "expires_at": invite.expires_at.isoformat() if invite.expires_at else None,
             "created_at": invite.created_at.isoformat() if invite.created_at else None,

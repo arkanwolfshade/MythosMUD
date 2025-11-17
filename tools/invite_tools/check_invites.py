@@ -115,11 +115,11 @@ async def count_invites():
         total = result.scalar()
 
         # Used count
-        result = await session.execute(text("SELECT COUNT(*) FROM invites WHERE used = 1"))
+        result = await session.execute(text("SELECT COUNT(*) FROM invites WHERE is_active = false"))
         used = result.scalar()
 
         # Unused count
-        result = await session.execute(text("SELECT COUNT(*) FROM invites WHERE used = 0"))
+        result = await session.execute(text("SELECT COUNT(*) FROM invites WHERE is_active = true"))
         unused = result.scalar()
 
         # Expired count

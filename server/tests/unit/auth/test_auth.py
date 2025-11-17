@@ -434,7 +434,7 @@ class TestInviteManagementEndpoints:
         mock_invite1 = MagicMock()
         mock_invite1.id = str(uuid.uuid4())
         mock_invite1.invite_code = "TEST123"
-        mock_invite1.is_used = False
+        mock_invite1.is_active = True
         mock_invite1.used_by_user_id = None  # Not used yet
         mock_invite1.created_at = datetime.now(UTC)
         mock_invite1.expires_at = datetime.now(UTC) + timedelta(days=30)
@@ -442,7 +442,7 @@ class TestInviteManagementEndpoints:
         mock_invite2 = MagicMock()
         mock_invite2.id = str(uuid.uuid4())
         mock_invite2.invite_code = "TEST456"
-        mock_invite2.is_used = False
+        mock_invite2.is_active = True
         mock_invite2.used_by_user_id = None  # Not used yet
         mock_invite2.created_at = datetime.now(UTC)
         mock_invite2.expires_at = datetime.now(UTC) + timedelta(days=30)
@@ -490,7 +490,7 @@ class TestInviteManagementEndpoints:
         mock_invite = MagicMock()
         mock_invite.id = str(uuid.uuid4())
         mock_invite.invite_code = "NEW123"
-        mock_invite.is_used = False
+        mock_invite.is_active = True
         mock_invite.used_by_user_id = None  # Not used yet
         mock_invite.created_at = datetime.now(UTC)
         mock_invite.expires_at = datetime.now(UTC) + timedelta(days=30)

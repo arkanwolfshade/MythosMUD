@@ -200,7 +200,9 @@ def main(
             # Fix bidirectional connections
             if missing_returns:
                 # Strip the is_zone_transition flag (5th element) as fixer only expects 4-element tuples
-                missing_returns_filtered = [(room_a, dir_a, room_b, dir_b) for room_a, dir_a, room_b, dir_b, _ in missing_returns]
+                missing_returns_filtered = [
+                    (room_a, dir_a, room_b, dir_b) for room_a, dir_a, room_b, dir_b, _ in missing_returns
+                ]
                 fixer.fix_bidirectional_connections(room_database, missing_returns_filtered, backup)
 
             # Fix self-references

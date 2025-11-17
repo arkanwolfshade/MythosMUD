@@ -79,9 +79,6 @@ except ImportError:
 project_root = Path(__file__).parent.parent.parent
 
 
-# REMOVED: _sqlite_url_to_path - SQLite is no longer supported
-
-
 def _is_postgres_url(url: str) -> bool:
     """Check if a database URL is PostgreSQL."""
     return url.startswith("postgresql") or url.startswith("postgresql+asyncpg") or url.startswith("postgresql+psycopg2")
@@ -93,8 +90,7 @@ def _configure_database_urls(
     """
     Configure DATABASE_URL and DATABASE_NPC_URL for tests.
 
-    For PostgreSQL URLs, keeps them as-is. For SQLite URLs, converts to absolute paths
-    and adds worker-specific suffixes for NPC databases when pytest-xdist is active.
+    For PostgreSQL URLs, keeps them as-is. All workers use the same database URL.
 
     Returns:
         Tuple containing the resolved primary database Path (or None for PostgreSQL)
@@ -202,7 +198,6 @@ def pytest_configure_node(node):
                 f"Unsupported database URL format: {npc_url}. Only PostgreSQL (postgresql+asyncpg://) is supported."
             )
         # PostgreSQL - no path manipulation needed
-        base_npc_path = None
     except KeyError:
         raise ValueError(
             "DATABASE_NPC_URL environment variable is required for pytest-xdist workers. "
@@ -214,13 +209,8 @@ def pytest_configure_node(node):
         worker_id = node.workerinput.get("workerid", "worker")
 
     # PostgreSQL uses shared database, no worker-specific paths needed
-    if base_npc_path is None:
-        # For PostgreSQL, all workers use the same database URL
-        node.workerinput["MYTHOSMUD_WORKER_NPC_DB_PATH"] = npc_url
-    else:
-        # SQLite path manipulation (should not reach here with PostgreSQL-only)
-        worker_path = base_npc_path.with_name(f"{base_npc_path.stem}_{worker_id}{base_npc_path.suffix}")
-        node.workerinput["MYTHOSMUD_WORKER_NPC_DB_PATH"] = str(worker_path)
+    # For PostgreSQL, all workers use the same database URL
+    node.workerinput["MYTHOSMUD_WORKER_NPC_DB_PATH"] = npc_url
 
 
 # Validate test environment before proceeding
@@ -382,16 +372,10 @@ def pytest_configure(config):
             if _is_postgres_url(worker_path_override):
                 os.environ["DATABASE_NPC_URL"] = worker_path_override
             else:
-                # Legacy SQLite path (should not happen with PostgreSQL-only)
-                # PostgreSQL only - use same database URL
-                database_url = os.environ.get("DATABASE_URL")
-                if database_url:
-                    os.environ["DATABASE_NPC_URL"] = database_url
-                else:
-                    raise ValueError(
-                        "DATABASE_URL environment variable is required when using worker path override. "
-                        "Please set it in server/tests/.env.unit_test to a PostgreSQL URL."
-                    )
+                raise ValueError(
+                    f"Unsupported database URL format: {worker_path_override}. "
+                    "Only PostgreSQL (postgresql+asyncpg://) is supported."
+                )
             apply_worker_suffix = False
 
     global TEST_DB_PATH, TEST_NPC_DB_PATH
@@ -437,36 +421,12 @@ def test_database():
 @pytest.fixture(scope="session")
 def test_npc_database():
     """Initialize NPC test database with proper schema."""
-    import os
-    import time
-
-    # Get the NPC test database path
-    from server.tests.scripts.init_npc_test_db import init_npc_test_database
-
-    npc_test_db_path = TEST_NPC_DB_PATH
-
-    # Always recreate worker-scoped NPC databases to guarantee consistent schema
-    if npc_test_db_path.exists():
-        for attempt in range(3):
-            try:
-                os.unlink(npc_test_db_path)
-                break
-            except PermissionError:
-                if attempt < 2:
-                    time.sleep(0.1)
-                else:
-                    raise
-
-    init_npc_test_database()
-
-    try:
-        yield str(npc_test_db_path)
-    finally:
-        if npc_test_db_path.exists():
-            try:
-                os.unlink(npc_test_db_path)
-            except PermissionError:
-                pass
+    # PostgreSQL databases are managed via DDL scripts, not Python initialization
+    # Just return the PostgreSQL URL from environment
+    npc_db_url = os.getenv("DATABASE_NPC_URL")
+    if not npc_db_url or not npc_db_url.startswith("postgresql"):
+        raise ValueError("DATABASE_NPC_URL must be set to a PostgreSQL URL. SQLite is no longer supported.")
+    return npc_db_url
 
 
 @pytest.fixture(autouse=True)  # Enable automatic use for all tests

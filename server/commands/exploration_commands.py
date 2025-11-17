@@ -122,7 +122,9 @@ async def handle_look_command(
             if target_room:
                 # Convert to strings to handle test mocks that might return MagicMock objects
                 name = str(target_room.name) if target_room.name is not None else "Unknown Room"
-                desc = str(target_room.description) if target_room.description is not None else "You see nothing special."
+                desc = (
+                    str(target_room.description) if target_room.description is not None else "You see nothing special."
+                )
                 logger.debug(
                     "Looked at room in direction",
                     player=player_name,
