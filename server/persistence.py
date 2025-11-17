@@ -400,8 +400,7 @@ class PersistenceLayer:
                     JOIN zones z ON sz.zone_id = z.id
                     ORDER BY z.stable_id, sz.stable_id, r.stable_id
                 """
-                cursor = conn.cursor()
-                cursor.execute(query)
+                cursor = conn.execute(query)
                 rooms_rows = cursor.fetchall()
 
                 # Query room links (exits) for all rooms
@@ -423,7 +422,7 @@ class PersistenceLayer:
                     JOIN subzones sz2 ON r2.subzone_id = sz2.id
                     JOIN zones z2 ON sz2.zone_id = z2.id
                 """
-                cursor.execute(exits_query)
+                cursor = conn.execute(exits_query)
                 exits_rows = cursor.fetchall()
 
                 # Process rooms and build room data list
@@ -514,8 +513,11 @@ class PersistenceLayer:
 
                     self._room_cache[room_id] = Room(room_data, self._event_bus)
 
-            self._log(f"Loaded {len(self._room_cache)} rooms into cache from PostgreSQL database.")
-            self._log(f"Loaded {len(self._room_mappings)} room mappings for backward compatibility.")
+            self._logger.info(
+                "Loaded rooms into cache from PostgreSQL database",
+                room_count=len(self._room_cache),
+                mapping_count=len(self._room_mappings),
+            )
         except Exception as e:
             context = create_error_context()
             context.metadata["operation"] = "load_room_cache"

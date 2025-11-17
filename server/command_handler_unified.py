@@ -11,6 +11,7 @@ consistency there is power."
 """
 
 import re
+import traceback
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
@@ -31,6 +32,7 @@ from .utils.command_parser import get_username_from_user
 from .utils.command_processor import get_command_processor
 from .utils.player_cache import cache_player, get_cached_player
 from .validators.command_validator import CommandValidator
+from .validators.security_validator import strip_ansi_codes
 
 logger = get_logger(__name__)
 
@@ -528,7 +530,30 @@ async def process_command_with_validation(
 
         return {"result": str(e)}
     except Exception as e:
-        logger.error("Error processing command", player=player_name, error=str(e), exc_info=True)
+        # Format exception traceback and sanitize ANSI codes for Windows compatibility
+        try:
+            exc_traceback = traceback.format_exc()
+            # Strip ANSI codes to prevent UnicodeEncodeError on Windows console
+            sanitized_traceback = strip_ansi_codes(exc_traceback)
+            logger.error(
+                "Error processing command",
+                player=player_name,
+                error=str(e),
+                error_type=type(e).__name__,
+                traceback=sanitized_traceback,
+            )
+        except Exception as log_error:
+            # If logging itself fails, use a minimal safe log
+            try:
+                logger.error(
+                    "Error processing command (logging error occurred)",
+                    player=player_name,
+                    error=str(e)[:200],  # Truncate to avoid encoding issues
+                    log_error=str(log_error)[:200],
+                )
+            except Exception:
+                # Last resort: silent failure to prevent test crashes
+                pass
         return {"result": "An error occurred while processing your command."}
 
 
