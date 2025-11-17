@@ -10,9 +10,8 @@ from uuid import UUID
 
 import psycopg2
 
-from server.logging.enhanced_logging_config import get_logger
-
 from .exceptions import DatabaseError, ValidationError
+from .logging.enhanced_logging_config import get_logger
 from .models.player import Player
 from .models.room import Room
 from .postgres_adapter import connect_postgres

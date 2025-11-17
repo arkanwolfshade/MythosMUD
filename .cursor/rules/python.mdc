@@ -46,9 +46,59 @@ This document outlines comprehensive best practices and coding standards for Pyt
 
 *   **Single Responsibility Principle:** Each module should have a well-defined purpose.
 *   **Imports:**
-    *   Order: standard library, third-party, local.
-    *   Absolute imports are generally preferred (e.g., `from my_package.module1 import function1`).
-    *   Use explicit relative imports (`from . import sibling_module`) when dealing with complex package layouts where absolute imports are overly verbose or impractical.
+    *   **Import Organization (isort configuration):**
+        *   Import grouping order: STDLIB → THIRDPARTY → FIRSTPARTY (server) → LOCALFOLDER (relative)
+        *   Blank line between groups
+        *   Alphabetical sorting within groups
+        *   See `pyproject.toml` `[tool.isort]` section for full configuration
+        *   Example:
+            ```python
+            import json
+            import os
+            from typing import Any
+
+            import asyncpg
+            import psycopg2
+
+            from server.config import get_config
+
+            from .exceptions import DatabaseError
+            from .models.player import Player
+            ```
+
+    *   **Import Style Policy (Project-Specific):**
+        *   **Production code** in `server/` package: Use **relative imports** (`from .module import ...`)
+            *   Example: `from .logging.enhanced_logging_config import get_logger`
+            *   Example: `from .models.player import Player`
+        *   **Test files** in `server/tests/`: Use **absolute imports** (`from server.module import ...`)
+            *   Example: `from server.models.player import Player`
+            *   Example: `from server.logging.enhanced_logging_config import get_logger`
+        *   **Scripts** in `server/scripts/`: Use **absolute imports** (`from server.module import ...`)
+            *   Example: `from server.database import get_session_maker`
+        *   **Rationale**: Relative imports provide better package encapsulation for production code, while absolute imports are more explicit for tests and scripts that may be run from different directories.
+
+    *   **Enhanced Logging Imports (MythosMUD-specific):**
+        *   **Always use**: Enhanced logging system
+            *   Production code: `from .logging.enhanced_logging_config import get_logger`
+            *   Tests/scripts: `from server.logging.enhanced_logging_config import get_logger`
+        *   **Never use**: Standard library logging
+            *   ❌ `import logging`
+            *   ❌ `from logging import getLogger`
+            *   ❌ `from logging import Logger`
+        *   **Usage**: `logger = get_logger(__name__)`
+        *   See `.cursor/rules/MYTHOSMUD_DEBUGGING_AGENT.mdc` for detailed logging guidelines.
+
+    *   **TYPE_CHECKING Usage (Circular Import Prevention):**
+        *   Use `TYPE_CHECKING` for type-only imports to avoid circular dependencies
+        *   Pattern:
+            ```python
+            from typing import TYPE_CHECKING
+
+            if TYPE_CHECKING:
+                from .models.profession import Profession
+            ```
+        *   Import actual classes at runtime where needed, not in type hints
+        *   Use string literals for forward references in type hints when necessary
 *   **Constants:**  Define module-level constants in uppercase (e.g., `MAX_ITERATIONS = 100`).
 *   **Dunder names:** `__all__`, `__version__`, etc. should be after the module docstring but before any imports (except `from __future__`).  Use `__all__` to explicitly define the public API.
 
