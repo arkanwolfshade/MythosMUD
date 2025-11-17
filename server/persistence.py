@@ -440,7 +440,17 @@ class PersistenceLayer:
                     zone_parts = zone_stable_id.split("/")
                     plane_name = zone_parts[0] if len(zone_parts) > 0 else ""
                     zone_name = zone_parts[1] if len(zone_parts) > 1 else zone_stable_id
-                    room_id = generate_room_id(plane_name, zone_name, subzone_stable_id, stable_id)
+
+                    # Check if stable_id already contains the full hierarchical path
+                    # Expected format: plane_zone_subzone_room_xxx or plane_zone_subzone_intersection_xxx
+                    # If stable_id already starts with plane_zone_subzone, it's a full room ID
+                    expected_prefix = f"{plane_name}_{zone_name}_{subzone_stable_id}_"
+                    if stable_id.startswith(expected_prefix):
+                        # stable_id is already a full hierarchical room ID, use it directly
+                        room_id = stable_id
+                    else:
+                        # stable_id is just the room identifier (e.g., "room_boundary_st_001"), generate full ID
+                        room_id = generate_room_id(plane_name, zone_name, subzone_stable_id, stable_id)
 
                     # Store room data for processing
                     room_data_list.append(
@@ -518,6 +528,10 @@ class PersistenceLayer:
                 room_count=len(self._room_cache),
                 mapping_count=len(self._room_mappings),
             )
+            # Debug: Log sample room IDs for troubleshooting
+            if self._room_cache:
+                sample_room_ids = list(self._room_cache.keys())[:5]
+                self._logger.debug("Sample room IDs loaded", sample_room_ids=sample_room_ids)
         except Exception as e:
             context = create_error_context()
             context.metadata["operation"] = "load_room_cache"
@@ -1060,6 +1074,22 @@ class PersistenceLayer:
             # Sync the room's player state with the database
             self._sync_room_players(room)
             return room
+
+        # Debug logging for missing rooms (only log once per room to avoid spam)
+        if not hasattr(self, "_missing_room_warnings"):
+            self._missing_room_warnings: set[str] = set()
+        if room_id not in self._missing_room_warnings:
+            self._missing_room_warnings.add(room_id)
+            # Log available room IDs that are similar (for debugging)
+            similar_rooms = [
+                rid for rid in self._room_cache.keys() if room_id.split("_")[-1] in rid or rid.split("_")[-1] in room_id
+            ][:5]
+            self._logger.warning(
+                "Room not found in cache",
+                requested_room_id=room_id,
+                cache_size=len(self._room_cache),
+                similar_rooms=similar_rooms,
+            )
 
         return None
 

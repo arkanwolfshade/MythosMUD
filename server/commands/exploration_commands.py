@@ -120,8 +120,9 @@ async def handle_look_command(
         if target_room_id:
             target_room = persistence.get_room(target_room_id)
             if target_room:
-                name = target_room.name
-                desc = target_room.description
+                # Convert to strings to handle test mocks that might return MagicMock objects
+                name = str(target_room.name) if target_room.name is not None else "Unknown Room"
+                desc = str(target_room.description) if target_room.description is not None else "You see nothing special."
                 logger.debug(
                     "Looked at room in direction",
                     player=player_name,
@@ -133,8 +134,9 @@ async def handle_look_command(
         return {"result": "You see nothing special that way."}
 
     # Look at current room
-    name = room.name
-    desc = room.description
+    # Convert to strings to handle test mocks that might return MagicMock objects
+    name = str(room.name) if room.name is not None else "Unknown Room"
+    desc = str(room.description) if room.description is not None else "You see nothing special."
     exits = room.exits
     # Only include exits that have valid room IDs (not null)
     valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
@@ -143,7 +145,8 @@ async def handle_look_command(
 
     drop_lines = format_room_drop_lines(room_drops)
     drop_summary = build_room_drop_summary(room_drops)
-    lines = [name, desc, "", *drop_lines, "", f"Exits: {exit_list}"]
+    # Ensure all items in lines are strings (handle test mocks)
+    lines = [name, desc, "", *[str(line) for line in drop_lines], "", f"Exits: {exit_list}"]
     rendered = "\n".join(lines)
 
     return {
