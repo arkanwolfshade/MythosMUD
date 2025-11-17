@@ -167,14 +167,18 @@ def get_npc_engine() -> AsyncEngine | None:
                 new_loop_id=current_loop_id,
             )
             # Dispose old engine (best effort, may fail if loop is closed)
+            # CRITICAL: Don't try to dispose if loop is closed - just set to None
+            # asyncpg will handle cleanup when the loop closes
             try:
                 if _npc_engine is not None:
-                    # Try to dispose, but don't wait for it if loop is closed
+                    # Check if loop is still valid before attempting disposal
                     try:
                         loop = asyncio.get_running_loop()
                         if not loop.is_closed():
-                            # Schedule disposal, but don't block
-                            asyncio.create_task(_npc_engine.dispose())
+                            # Try to dispose synchronously if possible, but don't block
+                            # Note: dispose() is async, but we can't await here
+                            # The engine will be cleaned up when the loop closes
+                            pass  # Let the old engine be garbage collected
                     except RuntimeError:
                         # Loop is closed or not running - just set to None
                         pass
@@ -305,6 +309,8 @@ async def init_npc_db():
 
 async def close_npc_db():
     """Close NPC database connections."""
+    global _npc_engine, _npc_async_session_maker, _npc_creation_loop_id
+
     context = create_error_context()
     context.metadata["operation"] = "close_npc_db"
 
@@ -318,6 +324,10 @@ async def close_npc_db():
                     loop = asyncio.get_running_loop()
                     if loop.is_closed():
                         logger.warning("Event loop is closed, skipping NPC engine disposal")
+                        # Reset global state before returning
+                        _npc_engine = None
+                        _npc_async_session_maker = None
+                        _npc_creation_loop_id = None
                         return
                 except RuntimeError:
                     # No running loop - that's okay, we can still try to dispose
@@ -326,23 +336,32 @@ async def close_npc_db():
                 await engine.dispose()
                 logger.info("NPC database connections closed")
             except (RuntimeError, AttributeError) as e:
-                # Event loop is closed or proactor is None - log and continue (don't raise)
-                logger.warning("Error disposing NPC database engine (event loop may be closed)", error=str(e))
-                return  # Don't raise for closed event loop
+                # Event loop is closed or proactor is None - this is expected during cleanup
+                # Don't log as error, just as debug since this is normal during test teardown
+                logger.debug("Event loop closed during NPC engine disposal (expected during cleanup)", error=str(e))
             except Exception as e:
-                logger.error("Unexpected error disposing NPC database engine", error=str(e))
-                # Don't raise - best effort cleanup
+                # Any other error - log but don't raise
+                logger.warning("Error disposing NPC database engine", error=str(e), error_type=type(e).__name__)
+            finally:
+                # Always reset global state, even if disposal failed
+                _npc_engine = None
+                _npc_async_session_maker = None
+                _npc_creation_loop_id = None
     except Exception as e:
         # Only log, don't raise - best effort cleanup
         context.metadata["error_type"] = type(e).__name__
         context.metadata["error_message"] = str(e)
-        logger.error(
+        logger.warning(
             "Error closing NPC database connections",
             context=context.to_dict(),
             error=str(e),
             error_type=type(e).__name__,
         )
         # Don't raise - allow cleanup to continue
+        # Reset global state anyway
+        _npc_engine = None
+        _npc_async_session_maker = None
+        _npc_creation_loop_id = None
 
 
 def get_npc_database_path() -> Path:

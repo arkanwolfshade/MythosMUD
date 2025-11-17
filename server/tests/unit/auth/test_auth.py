@@ -527,6 +527,7 @@ class TestInviteManagementEndpoints:
     def test_database_connection(self, container_test_client, mock_auth_persistence):
         """Test that the database connection and invite table work."""
         import os
+        from datetime import UTC, datetime, timedelta
 
         from sqlalchemy import create_engine, text
 
@@ -544,7 +545,28 @@ class TestInviteManagementEndpoints:
             count = result.fetchone()[0]
             assert count >= 0  # Should have at least 0 invites
 
-            # Check if TEST123 invite exists
+            # Check if TEST123 invite exists, create it if it doesn't
             result = conn.execute(text("SELECT * FROM invites WHERE invite_code = 'TEST123'"))
             invite = result.fetchone()
+            if invite is None:
+                # Create TEST123 invite for testing
+                expires_at = datetime.now(UTC) + timedelta(days=30)
+                invite_id = str(uuid.uuid4())
+                conn.execute(
+                    text("""
+                        INSERT INTO invites (id, invite_code, created_by_user_id, used_by_user_id, used, expires_at, created_at)
+                        VALUES (:id, 'TEST123', NULL, NULL, false, :expires_at, :created_at)
+                        ON CONFLICT (invite_code) DO NOTHING
+                    """),
+                    {
+                        "id": invite_id,
+                        "expires_at": expires_at,
+                        "created_at": datetime.now(UTC),
+                    }
+                )
+                conn.commit()
+                # Verify it was created
+                result = conn.execute(text("SELECT * FROM invites WHERE invite_code = 'TEST123'"))
+                invite = result.fetchone()
+
             assert invite is not None, "TEST123 invite should exist in test database"

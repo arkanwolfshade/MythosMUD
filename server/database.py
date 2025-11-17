@@ -197,14 +197,18 @@ class DatabaseManager:
                     new_loop_id=current_loop_id,
                 )
                 # Dispose old engine (best effort, may fail if loop is closed)
+                # CRITICAL: Don't try to dispose if loop is closed - just set to None
+                # asyncpg will handle cleanup when the loop closes
                 try:
                     if self.engine is not None:
-                        # Try to dispose, but don't wait for it if loop is closed
+                        # Check if loop is still valid before attempting disposal
                         try:
                             loop = asyncio.get_running_loop()
                             if not loop.is_closed():
-                                # Schedule disposal, but don't block
-                                asyncio.create_task(self.engine.dispose())
+                                # Try to dispose synchronously if possible, but don't block
+                                # Note: dispose() is async, but we can't await here
+                                # The engine will be cleaned up when the loop closes
+                                pass  # Let the old engine be garbage collected
                         except RuntimeError:
                             # Loop is closed or not running - just set to None
                             pass
@@ -303,7 +307,8 @@ class DatabaseManager:
                     if loop.is_closed():
                         logger.warning("Event loop is closed, skipping engine disposal")
                         self.engine = None
-                        self._initialized = False  # Reset initialization flag
+                        self._initialized = False
+                        self._creation_loop_id = None
                         return
                 except RuntimeError:
                     # No running loop - that's okay, we can still try to dispose
@@ -312,19 +317,21 @@ class DatabaseManager:
                 await engine.dispose()
                 logger.info("Database connections closed")
             except (RuntimeError, AttributeError) as e:
-                # Event loop is closed or proactor is None - log and continue
-                logger.warning("Error disposing database engine (event loop may be closed)", error=str(e))
-                # Set engine to None to prevent further use
-                self.engine = None
-                self._initialized = False  # Reset initialization flag
+                # Event loop is closed or proactor is None - this is expected during cleanup
+                # Don't log as error, just as debug since this is normal during test teardown
+                logger.debug("Event loop closed during engine disposal (expected during cleanup)", error=str(e))
             except Exception as e:
-                logger.error("Unexpected error disposing database engine", error=str(e))
-                # Set engine to None to prevent further use
+                # Any other error - log but don't raise
+                logger.warning("Error disposing database engine", error=str(e), error_type=type(e).__name__)
+            finally:
+                # Always reset state, even if disposal failed
                 self.engine = None
-                self._initialized = False  # Reset initialization flag
+                self._initialized = False
+                self._creation_loop_id = None
         else:
             # Engine already None, but reset flag if it was initialized
             self._initialized = False
+            self._creation_loop_id = None
 
 
 # DEPRECATED: Module-level global removed - use ApplicationContainer instead

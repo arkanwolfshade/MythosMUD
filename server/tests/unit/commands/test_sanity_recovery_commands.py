@@ -36,10 +36,16 @@ async def session_factory():
 
 
 async def _create_player(session: AsyncSession, *, player_name: str, room_id: str, san: int = 50) -> Player:
+    # Use unique identifiers to avoid IntegrityError in parallel test runs
+    unique_suffix = uuid.uuid4().hex[:8]
+    unique_username = f"{player_name}_{unique_suffix}"
+    unique_email = f"{player_name}_{unique_suffix}@example.com"
+    unique_player_name = f"{player_name}_{unique_suffix}"
+
     user = User(
         id=str(uuid.uuid4()),
-        email=f"{player_name}@example.com",
-        username=player_name,
+        email=unique_email,
+        username=unique_username,
         hashed_password="hashed",
         is_active=True,
         is_superuser=False,
@@ -48,7 +54,7 @@ async def _create_player(session: AsyncSession, *, player_name: str, room_id: st
     player = Player(
         player_id=f"player-{uuid.uuid4()}",
         user_id=user.id,
-        name=player_name,
+        name=unique_player_name,
         current_room_id=room_id,
     )
     session.add_all([user, player])

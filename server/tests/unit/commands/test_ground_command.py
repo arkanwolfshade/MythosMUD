@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import uuid
-from datetime import UTC, datetime
+from datetime import datetime
 from types import SimpleNamespace
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -49,19 +49,23 @@ async def create_player(
     """Create a player for testing ground command behaviour."""
 
     player_id = f"player-{uuid.uuid4()}"
+    # Use unique username to avoid IntegrityError in parallel test runs
+    unique_username = f"{name}_{uuid.uuid4().hex[:8]}"
     user = User(
         id=str(uuid.uuid4()),
         email=f"{player_id}@example.org",
-        username=name,
+        username=unique_username,
         hashed_password="hashed",
         is_active=True,
         is_superuser=False,
         is_verified=True,
     )
+    # Use unique player name to avoid IntegrityError in parallel test runs
+    unique_player_name = f"{name}_{uuid.uuid4().hex[:8]}"
     player = Player(
         player_id=player_id,
         user_id=user.id,
-        name=name,
+        name=unique_player_name,
         current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
     )
     sanity_record = PlayerSanity(
@@ -99,7 +103,8 @@ async def test_ground_command_revives_catatonic_player(session_factory):
         assert record is not None
         record.current_san = -20
         record.current_tier = "catatonic"
-        record.catatonia_entered_at = datetime(2025, 1, 1, tzinfo=UTC)
+        # Use timezone-naive datetime for TIMESTAMP WITHOUT TIME ZONE column
+        record.catatonia_entered_at = datetime(2025, 1, 1)
         await session.commit()
 
         persistence = MagicMock()
@@ -124,8 +129,9 @@ async def test_ground_command_revives_catatonic_player(session_factory):
         current_user = {"username": "rescuer"}
 
         with patch("server.commands.rescue_commands.get_async_session", fake_get_async_session):
-            result = await handle_ground_command(command_data, current_user, request, None, "rescuer")
+            result = await handle_ground_command(command_data, current_user, request, None, rescuer.name)
 
+        # Check for base name pattern (command output uses base name, not unique name)
         assert "victim" in result["result"].lower()
         assert "steadies" in result["result"].lower()
 
@@ -149,7 +155,8 @@ async def test_ground_command_emits_rescue_updates(session_factory):
         assert record is not None
         record.current_san = -20
         record.current_tier = "catatonic"
-        record.catatonia_entered_at = datetime(2025, 1, 1, tzinfo=UTC)
+        # Use timezone-naive datetime for TIMESTAMP WITHOUT TIME ZONE column
+        record.catatonia_entered_at = datetime(2025, 1, 1)
         await session.commit()
 
         persistence = MagicMock()
@@ -180,7 +187,7 @@ async def test_ground_command_emits_rescue_updates(session_factory):
             ) as mock_rescue_event:
                 with patch("server.commands.rescue_commands.send_rescue_update_event", mock_rescue_event):
                     with patch("server.services.sanity_service.send_rescue_update_event", mock_rescue_event):
-                        await handle_ground_command(command_data, current_user, request, None, "rescuer")
+                        await handle_ground_command(command_data, current_user, request, None, rescuer.name)
 
         statuses = [call.kwargs.get("status") for call in mock_rescue_event.await_args_list]
         assert statuses.count("channeling") == 2
@@ -216,15 +223,16 @@ async def test_ground_command_requires_catatonic_target(session_factory):
         await session.commit()
 
         persistence = MagicMock()
+        # Use actual player names from created players (now unique)
         persistence.get_player_by_name.side_effect = lambda name: {
-            "rescuer": SimpleNamespace(
+            rescuer.name: SimpleNamespace(
                 player_id=rescuer.player_id,
-                name="rescuer",
+                name=rescuer.name,
                 current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
             ),
-            "victim": SimpleNamespace(
+            victim.name: SimpleNamespace(
                 player_id=victim.player_id,
-                name="victim",
+                name=victim.name,
                 current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
             ),
         }[name]
@@ -233,11 +241,11 @@ async def test_ground_command_requires_catatonic_target(session_factory):
         async def fake_get_async_session():
             yield session
 
-        command_data = {"command_type": "ground", "target_player": "victim"}
-        current_user = {"username": "rescuer"}
+        command_data = {"command_type": "ground", "target_player": victim.name}
+        current_user = {"username": rescuer.name}
 
         with patch("server.commands.rescue_commands.get_async_session", fake_get_async_session):
-            result = await handle_ground_command(command_data, current_user, request, None, "rescuer")
+            result = await handle_ground_command(command_data, current_user, request, None, rescuer.name)
 
         assert "isn't catatonic" in result["result"]
 
