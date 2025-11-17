@@ -5,6 +5,7 @@ This module provides comprehensive user management including muting,
 permissions, and user state tracking for the chat system.
 """
 
+import asyncio
 import json
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -24,8 +25,14 @@ class UserManager:
     tracking with integration to AI logging systems.
     """
 
-    def __init__(self, data_dir: Path | None = None):
-        """Initialize the user manager."""
+    def __init__(self, data_dir: Path | None = None, mute_cache_ttl: int = 300):
+        """
+        Initialize the user manager.
+
+        Args:
+            data_dir: Directory for player-specific mute files
+            mute_cache_ttl: Cache TTL in seconds (default: 5 minutes)
+        """
         # Player mute storage: {player_id: {target_type: {target_id: mute_info}}}
         self._player_mutes: dict[
             str, dict[str, dict[str, Any]]
@@ -47,7 +54,11 @@ class UserManager:
         self.data_dir = data_dir or Path("data/user_management")
         self.data_dir.mkdir(parents=True, exist_ok=True)
 
-        logger.info("UserManager initialized with JSON file persistence")
+        # Mute data cache with TTL: {player_id: (load_time, data_loaded)}
+        self._mute_cache: dict[str, tuple[datetime, bool]] = {}
+        self._mute_cache_ttl = timedelta(seconds=mute_cache_ttl)
+
+        logger.info("UserManager initialized with JSON file persistence", cache_ttl_seconds=mute_cache_ttl)
 
     @staticmethod
     def _normalize_player_id(player_id: Any) -> str:
@@ -1035,18 +1046,121 @@ class UserManager:
             if "is_admin" in data and data["is_admin"]:
                 self._admin_players.add(player_id)
 
+            # Update cache
+            self._mute_cache[player_id] = (datetime.now(UTC), True)
             logger.info("Player mute data loaded")
             return True
 
         except OSError as e:
             logger.error("File system error loading player mute data", error=str(e), error_type=type(e).__name__)
+            self._mute_cache[player_id] = (datetime.now(UTC), False)
             return False
         except (ValueError, TypeError, json.JSONDecodeError) as e:
             logger.error("Data validation error loading player mute data", error=str(e), error_type=type(e).__name__)
+            self._mute_cache[player_id] = (datetime.now(UTC), False)
             return False
         except Exception as e:
             logger.error("Unexpected error loading player mute data", error=str(e), error_type=type(e).__name__)
+            self._mute_cache[player_id] = (datetime.now(UTC), False)
             return False
+
+    def _is_cache_valid(self, player_id: str) -> bool:
+        """
+        Check if cached mute data is still valid.
+
+        Args:
+            player_id: Player ID to check
+
+        Returns:
+            True if cache is valid, False otherwise
+        """
+        if player_id not in self._mute_cache:
+            return False
+
+        load_time, _ = self._mute_cache[player_id]
+        age = datetime.now(UTC) - load_time
+        return age < self._mute_cache_ttl
+
+    async def load_player_mutes_async(self, player_id: str) -> bool:
+        """
+        Async version of load_player_mutes using asyncio.to_thread for file I/O.
+
+        Args:
+            player_id: Player ID to load mutes for
+
+        Returns:
+            True if data was loaded successfully, False otherwise
+
+        AI: Uses asyncio.to_thread to run synchronous file I/O in thread pool,
+            preventing blocking of the event loop.
+        """
+        player_id = self._normalize_player_id(player_id)
+
+        # Check cache first
+        if self._is_cache_valid(player_id):
+            logger.debug("Using cached mute data", player_id=player_id)
+            return True
+
+        # Load from file using thread pool
+        try:
+            result = await asyncio.to_thread(self.load_player_mutes, player_id)
+            return result
+        except Exception as e:
+            logger.error("Error in async mute loading", player_id=player_id, error=str(e))
+            return False
+
+    async def load_player_mutes_batch(self, player_ids: list[str]) -> dict[str, bool]:
+        """
+        Batch load mute data for multiple players concurrently.
+
+        Args:
+            player_ids: List of player IDs to load mutes for
+
+        Returns:
+            Dictionary mapping player_id to load success status
+
+        AI: Loads mute data for all players concurrently using asyncio.gather,
+            significantly improving performance when loading multiple players.
+        """
+        # Filter out players with valid cache
+        players_to_load = [pid for pid in player_ids if not self._is_cache_valid(pid)]
+
+        if not players_to_load:
+            logger.debug("All players have valid cached mute data", total_players=len(player_ids))
+            return dict.fromkeys(player_ids, True)
+
+        logger.debug(
+            "Batch loading mute data",
+            total_players=len(player_ids),
+            cached=len(player_ids) - len(players_to_load),
+            to_load=len(players_to_load),
+        )
+
+        # Load all players concurrently
+        results = await asyncio.gather(
+            *[self.load_player_mutes_async(pid) for pid in players_to_load],
+            return_exceptions=True,
+        )
+
+        # Build result dictionary
+        result_dict: dict[str, bool] = {}
+        for i, player_id in enumerate(players_to_load):
+            if isinstance(results[i], Exception):
+                logger.error(
+                    "Error loading mute data in batch",
+                    player_id=player_id,
+                    error=str(results[i]),
+                )
+                result_dict[player_id] = False
+            else:
+                result_dict[player_id] = bool(results[i])
+
+        # Add cached players
+        for player_id in player_ids:
+            if player_id not in result_dict:
+                result_dict[player_id] = True
+
+        return result_dict
 
     def save_player_mutes(self, player_id: str) -> bool:
         """

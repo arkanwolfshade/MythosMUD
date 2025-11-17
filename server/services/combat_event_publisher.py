@@ -16,6 +16,7 @@ from ..events.combat_events import (
     PlayerAttackedEvent,
 )
 from ..logging.enhanced_logging_config import get_logger
+from .nats_exceptions import NATSPublishError
 from .nats_subject_manager import NATSSubjectManager
 
 logger = get_logger("services.combat_event_publisher")
@@ -134,9 +135,8 @@ class CombatEventPublisher:
                 subject=subject,
                 participant_count=participant_count,
             )
-            success = await self.nats_service.publish(subject, message_data)
-
-            if success:
+            try:
+                await self.nats_service.publish(subject, message_data)
                 logger.info(
                     "Combat started event published to NATS",
                     combat_id=combat_id,
@@ -144,16 +144,17 @@ class CombatEventPublisher:
                     subject=subject,
                     participant_count=participant_count,
                 )
-            else:
+                return True
+            except NATSPublishError as e:
                 logger.error(
                     "Failed to publish combat started event to NATS",
                     combat_id=combat_id,
                     room_id=room_id,
                     subject=subject,
                     participant_count=participant_count,
+                    error=str(e),
                 )
-
-            return success
+                return False
 
         except Exception as e:
             logger.error(
@@ -227,23 +228,23 @@ class CombatEventPublisher:
                     room_id=event.room_id,
                 )
 
-            success = await self.nats_service.publish(subject, message_data)
-
-            if success:
+            try:
+                await self.nats_service.publish(subject, message_data)
                 logger.info(
                     "Combat ended event published to NATS",
                     combat_id=str(event.combat_id),
                     room_id=event.room_id,
                     subject=subject,
                 )
-            else:
+                return True
+            except NATSPublishError as e:
                 logger.error(
                     "Failed to publish combat ended event to NATS",
                     combat_id=str(event.combat_id),
                     room_id=event.room_id,
+                    error=str(e),
                 )
-
-            return success
+                return False
 
         except Exception as e:
             logger.error(
@@ -326,9 +327,8 @@ class CombatEventPublisher:
                     room_id=event.room_id,
                 )
 
-            success = await self.nats_service.publish(subject, message_data)
-
-            if success:
+            try:
+                await self.nats_service.publish(subject, message_data)
                 logger.info(
                     "Player attacked event published to NATS",
                     combat_id=str(event.combat_id),
@@ -336,14 +336,15 @@ class CombatEventPublisher:
                     target_name=event.target_name,
                     damage=event.damage,
                 )
-            else:
+                return True
+            except NATSPublishError as e:
                 logger.error(
                     "Failed to publish player attacked event to NATS",
                     combat_id=str(event.combat_id),
                     attacker_name=event.attacker_name,
+                    error=str(e),
                 )
-
-            return success
+                return False
 
         except Exception as e:
             logger.error(
@@ -426,9 +427,8 @@ class CombatEventPublisher:
                     room_id=event.room_id,
                 )
 
-            success = await self.nats_service.publish(subject, message_data)
-
-            if success:
+            try:
+                await self.nats_service.publish(subject, message_data)
                 logger.info(
                     "NPC attacked event published to NATS",
                     combat_id=str(event.combat_id),
@@ -436,14 +436,15 @@ class CombatEventPublisher:
                     npc_name=event.npc_name,
                     damage=event.damage,
                 )
-            else:
+                return True
+            except NATSPublishError as e:
                 logger.error(
                     "Failed to publish NPC attacked event to NATS",
                     combat_id=str(event.combat_id),
                     attacker_name=event.attacker_name,
+                    error=str(e),
                 )
-
-            return success
+                return False
 
         except Exception as e:
             logger.error(
@@ -521,9 +522,8 @@ class CombatEventPublisher:
                     room_id=event.room_id,
                 )
 
-            success = await self.nats_service.publish(subject, message_data)
-
-            if success:
+            try:
+                await self.nats_service.publish(subject, message_data)
                 logger.info(
                     "NPC took damage event published to NATS",
                     combat_id=str(event.combat_id),
@@ -531,14 +531,15 @@ class CombatEventPublisher:
                     damage=event.damage,
                     current_hp=event.current_hp,
                 )
-            else:
+                return True
+            except NATSPublishError as e:
                 logger.error(
                     "Failed to publish NPC took damage event to NATS",
                     combat_id=str(event.combat_id),
                     npc_name=event.npc_name,
+                    error=str(e),
                 )
-
-            return success
+                return False
 
         except Exception as e:
             logger.error(
@@ -610,23 +611,23 @@ class CombatEventPublisher:
                     room_id=event.room_id,
                 )
 
-            success = await self.nats_service.publish(subject, message_data)
-
-            if success:
+            try:
+                await self.nats_service.publish(subject, message_data)
                 logger.info(
                     "NPC died event published to NATS",
                     combat_id=str(event.combat_id),
                     npc_name=event.npc_name,
                     xp_reward=event.xp_reward,
                 )
-            else:
+                return True
+            except NATSPublishError as e:
                 logger.error(
                     "Failed to publish NPC died event to NATS",
                     combat_id=str(event.combat_id),
                     npc_name=event.npc_name,
+                    error=str(e),
                 )
-
-            return success
+                return False
 
         except Exception as e:
             logger.error(
@@ -698,23 +699,23 @@ class CombatEventPublisher:
                     room_id=event.room_id,
                 )
 
-            success = await self.nats_service.publish(subject, message_data)
-
-            if success:
+            try:
+                await self.nats_service.publish(subject, message_data)
                 logger.info(
                     "Combat turn advanced event published to NATS",
                     combat_id=str(event.combat_id),
                     room_id=event.room_id,
                     current_turn=event.current_turn,
                 )
-            else:
+                return True
+            except NATSPublishError as e:
                 logger.error(
                     "Failed to publish combat turn advanced event to NATS",
                     combat_id=str(event.combat_id),
                     room_id=event.room_id,
+                    error=str(e),
                 )
-
-            return success
+                return False
 
         except Exception as e:
             logger.error(
@@ -783,23 +784,23 @@ class CombatEventPublisher:
                     room_id=event.room_id,
                 )
 
-            success = await self.nats_service.publish(subject, message_data)
-
-            if success:
+            try:
+                await self.nats_service.publish(subject, message_data)
                 logger.info(
                     "Combat timeout event published to NATS",
                     combat_id=str(event.combat_id),
                     room_id=event.room_id,
                     timeout_minutes=event.timeout_minutes,
                 )
-            else:
+                return True
+            except NATSPublishError as e:
                 logger.error(
                     "Failed to publish combat timeout event to NATS",
                     combat_id=str(event.combat_id),
                     room_id=event.room_id,
+                    error=str(e),
                 )
-
-            return success
+                return False
 
         except Exception as e:
             logger.error(

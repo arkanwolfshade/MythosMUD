@@ -8,7 +8,10 @@ and Windows-native solution.
 
 import asyncio
 import json
+import ssl
+from collections import deque
 from collections.abc import Callable
+from pathlib import Path
 from typing import Any
 
 import nats
@@ -16,6 +19,10 @@ import nats
 from ..config.models import NATSConfig
 from ..logging.enhanced_logging_config import get_logger
 from ..realtime.connection_state_machine import NATSConnectionStateMachine
+from .nats_exceptions import (
+    NATSPublishError,
+    NATSSubscribeError,
+)
 from .nats_subject_manager import NATSSubjectManager, SubjectValidationError
 
 logger = get_logger("nats")
@@ -29,7 +36,8 @@ class NATSMetrics:
         self.publish_errors = 0
         self.subscribe_count = 0
         self.subscribe_errors = 0
-        self.message_processing_times: list[float] = []
+        # Use deque with maxlen for automatic rotation - more memory efficient than list slicing
+        self.message_processing_times: deque[float] = deque(maxlen=1000)
         self.connection_health_score = 100.0
         self.batch_flush_count = 0
         self.batch_flush_errors = 0
@@ -40,11 +48,8 @@ class NATSMetrics:
         self.publish_count += 1
         if not success:
             self.publish_errors += 1
+        # Deque automatically rotates when maxlen is reached - no manual slicing needed
         self.message_processing_times.append(processing_time)
-
-        # Keep only last 1000 processing times for rolling average
-        if len(self.message_processing_times) > 1000:
-            self.message_processing_times = self.message_processing_times[-1000:]
 
     def record_subscribe(self, success: bool):
         """Record subscribe operation metrics."""
@@ -68,6 +73,7 @@ class NATSMetrics:
 
     def get_metrics(self) -> dict[str, Any]:
         """Get comprehensive NATS metrics."""
+        # Deque supports len() and iteration like a list
         avg_processing_time = (
             sum(self.message_processing_times) / len(self.message_processing_times)
             if self.message_processing_times
@@ -122,7 +128,7 @@ class NATSService:
             subject_manager: NATSSubjectManager instance (optional, for subject validation)
 
         AI: State machine tracks connection lifecycle and prevents invalid state transitions.
-        AI: Accepts dict for backward compatibility but converts to Pydantic model for type safety.
+        AI: Accepts dict and converts to Pydantic model for type safety.
         """
         # Convert dict to Pydantic model or use default if None
         if isinstance(config, dict):
@@ -147,12 +153,18 @@ class NATSService:
         # NATS metrics collection
         self.metrics = NATSMetrics()
 
-        # Legacy single connection for backward compatibility
+        # Primary connection (used for subscriptions and fallback)
         self.nc: nats.NATS | None = None
         self.subscriptions: dict[str, Any] = {}
         self._running = False
         self._connection_retries = 0
         self._max_retries = self.config.max_reconnect_attempts
+
+        # Health monitoring
+        self._health_check_task: asyncio.Task | None = None
+        self._last_health_check: float = 0.0
+        self._consecutive_health_failures = 0
+        self._health_check_timeout = 5.0  # seconds
 
         # NEW: Connection state machine (CRITICAL-1)
         # AI: FSM provides robust connection management with automatic recovery
@@ -196,7 +208,8 @@ class NATSService:
             nats_url = self.config.url
 
             # Connection options (Pydantic attribute access)
-            connect_options = {
+            # Type annotation allows TLS context to be added
+            connect_options: dict[str, Any] = {
                 "reconnect_time_wait": self.config.reconnect_time_wait,
                 "max_reconnect_attempts": self._max_retries,
                 "connect_timeout": self.config.connect_timeout,
@@ -204,7 +217,36 @@ class NATSService:
                 "max_outstanding_pings": self.config.max_outstanding_pings,
             }
 
-            logger.info("Connecting to NATS server", url=nats_url, state=self.state_machine.current_state.id)
+            # Configure TLS if enabled
+            if self.config.tls_enabled:
+                ssl_context = ssl.create_default_context()
+
+                # Load client certificate and key
+                if self.config.tls_cert_file and self.config.tls_key_file:
+                    cert_path = Path(self.config.tls_cert_file)
+                    key_path = Path(self.config.tls_key_file)
+                    ssl_context.load_cert_chain(cert_path, key_path)
+                    logger.debug("Loaded TLS client certificate", cert_file=str(cert_path), key_file=str(key_path))
+
+                # Load CA certificate for verification
+                if self.config.tls_ca_file:
+                    ca_path = Path(self.config.tls_ca_file)
+                    ssl_context.load_verify_locations(ca_path)
+                    logger.debug("Loaded TLS CA certificate", ca_file=str(ca_path))
+
+                # Configure certificate verification
+                if self.config.tls_verify:
+                    ssl_context.check_hostname = True
+                    ssl_context.verify_mode = ssl.CERT_REQUIRED
+                else:
+                    ssl_context.check_hostname = False
+                    ssl_context.verify_mode = ssl.CERT_NONE
+                    logger.warning("TLS verification disabled - using unverified certificates")
+
+                connect_options["tls"] = ssl_context
+                logger.info("TLS enabled for NATS connection", verify=self.config.tls_verify)
+
+            logger.info("Connecting to NATS server", url=nats_url, tls_enabled=self.config.tls_enabled, state=self.state_machine.current_state.id)
 
             # Connect to NATS
             self.nc = await nats.connect(nats_url, **connect_options)
@@ -226,6 +268,9 @@ class NATSService:
 
             # Initialize connection pool for high-throughput scenarios
             await self._initialize_connection_pool()
+
+            # Start health check monitoring task
+            await self._start_health_monitoring()
 
             logger.info(
                 "Connected to NATS server successfully",
@@ -308,106 +353,164 @@ class NATSService:
             if self._pool_initialized:
                 await self._cleanup_connection_pool()
 
+            # Stop health check monitoring
+            await self._stop_health_monitoring()
+
         except Exception as e:
             logger.error("Error disconnecting from NATS server", error=str(e))
 
-    async def publish(self, subject: str, data: dict[str, Any]) -> bool:
+    async def _start_health_monitoring(self):
+        """Start periodic health check monitoring task."""
+        health_check_interval = getattr(self.config, "health_check_interval", 30)
+        if health_check_interval <= 0:
+            logger.debug("Health monitoring disabled (interval <= 0)")
+            return
+
+        # Cancel existing task if any
+        if self._health_check_task and not self._health_check_task.done():
+            self._health_check_task.cancel()
+            try:
+                await self._health_check_task
+            except asyncio.CancelledError:
+                pass
+
+        # Start new health check task
+        self._health_check_task = asyncio.create_task(self._health_check_loop())
+        logger.info("Health monitoring started", interval_seconds=health_check_interval)
+
+    async def _stop_health_monitoring(self):
+        """Stop health check monitoring task."""
+        if self._health_check_task and not self._health_check_task.done():
+            self._health_check_task.cancel()
+            try:
+                await self._health_check_task
+            except asyncio.CancelledError:
+                pass
+            self._health_check_task = None
+        logger.debug("Health monitoring stopped")
+
+    async def _health_check_loop(self):
+        """Periodic health check loop using ping/pong."""
+        health_check_interval = getattr(self.config, "health_check_interval", 30)
+
+        while self._running:
+            try:
+                await asyncio.sleep(health_check_interval)
+
+                if not self.nc or not self._running:
+                    break
+
+                # Perform health check via ping/pong
+                health_ok = await self._perform_health_check()
+
+                if health_ok:
+                    self._consecutive_health_failures = 0
+                    self._last_health_check = asyncio.get_running_loop().time()
+                    # Update health score in metrics
+                    self.metrics.update_connection_health(100.0)
+                else:
+                    self._consecutive_health_failures += 1
+                    # Degrade health score based on failures
+                    health_score = max(0.0, 100.0 - (self._consecutive_health_failures * 20))
+                    self.metrics.update_connection_health(health_score)
+
+                    # Transition to degraded state if too many failures
+                    if self._consecutive_health_failures >= 3:
+                        if self.state_machine.current_state.id == "connected":
+                            self.state_machine.degrade()
+                            logger.warning(
+                                "NATS connection degraded due to health check failures",
+                                failures=self._consecutive_health_failures,
+                            )
+
+            except asyncio.CancelledError:
+                break
+            except Exception as e:
+                logger.error("Error in health check loop", error=str(e))
+                self._consecutive_health_failures += 1
+                await asyncio.sleep(health_check_interval)  # Wait before retrying
+
+    async def _perform_health_check(self) -> bool:
         """
-        Publish a message to a NATS subject.
+        Perform a single health check via ping/pong.
+
+        Returns:
+            True if health check passed, False otherwise
+        """
+        if not self.nc:
+            return False
+
+        try:
+            # Use NATS ping/pong mechanism for health check
+            # The nats-py client has built-in ping handling
+            # We can check if the connection is still alive by attempting a simple operation
+            # or checking connection state
+
+            # Try to flush any pending operations (lightweight check)
+            await asyncio.wait_for(self.nc.flush(), timeout=self._health_check_timeout)
+            return True
+
+        except TimeoutError:
+            logger.warning("Health check timeout", timeout=self._health_check_timeout)
+            return False
+        except Exception as e:
+            logger.warning("Health check failed", error=str(e), error_type=type(e).__name__)
+            return False
+
+    async def publish(self, subject: str, data: dict[str, Any]) -> None:
+        """
+        Publish a message to a NATS subject using connection pool.
 
         Args:
             subject: NATS subject name (e.g., 'chat.say', 'chat.global')
             data: Message data to publish
 
-        Returns:
-            True if published successfully, False otherwise
+        Raises:
+            NATSPublishError: If publishing fails or connection pool is not available
+
+        AI: Requires connection pool to be initialized. Raises exceptions instead of
+            returning False for better error handling.
         """
-        # AI Agent: Use asyncio.get_running_loop() instead of deprecated get_event_loop()
-        #           Python 3.10+ deprecates get_event_loop() in async contexts
-        start_time = asyncio.get_running_loop().time()
-        success = False
+        # Require connection pool - fail if not available
+        if not self._pool_initialized:
+            error_msg = "Connection pool not initialized - cannot publish"
+            logger.error("Connection pool not initialized", subject=subject)
+            raise NATSPublishError(error_msg, subject=subject)
 
-        try:
-            # Validate subject if subject manager is available and validation is enabled
-            if self.subject_manager and self.config.enable_subject_validation:
-                try:
-                    if not self.subject_manager.validate_subject(subject):
-                        logger.error(
-                            "Subject validation failed",
-                            subject=subject,
-                            message_id=data.get("message_id"),
-                            correlation_id=data.get("correlation_id"),
-                        )
-                        return False
-                except SubjectValidationError as e:
-                    logger.error(
-                        "Subject validation error",
-                        error=str(e),
-                        subject=subject,
-                        message_id=data.get("message_id"),
-                        correlation_id=data.get("correlation_id"),
-                    )
-                    return False
+        if self.available_connections.empty():
+            error_msg = "No available connections in pool"
+            logger.error("No available connections in pool", subject=subject, pool_size=self.pool_size)
+            raise NATSPublishError(error_msg, subject=subject)
 
-            # Validate connection state
-            if not self.nc or not self._running:
-                logger.error("NATS client not connected", subject=subject)
-                return False
+        # Use connection pool
+        await self.publish_with_pool(subject, data)
 
-            # Serialize message data using thread pool for CPU-bound operation
-            loop = asyncio.get_running_loop()
-            message_bytes = await loop.run_in_executor(None, lambda: json.dumps(data).encode("utf-8"))
-
-            # Publish to NATS subject
-            await self.nc.publish(subject, message_bytes)
-            success = True
-
-            logger.debug(
-                "Message published to NATS subject",
-                subject=subject,
-                message_id=data.get("message_id"),
-                sender_id=data.get("sender_id"),
-                data_size=len(message_bytes),
-                nats_client_connected=self.nc is not None,
-                service_running=self._running,
-            )
-
-        except Exception as e:
-            logger.error(
-                "Failed to publish message to NATS subject",
-                error=str(e),
-                error_type=type(e).__name__,
-                subject=subject,
-                message_id=data.get("message_id"),
-                exception_args=str(e.args) if e.args else None,
-            )
-        finally:
-            # Record metrics
-            # AI Agent: Use asyncio.get_running_loop() instead of deprecated get_event_loop()
-            #           Python 3.10+ deprecates get_event_loop() in async contexts
-            processing_time = asyncio.get_running_loop().time() - start_time
-            self.metrics.record_publish(success, processing_time)
-
-        return success
-
-    async def subscribe(self, subject: str, callback: Callable[[dict[str, Any]], None]) -> bool:
+    async def subscribe(self, subject: str, callback: Callable[[dict[str, Any]], None]) -> None:
         """
         Subscribe to a NATS subject and register a callback for incoming messages.
 
         Args:
             subject: NATS subject name to subscribe to
-            callback: Function to call when messages are received
+            callback: Function to call when messages are received (signature: async def callback(message_data: dict))
 
-        Returns:
-            True if subscribed successfully, False otherwise
+        Raises:
+            NATSSubscribeError: If subscription fails
+
+        AI: When manual_ack is enabled, messages are acknowledged after successful processing
+            and negatively acknowledged on failure. This provides at-least-once delivery semantics.
+            Raises exceptions instead of returning False for better error handling.
         """
         try:
             if not self.nc or not self._running:
+                error_msg = "NATS client not connected"
                 logger.error("NATS client not connected")
-                return False
+                raise NATSSubscribeError(error_msg, subject=subject)
 
-            # Create message handler
+            manual_ack_enabled = getattr(self.config, "manual_ack", False)
+
+            # Create message handler with acknowledgment support
             async def message_handler(msg):
+                message_acknowledged = False
                 try:
                     # Decode message data using thread pool for CPU-bound operation
                     loop = asyncio.get_running_loop()
@@ -419,17 +522,48 @@ class NATSService:
                     else:
                         callback(message_data)
 
+                    # Acknowledge message after successful processing (if manual ack enabled)
+                    if manual_ack_enabled and hasattr(msg, "ack"):
+                        try:
+                            await msg.ack()
+                            message_acknowledged = True
+                            logger.debug(
+                                "Message acknowledged",
+                                subject=subject,
+                                message_id=message_data.get("message_id"),
+                            )
+                        except Exception as ack_error:
+                            logger.error(
+                                "Failed to acknowledge message",
+                                error=str(ack_error),
+                                subject=subject,
+                                message_id=message_data.get("message_id"),
+                            )
+
                     logger.debug(
                         "Message received from NATS subject",
                         subject=subject,
                         message_id=message_data.get("message_id"),
                         sender_id=message_data.get("sender_id"),
+                        acknowledged=message_acknowledged,
                     )
 
                 except json.JSONDecodeError as e:
                     logger.error("Failed to decode NATS message", error=str(e), subject=subject)
+                    # Negatively acknowledge on decode failure (if manual ack enabled)
+                    if manual_ack_enabled and hasattr(msg, "nak"):
+                        try:
+                            await msg.nak()
+                        except Exception as nak_error:
+                            logger.error("Failed to negatively acknowledge message", error=str(nak_error), subject=subject)
                 except Exception as e:
                     logger.error("Error handling NATS message", error=str(e), subject=subject)
+                    # Negatively acknowledge on processing failure (if manual ack enabled)
+                    if manual_ack_enabled and hasattr(msg, "nak"):
+                        try:
+                            await msg.nak()
+                        except Exception as nak_error:
+                            logger.error("Failed to negatively acknowledge message", error=str(nak_error), subject=subject)
 
             # Subscribe to subject
             subscription = await self.nc.subscribe(subject, cb=message_handler)
@@ -438,14 +572,21 @@ class NATSService:
             # Record metrics
             self.metrics.record_subscribe(True)
 
-            logger.info("Subscribed to NATS subject", subject=subject)
-            return True
+            logger.info(
+                "Subscribed to NATS subject",
+                subject=subject,
+                manual_ack=manual_ack_enabled,
+            )
 
+        except NATSSubscribeError:
+            # Re-raise NATS subscribe errors
+            raise
         except Exception as e:
             # Record metrics
             self.metrics.record_subscribe(False)
+            error_msg = f"Failed to subscribe to NATS subject: {str(e)}"
             logger.error("Failed to subscribe to NATS subject", error=str(e), subject=subject)
-            return False
+            raise NATSSubscribeError(error_msg, subject=subject, error=e) from e
 
     async def unsubscribe(self, subject: str) -> bool:
         """
@@ -518,12 +659,47 @@ class NATSService:
 
     def is_connected(self) -> bool:
         """
-        Check if NATS client is connected.
+        Check if NATS client is connected and healthy.
 
         Returns:
-            True if connected, False otherwise
+            True if connected and healthy, False otherwise
+
+        AI: Verifies both connection state and recent health check success.
+            A stale connection (no recent successful health check) is considered disconnected.
         """
-        return self.nc is not None and self._running
+        if not self.nc or not self._running:
+            return False
+
+        # Check if we have a recent successful health check
+        # If health checks are enabled and we haven't had one recently, consider disconnected
+        health_check_interval = getattr(self.config, "health_check_interval", 30)
+        if health_check_interval > 0:
+            try:
+                current_time = asyncio.get_running_loop().time()
+            except RuntimeError:
+                # No event loop running, can't check time - assume connected if nc and _running are True
+                return True
+
+            time_since_last_check = current_time - self._last_health_check
+
+            # If it's been more than 2x the interval since last check, consider unhealthy
+            if self._last_health_check > 0 and time_since_last_check > (health_check_interval * 2):
+                logger.warning(
+                    "Connection health check stale",
+                    time_since_last_check=time_since_last_check,
+                    health_check_interval=health_check_interval,
+                )
+                return False
+
+            # If we've had too many consecutive failures, consider disconnected
+            if self._consecutive_health_failures >= 3:
+                logger.warning(
+                    "Too many consecutive health check failures",
+                    failures=self._consecutive_health_failures,
+                )
+                return False
+
+        return True
 
     def get_subscription_count(self) -> int:
         """
@@ -534,48 +710,90 @@ class NATSService:
         """
         return len(self.subscriptions)
 
-    # Event handlers with state machine integration
+    # Event handlers with state machine integration (fire-and-forget async tasks)
     def _on_error(self, error):
         """
         Handle NATS connection errors with state machine tracking.
 
         AI: Errors may trigger degradation or reconnection.
+        AI: Runs as fire-and-forget async task to prevent blocking NATS client.
         """
-        logger.error("NATS connection error", error=str(error), state=self.state_machine.current_state.id)
+        # Fire-and-forget async task to prevent blocking
+        try:
+            asyncio.create_task(self._handle_error_async(error))
+        except RuntimeError:
+            # No event loop available - this should not happen in normal operation
+            logger.error("NATS connection error handler called without event loop", error=str(error))
 
-        # Degrade connection if currently connected
-        if self.state_machine.current_state.id == "connected":
-            self.state_machine.degrade()
+    async def _handle_error_async(self, error):
+        """Async handler for NATS connection errors."""
+        try:
+            logger.error("NATS connection error", error=str(error), state=self.state_machine.current_state.id)
+
+            # Degrade connection if currently connected
+            if self.state_machine.current_state.id == "connected":
+                self.state_machine.degrade()
+        except Exception as e:
+            logger.error("Error in async error handler", error=str(e), original_error=str(error))
 
     def _on_disconnect(self):
         """
         Handle NATS disconnection events with state machine tracking.
 
         AI: Disconnection triggers reconnection attempt.
+        AI: Runs as fire-and-forget async task to prevent blocking NATS client.
         """
-        logger.warning("NATS client disconnected", state=self.state_machine.current_state.id)
-        self._running = False
+        # Fire-and-forget async task to prevent blocking
+        try:
+            asyncio.create_task(self._handle_disconnect_async())
+        except RuntimeError:
+            # No event loop available - this should not happen in normal operation
+            logger.error("NATS disconnect handler called without event loop")
+            self._running = False
 
-        # Transition to reconnecting if we were connected
-        if self.state_machine.current_state.id in ["connected", "degraded"]:
-            self.state_machine.disconnect()
-            self.state_machine.start_reconnect()
+    async def _handle_disconnect_async(self):
+        """Async handler for NATS disconnection events."""
+        try:
+            logger.warning("NATS client disconnected", state=self.state_machine.current_state.id)
+            self._running = False
+
+            # Transition to reconnecting if we were connected
+            if self.state_machine.current_state.id in ["connected", "degraded"]:
+                self.state_machine.disconnect()
+                self.state_machine.start_reconnect()
+        except Exception as e:
+            logger.error("Error in async disconnect handler", error=str(e))
 
     def _on_reconnect(self):
         """
         Handle NATS reconnection events with state machine tracking.
 
         AI: Successful reconnection transitions to connected state.
+        AI: Runs as fire-and-forget async task to prevent blocking NATS client.
         """
-        logger.info("NATS client reconnected", state=self.state_machine.current_state.id)
-        self._running = True
-        self._connection_retries = 0
+        # Fire-and-forget async task to prevent blocking
+        try:
+            asyncio.create_task(self._handle_reconnect_async())
+        except RuntimeError:
+            # No event loop available - this should not happen in normal operation
+            logger.error("NATS reconnect handler called without event loop")
+            self._running = True
+            self._connection_retries = 0
 
-        # Transition to connected if we were reconnecting
-        if self.state_machine.current_state.id == "reconnecting":
-            self.state_machine.connected_successfully()
-        elif self.state_machine.current_state.id == "degraded":
-            self.state_machine.recover()
+    async def _handle_reconnect_async(self):
+        """Async handler for NATS reconnection events."""
+        try:
+            logger.info("NATS client reconnected", state=self.state_machine.current_state.id)
+            self._running = True
+            self._connection_retries = 0
+
+            # Transition to connected if we were reconnecting
+            if self.state_machine.current_state.id == "reconnecting":
+                self.state_machine.connected_successfully()
+            elif self.state_machine.current_state.id == "degraded":
+                self.state_machine.recover()
+        except Exception as e:
+            logger.error("Error in async reconnect handler", error=str(e))
 
     def get_connection_stats(self) -> dict[str, Any]:
         """
@@ -586,11 +804,21 @@ class NATSService:
 
         AI: For monitoring dashboards and health checks.
         """
+        try:
+            current_time = asyncio.get_running_loop().time()
+            time_since_last_check = current_time - self._last_health_check if self._last_health_check > 0 else None
+        except RuntimeError:
+            time_since_last_check = None
+
         return {
             "nats_connected": self._running,
             "pool_initialized": self._pool_initialized,
             "pool_size": self.pool_size,
             "available_connections": self.available_connections.qsize(),
+            "health_check_enabled": getattr(self.config, "health_check_interval", 30) > 0,
+            "last_health_check": self._last_health_check if self._last_health_check > 0 else None,
+            "time_since_last_check": time_since_last_check,
+            "consecutive_health_failures": self._consecutive_health_failures,
             **self.state_machine.get_stats(),
             **self.metrics.get_metrics(),
         }
@@ -602,13 +830,36 @@ class NATSService:
 
         try:
             nats_url = self.config.url
-            connect_options = {
+            # Type annotation allows TLS context to be added
+            connect_options: dict[str, Any] = {
                 "reconnect_time_wait": self.config.reconnect_time_wait,
                 "max_reconnect_attempts": self._max_retries,
                 "connect_timeout": self.config.connect_timeout,
                 "ping_interval": self.config.ping_interval,
                 "max_outstanding_pings": self.config.max_outstanding_pings,
             }
+
+            # Configure TLS for pool connections if enabled
+            if self.config.tls_enabled:
+                ssl_context = ssl.create_default_context()
+
+                if self.config.tls_cert_file and self.config.tls_key_file:
+                    cert_path = Path(self.config.tls_cert_file)
+                    key_path = Path(self.config.tls_key_file)
+                    ssl_context.load_cert_chain(cert_path, key_path)
+
+                if self.config.tls_ca_file:
+                    ca_path = Path(self.config.tls_ca_file)
+                    ssl_context.load_verify_locations(ca_path)
+
+                if self.config.tls_verify:
+                    ssl_context.check_hostname = True
+                    ssl_context.verify_mode = ssl.CERT_REQUIRED
+                else:
+                    ssl_context.check_hostname = False
+                    ssl_context.verify_mode = ssl.CERT_NONE
+
+                connect_options["tls"] = ssl_context
 
             # Create pool connections
             for _i in range(self.pool_size):
@@ -633,18 +884,25 @@ class NATSService:
             # Continue with single connection if pool fails
             self._pool_initialized = False
 
-    async def _get_connection(self) -> nats.NATS | None:
-        """Get connection from pool or fallback to single connection."""
-        if self._pool_initialized and not self.available_connections.empty():
-            return await self.available_connections.get()
-        return self.nc
+    async def _get_connection(self) -> nats.NATS:
+        """
+        Get connection from pool.
+
+        Raises:
+            NATSPublishError: If no connection is available
+        """
+        if not self._pool_initialized:
+            raise NATSPublishError("Connection pool not initialized", subject="")
+        if self.available_connections.empty():
+            raise NATSPublishError("No available connections in pool", subject="")
+        return await self.available_connections.get()
 
     async def _return_connection(self, connection: nats.NATS):
         """Return connection to pool."""
         if self._pool_initialized and connection in self.connection_pool:
             await self.available_connections.put(connection)
 
-    async def publish_with_pool(self, subject: str, data: dict[str, Any]) -> bool:
+    async def publish_with_pool(self, subject: str, data: dict[str, Any]) -> None:
         """
         Publish message using connection pool for high-throughput scenarios.
 
@@ -652,23 +910,32 @@ class NATSService:
             subject: NATS subject name
             data: Message data to publish
 
-        Returns:
-            True if published successfully, False otherwise
+        Raises:
+            NATSPublishError: If publishing fails
+
+        AI: Raises exceptions instead of returning False for better error handling.
         """
+        # AI Agent: Use asyncio.get_running_loop() instead of deprecated get_event_loop()
+        #           Python 3.10+ deprecates get_event_loop() in async contexts
+        start_time = asyncio.get_running_loop().time()
+        success = False
         connection = None
+
         try:
             # Validate subject if subject manager is available and validation is enabled
             if self.subject_manager and self.config.enable_subject_validation:
                 try:
                     if not self.subject_manager.validate_subject(subject):
+                        error_msg = f"Subject validation failed: {subject}"
                         logger.error(
                             "Subject validation failed",
                             subject=subject,
                             message_id=data.get("message_id"),
                             correlation_id=data.get("correlation_id"),
                         )
-                        return False
+                        raise NATSPublishError(error_msg, subject=subject)
                 except SubjectValidationError as e:
+                    error_msg = f"Subject validation error: {str(e)}"
                     logger.error(
                         "Subject validation error",
                         error=str(e),
@@ -676,12 +943,9 @@ class NATSService:
                         message_id=data.get("message_id"),
                         correlation_id=data.get("correlation_id"),
                     )
-                    return False
+                    raise NATSPublishError(error_msg, subject=subject, error=e) from e
 
             connection = await self._get_connection()
-            if not connection:
-                logger.error("No NATS connection available", subject=subject)
-                return False
 
             # Serialize message data using thread pool for CPU-bound operation
             loop = asyncio.get_running_loop()
@@ -689,6 +953,7 @@ class NATSService:
 
             # Publish to NATS subject
             await connection.publish(subject, message_bytes)
+            success = True
 
             logger.debug(
                 "Message published via connection pool",
@@ -698,19 +963,24 @@ class NATSService:
                 data_size=len(message_bytes),
             )
 
-            return True
-
+        except NATSPublishError:
+            # Re-raise NATS publish errors
+            raise
         except Exception as e:
+            error_msg = f"Failed to publish message via connection pool: {str(e)}"
             logger.error(
                 "Failed to publish message via connection pool",
                 error=str(e),
                 subject=subject,
                 message_id=data.get("message_id"),
             )
-            return False
+            raise NATSPublishError(error_msg, subject=subject, error=e) from e
         finally:
             if connection:
                 await self._return_connection(connection)
+            # Record metrics
+            processing_time = asyncio.get_running_loop().time() - start_time
+            self.metrics.record_publish(success, processing_time)
 
     async def _cleanup_connection_pool(self):
         """Clean up connection pool during shutdown."""
@@ -824,7 +1094,7 @@ class NATSService:
                 batch_data = {
                     "messages": messages,
                     "count": len(messages),
-                    "batch_timestamp": asyncio.get_event_loop().time(),
+                    "batch_timestamp": asyncio.get_running_loop().time(),
                 }
 
                 # Use connection pool for batch publishing
