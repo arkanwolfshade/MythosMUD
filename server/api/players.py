@@ -8,7 +8,7 @@ creation, retrieval, listing, and deletion of player characters.
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from ..auth.users import get_current_active_user, get_current_user
 from ..dependencies import PlayerServiceDep, StatsGeneratorDep
@@ -27,13 +27,25 @@ from ..utils.rate_limiter import character_creation_limiter, stats_roll_limiter
 class CreateCharacterRequest(BaseModel):
     """Request model for character creation."""
 
-    name: str
-    stats: dict
-    profession_id: int = 0
+    __slots__ = ()  # Performance optimization
+
+    name: str = Field(..., min_length=1, max_length=50, description="Character name")
+    stats: dict = Field(..., description="Character stats dictionary")
+    profession_id: int = Field(default=0, ge=0, description="Profession ID")
+
+    @field_validator("name")
+    @classmethod
+    def validate_name(cls, v: str) -> str:
+        """Validate character name format."""
+        if not v or not v.strip():
+            raise ValueError("Character name cannot be empty or whitespace")
+        return v.strip()
 
 
 class RollStatsRequest(BaseModel):
     """Request model for rolling character stats."""
+
+    __slots__ = ()  # Performance optimization
 
     method: str = "3d6"
     required_class: str | None = None
@@ -44,12 +56,16 @@ class RollStatsRequest(BaseModel):
 class SanityLossRequest(BaseModel):
     """Request model for applying sanity loss."""
 
+    __slots__ = ()  # Performance optimization
+
     amount: int = Field(..., ge=0, le=100, description="Amount of sanity to lose (0-100)")
     source: str = Field(default="unknown", description="Source of sanity loss")
 
 
 class FearRequest(BaseModel):
     """Request model for applying fear."""
+
+    __slots__ = ()  # Performance optimization
 
     amount: int = Field(..., ge=0, le=100, description="Amount of fear to apply (0-100)")
     source: str = Field(default="unknown", description="Source of fear")
@@ -58,12 +74,16 @@ class FearRequest(BaseModel):
 class CorruptionRequest(BaseModel):
     """Request model for applying corruption."""
 
+    __slots__ = ()  # Performance optimization
+
     amount: int = Field(..., ge=0, le=100, description="Amount of corruption to apply (0-100)")
     source: str = Field(default="unknown", description="Source of corruption")
 
 
 class OccultKnowledgeRequest(BaseModel):
     """Request model for gaining occult knowledge."""
+
+    __slots__ = ()  # Performance optimization
 
     amount: int = Field(..., ge=0, le=100, description="Amount of occult knowledge to gain (0-100)")
     source: str = Field(default="unknown", description="Source of occult knowledge")
@@ -72,11 +92,15 @@ class OccultKnowledgeRequest(BaseModel):
 class HealRequest(BaseModel):
     """Request model for healing a player."""
 
+    __slots__ = ()  # Performance optimization
+
     amount: int = Field(..., ge=0, le=1000, description="Amount of health to restore (0-1000)")
 
 
 class DamageRequest(BaseModel):
     """Request model for damaging a player."""
+
+    __slots__ = ()  # Performance optimization
 
     amount: int = Field(..., ge=0, le=1000, description="Amount of damage to apply (0-1000)")
     damage_type: str = Field(default="physical", description="Type of damage")
@@ -138,9 +162,7 @@ async def list_players(
     """Get a list of all players."""
     result = await player_service.list_players()
     if not isinstance(result, list):
-        raise RuntimeError(
-            f"Expected list from player_service.list_players(), got {type(result).__name__}"
-        )
+        raise RuntimeError(f"Expected list from player_service.list_players(), got {type(result).__name__}")
     # Convert all PlayerRead objects to dicts
     return [player.model_dump() for player in result]
 
@@ -229,9 +251,7 @@ async def apply_sanity_loss(
     try:
         result = await player_service.apply_sanity_loss(player_id, request_data.amount, request_data.source)
         if not isinstance(result, dict):
-            raise RuntimeError(
-                f"Expected dict from player_service.apply_sanity_loss(), got {type(result).__name__}"
-            )
+            raise RuntimeError(f"Expected dict from player_service.apply_sanity_loss(), got {type(result).__name__}")
         return result
     except ValidationError as e:
         context = _create_error_context(request, current_user, requested_player_id=player_id)
@@ -250,9 +270,7 @@ async def apply_fear(
     try:
         result = await player_service.apply_fear(player_id, request_data.amount, request_data.source)
         if not isinstance(result, dict):
-            raise RuntimeError(
-                f"Expected dict from player_service.apply_fear(), got {type(result).__name__}"
-            )
+            raise RuntimeError(f"Expected dict from player_service.apply_fear(), got {type(result).__name__}")
         return result
     except ValidationError as e:
         context = _create_error_context(request, current_user, requested_player_id=player_id)
@@ -271,9 +289,7 @@ async def apply_corruption(
     try:
         result = await player_service.apply_corruption(player_id, request_data.amount, request_data.source)
         if not isinstance(result, dict):
-            raise RuntimeError(
-                f"Expected dict from player_service.apply_corruption(), got {type(result).__name__}"
-            )
+            raise RuntimeError(f"Expected dict from player_service.apply_corruption(), got {type(result).__name__}")
         return result
     except ValidationError as e:
         context = _create_error_context(request, current_user, requested_player_id=player_id)
@@ -313,9 +329,7 @@ async def heal_player(
     try:
         result = await player_service.heal_player(player_id, request_data.amount)
         if not isinstance(result, dict):
-            raise RuntimeError(
-                f"Expected dict from player_service.heal_player(), got {type(result).__name__}"
-            )
+            raise RuntimeError(f"Expected dict from player_service.heal_player(), got {type(result).__name__}")
         return result
     except ValidationError as e:
         context = _create_error_context(request, current_user, requested_player_id=player_id)
@@ -334,9 +348,7 @@ async def damage_player(
     try:
         result = await player_service.damage_player(player_id, request_data.amount, request_data.damage_type)
         if not isinstance(result, dict):
-            raise RuntimeError(
-                f"Expected dict from player_service.damage_player(), got {type(result).__name__}"
-            )
+            raise RuntimeError(f"Expected dict from player_service.damage_player(), got {type(result).__name__}")
         return result
     except ValidationError as e:
         context = _create_error_context(request, current_user, requested_player_id=player_id)
@@ -410,7 +422,9 @@ async def respawn_player(
 
         # This should never be reached, but mypy needs it
         raise LoggedHTTPException(
-            status_code=500, detail="No database session available", context=_create_error_context(request, current_user)
+            status_code=500,
+            detail="No database session available",
+            context=_create_error_context(request, current_user),
         )
 
     except LoggedHTTPException:

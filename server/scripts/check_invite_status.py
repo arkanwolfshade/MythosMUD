@@ -1,4 +1,5 @@
 """Check the status of a specific invite code."""
+
 import asyncio
 from pathlib import Path
 
@@ -33,5 +34,6 @@ async def check_invite(invite_code: str):
 
 if __name__ == "__main__":
     import sys
+
     invite_code = sys.argv[1] if len(sys.argv) > 1 else "COSMOS202541"
     asyncio.run(check_invite(invite_code))

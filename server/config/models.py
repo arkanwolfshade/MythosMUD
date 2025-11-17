@@ -118,7 +118,14 @@ class DatabaseConfig(BaseSettings):
         logger.debug("Database URL validation successful", url_preview=v[:50] if len(v) > 50 else v)
         return v
 
-    @field_validator("pool_size", "max_overflow", "pool_timeout", "asyncpg_pool_min_size", "asyncpg_pool_max_size", "asyncpg_command_timeout")
+    @field_validator(
+        "pool_size",
+        "max_overflow",
+        "pool_timeout",
+        "asyncpg_pool_min_size",
+        "asyncpg_pool_max_size",
+        "asyncpg_command_timeout",
+    )
     @classmethod
     def validate_pool_config(cls, v: int) -> int:
         """Validate pool configuration values are positive."""

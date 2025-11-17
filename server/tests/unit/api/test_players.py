@@ -462,7 +462,9 @@ class TestPlayerEffects:
         mock_player_service_dep.return_value = mock_service
 
         request_data = OccultKnowledgeRequest(amount=2, source="test")
-        result = await gain_occult_knowledge("test-player-id", request_data, mock_request, mock_current_user, mock_service)
+        result = await gain_occult_knowledge(
+            "test-player-id", request_data, mock_request, mock_current_user, mock_service
+        )
 
         assert "Gained 2 occult knowledge for TestPlayer" in result["message"]
         mock_service.gain_occult_knowledge.assert_called_once_with("test-player-id", 2, "test")

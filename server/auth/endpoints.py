@@ -47,6 +47,8 @@ class UserUpdate(schemas.BaseUserUpdate):
 class UserCreate(BaseModel):
     """Schema for user creation with invite code validation."""
 
+    __slots__ = ()  # Performance optimization
+
     username: str
     password: str
     invite_code: str | None = None
@@ -66,6 +68,8 @@ class UserCreate(BaseModel):
 class LoginRequest(BaseModel):
     """Schema for login requests."""
 
+    __slots__ = ()  # Performance optimization
+
     username: str
     password: str
 
@@ -73,6 +77,8 @@ class LoginRequest(BaseModel):
 # Define login response schema
 class LoginResponse(BaseModel):
     """Schema for login responses."""
+
+    __slots__ = ()  # Performance optimization
 
     access_token: str
     token_type: str = "bearer"

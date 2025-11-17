@@ -240,9 +240,7 @@ class TestPlayerAPIIntegration:
         mock_persistence_for_api.apply_fear.return_value = None
 
         # Act
-        response = container_test_client.post(
-            "/api/players/test-player-id/fear", json={"amount": 5, "source": "test"}
-        )
+        response = container_test_client.post("/api/players/test-player-id/fear", json={"amount": 5, "source": "test"})
 
         # Assert
         assert response.status_code in [200, 401]

@@ -13,12 +13,16 @@ from pydantic import BaseModel, ConfigDict, Field
 class InviteBase(BaseModel):
     """Base invite schema with common fields."""
 
+    __slots__ = ()  # Performance optimization
+
     invite_code: str = Field(..., min_length=1, max_length=50, description="Invite code")
     is_active: bool = Field(default=True, description="Whether invite is active (available for use)")
 
 
 class InviteCreate(InviteBase):
     """Schema for creating a new invite."""
+
+    __slots__ = ()  # Performance optimization
 
     expires_at: datetime | None = Field(None, description="When the invite expires")
 
@@ -31,6 +35,8 @@ class InviteCreate(InviteBase):
 
 class InviteRead(InviteBase):
     """Schema for reading invite data."""
+
+    __slots__ = ()  # Performance optimization
 
     id: str = Field(..., description="Invite's unique identifier (UUID as string)")
     used_by_user_id: str | None = Field(None, description="User who used the invite (UUID as string)")
@@ -54,6 +60,8 @@ class InviteRead(InviteBase):
 
 class InviteUpdate(BaseModel):
     """Schema for updating invite data."""
+
+    __slots__ = ()  # Performance optimization
 
     invite_code: str | None = Field(None, min_length=1, max_length=50, description="Invite code")
     is_active: bool | None = Field(None, description="Whether invite is active (available for use)")

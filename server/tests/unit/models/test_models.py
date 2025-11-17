@@ -111,6 +111,33 @@ class TestStats:
         stats = Stats(sanity=0)
         assert stats.is_insane() is True
 
+    def test_stats_ignores_extra_fields(self):
+        """Test that Stats model ignores extra fields (security: extra='ignore')."""
+        # Create Stats with extra fields that should be ignored
+        stats = Stats(
+            strength=15,
+            dexterity=12,
+            # Extra fields that should be ignored, not stored
+            malicious_field="injection_attempt",
+            another_extra_field=999,
+            nested_extra={"key": "value"},
+        )
+
+        # Verify valid fields are set
+        assert stats.strength == 15
+        assert stats.dexterity == 12
+
+        # Verify extra fields are NOT stored (ignored)
+        assert not hasattr(stats, "malicious_field")
+        assert not hasattr(stats, "another_extra_field")
+        assert not hasattr(stats, "nested_extra")
+
+        # Verify model_dump() doesn't include extra fields
+        dumped = stats.model_dump()
+        assert "malicious_field" not in dumped
+        assert "another_extra_field" not in dumped
+        assert "nested_extra" not in dumped
+
 
 class TestStatusEffect:
     """Test the StatusEffect model."""

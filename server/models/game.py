@@ -85,8 +85,8 @@ class Stats(BaseModel):
     model_config = ConfigDict(
         # Performance: validate assignment for computed fields
         validate_assignment=True,
-        # Allow extra fields for backward compatibility with serialized stats
-        extra="allow",
+        # Ignore extra fields for backward compatibility with serialized stats (safer than "allow")
+        extra="ignore",
         # Use enum values for consistency
         use_enum_values=True,
     )
@@ -116,26 +116,40 @@ class Stats(BaseModel):
     position: PositionState = Field(default=PositionState.STANDING, description="Current body posture")
 
     def __init__(self, **data: Any) -> None:
-        """Initialize Stats with proper random number generation."""
-        # Use a local random generator to avoid affecting global state
-        import random
+        """
+        Initialize Stats with provided data.
 
-        # Use system random for production, optional seed for testing
-        seed = data.pop("_test_seed", None)
-        local_rng = random.Random(seed) if seed is not None else random.Random()
+        For random stat generation, use generate_random_stats() from server.game.stats_generator
+        instead of calling Stats() without arguments.
+        """
+        # Handle backward compatibility: if no attributes provided, generate random ones
+        # This maintains compatibility with existing code that calls Stats()
+        if not any(
+            key in data for key in ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]
+        ):
+            # Import here to avoid circular dependency
+            from ..game.stats_generator import generate_random_stats
 
-        # Generate random values for any field that is None or not provided
-        data.setdefault("strength", local_rng.randint(3, 18))
-        data.setdefault("dexterity", local_rng.randint(3, 18))
-        data.setdefault("constitution", local_rng.randint(3, 18))
-        data.setdefault("intelligence", local_rng.randint(3, 18))
-        data.setdefault("wisdom", local_rng.randint(3, 18))
-        data.setdefault("charisma", local_rng.randint(3, 18))
+            # Generate random stats and merge with provided data
+            seed = data.pop("_test_seed", None)
+            random_stats = generate_random_stats(seed=seed)
+            # Merge random stats with any provided data (provided data takes precedence)
+            for key in ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]:
+                if key not in data:
+                    data[key] = getattr(random_stats, key)
 
-        # Replace None values with random values
-        for field in ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]:
-            if data.get(field) is None:
-                data[field] = local_rng.randint(3, 18)
+        # Replace None values with random values for backward compatibility
+        if any(
+            data.get(key) is None
+            for key in ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]
+        ):
+            from ..game.stats_generator import generate_random_stats
+
+            seed = data.pop("_test_seed", None)
+            random_stats = generate_random_stats(seed=seed)
+            for field in ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]:
+                if data.get(field) is None:
+                    data[field] = getattr(random_stats, field)
 
         super().__init__(**data)
 

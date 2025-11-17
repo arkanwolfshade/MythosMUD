@@ -14,6 +14,8 @@ from pydantic import BaseModel, ConfigDict, Field
 class UserBase(BaseModel):
     """Base user schema with common fields."""
 
+    __slots__ = ()  # Performance optimization
+
     username: str = Field(..., description="User's username")
     is_active: bool = Field(default=True, description="Whether user is active")
     is_superuser: bool = Field(default=False, description="Whether user is superuser")
@@ -21,6 +23,8 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     """Schema for creating a new user."""
+
+    __slots__ = ()  # Performance optimization
 
     password: str = Field(..., min_length=8, description="User's password")
 
@@ -39,6 +43,8 @@ class UserCreate(UserBase):
 
 class UserRead(UserBase):
     """Schema for reading user data."""
+
+    __slots__ = ()  # Performance optimization
 
     user_id: uuid.UUID = Field(..., description="User's unique identifier")
     created_at: datetime = Field(..., description="User creation timestamp")
@@ -62,6 +68,8 @@ class UserRead(UserBase):
 
 class UserUpdate(BaseModel):
     """Schema for updating user data."""
+
+    __slots__ = ()  # Performance optimization
 
     username: str | None = Field(None, description="User's username")
     password: str | None = Field(None, min_length=8, description="User's password")
