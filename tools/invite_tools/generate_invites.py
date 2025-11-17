@@ -172,8 +172,8 @@ async def generate_unique_codes(count=100, expires_in_days: int = 30):
 
     async with async_session() as session:
         # Get existing codes to avoid duplicates
-        # Note: Database column is 'code', not 'invite_code' (schema mismatch)
-        result = await session.execute(text("SELECT code FROM invites"))
+        # Database column is 'invite_code' after migration
+        result = await session.execute(text("SELECT invite_code FROM invites"))
         existing_codes = {row[0] for row in result.fetchall()}
 
         codes: set[str] = set()
@@ -199,7 +199,7 @@ async def generate_unique_codes(count=100, expires_in_days: int = 30):
             invites_data.append(
                 {
                     "id": str(uuid.uuid4()),
-                    "code": code,
+                    "invite_code": code,
                     "is_active": True,
                     "expires_at": expires_at,
                 }
@@ -209,8 +209,8 @@ async def generate_unique_codes(count=100, expires_in_days: int = 30):
         for invite_data in invites_data:
             await session.execute(
                 text("""
-                    INSERT INTO invites (id, code, is_active, expires_at, created_at)
-                    VALUES (:id, :code, :is_active, :expires_at, CURRENT_TIMESTAMP)
+                    INSERT INTO invites (id, invite_code, is_active, expires_at, created_at)
+                    VALUES (:id, :invite_code, :is_active, :expires_at, CURRENT_TIMESTAMP)
                 """),
                 invite_data,
             )

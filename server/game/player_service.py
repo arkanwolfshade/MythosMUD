@@ -81,7 +81,10 @@ class PlayerService:
             user_id = uuid.uuid4()
             logger.debug("Generated user_id for new player")
 
-        current_time = datetime.datetime.now()
+        # Use naive UTC datetime for PostgreSQL TIMESTAMP WITHOUT TIME ZONE compatibility
+        from datetime import UTC
+
+        current_time = datetime.datetime.now(UTC).replace(tzinfo=None)
         player = Player(
             player_id=uuid.uuid4(),
             user_id=user_id,
@@ -153,7 +156,10 @@ class PlayerService:
             user_id = uuid.uuid4()
             logger.debug("Generated user_id for new player")
 
-        current_time = datetime.datetime.now()
+        # Use naive UTC datetime for PostgreSQL TIMESTAMP WITHOUT TIME ZONE compatibility
+        from datetime import UTC
+
+        current_time = datetime.datetime.now(UTC).replace(tzinfo=None)
         player = Player(
             player_id=uuid.uuid4(),
             user_id=user_id,

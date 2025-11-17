@@ -13,7 +13,7 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
-from sqlalchemy import DateTime, String
+from sqlalchemy import Boolean, DateTime, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
@@ -44,6 +44,16 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     # User authentication fields (email and hashed_password are inherited from base)
     # Using Mapped[] with mapped_column for SQLAlchemy 2.0 type safety
     username: Mapped[str] = mapped_column(String(length=255), unique=True, nullable=False, index=True)
+
+    # Display name - defaults to username if not provided
+    # Note: We'll set this explicitly in registration, but provide a default for safety
+    display_name: Mapped[str] = mapped_column(String(length=255), nullable=False, server_default="")
+
+    # Legacy password hash field (nullable, separate from hashed_password used by FastAPI Users)
+    password_hash: Mapped[str | None] = mapped_column(String(length=255), nullable=True)
+
+    # Admin flag (separate from is_superuser)
+    is_admin: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
     # User status fields (is_active, is_superuser, is_verified are inherited from base)
 
@@ -82,4 +92,7 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
 
     def get_display_name(self) -> str:
         """Get display name for the user."""
+        # Return display_name if set and not empty, otherwise fall back to username
+        if hasattr(self, "display_name") and self.display_name:
+            return str(self.display_name)
         return str(self.username) if self.username else str(self.id)

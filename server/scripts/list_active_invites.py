@@ -1,0 +1,32 @@
+"""List active invite codes."""
+import asyncio
+from pathlib import Path
+
+from dotenv import load_dotenv
+from sqlalchemy import text
+
+from server.database import get_session_maker
+
+# Load environment variables
+load_dotenv(Path(".env.local"))
+
+
+async def list_active():
+    """List active invite codes."""
+    async with get_session_maker()() as session:
+        result = await session.execute(
+            text("SELECT invite_code FROM invites WHERE is_active = true LIMIT 5")
+        )
+        codes = [row[0] for row in result.fetchall()]
+        if codes:
+            print("Available invite codes:", ", ".join(codes))
+            return codes[0]  # Return first available
+        else:
+            print("No active invite codes found")
+            return None
+
+
+if __name__ == "__main__":
+    code = asyncio.run(list_active())
+    if code:
+        print(f"\nUsing invite code: {code}")

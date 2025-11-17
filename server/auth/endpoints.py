@@ -113,10 +113,11 @@ async def register_user(
         user_create.email = f"{user_create.username}@wolfshade.org"
         logger.info("Generated simple bogus email", username=user_create.username, email=user_create.email)
 
-    # Validate invite code (but don't use it yet)
+    # Validate invite code
+    validated_invite = None
     if user_create.invite_code:
         try:
-            await invite_manager.validate_invite(user_create.invite_code, request)
+            validated_invite = await invite_manager.validate_invite(user_create.invite_code, request)
         except LoggedHTTPException as e:
             raise e
 
@@ -151,17 +152,56 @@ async def register_user(
         # Create a minimal user object to avoid FastAPI Users issues
         user = User()
         user.username = user_create_clean.username
+        user.display_name = user_create_clean.username  # Default display_name to username
         user.email = user_create_clean.email
         user.hashed_password = hashed_password
         user.is_active = True
         user.is_superuser = False
         user.is_verified = False
+        user.is_admin = False  # New users are not admins by default
         user.created_at = datetime.now(UTC).replace(tzinfo=None)
         user.updated_at = datetime.now(UTC).replace(tzinfo=None)
 
         session.add(user)
         await session.commit()
         await session.refresh(user)
+
+        # Mark invite as used now that user registration is successful
+        if validated_invite and user_create.invite_code:
+            try:
+                # Re-query the invite in the current session to ensure it's attached
+                from sqlalchemy import text
+
+                # Use raw SQL update to avoid UUID type mismatch issues
+                # Cast used_by_user_id to UUID in the SQL to match the column type
+                await session.execute(
+                    text("""
+                        UPDATE invites
+                        SET is_active = :is_active, used_by_user_id = CAST(:used_by_user_id AS UUID)
+                        WHERE invite_code = :invite_code
+                    """),
+                    {
+                        "is_active": False,
+                        "used_by_user_id": str(user.id),
+                        "invite_code": user_create.invite_code,
+                    },
+                )
+                await session.commit()
+                logger.info(
+                    "Invite marked as used during registration",
+                    invite_code=user_create.invite_code,
+                    user_id=user.id,
+                    username=user.username,
+                )
+            except Exception as invite_error:
+                # Log error but don't fail registration if invite marking fails
+                logger.error(
+                    "Failed to mark invite as used during registration",
+                    error=str(invite_error),
+                    error_type=type(invite_error).__name__,
+                    invite_code=user_create.invite_code,
+                    user_id=user.id,
+                )
 
     except LoggedHTTPException:
         raise
@@ -177,11 +217,7 @@ async def register_user(
         # Re-raise other exceptions
         raise e
 
-    # Store invite code in user session for later use during character creation
-    # We'll mark it as used when the character is actually created
-    logger.info(
-        f"User {user.username} registered successfully - invite code reserved, player creation pending stats acceptance"
-    )
+    logger.info("User registered successfully", username=user.username, user_id=user.id)
 
     # Generate JWT token using FastAPI Users' built-in method
     import os

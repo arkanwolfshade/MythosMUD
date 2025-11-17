@@ -602,6 +602,22 @@ class AsyncPersistenceLayer:
 
     def _convert_player_to_db_data(self, player: Player) -> dict[str, Any]:
         """Convert a player object to database data dictionary."""
+        # Ensure datetime objects are naive (no timezone) for PostgreSQL TIMESTAMP WITHOUT TIME ZONE
+        # asyncpg expects datetime objects, not ISO strings
+        created_at = player.created_at
+        if created_at and hasattr(created_at, "tzinfo") and created_at.tzinfo is not None:
+            # Convert timezone-aware datetime to naive UTC
+            from datetime import UTC
+
+            created_at = created_at.astimezone(UTC).replace(tzinfo=None)
+
+        last_active = player.last_active
+        if last_active and hasattr(last_active, "tzinfo") and last_active.tzinfo is not None:
+            # Convert timezone-aware datetime to naive UTC
+            from datetime import UTC
+
+            last_active = last_active.astimezone(UTC).replace(tzinfo=None)
+
         return {
             "player_id": str(player.player_id),
             "user_id": str(player.user_id),
@@ -613,13 +629,11 @@ class AsyncPersistenceLayer:
             "stats": player.get_stats(),
             "inventory": player.get_inventory(),
             "status_effects": player.get_status_effects(),
-            "created_at": player.created_at.isoformat()
-            if hasattr(player.created_at, "isoformat")
-            else str(player.created_at),
-            "last_active": player.last_active.isoformat()
-            if hasattr(player.last_active, "isoformat")
-            else str(player.last_active),
-            "is_admin": int(player.is_admin) if hasattr(player, "is_admin") and player.is_admin is not None else 0,
+            "created_at": created_at,  # Pass datetime object directly to asyncpg
+            "last_active": last_active,  # Pass datetime object directly to asyncpg
+            "is_admin": int(bool(player.is_admin))
+            if hasattr(player, "is_admin") and player.is_admin is not None
+            else 0,
         }
 
     def _convert_row_to_profession_data(self, row: dict[str, Any]) -> dict[str, Any]:

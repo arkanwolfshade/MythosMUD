@@ -79,7 +79,7 @@ describe('StatsRollingScreen', () => {
       render(<StatsRollingScreen {...defaultProps} />);
 
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith('http://localhost:54731/players/roll-stats', {
+        expect(mockFetch).toHaveBeenCalledWith('http://localhost:54731/api/players/roll-stats', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

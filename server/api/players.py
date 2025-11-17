@@ -598,8 +598,13 @@ async def create_character_with_stats(
             user_id=current_user.id,
         )
 
-        # Note: For now, we'll skip marking the invite as used to avoid complexity
-        # TODO: Implement a proper way to track and mark invites as used
+        # Note: Invite codes are now marked as used during registration, not during character creation
+        # This ensures invites are consumed when users register, preventing invite code reuse
+        logger.debug(
+            "Character created - invite was already marked as used during registration",
+            user_id=current_user.id,
+        )
+
         logger.info("Character created successfully", character_name=request_data.name, user_id=current_user.id)
 
         # player is already a PlayerRead from the service layer

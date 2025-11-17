@@ -71,7 +71,7 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
     setError('');
 
     try {
-      const response = await fetch(`${baseUrl}/players/roll-stats`, {
+      const response = await fetch(`${baseUrl}/api/players/roll-stats`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -133,7 +133,7 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
     setRerollCooldown(1); // 1 second cooldown
 
     try {
-      const response = await fetch(`${baseUrl}/players/roll-stats`, {
+      const response = await fetch(`${baseUrl}/api/players/roll-stats`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -186,7 +186,7 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
     setError('');
 
     try {
-      const response = await fetch(`${baseUrl}/players/create-character`, {
+      const response = await fetch(`${baseUrl}/api/players/create-character`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
