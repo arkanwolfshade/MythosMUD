@@ -17,7 +17,7 @@ if ($Help) {
     Write-Host ""
     Write-Host "Backend Server: http://localhost:54731"
     Write-Host "Frontend Client: http://localhost:5173"
-    Write-Host "Test database location: data/e2e_test/players/e2e_players.db"
+    Write-Host "Test database: PostgreSQL (mythos_e2e database)"
     Write-Host ""
     Write-Host "After both services are running, execute E2E tests with:"
     Write-Host "  make test-server-e2e    # Server-side Playwright tests"
@@ -88,7 +88,7 @@ else {
 # Set LOGGING_ENVIRONMENT for Pydantic configuration
 $env:LOGGING_ENVIRONMENT = "e2e_test"
 Write-Host "Set LOGGING_ENVIRONMENT=e2e_test for Pydantic config" -ForegroundColor Cyan
-Write-Host "Test database: data/e2e_test/players/e2e_players.db" -ForegroundColor Gray
+Write-Host "Test database: PostgreSQL (mythos_e2e database)" -ForegroundColor Gray
 Write-Host ""
 
 # Start server using the existing start_server.ps1 script

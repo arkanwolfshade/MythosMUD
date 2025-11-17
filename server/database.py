@@ -12,6 +12,7 @@ import asyncio
 import threading
 from collections.abc import AsyncGenerator
 from pathlib import Path
+from typing import Any
 
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (
@@ -20,7 +21,7 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.pool import NullPool, StaticPool
+from sqlalchemy.pool import NullPool
 
 from .exceptions import ValidationError
 from .logging.enhanced_logging_config import get_logger
@@ -135,18 +136,32 @@ class DatabaseManager:
         logger.info("Using PostgreSQL database URL from environment", database_url=self.database_url)
 
         # Determine pool class based on database URL
-        # Use NullPool for tests, StaticPool for production
-        pool_class = NullPool if "test" in self.database_url else StaticPool
+        # Use NullPool for tests, default AsyncAdaptedQueuePool for production
+        # For async engines, AsyncAdaptedQueuePool is used automatically if poolclass not specified
+        pool_kwargs: dict[str, Any] = {}
+        if "test" in self.database_url:
+            pool_kwargs["poolclass"] = NullPool
+        else:
+            # For production, use default AsyncAdaptedQueuePool with configured pool size
+            # AsyncAdaptedQueuePool is automatically used by create_async_engine()
+            pool_kwargs.update(
+                {
+                    "pool_size": 5,  # Number of connections to maintain
+                    "max_overflow": 10,  # Additional connections that can be created
+                    "pool_timeout": 30,  # Seconds to wait for connection from pool
+                }
+            )
 
         # Create async engine with PostgreSQL configuration
         self.engine = create_async_engine(
             self.database_url,
             echo=False,
-            poolclass=pool_class,
             pool_pre_ping=True,
+            **pool_kwargs,
         )
 
-        logger.info("Database engine created", pool_class=pool_class.__name__)
+        pool_type = "NullPool" if "test" in self.database_url else "AsyncAdaptedQueuePool"
+        logger.info("Database engine created", pool_type=pool_type)
 
         # Create async session maker
         self.session_maker = async_sessionmaker(
@@ -257,12 +272,14 @@ class DatabaseManager:
 
     def get_database_path(self) -> Path | None:
         """
-        Get the database file path (SQLite only).
+        Get the database file path.
 
-        For PostgreSQL, returns None as there is no file path.
+        DEPRECATED: PostgreSQL does not use file paths. This method always returns None
+        for PostgreSQL databases. Kept for backward compatibility with code that may
+        check for database paths.
 
         Returns:
-            Path | None: Path to the database file (SQLite) or None (PostgreSQL)
+            Path | None: Always None for PostgreSQL (no file path)
         """
         database_url = self.get_database_url()
 
@@ -287,10 +304,10 @@ class DatabaseManager:
             context.metadata["database_url"] = database_url
             log_and_raise(
                 ValidationError,
-                f"Unsupported database URL: {database_url}",
+                f"Unsupported database URL: {database_url}. Only PostgreSQL is supported.",
                 context=context,
                 details={"database_url": database_url},
-                user_friendly="Unsupported database configuration",
+                user_friendly="Unsupported database configuration - PostgreSQL required",
             )
             # This should never be reached due to log_and_raise above
             raise RuntimeError("Unreachable code")
@@ -518,12 +535,14 @@ async def close_db() -> None:
 
 def get_database_path() -> Path | None:
     """
-    Get the database file path (SQLite only).
+    Get the database file path.
 
-    For PostgreSQL, returns None as there is no file path.
+    DEPRECATED: PostgreSQL does not use file paths. This function always returns None
+    for PostgreSQL databases. Kept for backward compatibility with code that may
+    check for database paths.
 
     Returns:
-        Path | None: Path to the database file (SQLite) or None (PostgreSQL)
+        Path | None: Always None for PostgreSQL (no file path)
     """
     # Test override path handling without requiring initialization
     if _database_url is not None:
@@ -540,7 +559,16 @@ def get_database_path() -> Path | None:
 
 
 def ensure_database_directory() -> None:
-    """Ensure database directory exists (SQLite only)."""
+    """
+    Ensure database directory exists.
+
+    DEPRECATED: PostgreSQL does not use file paths or directories. This function
+    is a no-op for PostgreSQL databases. Kept for backward compatibility.
+
+    For PostgreSQL, database directories are managed by the PostgreSQL server,
+    not by the application.
+    """
     db_path = get_database_path()
+    # PostgreSQL always returns None, so this is effectively a no-op
     if db_path is not None:
         db_path.parent.mkdir(parents=True, exist_ok=True)

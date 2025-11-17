@@ -80,7 +80,7 @@ class NPCDefinition(Base):
     max_population = Column(Integer, default=1, nullable=False)
     spawn_probability = Column(Float, default=1.0, nullable=False)
 
-    # Configuration stored as JSON (SQLite compatible)
+    # Configuration stored as JSON
     base_stats = Column(
         Text, nullable=False, default="{}", comment="Base statistics for the NPC (HP, MP, attributes, etc.)"
     )

@@ -25,7 +25,7 @@ async def session_factory():
 
     database_url = os.getenv("DATABASE_URL")
     if not database_url or not database_url.startswith("postgresql"):
-        raise ValueError("DATABASE_URL must be set to a PostgreSQL URL. SQLite is no longer supported.")
+        raise ValueError("DATABASE_URL must be set to a PostgreSQL URL for this test.")
     engine = create_async_engine(database_url, future=True)
     async with engine.begin() as conn:
         # PostgreSQL always enforces foreign keys - no PRAGMA needed

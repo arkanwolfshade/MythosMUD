@@ -2,39 +2,51 @@
 
 from __future__ import annotations
 
-import sqlite3
 from datetime import UTC, datetime
-from pathlib import Path
 
+import pytest
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+
+from server.database import get_database_url
+from server.models.base import Base
 from server.models.player import Player
+from server.models.user import User
 from server.persistence import PersistenceLayer
 
 
-def initialize_database(db_path: Path, user_id: str = "test-user-position") -> None:
-    """Create a fresh SQLite database with required schema and seed data."""
-    schema_path = Path("server/sql/schema.sql")
-    schema_sql = schema_path.read_text(encoding="utf-8")
+@pytest.fixture
+async def async_session_factory():
+    """Create an async session factory for database setup."""
+    database_url = get_database_url()
+    if not database_url or not database_url.startswith("postgresql"):
+        pytest.skip("DATABASE_URL must be set to a PostgreSQL URL for this test.")
 
-    with sqlite3.connect(db_path) as conn:
-        conn.execute("PRAGMA foreign_keys = ON")
-        conn.executescript(schema_sql)
-        conn.execute(
-            """
-            INSERT OR REPLACE INTO users (
-                id, email, username, hashed_password, is_active, is_superuser, is_verified
-            ) VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                user_id,
-                "position_test@example.com",
-                "position_test_user",
-                "hashed-password",
-                1,
-                0,
-                1,
-            ),
-        )
-        conn.commit()
+    engine = create_async_engine(database_url, future=True)
+    async with engine.begin() as conn:
+        # Create tables
+        await conn.run_sync(Base.metadata.create_all)
+
+    factory = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+    try:
+        yield factory
+    finally:
+        await engine.dispose()
+
+
+async def initialize_database(session: AsyncSession, user_id: str = "test-user-position") -> None:
+    """Create required schema and seed data in PostgreSQL."""
+    # Create user
+    user = User(
+        id=user_id,
+        email="position_test@example.com",
+        username="position_test_user",
+        hashed_password="hashed-password",
+        is_active=True,
+        is_superuser=False,
+        is_verified=True,
+    )
+    session.add(user)
+    await session.commit()
 
 
 def build_player(player_id: str, user_id: str) -> Player:
@@ -60,13 +72,19 @@ def test_player_stats_include_position_by_default():
     assert stats["position"] == "standing", "default position should be standing"
 
 
-def test_position_persists_across_logout_login_cycle(tmp_path: Path):
+@pytest.mark.asyncio
+async def test_position_persists_across_logout_login_cycle(async_session_factory):
     """Verify that player position changes persist after saving and reloading."""
-    db_path = tmp_path / "position_persistence.db"
-    user_id = "position-user"
-    initialize_database(db_path, user_id=user_id)
+    database_url = get_database_url()
+    if not database_url or not database_url.startswith("postgresql"):
+        pytest.skip("DATABASE_URL must be set to a PostgreSQL URL for this test.")
 
-    persistence = PersistenceLayer(db_path=str(db_path))
+    async with async_session_factory() as session:
+        user_id = "position-user"
+        await initialize_database(session, user_id=user_id)
+        await session.commit()
+
+    persistence = PersistenceLayer(db_path=database_url)
 
     player_id = "position-player"
     player = build_player(player_id, user_id)
@@ -91,40 +109,38 @@ def test_position_persists_across_logout_login_cycle(tmp_path: Path):
     assert reloaded_player.get_stats()["position"] == "sitting"
 
 
-def test_missing_position_defaults_to_standing_on_load(tmp_path: Path):
+@pytest.mark.asyncio
+async def test_missing_position_defaults_to_standing_on_load(async_session_factory):
     """Players with legacy stats lacking position should default to standing."""
-    db_path = tmp_path / "legacy_position.db"
-    user_id = "legacy-position-user"
-    initialize_database(db_path, user_id=user_id)
+    database_url = get_database_url()
+    if not database_url or not database_url.startswith("postgresql"):
+        pytest.skip("DATABASE_URL must be set to a PostgreSQL URL for this test.")
 
-    # Insert legacy stats without a position field.
-    legacy_stats = (
-        '{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, '
-        '"wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, '
-        '"fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100}'
-    )
+    async with async_session_factory() as session:
+        user_id = "legacy-position-user"
+        await initialize_database(session, user_id=user_id)
 
-    player_id = "legacy-player"
-    with sqlite3.connect(db_path) as conn:
-        conn.execute("PRAGMA foreign_keys = ON")
-        conn.execute(
-            """
-            INSERT INTO players (
-                player_id, user_id, name, stats, inventory, status_effects,
-                current_room_id, experience_points, level, is_admin, profession_id
-            ) VALUES (?, ?, ?, ?, '[]', '[]', ?, 0, 1, 0, 0)
-            """,
-            (
-                player_id,
-                user_id,
-                "LegacyPlayer",
-                legacy_stats,
-                "earth_arkhamcity_sanitarium_room_foyer_001",
-            ),
+        # Insert legacy stats without a position field using PostgreSQL syntax
+        legacy_stats = (
+            '{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, '
+            '"wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, '
+            '"fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100}'
         )
-        conn.commit()
 
-    persistence = PersistenceLayer(db_path=str(db_path))
+        player_id = "legacy-player"
+        # Create player with legacy stats
+        player = Player(
+            player_id=player_id,
+            user_id=user_id,
+            name="LegacyPlayer",
+            current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
+        )
+        # Set legacy stats directly
+        player.stats = legacy_stats
+        session.add(player)
+        await session.commit()
+
+    persistence = PersistenceLayer(db_path=database_url)
     rehydrated_player = persistence.get_player(player_id)
 
     assert rehydrated_player is not None, "legacy player should load successfully"

@@ -15,7 +15,6 @@ from .models.room import Room
 from .postgres_adapter import connect_postgres
 from .schemas.inventory_schema import InventorySchemaValidationError, validate_inventory_payload
 from .utils.error_logging import create_error_context, log_and_raise
-from .world_loader import ROOMS_BASE_PATH
 
 if TYPE_CHECKING:
     from .models.profession import Profession
@@ -121,7 +120,7 @@ class PersistenceLayer:
         if db_path:
             self.db_path = db_path
         elif os.environ.get("DATABASE_URL"):
-            # Use DATABASE_URL directly (could be PostgreSQL or SQLite)
+            # Use DATABASE_URL directly (PostgreSQL only)
             # Type assertion: we've already checked it's not None above
             database_url = os.environ.get("DATABASE_URL")
             assert database_url is not None, "DATABASE_URL should not be None here"
@@ -376,33 +375,156 @@ class PersistenceLayer:
 
     # --- Room Cache (Loaded at Startup) ---
     def _load_room_cache(self):
-        """Load rooms from JSON files using world_loader and convert to Room objects."""
+        """Load rooms from PostgreSQL database and convert to Room objects."""
         self._room_cache = {}
         self._room_mappings = {}
         try:
-            # Use the world_loader to load the full world data including room mappings
-            from .world_loader import load_hierarchical_world
+            from .world_loader import generate_room_id
 
-            world_data = load_hierarchical_world()
-            room_data = world_data["rooms"]
-            self._room_mappings = world_data["room_mappings"]
+            with self._get_connection() as conn:
+                # Query rooms with zone/subzone hierarchy
+                query = """
+                    SELECT
+                        r.id as room_uuid,
+                        r.stable_id,
+                        r.name,
+                        r.description,
+                        r.attributes,
+                        sz.stable_id as subzone_stable_id,
+                        z.stable_id as zone_stable_id,
+                        -- Extract plane from zone stable_id (format: 'plane/zone')
+                        SPLIT_PART(z.stable_id, '/', 1) as plane,
+                        SPLIT_PART(z.stable_id, '/', 2) as zone
+                    FROM rooms r
+                    JOIN subzones sz ON r.subzone_id = sz.id
+                    JOIN zones z ON sz.zone_id = z.id
+                    ORDER BY z.stable_id, sz.stable_id, r.stable_id
+                """
+                cursor = conn.cursor()
+                cursor.execute(query)
+                rooms_rows = cursor.fetchall()
 
-            # Convert dictionary data to Room objects
-            for room_id, room_data_dict in room_data.items():
-                self._room_cache[room_id] = Room(room_data_dict, self._event_bus)
+                # Query room links (exits) for all rooms
+                # Include both source and destination room zone/subzone info
+                exits_query = """
+                    SELECT
+                        r.stable_id as from_room_stable_id,
+                        r2.stable_id as to_room_stable_id,
+                        rl.direction,
+                        sz.stable_id as from_subzone_stable_id,
+                        z.stable_id as from_zone_stable_id,
+                        sz2.stable_id as to_subzone_stable_id,
+                        z2.stable_id as to_zone_stable_id
+                    FROM room_links rl
+                    JOIN rooms r ON rl.from_room_id = r.id
+                    JOIN rooms r2 ON rl.to_room_id = r2.id
+                    JOIN subzones sz ON r.subzone_id = sz.id
+                    JOIN zones z ON sz.zone_id = z.id
+                    JOIN subzones sz2 ON r2.subzone_id = sz2.id
+                    JOIN zones z2 ON sz2.zone_id = z2.id
+                """
+                cursor.execute(exits_query)
+                exits_rows = cursor.fetchall()
 
-            self._log(f"Loaded {len(self._room_cache)} rooms into cache from JSON files.")
+                # Process rooms and build room data list
+                room_data_list = []
+
+                for row in rooms_rows:
+                    stable_id = row[1]
+                    name = row[2]
+                    description = row[3]
+                    attributes = row[4] if row[4] else {}
+                    subzone_stable_id = row[5]
+                    zone_stable_id = row[6]
+
+                    # Generate hierarchical room ID
+                    zone_parts = zone_stable_id.split("/")
+                    plane_name = zone_parts[0] if len(zone_parts) > 0 else ""
+                    zone_name = zone_parts[1] if len(zone_parts) > 1 else zone_stable_id
+                    room_id = generate_room_id(plane_name, zone_name, subzone_stable_id, stable_id)
+
+                    # Store room data for processing
+                    room_data_list.append(
+                        {
+                            "room_id": room_id,
+                            "stable_id": stable_id,
+                            "name": name,
+                            "description": description,
+                            "attributes": attributes,
+                            "plane": plane_name,
+                            "zone": zone_name,
+                            "sub_zone": subzone_stable_id,
+                        }
+                    )
+
+                # Build exits dictionary keyed by room_id (not stable_id)
+                exits_by_room: dict[str, dict[str, str]] = {}
+                for row in exits_rows:
+                    from_stable_id = row[0]
+                    to_stable_id = row[1]
+                    direction = row[2]
+                    from_subzone = row[3]
+                    from_zone = row[4]
+                    to_subzone = row[5]
+                    to_zone = row[6]
+
+                    # Generate hierarchical room IDs for both source and destination
+                    from_zone_parts = from_zone.split("/")
+                    from_plane = from_zone_parts[0] if len(from_zone_parts) > 0 else ""
+                    from_zone_name = from_zone_parts[1] if len(from_zone_parts) > 1 else from_zone
+
+                    to_zone_parts = to_zone.split("/")
+                    to_plane = to_zone_parts[0] if len(to_zone_parts) > 0 else ""
+                    to_zone_name = to_zone_parts[1] if len(to_zone_parts) > 1 else to_zone
+
+                    from_room_id = generate_room_id(from_plane, from_zone_name, from_subzone, from_stable_id)
+                    to_room_id = generate_room_id(to_plane, to_zone_name, to_subzone, to_stable_id)
+
+                    if from_room_id not in exits_by_room:
+                        exits_by_room[from_room_id] = {}
+
+                    exits_by_room[from_room_id][direction] = to_room_id
+
+                # Convert database rows to Room objects
+                for room_data_item in room_data_list:
+                    room_id = room_data_item["room_id"]
+                    name = room_data_item["name"]
+                    description = room_data_item["description"]
+                    attributes = room_data_item["attributes"]
+                    plane_name = room_data_item["plane"]
+                    zone_name = room_data_item["zone"]
+                    subzone_stable_id = room_data_item["sub_zone"]
+
+                    # Get exits for this room (already resolved to full room IDs)
+                    exits = exits_by_room.get(room_id, {})
+
+                    # Build room data dictionary matching Room class expectations
+                    room_data = {
+                        "id": room_id,
+                        "name": name,
+                        "description": description,
+                        "plane": plane_name,
+                        "zone": zone_name,
+                        "sub_zone": subzone_stable_id,
+                        "resolved_environment": attributes.get("environment", "outdoors")
+                        if isinstance(attributes, dict)
+                        else "outdoors",
+                        "exits": exits,
+                    }
+
+                    self._room_cache[room_id] = Room(room_data, self._event_bus)
+
+            self._log(f"Loaded {len(self._room_cache)} rooms into cache from PostgreSQL database.")
             self._log(f"Loaded {len(self._room_mappings)} room mappings for backward compatibility.")
         except Exception as e:
             context = create_error_context()
             context.metadata["operation"] = "load_room_cache"
-            context.metadata["rooms_base_path"] = ROOMS_BASE_PATH
             log_and_raise(
                 DatabaseError,
                 f"Room cache load failed: {e}",
                 context=context,
-                details={"rooms_base_path": ROOMS_BASE_PATH, "error": str(e)},
-                user_friendly="Failed to load world data",
+                details={"error": str(e)},
+                user_friendly="Failed to load world data from database",
             )
 
     # --- CRUD for Players ---
@@ -518,7 +640,7 @@ class PersistenceLayer:
                         else:
                             last_active = player.last_active.isoformat()
 
-                    # Convert UUIDs to strings for SQLite compatibility
+                    # Convert UUIDs to strings for PostgreSQL (VARCHAR storage)
                     player_id_str = str(player.player_id) if player.player_id else None
                     user_id_str = str(player.user_id) if player.user_id else None
 
@@ -754,7 +876,7 @@ class PersistenceLayer:
                             else:
                                 last_active = player.last_active.isoformat()
 
-                        # Convert UUIDs to strings for SQLite compatibility
+                        # Convert UUIDs to strings for PostgreSQL (VARCHAR storage)
                         player_id_str = str(player.player_id) if player.player_id else None
                         user_id_str = str(player.user_id) if player.user_id else None
 
@@ -1150,13 +1272,13 @@ class PersistenceLayer:
             damage_type: Type of damage
 
         Note:
-            Currently delegates to synchronous method since SQLite operations
-            are blocking. Future enhancement: use asyncio.to_thread() for
-            true async when migrating to PostgreSQL or other async databases.
+            Currently delegates to synchronous method. The underlying persistence
+            layer uses PostgreSQL via psycopg2 (synchronous driver). For true async
+            operations, use the async_persistence layer methods instead.
         """
-        # Since the underlying operations are synchronous (SQLite),
+        # Since the underlying operations are synchronous (psycopg2),
         # we call the sync version directly
-        # Future: Could use asyncio.to_thread(self.damage_player, player, amount, damage_type)
+        # For true async operations, use async_persistence layer methods
         self.damage_player(player, amount, damage_type)
 
     async def async_heal_player(self, player: Player, amount: int) -> None:
@@ -1170,13 +1292,13 @@ class PersistenceLayer:
             amount: Amount of healing to apply
 
         Note:
-            Currently delegates to synchronous method since SQLite operations
-            are blocking. Future enhancement: use asyncio.to_thread() for
-            true async when migrating to PostgreSQL or other async databases.
+            Currently delegates to synchronous method. The underlying persistence
+            layer uses PostgreSQL via psycopg2 (synchronous driver). For true async
+            operations, use the async_persistence layer methods instead.
         """
-        # Since the underlying operations are synchronous (SQLite),
+        # Since the underlying operations are synchronous (psycopg2),
         # we call the sync version directly
-        # Future: Could use asyncio.to_thread(self.heal_player, player, amount)
+        # For true async operations, use async_persistence layer methods
         self.heal_player(player, amount)
 
     def gain_experience(self, player: Player, amount: int, source: str = "unknown") -> None:
@@ -1258,13 +1380,13 @@ class PersistenceLayer:
             source: Source of the XP for logging purposes
 
         Note:
-            Currently delegates to synchronous method since SQLite operations
-            are blocking. Future enhancement: use asyncio.to_thread() for
-            true async when migrating to PostgreSQL or other async databases.
+            Currently delegates to synchronous method. The underlying persistence
+            layer uses PostgreSQL via psycopg2 (synchronous driver). For true async
+            operations, use the async_persistence layer methods instead.
         """
-        # Since the underlying operations are synchronous (SQLite),
+        # Since the underlying operations are synchronous (psycopg2),
         # we call the sync version directly
-        # Future: Could use asyncio.to_thread(self.gain_experience, player, amount, source)
+        # For true async operations, use async_persistence layer methods
         self.gain_experience(player, amount, source)
 
     def update_player_stat_field(
@@ -1297,7 +1419,7 @@ class PersistenceLayer:
             persistence.update_player_stat_field(player_id, "experience_points", 100, "killed_npc")
 
         Note:
-            Uses SQLite's json_set() function for atomic field updates.
+            Uses PostgreSQL's jsonb_set() function for atomic field updates.
             Invalidates player cache to ensure fresh data on next get_player().
         """
         try:
@@ -1323,7 +1445,7 @@ class PersistenceLayer:
             if field_name not in allowed_fields:
                 raise ValueError(f"Invalid stat field name: {field_name}. Must be one of {allowed_fields}")
 
-            # Execute atomic field update using SQLite json_set()
+            # Execute atomic field update using PostgreSQL jsonb_set()
             # AI Agent: This prevents race conditions by updating ONLY this field
             # without loading/saving the entire player object which might have stale data
             with self._lock, self._get_connection() as conn:

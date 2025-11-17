@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 def _utc_now() -> datetime:
-    """Return naive UTC timestamps for SQLite compatibility."""
+    """Return naive UTC timestamps for PostgreSQL TIMESTAMP WITHOUT TIME ZONE compatibility."""
     return datetime.now(UTC).replace(tzinfo=None)
 
 

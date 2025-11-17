@@ -21,7 +21,7 @@ from sqlalchemy import (
     Text,
     func,
 )
-from sqlalchemy.dialects.sqlite import JSON as SqliteJSON
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.mutable import MutableDict, MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -31,7 +31,7 @@ if TYPE_CHECKING:
     pass
 
 
-JSON = SqliteJSON  # Explicit alias for readability
+JSON = JSONB  # PostgreSQL JSONB type for JSON data
 
 
 class ItemPrototype(Base):
@@ -174,7 +174,6 @@ class ItemComponentState(Base):
             "component_id",
             unique=True,
         ),
-        {"sqlite_autoincrement": True},
     )
 
     @staticmethod

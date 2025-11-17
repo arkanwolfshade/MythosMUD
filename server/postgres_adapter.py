@@ -1,8 +1,8 @@
 """
 PostgreSQL adapter for persistence layer.
 
-Provides a PostgreSQL connection interface compatible with sqlite3 usage patterns
-in persistence.py, allowing gradual migration from SQLite to PostgreSQL.
+Provides a PostgreSQL connection interface for the persistence layer,
+using psycopg2 for synchronous database operations.
 """
 
 import threading
@@ -19,7 +19,7 @@ logger = get_logger(__name__)
 
 
 class PostgresRow:
-    """Row-like object compatible with sqlite3.Row interface."""
+    """Row-like object for PostgreSQL query results."""
 
     def __init__(self, row_dict: dict[str, Any]):
         self._row_dict = row_dict
@@ -50,18 +50,23 @@ class PostgresRow:
 
 
 class PostgresConnection:
-    """PostgreSQL connection wrapper compatible with sqlite3.Connection interface."""
+    """PostgreSQL connection wrapper for persistence layer operations."""
 
     def __init__(self, conn: psycopg2.extensions.connection):
         self._conn = conn
         self._conn.autocommit = False
 
     def execute(self, query: str, params: tuple | None = None) -> "PostgresCursor":
-        """Execute a query and return a cursor."""
-        # Convert SQLite ? placeholders to PostgreSQL %s placeholders
-        if params:
-            # Replace ? with %s in the query
-            query = query.replace("?", "%s")
+        """
+        Execute a query and return a cursor.
+
+        Args:
+            query: SQL query with PostgreSQL %s placeholders
+            params: Optional tuple of parameters for the query
+
+        Returns:
+            PostgresCursor: Cursor for fetching results
+        """
         cursor = self._conn.cursor(cursor_factory=RealDictCursor)
         cursor.execute(query, params)
         return PostgresCursor(cursor)
@@ -90,7 +95,7 @@ class PostgresConnection:
 
 
 class PostgresCursor:
-    """PostgreSQL cursor wrapper compatible with sqlite3.Cursor interface."""
+    """PostgreSQL cursor wrapper for query result access."""
 
     def __init__(self, cursor: psycopg2.extensions.cursor):
         self._cursor = cursor
@@ -155,8 +160,16 @@ def is_postgres_url(database_url: str) -> bool:
 
 
 def connect_postgres(database_url: str) -> PostgresConnection:
-    """Create a PostgreSQL connection (for compatibility with sqlite3.connect)."""
-    # Parse URL and create connection
+    """
+    Create a PostgreSQL connection.
+
+    Args:
+        database_url: PostgreSQL connection URL (postgresql:// or postgresql+psycopg2://)
+
+    Returns:
+        PostgresConnection: Wrapped PostgreSQL connection
+    """
+    # Normalize URL format (remove driver prefix if present)
     url = database_url.replace("postgresql+psycopg2://", "postgresql://").replace(
         "postgresql+asyncpg://", "postgresql://"
     )

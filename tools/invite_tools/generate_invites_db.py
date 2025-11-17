@@ -178,7 +178,7 @@ async def create_invite_in_db(invite_code: str, expires_in_days: int = 30):
         invite = Invite(
             invite_code=invite_code,
             used=False,
-            # Persist naive UTC to DB for SQLite compatibility
+            # Persist naive UTC to DB (PostgreSQL stores as TIMESTAMP WITHOUT TIME ZONE)
             expires_at=(datetime.now(UTC) + timedelta(days=expires_in_days)).replace(tzinfo=None),
             created_at=datetime.now(UTC).replace(tzinfo=None),
         )

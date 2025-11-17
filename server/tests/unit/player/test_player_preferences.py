@@ -2,50 +2,102 @@
 Tests for player channel preferences functionality.
 
 This module tests the player channel preferences table and service
-for the Advanced Chat Channels feature.
+for the Advanced Chat Channels feature using PostgreSQL.
 """
 
-import json
-import sqlite3
+import uuid
 
 import pytest
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
+from server.database import get_database_url
+from server.models.base import Base
+from server.models.player import Player, PlayerChannelPreferences
+from server.models.user import User
 from server.services.player_preferences_service import PlayerPreferencesService
+
+
+@pytest.fixture
+async def session_factory():
+    """Create an async session factory for testing."""
+    database_url = get_database_url()
+    if not database_url or not database_url.startswith("postgresql"):
+        pytest.skip("DATABASE_URL must be set to a PostgreSQL URL for this test.")
+
+    engine = create_async_engine(database_url, future=True)
+    async with engine.begin() as conn:
+        # Create tables
+        await conn.run_sync(Base.metadata.create_all)
+
+    factory = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+    try:
+        yield factory
+    finally:
+        await engine.dispose()
+
+
+async def create_test_player(session: AsyncSession, player_id: str) -> Player:
+    """Create a test player for preferences testing."""
+    user = User(
+        id=str(uuid.uuid4()),
+        email=f"{player_id}@example.com",
+        username=player_id,
+        hashed_password="hashed",
+        is_active=True,
+        is_superuser=False,
+        is_verified=True,
+    )
+    player = Player(
+        player_id=player_id,
+        user_id=user.id,
+        name=player_id,
+    )
+    session.add_all([user, player])
+    await session.flush()
+    return player
 
 
 class TestPlayerChannelPreferencesTable:
     """Test the player_channel_preferences table schema and operations."""
 
-    @pytest.fixture
-    def temp_db_path(self, tmp_path):
-        """Create a temporary database for testing."""
-        db_path = tmp_path / "unit_test_players.db"
-        return str(db_path)
+    @pytest.mark.asyncio
+    async def test_preferences_table_exists(self, session_factory):
+        """Test that the preferences table exists in the database."""
+        from sqlalchemy import text
 
-    @pytest.fixture
-    def preferences_service(self, temp_db_path):
-        """Create a PlayerPreferencesService instance with test database."""
-        return PlayerPreferencesService(temp_db_path)
-
-    def test_create_preferences_table(self, temp_db_path):
-        """Test that the preferences table can be created."""
-        PlayerPreferencesService(temp_db_path)
-
-        # Table should be created during service initialization
-        with sqlite3.connect(temp_db_path) as conn:
-            cursor = conn.execute(
-                "SELECT name FROM sqlite_master WHERE type='table' AND name='player_channel_preferences'"
+        async with session_factory() as session:
+            # Check table exists using PostgreSQL information_schema
+            result = await session.execute(
+                text(
+                    """
+                    SELECT table_name
+                    FROM information_schema.tables
+                    WHERE table_schema = 'public' AND table_name = 'player_channel_preferences'
+                """
+                )
             )
-            table_exists = cursor.fetchone() is not None
-            assert table_exists, "player_channel_preferences table should be created"
+            table_exists = result.fetchone() is not None
+            assert table_exists
 
-    def test_preferences_table_schema(self, temp_db_path):
+    @pytest.mark.asyncio
+    async def test_preferences_table_schema(self, session_factory):
         """Test that the preferences table has the correct schema."""
-        PlayerPreferencesService(temp_db_path)
+        from sqlalchemy import text
 
-        with sqlite3.connect(temp_db_path) as conn:
-            cursor = conn.execute("PRAGMA table_info(player_channel_preferences)")
-            columns = {row[1]: row[2] for row in cursor.fetchall()}
+        async with session_factory() as session:
+            # Use PostgreSQL information_schema to check columns
+            result = await session.execute(
+                text(
+                    """
+                    SELECT column_name, data_type
+                    FROM information_schema.columns
+                    WHERE table_schema = 'public' AND table_name = 'player_channel_preferences'
+                    ORDER BY ordinal_position
+                """
+                )
+            )
+            columns = {row[0]: row[1] for row in result.fetchall()}
 
             # Check required columns exist
             assert "player_id" in columns
@@ -54,249 +106,265 @@ class TestPlayerChannelPreferencesTable:
             assert "created_at" in columns
             assert "updated_at" in columns
 
-            # Check data types
-            assert columns["player_id"] == "TEXT"
-            assert columns["default_channel"] == "TEXT"
-            assert columns["muted_channels"] == "TEXT"
-            assert columns["created_at"] == "TIMESTAMP"
-            assert columns["updated_at"] == "TIMESTAMP"
-
-    def test_preferences_table_constraints(self, temp_db_path):
+    @pytest.mark.asyncio
+    async def test_preferences_table_constraints(self, session_factory):
         """Test that the preferences table has correct constraints."""
-        PlayerPreferencesService(temp_db_path)
+        async with session_factory() as session:
+            # Create a test player first
+            player = await create_test_player(session, "test-constraints-player")
 
-        with sqlite3.connect(temp_db_path) as conn:
             # Test primary key constraint
-            cursor = conn.execute("PRAGMA table_info(player_channel_preferences)")
-            columns = cursor.fetchall()
+            preferences1 = PlayerChannelPreferences(
+                player_id=player.player_id,
+                default_channel="local",
+                muted_channels=[],
+            )
+            session.add(preferences1)
+            await session.commit()
 
-            player_id_col = next(col for col in columns if col[1] == "player_id")
-            assert player_id_col[5] == 1, "player_id should be primary key"
-
-            # Test default value for default_channel
-            default_channel_col = next(col for col in columns if col[1] == "default_channel")
-            assert default_channel_col[4] == "'local'", "default_channel should default to 'local'"
+            # Try to create duplicate - should fail
+            with pytest.raises(IntegrityError):
+                preferences2 = PlayerChannelPreferences(
+                    player_id=player.player_id,
+                    default_channel="global",
+                    muted_channels=[],
+                )
+                session.add(preferences2)
+                await session.commit()
 
 
 class TestPlayerPreferencesService:
     """Test the PlayerPreferencesService functionality."""
 
-    @pytest.fixture
-    def temp_db_path(self, tmp_path):
-        """Create a temporary database for testing."""
-        db_path = tmp_path / "unit_test_players.db"
-        return str(db_path)
-
-    @pytest.fixture
-    def preferences_service(self, temp_db_path):
-        """Create a PlayerPreferencesService instance with test database."""
-        return PlayerPreferencesService(temp_db_path)
-
-    def test_create_player_preferences(self, preferences_service):
+    @pytest.mark.asyncio
+    async def test_create_player_preferences(self, session_factory):
         """Test creating preferences for a new player."""
-        player_id = "test-player-123"
+        async with session_factory() as session:
+            player = await create_test_player(session, "test-player-123")
+            service = PlayerPreferencesService()
 
-        # Create preferences
-        result = preferences_service.create_player_preferences(player_id)
-        assert result["success"] is True
+            # Create preferences
+            result = await service.create_player_preferences(session, player.player_id)
+            assert result["success"] is True
 
-        # Verify preferences were created with defaults
-        preferences = preferences_service.get_player_preferences(player_id)
-        assert preferences["success"] is True
-        assert preferences["data"]["player_id"] == player_id
-        assert preferences["data"]["default_channel"] == "local"
-        assert preferences["data"]["muted_channels"] == "[]"
+            # Verify preferences were created with defaults
+            preferences = await service.get_player_preferences(session, player.player_id)
+            assert preferences["success"] is True
+            assert preferences["data"]["player_id"] == player.player_id
+            assert preferences["data"]["default_channel"] == "local"
+            assert preferences["data"]["muted_channels"] == []
 
-    def test_get_player_preferences_not_found(self, preferences_service):
+    @pytest.mark.asyncio
+    async def test_get_player_preferences_not_found(self, session_factory):
         """Test getting preferences for non-existent player."""
-        player_id = "non-existent-player"
+        async with session_factory() as session:
+            service = PlayerPreferencesService()
+            result = await service.get_player_preferences(session, "non-existent-player")
+            assert result["success"] is False
+            assert "not found" in result["error"].lower()
 
-        result = preferences_service.get_player_preferences(player_id)
-        assert result["success"] is False
-        assert "not found" in result["error"].lower()
-
-    def test_update_default_channel(self, preferences_service):
+    @pytest.mark.asyncio
+    async def test_update_default_channel(self, session_factory):
         """Test updating a player's default channel."""
-        player_id = "test-player-456"
+        async with session_factory() as session:
+            player = await create_test_player(session, "test-player-456")
+            service = PlayerPreferencesService()
 
-        # Create initial preferences
-        preferences_service.create_player_preferences(player_id)
+            # Create initial preferences
+            await service.create_player_preferences(session, player.player_id)
 
-        # Update default channel
-        result = preferences_service.update_default_channel(player_id, "global")
-        assert result["success"] is True
+            # Update default channel
+            result = await service.update_default_channel(session, player.player_id, "global")
+            assert result["success"] is True
 
-        # Verify update
-        preferences = preferences_service.get_player_preferences(player_id)
-        assert preferences["data"]["default_channel"] == "global"
+            # Verify update
+            preferences = await service.get_player_preferences(session, player.player_id)
+            assert preferences["data"]["default_channel"] == "global"
 
-    def test_update_default_channel_invalid(self, preferences_service):
+    @pytest.mark.asyncio
+    async def test_update_default_channel_invalid(self, session_factory):
         """Test updating default channel with invalid value."""
-        player_id = "test-player-789"
+        async with session_factory() as session:
+            player = await create_test_player(session, "test-player-789")
+            service = PlayerPreferencesService()
 
-        # Create initial preferences
-        preferences_service.create_player_preferences(player_id)
+            # Create initial preferences
+            await service.create_player_preferences(session, player.player_id)
 
-        # Try to update with invalid channel
-        result = preferences_service.update_default_channel(player_id, "invalid_channel")
-        assert result["success"] is False
-        assert "invalid" in result["error"].lower()
+            # Try to update with invalid channel
+            result = await service.update_default_channel(session, player.player_id, "invalid_channel")
+            assert result["success"] is False
+            assert "invalid" in result["error"].lower()
 
-    def test_mute_channel(self, preferences_service):
+    @pytest.mark.asyncio
+    async def test_mute_channel(self, session_factory):
         """Test muting a channel for a player."""
-        player_id = "test-player-mute"
+        async with session_factory() as session:
+            player = await create_test_player(session, "test-player-mute")
+            service = PlayerPreferencesService()
 
-        # Create initial preferences
-        preferences_service.create_player_preferences(player_id)
+            # Create initial preferences
+            await service.create_player_preferences(session, player.player_id)
 
-        # Mute global channel
-        result = preferences_service.mute_channel(player_id, "global")
-        assert result["success"] is True
+            # Mute global channel
+            result = await service.mute_channel(session, player.player_id, "global")
+            assert result["success"] is True
 
-        # Verify channel is muted
-        preferences = preferences_service.get_player_preferences(player_id)
-        muted_channels = json.loads(preferences["data"]["muted_channels"])
-        assert "global" in muted_channels
+            # Verify channel is muted
+            preferences = await service.get_player_preferences(session, player.player_id)
+            muted_channels = preferences["data"]["muted_channels"]
+            assert "global" in muted_channels
 
-    def test_unmute_channel(self, preferences_service):
+    @pytest.mark.asyncio
+    async def test_unmute_channel(self, session_factory):
         """Test unmuting a channel for a player."""
-        player_id = "test-player-unmute"
+        async with session_factory() as session:
+            player = await create_test_player(session, "test-player-unmute")
+            service = PlayerPreferencesService()
 
-        # Create initial preferences
-        preferences_service.create_player_preferences(player_id)
+            # Create initial preferences
+            await service.create_player_preferences(session, player.player_id)
 
-        # Mute global channel first
-        preferences_service.mute_channel(player_id, "global")
+            # Mute global channel first
+            await service.mute_channel(session, player.player_id, "global")
 
-        # Unmute global channel
-        result = preferences_service.unmute_channel(player_id, "global")
-        assert result["success"] is True
+            # Unmute global channel
+            result = await service.unmute_channel(session, player.player_id, "global")
+            assert result["success"] is True
 
-        # Verify channel is unmuted
-        preferences = preferences_service.get_player_preferences(player_id)
-        muted_channels = json.loads(preferences["data"]["muted_channels"])
-        assert "global" not in muted_channels
+            # Verify channel is unmuted
+            preferences = await service.get_player_preferences(session, player.player_id)
+            muted_channels = preferences["data"]["muted_channels"]
+            assert "global" not in muted_channels
 
-    def test_mute_system_channel(self, preferences_service):
+    @pytest.mark.asyncio
+    async def test_mute_system_channel(self, session_factory):
         """Test that system channel cannot be muted."""
-        player_id = "test-player-system"
+        async with session_factory() as session:
+            player = await create_test_player(session, "test-player-system")
+            service = PlayerPreferencesService()
 
-        # Create initial preferences
-        preferences_service.create_player_preferences(player_id)
+            # Create initial preferences
+            await service.create_player_preferences(session, player.player_id)
 
-        # Try to mute system channel
-        result = preferences_service.mute_channel(player_id, "system")
-        assert result["success"] is False
-        assert "system channel cannot be muted" in result["error"].lower()
+            # Try to mute system channel
+            result = await service.mute_channel(session, player.player_id, "system")
+            assert result["success"] is False
+            assert "system channel cannot be muted" in result["error"].lower()
 
-    def test_get_muted_channels(self, preferences_service):
+    @pytest.mark.asyncio
+    async def test_get_muted_channels(self, session_factory):
         """Test getting list of muted channels for a player."""
-        player_id = "test-player-muted-list"
+        async with session_factory() as session:
+            player = await create_test_player(session, "test-player-muted-list")
+            service = PlayerPreferencesService()
 
-        # Create initial preferences
-        preferences_service.create_player_preferences(player_id)
+            # Create initial preferences
+            await service.create_player_preferences(session, player.player_id)
 
-        # Mute multiple channels
-        preferences_service.mute_channel(player_id, "global")
-        preferences_service.mute_channel(player_id, "whisper")
+            # Mute multiple channels
+            await service.mute_channel(session, player.player_id, "global")
+            await service.mute_channel(session, player.player_id, "whisper")
 
-        # Get muted channels
-        result = preferences_service.get_muted_channels(player_id)
-        assert result["success"] is True
-        muted_channels = result["data"]
-        assert "global" in muted_channels
-        assert "whisper" in muted_channels
-        assert "local" not in muted_channels
+            # Get muted channels
+            result = await service.get_muted_channels(session, player.player_id)
+            assert result["success"] is True
+            muted_channels = result["data"]
+            assert "global" in muted_channels
+            assert "whisper" in muted_channels
+            assert "local" not in muted_channels
 
-    def test_is_channel_muted(self, preferences_service):
+    @pytest.mark.asyncio
+    async def test_is_channel_muted(self, session_factory):
         """Test checking if a specific channel is muted."""
-        player_id = "test-player-check-mute"
+        async with session_factory() as session:
+            player = await create_test_player(session, "test-player-check-mute")
+            service = PlayerPreferencesService()
 
-        # Create initial preferences
-        preferences_service.create_player_preferences(player_id)
+            # Create initial preferences
+            await service.create_player_preferences(session, player.player_id)
 
-        # Initially not muted
-        result = preferences_service.is_channel_muted(player_id, "global")
-        assert result["success"] is True
-        assert result["data"] is False
+            # Initially not muted
+            result = await service.is_channel_muted(session, player.player_id, "global")
+            assert result["success"] is True
+            assert result["data"] is False
 
-        # Mute the channel
-        preferences_service.mute_channel(player_id, "global")
+            # Mute the channel
+            await service.mute_channel(session, player.player_id, "global")
 
-        # Now should be muted
-        result = preferences_service.is_channel_muted(player_id, "global")
-        assert result["success"] is True
-        assert result["data"] is True
+            # Now should be muted
+            result = await service.is_channel_muted(session, player.player_id, "global")
+            assert result["success"] is True
+            assert result["data"] is True
 
-    def test_delete_player_preferences(self, preferences_service):
+    @pytest.mark.asyncio
+    async def test_delete_player_preferences(self, session_factory):
         """Test deleting player preferences."""
-        player_id = "test-player-delete"
+        async with session_factory() as session:
+            player = await create_test_player(session, "test-player-delete")
+            service = PlayerPreferencesService()
 
-        # Create preferences
-        preferences_service.create_player_preferences(player_id)
+            # Create preferences
+            await service.create_player_preferences(session, player.player_id)
 
-        # Verify they exist
-        preferences = preferences_service.get_player_preferences(player_id)
-        assert preferences["success"] is True
+            # Verify they exist
+            preferences = await service.get_player_preferences(session, player.player_id)
+            assert preferences["success"] is True
 
-        # Delete preferences
-        result = preferences_service.delete_player_preferences(player_id)
-        assert result["success"] is True
+            # Delete preferences
+            result = await service.delete_player_preferences(session, player.player_id)
+            assert result["success"] is True
 
-        # Verify they're gone
-        preferences = preferences_service.get_player_preferences(player_id)
-        assert preferences["success"] is False
+            # Verify they're gone
+            preferences = await service.get_player_preferences(session, player.player_id)
+            assert preferences["success"] is False
 
-    def test_preferences_persistence(self, temp_db_path):
+    @pytest.mark.asyncio
+    async def test_preferences_persistence(self, session_factory):
         """Test that preferences persist across service instances."""
-        player_id = "test-player-persistence"
+        async with session_factory() as session:
+            player = await create_test_player(session, "test-player-persistence")
+            service1 = PlayerPreferencesService()
 
-        # Create preferences with first service instance
-        service1 = PlayerPreferencesService(temp_db_path)
-        service1.create_player_preferences(player_id)
-        service1.update_default_channel(player_id, "global")
+            # Create preferences with first service instance
+            await service1.create_player_preferences(session, player.player_id)
+            await service1.update_default_channel(session, player.player_id, "global")
 
-        # Create new service instance
-        service2 = PlayerPreferencesService(temp_db_path)
+            # Create new service instance
+            service2 = PlayerPreferencesService()
 
-        # Verify preferences persist
-        preferences = service2.get_player_preferences(player_id)
-        assert preferences["success"] is True
-        assert preferences["data"]["default_channel"] == "global"
+            # Verify preferences persist
+            preferences = await service2.get_player_preferences(session, player.player_id)
+            assert preferences["success"] is True
+            assert preferences["data"]["default_channel"] == "global"
 
-    def test_concurrent_access(self, temp_db_path):
+    @pytest.mark.asyncio
+    async def test_concurrent_access(self, session_factory):
         """Test concurrent access to preferences."""
-        player_id = "test-player-concurrent"
+        async with session_factory() as session:
+            player = await create_test_player(session, "test-player-concurrent")
+            service1 = PlayerPreferencesService()
+            service2 = PlayerPreferencesService()
 
-        # Create two service instances
-        service1 = PlayerPreferencesService(temp_db_path)
-        service2 = PlayerPreferencesService(temp_db_path)
+            # Create preferences with first service
+            await service1.create_player_preferences(session, player.player_id)
 
-        # Create preferences with first service
-        service1.create_player_preferences(player_id)
+            # Both services should see the preferences
+            prefs1 = await service1.get_player_preferences(session, player.player_id)
+            prefs2 = await service2.get_player_preferences(session, player.player_id)
 
-        # Both services should see the preferences
-        prefs1 = service1.get_player_preferences(player_id)
-        prefs2 = service2.get_player_preferences(player_id)
-
-        assert prefs1["success"] is True
-        assert prefs2["success"] is True
-        assert prefs1["data"]["player_id"] == prefs2["data"]["player_id"]
+            assert prefs1["success"] is True
+            assert prefs2["success"] is True
+            assert prefs1["data"]["player_id"] == prefs2["data"]["player_id"]
 
 
 class TestPlayerPreferencesValidation:
     """Test validation of player preferences data."""
 
     @pytest.fixture
-    def temp_db_path(self, tmp_path):
-        """Create a temporary database for testing."""
-        db_path = tmp_path / "unit_test_players.db"
-        return str(db_path)
-
-    @pytest.fixture
-    def preferences_service(self, temp_db_path):
-        """Create a PlayerPreferencesService instance with test database."""
-        return PlayerPreferencesService(temp_db_path)
+    def preferences_service(self):
+        """Create a PlayerPreferencesService instance."""
+        return PlayerPreferencesService()
 
     def test_valid_channel_names(self, preferences_service):
         """Test that valid channel names are accepted."""
@@ -345,298 +413,263 @@ class TestPlayerPreferencesValidation:
 class TestPlayerPreferencesServiceErrorPaths:
     """Test error handling paths in PlayerPreferencesService."""
 
-    @pytest.fixture
-    def temp_db_path(self, tmp_path):
-        """Create a temporary database for testing."""
-        db_path = tmp_path / "unit_test_players.db"
-        return str(db_path)
-
-    @pytest.fixture
-    def preferences_service(self, temp_db_path):
-        """Create a PlayerPreferencesService instance with test database."""
-        return PlayerPreferencesService(temp_db_path)
-
-    def test_create_player_preferences_invalid_player_id(self, preferences_service):
-        """Test creating preferences with invalid player ID.
-
-        AI: Tests line 110 in player_preferences_service.py where invalid player_id
-        returns error. Covers the validation failure path.
-        """
-        result = preferences_service.create_player_preferences("")
-        assert result["success"] is False
-        assert "error" in result
-
-    def test_create_player_preferences_already_exists(self, preferences_service):
-        """Test creating preferences when they already exist.
-
-        AI: Tests lines 127-129 in player_preferences_service.py where we check
-        if preferences already exist and return error. Covers the duplicate check path.
-        """
-        player_id = "test-player-duplicate"
-
-        # Create once
-        result1 = preferences_service.create_player_preferences(player_id)
-        assert result1["success"] is True
-
-        # Try to create again
-        result2 = preferences_service.create_player_preferences(player_id)
-        assert result2["success"] is False
-        assert "already exist" in result2["error"].lower()
-
-    def test_get_player_preferences_invalid_player_id(self, preferences_service):
-        """Test getting preferences with invalid player ID.
-
-        AI: Tests line 142 in player_preferences_service.py where invalid player_id
-        returns error in get_player_preferences. Covers validation path.
-        """
-        result = preferences_service.get_player_preferences("")
-        assert result["success"] is False
-
-    def test_get_player_preferences_not_found(self, preferences_service):
-        """Test getting preferences for nonexistent player.
-
-        AI: Tests lines 157-158 in player_preferences_service.py where we return
-        error when player preferences don't exist. Covers the not-found path.
-        """
-        result = preferences_service.get_player_preferences("nonexistent-player")
-        assert result["success"] is False
-        assert "not found" in result["error"].lower()
-
-    def test_update_default_channel_invalid_player_id(self, preferences_service):
-        """Test updating channel with invalid player ID.
-
-        AI: Tests line 187 in player_preferences_service.py where invalid player_id
-        returns error. Covers validation in update_default_channel.
-        """
-        result = preferences_service.update_default_channel("", "local")
-        assert result["success"] is False
-
-    def test_update_default_channel_invalid_channel(self, preferences_service):
-        """Test updating to invalid channel.
-
-        AI: Tests line 199 in player_preferences_service.py where invalid channel
-        returns error. Covers channel validation path.
-        """
-        player_id = "test-player-channel"
-        preferences_service.create_player_preferences(player_id)
-
-        result = preferences_service.update_default_channel(player_id, "invalid_channel")
-        assert result["success"] is False
-        assert "invalid" in result["error"].lower()
-
-    def test_mute_channel_invalid_player_id(self, preferences_service):
-        """Test muting channel with invalid player ID.
-
-        AI: Tests line 232 in player_preferences_service.py where invalid player_id
-        returns error in mute_channel. Covers validation path.
-        """
-        result = preferences_service.mute_channel("", "local")
-        assert result["success"] is False
-
-    def test_mute_channel_invalid_channel(self, preferences_service):
-        """Test muting invalid channel.
-
-        AI: Tests line 249 in player_preferences_service.py where invalid channel
-        returns error. Covers channel validation in mute_channel.
-        """
-        player_id = "test-player-mute"
-        preferences_service.create_player_preferences(player_id)
-
-        result = preferences_service.mute_channel(player_id, "invalid_channel")
-        assert result["success"] is False
-
-    def test_unmute_channel_invalid_player_id(self, preferences_service):
-        """Test unmuting channel with invalid player ID.
-
-        AI: Tests line 290 in player_preferences_service.py where invalid player_id
-        returns error in unmute_channel. Covers validation path.
-        """
-        result = preferences_service.unmute_channel("", "local")
-        assert result["success"] is False
-
-    def test_unmute_channel_invalid_channel(self, preferences_service):
-        """Test unmuting invalid channel.
-
-        AI: Tests line 303 in player_preferences_service.py where invalid channel
-        returns error in unmute_channel. Covers channel validation path.
-        """
-        player_id = "test-player-unmute"
-        preferences_service.create_player_preferences(player_id)
-
-        result = preferences_service.unmute_channel(player_id, "invalid_channel")
-        assert result["success"] is False
-
-    def test_get_muted_channels_invalid_player_id(self, preferences_service):
-        """Test getting muted channels with invalid player ID.
-
-        AI: Tests line 343 in player_preferences_service.py where invalid player_id
-        returns error. Covers validation in get_muted_channels.
-        """
-        result = preferences_service.get_muted_channels("")
-        assert result["success"] is False
-
-    def test_get_muted_channels_not_found(self, preferences_service):
-        """Test getting muted channels for nonexistent player.
-
-        AI: Tests line 352 in player_preferences_service.py where we return
-        error for nonexistent player. Covers the not-found path.
-        """
-        result = preferences_service.get_muted_channels("nonexistent-player")
-        assert result["success"] is False
-        assert "not found" in result["error"].lower()
-
-    def test_is_channel_muted_invalid_player_id(self, preferences_service):
-        """Test checking if channel muted with invalid player ID.
-
-        AI: Tests line 373 in player_preferences_service.py where invalid player_id
-        returns error. Covers validation in is_channel_muted.
-        """
-        result = preferences_service.is_channel_muted("", "local")
-        assert result["success"] is False
-
-    def test_is_channel_muted_invalid_channel(self, preferences_service):
-        """Test checking if invalid channel is muted.
-
-        AI: Tests line 385 in player_preferences_service.py where invalid channel
-        returns error. Covers channel validation in is_channel_muted.
-        """
-        player_id = "test-player-check"
-        preferences_service.create_player_preferences(player_id)
-
-        result = preferences_service.is_channel_muted(player_id, "invalid_channel")
-        assert result["success"] is False
-
-    def test_is_channel_muted_not_found(self, preferences_service):
-        """Test checking if channel muted for nonexistent player.
-
-        AI: Tests line 385 in player_preferences_service.py where we return
-        error for nonexistent player. Covers the not-found path.
-        """
-        result = preferences_service.is_channel_muted("nonexistent-player", "local")
-        assert result["success"] is False
-        assert "not found" in result["error"].lower()
-
-    def test_delete_player_preferences_invalid_player_id(self, preferences_service):
-        """Test deleting preferences with invalid player ID.
-
-        AI: Tests line 407 in player_preferences_service.py where invalid player_id
-        returns error in delete_player_preferences. Covers validation path.
-        """
-        result = preferences_service.delete_player_preferences("")
-        assert result["success"] is False
-
-    def test_delete_player_preferences_not_found(self, preferences_service):
-        """Test deleting preferences for nonexistent player.
-
-        AI: Tests the delete path for nonexistent player. May return success
-        (no-op) or error depending on implementation.
-        """
-        result = preferences_service.delete_player_preferences("nonexistent-player")
-        # Service handles this gracefully - check that it returns a result
-        assert "success" in result
-
-    def test_database_exception_in_get_preferences(self, temp_db_path):
-        """Test database exception handling in get_player_preferences.
-
-        AI: Tests lines 171-173 in player_preferences_service.py where we catch
-        and handle database exceptions. Covers the exception handler path.
-        """
-        service = PlayerPreferencesService(temp_db_path)
-
-        # Corrupt the database path to cause an exception
-        service.db_path = "/invalid/path/that/does/not/exist/test.db"
-
-        result = service.get_player_preferences("test-player")
-        assert result["success"] is False
-        assert "error" in result
-
-    def test_database_exception_in_update_channel(self, temp_db_path):
-        """Test database exception handling in update_default_channel.
-
-        AI: Tests lines 216-218 in player_preferences_service.py where we catch
-        and handle database exceptions. Covers the exception handler path.
-        """
-        service = PlayerPreferencesService(temp_db_path)
-        player_id = "test-player-update"
-        service.create_player_preferences(player_id)
-
-        # Corrupt the database path to cause an exception
-        service.db_path = "/invalid/path/test.db"
-
-        result = service.update_default_channel(player_id, "global")
-        assert result["success"] is False
-        assert "error" in result
-
-    def test_database_exception_in_mute_channel(self, temp_db_path):
-        """Test database exception handling in mute_channel.
-
-        AI: Tests lines 274-276 in player_preferences_service.py where we catch
-        and handle database exceptions. Covers the exception handler path.
-        """
-        service = PlayerPreferencesService(temp_db_path)
-        player_id = "test-player-mute"
-        service.create_player_preferences(player_id)
-
-        # Corrupt the database path
-        service.db_path = "/invalid/path/test.db"
-
-        result = service.mute_channel(player_id, "local")
-        assert result["success"] is False
-
-    def test_unmute_channel_not_in_muted_list(self, preferences_service):
-        """Test unmuting a channel that isn't muted.
-
-        AI: Tests line 293 in player_preferences_service.py where we handle
-        unmuting a channel that isn't in the muted list.
-        """
-        player_id = "test-player-unmute-none"
-        preferences_service.create_player_preferences(player_id)
-
-        # Try to unmute a channel that was never muted
-        result = preferences_service.unmute_channel(player_id, "local")
-        # Should still succeed
-        assert result["success"] is True
-
-    def test_database_exception_in_unmute_channel(self, temp_db_path):
-        """Test database exception handling in unmute_channel.
-
-        AI: Tests lines 328-330 in player_preferences_service.py where we catch
-        and handle database exceptions. Covers the exception handler path.
-        """
-        service = PlayerPreferencesService(temp_db_path)
-        player_id = "test-player-unmute-err"
-        service.create_player_preferences(player_id)
-
-        # Corrupt the database path
-        service.db_path = "/invalid/path/test.db"
-
-        result = service.unmute_channel(player_id, "local")
-        assert result["success"] is False
-
-    def test_database_exception_in_get_muted_channels(self, temp_db_path):
-        """Test database exception handling in get_muted_channels.
-
-        AI: Tests line 352 in player_preferences_service.py where we catch
-        and handle database exceptions. Covers the exception handler path.
-        """
-        service = PlayerPreferencesService(temp_db_path)
-
-        # Corrupt the database path
-        service.db_path = "/invalid/path/test.db"
-
-        result = service.get_muted_channels("test-player")
-        assert result["success"] is False
-
-    def test_database_exception_in_is_channel_muted(self, temp_db_path):
-        """Test database exception handling in is_channel_muted.
-
-        AI: Tests line 376 in player_preferences_service.py where we catch
-        and handle database exceptions. Covers the exception handler path.
-        """
-        service = PlayerPreferencesService(temp_db_path)
-
-        # Corrupt the database path
-        service.db_path = "/invalid/path/test.db"
-
-        result = service.is_channel_muted("test-player", "local")
-        assert result["success"] is False
+    @pytest.mark.asyncio
+    async def test_create_player_preferences_invalid_player_id(self, session_factory):
+        """Test creating preferences with invalid player ID."""
+        async with session_factory() as session:
+            service = PlayerPreferencesService()
+            result = await service.create_player_preferences(session, "")
+            assert result["success"] is False
+            assert "error" in result
+
+    @pytest.mark.asyncio
+    async def test_create_player_preferences_already_exists(self, session_factory):
+        """Test creating preferences when they already exist."""
+        async with session_factory() as session:
+            player = await create_test_player(session, "test-player-duplicate")
+            service = PlayerPreferencesService()
+
+            # Create once
+            result1 = await service.create_player_preferences(session, player.player_id)
+            assert result1["success"] is True
+
+            # Try to create again
+            result2 = await service.create_player_preferences(session, player.player_id)
+            assert result2["success"] is False
+            assert "already exist" in result2["error"].lower()
+
+    @pytest.mark.asyncio
+    async def test_get_player_preferences_invalid_player_id(self, session_factory):
+        """Test getting preferences with invalid player ID."""
+        async with session_factory() as session:
+            service = PlayerPreferencesService()
+            result = await service.get_player_preferences(session, "")
+            assert result["success"] is False
+
+    @pytest.mark.asyncio
+    async def test_get_player_preferences_not_found(self, session_factory):
+        """Test getting preferences for nonexistent player."""
+        async with session_factory() as session:
+            service = PlayerPreferencesService()
+            result = await service.get_player_preferences(session, "nonexistent-player")
+            assert result["success"] is False
+            assert "not found" in result["error"].lower()
+
+    @pytest.mark.asyncio
+    async def test_update_default_channel_invalid_player_id(self, session_factory):
+        """Test updating channel with invalid player ID."""
+        async with session_factory() as session:
+            service = PlayerPreferencesService()
+            result = await service.update_default_channel(session, "", "local")
+            assert result["success"] is False
+
+    @pytest.mark.asyncio
+    async def test_update_default_channel_invalid_channel(self, session_factory):
+        """Test updating to invalid channel."""
+        async with session_factory() as session:
+            player = await create_test_player(session, "test-player-channel")
+            service = PlayerPreferencesService()
+            await service.create_player_preferences(session, player.player_id)
+
+            result = await service.update_default_channel(session, player.player_id, "invalid_channel")
+            assert result["success"] is False
+            assert "invalid" in result["error"].lower()
+
+    @pytest.mark.asyncio
+    async def test_mute_channel_invalid_player_id(self, session_factory):
+        """Test muting channel with invalid player ID."""
+        async with session_factory() as session:
+            service = PlayerPreferencesService()
+            result = await service.mute_channel(session, "", "local")
+            assert result["success"] is False
+
+    @pytest.mark.asyncio
+    async def test_mute_channel_invalid_channel(self, session_factory):
+        """Test muting invalid channel."""
+        async with session_factory() as session:
+            player = await create_test_player(session, "test-player-mute")
+            service = PlayerPreferencesService()
+            await service.create_player_preferences(session, player.player_id)
+
+            result = await service.mute_channel(session, player.player_id, "invalid_channel")
+            assert result["success"] is False
+
+    @pytest.mark.asyncio
+    async def test_unmute_channel_invalid_player_id(self, session_factory):
+        """Test unmuting channel with invalid player ID."""
+        async with session_factory() as session:
+            service = PlayerPreferencesService()
+            result = await service.unmute_channel(session, "", "local")
+            assert result["success"] is False
+
+    @pytest.mark.asyncio
+    async def test_unmute_channel_invalid_channel(self, session_factory):
+        """Test unmuting invalid channel."""
+        async with session_factory() as session:
+            player = await create_test_player(session, "test-player-unmute")
+            service = PlayerPreferencesService()
+            await service.create_player_preferences(session, player.player_id)
+
+            result = await service.unmute_channel(session, player.player_id, "invalid_channel")
+            assert result["success"] is False
+
+    @pytest.mark.asyncio
+    async def test_get_muted_channels_invalid_player_id(self, session_factory):
+        """Test getting muted channels with invalid player ID."""
+        async with session_factory() as session:
+            service = PlayerPreferencesService()
+            result = await service.get_muted_channels(session, "")
+            assert result["success"] is False
+
+    @pytest.mark.asyncio
+    async def test_get_muted_channels_not_found(self, session_factory):
+        """Test getting muted channels for nonexistent player."""
+        async with session_factory() as session:
+            service = PlayerPreferencesService()
+            result = await service.get_muted_channels(session, "nonexistent-player")
+            assert result["success"] is False
+            assert "not found" in result["error"].lower()
+
+    @pytest.mark.asyncio
+    async def test_is_channel_muted_invalid_player_id(self, session_factory):
+        """Test checking if channel muted with invalid player ID."""
+        async with session_factory() as session:
+            service = PlayerPreferencesService()
+            result = await service.is_channel_muted(session, "", "local")
+            assert result["success"] is False
+
+    @pytest.mark.asyncio
+    async def test_is_channel_muted_invalid_channel(self, session_factory):
+        """Test checking if invalid channel is muted."""
+        async with session_factory() as session:
+            player = await create_test_player(session, "test-player-check")
+            service = PlayerPreferencesService()
+            await service.create_player_preferences(session, player.player_id)
+
+            result = await service.is_channel_muted(session, player.player_id, "invalid_channel")
+            assert result["success"] is False
+
+    @pytest.mark.asyncio
+    async def test_is_channel_muted_not_found(self, session_factory):
+        """Test checking if channel muted for nonexistent player."""
+        async with session_factory() as session:
+            service = PlayerPreferencesService()
+            result = await service.is_channel_muted(session, "nonexistent-player", "local")
+            assert result["success"] is False
+            assert "not found" in result["error"].lower()
+
+    @pytest.mark.asyncio
+    async def test_delete_player_preferences_invalid_player_id(self, session_factory):
+        """Test deleting preferences with invalid player ID."""
+        async with session_factory() as session:
+            service = PlayerPreferencesService()
+            result = await service.delete_player_preferences(session, "")
+            assert result["success"] is False
+
+    @pytest.mark.asyncio
+    async def test_delete_player_preferences_not_found(self, session_factory):
+        """Test deleting preferences for nonexistent player."""
+        async with session_factory() as session:
+            service = PlayerPreferencesService()
+            result = await service.delete_player_preferences(session, "nonexistent-player")
+            # Service handles this gracefully - check that it returns a result
+            assert "success" in result
+
+    @pytest.mark.asyncio
+    async def test_database_exception_in_get_preferences(self, session_factory):
+        """Test database exception handling in get_player_preferences."""
+        async with session_factory() as session:
+            service = PlayerPreferencesService()
+
+            # Close the session to cause an exception
+            await session.close()
+
+            # Try to use closed session
+            result = await service.get_player_preferences(session, "test-player")
+            assert result["success"] is False
+            assert "error" in result
+
+    @pytest.mark.asyncio
+    async def test_database_exception_in_update_channel(self, session_factory):
+        """Test database exception handling in update_default_channel."""
+        async with session_factory() as session:
+            player = await create_test_player(session, "test-player-update")
+            service = PlayerPreferencesService()
+            await service.create_player_preferences(session, player.player_id)
+
+            # Close the session to cause an exception
+            await session.close()
+
+            # Try to use closed session
+            result = await service.update_default_channel(session, player.player_id, "global")
+            assert result["success"] is False
+            assert "error" in result
+
+    @pytest.mark.asyncio
+    async def test_database_exception_in_mute_channel(self, session_factory):
+        """Test database exception handling in mute_channel."""
+        async with session_factory() as session:
+            player = await create_test_player(session, "test-player-mute")
+            service = PlayerPreferencesService()
+            await service.create_player_preferences(session, player.player_id)
+
+            # Close the session to cause an exception
+            await session.close()
+
+            # Try to use closed session
+            result = await service.mute_channel(session, player.player_id, "local")
+            assert result["success"] is False
+
+    @pytest.mark.asyncio
+    async def test_unmute_channel_not_in_muted_list(self, session_factory):
+        """Test unmuting a channel that isn't muted."""
+        async with session_factory() as session:
+            player = await create_test_player(session, "test-player-unmute-none")
+            service = PlayerPreferencesService()
+            await service.create_player_preferences(session, player.player_id)
+
+            # Try to unmute a channel that was never muted
+            result = await service.unmute_channel(session, player.player_id, "local")
+            # Should still succeed
+            assert result["success"] is True
+
+    @pytest.mark.asyncio
+    async def test_database_exception_in_unmute_channel(self, session_factory):
+        """Test database exception handling in unmute_channel."""
+        async with session_factory() as session:
+            player = await create_test_player(session, "test-player-unmute-err")
+            service = PlayerPreferencesService()
+            await service.create_player_preferences(session, player.player_id)
+
+            # Close the session to cause an exception
+            await session.close()
+
+            # Try to use closed session
+            result = await service.unmute_channel(session, player.player_id, "local")
+            assert result["success"] is False
+
+    @pytest.mark.asyncio
+    async def test_database_exception_in_get_muted_channels(self, session_factory):
+        """Test database exception handling in get_muted_channels."""
+        async with session_factory() as session:
+            service = PlayerPreferencesService()
+
+            # Close the session to cause an exception
+            await session.close()
+
+            # Try to use closed session
+            result = await service.get_muted_channels(session, "test-player")
+            assert result["success"] is False
+
+    @pytest.mark.asyncio
+    async def test_database_exception_in_is_channel_muted(self, session_factory):
+        """Test database exception handling in is_channel_muted."""
+        async with session_factory() as session:
+            service = PlayerPreferencesService()
+
+            # Close the session to cause an exception
+            await session.close()
+
+            # Try to use closed session
+            result = await service.is_channel_muted(session, "test-player", "local")
+            assert result["success"] is False

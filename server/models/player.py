@@ -10,8 +10,9 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy.ext.mutable import MutableList
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
 
@@ -253,3 +254,46 @@ class Player(Base):
         back_populates="player",
         cascade="all, delete-orphan",
     )
+
+    channel_preferences: Mapped["PlayerChannelPreferences | None"] = relationship(
+        "PlayerChannelPreferences",
+        back_populates="player",
+        uselist=False,
+        cascade="all, delete-orphan",
+        single_parent=True,
+    )
+
+
+class PlayerChannelPreferences(Base):
+    """
+    Player channel preferences model for Advanced Chat Channels.
+
+    Stores player preferences for chat channels including default channel
+    and muted channels list.
+    """
+
+    __tablename__ = "player_channel_preferences"
+
+    player_id: Mapped[str] = mapped_column(
+        String(255),
+        ForeignKey("players.player_id", ondelete="CASCADE"),
+        primary_key=True,
+        nullable=False,
+    )
+    default_channel: Mapped[str] = mapped_column(String(32), nullable=False, default="local")
+    muted_channels: Mapped[list[str]] = mapped_column(MutableList.as_mutable(JSONB), nullable=False, default=list)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(UTC),
+        server_default="CURRENT_TIMESTAMP",
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
+        server_default="CURRENT_TIMESTAMP",
+    )
+
+    player: Mapped["Player"] = relationship("Player", back_populates="channel_preferences")

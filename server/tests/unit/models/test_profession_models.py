@@ -277,8 +277,11 @@ class TestProfessionDatabaseSchema:
         with db_engine.connect() as conn:
             result = conn.execute(
                 text("""
-                SELECT name FROM sqlite_master
-                WHERE type='index' AND name='idx_professions_available'
+                SELECT indexname
+                FROM pg_indexes
+                WHERE schemaname = 'public'
+                AND tablename = 'professions'
+                AND indexname = 'idx_professions_available'
             """)
             )
             index_exists = result.fetchone() is not None
@@ -288,12 +291,13 @@ class TestProfessionDatabaseSchema:
         """Test that table constraints work correctly."""
         with db_engine.connect() as conn:
             # Test NOT NULL constraints
-            with pytest.raises(IntegrityError):  # SQLite raises IntegrityError for NOT NULL violations
+            with pytest.raises(IntegrityError):  # PostgreSQL raises IntegrityError for NOT NULL violations
                 conn.execute(
                     text("""
                     INSERT INTO professions (id, name) VALUES (0, 'Test')
                 """)
                 )
+                conn.commit()  # Commit to trigger the error
 
             # Test UNIQUE constraint on name
             conn.execute(
@@ -302,16 +306,16 @@ class TestProfessionDatabaseSchema:
                 VALUES (0, 'Test', 'Description', 'Flavor', '{}', '{}')
             """)
             )
+            conn.commit()
 
-            with pytest.raises(IntegrityError):  # SQLite raises IntegrityError for UNIQUE violations
+            with pytest.raises(IntegrityError):  # PostgreSQL raises IntegrityError for UNIQUE violations
                 conn.execute(
                     text("""
                     INSERT INTO professions (id, name, description, flavor_text, stat_requirements, mechanical_effects)
                     VALUES (1, 'Test', 'Description', 'Flavor', '{}', '{}')
                 """)
                 )
-
-            conn.commit()
+                conn.commit()  # Commit to trigger the error
 
     def test_professions_default_values(self, db_engine):
         """Test that default values work correctly."""
@@ -322,10 +326,11 @@ class TestProfessionDatabaseSchema:
                 VALUES (0, 'Test', 'Description', 'Flavor', '{}', '{}')
             """)
             )
+            conn.commit()
 
             result = conn.execute(text("SELECT is_available FROM professions WHERE id = 0"))
             is_available = result.fetchone()[0]
-            assert is_available == 1  # SQLite stores BOOLEAN as INTEGER
+            assert is_available is True  # PostgreSQL stores BOOLEAN as boolean
 
 
 class TestPlayerProfessionIntegration:
@@ -333,57 +338,78 @@ class TestPlayerProfessionIntegration:
 
     @pytest.fixture
     def db_session_with_professions(self):
-        """Create a database session with professions table."""
-        engine = create_engine("sqlite:///:memory:", echo=False)
+        """Create a PostgreSQL database session with professions and players tables."""
+        import os
 
-        # Create professions table
+        database_url = os.getenv("DATABASE_URL")
+        if not database_url or not database_url.startswith("postgresql"):
+            raise ValueError("DATABASE_URL must be set to a PostgreSQL URL. SQLite is no longer supported.")
+        # Convert async URL to sync URL for create_engine
+        sync_url = database_url.replace("+asyncpg", "")
+        engine = create_engine(sync_url, echo=False)
+
+        # Create professions table (if not exists)
         with engine.connect() as conn:
             conn.execute(
                 text("""
-                CREATE TABLE professions (
+                CREATE TABLE IF NOT EXISTS professions (
                     id INTEGER PRIMARY KEY,
-                    name TEXT NOT NULL UNIQUE,
+                    name VARCHAR(50) NOT NULL UNIQUE,
                     description TEXT NOT NULL,
                     flavor_text TEXT NOT NULL,
                     stat_requirements TEXT NOT NULL,
                     mechanical_effects TEXT NOT NULL,
-                    is_available BOOLEAN NOT NULL DEFAULT 1
+                    is_available BOOLEAN NOT NULL DEFAULT TRUE
                 )
             """)
             )
-            conn.execute(text("CREATE INDEX idx_professions_available ON professions(is_available)"))
+            conn.execute(text("CREATE INDEX IF NOT EXISTS idx_professions_available ON professions(is_available)"))
 
-            # Insert test professions
+            # Insert test professions (using ON CONFLICT to handle existing data)
             conn.execute(
                 text("""
                 INSERT INTO professions (id, name, description, flavor_text, stat_requirements, mechanical_effects)
                 VALUES
                 (0, 'Tramp', 'A wandering soul', 'Test flavor', '{}', '{}'),
                 (1, 'Gutter Rat', 'A street survivor', 'Test flavor', '{}', '{}')
+                ON CONFLICT (id) DO UPDATE SET
+                    name = EXCLUDED.name,
+                    description = EXCLUDED.description,
+                    flavor_text = EXCLUDED.flavor_text,
+                    stat_requirements = EXCLUDED.stat_requirements,
+                    mechanical_effects = EXCLUDED.mechanical_effects
             """)
             )
             conn.commit()
 
-        # Create players table (simplified for testing)
+        # Create players table (simplified for testing, if not exists)
         with engine.connect() as conn:
             conn.execute(
                 text("""
-                CREATE TABLE players (
-                    player_id TEXT PRIMARY KEY,
-                    user_id TEXT NOT NULL,
-                    name TEXT UNIQUE NOT NULL,
+                CREATE TABLE IF NOT EXISTS players (
+                    player_id VARCHAR(255) PRIMARY KEY,
+                    user_id VARCHAR(255) NOT NULL,
+                    name VARCHAR(50) UNIQUE NOT NULL,
                     profession_id INTEGER NOT NULL DEFAULT 0,
                     stats TEXT NOT NULL DEFAULT '{}',
-                    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-                );
+                    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+                )
             """)
             )
             conn.commit()
 
         Session = sessionmaker(bind=engine)
         session = Session()
-        yield session
-        session.close()
+        try:
+            yield session
+        finally:
+            # Clean up test data
+            try:
+                session.execute(text("DELETE FROM players WHERE player_id LIKE 'test_%' OR player_id LIKE 'player_%'"))
+                session.commit()
+            except Exception:
+                pass
+            session.close()
 
     def test_player_with_profession_id(self, db_session_with_professions):
         """Test that a player can have a profession_id."""
@@ -471,15 +497,30 @@ class TestProfessionHelperMethods:
 
     @pytest.fixture
     def db_session(self):
-        """Create an in-memory SQLite database for testing."""
-        engine = create_engine("sqlite:///:memory:", echo=False)
+        """Create a PostgreSQL database session for testing."""
+        import os
+
+        database_url = os.getenv("DATABASE_URL")
+        if not database_url or not database_url.startswith("postgresql"):
+            raise ValueError("DATABASE_URL must be set to a PostgreSQL URL. SQLite is no longer supported.")
+        # Convert async URL to sync URL for create_engine
+        sync_url = database_url.replace("+asyncpg", "")
+        engine = create_engine(sync_url, echo=False)
         from server.metadata import metadata
 
         metadata.create_all(engine)
         Session = sessionmaker(bind=engine)
         session = Session()
-        yield session
-        session.close()
+        try:
+            yield session
+        finally:
+            # Clean up test data
+            try:
+                session.execute(text("DELETE FROM professions WHERE id >= 0"))
+                session.commit()
+            except Exception:
+                pass
+            session.close()
 
     def test_get_stat_requirements_valid_json(self, db_session):
         """Test get_stat_requirements with valid JSON."""

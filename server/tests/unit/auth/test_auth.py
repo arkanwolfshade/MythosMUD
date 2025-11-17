@@ -562,7 +562,7 @@ class TestInviteManagementEndpoints:
                         "id": invite_id,
                         "expires_at": expires_at,
                         "created_at": datetime.now(UTC),
-                    }
+                    },
                 )
                 conn.commit()
                 # Verify it was created

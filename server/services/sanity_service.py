@@ -24,7 +24,7 @@ logger = get_logger(__name__)
 
 
 def _utc_now() -> datetime:
-    """Return naive UTC timestamp suitable for SQLite."""
+    """Return naive UTC timestamp suitable for PostgreSQL TIMESTAMP WITHOUT TIME ZONE."""
     return datetime.now(UTC).replace(tzinfo=None)
 
 

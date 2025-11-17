@@ -3,15 +3,16 @@
 Test database initialization for MythosMUD.
 
 DEPRECATED: This script is for SQLite initialization only.
-We now use PostgreSQL exclusively. SQLite databases have been renamed to .bak extension.
+We now use PostgreSQL exclusively. SQLite databases have been removed.
 
-This module provides utilities for setting up test databases with sample data.
+This module is kept for reference only and should not be used.
+All test data is now stored in PostgreSQL via SQLAlchemy models.
 """
 
-import sqlite3
 from pathlib import Path
 
-from server.scripts.player_inventory_migration import migrate_player_inventories
+# DEPRECATED: This script is no longer functional
+# Test databases are now managed via PostgreSQL SQL schema files in db/schema/
 
 # Test database path - use project root relative path
 # from server/tests/scripts -> server/tests -> server -> project_root
@@ -19,23 +20,19 @@ from server.scripts.player_inventory_migration import migrate_player_inventories
 project_root = Path(__file__).parent.parent.parent.parent
 TEST_DB_PATH = project_root / "data" / "unit_test" / "players" / "unit_test_players.db"
 
-# Test database schema is now loaded from server/sql/schema.sql
+# Test database schema is now loaded from db/schema/ SQL files
 
 
 def load_schema():
-    """Load the test database schema from SQL files."""
-    from pathlib import Path
+    """
+    Load the test database schema from SQL files.
 
-    # Get the project root directory (go up from server/tests/scripts to project root)
-    # server/tests/scripts -> server/tests -> server -> project_root
-    project_root = Path(__file__).parent.parent.parent.parent
-    schema_file = project_root / "server" / "sql" / "schema.sql"
-
-    if not schema_file.exists():
-        raise FileNotFoundError(f"Schema file not found: {schema_file}")
-
-    with open(schema_file, encoding="utf-8") as f:
-        return f.read()
+    DEPRECATED: This function is no longer used.
+    Database schema is now defined in db/schema/ SQL files.
+    """
+    raise DeprecationWarning(
+        "This function is deprecated. Database schema is now managed via PostgreSQL SQL files in db/schema/"
+    )
 
 
 # Sample test user data
@@ -110,127 +107,26 @@ SAMPLE_INVITES = [
 
 
 def init_test_database():
-    """Initialize the test database with schema and test data."""
-    import os
+    """
+    Initialize the test database with schema and test data.
 
-    print(f"Initializing test database at: {TEST_DB_PATH}")
-
-    # Set DATABASE_URL for tests that need it (convert Windows path to POSIX for SQLite URL)
-    db_path_posix = str(TEST_DB_PATH).replace("\\", "/")
-    os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{db_path_posix}"
-
-    # Ensure the data directory exists
-    TEST_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-
-    # Create database and schema
-    with sqlite3.connect(TEST_DB_PATH) as conn:
-        conn.execute("PRAGMA foreign_keys = ON")
-        conn.executescript(load_schema())
-
-        # MIGRATION: Add respawn_room_id column if it doesn't exist (for existing databases)
-        try:
-            conn.execute("SELECT respawn_room_id FROM players LIMIT 1")
-        except sqlite3.OperationalError:
-            # Column doesn't exist, add it
-            print("[MIGRATION] Adding respawn_room_id column to players table")
-            conn.execute(
-                "ALTER TABLE players ADD COLUMN respawn_room_id TEXT DEFAULT 'earth_arkhamcity_sanitarium_room_foyer_001'"
-            )
-
-        conn.commit()
-
-    print("[OK] Database schema created")
-
-    # Insert sample test players into database
-    with sqlite3.connect(TEST_DB_PATH) as conn:
-        conn.execute("PRAGMA foreign_keys = ON")
-        for user_data in SAMPLE_USERS:
-            conn.execute(
-                """
-                INSERT OR REPLACE INTO users (
-                    id, email, username, hashed_password, is_active, is_superuser, is_verified
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
-                (
-                    user_data["id"],
-                    user_data["email"],
-                    user_data["username"],
-                    user_data["hashed_password"],
-                    user_data["is_active"],
-                    user_data["is_superuser"],
-                    user_data["is_verified"],
-                ),
-            )
-
-        for player_data in SAMPLE_PLAYERS:
-            conn.execute(
-                """
-                INSERT OR REPLACE INTO players (
-                    player_id, user_id, name, stats, inventory, status_effects,
-                    current_room_id, respawn_room_id, experience_points, level
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-                (
-                    player_data["player_id"],
-                    player_data["user_id"],
-                    player_data["name"],
-                    player_data["stats"],
-                    player_data["inventory"],
-                    player_data["status_effects"],
-                    player_data["current_room_id"],
-                    player_data.get("respawn_room_id", "earth_arkhamcity_sanitarium_room_foyer_001"),
-                    player_data["experience_points"],
-                    player_data["level"],
-                ),
-            )
-
-        conn.commit()
-
-    print(f"[OK] Loaded {len(SAMPLE_PLAYERS)} sample test players")
-
-    # Ensure player_inventories table exists and is populated
-    migrate_player_inventories(TEST_DB_PATH)
-
-    # Insert sample test invites into database
-    with sqlite3.connect(TEST_DB_PATH) as conn:
-        for invite_data in SAMPLE_INVITES:
-            conn.execute(
-                """
-                INSERT OR REPLACE INTO invites (
-                    id, invite_code, created_by_user_id, used_by_user_id, used, expires_at, created_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
-                (
-                    invite_data["id"],
-                    invite_data["invite_code"],
-                    invite_data["created_by_user_id"],
-                    invite_data["used_by_user_id"],
-                    invite_data["used"],
-                    invite_data["expires_at"],
-                    invite_data["created_at"],
-                ),
-            )
-
-        conn.commit()
-
-    print(f"[OK] Loaded {len(SAMPLE_INVITES)} sample test invites")
-
-    # Verify the database was created successfully
-    with sqlite3.connect(TEST_DB_PATH) as conn:
-        cursor = conn.execute("SELECT COUNT(*) FROM users")
-        user_count = cursor.fetchone()[0]
-        print(f"[OK] Test database contains {user_count} users")
-
-        cursor = conn.execute("SELECT COUNT(*) FROM players")
-        player_count = cursor.fetchone()[0]
-        print(f"[OK] Test database contains {player_count} players")
-
-        cursor = conn.execute("SELECT COUNT(*) FROM invites")
-        invite_count = cursor.fetchone()[0]
-        print(f"[OK] Test database contains {invite_count} invites")
-
-    print("[OK] Test database initialization completed successfully")
+    DEPRECATED: This function is no longer used.
+    Test databases are now PostgreSQL databases initialized via db/schema/ SQL files.
+    """
+    print(
+        "[DEPRECATED] init_test_database() is deprecated. "
+        "Test databases are now PostgreSQL databases managed via db/schema/ SQL files."
+    )
+    print(
+        "To initialize test database, use PostgreSQL SQL schema files in db/schema/ "
+        "and ensure DATABASE_URL is set to a PostgreSQL URL."
+    )
+    raise DeprecationWarning("This function is deprecated. Use PostgreSQL SQL schema files in db/schema/ instead.")
 
 
 if __name__ == "__main__":
-    init_test_database()
+    print(
+        "[DEPRECATED] This script is deprecated. "
+        "Test databases are now PostgreSQL databases managed via db/schema/ SQL files."
+    )
+    print("This script will not execute. Use PostgreSQL schema files instead.")

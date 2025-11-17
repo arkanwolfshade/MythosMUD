@@ -127,7 +127,7 @@ If issues are discovered:
 ## Migration Artifacts
 
 - Static data JSON schemas: `db/static/schemas/`
-- Generated SQL: `data/static/generated_sql/static_seed.sql`
+- Generated SQL: `data/seed/00_world_and_emotes.sql`
 - Migration CSVs: `data/migration/csv/`
 - SQLite backups: `data/**/*.db.bak`
 

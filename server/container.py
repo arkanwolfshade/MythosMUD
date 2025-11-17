@@ -31,8 +31,6 @@ USAGE:
 
 import asyncio
 import json
-import os
-import sqlite3
 import threading
 from datetime import datetime
 from pathlib import Path
@@ -228,7 +226,6 @@ class ApplicationContainer:
 
                 self.config = get_config()
                 logger.info("Configuration loaded", environment=self.config.logging.environment)
-                project_root = self._get_project_root()
                 normalized_environment = normalize_environment(self.config.logging.environment)
 
                 # Phase 2: Database infrastructure
@@ -384,7 +381,7 @@ class ApplicationContainer:
                 logger.info("Game services initialized")
 
                 # Initialize item prototype registry and factory
-                self._initialize_item_services(project_root)
+                await self._initialize_item_services()
 
                 # Phase 8: Caching services (optional, may fail gracefully)
                 logger.debug("Initializing caching services...")
@@ -437,21 +434,17 @@ class ApplicationContainer:
                 await self.shutdown()
                 raise RuntimeError(f"Failed to initialize application container: {e}") from e
 
-    def _initialize_item_services(self, project_root: Path) -> None:
-        """Load item prototypes and create the shared item factory."""
+    async def _initialize_item_services(self) -> None:
+        """Load item prototypes from PostgreSQL and create the shared item factory."""
+        from sqlalchemy import select
+
         from .game.items.item_factory import ItemFactory
         from .game.items.models import ItemPrototypeModel
         from .game.items.prototype_registry import PrototypeRegistry
+        from .models.item import ItemPrototype
 
-        item_db_path = self._resolve_item_database_path(project_root)
-        if item_db_path is None:
-            logger.warning("Item database path could not be resolved; item services will remain unavailable")
-            self.item_prototype_registry = None
-            self.item_factory = None
-            return
-
-        if not item_db_path.exists():
-            logger.warning("Item database not found; item services unavailable", item_db=str(item_db_path))
+        if not self.database_manager:
+            logger.warning("Database manager not initialized; item services will remain unavailable")
             self.item_prototype_registry = None
             self.item_factory = None
             return
@@ -460,47 +453,30 @@ class ApplicationContainer:
         invalid_entries: list[dict[str, Any]] = []
 
         try:
-            with sqlite3.connect(item_db_path) as connection:
-                connection.row_factory = sqlite3.Row
-                rows = connection.execute(
-                    """
-                    SELECT
-                        prototype_id,
-                        name,
-                        short_description,
-                        long_description,
-                        item_type,
-                        weight,
-                        base_value,
-                        durability,
-                        flags,
-                        wear_slots,
-                        stacking_rules,
-                        usage_restrictions,
-                        effect_components,
-                        metadata,
-                        tags
-                    FROM item_prototypes
-                    """
-                ).fetchall()
+            session_maker = self.database_manager.get_session_maker()
 
-                for row in rows:
+            async with session_maker() as session:
+                # Query item_prototypes from PostgreSQL using ORM
+                result = await session.execute(select(ItemPrototype))
+                item_prototypes = result.scalars().all()
+
+                for db_prototype in item_prototypes:
                     payload = {
-                        "prototype_id": row["prototype_id"],
-                        "name": row["name"],
-                        "short_description": row["short_description"],
-                        "long_description": row["long_description"],
-                        "item_type": row["item_type"],
-                        "weight": row["weight"],
-                        "base_value": row["base_value"],
-                        "durability": row["durability"],
-                        "flags": self._decode_json_column(row["flags"], list),
-                        "wear_slots": self._decode_json_column(row["wear_slots"], list),
-                        "stacking_rules": self._decode_json_column(row["stacking_rules"], dict),
-                        "usage_restrictions": self._decode_json_column(row["usage_restrictions"], dict),
-                        "effect_components": self._decode_json_column(row["effect_components"], list),
-                        "metadata": self._decode_json_column(row["metadata"], dict),
-                        "tags": self._decode_json_column(row["tags"], list),
+                        "prototype_id": db_prototype.prototype_id,
+                        "name": db_prototype.name,
+                        "short_description": db_prototype.short_description,
+                        "long_description": db_prototype.long_description,
+                        "item_type": db_prototype.item_type,
+                        "weight": float(db_prototype.weight) if db_prototype.weight is not None else 0.0,
+                        "base_value": int(db_prototype.base_value) if db_prototype.base_value is not None else 0,
+                        "durability": int(db_prototype.durability) if db_prototype.durability is not None else None,
+                        "flags": self._decode_json_column(db_prototype.flags, list),
+                        "wear_slots": self._decode_json_column(db_prototype.wear_slots, list),
+                        "stacking_rules": self._decode_json_column(db_prototype.stacking_rules, dict),
+                        "usage_restrictions": self._decode_json_column(db_prototype.usage_restrictions, dict),
+                        "effect_components": self._decode_json_column(db_prototype.effect_components, list),
+                        "metadata": self._decode_json_column(db_prototype.metadata_payload, dict),
+                        "tags": self._decode_json_column(db_prototype.tags, list),
                     }
 
                     try:
@@ -524,13 +500,14 @@ class ApplicationContainer:
             self.item_factory = ItemFactory(registry)
 
             logger.info(
-                "Item services initialized",
+                "Item services initialized from PostgreSQL",
                 prototype_count=len(prototypes),
                 invalid_count=len(invalid_entries),
-                item_db=str(item_db_path),
             )
-        except sqlite3.Error as exc:
-            logger.error("Failed to load item prototypes from database", error=str(exc), item_db=str(item_db_path))
+        except Exception as exc:
+            logger.error(
+                "Failed to load item prototypes from PostgreSQL database", error=str(exc), error_type=type(exc).__name__
+            )
             self.item_prototype_registry = None
             self.item_factory = None
 
@@ -553,42 +530,34 @@ class ApplicationContainer:
             logger.warning("Failed to decode JSON column; using default value", column_value=value)
             return expected_type()
 
-    def _resolve_item_database_path(self, project_root: Path) -> Path | None:
-        """Resolve the path to the item prototype database based on configuration and overrides."""
-        override = os.environ.get("ITEM_DATABASE_URL") or os.environ.get("ITEM_DATABASE_PATH")
-        if override:
-            normalized = self._normalize_path_from_url_or_path(override, project_root)
-            if normalized:
-                return normalized
-
-        if not self.config:
-            return None
-
-        environment = getattr(self.config.logging, "environment", "local")
-        env_map = {
-            "local": Path("data") / "local" / "items" / "local_items.db",
-            "e2e_test": Path("data") / "e2e_test" / "items" / "e2e_items.db",
-            "unit_test": Path("data") / "unit_test" / "items" / "unit_test_items.db",
-        }
-
-        relative = env_map.get(environment)
-        if relative is None:
-            relative = Path("data") / environment / "items" / f"{environment}_items.db"
-
-        return (project_root / relative).resolve()
-
     def _normalize_path_from_url_or_path(self, raw: str, project_root: Path) -> Path | None:
-        """Normalize an item database override into a filesystem path."""
+        """
+        Normalize an item database override into a filesystem path.
+
+        DEPRECATED: Items are now stored in PostgreSQL. This method is kept for
+        backward compatibility but should not be used for new code.
+
+        Args:
+            raw: Database URL or file path
+            project_root: Project root directory for relative paths
+
+        Returns:
+            Path | None: Normalized path or None if invalid
+        """
         try:
             if "://" in raw:
                 parsed = urlparse(raw)
-                if parsed.scheme.startswith("sqlite"):
-                    path_str = parsed.path
-                    if path_str.startswith("/") and len(path_str) > 3 and path_str[2] == ":":
-                        path_str = path_str.lstrip("/")
-                    return Path(path_str).resolve()
-                return Path(parsed.path or "").resolve()
+                # PostgreSQL URLs don't have file paths - return None
+                if parsed.scheme.startswith("postgresql"):
+                    logger.warning(
+                        "Item database override with PostgreSQL URL is not supported - items are in PostgreSQL",
+                        url=raw,
+                    )
+                    return None
+                # For other URL schemes, try to extract path
+                return Path(parsed.path or "").resolve() if parsed.path else None
 
+            # Handle file paths
             path = Path(raw)
             if not path.is_absolute():
                 path = (project_root / path).resolve()
@@ -653,6 +622,7 @@ class ApplicationContainer:
             # 5. Close NPC database connections
             try:
                 from .npc_database import close_npc_db
+
                 await close_npc_db()
                 logger.debug("NPC database connections closed")
             except Exception as e:

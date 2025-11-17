@@ -458,8 +458,8 @@ class TestErrorLoggingIntegration:
         db_error_details = {
             "operation": "SELECT",
             "table": "players",
-            "error_code": "SQLITE_ERROR",
-            "query": "SELECT * FROM players WHERE id = ?",
+            "error_code": "POSTGRES_ERROR",
+            "query": "SELECT * FROM players WHERE id = $1",
         }
 
         with patch("server.utils.error_logging.logger") as mock_logger:
@@ -700,19 +700,19 @@ class TestWrapThirdPartyException:
     """Test cases for wrap_third_party_exception function."""
 
     def test_wrap_known_database_exception(self):
-        """Test wrapping a known SQLite exception."""
-        import sqlite3
+        """Test wrapping a known PostgreSQL exception."""
+        from sqlalchemy.exc import OperationalError
 
         from server.utils.error_logging import wrap_third_party_exception
 
         try:
-            raise sqlite3.OperationalError("database is locked")
-        except sqlite3.OperationalError as exc:
+            raise OperationalError("connection failed", None, None)
+        except OperationalError as exc:
             wrapped = wrap_third_party_exception(exc)
 
             assert isinstance(wrapped, DatabaseError)
-            assert "database is locked" in str(wrapped)
-            assert wrapped.details["original_type"] == "sqlite3.OperationalError"
+            assert "connection failed" in str(wrapped)
+            assert wrapped.details["original_type"] == "sqlalchemy.exc.OperationalError"
             assert wrapped.user_friendly == "An internal error occurred. Please try again."
 
     def test_wrap_unmapped_exception(self):
@@ -736,15 +736,15 @@ class TestWrapThirdPartyException:
 
     def test_wrap_exception_with_context(self):
         """Test wrapping exception with custom error context."""
-        import sqlite3
+        from sqlalchemy.exc import IntegrityError
 
         from server.utils.error_logging import wrap_third_party_exception
 
         context = create_error_context(user_id="wrap-user-123")
 
         try:
-            raise sqlite3.IntegrityError("UNIQUE constraint failed")
-        except sqlite3.IntegrityError as exc:
+            raise IntegrityError("UNIQUE constraint failed", None, None)
+        except IntegrityError as exc:
             wrapped = wrap_third_party_exception(exc, context=context)
 
             assert wrapped.context == context
@@ -752,7 +752,7 @@ class TestWrapThirdPartyException:
 
     def test_wrap_exception_custom_logger(self):
         """Test wrapping exception with custom logger."""
-        import sqlite3
+        from sqlalchemy.exc import DatabaseError as SQLAlchemyDatabaseError
 
         from server.utils.error_logging import wrap_third_party_exception
 
@@ -761,8 +761,8 @@ class TestWrapThirdPartyException:
             mock_get_logger.return_value = mock_custom_logger
 
             try:
-                raise sqlite3.DatabaseError("database error")
-            except sqlite3.DatabaseError as exc:
+                raise SQLAlchemyDatabaseError("database error", None, None)
+            except SQLAlchemyDatabaseError as exc:
                 wrapped = wrap_third_party_exception(exc, logger_name="custom.wrapper.logger")
 
                 # Verify wrapped exception was created

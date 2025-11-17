@@ -227,16 +227,19 @@ def container_test_client():
 
         try:
             from server.npc_database import close_npc_db
+
             loop.run_until_complete(close_npc_db())
         except Exception as e:
             logger.warning("Error disposing NPC database engine before TestClient creation", error=str(e))
 
         # Reset DatabaseManager singleton so it gets recreated in TestClient's loop
         from server.database import DatabaseManager
+
         DatabaseManager.reset_instance()
 
         # Reset NPC database global state
         import server.npc_database
+
         server.npc_database._npc_engine = None
         server.npc_database._npc_async_session_maker = None
         server.npc_database._npc_database_url = None
@@ -260,7 +263,9 @@ def container_test_client():
                 logger.debug("Waiting for pending tasks to complete", task_count=len(pending_tasks))
                 # Give tasks a short time to complete, then cancel remaining ones
                 try:
-                    loop.run_until_complete(asyncio.wait_for(asyncio.gather(*pending_tasks, return_exceptions=True), timeout=2.0))
+                    loop.run_until_complete(
+                        asyncio.wait_for(asyncio.gather(*pending_tasks, return_exceptions=True), timeout=2.0)
+                    )
                 except TimeoutError:
                     logger.warning("Some tasks did not complete in time, cancelling", task_count=len(pending_tasks))
                     for task in pending_tasks:

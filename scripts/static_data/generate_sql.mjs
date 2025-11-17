@@ -218,7 +218,7 @@ async function generateRooms() {
 }
 
 async function main() {
-	const outDir = resolve(root, 'data/static/generated_sql');
+	const outDir = resolve(root, 'data/seed');
 	await ensureDir(outDir);
 
 	const sections = [];
@@ -233,7 +233,7 @@ async function main() {
 	sections.push('COMMIT;');
 
 	const sql = sections.join('\n');
-	const target = resolve(outDir, 'static_seed.sql');
+	const target = resolve(outDir, '00_world_and_emotes.sql');
 	await fs.writeFile(target, sql, 'utf-8');
 	console.log(`Wrote ${target}`);
 }

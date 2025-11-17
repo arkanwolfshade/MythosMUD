@@ -498,7 +498,7 @@ def _setup_enhanced_file_logging(
     # Enhanced log categories with security and performance considerations
     log_categories = {
         "server": ["server", "uvicorn"],
-        "persistence": ["persistence", "PersistenceLayer", "aiosqlite"],
+        "persistence": ["persistence", "PersistenceLayer", "asyncpg"],
         "authentication": ["auth"],
         "world": ["world"],
         "communications": ["realtime", "communications"],

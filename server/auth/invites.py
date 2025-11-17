@@ -138,7 +138,7 @@ class InviteManager:
         logger.info("Cleaning up expired invites")
 
         # Find expired invites
-        # Compare using naive UTC to match SQLite stored values
+        # Compare using naive UTC to match PostgreSQL TIMESTAMP WITHOUT TIME ZONE stored values
         result = await self.session.execute(
             select(Invite).where(Invite.expires_at < datetime.now(UTC).replace(tzinfo=None))
         )

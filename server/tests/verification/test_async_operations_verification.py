@@ -278,10 +278,10 @@ class TestAsyncOperationsVerification:
         """Test async operations with a real persistence layer instance."""
         import os
 
-        # Use PostgreSQL from environment - SQLite is no longer supported
+        # Use PostgreSQL from environment
         database_url = os.getenv("DATABASE_URL")
         if not database_url or not database_url.startswith("postgresql"):
-            pytest.skip("DATABASE_URL must be set to a PostgreSQL URL. SQLite is no longer supported.")
+            pytest.skip("DATABASE_URL must be set to a PostgreSQL URL for this test.")
 
         # Create a real persistence layer (this will use PostgreSQL)
         persistence = PersistenceLayer()

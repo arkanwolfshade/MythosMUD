@@ -256,7 +256,7 @@ class TestAsyncRouteHandlers:
         """Checklist for converting routes to async."""
         conversion_checklist = {
             "identify_io_operations": [
-                "✓ Database queries (SQLite operations)",
+                "✓ Database queries (PostgreSQL operations)",
                 "✓ External service calls (NATS, authentication)",
                 "✓ File I/O operations (logs, configs)",
                 "✓ Network operations (real-time messaging)",

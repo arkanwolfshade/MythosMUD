@@ -77,7 +77,7 @@ class SQLAlchemyAsyncLinter(ast.NodeVisitor):
         # Check if the object being called is likely a SQLAlchemy connection/session
         if isinstance(call_node.func.value, ast.Name):
             obj_name = call_node.func.value.id
-            # Only check SQLAlchemy connections, not aiosqlite or other database libraries
+            # Only check SQLAlchemy connections, not asyncpg or other database libraries
             if obj_name in ["conn", "session", "connection"] and self.has_sqlalchemy_import:
                 # Check if first argument is a raw string
                 if call_node.args and isinstance(call_node.args[0], ast.Constant):
@@ -181,7 +181,7 @@ def main():
     print("[FIX] To fix these issues:")
     print("   1. Add 'from sqlalchemy import text' to imports")
     print("   2. Wrap raw SQL strings with text() function")
-    print("   3. Example: await conn.execute(text('PRAGMA foreign_keys = ON'))")
+    print("   3. Example: await conn.execute(text('SELECT * FROM players WHERE id = :id'))")
 
     return 1
 

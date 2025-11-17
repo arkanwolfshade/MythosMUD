@@ -21,7 +21,7 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.pool import NullPool, StaticPool
+from sqlalchemy.pool import NullPool
 
 from .exceptions import ValidationError
 from .logging.enhanced_logging_config import get_logger
@@ -94,10 +94,6 @@ def _initialize_npc_database() -> None:
     _npc_database_url = npc_database_url
     logger.info("Using NPC database URL from configuration", npc_database_url=_npc_database_url)
 
-    # Determine pool class based on database URL
-    # Use NullPool for tests
-    pool_class = NullPool if "test" in _npc_database_url else StaticPool
-
     # PostgreSQL connection args (no SQLite-specific args)
     connect_args: dict[str, Any] = {}
     if not _npc_database_url.startswith("postgresql"):
@@ -109,16 +105,33 @@ def _initialize_npc_database() -> None:
             user_friendly="NPC database configuration error - PostgreSQL required",
         )
 
-    # Create async engine for NPC database
+    # Configure pool settings based on database URL
+    # Use NullPool for tests, default AsyncAdaptedQueuePool for production
+    # For async engines, AsyncAdaptedQueuePool is used automatically if poolclass not specified
+    pool_kwargs: dict[str, Any] = {}
+    if "test" in _npc_database_url:
+        pool_kwargs["poolclass"] = NullPool
+    else:
+        # For production, use default AsyncAdaptedQueuePool with configured pool size
+        # AsyncAdaptedQueuePool is automatically used by create_async_engine()
+        pool_kwargs.update(
+            {
+                "pool_size": 5,  # Number of connections to maintain
+                "max_overflow": 10,  # Additional connections that can be created
+                "pool_timeout": 30,  # Seconds to wait for connection from pool
+            }
+        )
+
     _npc_engine = create_async_engine(
         _npc_database_url,
         echo=False,
-        poolclass=pool_class,
         pool_pre_ping=True,
         connect_args=connect_args,
+        **pool_kwargs,
     )
 
-    logger.info("NPC Database engine created", pool_class=pool_class.__name__)
+    pool_type = "NullPool" if "test" in _npc_database_url else "AsyncAdaptedQueuePool"
+    logger.info("NPC Database engine created", pool_type=pool_type)
 
     # Create async session maker for NPC database
     _npc_async_session_maker = async_sessionmaker(
@@ -364,12 +377,16 @@ async def close_npc_db():
         _npc_creation_loop_id = None
 
 
-def get_npc_database_path() -> Path:
+def get_npc_database_path() -> Path | None:
     """
     Get the NPC database file path.
 
+    DEPRECATED: PostgreSQL does not use file paths. This function always returns None
+    for PostgreSQL databases. Kept for backward compatibility with code that may
+    check for database paths.
+
     Returns:
-        Path: Path to the NPC database file
+        Path | None: Always None for PostgreSQL (no file path)
     """
     # Initialize database if needed
     if _npc_database_url is None:
@@ -378,25 +395,35 @@ def get_npc_database_path() -> Path:
     # After initialization, database URL should be set
     assert _npc_database_url is not None, "NPC database URL should be initialized"
 
-    if _npc_database_url.startswith("sqlite+aiosqlite:///"):
-        db_path = _npc_database_url.replace("sqlite+aiosqlite:///", "")
-        return Path(db_path)
+    if _npc_database_url.startswith("postgresql"):
+        # PostgreSQL doesn't have a file path
+        return None
     else:
         context = create_error_context()
         context.metadata["operation"] = "get_npc_database_path"
         context.metadata["database_url"] = _npc_database_url
         log_and_raise(
             ValidationError,
-            f"Unsupported NPC database URL: {_npc_database_url}",
+            f"Unsupported NPC database URL: {_npc_database_url}. Only PostgreSQL is supported.",
             context=context,
             details={"database_url": _npc_database_url},
-            user_friendly="Unsupported NPC database configuration",
+            user_friendly="Unsupported NPC database configuration - PostgreSQL required",
         )
         # Satisfy type checker: log_and_raise raises
         raise AssertionError("unreachable")
 
 
 def ensure_npc_database_directory():
-    """Ensure NPC database directory exists."""
+    """
+    Ensure NPC database directory exists.
+
+    DEPRECATED: PostgreSQL does not use file paths or directories. This function
+    is a no-op for PostgreSQL databases. Kept for backward compatibility.
+
+    For PostgreSQL, database directories are managed by the PostgreSQL server,
+    not by the application.
+    """
     db_path = get_npc_database_path()
-    db_path.parent.mkdir(parents=True, exist_ok=True)
+    # PostgreSQL always returns None, so this is effectively a no-op
+    if db_path is not None:
+        db_path.parent.mkdir(parents=True, exist_ok=True)

@@ -34,7 +34,7 @@ class Invite(Base):
     used_by_user_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), nullable=True)
     used = Column(Boolean, default=False, nullable=False)
     expires_at = Column(DateTime, nullable=False)
-    # Store datetimes in database as naive UTC to keep SQLite comparisons simple.
+    # Store datetimes in database as naive UTC for PostgreSQL TIMESTAMP WITHOUT TIME ZONE compatibility.
     created_at = Column(DateTime, default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
 
     # ARCHITECTURE FIX Phase 3.1: Relationships defined directly in model (no circular imports)
@@ -74,7 +74,7 @@ class Invite(Base):
         return cls(
             invite_code=cls._generate_invite_code(),
             created_by_user_id=created_by_user_id,
-            # Persist naive UTC in DB
+            # Persist naive UTC for PostgreSQL TIMESTAMP WITHOUT TIME ZONE
             expires_at=(datetime.now(UTC) + timedelta(days=expires_in_days)).replace(tzinfo=None),
         )
 

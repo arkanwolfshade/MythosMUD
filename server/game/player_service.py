@@ -174,7 +174,7 @@ class PlayerService:
             # Dictionary
             player.set_stats(stats)  # type: ignore[arg-type]
 
-        # Ensure JSON TEXT fields are initialized (SQLite NOT NULL constraints)
+        # Ensure JSONB fields are initialized (PostgreSQL NOT NULL constraints)
         if not getattr(player, "inventory", None):
             player.set_inventory([])
         if not getattr(player, "status_effects", None):
