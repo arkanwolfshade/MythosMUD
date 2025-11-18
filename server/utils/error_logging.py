@@ -100,8 +100,9 @@ def log_and_raise(
 
     # Log the error with full context
     error_logger.error(
-        f"Error logged and exception raised: {message}",
+        "Error logged and exception raised",
         error_type=exception_class.__name__,
+        error_message=message,
         details=details or {},
         user_friendly=user_friendly,
     )
