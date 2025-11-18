@@ -89,6 +89,22 @@ class EventBus:
             # Signal shutdown to async processing loop - Task 1.3
             self._shutdown_event.set()
 
+            # Put sentinel in queue to wake up processing task immediately
+            # This ensures the task waiting on asyncio.wait_for() wakes up right away
+            try:
+                self._event_queue.put_nowait(None)  # Sentinel to wake up waiting task
+            except asyncio.QueueFull:
+                # Queue is full, but that's okay - task will wake up on timeout or cancellation
+                pass
+
+            # Cancel processing task explicitly if it exists
+            if self._processing_task and not self._processing_task.done():
+                self._processing_task.cancel()
+                try:
+                    await self._processing_task
+                except asyncio.CancelledError:
+                    pass
+
             # Cancel all active tasks and wait for graceful shutdown
             if self._active_tasks:
                 for task in list(self._active_tasks):
