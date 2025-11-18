@@ -259,12 +259,22 @@ class TestNPCStartupService:
         existing_rooms.update(world_data["room_mappings"].keys())
 
         # AI Agent: Get all NPC definitions from database
+        # Ensure NPC database is initialized before use
+        from server.npc_database import get_npc_engine, init_npc_db
         from server.services.npc_service import NPCService
+
+        # Initialize NPC database if needed
+        engine = get_npc_engine()
+        if engine is None:
+            await init_npc_db()
 
         npc_service_instance = NPCService()
         npc_definitions = []
+        # Use async for to properly handle the async generator and context manager
         async for session in get_npc_session():
             npc_definitions = await npc_service_instance.get_npc_definitions(session)
+            # Break after first iteration to exit the async for loop
+            # The generator will be properly closed by the async for loop
             break
 
         # AI Agent: Validate all NPC spawn locations

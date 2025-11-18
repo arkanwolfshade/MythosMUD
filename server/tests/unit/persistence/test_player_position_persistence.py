@@ -69,16 +69,28 @@ async def initialize_database(session: AsyncSession, user_id: str | None = None)
     return str(user_uuid)
 
 
-def build_player(player_id: str, user_id: str) -> Player:
+def build_player(player_id: str, user_id: str, name: str | None = None) -> Player:
     """Create a Player instance with timestamps normalized for persistence tests."""
     import json
+    import uuid
+
+    # Use unique name based on player_id if not provided
+    # Player.name has unique constraint, so we need to ensure uniqueness
+    if name is None:
+        # Use a combination of player_id and a short UUID to ensure uniqueness
+        unique_part = player_id.replace("-", "")[-12:] if len(player_id) > 12 else player_id
+        name = f"PositionTester-{unique_part}-{str(uuid.uuid4())[:8]}"
 
     player = Player(
         player_id=player_id,
         user_id=user_id,
-        name="PositionTester",
+        name=name,
         current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
         status_effects=json.dumps([]),  # Ensure status_effects is set (not null)
+        experience_points=0,  # Ensure experience_points is set (not null)
+        level=1,  # Ensure level is set (not null)
+        is_admin=0,  # Ensure is_admin is set (not null)
+        profession_id=0,  # Ensure profession_id is set (not null)
     )
     now = datetime.now(UTC).replace(tzinfo=None)
     player.created_at = now  # type: ignore[assignment]

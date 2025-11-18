@@ -227,6 +227,15 @@ class TestNPCSpawnRule:
         # Generate unique identifier to avoid constraint violations
         unique_suffix = str(uuid.uuid4())[:8]
 
+        # Ensure NPC database is initialized before use
+        from server.npc_database import get_npc_engine, init_npc_db
+
+        # Initialize NPC database if needed
+        engine = get_npc_engine()
+        if engine is None:
+            await init_npc_db()
+
+        # Use async for to properly handle the async generator and context manager
         async for session in get_npc_session():
             # Create NPC definition with unique name
             npc_def = NPCDefinition(
@@ -246,16 +255,22 @@ class TestNPCSpawnRule:
             assert spawn_rule.min_population == 0
             assert spawn_rule.max_population == 999
             assert spawn_rule.get_spawn_conditions() == {}
+            # Break after first iteration to exit the async for loop
+            # The generator will be properly closed by the async for loop
             break
 
     @pytest.mark.asyncio
     async def test_spawn_rule_foreign_key_constraint(self, test_client, test_npc_database):
         """Test that spawn rules require valid NPC definitions."""
-        from server.npc_database import get_npc_session
+        from server.npc_database import get_npc_engine, get_npc_session, init_npc_db
 
-        gen = get_npc_session()
-        session = await gen.__anext__()
-        try:
+        # Ensure NPC database is initialized before use
+        engine = get_npc_engine()
+        if engine is None:
+            await init_npc_db()
+
+        # Use async for to properly handle the async generator and context manager
+        async for session in get_npc_session():
             # Try to create spawn rule with non-existent NPC definition
             spawn_rule = NPCSpawnRule(
                 npc_definition_id=99999,  # Non-existent ID
@@ -266,11 +281,9 @@ class TestNPCSpawnRule:
 
             with pytest.raises(IntegrityError):
                 await session.commit()
-        finally:
-            try:
-                await gen.__anext__()
-            except StopAsyncIteration:
-                pass
+            # Break after first iteration to exit the async for loop
+            # The generator will be properly closed by the async for loop
+            break
 
     @pytest.mark.asyncio
     async def test_spawn_rule_json_conditions(self, test_client, test_npc_database):
@@ -292,6 +305,14 @@ class TestNPCSpawnRule:
             "events": ["full_moon", "eclipse"],
             "required_items": ["holy_symbol", "silver_weapon"],
         }
+
+        # Ensure NPC database is initialized before use
+        from server.npc_database import get_npc_engine, init_npc_db
+
+        # Initialize NPC database if needed
+        engine = get_npc_engine()
+        if engine is None:
+            await init_npc_db()
 
         # Use async context manager properly to avoid GC connection warnings
         async for session in get_npc_session():
@@ -317,6 +338,8 @@ class TestNPCSpawnRule:
             result = retrieved.get_spawn_conditions()
 
             assert result == complex_conditions
+            # Break after first iteration to exit the async for loop
+            # The generator will be properly closed by the async for loop
             break
 
 
@@ -337,12 +360,15 @@ class TestNPCDatabaseConstraints:
     @pytest.mark.asyncio
     async def test_npc_definition_required_fields(self, test_client, test_npc_database):
         """Test that required fields cannot be null."""
-        from server.npc_database import get_npc_session
+        from server.npc_database import get_npc_engine, get_npc_session, init_npc_db
+
+        # Ensure NPC database is initialized before use
+        engine = get_npc_engine()
+        if engine is None:
+            await init_npc_db()
 
         # Use async context manager properly to avoid GC connection warnings
-        gen = get_npc_session()
-        session = await gen.__anext__()
-        try:
+        async for session in get_npc_session():
             # Test missing name
             npc_def = NPCDefinition(npc_type=NPCDefinitionType.SHOPKEEPER, sub_zone_id="arkham_northside")
             session.add(npc_def)
@@ -351,12 +377,9 @@ class TestNPCDatabaseConstraints:
                 await session.commit()
 
             await session.rollback()
-        finally:
-            # Properly close the generator to trigger cleanup
-            try:
-                await gen.__anext__()
-            except StopAsyncIteration:
-                pass
+            # Break after first iteration to exit the async for loop
+            # The generator will be properly closed by the async for loop
+            break
 
     @pytest.mark.asyncio
     async def test_npc_definition_zone_index(self, test_client, test_npc_database):
@@ -368,6 +391,15 @@ class TestNPCDatabaseConstraints:
         # Generate unique identifier to avoid constraint violations
         unique_suffix = str(uuid.uuid4())[:8]
 
+        # Ensure NPC database is initialized before use
+        from server.npc_database import get_npc_engine, init_npc_db
+
+        # Initialize NPC database if needed
+        engine = get_npc_engine()
+        if engine is None:
+            await init_npc_db()
+
+        # Use async for to properly handle the async generator and context manager
         async for session in get_npc_session():
             # Clean up any existing NPC data to avoid conflicts
             from sqlalchemy import text
@@ -414,4 +446,6 @@ class TestNPCDatabaseConstraints:
             test_results = [npc for npc in arkham_results if unique_suffix in npc.name]
             assert len(test_results) == 5
             assert all(npc.sub_zone_id == "arkham_northside" for npc in test_results)
+            # Break after first iteration to exit the async for loop
+            # The generator will be properly closed by the async for loop
             break

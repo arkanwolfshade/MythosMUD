@@ -87,16 +87,28 @@ async def initialize_database(session: AsyncSession, user_id: str | None = None)
     return str(user_uuid)
 
 
-def build_player(player_id: str, user_id: str) -> Player:
+def build_player(player_id: str, user_id: str, name: str | None = None) -> Player:
     """Create a Player instance with timestamps normalized for persistence tests."""
     import json
+    import uuid
+
+    # Use unique name based on player_id if not provided
+    # Player.name has unique constraint, so we need to ensure uniqueness
+    if name is None:
+        # Use a combination of player_id and a short UUID to ensure uniqueness
+        unique_part = player_id.replace("-", "")[-12:] if len(player_id) > 12 else player_id
+        name = f"InventoryValidator-{unique_part}-{str(uuid.uuid4())[:8]}"
 
     player = Player(
         player_id=player_id,
         user_id=user_id,
-        name="InventoryValidator",
+        name=name,
         current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
         status_effects=json.dumps([]),  # Ensure status_effects is set (not null)
+        experience_points=0,  # Ensure experience_points is set (not null)
+        level=1,  # Ensure level is set (not null)
+        is_admin=0,  # Ensure is_admin is set (not null)
+        profession_id=0,  # Ensure profession_id is set (not null)
     )
     now = datetime.now(UTC).replace(tzinfo=None)
     player.created_at = now  # type: ignore[assignment]
@@ -235,12 +247,13 @@ async def test_loading_player_with_corrupt_inventory_raises(
     import uuid
 
     unique_suffix = str(uuid.uuid4())[:8]
+    player_id = f"corrupt-player-{unique_suffix}"
 
     async with async_session_factory() as session:
         user_id = await initialize_database(session)
 
     persistence = PersistenceLayer(db_path=database_url)
-    player = build_player(f"corrupt-player-{unique_suffix}", user_id)
+    player = build_player(player_id, user_id)
     player.set_inventory([])
     persistence.save_player(player)
 
@@ -267,7 +280,7 @@ async def test_loading_player_with_corrupt_inventory_raises(
                 WHERE player_id = :player_id
                 """
             ),
-            {"inventory_json": json.dumps(oversized_payload), "player_id": "corrupt-player"},
+            {"inventory_json": json.dumps(oversized_payload), "player_id": player_id},
         )
         await session.commit()
 
@@ -275,7 +288,7 @@ async def test_loading_player_with_corrupt_inventory_raises(
 
     with caplog.at_level(logging.ERROR, logger="server.persistence"):
         with pytest.raises(DatabaseError) as excinfo:
-            persistence.get_player("corrupt-player")
+            persistence.get_player(player_id)
 
     assert "Invalid inventory payload detected in storage" in str(excinfo.value)
     load_logs = [record for record in caplog.records if record.message == "Stored inventory payload failed validation"]

@@ -849,6 +849,8 @@ class PersistenceLayer:
                         ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         """
                     insert_query = self._convert_insert_or_replace(insert_query, "players", "player_id")
+                    # Ensure is_admin is an integer (not boolean) for PostgreSQL
+                    is_admin_int = int(player.is_admin) if player.is_admin is not None else 0
                     conn.execute(
                         insert_query,
                         (
@@ -861,7 +863,7 @@ class PersistenceLayer:
                             player.current_room_id,
                             player.experience_points,
                             player.level,
-                            player.is_admin,
+                            is_admin_int,
                             player.profession_id,
                             created_at,
                             last_active,

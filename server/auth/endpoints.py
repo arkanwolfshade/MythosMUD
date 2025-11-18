@@ -213,32 +213,39 @@ async def register_user(
         raise
     except IntegrityError as e:
         # Handle database integrity constraint violations (duplicate username, email, etc.)
+        # Check both the exception message and the underlying exception
         error_str = str(e).lower()
-        constraint_errors = [
-            "unique constraint failed: users.username",  # SQLite
-            "duplicate key value violates unique constraint",  # PostgreSQL
-            "unique_violation",  # PostgreSQL error code
-            "users_username_key",  # PostgreSQL constraint name
-            "users_email_key",  # PostgreSQL constraint name for email
-        ]
-        # Check if it's a unique constraint violation
-        if any(err in error_str for err in constraint_errors):
-            # Determine if it's username or email constraint
-            if "username" in error_str or "users_username_key" in error_str:
-                detail = "Username already exists"
-            elif "email" in error_str or "users_email_key" in error_str:
-                detail = "Email already exists"
-            else:
-                detail = "A user with this information already exists"
+        orig_error_str = str(e.orig).lower() if hasattr(e, "orig") else ""
+        combined_error = f"{error_str} {orig_error_str}".lower()
 
-            context = create_context_from_request(request)
-            context.metadata["username"] = user_create_clean.username
-            context.metadata["operation"] = "register_user"
-            context.metadata["constraint_error"] = str(e)
-            raise LoggedHTTPException(status_code=400, detail=detail, context=context) from e
-        # Re-raise other integrity errors
-        raise e
+        # Any IntegrityError during registration is likely a constraint violation
+        # (duplicate username, email, etc.) - return 400 instead of 500
+        # Try to determine the specific constraint, but default to generic message
+
+        # Determine if it's username or email constraint
+        if "username" in combined_error or "users_username_key" in combined_error:
+            detail = "Username already exists"
+        elif "email" in combined_error or "users_email_key" in combined_error:
+            detail = "Email already exists"
+        else:
+            # Generic message for any integrity constraint violation
+            detail = "A user with this information already exists"
+
+        context = create_context_from_request(request)
+        context.metadata["username"] = user_create_clean.username
+        context.metadata["operation"] = "register_user"
+        context.metadata["constraint_error"] = str(e)
+        context.metadata["original_error"] = orig_error_str if hasattr(e, "orig") else ""
+        raise LoggedHTTPException(status_code=400, detail=detail, context=context) from e
     except Exception as e:
+        # Log unexpected exceptions for debugging
+        logger.error(
+            "Unexpected error during registration",
+            error=str(e),
+            error_type=type(e).__name__,
+            username=user_create_clean.username,
+            exc_info=True,
+        )
         # Re-raise other exceptions
         raise e
 
