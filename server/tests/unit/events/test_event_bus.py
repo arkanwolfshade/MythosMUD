@@ -455,7 +455,8 @@ class TestEventBus(TestingAsyncMixin):
         # Verify tasks are cleaned up - wait for tasks to complete and be removed
         # Tasks are removed from _active_tasks via done callbacks, so we need to wait
         # until either _active_tasks is empty or all remaining tasks are done
-        max_wait = 50  # Increased wait time significantly
+        # The processing task waits on asyncio.wait_for with 1.0s timeout, so we need to wait at least that long
+        max_wait = 150  # Wait up to 15 seconds (processing task has 1s timeout, plus cleanup time)
         wait_count = 0
         while wait_count < max_wait:
             # Check if all tasks are done or if _active_tasks is empty
@@ -549,7 +550,23 @@ class TestEventBus(TestingAsyncMixin):
             for task in tasks_list:
                 if not task.done() and not task.cancelled():
                     task.cancel()
-            # Wait a bit for cancellation to complete
+            # Wait longer for cancellation to complete, especially for processing task
+            await asyncio.sleep(0.5)
+            # Try cancelling again if still pending
+            tasks_list = list(event_bus._active_tasks)
+            for task in tasks_list:
+                if not task.done() and not task.cancelled():
+                    task.cancel()
+            await asyncio.sleep(0.2)
+
+        # Also ensure the main processing task is cancelled if it exists
+        if hasattr(event_bus, "_processing_task") and event_bus._processing_task:
+            if not event_bus._processing_task.done() and not event_bus._processing_task.cancelled():
+                event_bus._processing_task.cancel()
+                try:
+                    await event_bus._processing_task
+                except asyncio.CancelledError:
+                    pass
             await asyncio.sleep(0.1)
 
         # Active tasks should be empty or contain only completed tasks
