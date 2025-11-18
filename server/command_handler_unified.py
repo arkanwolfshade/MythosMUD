@@ -679,13 +679,28 @@ async def _check_catatonia_block(player_name: str, command: str, request: Reques
         except Exception:  # pragma: no cover - defensive
             logger.exception("Catatonia registry lookup failed", player=player_name)
 
-    async for session in get_async_session():
-        sanity_record = await session.get(PlayerSanity, str(player_id))
-        if sanity_record and sanity_record.current_tier == "catatonic":
-            logger.info("Catatonic player command blocked", player=player_name, command=command)
-            return (
-                True,
-                "Your body lies unresponsive, trapped in catatonia. Another must ground you.",
-            )
+    try:
+        async for session in get_async_session():
+            try:
+                sanity_record = await session.get(PlayerSanity, str(player_id))
+                if sanity_record and sanity_record.current_tier == "catatonic":
+                    logger.info("Catatonic player command blocked", player=player_name, command=command)
+                    return (
+                        True,
+                        "Your body lies unresponsive, trapped in catatonia. Another must ground you.",
+                    )
+            except Exception as e:
+                # If database query fails, log but don't block command
+                logger.warning("Failed to check catatonia status in database", player=player_name, error=str(e))
+                return False, None
+    except (RuntimeError, AttributeError) as e:
+        # Event loop is closed or database is unavailable - don't block command
+        # This can happen during test cleanup on Windows
+        logger.debug("Database session unavailable for catatonia check", player=player_name, error=str(e))
+        return False, None
+    except Exception as e:
+        # Any other error - log but don't block command
+        logger.warning("Error checking catatonia status", player=player_name, error=str(e))
+        return False, None
 
     return False, None

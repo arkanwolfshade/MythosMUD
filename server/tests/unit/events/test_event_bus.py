@@ -406,3 +406,89 @@ class TestEventBus(TestingAsyncMixin):
 
         # Give time for cleanup
         await asyncio.sleep(0.1)
+
+    @pytest.mark.asyncio
+    async def test_structured_concurrency_multiple_async_subscribers(self):
+        """
+        Test that EventBus uses structured concurrency for multiple async subscribers.
+
+        AnyIO Pattern: All async subscribers should run concurrently and complete
+        even if some fail, using asyncio.gather with return_exceptions=True.
+        """
+        event_bus = EventBus()
+        results = []
+        errors = []
+
+        async def subscriber1(event):
+            await asyncio.sleep(0.01)
+            results.append("subscriber1")
+            return "result1"
+
+        async def subscriber2(event):
+            await asyncio.sleep(0.01)
+            results.append("subscriber2")
+            return "result2"
+
+        async def failing_subscriber(event):
+            await asyncio.sleep(0.01)
+            errors.append("failing_subscriber")
+            raise ValueError("Test error")
+
+        # Subscribe all handlers
+        event_bus.subscribe(PlayerEnteredRoom, subscriber1)
+        event_bus.subscribe(PlayerEnteredRoom, subscriber2)
+        event_bus.subscribe(PlayerEnteredRoom, failing_subscriber)
+
+        # Publish an event
+        event = PlayerEnteredRoom(player_id="player123", room_id="room456")
+        event_bus.publish(event)
+
+        # Give time for all subscribers to complete
+        await asyncio.sleep(0.2)
+
+        # All subscribers should have run (structured concurrency ensures all complete)
+        assert len(results) == 2
+        assert "subscriber1" in results
+        assert "subscriber2" in results
+        assert len(errors) == 1  # Failing subscriber should have run and failed
+
+        # Verify tasks are cleaned up
+        await asyncio.sleep(0.1)
+        # Active tasks should be empty or contain only completed tasks
+        for task in event_bus._active_tasks:
+            assert task.done()
+
+        # Clean up
+        await event_bus.shutdown()
+
+    @pytest.mark.asyncio
+    async def test_structured_concurrency_task_cleanup(self):
+        """
+        Test that EventBus properly cleans up tasks after structured concurrency execution.
+
+        AnyIO Pattern: Tasks created for async subscribers should be properly tracked
+        and cleaned up after completion.
+        """
+        event_bus = EventBus()
+
+        async def subscriber(event):
+            await asyncio.sleep(0.05)
+            return "done"
+
+        event_bus.subscribe(PlayerEnteredRoom, subscriber)
+
+        # Publish an event
+        event = PlayerEnteredRoom(player_id="player123", room_id="room456")
+        event_bus.publish(event)
+
+        # Wait for processing
+        await asyncio.sleep(0.1)
+
+        # Tasks should be created and then cleaned up
+        # After completion, active tasks should be empty or only contain done tasks
+        await asyncio.sleep(0.1)
+        for task in event_bus._active_tasks:
+            assert task.done()
+
+        # Clean up
+        await event_bus.shutdown()

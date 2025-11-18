@@ -61,7 +61,24 @@ class CatatoniaRegistry(CatatoniaObserverProtocol):
         try:
             result = callback(player_id, current_san)
             if asyncio.iscoroutine(result):
-                asyncio.create_task(result)  # Fire-and-forget failover
+                # Fire-and-forget failover task
+                # AnyIO Pattern: For fire-and-forget tasks, we create them but don't track
+                # since they're intentionally decoupled from the main flow.
+                # The callback is responsible for its own error handling.
+                try:
+                    task = asyncio.create_task(result)
+
+                    # Add a callback to log if it fails (defensive logging)
+                    def log_failover_error(t: asyncio.Task) -> None:
+                        try:
+                            t.result()  # This will raise if task failed
+                        except Exception as e:
+                            logger.error("Failover callback task failed", player_id=player_id, error=str(e))
+
+                    task.add_done_callback(log_failover_error)
+                except RuntimeError:
+                    # No event loop available - log and continue
+                    logger.warning("Failover callback requires event loop", player_id=player_id)
         except Exception as exc:  # pragma: no cover - defensive logging
             logger.error("Failover callback failed", player_id=player_id, error=str(exc))
 

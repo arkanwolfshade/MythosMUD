@@ -211,13 +211,18 @@ async def register_user(
     except LoggedHTTPException:
         raise
     except Exception as e:
-        # Check if it's a duplicate username error
-        constraint_error = "UNIQUE constraint failed: users.username"
-        if constraint_error in str(e):
+        # Check if it's a duplicate username error (SQLite or PostgreSQL)
+        error_str = str(e).lower()
+        constraint_errors = [
+            "unique constraint failed: users.username",  # SQLite
+            "duplicate key value violates unique constraint",  # PostgreSQL
+            "unique_violation",  # PostgreSQL error code
+        ]
+        if any(err in error_str for err in constraint_errors):
             context = create_context_from_request(request)
             context.metadata["username"] = user_create_clean.username
             context.metadata["operation"] = "register_user"
-            context.metadata["constraint_error"] = constraint_error
+            context.metadata["constraint_error"] = str(e)
             raise LoggedHTTPException(status_code=400, detail="Username already exists", context=context) from e
         # Re-raise other exceptions
         raise e

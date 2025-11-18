@@ -1910,8 +1910,12 @@ class ConnectionManager:
                 # Wait briefly for task to cancel
                 try:
                     _ = asyncio.get_running_loop()  # Verify loop exists
-                    # Schedule wait in background
+                    # Schedule wait in background with proper tracking
+                    # AnyIO Pattern: Track background tasks for proper cleanup
+                    # Note: This is a short-lived task that completes quickly
                     asyncio.create_task(self._wait_for_task_cancellation(self._health_check_task))
+                    # Don't track this specific task as it's very short-lived and self-cleaning
+                    # The health check task itself is already tracked separately
                 except RuntimeError:
                     # No running loop - task will be cleaned up on next event loop
                     logger.debug("No running loop for health check task cancellation")

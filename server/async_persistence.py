@@ -173,6 +173,12 @@ class AsyncPersistenceLayer:
         context.metadata["player_id"] = str(player.player_id)
 
         try:
+            # Ensure is_admin is an integer (PostgreSQL requires integer, not boolean)
+            # Convert boolean to integer if needed (0 for False, 1 for True)
+            # Note: is_admin is Integer column with nullable=False, so it can't be None
+            if isinstance(getattr(player, "is_admin", None), bool):
+                player.is_admin = 1 if player.is_admin else 0  # type: ignore[assignment]
+
             async for session in get_async_session():
                 # SQLAlchemy ORM handles JSON serialization automatically via Column[Text] types
                 # Player model's stats, inventory, and status_effects are Column[str] that store JSON
@@ -251,6 +257,12 @@ class AsyncPersistenceLayer:
         context.metadata["player_count"] = len(players)
 
         try:
+            # Ensure is_admin is an integer for all players (PostgreSQL requires integer, not boolean)
+            # Note: is_admin is Integer column with nullable=False, so it can't be None
+            for player in players:
+                if isinstance(getattr(player, "is_admin", None), bool):
+                    player.is_admin = 1 if player.is_admin else 0  # type: ignore[assignment]
+
             async for session in get_async_session():
                 # Batch save in a single transaction for atomicity
                 # SQLAlchemy ORM handles JSON serialization automatically via Column[Text] types

@@ -42,8 +42,16 @@ class TestPlayerPreferencesIntegration:
             async with factory() as cleanup_session:
                 try:
                     # Delete test data in reverse dependency order using raw SQL
-                    await cleanup_session.execute(text("DELETE FROM player_channel_preferences WHERE player_id LIKE 'integration-test-player%' OR player_id LIKE 'player%' OR player_id LIKE 'error-test-player%'"))
-                    await cleanup_session.execute(text("DELETE FROM players WHERE player_id LIKE 'integration-test-player%' OR player_id LIKE 'player%' OR player_id LIKE 'error-test-player%'"))
+                    await cleanup_session.execute(
+                        text(
+                            "DELETE FROM player_channel_preferences WHERE player_id LIKE 'integration-test-player%' OR player_id LIKE 'player%' OR player_id LIKE 'error-test-player%'"
+                        )
+                    )
+                    await cleanup_session.execute(
+                        text(
+                            "DELETE FROM players WHERE player_id LIKE 'integration-test-player%' OR player_id LIKE 'player%' OR player_id LIKE 'error-test-player%'"
+                        )
+                    )
                     await cleanup_session.execute(text("DELETE FROM users WHERE email LIKE '%@example.com'"))
                     await cleanup_session.commit()
                 except Exception:
@@ -121,7 +129,11 @@ class TestPlayerPreferencesIntegration:
             assert "global" not in muted_channels  # Should not be muted
 
             # 6. Verify foreign key constraint works
-            await session.delete(test_player)
+            # Load player object first, then delete
+
+            player = await session.get(Player, player_id)
+            if player:
+                await session.delete(player)
             await session.commit()
 
             # Preferences should be automatically deleted due to CASCADE
@@ -154,11 +166,13 @@ class TestPlayerPreferencesIntegration:
 
                 player = Player(player_id=player_id, user_id=user_id, name=name, level=1)
                 session.add(player)
+                # Flush after each player to avoid sentinel value issues
+                await session.flush()
 
             await session.commit()
 
             # Create preferences for all players
-            for player_id, _, _ in players_data:
+            for player_id, _ in players_data:
                 result = await preferences_service.create_player_preferences(session, player_id)
                 assert result["success"] is True
 
@@ -194,7 +208,7 @@ class TestPlayerPreferencesIntegration:
         self, async_session_factory, test_player, preferences_service
     ):
         """Test that preferences persist when service is restarted."""
-        player_id = test_player.player_id
+        player_id = test_player  # test_player fixture now yields player_id directly
 
         # Create preferences with first service instance
         async with async_session_factory() as session:
@@ -217,7 +231,7 @@ class TestPlayerPreferencesIntegration:
     @pytest.mark.asyncio
     async def test_concurrent_preferences_access(self, async_session_factory, test_player, preferences_service):
         """Test concurrent access to preferences from multiple service instances."""
-        player_id = test_player.player_id
+        player_id = test_player  # test_player fixture now yields player_id directly
 
         # Create multiple service instances
         services = [PlayerPreferencesService() for _ in range(3)]
@@ -242,7 +256,7 @@ class TestPlayerPreferencesIntegration:
     @pytest.mark.asyncio
     async def test_database_constraints_and_indexes(self, async_session_factory, test_player, preferences_service):
         """Test that database constraints and indexes work correctly."""
-        player_id = test_player.player_id
+        player_id = test_player  # test_player fixture now yields player_id directly
 
         async with async_session_factory() as session:
             # Test primary key constraint
@@ -257,6 +271,9 @@ class TestPlayerPreferencesIntegration:
                 )
                 session.add(duplicate_prefs)
                 await session.commit()
+
+            # Rollback after the first IntegrityError
+            await session.rollback()
 
             # Test foreign key constraint
             with pytest.raises(IntegrityError):
@@ -315,7 +332,7 @@ class TestPlayerPreferencesIntegration:
     @pytest.mark.asyncio
     async def test_json_handling_edge_cases(self, async_session_factory, test_player, preferences_service):
         """Test edge cases in JSON handling for muted channels."""
-        player_id = test_player.player_id
+        player_id = test_player  # test_player fixture now yields player_id directly
 
         async with async_session_factory() as session:
             # Create preferences
@@ -346,7 +363,7 @@ class TestPlayerPreferencesIntegration:
     @pytest.mark.asyncio
     async def test_timestamp_handling(self, async_session_factory, test_player, preferences_service):
         """Test that timestamps are handled correctly."""
-        player_id = test_player.player_id
+        player_id = test_player  # test_player fixture now yields player_id directly
 
         async with async_session_factory() as session:
             # Create preferences
@@ -374,7 +391,7 @@ class TestPlayerPreferencesIntegration:
     @pytest.mark.asyncio
     async def test_service_cleanup_and_cleanup(self, async_session_factory, test_player, preferences_service):
         """Test service cleanup and database cleanup."""
-        player_id = test_player.player_id
+        player_id = test_player  # test_player fixture now yields player_id directly
 
         async with async_session_factory() as session:
             # Create service and preferences

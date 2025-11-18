@@ -4,7 +4,7 @@
 
 import '@testing-library/jest-dom';
 import { render, screen, waitFor, within } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useGameConnection } from '../../hooks/useGameConnectionRefactored';
 import { GameTerminalWithPanels } from '../GameTerminalWithPanels';
@@ -68,36 +68,38 @@ describe('GameTerminalWithPanels - Combat Events', () => {
     });
   };
 
-  const getInfoValue = (label: string) => {
+  const getInfoValue = (label: string): HTMLElement => {
     // Special handling for Health - it's rendered by HealthMeter component
     if (label === 'Health:') {
       const healthMeter = screen.getByTestId('health-meter');
       const strongTag = healthMeter.querySelector('strong');
       if (strongTag) {
-        // Extract just the current value (before the " / max" part)
-        const text = strongTag.textContent || '';
-        const match = text.match(/^(\d+)/);
-        if (match) {
-          // Return the strong tag itself, but we'll check its textContent
-          return strongTag as HTMLElement;
-        }
+        // Return the strong tag element for health value
+        return strongTag as HTMLElement;
       }
-      // Fallback: look for "Health" text
+      // Fallback: look for "Health" text and find the meter container
       const labelNode = screen.getByText('Health');
       const container = labelNode.closest('[data-testid="health-meter"]');
       if (container) {
-        const strongTag = container.querySelector('strong');
-        if (strongTag) {
-          return strongTag as HTMLElement;
+        const fallbackStrongTag = container.querySelector('strong');
+        if (fallbackStrongTag) {
+          return fallbackStrongTag as HTMLElement;
         }
       }
+      // If we can't find the health meter, throw a descriptive error
+      throw new Error(`Unable to find health meter element for label: ${label}`);
     }
 
-    // For other labels (like "In Combat:"), use original logic
+    // For other labels (like "In Combat:"), use standard logic
     const labelNode = screen.getByText(label);
     const container = labelNode.closest('div');
-    expect(container).not.toBeNull();
-    const spans = container!.querySelectorAll('span');
+    if (!container) {
+      throw new Error(`Unable to find container for label: ${label}`);
+    }
+    const spans = container.querySelectorAll('span');
+    if (spans.length === 0) {
+      throw new Error(`No span elements found in container for label: ${label}`);
+    }
     return spans[spans.length - 1] as HTMLElement;
   };
 
@@ -119,6 +121,11 @@ describe('GameTerminalWithPanels - Combat Events', () => {
         sendCommand: vi.fn(),
       } as unknown as ReturnType<typeof useGameConnection>;
     });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    eventCallback = null;
   });
 
   it('does not mark observers as in combat when combat starts elsewhere', async () => {

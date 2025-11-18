@@ -166,6 +166,10 @@ class NATSService:
         self._consecutive_health_failures = 0
         self._health_check_timeout = 5.0  # seconds
 
+        # Tracked background tasks for proper lifecycle management
+        # AnyIO Pattern: Track all background tasks for proper cleanup
+        self._background_tasks: set[asyncio.Task] = set()
+
         # NEW: Connection state machine (CRITICAL-1)
         # AI: FSM provides robust connection management with automatic recovery
         self.state_machine = NATSConnectionStateMachine(
@@ -318,8 +322,12 @@ class NATSService:
         Disconnect from NATS with graceful shutdown and message draining.
 
         AI: State machine transitions to disconnected, enabling clean reconnection.
+        AnyIO Pattern: Cancels all background tasks for proper cleanup.
         """
         try:
+            # Cancel all background tasks first (AnyIO Pattern: structured cleanup)
+            await self._cancel_background_tasks()
+
             # Flush any pending batched messages
             if self.message_batch:
                 logger.info("Flushing pending batched messages before shutdown", batch_size=len(self.message_batch))
@@ -379,9 +387,54 @@ class NATSService:
             except asyncio.CancelledError:
                 pass
 
-        # Start new health check task
-        self._health_check_task = asyncio.create_task(self._health_check_loop())
+        # Start new health check task with proper tracking
+        # AnyIO Pattern: Track long-running background tasks for proper cleanup
+        self._health_check_task = self._create_tracked_task(
+            self._health_check_loop(), task_name="nats_health_check", task_type="lifecycle"
+        )
         logger.info("Health monitoring started", interval_seconds=health_check_interval)
+
+    async def _cancel_background_tasks(self):
+        """
+        Cancel all tracked background tasks for proper cleanup.
+
+        AnyIO Pattern: Structured cleanup of all background tasks ensures
+        no orphaned tasks remain after shutdown.
+        """
+        if not self._background_tasks:
+            return
+
+        logger.debug("Cancelling background tasks", task_count=len(self._background_tasks))
+
+        # Cancel all background tasks
+        for task in list(self._background_tasks):
+            if not task.done():
+                task.cancel()
+
+        # Wait for tasks to complete with timeout
+        if self._background_tasks:
+            try:
+                done, pending = await asyncio.wait(
+                    self._background_tasks, timeout=2.0, return_when=asyncio.ALL_COMPLETED
+                )
+
+                # Force cancel any remaining tasks
+                if pending:
+                    for task in pending:
+                        if not task.done():
+                            task.cancel()
+                    # Give them a brief moment to cancel
+                    try:
+                        await asyncio.wait_for(asyncio.gather(*pending, return_exceptions=True), timeout=0.5)
+                    except (TimeoutError, Exception):
+                        pass  # Abandon remaining tasks
+
+            except (RuntimeError, asyncio.CancelledError) as e:
+                logger.debug("Error during background task cancellation", error=str(e))
+            finally:
+                self._background_tasks.clear()
+
+        logger.debug("Background tasks cancelled")
 
     async def _stop_health_monitoring(self):
         """Stop health check monitoring task."""
@@ -719,6 +772,38 @@ class NATSService:
         """
         return len(self.subscriptions)
 
+    def _create_tracked_task(
+        self, coro, task_name: str = "nats_background", task_type: str = "background"
+    ) -> asyncio.Task:
+        """
+        Create a tracked background task with proper lifecycle management.
+
+        AnyIO Pattern: Track all background tasks for proper cleanup and monitoring.
+        Ensures tasks are properly cancelled during shutdown.
+
+        Args:
+            coro: Coroutine to run as background task
+            task_name: Human-readable name for the task
+            task_type: Type of task (lifecycle, background, etc.)
+
+        Returns:
+            Created and tracked asyncio.Task
+        """
+        try:
+            task = asyncio.create_task(coro)
+            self._background_tasks.add(task)
+
+            # Remove from tracking when complete
+            def remove_task(t: asyncio.Task) -> None:
+                self._background_tasks.discard(t)
+
+            task.add_done_callback(remove_task)
+            logger.debug("Created tracked background task", task_name=task_name, task_type=task_type)
+            return task
+        except RuntimeError as e:
+            logger.error("Failed to create tracked task - no event loop", task_name=task_name, error=str(e))
+            raise
+
     # Event handlers with state machine integration (fire-and-forget async tasks)
     def _on_error(self, error):
         """
@@ -726,10 +811,13 @@ class NATSService:
 
         AI: Errors may trigger degradation or reconnection.
         AI: Runs as fire-and-forget async task to prevent blocking NATS client.
+        AnyIO Pattern: Fire-and-forget tasks are tracked for proper cleanup.
         """
-        # Fire-and-forget async task to prevent blocking
+        # Fire-and-forget async task to prevent blocking, but track it
         try:
-            asyncio.create_task(self._handle_error_async(error))
+            self._create_tracked_task(
+                self._handle_error_async(error), task_name="nats_error_handler", task_type="background"
+            )
         except RuntimeError:
             # No event loop available - this should not happen in normal operation
             logger.error("NATS connection error handler called without event loop", error=str(error))
@@ -751,10 +839,13 @@ class NATSService:
 
         AI: Disconnection triggers reconnection attempt.
         AI: Runs as fire-and-forget async task to prevent blocking NATS client.
+        AnyIO Pattern: Fire-and-forget tasks are tracked for proper cleanup.
         """
-        # Fire-and-forget async task to prevent blocking
+        # Fire-and-forget async task to prevent blocking, but track it
         try:
-            asyncio.create_task(self._handle_disconnect_async())
+            self._create_tracked_task(
+                self._handle_disconnect_async(), task_name="nats_disconnect_handler", task_type="background"
+            )
         except RuntimeError:
             # No event loop available - this should not happen in normal operation
             logger.error("NATS disconnect handler called without event loop")
@@ -779,10 +870,13 @@ class NATSService:
 
         AI: Successful reconnection transitions to connected state.
         AI: Runs as fire-and-forget async task to prevent blocking NATS client.
+        AnyIO Pattern: Fire-and-forget tasks are tracked for proper cleanup.
         """
-        # Fire-and-forget async task to prevent blocking
+        # Fire-and-forget async task to prevent blocking, but track it
         try:
-            asyncio.create_task(self._handle_reconnect_async())
+            self._create_tracked_task(
+                self._handle_reconnect_async(), task_name="nats_reconnect_handler", task_type="background"
+            )
         except RuntimeError:
             # No event loop available - this should not happen in normal operation
             logger.error("NATS reconnect handler called without event loop")
@@ -1053,8 +1147,11 @@ class NATSService:
             if len(self.message_batch) >= self.batch_size:
                 await self._flush_batch()
             elif not self._batch_task:
-                # Start timeout task for batch
-                self._batch_task = asyncio.create_task(self._batch_timeout())
+                # Start timeout task for batch with proper tracking
+                # AnyIO Pattern: Track short-lived tasks for proper cancellation
+                self._batch_task = self._create_tracked_task(
+                    self._batch_timeout(), task_name="nats_batch_timeout", task_type="background"
+                )
 
             logger.debug(
                 "Message added to batch",

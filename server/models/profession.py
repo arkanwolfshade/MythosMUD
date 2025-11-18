@@ -8,7 +8,7 @@ including requirements, effects, and availability status.
 import json
 from typing import Any, cast
 
-from sqlalchemy import Boolean, Column, Integer, String, Text
+from sqlalchemy import Boolean, Column, Index, Integer, String, Text
 from sqlalchemy.orm import DeclarativeBase
 
 from ..metadata import metadata
@@ -27,7 +27,10 @@ class Profession(Base):
     """
 
     __tablename__ = "professions"
-    __table_args__ = {"extend_existing": True}
+    __table_args__ = (
+        Index("idx_professions_available", "is_available"),
+        {"extend_existing": True},
+    )
 
     # Primary key
     id = Column(Integer, primary_key=True)

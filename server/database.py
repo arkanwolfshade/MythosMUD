@@ -318,8 +318,23 @@ class DatabaseManager:
                     # No running loop - that's okay, we can still try to dispose
                     pass
 
-                await engine.dispose()
-                logger.info("Database connections closed")
+                # For Windows/asyncpg: Use a timeout and force close if needed
+                try:
+                    # Try graceful disposal first
+                    await asyncio.wait_for(engine.dispose(), timeout=1.0)
+                    logger.info("Database connections closed")
+                except TimeoutError:
+                    # If disposal times out, try to force close connections
+                    logger.warning("Engine disposal timed out, attempting force close")
+                    try:
+                        # Force close by setting pool to None and clearing connections
+                        if hasattr(engine, "sync_engine") and hasattr(engine.sync_engine, "pool"):
+                            pool = engine.sync_engine.pool
+                            if pool:
+                                pool.dispose()
+                    except Exception:
+                        pass  # Ignore errors during force close
+                    logger.info("Database connections force closed")
             except (RuntimeError, AttributeError) as e:
                 # Event loop is closed or proactor is None - this is expected during cleanup
                 # Don't log as error, just as debug since this is normal during test teardown

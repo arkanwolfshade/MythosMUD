@@ -5,6 +5,7 @@ This module tests the NATSService class which handles all NATS pub/sub operation
 and real-time messaging for the chat system.
 """
 
+import asyncio
 import json
 from unittest.mock import AsyncMock, Mock, patch
 
@@ -56,6 +57,9 @@ class TestNATSService:
         assert self.nats_service._running is False
         assert self.nats_service._connection_retries == 0
         assert self.nats_service._max_retries == 3
+        # Verify background tasks tracking is initialized
+        assert hasattr(self.nats_service, "_background_tasks")
+        assert isinstance(self.nats_service._background_tasks, set)
 
     def test_nats_service_initialization_with_config(self):
         """Test NATSService initialization with custom config."""
@@ -639,6 +643,46 @@ class TestNATSService:
         # Verify
         assert self.nats_service._running is True
         assert self.nats_service._connection_retries == 0
+
+    @pytest.mark.asyncio
+    async def test_background_task_cleanup_on_disconnect(self):
+        """
+        Test that NATS service properly cleans up background tasks on disconnect.
+
+        AnyIO Pattern: All tracked background tasks should be cancelled and cleaned up
+        during service shutdown.
+        """
+        service = NATSService(
+            {
+                "url": "nats://localhost:4222",
+                "max_reconnect_attempts": 3,
+                "connect_timeout": 5,
+            }
+        )
+
+        # Create some background tasks manually to test cleanup
+        async def background_task():
+            await asyncio.sleep(10)  # Long-running task
+
+        # Create tracked tasks
+        task1 = service._create_tracked_task(background_task(), task_name="test_task_1")
+        task2 = service._create_tracked_task(background_task(), task_name="test_task_2")
+
+        # Verify tasks are tracked
+        assert len(service._background_tasks) == 2
+        assert task1 in service._background_tasks
+        assert task2 in service._background_tasks
+
+        # Disconnect should cancel all background tasks
+        await service.disconnect()
+
+        # Wait a bit for cancellation to complete
+        await asyncio.sleep(0.1)
+
+        # Background tasks should be cancelled and cleaned up
+        assert len(service._background_tasks) == 0
+        assert task1.done()
+        assert task2.done()
 
 
 class TestGlobalNATSService:
