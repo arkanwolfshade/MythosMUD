@@ -200,10 +200,16 @@ async def test_item_schema_and_seed_scripts_create_expected_artifacts(async_sess
         for statement in statements:
             if statement:
                 try:
+                    # Use execute with commit=False to batch statements
                     await session.execute(text(statement))
-                except Exception:
+                except Exception as e:
                     # Log the statement that failed for debugging
-                    print(f"Failed statement: {statement[:200]}...")
+                    print(f"Failed statement: {statement[:500]}...")
+                    print(f"Error: {e}")
+                    # If it's a ProgrammingError, it might be due to invalid SQL conversion
+                    # Try to provide more context
+                    if "ProgrammingError" in str(type(e)):
+                        print(f"Full statement: {statement}")
                     raise
         await session.commit()
 

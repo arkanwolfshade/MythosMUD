@@ -195,6 +195,11 @@ class TestRegistrationEndpoints:
         # The first registration should succeed
         assert first_response.status_code == 200
 
+        # Small delay to ensure first transaction commits before second request
+        import time
+
+        time.sleep(0.1)
+
         # Now try to register with the same username
         response = container_test_client.post(
             "/auth/register", json={"username": unique_username, "password": "testpass123", "invite_code": "TEST456"}

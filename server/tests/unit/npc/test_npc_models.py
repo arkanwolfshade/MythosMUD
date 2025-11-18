@@ -174,14 +174,18 @@ class TestNPCSpawnRule:
         """Test creating an NPC spawn rule."""
         import uuid
 
-        from server.npc_database import get_npc_session
+        from server.npc_database import get_npc_engine, get_npc_session, init_npc_db
 
         # Generate unique identifier to avoid constraint violations on repeated test runs
         unique_suffix = str(uuid.uuid4())[:8]
 
-        gen = get_npc_session()
-        session = await gen.__anext__()
-        try:
+        # Ensure NPC database is initialized before use
+        engine = get_npc_engine()
+        if engine is None:
+            await init_npc_db()
+
+        # Use async for to properly handle the async generator and context manager
+        async for session in get_npc_session():
             # First create an NPC definition with unique name
             npc_def = NPCDefinition(
                 name=f"Spawnable NPC-{unique_suffix}",
@@ -211,11 +215,9 @@ class TestNPCSpawnRule:
             assert spawn_rule.min_population == 2
             assert spawn_rule.max_population == 10
             assert spawn_rule.get_spawn_conditions() == {"time_of_day": "night", "weather": "foggy"}
-        finally:
-            try:
-                await gen.__anext__()
-            except StopAsyncIteration:
-                pass
+            # Break after first iteration to exit the async for loop
+            # The generator will be properly closed by the async for loop
+            break
 
     @pytest.mark.asyncio
     async def test_spawn_rule_default_values(self, test_client, test_npc_database):
