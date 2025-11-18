@@ -252,3 +252,5 @@ playwright-report/
 test-results/
 .cache/
 .playwright-mcp/
+
+node_modules/

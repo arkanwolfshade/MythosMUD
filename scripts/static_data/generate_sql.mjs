@@ -1,8 +1,8 @@
-import { promises as fs } from 'node:fs';
-import { resolve, dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
+import Ajv2020 from 'ajv/dist/2020.js';
+import { promises as fs } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { v5 as uuidv5 } from 'uuid';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -217,6 +217,164 @@ async function generateRooms() {
 	return parts.join('\n') + '\n';
 }
 
+async function generateZoneConfigs() {
+	const base = resolve(root, 'data/local/rooms');
+	const files = await walk(base);
+
+	const zoneConfigs = [];  // {plane, zone, config}
+	const subzoneConfigs = [];  // {plane, zone, subzone, config}
+
+	// Load zone and subzone configs
+	for (const file of files) {
+		const base = file.toLowerCase();
+		// Check subzone_config.json FIRST because it ends with zone_config.json
+		// This prevents subzone configs from being incorrectly matched as zone configs
+		if (base.endsWith('subzone_config.json')) {
+			const config = JSON.parse(await fs.readFile(file, 'utf-8'));
+			// Extract plane, zone, subzone from path: data/local/rooms/plane/zone/subzone/subzone_config.json
+			const parts = file.split(/[/\\]/);
+			const roomsIndex = parts.indexOf('rooms');
+			const planeIndex = roomsIndex + 1;
+			// Need: plane (planeIndex), zone (planeIndex+1), subzone (planeIndex+2), filename (planeIndex+3)
+			// So we need at least planeIndex + 4 parts total (0-indexed, so parts.length >= planeIndex + 4)
+			// Which means: planeIndex < parts.length - 3
+			if (roomsIndex >= 0 && planeIndex > 0 && planeIndex < parts.length - 3) {
+				const plane = parts[planeIndex];
+				const zone = parts[planeIndex + 1];
+				const subzone = parts[planeIndex + 2];
+				if (plane && zone && subzone) {
+					subzoneConfigs.push({ plane, zone, subzone, config });
+				} else {
+					console.warn(`Warning: Missing plane/zone/subzone in path: ${file} (plane=${plane}, zone=${zone}, subzone=${subzone})`);
+				}
+			} else {
+				console.warn(`Warning: Could not parse subzone config path: ${file} (roomsIndex=${roomsIndex}, planeIndex=${planeIndex}, parts.length=${parts.length})`);
+			}
+		} else if (base.endsWith('zone_config.json')) {
+			const config = JSON.parse(await fs.readFile(file, 'utf-8'));
+			// Extract plane and zone from path: data/local/rooms/plane/zone/zone_config.json
+			const parts = file.split(/[/\\]/);
+			const planeIndex = parts.indexOf('rooms') + 1;
+			if (planeIndex > 0 && planeIndex < parts.length - 2) {
+				const plane = parts[planeIndex];
+				const zone = parts[planeIndex + 1];
+				zoneConfigs.push({ plane, zone, config });
+			}
+		}
+	}
+
+	const parts = [];
+	parts.push('-- Generated from zone_config.json and subzone_config.json files');
+
+	console.log(`Found ${zoneConfigs.length} zone configs and ${subzoneConfigs.length} subzone configs`);
+
+	// Need to load zone and subzone IDs from existing data
+	// We'll use the same UUID generation as in generateRooms
+	const zoneIdByStable = new Map();
+	const subzoneIdByStable = new Map();
+
+	// First, collect all zones and subzones we need
+	const zoneStables = new Set();
+	const subzoneKeys = new Set();
+
+	for (const zc of zoneConfigs) {
+		zoneStables.add(`${zc.plane}/${zc.zone}`);
+	}
+
+	for (const szc of subzoneConfigs) {
+		zoneStables.add(`${szc.plane}/${szc.zone}`);
+		subzoneKeys.add(`${szc.plane}/${szc.zone}::${szc.subzone}`);
+	}
+
+	// Generate zone IDs
+	for (const zoneStable of zoneStables) {
+		const zid = v5('zones', zoneStable);
+		zoneIdByStable.set(zoneStable, zid);
+	}
+
+	// Generate subzone IDs
+	// Use the same UUID generation format as generateRooms(): zoneStable:subStable (single colon)
+	for (const szc of subzoneConfigs) {
+		const zoneStable = `${szc.plane}/${szc.zone}`;
+		const key = `${zoneStable}::${szc.subzone}`;  // Map key uses double colon
+		if (!subzoneIdByStable.has(key)) {
+			// UUID generation uses single colon to match generateRooms()
+			const szId = v5('subzones', `${zoneStable}:${szc.subzone}`);
+			subzoneIdByStable.set(key, szId);
+		}
+	}
+
+	// Generate zone configurations
+	// Deduplicate: only keep one config per zone
+	// Ensure we're using the actual zone_config.json file (not accidentally picking up subzone configs)
+	const zoneConfigsByZone = new Map();
+	for (const zc of zoneConfigs) {
+		const zoneStable = `${zc.plane}/${zc.zone}`;
+		// Only add if we don't have one yet, or if this one has zone_type (which indicates it's a proper zone config)
+		if (!zoneConfigsByZone.has(zoneStable)) {
+			zoneConfigsByZone.set(zoneStable, zc);
+		} else {
+			// If we already have one, prefer the one with zone_type field (proper zone config)
+			const existing = zoneConfigsByZone.get(zoneStable);
+			if (zc.config.zone_type && !existing.config.zone_type) {
+				zoneConfigsByZone.set(zoneStable, zc);
+			}
+		}
+	}
+
+	for (const [zoneStable, zc] of zoneConfigsByZone) {
+		const zoneId = zoneIdByStable.get(zoneStable);
+		const configId = v5('zone_configurations', `${zoneStable}:zone`);
+
+		const weatherPatterns = JSON.stringify(zc.config.weather_patterns || []);
+		const specialRules = JSON.stringify(zc.config.special_rules || {});
+		const description = zc.config.description ? `'${ql(zc.config.description)}'` : 'NULL';
+		const environment = zc.config.environment ? `'${ql(zc.config.environment)}'` : 'NULL';
+
+		parts.push(
+			`INSERT INTO zone_configurations (id, zone_id, subzone_id, configuration_type, environment, description, weather_patterns, special_rules) VALUES (` +
+				`'${configId}'::uuid, '${zoneId}'::uuid, NULL, 'zone', ${environment}, ${description}, '${weatherPatterns.replaceAll("'", "''")}'::jsonb, '${specialRules.replaceAll("'", "''")}'::jsonb) ` +
+				`ON CONFLICT (zone_id, subzone_id, configuration_type) DO NOTHING;`
+		);
+	}
+
+	// Generate subzone configurations
+	console.log(`DEBUG: Generating ${subzoneConfigs.length} subzone configs`);
+	console.log(`DEBUG: subzoneIdByStable has ${subzoneIdByStable.size} entries`);
+	for (const szc of subzoneConfigs) {
+		const zoneStable = `${szc.plane}/${szc.zone}`;
+		const zoneId = zoneIdByStable.get(zoneStable);
+		const key = `${zoneStable}::${szc.subzone}`;
+		const subzoneId = subzoneIdByStable.get(key);
+
+		console.log(`DEBUG: Processing subzone config: ${key}, zoneId=${zoneId ? 'found' : 'NOT FOUND'}, subzoneId=${subzoneId ? 'found' : 'NOT FOUND'}`);
+
+		if (!subzoneId) {
+			console.warn(`Warning: Subzone ID not found for ${key}, skipping subzone config`);
+			continue;
+		}
+		if (!zoneId) {
+			console.warn(`Warning: Zone ID not found for ${zoneStable}, skipping subzone config`);
+			continue;
+		}
+
+		const configId = v5('zone_configurations', `${key}:subzone`);
+
+		const weatherPatterns = JSON.stringify(szc.config.weather_patterns || []);
+		const specialRules = JSON.stringify(szc.config.special_rules || {});
+		const description = szc.config.description ? `'${ql(szc.config.description)}'` : 'NULL';
+		const environment = szc.config.environment ? `'${ql(szc.config.environment)}'` : 'NULL';
+
+		parts.push(
+			`INSERT INTO zone_configurations (id, zone_id, subzone_id, configuration_type, environment, description, weather_patterns, special_rules) VALUES (` +
+				`'${configId}'::uuid, '${zoneId}'::uuid, '${subzoneId}'::uuid, 'subzone', ${environment}, ${description}, '${weatherPatterns.replaceAll("'", "''")}'::jsonb, '${specialRules.replaceAll("'", "''")}'::jsonb) ` +
+				`ON CONFLICT (zone_id, subzone_id, configuration_type) DO NOTHING;`
+		);
+	}
+
+	return parts.join('\n') + '\n';
+}
+
 async function main() {
 	const outDir = resolve(root, 'data/seed');
 	await ensureDir(outDir);
@@ -226,6 +384,8 @@ async function main() {
 	sections.push('BEGIN;');
 	sections.push('-- world first (zones, subzones, rooms, links)');
 	sections.push(await generateRooms());
+	sections.push('-- zone configurations');
+	sections.push(await generateZoneConfigs());
 	sections.push('-- calendars and emotes');
 	sections.push(await generateHolidays());
 	sections.push(await generateNpcSchedules());

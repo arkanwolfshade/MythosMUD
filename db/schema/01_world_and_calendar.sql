@@ -75,6 +75,21 @@ CREATE TABLE IF NOT EXISTS subzones (
 );
 CREATE INDEX IF NOT EXISTS idx_subzones_zone ON subzones(zone_id);
 
+-- Zone configurations (zone and subzone level settings)
+CREATE TABLE IF NOT EXISTS zone_configurations (
+    id              uuid PRIMARY KEY,
+    zone_id         uuid REFERENCES zones(id) ON DELETE CASCADE,
+    subzone_id      uuid REFERENCES subzones(id) ON DELETE CASCADE,
+    configuration_type text NOT NULL CHECK (configuration_type IN ('zone', 'subzone')),
+    environment     text,
+    description     text,
+    weather_patterns jsonb DEFAULT '[]'::jsonb,
+    special_rules   jsonb DEFAULT '{}'::jsonb,
+    UNIQUE(zone_id, subzone_id, configuration_type)
+);
+CREATE INDEX IF NOT EXISTS idx_zone_configs_zone ON zone_configurations(zone_id);
+CREATE INDEX IF NOT EXISTS idx_zone_configs_subzone ON zone_configurations(subzone_id);
+
 CREATE TABLE IF NOT EXISTS rooms (
     id              uuid PRIMARY KEY,
     subzone_id      uuid NOT NULL REFERENCES subzones(id) ON DELETE CASCADE,

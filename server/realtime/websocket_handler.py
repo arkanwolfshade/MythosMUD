@@ -150,6 +150,24 @@ async def handle_websocket_connection(
                     # Get room data and ensure UUIDs are converted to strings
                     room_data = room.to_dict() if hasattr(room, "to_dict") else room
 
+                    # Debug: Log room exits to verify they're being loaded
+                    if hasattr(room, "exits"):
+                        logger.info(
+                            "DEBUG: Room exits in room object",
+                            room_id=room.id if hasattr(room, "id") else "unknown",
+                            exits=room.exits,
+                            exits_type=type(room.exits).__name__,
+                            exits_count=len(room.exits) if isinstance(room.exits, dict) else 0,
+                        )
+                    if isinstance(room_data, dict) and "exits" in room_data:
+                        logger.info(
+                            "DEBUG: Room exits in room_data dict",
+                            room_id=room_data.get("id", "unknown"),
+                            exits=room_data["exits"],
+                            exits_type=type(room_data["exits"]).__name__,
+                            exits_count=len(room_data["exits"]) if isinstance(room_data["exits"], dict) else 0,
+                        )
+
                     # Ensure all UUID objects are converted to strings for JSON serialization
                     def convert_uuids_to_strings(obj: Any) -> Any:
                         if isinstance(obj, dict):
@@ -231,6 +249,19 @@ async def handle_websocket_connection(
                             "xp": getattr(player, "experience_points", 0),
                             "stats": stats_data,
                         }
+
+                    # Debug: Log the room_data that will be sent to verify exits are included
+                    if isinstance(room_data, dict):
+                        logger.info(
+                            "DEBUG: Room data being sent to client",
+                            room_id=room_data.get("id", "unknown"),
+                            has_exits="exits" in room_data,
+                            exits=room_data.get("exits", {}),
+                            exits_type=type(room_data.get("exits", {})).__name__,
+                            exits_count=len(room_data.get("exits", {}))
+                            if isinstance(room_data.get("exits"), dict)
+                            else 0,
+                        )
 
                     game_state_event = build_event(
                         "game_state",

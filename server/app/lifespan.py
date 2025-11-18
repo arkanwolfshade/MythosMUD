@@ -162,7 +162,10 @@ async def lifespan(app: FastAPI):
         persistence=container.persistence,
     )
     app.state.npc_population_controller = NPCPopulationController(
-        container.event_bus, app.state.npc_spawning_service, app.state.npc_lifecycle_manager
+        container.event_bus,
+        app.state.npc_spawning_service,
+        app.state.npc_lifecycle_manager,
+        async_persistence=container.async_persistence,
     )
     # Update spawning service to use population controller
     app.state.npc_spawning_service.population_controller = app.state.npc_population_controller

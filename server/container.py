@@ -255,6 +255,17 @@ class ApplicationContainer:
                 self.event_bus = EventBus()  # EventBus doesn't accept task_registry parameter
                 logger.info("Event system initialized")
 
+                # Phase 5: Persistence layer (both sync and async versions)
+                logger.debug("Initializing persistence layer...")
+                from .async_persistence import AsyncPersistenceLayer
+                from .persistence import PersistenceLayer
+
+                self.persistence = PersistenceLayer(event_bus=self.event_bus)
+                self.async_persistence = AsyncPersistenceLayer(event_bus=self.event_bus)
+                logger.info("Persistence layers initialized (sync and async)")
+
+                # Phase 5.5: Temporal services (holidays and schedules - require async_persistence)
+                logger.debug("Initializing temporal services...")
                 from .services.holiday_service import HolidayService
                 from .services.schedule_service import ScheduleService
                 from .time.time_service import get_mythos_chronicle
@@ -264,10 +275,12 @@ class ApplicationContainer:
                     chronicle=get_mythos_chronicle(),
                     data_path=holidays_path,
                     environment=normalized_environment,
+                    async_persistence=self.async_persistence,
                 )
                 self.schedule_service = ScheduleService(
                     schedule_dir=schedules_dir,
                     environment=normalized_environment,
+                    async_persistence=self.async_persistence,
                 )
                 logger.info(
                     "Temporal schedule and holiday services initialized",
@@ -296,15 +309,6 @@ class ApplicationContainer:
                     holiday_resolver=_resolve_hourly_holidays,
                 )
                 logger.info("Mythos tick scheduler prepared")
-
-                # Phase 5: Persistence layer (both sync and async versions)
-                logger.debug("Initializing persistence layer...")
-                from .async_persistence import AsyncPersistenceLayer
-                from .persistence import PersistenceLayer
-
-                self.persistence = PersistenceLayer(event_bus=self.event_bus)
-                self.async_persistence = AsyncPersistenceLayer(event_bus=self.event_bus)
-                logger.info("Persistence layers initialized (sync and async)")
 
                 # Phase 6: Real-time communication
                 logger.debug("Initializing real-time communication...")

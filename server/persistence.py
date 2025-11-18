@@ -586,6 +586,7 @@ class PersistenceLayer:
 
                 # Build exits dictionary keyed by room_id (not stable_id)
                 exits_by_room: dict[str, dict[str, str]] = {}
+                exit_count = 0
                 for row in exits_rows:
                     from_stable_id = row[0]
                     to_stable_id = row[1]
@@ -604,13 +605,30 @@ class PersistenceLayer:
                     to_plane = to_zone_parts[0] if len(to_zone_parts) > 0 else ""
                     to_zone_name = to_zone_parts[1] if len(to_zone_parts) > 1 else to_zone
 
-                    from_room_id = generate_room_id(from_plane, from_zone_name, from_subzone, from_stable_id)
-                    to_room_id = generate_room_id(to_plane, to_zone_name, to_subzone, to_stable_id)
+                    # Check if stable_id already contains the full hierarchical path
+                    # Expected format: plane_zone_subzone_room_xxx or plane_zone_subzone_intersection_xxx
+                    # If stable_id already starts with plane_zone_subzone, it's a full room ID
+                    from_expected_prefix = f"{from_plane}_{from_zone_name}_{from_subzone}_"
+                    if from_stable_id.startswith(from_expected_prefix):
+                        # stable_id is already a full hierarchical room ID, use it directly
+                        from_room_id = from_stable_id
+                    else:
+                        # stable_id is just the room identifier, generate full ID
+                        from_room_id = generate_room_id(from_plane, from_zone_name, from_subzone, from_stable_id)
+
+                    to_expected_prefix = f"{to_plane}_{to_zone_name}_{to_subzone}_"
+                    if to_stable_id.startswith(to_expected_prefix):
+                        # stable_id is already a full hierarchical room ID, use it directly
+                        to_room_id = to_stable_id
+                    else:
+                        # stable_id is just the room identifier, generate full ID
+                        to_room_id = generate_room_id(to_plane, to_zone_name, to_subzone, to_stable_id)
 
                     if from_room_id not in exits_by_room:
                         exits_by_room[from_room_id] = {}
 
                     exits_by_room[from_room_id][direction] = to_room_id
+                    exit_count += 1
 
                 # Convert database rows to Room objects
                 for room_data_item in room_data_list:
@@ -624,6 +642,16 @@ class PersistenceLayer:
 
                     # Get exits for this room (already resolved to full room IDs)
                     exits = exits_by_room.get(room_id, {})
+
+                    # Debug: Log exits for specific room to verify loading
+                    if room_id == "earth_arkhamcity_sanitarium_room_foyer_001":
+                        self._logger.info(
+                            "DEBUG: Loading foyer room with exits",
+                            room_id=room_id,
+                            exits=exits,
+                            exits_count=len(exits),
+                            exits_by_room_keys=list(exits_by_room.keys())[:10],
+                        )
 
                     # Build room data dictionary matching Room class expectations
                     room_data = {
@@ -645,6 +673,8 @@ class PersistenceLayer:
                 "Loaded rooms into cache from PostgreSQL database",
                 room_count=len(self._room_cache),
                 mapping_count=len(self._room_mappings),
+                exit_count=exit_count,
+                exits_by_room_count=len(exits_by_room),
             )
             # Debug: Log sample room IDs for troubleshooting
             if self._room_cache:

@@ -1446,9 +1446,15 @@ class NATSMessageHandler:
 
             success_count = 0
             for subject in event_subjects:
-                success = await self._subscribe_to_subject(subject)
-                if success:
+                try:
+                    await self._subscribe_to_subject(subject)
                     success_count += 1
+                except Exception as e:
+                    logger.error(
+                        "Failed to subscribe to event subject",
+                        subject=subject,
+                        error=str(e),
+                    )
 
             if success_count == len(event_subjects):
                 logger.info("Successfully subscribed to all event subjects", count=success_count)
