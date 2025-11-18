@@ -972,9 +972,12 @@ class TestProfessionHelperMethods:
 
     def test_get_mechanical_effects_invalid_json(self, db_session):
         """Test get_mechanical_effects with invalid JSON returns empty dict."""
+        import uuid
+
         # Arrange
+        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
         profession = Profession(
-            id=0,
+            id=unique_id,
             name="Mage",
             description="A spellcaster",
             flavor_text="Magic",
@@ -992,9 +995,12 @@ class TestProfessionHelperMethods:
 
     def test_set_mechanical_effects(self, db_session):
         """Test set_mechanical_effects stores effects as JSON."""
+        import uuid
+
         # Arrange
+        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
         profession = Profession(
-            id=0,
+            id=unique_id,
             name="Warrior",
             description="A fighter",
             flavor_text="Strength",
@@ -1015,10 +1021,13 @@ class TestProfessionHelperMethods:
 
     def test_meets_stat_requirements_all_met(self, db_session):
         """Test meets_stat_requirements when all requirements are met."""
+        import uuid
+
         # Arrange
+        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
         requirements = {"strength": 12, "intelligence": 10}
         profession = Profession(
-            id=0,
+            id=unique_id,
             name="Scholar",
             description="Learned",
             flavor_text="Knowledge",
@@ -1038,10 +1047,13 @@ class TestProfessionHelperMethods:
 
     def test_meets_stat_requirements_not_met(self, db_session):
         """Test meets_stat_requirements when requirements are not met."""
+        import uuid
+
         # Arrange
+        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
         requirements = {"strength": 12, "intelligence": 10}
         profession = Profession(
-            id=0,
+            id=unique_id,
             name="Scholar",
             description="Learned",
             flavor_text="Knowledge",
@@ -1061,10 +1073,13 @@ class TestProfessionHelperMethods:
 
     def test_meets_stat_requirements_exact_match(self, db_session):
         """Test meets_stat_requirements with exact stat match."""
+        import uuid
+
         # Arrange
+        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
         requirements = {"strength": 12, "intelligence": 10}
         profession = Profession(
-            id=0,
+            id=unique_id,
             name="Scholar",
             description="Learned",
             flavor_text="Knowledge",
@@ -1084,10 +1099,13 @@ class TestProfessionHelperMethods:
 
     def test_meets_stat_requirements_missing_stat_defaults_to_zero(self, db_session):
         """Test meets_stat_requirements when player missing a required stat."""
+        import uuid
+
         # Arrange
+        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
         requirements = {"strength": 12}
         profession = Profession(
-            id=0,
+            id=unique_id,
             name="Warrior",
             description="Fighter",
             flavor_text="Strength",
@@ -1107,9 +1125,12 @@ class TestProfessionHelperMethods:
 
     def test_meets_stat_requirements_no_requirements(self, db_session):
         """Test meets_stat_requirements with no requirements."""
+        import uuid
+
         # Arrange
+        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
         profession = Profession(
-            id=0,
+            id=unique_id,
             name="Tramp",
             description="No requirements",
             flavor_text="Freedom",
@@ -1129,9 +1150,12 @@ class TestProfessionHelperMethods:
 
     def test_is_available_for_selection_true(self, db_session):
         """Test is_available_for_selection when available."""
+        import uuid
+
         # Arrange
+        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
         profession = Profession(
-            id=0,
+            id=unique_id,
             name="Warrior",
             description="Fighter",
             flavor_text="Strength",
@@ -1150,9 +1174,12 @@ class TestProfessionHelperMethods:
 
     def test_is_available_for_selection_false(self, db_session):
         """Test is_available_for_selection when not available."""
+        import uuid
+
         # Arrange
+        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
         profession = Profession(
-            id=0,
+            id=unique_id,
             name="Warrior",
             description="Fighter",
             flavor_text="Strength",
@@ -1171,9 +1198,12 @@ class TestProfessionHelperMethods:
 
     def test_get_requirement_display_text_no_requirements(self, db_session):
         """Test get_requirement_display_text with no requirements."""
+        import uuid
+
         # Arrange
+        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
         profession = Profession(
-            id=0,
+            id=unique_id,
             name="Tramp",
             description="No requirements",
             flavor_text="Freedom",
@@ -1191,10 +1221,13 @@ class TestProfessionHelperMethods:
 
     def test_get_requirement_display_text_single_requirement(self, db_session):
         """Test get_requirement_display_text with single requirement."""
+        import uuid
+
         # Arrange
+        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
         requirements = {"strength": 12}
         profession = Profession(
-            id=0,
+            id=unique_id,
             name="Warrior",
             description="Fighter",
             flavor_text="Strength",
@@ -1212,10 +1245,13 @@ class TestProfessionHelperMethods:
 
     def test_get_requirement_display_text_multiple_requirements(self, db_session):
         """Test get_requirement_display_text with multiple requirements."""
+        import uuid
+
         # Arrange
+        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
         requirements = {"strength": 12, "intelligence": 10, "wisdom": 8}
         profession = Profession(
-            id=0,
+            id=unique_id,
             name="Paladin",
             description="Holy warrior",
             flavor_text="Faith and steel",
@@ -1236,10 +1272,13 @@ class TestProfessionHelperMethods:
 
     def test_get_requirement_display_text_capitalization(self, db_session):
         """Test that stat names are properly capitalized in display text."""
+        import uuid
+
         # Arrange
+        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
         requirements = {"occult_knowledge": 15}
         profession = Profession(
-            id=0,
+            id=unique_id,
             name="Cultist",
             description="Dark practitioner",
             flavor_text="Forbidden knowledge",
