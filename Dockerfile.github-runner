@@ -7,7 +7,7 @@ FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Human reader: install baseline system packages required for Python/Node builds,
-# PostgreSQL client libraries, and Playwright runtime dependencies used in CI.
+# PostgreSQL server and client libraries, and Playwright runtime dependencies used in CI.
 # AI reader: keep package list minimal and aligned with workflow requirements.
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -21,6 +21,8 @@ RUN apt-get update && \
         python3.12-venv \
         python3.12-dev \
         python3-pip \
+        postgresql \
+        postgresql-contrib \
         postgresql-client \
         libpq-dev \
         libssl-dev \
@@ -87,19 +89,40 @@ RUN . .venv/bin/activate && \
 # Restore default workspace after Node setup.
 WORKDIR /workspace
 
-# Initialize and verify test databases to mirror CI preparation steps.
+# Human reader: initialize PostgreSQL server, create databases, and apply schema DDL scripts.
+# AI reader: PostgreSQL must be self-contained in Docker image for CI workflows (no host dependency).
+# All operations in single RUN to keep service running during execution.
+RUN service postgresql start && \
+    sleep 3 && \
+    pg_isready -U postgres && \
+    sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';" && \
+    sudo -u postgres psql -f /workspace/db/roles/roles.sql && \
+    sudo -u postgres psql -f /workspace/db/databases/databases.sql && \
+    sudo -u postgres psql -d mythos_unit -f /workspace/db/schema/01_world_and_calendar.sql && \
+    sudo -u postgres psql -d mythos_unit -f /workspace/db/schema/02_items_and_npcs.sql && \
+    sudo -u postgres psql -d mythos_unit -f /workspace/db/schema/03_identity_and_moderation.sql && \
+    sudo -u postgres psql -d mythos_unit -f /workspace/db/schema/04_runtime_tables.sql && \
+    sudo -u postgres psql -d mythos_e2e -f /workspace/db/schema/01_world_and_calendar.sql && \
+    sudo -u postgres psql -d mythos_e2e -f /workspace/db/schema/02_items_and_npcs.sql && \
+    sudo -u postgres psql -d mythos_e2e -f /workspace/db/schema/03_identity_and_moderation.sql && \
+    sudo -u postgres psql -d mythos_e2e -f /workspace/db/schema/04_runtime_tables.sql && \
+    sudo -u postgres psql -c "\l" | grep -q "mythos_unit" && \
+    sudo -u postgres psql -c "\l" | grep -q "mythos_e2e" && \
+    sudo -u postgres psql -d mythos_unit -c "\dt" | grep -q "users" && \
+    sudo -u postgres psql -d mythos_unit -c "\dt" | grep -q "players" && \
+    sudo -u postgres psql -d mythos_e2e -c "\dt" | grep -q "users" && \
+    sudo -u postgres psql -d mythos_e2e -c "\dt" | grep -q "players"
+
+# Set environment variables for test execution (matches CI workflow expectations).
 # Human reader: supply actual secrets via docker run -e / compose; do NOT bake them into the image.
 # AI reader: runtime env vars should match GitHub Actions workflow exports.
-# NOTE: PostgreSQL databases must be initialized via DDL scripts, not Python initialization.
-# Database initialization should happen in CI workflow, not in Docker image build.
-RUN . .venv/bin/activate && \
-    export DATABASE_URL="postgresql+asyncpg://postgres:postgres@localhost:5432/mythos_unit" && \
-    export DATABASE_NPC_URL="postgresql+asyncpg://postgres:postgres@localhost:5432/mythos_unit" && \
-    export MYTHOSMUD_ADMIN_PASSWORD="test-admin-password" && \
-    export MYTHOSMUD_SECRET_KEY="test-secret-key-for-ci-workflow" && \
-    export MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow" && \
-    export MYTHOSMUD_RESET_TOKEN_SECRET="test-reset-token-secret-for-ci-workflow" && \
-    export MYTHOSMUD_VERIFICATION_TOKEN_SECRET="test-verification-token-secret-for-ci-workflow"
+ENV DATABASE_URL="postgresql+asyncpg://postgres:postgres@localhost:5432/mythos_unit" \
+    DATABASE_NPC_URL="postgresql+asyncpg://postgres:postgres@localhost:5432/mythos_unit" \
+    MYTHOSMUD_ADMIN_PASSWORD="test-admin-password" \
+    MYTHOSMUD_SECRET_KEY="test-secret-key-for-ci-workflow" \
+    MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow" \
+    MYTHOSMUD_RESET_TOKEN_SECRET="test-reset-token-secret-for-ci-workflow" \
+    MYTHOSMUD_VERIFICATION_TOKEN_SECRET="test-verification-token-secret-for-ci-workflow"
 
 # Default shell for interactive troubleshooting.
 CMD ["/bin/bash"]
