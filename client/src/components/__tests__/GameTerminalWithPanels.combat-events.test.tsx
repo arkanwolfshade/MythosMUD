@@ -6,8 +6,8 @@ import '@testing-library/jest-dom';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { GameTerminalWithPanels } from '../GameTerminalWithPanels';
 import { useGameConnection } from '../../hooks/useGameConnectionRefactored';
+import { GameTerminalWithPanels } from '../GameTerminalWithPanels';
 
 vi.mock('../../hooks/useGameConnectionRefactored');
 const mockUseGameConnection = vi.mocked(useGameConnection);
@@ -69,6 +69,31 @@ describe('GameTerminalWithPanels - Combat Events', () => {
   };
 
   const getInfoValue = (label: string) => {
+    // Special handling for Health - it's rendered by HealthMeter component
+    if (label === 'Health:') {
+      const healthMeter = screen.getByTestId('health-meter');
+      const strongTag = healthMeter.querySelector('strong');
+      if (strongTag) {
+        // Extract just the current value (before the " / max" part)
+        const text = strongTag.textContent || '';
+        const match = text.match(/^(\d+)/);
+        if (match) {
+          // Return the strong tag itself, but we'll check its textContent
+          return strongTag as HTMLElement;
+        }
+      }
+      // Fallback: look for "Health" text
+      const labelNode = screen.getByText('Health');
+      const container = labelNode.closest('[data-testid="health-meter"]');
+      if (container) {
+        const strongTag = container.querySelector('strong');
+        if (strongTag) {
+          return strongTag as HTMLElement;
+        }
+      }
+    }
+
+    // For other labels (like "In Combat:"), use original logic
     const labelNode = screen.getByText(label);
     const container = labelNode.closest('div');
     expect(container).not.toBeNull();
@@ -188,7 +213,7 @@ describe('GameTerminalWithPanels - Combat Events', () => {
     expect(eventCallback).not.toBeNull();
 
     sendStatusUpdate(defaultPlayerName, { inCombat: 'Yes' });
-    await waitFor(() => expect(getInfoValue('Health:')).toHaveTextContent('100'));
+    await waitFor(() => expect(getInfoValue('Health:')).toHaveTextContent(/^100/));
 
     triggerEvent({
       event_type: 'npc_attacked',
@@ -207,7 +232,7 @@ describe('GameTerminalWithPanels - Combat Events', () => {
     await waitFor(() => {
       expect(findMessageContainer('Sanitarium Patient attacks you for 10 damage! (90/100 HP)')).toBeDefined();
     });
-    expect(getInfoValue('Health:')).toHaveTextContent('90');
+    expect(getInfoValue('Health:')).toHaveTextContent(/^90/);
   });
 
   it('shows npc attacks against other players without altering local health', async () => {
@@ -216,7 +241,7 @@ describe('GameTerminalWithPanels - Combat Events', () => {
     expect(eventCallback).not.toBeNull();
 
     sendStatusUpdate(otherPlayer, { inCombat: 'No' });
-    await waitFor(() => expect(getInfoValue('Health:')).toHaveTextContent('100'));
+    await waitFor(() => expect(getInfoValue('Health:')).toHaveTextContent(/^100/));
 
     triggerEvent({
       event_type: 'npc_attacked',
@@ -237,6 +262,6 @@ describe('GameTerminalWithPanels - Combat Events', () => {
         findMessageContainer('Sanitarium Patient attacks ArkanWolfshade for 10 damage! (90/100 HP)')
       ).toBeDefined();
     });
-    expect(getInfoValue('Health:')).toHaveTextContent('100');
+    expect(getInfoValue('Health:')).toHaveTextContent(/^100/);
   });
 });

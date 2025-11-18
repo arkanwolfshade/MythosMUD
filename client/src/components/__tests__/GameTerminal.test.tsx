@@ -248,10 +248,15 @@ describe('GameTerminal', () => {
     it('should display player stats in status panel', () => {
       render(<GameTerminal {...defaultProps} />);
 
-      expect(screen.getByText('Health:')).toBeInTheDocument();
-      expect(screen.getByText('100')).toBeInTheDocument();
-      expect(screen.getByText('Sanity:')).toBeInTheDocument();
-      expect(screen.getByText('80')).toBeInTheDocument();
+      // HealthMeter renders "Health" (without colon) and value as "100 / 100"
+      expect(screen.getByText('Health')).toBeInTheDocument();
+      const healthMeter = screen.getByTestId('health-meter');
+      expect(healthMeter).toHaveTextContent(/100/);
+      // SanityMeter renders "Sanity" (without colon) and value as "80 / 100"
+      expect(screen.getByText('Sanity')).toBeInTheDocument();
+      // Sanity value should be 80, not 100
+      expect(screen.getByText(/^80/)).toBeInTheDocument();
+      // Core attributes still use colon format
       expect(screen.getByText('STR:')).toBeInTheDocument();
       expect(screen.getByText('10')).toBeInTheDocument();
     });
