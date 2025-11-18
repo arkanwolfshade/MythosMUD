@@ -136,6 +136,9 @@ async def lifespan(app: FastAPI):
     container.connection_manager._event_bus = container.event_bus
     container.connection_manager.app = app
 
+    # Start periodic connection health checks
+    container.connection_manager.start_health_checks()
+
     # Clear any stale pending messages from previous server sessions
     container.connection_manager.message_queue.pending_messages.clear()
     logger.info("Cleared stale pending messages from previous server sessions")
@@ -417,6 +420,12 @@ async def lifespan(app: FastAPI):
 
         # Phase 2: Connection Manager cleanup before task cancellation
         if hasattr(app.state, "connection_manager") and app.state.connection_manager:
+            logger.info("Stopping connection manager health checks")
+            try:
+                app.state.connection_manager.stop_health_checks()
+            except Exception as e:
+                logger.error("Error stopping connection manager health checks", error=str(e))
+
             logger.info("Cleaning up connection manager tasks")
             try:
                 await app.state.connection_manager.force_cleanup()

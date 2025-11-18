@@ -19,7 +19,6 @@ from ..logging.enhanced_logging_config import get_logger
 from ..services.chat_logger import chat_logger
 from ..services.player_combat_service import PlayerXPAwardEvent
 from ..services.room_sync_service import get_room_sync_service
-from .connection_manager import _get_npc_name_from_instance
 
 
 class RealTimeEventHandler:
@@ -87,6 +86,143 @@ class RealTimeEventHandler:
         self._sequence_counter += 1
         return self._sequence_counter
 
+    def _get_player_info(self, player_id: str) -> tuple[Any, str] | None:
+        """
+        Get player information and name.
+
+        Args:
+            player_id: The player's ID
+
+        Returns:
+            tuple: (player, player_name) or None if player not found
+        """
+        player = self.connection_manager._get_player(player_id)
+        if not player:
+            self._logger.warning("Player not found", player_id=player_id)
+            return None
+        player_name = getattr(player, "name", player_id)
+        return (player, player_name)
+
+    def _log_player_movement(self, player_id: str, player_name: str, room_id: str, movement_type: str) -> None:
+        """
+        Log player movement for AI processing.
+
+        Args:
+            player_id: The player's ID
+            player_name: The player's name
+            room_id: The room ID
+            movement_type: Type of movement ("joined" or "left")
+        """
+        try:
+            room = (
+                self.connection_manager.persistence.get_room(room_id) if self.connection_manager.persistence else None
+            )
+            room_name = getattr(room, "name", room_id) if room else room_id
+
+            if movement_type == "joined":
+                self.chat_logger.log_player_joined_room(
+                    player_id=player_id,
+                    player_name=player_name,
+                    room_id=room_id,
+                    room_name=room_name,
+                )
+            elif movement_type == "left":
+                self.chat_logger.log_player_left_room(
+                    player_id=player_id,
+                    player_name=player_name,
+                    room_id=room_id,
+                    room_name=room_name,
+                )
+        except Exception as e:
+            self._logger.error("Error logging player movement", error=str(e), movement_type=movement_type)
+
+    def _extract_occupant_names(self, occupants_info: list[dict[str, Any] | str]) -> list[str]:
+        """
+        Extract occupant names from occupant information.
+
+        Args:
+            occupants_info: List of occupant information dictionaries or strings
+
+        Returns:
+            list: List of occupant names
+        """
+        names: list[str] = []
+        for occ in occupants_info or []:
+            if isinstance(occ, dict):
+                n = occ.get("player_name") or occ.get("npc_name") or occ.get("name")
+                if n:
+                    names.append(n)
+            elif isinstance(occ, str):
+                names.append(occ)
+        return names
+
+    async def _send_room_update_to_player(self, player_id: str, room_id: str) -> None:
+        """
+        Send full room update to a player.
+
+        Args:
+            player_id: The player's ID
+            room_id: The room ID
+        """
+        try:
+            room = (
+                self.connection_manager.persistence.get_room(room_id) if self.connection_manager.persistence else None
+            )
+            if not room:
+                return
+
+            # Get room occupants and transform to names
+            occupants_info = self._get_room_occupants(room_id)
+            occupant_names = self._extract_occupant_names(occupants_info)
+
+            # Create room_update event with full room data
+            room_data = room.to_dict() if hasattr(room, "to_dict") else room
+            room_update_event = {
+                "event_type": "room_update",
+                "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
+                "sequence_number": self._get_next_sequence(),
+                "room_id": room_id,
+                "data": {
+                    "room": room_data,
+                    "entities": [],
+                    "occupants": occupant_names,
+                    "occupant_count": len(occupant_names),
+                },
+            }
+            # Send as personal message
+            await self.connection_manager.send_personal_message(player_id, room_update_event)
+            self._logger.debug(
+                "Sent room_update to player",
+                player_id=player_id,
+                room_id=room_id,
+                occupants=occupant_names,
+            )
+        except Exception as e:
+            self._logger.error("Error sending room update to player", player_id=player_id, error=str(e))
+
+    async def _send_occupants_snapshot_to_player(self, player_id: str, room_id: str) -> None:
+        """
+        Send occupants snapshot to a player.
+
+        Args:
+            player_id: The player's ID
+            room_id: The room ID
+        """
+        try:
+            occupants_snapshot = self._get_room_occupants(room_id)
+            names = self._extract_occupant_names(occupants_snapshot)
+
+            personal = {
+                "event_type": "room_occupants",
+                "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
+                "sequence_number": self._get_next_sequence(),
+                "room_id": room_id,
+                "data": {"occupants": names, "count": len(names)},
+            }
+            await self.connection_manager.send_personal_message(player_id, personal)
+        except Exception as e:
+            self._logger.error("Error sending occupants snapshot to player", player_id=player_id, error=str(e))
+
     async def _handle_player_entered(self, event: PlayerEnteredRoom) -> None:
         """
         Handle player entering a room with enhanced synchronization.
@@ -99,34 +235,19 @@ class RealTimeEventHandler:
             processed_event = self.room_sync_service._process_event_with_ordering(event)
 
             self._logger.debug(
-                f"Handling player entered event with synchronization: {processed_event.player_id} -> {processed_event.room_id}"
+                "Handling player entered event with synchronization",
+                player_id=processed_event.player_id,
+                room_id=processed_event.room_id,
             )
 
             # Get player information
-            player = self.connection_manager._get_player(processed_event.player_id)
-            if not player:
-                self._logger.warning("Player not found for entered event", player_id=processed_event.player_id)
+            player_info = self._get_player_info(processed_event.player_id)
+            if not player_info:
                 return
-
-            player_name = getattr(player, "name", processed_event.player_id)
+            player, player_name = player_info
 
             # Log player movement for AI processing
-            try:
-                room = (
-                    self.connection_manager.persistence.get_room(processed_event.room_id)
-                    if self.connection_manager.persistence
-                    else None
-                )
-                room_name = getattr(room, "name", processed_event.room_id) if room else processed_event.room_id
-
-                self.chat_logger.log_player_joined_room(
-                    player_id=processed_event.player_id,
-                    player_name=player_name,
-                    room_id=processed_event.room_id,
-                    room_name=room_name,
-                )
-            except Exception as e:
-                self._logger.error("Error logging player joined room", error=str(e))
+            self._log_player_movement(processed_event.player_id, player_name, processed_event.room_id, "joined")
 
             # Create real-time message with processed event
             message = self._create_player_entered_message(processed_event, player_name)
@@ -136,7 +257,9 @@ class RealTimeEventHandler:
             room_id_str = str(processed_event.room_id) if processed_event.room_id else None
 
             self._logger.debug(
-                f"Broadcasting player_entered: exclude_player={exclude_player_id} (type: {type(exclude_player_id)})"
+                "Broadcasting player_entered",
+                exclude_player=exclude_player_id,
+                room_id=room_id_str,
             )
 
             # Broadcast to room occupants (excluding the entering player)
@@ -151,77 +274,8 @@ class RealTimeEventHandler:
             # so they immediately see who is present on joining
             if room_id_str is not None and exclude_player_id is not None:
                 await self._send_room_occupants_update(room_id_str, exclude_player=exclude_player_id)
-            try:
-                # Send full room update to the entering player so their Room Info panel updates
-                if room_id_str is not None and exclude_player_id is not None:
-                    # Get room data
-                    room = (
-                        self.connection_manager.persistence.get_room(room_id_str)
-                        if self.connection_manager.persistence
-                        else None
-                    )
-                    if room:
-                        # Get room occupants and transform to names
-                        occupants_info = self._get_room_occupants(room_id_str)
-                        occupant_names: list[str] = []
-                        for occ in occupants_info or []:
-                            if isinstance(occ, dict):
-                                n = occ.get("player_name") or occ.get("npc_name") or occ.get("name")
-                                if n:
-                                    occupant_names.append(n)
-                            elif isinstance(occ, str):
-                                occupant_names.append(occ)
-
-                        # Create room_update event with full room data
-                        room_data = room.to_dict() if hasattr(room, "to_dict") else room
-                        room_update_event = {
-                            "event_type": "room_update",
-                            "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
-                            "sequence_number": self._get_next_sequence(),
-                            "room_id": room_id_str,
-                            "data": {
-                                "room": room_data,
-                                "entities": [],
-                                "occupants": occupant_names,
-                                "occupant_count": len(occupant_names),
-                            },
-                        }
-                        # Send as personal message to entering player
-                        await self.connection_manager.send_personal_message(exclude_player_id, room_update_event)
-                        self._logger.debug(
-                            "Sent room_update to entering player",
-                            player_id=exclude_player_id,
-                            room_id=room_id_str,
-                            occupants=occupant_names,
-                        )
-
-                # Also send a direct occupants snapshot to the entering player
-                if room_id_str is None:
-                    occupants_snapshot: list[dict[str, Any] | str] | None = []
-                else:
-                    occupants_snapshot = self._get_room_occupants(room_id_str)
-                names: list[str] = []
-                for occ in occupants_snapshot or []:
-                    if isinstance(occ, dict):
-                        n = occ.get("player_name") or occ.get("npc_name") or occ.get("name")
-                        if n:
-                            names.append(n)
-                    elif isinstance(occ, str):
-                        names.append(occ)
-                # Convert room_id to string for JSON serialization
-                room_id_str = str(processed_event.room_id) if processed_event.room_id else ""
-
-                personal = {
-                    "event_type": "room_occupants",
-                    "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
-                    "sequence_number": self._get_next_sequence(),
-                    "room_id": room_id_str,
-                    "data": {"occupants": names, "count": len(names)},
-                }
-                if exclude_player_id is not None:
-                    await self.connection_manager.send_personal_message(exclude_player_id, personal)
-            except Exception as e:
-                self._logger.error("Error sending personal room update and occupants", error=str(e))
+                await self._send_room_update_to_player(exclude_player_id, room_id_str)
+                await self._send_occupants_snapshot_to_player(exclude_player_id, room_id_str)
 
             self._logger.info(
                 "Player entered room with enhanced synchronization",
@@ -244,34 +298,19 @@ class RealTimeEventHandler:
             processed_event = self.room_sync_service._process_event_with_ordering(event)
 
             self._logger.debug(
-                f"Handling player left event with synchronization: {processed_event.player_id} <- {processed_event.room_id}"
+                "Handling player left event with synchronization",
+                player_id=processed_event.player_id,
+                room_id=processed_event.room_id,
             )
 
             # Get player information
-            player = self.connection_manager._get_player(processed_event.player_id)
-            if not player:
-                self._logger.warning("Player not found for left event", player_id=processed_event.player_id)
+            player_info = self._get_player_info(processed_event.player_id)
+            if not player_info:
                 return
-
-            player_name = getattr(player, "name", processed_event.player_id)
+            player, player_name = player_info
 
             # Log player movement for AI processing
-            try:
-                room = (
-                    self.connection_manager.persistence.get_room(processed_event.room_id)
-                    if self.connection_manager.persistence
-                    else None
-                )
-                room_name = getattr(room, "name", processed_event.room_id) if room else processed_event.room_id
-
-                self.chat_logger.log_player_left_room(
-                    player_id=processed_event.player_id,
-                    player_name=player_name,
-                    room_id=processed_event.room_id,
-                    room_name=room_name,
-                )
-            except Exception as e:
-                self._logger.error("Error logging player left room", error=str(e))
+            self._log_player_movement(processed_event.player_id, player_name, processed_event.room_id, "left")
 
             # Create real-time message with processed event
             message = self._create_player_left_message(processed_event, player_name)
@@ -284,7 +323,9 @@ class RealTimeEventHandler:
             room_id_str = str(processed_event.room_id) if processed_event.room_id else None
 
             self._logger.debug(
-                f"Broadcasting player_left: exclude_player={exclude_player_id} (type: {type(exclude_player_id)})"
+                "Broadcasting player_left",
+                exclude_player=exclude_player_id,
+                room_id=room_id_str,
             )
 
             # Broadcast to remaining room occupants (excluding the leaving player)
@@ -423,9 +464,12 @@ class RealTimeEventHandler:
             # Get player IDs in the room
             player_ids = room.get_players()
 
-            # Convert to occupant information
+            # OPTIMIZATION: Batch load all players at once to eliminate N+1 queries
+            players = self.connection_manager._get_players_batch(list(player_ids))
+
+            # Convert to occupant information using batch-loaded players
             for player_id in player_ids:
-                player = self.connection_manager._get_player(player_id)
+                player = players.get(player_id)
                 if player:
                     occupant_info = {
                         "player_id": player_id,
@@ -438,26 +482,18 @@ class RealTimeEventHandler:
             # Get NPC IDs in the room
             npc_ids = room.get_npcs()
 
-            # Convert NPCs to occupant information
+            # OPTIMIZATION: Batch load all NPC names at once to eliminate N+1 queries
+            npc_names = self.connection_manager._get_npcs_batch(list(npc_ids))
+
+            # Convert NPCs to occupant information using batch-loaded names
             for npc_id in npc_ids:
-                # Get NPC name from the actual NPC instance, preserving original case from database
-                npc_name = _get_npc_name_from_instance(npc_id)
-                if npc_name:
-                    occupant_info = {
-                        "npc_id": npc_id,
-                        "npc_name": npc_name,
-                        "type": "npc",
-                    }
-                    occupants.append(occupant_info)
-                else:
-                    # Fallback: Extract NPC name from the NPC ID if instance not found
-                    npc_name = npc_id.split("_")[0].replace("_", " ").title()
-                    occupant_info = {
-                        "npc_id": npc_id,
-                        "npc_name": npc_name,
-                        "type": "npc",
-                    }
-                    occupants.append(occupant_info)
+                npc_name = npc_names.get(npc_id, npc_id.split("_")[0].replace("_", " ").title())
+                occupant_info = {
+                    "npc_id": npc_id,
+                    "npc_name": npc_name,
+                    "type": "npc",
+                }
+                occupants.append(occupant_info)
 
         except Exception as e:
             self._logger.error("Error getting room occupants", error=str(e), exc_info=True)

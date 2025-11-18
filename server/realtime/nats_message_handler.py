@@ -692,7 +692,7 @@ class NATSMessageHandler:
                         is_muted = patched_mute_checker(player_id, sender_id)
                     else:
                         # Check if the receiving player has muted the sender using the shared UserManager instance
-                        is_muted = self._is_player_muted_by_receiver_with_user_manager(
+                        is_muted = await self._is_player_muted_by_receiver_with_user_manager(
                             user_manager, player_id, sender_id
                         )
                     logger.debug(
@@ -1003,7 +1003,9 @@ class NATSMessageHandler:
             )
             return False
 
-    def _is_player_muted_by_receiver_with_user_manager(self, user_manager, receiver_id: str, sender_id: str) -> bool:
+    async def _is_player_muted_by_receiver_with_user_manager(
+        self, user_manager, receiver_id: str, sender_id: str
+    ) -> bool:
         """
         Check if a receiving player has muted the sender using a provided UserManager instance.
 
@@ -1022,10 +1024,10 @@ class NATSMessageHandler:
         )
 
         try:
-            # Load the receiver's mute data before checking (if not already loaded)
-            mute_load_result = user_manager.load_player_mutes(receiver_id)
+            # Load the receiver's mute data before checking (if not already loaded) - async version
+            mute_load_result = await user_manager.load_player_mutes_async(receiver_id)
             logger.debug(
-                "=== MUTE FILTERING DEBUG: Mute data load result ===",
+                "=== BROADCAST FILTERING DEBUG: Mute data load result (async) ===",
                 receiver_id=receiver_id,
                 sender_id=sender_id,
                 mute_load_result=mute_load_result,

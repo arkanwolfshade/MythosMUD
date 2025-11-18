@@ -196,7 +196,9 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
     logger.info("WebSocket connection attempt", player_id=player_id, session_id=session_id)
 
     try:
-        await handle_websocket_connection(websocket, player_id, session_id, connection_manager=connection_manager)
+        await handle_websocket_connection(
+            websocket, player_id, session_id, connection_manager=connection_manager, token=token
+        )
     except Exception as e:
         logger.error("Error in WebSocket endpoint", player_id=player_id, error=str(e), exc_info=True)
         raise

@@ -6,6 +6,7 @@ and real-time updates for the game.
 """
 
 import json
+import time
 from typing import Any
 
 from fastapi import WebSocket, WebSocketDisconnect
@@ -52,7 +53,11 @@ def _get_npc_name_from_instance(npc_id: str) -> str | None:
 
 
 async def handle_websocket_connection(
-    websocket: WebSocket, player_id: str, session_id: str | None = None, connection_manager=None
+    websocket: WebSocket,
+    player_id: str,
+    session_id: str | None = None,
+    connection_manager=None,
+    token: str | None = None,
 ) -> None:
     """
     Handle a WebSocket connection for a player.
@@ -84,8 +89,8 @@ async def handle_websocket_connection(
     # Convert player_id to string to ensure JSON serialization compatibility
     player_id_str = str(player_id)
 
-    # Connect the WebSocket with session tracking
-    success = await connection_manager.connect_websocket(websocket, player_id_str, session_id)
+    # Connect the WebSocket with session tracking and token for revalidation
+    success = await connection_manager.connect_websocket(websocket, player_id_str, session_id, token=token)
     if not success:
         logger.error("Failed to connect WebSocket", player_id=player_id_str)
         return
@@ -336,24 +341,70 @@ async def handle_websocket_connection(
         await websocket.send_json(welcome_event)
 
         # Main message loop
+        from .message_validator import MessageValidationError, get_message_validator
+
+        validator = get_message_validator()
+
+        # Get connection_id for rate limiting
+        connection_id = connection_manager.get_connection_id_from_websocket(websocket)
+
         while True:
             try:
                 # Receive message from client
                 data = await websocket.receive_text()
-                message = json.loads(data)
 
-                # CRITICAL FIX: Handle wrapped message format from useWebSocketConnection
-                # The client wraps messages in {message, csrfToken, timestamp} structure
-                if "message" in message and isinstance(message["message"], str):
-                    try:
-                        # Unwrap the inner message
-                        inner_message = json.loads(message["message"])
-                        # Verify CSRF token if present
-                        # TODO: Implement CSRF validation
-                        message = inner_message
-                    except json.JSONDecodeError:
-                        # If inner message is not JSON, use it as-is
-                        pass
+                # Check message rate limit before processing
+                if connection_id:
+                    if not connection_manager.rate_limiter.check_message_rate_limit(connection_id):
+                        logger.warning(
+                            "Message rate limit exceeded",
+                            player_id=player_id_str,
+                            connection_id=connection_id,
+                        )
+                        rate_limit_info = connection_manager.rate_limiter.get_message_rate_limit_info(connection_id)
+                        error_response = create_websocket_error_response(
+                            ErrorType.RATE_LIMIT_EXCEEDED,
+                            f"Message rate limit exceeded. Limit: {rate_limit_info['max_attempts']} messages per minute. Try again in {int(rate_limit_info['reset_time'] - time.time())} seconds.",
+                            ErrorMessages.RATE_LIMIT_EXCEEDED,
+                            {
+                                "player_id": player_id_str,
+                                "connection_id": connection_id,
+                                "rate_limit_info": rate_limit_info,
+                            },
+                        )
+                        await websocket.send_json(error_response)
+                        continue
+
+                # Validate and parse message using comprehensive validator
+                try:
+                    # Get CSRF token if available (from connection metadata or session)
+                    csrf_token = None
+                    # TODO: Retrieve actual CSRF token from session/connection metadata
+                    # For now, validation will allow messages without tokens (backward compatibility)
+
+                    # Parse and validate message (handles size, depth, schema, CSRF)
+                    message = validator.parse_and_validate(
+                        data=data,
+                        player_id=player_id_str,
+                        schema=None,  # Basic validation for now, can be enhanced per message type
+                        csrf_token=csrf_token,
+                    )
+
+                except MessageValidationError as e:
+                    logger.warning(
+                        "Message validation failed",
+                        player_id=player_id_str,
+                        error_type=e.error_type,
+                        error_message=e.message,
+                    )
+                    error_response = create_websocket_error_response(
+                        ErrorType.INVALID_FORMAT,
+                        f"Message validation failed: {e.message}",
+                        ErrorMessages.INVALID_FORMAT,
+                        {"player_id": player_id_str, "error_type": e.error_type},
+                    )
+                    await websocket.send_json(error_response)
+                    continue
 
                 # Mark presence on any inbound message
                 connection_manager.mark_player_seen(player_id_str)
@@ -362,7 +413,7 @@ async def handle_websocket_connection(
                 await handle_websocket_message(websocket, player_id_str, message)
 
             except json.JSONDecodeError:
-                logger.warning("Invalid JSON from player", player_id=player_id)
+                logger.warning("Invalid JSON from player", player_id=player_id_str)
                 error_response = create_websocket_error_response(
                     ErrorType.INVALID_FORMAT,
                     "Invalid JSON format",
@@ -372,18 +423,44 @@ async def handle_websocket_connection(
                 await websocket.send_json(error_response)
 
             except WebSocketDisconnect:
-                logger.info("WebSocket disconnected", player_id=player_id_str)
+                logger.info(
+                    "WebSocket disconnected",
+                    player_id=player_id_str,
+                    connection_id=connection_id,
+                )
                 break
 
             except Exception as e:
-                logger.error("Error handling WebSocket message", player_id=player_id_str, error=str(e))
-                error_response = create_websocket_error_response(
-                    ErrorType.INTERNAL_ERROR,
-                    f"Internal server error: {str(e)}",
-                    ErrorMessages.INTERNAL_ERROR,
-                    {"player_id": player_id_str},
+                # Enhanced error context for debugging
+                logger.error(
+                    "Error handling WebSocket message",
+                    player_id=player_id_str,
+                    connection_id=connection_id,
+                    error=str(e),
+                    error_type=type(e).__name__,
+                    exc_info=True,
                 )
-                await websocket.send_json(error_response)
+                try:
+                    error_response = create_websocket_error_response(
+                        ErrorType.INTERNAL_ERROR,
+                        f"Internal server error: {str(e)}",
+                        ErrorMessages.INTERNAL_ERROR,
+                        {
+                            "player_id": player_id_str,
+                            "connection_id": connection_id,
+                            "error_type": type(e).__name__,
+                        },
+                    )
+                    await websocket.send_json(error_response)
+                except Exception as send_error:
+                    # If we can't send error response, log and continue
+                    logger.error(
+                        "Failed to send error response to client",
+                        player_id=player_id_str,
+                        connection_id=connection_id,
+                        original_error=str(e),
+                        send_error=str(send_error),
+                    )
 
     finally:
         # Clean up connection
@@ -426,7 +503,11 @@ async def handle_websocket_message(websocket: WebSocket, player_id: str, message
 
 
 async def handle_game_command(
-    websocket: WebSocket, player_id: str, command: str, args: list[Any] | None = None
+    websocket: WebSocket,
+    player_id: str,
+    command: str,
+    args: list[Any] | None = None,
+    connection_manager=None,
 ) -> None:
     """
     Handle a game command from a player.
@@ -436,13 +517,14 @@ async def handle_game_command(
         player_id: The player's ID
         command: The command string
         args: Command arguments (optional, will parse from command if not provided)
+        connection_manager: ConnectionManager instance (optional, will resolve from app.state if not provided)
     """
     try:
-        # AI Agent: Access connection_manager via app.state.container (no longer a global)
-        #           Import locally to avoid circular import
-        from ..main import app
+        # Resolve connection_manager if not provided (backward compatibility)
+        if connection_manager is None:
+            from ..main import app
 
-        connection_manager = app.state.container.connection_manager
+            connection_manager = app.state.container.connection_manager
 
         logger.info(
             "🚨 SERVER DEBUG: handle_game_command called",
@@ -466,7 +548,7 @@ async def handle_game_command(
             cmd = command.lower()
 
         # Simple command processing for WebSocket
-        result = await process_websocket_command(cmd, args, player_id)
+        result = await process_websocket_command(cmd, args, player_id, connection_manager=connection_manager)
 
         # Send the result back to the player
         logger.info(
@@ -512,7 +594,7 @@ async def handle_game_command(
         await websocket.send_json(error_response)
 
 
-async def process_websocket_command(cmd: str, args: list, player_id: str) -> dict:
+async def process_websocket_command(cmd: str, args: list, player_id: str, connection_manager=None) -> dict:
     """
     Process a command for WebSocket connections.
 
@@ -520,6 +602,7 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
         cmd: The command name
         args: Command arguments
         player_id: The player's ID
+        connection_manager: ConnectionManager instance (optional, will resolve from app.state if not provided)
 
     Returns:
         dict: Command result
@@ -527,11 +610,11 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
     logger.info("SERVER DEBUG: process_websocket_command called", cmd=cmd, args=args, player_id=player_id)
     logger.debug("Processing command", cmd=cmd, args=args, player_id=player_id)
 
-    # AI Agent: Access connection_manager via app.state.container (no longer a global)
-    #           Import locally to avoid circular import
-    from ..main import app
+    # Resolve connection_manager if not provided (backward compatibility)
+    if connection_manager is None:
+        from ..main import app
 
-    connection_manager = app.state.container.connection_manager
+        connection_manager = app.state.container.connection_manager
 
     # Get player from connection manager
     logger.debug("Getting player for ID", player_id=player_id, player_id_type=type(player_id))
@@ -704,7 +787,7 @@ Directions: north, south, east, west
 """
 
 
-async def handle_chat_message(websocket: WebSocket, player_id: str, message: str) -> None:
+async def handle_chat_message(websocket: WebSocket, player_id: str, message: str, connection_manager=None) -> None:
     """
     Handle a chat message from a player.
 
@@ -712,13 +795,14 @@ async def handle_chat_message(websocket: WebSocket, player_id: str, message: str
         websocket: The WebSocket connection
         player_id: The player's ID
         message: The chat message
+        connection_manager: ConnectionManager instance (optional, will resolve from app.state if not provided)
     """
     try:
-        # AI Agent: Access connection_manager via app.state.container (no longer a global)
-        #           Import locally to avoid circular import
-        from ..main import app
+        # Resolve connection_manager if not provided (backward compatibility)
+        if connection_manager is None:
+            from ..main import app
 
-        connection_manager = app.state.container.connection_manager
+            connection_manager = app.state.container.connection_manager
 
         # Create chat event
         chat_event = build_event(
@@ -749,21 +833,22 @@ async def handle_chat_message(websocket: WebSocket, player_id: str, message: str
         await websocket.send_json(error_response)
 
 
-async def broadcast_room_update(player_id: str, room_id: str) -> None:
+async def broadcast_room_update(player_id: str, room_id: str, connection_manager=None) -> None:
     """
     Broadcast a room update to all players in the room.
 
     Args:
         player_id: The player who triggered the update
         room_id: The room's ID
+        connection_manager: ConnectionManager instance (optional, will resolve from app.state if not provided)
     """
     logger.debug("broadcast_room_update called", player_id=player_id, room_id=room_id)
     try:
-        # AI Agent: Access connection_manager via app.state.container (no longer a global)
-        #           Import locally to avoid circular import
-        from ..main import app
+        # Resolve connection_manager if not provided (backward compatibility)
+        if connection_manager is None:
+            from ..main import app
 
-        connection_manager = app.state.container.connection_manager
+            connection_manager = app.state.container.connection_manager
 
         # Get room data
         persistence = connection_manager.persistence

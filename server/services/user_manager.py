@@ -701,6 +701,55 @@ class UserManager:
             logger.error("Error checking player mute", error=str(e), player_id=player_id, target_id=target_id)
             return False
 
+    async def is_player_muted_async(self, player_id: str, target_id: str) -> bool:
+        """
+        Async version of is_player_muted using async mute loading.
+
+        Args:
+            player_id: Player ID
+            target_id: Target player ID
+
+        Returns:
+            True if target is muted by player
+
+        AI: Uses async mute loading to prevent blocking the event loop.
+        """
+        raw_player_id = player_id
+        raw_target_id = target_id
+        player_id = self._normalize_player_id(player_id)
+        target_id = self._normalize_player_id(target_id)
+
+        try:
+            # Load player's mute data asynchronously to ensure it's available
+            await self.load_player_mutes_async(player_id)
+
+            if raw_player_id != player_id and raw_player_id in self._player_mutes:
+                self._player_mutes[player_id] = self._player_mutes.pop(raw_player_id)
+            if player_id not in self._player_mutes:
+                return False
+            if raw_target_id != target_id and raw_target_id in self._player_mutes[player_id]:
+                self._player_mutes[player_id][target_id] = self._player_mutes[player_id].pop(raw_target_id)
+
+            # Check if mute exists and is not expired
+            if player_id in self._player_mutes and target_id in self._player_mutes[player_id]:
+                mute_info = self._player_mutes[player_id][target_id]
+
+                # Check if mute is expired
+                if mute_info["expires_at"] and mute_info["expires_at"] < datetime.now(UTC):
+                    # Remove expired mute
+                    del self._player_mutes[player_id][target_id]
+                    if not self._player_mutes[player_id]:
+                        del self._player_mutes[player_id]
+                    return False
+
+                return True
+
+            return False
+
+        except Exception as e:
+            logger.error("Error checking player mute (async)", error=str(e), player_id=player_id, target_id=target_id)
+            return False
+
     def is_channel_muted(self, player_id: str, channel: str) -> bool:
         """
         Check if a player has muted a specific channel.

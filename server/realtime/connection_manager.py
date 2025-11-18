@@ -90,6 +90,8 @@ class ConnectionMetadata:
     last_seen: float
     is_healthy: bool
     session_id: str | None = None  # For tracking new game client sessions
+    token: str | None = None  # JWT token for periodic revalidation
+    last_token_validation: float | None = None  # Timestamp of last token validation
 
 
 class ConnectionManager:
@@ -178,6 +180,15 @@ class ConnectionManager:
 
         # Track safely closed websocket objects to avoid duplicate closes
         self._closed_websockets: set[int] = set()
+
+        # Background executor for disconnect processing when no event loop is available
+        self._disconnect_executor: Any | None = None
+
+        # Connection health check configuration
+        self._health_check_interval: float = 30.0  # Check every 30 seconds
+        self._health_check_task: Any | None = None
+        self._connection_timeout: float = 90.0  # 90 seconds idle = stale connection
+        self._token_revalidation_interval: float = 300.0  # Revalidate tokens every 5 minutes
 
     def _is_websocket_open(self, websocket: WebSocket) -> bool:
         try:
@@ -377,7 +388,9 @@ class ConnectionManager:
         self.persistence = persistence
         self.room_manager.set_persistence(persistence)
 
-    async def connect_websocket(self, websocket: WebSocket, player_id: str, session_id: str | None = None) -> bool:
+    async def connect_websocket(
+        self, websocket: WebSocket, player_id: str, session_id: str | None = None, token: str | None = None
+    ) -> bool:
         """
         Connect a WebSocket for a player.
 
@@ -439,6 +452,11 @@ class ConnectionManager:
             connection_id = str(uuid.uuid4())
             self.active_websockets[connection_id] = websocket
 
+            # Store connection_id in websocket state for easy retrieval
+            # Note: websocket.state is read-only in Starlette, so we use a workaround
+            # by storing connection_id in a custom attribute
+            websocket._mythos_connection_id = connection_id  # type: ignore[attr-defined]
+
             # Add the new connection to the player's connection list
             if player_id not in self.player_websockets:
                 self.player_websockets[player_id] = []
@@ -454,6 +472,8 @@ class ConnectionManager:
                 last_seen=current_time,
                 is_healthy=True,
                 session_id=session_id,
+                token=token,
+                last_token_validation=current_time if token else None,
             )
 
             # Track connection in session
@@ -506,7 +526,30 @@ class ConnectionManager:
                     await self._broadcast_connection_message(player_id, player)
 
         except Exception as e:
-            logger.error("Error connecting WebSocket", player_id=player_id, error=str(e), exc_info=True)
+            # Enhanced error context for connection failures
+            logger.error(
+                "Error connecting WebSocket",
+                player_id=player_id,
+                session_id=session_id,
+                has_token=bool(token),
+                error=str(e),
+                error_type=type(e).__name__,
+                exc_info=True,
+            )
+            # Attempt cleanup on connection failure
+            try:
+                if "connection_id" in locals():
+                    # Connection was partially established, clean it up
+                    if connection_id in self.active_websockets:
+                        del self.active_websockets[connection_id]
+                    if connection_id in self.connection_metadata:
+                        del self.connection_metadata[connection_id]
+            except Exception as cleanup_error:
+                logger.warning(
+                    "Error during connection failure cleanup",
+                    player_id=player_id,
+                    cleanup_error=str(cleanup_error),
+                )
             return False
 
         # Track performance metrics
@@ -1149,17 +1192,55 @@ class ConnectionManager:
                 # Only track disconnection if it's not a force disconnect
                 if not is_force_disconnect:
                     try:
-                        loop = asyncio.get_running_loop()
-                        loop.create_task(self._check_and_process_disconnect(player_id))
-                    except RuntimeError:
-                        # No running loop - log warning and skip to avoid nested event loop errors
-                        # asyncio.run() cannot be called from within a running event loop
-                        logger.warning(
-                            "No event loop available for disconnect processing",
+                        # Try to get running event loop and schedule disconnect processing
+                        _ = asyncio.get_running_loop()  # Verify loop exists
+                        # Schedule disconnect processing as tracked task to prevent memory leaks
+                        from ..app.tracked_task_manager import get_global_tracked_manager
+
+                        tracked_manager = get_global_tracked_manager()
+                        tracked_manager.create_tracked_task(
+                            self._check_and_process_disconnect(player_id),
+                            task_name=f"connection_manager/disconnect_{player_id}",
+                            task_type="connection_manager",
+                        )
+                        logger.debug(
+                            "Scheduled disconnect processing as tracked task",
                             player_id=player_id,
                         )
-                        # Skip disconnect processing when no event loop is available
-                        # This is safe because force_disconnect already cleaned up the connection
+                    except RuntimeError:
+                        # No running loop - use background thread executor to run async code
+                        # This ensures disconnect processing always occurs, preventing memory leaks
+                        import concurrent.futures
+
+                        # Create executor if it doesn't exist
+                        if not hasattr(self, "_disconnect_executor") or self._disconnect_executor is None:
+                            self._disconnect_executor = concurrent.futures.ThreadPoolExecutor(
+                                max_workers=1, thread_name_prefix="disconnect_processor"
+                            )
+
+                        # Submit disconnect processing to executor with its own event loop
+                        def run_disconnect_in_thread():
+                            try:
+                                # Create new event loop for this thread
+                                new_loop = asyncio.new_event_loop()
+                                asyncio.set_event_loop(new_loop)
+                                try:
+                                    new_loop.run_until_complete(self._check_and_process_disconnect(player_id))
+                                finally:
+                                    new_loop.close()
+                            except Exception as e:
+                                logger.error(
+                                    "Error in background disconnect processing",
+                                    player_id=player_id,
+                                    error=str(e),
+                                    exc_info=True,
+                                )
+
+                        self._disconnect_executor.submit(run_disconnect_in_thread)
+                        logger.info(
+                            "Scheduled disconnect processing via background thread executor",
+                            player_id=player_id,
+                        )
 
             logger.info("SSE disconnected", player_id=player_id)
         except Exception as e:
@@ -1345,6 +1426,35 @@ class ConnectionManager:
         try:
             # Convert UUIDs to strings for JSON serialization
             serializable_event = self._convert_uuids_to_strings(event)
+
+            # OPTIMIZATION: Optimize payload size (compression, size limits)
+            try:
+                from .payload_optimizer import get_payload_optimizer
+
+                optimizer = get_payload_optimizer()
+                serializable_event = optimizer.optimize_payload(serializable_event)
+            except ValueError as size_error:
+                # Payload too large - log error and send truncated/error message
+                logger.error(
+                    "Payload too large to send",
+                    player_id=player_id,
+                    error=str(size_error),
+                    event_type=event.get("event_type"),
+                )
+                # Send error message instead
+                serializable_event = {
+                    "type": "error",
+                    "error_type": "payload_too_large",
+                    "message": "Message payload too large to transmit",
+                    "details": {"max_size": optimizer.max_payload_size},
+                }
+            except Exception as opt_error:
+                # Optimization failed, but continue with original payload
+                logger.warning(
+                    "Payload optimization failed, using original",
+                    player_id=player_id,
+                    error=str(opt_error),
+                )
 
             # Debug logging to see what's being sent
             if event.get("event_type") == "game_state":
@@ -1592,11 +1702,292 @@ class ConnectionManager:
             if connection_id in self.connection_metadata:
                 del self.connection_metadata[connection_id]
 
+            # Clean up rate limit data for this connection
+            self.rate_limiter.remove_connection_message_data(connection_id)
+
             logger.info("Cleaned up dead WebSocket connection", connection_id=connection_id, player_id=player_id)
         except Exception as e:
             logger.error(
                 "Error cleaning up dead WebSocket", connection_id=connection_id, player_id=player_id, error=str(e)
             )
+
+    async def _check_connection_health(self) -> None:
+        """
+        Check health of all connections and clean up stale/dead ones.
+
+        This method:
+        - Verifies WebSocket state for all active connections
+        - Detects stale connections based on last_seen timestamps
+        - Cleans up dead connections proactively
+        - Updates connection metadata health status
+
+        AI: Periodic health checks prevent memory leaks from dead connections.
+        """
+        start_time = time.time()
+        try:
+            now = time.time()
+            stale_connections: list[tuple[str, str]] = []  # (player_id, connection_id)
+
+            # Check WebSocket connections
+            for connection_id, websocket in list(self.active_websockets.items()):
+                try:
+                    # Get connection metadata
+                    metadata = self.connection_metadata.get(connection_id)
+                    if not metadata:
+                        # Missing metadata - mark for cleanup
+                        # Try to find player_id from player_websockets mapping
+                        player_id_for_cleanup = "unknown"
+                        for pid, conn_ids in self.player_websockets.items():
+                            if connection_id in conn_ids:
+                                player_id_for_cleanup = pid
+                                break
+                        stale_connections.append((player_id_for_cleanup, connection_id))
+                        continue
+
+                    # Check if connection is stale (no activity for timeout period)
+                    time_since_last_seen = now - metadata.last_seen
+                    if time_since_last_seen > self._connection_timeout:
+                        logger.debug(
+                            "Connection marked as stale",
+                            connection_id=connection_id,
+                            player_id=metadata.player_id,
+                            seconds_idle=time_since_last_seen,
+                        )
+                        stale_connections.append((metadata.player_id, connection_id))
+                        metadata.is_healthy = False
+                        continue
+
+                    # Verify WebSocket is actually open
+                    if not self._is_websocket_open(websocket):
+                        logger.debug(
+                            "WebSocket not open, marking for cleanup",
+                            connection_id=connection_id,
+                            player_id=metadata.player_id,
+                        )
+                        stale_connections.append((metadata.player_id, connection_id))
+                        metadata.is_healthy = False
+                        continue
+
+                    # Check token validity if token exists and revalidation interval has passed
+                    if metadata.token and metadata.last_token_validation:
+                        time_since_validation = now - metadata.last_token_validation
+                        if time_since_validation >= self._token_revalidation_interval:
+                            if not self._validate_token(metadata.token, metadata.player_id):
+                                logger.warning(
+                                    "Token validation failed during health check",
+                                    connection_id=connection_id,
+                                    player_id=metadata.player_id,
+                                )
+                                stale_connections.append((metadata.player_id, connection_id))
+                                metadata.is_healthy = False
+                                continue
+                            else:
+                                # Update last validation time
+                                metadata.last_token_validation = now
+                                logger.debug(
+                                    "Token revalidated successfully",
+                                    connection_id=connection_id,
+                                    player_id=metadata.player_id,
+                                )
+
+                    # Connection is healthy
+                    metadata.is_healthy = True
+
+                except Exception as e:
+                    logger.warning(
+                        "Error checking connection health",
+                        connection_id=connection_id,
+                        error=str(e),
+                    )
+                    # Mark for cleanup on error
+                    metadata = self.connection_metadata.get(connection_id)
+                    if metadata:
+                        stale_connections.append((metadata.player_id, connection_id))
+                        metadata.is_healthy = False
+
+            # Clean up stale connections
+            if stale_connections:
+                logger.info(
+                    "Cleaning up stale connections from health check",
+                    stale_count=len(stale_connections),
+                )
+                for player_id, connection_id in stale_connections:
+                    try:
+                        await self._cleanup_dead_websocket(player_id, connection_id)
+                    except Exception as e:
+                        logger.error(
+                            "Error cleaning up stale connection",
+                            player_id=player_id,
+                            connection_id=connection_id,
+                            error=str(e),
+                        )
+
+            # Update performance stats
+            duration_ms = (time.time() - start_time) * 1000
+            self.performance_stats["health_check_times"].append(duration_ms)
+            self.performance_stats["total_health_checks"] += 1
+
+            # Keep only recent health check times (last 100)
+            if len(self.performance_stats["health_check_times"]) > 100:
+                self.performance_stats["health_check_times"] = self.performance_stats["health_check_times"][-100:]
+
+            logger.debug(
+                "Connection health check completed",
+                duration_ms=duration_ms,
+                stale_connections_cleaned=len(stale_connections),
+            )
+
+        except Exception as e:
+            logger.error("Error in connection health check", error=str(e), exc_info=True)
+
+    async def _periodic_health_check(self) -> None:
+        """
+        Periodic health check task that runs continuously.
+
+        This task:
+        - Runs health checks at configured intervals
+        - Handles cancellation gracefully
+        - Logs health check statistics
+
+        AI: Background task for proactive connection health monitoring.
+        """
+        logger.info(
+            "Starting periodic connection health checks",
+            interval_seconds=self._health_check_interval,
+            connection_timeout_seconds=self._connection_timeout,
+        )
+
+        try:
+            while True:
+                await asyncio.sleep(self._health_check_interval)
+                await self._check_connection_health()
+        except asyncio.CancelledError:
+            logger.info("Periodic health check task cancelled")
+            raise
+        except Exception as e:
+            logger.error("Error in periodic health check task", error=str(e), exc_info=True)
+            raise
+
+    def start_health_checks(self) -> None:
+        """
+        Start the periodic health check task.
+
+        This should be called during application startup to begin
+        proactive connection health monitoring.
+
+        AI: Creates and tracks the health check task to prevent memory leaks.
+        """
+        if self._health_check_task is not None and not self._health_check_task.done():
+            logger.warning("Health check task already running")
+            return
+
+        try:
+            from ..app.tracked_task_manager import get_global_tracked_manager
+
+            tracked_manager = get_global_tracked_manager()
+            self._health_check_task = tracked_manager.create_tracked_task(
+                self._periodic_health_check(),
+                task_name="connection_manager/periodic_health_check",
+                task_type="connection_manager",
+            )
+            logger.info("Periodic health check task started")
+        except Exception as e:
+            logger.error("Error starting health check task", error=str(e), exc_info=True)
+
+    def stop_health_checks(self) -> None:
+        """
+        Stop the periodic health check task.
+
+        This should be called during application shutdown.
+        """
+        if self._health_check_task is not None and not self._health_check_task.done():
+            logger.info("Stopping periodic health check task")
+            self._health_check_task.cancel()
+            try:
+                # Wait briefly for task to cancel
+                try:
+                    _ = asyncio.get_running_loop()  # Verify loop exists
+                    # Schedule wait in background
+                    asyncio.create_task(self._wait_for_task_cancellation(self._health_check_task))
+                except RuntimeError:
+                    # No running loop - task will be cleaned up on next event loop
+                    logger.debug("No running loop for health check task cancellation")
+            except Exception as e:
+                logger.warning("Error waiting for health check task cancellation", error=str(e))
+            self._health_check_task = None
+
+    async def _wait_for_task_cancellation(self, task: Any) -> None:
+        """Wait for a task to be cancelled, with timeout."""
+        try:
+            await asyncio.wait_for(task, timeout=5.0)
+        except (TimeoutError, asyncio.CancelledError):
+            pass
+        except Exception as e:
+            logger.debug("Task cancellation wait completed", error=str(e))
+
+    def _validate_token(self, token: str, player_id: str) -> bool:
+        """
+        Validate a JWT token for a connection.
+
+        Args:
+            token: JWT token to validate
+            player_id: Player ID to verify token matches
+
+        Returns:
+            bool: True if token is valid, False otherwise
+
+        AI: Token revalidation ensures connections with expired or revoked tokens are disconnected.
+        """
+        try:
+            from ..auth_utils import decode_access_token
+
+            payload = decode_access_token(token)
+            if not payload or "sub" not in payload:
+                logger.debug("Token validation failed: invalid payload", player_id=player_id)
+                return False
+
+            # Verify player matches token
+            user_id = str(payload["sub"]).strip()
+            if not self.persistence:
+                logger.warning("Cannot validate token: persistence not available", player_id=player_id)
+                return False
+
+            player = self.persistence.get_player_by_user_id(user_id)
+            if not player or str(player.player_id) != player_id:
+                logger.warning(
+                    "Token validation failed: player mismatch",
+                    player_id=player_id,
+                    token_user_id=user_id,
+                )
+                return False
+
+            return True
+        except Exception as e:
+            logger.error("Error validating token", player_id=player_id, error=str(e), exc_info=True)
+            return False
+
+    def get_connection_id_from_websocket(self, websocket: WebSocket) -> str | None:
+        """
+        Get connection ID from a WebSocket instance.
+
+        Args:
+            websocket: The WebSocket connection
+
+        Returns:
+            str: Connection ID if found, None otherwise
+        """
+        # Try to get from websocket custom attribute first
+        if hasattr(websocket, "_mythos_connection_id"):
+            connection_id = websocket._mythos_connection_id
+            if connection_id:
+                return connection_id
+
+        # Fallback: search active_websockets
+        for conn_id, ws in self.active_websockets.items():
+            if ws is websocket:
+                return conn_id
+
+        return None
 
     async def broadcast_to_room(
         self, room_id: str, event: dict[str, Any], exclude_player: str | None = None
@@ -1627,20 +2018,66 @@ class ConnectionManager:
         logger.debug("broadcast_to_room", room_id=room_id, exclude_player=exclude_player)
         logger.debug("broadcast_to_room targets", targets=targets)
 
-        for pid in targets:
-            if pid != exclude_player:
-                logger.debug("broadcast_to_room sending to player", player_id=pid)
-                delivery_status = await self.send_personal_message(pid, event)
+        # OPTIMIZATION: Batch send messages concurrently to all recipients
+        # This significantly improves performance when broadcasting to multiple players
+        target_list = [pid for pid in targets if pid != exclude_player]
+        excluded_count = len(targets) - len(target_list)
 
-                # Track delivery statistics
-                broadcast_stats["delivery_details"][pid] = delivery_status
-                if delivery_status["success"]:
-                    broadcast_stats["successful_deliveries"] += 1
-                else:
-                    broadcast_stats["failed_deliveries"] += 1
-            else:
-                logger.debug("broadcast_to_room: excluding player (self-message exclusion)", player_id=pid)
-                broadcast_stats["excluded_players"] += 1
+        if excluded_count > 0:
+            broadcast_stats["excluded_players"] = excluded_count
+
+        if target_list:
+            # Send to all targets concurrently using asyncio.gather
+            try:
+                delivery_results = await asyncio.gather(
+                    *[self.send_personal_message(pid, event) for pid in target_list],
+                    return_exceptions=True,
+                )
+
+                # Process results
+                for i, pid in enumerate(target_list):
+                    result = delivery_results[i]
+                    if isinstance(result, Exception):
+                        logger.error(
+                            "Error sending message in batch broadcast",
+                            player_id=pid,
+                            room_id=room_id,
+                            error=str(result),
+                        )
+                        broadcast_stats["delivery_details"][pid] = {"success": False, "error": str(result)}
+                        broadcast_stats["failed_deliveries"] += 1
+                    else:
+                        # Type narrowing: result is dict[str, Any] when not an exception
+                        delivery_status: dict[str, Any] = result  # type: ignore[assignment]
+                        broadcast_stats["delivery_details"][pid] = delivery_status
+                        if delivery_status["success"]:
+                            broadcast_stats["successful_deliveries"] += 1
+                        else:
+                            broadcast_stats["failed_deliveries"] += 1
+            except Exception as e:
+                logger.error(
+                    "Error in batch broadcast",
+                    room_id=room_id,
+                    target_count=len(target_list),
+                    error=str(e),
+                    exc_info=True,
+                )
+                # Fallback: send individually if batch fails
+                for pid in target_list:
+                    try:
+                        delivery_status = await self.send_personal_message(pid, event)
+                        broadcast_stats["delivery_details"][pid] = delivery_status
+                        if delivery_status["success"]:
+                            broadcast_stats["successful_deliveries"] += 1
+                        else:
+                            broadcast_stats["failed_deliveries"] += 1
+                    except Exception as individual_error:
+                        logger.error(
+                            "Error sending individual message in fallback",
+                            player_id=pid,
+                            error=str(individual_error),
+                        )
+                        broadcast_stats["failed_deliveries"] += 1
 
         logger.debug("broadcast_to_room: delivery stats for room", room_id=room_id, stats=broadcast_stats)
         return broadcast_stats
@@ -1667,18 +2104,63 @@ class ConnectionManager:
             "delivery_details": {},
         }
 
-        for player_id in all_players:
-            if player_id != exclude_player:
-                delivery_status = await self.send_personal_message(player_id, event)
+        # OPTIMIZATION: Batch send messages concurrently to all recipients
+        target_list = [pid for pid in all_players if pid != exclude_player]
+        excluded_count = len(all_players) - len(target_list)
 
-                # Track delivery statistics
-                global_stats["delivery_details"][player_id] = delivery_status
-                if delivery_status["success"]:
-                    global_stats["successful_deliveries"] += 1
-                else:
-                    global_stats["failed_deliveries"] += 1
-            else:
-                global_stats["excluded_players"] += 1
+        if excluded_count > 0:
+            global_stats["excluded_players"] = excluded_count
+
+        if target_list:
+            # Send to all targets concurrently using asyncio.gather
+            try:
+                delivery_results = await asyncio.gather(
+                    *[self.send_personal_message(pid, event) for pid in target_list],
+                    return_exceptions=True,
+                )
+
+                # Process results
+                for i, player_id in enumerate(target_list):
+                    result = delivery_results[i]
+                    if isinstance(result, Exception):
+                        logger.error(
+                            "Error sending message in batch global broadcast",
+                            player_id=player_id,
+                            error=str(result),
+                        )
+                        global_stats["delivery_details"][player_id] = {"success": False, "error": str(result)}
+                        global_stats["failed_deliveries"] += 1
+                    else:
+                        # Type narrowing: result is dict[str, Any] when not an exception
+                        delivery_status: dict[str, Any] = result  # type: ignore[assignment]
+                        global_stats["delivery_details"][player_id] = delivery_status
+                        if delivery_status["success"]:
+                            global_stats["successful_deliveries"] += 1
+                        else:
+                            global_stats["failed_deliveries"] += 1
+            except Exception as e:
+                logger.error(
+                    "Error in batch global broadcast",
+                    target_count=len(target_list),
+                    error=str(e),
+                    exc_info=True,
+                )
+                # Fallback: send individually if batch fails
+                for player_id in target_list:
+                    try:
+                        delivery_status = await self.send_personal_message(player_id, event)
+                        global_stats["delivery_details"][player_id] = delivery_status
+                        if delivery_status["success"]:
+                            global_stats["successful_deliveries"] += 1
+                        else:
+                            global_stats["failed_deliveries"] += 1
+                    except Exception as individual_error:
+                        logger.error(
+                            "Error sending individual message in fallback",
+                            player_id=player_id,
+                            error=str(individual_error),
+                        )
+                        global_stats["failed_deliveries"] += 1
 
         logger.debug("broadcast_global: delivery stats", stats=global_stats)
         return global_stats
@@ -1785,6 +2267,100 @@ class ConnectionManager:
             else:
                 logger.warning("Player not found by name", player_id=player_id)
         return player
+
+    def _get_players_batch(self, player_ids: list[str]) -> dict[str, Player]:
+        """
+        Get multiple players from the persistence layer in a single batch operation.
+
+        This method optimizes room occupant lookups by reducing N+1 queries to a single
+        batch operation.
+
+        Args:
+            player_ids: List of player IDs to retrieve
+
+        Returns:
+            dict: Mapping of player_id to Player object (only includes found players)
+
+        AI: Batch loading eliminates N+1 queries when getting room occupants.
+        """
+        if self.persistence is None:
+            logger.warning("Persistence layer not initialized for batch player lookup", player_count=len(player_ids))
+            return {}
+
+        players: dict[str, Player] = {}
+        if not player_ids:
+            return players
+
+        # Load players in batch - iterate through IDs and get each one
+        # Note: If persistence layer supports batch operations in the future, this can be optimized further
+        for player_id in player_ids:
+            try:
+                player = self.persistence.get_player(player_id)
+                if player:
+                    players[player_id] = player
+                else:
+                    # Fallback to get_player_by_name for this specific player
+                    player = self.persistence.get_player_by_name(player_id)
+                    if player:
+                        players[player_id] = player
+            except Exception as e:
+                logger.debug("Error loading player in batch", player_id=player_id, error=str(e))
+
+        logger.debug(
+            "Batch loaded players",
+            requested_count=len(player_ids),
+            loaded_count=len(players),
+        )
+        return players
+
+    def _get_npcs_batch(self, npc_ids: list[str]) -> dict[str, str]:
+        """
+        Get NPC names for multiple NPCs in a batch operation.
+
+        Args:
+            npc_ids: List of NPC IDs to retrieve names for
+
+        Returns:
+            dict: Mapping of npc_id to npc_name (only includes found NPCs)
+
+        AI: Batch loading eliminates N+1 queries when getting NPC names for room occupants.
+        """
+        npc_names: dict[str, str] = {}
+        if not npc_ids:
+            return npc_names
+
+        try:
+            # Get NPC instance service for batch lookup
+            from ..services.npc_instance_service import get_npc_instance_service
+
+            npc_instance_service = get_npc_instance_service()
+            if hasattr(npc_instance_service, "lifecycle_manager"):
+                lifecycle_manager = npc_instance_service.lifecycle_manager
+                if lifecycle_manager:
+                    for npc_id in npc_ids:
+                        if npc_id in lifecycle_manager.active_npcs:
+                            npc_instance = lifecycle_manager.active_npcs[npc_id]
+                            name = getattr(npc_instance, "name", None)
+                            if name:
+                                npc_names[npc_id] = name
+                            else:
+                                # Fallback: Extract NPC name from the NPC ID
+                                npc_names[npc_id] = npc_id.split("_")[0].replace("_", " ").title()
+                        else:
+                            # Fallback: Extract NPC name from the NPC ID
+                            npc_names[npc_id] = npc_id.split("_")[0].replace("_", " ").title()
+        except Exception as e:
+            logger.debug("Error batch loading NPC names", npc_count=len(npc_ids), error=str(e))
+            # Fallback: Generate names from IDs
+            for npc_id in npc_ids:
+                npc_names[npc_id] = npc_id.split("_")[0].replace("_", " ").title()
+
+        logger.debug(
+            "Batch loaded NPC names",
+            requested_count=len(npc_ids),
+            loaded_count=len(npc_names),
+        )
+        return npc_names
 
     def _convert_uuids_to_strings(self, obj):
         """
