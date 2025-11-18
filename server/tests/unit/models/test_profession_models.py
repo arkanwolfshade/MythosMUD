@@ -972,10 +972,11 @@ class TestProfessionHelperMethods:
 
     def test_get_mechanical_effects_invalid_json(self, db_session):
         """Test get_mechanical_effects with invalid JSON returns empty dict."""
+        import time
         import uuid
 
-        # Arrange
-        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
+        # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
+        unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         profession = Profession(
             id=unique_id,
             name="Mage",
@@ -995,10 +996,11 @@ class TestProfessionHelperMethods:
 
     def test_set_mechanical_effects(self, db_session):
         """Test set_mechanical_effects stores effects as JSON."""
+        import time
         import uuid
 
-        # Arrange
-        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
+        # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
+        unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         profession = Profession(
             id=unique_id,
             name="Warrior",
@@ -1021,10 +1023,11 @@ class TestProfessionHelperMethods:
 
     def test_meets_stat_requirements_all_met(self, db_session):
         """Test meets_stat_requirements when all requirements are met."""
+        import time
         import uuid
 
-        # Arrange
-        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
+        # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
+        unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         requirements = {"strength": 12, "intelligence": 10}
         profession = Profession(
             id=unique_id,
@@ -1047,10 +1050,11 @@ class TestProfessionHelperMethods:
 
     def test_meets_stat_requirements_not_met(self, db_session):
         """Test meets_stat_requirements when requirements are not met."""
+        import time
         import uuid
 
-        # Arrange
-        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
+        # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
+        unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         requirements = {"strength": 12, "intelligence": 10}
         profession = Profession(
             id=unique_id,
@@ -1073,10 +1077,11 @@ class TestProfessionHelperMethods:
 
     def test_meets_stat_requirements_exact_match(self, db_session):
         """Test meets_stat_requirements with exact stat match."""
+        import time
         import uuid
 
-        # Arrange
-        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
+        # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
+        unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         requirements = {"strength": 12, "intelligence": 10}
         profession = Profession(
             id=unique_id,
@@ -1099,10 +1104,11 @@ class TestProfessionHelperMethods:
 
     def test_meets_stat_requirements_missing_stat_defaults_to_zero(self, db_session):
         """Test meets_stat_requirements when player missing a required stat."""
+        import time
         import uuid
 
-        # Arrange
-        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
+        # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
+        unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         requirements = {"strength": 12}
         profession = Profession(
             id=unique_id,
@@ -1125,10 +1131,11 @@ class TestProfessionHelperMethods:
 
     def test_meets_stat_requirements_no_requirements(self, db_session):
         """Test meets_stat_requirements with no requirements."""
+        import time
         import uuid
 
-        # Arrange
-        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
+        # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
+        unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         profession = Profession(
             id=unique_id,
             name="Tramp",
@@ -1150,10 +1157,11 @@ class TestProfessionHelperMethods:
 
     def test_is_available_for_selection_true(self, db_session):
         """Test is_available_for_selection when available."""
+        import time
         import uuid
 
-        # Arrange
-        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
+        # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
+        unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         profession = Profession(
             id=unique_id,
             name="Warrior",
@@ -1174,10 +1182,11 @@ class TestProfessionHelperMethods:
 
     def test_is_available_for_selection_false(self, db_session):
         """Test is_available_for_selection when not available."""
+        import time
         import uuid
 
-        # Arrange
-        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
+        # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
+        unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         profession = Profession(
             id=unique_id,
             name="Warrior",
@@ -1198,10 +1207,11 @@ class TestProfessionHelperMethods:
 
     def test_get_requirement_display_text_no_requirements(self, db_session):
         """Test get_requirement_display_text with no requirements."""
+        import time
         import uuid
 
-        # Arrange
-        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
+        # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
+        unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         profession = Profession(
             id=unique_id,
             name="Tramp",
@@ -1221,10 +1231,11 @@ class TestProfessionHelperMethods:
 
     def test_get_requirement_display_text_single_requirement(self, db_session):
         """Test get_requirement_display_text with single requirement."""
+        import time
         import uuid
 
-        # Arrange
-        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
+        # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
+        unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         requirements = {"strength": 12}
         profession = Profession(
             id=unique_id,
@@ -1245,10 +1256,11 @@ class TestProfessionHelperMethods:
 
     def test_get_requirement_display_text_multiple_requirements(self, db_session):
         """Test get_requirement_display_text with multiple requirements."""
+        import time
         import uuid
 
-        # Arrange
-        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
+        # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
+        unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         requirements = {"strength": 12, "intelligence": 10, "wisdom": 8}
         profession = Profession(
             id=unique_id,
@@ -1272,10 +1284,11 @@ class TestProfessionHelperMethods:
 
     def test_get_requirement_display_text_capitalization(self, db_session):
         """Test that stat names are properly capitalized in display text."""
+        import time
         import uuid
 
-        # Arrange
-        unique_id = int(str(uuid.uuid4().int)[:10])  # Generate unique integer ID
+        # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
+        unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
         requirements = {"occult_knowledge": 15}
         profession = Profession(
             id=unique_id,
