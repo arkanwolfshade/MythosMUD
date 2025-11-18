@@ -51,13 +51,32 @@ async def async_session_factory():
         await engine.dispose()
 
 
-async def initialize_database(session: AsyncSession, user_id: str = "inventory-validation-user") -> None:
-    """Create required schema and seed data in PostgreSQL."""
-    # Create user
+async def initialize_database(session: AsyncSession, user_id: str | None = None) -> str:
+    """Create required schema and seed data in PostgreSQL.
+
+    Returns:
+        The UUID of the created user (as string)
+    """
+    import uuid
+
+    # Generate a proper UUID for user_id if not provided
+    if user_id is None:
+        user_uuid = uuid.uuid4()
+    else:
+        # If user_id is provided, try to use it as UUID, or generate new one
+        try:
+            user_uuid = uuid.UUID(user_id)
+        except (ValueError, AttributeError):
+            # If it's not a valid UUID, generate a new one
+            user_uuid = uuid.uuid4()
+
+    unique_suffix = str(user_uuid)[:8]
+
+    # Create user with unique email and username
     user = User(
-        id=user_id,
-        email="inventory_validation@example.com",
-        username="inventory_validation_user",
+        id=str(user_uuid),
+        email=f"inventory_validation_{unique_suffix}@example.com",
+        username=f"inventory_validation_user_{unique_suffix}",
         hashed_password="hashed-password",
         is_active=True,
         is_superuser=False,
@@ -65,15 +84,19 @@ async def initialize_database(session: AsyncSession, user_id: str = "inventory-v
     )
     session.add(user)
     await session.commit()
+    return str(user_uuid)
 
 
 def build_player(player_id: str, user_id: str) -> Player:
     """Create a Player instance with timestamps normalized for persistence tests."""
+    import json
+
     player = Player(
         player_id=player_id,
         user_id=user_id,
         name="InventoryValidator",
         current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
+        status_effects=json.dumps([]),  # Ensure status_effects is set (not null)
     )
     now = datetime.now(UTC).replace(tzinfo=None)
     player.created_at = now  # type: ignore[assignment]
@@ -92,12 +115,15 @@ async def test_save_player_with_oversized_inventory_rejected(
     if not database_url or not database_url.startswith("postgresql"):
         pytest.skip("DATABASE_URL must be set to a PostgreSQL URL for this test.")
 
+    import uuid
+
+    unique_suffix = str(uuid.uuid4())[:8]
+
     async with async_session_factory() as session:
-        user_id = "oversized-user"
-        await initialize_database(session, user_id=user_id)
+        user_id = await initialize_database(session)
 
     persistence = PersistenceLayer(db_path=database_url)
-    player = build_player("oversized-player", user_id)
+    player = build_player(f"oversized-player-{unique_suffix}", user_id)
 
     invalid_inventory = []
     for idx in range(25):
@@ -120,6 +146,7 @@ async def test_save_player_with_oversized_inventory_rejected(
             persistence.save_player(player)
 
     player_name = cast(str, player.name)
+    player_id_str = str(player.player_id)  # Convert to str for type checking
     assert "Inventory validation failed" in str(excinfo.value)
     error_logs = [
         record for record in caplog.records if record.message == "Inventory payload validation failed during save"
@@ -127,11 +154,11 @@ async def test_save_player_with_oversized_inventory_rejected(
     combined_output = (caplog.text or "") + capsys.readouterr().out
     if error_logs:
         log_record = cast(InventorySaveLogRecord, error_logs[0])
-        assert log_record.player_id == "oversized-player"
+        assert log_record.player_id == player_id_str
         assert log_record.player_name == player_name
     else:
         assert "Inventory payload validation failed during save" in combined_output
-        assert "oversized-player" in combined_output
+        assert player_id_str in combined_output
         assert player_name in combined_output
     caplog.clear()
 
@@ -147,12 +174,15 @@ async def test_save_player_with_invalid_equipped_payload_rejected(
     if not database_url or not database_url.startswith("postgresql"):
         pytest.skip("DATABASE_URL must be set to a PostgreSQL URL for this test.")
 
+    import uuid
+
+    unique_suffix = str(uuid.uuid4())[:8]
+
     async with async_session_factory() as session:
-        user_id = "equipped-user"
-        await initialize_database(session, user_id=user_id)
+        user_id = await initialize_database(session)
 
     persistence = PersistenceLayer(db_path=database_url)
-    player = build_player("equipped-player", user_id)
+    player = build_player(f"equipped-player-{unique_suffix}", user_id)
 
     player.set_inventory([])
     player.set_equipped_items(
@@ -202,12 +232,15 @@ async def test_loading_player_with_corrupt_inventory_raises(
     if not database_url or not database_url.startswith("postgresql"):
         pytest.skip("DATABASE_URL must be set to a PostgreSQL URL for this test.")
 
+    import uuid
+
+    unique_suffix = str(uuid.uuid4())[:8]
+
     async with async_session_factory() as session:
-        user_id = "corrupt-user"
-        await initialize_database(session, user_id=user_id)
+        user_id = await initialize_database(session)
 
     persistence = PersistenceLayer(db_path=database_url)
-    player = build_player("corrupt-player", user_id)
+    player = build_player(f"corrupt-player-{unique_suffix}", user_id)
     player.set_inventory([])
     persistence.save_player(player)
 

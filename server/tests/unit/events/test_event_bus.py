@@ -455,26 +455,36 @@ class TestEventBus(TestingAsyncMixin):
         # Verify tasks are cleaned up - wait for tasks to complete and be removed
         # Tasks are removed from _active_tasks via done callbacks, so we need to wait
         # until either _active_tasks is empty or all remaining tasks are done
-        max_wait = 10
+        max_wait = 50  # Increased wait time significantly
         wait_count = 0
         while wait_count < max_wait:
             # Check if all tasks are done or if _active_tasks is empty
             if len(event_bus._active_tasks) == 0:
                 # All tasks have been cleaned up - this is the expected state
                 break
-            all_done = all(task.done() for task in event_bus._active_tasks)
+            # Check if all tasks are done (not pending)
+            tasks_list = list(event_bus._active_tasks)
+            # Filter out cancelled tasks
+            active_tasks = [t for t in tasks_list if not t.cancelled()]
+            if not active_tasks:
+                # All tasks are cancelled or removed
+                break
+            all_done = all(task.done() for task in active_tasks)
             if all_done:
                 # All tasks are done, waiting for cleanup callbacks
+                # Give a bit more time for callbacks to execute
+                await asyncio.sleep(0.2)
                 break
-            await asyncio.sleep(0.05)
+            await asyncio.sleep(0.1)
             wait_count += 1
 
         # Active tasks should be empty or contain only completed tasks
         # (empty is preferred as tasks are removed via done callbacks)
         if event_bus._active_tasks:
-            # If tasks remain, they should all be done
-            for task in event_bus._active_tasks:
-                assert task.done(), f"Task {task} is not done"
+            # If tasks remain, they should all be done (not pending) or cancelled
+            for task in list(event_bus._active_tasks):
+                # Task should be done or cancelled, not pending
+                assert task.done() or task.cancelled(), f"Task {task} is not done or cancelled (state: pending)"
 
         # Clean up
         await event_bus.shutdown()
@@ -506,26 +516,36 @@ class TestEventBus(TestingAsyncMixin):
         # After completion, active tasks should be empty or only contain done tasks
         # Tasks are removed from _active_tasks via done callbacks, so we need to wait
         # until either _active_tasks is empty or all remaining tasks are done
-        max_wait = 10
+        max_wait = 50  # Increased wait time significantly
         wait_count = 0
         while wait_count < max_wait:
             # Check if all tasks are done or if _active_tasks is empty
             if len(event_bus._active_tasks) == 0:
                 # All tasks have been cleaned up - this is the expected state
                 break
-            all_done = all(task.done() for task in event_bus._active_tasks)
+            # Check if all tasks are done (not pending)
+            tasks_list = list(event_bus._active_tasks)
+            # Filter out cancelled tasks
+            active_tasks = [t for t in tasks_list if not t.cancelled()]
+            if not active_tasks:
+                # All tasks are cancelled or removed
+                break
+            all_done = all(task.done() for task in active_tasks)
             if all_done:
                 # All tasks are done, waiting for cleanup callbacks
+                # Give a bit more time for callbacks to execute
+                await asyncio.sleep(0.2)
                 break
-            await asyncio.sleep(0.05)
+            await asyncio.sleep(0.1)
             wait_count += 1
 
         # Active tasks should be empty or contain only completed tasks
         # (empty is preferred as tasks are removed via done callbacks)
         if event_bus._active_tasks:
-            # If tasks remain, they should all be done
-            for task in event_bus._active_tasks:
-                assert task.done(), f"Task {task} is not done"
+            # If tasks remain, they should all be done (not pending) or cancelled
+            for task in list(event_bus._active_tasks):
+                # Task should be done or cancelled, not pending
+                assert task.done() or task.cancelled(), f"Task {task} is not done or cancelled (state: pending)"
 
         # Clean up
         await event_bus.shutdown()

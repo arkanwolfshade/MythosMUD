@@ -220,14 +220,19 @@ class TestNPCSpawnRule:
     @pytest.mark.asyncio
     async def test_spawn_rule_default_values(self, test_client, test_npc_database):
         """Test spawn rule with default values."""
+        import uuid
+
         from server.npc_database import get_npc_session
 
-        gen = get_npc_session()
-        session = await gen.__anext__()
-        try:
-            # Create NPC definition
+        # Generate unique identifier to avoid constraint violations
+        unique_suffix = str(uuid.uuid4())[:8]
+
+        async for session in get_npc_session():
+            # Create NPC definition with unique name
             npc_def = NPCDefinition(
-                name="Default Spawn NPC", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="arkham_northside"
+                name=f"Default Spawn NPC-{unique_suffix}",
+                npc_type=NPCDefinitionType.PASSIVE_MOB,
+                sub_zone_id="arkham_northside",
             )
             session.add(npc_def)
             await session.commit()
@@ -241,11 +246,7 @@ class TestNPCSpawnRule:
             assert spawn_rule.min_population == 0
             assert spawn_rule.max_population == 999
             assert spawn_rule.get_spawn_conditions() == {}
-        finally:
-            try:
-                await gen.__anext__()
-            except StopAsyncIteration:
-                pass
+            break
 
     @pytest.mark.asyncio
     async def test_spawn_rule_foreign_key_constraint(self, test_client, test_npc_database):
@@ -274,7 +275,12 @@ class TestNPCSpawnRule:
     @pytest.mark.asyncio
     async def test_spawn_rule_json_conditions(self, test_client, test_npc_database):
         """Test complex spawn conditions in JSON format."""
+        import uuid
+
         from server.npc_database import get_npc_session
+
+        # Generate unique identifier to avoid constraint violations
+        unique_suffix = str(uuid.uuid4())[:8]
 
         # Complex spawn conditions
         complex_conditions = {
@@ -288,12 +294,10 @@ class TestNPCSpawnRule:
         }
 
         # Use async context manager properly to avoid GC connection warnings
-        gen = get_npc_session()
-        session = await gen.__anext__()
-        try:
-            # Create NPC definition
+        async for session in get_npc_session():
+            # Create NPC definition with unique name
             npc_def = NPCDefinition(
-                name="Conditional Spawn NPC",
+                name=f"Conditional Spawn NPC-{unique_suffix}",
                 npc_type=NPCDefinitionType.AGGRESSIVE_MOB,
                 sub_zone_id="arkham_northside",
             )
@@ -313,12 +317,7 @@ class TestNPCSpawnRule:
             result = retrieved.get_spawn_conditions()
 
             assert result == complex_conditions
-        finally:
-            # Properly close the generator to trigger cleanup
-            try:
-                await gen.__anext__()
-            except StopAsyncIteration:
-                pass
+            break
 
 
 class TestNPCModelEnums:
@@ -362,11 +361,14 @@ class TestNPCDatabaseConstraints:
     @pytest.mark.asyncio
     async def test_npc_definition_zone_index(self, test_client, test_npc_database):
         """Test that zone-based queries are efficient."""
+        import uuid
+
         from server.npc_database import get_npc_session
 
-        gen = get_npc_session()
-        session = await gen.__anext__()
-        try:
+        # Generate unique identifier to avoid constraint violations
+        unique_suffix = str(uuid.uuid4())[:8]
+
+        async for session in get_npc_session():
             # Clean up any existing NPC data to avoid conflicts
             from sqlalchemy import text
 
@@ -380,18 +382,22 @@ class TestNPCDatabaseConstraints:
             await session.execute(text("DELETE FROM npc_definitions"))
             await session.commit()
 
-            # Create NPCs in different zones
+            # Create NPCs in different zones with unique names
             npcs = []
             for i in range(5):
                 npc = NPCDefinition(
-                    name=f"Zone NPC {i}", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="arkham_northside"
+                    name=f"Zone NPC {i}-{unique_suffix}",
+                    npc_type=NPCDefinitionType.PASSIVE_MOB,
+                    sub_zone_id="arkham_northside",
                 )
                 npcs.append(npc)
                 session.add(npc)
 
             for i in range(3):
                 npc = NPCDefinition(
-                    name=f"Innsmouth NPC {i}", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="innsmouth_docks"
+                    name=f"Innsmouth NPC {i}-{unique_suffix}",
+                    npc_type=NPCDefinitionType.PASSIVE_MOB,
+                    sub_zone_id="innsmouth_docks",
                 )
                 npcs.append(npc)
                 session.add(npc)
@@ -404,10 +410,8 @@ class TestNPCDatabaseConstraints:
             )
             arkham_results = arkham_npcs.scalars().all()
 
-            assert len(arkham_results) == 5
-            assert all(npc.sub_zone_id == "arkham_northside" for npc in arkham_results)
-        finally:
-            try:
-                await gen.__anext__()
-            except StopAsyncIteration:
-                pass
+            # Filter to only our test NPCs
+            test_results = [npc for npc in arkham_results if unique_suffix in npc.name]
+            assert len(test_results) == 5
+            assert all(npc.sub_zone_id == "arkham_northside" for npc in test_results)
+            break

@@ -204,11 +204,12 @@ class TestSQLInjectionPrevention:
         """Test that update_player_stat_field validates field_name against whitelist."""
         # Create a test player with required fields
         # Use test user ID from persistence fixture if available, otherwise create new UUID
+        unique_suffix = str(uuid.uuid4())[:8]
         test_user_id = getattr(persistence, "_test_user_id", str(uuid.uuid4()))
         player = Player(
-            player_id="test-player-123",
+            player_id=f"test-player-123-{unique_suffix}",
             user_id=test_user_id,
-            name="TestPlayer",
+            name=f"TestPlayer-{unique_suffix}",
             current_room_id="limbo_death_void_limbo_death_void",  # Valid test room
             experience_points=0,
             level=1,
@@ -262,13 +263,14 @@ class TestSQLInjectionPrevention:
         """Test that update_player_stat_field uses parameterized queries."""
         # Create a test player with required fields
         # Use test user ID from persistence fixture
+        unique_suffix = str(uuid.uuid4())[:8]
         test_user_id = getattr(persistence, "_test_user_id", None)
         if not test_user_id:
             pytest.skip("Test user ID not available from persistence fixture")
         player = Player(
-            player_id="test-player-456",
+            player_id=f"test-player-456-{unique_suffix}",
             user_id=test_user_id,
-            name="TestPlayer2",
+            name=f"TestPlayer2-{unique_suffix}",
             current_room_id="limbo_death_void_limbo_death_void",  # Valid test room
             experience_points=0,
             level=1,

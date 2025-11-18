@@ -148,9 +148,11 @@ class TestNPCStartupService:
         npc_def = MagicMock()
         npc_def.room_id = "specific_room_123"
         npc_def.sub_zone_id = "test_zone"
+        npc_def.name = "TestNPC"  # Add name attribute for logging
+        npc_def.id = 1  # Add id attribute for logging
 
         # Mock persistence to return a room for the specific room_id
-        with patch("server.services.npc_startup_service.get_persistence") as mock_get_persistence:
+        with patch("server.persistence.get_persistence") as mock_get_persistence:
             mock_persistence = MagicMock()
             mock_persistence.get_room.return_value = MagicMock()  # Return a room object
             mock_get_persistence.return_value = mock_persistence
@@ -247,7 +249,6 @@ class TestNPCStartupService:
         earth_innsmouth_waterfront_room_waterfront_001 which didn't exist.
         """
         from server.npc_database import get_npc_session
-        from server.services.npc_service import npc_service
         from server.world_loader import load_hierarchical_world
 
         # AI Agent: Load world data to get all existing rooms
@@ -258,8 +259,12 @@ class TestNPCStartupService:
         existing_rooms.update(world_data["room_mappings"].keys())
 
         # AI Agent: Get all NPC definitions from database
+        from server.services.npc_service import NPCService
+
+        npc_service_instance = NPCService()
+        npc_definitions = []
         async for session in get_npc_session():
-            npc_definitions = await npc_service.get_npc_definitions(session)
+            npc_definitions = await npc_service_instance.get_npc_definitions(session)
             break
 
         # AI Agent: Validate all NPC spawn locations

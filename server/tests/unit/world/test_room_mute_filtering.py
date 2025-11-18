@@ -216,9 +216,20 @@ class TestRoomBasedMuteFiltering:
 
         with (
             patch.object(self.handler, "_is_player_in_room", return_value=True),
-            patch.object(self.handler, "_is_player_muted_by_receiver_with_user_manager", return_value=False),
             patch("server.services.user_manager.user_manager") as mock_user_manager,
         ):
+            # Configure mock to return False for mute check (not muted)
+            mock_user_manager.load_player_mutes_batch = AsyncMock(return_value={self.receiver_id: {}})
+            mock_user_manager._player_mutes = {self.receiver_id: {}}
+
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "say")
 
-        mock_user_manager.load_player_mutes.assert_called_with(self.receiver_id)
+        # Verify that batch loading was used for performance optimization
+        mock_user_manager.load_player_mutes_batch.assert_called_once()
+        # Verify the call included the receiver_id in the batch
+        call_args = mock_user_manager.load_player_mutes_batch.call_args
+        assert call_args is not None
+        # load_player_mutes_batch takes receiver_ids as first positional argument
+        receiver_ids = call_args[0][0] if call_args[0] else []
+        assert isinstance(receiver_ids, (list, set)), f"Expected list or set, got {type(receiver_ids)}"
+        assert self.receiver_id in receiver_ids, f"Expected {self.receiver_id} in {receiver_ids}"

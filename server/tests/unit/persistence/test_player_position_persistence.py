@@ -33,16 +33,30 @@ async def async_session_factory():
         await engine.dispose()
 
 
-async def initialize_database(session: AsyncSession, user_id: str = "test-user-position") -> None:
-    """Create required schema and seed data in PostgreSQL."""
+async def initialize_database(session: AsyncSession, user_id: str | None = None) -> str:
+    """Create required schema and seed data in PostgreSQL.
+
+    Returns:
+        The UUID of the created user (as string)
+    """
     import uuid
 
-    # Generate unique suffix from user_id or create new one
-    unique_suffix = user_id.split("-")[-1] if "-" in user_id else str(uuid.uuid4())[:8]
+    # Generate a proper UUID for user_id if not provided
+    if user_id is None:
+        user_uuid = uuid.uuid4()
+    else:
+        # If user_id is provided, try to use it as UUID, or generate new one
+        try:
+            user_uuid = uuid.UUID(user_id)
+        except (ValueError, AttributeError):
+            # If it's not a valid UUID, generate a new one
+            user_uuid = uuid.uuid4()
+
+    unique_suffix = str(user_uuid)[:8]
 
     # Create user with unique email and username
     user = User(
-        id=user_id,
+        id=str(user_uuid),
         email=f"position_test_{unique_suffix}@example.com",
         username=f"position_test_user_{unique_suffix}",
         hashed_password="hashed-password",
@@ -52,15 +66,19 @@ async def initialize_database(session: AsyncSession, user_id: str = "test-user-p
     )
     session.add(user)
     await session.commit()
+    return str(user_uuid)
 
 
 def build_player(player_id: str, user_id: str) -> Player:
     """Create a Player instance with timestamps normalized for persistence tests."""
+    import json
+
     player = Player(
         player_id=player_id,
         user_id=user_id,
         name="PositionTester",
         current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
+        status_effects=json.dumps([]),  # Ensure status_effects is set (not null)
     )
     now = datetime.now(UTC).replace(tzinfo=None)
     player.created_at = now  # type: ignore[assignment]
@@ -88,10 +106,9 @@ async def test_position_persists_across_logout_login_cycle(async_session_factory
 
     # Generate unique identifiers to avoid constraint violations on repeated test runs
     unique_suffix = str(uuid.uuid4())[:8]
-    user_id = f"position-user-{unique_suffix}"
 
     async with async_session_factory() as session:
-        await initialize_database(session, user_id=user_id)
+        user_id = await initialize_database(session)
         await session.commit()
 
     persistence = PersistenceLayer(db_path=database_url)
@@ -130,10 +147,9 @@ async def test_missing_position_defaults_to_standing_on_load(async_session_facto
 
     # Generate unique identifiers to avoid constraint violations on repeated test runs
     unique_suffix = str(uuid.uuid4())[:8]
-    user_id = f"legacy-position-user-{unique_suffix}"
 
     async with async_session_factory() as session:
-        await initialize_database(session, user_id=user_id)
+        user_id = await initialize_database(session)
 
         # Insert legacy stats without a position field using PostgreSQL syntax
         legacy_stats = (

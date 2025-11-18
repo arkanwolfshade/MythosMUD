@@ -131,12 +131,17 @@ def test_sanity_relationships_cascade():
         session.delete(player)
         session.commit()
 
-        sanity_rows = session.execute(select(PlayerSanity)).all()
-        adjustment_rows = session.execute(select(SanityAdjustmentLog)).all()
-        exposure_rows = session.execute(select(SanityExposureState)).all()
-        cooldown_rows = session.execute(select(SanityCooldown)).all()
+        # Check that only our test player's records were deleted (filter by player_id)
+        sanity_rows = session.execute(select(PlayerSanity).where(PlayerSanity.player_id == player_id)).all()
+        adjustment_rows = session.execute(
+            select(SanityAdjustmentLog).where(SanityAdjustmentLog.player_id == player_id)
+        ).all()
+        exposure_rows = session.execute(
+            select(SanityExposureState).where(SanityExposureState.player_id == player_id)
+        ).all()
+        cooldown_rows = session.execute(select(SanityCooldown).where(SanityCooldown.player_id == player_id)).all()
 
-        assert not sanity_rows
-        assert not adjustment_rows
-        assert not exposure_rows
-        assert not cooldown_rows
+        assert not sanity_rows, f"PlayerSanity records for {player_id} should be deleted"
+        assert not adjustment_rows, f"SanityAdjustmentLog records for {player_id} should be deleted"
+        assert not exposure_rows, f"SanityExposureState records for {player_id} should be deleted"
+        assert not cooldown_rows, f"SanityCooldown records for {player_id} should be deleted"
