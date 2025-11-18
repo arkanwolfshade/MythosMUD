@@ -149,9 +149,15 @@ class TestNPCStartupService:
         npc_def.room_id = "specific_room_123"
         npc_def.sub_zone_id = "test_zone"
 
-        room_id = startup_service._determine_spawn_room(npc_def)
+        # Mock persistence to return a room for the specific room_id
+        with patch("server.services.npc_startup_service.get_persistence") as mock_get_persistence:
+            mock_persistence = MagicMock()
+            mock_persistence.get_room.return_value = MagicMock()  # Return a room object
+            mock_get_persistence.return_value = mock_persistence
 
-        assert room_id == "specific_room_123"
+            room_id = startup_service._determine_spawn_room(npc_def)
+
+            assert room_id == "specific_room_123"
 
     @pytest.mark.asyncio
     async def test_determine_spawn_room_with_sub_zone(self, startup_service):

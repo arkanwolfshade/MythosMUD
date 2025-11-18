@@ -144,11 +144,14 @@ class TestPlayerPreferencesIntegration:
     async def test_multiple_players_preferences(self, async_session_factory, preferences_service):
         """Test managing preferences for multiple players."""
         async with async_session_factory() as session:
-            # Create test users and players
+            # Generate unique suffix to avoid constraint violations on repeated test runs
+            unique_suffix = str(uuid.uuid4())[:8]
+
+            # Create test users and players with unique identifiers
             players_data = [
-                ("player1", "Player1"),
-                ("player2", "Player2"),
-                ("player3", "Player3"),
+                (f"player1-{unique_suffix}", f"Player1-{unique_suffix}"),
+                (f"player2-{unique_suffix}", f"Player2-{unique_suffix}"),
+                (f"player3-{unique_suffix}", f"Player3-{unique_suffix}"),
             ]
 
             for player_id, name in players_data:
@@ -177,19 +180,19 @@ class TestPlayerPreferencesIntegration:
                 assert result["success"] is True
 
             # Set different default channels
-            await preferences_service.update_default_channel(session, "player1", "local")
-            await preferences_service.update_default_channel(session, "player2", "global")
-            await preferences_service.update_default_channel(session, "player3", "whisper")
+            await preferences_service.update_default_channel(session, players_data[0][0], "local")
+            await preferences_service.update_default_channel(session, players_data[1][0], "global")
+            await preferences_service.update_default_channel(session, players_data[2][0], "whisper")
 
             # Mute different channels for each player
-            await preferences_service.mute_channel(session, "player1", "global")
-            await preferences_service.mute_channel(session, "player2", "whisper")
-            await preferences_service.mute_channel(session, "player3", "local")
+            await preferences_service.mute_channel(session, players_data[0][0], "global")
+            await preferences_service.mute_channel(session, players_data[1][0], "whisper")
+            await preferences_service.mute_channel(session, players_data[2][0], "local")
 
             # Verify each player has correct preferences
-            prefs1 = await preferences_service.get_player_preferences(session, "player1")
-            prefs2 = await preferences_service.get_player_preferences(session, "player2")
-            prefs3 = await preferences_service.get_player_preferences(session, "player3")
+            prefs1 = await preferences_service.get_player_preferences(session, players_data[0][0])
+            prefs2 = await preferences_service.get_player_preferences(session, players_data[1][0])
+            prefs3 = await preferences_service.get_player_preferences(session, players_data[2][0])
 
             assert prefs1["data"]["default_channel"] == "local"
             assert prefs2["data"]["default_channel"] == "global"
@@ -288,15 +291,17 @@ class TestPlayerPreferencesIntegration:
     @pytest.mark.asyncio
     async def test_error_handling_and_recovery(self, async_session_factory, preferences_service):
         """Test error handling and recovery scenarios."""
-        player_id = "error-test-player"
+        # Generate unique suffix to avoid constraint violations on repeated test runs
+        unique_suffix = str(uuid.uuid4())[:8]
+        player_id = f"error-test-player-{unique_suffix}"
 
         async with async_session_factory() as session:
-            # Create test user and player
+            # Create test user and player with unique identifiers
             user_id = str(uuid.uuid4())
             user = User(
                 id=user_id,
-                email="error@example.com",
-                username="erroruser",
+                email=f"error-{unique_suffix}@example.com",
+                username=f"erroruser-{unique_suffix}",
                 hashed_password="hashed",
                 is_active=True,
                 is_superuser=False,
@@ -304,7 +309,7 @@ class TestPlayerPreferencesIntegration:
             )
             session.add(user)
 
-            player = Player(player_id=player_id, user_id=user_id, name="ErrorPlayer", level=1)
+            player = Player(player_id=player_id, user_id=user_id, name=f"ErrorPlayer-{unique_suffix}", level=1)
             session.add(player)
             await session.commit()
 

@@ -722,16 +722,30 @@ class TestPlayerProfessionIntegration:
         )
         db_session_with_professions.commit()
 
+        # Generate unique player IDs to avoid constraint violations on repeated test runs
+        unique_suffix = str(uuid.uuid4())[:8]
+        player_id_1 = f"player_1-{unique_suffix}"
+        player_id_2 = f"player_2-{unique_suffix}"
+        player_name_1 = f"Player1-{unique_suffix}"
+        player_name_2 = f"Player2-{unique_suffix}"
+
         # Insert test players with different professions
         # Include all required NOT NULL columns and use proper UUIDs
         db_session_with_professions.execute(
             text("""
             INSERT INTO players (player_id, user_id, name, profession_id, stats, inventory, status_effects, current_room_id, experience_points, level, is_admin, created_at, last_active)
             VALUES
-            ('player_1', :user_id_1, 'Player1', 0, '{}', '[]', '[]', 'earth_arkhamcity_sanitarium_room_foyer_001', 0, 1, 0, NOW(), NOW()),
-            ('player_2', :user_id_2, 'Player2', 1, '{}', '[]', '[]', 'earth_arkhamcity_sanitarium_room_foyer_001', 0, 1, 0, NOW(), NOW())
+            (:player_id_1, :user_id_1, :player_name_1, 0, '{}', '[]', '[]', 'earth_arkhamcity_sanitarium_room_foyer_001', 0, 1, 0, NOW(), NOW()),
+            (:player_id_2, :user_id_2, :player_name_2, 1, '{}', '[]', '[]', 'earth_arkhamcity_sanitarium_room_foyer_001', 0, 1, 0, NOW(), NOW())
         """),
-            {"user_id_1": user_id_1, "user_id_2": user_id_2},
+            {
+                "player_id_1": player_id_1,
+                "player_id_2": player_id_2,
+                "user_id_1": user_id_1,
+                "user_id_2": user_id_2,
+                "player_name_1": player_name_1,
+                "player_name_2": player_name_2,
+            },
         )
         db_session_with_professions.commit()
 
@@ -741,12 +755,13 @@ class TestPlayerProfessionIntegration:
             SELECT p.name, pr.name as profession_name
             FROM players p
             JOIN professions pr ON p.profession_id = pr.id
-            WHERE p.profession_id = 0 AND p.player_id IN ('player_1', 'player_2')
-        """)
+            WHERE p.profession_id = 0 AND p.player_id IN (:player_id_1, :player_id_2)
+        """),
+            {"player_id_1": player_id_1, "player_id_2": player_id_2},
         )
         players_with_tramp = result.fetchall()
         assert len(players_with_tramp) == 1
-        assert players_with_tramp[0][0] == "Player1"
+        assert players_with_tramp[0][0] == player_name_1
         assert players_with_tramp[0][1] == "Tramp"
 
         result = db_session_with_professions.execute(
@@ -754,12 +769,13 @@ class TestPlayerProfessionIntegration:
             SELECT p.name, pr.name as profession_name
             FROM players p
             JOIN professions pr ON p.profession_id = pr.id
-            WHERE p.profession_id = 1 AND p.player_id IN ('player_1', 'player_2')
-        """)
+            WHERE p.profession_id = 1 AND p.player_id IN (:player_id_1, :player_id_2)
+        """),
+            {"player_id_1": player_id_1, "player_id_2": player_id_2},
         )
         players_with_gutter_rat = result.fetchall()
         assert len(players_with_gutter_rat) == 1
-        assert players_with_gutter_rat[0][0] == "Player2"
+        assert players_with_gutter_rat[0][0] == player_name_2
         assert players_with_gutter_rat[0][1] == "Gutter Rat"
 
 

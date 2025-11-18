@@ -452,11 +452,29 @@ class TestEventBus(TestingAsyncMixin):
         assert "subscriber2" in results
         assert len(errors) == 1  # Failing subscriber should have run and failed
 
-        # Verify tasks are cleaned up
-        await asyncio.sleep(0.1)
+        # Verify tasks are cleaned up - wait for tasks to complete and be removed
+        # Tasks are removed from _active_tasks via done callbacks, so we need to wait
+        # until either _active_tasks is empty or all remaining tasks are done
+        max_wait = 10
+        wait_count = 0
+        while wait_count < max_wait:
+            # Check if all tasks are done or if _active_tasks is empty
+            if len(event_bus._active_tasks) == 0:
+                # All tasks have been cleaned up - this is the expected state
+                break
+            all_done = all(task.done() for task in event_bus._active_tasks)
+            if all_done:
+                # All tasks are done, waiting for cleanup callbacks
+                break
+            await asyncio.sleep(0.05)
+            wait_count += 1
+
         # Active tasks should be empty or contain only completed tasks
-        for task in event_bus._active_tasks:
-            assert task.done()
+        # (empty is preferred as tasks are removed via done callbacks)
+        if event_bus._active_tasks:
+            # If tasks remain, they should all be done
+            for task in event_bus._active_tasks:
+                assert task.done(), f"Task {task} is not done"
 
         # Clean up
         await event_bus.shutdown()
@@ -486,9 +504,28 @@ class TestEventBus(TestingAsyncMixin):
 
         # Tasks should be created and then cleaned up
         # After completion, active tasks should be empty or only contain done tasks
-        await asyncio.sleep(0.1)
-        for task in event_bus._active_tasks:
-            assert task.done()
+        # Tasks are removed from _active_tasks via done callbacks, so we need to wait
+        # until either _active_tasks is empty or all remaining tasks are done
+        max_wait = 10
+        wait_count = 0
+        while wait_count < max_wait:
+            # Check if all tasks are done or if _active_tasks is empty
+            if len(event_bus._active_tasks) == 0:
+                # All tasks have been cleaned up - this is the expected state
+                break
+            all_done = all(task.done() for task in event_bus._active_tasks)
+            if all_done:
+                # All tasks are done, waiting for cleanup callbacks
+                break
+            await asyncio.sleep(0.05)
+            wait_count += 1
+
+        # Active tasks should be empty or contain only completed tasks
+        # (empty is preferred as tasks are removed via done callbacks)
+        if event_bus._active_tasks:
+            # If tasks remain, they should all be done
+            for task in event_bus._active_tasks:
+                assert task.done(), f"Task {task} is not done"
 
         # Clean up
         await event_bus.shutdown()

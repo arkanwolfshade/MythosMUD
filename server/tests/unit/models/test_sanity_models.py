@@ -59,14 +59,19 @@ def test_player_sanity_defaults_and_constraints():
     engine = build_engine()
     Base.metadata.create_all(engine)
 
+    # Generate unique identifiers to avoid constraint violations on repeated test runs
+    unique_suffix = str(uuid.uuid4())[:8]
+    player_id = f"investigator-1-{unique_suffix}"
+    username = f"arkhamite-{unique_suffix}"
+
     with Session(engine) as session:
-        player = create_user_and_player(session, "investigator-1", "arkhamite")
+        player = create_user_and_player(session, player_id, username)
 
         player_sanity = PlayerSanity()
         player.sanity = player_sanity
         session.commit()
 
-        persisted = session.get(PlayerSanity, "investigator-1")
+        persisted = session.get(PlayerSanity, player_id)
         assert persisted is not None
         assert persisted.current_san == 100
         assert persisted.current_tier == "lucid"
@@ -97,8 +102,13 @@ def test_sanity_relationships_cascade():
     engine = build_engine()
     Base.metadata.create_all(engine)
 
+    # Generate unique identifiers to avoid constraint violations on repeated test runs
+    unique_suffix = str(uuid.uuid4())[:8]
+    player_id = f"investigator-2-{unique_suffix}"
+    username = f"miskatonic-{unique_suffix}"
+
     with Session(engine) as session:
-        player = create_user_and_player(session, "investigator-2", "miskatonic")
+        player = create_user_and_player(session, player_id, username)
 
         player.sanity = PlayerSanity(current_san=88, current_tier="uneasy")
         player.sanity_adjustments.append(

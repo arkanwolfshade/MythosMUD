@@ -35,11 +35,16 @@ async def async_session_factory():
 
 async def initialize_database(session: AsyncSession, user_id: str = "test-user-position") -> None:
     """Create required schema and seed data in PostgreSQL."""
-    # Create user
+    import uuid
+
+    # Generate unique suffix from user_id or create new one
+    unique_suffix = user_id.split("-")[-1] if "-" in user_id else str(uuid.uuid4())[:8]
+
+    # Create user with unique email and username
     user = User(
         id=user_id,
-        email="position_test@example.com",
-        username="position_test_user",
+        email=f"position_test_{unique_suffix}@example.com",
+        username=f"position_test_user_{unique_suffix}",
         hashed_password="hashed-password",
         is_active=True,
         is_superuser=False,
@@ -75,18 +80,23 @@ def test_player_stats_include_position_by_default():
 @pytest.mark.asyncio
 async def test_position_persists_across_logout_login_cycle(async_session_factory):
     """Verify that player position changes persist after saving and reloading."""
+    import uuid
+
     database_url = get_database_url()
     if not database_url or not database_url.startswith("postgresql"):
         pytest.skip("DATABASE_URL must be set to a PostgreSQL URL for this test.")
 
+    # Generate unique identifiers to avoid constraint violations on repeated test runs
+    unique_suffix = str(uuid.uuid4())[:8]
+    user_id = f"position-user-{unique_suffix}"
+
     async with async_session_factory() as session:
-        user_id = "position-user"
         await initialize_database(session, user_id=user_id)
         await session.commit()
 
     persistence = PersistenceLayer(db_path=database_url)
 
-    player_id = "position-player"
+    player_id = f"position-player-{unique_suffix}"
     player = build_player(player_id, user_id)
 
     # Initial save representing the player's first login.
@@ -112,12 +122,17 @@ async def test_position_persists_across_logout_login_cycle(async_session_factory
 @pytest.mark.asyncio
 async def test_missing_position_defaults_to_standing_on_load(async_session_factory):
     """Players with legacy stats lacking position should default to standing."""
+    import uuid
+
     database_url = get_database_url()
     if not database_url or not database_url.startswith("postgresql"):
         pytest.skip("DATABASE_URL must be set to a PostgreSQL URL for this test.")
 
+    # Generate unique identifiers to avoid constraint violations on repeated test runs
+    unique_suffix = str(uuid.uuid4())[:8]
+    user_id = f"legacy-position-user-{unique_suffix}"
+
     async with async_session_factory() as session:
-        user_id = "legacy-position-user"
         await initialize_database(session, user_id=user_id)
 
         # Insert legacy stats without a position field using PostgreSQL syntax
@@ -127,12 +142,12 @@ async def test_missing_position_defaults_to_standing_on_load(async_session_facto
             '"fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100}'
         )
 
-        player_id = "legacy-player"
+        player_id = f"legacy-player-{unique_suffix}"
         # Create player with legacy stats
         player = Player(
             player_id=player_id,
             user_id=user_id,
-            name="LegacyPlayer",
+            name=f"LegacyPlayer-{unique_suffix}",
             current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
         )
         # Set legacy stats directly

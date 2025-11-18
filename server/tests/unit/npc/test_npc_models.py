@@ -172,14 +172,21 @@ class TestNPCSpawnRule:
     @pytest.mark.asyncio
     async def test_spawn_rule_creation(self, test_client, test_npc_database):
         """Test creating an NPC spawn rule."""
+        import uuid
+
         from server.npc_database import get_npc_session
+
+        # Generate unique identifier to avoid constraint violations on repeated test runs
+        unique_suffix = str(uuid.uuid4())[:8]
 
         gen = get_npc_session()
         session = await gen.__anext__()
         try:
-            # First create an NPC definition
+            # First create an NPC definition with unique name
             npc_def = NPCDefinition(
-                name="Spawnable NPC", npc_type=NPCDefinitionType.PASSIVE_MOB, sub_zone_id="arkham_northside"
+                name=f"Spawnable NPC-{unique_suffix}",
+                npc_type=NPCDefinitionType.PASSIVE_MOB,
+                sub_zone_id="arkham_northside",
             )
             session.add(npc_def)
             await session.commit()
