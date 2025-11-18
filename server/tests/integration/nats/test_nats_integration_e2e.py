@@ -14,6 +14,7 @@ from server.realtime.nats_message_handler import NATSMessageHandler
 from server.services.game_tick_service import GameTickService
 
 
+@pytest.mark.e2e
 class TestNATSIntegrationE2E:
     """End-to-end integration tests for NATS event flow."""
 

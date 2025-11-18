@@ -5,7 +5,10 @@ This module tests the integration between the PlayerPreferencesService
 and the PostgreSQL database, including persistence and real-world usage scenarios.
 """
 
+import uuid
+
 import pytest
+from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
@@ -28,24 +31,36 @@ class TestPlayerPreferencesIntegration:
 
         engine = create_async_engine(database_url, future=True)
         async with engine.begin() as conn:
-            # Create tables
+            # Create tables if they don't exist
             await conn.run_sync(Base.metadata.create_all)
 
         factory = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
         try:
             yield factory
         finally:
+            # Clean up test data instead of dropping tables (safer for shared test DB)
+            async with factory() as cleanup_session:
+                try:
+                    # Delete test data in reverse dependency order using raw SQL
+                    await cleanup_session.execute(text("DELETE FROM player_channel_preferences WHERE player_id LIKE 'integration-test-player%' OR player_id LIKE 'player%' OR player_id LIKE 'error-test-player%'"))
+                    await cleanup_session.execute(text("DELETE FROM players WHERE player_id LIKE 'integration-test-player%' OR player_id LIKE 'player%' OR player_id LIKE 'error-test-player%'"))
+                    await cleanup_session.execute(text("DELETE FROM users WHERE email LIKE '%@example.com'"))
+                    await cleanup_session.commit()
+                except Exception:
+                    await cleanup_session.rollback()
             await engine.dispose()
 
     @pytest.fixture
     async def test_player(self, async_session_factory):
         """Create a test player in the database."""
         async with async_session_factory() as session:
-            # Create test user first
+            # Create test user first with valid UUID and unique identifiers
+            user_id = str(uuid.uuid4())
+            unique_suffix = str(uuid.uuid4())[:8]
             user = User(
-                id="test-user-prefs",
-                email="test-prefs@example.com",
-                username="testprefs",
+                id=user_id,
+                email=f"test-prefs-{unique_suffix}@example.com",
+                username=f"testprefs-{unique_suffix}",
                 hashed_password="hashed_password",
                 is_active=True,
                 is_superuser=False,
@@ -53,16 +68,18 @@ class TestPlayerPreferencesIntegration:
             )
             session.add(user)
 
-            # Create test player
+            # Create test player with unique ID
+            player_id = f"integration-test-player-{unique_suffix}"
             player = Player(
-                player_id="integration-test-player",
-                user_id="test-user-prefs",
-                name="TestPlayer",
+                player_id=player_id,
+                user_id=user_id,
+                name=f"TestPlayer-{unique_suffix}",
                 level=1,
             )
             session.add(player)
             await session.commit()
-            yield player
+            # Store player_id instead of player object to avoid session issues
+            yield player_id
 
     @pytest.fixture
     def preferences_service(self):
@@ -72,7 +89,7 @@ class TestPlayerPreferencesIntegration:
     @pytest.mark.asyncio
     async def test_full_player_lifecycle(self, async_session_factory, test_player, preferences_service):
         """Test complete player lifecycle with preferences."""
-        player_id = test_player.player_id
+        player_id = test_player  # test_player fixture now yields player_id directly
 
         async with async_session_factory() as session:
             # 1. Create preferences
@@ -117,16 +134,17 @@ class TestPlayerPreferencesIntegration:
         async with async_session_factory() as session:
             # Create test users and players
             players_data = [
-                ("player1", "user1", "Player1"),
-                ("player2", "user2", "Player2"),
-                ("player3", "user3", "Player3"),
+                ("player1", "Player1"),
+                ("player2", "Player2"),
+                ("player3", "Player3"),
             ]
 
-            for player_id, user_id, name in players_data:
+            for player_id, name in players_data:
+                user_id = str(uuid.uuid4())
                 user = User(
                     id=user_id,
-                    email=f"{user_id}@example.com",
-                    username=user_id,
+                    email=f"{player_id}@example.com",
+                    username=player_id,
                     hashed_password="hashed",
                     is_active=True,
                     is_superuser=False,
@@ -257,8 +275,9 @@ class TestPlayerPreferencesIntegration:
 
         async with async_session_factory() as session:
             # Create test user and player
+            user_id = str(uuid.uuid4())
             user = User(
-                id="error-user",
+                id=user_id,
                 email="error@example.com",
                 username="erroruser",
                 hashed_password="hashed",
@@ -268,7 +287,7 @@ class TestPlayerPreferencesIntegration:
             )
             session.add(user)
 
-            player = Player(player_id=player_id, user_id="error-user", name="ErrorPlayer", level=1)
+            player = Player(player_id=player_id, user_id=user_id, name="ErrorPlayer", level=1)
             session.add(player)
             await session.commit()
 

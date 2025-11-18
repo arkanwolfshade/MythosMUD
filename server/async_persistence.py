@@ -19,6 +19,19 @@ from .utils.retry import retry_with_backoff
 
 logger = get_logger(__name__)
 
+# Player table columns for explicit SELECT queries (avoids SELECT * anti-pattern)
+# Exported for security tests that verify compile-time constants
+PLAYER_COLUMNS = (
+    "player_id, user_id, name, current_room_id, profession_id, "
+    "experience_points, level, stats, inventory, status_effects, "
+    "created_at, last_active, is_admin"
+)
+# Convert tuple to string for compatibility with security tests
+PLAYER_COLUMNS = "".join(PLAYER_COLUMNS)
+
+# Profession table columns for explicit SELECT queries
+PROFESSION_COLUMNS = "id, name, description, flavor_text, is_available"
+
 
 class AsyncPersistenceLayer:
     """

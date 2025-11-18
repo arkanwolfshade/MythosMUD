@@ -81,11 +81,10 @@ class TestWebSocketRateLimitingIntegration:
         # Should be blocked
         assert connection_manager.rate_limiter.check_message_rate_limit(connection_id) is False
 
-        # Fast-forward time
-        with patch("server.realtime.rate_limiter.time.time") as mock_time:
-            mock_time.return_value = time.time() + 61  # After 60-second window
-
-            # Should be allowed again
+        # Fast-forward time - need to ensure mock returns a numeric value
+        future_time = time.time() + 61  # After 60-second window
+        with patch("server.realtime.rate_limiter.time.time", return_value=future_time):
+            # Should be allowed again (all old attempts are outside the window now)
             result = connection_manager.rate_limiter.check_message_rate_limit(connection_id)
             assert result is True
 
@@ -136,14 +135,14 @@ class TestWebSocketRateLimitingIntegration:
 
         # Verify data exists
         info = connection_manager.rate_limiter.get_message_rate_limit_info(connection_id)
-        assert info["current_attempts"] == 50
+        assert info["attempts"] == 50
 
         # Disconnect
         await connection_manager.disconnect_websocket(mock_player.player_id)
 
         # Rate limit data should be cleaned up
         info = connection_manager.rate_limiter.get_message_rate_limit_info(connection_id)
-        assert info["current_attempts"] == 0
+        assert info["attempts"] == 0
 
     @pytest.mark.asyncio
     async def test_message_validation_with_rate_limiting(self, connection_manager, mock_websocket, mock_player):
@@ -185,7 +184,7 @@ class TestWebSocketRateLimitingIntegration:
 
         # Verify info structure
         assert "max_attempts" in info
-        assert "current_attempts" in info
+        assert "attempts" in info
         assert "reset_time" in info
         assert info["max_attempts"] == 100
-        assert info["current_attempts"] >= 100
+        assert info["attempts"] >= 100

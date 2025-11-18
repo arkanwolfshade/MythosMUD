@@ -5,30 +5,227 @@ These tests verify that all database operations use parameterized queries
 and are protected against SQL injection attacks.
 """
 
+import json
+import os
+import uuid
+from datetime import datetime
+
 import pytest
 
 from server.exceptions import DatabaseError, ValidationError
 from server.models.player import Player
-from server.persistence import PersistenceLayer
+from server.persistence import PersistenceLayer, get_persistence, reset_persistence
 
 
 class TestSQLInjectionPrevention:
     """Test SQL injection prevention in database operations."""
 
+    @pytest.fixture(autouse=True)
+    def cleanup_players(self, persistence):
+        """Clean up test players after each test."""
+        yield
+        # Clean up test players after test completes
+        try:
+            test_user_id = getattr(persistence, "_test_user_id", None)
+            if test_user_id:
+                # Delete test players for this user
+                player = (
+                    persistence.get_player_by_name("TestPlayer")
+                    or persistence.get_player_by_name("TestPlayer2")
+                    or persistence.get_player_by_name("SafePlayer")
+                    or persistence.get_player_by_name("TestPlayer3")
+                )
+                if player:
+                    try:
+                        persistence.delete_player(player.player_id)
+                    except Exception:
+                        pass  # Ignore cleanup errors
+        except Exception:
+            pass  # Ignore cleanup errors
+
+    @pytest.fixture
+    def persistence(self):
+        """Create a persistence layer instance for testing."""
+        # Reset persistence to ensure clean state
+        reset_persistence()
+
+        # Use PostgreSQL from environment - SQLite is no longer supported
+        database_url = os.getenv("DATABASE_URL")
+        if not database_url or not database_url.startswith("postgresql"):
+            pytest.skip("DATABASE_URL must be set to a PostgreSQL URL. SQLite is no longer supported.")
+
+        # Get persistence instance (uses singleton pattern)
+        persistence_instance = get_persistence()
+
+        # Create a test user in the database to satisfy foreign key constraints
+        # This is needed because players table has a foreign key to users table
+        # Use raw SQL to avoid schema mismatch issues
+        from sqlalchemy import text
+
+        from server.auth.argon2_utils import hash_password
+        from server.database import get_async_session
+
+        async def create_test_user():
+            test_user_id = uuid.uuid4()
+            test_username = f"test_user_{test_user_id.hex[:8]}"
+            test_email = f"test_{test_user_id.hex[:8]}@test.example.com"
+            hashed_pw = hash_password("test_password")
+            now = datetime.now()
+            final_user_id = None
+
+            async for session in get_async_session():
+                # First, try to find any existing user
+                find_user_stmt = text("SELECT id FROM users LIMIT 1")
+                result = await session.execute(find_user_stmt)
+                existing_user = result.fetchone()
+
+                if existing_user:
+                    # Use existing user
+                    final_user_id = str(existing_user[0])
+                else:
+                    # No existing user, try to create one
+                    # Check if test user already exists using raw SQL
+                    check_stmt = text("SELECT id FROM users WHERE id = :user_id")
+                    result = await session.execute(check_stmt, {"user_id": str(test_user_id)})
+                    existing = result.fetchone()
+
+                    if not existing:
+                        # Create test user using raw SQL to avoid schema issues
+                        # Use minimal required columns based on FastAPI Users base table
+                        # Try with username first, if that fails, try without it
+                        try:
+                            insert_stmt = text("""
+                                INSERT INTO users (id, username, email, hashed_password, is_active, is_superuser, is_verified, display_name, is_admin, created_at, updated_at)
+                                VALUES (:id, :username, :email, :hashed_password, :is_active, :is_superuser, :is_verified, :display_name, :is_admin, :created_at, :updated_at)
+                            """)
+                            await session.execute(
+                                insert_stmt,
+                                {
+                                    "id": str(test_user_id),
+                                    "username": test_username,
+                                    "email": test_email,
+                                    "hashed_password": hashed_pw,
+                                    "is_active": True,
+                                    "is_superuser": False,
+                                    "is_verified": True,
+                                    "display_name": test_username,  # Use username as display_name
+                                    "is_admin": False,
+                                    "created_at": now,
+                                    "updated_at": now,
+                                },
+                            )
+                            await session.commit()
+                            final_user_id = str(test_user_id)
+                        except Exception as e:
+                            # Rollback failed transaction before trying fallback
+                            await session.rollback()
+                            # Fallback: try without username if column doesn't exist
+                            try:
+                                insert_stmt = text("""
+                                    INSERT INTO users (id, email, hashed_password, is_active, is_superuser, is_verified, display_name, is_admin, created_at, updated_at)
+                                    VALUES (:id, :email, :hashed_password, :is_active, :is_superuser, :is_verified, :display_name, :is_admin, :created_at, :updated_at)
+                                """)
+                                await session.execute(
+                                    insert_stmt,
+                                    {
+                                        "id": str(test_user_id),
+                                        "email": test_email,
+                                        "hashed_password": hashed_pw,
+                                        "is_active": True,
+                                        "is_superuser": False,
+                                        "is_verified": True,
+                                        "display_name": test_email.split("@")[0],  # Use email prefix as display_name
+                                        "is_admin": False,
+                                        "created_at": now,
+                                        "updated_at": now,
+                                    },
+                                )
+                                await session.commit()
+                                final_user_id = str(test_user_id)
+                            except Exception as e2:
+                                # If both fail, skip test
+                                await session.rollback()
+                                pytest.skip(
+                                    f"Could not create test user - database schema mismatch. First error: {e}, Second error: {e2}"
+                                )
+                    else:
+                        final_user_id = str(test_user_id)
+
+                # Verify the user actually exists before using it
+                if final_user_id:
+                    verify_stmt = text("SELECT id FROM users WHERE id = :user_id")
+                    result = await session.execute(verify_stmt, {"user_id": final_user_id})
+                    verified = result.fetchone()
+                    if not verified:
+                        pytest.skip(f"User ID {final_user_id} was set but does not exist in database - schema mismatch")
+                    persistence_instance._test_user_id = final_user_id
+                else:
+                    pytest.skip("Could not find or create a test user - database may be empty or schema mismatch")
+                break
+
+        # Run async function to create test user
+        import asyncio
+
+        try:
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+        loop.run_until_complete(create_test_user())
+
+        # Clean up any existing test players for this user before tests run
+        test_user_id = getattr(persistence_instance, "_test_user_id", None)
+        if test_user_id:
+            try:
+                # Try to find and delete any existing test players
+                from sqlalchemy import text
+
+                from server.database import get_async_session
+
+                async def cleanup_existing_players():
+                    async for session in get_async_session():
+                        # Delete test players that might exist from previous test runs
+                        delete_stmt = text("""
+                            DELETE FROM players
+                            WHERE user_id = :user_id
+                            AND (player_id LIKE 'test-player-%' OR name IN ('TestPlayer', 'TestPlayer2', 'SafePlayer', 'TestPlayer3'))
+                        """)
+                        await session.execute(delete_stmt, {"user_id": test_user_id})
+                        await session.commit()
+                        break
+
+                loop.run_until_complete(cleanup_existing_players())
+            except Exception:
+                pass  # Ignore cleanup errors
+
+        return persistence_instance
+
     def test_update_player_stat_field_whitelist_validation(self, persistence: PersistenceLayer):
         """Test that update_player_stat_field validates field_name against whitelist."""
-        # Create a test player
+        # Create a test player with required fields
+        # Use test user ID from persistence fixture if available, otherwise create new UUID
+        test_user_id = getattr(persistence, "_test_user_id", str(uuid.uuid4()))
         player = Player(
             player_id="test-player-123",
-            user_id="test-user-123",
+            user_id=test_user_id,
             name="TestPlayer",
+            current_room_id="limbo_death_void_limbo_death_void",  # Valid test room
+            experience_points=0,
+            level=1,
+            is_admin=0,
+            profession_id=1,  # Default profession ID
+            created_at=datetime.now(),
+            last_active=datetime.now(),
+            stats={"current_health": 100, "max_health": 100},  # JSONB accepts dict directly
+            status_effects=json.dumps([]),
+            inventory=json.dumps([]),
         )
         persistence.save_player(player)
 
-        # Test valid field names
+        # Test valid field names (only fields that are in stats JSONB)
+        # Note: experience_points is NOT in stats JSONB - it's a separate INTEGER column
         valid_fields = [
             "current_health",
-            "experience_points",
             "sanity",
             "occult_knowledge",
             "fear",
@@ -63,11 +260,25 @@ class TestSQLInjectionPrevention:
 
     def test_update_player_stat_field_parameterized_query(self, persistence: PersistenceLayer):
         """Test that update_player_stat_field uses parameterized queries."""
-        # Create a test player
+        # Create a test player with required fields
+        # Use test user ID from persistence fixture
+        test_user_id = getattr(persistence, "_test_user_id", None)
+        if not test_user_id:
+            pytest.skip("Test user ID not available from persistence fixture")
         player = Player(
             player_id="test-player-456",
-            user_id="test-user-456",
+            user_id=test_user_id,
             name="TestPlayer2",
+            current_room_id="limbo_death_void_limbo_death_void",  # Valid test room
+            experience_points=0,
+            level=1,
+            is_admin=0,
+            profession_id=1,  # Default profession ID
+            created_at=datetime.now(),
+            last_active=datetime.now(),
+            stats={"current_health": 100, "max_health": 100},  # JSONB accepts dict directly
+            status_effects=json.dumps([]),
+            inventory=json.dumps([]),
         )
         persistence.save_player(player)
 
@@ -88,11 +299,25 @@ class TestSQLInjectionPrevention:
 
     def test_get_player_by_name_parameterized(self, persistence: PersistenceLayer):
         """Test that get_player_by_name uses parameterized queries."""
-        # Create a test player
+        # Create a test player with required fields
+        # Use test user ID from persistence fixture
+        test_user_id = getattr(persistence, "_test_user_id", None)
+        if not test_user_id:
+            pytest.skip("Test user ID not available from persistence fixture")
         player = Player(
             player_id="test-player-789",
-            user_id="test-user-789",
+            user_id=test_user_id,
             name="SafePlayer",
+            current_room_id="limbo_death_void_limbo_death_void",  # Valid test room
+            experience_points=0,
+            level=1,
+            is_admin=0,
+            profession_id=1,  # Default profession ID
+            created_at=datetime.now(),
+            last_active=datetime.now(),
+            stats={"current_health": 100, "max_health": 100},  # JSONB accepts dict directly
+            status_effects=json.dumps([]),
+            inventory=json.dumps([]),
         )
         persistence.save_player(player)
 
@@ -115,11 +340,25 @@ class TestSQLInjectionPrevention:
 
     def test_get_player_by_id_parameterized(self, persistence: PersistenceLayer):
         """Test that get_player uses parameterized queries."""
-        # Create a test player
+        # Create a test player with required fields
+        # Use test user ID from persistence fixture
+        test_user_id = getattr(persistence, "_test_user_id", None)
+        if not test_user_id:
+            pytest.skip("Test user ID not available from persistence fixture")
         player = Player(
             player_id="test-player-abc",
-            user_id="test-user-abc",
+            user_id=test_user_id,
             name="TestPlayer3",
+            current_room_id="limbo_death_void_limbo_death_void",  # Valid test room
+            experience_points=0,
+            level=1,
+            is_admin=0,
+            profession_id=1,  # Default profession ID
+            created_at=datetime.now(),
+            last_active=datetime.now(),
+            stats={"current_health": 100, "max_health": 100},  # JSONB accepts dict directly
+            status_effects=json.dumps([]),
+            inventory=json.dumps([]),
         )
         persistence.save_player(player)
 
@@ -174,9 +413,13 @@ class TestSQLInjectionPrevention:
         for malicious_name in malicious_names:
             # Should fail validation or be sanitized
             # The exact behavior depends on validation rules
+            # Use test user ID from persistence fixture
+            test_user_id = getattr(persistence, "_test_user_id", None)
+            if not test_user_id:
+                pytest.skip("Test user ID not available from persistence fixture")
             player = Player(
                 player_id=f"test-{malicious_name[:10]}",
-                user_id="test-user",
+                user_id=test_user_id,
                 name=malicious_name,
             )
 

@@ -36,6 +36,9 @@ class TestConnectionPool:
         assert pool_type in ["NullPool", "AsyncAdaptedQueuePool"], f"Unexpected pool type: {pool_type}"
 
     @pytest.mark.asyncio
+    @pytest.mark.skip(
+        reason="AsyncPersistenceLayer no longer uses asyncpg pools directly - uses SQLAlchemy async sessions"
+    )
     async def test_asyncpg_pool_creation(self):
         """Test that asyncpg pool is created correctly."""
         async_persistence = AsyncPersistenceLayer()
@@ -53,6 +56,9 @@ class TestConnectionPool:
         assert not pool.is_closing()
 
     @pytest.mark.asyncio
+    @pytest.mark.skip(
+        reason="AsyncPersistenceLayer no longer uses asyncpg pools directly - uses SQLAlchemy async sessions"
+    )
     async def test_pool_connection_acquisition(self):
         """Test that connections can be acquired from pool."""
         async_persistence = AsyncPersistenceLayer()
@@ -68,6 +74,9 @@ class TestConnectionPool:
             assert result == 1
 
     @pytest.mark.asyncio
+    @pytest.mark.skip(
+        reason="AsyncPersistenceLayer no longer uses asyncpg pools directly - uses SQLAlchemy async sessions"
+    )
     async def test_pool_connection_release(self):
         """Test that connections are properly released back to pool."""
         async_persistence = AsyncPersistenceLayer()
@@ -86,6 +95,9 @@ class TestConnectionPool:
         assert not pool.is_closing()
 
     @pytest.mark.asyncio
+    @pytest.mark.skip(
+        reason="AsyncPersistenceLayer no longer uses asyncpg pools directly - uses SQLAlchemy async sessions"
+    )
     async def test_pool_exhaustion_handling(self):
         """Test that pool exhaustion is handled gracefully."""
         # This test is difficult to implement without modifying pool size
@@ -108,6 +120,9 @@ class TestConnectionPool:
             pytest.fail(f"Unexpected error acquiring connection: {e}")
 
     @pytest.mark.asyncio
+    @pytest.mark.skip(
+        reason="AsyncPersistenceLayer no longer uses asyncpg pools directly - uses SQLAlchemy async sessions"
+    )
     async def test_pool_recovery_after_error(self):
         """Test that pool recovers after connection errors."""
         async_persistence = AsyncPersistenceLayer()
@@ -133,6 +148,9 @@ class TestConnectionPool:
             assert not pool.is_closing()
 
     @pytest.mark.asyncio
+    @pytest.mark.skip(
+        reason="AsyncPersistenceLayer no longer uses asyncpg pools directly - uses SQLAlchemy async sessions"
+    )
     async def test_multiple_concurrent_connections(self):
         """Test that multiple concurrent connections work correctly."""
         async_persistence = AsyncPersistenceLayer()
@@ -154,6 +172,9 @@ class TestConnectionPool:
         assert results == [0, 1, 2, 3, 4]
 
     @pytest.mark.asyncio
+    @pytest.mark.skip(
+        reason="AsyncPersistenceLayer no longer uses asyncpg pools directly - uses SQLAlchemy async sessions"
+    )
     async def test_pool_close_cleanup(self):
         """Test that pool is properly closed and cleaned up."""
         async_persistence = AsyncPersistenceLayer()

@@ -607,6 +607,9 @@ class ConnectionManager:
                     if connection_id in self.connection_metadata:
                         del self.connection_metadata[connection_id]
 
+                    # Clean up message rate limit data for this connection
+                    self.rate_limiter.remove_connection_message_data(connection_id)
+
                 # Remove player from websocket tracking
                 del self.player_websockets[player_id]
 
@@ -1335,7 +1338,7 @@ class ConnectionManager:
                 connection_age = now_ts - timestamp
                 if connection_age > self.memory_monitor.max_connection_age:
                     logger.info(
-                        f"🔍 DEBUG: Connection {connection_id} is stale (age: {connection_age:.1f}s, max: {self.memory_monitor.max_connection_age}s)"
+                        f"DEBUG: Connection {connection_id} is stale (age: {connection_age:.1f}s, max: {self.memory_monitor.max_connection_age}s)"
                     )
                     stale_connections.append(connection_id)
 
@@ -2588,13 +2591,13 @@ class ConnectionManager:
             async with self.disconnect_lock:
                 if player_id in self.disconnecting_players:
                     logger.debug(
-                        "🔍 DEBUG: Player already being disconnected, skipping duplicate event", player_id=player_id
+                        "DEBUG: Player already being disconnected, skipping duplicate event", player_id=player_id
                     )
                     return
 
                 # Mark player as being disconnected
                 self.disconnecting_players.add(player_id)
-                logger.debug("🔍 DEBUG: Marked player as disconnecting", player_id=player_id)
+                logger.debug("DEBUG: Marked player as disconnecting", player_id=player_id)
 
             # Resolve player using flexible lookup (ID or name)
             pl = self._get_player(player_id)
@@ -2620,7 +2623,7 @@ class ConnectionManager:
                 if room_id and self.persistence:
                     room = self.persistence.get_room(room_id)
                     if room and room.has_player(key):
-                        logger.debug("🔍 DEBUG: Removing ghost player from room", ghost_player=key, room_id=room_id)
+                        logger.debug("DEBUG: Removing ghost player from room", ghost_player=key, room_id=room_id)
                         room.player_left(key)
 
                 # CRITICAL FIX: Clean up all ghost players from all rooms
@@ -2646,7 +2649,7 @@ class ConnectionManager:
                     room_id=room_id,
                 )
                 # Exclude the disconnecting player from their own "left game" message
-                logger.info("🔍 DEBUG: Broadcasting player_left_game", player_id=player_id, room_id=room_id)
+                logger.info("DEBUG: Broadcasting player_left_game", player_id=player_id, room_id=room_id)
                 await self.broadcast_to_room(room_id, left_event, exclude_player=player_id)
 
                 # 2) occupants update (names only)
@@ -2698,11 +2701,11 @@ class ConnectionManager:
                 ghost_players = room_player_ids - online_player_ids
 
                 if ghost_players:
-                    logger.debug("🔍 DEBUG: Found ghost players in room", room_id=room.id, ghost_players=ghost_players)
+                    logger.debug("DEBUG: Found ghost players in room", room_id=room.id, ghost_players=ghost_players)
                     for ghost_player_id in ghost_players:
                         room._players.discard(ghost_player_id)
                         logger.debug(
-                            "🔍 DEBUG: Removed ghost player from room", ghost_player_id=ghost_player_id, room_id=room.id
+                            "DEBUG: Removed ghost player from room", ghost_player_id=ghost_player_id, room_id=room.id
                         )
 
         except Exception as e:

@@ -150,7 +150,8 @@ class TestErrorLoggingUtilities:
                 # Verify logger was called
                 mock_logger.error.assert_called_once()
                 call_args = mock_logger.error.call_args
-                assert "Test error message" in call_args[0][0]
+                # The actual error message is in error_message keyword arg, not the log message
+                assert call_args[1]["error_message"] == "Test error message"
                 assert call_args[1]["error_type"] == "ValidationError"
                 assert call_args[1]["details"] == {"test_key": "test_value"}
 
@@ -177,7 +178,8 @@ class TestErrorLoggingUtilities:
                 # Verify logger was called with context
                 mock_logger.error.assert_called_once()
                 call_args = mock_logger.error.call_args
-                assert "Context test error" in call_args[0][0]
+                # The actual error message is in error_message keyword arg
+                assert call_args[1]["error_message"] == "Context test error"
                 assert call_args[1]["error_type"] == "DatabaseError"
                 assert call_args[1]["user_friendly"] == "A user-friendly error message"
 
@@ -208,7 +210,8 @@ class TestErrorLoggingUtilities:
                 # Verify logger was called
                 mock_logger.error.assert_called_once()
                 call_args = mock_logger.error.call_args
-                assert "Custom error occurred" in call_args[0][0]
+                # The actual error message is in error_message keyword arg
+                assert call_args[1]["error_message"] == "Custom error occurred"
                 assert call_args[1]["error_type"] == "CustomError"
 
         finally:
@@ -450,7 +453,8 @@ class TestErrorLoggingIntegration:
             # Verify logger was called with request context
             mock_logger.error.assert_called_once()
             call_args = mock_logger.error.call_args
-            assert "Request context test" in call_args[0][0]
+            # The actual error message is in error_message keyword arg
+            assert call_args[1]["error_message"] == "Request context test"
 
     def test_error_logging_with_database_operations(self):
         """Test error logging integration with database operations."""
@@ -474,7 +478,8 @@ class TestErrorLoggingIntegration:
             # Verify logger was called with database context
             mock_logger.error.assert_called_once()
             call_args = mock_logger.error.call_args
-            assert "Database operation failed" in call_args[0][0]
+            # The actual error message is in error_message keyword arg
+            assert call_args[1]["error_message"] == "Database operation failed"
             assert call_args[1]["details"] == db_error_details
             assert call_args[1]["user_friendly"] == "Unable to retrieve player data"
 
@@ -496,7 +501,8 @@ class TestErrorLoggingIntegration:
                 # Verify logger was called
                 mock_logger.error.assert_called_once()
                 call_args = mock_logger.error.call_args
-                assert "Outer error" in call_args[0][0]
+                # The actual error message is in error_message keyword arg
+                assert call_args[1]["error_message"] == "Outer error"
                 assert "Inner error" in call_args[1]["details"]["exception_chain"]
 
 

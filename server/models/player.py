@@ -9,7 +9,7 @@ import json
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
 
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text, text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -49,11 +49,25 @@ class Player(Base):
     # Player information
     name = Column(String(length=50), unique=True, nullable=False, index=True)
 
-    # Game data stored as JSON in TEXT fields
+    # Game data stored as JSONB (migrated from TEXT in migration 006)
     stats = Column(
-        Text(),
+        JSONB,
         nullable=False,
-        default='{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100, "position": "standing"}',
+        default=lambda: {
+            "strength": 10,
+            "dexterity": 10,
+            "constitution": 10,
+            "intelligence": 10,
+            "wisdom": 10,
+            "charisma": 10,
+            "sanity": 100,
+            "occult_knowledge": 0,
+            "fear": 0,
+            "corruption": 0,
+            "cult_affiliation": 0,
+            "current_health": 100,
+            "position": "standing",
+        },
     )
     inventory = Column(Text(), nullable=False, default="[]")
     status_effects = Column(Text(), nullable=False, default="[]")
@@ -86,9 +100,19 @@ class Player(Base):
 
     def get_stats(self) -> dict[str, Any]:
         """Get player stats as dictionary."""
+        # With JSONB, SQLAlchemy returns dict directly, but handle both cases for compatibility
+        # Note: mypy sees self.stats as Column[Any], but at runtime SQLAlchemy returns the actual value
         try:
-            stats = cast(dict[str, Any], json.loads(cast(str, self.stats)))
-        except (json.JSONDecodeError, TypeError):
+            if isinstance(self.stats, dict):  # type: ignore[unreachable]
+                # JSONB column returns dict directly
+                stats = cast(dict[str, Any], self.stats)  # type: ignore[unreachable]
+            elif isinstance(self.stats, str):  # type: ignore[unreachable]
+                # Fallback for TEXT column (backward compatibility during migration)
+                stats = cast(dict[str, Any], json.loads(self.stats))  # type: ignore[unreachable]
+            else:
+                # Handle None or other types
+                raise TypeError(f"Unexpected stats type: {type(self.stats)}")
+        except (json.JSONDecodeError, TypeError, AttributeError):
             stats = {
                 "strength": 10,
                 "dexterity": 10,
@@ -106,7 +130,7 @@ class Player(Base):
             }
             return stats
 
-        if "position" not in stats:
+        if "position" not in stats:  # type: ignore[unreachable]
             stats["position"] = "standing"
             try:
                 self.set_stats(stats)
@@ -118,7 +142,8 @@ class Player(Base):
 
     def set_stats(self, stats: dict[str, Any]) -> None:
         """Set player stats from dictionary."""
-        self.stats = json.dumps(stats)  # type: ignore[assignment]
+        # With JSONB, SQLAlchemy accepts dict directly
+        self.stats = stats  # type: ignore[assignment]
 
     def get_inventory(self) -> list[dict[str, Any]]:
         """Get player inventory as list."""
@@ -285,14 +310,14 @@ class PlayerChannelPreferences(Base):
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(UTC),
-        server_default="CURRENT_TIMESTAMP",
+        server_default=text("CURRENT_TIMESTAMP"),
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(UTC),
         onupdate=lambda: datetime.now(UTC),
-        server_default="CURRENT_TIMESTAMP",
+        server_default=text("CURRENT_TIMESTAMP"),
     )
 
     player: Mapped["Player"] = relationship("Player", back_populates="channel_preferences")

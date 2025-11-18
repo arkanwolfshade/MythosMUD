@@ -10,6 +10,7 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 from server.realtime.nats_message_handler import NATSMessageHandler
+from server.services.nats_subject_manager import NATSSubjectManager
 from server.utils.room_utils import extract_subzone_from_room_id, get_subzone_local_channel_subject
 
 
@@ -27,12 +28,20 @@ class TestLocalChannelNATSIntegration:
         return mock_service
 
     @pytest.fixture
-    def nats_handler(self, mock_nats_service):
+    def subject_manager(self):
+        """Create a real NATSSubjectManager for testing."""
+        return NATSSubjectManager()
+
+    @pytest.fixture
+    def nats_handler(self, mock_nats_service, subject_manager):
         """Create a NATS message handler with mocked dependencies."""
         # AI Agent: Inject mock connection_manager via constructor (no longer a global)
         #           Post-migration: NATSMessageHandler requires connection_manager
+        #           Also requires subject_manager for room subscription methods
         mock_connection_manager = MagicMock()
-        return NATSMessageHandler(mock_nats_service, connection_manager=mock_connection_manager)
+        return NATSMessageHandler(
+            mock_nats_service, subject_manager=subject_manager, connection_manager=mock_connection_manager
+        )
 
     @pytest.mark.asyncio
     async def test_local_channel_subscription_on_start(self, nats_handler, mock_nats_service):
@@ -43,14 +52,15 @@ class TestLocalChannelNATSIntegration:
         mock_nats_service.subscribe.assert_called()
         subscribe_calls = mock_nats_service.subscribe.call_args_list
 
-        # Check that "chat.local.*" pattern is subscribed
+        # With subject manager, the pattern is "chat.local.subzone.*" instead of "chat.local.*"
         local_subscription_found = False
         for call in subscribe_calls:
-            if call[0][0] == "chat.local.*":
+            subject = call[0][0]
+            if subject == "chat.local.subzone.*":
                 local_subscription_found = True
                 break
 
-        assert local_subscription_found, "Local channel subject pattern not subscribed"
+        assert local_subscription_found, "Local channel subject pattern (chat.local.subzone.*) not subscribed"
 
     @pytest.mark.asyncio
     async def test_local_channel_message_handling(self, nats_handler):
@@ -95,45 +105,45 @@ class TestLocalChannelNATSIntegration:
         assert call_args[0][3] == "local"
 
     @pytest.mark.asyncio
-    async def test_room_subscription_includes_local_channel(self, nats_handler, mock_nats_service):
+    async def test_room_subscription_includes_local_channel(self, nats_handler, mock_nats_service, subject_manager):
         """Test that subscribing to a room includes local channel subscription."""
         room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
         await nats_handler.subscribe_to_room(room_id)
 
-        # Verify that both say and local subjects are subscribed
+        # Verify that say subject is subscribed using standardized pattern
         subscribe_calls = mock_nats_service.subscribe.call_args_list
-        expected_subjects = [f"chat.say.{room_id}", f"chat.local.{room_id}"]
+        # Subject manager generates: chat.say.room.{room_id}
+        expected_say_subject = subject_manager.build_subject("chat_say_room", room_id=room_id)
 
-        for expected_subject in expected_subjects:
-            subject_found = False
-            for call in subscribe_calls:
-                if call[0][0] == expected_subject:
-                    subject_found = True
-                    break
-            assert subject_found, f"Subject {expected_subject} not subscribed"
+        subject_found = False
+        for call in subscribe_calls:
+            if call[0][0] == expected_say_subject:
+                subject_found = True
+                break
+        assert subject_found, f"Subject {expected_say_subject} not subscribed"
 
     @pytest.mark.asyncio
-    async def test_room_unsubscription_includes_local_channel(self, nats_handler, mock_nats_service):
+    async def test_room_unsubscription_includes_local_channel(self, nats_handler, mock_nats_service, subject_manager):
         """Test that unsubscribing from a room includes local channel unsubscription."""
         room_id = "earth_arkhamcity_northside_intersection_derby_high"
 
-        # First subscribe to the room
-        nats_handler.subscriptions = {f"chat.say.{room_id}": True, f"chat.local.{room_id}": True}
+        # First subscribe to the room to set up subscriptions
+        say_subject = subject_manager.build_subject("chat_say_room", room_id=room_id)
+        nats_handler.subscriptions = {say_subject: True}
 
         await nats_handler.unsubscribe_from_room(room_id)
 
-        # Verify that both say and local subjects are unsubscribed
+        # Verify that say subject is unsubscribed using standardized pattern
         unsubscribe_calls = mock_nats_service.unsubscribe.call_args_list
-        expected_subjects = [f"chat.say.{room_id}", f"chat.local.{room_id}"]
+        expected_say_subject = subject_manager.build_subject("chat_say_room", room_id=room_id)
 
-        for expected_subject in expected_subjects:
-            subject_found = False
-            for call in unsubscribe_calls:
-                if call[0][0] == expected_subject:
-                    subject_found = True
-                    break
-            assert subject_found, f"Subject {expected_subject} not unsubscribed"
+        subject_found = False
+        for call in unsubscribe_calls:
+            if call[0][0] == expected_say_subject:
+                subject_found = True
+                break
+        assert subject_found, f"Subject {expected_say_subject} not unsubscribed"
 
 
 class TestLocalChannelSubZoneSubscriptionManagement:
@@ -150,12 +160,20 @@ class TestLocalChannelSubZoneSubscriptionManagement:
         return mock_service
 
     @pytest.fixture
-    def nats_handler(self, mock_nats_service):
+    def subject_manager(self):
+        """Create a real NATSSubjectManager for testing."""
+        return NATSSubjectManager()
+
+    @pytest.fixture
+    def nats_handler(self, mock_nats_service, subject_manager):
         """Create a NATS message handler with mocked dependencies."""
         # AI Agent: Inject mock connection_manager via constructor (no longer a global)
         #           Post-migration: NATSMessageHandler requires connection_manager
+        #           Also requires subject_manager for room subscription methods
         mock_connection_manager = MagicMock()
-        return NATSMessageHandler(mock_nats_service, connection_manager=mock_connection_manager)
+        return NATSMessageHandler(
+            mock_nats_service, subject_manager=subject_manager, connection_manager=mock_connection_manager
+        )
 
     @pytest.mark.asyncio
     async def test_subzone_subscription_creation(self, nats_handler, mock_nats_service):

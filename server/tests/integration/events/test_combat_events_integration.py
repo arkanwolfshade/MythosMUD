@@ -355,8 +355,10 @@ class TestCombatEventPublisher:
     @pytest.mark.asyncio
     async def test_publish_nats_publish_fails(self):
         """Test publishing when NATS publish fails."""
-        # Setup NATS service to return False
-        self.mock_nats_service.publish.return_value = False
+        # Setup NATS service to raise exception (publish now raises instead of returning False)
+        from server.services.nats_exceptions import NATSPublishError
+
+        self.mock_nats_service.publish.side_effect = NATSPublishError("Publish failed", subject="combat.started.test")
 
         # Create combat started event
         event = CombatStartedEvent(
@@ -376,7 +378,7 @@ class TestCombatEventPublisher:
     @pytest.mark.asyncio
     async def test_publish_nats_exception(self):
         """Test publishing when NATS raises an exception."""
-        # Setup NATS service to raise an exception
+        # Setup NATS service to raise an exception (generic exception, not NATSPublishError)
         self.mock_nats_service.publish.side_effect = Exception("NATS error")
 
         # Create combat started event
@@ -387,7 +389,7 @@ class TestCombatEventPublisher:
             turn_order=[],
         )
 
-        # Execute
+        # Execute - should catch exception and return False
         result = await self.publisher.publish_combat_started(event)
 
         # Verify

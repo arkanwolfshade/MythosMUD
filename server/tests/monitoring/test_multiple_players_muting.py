@@ -274,12 +274,17 @@ class TestMultiplePlayersMuting:
             ):
                 # Mock the global user_manager instance
                 with patch("server.services.user_manager.user_manager") as mock_user_manager:
+                    # Mock batch loading method (implementation now uses batch loading for efficiency)
+                    mock_user_manager.load_player_mutes_batch = AsyncMock(return_value={})
+
                     # Execute
                     await self.handler._broadcast_to_room_with_filtering(
                         self.room_id, chat_event, self.sender_id, "local"
                     )
 
-                    # Verify that mute data was pre-loaded for all receivers
+                    # Verify that mute data was pre-loaded for all receivers using batch loading
                     expected_receivers = [pid for pid in self.all_players if pid != self.sender_id]
-                    for receiver_id in expected_receivers:
-                        mock_user_manager.load_player_mutes.assert_any_call(receiver_id)
+                    # Implementation now uses load_player_mutes_batch instead of individual calls
+                    mock_user_manager.load_player_mutes_batch.assert_called_once()
+                    call_args = mock_user_manager.load_player_mutes_batch.call_args[0][0]
+                    assert set(call_args) == set(expected_receivers), "Batch load should include all expected receivers"

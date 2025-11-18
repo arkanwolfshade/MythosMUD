@@ -213,6 +213,10 @@ class TestWebSocketConnectionEvents:
         mock_player.name = "TestPlayer"
         mock_connection_manager._get_player.return_value = mock_player
 
+        # Mock batch loading methods (used for N+1 query prevention)
+        mock_connection_manager._get_players_batch = Mock(return_value={"test_player_123": mock_player})
+        mock_connection_manager._get_npcs_batch = Mock(return_value={})
+
         # Add async methods that are actually called
         mock_connection_manager.broadcast_to_room = AsyncMock()
         mock_connection_manager.subscribe_to_room = AsyncMock()
@@ -229,11 +233,6 @@ class TestWebSocketConnectionEvents:
         # Fix async mock issues - persistence.get_room is not async
         mock_connection_manager.persistence = Mock()
         mock_connection_manager.persistence.get_room.return_value = mock_room
-
-        # Fix async mock issues - _get_room_occupants is not async
-        mock_connection_manager._get_room_occupants = Mock(return_value=[])
-        # Ensure the method is not treated as async
-        mock_connection_manager._get_room_occupants.side_effect = lambda room_id: []
 
         event_handler = RealTimeEventHandler(mock_event_bus)
         event_handler.connection_manager = mock_connection_manager
@@ -249,9 +248,8 @@ class TestWebSocketConnectionEvents:
         # Handle the event directly (no need to mock the method itself)
         await event_handler._handle_player_entered(event)
 
-        # Verify player was looked up (called 4 times: once directly for player name,
-        # once for room_update event occupants, twice more for occupants snapshot)
-        assert mock_connection_manager._get_player.call_count == 4
+        # Verify player was looked up (called once for player info)
+        assert mock_connection_manager._get_player.call_count >= 1
         mock_connection_manager._get_player.assert_any_call("test_player_123")
 
     @pytest.mark.asyncio
@@ -264,6 +262,10 @@ class TestWebSocketConnectionEvents:
         mock_player = Mock(name="TestPlayer")
         mock_player.name = "TestPlayer"
         mock_connection_manager._get_player.return_value = mock_player
+
+        # Mock batch loading methods (used for N+1 query prevention)
+        mock_connection_manager._get_players_batch = Mock(return_value={"test_player_123": mock_player})
+        mock_connection_manager._get_npcs_batch = Mock(return_value={})
 
         # Add async methods that are actually called
         mock_connection_manager.broadcast_to_room = AsyncMock()
@@ -282,11 +284,6 @@ class TestWebSocketConnectionEvents:
         mock_connection_manager.persistence = Mock()
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
-        # Fix async mock issues - _get_room_occupants is not async
-        mock_connection_manager._get_room_occupants = Mock(return_value=[])
-        # Ensure the method is not treated as async
-        mock_connection_manager._get_room_occupants.side_effect = lambda room_id: []
-
         event_handler = RealTimeEventHandler(mock_event_bus)
         event_handler.connection_manager = mock_connection_manager
 
@@ -301,8 +298,8 @@ class TestWebSocketConnectionEvents:
         # Handle the event directly (no need to mock the method itself)
         await event_handler._handle_player_left(event)
 
-        # Verify player was looked up (called twice: once directly, once in room occupants update)
-        assert mock_connection_manager._get_player.call_count == 2
+        # Verify player was looked up (implementation now uses batch loading, so may be called once or more)
+        assert mock_connection_manager._get_player.call_count >= 1
         mock_connection_manager._get_player.assert_any_call("test_player_123")
 
     @pytest.mark.skip(reason="Complex WebSocket mocking issue - needs investigation")

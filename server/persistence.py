@@ -192,7 +192,6 @@ class PersistenceLayer:
     # of SQL injection even if validation is bypassed
     FIELD_NAME_TO_ARRAY: dict[str, str] = {
         "current_health": "ARRAY['current_health']::text[]",
-        "experience_points": "ARRAY['experience_points']::text[]",
         "sanity": "ARRAY['sanity']::text[]",
         "occult_knowledge": "ARRAY['occult_knowledge']::text[]",
         "fear": "ARRAY['fear']::text[]",
@@ -205,6 +204,7 @@ class PersistenceLayer:
         "wisdom": "ARRAY['wisdom']::text[]",
         "charisma": "ARRAY['charisma']::text[]",
     }
+    # Note: experience_points is NOT in stats JSONB - it's a separate INTEGER column
 
     def __init__(self, db_path: str | None = None, log_path: str | None = None, event_bus=None):
         # Use environment variable for database path - require it to be set
@@ -320,6 +320,33 @@ class PersistenceLayer:
         # Convert is_admin from integer to boolean
         if "is_admin" in data:
             data["is_admin"] = bool(data["is_admin"])
+
+        # Handle stats: JSONB column may return as dict (psycopg2) or string
+        # Player model's get_stats() handles both, but we ensure dict for consistency
+        if "stats" in data:
+            stats_value = data["stats"]
+            if isinstance(stats_value, str):
+                # JSONB returned as string - parse to dict
+                try:
+                    data["stats"] = json.loads(stats_value)
+                except (json.JSONDecodeError, TypeError):
+                    # Invalid JSON - use default stats
+                    data["stats"] = {
+                        "strength": 10,
+                        "dexterity": 10,
+                        "constitution": 10,
+                        "intelligence": 10,
+                        "wisdom": 10,
+                        "charisma": 10,
+                        "sanity": 100,
+                        "occult_knowledge": 0,
+                        "fear": 0,
+                        "corruption": 0,
+                        "cult_affiliation": 0,
+                        "current_health": 100,
+                        "position": "standing",
+                    }
+            # If it's already a dict, keep it as-is (psycopg2 may return JSONB as dict)
 
         # Convert datetime strings back to datetime objects if needed
         # (Player model handles this internally, but we could add explicit conversion here)
@@ -790,6 +817,31 @@ class PersistenceLayer:
                             user_friendly="Player inventory data is invalid",
                         )
 
+                    # Serialize stats to JSON if it's a dict (JSONB column expects JSON string for psycopg2)
+                    # Note: mypy sees player.stats as Column[Any], but at runtime SQLAlchemy returns the actual value
+                    stats_json = player.stats
+                    if isinstance(stats_json, dict):  # type: ignore[unreachable]
+                        stats_json = json.dumps(stats_json)  # type: ignore[unreachable]
+                    elif stats_json is None:
+                        # Use default stats if None
+                        stats_json = json.dumps(  # type: ignore[unreachable]
+                            {
+                                "strength": 10,
+                                "dexterity": 10,
+                                "constitution": 10,
+                                "intelligence": 10,
+                                "wisdom": 10,
+                                "charisma": 10,
+                                "sanity": 100,
+                                "occult_knowledge": 0,
+                                "fear": 0,
+                                "corruption": 0,
+                                "cult_affiliation": 0,
+                                "current_health": 100,
+                                "position": "standing",
+                            }
+                        )
+
                     insert_query = """
                         INSERT OR REPLACE INTO players (
                             player_id, user_id, name, stats, inventory, status_effects,
@@ -803,7 +855,7 @@ class PersistenceLayer:
                             player_id_str,
                             user_id_str,
                             player.name,
-                            player.stats,
+                            stats_json,
                             inventory_json,
                             player.status_effects,
                             player.current_room_id,
@@ -1000,6 +1052,31 @@ class PersistenceLayer:
                         player_id_str = str(player.player_id) if player.player_id else None
                         user_id_str = str(player.user_id) if player.user_id else None
 
+                        # Serialize stats to JSON if it's a dict (JSONB column expects JSON string for psycopg2)
+                        # Note: mypy sees player.stats as Column[Any], but at runtime SQLAlchemy returns the actual value
+                        stats_json = player.stats
+                        if isinstance(stats_json, dict):  # type: ignore[unreachable]
+                            stats_json = json.dumps(stats_json)  # type: ignore[unreachable]
+                        elif stats_json is None:
+                            # Use default stats if None
+                            stats_json = json.dumps(  # type: ignore[unreachable]
+                                {
+                                    "strength": 10,
+                                    "dexterity": 10,
+                                    "constitution": 10,
+                                    "intelligence": 10,
+                                    "wisdom": 10,
+                                    "charisma": 10,
+                                    "sanity": 100,
+                                    "occult_knowledge": 0,
+                                    "fear": 0,
+                                    "corruption": 0,
+                                    "cult_affiliation": 0,
+                                    "current_health": 100,
+                                    "position": "standing",
+                                }
+                            )
+
                         insert_query = """
                             INSERT OR REPLACE INTO players (
                                 player_id, user_id, name, stats, inventory, status_effects,
@@ -1013,7 +1090,7 @@ class PersistenceLayer:
                                 player_id_str,
                                 user_id_str,
                                 player.name,
-                                player.stats,
+                                stats_json,
                                 player.inventory,
                                 player.status_effects,
                                 player.current_room_id,
@@ -1571,6 +1648,10 @@ class PersistenceLayer:
             # Convert UUID to string if needed
             player_id_str = str(player_id)
 
+            # Validate delta type (security: prevent SQL injection via type confusion)
+            if not isinstance(delta, (int, float)):
+                raise TypeError(f"delta must be int or float, got {type(delta).__name__}")
+
             # Validate field name (whitelist approach for security)
             # Use the mapping dictionary as the source of truth for allowed fields
             if field_name not in self.FIELD_NAME_TO_ARRAY:
@@ -1592,14 +1673,17 @@ class PersistenceLayer:
             with self._lock, self._get_connection() as conn:
                 # PostgreSQL JSONB path format: array of path elements
                 # jsonb_set() requires path as text array, which we get from the mapping dictionary
+                # After migration 006, stats is JSONB, so no casting needed
+                # Use COALESCE to handle null stats and default to 0 for missing fields
                 cursor = conn.execute(
                     f"""
                     UPDATE players
                     SET stats = jsonb_set(
-                        stats::jsonb,
+                        COALESCE(stats, '{{}}'::jsonb),
                         {array_literal},
-                        to_jsonb((stats->>%s)::integer + %s)
-                    )::text
+                        to_jsonb((COALESCE(stats->>%s, '0'))::numeric + %s),
+                        true
+                    )
                     WHERE player_id = %s
                     """,
                     (field_name, delta, player_id_str),
@@ -1682,7 +1766,44 @@ class PersistenceLayer:
         """
         if delta < 0:
             raise ValueError(f"XP delta must be non-negative, got {delta}")
-        self.update_player_stat_field(player_id, "experience_points", delta, reason)
+
+        # experience_points is a separate INTEGER column, not in stats JSONB
+        # Use atomic UPDATE to prevent race conditions
+        player_id_str = str(player_id)
+        context = create_error_context()
+        context.metadata["operation"] = "update_player_xp"
+        context.metadata["player_id"] = player_id_str
+
+        try:
+            with self._lock, self._get_connection() as conn:
+                cursor = conn.execute(
+                    """
+                    UPDATE players
+                    SET experience_points = experience_points + %s
+                    WHERE player_id = %s
+                    """,
+                    (delta, player_id_str),
+                )
+
+                if cursor.rowcount == 0:
+                    raise ValueError(f"Player {player_id_str} not found")
+
+                conn.commit()
+
+                self._logger.info(
+                    "Player XP updated atomically",
+                    player_id=player_id_str,
+                    delta=delta,
+                    reason=reason,
+                )
+        except psycopg2.Error as e:
+            log_and_raise(
+                DatabaseError,
+                f"Database error updating XP for player '{player_id_str}': {e}",
+                context=context,
+                details={"player_id": player_id_str, "delta": delta, "error": str(e)},
+                user_friendly="Failed to update experience points",
+            )
 
     # --- TODO: Inventory, status effects, etc. ---
     # def get_inventory(self, ...): ...

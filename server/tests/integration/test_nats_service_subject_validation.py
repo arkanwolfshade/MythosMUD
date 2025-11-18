@@ -5,6 +5,7 @@ This module tests the integration of NATSSubjectManager with NATSService
 to ensure proper subject validation before message publishing.
 """
 
+import asyncio
 import uuid
 from unittest.mock import AsyncMock, patch
 
@@ -41,6 +42,11 @@ class TestNATSServiceSubjectValidation:
         self.nats_service.nc = self.mock_nc
         self.nats_service._running = True
 
+        # Initialize connection pool for testing (mock the pool)
+        self.nats_service._pool_initialized = True
+        self.nats_service.connection_pool = [self.mock_nc]
+        self.nats_service.available_connections = asyncio.Queue()
+
         # Test data
         self.test_subject = "chat.say.room.test-room-123"
         self.test_message_data = {
@@ -52,25 +58,34 @@ class TestNATSServiceSubjectValidation:
             "timestamp": "2025-01-01T12:00:00Z",
         }
 
+    async def _init_connection_pool(self):
+        """Helper to initialize connection pool for async tests."""
+        await self.nats_service.available_connections.put(self.mock_nc)
+
     @pytest.mark.asyncio
     async def test_publish_with_valid_subject_passes_validation(self):
         """Test that publishing with a valid subject passes validation."""
+        # Initialize connection pool
+        await self._init_connection_pool()
+
         # Inject subject manager
         self.nats_service.subject_manager = self.subject_manager
 
         # Mock successful publish
         self.mock_nc.publish = AsyncMock()
 
-        # Publish message
-        result = await self.nats_service.publish(self.test_subject, self.test_message_data)
+        # Publish message (should not raise exception)
+        await self.nats_service.publish(self.test_subject, self.test_message_data)
 
         # Verify publish was called
-        assert result is True
         self.mock_nc.publish.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_publish_with_invalid_subject_fails_validation(self):
         """Test that publishing with an invalid subject fails validation."""
+        # Initialize connection pool
+        await self._init_connection_pool()
+
         # Inject subject manager with strict validation
         strict_manager = NATSSubjectManager(strict_validation=True)
         self.nats_service.subject_manager = strict_manager
@@ -78,32 +93,39 @@ class TestNATSServiceSubjectValidation:
         # Invalid subject with special characters
         invalid_subject = "chat.say.room@invalid"
 
-        # Publish message with invalid subject
-        result = await self.nats_service.publish(invalid_subject, self.test_message_data)
+        # Publish message with invalid subject (should raise exception or fail)
+        from server.services.nats_exceptions import NATSPublishError
 
-        # Verify publish failed
-        assert result is False
+        with pytest.raises(NATSPublishError):
+            await self.nats_service.publish(invalid_subject, self.test_message_data)
+
+        # Verify publish was not called
         self.mock_nc.publish.assert_not_called()
 
     @pytest.mark.asyncio
     async def test_publish_without_subject_manager_works_normally(self):
         """Test that publishing without subject manager works normally (backward compatibility)."""
+        # Initialize connection pool
+        await self._init_connection_pool()
+
         # Ensure no subject manager is injected
         self.nats_service.subject_manager = None
 
         # Mock successful publish
         self.mock_nc.publish = AsyncMock()
 
-        # Publish message
-        result = await self.nats_service.publish(self.test_subject, self.test_message_data)
+        # Publish message (should not raise exception)
+        await self.nats_service.publish(self.test_subject, self.test_message_data)
 
         # Verify publish was called (no validation)
-        assert result is True
         self.mock_nc.publish.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_publish_with_validation_error_logs_appropriately(self):
         """Test that validation errors are logged with proper context."""
+        # Initialize connection pool
+        await self._init_connection_pool()
+
         # Inject subject manager with strict validation
         strict_manager = NATSSubjectManager(strict_validation=True)
         self.nats_service.subject_manager = strict_manager
@@ -113,11 +135,11 @@ class TestNATSServiceSubjectValidation:
 
         # Mock logger to capture log calls
         with patch("server.services.nats_service.logger") as mock_logger:
-            # Publish message with invalid subject
-            result = await self.nats_service.publish(invalid_subject, self.test_message_data)
+            # Publish message with invalid subject (should raise exception)
+            from server.services.nats_exceptions import NATSPublishError
 
-            # Verify publish failed
-            assert result is False
+            with pytest.raises(NATSPublishError):
+                await self.nats_service.publish(invalid_subject, self.test_message_data)
 
             # Verify error was logged
             mock_logger.error.assert_called()
@@ -127,6 +149,9 @@ class TestNATSServiceSubjectValidation:
     @pytest.mark.asyncio
     async def test_publish_with_correlation_id_tracking(self):
         """Test that validation failures include correlation ID tracking."""
+        # Initialize connection pool
+        await self._init_connection_pool()
+
         # Inject subject manager
         self.nats_service.subject_manager = self.subject_manager
 
@@ -137,34 +162,33 @@ class TestNATSServiceSubjectValidation:
         # Mock successful publish
         self.mock_nc.publish = AsyncMock()
 
-        # Publish message
-        result = await self.nats_service.publish(self.test_subject, self.test_message_data)
+        # Publish message (should not raise exception)
+        await self.nats_service.publish(self.test_subject, self.test_message_data)
 
         # Verify publish succeeded
-        assert result is True
         self.mock_nc.publish.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_publish_with_pool_includes_subject_validation(self):
         """Test that publish_with_pool method includes subject validation."""
+        # Initialize connection pool
+        await self._init_connection_pool()
+
         # Inject subject manager
         self.nats_service.subject_manager = self.subject_manager
 
-        # Mock connection pool to return a mock connection
-        mock_connection = AsyncMock()
-        self.nats_service.available_connections.put_nowait(mock_connection)
-        self.nats_service._pool_initialized = True
-
-        # Publish message using pool
-        result = await self.nats_service.publish_with_pool(self.test_subject, self.test_message_data)
+        # Publish message using pool (should not raise exception)
+        await self.nats_service.publish_with_pool(self.test_subject, self.test_message_data)
 
         # Verify publish was called
-        assert result is True
-        mock_connection.publish.assert_called_once()
+        self.mock_nc.publish.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_publish_batch_includes_subject_validation(self):
         """Test that publish_batch method includes subject validation."""
+        # Initialize connection pool
+        await self._init_connection_pool()
+
         # Inject subject manager
         self.nats_service.subject_manager = self.subject_manager
 
@@ -178,7 +202,7 @@ class TestNATSServiceSubjectValidation:
             # Publish message to batch
             result = await self.nats_service.publish_batch(self.test_subject, self.test_message_data)
 
-            # Verify batch processing was called
+            # Verify batch processing was called (publish_batch returns bool)
             assert result is True
             mock_flush.assert_called_once()
 
@@ -196,9 +220,10 @@ class TestNATSServiceSubjectValidation:
         assert self.nats_service.subject_manager is new_manager
 
         # Test that validation now works
+        await self._init_connection_pool()
         self.mock_nc.publish = AsyncMock()
-        result = await self.nats_service.publish(self.test_subject, self.test_message_data)
-        assert result is True
+        await self.nats_service.publish(self.test_subject, self.test_message_data)
+        self.mock_nc.publish.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_subject_manager_can_be_replaced(self):
@@ -219,6 +244,9 @@ class TestNATSServiceSubjectValidation:
     async def test_validation_performance_impact_is_minimal(self):
         """Test that subject validation has minimal performance impact."""
         import time
+
+        # Initialize connection pool
+        await self._init_connection_pool()
 
         # Inject subject manager
         self.nats_service.subject_manager = self.subject_manager
@@ -259,9 +287,11 @@ class TestNATSServiceSubjectValidation:
             "chat.pose.room.test-room-123",
         ]
 
+        # Initialize connection pool
+        await self._init_connection_pool()
+
         for subject in valid_subjects:
-            result = await self.nats_service.publish(subject, self.test_message_data)
-            assert result is True
+            await self.nats_service.publish(subject, self.test_message_data)
 
         # Verify all publishes were called
         assert self.mock_nc.publish.call_count == len(valid_subjects)
@@ -269,6 +299,9 @@ class TestNATSServiceSubjectValidation:
     @pytest.mark.asyncio
     async def test_validation_with_invalid_subject_patterns(self):
         """Test validation with invalid subject patterns."""
+        # Initialize connection pool
+        await self._init_connection_pool()
+
         # Inject subject manager with strict validation
         strict_manager = NATSSubjectManager(strict_validation=True)
         self.nats_service.subject_manager = strict_manager
@@ -282,9 +315,11 @@ class TestNATSServiceSubjectValidation:
             "chat.say.room.invalid$",  # Dollar sign
         ]
 
+        from server.services.nats_exceptions import NATSPublishError
+
         for subject in invalid_subjects:
-            result = await self.nats_service.publish(subject, self.test_message_data)
-            assert result is False
+            with pytest.raises(NATSPublishError):
+                await self.nats_service.publish(subject, self.test_message_data)
 
         # Verify no publishes were called
         self.mock_nc.publish.assert_not_called()
@@ -296,19 +331,22 @@ class TestNATSServiceSubjectValidation:
         config = NATSConfig(enable_subject_validation=False)
         nats_service = NATSService(config)
 
-        # Mock NATS connection
+        # Mock NATS connection and initialize pool
         mock_nc = AsyncMock()
         nats_service.nc = mock_nc
         nats_service._running = True
+        nats_service._pool_initialized = True
+        nats_service.connection_pool = [mock_nc]
+        nats_service.available_connections = asyncio.Queue()
+        await nats_service.available_connections.put(mock_nc)
 
         # Invalid subject that would normally fail validation
         invalid_subject = "chat.say.room@invalid"
 
-        # Publish message with invalid subject
-        result = await nats_service.publish(invalid_subject, self.test_message_data)
+        # Publish message with invalid subject (should succeed when validation disabled)
+        await nats_service.publish(invalid_subject, self.test_message_data)
 
         # Verify publish succeeded (validation disabled)
-        assert result is True
         mock_nc.publish.assert_called_once()
 
     @pytest.mark.asyncio
@@ -318,19 +356,23 @@ class TestNATSServiceSubjectValidation:
         config = NATSConfig(strict_subject_validation=True)
         nats_service = NATSService(config)
 
-        # Mock NATS connection
+        # Mock NATS connection and initialize pool
         mock_nc = AsyncMock()
         nats_service.nc = mock_nc
         nats_service._running = True
+        nats_service._pool_initialized = True
+        nats_service.connection_pool = [mock_nc]
+        nats_service.available_connections = asyncio.Queue()
+        await nats_service.available_connections.put(mock_nc)
 
         # Invalid subject
         invalid_subject = "chat.say.room@invalid"
 
-        # Publish message with invalid subject
-        result = await nats_service.publish(invalid_subject, self.test_message_data)
+        # Publish message with invalid subject (should raise exception with strict validation)
+        from server.services.nats_exceptions import NATSPublishError
 
-        # Verify publish failed (strict validation enabled)
-        assert result is False
+        with pytest.raises(NATSPublishError):
+            await nats_service.publish(invalid_subject, self.test_message_data)
         mock_nc.publish.assert_not_called()
 
     @pytest.mark.asyncio
