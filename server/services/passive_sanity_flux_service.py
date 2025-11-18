@@ -17,7 +17,6 @@ from ..models.player import Player
 from ..models.sanity import PlayerSanity
 from ..persistence import PersistenceLayer
 from ..services.sanity_service import CatatoniaObserverProtocol, SanityService, SanityUpdateResult
-from ..world_loader import load_hierarchical_world
 
 try:
     from ..monitoring.performance_monitor import PerformanceMonitor
@@ -389,34 +388,105 @@ class PassiveSanityFluxService:
         return normalized
 
     def _load_sanity_rate_overrides(self) -> dict[str, float]:
+        """Load sanity rate overrides from PostgreSQL zone_configurations table."""
+        import asyncio
+        import threading
+
+
         overrides: dict[str, float] = {}
-        try:
-            world_data = load_hierarchical_world(enable_schema_validation=False)
-        except Exception as exc:  # pragma: no cover - defensive
-            logger.warning("Could not load world data for sanity rate overrides", error=str(exc))
+        result_container: dict[str, Any] = {"overrides": {}, "error": None}
+
+        def run_async():
+            new_loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(new_loop)
+            try:
+                new_loop.run_until_complete(self._async_load_sanity_rate_overrides(result_container))
+            finally:
+                new_loop.close()
+
+        thread = threading.Thread(target=run_async)
+        thread.start()
+        thread.join()
+
+        error = result_container.get("error")
+        if error is not None:
+            logger.warning("Could not load sanity rate overrides from database", error=str(error))
             return overrides
 
-        for path, config in world_data.get("zone_configs", {}).items():
-            rate = self._extract_sanity_rate(config)
-            if rate is None:
-                continue
-            plane, zone, _ = self._parse_hierarchy_path(path)
-            key = self._build_override_key(plane, zone, None)
-            overrides[key] = self._rate_to_flux(rate)
-
-        for path, config in world_data.get("subzone_configs", {}).items():
-            rate = self._extract_sanity_rate(config)
-            if rate is None:
-                continue
-            plane, zone, sub_zone = self._parse_hierarchy_path(path)
-            key = self._build_override_key(plane, zone, sub_zone)
-            overrides[key] = self._rate_to_flux(rate)
-
+        overrides = result_container.get("overrides", {})
         if overrides:
-            logger.info("Loaded sanity rate overrides", count=len(overrides))
+            logger.info("Loaded sanity rate overrides from database", count=len(overrides))
         else:
-            logger.info("No sanity rate overrides discovered in world data")
+            logger.info("No sanity rate overrides found in database")
         return overrides
+
+    async def _async_load_sanity_rate_overrides(self, result_container: dict[str, Any]) -> None:
+        """Async helper to load sanity rate overrides from PostgreSQL."""
+        import json
+        import os
+
+        import asyncpg
+
+        try:
+            # Get database URL from environment
+            database_url = os.getenv("DATABASE_URL")
+            if not database_url:
+                raise ValueError("DATABASE_URL environment variable not set")
+
+            # Convert SQLAlchemy-style URL to asyncpg-compatible format
+            if database_url.startswith("postgresql+asyncpg://"):
+                database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
+
+            # Use asyncpg directly to avoid event loop conflicts
+            conn = await asyncpg.connect(database_url)
+            try:
+                # Query zone configurations
+                query = """
+                    SELECT
+                        z.stable_id as zone_stable_id,
+                        sz.stable_id as subzone_stable_id,
+                        zc.configuration_type,
+                        zc.special_rules
+                    FROM zone_configurations zc
+                    JOIN zones z ON zc.zone_id = z.id
+                    LEFT JOIN subzones sz ON zc.subzone_id = sz.id
+                    WHERE zc.special_rules IS NOT NULL
+                    ORDER BY z.stable_id, sz.stable_id, zc.configuration_type
+                """
+                rows = await conn.fetch(query)
+
+                for row in rows:
+                    zone_stable_id = row["zone_stable_id"]
+                    subzone_stable_id = row["subzone_stable_id"]
+                    config_type = row["configuration_type"]
+                    # asyncpg returns JSONB as dict/list, but ensure proper types
+                    special_rules = row["special_rules"] if row["special_rules"] else {}
+                    if isinstance(special_rules, str):
+                        special_rules = json.loads(special_rules)
+
+                    # Extract sanity drain rate from special_rules
+                    rate = self._extract_sanity_rate({"special_rules": special_rules})
+                    if rate is None:
+                        continue
+
+                    # Parse zone stable_id (format: 'plane/zone')
+                    zone_parts = zone_stable_id.split("/")
+                    plane = zone_parts[0] if len(zone_parts) > 0 else None
+                    zone = zone_parts[1] if len(zone_parts) > 1 else None
+
+                    if config_type == "zone":
+                        # Zone-level config
+                        key = self._build_override_key(plane, zone, None)
+                        result_container["overrides"][key] = self._rate_to_flux(rate)
+                    elif config_type == "subzone" and subzone_stable_id:
+                        # Subzone-level config
+                        key = self._build_override_key(plane, zone, subzone_stable_id)
+                        result_container["overrides"][key] = self._rate_to_flux(rate)
+            finally:
+                await conn.close()
+        except Exception as e:
+            result_container["error"] = e
+            raise
 
     @staticmethod
     def _extract_sanity_rate(config: dict[str, Any]) -> float | None:

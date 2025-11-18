@@ -35,13 +35,16 @@ def event_bus():
 @pytest.fixture
 def population_controller(event_bus):
     """Create a population controller with mocked zone configs."""
-    with patch("server.npc.population_control.Path") as mock_path:
-        mock_path.return_value.iterdir.return_value = []
+    # Create a mock async_persistence that doesn't actually load from database
+    mock_persistence = MagicMock()
+
+    # Patch the _load_zone_configurations method to skip database loading
+    with patch.object(NPCPopulationController, "_load_zone_configurations", return_value=None):
         controller = NPCPopulationController(
             event_bus,
             spawning_service=None,
             lifecycle_manager=None,
-            rooms_data_path="test_path",
+            async_persistence=mock_persistence,
         )
 
         # Add a mock zone configuration

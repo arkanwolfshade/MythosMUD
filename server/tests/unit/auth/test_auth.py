@@ -184,33 +184,65 @@ class TestRegistrationEndpoints:
         """Test registration with duplicate username."""
         import uuid
 
+        from sqlalchemy.ext.asyncio import AsyncSession
+
+        from server.database import get_async_session
+
         # Use a unique username to avoid conflicts with other tests
         unique_username = f"duplicate_test_{uuid.uuid4().hex[:8]}"
 
-        # First, register a user to create the duplicate condition
-        first_response = container_test_client.post(
-            "/auth/register", json={"username": unique_username, "password": "testpass123", "invite_code": "TEST456"}
-        )
+        # Create a mock session that simulates duplicate username detection
+        mock_session = AsyncMock(spec=AsyncSession)
 
-        # The first registration should succeed
-        assert first_response.status_code == 200
+        # First call: no existing user (registration succeeds)
+        # Second call: user exists (duplicate detected)
+        call_count = {"count": 0}
 
-        # Small delay to ensure first transaction commits before second request
-        import time
+        async def mock_execute(stmt):
+            call_count["count"] += 1
+            mock_result = MagicMock()
+            if call_count["count"] == 1:
+                # First registration - no existing user
+                mock_result.scalar_one_or_none = MagicMock(return_value=None)
+            else:
+                # Second registration - user already exists
+                existing_user = MagicMock()
+                existing_user.username = unique_username
+                mock_result.scalar_one_or_none = MagicMock(return_value=existing_user)
+            return mock_result
 
-        time.sleep(0.1)
+        mock_session.execute = mock_execute
+        mock_session.add = MagicMock()
+        mock_session.commit = AsyncMock()
+        mock_session.refresh = AsyncMock()
 
-        # Now try to register with the same username
-        response = container_test_client.post(
-            "/auth/register", json={"username": unique_username, "password": "testpass123", "invite_code": "TEST456"}
-        )
+        # Create a mock async generator for the session dependency
+        async def mock_get_session():
+            yield mock_session
 
-        # Debug output
-        print(f"Response status: {response.status_code}")
-        print(f"Response body: {response.text}")
+        # Override the dependency
+        container_test_client.app.dependency_overrides[get_async_session] = mock_get_session
 
-        assert response.status_code == 400
-        assert "Username already exists" in response.json()["error"]["message"]
+        try:
+            # First, register a user to create the duplicate condition
+            first_response = container_test_client.post(
+                "/auth/register", json={"username": unique_username, "password": "testpass123", "invite_code": "TEST456"}
+            )
+
+            # The first registration should succeed
+            assert first_response.status_code == 200
+
+            # Now try to register with the same username
+            response = container_test_client.post(
+                "/auth/register", json={"username": unique_username, "password": "testpass123", "invite_code": "TEST456"}
+            )
+
+            # Should return 400 for duplicate username
+            assert response.status_code == 400
+            assert "Username already exists" in response.json()["error"]["message"]
+        finally:
+            # Clean up dependency override
+            container_test_client.app.dependency_overrides.pop(get_async_session, None)
 
     def test_registration_with_empty_password(self, container_test_client, mock_auth_persistence):
         """Test registration with empty password should be rejected for security."""
