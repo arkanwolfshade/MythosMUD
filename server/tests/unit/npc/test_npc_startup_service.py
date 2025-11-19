@@ -249,14 +249,12 @@ class TestNPCStartupService:
         earth_innsmouth_waterfront_room_waterfront_001 which didn't exist.
         """
         from server.npc_database import get_npc_session
-        from server.world_loader import load_hierarchical_world
+        from server.persistence import get_persistence
 
-        # AI Agent: Load world data to get all existing rooms
-        world_data = load_hierarchical_world()
-        existing_rooms = set(world_data["rooms"].keys())
-
-        # AI Agent: Also check room_mappings for backward compatibility
-        existing_rooms.update(world_data["room_mappings"].keys())
+        # AI Agent: Get all existing rooms from database via persistence layer
+        persistence = get_persistence()
+        all_rooms = persistence.list_rooms()
+        existing_rooms = {room.id for room in all_rooms if room.id}
 
         # AI Agent: Get all NPC definitions from database
         # Ensure NPC database is initialized before use

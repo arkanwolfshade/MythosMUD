@@ -5,6 +5,7 @@ import { TerminalButton } from './ui/TerminalButton';
 interface DraggablePanelProps {
   children: React.ReactNode;
   title: string;
+  panelId?: string; // Unique identifier for localStorage persistence
   defaultPosition?: { x: number; y: number };
   defaultSize?: { width: number; height: number };
   minSize?: { width: number; height: number };
@@ -21,6 +22,7 @@ interface DraggablePanelProps {
 export const DraggablePanel: React.FC<DraggablePanelProps> = ({
   children,
   title,
+  panelId,
   defaultPosition = { x: 50, y: 50 },
   defaultSize = { width: 400, height: 300 },
   minSize = { width: 200, height: 150 },
@@ -33,8 +35,29 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
   zIndex = 1000,
   autoSize = false, // Default to false for backward compatibility
 }) => {
-  const [position, setPosition] = useState(defaultPosition);
-  const [size, setSize] = useState(defaultSize);
+  // Load saved position and size from localStorage on mount
+  const loadSavedState = () => {
+    if (!panelId) return { position: defaultPosition, size: defaultSize };
+
+    try {
+      const savedState = localStorage.getItem(`mythosmud-panel-${panelId}`);
+      if (savedState) {
+        const parsed = JSON.parse(savedState);
+        return {
+          position: parsed.position || defaultPosition,
+          size: parsed.size || defaultSize,
+        };
+      }
+    } catch (error) {
+      console.warn(`Failed to load saved state for panel ${panelId}:`, error);
+    }
+
+    return { position: defaultPosition, size: defaultSize };
+  };
+
+  const initialState = loadSavedState();
+  const [position, setPosition] = useState(initialState.position);
+  const [size, setSize] = useState(initialState.size);
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -42,10 +65,49 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [resizeDirection, setResizeDirection] = useState<string>('');
   const [headerHeight, setHeaderHeight] = useState(40); // Track header height to avoid ref access during render
+  const saveTimeoutRef = useRef<number | null>(null);
 
   const panelRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  // Save position and size to localStorage (debounced)
+  const saveState = useCallback(
+    (pos: { x: number; y: number }, sz: { width: number; height: number }) => {
+      if (!panelId) return;
+
+      // Clear existing timeout
+      if (saveTimeoutRef.current !== null) {
+        window.clearTimeout(saveTimeoutRef.current);
+      }
+
+      // Debounce saves to avoid excessive localStorage writes
+      saveTimeoutRef.current = window.setTimeout(() => {
+        try {
+          localStorage.setItem(
+            `mythosmud-panel-${panelId}`,
+            JSON.stringify({
+              position: pos,
+              size: sz,
+            })
+          );
+        } catch (error) {
+          console.warn(`Failed to save state for panel ${panelId}:`, error);
+        }
+        saveTimeoutRef.current = null;
+      }, 300); // Save 300ms after last change
+    },
+    [panelId]
+  );
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current !== null) {
+        window.clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Measure header height to avoid ref access during render
   useEffect(() => {
@@ -136,7 +198,9 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
       if (isDragging) {
         const newX = e.clientX - dragOffset.x;
         const newY = e.clientY - dragOffset.y;
-        setPosition({ x: Math.max(0, newX), y: Math.max(0, newY) });
+        const newPosition = { x: Math.max(0, newX), y: Math.max(0, newY) };
+        setPosition(newPosition);
+        saveState(newPosition, size);
       }
 
       if (isResizing) {
@@ -164,12 +228,15 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
             newY = position.y + (size.height - newHeight);
           }
 
-          setSize({ width: newWidth, height: newHeight });
-          setPosition({ x: newX, y: newY });
+          const newSize = { width: newWidth, height: newHeight };
+          const newPosition = { x: newX, y: newY };
+          setSize(newSize);
+          setPosition(newPosition);
+          saveState(newPosition, newSize);
         }
       }
     },
-    [isDragging, isResizing, dragOffset, resizeDirection, position, size, minSize, maxSize]
+    [isDragging, isResizing, dragOffset, resizeDirection, position, size, minSize, maxSize, saveState]
   );
 
   const handleMouseUp = () => {
@@ -275,37 +342,47 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
       {/* Resize handles */}
       {!isMinimized && (
         <>
+          {/* Corner resize handles */}
           <div
-            className="absolute top-0 right-0 w-2 h-2 cursor-se-resize hover:bg-mythos-terminal-primary/20"
+            className="absolute top-0 right-0 w-3 h-3 cursor-se-resize hover:bg-mythos-terminal-primary/30 z-10"
             onMouseDown={e => handleMouseDown(e, 'se')}
+            title="Resize"
           />
           <div
-            className="absolute bottom-0 left-0 w-2 h-2 cursor-sw-resize hover:bg-mythos-terminal-primary/20"
+            className="absolute bottom-0 left-0 w-3 h-3 cursor-sw-resize hover:bg-mythos-terminal-primary/30 z-10"
             onMouseDown={e => handleMouseDown(e, 'sw')}
+            title="Resize"
           />
           <div
-            className="absolute bottom-0 right-0 w-2 h-2 cursor-se-resize hover:bg-mythos-terminal-primary/20"
+            className="absolute bottom-0 right-0 w-3 h-3 cursor-se-resize hover:bg-mythos-terminal-primary/30 z-10"
             onMouseDown={e => handleMouseDown(e, 'se')}
+            title="Resize"
           />
           <div
-            className="absolute top-0 left-0 w-2 h-2 cursor-nw-resize hover:bg-mythos-terminal-primary/20"
+            className="absolute top-0 left-0 w-3 h-3 cursor-nw-resize hover:bg-mythos-terminal-primary/30 z-10"
             onMouseDown={e => handleMouseDown(e, 'nw')}
+            title="Resize"
           />
+          {/* Edge resize handles */}
           <div
-            className="absolute top-1/2 left-0 w-1 h-4 -translate-y-1/2 cursor-w-resize hover:bg-mythos-terminal-primary/20"
+            className="absolute top-1/2 left-0 w-2 h-8 -translate-y-1/2 cursor-w-resize hover:bg-mythos-terminal-primary/30 z-10"
             onMouseDown={e => handleMouseDown(e, 'w')}
+            title="Resize width"
           />
           <div
-            className="absolute top-1/2 right-0 w-1 h-4 -translate-y-1/2 cursor-e-resize hover:bg-mythos-terminal-primary/20"
+            className="absolute top-1/2 right-0 w-2 h-8 -translate-y-1/2 cursor-e-resize hover:bg-mythos-terminal-primary/30 z-10"
             onMouseDown={e => handleMouseDown(e, 'e')}
+            title="Resize width"
           />
           <div
-            className="absolute left-1/2 top-0 w-4 h-1 -translate-x-1/2 cursor-n-resize hover:bg-mythos-terminal-primary/20"
+            className="absolute left-1/2 top-0 w-8 h-2 -translate-x-1/2 cursor-n-resize hover:bg-mythos-terminal-primary/30 z-10"
             onMouseDown={e => handleMouseDown(e, 'n')}
+            title="Resize height"
           />
           <div
-            className="absolute left-1/2 bottom-0 w-4 h-1 -translate-x-1/2 cursor-s-resize hover:bg-mythos-terminal-primary/20"
+            className="absolute left-1/2 bottom-0 w-8 h-2 -translate-x-1/2 cursor-s-resize hover:bg-mythos-terminal-primary/30 z-10"
             onMouseDown={e => handleMouseDown(e, 's')}
+            title="Resize height"
           />
         </>
       )}

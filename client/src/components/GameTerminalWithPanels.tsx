@@ -2278,6 +2278,11 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
     setHallucinationFeed(prev => prev.filter(entry => entry.id !== id));
   }, []);
 
+  const handleDismissIncapacitated = useCallback(() => {
+    // Reset incapacitated dismissal state when health recovers
+    // This is handled in GameTerminal component, but we can add additional logic here if needed
+  }, []);
+
   const handleDismissRescue = useCallback(() => {
     setRescueState(null);
   }, []);
@@ -2300,6 +2305,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
         rescueState={rescueState}
         onDismissHallucination={handleDismissHallucination}
         onDismissRescue={handleDismissRescue}
+        onDismissIncapacitated={handleDismissIncapacitated}
         onConnect={connect}
         onDisconnect={disconnect}
         onLogout={handleLogout}

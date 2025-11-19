@@ -116,6 +116,13 @@ class PassiveSanityFluxService:
         if not self._should_process_tick(tick_count):
             return {"evaluated": 0, "adjustments": 0, "skipped": True}
 
+        logger.debug(
+            "Processing passive SAN flux tick",
+            tick_count=tick_count,
+            ticks_per_minute=self._ticks_per_minute,
+            should_process=self._should_process_tick(tick_count),
+        )
+
         evaluation_start = time.perf_counter()
         timestamp = now or self._now_provider()
         processed_player_ids: set[str] = set()
@@ -139,6 +146,21 @@ class PassiveSanityFluxService:
 
                 total_flux = self._apply_adaptive_resistance(player_id, room_id, total_flux)
                 delta = self._apply_residual(player_id, total_flux)
+
+                # Log flux calculation for debugging
+                if abs(delta) > 5 or abs(total_flux) > 5:
+                    logger.warning(
+                        "Large flux or delta calculated for player",
+                        player_id=player_id,
+                        room_id=room_id,
+                        base_flux=base_flux,
+                        companion_flux=companion_flux,
+                        total_flux_before_adaptive=base_flux + companion_flux,
+                        total_flux_after_adaptive=total_flux,
+                        delta=delta,
+                        source=context.source,
+                        metadata=context.metadata,
+                    )
 
                 if delta == 0:
                     continue
@@ -317,7 +339,8 @@ class PassiveSanityFluxService:
         return flux * multiplier
 
     def _apply_residual(self, player_id: str, flux: float) -> int:
-        residual = self._residuals.get(player_id, 0.0) + flux
+        previous_residual = self._residuals.get(player_id, 0.0)
+        residual = previous_residual + flux
         delta = 0
 
         if residual >= 1.0 - self._epsilon:
@@ -327,6 +350,19 @@ class PassiveSanityFluxService:
 
         residual -= delta
         self._residuals[player_id] = residual
+
+        # Log residual accumulation for debugging massive sanity losses
+        if abs(delta) > 10 or abs(flux) > 10:
+            logger.warning(
+                "Large sanity flux or delta detected",
+                player_id=player_id,
+                flux=flux,
+                previous_residual=previous_residual,
+                residual_before_apply=residual + delta,
+                delta=delta,
+                residual_after_apply=residual,
+            )
+
         return delta
 
     def _prune_trackers(self, active_player_ids: Iterable[str]) -> None:
@@ -468,6 +504,17 @@ class PassiveSanityFluxService:
                     if rate is None:
                         continue
 
+                    # Validate rate before conversion
+                    if rate > 10.0:
+                        logger.warning(
+                            "Sanity drain rate from database exceeds threshold",
+                            rate=rate,
+                            zone_stable_id=zone_stable_id,
+                            subzone_stable_id=subzone_stable_id,
+                            config_type=config_type,
+                            message="This may indicate a configuration error (e.g., 100 instead of 0.1)",
+                        )
+
                     # Parse zone stable_id (format: 'plane/zone')
                     zone_parts = zone_stable_id.split("/")
                     plane = zone_parts[0] if len(zone_parts) > 0 else None
@@ -476,11 +523,27 @@ class PassiveSanityFluxService:
                     if config_type == "zone":
                         # Zone-level config
                         key = self._build_override_key(plane, zone, None)
-                        result_container["overrides"][key] = self._rate_to_flux(rate)
+                        flux = self._rate_to_flux(rate)
+                        result_container["overrides"][key] = flux
+                        logger.debug(
+                            "Loaded sanity rate override from database",
+                            key=key,
+                            rate=rate,
+                            flux=flux,
+                            source="zone_config",
+                        )
                     elif config_type == "subzone" and subzone_stable_id:
                         # Subzone-level config
                         key = self._build_override_key(plane, zone, subzone_stable_id)
-                        result_container["overrides"][key] = self._rate_to_flux(rate)
+                        flux = self._rate_to_flux(rate)
+                        result_container["overrides"][key] = flux
+                        logger.debug(
+                            "Loaded sanity rate override from database",
+                            key=key,
+                            rate=rate,
+                            flux=flux,
+                            source="subzone_config",
+                        )
             finally:
                 await conn.close()
         except Exception as e:
@@ -514,7 +577,28 @@ class PassiveSanityFluxService:
 
     @staticmethod
     def _rate_to_flux(rate: float) -> float:
-        return -float(rate)
+        """
+        Convert sanity_drain_rate to flux value.
+
+        Args:
+            rate: Sanity drain rate (expected range: 0.0 to ~2.0 per minute)
+
+        Returns:
+            Negative flux value (since drain is negative)
+
+        Raises:
+            ValueError: If rate is unreasonably large (possible configuration error)
+        """
+        rate_float = float(rate)
+        # Sanity check: rates > 10.0 are likely configuration errors (100 instead of 0.1, etc.)
+        if rate_float > 10.0:
+            logger.error(
+                "Sanity drain rate exceeds maximum threshold - possible configuration error",
+                rate=rate_float,
+                message="Rates > 10.0 are likely configuration errors (e.g., 100 instead of 0.1). Clamping to 10.0.",
+            )
+            rate_float = 10.0
+        return -rate_float
 
     def _lookup_world_override_flux(self, room: Any) -> tuple[float | None, str | None]:
         if not self._sanity_rate_overrides:

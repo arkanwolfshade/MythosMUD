@@ -8,7 +8,7 @@ import { ChatPanel } from './panels/ChatPanel';
 import { CommandPanel } from './panels/CommandPanel';
 import { GameLogPanel } from './panels/GameLogPanel';
 import { SanityMeter, HallucinationTicker, RescueStatusBanner } from './sanity';
-import { HealthMeter } from './health';
+import { HealthMeter, IncapacitatedBanner } from './health';
 import type { SanityStatus, HallucinationMessage, RescueState } from '../types/sanity';
 import type { HealthStatus } from '../types/health';
 import { determineHealthTier } from '../types/health';
@@ -120,6 +120,7 @@ interface GameTerminalProps {
   rescueState: RescueState | null;
   onDismissHallucination?: (id: string) => void;
   onDismissRescue?: () => void;
+  onDismissIncapacitated?: () => void;
   onConnect: () => void;
   onDisconnect: () => void;
   onLogout: () => void;
@@ -150,6 +151,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
   rescueState,
   onDismissHallucination,
   onDismissRescue,
+  onDismissIncapacitated,
   onConnect: _onConnect,
   onDisconnect: _onDisconnect,
   onLogout,
@@ -167,6 +169,8 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
   const debug = debugLogger('GameTerminal');
   const [selectedChatChannel, setSelectedChatChannel] = useState(DEFAULT_CHANNEL);
   const [healthChange, setHealthChange] = useState<HealthStatus['lastChange']>();
+  const [manuallyDismissed, setManuallyDismissed] = useState(false);
+  const [wasIncapacitated, setWasIncapacitated] = useState(false);
   const previousHealthRef = useRef<number | null>(null);
 
   const derivedSanityStatus = useMemo<SanityStatus | null>(() => {
@@ -193,12 +197,36 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
     return buildHealthStatus(player, healthChange);
   }, [healthStatus, player, healthChange]);
 
+  const isIncapacitated = derivedHealthStatus?.current !== undefined && derivedHealthStatus.current <= 0;
+
+  // Track health changes and reset dismissed state when health recovers
   useEffect(() => {
-    if (!healthStatus) {
+    if (!derivedHealthStatus) {
       return;
     }
-    previousHealthRef.current = healthStatus.current;
-  }, [healthStatus]);
+
+    const isCurrentlyIncapacitated = isIncapacitated;
+
+    // Reset dismissed state when health recovers from incapacitated to healthy
+    if (wasIncapacitated && !isCurrentlyIncapacitated) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Reset dismissed state on health recovery transition
+      setManuallyDismissed(false);
+    }
+
+    // Update previous state for next comparison
+
+    setWasIncapacitated(isCurrentlyIncapacitated);
+  }, [derivedHealthStatus, isIncapacitated, wasIncapacitated]);
+
+  // Compute dismissed state: reset when health recovers, otherwise use manual dismissal
+  const healthJustRecovered = wasIncapacitated && !isIncapacitated;
+  const isIncapacitatedDismissed = healthJustRecovered ? false : manuallyDismissed;
+  const shouldShowIncapacitatedBanner = isIncapacitated && !isIncapacitatedDismissed;
+
+  const handleDismissIncapacitated = () => {
+    setManuallyDismissed(true);
+    onDismissIncapacitated?.();
+  };
 
   /* eslint-disable react-hooks/set-state-in-effect -- health change derives from server snapshots */
   useEffect(() => {
@@ -225,7 +253,6 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
 
     previousHealthRef.current = currentHealth;
   }, [player, healthStatus]);
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   const recentHallucinations = useMemo(() => hallucinations.slice(0, 3), [hallucinations]);
 
@@ -273,8 +300,11 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
 
       {/* MOTD is now handled by the interstitial screen in App.tsx */}
 
-      {(rescueState && rescueState.status !== 'idle') || (mythosTime && mythosTime.active_holidays.length > 0) ? (
-        <div className="absolute left-0 right-0 top-12 z-20 px-4 space-y-2">
+      {(rescueState && rescueState.status !== 'idle') ||
+      (mythosTime && mythosTime.active_holidays.length > 0) ||
+      shouldShowIncapacitatedBanner ? (
+        <div className="absolute left-0 right-0 top-12 z-[9999] px-4 space-y-2">
+          {shouldShowIncapacitatedBanner && <IncapacitatedBanner onDismiss={handleDismissIncapacitated} />}
           {rescueState && rescueState.status !== 'idle' && (
             <RescueStatusBanner state={rescueState} onDismiss={onDismissRescue} />
           )}
@@ -289,6 +319,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
         <div className="game-terminal-panels">
           {/* Chat Panel */}
           <DraggablePanel
+            panelId="chat"
             title="Chat"
             className="panel-chat"
             variant="eldritch"
@@ -311,6 +342,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
 
           {/* Game Log Panel */}
           <DraggablePanel
+            panelId="gameLog"
             title="Game Log"
             className="panel-gameLog"
             variant="default"
@@ -326,11 +358,12 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
 
           {/* Command Panel */}
           <DraggablePanel
+            panelId="command"
             title="Commands"
             className="panel-command"
             variant="elevated"
-            defaultSize={{ width: 500, height: 200 }}
-            defaultPosition={{ x: 50, y: 500 }}
+            defaultSize={{ width: 300, height: 300 }}
+            defaultPosition={{ x: 600, y: 500 }}
             onClose={() => console.log('Command panel closed')}
             onMinimize={() => console.log('Command panel minimized')}
             onMaximize={() => console.log('Command panel maximized')}
@@ -354,17 +387,18 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
               onChannelSelect={setSelectedChatChannel}
               isConnected={isConnected}
               isLoggingOut={isLoggingOut}
-              disabled={isMortallyWounded || isDead}
+              disabled={isMortallyWounded || isDead || isIncapacitated}
             />
           </DraggablePanel>
 
           {/* Room Info Panel */}
           <DraggablePanel
+            panelId="roomInfo"
             title="Room Info"
             className="panel-roomInfo"
             variant="default"
-            defaultSize={{ width: 300, height: 300 }}
-            defaultPosition={{ x: 600, y: 500 }}
+            defaultSize={{ width: 500, height: 200 }}
+            defaultPosition={{ x: 50, y: 500 }}
             onClose={() => console.log('Room panel closed')}
             onMinimize={() => console.log('Room panel minimized')}
             onMaximize={() => console.log('Room panel maximized')}
@@ -382,6 +416,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
 
           {/* Player Status Panel */}
           <DraggablePanel
+            panelId="status"
             title="Status"
             className="panel-status"
             variant="default"

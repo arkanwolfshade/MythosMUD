@@ -350,6 +350,13 @@ class NPCPopulationController:
                         # Subzone-level config: key is "zone/subzone"
                         subzone_key = f"{zone_name}/{subzone_stable_id}"
                         result_container["configs"]["subzone"][subzone_key] = zone_config
+                        logger.debug(
+                            "Loaded subzone configuration",
+                            subzone_key=subzone_key,
+                            zone_stable_id=zone_stable_id,
+                            subzone_stable_id=subzone_stable_id,
+                            zone_name=zone_name,
+                        )
             finally:
                 await conn.close()
         except Exception as e:
@@ -473,12 +480,29 @@ class NPCPopulationController:
         Get zone configuration for a given zone key.
 
         Args:
-            zone_key: Zone key in format "zone/sub_zone"
+            zone_key: Zone key in format "zone/sub_zone" or "zone"
 
         Returns:
             Zone configuration or None if not found
         """
-        return self.zone_configurations.get(zone_key)
+        # First, try exact match
+        config = self.zone_configurations.get(zone_key)
+        if config:
+            return config
+
+        # If zone_key is "zone/subzone" format and not found, try zone-level config as fallback
+        if "/" in zone_key:
+            zone_name = zone_key.split("/")[0]
+            config = self.zone_configurations.get(zone_name)
+            if config:
+                logger.debug(
+                    "Subzone config not found, using zone-level config as fallback",
+                    requested_zone_key=zone_key,
+                    fallback_zone_key=zone_name,
+                )
+                return config
+
+        return None
 
     def get_population_stats(self, zone_key: str) -> PopulationStats | None:
         """
@@ -505,7 +529,18 @@ class NPCPopulationController:
         zone_config = self.get_zone_configuration(zone_key)
 
         if not zone_config:
-            logger.warning("No zone configuration found", zone_key=zone_key, room_id=room_id)
+            # Check if we have any zone configurations loaded at all
+            available_keys = list(self.zone_configurations.keys())
+            logger.warning(
+                "No zone configuration found",
+                zone_key=zone_key,
+                room_id=room_id,
+                total_configs_loaded=len(self.zone_configurations),
+                available_keys=available_keys[:10] if len(available_keys) > 10 else available_keys,
+                message="This may indicate a missing zone configuration in the database or a key mismatch",
+            )
+            # Don't return early - some rooms may not need NPC spawning
+            # Instead, we'll just skip NPC spawning for this room
             return
 
         logger.info("Zone configuration found", zone_key=zone_key)
