@@ -71,6 +71,10 @@ RUN npm install
 WORKDIR /workspace
 COPY . /workspace
 
+# Human reader: make diagnostic scripts executable for troubleshooting.
+# AI reader: PostgreSQL diagnostic scripts available at scripts/check_postgresql.sh and scripts/setup_postgresql_test_db.sh.
+RUN chmod +x scripts/*.sh 2>/dev/null || true
+
 # Human reader: create directories required by MythosMUD database placement rules.
 # AI reader: ensures init/verify scripts succeed without manual mkdir.
 RUN mkdir -p /workspace/data/unit_test/players /workspace/data/unit_test/npcs
@@ -96,7 +100,7 @@ WORKDIR /workspace
 RUN service postgresql start && \
     sleep 3 && \
     pg_isready -U postgres && \
-    su postgres -c "psql -c \"ALTER USER postgres PASSWORD 'postgres';\"" && \
+    su postgres -c "psql -c \"ALTER USER postgres PASSWORD 'Cthulhu1';\"" && \
     su postgres -c "psql -f /workspace/db/roles/roles.sql" && \
     su postgres -c "psql -f /workspace/db/databases/databases.sql" && \
     su postgres -c "psql -d mythos_unit -f /workspace/db/schema/01_world_and_calendar.sql" && \
@@ -117,8 +121,8 @@ RUN service postgresql start && \
 # Set environment variables for test execution (matches CI workflow expectations).
 # Human reader: supply actual secrets via docker run -e / compose; do NOT bake them into the image.
 # AI reader: runtime env vars should match GitHub Actions workflow exports.
-ENV DATABASE_URL="postgresql+asyncpg://postgres:postgres@localhost:5432/mythos_unit" \
-    DATABASE_NPC_URL="postgresql+asyncpg://postgres:postgres@localhost:5432/mythos_unit" \
+ENV DATABASE_URL="postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit" \
+    DATABASE_NPC_URL="postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit" \
     MYTHOSMUD_ADMIN_PASSWORD="test-admin-password" \
     MYTHOSMUD_SECRET_KEY="test-secret-key-for-ci-workflow" \
     MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow" \

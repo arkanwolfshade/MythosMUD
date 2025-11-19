@@ -19,9 +19,9 @@ from ..persistence import PersistenceLayer
 from ..services.sanity_service import CatatoniaObserverProtocol, SanityService, SanityUpdateResult
 
 try:
-    from ..monitoring.performance_monitor import PerformanceMonitor
+    from server.monitoring.performance_monitor import PerformanceMonitor
 except ImportError:  # pragma: no cover - monitoring is optional in some test harnesses
-    PerformanceMonitor = None  # type: ignore[misc,assignment]
+    PerformanceMonitor = None  # type: ignore[assignment, misc]
 
 logger = get_logger(__name__)
 

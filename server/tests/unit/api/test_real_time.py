@@ -197,7 +197,7 @@ class TestWebSocketEndpoint:
 
             # Verify handle_websocket_connection was called with correct parameters
             mock_handle.assert_called_once_with(
-                mock_websocket, "test_player_id", None, connection_manager=mock_connection_manager
+                mock_websocket, "test_player_id", None, connection_manager=mock_connection_manager, token="valid_token"
             )
 
     @pytest.mark.asyncio
@@ -230,7 +230,11 @@ class TestWebSocketEndpoint:
             # Ensure decode was invoked with token extracted from header
             mock_decode.assert_called_once_with("test_token_from_header")
             mock_handle.assert_called_once_with(
-                mock_websocket, "player_from_header", None, connection_manager=mock_connection_manager
+                mock_websocket,
+                "player_from_header",
+                None,
+                connection_manager=mock_connection_manager,
+                token="test_token_from_header",
             )
 
     @pytest.mark.asyncio
@@ -264,7 +268,11 @@ class TestWebSocketEndpoint:
 
             # Verify handle_websocket_connection was called with player_id from query params
             mock_handle.assert_called_once_with(
-                mock_websocket, "test_player_id", None, connection_manager=mock_connection_manager
+                mock_websocket,
+                "test_player_id",
+                None,
+                connection_manager=mock_connection_manager,
+                token="invalid_token",
             )
 
     @pytest.mark.asyncio

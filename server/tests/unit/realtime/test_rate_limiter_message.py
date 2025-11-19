@@ -39,6 +39,9 @@ class TestMessageRateLimiting:
 
     def test_message_rate_limit_resets_after_window(self):
         """Test message rate limit resets after time window."""
+        # Capture current time before patching
+        base_time = time.time()
+
         # Send messages up to limit
         for _ in range(100):
             self.rate_limiter.check_message_rate_limit(self.connection_id)
@@ -49,7 +52,7 @@ class TestMessageRateLimiting:
         # Fast-forward time (mock time.time)
         with patch("server.realtime.rate_limiter.time.time") as mock_time:
             # Set time to be after the window (61 seconds later)
-            mock_time.return_value = time.time() + 61
+            mock_time.return_value = base_time + 61
 
             # Should now be allowed again
             result = self.rate_limiter.check_message_rate_limit(self.connection_id)
@@ -114,13 +117,16 @@ class TestMessageRateLimiting:
 
     def test_cleanup_old_message_attempts(self):
         """Test cleanup of old message attempts."""
+        # Capture current time before patching
+        base_time = time.time()
+
         # Send messages
         for _ in range(50):
             self.rate_limiter.check_message_rate_limit(self.connection_id)
 
         # Fast-forward time to be after window
         with patch("server.realtime.rate_limiter.time.time") as mock_time:
-            mock_time.return_value = time.time() + 61
+            mock_time.return_value = base_time + 61
 
             # Cleanup old attempts
             self.rate_limiter.cleanup_old_message_attempts()

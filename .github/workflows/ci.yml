@@ -18,8 +18,8 @@ jobs:
       ACTIONS_RUNNER_DEBUG: true
       UV_PROJECT_ENVIRONMENT: .venv-ci
       UV_LINK_MODE: copy
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/mythos_unit
-      DATABASE_NPC_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/mythos_unit
+      DATABASE_URL: postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit
+      DATABASE_NPC_URL: postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit
       MYTHOSMUD_ADMIN_PASSWORD: ${{ secrets.MYTHOSMUD_ADMIN_PASSWORD_CI }}
       MYTHOSMUD_SECRET_KEY: ${{ secrets.MYTHOSMUD_SECRET_KEY_CI }}
       MYTHOSMUD_JWT_SECRET: ${{ secrets.MYTHOSMUD_JWT_SECRET_CI }}

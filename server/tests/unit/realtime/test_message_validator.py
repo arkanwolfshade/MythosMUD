@@ -169,7 +169,7 @@ class TestMessageValidator:
 
     def test_schema_validation(self):
         """Test Pydantic schema validation."""
-        from server.schemas.websocket_messages import ClientWebSocketMessage
+        from server.schemas.websocket_messages import WrappedMessage
 
         # Valid schema
         outer_message = {
@@ -178,7 +178,7 @@ class TestMessageValidator:
         }
         data = json.dumps(outer_message)
 
-        result = self.validator.parse_and_validate(data, self.player_id, schema=ClientWebSocketMessage)
+        result = self.validator.parse_and_validate(data, self.player_id, schema=WrappedMessage)
         assert result == {"type": "chat", "command": "say hello"}
 
     def test_get_message_validator_singleton(self):

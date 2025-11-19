@@ -13,6 +13,8 @@ from typing import Any, NoReturn
 from fastapi import HTTPException, Request
 from fastapi.websockets import WebSocket
 
+from server.monitoring.exception_metrics import increment_exception
+
 from ..exceptions import (
     AuthenticationError,
     ConfigurationError,
@@ -24,7 +26,6 @@ from ..exceptions import (
     create_error_context,
 )
 from ..logging.enhanced_logging_config import get_logger
-from ..monitoring.exception_metrics import increment_exception
 
 logger = get_logger(__name__)
 

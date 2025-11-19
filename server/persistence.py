@@ -624,6 +624,27 @@ class PersistenceLayer:
                         # stable_id is just the room identifier, generate full ID
                         to_room_id = generate_room_id(to_plane, to_zone_name, to_subzone, to_stable_id)
 
+                    # Debug logging for sanitarium exits
+                    if from_room_id in (
+                        "earth_arkhamcity_sanitarium_room_foyer_001",
+                        "earth_arkhamcity_sanitarium_room_foyer_entrance_001",
+                    ) or to_room_id in (
+                        "earth_arkhamcity_sanitarium_room_foyer_001",
+                        "earth_arkhamcity_sanitarium_room_foyer_entrance_001",
+                    ):
+                        self._logger.info(
+                            "DEBUG: Building sanitarium exit",
+                            direction=direction,
+                            from_stable_id=from_stable_id,
+                            from_room_id=from_room_id,
+                            to_stable_id=to_stable_id,
+                            to_room_id=to_room_id,
+                            from_zone=from_zone,
+                            from_subzone=from_subzone,
+                            to_zone=to_zone,
+                            to_subzone=to_subzone,
+                        )
+
                     if from_room_id not in exits_by_room:
                         exits_by_room[from_room_id] = {}
 
@@ -643,11 +664,15 @@ class PersistenceLayer:
                     # Get exits for this room (already resolved to full room IDs)
                     exits = exits_by_room.get(room_id, {})
 
-                    # Debug: Log exits for specific room to verify loading
-                    if room_id == "earth_arkhamcity_sanitarium_room_foyer_001":
+                    # Debug: Log exits for specific rooms to verify loading
+                    if room_id in (
+                        "earth_arkhamcity_sanitarium_room_foyer_001",
+                        "earth_arkhamcity_sanitarium_room_foyer_entrance_001",
+                    ):
                         self._logger.info(
-                            "DEBUG: Loading foyer room with exits",
+                            "DEBUG: Loading sanitarium room with exits",
                             room_id=room_id,
+                            room_name=name,
                             exits=exits,
                             exits_count=len(exits),
                             exits_by_room_keys=list(exits_by_room.keys())[:10],

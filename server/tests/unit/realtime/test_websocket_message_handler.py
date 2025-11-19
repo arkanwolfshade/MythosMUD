@@ -113,7 +113,9 @@ class TestWebSocketMessageHandler:
 
             await handle_game_command(mock_websocket, "test_player", "look", ["north"])
 
-            mock_process.assert_called_once_with("look", ["north"], "test_player")
+            mock_process.assert_called_once_with(
+                "look", ["north"], "test_player", connection_manager=mock_connection_manager
+            )
 
     @pytest.mark.asyncio
     async def test_handle_game_command_without_args(self, mock_websocket, mock_connection_manager):
@@ -123,7 +125,9 @@ class TestWebSocketMessageHandler:
 
             await handle_game_command(mock_websocket, "test_player", "look north")
 
-            mock_process.assert_called_once_with("look", ["north"], "test_player")
+            mock_process.assert_called_once_with(
+                "look", ["north"], "test_player", connection_manager=mock_connection_manager
+            )
 
     @pytest.mark.asyncio
     async def test_handle_empty_command(self, mock_websocket, mock_connection_manager):

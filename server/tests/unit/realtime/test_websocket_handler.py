@@ -108,7 +108,9 @@ class TestWebSocketConnection:
         )
 
         # Verify
-        mock_connection_manager.connect_websocket.assert_called_once_with(mock_websocket, player_id, session_id)
+        mock_connection_manager.connect_websocket.assert_called_once_with(
+            mock_websocket, player_id, session_id, token=None
+        )
         mock_user_manager.load_player_mutes.assert_called_once_with(player_id)
         mock_websocket.send_json.assert_called()
         mock_connection_manager.disconnect_websocket.assert_called_once_with(player_id)
@@ -135,7 +137,7 @@ class TestWebSocketConnection:
         )
 
         # Verify
-        mock_connection_manager.connect_websocket.assert_called_once_with(mock_websocket, player_id, None)
+        mock_connection_manager.connect_websocket.assert_called_once_with(mock_websocket, player_id, None, token=None)
         mock_websocket.send_json.assert_not_called()
 
     @pytest.mark.asyncio
@@ -291,7 +293,11 @@ class TestGameCommandHandling:
             await handle_game_command(mock_websocket, player_id, command, args)
 
             # Verify
-            mock_process.assert_called_once_with("look", [], player_id)
+            # connection_manager is resolved from app.state.container.connection_manager
+            from server.main import app
+
+            expected_connection_manager = app.state.container.connection_manager
+            mock_process.assert_called_once_with("look", [], player_id, connection_manager=expected_connection_manager)
             mock_websocket.send_json.assert_called_once()
 
     @pytest.mark.asyncio
@@ -436,6 +442,8 @@ class TestWebSocketCommandProcessing:
 
         mock_player = Mock()
         mock_player.current_room_id = "room_1"
+        # Mock get_stats to return standing position (required for movement)
+        mock_player.get_stats = Mock(return_value={"position": "standing"})
         mock_connection_manager._get_player.return_value = mock_player
 
         mock_room = Mock()

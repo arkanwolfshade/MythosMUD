@@ -707,33 +707,43 @@ class TestNPCLifecycleManager:
         # Use a real room that exists in the test environment
         test_room_id = "earth_arkhamcity_sanitarium_room_foyer_entrance_001"
 
-        # Spawn the NPC first
-        npc_id = lifecycle_manager.spawn_npc(shopkeeper_definition, test_room_id, "test")
-        assert npc_id is not None
-        assert npc_id in lifecycle_manager.active_npcs
-        assert npc_id in lifecycle_manager.lifecycle_records
+        # Mock persistence to return a room
+        with (
+            patch("server.npc.lifecycle_manager.get_persistence") as mock_get_persistence,
+            patch.object(lifecycle_manager, "_can_spawn_npc", return_value=True),
+        ):
+            mock_persistence = MagicMock()
+            mock_room = MagicMock()
+            mock_persistence.get_room.return_value = mock_room
+            mock_get_persistence.return_value = mock_persistence
 
-        # Create NPCDied event
-        died_event = NPCDied(npc_id=npc_id, room_id=test_room_id, cause="combat")
+            # Spawn the NPC first
+            npc_id = lifecycle_manager.spawn_npc(shopkeeper_definition, test_room_id, "test")
+            assert npc_id is not None
+            assert npc_id in lifecycle_manager.active_npcs
+            assert npc_id in lifecycle_manager.lifecycle_records
 
-        # Handle the death event
-        lifecycle_manager._handle_npc_died(died_event)
+            # Create NPCDied event
+            died_event = NPCDied(npc_id=npc_id, room_id=test_room_id, cause="combat")
 
-        # Verify NPC was removed from active NPCs
-        assert npc_id not in lifecycle_manager.active_npcs
+            # Handle the death event
+            lifecycle_manager._handle_npc_died(died_event)
 
-        # AI Agent: CRITICAL - Verify lifecycle record is PRESERVED for XP calculation
-        #           The record must remain so combat service can read xp_value from base_stats
-        assert npc_id in lifecycle_manager.lifecycle_records, (
-            "Lifecycle record must be preserved after death for XP calculation"
-        )
+            # Verify NPC was removed from active NPCs
+            assert npc_id not in lifecycle_manager.active_npcs
 
-        # Verify NPC was queued for respawn
-        assert npc_id in lifecycle_manager.respawn_queue
-        respawn_data = lifecycle_manager.respawn_queue[npc_id]
-        assert respawn_data["npc_id"] == npc_id
-        assert respawn_data["definition"] == shopkeeper_definition
-        assert "scheduled_time" in respawn_data
+            # AI Agent: CRITICAL - Verify lifecycle record is PRESERVED for XP calculation
+            #           The record must remain so combat service can read xp_value from base_stats
+            assert npc_id in lifecycle_manager.lifecycle_records, (
+                "Lifecycle record must be preserved after death for XP calculation"
+            )
+
+            # Verify NPC was queued for respawn
+            assert npc_id in lifecycle_manager.respawn_queue
+            respawn_data = lifecycle_manager.respawn_queue[npc_id]
+            assert respawn_data["npc_id"] == npc_id
+            assert respawn_data["definition"] == shopkeeper_definition
+            assert "scheduled_time" in respawn_data
 
     def test_handle_npc_died_respects_delay_for_required_npcs(self, lifecycle_manager):
         """Test that required NPCs also respect respawn delay."""
@@ -756,18 +766,28 @@ class TestNPCLifecycleManager:
         )
         required_definition.id = 999
 
-        # Spawn the required NPC
-        npc_id = lifecycle_manager.spawn_npc(required_definition, test_room_id, "test")
-        assert npc_id is not None
+        # Mock persistence to return a room
+        with (
+            patch("server.npc.lifecycle_manager.get_persistence") as mock_get_persistence,
+            patch.object(lifecycle_manager, "_can_spawn_npc", return_value=True),
+        ):
+            mock_persistence = MagicMock()
+            mock_room = MagicMock()
+            mock_persistence.get_room.return_value = mock_room
+            mock_get_persistence.return_value = mock_persistence
 
-        # Record the current time
-        death_time = time.time()
+            # Spawn the required NPC
+            npc_id = lifecycle_manager.spawn_npc(required_definition, test_room_id, "test")
+            assert npc_id is not None
 
-        # Create NPCDied event
-        died_event = NPCDied(npc_id=npc_id, room_id=test_room_id, cause="combat")
+            # Record the current time
+            death_time = time.time()
 
-        # Handle the death event
-        lifecycle_manager._handle_npc_died(died_event)
+            # Create NPCDied event
+            died_event = NPCDied(npc_id=npc_id, room_id=test_room_id, cause="combat")
+
+            # Handle the death event
+            lifecycle_manager._handle_npc_died(died_event)
 
         # Verify NPC was queued for respawn
         assert npc_id in lifecycle_manager.respawn_queue

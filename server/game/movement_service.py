@@ -117,10 +117,18 @@ class MovementService:
         start_time = time.time()
         monitor = get_movement_monitor()
 
+        # Track timing breakdown for each operation phase
+        timing_breakdown = {}
+
         with self._lock:
             try:
+                # Measure lock acquisition wait time
+                lock_acquisition_time = time.time()
+                timing_breakdown["lock_wait_ms"] = (lock_acquisition_time - start_time) * 1000
+
                 # Step 1: Resolve the player (prefer by ID, fallback to name)
                 self._logger.debug("MovementService using persistence instance", persistence_id=id(self._persistence))
+                player_lookup_start = time.time()
                 player = self._persistence.get_player(player_id)
                 if not player:
                     # Fallback to name lookup only if player_id doesn't look like a UUID
@@ -130,6 +138,8 @@ class MovementService:
                             self._logger.info(
                                 "Resolved player by name", player_name=player_id, player_id=player.player_id
                             )
+                player_lookup_end = time.time()
+                timing_breakdown["player_lookup_ms"] = (player_lookup_end - player_lookup_start) * 1000
 
                 if not player:
                     self._logger.error("Player not found", player_id=player_id)
@@ -156,14 +166,28 @@ class MovementService:
                     self._logger.info("Player ID resolved", player_name=player_id, player_id=resolved_player_id)
 
                 # Step 2: Validate the move
+                validation_start = time.time()
                 if not self._validate_movement(player, from_room_id, to_room_id):
+                    validation_end = time.time()
+                    timing_breakdown["validation_ms"] = (validation_end - validation_start) * 1000
                     duration_ms = (time.time() - start_time) * 1000
+                    self._logger.debug(
+                        "Movement validation failed",
+                        player_id=resolved_player_id,
+                        duration_ms=duration_ms,
+                        **timing_breakdown,
+                    )
                     monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
                     return False
+                validation_end = time.time()
+                timing_breakdown["validation_ms"] = (validation_end - validation_start) * 1000
 
                 # Step 3: Get the rooms
+                room_lookup_start = time.time()
                 from_room = self._persistence.get_room(from_room_id)
                 to_room = self._persistence.get_room(to_room_id)
+                room_lookup_end = time.time()
+                timing_breakdown["room_lookup_ms"] = (room_lookup_end - room_lookup_start) * 1000
 
                 if not from_room:
                     self._logger.error("From room not found", room_id=from_room_id)
@@ -220,33 +244,69 @@ class MovementService:
                 )
 
                 # Remove from old room
+                room_update_start = time.time()
                 self._logger.debug("Removing player from room", player_id=resolved_player_id, room_id=from_room_id)
                 from_room.player_left(str(resolved_player_id))
 
                 # Add to new room
                 self._logger.debug("Adding player to room", player_id=resolved_player_id, room_id=to_room_id)
                 to_room.player_entered(str(resolved_player_id))
+                room_update_end = time.time()
+                timing_breakdown["room_update_ms"] = (room_update_end - room_update_start) * 1000
 
                 # Update player's room in persistence
+                db_write_start = time.time()
                 self._logger.debug("Updating player room in database", player_id=resolved_player_id, room_id=to_room_id)
                 player.current_room_id = to_room_id  # type: ignore[assignment]
                 self._persistence.save_player(player)
+                db_write_end = time.time()
+                timing_breakdown["db_write_ms"] = (db_write_end - db_write_start) * 1000
 
-                # Record successful movement
+                # Record successful movement with timing breakdown
                 duration_ms = (time.time() - start_time) * 1000
+                timing_breakdown["total_ms"] = duration_ms
+
+                # Log detailed timing breakdown for performance analysis
+                self._logger.info(
+                    "Movement timing breakdown",
+                    player_id=resolved_player_id,
+                    from_room=from_room_id,
+                    to_room=to_room_id,
+                    total_ms=duration_ms,
+                    lock_wait_ms=timing_breakdown.get("lock_wait_ms", 0),
+                    player_lookup_ms=timing_breakdown.get("player_lookup_ms", 0),
+                    validation_ms=timing_breakdown.get("validation_ms", 0),
+                    room_lookup_ms=timing_breakdown.get("room_lookup_ms", 0),
+                    room_update_ms=timing_breakdown.get("room_update_ms", 0),
+                    db_write_ms=timing_breakdown.get("db_write_ms", 0),
+                )
+
                 monitor.record_movement_attempt(player_id, from_room_id, to_room_id, True, duration_ms)
 
                 self._logger.info("Successfully moved player", player_id=resolved_player_id, room_id=to_room_id)
                 return True
 
             except Exception as e:
-                self._logger.error("Error moving player", player_id=player_id, error=str(e))
+                duration_ms = (time.time() - start_time) * 1000
+                timing_breakdown["total_ms"] = duration_ms
+
+                self._logger.error(
+                    "Error moving player",
+                    player_id=player_id,
+                    error=str(e),
+                    total_ms=duration_ms,
+                    lock_wait_ms=timing_breakdown.get("lock_wait_ms", 0),
+                    player_lookup_ms=timing_breakdown.get("player_lookup_ms", 0),
+                    validation_ms=timing_breakdown.get("validation_ms", 0),
+                    room_lookup_ms=timing_breakdown.get("room_lookup_ms", 0),
+                    room_update_ms=timing_breakdown.get("room_update_ms", 0),
+                    db_write_ms=timing_breakdown.get("db_write_ms", 0),
+                )
                 context = create_error_context()
                 context.metadata["player_id"] = player_id
                 context.metadata["from_room_id"] = from_room_id
                 context.metadata["to_room_id"] = to_room_id
                 context.metadata["operation"] = "move_player"
-                duration_ms = (time.time() - start_time) * 1000
                 monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
                 log_and_raise(
                     DatabaseError,
@@ -462,7 +522,7 @@ class MovementService:
         # Check if any exit in the room leads to the target room
         exits = from_room.exits
         if not exits:
-            self._logger.debug("No exits found in room", room_id=from_room.id)
+            self._logger.warning("No exits found in room", room_id=from_room.id, room_name=from_room.name)
             return False
 
         # Check each exit direction
@@ -471,7 +531,27 @@ class MovementService:
                 self._logger.debug("Valid exit found", direction=direction, room_id=to_room_id)
                 return True
 
-        self._logger.debug("No valid exit", from_room=from_room.id, to_room=to_room_id, available_exits=exits)
+        # Enhanced logging for debugging exit mismatches
+        # As noted in the Pnakotic Manuscripts, dimensional gateways must be precisely aligned
+        self._logger.warning(
+            "Exit validation failed - room ID mismatch",
+            from_room_id=from_room.id,
+            from_room_name=from_room.name,
+            to_room_id=to_room_id,
+            available_exits=exits,
+            exit_directions=list(exits.keys()),
+            exit_targets=list(exits.values()),
+        )
+
+        # Check if target room exists (might be a room ID format issue)
+        target_room = self._persistence.get_room(to_room_id)
+        if not target_room:
+            self._logger.error(
+                "Target room not found in persistence",
+                to_room_id=to_room_id,
+                from_room_id=from_room.id,
+            )
+
         return False
 
     def add_player_to_room(self, player_id: str, room_id: str) -> bool:

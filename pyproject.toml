@@ -195,8 +195,8 @@ no_implicit_reexport = false  # Low priority for now
 # Performance optimizations (best practices)
 cache_dir = ".mypy_cache"
 sqlite_cache = true
-namespace_packages = true
-explicit_package_bases = true
+namespace_packages = false  # Changed: server is not a namespace package
+explicit_package_bases = false  # Changed: not using explicit package bases
 
 # Discovery settings
 follow_imports = "normal"
@@ -215,11 +215,15 @@ exclude = [
     "^scripts/",
     "^docs/",
     "^tools/",
-    "^monitoring/",
     "^server/alembic/",
     "^server/test_who_command_direct.py$",
     "^server/tests/scripts/",
 ]
+
+# Per-module options - Allow imports from server.scripts (excluded from type checking but imports allowed)
+[[tool.mypy.overrides]]
+module = "server.scripts.*"
+ignore_missing_imports = true
 
 # Per-module options - Third-party libraries without stubs or with incomplete stubs
 [[tool.mypy.overrides]]
@@ -248,6 +252,16 @@ module = [
     "server.async_utils.tracked_task_manager",
     "server.tests.windows_logging_fix",
     "server.tests.windows_event_loop_fix",
+]
+ignore_missing_imports = true
+
+# Test files - ignore missing imports to focus on production code
+# Human reader: Test files have many dynamic imports and mocks that confuse mypy
+# AI reader: Test files use extensive mocking and dynamic imports that mypy can't resolve
+[[tool.mypy.overrides]]
+module = [
+    "server.tests.*",
+    "tests.*",
 ]
 ignore_missing_imports = true
 

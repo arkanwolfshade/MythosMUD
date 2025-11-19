@@ -21,17 +21,31 @@ class RateLimiter:
     windows and thresholds for different types of operations.
     """
 
-    def __init__(self) -> None:
-        """Initialize the rate limiter with default settings."""
+    def __init__(
+        self,
+        max_connection_attempts: int = 5,
+        connection_window: int = 60,
+        max_messages_per_minute: int = 100,
+        message_window: int = 60,
+    ) -> None:
+        """
+        Initialize the rate limiter with configurable settings.
+
+        Args:
+            max_connection_attempts: Maximum connection attempts per window (default: 5)
+            connection_window: Connection rate limit window in seconds (default: 60)
+            max_messages_per_minute: Maximum messages per minute per connection (default: 100)
+            message_window: Message rate limit window in seconds (default: 60)
+        """
         # Connection rate limiting
         self.connection_attempts: dict[str, list[float]] = {}
-        self.max_connection_attempts = 5  # Max attempts per minute
-        self.connection_window = 60  # Time window in seconds
+        self.max_connection_attempts = max_connection_attempts
+        self.connection_window = connection_window
 
         # Message rate limiting (per connection)
         self.message_attempts: dict[str, list[float]] = {}  # connection_id -> list of timestamps
-        self.max_messages_per_minute = 100  # Max messages per minute per connection
-        self.message_window = 60  # Time window in seconds
+        self.max_messages_per_minute = max_messages_per_minute
+        self.message_window = message_window
 
     def check_rate_limit(self, player_id: str) -> bool:
         """
@@ -263,6 +277,7 @@ class RateLimiter:
 
         return {
             "attempts": len(recent_attempts),
+            "current_attempts": len(recent_attempts),  # Alias for test compatibility
             "max_attempts": self.max_messages_per_minute,
             "window_seconds": self.message_window,
             "attempts_remaining": max(0, self.max_messages_per_minute - len(recent_attempts)),

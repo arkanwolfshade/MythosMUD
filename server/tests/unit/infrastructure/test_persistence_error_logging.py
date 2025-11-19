@@ -56,6 +56,7 @@ class TestPersistenceErrorLogging:
         assert "DATABASE_URL environment variable must be set" in str(exc_info.value)
         assert exc_info.value.context.metadata["operation"] == "persistence_init"
 
+    @pytest.mark.skip(reason="load_hierarchical_world removed - rooms now loaded from database")
     def test_room_cache_load_error_logging(self):
         """Test error logging when room cache loading fails."""
         # Mock world_loader to raise an exception
@@ -260,6 +261,7 @@ class TestWorldLoaderErrorLogging:
         assert exc_info.value.context.metadata["operation"] == "validate_room_data"
         assert exc_info.value.context.metadata["file_path"] == "test_file.json"
 
+    @pytest.mark.skip(reason="load_hierarchical_world removed - rooms now loaded from database")
     def test_room_file_load_error_logging(self):
         """Test error logging for room file loading errors."""
         from server.world_loader import load_hierarchical_world
@@ -282,6 +284,7 @@ class TestWorldLoaderErrorLogging:
         # We can't easily test the warning log without more complex mocking
         # The important thing is that it doesn't crash the system
 
+    @pytest.mark.skip(reason="load_hierarchical_world removed - rooms now loaded from database")
     def test_world_load_directory_error_logging(self):
         """Test error logging for world directory access errors."""
         from server.world_loader import load_hierarchical_world
@@ -294,6 +297,7 @@ class TestWorldLoaderErrorLogging:
         # We can't easily test the warning log without more complex mocking
         # The important thing is that it doesn't crash the system
 
+    @pytest.mark.skip(reason="load_rooms removed - rooms now loaded from database")
     def test_validation_errors_logging(self):
         """Test logging of validation errors during world loading."""
         from server.world_loader import load_rooms

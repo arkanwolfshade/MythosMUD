@@ -666,89 +666,11 @@ async def process_websocket_command(cmd: str, args: list, player_id: str, connec
         logger.warning("Persistence layer not available")
         return {"result": "Game system unavailable"}
 
-    # Handle basic commands - use unified command handler for look to support targets
-    if cmd == "look":
-        # Use the unified command handler for look commands to support targets
-        pass  # Fall through to unified command handler
-
-    elif cmd == "go":
-        logger.debug("Processing go command", args=args)
-        if not args:
-            logger.warning("Go command called without arguments")
-            return {"result": "Go where? Usage: go <direction>"}
-
-        direction = args[0].lower()
-        logger.debug("Direction", direction=direction)
-        # Use the connection manager's view of the player's current room
-        room_id = getattr(player, "current_room_id", None)
-        logger.debug("Current room ID", room_id=room_id)
-        room = persistence.get_room(room_id)
-        if not room:
-            logger.warning("Room not found", room_id=room_id)
-            return {"result": "You can't go that way"}
-
-        exits = room.exits if hasattr(room, "exits") else {}
-        target_room_id = exits.get(direction)
-        if not target_room_id:
-            return {"result": "You can't go that way"}
-
-        target_room = persistence.get_room(target_room_id)
-        if not target_room:
-            return {"result": "You can't go that way"}
-
-        # Use MovementService to move the player (this will trigger events)
-        from ..game.movement_service import MovementService
-
-        # Get the event bus from the connection manager (should be set during app startup)
-        event_bus = getattr(connection_manager, "_event_bus", None)
-        if not event_bus:
-            logger.error("No EventBus available for player movement", player_id=player_id)
-            return {"result": "Game system temporarily unavailable"}
-
-        # Get player combat service from connection manager
-        player_combat_service = getattr(connection_manager, "_player_combat_service", None)
-
-        # Create MovementService with the same persistence layer as the connection manager
-        movement_service = MovementService(event_bus, player_combat_service=player_combat_service)
-        # Override the persistence layer to use the same instance as the connection manager
-        if connection_manager.persistence:
-            movement_service._persistence = connection_manager.persistence
-            logger.debug("Overriding MovementService persistence with connection manager persistence")
-            logger.debug("MovementService persistence ID", persistence_id=id(movement_service._persistence))
-            logger.debug("Connection manager persistence ID", persistence_id=id(connection_manager.persistence))
-        else:
-            logger.error("Connection manager persistence is None!")
-
-        # Get the player's current room before moving
-        from_room_id = player.current_room_id
-
-        # Debug: Check if the player is in the room according to both persistence layers
-        from_room = connection_manager.persistence.get_room(from_room_id) if connection_manager.persistence else None
-        if from_room:
-            has_player = from_room.has_player(player_id)
-            logger.debug("Player in room", player_id=player_id, room_id=from_room_id, has_player=has_player)
-            logger.debug("Room players", room_id=from_room_id, players=list(from_room.get_players()))
-        else:
-            logger.error("Could not get room from connection manager persistence", room_id=from_room_id)
-
-        logger.debug("Moving player", player_id=player_id, from_room_id=from_room_id, to_room_id=target_room_id)
-
-        # Move the player using the movement service
-        success = movement_service.move_player(player_id, str(from_room_id), target_room_id)
-
-        logger.debug("Movement result", success=success)
-
-        if not success:
-            return {"result": "You can't go that way"}
-
-        # Get updated room info
-        updated_room = persistence.get_room(target_room_id)
-        name = getattr(updated_room, "name", "")
-        desc = getattr(updated_room, "description", "You see nothing special.")
-        exits = updated_room.exits if hasattr(updated_room, "exits") else {}
-        valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
-        exit_list = ", ".join(valid_exits) if valid_exits else "none"
-        return {"result": f"{name}\n{desc}\n\nExits: {exit_list}", "room_changed": True, "room_id": target_room_id}
+    # CRITICAL FIX: Removed special case for "go" command
+    # The unified command handler (called below) will handle "go" commands
+    # and apply all necessary checks including catatonia validation
+    # The old special case bypassed catatonia checks, allowing catatonic players to move
+    # All commands (including "go" and "look") now go through the unified handler
 
     # Use the unified command handler for all commands
     from ..alias_storage import AliasStorage

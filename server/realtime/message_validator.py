@@ -297,9 +297,12 @@ class WebSocketMessageValidator:
                 inner_message = json.loads(inner_data)
                 # Validate inner message structure
                 self.validate_json_structure(inner_message)
-                # Use inner message, preserve CSRF token from outer if present
-                if "csrfToken" not in inner_message and "csrfToken" in message:
-                    inner_message["csrfToken"] = message["csrfToken"]
+                # Use inner message, preserve CSRF token from outer if present and not None
+                # Human reader: Only copy csrfToken if it exists in outer message and is not None
+                # AI reader: Copy csrfToken from outer to inner message only if it has a non-None value
+                outer_csrf = message.get("csrfToken") or message.get("csrf_token")
+                if outer_csrf is not None and "csrfToken" not in inner_message and "csrf_token" not in inner_message:
+                    inner_message["csrfToken"] = outer_csrf
                 message = inner_message
             except json.JSONDecodeError:
                 # If inner message is not JSON, use outer message as-is
@@ -310,6 +313,12 @@ class WebSocketMessageValidator:
 
         # Step 6: Validate CSRF token
         self.validate_csrf(message, player_id, csrf_token)
+
+        # Step 7: Remove CSRF token from result (it's only needed for validation)
+        # Human reader: csrfToken is a validation field, not part of the actual message content
+        # AI reader: Remove csrfToken and csrf_token from the returned message after validation
+        message.pop("csrfToken", None)
+        message.pop("csrf_token", None)
 
         logger.debug("Message validation successful", player_id=player_id, message_type=message.get("type"))
 

@@ -50,10 +50,16 @@ If you prefer to set up the environment manually:
 The `.env.unit_test` file must contain the following required variables:
 
 - `SERVER_PORT=54731` - Port for test server
-- `DATABASE_URL=...` - SQLite database URL for player data
-- `DATABASE_NPC_URL=...` - SQLite database URL for NPC data
+- `DATABASE_URL=...` - **PostgreSQL** database URL for player data (format: `postgresql+asyncpg://user:password@host:port/database`)
+- `DATABASE_NPC_URL=...` - **PostgreSQL** database URL for NPC data (format: `postgresql+asyncpg://user:password@host:port/database`)
 - `MYTHOSMUD_ADMIN_PASSWORD=...` - Admin password for tests
 - And many other configuration variables (see `env.unit_test.example` for complete list)
+
+**CRITICAL**: Tests require PostgreSQL - SQLite is no longer supported. The default configuration uses:
+- Database: `mythos_unit`
+- User: `postgres`
+- Password: `Cthulhu1` (as configured in `.env.unit_test`)
+- Host: `localhost:5432`
 
 ## Running Tests
 
@@ -68,6 +74,64 @@ make test
 
 # Run specific test file
 uv run pytest server/tests/unit/commands/test_utility_commands.py -v
+```
+
+## PostgreSQL Setup
+
+Before running tests, you must ensure PostgreSQL is properly configured:
+
+### 1. Install PostgreSQL
+
+If PostgreSQL is not installed:
+- Download from: https://www.postgresql.org/download/windows/
+- Install with default settings
+- Note the password you set for the `postgres` user
+
+### 2. Verify PostgreSQL Connection
+
+Run the diagnostic script to check PostgreSQL connectivity:
+
+```powershell
+# From project root
+pwsh scripts/check_postgresql.ps1
+```
+
+This will verify:
+- PostgreSQL service is running
+- Network connectivity to the server
+- Authentication credentials
+- Database existence
+
+### 3. Create Test Database
+
+If the database doesn't exist, create it:
+
+```powershell
+# From project root
+pwsh scripts/setup_postgresql_test_db.ps1
+```
+
+Or manually:
+
+```powershell
+# Set password (replace with your actual postgres password)
+$env:PGPASSWORD = "Cthulhu1"
+psql -U postgres -c "CREATE DATABASE mythos_unit;"
+```
+
+### 4. Update Password if Needed
+
+If your PostgreSQL `postgres` user has a different password, either:
+
+**Option A**: Update `.env.unit_test`:
+```powershell
+# Edit server/tests/.env.unit_test
+# Change: DATABASE_URL=postgresql+asyncpg://postgres:YOUR_PASSWORD@localhost:5432/mythos_unit
+```
+
+**Option B**: Change PostgreSQL password to match `.env.unit_test`:
+```powershell
+psql -U postgres -c "ALTER USER postgres WITH PASSWORD 'Cthulhu1';"
 ```
 
 ## Troubleshooting
@@ -89,6 +153,50 @@ This error occurs when the `.env.unit_test` file exists but is missing required 
 This error occurs when Pydantic configuration validation fails due to missing environment variables.
 
 **Solution**: Ensure the `.env.unit_test` file exists and contains all required variables.
+
+### Error: "password authentication failed for user 'postgres'"
+
+This error occurs when PostgreSQL authentication fails.
+
+**Solutions**:
+1. **Check PostgreSQL is running**:
+   ```powershell
+   Get-Service -Name "*postgresql*"
+   Start-Service -Name "postgresql-x64-*"  # Adjust service name as needed
+   ```
+
+2. **Verify password matches**:
+   ```powershell
+   # Run diagnostic
+   pwsh scripts/check_postgresql.ps1
+   ```
+
+3. **Reset PostgreSQL password** (if needed):
+   ```powershell
+   psql -U postgres -c "ALTER USER postgres WITH PASSWORD 'Cthulhu1';"
+   ```
+
+4. **Check database exists**:
+   ```powershell
+   pwsh scripts/setup_postgresql_test_db.ps1
+   ```
+
+### Error: "connection to server at 'localhost' (127.0.0.1), port 5432 failed"
+
+This error occurs when PostgreSQL is not running or not accessible.
+
+**Solutions**:
+1. **Start PostgreSQL service**:
+   ```powershell
+   Get-Service -Name "*postgresql*" | Start-Service
+   ```
+
+2. **Check PostgreSQL is listening on port 5432**:
+   ```powershell
+   netstat -an | findstr :5432
+   ```
+
+3. **Verify firewall settings** (if using remote PostgreSQL)
 
 ## File Locations
 

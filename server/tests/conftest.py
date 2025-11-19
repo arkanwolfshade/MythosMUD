@@ -36,8 +36,23 @@ The test suite is organized hierarchically:
 - scripts/           - Test setup and migration scripts
 """
 
-import asyncio
+# CRITICAL: Set environment variables BEFORE any imports that might load config
+# This prevents SecurityConfig validation errors during test collection
+# Human reader: These must be set before importing any server modules that might load config
+# AI reader: Environment variables must be set before module-level config instantiation
 import os
+
+# Set critical environment variables immediately to prevent module-level config loading failures
+# Force-set these values even if they're empty (setdefault won't override empty strings)
+# Human reader: These must be set before any server modules load config during test collection
+# AI reader: Force-set environment variables to prevent SecurityConfig validation failures
+if not os.environ.get("MYTHOSMUD_ADMIN_PASSWORD") or len(os.environ.get("MYTHOSMUD_ADMIN_PASSWORD", "")) < 8:
+    os.environ["MYTHOSMUD_ADMIN_PASSWORD"] = "test-admin-password-for-development"
+os.environ.setdefault("SERVER_PORT", "54731")
+os.environ.setdefault("SERVER_HOST", "127.0.0.1")
+os.environ.setdefault("LOGGING_ENVIRONMENT", "unit_test")
+
+import asyncio
 import sys
 from pathlib import Path
 from typing import Any
@@ -216,7 +231,10 @@ def pytest_configure_node(node):
 # Validate test environment before proceeding
 try:
     validate_test_environment()
-    load_dotenv(TEST_ENV_PATH, override=True)  # Force override existing values
+    # Use override=False so environment variables (from Docker/CI) take precedence
+    # This allows Docker/CI to set DATABASE_URL with correct password while
+    # still allowing local development to use .env.unit_test values
+    load_dotenv(TEST_ENV_PATH, override=False)  # Don't override existing env vars
     logger.info("Loaded test environment secrets", test_env_path=str(TEST_ENV_PATH))
 except (FileNotFoundError, ValueError) as e:
     logger.critical("Test environment validation failed", error=str(e))
@@ -237,12 +255,8 @@ os.environ["MYTHOSMUD_JWT_SECRET"] = "test-jwt-secret-for-development"
 os.environ["MYTHOSMUD_RESET_TOKEN_SECRET"] = "test-reset-token-secret-for-development"
 os.environ["MYTHOSMUD_VERIFICATION_TOKEN_SECRET"] = "test-verification-token-secret-for-development"
 
-# CRITICAL: Pydantic ServerConfig requires SERVER_PORT - set at module level
-# This must happen BEFORE any server modules are imported during collection
-os.environ.setdefault("SERVER_PORT", "54731")
-os.environ.setdefault("SERVER_HOST", "127.0.0.1")
-os.environ.setdefault("MYTHOSMUD_ADMIN_PASSWORD", "test-admin-password-for-development")
-os.environ.setdefault("LOGGING_ENVIRONMENT", "unit_test")
+# Note: Critical environment variables are now set at the top of this file
+# before any imports to prevent config validation errors during test collection
 os.environ.setdefault("GAME_ROOM_DATA_PATH", "data/rooms")
 os.environ.setdefault("GAME_ALIASES_DIR", str(project_root / "data" / "unit_test" / "players" / "aliases"))
 

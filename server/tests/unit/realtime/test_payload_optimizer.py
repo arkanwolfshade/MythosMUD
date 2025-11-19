@@ -40,8 +40,14 @@ class TestPayloadOptimizer:
 
     def test_optimize_payload_exceeds_max_size(self):
         """Test optimization fails for payload exceeding maximum size."""
-        # Create payload larger than max (100KB)
-        large_payload = {"type": "chat", "message": "x" * 150000}
+        # Create payload with uncompressible data that exceeds max even when compressed
+        # Use random data that doesn't compress well - needs to be > 50KB compressed
+        import random
+        import string
+
+        # Generate random uncompressible data (150KB of random characters)
+        random_data = ''.join(random.choices(string.ascii_letters + string.digits, k=150000))
+        large_payload = {"type": "chat", "message": random_data}
 
         with pytest.raises(ValueError) as exc_info:
             self.optimizer.optimize_payload(large_payload)
@@ -126,6 +132,7 @@ class TestPayloadOptimizer:
         optimizer = PayloadOptimizer(
             max_payload_size=50 * 1024,  # 50KB
             compression_threshold=5 * 1024,  # 5KB
+            max_compressed_size=25 * 1024,  # 25KB max compressed
         )
 
         # Payload within custom limit should pass
@@ -133,8 +140,12 @@ class TestPayloadOptimizer:
         optimized = optimizer.optimize_payload(payload)
         assert optimized is not None
 
-        # Payload exceeding custom limit should fail
-        large_payload = {"type": "chat", "message": "x" * 60000}
+        # Payload exceeding custom limit with uncompressible data should fail
+        # Use random data that doesn't compress well
+        import random
+        import string
+        random_data = ''.join(random.choices(string.ascii_letters + string.digits, k=60000))
+        large_payload = {"type": "chat", "message": random_data}
         with pytest.raises(ValueError):
             optimizer.optimize_payload(large_payload)
 

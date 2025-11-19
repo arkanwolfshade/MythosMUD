@@ -1,6 +1,6 @@
 # MythosMUD Makefile
 
-.PHONY: help clean lint format test test-fast test-fast-serial test-ci test-comprehensive test-coverage test-client test-client-e2e test-e2e test-slow coverage build install run semgrep semgrep-autofix mypy lint-sqlalchemy setup-test-env
+.PHONY: help clean lint format test test-fast test-fast-serial test-ci test-comprehensive test-coverage test-client test-client-e2e test-e2e test-slow coverage build install run semgrep semgrep-autofix mypy lint-sqlalchemy setup-test-env check-postgresql setup-postgresql-test-db
 
 # Determine project root for worktree contexts
 PROJECT_ROOT := $(shell python -c "import os; print(os.path.dirname(os.getcwd()) if 'MythosMUD-' in os.getcwd() else os.getcwd())")
@@ -14,6 +14,11 @@ help:
 	@echo "  lint-sqlalchemy - Run SQLAlchemy async pattern linter"
 	@echo "  mypy            - Run mypy static type checking"
 	@echo "  format          - Run ruff format (Python) and Prettier (Node)"
+	@echo ""
+	@echo "Database Setup:"
+	@echo "  setup-test-env         - Create test environment files"
+	@echo "  check-postgresql       - Verify PostgreSQL connectivity for tests"
+	@echo "  setup-postgresql-test-db - Create PostgreSQL test database"
 	@echo ""
 	@echo "Testing - Daily Development:"
 	@echo "  test-fast        - Quick unit tests with parallelization (~2-3 min)"
@@ -44,6 +49,14 @@ clean:
 setup-test-env:
 	@echo "Setting up test environment files..."
 	cd $(PROJECT_ROOT) && powershell -ExecutionPolicy Bypass -File scripts/setup_test_environment.ps1
+
+check-postgresql:
+	@echo "Checking PostgreSQL connectivity for tests..."
+	cd $(PROJECT_ROOT) && powershell -ExecutionPolicy Bypass -File scripts/check_postgresql.ps1
+
+setup-postgresql-test-db:
+	@echo "Setting up PostgreSQL test database..."
+	cd $(PROJECT_ROOT) && powershell -ExecutionPolicy Bypass -File scripts/setup_postgresql_test_db.ps1
 
 lint:
 	cd $(PROJECT_ROOT) && python scripts/lint.py

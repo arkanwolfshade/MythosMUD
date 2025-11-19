@@ -321,8 +321,17 @@ async def process_command_unified(
         original_command=command_line,
     )
 
+    logger.debug("Checking catatonia before command processing", player=player_name, command=cmd)
     block_catatonia, catatonia_message = await _check_catatonia_block(player_name, cmd, request)
+    logger.debug(
+        "Catatonia check result",
+        player=player_name,
+        command=cmd,
+        block=block_catatonia,
+        message=catatonia_message,
+    )
     if block_catatonia:
+        logger.info("Command blocked due to catatonia", player=player_name, command=cmd, message=catatonia_message)
         return {"result": catatonia_message}
 
     # Step 5: Handle alias management commands first (don't expand these)
@@ -680,18 +689,50 @@ async def _check_catatonia_block(player_name: str, command: str, request: Reques
             logger.exception("Catatonia registry lookup failed", player=player_name)
 
     try:
+        logger.debug(
+            "Starting catatonia check",
+            player=player_name,
+            command=command,
+            player_id=player_id,
+        )
         async for session in get_async_session():
             try:
+                logger.debug("Database session obtained for catatonia check", player=player_name, player_id=player_id)
                 sanity_record = await session.get(PlayerSanity, str(player_id))
-                if sanity_record and sanity_record.current_tier == "catatonic":
-                    logger.info("Catatonic player command blocked", player=player_name, command=command)
+                logger.debug(
+                    "Sanity record retrieved",
+                    player=player_name,
+                    player_id=player_id,
+                    sanity_record_exists=bool(sanity_record),
+                    current_san=sanity_record.current_san if sanity_record else None,
+                    current_tier=sanity_record.current_tier if sanity_record else None,
+                )
+                # Block if tier is catatonic OR sanity is <= 0
+                # This prevents movement even if tier hasn't been updated yet
+                # As noted in the Pnakotic Manuscripts, sanity <= 0 should always result in catatonic state
+                if sanity_record and (sanity_record.current_tier == "catatonic" or sanity_record.current_san <= 0):
+                    logger.info(
+                        "Catatonic player command blocked",
+                        player=player_name,
+                        command=command,
+                        sanity=sanity_record.current_san,
+                        tier=sanity_record.current_tier,
+                    )
                     return (
                         True,
                         "Your body lies unresponsive, trapped in catatonia. Another must ground you.",
                     )
+                else:
+                    logger.debug(
+                        "Player not catatonic, allowing command",
+                        player=player_name,
+                        command=command,
+                        sanity=sanity_record.current_san if sanity_record else None,
+                        tier=sanity_record.current_tier if sanity_record else None,
+                    )
             except Exception as e:
                 # If database query fails, log but don't block command
-                logger.warning("Failed to check catatonia status in database", player=player_name, error=str(e))
+                logger.warning("Failed to check catatonia status in database", player=player_name, error=str(e), error_type=type(e).__name__)
                 return False, None
     except (RuntimeError, AttributeError) as e:
         # Event loop is closed or database is unavailable - don't block command

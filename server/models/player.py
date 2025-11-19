@@ -73,7 +73,9 @@ class Player(Base):
     status_effects = Column(Text(), nullable=False, default="[]")
 
     # Location and progression
-    current_room_id = Column(String(length=50), nullable=False, default="earth_arkhamcity_sanitarium_room_foyer_001")
+    # CRITICAL FIX: Increased from 50 to 255 to accommodate hierarchical room IDs
+    # Room IDs like "earth_arkhamcity_sanitarium_room_foyer_entrance_001" are 54 characters
+    current_room_id = Column(String(length=255), nullable=False, default="earth_arkhamcity_sanitarium_room_foyer_001")
     respawn_room_id = Column(
         String(length=100), nullable=True, default="earth_arkhamcity_sanitarium_room_foyer_001"
     )  # Player's respawn location (NULL = use default)
