@@ -12,6 +12,9 @@ CREATE TABLE IF NOT EXISTS users (
     is_superuser boolean NOT NULL DEFAULT false,
     is_verified boolean NOT NULL DEFAULT false,
     username varchar(255) NOT NULL UNIQUE,
+    display_name varchar(255) NOT NULL DEFAULT '',
+    password_hash varchar(255) NULL,
+    is_admin boolean NOT NULL DEFAULT false,
     created_at timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz NOT NULL DEFAULT now()
 );

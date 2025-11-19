@@ -42,6 +42,7 @@ class NPCCombatIntegrationService:
         event_bus: EventBus | None = None,
         combat_service: "CombatService | None" = None,
         player_combat_service=None,
+        connection_manager=None,
     ):
         """
         Initialize the NPC combat integration service.
@@ -55,6 +56,10 @@ class NPCCombatIntegrationService:
                 If None, will create a new one (for testing).
                 CRITICAL: Production code should ALWAYS pass the shared instance
                 from app.state to prevent instance mismatch bugs.
+            connection_manager: Optional ConnectionManager instance to use.
+                If None, CombatMessagingIntegration will try to lazy-load from container.
+                CRITICAL: Production code should ALWAYS pass the shared instance
+                from container to prevent initialization failures.
         """
         self.event_bus = event_bus or EventBus()
         self._persistence = get_persistence(event_bus)
@@ -108,7 +113,9 @@ class NPCCombatIntegrationService:
         self._combat_service.auto_progression_enabled = True
         self._combat_service.turn_interval_seconds = 6
 
-        self._messaging_integration = CombatMessagingIntegration()
+        # CRITICAL FIX: Pass connection_manager to CombatMessagingIntegration
+        # If not provided, it will try to lazy-load from container (for backward compatibility)
+        self._messaging_integration = CombatMessagingIntegration(connection_manager=connection_manager)
         self._event_publisher = CombatEventPublisher(event_bus)
 
         logger.info("NPC Combat Integration Service initialized with auto-progression enabled")

@@ -5,6 +5,9 @@ This module provides a service for publishing combat events to NATS
 for real-time distribution to clients and other systems.
 """
 
+import uuid
+from datetime import UTC, datetime
+
 from ..events.combat_events import (
     CombatEndedEvent,
     CombatStartedEvent,
@@ -53,6 +56,50 @@ class CombatEventPublisher:
             nats_service_type=(type(self.nats_service).__name__ if self.nats_service else "None"),
             subject_manager_enabled=subject_manager is not None,
         )
+
+    def _create_event_message(
+        self,
+        event_type: str,
+        event_data: dict,
+        room_id: str | None = None,
+        player_id: str | None = None,
+        timestamp: str | None = None,
+    ) -> dict:
+        """
+        Create a standardized event message structure matching EventMessageSchema.
+
+        Args:
+            event_type: Type of event (combat_started, player_attacked, etc.)
+            event_data: Event-specific data dictionary
+            room_id: Optional room ID for room-scoped events
+            player_id: Optional player ID for player-scoped events
+            timestamp: Optional custom timestamp (ISO format)
+
+        Returns:
+            Event message dictionary matching EventMessageSchema
+        """
+        # Generate message_id
+        message_id = str(uuid.uuid4())
+
+        # Generate timestamp if not provided
+        if timestamp is None:
+            timestamp = datetime.now(UTC).isoformat().replace("+00:00", "Z")
+
+        # Create base message structure matching EventMessageSchema
+        message = {
+            "message_id": message_id,
+            "timestamp": timestamp,
+            "event_type": event_type,
+            "event_data": event_data,
+        }
+
+        # Add optional fields
+        if room_id is not None:
+            message["room_id"] = room_id
+        if player_id is not None:
+            message["player_id"] = player_id
+
+        return message
 
     async def publish_combat_started(self, event: CombatStartedEvent) -> bool:
         """
@@ -104,17 +151,22 @@ class CombatEventPublisher:
             # Ensure timestamp is set (should be guaranteed by BaseEvent.__post_init__)
             assert event.timestamp is not None, "Event timestamp should be set by BaseEvent.__post_init__"
 
-            # Create message data for NATS
-            message_data = {
-                "event_type": "combat_started",
-                "data": {
-                    "combat_id": combat_id,
-                    "room_id": room_id,
-                    "participants": event.participants,
-                    "turn_order": event.turn_order,
-                    "timestamp": event.timestamp.isoformat(),
-                },
+            # Create event data dictionary
+            event_data = {
+                "combat_id": combat_id,
+                "room_id": room_id,
+                "participants": event.participants,
+                "turn_order": event.turn_order,
+                "timestamp": event.timestamp.isoformat(),
             }
+
+            # Create properly formatted message matching EventMessageSchema
+            message_data = self._create_event_message(
+                event_type="combat_started",
+                event_data=event_data,
+                room_id=room_id,
+                timestamp=event.timestamp.isoformat().replace("+00:00", "Z"),
+            )
 
             # Build subject using standardized pattern
             if self.subject_manager:
@@ -203,18 +255,23 @@ class CombatEventPublisher:
                 )
                 return False
 
-            # Create message data for NATS
-            message_data = {
-                "event_type": "combat_ended",
-                "data": {
-                    "combat_id": str(event.combat_id),
-                    "room_id": event.room_id,
-                    "reason": event.reason,
-                    "duration_seconds": event.duration_seconds,
-                    "participants": event.participants,
-                    "timestamp": event.timestamp.isoformat(),
-                },
+            # Create event data dictionary
+            event_data = {
+                "combat_id": str(event.combat_id),
+                "room_id": event.room_id,
+                "reason": event.reason,
+                "duration_seconds": event.duration_seconds,
+                "participants": event.participants,
+                "timestamp": event.timestamp.isoformat(),
             }
+
+            # Create properly formatted message matching EventMessageSchema
+            message_data = self._create_event_message(
+                event_type="combat_ended",
+                event_data=event_data,
+                room_id=event.room_id,
+                timestamp=event.timestamp.isoformat().replace("+00:00", "Z"),
+            )
 
             # Build subject using standardized pattern
             if self.subject_manager:
@@ -297,23 +354,28 @@ class CombatEventPublisher:
                 )
                 return False
 
-            # Create message data for NATS
-            message_data = {
-                "event_type": "player_attacked",
-                "data": {
-                    "combat_id": str(event.combat_id),
-                    "room_id": event.room_id,
-                    "attacker_id": str(event.attacker_id),
-                    "attacker_name": event.attacker_name,
-                    "target_id": str(event.target_id),
-                    "target_name": event.target_name,
-                    "damage": event.damage,
-                    "action_type": event.action_type,
-                    "target_current_hp": event.target_current_hp,
-                    "target_max_hp": event.target_max_hp,
-                    "timestamp": event.timestamp.isoformat(),
-                },
+            # Create event data dictionary
+            event_data = {
+                "combat_id": str(event.combat_id),
+                "room_id": event.room_id,
+                "attacker_id": str(event.attacker_id),
+                "attacker_name": event.attacker_name,
+                "target_id": str(event.target_id),
+                "target_name": event.target_name,
+                "damage": event.damage,
+                "action_type": event.action_type,
+                "target_current_hp": event.target_current_hp,
+                "target_max_hp": event.target_max_hp,
+                "timestamp": event.timestamp.isoformat(),
             }
+
+            # Create properly formatted message matching EventMessageSchema
+            message_data = self._create_event_message(
+                event_type="player_attacked",
+                event_data=event_data,
+                room_id=event.room_id,
+                timestamp=event.timestamp.isoformat().replace("+00:00", "Z"),
+            )
 
             # Build subject using standardized pattern
             if self.subject_manager:
@@ -397,23 +459,28 @@ class CombatEventPublisher:
                 )
                 return False
 
-            # Create message data for NATS
-            message_data = {
-                "event_type": "npc_attacked",
-                "data": {
-                    "combat_id": str(event.combat_id),
-                    "room_id": event.room_id,
-                    "attacker_id": str(event.attacker_id),
-                    "attacker_name": event.attacker_name,
-                    "npc_id": str(event.npc_id),
-                    "npc_name": event.npc_name,
-                    "damage": event.damage,
-                    "action_type": event.action_type,
-                    "target_current_hp": event.target_current_hp,
-                    "target_max_hp": event.target_max_hp,
-                    "timestamp": event.timestamp.isoformat(),
-                },
+            # Create event data dictionary
+            event_data = {
+                "combat_id": str(event.combat_id),
+                "room_id": event.room_id,
+                "attacker_id": str(event.attacker_id),
+                "attacker_name": event.attacker_name,
+                "npc_id": str(event.npc_id),
+                "npc_name": event.npc_name,
+                "damage": event.damage,
+                "action_type": event.action_type,
+                "target_current_hp": event.target_current_hp,
+                "target_max_hp": event.target_max_hp,
+                "timestamp": event.timestamp.isoformat(),
             }
+
+            # Create properly formatted message matching EventMessageSchema
+            message_data = self._create_event_message(
+                event_type="npc_attacked",
+                event_data=event_data,
+                room_id=event.room_id,
+                timestamp=event.timestamp.isoformat().replace("+00:00", "Z"),
+            )
 
             # Build subject using standardized pattern
             if self.subject_manager:
@@ -495,20 +562,25 @@ class CombatEventPublisher:
                 )
                 return False
 
-            # Create message data for NATS
-            message_data = {
-                "event_type": "npc_took_damage",
-                "data": {
-                    "combat_id": str(event.combat_id),
-                    "room_id": event.room_id,
-                    "npc_id": str(event.npc_id),
-                    "npc_name": event.npc_name,
-                    "damage": event.damage,
-                    "current_hp": event.current_hp,
-                    "max_hp": event.max_hp,
-                    "timestamp": event.timestamp.isoformat(),
-                },
+            # Create event data dictionary
+            event_data = {
+                "combat_id": str(event.combat_id),
+                "room_id": event.room_id,
+                "npc_id": str(event.npc_id),
+                "npc_name": event.npc_name,
+                "damage": event.damage,
+                "current_hp": event.current_hp,
+                "max_hp": event.max_hp,
+                "timestamp": event.timestamp.isoformat(),
             }
+
+            # Create properly formatted message matching EventMessageSchema
+            message_data = self._create_event_message(
+                event_type="npc_took_damage",
+                event_data=event_data,
+                room_id=event.room_id,
+                timestamp=event.timestamp.isoformat().replace("+00:00", "Z"),
+            )
 
             # Build subject using standardized pattern
             if self.subject_manager:
@@ -586,18 +658,23 @@ class CombatEventPublisher:
                 )
                 return False
 
-            # Create message data for NATS
-            message_data = {
-                "event_type": "npc_died",
-                "data": {
-                    "combat_id": str(event.combat_id),
-                    "room_id": event.room_id,
-                    "npc_id": str(event.npc_id),
-                    "npc_name": event.npc_name,
-                    "xp_reward": event.xp_reward,
-                    "timestamp": event.timestamp.isoformat(),
-                },
+            # Create event data dictionary
+            event_data = {
+                "combat_id": str(event.combat_id),
+                "room_id": event.room_id,
+                "npc_id": str(event.npc_id),
+                "npc_name": event.npc_name,
+                "xp_reward": event.xp_reward,
+                "timestamp": event.timestamp.isoformat(),
             }
+
+            # Create properly formatted message matching EventMessageSchema
+            message_data = self._create_event_message(
+                event_type="npc_died",
+                event_data=event_data,
+                room_id=event.room_id,
+                timestamp=event.timestamp.isoformat().replace("+00:00", "Z"),
+            )
 
             # Build subject using standardized pattern
             if self.subject_manager:
@@ -674,18 +751,23 @@ class CombatEventPublisher:
                 )
                 return False
 
-            # Create message data for NATS
-            message_data = {
-                "event_type": "combat_turn_advanced",
-                "data": {
-                    "combat_id": str(event.combat_id),
-                    "room_id": event.room_id,
-                    "current_turn": event.current_turn,
-                    "combat_round": event.combat_round,
-                    "next_participant": event.next_participant,
-                    "timestamp": event.timestamp.isoformat(),
-                },
+            # Create event data dictionary
+            event_data = {
+                "combat_id": str(event.combat_id),
+                "room_id": event.room_id,
+                "current_turn": event.current_turn,
+                "combat_round": event.combat_round,
+                "next_participant": event.next_participant,
+                "timestamp": event.timestamp.isoformat(),
             }
+
+            # Create properly formatted message matching EventMessageSchema
+            message_data = self._create_event_message(
+                event_type="combat_turn_advanced",
+                event_data=event_data,
+                room_id=event.room_id,
+                timestamp=event.timestamp.isoformat().replace("+00:00", "Z"),
+            )
 
             # Build subject using standardized pattern
             if self.subject_manager:
@@ -760,17 +842,22 @@ class CombatEventPublisher:
                 )
                 return False
 
-            # Create message data for NATS
-            message_data = {
-                "event_type": "combat_timeout",
-                "data": {
-                    "combat_id": str(event.combat_id),
-                    "room_id": event.room_id,
-                    "timeout_minutes": event.timeout_minutes,
-                    "last_activity": event.last_activity.isoformat() if event.last_activity else None,
-                    "timestamp": event.timestamp.isoformat(),
-                },
+            # Create event data dictionary
+            event_data = {
+                "combat_id": str(event.combat_id),
+                "room_id": event.room_id,
+                "timeout_minutes": event.timeout_minutes,
+                "last_activity": event.last_activity.isoformat() if event.last_activity else None,
+                "timestamp": event.timestamp.isoformat(),
             }
+
+            # Create properly formatted message matching EventMessageSchema
+            message_data = self._create_event_message(
+                event_type="combat_timeout",
+                event_data=event_data,
+                room_id=event.room_id,
+                timestamp=event.timestamp.isoformat().replace("+00:00", "Z"),
+            )
 
             # Build subject using standardized pattern
             if self.subject_manager:

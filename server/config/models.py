@@ -133,6 +133,33 @@ class DatabaseConfig(BaseSettings):
             raise ValueError("Pool configuration values must be at least 1")
         return v
 
+    @model_validator(mode="before")
+    @classmethod
+    def ensure_url_set(cls, data: Any) -> Any:
+        """
+        Ensure url is set - use npc_url as fallback if url is missing.
+
+        This handles cases where DatabaseConfig is instantiated with only npc_url
+        (e.g., from environment variables where DATABASE_URL might not be set but
+        DATABASE_NPC_URL is). In such cases, we use npc_url as the url value.
+        """
+        # Human reader: If url is missing but npc_url is set, use npc_url as url
+        # AI reader: Fallback logic for missing url field when npc_url is available
+        if isinstance(data, dict):
+            # If url is missing but npc_url is present, use npc_url as url
+            if "url" not in data and "npc_url" in data and data["npc_url"]:
+                logger.debug("url missing but npc_url available, using npc_url as url fallback")
+                data["url"] = data["npc_url"]
+            # Also check environment variables if data is empty or url is missing
+            elif "url" not in data or not data.get("url"):
+                # Check if DATABASE_URL is in environment but not in data
+                db_url = os.getenv("DATABASE_URL")
+                npc_url = os.getenv("DATABASE_NPC_URL")
+                if not db_url and npc_url:
+                    logger.debug("DATABASE_URL missing but DATABASE_NPC_URL available, using as fallback")
+                    data["url"] = npc_url
+        return data
+
     model_config = {"env_prefix": "DATABASE_", "case_sensitive": False, "extra": "ignore"}
 
 
