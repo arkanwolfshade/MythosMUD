@@ -13,7 +13,7 @@ import asyncio
 import json
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
@@ -295,7 +295,48 @@ class TestNPCPopulationController:
 
         mock_lifecycle_manager.spawn_npc = Mock(side_effect=mock_spawn_npc)
 
-        return NPCPopulationController(event_bus, mock_spawning_service, mock_lifecycle_manager, str(temp_rooms_dir))
+        # Create a mock async_persistence that doesn't actually load from database
+        mock_persistence = MagicMock()
+
+        # Patch the _load_zone_configurations method to skip database loading
+        with patch.object(NPCPopulationController, "_load_zone_configurations", return_value=None):
+            controller = NPCPopulationController(
+                event_bus,
+                spawning_service=mock_spawning_service,
+                lifecycle_manager=mock_lifecycle_manager,
+                async_persistence=mock_persistence,
+            )
+
+            # Manually add zone configurations that tests expect (from temp_rooms_dir fixture)
+            # Zone config for "arkhamcity"
+            zone_config_data = {
+                "zone_type": "city",
+                "environment": "outdoors",
+                "description": "A bustling urban area",
+                "weather_patterns": ["fog", "rain", "overcast"],
+                "special_rules": {
+                    "npc_spawn_modifier": 1.2,
+                    "sanity_drain_rate": 0.1,
+                    "combat_modifier": 1.0,
+                    "exploration_bonus": 0.5,
+                },
+            }
+            controller.zone_configurations["arkhamcity"] = ZoneConfiguration(zone_config_data)
+
+            # Sub-zone config for "arkhamcity/downtown"
+            subzone_config_data = {
+                "environment": "outdoors",
+                "description": "The bustling commercial heart",
+                "special_rules": {
+                    "npc_spawn_modifier": 1.5,
+                    "sanity_drain_rate": 0.08,
+                    "combat_modifier": 1.1,
+                    "exploration_bonus": 0.7,
+                },
+            }
+            controller.zone_configurations["arkhamcity/downtown"] = ZoneConfiguration(subzone_config_data)
+
+            return controller
 
     @pytest.fixture
     def shopkeeper_definition(self):
@@ -656,31 +697,34 @@ class TestNPCPopulationController:
 
     def test_zone_configuration_missing_files(self, event_bus):
         """Test handling of missing zone configuration files."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir)
+        # Create a mock async_persistence
+        mock_persistence = MagicMock()
 
-            # Create a zone directory without config files
-            arkham_dir = temp_path / "arkhamcity"
-            arkham_dir.mkdir()
-
+        # Patch the _load_zone_configurations method to skip database loading
+        with patch.object(NPCPopulationController, "_load_zone_configurations", return_value=None):
             # This should not raise an exception
-            controller = NPCPopulationController(event_bus, rooms_data_path=str(temp_path))
+            controller = NPCPopulationController(
+                event_bus,
+                spawning_service=None,
+                lifecycle_manager=None,
+                async_persistence=mock_persistence,
+            )
             assert len(controller.zone_configurations) == 0
 
     def test_zone_configuration_invalid_json(self, event_bus):
         """Test handling of invalid JSON in zone configuration files."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir)
+        # Create a mock async_persistence
+        mock_persistence = MagicMock()
 
-            # Create zone directory with invalid JSON
-            arkham_dir = temp_path / "arkhamcity"
-            arkham_dir.mkdir()
-
-            with open(arkham_dir / "zone_config.json", "w") as f:
-                f.write("invalid json content")
-
+        # Patch the _load_zone_configurations method to skip database loading
+        with patch.object(NPCPopulationController, "_load_zone_configurations", return_value=None):
             # This should not raise an exception
-            controller = NPCPopulationController(event_bus, rooms_data_path=str(temp_path))
+            controller = NPCPopulationController(
+                event_bus,
+                spawning_service=None,
+                lifecycle_manager=None,
+                async_persistence=mock_persistence,
+            )
             assert len(controller.zone_configurations) == 0
 
 

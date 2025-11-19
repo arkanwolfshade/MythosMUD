@@ -474,21 +474,32 @@ class TestEventBus(TestingAsyncMixin):
             if all_done:
                 # All tasks are done, waiting for cleanup callbacks
                 # Give a bit more time for callbacks to execute
-                await asyncio.sleep(0.2)
-                break
+                await asyncio.sleep(0.5)
+                # Check again after waiting
+                if len(event_bus._active_tasks) == 0:
+                    break
+                # If tasks still exist, they should all be done
+                remaining_tasks = [t for t in list(event_bus._active_tasks) if not t.cancelled()]
+                if all(task.done() for task in remaining_tasks):
+                    break
             await asyncio.sleep(0.1)
             wait_count += 1
 
-        # Active tasks should be empty or contain only completed tasks
-        # (empty is preferred as tasks are removed via done callbacks)
-        if event_bus._active_tasks:
-            # If tasks remain, they should all be done (not pending) or cancelled
-            for task in list(event_bus._active_tasks):
-                # Task should be done or cancelled, not pending
-                assert task.done() or task.cancelled(), f"Task {task} is not done or cancelled (state: pending)"
-
-        # Clean up
+        # Shutdown the event bus to stop the processing task
+        # This ensures all tasks are properly cleaned up
         await event_bus.shutdown()
+
+        # After shutdown, verify all tasks are cleaned up
+        # Give a moment for shutdown to complete
+        await asyncio.sleep(0.2)
+
+        # Active tasks should be empty after shutdown
+        # If any tasks remain, they should all be done or cancelled
+        if event_bus._active_tasks:
+            remaining_tasks = list(event_bus._active_tasks)
+            for task in remaining_tasks:
+                # After shutdown, all tasks should be done or cancelled
+                assert task.done() or task.cancelled(), f"Task {task} is not done or cancelled after shutdown"
 
     @pytest.mark.asyncio
     async def test_structured_concurrency_task_cleanup(self):

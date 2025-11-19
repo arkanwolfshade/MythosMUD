@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 from unittest.mock import AsyncMock, patch
@@ -86,7 +85,17 @@ async def test_time_event_consumer_updates_room_and_npc_state() -> None:
     event_bus = EventBus()
     chronicle = DummyChronicle(datetime(1930, 1, 1, 23, tzinfo=UTC))
     holiday_service = HolidayService(chronicle=chronicle, collection=_holiday_collection(), data_path="unused")
-    schedule_service = ScheduleService(schedule_dir="unused", collections=[(Path("npc.json"), _schedule_collection())])
+    # ScheduleService now loads from database - mock the database loading
+    schedule_collection = _schedule_collection()
+    mock_persistence = AsyncMock()
+
+    # Mock the async load to return our test schedules
+    async def mock_async_load(result_container):
+        result_container["entries"] = schedule_collection.schedules
+        result_container["error"] = None
+
+    with patch.object(ScheduleService, "_async_load_from_database", side_effect=mock_async_load):
+        schedule_service = ScheduleService(schedule_dir="unused", async_persistence=mock_persistence)
     room_service = DummyRoomService()
     npc_manager = DummyNPCManager()
 

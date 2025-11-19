@@ -26,10 +26,6 @@ import server.world_loader
 from server.world_loader import (
     generate_room_id,
     get_room_environment,
-    load_hierarchical_world,
-    load_subzone_config,
-    load_zone_config,
-    resolve_room_reference,
 )
 
 
@@ -118,6 +114,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
         with open(os.path.join(french_hill_path, "S_Garrison_St_002.json"), "w") as f:
             json.dump(room2_data, f)
 
+    @pytest.mark.skip(reason="load_zone_config removed - rooms now loaded from database")
     def test_load_zone_config(self):
         """Test loading zone configuration files."""
         # Create test zone config
@@ -131,7 +128,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
             json.dump(zone_config, f)
 
         # Test loading
-        loaded_config = load_zone_config(zone_path)
+        loaded_config = load_zone_config(zone_path)  # noqa: F821
         self.assertIsNotNone(loaded_config)
         self.assertEqual(loaded_config["zone_type"], "city")
         self.assertEqual(loaded_config["environment"], "outdoors")
@@ -139,9 +136,10 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
         # Test non-existent config
         empty_path = os.path.join(self.temp_dir, "empty_zone")
         os.makedirs(empty_path)
-        loaded_config = load_zone_config(empty_path)
+        loaded_config = load_zone_config(empty_path)  # noqa: F821
         self.assertIsNone(loaded_config)
 
+    @pytest.mark.skip(reason="load_subzone_config removed - rooms now loaded from database")
     def test_load_subzone_config(self):
         """Test loading sub-zone configuration files."""
         # Create test subzone config
@@ -155,14 +153,14 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
             json.dump(subzone_config, f)
 
         # Test loading
-        loaded_config = load_subzone_config(subzone_path)
+        loaded_config = load_subzone_config(subzone_path)  # noqa: F821
         self.assertIsNotNone(loaded_config)
         self.assertEqual(loaded_config["environment"], "indoors")
 
         # Test non-existent config
         empty_path = os.path.join(self.temp_dir, "empty_subzone")
         os.makedirs(empty_path)
-        loaded_config = load_subzone_config(empty_path)
+        loaded_config = load_subzone_config(empty_path)  # noqa: F821
         self.assertIsNone(loaded_config)
 
     def test_generate_room_id(self):
@@ -199,6 +197,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
         env = get_room_environment(room_data_no_env, None, None)
         self.assertEqual(env, "outdoors")
 
+    @pytest.mark.skip(reason="load_hierarchical_world removed - rooms now loaded from database")
     def test_load_hierarchical_world(self):
         """Test loading the complete hierarchical world structure."""
         # Temporarily patch the ROOMS_BASE_PATH
@@ -211,7 +210,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
             self.create_test_structure()
 
             # Load world data
-            world_data = load_hierarchical_world()
+            world_data = load_hierarchical_world()  # noqa: F821
 
             # Verify structure
             self.assertIn("rooms", world_data)
@@ -241,6 +240,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
             if original_path is not None:
                 server.world_loader.ROOMS_BASE_PATH = original_path
 
+    @pytest.mark.skip(reason="resolve_room_reference removed - rooms now loaded from database")
     def test_resolve_room_reference(self):
         """Test room reference resolution for both old and new formats."""
         # Temporarily patch the ROOMS_BASE_PATH
@@ -251,19 +251,19 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
             original_path = server.world_loader.ROOMS_BASE_PATH
             server.world_loader.ROOMS_BASE_PATH = self.rooms_path
             self.create_test_structure()
-            world_data = load_hierarchical_world()
+            world_data = load_hierarchical_world()  # noqa: F821
 
             # Test new format ID
             new_id = "earth_arkhamcity_french_hill_S_Garrison_St_001"
-            resolved = resolve_room_reference(new_id, world_data)
+            resolved = resolve_room_reference(new_id, world_data)  # noqa: F821
             self.assertEqual(resolved, new_id)
 
             # Test non-existent ID
-            resolved = resolve_room_reference("non_existent_room", world_data)
+            resolved = resolve_room_reference("non_existent_room", world_data)  # noqa: F821
             self.assertIsNone(resolved)
 
             # Test without world_data (should load automatically)
-            resolved = resolve_room_reference(new_id)
+            resolved = resolve_room_reference(new_id)  # noqa: F821
             self.assertEqual(resolved, new_id)
 
         finally:
@@ -271,6 +271,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
             if original_path is not None:
                 server.world_loader.ROOMS_BASE_PATH = original_path
 
+    @pytest.mark.skip(reason="load_rooms and load_hierarchical_world removed - rooms now loaded from database")
     def test_backward_compatibility(self):
         """Test backward compatibility with existing room loading."""
         # Temporarily patch the ROOMS_BASE_PATH
@@ -288,7 +289,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
             rooms = load_rooms()
 
             # Should return the same rooms as hierarchical loader
-            world_data = load_hierarchical_world()
+            world_data = load_hierarchical_world()  # noqa: F821
             self.assertEqual(len(rooms), len(world_data["rooms"]))
 
             # Verify room IDs match
@@ -300,6 +301,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
             if original_path is not None:
                 server.world_loader.ROOMS_BASE_PATH = original_path
 
+    @pytest.mark.skip(reason="load_hierarchical_world removed - rooms now loaded from database")
     def test_empty_rooms_directory_isolated(self):
         """Test behavior with empty rooms directory - completely isolated."""
         # Create a completely isolated temporary directory
@@ -318,7 +320,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
                 server.world_loader.ROOMS_BASE_PATH = isolated_rooms_path
                 print(f"[DEBUG] Patched ROOMS_BASE_PATH: {server.world_loader.ROOMS_BASE_PATH}")
 
-                world_data = load_hierarchical_world()
+                world_data = load_hierarchical_world()  # noqa: F821
                 print(f"[DEBUG] Loaded rooms: {list(world_data['rooms'].keys())}")
 
                 # Should return empty structure
@@ -334,6 +336,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
             # Clean up
             shutil.rmtree(isolated_temp_dir)
 
+    @pytest.mark.skip(reason="load_zone_config removed - rooms now loaded from database")
     def test_malformed_config_files(self):
         """Test handling of malformed configuration files."""
         # Create malformed zone config
@@ -345,9 +348,10 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
             f.write('{"invalid": json}')  # Malformed JSON
 
         # Should handle gracefully
-        loaded_config = load_zone_config(zone_path)
+        loaded_config = load_zone_config(zone_path)  # noqa: F821
         self.assertIsNone(loaded_config)
 
+    @pytest.mark.skip(reason="load_hierarchical_world removed - rooms now loaded from database")
     def test_environment_inheritance_priority(self):
         """Test that environment inheritance follows correct priority."""
         # Temporarily patch the ROOMS_BASE_PATH
@@ -388,7 +392,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
                 json.dump(room_data, f)
 
             # Load world data
-            world_data = load_hierarchical_world()
+            world_data = load_hierarchical_world()  # noqa: F821
 
             # Room should inherit indoor environment (highest priority)
             room = world_data["rooms"]["earth_test_zone_test_subzone_test_room"]
@@ -402,12 +406,10 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
     def test_module_coverage(self):
         """Test to ensure world_loader module is properly imported for coverage."""
         # This test ensures the module is executed and tracked by coverage
-        assert hasattr(server.world_loader, "load_rooms")
-        assert hasattr(server.world_loader, "load_hierarchical_world")
+        # Note: load_rooms, load_hierarchical_world, and resolve_room_reference have been removed
+        # as rooms are now loaded from database instead of files
         assert hasattr(server.world_loader, "generate_room_id")
         assert hasattr(server.world_loader, "get_room_environment")
-        assert hasattr(server.world_loader, "resolve_room_reference")
-        assert hasattr(server.world_loader, "ROOMS_BASE_PATH")
 
 
 if __name__ == "__main__":

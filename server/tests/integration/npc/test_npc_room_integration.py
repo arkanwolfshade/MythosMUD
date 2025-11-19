@@ -50,7 +50,17 @@ class TestNPCRoomIntegration:
     @pytest.fixture
     def population_controller(self, event_bus):
         """Create an NPC population controller."""
-        return NPCPopulationController(event_bus)
+        # Create a mock async_persistence that doesn't actually load from database
+        mock_persistence = MagicMock()
+
+        # Patch the _load_zone_configurations method to skip database loading
+        with patch.object(NPCPopulationController, "_load_zone_configurations", return_value=None):
+            return NPCPopulationController(
+                event_bus,
+                spawning_service=None,
+                lifecycle_manager=None,
+                async_persistence=mock_persistence,
+            )
 
     @pytest.fixture
     def spawning_service(self, event_bus, population_controller):

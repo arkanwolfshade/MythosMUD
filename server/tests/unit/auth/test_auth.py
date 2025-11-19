@@ -226,7 +226,8 @@ class TestRegistrationEndpoints:
         try:
             # First, register a user to create the duplicate condition
             first_response = container_test_client.post(
-                "/auth/register", json={"username": unique_username, "password": "testpass123", "invite_code": "TEST456"}
+                "/auth/register",
+                json={"username": unique_username, "password": "testpass123", "invite_code": "TEST456"},
             )
 
             # The first registration should succeed
@@ -234,7 +235,8 @@ class TestRegistrationEndpoints:
 
             # Now try to register with the same username
             response = container_test_client.post(
-                "/auth/register", json={"username": unique_username, "password": "testpass123", "invite_code": "TEST456"}
+                "/auth/register",
+                json={"username": unique_username, "password": "testpass123", "invite_code": "TEST456"},
             )
 
             # Should return 400 for duplicate username
