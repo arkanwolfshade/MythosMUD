@@ -17,7 +17,6 @@ from fastapi import FastAPI
 from sqlalchemy import select
 
 from ..container import ApplicationContainer
-from ..database import get_async_session
 from ..logging.enhanced_logging_config import get_logger, update_logging_with_player_service
 from ..realtime.sse_handler import broadcast_game_event
 from ..services.catatonia_registry import CatatoniaRegistry
@@ -226,9 +225,43 @@ async def lifespan(app: FastAPI):
     logger.info("Player respawn service initialized")
 
     async def _sanitarium_failover(player_id: str, current_san: int) -> None:
-        """Failover callback that relocates catatonic players to the sanitarium."""
+        """
+        Failover callback that relocates catatonic players to the sanitarium.
 
-        async for session in get_async_session():
+        This callback runs in a background task (fire-and-forget) to avoid blocking
+        the sanity service transaction. It uses a completely independent database session
+        to prevent transaction conflicts.
+
+        CRITICAL: We add a small delay to ensure the sanity service's transaction has
+        completed before attempting the respawn. This prevents asyncpg connection conflicts.
+        """
+        # Small delay to ensure the sanity service transaction has completed
+        # This prevents "another operation is in progress" errors from asyncpg
+        await asyncio.sleep(0.1)
+
+        # Use container's database manager to get a session maker
+        # This ensures we get a fresh, independent session that won't conflict
+        # with any active transactions from the sanity service
+        if container.database_manager is None:
+            logger.error(
+                "Database manager not available for catatonia failover",
+                player_id=player_id,
+            )
+            return
+
+        try:
+            session_maker = container.database_manager.get_session_maker()
+        except Exception as exc:
+            logger.error(
+                "Failed to get session maker for catatonia failover",
+                player_id=player_id,
+                error=str(exc),
+                exc_info=True,
+            )
+            return
+
+        # Create a completely independent session for the respawn operation
+        async with session_maker() as session:
             try:
                 await app.state.player_respawn_service.move_player_to_limbo(player_id, "catatonia_failover", session)
                 await app.state.player_respawn_service.respawn_player(player_id, session)
@@ -242,9 +275,10 @@ async def lifespan(app: FastAPI):
                     "Catatonia failover failed",
                     player_id=player_id,
                     error=str(exc),
+                    exc_info=True,
                 )
-            # The generator only yields once; return ensures we exit after handling the first session.
-            return
+                # Rollback the session on error
+                await session.rollback()
 
     app.state.catatonia_registry = CatatoniaRegistry(failover_callback=_sanitarium_failover)
     logger.info("Catatonia registry initialized")

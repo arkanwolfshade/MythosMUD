@@ -477,23 +477,29 @@ class PassiveSanityFluxService:
             try:
                 # Query zone configurations
                 query = """
+                    -- Query zones (authoritative zone data)
+                    SELECT
+                        z.stable_id as zone_stable_id,
+                        NULL::text as subzone_stable_id,
+                        z.special_rules
+                    FROM zones z
+                    WHERE z.special_rules IS NOT NULL
+                    UNION ALL
+                    -- Query subzones (authoritative subzone data)
                     SELECT
                         z.stable_id as zone_stable_id,
                         sz.stable_id as subzone_stable_id,
-                        zc.configuration_type,
-                        zc.special_rules
-                    FROM zone_configurations zc
-                    JOIN zones z ON zc.zone_id = z.id
-                    LEFT JOIN subzones sz ON zc.subzone_id = sz.id
-                    WHERE zc.special_rules IS NOT NULL
-                    ORDER BY z.stable_id, sz.stable_id, zc.configuration_type
+                        sz.special_rules
+                    FROM subzones sz
+                    JOIN zones z ON sz.zone_id = z.id
+                    WHERE sz.special_rules IS NOT NULL
+                    ORDER BY zone_stable_id, subzone_stable_id
                 """
                 rows = await conn.fetch(query)
 
                 for row in rows:
                     zone_stable_id = row["zone_stable_id"]
                     subzone_stable_id = row["subzone_stable_id"]
-                    config_type = row["configuration_type"]
                     # asyncpg returns JSONB as dict/list, but ensure proper types
                     special_rules = row["special_rules"] if row["special_rules"] else {}
                     if isinstance(special_rules, str):
@@ -511,7 +517,6 @@ class PassiveSanityFluxService:
                             rate=rate,
                             zone_stable_id=zone_stable_id,
                             subzone_stable_id=subzone_stable_id,
-                            config_type=config_type,
                             message="This may indicate a configuration error (e.g., 100 instead of 0.1)",
                         )
 
@@ -520,19 +525,7 @@ class PassiveSanityFluxService:
                     plane = zone_parts[0] if len(zone_parts) > 0 else None
                     zone = zone_parts[1] if len(zone_parts) > 1 else None
 
-                    if config_type == "zone":
-                        # Zone-level config
-                        key = self._build_override_key(plane, zone, None)
-                        flux = self._rate_to_flux(rate)
-                        result_container["overrides"][key] = flux
-                        logger.debug(
-                            "Loaded sanity rate override from database",
-                            key=key,
-                            rate=rate,
-                            flux=flux,
-                            source="zone_config",
-                        )
-                    elif config_type == "subzone" and subzone_stable_id:
+                    if subzone_stable_id:
                         # Subzone-level config
                         key = self._build_override_key(plane, zone, subzone_stable_id)
                         flux = self._rate_to_flux(rate)
@@ -543,6 +536,18 @@ class PassiveSanityFluxService:
                             rate=rate,
                             flux=flux,
                             source="subzone_config",
+                        )
+                    else:
+                        # Zone-level config
+                        key = self._build_override_key(plane, zone, None)
+                        flux = self._rate_to_flux(rate)
+                        result_container["overrides"][key] = flux
+                        logger.debug(
+                            "Loaded sanity rate override from database",
+                            key=key,
+                            rate=rate,
+                            flux=flux,
+                            source="zone_config",
                         )
             finally:
                 await conn.close()

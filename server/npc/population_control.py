@@ -39,6 +39,7 @@ class ZoneConfiguration:
         Args:
             config_data: Dictionary containing zone configuration data
         """
+        self.zone_type = config_data.get("zone_type")  # Only populated for zone-level configs
         self.environment = config_data.get("environment", "outdoors")
         self.description = config_data.get("description", "")
         self.weather_patterns = config_data.get("weather_patterns", [])
@@ -292,28 +293,24 @@ class NPCPopulationController:
             # Use asyncpg directly to avoid event loop conflicts
             conn = await asyncpg.connect(database_url)
             try:
-                # Query zone configurations
-                query = """
+                # Query zones (authoritative zone data)
+                zone_query = """
                     SELECT
-                        zc.id,
+                        z.id,
                         z.stable_id as zone_stable_id,
-                        sz.stable_id as subzone_stable_id,
-                        zc.configuration_type,
-                        zc.environment,
-                        zc.description,
-                        zc.weather_patterns,
-                        zc.special_rules
-                    FROM zone_configurations zc
-                    JOIN zones z ON zc.zone_id = z.id
-                    LEFT JOIN subzones sz ON zc.subzone_id = sz.id
-                    ORDER BY z.stable_id, sz.stable_id, zc.configuration_type
+                        z.zone_type,
+                        z.environment,
+                        z.description,
+                        z.weather_patterns,
+                        z.special_rules
+                    FROM zones z
+                    ORDER BY z.stable_id
                 """
-                rows = await conn.fetch(query)
+                zone_rows = await conn.fetch(zone_query)
 
-                for row in rows:
+                for row in zone_rows:
                     zone_stable_id = row["zone_stable_id"]
-                    subzone_stable_id = row["subzone_stable_id"]
-                    config_type = row["configuration_type"]
+                    zone_type = row["zone_type"]
                     environment = row["environment"]
                     description = row["description"]
                     # asyncpg returns JSONB as dict/list, but ensure proper types
@@ -333,8 +330,9 @@ class NPCPopulationController:
                     zone_parts = zone_stable_id.split("/")
                     zone_name = zone_parts[1] if len(zone_parts) > 1 else zone_stable_id
 
-                    # Build config data dictionary
+                    # Build config data dictionary for zone
                     config_data = {
+                        "zone_type": zone_type,
                         "environment": environment,
                         "description": description,
                         "weather_patterns": weather_patterns,
@@ -342,21 +340,68 @@ class NPCPopulationController:
                     }
 
                     zone_config = ZoneConfiguration(config_data)
+                    result_container["configs"]["zone"][zone_name] = zone_config
 
-                    if config_type == "zone":
-                        # Zone-level config: key is just zone name
-                        result_container["configs"]["zone"][zone_name] = zone_config
-                    elif config_type == "subzone" and subzone_stable_id:
-                        # Subzone-level config: key is "zone/subzone"
-                        subzone_key = f"{zone_name}/{subzone_stable_id}"
-                        result_container["configs"]["subzone"][subzone_key] = zone_config
-                        logger.debug(
-                            "Loaded subzone configuration",
-                            subzone_key=subzone_key,
-                            zone_stable_id=zone_stable_id,
-                            subzone_stable_id=subzone_stable_id,
-                            zone_name=zone_name,
-                        )
+                # Query subzones (authoritative subzone data) with zone info via zone_configurations
+                subzone_query = """
+                    SELECT
+                        sz.id,
+                        z.stable_id as zone_stable_id,
+                        sz.stable_id as subzone_stable_id,
+                        sz.environment,
+                        sz.description,
+                        sz.special_rules,
+                        z.zone_type,
+                        z.weather_patterns
+                    FROM subzones sz
+                    JOIN zones z ON sz.zone_id = z.id
+                    ORDER BY z.stable_id, sz.stable_id
+                """
+                subzone_rows = await conn.fetch(subzone_query)
+
+                for row in subzone_rows:
+                    zone_stable_id = row["zone_stable_id"]
+                    subzone_stable_id = row["subzone_stable_id"]
+                    environment = row["environment"]
+                    description = row["description"]
+                    # asyncpg returns JSONB as dict/list, but ensure proper types
+                    special_rules = row["special_rules"] if row["special_rules"] else {}
+                    if isinstance(special_rules, str):
+                        import json
+
+                        special_rules = json.loads(special_rules)
+
+                    # Subzones inherit zone_type and weather_patterns from parent zone
+                    zone_type = row["zone_type"]
+                    weather_patterns = row["weather_patterns"] if row["weather_patterns"] else []
+                    if isinstance(weather_patterns, str):
+                        import json
+
+                        weather_patterns = json.loads(weather_patterns)
+
+                    # Extract zone name from stable_id (format: 'plane/zone')
+                    zone_parts = zone_stable_id.split("/")
+                    zone_name = zone_parts[1] if len(zone_parts) > 1 else zone_stable_id
+
+                    # Build config data dictionary for subzone
+                    config_data = {
+                        "zone_type": zone_type,  # Inherited from zone
+                        "environment": environment,
+                        "description": description,
+                        "weather_patterns": weather_patterns,  # Inherited from zone
+                        "special_rules": special_rules,
+                    }
+
+                    zone_config = ZoneConfiguration(config_data)
+                    subzone_key = f"{zone_name}/{subzone_stable_id}"
+                    result_container["configs"]["subzone"][subzone_key] = zone_config
+                    logger.debug(
+                        "Loaded subzone configuration",
+                        subzone_key=subzone_key,
+                        zone_stable_id=zone_stable_id,
+                        subzone_stable_id=subzone_stable_id,
+                        zone_name=zone_name,
+                    )
             finally:
                 await conn.close()
         except Exception as e:

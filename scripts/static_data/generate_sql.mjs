@@ -128,6 +128,7 @@ async function generateRooms() {
 	const rooms = [];                // room objects with computed ids
 	const links = [];                // from,to,direction
 
+	// First pass: collect subzones from room files
 	for (const file of files) {
 		const base = file.toLowerCase();
 		if (base.endsWith('subzone_config.json') || base.endsWith('zone_config.json')) {
@@ -148,17 +149,104 @@ async function generateRooms() {
 		rooms.push(room);
 	}
 
+	// Second pass: also create subzones that have config files but no rooms
+	for (const file of files) {
+		const base = file.toLowerCase();
+		if (!base.endsWith('subzone_config.json')) {
+			continue; // only process subzone config files
+		}
+		// Extract plane, zone, subzone from path: data/local/rooms/plane/zone/subzone/subzone_config.json
+		const parts = file.split(/[/\\]/);
+		const roomsIndex = parts.indexOf('rooms');
+		const planeIndex = roomsIndex + 1;
+		if (roomsIndex >= 0 && planeIndex > 0 && planeIndex < parts.length - 3) {
+			const plane = parts[planeIndex];
+			const zone = parts[planeIndex + 1];
+			const subzone = parts[planeIndex + 2];
+			if (plane && zone && subzone) {
+				const zoneStable = `${plane}/${zone}`;
+				const subStable = subzone;
+				insertZones.set(zoneStable, zone);
+				// Only add if not already in list (deduplicate)
+				const key = subzoneIdKey(zoneStable, subStable);
+				if (!insertSubzones.find(s => subzoneIdKey(s.zoneStable, s.subStable) === key)) {
+					insertSubzones.push({ zoneStable, subStable, name: subStable });
+				}
+			}
+		}
+	}
+
 	// Build SQL in dependency order
 	const parts = [];
 	parts.push('-- Generated from rooms directory');
+
+	// Load zone configs for populating zone fields
+	const zoneConfigsByKey = new Map();
+	for (const file of files) {
+		const base = file.toLowerCase();
+		if (base.endsWith('zone_config.json') && !base.endsWith('subzone_config.json')) {
+			const config = JSON.parse(await fs.readFile(file, 'utf-8'));
+			// Extract plane, zone from path: data/local/rooms/plane/zone/zone_config.json
+			const parts = file.split(/[/\\]/);
+			const roomsIndex = parts.indexOf('rooms');
+			const planeIndex = roomsIndex + 1;
+			if (roomsIndex >= 0 && planeIndex > 0 && planeIndex < parts.length - 2) {
+				const plane = parts[planeIndex];
+				const zone = parts[planeIndex + 1];
+				if (plane && zone) {
+					const zoneStable = `${plane}/${zone}`;
+					zoneConfigsByKey.set(zoneStable, config);
+				}
+			}
+		}
+	}
 
 	// Zones
 	for (const [zoneStable, zoneName] of insertZones.entries()) {
 		const zid = v5('zones', zoneStable);
 		zoneIdByStable.set(zoneStable, zid);
+
+		// Get zone config if available
+		const zoneConfig = zoneConfigsByKey.get(zoneStable);
+		const zoneType = zoneConfig?.zone_type ? `'${ql(zoneConfig.zone_type)}'` : 'NULL';
+		const environment = zoneConfig?.environment ? `'${ql(zoneConfig.environment)}'` : 'NULL';
+		const description = zoneConfig?.description ? `'${ql(zoneConfig.description)}'` : 'NULL';
+		const weatherPatterns = zoneConfig?.weather_patterns ? JSON.stringify(zoneConfig.weather_patterns).replaceAll("'", "''") : '[]';
+		const specialRules = zoneConfig?.special_rules ? JSON.stringify(zoneConfig.special_rules).replaceAll("'", "''") : '{}';
+
 		parts.push(
-			`INSERT INTO zones (id, stable_id, name) VALUES ('${zid}'::uuid, '${ql(zoneStable)}', '${ql(zoneName)}') ON CONFLICT (stable_id) DO NOTHING;`
+			`INSERT INTO zones (id, stable_id, name, zone_type, environment, description, weather_patterns, special_rules) VALUES (` +
+				`'${zid}'::uuid, '${ql(zoneStable)}', '${ql(zoneName)}', ${zoneType}, ${environment}, ${description}, '${weatherPatterns}'::jsonb, '${specialRules}'::jsonb) ` +
+				`ON CONFLICT (stable_id) DO UPDATE SET ` +
+				`zone_type = EXCLUDED.zone_type, ` +
+				`environment = EXCLUDED.environment, ` +
+				`description = EXCLUDED.description, ` +
+				`weather_patterns = EXCLUDED.weather_patterns, ` +
+				`special_rules = EXCLUDED.special_rules;`
 		);
+	}
+
+	// Load subzone configs for populating subzone fields
+	const subzoneConfigsByKey = new Map();
+	for (const file of files) {
+		const base = file.toLowerCase();
+		if (base.endsWith('subzone_config.json')) {
+			const config = JSON.parse(await fs.readFile(file, 'utf-8'));
+			// Extract plane, zone, subzone from path: data/local/rooms/plane/zone/subzone/subzone_config.json
+			const parts = file.split(/[/\\]/);
+			const roomsIndex = parts.indexOf('rooms');
+			const planeIndex = roomsIndex + 1;
+			if (roomsIndex >= 0 && planeIndex > 0 && planeIndex < parts.length - 3) {
+				const plane = parts[planeIndex];
+				const zone = parts[planeIndex + 1];
+				const subzone = parts[planeIndex + 2];
+				if (plane && zone && subzone) {
+					const zoneStable = `${plane}/${zone}`;
+					const key = subzoneIdKey(zoneStable, subzone);
+					subzoneConfigsByKey.set(key, config);
+				}
+			}
+		}
 	}
 
 	// Subzones
@@ -168,9 +256,20 @@ async function generateRooms() {
 		if (!subzoneIdByStable.has(key)) {
 			const szId = v5('subzones', `${s.zoneStable}:${s.subStable}`);
 			subzoneIdByStable.set(key, szId);
+
+			// Get subzone config if available
+			const subzoneConfig = subzoneConfigsByKey.get(key);
+			const environment = subzoneConfig?.environment ? `'${ql(subzoneConfig.environment)}'` : 'NULL';
+			const description = subzoneConfig?.description ? `'${ql(subzoneConfig.description)}'` : 'NULL';
+			const specialRules = subzoneConfig?.special_rules ? JSON.stringify(subzoneConfig.special_rules).replaceAll("'", "''") : '{}';
+
 			parts.push(
-				`INSERT INTO subzones (id, zone_id, stable_id, name) VALUES ('${szId}'::uuid, '${zid}'::uuid, '${ql(s.subStable)}', '${ql(s.name)}') ` +
-					`ON CONFLICT (zone_id, stable_id) DO NOTHING;`
+				`INSERT INTO subzones (id, zone_id, stable_id, name, environment, description, special_rules) VALUES (` +
+					`'${szId}'::uuid, '${zid}'::uuid, '${ql(s.subStable)}', '${ql(s.name)}', ${environment}, ${description}, '${specialRules}'::jsonb) ` +
+					`ON CONFLICT (zone_id, stable_id) DO UPDATE SET ` +
+					`environment = EXCLUDED.environment, ` +
+					`description = EXCLUDED.description, ` +
+					`special_rules = EXCLUDED.special_rules;`
 			);
 		}
 	}
@@ -304,71 +403,30 @@ async function generateZoneConfigs() {
 		}
 	}
 
-	// Generate zone configurations
-	// Deduplicate: only keep one config per zone
-	// Ensure we're using the actual zone_config.json file (not accidentally picking up subzone configs)
-	const zoneConfigsByZone = new Map();
-	for (const zc of zoneConfigs) {
-		const zoneStable = `${zc.plane}/${zc.zone}`;
-		// Only add if we don't have one yet, or if this one has zone_type (which indicates it's a proper zone config)
-		if (!zoneConfigsByZone.has(zoneStable)) {
-			zoneConfigsByZone.set(zoneStable, zc);
-		} else {
-			// If we already have one, prefer the one with zone_type field (proper zone config)
-			const existing = zoneConfigsByZone.get(zoneStable);
-			if (zc.config.zone_type && !existing.config.zone_type) {
-				zoneConfigsByZone.set(zoneStable, zc);
-			}
-		}
-	}
-
-	for (const [zoneStable, zc] of zoneConfigsByZone) {
-		const zoneId = zoneIdByStable.get(zoneStable);
-		const configId = v5('zone_configurations', `${zoneStable}:zone`);
-
-		const weatherPatterns = JSON.stringify(zc.config.weather_patterns || []);
-		const specialRules = JSON.stringify(zc.config.special_rules || {});
-		const description = zc.config.description ? `'${ql(zc.config.description)}'` : 'NULL';
-		const environment = zc.config.environment ? `'${ql(zc.config.environment)}'` : 'NULL';
-
-		parts.push(
-			`INSERT INTO zone_configurations (id, zone_id, subzone_id, configuration_type, environment, description, weather_patterns, special_rules) VALUES (` +
-				`'${configId}'::uuid, '${zoneId}'::uuid, NULL, 'zone', ${environment}, ${description}, '${weatherPatterns.replaceAll("'", "''")}'::jsonb, '${specialRules.replaceAll("'", "''")}'::jsonb) ` +
-				`ON CONFLICT (zone_id, subzone_id, configuration_type) DO NOTHING;`
-		);
-	}
-
-	// Generate subzone configurations
-	console.log(`DEBUG: Generating ${subzoneConfigs.length} subzone configs`);
-	console.log(`DEBUG: subzoneIdByStable has ${subzoneIdByStable.size} entries`);
+	// Generate zone configurations (mapping table only - data is in zones and subzones tables)
+	// Create mapping entries for each subzone to its parent zone
+	console.log(`DEBUG: Generating ${subzoneConfigs.length} zone-configuration mappings`);
 	for (const szc of subzoneConfigs) {
 		const zoneStable = `${szc.plane}/${szc.zone}`;
 		const zoneId = zoneIdByStable.get(zoneStable);
 		const key = `${zoneStable}::${szc.subzone}`;
 		const subzoneId = subzoneIdByStable.get(key);
 
-		console.log(`DEBUG: Processing subzone config: ${key}, zoneId=${zoneId ? 'found' : 'NOT FOUND'}, subzoneId=${subzoneId ? 'found' : 'NOT FOUND'}`);
-
 		if (!subzoneId) {
-			console.warn(`Warning: Subzone ID not found for ${key}, skipping subzone config`);
+			console.warn(`Warning: Subzone ID not found for ${key}, skipping zone configuration mapping`);
 			continue;
 		}
 		if (!zoneId) {
-			console.warn(`Warning: Zone ID not found for ${zoneStable}, skipping subzone config`);
+			console.warn(`Warning: Zone ID not found for ${zoneStable}, skipping zone configuration mapping`);
 			continue;
 		}
 
-		const configId = v5('zone_configurations', `${key}:subzone`);
-
-		const weatherPatterns = JSON.stringify(szc.config.weather_patterns || []);
-		const specialRules = JSON.stringify(szc.config.special_rules || {});
-		const description = szc.config.description ? `'${ql(szc.config.description)}'` : 'NULL';
-		const environment = szc.config.environment ? `'${ql(szc.config.environment)}'` : 'NULL';
+		const configId = v5('zone_configurations', key);
 
 		parts.push(
-			`INSERT INTO zone_configurations (id, zone_id, subzone_id, configuration_type, environment, description, weather_patterns, special_rules) VALUES (` +
-				`'${configId}'::uuid, '${zoneId}'::uuid, '${subzoneId}'::uuid, 'subzone', ${environment}, ${description}, '${weatherPatterns.replaceAll("'", "''")}'::jsonb, '${specialRules.replaceAll("'", "''")}'::jsonb) ` +
-				`ON CONFLICT (zone_id, subzone_id, configuration_type) DO NOTHING;`
+			`INSERT INTO zone_configurations (id, zone_id, subzone_id) VALUES (` +
+				`'${configId}'::uuid, '${zoneId}'::uuid, '${subzoneId}'::uuid) ` +
+				`ON CONFLICT (zone_id, subzone_id) DO NOTHING;`
 		);
 	}
 

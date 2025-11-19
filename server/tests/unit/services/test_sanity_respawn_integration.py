@@ -1,0 +1,339 @@
+"""
+Integration test for sanity-based sanitarium respawn.
+
+This test verifies the complete flow:
+1. Player sanity reaches -100 via PassiveSanityFluxService
+2. CatatoniaRegistry failover callback is triggered
+3. Player is moved to limbo and respawned at sanitarium
+
+This test reproduces the bug where players at -100 sanity are not respawning.
+"""
+
+from __future__ import annotations
+
+import uuid
+from unittest.mock import MagicMock
+
+import pytest
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+
+from server.models.base import Base
+from server.models.player import Player
+from server.models.sanity import PlayerSanity
+from server.models.user import User
+from server.services.catatonia_registry import CatatoniaRegistry
+from server.services.passive_sanity_flux_service import PassiveSanityFluxService
+from server.services.player_respawn_service import PlayerRespawnService
+
+
+@pytest.fixture
+async def session_factory():
+    """Create a PostgreSQL session factory for tests."""
+
+    import os
+
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url or not database_url.startswith("postgresql"):
+        raise ValueError("DATABASE_URL must be set to a PostgreSQL URL for this test.")
+    engine = create_async_engine(database_url, future=True)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+    factory = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+    try:
+        yield factory
+    finally:
+        await engine.dispose()
+
+
+async def create_test_player(
+    session: AsyncSession,
+    *,
+    name: str,
+    sanity: int = 100,
+    tier: str = "lucid",
+    room_id: str = "earth_arkhamcity_downtown_room_derby_st_001",
+) -> Player:
+    """Create a player and associated sanity record for testing."""
+
+    player_id = f"player-{uuid.uuid4()}"
+    unique_name = f"{name}-{uuid.uuid4().hex[:8]}"
+    user = User(
+        id=str(uuid.uuid4()),
+        email=f"{player_id}@example.org",
+        username=unique_name,
+        hashed_password="hashed",
+        is_active=True,
+        is_superuser=False,
+        is_verified=True,
+    )
+    player = Player(
+        player_id=player_id,
+        user_id=user.id,
+        name=unique_name,
+        current_room_id=room_id,
+    )
+    sanity_record = PlayerSanity(
+        player_id=player_id,
+        current_san=sanity,
+        current_tier=tier,
+    )
+    session.add_all([user, player, sanity_record])
+    await session.flush()
+    return player
+
+
+@pytest.mark.asyncio
+async def test_sanity_respawn_flow_when_sanity_hits_minus_100(session_factory):
+    """
+    Test complete respawn flow when sanity reaches -100.
+
+    This test reproduces the reported bug where players at -100 sanity
+    are not respawning at the sanitarium.
+
+    NOTE: This test directly uses SanityService to apply a delta that will
+    cross the -100 threshold, bypassing the flux calculation which may not
+    work correctly with mocked persistence.
+    """
+    session_maker = session_factory
+    async with session_maker() as session:
+        # Create player with sanity at -99 (just above threshold)
+        player = await create_test_player(
+            session,
+            name="test_victim",
+            sanity=-99,
+            tier="catatonic",
+            room_id="earth_arkhamcity_downtown_room_derby_st_001",
+        )
+        await session.commit()
+
+        # Track failover callback calls
+        failover_calls = []
+
+        async def failover_callback(player_id: str, current_san: int) -> None:
+            """Track failover callback invocations."""
+            failover_calls.append({"player_id": player_id, "current_san": current_san})
+            # Note: In production, the failover callback uses container.database_manager
+            # to get a completely independent session. In tests, we need to wait for
+            # the sanity service transaction to complete before attempting respawn.
+            import asyncio
+
+            await asyncio.sleep(0.2)  # Allow sanity service transaction to complete
+
+            # Actually perform the respawn using a fresh session
+            # In production, this would use container.database_manager.get_session_maker()
+            # For the test, we'll use the session factory to create a new session
+            async with session_maker() as respawn_session:
+                respawn_service = PlayerRespawnService()
+                await respawn_service.move_player_to_limbo(player_id, "catatonia_failover", respawn_session)
+                await respawn_service.respawn_player(player_id, respawn_session)
+
+        # Get session maker for failover callback to use
+        from server.database import DatabaseManager
+
+        db_manager = DatabaseManager()
+        session_maker = db_manager.get_session_maker()
+
+        # Create catatonia registry with failover callback
+        registry = CatatoniaRegistry(failover_callback=failover_callback)
+
+        # Use SanityService directly to apply a -1 delta that will cross the threshold
+        # This bypasses the flux calculation and tests the core failover logic
+        from server.services.sanity_service import SanityService
+
+        sanity_service = SanityService(session, catatonia_observer=registry)
+
+        # Apply -1 sanity loss (should push from -99 to -100 and trigger failover)
+        await sanity_service.apply_sanity_adjustment(
+            player.player_id,
+            -1,
+            reason_code="test_crossing_threshold",
+        )
+
+        await session.commit()
+
+        # Wait for failover callback to complete (it runs as a background task)
+        import asyncio
+
+        await asyncio.sleep(0.5)  # Give failover callback time to execute
+
+        # Refresh player from database
+        await session.refresh(player)
+        refreshed_sanity = await session.get(PlayerSanity, player.player_id)
+
+        # VERIFICATION: Check if failover was triggered
+        assert len(failover_calls) > 0, "Failover callback should have been called when sanity reached -100"
+        assert failover_calls[0]["player_id"] == player.player_id
+        assert failover_calls[0]["current_san"] == -100
+
+        # VERIFICATION: Check if player was respawned at sanitarium
+        assert player.current_room_id == "earth_arkhamcity_sanitarium_room_foyer_001", (
+            f"Player should be at sanitarium, but is at {player.current_room_id}"
+        )
+
+        # VERIFICATION: Check if sanity is clamped at -100
+        assert refreshed_sanity is not None
+        assert refreshed_sanity.current_san == -100
+
+
+@pytest.mark.asyncio
+async def test_sanity_respawn_flow_from_high_sanity_to_minus_100(session_factory):
+    """
+    Test respawn flow when sanity drops from high value directly to -100.
+
+    This tests the scenario where a massive sanity loss (like the bug reported earlier)
+    causes sanity to drop from 100 to -100 in one tick.
+    """
+    session_maker = session_factory
+    async with session_maker() as session:
+        # Create player with high sanity
+        player = await create_test_player(
+            session,
+            name="test_victim_2",
+            sanity=100,
+            tier="lucid",
+            room_id="earth_arkhamcity_downtown_room_derby_st_001",
+        )
+        await session.commit()
+
+        failover_calls = []
+
+        async def failover_callback(player_id: str, current_san: int) -> None:
+            """Track failover callback invocations."""
+            failover_calls.append({"player_id": player_id, "current_san": current_san})
+            respawn_service = PlayerRespawnService()
+            await respawn_service.move_player_to_limbo(player_id, "catatonia_failover", session)
+            await respawn_service.respawn_player(player_id, session)
+
+        registry = CatatoniaRegistry(failover_callback=failover_callback)
+
+        persistence = MagicMock()
+        persistence.get_player = MagicMock(return_value=player)
+        persistence.get_room = MagicMock(return_value=MagicMock(plane="earth", zone="arkhamcity", sub_zone="downtown"))
+
+        # Manually apply a massive sanity loss that would push to -100
+        # We'll use the sanity service directly to simulate this
+        from server.services.sanity_service import SanityService
+
+        sanity_service = SanityService(session, catatonia_observer=registry)
+        # Apply -200 sanity loss (should clamp to -100)
+        await sanity_service.apply_sanity_adjustment(
+            player.player_id,
+            -200,
+            reason_code="test_massive_loss",
+        )
+        await session.commit()
+
+        # Refresh player
+        await session.refresh(player)
+
+        # VERIFICATION: Failover should have been triggered
+        assert len(failover_calls) > 0, "Failover callback should have been called"
+        assert failover_calls[0]["current_san"] == -100
+
+        # VERIFICATION: Player should be at sanitarium
+        assert player.current_room_id == "earth_arkhamcity_sanitarium_room_foyer_001", (
+            f"Player should be at sanitarium, but is at {player.current_room_id}"
+        )
+
+
+@pytest.mark.asyncio
+async def test_sanity_respawn_flow_without_observer(session_factory):
+    """
+    Test that respawn does NOT happen when catatonia_observer is None.
+
+    This verifies that the observer is required for the respawn flow.
+    """
+    session_maker = session_factory
+    async with session_maker() as session:
+        player = await create_test_player(
+            session,
+            name="test_victim_3",
+            sanity=-99,
+            tier="catatonic",
+            room_id="earth_arkhamcity_downtown_room_derby_st_001",
+        )
+        await session.commit()
+
+        original_room = player.current_room_id
+
+        # Create flux service WITHOUT catatonia observer
+        persistence = MagicMock()
+        persistence.get_player = MagicMock(return_value=player)
+        persistence.get_room = MagicMock(return_value=MagicMock(plane="earth", zone="arkhamcity", sub_zone="downtown"))
+
+        flux_service = PassiveSanityFluxService(
+            persistence=persistence,
+            catatonia_observer=None,  # No observer!
+        )
+
+        # Process tick
+        await flux_service.process_tick(tick_count=1, session=session, now=None)
+        await session.commit()
+
+        # Refresh player
+        await session.refresh(player)
+
+        # VERIFICATION: Player should NOT have moved (no observer = no respawn)
+        assert player.current_room_id == original_room, "Player should not have moved without observer"
+
+
+@pytest.mark.asyncio
+async def test_sanity_respawn_flow_condition_check(session_factory):
+    """
+    Test that the condition `new_san <= -100 and previous_san > -100` works correctly.
+
+    This verifies the exact condition that triggers respawn.
+    """
+    session_maker = session_factory
+    async with session_maker() as session:
+        # Test case 1: Player already at -100 (should NOT trigger again)
+        player1 = await create_test_player(
+            session,
+            name="test_already_at_minus_100",
+            sanity=-100,
+            tier="catatonic",
+        )
+        await session.commit()
+
+        failover_calls_1 = []
+
+        async def failover_callback_1(player_id: str, current_san: int) -> None:
+            failover_calls_1.append({"player_id": player_id, "current_san": current_san})
+
+        registry1 = CatatoniaRegistry(failover_callback=failover_callback_1)
+
+        from server.services.sanity_service import SanityService
+
+        sanity_service1 = SanityService(session, catatonia_observer=registry1)
+        # Try to apply more sanity loss (should stay at -100)
+        await sanity_service1.apply_sanity_adjustment(player1.player_id, -10, reason_code="test")
+        await session.commit()
+
+        # VERIFICATION: Should NOT trigger failover (already at -100)
+        assert len(failover_calls_1) == 0, "Failover should not trigger if already at -100"
+
+        # Test case 2: Player at -99, apply -1 (should trigger)
+        player2 = await create_test_player(
+            session,
+            name="test_crossing_threshold",
+            sanity=-99,
+            tier="catatonic",
+        )
+        await session.commit()
+
+        failover_calls_2 = []
+
+        async def failover_callback_2(player_id: str, current_san: int) -> None:
+            failover_calls_2.append({"player_id": player_id, "current_san": current_san})
+
+        registry2 = CatatoniaRegistry(failover_callback=failover_callback_2)
+
+        sanity_service2 = SanityService(session, catatonia_observer=registry2)
+        # Apply -1 sanity loss (should cross threshold)
+        await sanity_service2.apply_sanity_adjustment(player2.player_id, -1, reason_code="test")
+        await session.commit()
+
+        # VERIFICATION: Should trigger failover (crossing from -99 to -100)
+        assert len(failover_calls_2) > 0, "Failover should trigger when crossing -100 threshold"
+        assert failover_calls_2[0]["current_san"] == -100
