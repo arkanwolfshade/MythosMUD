@@ -179,7 +179,9 @@ async def test_missing_position_defaults_to_standing_on_load(async_session_facto
             current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
         )
         # Set legacy stats directly
-        player.stats = legacy_stats
+        # Testing legacy behavior where stats is assigned as string
+        # SQLAlchemy JSONB column accepts dict at runtime
+        player.stats = legacy_stats  # type: ignore[assignment,unused-ignore]
         session.add(player)
         await session.commit()
 

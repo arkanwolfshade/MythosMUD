@@ -40,9 +40,9 @@ async def main():
 
             # Load seed files
             seed_files = [
-                ("data/seed/01_professions.sql", "Professions"),
-                ("data/seed/02_item_prototypes.sql", "Item Prototypes"),
-                ("data/seed/03_npc_definitions.sql", "NPC Definitions"),
+                ("data/db/01_professions.sql", "Professions"),
+                ("data/db/02_item_prototypes.sql", "Item Prototypes"),
+                ("data/db/03_npc_definitions.sql", "NPC Definitions"),
             ]
 
             print("\nLoading seed data...")

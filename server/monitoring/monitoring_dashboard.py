@@ -99,7 +99,11 @@ class MonitoringDashboard:
             Current system health status
         """
         # Get performance statistics
-        perf_stats = self.performance_monitor.get_all_stats()
+        perf_stats_raw = self.performance_monitor.get_all_stats()
+        # Filter out None values for type safety
+        perf_stats: dict[str, PerformanceStats] = {
+            k: v for k, v in perf_stats_raw.items() if v is not None
+        }
 
         # Get exception statistics
         exc_stats = self.exception_tracker.get_stats()
@@ -144,7 +148,11 @@ class MonitoringDashboard:
             Complete monitoring summary with all metrics
         """
         system_health = self.get_system_health()
-        performance_stats = self.performance_monitor.get_all_stats()
+        performance_stats_raw = self.performance_monitor.get_all_stats()
+        # Filter out None values for type safety
+        performance_stats: dict[str, PerformanceStats] = {
+            k: v for k, v in performance_stats_raw.items() if v is not None
+        }
         exception_stats = self.exception_tracker.get_stats()
         log_stats = self.log_aggregator.get_stats()
 

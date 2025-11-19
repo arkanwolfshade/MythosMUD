@@ -492,10 +492,10 @@ class PersistenceLayer:
         player.set_equipped_items(validated_payload["equipped"])
 
     # --- Room Cache (Loaded at Startup) ---
-    def _load_room_cache(self):
+    def _load_room_cache(self) -> None:
         """Load rooms from PostgreSQL database and convert to Room objects."""
         self._room_cache = {}
-        self._room_mappings = {}
+        self._room_mappings: dict[str, str] = {}
         try:
             from .world_loader import generate_room_id
 

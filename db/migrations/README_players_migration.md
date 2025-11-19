@@ -1,6 +1,6 @@
 # Players Table Migration
 
-This migration aligns the PostgreSQL `players` table with the SQLAlchemy model defined in `server/models/player.py` and the schema in `db/schema/04_runtime_tables.sql`.
+This migration aligns the PostgreSQL `players` table with the SQLAlchemy model defined in `server/models/player.py` and the schema in `db/authoritative_schema.sql`.
 
 ## Problem
 

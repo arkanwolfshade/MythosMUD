@@ -1,5 +1,5 @@
 -- Migration: Add flavor_text column to professions table if missing
--- Run this with: psql -d mythos_dev -f db/migration/add_flavor_text_to_professions.sql
+-- Run this with: psql -d mythos_dev -f db/migrations/add_flavor_text_to_professions.sql
 
 -- Check if column exists and add if missing
 DO $$

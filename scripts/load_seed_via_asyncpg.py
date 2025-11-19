@@ -28,9 +28,9 @@ async def load_seed_data():
 
     try:
         seed_files = [
-            "data/seed/01_professions.sql",
-            "data/seed/02_item_prototypes.sql",
-            "data/seed/03_npc_definitions.sql",
+            "data/db/01_professions.sql",
+            "data/db/02_item_prototypes.sql",
+            "data/db/03_npc_definitions.sql",
         ]
 
         for seed_file in seed_files:

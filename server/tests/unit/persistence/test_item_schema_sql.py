@@ -167,8 +167,9 @@ async def async_session_factory():
     engine = create_async_engine(database_url, future=True)
     async with engine.begin() as conn:
         # Create tables using PostgreSQL schema
-        # Load the PostgreSQL schema for items from db/schema/04_runtime_tables.sql
-        schema_path = project_path("db", "schema", "04_runtime_tables.sql")
+        # Load the PostgreSQL schema for items from db/authoritative_schema.sql
+        # (extracting just the item-related portions for this test)
+        schema_path = project_path("db", "authoritative_schema.sql")
         if schema_path.exists():
             schema_sql = load_sql(schema_path)
             # Extract item table creation statements (from "-- Item system tables" to next major section)

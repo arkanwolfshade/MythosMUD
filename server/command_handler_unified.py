@@ -732,7 +732,12 @@ async def _check_catatonia_block(player_name: str, command: str, request: Reques
                     )
             except Exception as e:
                 # If database query fails, log but don't block command
-                logger.warning("Failed to check catatonia status in database", player=player_name, error=str(e), error_type=type(e).__name__)
+                logger.warning(
+                    "Failed to check catatonia status in database",
+                    player=player_name,
+                    error=str(e),
+                    error_type=type(e).__name__,
+                )
                 return False, None
     except (RuntimeError, AttributeError) as e:
         # Event loop is closed or database is unavailable - don't block command

@@ -69,10 +69,11 @@ jobs:
           pg_isready -U postgres
           sudo -u postgres psql -f db/roles/roles.sql
           sudo -u postgres psql -f db/databases/databases.sql
-          sudo -u postgres psql -d mythos_unit -f db/schema/01_world_and_calendar.sql
-          sudo -u postgres psql -d mythos_unit -f db/schema/02_items_and_npcs.sql
-          sudo -u postgres psql -d mythos_unit -f db/schema/03_identity_and_moderation.sql
-          sudo -u postgres psql -d mythos_unit -f db/schema/04_runtime_tables.sql
+          sudo -u postgres psql -d mythos_unit -f db/authoritative_schema.sql
+          sudo -u postgres psql -d mythos_unit -f data/db/00_world_and_emotes.sql
+          sudo -u postgres psql -d mythos_unit -f data/db/01_professions.sql
+          sudo -u postgres psql -d mythos_unit -f data/db/02_item_prototypes.sql
+          sudo -u postgres psql -d mythos_unit -f data/db/03_npc_definitions.sql
       - name: Start PostgreSQL service
         run: |
           # Start PostgreSQL - try service command first, fall back to direct start

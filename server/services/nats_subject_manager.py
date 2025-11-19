@@ -331,9 +331,22 @@ class SubjectManagerMetrics:
         index = int(len(sorted_times) * percentile)
         return sorted_times[min(index, len(sorted_times) - 1)]
 
-    def reset(self):
+    def reset(self) -> None:
         """Reset all metrics to zero."""
-        self.__init__()
+        # Reset all metrics manually instead of calling __init__ to avoid type safety issues
+        self.validation_count = 0
+        self.validation_success_count = 0
+        self.validation_failure_count = 0
+        self.validation_times.clear()
+        self.cache_hits = 0
+        self.cache_misses = 0
+        self.build_count = 0
+        self.build_success_count = 0
+        self.build_failure_count = 0
+        self.build_times.clear()
+        self.pattern_not_found_errors = 0
+        self.missing_parameter_errors = 0
+        self.validation_errors = 0
 
 
 class NATSSubjectManager:

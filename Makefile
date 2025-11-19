@@ -1,6 +1,6 @@
 # MythosMUD Makefile
 
-.PHONY: help clean lint format test test-fast test-fast-serial test-ci test-comprehensive test-coverage test-client test-client-e2e test-e2e test-slow coverage build install run semgrep semgrep-autofix mypy lint-sqlalchemy setup-test-env check-postgresql setup-postgresql-test-db
+.PHONY: help clean lint format test test-fast test-fast-serial test-ci test-comprehensive test-coverage test-client test-client-e2e test-e2e test-slow coverage build install run semgrep semgrep-autofix mypy lint-sqlalchemy setup-test-env check-postgresql setup-postgresql-test-db verify-schema
 
 # Determine project root for worktree contexts
 PROJECT_ROOT := $(shell python -c "import os; print(os.path.dirname(os.getcwd()) if 'MythosMUD-' in os.getcwd() else os.getcwd())")
@@ -19,6 +19,7 @@ help:
 	@echo "  setup-test-env         - Create test environment files"
 	@echo "  check-postgresql       - Verify PostgreSQL connectivity for tests"
 	@echo "  setup-postgresql-test-db - Create PostgreSQL test database"
+	@echo "  verify-schema          - Verify authoritative_schema.sql matches mythos_dev"
 	@echo ""
 	@echo "Testing - Daily Development:"
 	@echo "  test-fast        - Quick unit tests with parallelization (~2-3 min)"
@@ -57,6 +58,10 @@ check-postgresql:
 setup-postgresql-test-db:
 	@echo "Setting up PostgreSQL test database..."
 	cd $(PROJECT_ROOT) && powershell -ExecutionPolicy Bypass -File scripts/setup_postgresql_test_db.ps1
+
+verify-schema:
+	@echo "Verifying authoritative_schema.sql matches mythos_dev..."
+	cd $(PROJECT_ROOT) && bash scripts/verify_schema_match.sh
 
 lint:
 	cd $(PROJECT_ROOT) && python scripts/lint.py

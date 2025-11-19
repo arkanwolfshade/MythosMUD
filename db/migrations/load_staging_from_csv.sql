@@ -2,7 +2,10 @@
 set ON_ERROR_STOP on
 SET client_min_messages = WARNING;
 SET search_path = public;
--- Assumes CSVs exist in data/migration/csv/*.csv with headers
+-- Historical migration script: Loads CSV data from staging
+-- NOTE: CSV files have been moved to data/db/migrations/
+-- Update the FROM paths below to use absolute paths or copy files to the PostgreSQL server's accessible location
+-- Original location: data/migration/csv/*.csv
 \ copy staging_users (
     old_sqlite_id,
     email,
@@ -14,7 +17,7 @@ SET search_path = public;
     created_at,
     updated_at
 )
-FROM 'data/migration/csv/users.csv' WITH (FORMAT csv, HEADER true) \ copy staging_players (
+FROM 'data/db/migrations/users.csv' WITH (FORMAT csv, HEADER true) \ copy staging_players (
         old_sqlite_id,
         user_id,
         name,
@@ -30,4 +33,4 @@ FROM 'data/migration/csv/users.csv' WITH (FORMAT csv, HEADER true) \ copy stagin
         created_at,
         last_active
     )
-FROM 'data/migration/csv/players.csv' WITH (FORMAT csv, HEADER true)
+FROM 'data/db/migrations/players.csv' WITH (FORMAT csv, HEADER true)

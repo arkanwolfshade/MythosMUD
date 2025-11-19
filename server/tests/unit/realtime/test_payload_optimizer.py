@@ -46,7 +46,7 @@ class TestPayloadOptimizer:
         import string
 
         # Generate random uncompressible data (150KB of random characters)
-        random_data = ''.join(random.choices(string.ascii_letters + string.digits, k=150000))
+        random_data = "".join(random.choices(string.ascii_letters + string.digits, k=150000))
         large_payload = {"type": "chat", "message": random_data}
 
         with pytest.raises(ValueError) as exc_info:
@@ -144,7 +144,8 @@ class TestPayloadOptimizer:
         # Use random data that doesn't compress well
         import random
         import string
-        random_data = ''.join(random.choices(string.ascii_letters + string.digits, k=60000))
+
+        random_data = "".join(random.choices(string.ascii_letters + string.digits, k=60000))
         large_payload = {"type": "chat", "message": random_data}
         with pytest.raises(ValueError):
             optimizer.optimize_payload(large_payload)

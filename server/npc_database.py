@@ -282,7 +282,7 @@ async def init_npc_db():
     Initialize NPC database connection and verify configuration.
 
     NOTE: DDL (table creation) is NOT managed by this function.
-    All database schema must be created via SQL scripts in db/schema/
+    All database schema must be created via SQL script db/authoritative_schema.sql
     and applied using database management scripts (e.g., psql).
 
     This function only:
@@ -290,7 +290,7 @@ async def init_npc_db():
     - Configures SQLAlchemy mappers for ORM relationships
     - Verifies database connectivity
 
-    To create tables, use the SQL scripts in db/schema/ directory.
+    To create tables, use the SQL script db/authoritative_schema.sql.
     """
     context = create_error_context()
     context.metadata["operation"] = "init_npc_db"
@@ -310,6 +310,13 @@ async def init_npc_db():
         engine = get_npc_engine()  # Initialize if needed
 
         # Verify database connectivity with a simple query
+        if engine is None:
+            log_and_raise(
+                ValidationError,
+                "NPC database engine is None - initialization failed",
+                context=context,
+                user_friendly="Critical system error: NPC database not available",
+            )
         async with engine.begin() as conn:
             await conn.execute(text("SELECT 1"))
             logger.info("NPC database connection verified successfully")

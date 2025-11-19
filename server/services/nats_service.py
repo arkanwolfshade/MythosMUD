@@ -1189,7 +1189,7 @@ class NATSService:
 
         try:
             # Group messages by subject for efficient publishing
-            grouped_messages = {}
+            grouped_messages: dict[str, list[Any]] = {}
             for subject, data in self.message_batch:
                 if subject not in grouped_messages:
                     grouped_messages[subject] = []

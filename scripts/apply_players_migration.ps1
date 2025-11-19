@@ -20,7 +20,8 @@ if (-not (Test-Path $psqlPath)) {
 }
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$migrationFile = Join-Path $scriptDir "migrate_players_to_correct_schema.sql"
+$projectRoot = Split-Path -Parent (Split-Path -Parent $scriptDir)
+$migrationFile = Join-Path $projectRoot "db\migrations\migrate_players_to_correct_schema.sql"
 
 if (-not (Test-Path $migrationFile)) {
     Write-Host "[ERROR] Migration file not found: $migrationFile" -ForegroundColor Red

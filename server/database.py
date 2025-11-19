@@ -454,7 +454,7 @@ async def init_db() -> None:
     Initialize database connection and verify configuration.
 
     NOTE: DDL (table creation) is NOT managed by this function.
-    All database schema must be created via SQL scripts in db/schema/
+    All database schema must be created via SQL scripts in db/authoritative_schema.sql
     and applied using database management scripts (e.g., psql).
 
     This function only:
@@ -462,7 +462,7 @@ async def init_db() -> None:
     - Configures SQLAlchemy mappers for ORM relationships
     - Verifies database connectivity
 
-    To create tables, use the SQL scripts in db/schema/ directory.
+    To create tables, use the SQL script db/authoritative_schema.sql.
     """
     context = create_error_context()
     context.metadata["operation"] = "init_db"

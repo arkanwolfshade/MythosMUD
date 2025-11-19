@@ -36,7 +36,8 @@ async def apply_migration(db_name: str, host: str, port: int, user: str, passwor
         try:
             # Read migration SQL file
             script_dir = Path(__file__).parent
-            migration_file = script_dir / "migrate_players_to_correct_schema.sql"
+            project_root = script_dir.parent
+            migration_file = project_root / "db" / "migrations" / "migrate_players_to_correct_schema.sql"
 
             if not migration_file.exists():
                 print(f"[ERROR] Migration file not found: {migration_file}")

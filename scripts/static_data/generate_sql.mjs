@@ -434,7 +434,7 @@ async function generateZoneConfigs() {
 }
 
 async function main() {
-	const outDir = resolve(root, 'data/seed');
+	const outDir = resolve(root, 'data/db');
 	await ensureDir(outDir);
 
 	const sections = [];

@@ -95,7 +95,7 @@ Installs project dependencies.
 
 ### Database Initialization (PostgreSQL)
 
-Database initialization is now handled via PostgreSQL SQL scripts in `db/schema/`.
+Database initialization is now handled via the authoritative schema file `db/authoritative_schema.sql`.
 See `db/README.md` for database setup instructions.
 
 **Note:** SQLite database initialization scripts have been removed as the project

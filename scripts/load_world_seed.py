@@ -28,11 +28,13 @@ async def main():
     url = database_url.replace("postgresql+asyncpg://", "postgresql://")
     print(f"Database URL: {url[:50]}...")
 
-    schema_file = Path("db/schema/01_world_and_calendar.sql")
-    seed_file = Path("data/seed/00_world_and_emotes.sql")
+    # Use authoritative schema instead of legacy schema files
+    schema_file = Path("db/authoritative_schema.sql")
+    seed_file = Path("data/db/00_world_and_emotes.sql")
 
     if not schema_file.exists():
         print(f"ERROR: Schema file not found: {schema_file}")
+        print("       Run: ./scripts/generate_schema_from_dev.sh to generate it")
         sys.exit(1)
 
     if not seed_file.exists():

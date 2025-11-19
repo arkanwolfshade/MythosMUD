@@ -68,7 +68,7 @@ All environment files now use PostgreSQL URLs:
 
 - ✅ All SQLite databases renamed to `.bak` extension (9 files)
 - ✅ Original data preserved for rollback if needed
-- ✅ Migration CSV files saved in `data/migration/csv/`
+- ✅ Migration CSV files saved in `data/db/migrations/` (moved from `data/migration/csv/`)
 
 ## Verification Results
 
@@ -102,10 +102,11 @@ If issues are discovered:
 ## Files Modified
 
 ### Database Scripts
-- `db/roles/roles.sql` - Role creation
-- `db/databases/databases.sql` - Database provisioning
-- `db/schema/*.sql` - All DDL schemas
-- `db/migration/*.sql` - Migration scripts
+- `db/roles/roles.sql` - Role creation (✅ Active)
+- `db/databases/databases.sql` - Database provisioning (✅ Active)
+- `db/authoritative_schema.sql` - Single authoritative schema (✅ Active)
+- `db/schema/*.sql` - Legacy schema files (⚠️ Deprecated - see `db/schema/README.md`)
+- `db/migrations/*.sql` - Migration scripts (moved from db/migration/)
 - `db/verification/*.sql` - Verification queries
 
 ### Server Code
@@ -127,8 +128,8 @@ If issues are discovered:
 ## Migration Artifacts
 
 - Static data JSON schemas: `db/static/schemas/`
-- Generated SQL: `data/seed/00_world_and_emotes.sql`
-- Migration CSVs: `data/migration/csv/`
+- Generated SQL: `data/db/00_world_and_emotes.sql` (moved from `data/seed/`)
+- Migration CSVs: `data/db/migrations/` (moved from `data/migration/csv/`)
 - SQLite backups: `data/**/*.db.bak`
 
 ---

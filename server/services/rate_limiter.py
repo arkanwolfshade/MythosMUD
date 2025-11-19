@@ -44,7 +44,9 @@ class RateLimiter:
             self.enabled = True
         else:
             # Legacy dict format (for backward compatibility with tests)
-            chat_config = config.get("chat", {})
+            # This branch should never execute in production since get_config() always returns AppConfig
+            # which has a "chat" attribute. Kept for test compatibility where config may be a dict.
+            chat_config = config.get("chat", {})  # type: ignore[attr-defined,unused-ignore]
             rate_limiting_config = chat_config.get("rate_limiting", {})
             default_limits = {
                 "global": 10,
@@ -59,7 +61,9 @@ class RateLimiter:
             self.enabled = rate_limiting_config.get("enabled", True)
 
         # Sliding window storage: {player_id: {channel: deque(timestamps)}}
-        self.windows = defaultdict(lambda: defaultdict(deque))
+        self.windows: defaultdict[str, defaultdict[str, deque[float]]] = defaultdict(
+            lambda: defaultdict(deque)
+        )
 
         # Window size in seconds (1 minute)
         self.window_size = 60

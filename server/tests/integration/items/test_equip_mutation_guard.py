@@ -1,4 +1,5 @@
 from copy import deepcopy
+from typing import Any
 
 from server.services.equipment_service import EquipmentService
 from server.services.inventory_mutation_guard import InventoryMutationGuard
@@ -54,7 +55,7 @@ def test_unequip_flow_respects_mutation_guard():
         "slot_type": "head",
         "quantity": 1,
     }
-    inventory = []
+    inventory: list[dict[str, Any]] = []
     equipped = {"head": deepcopy(equipped_stack)}
 
     with inventory_service.begin_mutation("investigator-2", "token-unequip") as decision:

@@ -49,9 +49,9 @@ else:
 
 # Load seed files
 seed_files = [
-    "data/seed/01_professions.sql",
-    "data/seed/02_item_prototypes.sql",
-    "data/seed/03_npc_definitions.sql",
+    "data/db/01_professions.sql",
+    "data/db/02_item_prototypes.sql",
+    "data/db/03_npc_definitions.sql",
 ]
 
 print("=== Loading MythosMUD Seed Data ===\n")

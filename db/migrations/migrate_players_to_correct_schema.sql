@@ -1,6 +1,6 @@
 -- Migration: Align players table with SQLAlchemy model
 -- This migration transforms the players table from the old schema to match
--- the schema defined in db/schema/04_runtime_tables.sql and server/models/player.py
+-- the schema defined in db/authoritative_schema.sql and server/models/player.py
 --
 -- OLD SCHEMA:
 --   id uuid PRIMARY KEY
@@ -41,7 +41,7 @@ SELECT EXISTS (
         WHERE table_schema = 'public'
             AND table_name = 'players'
     ) INTO table_exists;
-IF NOT table_exists THEN RAISE NOTICE 'Players table does not exist. Schema should be created by db/schema/04_runtime_tables.sql';
+IF NOT table_exists THEN RAISE NOTICE 'Players table does not exist. Schema should be created by db/authoritative_schema.sql';
 RETURN;
 END IF;
 -- Check for new schema (player_id varchar)
