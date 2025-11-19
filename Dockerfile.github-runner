@@ -92,26 +92,27 @@ WORKDIR /workspace
 # Human reader: initialize PostgreSQL server, create databases, and apply schema DDL scripts.
 # AI reader: PostgreSQL must be self-contained in Docker image for CI workflows (no host dependency).
 # All operations in single RUN to keep service running during execution.
+# Note: Running as root in Docker, use su to execute as postgres user.
 RUN service postgresql start && \
     sleep 3 && \
     pg_isready -U postgres && \
-    sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';" && \
-    sudo -u postgres psql -f /workspace/db/roles/roles.sql && \
-    sudo -u postgres psql -f /workspace/db/databases/databases.sql && \
-    sudo -u postgres psql -d mythos_unit -f /workspace/db/schema/01_world_and_calendar.sql && \
-    sudo -u postgres psql -d mythos_unit -f /workspace/db/schema/02_items_and_npcs.sql && \
-    sudo -u postgres psql -d mythos_unit -f /workspace/db/schema/03_identity_and_moderation.sql && \
-    sudo -u postgres psql -d mythos_unit -f /workspace/db/schema/04_runtime_tables.sql && \
-    sudo -u postgres psql -d mythos_e2e -f /workspace/db/schema/01_world_and_calendar.sql && \
-    sudo -u postgres psql -d mythos_e2e -f /workspace/db/schema/02_items_and_npcs.sql && \
-    sudo -u postgres psql -d mythos_e2e -f /workspace/db/schema/03_identity_and_moderation.sql && \
-    sudo -u postgres psql -d mythos_e2e -f /workspace/db/schema/04_runtime_tables.sql && \
-    sudo -u postgres psql -c "\l" | grep -q "mythos_unit" && \
-    sudo -u postgres psql -c "\l" | grep -q "mythos_e2e" && \
-    sudo -u postgres psql -d mythos_unit -c "\dt" | grep -q "users" && \
-    sudo -u postgres psql -d mythos_unit -c "\dt" | grep -q "players" && \
-    sudo -u postgres psql -d mythos_e2e -c "\dt" | grep -q "users" && \
-    sudo -u postgres psql -d mythos_e2e -c "\dt" | grep -q "players"
+    su postgres -c "psql -c \"ALTER USER postgres PASSWORD 'postgres';\"" && \
+    su postgres -c "psql -f /workspace/db/roles/roles.sql" && \
+    su postgres -c "psql -f /workspace/db/databases/databases.sql" && \
+    su postgres -c "psql -d mythos_unit -f /workspace/db/schema/01_world_and_calendar.sql" && \
+    su postgres -c "psql -d mythos_unit -f /workspace/db/schema/02_items_and_npcs.sql" && \
+    su postgres -c "psql -d mythos_unit -f /workspace/db/schema/03_identity_and_moderation.sql" && \
+    su postgres -c "psql -d mythos_unit -f /workspace/db/schema/04_runtime_tables.sql" && \
+    su postgres -c "psql -d mythos_e2e -f /workspace/db/schema/01_world_and_calendar.sql" && \
+    su postgres -c "psql -d mythos_e2e -f /workspace/db/schema/02_items_and_npcs.sql" && \
+    su postgres -c "psql -d mythos_e2e -f /workspace/db/schema/03_identity_and_moderation.sql" && \
+    su postgres -c "psql -d mythos_e2e -f /workspace/db/schema/04_runtime_tables.sql" && \
+    su postgres -c "psql -c '\\l'" | grep -q "mythos_unit" && \
+    su postgres -c "psql -c '\\l'" | grep -q "mythos_e2e" && \
+    su postgres -c "psql -d mythos_unit -c '\\dt'" | grep -q "users" && \
+    su postgres -c "psql -d mythos_unit -c '\\dt'" | grep -q "players" && \
+    su postgres -c "psql -d mythos_e2e -c '\\dt'" | grep -q "users" && \
+    su postgres -c "psql -d mythos_e2e -c '\\dt'" | grep -q "players"
 
 # Set environment variables for test execution (matches CI workflow expectations).
 # Human reader: supply actual secrets via docker run -e / compose; do NOT bake them into the image.

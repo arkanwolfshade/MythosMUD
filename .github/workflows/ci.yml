@@ -18,8 +18,8 @@ jobs:
       ACTIONS_RUNNER_DEBUG: true
       UV_PROJECT_ENVIRONMENT: .venv-ci
       UV_LINK_MODE: copy
-      DATABASE_URL: sqlite+aiosqlite:///${{ github.workspace }}/data/unit_test/players/unit_test_players.db
-      DATABASE_NPC_URL: sqlite+aiosqlite:///${{ github.workspace }}/data/unit_test/npcs/unit_test_npcs.db
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/mythos_unit
+      DATABASE_NPC_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/mythos_unit
       MYTHOSMUD_ADMIN_PASSWORD: ${{ secrets.MYTHOSMUD_ADMIN_PASSWORD_CI }}
       MYTHOSMUD_SECRET_KEY: ${{ secrets.MYTHOSMUD_SECRET_KEY_CI }}
       MYTHOSMUD_JWT_SECRET: ${{ secrets.MYTHOSMUD_JWT_SECRET_CI }}
@@ -56,14 +56,32 @@ jobs:
           source .venv-ci/bin/activate
           playwright install chromium
           playwright install-deps
-      - name: Initialize test database
+      - name: Install PostgreSQL
+        if: ${{ !env.ACT }}
         run: |
-          source .venv-ci/bin/activate
-          python server/tests/scripts/init_test_db.py
-      - name: Verify test database
+          sudo apt-get update
+          sudo apt-get install -y postgresql postgresql-contrib
+      - name: Initialize PostgreSQL databases
+        if: ${{ !env.ACT }}
         run: |
-          source .venv-ci/bin/activate
-          python server/tests/scripts/verify_test_db.py
+          sudo service postgresql start
+          sleep 3
+          pg_isready -U postgres
+          sudo -u postgres psql -f db/roles/roles.sql
+          sudo -u postgres psql -f db/databases/databases.sql
+          sudo -u postgres psql -d mythos_unit -f db/schema/01_world_and_calendar.sql
+          sudo -u postgres psql -d mythos_unit -f db/schema/02_items_and_npcs.sql
+          sudo -u postgres psql -d mythos_unit -f db/schema/03_identity_and_moderation.sql
+          sudo -u postgres psql -d mythos_unit -f db/schema/04_runtime_tables.sql
+      - name: Start PostgreSQL service
+        run: |
+          # Start PostgreSQL - try service command first, fall back to direct start
+          service postgresql start 2>/dev/null || \
+          (command -v sudo >/dev/null 2>&1 && sudo service postgresql start) || \
+          (PGDATA=$(find /var/lib/postgresql -type d -name "main" 2>/dev/null | head -1) && \
+           [ -n "$PGDATA" ] && su postgres -c "postgres -D $PGDATA" &) || true
+          sleep 3
+          pg_isready -U postgres || (sleep 3 && pg_isready -U postgres)
       - name: Lint with ruff
         run: |
           source .venv-ci/bin/activate
