@@ -271,4 +271,74 @@ describe('GameTerminalWithPanels - Combat Events', () => {
     });
     expect(getInfoValue('Health:')).toHaveTextContent(/^100/);
   });
+
+  it('displays participant names in turn order instead of UUIDs', async () => {
+    renderTerminal();
+    expect(eventCallback).not.toBeNull();
+
+    sendStatusUpdate(defaultPlayerName);
+    await waitFor(() => expect(getInfoValue('In Combat:')).toHaveTextContent('No'));
+
+    const playerUuid = '9bcee4bf-43dc-4860-885a-1be5356b5a24';
+    const npcUuid = 'd839d857-1601-45dc-ac16-0960e034a52e';
+
+    triggerEvent({
+      event_type: 'combat_started',
+      timestamp: new Date().toISOString(),
+      sequence_number: Date.now(),
+      data: {
+        combat_id: 'combat-004',
+        room_id: 'room-004',
+        turn_order: [playerUuid, npcUuid],
+        participants: {
+          [playerUuid]: { name: 'ArkanWolfshade', hp: 100, max_hp: 100 },
+          [npcUuid]: { name: 'Sanitarium Patient', hp: 50, max_hp: 50 },
+        },
+      },
+    });
+
+    // Verify message contains participant names, not UUIDs
+    await waitFor(() => {
+      const combatMessage = screen.getByText(/Combat has begun!/);
+      expect(combatMessage).toBeInTheDocument();
+      expect(combatMessage.textContent).toContain('ArkanWolfshade');
+      expect(combatMessage.textContent).toContain('Sanitarium Patient');
+      expect(combatMessage.textContent).not.toContain(playerUuid);
+      expect(combatMessage.textContent).not.toContain(npcUuid);
+    });
+  });
+
+  it('falls back to UUID if participant name is missing', async () => {
+    renderTerminal();
+    expect(eventCallback).not.toBeNull();
+
+    sendStatusUpdate(defaultPlayerName);
+    await waitFor(() => expect(getInfoValue('In Combat:')).toHaveTextContent('No'));
+
+    const playerUuid = '9bcee4bf-43dc-4860-885a-1be5356b5a24';
+    const unknownUuid = 'unknown-uuid-12345';
+
+    triggerEvent({
+      event_type: 'combat_started',
+      timestamp: new Date().toISOString(),
+      sequence_number: Date.now(),
+      data: {
+        combat_id: 'combat-005',
+        room_id: 'room-005',
+        turn_order: [playerUuid, unknownUuid],
+        participants: {
+          [playerUuid]: { name: 'ArkanWolfshade', hp: 100, max_hp: 100 },
+          // Missing participant entry for unknownUuid
+        },
+      },
+    });
+
+    // Verify message shows name for found participant, UUID for missing one
+    await waitFor(() => {
+      const combatMessage = screen.getByText(/Combat has begun!/);
+      expect(combatMessage).toBeInTheDocument();
+      expect(combatMessage.textContent).toContain('ArkanWolfshade');
+      expect(combatMessage.textContent).toContain(unknownUuid);
+    });
+  });
 });

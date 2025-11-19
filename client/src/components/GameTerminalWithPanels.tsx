@@ -1517,27 +1517,39 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             const turnOrder = Array.isArray(event.data.turn_order) ? (event.data.turn_order as string[]) : [];
             const participants = event.data.participants as Record<string, CombatParticipant> | undefined;
 
+            // Convert UUIDs in turn order to participant names (handles players, NPCs, and mobs)
+            // Fallback to UUID if participant not found or name missing
+            const participantNames = turnOrder.map(uuid => {
+              const participant = participants?.[uuid];
+              return participant?.name || uuid;
+            });
+
             // Check if we've already processed this combat_started event
-            // Look for any message that contains "Combat has begun!" and the same turn order
+            // Look for any message that contains "Combat has begun!" and the same turn order (using names now)
             // Check both current messages and pending updates
             const allMessages = [...currentMessagesRef.current, ...(updates.messages || [])];
             const existingMessage = allMessages.find(
-              msg => msg.text.includes('Combat has begun!') && msg.text.includes(turnOrder.join(', '))
+              msg => msg.text.includes('Combat has begun!') && participantNames.some(name => msg.text.includes(name))
             );
 
             console.log('🔍 DEBUG: Checking for duplicate combat_started', {
               combatId,
               turnOrder,
+              participantNames,
               existingMessage: existingMessage ? existingMessage.text : null,
               currentMessagesCount: currentMessagesRef.current.length,
             });
 
             if (existingMessage) {
-              console.log('🔍 DEBUG: Duplicate combat_started event detected, skipping', { combatId, turnOrder });
+              console.log('🔍 DEBUG: Duplicate combat_started event detected, skipping', {
+                combatId,
+                turnOrder,
+                participantNames,
+              });
               break;
             }
 
-            const message = `Combat has begun! Turn order: ${turnOrder.join(', ')}`;
+            const message = `Combat has begun! Turn order: ${participantNames.join(', ')}`;
             const messageObj = {
               text: message,
               timestamp: event.timestamp,
