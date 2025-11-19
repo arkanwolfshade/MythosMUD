@@ -1529,7 +1529,7 @@ class NATSMessageHandler:
 
             # Extract event details
             event_type = message_data.get("event_type")
-            data = message_data.get("data", {})
+            data = message_data.get("event_data", {})
 
             # Debug logging for all messages
             logger.debug("NATS message received", event_type=event_type, data=data)

@@ -690,7 +690,7 @@ class TestNATSMessageHandlerEventSubscription:
             # Create test event message
             event_message = {
                 "event_type": "player_entered",
-                "data": {
+                "event_data": {
                     "player_id": self.test_player_id,
                     "room_id": self.test_room_id,
                     "player_name": "TestPlayer",
@@ -710,7 +710,7 @@ class TestNATSMessageHandlerEventSubscription:
             # Check event type and room ID
             assert call_args[0][0] == "player_entered"
             assert call_args[0][1] == self.test_room_id
-            assert call_args[0][2] == event_message["data"]
+            assert call_args[0][2] == event_message["event_data"]
 
     @pytest.mark.asyncio
     async def test_handle_event_message_player_left(self):
@@ -723,7 +723,7 @@ class TestNATSMessageHandlerEventSubscription:
             # Create test event message
             event_message = {
                 "event_type": "player_left",
-                "data": {
+                "event_data": {
                     "player_id": self.test_player_id,
                     "room_id": self.test_room_id,
                     "player_name": "TestPlayer",
@@ -743,7 +743,7 @@ class TestNATSMessageHandlerEventSubscription:
             # Check event type and room ID
             assert call_args[0][0] == "player_left"
             assert call_args[0][1] == self.test_room_id
-            assert call_args[0][2] == event_message["data"]
+            assert call_args[0][2] == event_message["event_data"]
 
     @pytest.mark.asyncio
     async def test_handle_event_message_game_tick(self):
@@ -756,7 +756,7 @@ class TestNATSMessageHandlerEventSubscription:
             # Create test event message
             event_message = {
                 "event_type": "game_tick",
-                "data": {
+                "event_data": {
                     "tick_number": 1,
                     "server_time": "2024-01-01T12:00:00Z",
                 },
@@ -773,7 +773,7 @@ class TestNATSMessageHandlerEventSubscription:
 
             # Check event type and data
             assert call_args[0][0] == "game_tick"
-            assert call_args[0][1] == event_message["data"]
+            assert call_args[0][1] == event_message["event_data"]
 
     @pytest.mark.asyncio
     async def test_handle_event_message_unknown_event_type(self):
@@ -783,7 +783,7 @@ class TestNATSMessageHandlerEventSubscription:
             # Create test event message with unknown event type
             event_message = {
                 "event_type": "unknown_event",
-                "data": {"test": "data"},
+                "event_data": {"test": "data"},
                 "timestamp": "2024-01-01T12:00:00Z",
                 "sequence_number": 1,
             }
@@ -826,7 +826,7 @@ class TestNATSMessageHandlerEventSubscription:
             # Create test event message
             event_message = {
                 "event_type": "player_entered",
-                "data": {
+                "event_data": {
                     "player_id": self.test_player_id,
                     "room_id": self.test_room_id,
                     "player_name": "TestPlayer",

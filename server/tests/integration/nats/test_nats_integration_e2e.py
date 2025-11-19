@@ -174,7 +174,7 @@ class TestNATSIntegrationE2E:
         # Simulate NATS message for player_entered event
         player_entered_message = {
             "event_type": "player_entered",
-            "data": {"player_id": "player1", "room_id": "test_room_1"},
+            "event_data": {"player_id": "player1", "room_id": "test_room_1"},
             "timestamp": datetime.now(UTC).isoformat(),
         }
 
@@ -204,7 +204,7 @@ class TestNATSIntegrationE2E:
         # Simulate NATS message for game_tick event
         game_tick_message = {
             "event_type": "game_tick",
-            "data": {"tick_number": 1, "tick_interval": 10.0},
+            "event_data": {"tick_number": 1, "tick_interval": 10.0},
             "timestamp": datetime.now(UTC).isoformat(),
         }
 
