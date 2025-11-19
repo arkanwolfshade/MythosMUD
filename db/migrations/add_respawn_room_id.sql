@@ -1,0 +1,33 @@
+-- Migration: Add respawn_room_id to players table
+-- Date: 2025-10-27
+-- Purpose: Enable player death/respawn system
+-- Status: ⚠️ DEPRECATED - This column already exists in db/authoritative_schema.sql
+--
+-- This migration is kept for historical reference only.
+-- The respawn_room_id column is now part of the baseline schema.
+--
+-- Original SQLite version (deprecated):
+-- BEGIN TRANSACTION;
+-- ALTER TABLE players
+-- ADD COLUMN respawn_room_id VARCHAR(100) DEFAULT 'earth_arkhamcity_sanitarium_room_foyer_001';
+-- SELECT name, type, dflt_value, pk
+-- FROM pragma_table_info('players')
+-- WHERE name = 'respawn_room_id';
+-- COMMIT;
+--
+-- PostgreSQL version (if needed for existing databases without this column):
+-- DO $$
+-- BEGIN
+--     IF NOT EXISTS (
+--         SELECT 1 FROM information_schema.columns
+--         WHERE table_name = 'players' AND column_name = 'respawn_room_id'
+--     ) THEN
+--         ALTER TABLE players
+--         ADD COLUMN respawn_room_id VARCHAR(100) DEFAULT 'earth_arkhamcity_sanitarium_room_foyer_001';
+--     END IF;
+-- END $$;
+--
+-- Verification query:
+-- SELECT column_name, data_type, column_default
+-- FROM information_schema.columns
+-- WHERE table_name = 'players' AND column_name = 'respawn_room_id';

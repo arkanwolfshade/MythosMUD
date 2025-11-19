@@ -43,6 +43,17 @@ These files are **kept for historical reference** but should **not** be used for
 - **See**: `data/static/generated_sql/README.md`
 - **Action**: Do not use - kept for historical reference only
 
+## Active Scripts
+
+These scripts are **actively used** for data generation:
+
+### ✅ `scripts/static_data/generate_sql.mjs`
+- **Status**: Active
+- **Purpose**: Generates `data/db/00_world_and_emotes.sql` from JSON source data
+- **Output**: DML baseline file for world data, calendars, and emotes
+- **Location**: `scripts/static_data/`
+- **See**: `scripts/static_data/README.md`
+
 ## Removed Directories
 
 These directories have been **removed** after migration:
@@ -54,6 +65,25 @@ These directories have been **removed** after migration:
   - SQL files → `db/migrations/`
   - Utility scripts → `scripts/`
   - Documentation → `db/migrations/`
+
+### ❌ `scripts/migrations/` (removed)
+- **Status**: Removed
+- **Reason**: Migration files belong in `db/migrations/`, not `scripts/`
+- **Migration**:
+  - `add_respawn_room_id.sql` → `db/migrations/add_respawn_room_id.sql` (marked as deprecated)
+
+### ⚠️ `server/sql/` (legacy - kept for reference)
+- **Status**: Deprecated - Legacy SQLite files kept for historical reference
+- **Files**:
+  - `items_schema.sql` - SQLite schema (replaced by `db/authoritative_schema.sql`)
+  - `npc_schema.sql` - SQLite schema (replaced by `db/authoritative_schema.sql`)
+  - `items_seed_data.sql` - SQLite seed data (replaced by `data/db/02_item_prototypes.sql`)
+  - `npc_sample_data.sql` - SQLite seed data (still referenced, should be migrated)
+  - `migrations/001_add_player_channel_preferences.sql` - SQLite migration (legacy)
+  - `migrations/002-009_*.sql` - PostgreSQL migrations (moved to `db/migrations/`, marked as deprecated)
+- **Location**: `server/sql/`
+- **See**: `server/sql/README.md`
+- **Action**: Do not use - all functionality replaced by PostgreSQL schema and migrations
 
 ### ❌ `data/seed/` (removed)
 - **Status**: Removed

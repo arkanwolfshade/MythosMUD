@@ -70,7 +70,7 @@ class TestNPCStartupService:
             ),
             patch("server.services.npc_startup_service.get_npc_session") as mock_session,
             patch("server.services.npc_startup_service.npc_service") as mock_npc_service,
-            patch("server.services.npc_startup_service.get_persistence") as mock_get_persistence,
+            patch("server.persistence.get_persistence") as mock_get_persistence,
         ):
             # Setup mocks
             mock_session.return_value.__aiter__.return_value = [MagicMock()]
@@ -109,7 +109,7 @@ class TestNPCStartupService:
         }
 
         # Mock persistence to return rooms for room validation
-        with patch("server.services.npc_startup_service.get_persistence") as mock_get_persistence:
+        with patch("server.persistence.get_persistence") as mock_get_persistence:
             mock_persistence = MagicMock()
             mock_persistence.get_room.return_value = MagicMock()  # Return a room object
             mock_get_persistence.return_value = mock_persistence
@@ -132,7 +132,7 @@ class TestNPCStartupService:
         # Mock random to always return 0.3 (below the 0.5 probability)
         with (
             patch("random.random", return_value=0.3),
-            patch("server.services.npc_startup_service.get_persistence") as mock_get_persistence,
+            patch("server.persistence.get_persistence") as mock_get_persistence,
         ):
             # Mock persistence to return rooms for room validation
             mock_persistence = MagicMock()
@@ -191,7 +191,7 @@ class TestNPCStartupService:
         npc_def.id = 1
 
         # Mock persistence to return a room for the default room
-        with patch("server.services.npc_startup_service.get_persistence") as mock_get_persistence:
+        with patch("server.persistence.get_persistence") as mock_get_persistence:
             mock_persistence = MagicMock()
             mock_persistence.get_room.return_value = MagicMock()  # Return a room object
             mock_get_persistence.return_value = mock_persistence
@@ -209,11 +209,13 @@ class TestNPCStartupService:
         npc_def.name = "TestNPC"
         npc_def.id = 1
 
-        # Mock persistence to return None for unknown sub-zone, but return room for fallback
-        with patch("server.services.npc_startup_service.get_persistence") as mock_get_persistence:
+        # Mock persistence to return room for fallback (since unknown sub-zone returns None, fallback is used)
+        with patch("server.persistence.get_persistence") as mock_get_persistence:
             mock_persistence = MagicMock()
-            # First call (for unknown sub-zone) returns None, second call (for fallback) returns room
-            mock_persistence.get_room.side_effect = [None, MagicMock()]
+            # Fallback room lookup (first and only call since sub-zone default returns None) returns a room
+            mock_room = MagicMock()
+            mock_room.id = "earth_arkhamcity_northside_intersection_derby_high"
+            mock_persistence.get_room.return_value = mock_room
             mock_get_persistence.return_value = mock_persistence
 
             room_id = startup_service._determine_spawn_room(npc_def)
@@ -247,7 +249,7 @@ class TestNPCStartupService:
         npc_def.sub_zone_id = None
 
         # Mock persistence to return rooms for room validation
-        with patch("server.services.npc_startup_service.get_persistence") as mock_get_persistence:
+        with patch("server.persistence.get_persistence") as mock_get_persistence:
             mock_persistence = MagicMock()
             mock_persistence.get_room.return_value = MagicMock()  # Return a room object
             mock_get_persistence.return_value = mock_persistence

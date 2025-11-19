@@ -37,11 +37,12 @@ def test_no_database_files_outside_approved_locations():
         project_root / "data" / "unit_test" / "npcs",
     ]
 
-    # Find all .db files in the project, excluding node_modules
+    # Find all .db files in the project, excluding node_modules and cache directories
     db_files = []
     for db_file in project_root.rglob("*.db"):
         # Skip files in node_modules directories (external dependencies)
-        if "node_modules" not in db_file.parts:
+        # Skip files in cache directories (.mypy_cache, __pycache__, etc.)
+        if "node_modules" not in db_file.parts and ".mypy_cache" not in db_file.parts:
             db_files.append(db_file)
 
     # Check each .db file to ensure it's in an approved location

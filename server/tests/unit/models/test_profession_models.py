@@ -85,15 +85,37 @@ class TestProfessionModel:
         Session = sessionmaker(bind=engine)
         session = Session()
         try:
-            # Clean up any existing test data
+            # Clean up any existing test data before test
             session.execute(text("DELETE FROM professions WHERE id >= 0"))
             session.commit()
             yield session
+            # Clean up test data after test to prevent conflicts in parallel execution
+            # Rollback first in case of any pending transaction issues
+            try:
+                session.rollback()
+            except Exception:
+                pass  # Ignore rollback errors
+            session.execute(text("DELETE FROM professions WHERE id >= 0"))
+            session.commit()
+        except Exception:
+            # Rollback on any exception before cleanup
+            try:
+                session.rollback()
+            except Exception:
+                pass  # Ignore rollback errors
+            raise
         finally:
-            session.close()
+            try:
+                session.close()
+            except Exception:
+                pass  # Ignore close errors
 
     def test_profession_creation(self, db_session):
         """Test creating a profession with all required fields."""
+        # Clean up any existing profession with this ID to prevent conflicts in parallel execution
+        db_session.execute(text("DELETE FROM professions WHERE id = 0"))
+        db_session.commit()
+
         profession = Profession(
             id=0,
             name="Tramp",
@@ -122,6 +144,10 @@ class TestProfessionModel:
 
     def test_profession_with_stat_requirements(self, db_session):
         """Test creating a profession with stat requirements."""
+        # Clean up any existing profession with this ID to prevent conflicts in parallel execution
+        db_session.execute(text("DELETE FROM professions WHERE id = 1"))
+        db_session.commit()
+
         stat_reqs = json.dumps({"strength": 12, "intelligence": 10})
         profession = Profession(
             id=1,
@@ -137,6 +163,7 @@ class TestProfessionModel:
         db_session.commit()
 
         saved_profession = db_session.query(Profession).filter_by(id=1).first()
+        assert saved_profession is not None, "Profession should be saved successfully"
         assert saved_profession.stat_requirements == stat_reqs
 
         # Test parsing the JSON
@@ -146,6 +173,10 @@ class TestProfessionModel:
 
     def test_profession_with_mechanical_effects(self, db_session):
         """Test creating a profession with mechanical effects."""
+        # Clean up any existing profession with this ID or name to prevent conflicts in parallel execution
+        db_session.execute(text("DELETE FROM professions WHERE id = 2 OR name = 'Warrior'"))
+        db_session.commit()
+
         effects = json.dumps({"combat_bonus": 2, "social_bonus": 1})
         profession = Profession(
             id=2,
@@ -161,6 +192,7 @@ class TestProfessionModel:
         db_session.commit()
 
         saved_profession = db_session.query(Profession).filter_by(id=2).first()
+        assert saved_profession is not None, "Profession should be saved successfully"
         assert saved_profession.mechanical_effects == effects
 
         # Test parsing the JSON
