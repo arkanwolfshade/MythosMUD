@@ -118,9 +118,9 @@ test-comprehensive: setup-test-env
 	@echo "Building Docker runner image (this ensures dependencies are up-to-date)..."
 	cd $(PROJECT_ROOT) && docker build --pull -t $(ACT_RUNNER_IMAGE) -f $(ACT_RUNNER_DOCKERFILE) .
 	@echo "Running backend tests..."
-	cd $(PROJECT_ROOT) && act --timeout 30m --env ACT=1 --env UV_PROJECT_ENVIRONMENT=.venv-ci --env UV_LINK_MODE=copy -W .github/workflows/ci.yml -j backend
+	cd $(PROJECT_ROOT) && act --env ACT=1 --env UV_PROJECT_ENVIRONMENT=.venv-ci --env UV_LINK_MODE=copy -W .github/workflows/ci.yml -j backend
 	@echo "Running frontend tests..."
-	cd $(PROJECT_ROOT) && act --timeout 10m --reuse --env ACT=1 --env UV_PROJECT_ENVIRONMENT=.venv-ci --env UV_LINK_MODE=copy -W .github/workflows/ci.yml -j frontend
+	cd $(PROJECT_ROOT) && act --reuse --env ACT=1 --env UV_PROJECT_ENVIRONMENT=.venv-ci --env UV_LINK_MODE=copy -W .github/workflows/ci.yml -j frontend
 	@echo "Test comprehensive run completed."
 
 test-coverage: setup-test-env

@@ -57,11 +57,15 @@ jobs:
           source .venv-ci/bin/activate
           playwright install chromium
           playwright install-deps
-      - name: Install PostgreSQL
+      - name: Install PostgreSQL 18
         if: ${{ !env.ACT }}
         run: |
           sudo apt-get update
-          sudo apt-get install -y postgresql postgresql-contrib
+          sudo apt-get install -y wget lsb-release gnupg
+          wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+          sudo apt-get update
+          sudo apt-get install -y postgresql-18 postgresql-contrib-18
       - name: Initialize PostgreSQL databases
         if: ${{ !env.ACT }}
         run: |
