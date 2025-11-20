@@ -504,6 +504,7 @@ class TestCombatConfigurationEdgeCases:
         # Environment variable should override default
         reset_config()
         from server.config.models import AppConfig
+
         app_config: AppConfig = get_config()
         assert app_config.game.combat_tick_interval == 8
 

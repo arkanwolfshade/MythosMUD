@@ -12,6 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.events.event_types import PlayerRespawnedEvent
 from server.logging.enhanced_logging_config import get_logger
+from server.models.game import PositionState
 from server.models.player import Player
 
 logger = get_logger(__name__)
@@ -20,7 +21,9 @@ logger = get_logger(__name__)
 DEFAULT_RESPAWN_ROOM = "earth_arkhamcity_sanitarium_room_foyer_001"
 
 # Limbo room for death state isolation
-LIMBO_ROOM_ID = "limbo_death_void"
+# NOTE: Room ID is generated as {plane}_{zone}_{sub_zone}_{stable_id}
+# For limbo room: limbo_death_void_limbo_death_void
+LIMBO_ROOM_ID = "limbo_death_void_limbo_death_void"
 
 
 class PlayerRespawnService:
@@ -159,6 +162,11 @@ class PlayerRespawnService:
             stats = player.get_stats()
             old_hp = stats.get("current_health", -10)
             stats["current_health"] = 100
+
+            # BUGFIX: Restore posture to standing when player respawns
+            # As documented in "Resurrection and Corporeal Restoration" - Dr. Armitage, 1930
+            # Upon resurrection, the body is restored to full function including upright posture
+            stats["position"] = PositionState.STANDING
 
             # Update player stats and location
             player.set_stats(stats)

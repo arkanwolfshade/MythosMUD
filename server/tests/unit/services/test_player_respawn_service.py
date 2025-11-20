@@ -5,7 +5,7 @@ from unittest.mock import AsyncMock, Mock
 import pytest
 
 from server.models.player import Player
-from server.services.player_respawn_service import PlayerRespawnService
+from server.services.player_respawn_service import LIMBO_ROOM_ID, PlayerRespawnService
 
 DEFAULT_RESPAWN_ROOM = "earth_arkhamcity_sanitarium_room_foyer_001"
 
@@ -42,7 +42,7 @@ class TestPlayerRespawnService:
 
         assert result is True
         # Verify player was moved to limbo room
-        assert mock_player.current_room_id == "limbo_death_void"
+        assert mock_player.current_room_id == LIMBO_ROOM_ID
         mock_session.commit.assert_called_once()
 
     @pytest.mark.asyncio
@@ -96,7 +96,7 @@ class TestPlayerRespawnService:
         stats = {"current_health": -10}
         mock_player.get_stats.return_value = stats
         mock_player.respawn_room_id = DEFAULT_RESPAWN_ROOM
-        mock_player.current_room_id = "limbo_death_void"
+        mock_player.current_room_id = LIMBO_ROOM_ID
 
         mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
@@ -118,7 +118,7 @@ class TestPlayerRespawnService:
         stats = {"current_health": -10}
         mock_player.get_stats.return_value = stats
         mock_player.respawn_room_id = "custom-respawn-room"
-        mock_player.current_room_id = "limbo_death_void"
+        mock_player.current_room_id = LIMBO_ROOM_ID
 
         mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
@@ -145,7 +145,7 @@ class TestPlayerRespawnService:
         for hp in [-10, -5, -1, 0]:
             stats = {"current_health": hp, "sanity": 50}
             mock_player.get_stats.return_value = stats.copy()
-            mock_player.current_room_id = "limbo_death_void"
+            mock_player.current_room_id = LIMBO_ROOM_ID
 
             mock_session = AsyncMock()
             mock_session.get.return_value = mock_player
@@ -193,7 +193,7 @@ class TestPlayerRespawnService:
         stats = {"current_health": -10}
         mock_player.get_stats.return_value = stats
         mock_player.name = "TestPlayer"
-        mock_player.current_room_id = "limbo_death_void"
+        mock_player.current_room_id = LIMBO_ROOM_ID
         mock_player.respawn_room_id = DEFAULT_RESPAWN_ROOM
 
         mock_session = AsyncMock()
@@ -241,7 +241,7 @@ class TestPlayerRespawnService:
         mock_player.player_id = player_id
         mock_player.get_stats.return_value = stats
         mock_player.name = "TestPlayer"
-        mock_player.current_room_id = "limbo_death_void"
+        mock_player.current_room_id = LIMBO_ROOM_ID
         mock_player.respawn_room_id = DEFAULT_RESPAWN_ROOM
 
         mock_session = AsyncMock()
@@ -270,7 +270,7 @@ class TestPlayerRespawnService:
         stats = {"current_health": -10}
         mock_player.get_stats.return_value = stats
         mock_player.name = "TestPlayer"
-        mock_player.current_room_id = "limbo_death_void"
+        mock_player.current_room_id = LIMBO_ROOM_ID
         mock_player.respawn_room_id = DEFAULT_RESPAWN_ROOM
 
         mock_session = AsyncMock()

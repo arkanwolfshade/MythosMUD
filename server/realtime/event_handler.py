@@ -799,19 +799,23 @@ class RealTimeEventHandler:
         try:
             player_id_str = event.player_id
 
-            # Get the current player data to send updated HP
+            # Get the current player data to send updated HP and stats
             player = self.connection_manager._get_player(player_id_str)
             if not player:
                 self._logger.warning("Player not found for HP update event", player_id=player_id_str)
                 return
 
-            # Create player update event with new HP
+            # Get full player stats including posture/position
+            stats = player.get_stats() if hasattr(player, "get_stats") else {}
+
+            # Create player update event with new HP and full stats
             player_update_data = {
                 "player_id": player_id_str,
                 "name": player.name,
                 "health": event.new_hp,
                 "max_health": event.max_hp,
                 "current_room_id": getattr(player, "current_room_id", None),
+                "stats": stats,  # Include full stats so client can update posture
             }
 
             # Send personal message to the player
@@ -860,7 +864,8 @@ class RealTimeEventHandler:
                 {
                     "player_id": player_id_str,
                     "player_name": event.player_name,
-                    "death_location": event.room_id,
+                    "death_location": event.death_location
+                    or event.room_id,  # Use death_location if available, fallback to room_id
                     "killer_id": event.killer_id,
                     "killer_name": event.killer_name,
                     "message": "You have died. The darkness claims you utterly.",

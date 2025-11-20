@@ -538,6 +538,26 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               };
               updates.room = roomWithOccupants;
 
+              // BUGFIX: Check if player is dead (HP <= -10) on connection and show death screen
+              // This handles players who connect with HP already at death threshold
+              const playerHp = playerData.stats?.current_health ?? playerData.stats?.health ?? 100;
+              if (playerHp <= -10) {
+                setIsDead(true);
+                setIsMortallyWounded(false);
+                setDeathLocation(roomData.name || 'Unknown Location');
+                logger.info('GameTerminalWithPanels', 'Player connected with HP <= -10, showing death screen', {
+                  playerHp,
+                  roomName: roomData.name,
+                });
+              } else if (playerHp <= 0 && playerHp > -10) {
+                // Player is mortally wounded but not dead yet
+                setIsMortallyWounded(true);
+                setIsDead(false);
+                logger.info('GameTerminalWithPanels', 'Player connected with HP <= 0, mortally wounded', {
+                  playerHp,
+                });
+              }
+
               logger.info('GameTerminalWithPanels', 'Received game state', {
                 playerName: playerData.name,
                 roomName: roomData.name,
@@ -654,6 +674,27 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
 
             setHealthStatus(updatedHealthStatus);
             applyHealthToPlayer(updatedHealthStatus.current, updatedHealthStatus.max);
+
+            // BUGFIX: Update full player stats including posture/position when HP updates
+            // The server now sends full stats in the player_hp_updated event
+            if (event.data.player && currentPlayerRef.current) {
+              const playerData = event.data.player as Player;
+              if (playerData.stats) {
+                updates.player = {
+                  ...currentPlayerRef.current,
+                  stats: {
+                    ...currentPlayerRef.current.stats,
+                    ...playerData.stats, // Merge in updated stats including position/posture
+                    current_health: updatedHealthStatus.current, // Ensure HP is correct
+                    max_health: updatedHealthStatus.max, // Ensure max HP is correct
+                  },
+                };
+                logger.info('GameTerminalWithPanels', 'Updated player stats including posture', {
+                  position: playerData.stats.position,
+                  current_health: updatedHealthStatus.current,
+                });
+              }
+            }
 
             const messageText = buildHealthChangeMessage(updatedHealthStatus, delta, event.data);
             appendMessage(

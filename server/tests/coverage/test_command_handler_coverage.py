@@ -243,15 +243,28 @@ class TestCommunicationCommands:
         assert "result" in result
         assert "testuser waves" in result["result"]
 
-    def test_is_predefined_emote(self):
+    @patch("server.game.emote_service.EmoteService")
+    def test_is_predefined_emote(self, mock_emote_service_class):
         """Test predefined emote detection."""
+        # Mock EmoteService to avoid database access during tests
+        mock_emote_service = Mock()
+        # Return True for known emotes, False for unknown
+        mock_emote_service.is_emote_alias.side_effect = lambda cmd: cmd in ("twibble", "wave")
+        mock_emote_service_class.return_value = mock_emote_service
+
         assert _is_predefined_emote("twibble")
         assert _is_predefined_emote("wave")
         assert not _is_predefined_emote("custom_action")
 
     @pytest.mark.asyncio
-    async def test_process_command_predefined_emote(self):
+    @patch("server.game.emote_service.EmoteService")
+    async def test_process_command_predefined_emote(self, mock_emote_service_class):
         """Test predefined emote command."""
+        # Mock EmoteService to recognize "twibble" as a predefined emote
+        mock_emote_service = Mock()
+        mock_emote_service.is_emote_alias.return_value = True
+        mock_emote_service_class.return_value = mock_emote_service
+
         mock_request = Mock()
         mock_request.app = Mock()
         mock_request.app.state = Mock()

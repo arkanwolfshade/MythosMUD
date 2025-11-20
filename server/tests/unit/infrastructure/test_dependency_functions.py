@@ -213,8 +213,14 @@ class TestDependencyFunctions:
             thread.start()
 
         # Wait for all threads to complete
+        # CRITICAL: Add timeout to prevent indefinite hang if threads don't complete
         for thread in threads:
-            thread.join()
+            thread.join(timeout=10.0)
+            if thread.is_alive():
+                raise TimeoutError(
+                    f"Thread {thread.ident} did not complete within 10 second timeout. "
+                    "This may indicate a resource leak or hanging operation."
+                )
 
         # Verify no errors occurred
         assert len(errors) == 0, f"Thread safety errors: {errors}"

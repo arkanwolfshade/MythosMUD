@@ -101,9 +101,7 @@ class MonitoringDashboard:
         # Get performance statistics
         perf_stats_raw = self.performance_monitor.get_all_stats()
         # Filter out None values for type safety
-        perf_stats: dict[str, PerformanceStats] = {
-            k: v for k, v in perf_stats_raw.items() if v is not None
-        }
+        perf_stats: dict[str, PerformanceStats] = {k: v for k, v in perf_stats_raw.items() if v is not None}
 
         # Get exception statistics
         exc_stats = self.exception_tracker.get_stats()

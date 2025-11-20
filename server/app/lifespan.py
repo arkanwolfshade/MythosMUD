@@ -20,6 +20,7 @@ from ..container import ApplicationContainer
 from ..logging.enhanced_logging_config import get_logger, update_logging_with_player_service
 from ..realtime.sse_handler import broadcast_game_event
 from ..services.catatonia_registry import CatatoniaRegistry
+from ..services.player_respawn_service import LIMBO_ROOM_ID
 from ..time.time_event_consumer import MythosTimeEventConsumer
 from ..time.time_service import get_mythos_chronicle
 
@@ -366,7 +367,12 @@ async def lifespan(app: FastAPI):
         # Initialize combat service now that NATS service is available
         from ..services.combat_service import CombatService
 
-        app.state.combat_service = CombatService(app.state.player_combat_service, container.nats_service)
+        app.state.combat_service = CombatService(
+            app.state.player_combat_service,
+            container.nats_service,
+            player_death_service=app.state.player_death_service,
+            player_respawn_service=app.state.player_respawn_service,
+        )
 
         # Update global combat service instance for tests and other modules
         from ..services.combat_service import set_combat_service
@@ -623,7 +629,7 @@ async def game_tick_loop(app: FastAPI):
                                 current_hp = stats.get("current_health", 0)
 
                                 # If player is dead and not in limbo, move them there
-                                if current_hp <= -10 and player.current_room_id != "limbo_death_void":
+                                if current_hp <= -10 and player.current_room_id != LIMBO_ROOM_ID:
                                     logger.info(
                                         "Found dead player not in limbo - moving to limbo",
                                         player_id=player.player_id,

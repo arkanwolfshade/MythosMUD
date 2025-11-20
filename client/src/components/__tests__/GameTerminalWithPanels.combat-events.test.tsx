@@ -43,8 +43,19 @@ describe('GameTerminalWithPanels - Combat Events', () => {
     render(<GameTerminalWithPanels playerName={playerName} authToken="test-token" />);
 
   const findMessageContainer = (text: string) => {
+    // Combat messages appear in GameLogPanel, not ChatPanel
+    // Try GameLogPanel first (game-log-message), then fall back to ChatPanel (chat-message)
+    const gameLogMessages = screen.queryAllByTestId('game-log-message');
+    const gameLogMatch = gameLogMessages.find(container => {
+      const textElement = within(container).queryByText(text, { exact: false });
+      return textElement !== null;
+    });
+    if (gameLogMatch) {
+      return gameLogMatch;
+    }
+    // Fallback to ChatPanel for non-combat messages
     const messageContainers = screen.queryAllByTestId('chat-message');
-    return messageContainers.find(container => within(container).queryByText(text));
+    return messageContainers.find(container => within(container).queryByText(text, { exact: false }));
   };
 
   const sendStatusUpdate = (playerName: string, options: { inCombat?: 'Yes' | 'No'; health?: string } = {}) => {

@@ -208,8 +208,15 @@ class TestComprehensiveIntegration:
             thread.start()
 
         # Wait for all threads to complete
+        # CRITICAL: Add timeout to prevent indefinite hang if threads don't complete
+        # This prevents the test suite from stalling if threads hang due to resource leaks
         for thread in threads:
-            thread.join()
+            thread.join(timeout=10.0)
+            if thread.is_alive():
+                raise TimeoutError(
+                    f"Thread {thread.ident} did not complete within 10 second timeout. "
+                    "This may indicate a resource leak or hanging operation."
+                )
 
         # Verify all requests completed successfully
         assert len(results) == 5

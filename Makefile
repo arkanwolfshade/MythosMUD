@@ -161,6 +161,6 @@ all:
 	cd $(PROJECT_ROOT) && make mypy
 	cd $(PROJECT_ROOT) && make lint
 	cd $(PROJECT_ROOT) && make semgrep
-	cd $(PROJECT_ROOT) && make test-comprehensive
-	cd $(PROJECT_ROOT) && make test-client
 	cd $(PROJECT_ROOT) && make build
+	cd $(PROJECT_ROOT) && make test-client
+	cd $(PROJECT_ROOT) && make test-comprehensive

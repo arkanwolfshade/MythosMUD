@@ -13,6 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.events.event_types import PlayerDiedEvent, PlayerHPDecayEvent
 from server.logging.enhanced_logging_config import get_logger, log_exception_once
+from server.models.game import PositionState
 from server.models.player import Player
 
 logger = get_logger(__name__)
@@ -124,6 +125,22 @@ class PlayerDeathService:
 
             # Update player stats
             stats["current_health"] = new_hp
+
+            # BUGFIX: Automatically change posture to lying when HP drops to <= 0
+            # As documented in "Corporeal Collapse and Unconsciousness" - Dr. Armitage, 1928
+            # When a player's life force drops to zero or below, their body automatically collapses
+            if new_hp <= 0 and old_hp > 0:
+                stats["position"] = PositionState.LYING
+                logger.info(
+                    "Player posture changed to lying (unconscious)",
+                    player_id=player_id,
+                    player_name=player.name,
+                    hp=new_hp,
+                )
+            elif new_hp <= 0 and stats.get("position") != PositionState.LYING:
+                # Ensure player is lying if already at <= 0 HP
+                stats["position"] = PositionState.LYING
+
             player.set_stats(stats)
 
             # Commit changes to database using async API
@@ -187,6 +204,17 @@ class PlayerDeathService:
                 logger.warning("Player not found for death handling", player_id=player_id)
                 return False
 
+            # Ensure player posture is set to lying when dead
+            stats = player.get_stats()
+            if stats.get("position") != PositionState.LYING:
+                stats["position"] = PositionState.LYING
+                player.set_stats(stats)
+                logger.debug(
+                    "Set player posture to lying on death",
+                    player_id=player_id,
+                    player_name=player.name,
+                )
+
             # Log death event
             logger.info(
                 "Player died",
@@ -222,10 +250,18 @@ class PlayerDeathService:
 
             # Publish player died event if event bus is available
             if self._event_bus:
+                # Get room name for death location display
+                from ..persistence import get_persistence
+
+                persistence = get_persistence()
+                room = persistence.get_room(death_location) if death_location else None
+                room_name = room.name if room else death_location
+
                 event = PlayerDiedEvent(
                     player_id=player_id,
                     player_name=str(player.name),
                     room_id=death_location,
+                    death_location=room_name,  # Set death_location for client display
                     killer_id=killer_info.get("killer_id") if killer_info else None,
                     killer_name=killer_info.get("killer_name") if killer_info else None,
                 )

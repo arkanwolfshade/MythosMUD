@@ -156,8 +156,15 @@ class TestAsyncRouteHandlers:
             thread = threading.Thread(target=make_request)
             threads.append(thread)
             thread.start()
+        # CRITICAL: Add timeout to prevent indefinite hang if threads don't complete
+        # This prevents the test suite from stalling if threads hang due to resource leaks
         for thread in threads:
-            thread.join()
+            thread.join(timeout=10.0)  # 10 second timeout per thread
+            if thread.is_alive():
+                raise TimeoutError(
+                    f"Thread {thread.ident} did not complete within 10 second timeout. "
+                    "This may indicate a resource leak or hanging operation."
+                )
 
         response_times = []
         while not results.empty():

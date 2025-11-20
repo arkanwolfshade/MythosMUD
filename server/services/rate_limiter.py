@@ -61,9 +61,7 @@ class RateLimiter:
             self.enabled = rate_limiting_config.get("enabled", True)
 
         # Sliding window storage: {player_id: {channel: deque(timestamps)}}
-        self.windows: defaultdict[str, defaultdict[str, deque[float]]] = defaultdict(
-            lambda: defaultdict(deque)
-        )
+        self.windows: defaultdict[str, defaultdict[str, deque[float]]] = defaultdict(lambda: defaultdict(deque))
 
         # Window size in seconds (1 minute)
         self.window_size = 60

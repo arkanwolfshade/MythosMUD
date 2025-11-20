@@ -276,21 +276,46 @@ async def handle_websocket_connection(
                     )
                     await websocket.send_json(game_state_event)
 
-                    # Check if player is in limbo (dead) and send death event to trigger UI
-                    if canonical_room_id == "limbo_death_void_limbo_room":
+                    # Check if player is dead (HP <= -10) and send death event to trigger UI
+                    # This handles players who connect with HP already at death threshold
+                    # CRITICAL: Refresh player from database to ensure we have latest HP and room after respawn
+                    # The persistence layer might have cached player data, so we need fresh data
+                    fresh_player = persistence.get_player(player_id_str)
+                    if fresh_player:
+                        player = fresh_player
+                        # Update canonical_room_id with fresh player's room to ensure accurate death check
+                        canonical_room_id = (
+                            str(player.current_room_id) if hasattr(player, "current_room_id") else canonical_room_id
+                        )
+
+                    stats = player.get_stats() if hasattr(player, "get_stats") else {}
+                    current_hp = stats.get("current_health", 100)
+
+                    # Import LIMBO_ROOM_ID for comparison
+                    from ..services.player_respawn_service import LIMBO_ROOM_ID
+
+                    # Check if player is dead (HP <= -10) or in limbo
+                    # Use the fresh canonical_room_id which was updated from the refreshed player
+                    if current_hp <= -10 or str(canonical_room_id) == LIMBO_ROOM_ID:
+                        # Get room name for death location display
+                        death_location_name = room.name if room else "Unknown Location"
+
                         death_event = build_event(
                             "player_died",
                             {
                                 "player_id": player_id_str,
                                 "player_name": player.name,
-                                "death_location": getattr(player, "death_location", "Unknown Location"),
+                                "death_location": death_location_name,
                                 "message": "You have died. The darkness claims you utterly.",
                             },
                             player_id=player_id_str,
                         )
                         await websocket.send_json(death_event)
                         logger.info(
-                            "Sent death notification to player on login", player_id=player_id_str, in_limbo=True
+                            "Sent death notification to player on login",
+                            player_id=player_id_str,
+                            current_hp=current_hp,
+                            in_limbo=str(canonical_room_id) == LIMBO_ROOM_ID,
                         )
 
                     # Note: Room update happens via EventBus flow
