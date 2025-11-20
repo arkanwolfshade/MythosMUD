@@ -287,7 +287,13 @@ class WebSocketMessageValidator:
         # Step 3: Validate JSON structure (depth, string lengths)
         self.validate_json_structure(message)
 
-        # Step 4: Handle nested message format (from useWebSocketConnection)
+        # Step 4: Validate schema against outer message if schema is provided
+        # This must happen before extracting inner message, as the schema (e.g., WrappedMessage)
+        # expects the outer message structure
+        if schema is not None:
+            self.validate_schema(message, schema)
+
+        # Step 5: Handle nested message format (from useWebSocketConnection)
         if "message" in message and isinstance(message["message"], str):
             try:
                 # Parse inner message
@@ -308,8 +314,10 @@ class WebSocketMessageValidator:
                 # If inner message is not JSON, use outer message as-is
                 pass
 
-        # Step 5: Validate schema
-        self.validate_schema(message, schema)
+        # Step 6: Validate schema against inner message if no schema was provided earlier
+        # (This allows schema validation of inner messages when no outer schema is specified)
+        if schema is None:
+            self.validate_schema(message, schema)
 
         # Step 6: Validate CSRF token
         self.validate_csrf(message, player_id, csrf_token)

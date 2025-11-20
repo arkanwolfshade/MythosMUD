@@ -532,6 +532,7 @@ def test_client(mock_application_container):
 
     from ..events.event_bus import EventBus
     from ..game.player_service import PlayerService
+    from ..game.room_service import RoomService
     from ..main import app
     from ..persistence import get_persistence, reset_persistence
     from ..realtime.event_handler import RealTimeEventHandler
@@ -549,20 +550,23 @@ def test_client(mock_application_container):
     app.state.persistence = get_persistence(event_bus=event_bus)
     app.state.server_shutdown_pending = False
 
-    # Create real PlayerService with real persistence
+    # Create real PlayerService and RoomService with real persistence
     player_service = PlayerService(app.state.persistence)
+    room_service = RoomService(app.state.persistence)
 
     # Use the comprehensive mock container
     app.state.container = mock_application_container
-    # Update container's persistence, event_bus, and player_service with real instances
+    # Update container's persistence, event_bus, and services with real instances
     mock_application_container.persistence = app.state.persistence
     mock_application_container.event_bus = app.state.event_handler.event_bus
     mock_application_container.event_handler = app.state.event_handler
     mock_application_container.player_service = player_service
+    mock_application_container.room_service = room_service
 
     # Also set these on app.state for backward compatibility
     app.state.event_bus = app.state.event_handler.event_bus
     app.state.player_service = player_service
+    app.state.room_service = room_service
 
     client = TestClient(app)
     client.app.state.server_shutdown_pending = False

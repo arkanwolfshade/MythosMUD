@@ -549,12 +549,41 @@ class TestNATSMessageHandlerEventSubscription:
         self.mock_nats_service.subscribe = AsyncMock()
         self.mock_nats_service.unsubscribe = AsyncMock()
 
+        # Create a mock subject manager with expected subscription patterns
+        self.mock_subject_manager = Mock()
+        self.mock_subject_manager.get_chat_subscription_patterns = Mock(
+            return_value=[
+                "chat.say.*",
+                "chat.local.*",
+                "chat.local.subzone.*",
+                "chat.emote.*",
+                "chat.pose.*",
+                "chat.global",
+                "chat.party.*",
+                "chat.whisper.player.*",
+                "chat.system",
+                "chat.admin",
+            ]
+        )
+        self.mock_subject_manager.get_event_subscription_patterns = Mock(
+            return_value=[
+                "events.player_entered.*",
+                "events.player_left.*",
+                "events.game_tick",
+                "combat.attack.*",
+                "combat.npc_attacked.*",
+                "combat.npc_action.*",
+                "combat.started.*",
+                "combat.ended.*",
+                "combat.npc_died.*",
+                "events.player_mortally_wounded.*",
+                "events.player_hp_decay.*",
+                "events.player_died.*",
+                "events.player_respawned.*",
+            ]
+        )
+
         # Create the handler instance
-        # Use the same mock subject manager setup as in setup_method
-        if not hasattr(self, "mock_subject_manager"):
-            self.mock_subject_manager = Mock()
-            self.mock_subject_manager.get_chat_subscription_patterns = Mock(return_value=[])
-            self.mock_subject_manager.get_event_subscription_patterns = Mock(return_value=[])
         self.handler = NATSMessageHandler(self.mock_nats_service, subject_manager=self.mock_subject_manager)
 
         # Mock connection manager

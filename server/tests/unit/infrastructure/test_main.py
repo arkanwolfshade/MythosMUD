@@ -107,51 +107,76 @@ class TestEndpoints:
 
     def test_create_player_success(self, client):
         """Test creating a new player."""
-        # Mock the authentication dependency
-        with patch("server.api.players.get_current_user") as mock_auth:
-            mock_auth.return_value = {"user_id": "test-user-id"}
+        # Create a proper mock User object (not a dict)
+        mock_user = Mock()
+        mock_user.id = uuid.uuid4()
+        mock_user.username = "testuser"
+        mock_user.email = "test@example.com"
 
-            # Mock the PlayerService to return a successful result
-            mock_service_instance = Mock()
-            mock_player = Mock()
-            mock_player.name = "testplayer"
-            mock_player.current_room_id = "earth_arkhamcity_intersection_derby_high"
-            mock_player.player_id = "550e8400-e29b-41d4-a716-446655440000"
-            mock_player.id = "550e8400-e29b-41d4-a716-446655440000"
-            mock_player.user_id = "550e8400-e29b-41d4-a716-446655440001"
-            mock_player.experience_points = 0
-            mock_player.level = 1
-            mock_player.stats = {"health": 100, "sanity": 90, "position": "standing"}
-            mock_player.inventory = []
-            mock_player.status_effects = []
-            mock_player.created_at = "2024-01-01T00:00:00Z"
-            mock_player.last_active = "2024-01-01T00:00:00Z"
-            mock_player.is_admin = False
-            mock_player.in_combat = False
-            mock_player.position = "standing"
-            # Add profession fields that are now required by PlayerRead schema
-            mock_player.profession_id = 0
-            mock_player.profession_name = "Scholar"
-            mock_player.profession_description = "A learned academic"
-            mock_player.profession_flavor_text = "Knowledge is power"
-            mock_service_instance.create_player = AsyncMock(return_value=mock_player)
+        # Mock the PlayerService to return a successful result
+        mock_service_instance = Mock()
+        mock_player = Mock()
+        mock_player.name = "testplayer"
+        mock_player.current_room_id = "earth_arkhamcity_intersection_derby_high"
+        mock_player.player_id = "550e8400-e29b-41d4-a716-446655440000"
+        mock_player.id = "550e8400-e29b-41d4-a716-446655440000"
+        mock_player.user_id = "550e8400-e29b-41d4-a716-446655440001"
+        mock_player.experience_points = 0
+        mock_player.level = 1
+        mock_player.stats = {"health": 100, "sanity": 90, "position": "standing"}
+        mock_player.inventory = []
+        mock_player.status_effects = []
+        mock_player.created_at = "2024-01-01T00:00:00Z"
+        mock_player.last_active = "2024-01-01T00:00:00Z"
+        mock_player.is_admin = False
+        mock_player.in_combat = False
+        mock_player.position = "standing"
+        # Add profession fields that are now required by PlayerRead schema
+        mock_player.profession_id = 0
+        mock_player.profession_name = "Scholar"
+        mock_player.profession_description = "A learned academic"
+        mock_player.profession_flavor_text = "Knowledge is power"
+        mock_player.model_dump = Mock(return_value={
+            "player_id": mock_player.player_id,
+            "name": mock_player.name,
+            "current_room_id": mock_player.current_room_id,
+            "user_id": mock_player.user_id,
+            "experience_points": mock_player.experience_points,
+            "level": mock_player.level,
+            "stats": mock_player.stats,
+            "inventory": mock_player.inventory,
+            "status_effects": mock_player.status_effects,
+            "created_at": mock_player.created_at,
+            "last_active": mock_player.last_active,
+            "profession_id": mock_player.profession_id,
+            "profession_name": mock_player.profession_name,
+            "profession_description": mock_player.profession_description,
+            "profession_flavor_text": mock_player.profession_flavor_text,
+        })
+        mock_service_instance.create_player = AsyncMock(return_value=mock_player)
 
-            # Override the app dependency to use our mock
-            import server.dependencies
-            from server.main import app
+        # Override the app dependencies
+        import server.dependencies
+        from server.api.players import get_current_user
+        from server.main import app
 
-            app.dependency_overrides[server.dependencies.get_player_service] = lambda: mock_service_instance
+        # Mock the authentication dependency - get_current_user is async
+        async def mock_get_current_user():
+            return mock_user
 
-            try:
-                response = client.post(
-                    "/api/players?name=testplayer&starting_room_id=earth_arkhamcity_intersection_derby_high"
-                )
+        app.dependency_overrides[get_current_user] = mock_get_current_user
+        app.dependency_overrides[server.dependencies.get_player_service] = lambda: mock_service_instance
 
-                assert response.status_code == 200
-                # The response will be handled by the PlayerService
-            finally:
-                # Clean up the dependency override
-                app.dependency_overrides.clear()
+        try:
+            response = client.post(
+                "/api/players?name=testplayer&starting_room_id=earth_arkhamcity_intersection_derby_high"
+            )
+
+            assert response.status_code == 200
+            # The response will be handled by the PlayerService
+        finally:
+            # Clean up the dependency overrides
+            app.dependency_overrides.clear()
 
     def test_create_player_already_exists(self, client):
         """Test creating a player that already exists."""

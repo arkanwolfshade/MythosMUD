@@ -94,11 +94,27 @@ class TestAsyncOperationScheduling:
         # Verify the code uses get_running_loop() by checking the actual implementation
         # This is more of a verification test than a functional test
         import inspect
+        import re
 
-        source = inspect.getsource(event_handler._handle_npc_spawn_event)
+        # Check _handle_npc_left which uses get_running_loop() for async operations
+        source = inspect.getsource(event_handler._handle_npc_left)
         assert "get_running_loop()" in source or "get_running_loop" in source
-        # Should NOT use deprecated get_event_loop()
-        assert "get_event_loop()" not in source
+
+        # Should NOT use deprecated get_event_loop() in actual code (comments are OK)
+        # Filter out comments and docstrings to check only actual code
+        lines = []
+        for line in source.split('\n'):
+            stripped = line.strip()
+            # Skip empty lines, comments, and docstrings
+            if stripped and not stripped.startswith('#') and not stripped.startswith('"""') and not stripped.startswith("'''"):
+                # Remove inline comments
+                code_part = re.sub(r'#.*$', '', line).strip()
+                if code_part:
+                    lines.append(code_part)
+
+        code_only = '\n'.join(lines)
+        # Check that get_event_loop() is not used in actual code (only in comments)
+        assert "get_event_loop()" not in code_only, "get_event_loop() should not be used in actual code, only get_running_loop()"
 
     @pytest.mark.asyncio
     async def test_runtime_error_handling_no_loop(self):

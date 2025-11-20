@@ -151,6 +151,9 @@ class TestPlayerDeathService:
         """Test basic player death handling."""
         mock_player.current_room_id = "death-room"
         mock_player.name = "DeadPlayer"
+        # get_stats() must return a mutable dict, not a Mock
+        mock_player.get_stats.return_value = {"current_health": -10, "position": "standing"}
+        mock_player.set_stats = Mock()
 
         mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
@@ -169,6 +172,9 @@ class TestPlayerDeathService:
         """Test player death without a killer."""
         mock_player.current_room_id = "death-room"
         mock_player.name = "DeadPlayer"
+        # get_stats() must return a mutable dict, not a Mock
+        mock_player.get_stats.return_value = {"current_health": -10, "position": "standing"}
+        mock_player.set_stats = Mock()
 
         mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
@@ -249,6 +255,9 @@ class TestPlayerDeathService:
 
         mock_player.name = "TestPlayer"
         mock_player.current_room_id = "death-room"
+        # get_stats() must return a mutable dict, not a Mock
+        mock_player.get_stats.return_value = {"current_health": -10, "position": "standing"}
+        mock_player.set_stats = Mock()
 
         mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
@@ -268,6 +277,12 @@ class TestPlayerDeathService:
     @pytest.mark.asyncio
     async def test_handle_player_death_database_exception(self, player_death_service, mock_player):
         """Test death handling handles database exceptions gracefully."""
+        mock_player.current_room_id = "death-room"
+        mock_player.name = "DeadPlayer"
+        # get_stats() must return a mutable dict, not a Mock
+        mock_player.get_stats.return_value = {"current_health": -10, "position": "standing"}
+        mock_player.set_stats = Mock()
+
         mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
         mock_session.commit.side_effect = Exception("Database error")
@@ -292,6 +307,9 @@ class TestPlayerDeathService:
         mock_player.player_id = player_id
         mock_player.name = "TestPlayer"
         mock_player.current_room_id = "death-room"
+        # get_stats() must return a mutable dict, not a Mock
+        mock_player.get_stats.return_value = {"current_health": -10, "position": "standing"}
+        mock_player.set_stats = Mock()
 
         mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
@@ -320,6 +338,9 @@ class TestPlayerDeathService:
 
         mock_player.name = "TestPlayer"
         mock_player.current_room_id = "death-room"
+        # get_stats() must return a mutable dict, not a Mock
+        mock_player.get_stats.return_value = {"current_health": -10, "position": "standing"}
+        mock_player.set_stats = Mock()
 
         mock_session = AsyncMock()
         mock_session.get.return_value = mock_player

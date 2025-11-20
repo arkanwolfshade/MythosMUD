@@ -18,6 +18,8 @@ jobs:
       ACTIONS_RUNNER_DEBUG: true
       UV_PROJECT_ENVIRONMENT: .venv-ci
       UV_LINK_MODE: copy
+      # Suppress Node.js punycode deprecation warning (DEP0040) from transitive dependencies
+      NODE_OPTIONS: --no-deprecation
       DATABASE_URL: postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit
       DATABASE_NPC_URL: postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit
       MYTHOSMUD_ADMIN_PASSWORD: ${{ secrets.MYTHOSMUD_ADMIN_PASSWORD_CI }}
@@ -97,6 +99,28 @@ jobs:
           source .venv-ci/bin/activate
           # Use pre-commit to run mypy with identical config to local development
           pre-commit run mypy --all-files
+      - name: Set up test environment file
+        run: |
+          # Create test environment file from example for CI
+          # CI already has all env vars set, but conftest.py validates the file exists
+          mkdir -p server/tests
+          if [ -f env.unit_test.example ]; then
+            cp env.unit_test.example server/tests/.env.unit_test
+            echo "Created server/tests/.env.unit_test from example"
+          else
+            echo "Warning: env.unit_test.example not found, creating minimal .env.unit_test"
+            # Use environment variables that are already set in the job env section
+            cat > server/tests/.env.unit_test << 'EOF'
+          SERVER_PORT=54731
+          EOF
+            echo "DATABASE_URL=${DATABASE_URL}" >> server/tests/.env.unit_test
+            echo "DATABASE_NPC_URL=${DATABASE_NPC_URL}" >> server/tests/.env.unit_test
+            echo "MYTHOSMUD_ADMIN_PASSWORD=${MYTHOSMUD_ADMIN_PASSWORD}" >> server/tests/.env.unit_test
+            echo "MYTHOSMUD_SECRET_KEY=${MYTHOSMUD_SECRET_KEY}" >> server/tests/.env.unit_test
+            echo "MYTHOSMUD_JWT_SECRET=${MYTHOSMUD_JWT_SECRET}" >> server/tests/.env.unit_test
+            echo "MYTHOSMUD_RESET_TOKEN_SECRET=${MYTHOSMUD_RESET_TOKEN_SECRET}" >> server/tests/.env.unit_test
+            echo "MYTHOSMUD_VERIFICATION_TOKEN_SECRET=${MYTHOSMUD_VERIFICATION_TOKEN_SECRET}" >> server/tests/.env.unit_test
+          fi
       - name: Run tests with coverage
         run: |
           source .venv-ci/bin/activate
@@ -141,6 +165,8 @@ jobs:
     env:
       ACTIONS_STEP_DEBUG: true
       ACTIONS_RUNNER_DEBUG: true
+      # Suppress Node.js punycode deprecation warning (DEP0040) from transitive dependencies
+      NODE_OPTIONS: --no-deprecation
     defaults:
       run:
         working-directory: client

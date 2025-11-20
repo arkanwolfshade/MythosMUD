@@ -55,7 +55,7 @@ async def create_test_player(session: AsyncSession, player_id: str) -> Player:
     player = Player(
         player_id=player_id,
         user_id=user.id,
-        name=player_id,
+        name=unique_username,  # Use unique username to avoid duplicate key violations
     )
     session.add_all([user, player])
     await session.flush()

@@ -3,6 +3,7 @@ End-to-end integration tests for complete NATS event flow.
 """
 
 import asyncio
+import uuid
 from datetime import UTC, datetime
 from unittest.mock import AsyncMock, Mock, patch
 
@@ -175,7 +176,9 @@ class TestNATSIntegrationE2E:
         await self.nats_handler.start()
 
         # Simulate NATS message for player_entered event
+        # EventMessageSchema requires message_id and timestamp from BaseMessageSchema
         player_entered_message = {
+            "message_id": str(uuid.uuid4()),
             "event_type": "player_entered",
             "event_data": {"player_id": "player1", "room_id": "test_room_1"},
             "timestamp": datetime.now(UTC).isoformat(),
@@ -205,7 +208,9 @@ class TestNATSIntegrationE2E:
         await self.nats_handler.start()
 
         # Simulate NATS message for game_tick event
+        # EventMessageSchema requires message_id and timestamp from BaseMessageSchema
         game_tick_message = {
+            "message_id": str(uuid.uuid4()),
             "event_type": "game_tick",
             "event_data": {"tick_number": 1, "tick_interval": 10.0},
             "timestamp": datetime.now(UTC).isoformat(),

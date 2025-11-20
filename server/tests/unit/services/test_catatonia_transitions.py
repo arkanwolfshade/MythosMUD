@@ -62,7 +62,7 @@ async def create_player(
     player = Player(
         player_id=player_id,
         user_id=user.id,
-        name=name,
+        name=unique_username,  # Use unique username to avoid duplicate key violations
         current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
     )
     sanity_record = PlayerSanity(
