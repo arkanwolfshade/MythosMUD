@@ -593,8 +593,8 @@ class TestInviteManagementEndpoints:
                 invite_id = str(uuid.uuid4())
                 conn.execute(
                     text("""
-                        INSERT INTO invites (id, invite_code, created_by_user_id, used_by_user_id, used, expires_at, created_at)
-                        VALUES (:id, 'TEST123', NULL, NULL, false, :expires_at, :created_at)
+                        INSERT INTO invites (id, invite_code, created_by_user_id, used_by_user_id, is_active, expires_at, created_at)
+                        VALUES (:id, 'TEST123', NULL, NULL, true, :expires_at, :created_at)
                         ON CONFLICT (invite_code) DO NOTHING
                     """),
                     {

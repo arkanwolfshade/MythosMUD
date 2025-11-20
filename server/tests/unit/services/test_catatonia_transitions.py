@@ -50,6 +50,7 @@ async def create_player(
         id=str(uuid.uuid4()),
         email=f"{player_id}@example.org",
         username=name,
+        display_name=name,
         hashed_password="hashed",
         is_active=True,
         is_superuser=False,

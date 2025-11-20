@@ -29,7 +29,7 @@ help:
 	@echo "  test-client-e2e  - Automated client E2E tests (Playwright)"
 	@echo ""
 	@echo "Testing - CI/CD:"
-	@echo "  test-comprehensive - Full test suite for CI/CD (~30 min)"
+	@echo "  test-comprehensive - Full test suite for CI/CD (~30 min, rebuilds Docker image)"
 	@echo "  test-coverage      - Generate coverage reports"
 	@echo ""
 	@echo "Testing - On-Demand:"
@@ -115,9 +115,13 @@ test-comprehensive: setup-test-env
 	@if not exist "$(PROJECT_ROOT)\\.act.secrets" ( \
 		echo ERROR: Missing $(PROJECT_ROOT)\\.act.secrets. Copy .act.secrets.example and populate secrets before running act. & \
 		exit 1 )
-	cd $(PROJECT_ROOT) && docker build -t $(ACT_RUNNER_IMAGE) -f $(ACT_RUNNER_DOCKERFILE) .
-	cd $(PROJECT_ROOT) && act --env ACT=1 --env UV_PROJECT_ENVIRONMENT=.venv-ci --env UV_LINK_MODE=copy -W .github/workflows/ci.yml -j backend
-	cd $(PROJECT_ROOT) && act --reuse --env ACT=1 --env UV_PROJECT_ENVIRONMENT=.venv-ci --env UV_LINK_MODE=copy -W .github/workflows/ci.yml -j frontend
+	@echo "Building Docker runner image (this ensures dependencies are up-to-date)..."
+	cd $(PROJECT_ROOT) && docker build --pull -t $(ACT_RUNNER_IMAGE) -f $(ACT_RUNNER_DOCKERFILE) .
+	@echo "Running backend tests..."
+	cd $(PROJECT_ROOT) && act --timeout 30m --env ACT=1 --env UV_PROJECT_ENVIRONMENT=.venv-ci --env UV_LINK_MODE=copy -W .github/workflows/ci.yml -j backend
+	@echo "Running frontend tests..."
+	cd $(PROJECT_ROOT) && act --timeout 10m --reuse --env ACT=1 --env UV_PROJECT_ENVIRONMENT=.venv-ci --env UV_LINK_MODE=copy -W .github/workflows/ci.yml -j frontend
+	@echo "Test comprehensive run completed."
 
 test-coverage: setup-test-env
 	@echo "Generating coverage report..."

@@ -59,6 +59,7 @@ async def initialize_database(session: AsyncSession, user_id: str | None = None)
         id=str(user_uuid),
         email=f"position_test_{unique_suffix}@example.com",
         username=f"position_test_user_{unique_suffix}",
+        display_name=f"position_test_user_{unique_suffix}",
         hashed_password="hashed-password",
         is_active=True,
         is_superuser=False,

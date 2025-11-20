@@ -265,11 +265,15 @@ class TestInitNPCDB:
     @pytest.mark.asyncio
     async def test_init_npc_db_success(self):
         """Test successful database initialization."""
+        from sqlalchemy import text
+
         import server.npc_database as npc_db
 
         # Create mocks
         mock_engine = AsyncMock(spec=AsyncEngine)
         mock_conn = AsyncMock()
+        mock_result = AsyncMock()
+        mock_conn.execute = AsyncMock(return_value=mock_result)
         mock_engine.begin.return_value.__aenter__.return_value = mock_conn
         mock_engine.begin.return_value.__aexit__.return_value = None
 
@@ -278,11 +282,14 @@ class TestInitNPCDB:
         npc_db._npc_database_url = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
 
         with patch("sqlalchemy.orm.configure_mappers"):
-            await init_npc_db()
+            with patch("server.models.npc.NPCDefinition"):
+                await init_npc_db()
 
-        # Verify database tables were created
-        mock_conn.run_sync.assert_called_once()
+        # Verify connectivity check was performed (SELECT 1)
         mock_conn.execute.assert_called_once()
+        call_args = mock_conn.execute.call_args[0]
+        assert isinstance(call_args[0], text.TextClause)
+        assert "SELECT 1" in str(call_args[0])
 
         # Clean up
         npc_db._npc_engine = None
@@ -334,27 +341,34 @@ class TestCloseNPCDB:
 
     @pytest.mark.asyncio
     async def test_close_npc_db_error(self):
-        """Test database closing error handling."""
+        """Test database closing error handling - errors are logged but not raised."""
         import server.npc_database as npc_db
 
         mock_engine = AsyncMock(spec=AsyncEngine)
         mock_engine.dispose.side_effect = Exception("Dispose error")
         npc_db._npc_engine = mock_engine
+        npc_db._npc_async_session_maker = MagicMock()
+        npc_db._npc_database_url = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
 
-        with pytest.raises(Exception) as exc_info:
-            await close_npc_db()
+        # close_npc_db() now catches exceptions and doesn't raise them (best-effort cleanup)
+        await close_npc_db()
 
-        assert "Dispose error" in str(exc_info.value)
+        # Verify dispose was attempted (even though it failed)
+        mock_engine.dispose.assert_called_once()
+        # Verify state was reset despite error
+        assert npc_db._npc_engine is None
 
         # Clean up
         npc_db._npc_engine = None
+        npc_db._npc_async_session_maker = None
+        npc_db._npc_database_url = None
 
 
 class TestGetNPCDatabasePath:
     """Test getting NPC database path."""
 
     def test_get_npc_database_path_initializes_if_needed(self):
-        """Test that get_npc_database_path initializes database if not initialized."""
+        """Test that get_npc_database_path initializes database if not initialized and returns None for PostgreSQL."""
         import server.npc_database as npc_db
 
         npc_db._npc_database_url = None
@@ -366,7 +380,8 @@ class TestGetNPCDatabasePath:
 
             path = get_npc_database_path()
 
-            assert isinstance(path, Path)
+            # PostgreSQL doesn't have a file path, so this should return None
+            assert path is None
             assert npc_db._npc_database_url is not None
 
         # Clean up
@@ -378,7 +393,8 @@ class TestGetNPCDatabasePath:
         """Test error handling for unsupported database URL."""
         import server.npc_database as npc_db
 
-        npc_db._npc_database_url = "postgresql://localhost/npcs"
+        # Set an unsupported URL (not postgresql)
+        npc_db._npc_database_url = "sqlite:///npcs.db"
 
         with pytest.raises(ValidationError) as exc_info:
             get_npc_database_path()
@@ -393,7 +409,7 @@ class TestEnsureNPCDatabaseDirectory:
     """Test ensuring NPC database directory exists."""
 
     def test_ensure_npc_database_directory_creates_dir(self):
-        """Test that ensure_npc_database_directory creates directory."""
+        """Test that ensure_npc_database_directory is a no-op for PostgreSQL."""
         import server.npc_database as npc_db
 
         npc_db._npc_database_url = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
@@ -401,7 +417,8 @@ class TestEnsureNPCDatabaseDirectory:
         with patch.object(Path, "mkdir") as mock_mkdir:
             ensure_npc_database_directory()
 
-            mock_mkdir.assert_called_once_with(parents=True, exist_ok=True)
+            # PostgreSQL returns None from get_npc_database_path(), so mkdir should NOT be called
+            mock_mkdir.assert_not_called()
 
         # Clean up
         npc_db._npc_database_url = None
@@ -431,9 +448,9 @@ class TestNPCDatabaseIntegration:
             session_maker = get_npc_session_maker()
             assert session_maker is not None
 
-            # Get database path
+            # Get database path (returns None for PostgreSQL)
             path = get_npc_database_path()
-            assert isinstance(path, Path)
+            assert path is None  # PostgreSQL doesn't have a file path
 
             # All should use the same initialized values
             assert npc_db._npc_engine is engine

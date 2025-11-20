@@ -13,7 +13,7 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
-from sqlalchemy import Boolean, DateTime, String
+from sqlalchemy import Boolean, DateTime, String, event
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
@@ -96,3 +96,26 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
         if hasattr(self, "display_name") and self.display_name:
             return str(self.display_name)
         return str(self.username) if self.username else str(self.id)
+
+
+# Event listener to ensure display_name defaults to username if not set
+# This handles cases where display_name is not explicitly provided during User creation
+@event.listens_for(User, "before_insert", propagate=True)
+def set_display_name_default(mapper, connection, target):
+    """
+    Ensure display_name is set to username if not provided or empty.
+
+    This event listener runs before INSERT operations to guarantee that
+    display_name always has a value, even if it wasn't explicitly set.
+    This is critical for PostgreSQL NOT NULL constraint compliance.
+    """
+    # If display_name is None, empty string, or not set, use username
+    if not target.display_name or target.display_name == "":
+        if target.username:
+            target.display_name = target.username
+        # If username is also not set (shouldn't happen, but safety first)
+        elif hasattr(target, "id") and target.id:
+            target.display_name = str(target.id)
+        else:
+            # Last resort: use a placeholder (should never happen in practice)
+            target.display_name = "user"

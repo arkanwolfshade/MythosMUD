@@ -44,6 +44,7 @@ async def _create_player(session: AsyncSession, *, room_id: str, sanity: int = 1
         id=str(uuid.uuid4()),
         email=f"{player_id}@example.com",
         username=player_id,
+        display_name=player_id,
         hashed_password="hashed",
         is_active=True,
         is_superuser=False,

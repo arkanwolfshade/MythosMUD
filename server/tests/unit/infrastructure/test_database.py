@@ -134,11 +134,15 @@ class TestInitDB:
 
     @pytest.mark.asyncio
     async def test_init_db_creates_tables(self):
-        """Test that init_db creates all tables."""
+        """Test that init_db verifies database connectivity."""
         from unittest.mock import MagicMock
+
+        from sqlalchemy import text
 
         # Create properly configured mocks for async engine operations
         mock_conn = AsyncMock()
+        mock_result = AsyncMock()
+        mock_conn.execute = AsyncMock(return_value=mock_result)
 
         # Create a mock async context manager
         mock_context_manager = MagicMock()
@@ -150,13 +154,18 @@ class TestInitDB:
         mock_engine.begin = MagicMock(return_value=mock_context_manager)
 
         with patch("server.database.get_engine", return_value=mock_engine):
-            # AI Agent: connection_manager no longer a module-level global - patch removed
-            await init_db()
+            with patch("sqlalchemy.orm.configure_mappers"):
+                with patch("server.models.invite.Invite"):
+                    with patch("server.models.player.Player"):
+                        with patch("server.models.user.User"):
+                            with patch("server.models.sanity.PlayerSanity"):
+                                await init_db()
 
-            # Verify that create_all was called
-            mock_conn.run_sync.assert_called_once()
-            call_args = mock_conn.run_sync.call_args[0]
-            assert call_args[0] == metadata.create_all
+            # Verify that connectivity check was performed (SELECT 1)
+            mock_conn.execute.assert_called_once()
+            call_args = mock_conn.execute.call_args[0]
+            assert isinstance(call_args[0], text.TextClause)
+            assert "SELECT 1" in str(call_args[0])
 
     @pytest.mark.asyncio
     @pytest.mark.filterwarnings("ignore:coroutine.*was never awaited:RuntimeWarning")
@@ -249,12 +258,11 @@ class TestDatabaseIntegration:
         """Test complete database lifecycle."""
         from unittest.mock import MagicMock
 
+        from sqlalchemy import text
+
         # Create properly configured mocks
         mock_conn = AsyncMock()
-
-        # Mock execute to return a result with synchronous fetchone()
-        mock_result = Mock()
-        mock_result.fetchone = Mock(return_value=None)
+        mock_result = AsyncMock()
         mock_conn.execute = AsyncMock(return_value=mock_result)
 
         # Create a mock async context manager
@@ -275,8 +283,16 @@ class TestDatabaseIntegration:
             mock_get_mgr.return_value = mock_mgr
 
             with patch("server.database.get_engine", return_value=mock_engine):
-                await init_db()
-                mock_conn.run_sync.assert_called_once()
+                with patch("sqlalchemy.orm.configure_mappers"):
+                    with patch("server.models.invite.Invite"):
+                        with patch("server.models.player.Player"):
+                            with patch("server.models.user.User"):
+                                with patch("server.models.sanity.PlayerSanity"):
+                                    await init_db()
+                                    # Verify connectivity check was performed
+                                    mock_conn.execute.assert_called_once()
+                                    call_args = mock_conn.execute.call_args[0]
+                                    assert isinstance(call_args[0], text.TextClause)
 
                 # Test closing
                 await close_db()
