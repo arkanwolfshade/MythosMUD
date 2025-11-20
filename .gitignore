@@ -146,7 +146,6 @@ celerybeat.pid
 .env.e2e_test
 .env.test
 .env.unit_test
-server\tests\.env.unit_test
 .env.local
 .env.production
 .env.prod
