@@ -54,6 +54,9 @@ class TestNATSIntegrationE2E:
         # Mock broadcast methods
         self.connection_manager.broadcast_to_room = AsyncMock()
         self.connection_manager.broadcast_global = AsyncMock()
+        # Ensure broadcast_room_event and broadcast_global_event exist and are callable
+        self.connection_manager.broadcast_room_event = AsyncMock()
+        self.connection_manager.broadcast_global_event = AsyncMock()
 
     @pytest.mark.asyncio
     async def test_complete_player_entered_event_flow(self):

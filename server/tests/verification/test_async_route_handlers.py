@@ -206,7 +206,8 @@ class TestAsyncRouteHandlers:
             players = await service.list_players_async()
             assert len(players) == 2
 
-        asyncio.get_event_loop().run_until_complete(_run())
+        # Use asyncio.run() instead of deprecated get_event_loop()
+        asyncio.run(_run())
 
     def test_async_dependency_injection_pattern(self):
         """Demonstrate async dependency injection pattern on a local app."""

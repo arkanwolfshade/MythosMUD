@@ -39,11 +39,14 @@ async def session_factory():
 
 async def create_test_player(session: AsyncSession, player_id: str) -> Player:
     """Create a test player for preferences testing."""
+    # Add unique suffix to username to avoid conflicts in parallel test runs
+    unique_suffix = str(uuid.uuid4())[:8]
+    unique_username = f"{player_id}-{unique_suffix}"
     user = User(
         id=str(uuid.uuid4()),
-        email=f"{player_id}@example.com",
-        username=player_id,
-        display_name=player_id,
+        email=f"{unique_username}@example.com",
+        username=unique_username,
+        display_name=unique_username,
         hashed_password="hashed",
         is_active=True,
         is_superuser=False,

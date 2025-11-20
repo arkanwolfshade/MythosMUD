@@ -46,11 +46,14 @@ async def create_player(
     """Create a player and associated sanity record for testing."""
 
     player_id = f"player-{uuid.uuid4()}"
+    # Add unique suffix to username to avoid conflicts in parallel test runs
+    unique_suffix = str(uuid.uuid4())[:8]
+    unique_username = f"{name}-{unique_suffix}"
     user = User(
         id=str(uuid.uuid4()),
         email=f"{player_id}@example.org",
-        username=name,
-        display_name=name,
+        username=unique_username,
+        display_name=unique_username,
         hashed_password="hashed",
         is_active=True,
         is_superuser=False,

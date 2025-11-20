@@ -176,7 +176,7 @@ async def test_apply_sanity_adjustment_emits_failover_rescue_update(session_fact
                 player_id=player.player_id,
                 current_san=-99,
                 current_tier="catatonic",
-                catatonia_entered_at=datetime(2025, 1, 1, tzinfo=UTC),
+                catatonia_entered_at=datetime(2025, 1, 1, tzinfo=UTC).replace(tzinfo=None),
             )
         )
         await session.flush()
@@ -215,7 +215,7 @@ async def test_apply_sanity_adjustment_emits_success_rescue_update_on_recovery(s
                 player_id=player.player_id,
                 current_san=-10,
                 current_tier="catatonic",
-                catatonia_entered_at=datetime(2025, 1, 1, tzinfo=UTC),
+                catatonia_entered_at=datetime(2025, 1, 1, tzinfo=UTC).replace(tzinfo=None),
             )
         )
         await session.flush()

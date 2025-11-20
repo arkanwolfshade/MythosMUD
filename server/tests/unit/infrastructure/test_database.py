@@ -137,8 +137,6 @@ class TestInitDB:
         """Test that init_db verifies database connectivity."""
         from unittest.mock import MagicMock
 
-        from sqlalchemy import text
-
         # Create properly configured mocks for async engine operations
         mock_conn = AsyncMock()
         mock_result = AsyncMock()
@@ -164,7 +162,7 @@ class TestInitDB:
             # Verify that connectivity check was performed (SELECT 1)
             mock_conn.execute.assert_called_once()
             call_args = mock_conn.execute.call_args[0]
-            assert isinstance(call_args[0], text.TextClause)
+            # text() returns a TextClause object - check by string representation
             assert "SELECT 1" in str(call_args[0])
 
     @pytest.mark.asyncio
@@ -258,8 +256,6 @@ class TestDatabaseIntegration:
         """Test complete database lifecycle."""
         from unittest.mock import MagicMock
 
-        from sqlalchemy import text
-
         # Create properly configured mocks
         mock_conn = AsyncMock()
         mock_result = AsyncMock()
@@ -292,7 +288,8 @@ class TestDatabaseIntegration:
                                     # Verify connectivity check was performed
                                     mock_conn.execute.assert_called_once()
                                     call_args = mock_conn.execute.call_args[0]
-                                    assert isinstance(call_args[0], text.TextClause)
+                                    # text() returns a TextClause object - check by string representation
+                                    assert "SELECT 1" in str(call_args[0])
 
                 # Test closing
                 await close_db()

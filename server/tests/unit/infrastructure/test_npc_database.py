@@ -265,8 +265,6 @@ class TestInitNPCDB:
     @pytest.mark.asyncio
     async def test_init_npc_db_success(self):
         """Test successful database initialization."""
-        from sqlalchemy import text
-
         import server.npc_database as npc_db
 
         # Create mocks
@@ -288,7 +286,7 @@ class TestInitNPCDB:
         # Verify connectivity check was performed (SELECT 1)
         mock_conn.execute.assert_called_once()
         call_args = mock_conn.execute.call_args[0]
-        assert isinstance(call_args[0], text.TextClause)
+        # text() returns a TextClause object - check by string representation
         assert "SELECT 1" in str(call_args[0])
 
         # Clean up

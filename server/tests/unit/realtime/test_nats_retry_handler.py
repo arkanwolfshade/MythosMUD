@@ -121,9 +121,11 @@ class TestNATSRetryHandler:
             subject="test.subject", data={"test": "data"}, attempt=1, first_attempt_time=datetime.now()
         )
 
-        start_time = asyncio.get_event_loop().time()
+        # Use get_running_loop() in async context instead of deprecated get_event_loop()
+        loop = asyncio.get_running_loop()
+        start_time = loop.time()
         await handler.retry_async(mock_func, message)
-        elapsed = asyncio.get_event_loop().time() - start_time
+        elapsed = loop.time() - start_time
 
         # Should have waited at least base_delay * 2^1 = 0.2s (with some tolerance)
         assert elapsed >= 0.15
