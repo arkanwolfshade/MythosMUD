@@ -98,7 +98,12 @@ class RealTimeEventHandler:
             tuple: (player, player_name) or None if player not found
         """
         # Convert to UUID if string (for backward compatibility)
-        player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+        try:
+            player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+        except (ValueError, TypeError):
+            # Invalid UUID string - log and return None
+            self._logger.warning("Invalid player_id format, cannot convert to UUID", player_id=player_id)
+            return None
         player = self.connection_manager._get_player(player_id_uuid)
         if not player:
             # Structlog handles UUID objects automatically, no need to convert to string

@@ -8,6 +8,7 @@ through event publishing, processing, and broadcasting to other clients.
 import asyncio
 import json
 from unittest.mock import AsyncMock, Mock
+from uuid import uuid4
 
 import pytest
 
@@ -42,10 +43,13 @@ class TestCompleteEventFlowIntegration:
         # Create event handler
         event_handler = RealTimeEventHandler(event_bus)
         event_handler.connection_manager = mock_connection_manager
+        # Use UUID for player_id
+        player_id = uuid4()
+
         # Setup mock player
         mock_player = Mock()
         mock_player.name = "TestPlayer"
-        mock_player.id = "test_player_123"
+        mock_player.id = player_id
         mock_connection_manager._get_player.return_value = mock_player
 
         # Setup mock room
@@ -60,7 +64,7 @@ class TestCompleteEventFlowIntegration:
         room = Room(room_data, event_bus)
 
         # 2. Simulate WebSocket connection handler calling room.player_entered
-        room.player_entered("test_player_123")
+        room.player_entered(str(player_id))
 
         # 3. Wait for event processing
         await asyncio.sleep(0.3)
@@ -86,13 +90,13 @@ class TestCompleteEventFlowIntegration:
         player_entered_message = player_entered_calls[0][0][1]
         assert player_entered_message["event_type"] == "player_entered"
         assert player_entered_message["room_id"] == "test_room_001"
-        assert player_entered_message["data"]["player_id"] == "test_player_123"
+        assert player_entered_message["data"]["player_id"] == str(player_id)
         assert player_entered_message["data"]["player_name"] == "TestPlayer"
         assert player_entered_message["data"]["message"] == "TestPlayer enters the room."
 
         # Verify exclude_player parameter
         exclude_player = player_entered_calls[0][1].get("exclude_player")
-        assert exclude_player == "test_player_123"
+        assert exclude_player == str(player_id)
 
     @pytest.mark.asyncio
     async def test_websocket_disconnection_to_event_broadcasting_flow(self, mock_connection_manager):
@@ -105,10 +109,13 @@ class TestCompleteEventFlowIntegration:
         event_handler = RealTimeEventHandler(event_bus)
         event_handler.connection_manager = mock_connection_manager
 
+        # Use UUID for player_id
+        player_id = uuid4()
+
         # Setup mock player
         mock_player = Mock()
         mock_player.name = "TestPlayer"
-        mock_player.id = "test_player_123"
+        mock_player.id = player_id
         mock_connection_manager._get_player.return_value = mock_player
 
         # Setup mock room
@@ -123,12 +130,12 @@ class TestCompleteEventFlowIntegration:
         room = Room(room_data, event_bus)
 
         # 2. First add player to room
-        room.player_entered("test_player_123")
+        room.player_entered(str(player_id))
         await asyncio.sleep(0.1)  # Brief wait
         mock_connection_manager.broadcast_to_room.reset_mock()  # Clear enter events
 
         # 3. Simulate WebSocket disconnection handler calling room.player_left
-        room.player_left("test_player_123")
+        room.player_left(str(player_id))
 
         # 4. Wait for event processing
         await asyncio.sleep(0.3)
@@ -148,7 +155,7 @@ class TestCompleteEventFlowIntegration:
         player_left_message = player_left_calls[0][0][1]
         assert player_left_message["event_type"] == "player_left"
         assert player_left_message["room_id"] == "test_room_001"
-        assert player_left_message["data"]["player_id"] == "test_player_123"
+        assert player_left_message["data"]["player_id"] == str(player_id)
         assert player_left_message["data"]["player_name"] == "TestPlayer"
         assert player_left_message["data"]["message"] == "TestPlayer leaves the room."
 
@@ -163,19 +170,23 @@ class TestCompleteEventFlowIntegration:
         event_handler = RealTimeEventHandler(event_bus)
         event_handler.connection_manager = mock_connection_manager
 
+        # Use UUIDs for player_ids
+        player_id1 = uuid4()
+        player_id2 = uuid4()
+
         # Setup mock players
         mock_player1 = Mock()
         mock_player1.name = "Player1"
-        mock_player1.id = "player_001"
+        mock_player1.id = player_id1
 
         mock_player2 = Mock()
         mock_player2.name = "Player2"
-        mock_player2.id = "player_002"
+        mock_player2.id = player_id2
 
-        def mock_get_player(player_id):
-            if player_id == "player_001":
+        def mock_get_player(player_id_uuid):
+            if player_id_uuid == player_id1:
                 return mock_player1
-            elif player_id == "player_002":
+            elif player_id_uuid == player_id2:
                 return mock_player2
             return None
 
@@ -192,8 +203,8 @@ class TestCompleteEventFlowIntegration:
         room = Room(room_data, event_bus)
 
         # Simulate multiple players entering simultaneously
-        room.player_entered("player_001")
-        room.player_entered("player_002")
+        room.player_entered(str(player_id1))
+        room.player_entered(str(player_id2))
 
         # Wait for event processing
         await asyncio.sleep(0.5)
@@ -233,8 +244,11 @@ class TestCompleteEventFlowIntegration:
         mock_room.get_players.return_value = []
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
+        # Use UUID for player_id
+        player_id = uuid4()
+
         # Create and publish event
-        event = PlayerEnteredRoom(player_id="test_player_123", room_id="test_room_001")
+        event = PlayerEnteredRoom(player_id=str(player_id), room_id="test_room_001")
 
         event_bus.publish(event)
         await asyncio.sleep(0.3)
@@ -288,8 +302,11 @@ class TestCompleteEventFlowIntegration:
         # Setup mock to simulate errors
         mock_connection_manager._get_player.side_effect = Exception("Database error")
 
+        # Use UUID for player_id
+        player_id = uuid4()
+
         # Create and publish event
-        event = PlayerEnteredRoom(player_id="test_player_123", room_id="test_room_001")
+        event = PlayerEnteredRoom(player_id=str(player_id), room_id="test_room_001")
 
         # This should not crash the system
         event_bus.publish(event)
@@ -428,6 +445,9 @@ class TestRealEventFlow:
 
         room = Room(mock_room_data, event_bus)
 
+        # Use UUID for player_id
+        player_id = uuid4()
+
         # Setup mock player
         mock_player = Mock()
         mock_player.name = "TestPlayer"
@@ -435,7 +455,7 @@ class TestRealEventFlow:
         mock_connection_manager.persistence.get_room.return_value = room
 
         # Simulate player entering room (this should trigger event)
-        room.player_entered("test_player_123")
+        room.player_entered(str(player_id))
 
         # Wait for event processing
         await asyncio.sleep(0.3)
@@ -447,7 +467,7 @@ class TestRealEventFlow:
         mock_connection_manager.broadcast_to_room.reset_mock()
 
         # Simulate player leaving room
-        room.player_left("test_player_123")
+        room.player_left(str(player_id))
 
         # Wait for event processing
         await asyncio.sleep(0.3)

@@ -8,6 +8,7 @@ through event publishing, processing, and broadcasting.
 import asyncio
 import json
 from unittest.mock import AsyncMock, Mock
+from uuid import uuid4
 
 import pytest
 
@@ -43,6 +44,9 @@ class TestSimpleIntegration:
         event_handler = RealTimeEventHandler(event_bus)
         event_handler.connection_manager = mock_connection_manager
 
+        # Use UUID for player_id
+        player_id = uuid4()
+
         # Setup mock player
         mock_player = Mock()
         mock_player.name = "TestPlayer"
@@ -60,7 +64,7 @@ class TestSimpleIntegration:
         room = Room(room_data, event_bus)
 
         # 2. Simulate WebSocket connection handler calling room.player_entered
-        room.player_entered("test_player_123")
+        room.player_entered(str(player_id))
 
         # 3. Wait for event processing
         await asyncio.sleep(0.3)
@@ -86,13 +90,13 @@ class TestSimpleIntegration:
         player_entered_message = player_entered_calls[0][0][1]
         assert player_entered_message["event_type"] == "player_entered"
         assert player_entered_message["room_id"] == "test_room_001"
-        assert player_entered_message["data"]["player_id"] == "test_player_123"
+        assert player_entered_message["data"]["player_id"] == str(player_id)
         assert player_entered_message["data"]["player_name"] == "TestPlayer"
         assert player_entered_message["data"]["message"] == "TestPlayer enters the room."
 
         # Verify exclude_player parameter
         exclude_player = player_entered_calls[0][1].get("exclude_player")
-        assert exclude_player == "test_player_123"
+        assert exclude_player == str(player_id)
 
     @pytest.mark.asyncio
     async def test_complete_disconnection_flow(self, mock_connection_manager):
@@ -104,6 +108,9 @@ class TestSimpleIntegration:
         # Create event handler
         event_handler = RealTimeEventHandler(event_bus)
         event_handler.connection_manager = mock_connection_manager
+
+        # Use UUID for player_id
+        player_id = uuid4()
 
         # Setup mock player
         mock_player = Mock()
@@ -122,12 +129,12 @@ class TestSimpleIntegration:
         room = Room(room_data, event_bus)
 
         # 2. First add player to room
-        room.player_entered("test_player_123")
+        room.player_entered(str(player_id))
         await asyncio.sleep(0.1)  # Brief wait
         mock_connection_manager.broadcast_to_room.reset_mock()  # Clear enter events
 
         # 3. Simulate WebSocket disconnection handler calling room.player_left
-        room.player_left("test_player_123")
+        room.player_left(str(player_id))
 
         # 4. Wait for event processing
         await asyncio.sleep(0.3)
@@ -147,7 +154,7 @@ class TestSimpleIntegration:
         player_left_message = player_left_calls[0][0][1]
         assert player_left_message["event_type"] == "player_left"
         assert player_left_message["room_id"] == "test_room_001"
-        assert player_left_message["data"]["player_id"] == "test_player_123"
+        assert player_left_message["data"]["player_id"] == str(player_id)
         assert player_left_message["data"]["player_name"] == "TestPlayer"
         assert player_left_message["data"]["message"] == "TestPlayer leaves the room."
 
@@ -173,8 +180,11 @@ class TestSimpleIntegration:
         mock_room.get_players.return_value = []
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
+        # Use UUID for player_id
+        player_id = uuid4()
+
         # Create and publish event
-        event = PlayerEnteredRoom(player_id="test_player_123", room_id="test_room_001")
+        event = PlayerEnteredRoom(player_id=str(player_id), room_id="test_room_001")
 
         event_bus.publish(event)
         await asyncio.sleep(0.3)
@@ -225,19 +235,23 @@ class TestSimpleIntegration:
         event_handler = RealTimeEventHandler(event_bus)
         event_handler.connection_manager = mock_connection_manager
 
+        # Use UUIDs for player_ids
+        player_id1 = uuid4()
+        player_id2 = uuid4()
+
         # Setup mock players
         mock_player1 = Mock()
         mock_player1.name = "Player1"
-        mock_player1.id = "player_001"
+        mock_player1.id = player_id1
 
         mock_player2 = Mock()
         mock_player2.name = "Player2"
-        mock_player2.id = "player_002"
+        mock_player2.id = player_id2
 
-        def mock_get_player(player_id):
-            if player_id == "player_001":
+        def mock_get_player(player_id_uuid):
+            if player_id_uuid == player_id1:
                 return mock_player1
-            elif player_id == "player_002":
+            elif player_id_uuid == player_id2:
                 return mock_player2
             return None
 
@@ -254,8 +268,8 @@ class TestSimpleIntegration:
         room = Room(room_data, event_bus)
 
         # Simulate multiple players entering simultaneously
-        room.player_entered("player_001")
-        room.player_entered("player_002")
+        room.player_entered(str(player_id1))
+        room.player_entered(str(player_id2))
 
         # Wait for event processing
         await asyncio.sleep(0.5)
@@ -295,18 +309,21 @@ class TestSimpleConnectionEvents:
         mock_event_bus = Mock()
         mock_event_bus.publish = Mock()
 
+        # Use UUID for player_id
+        player_id = uuid4()
+
         # Create room with event bus
         room_data = {"id": "test_room_001", "name": "Test Room"}
         room = Room(room_data, mock_event_bus)
 
         # Call player_entered
-        room.player_entered("test_player_123")
+        room.player_entered(str(player_id))
 
         # Verify event was published
         mock_event_bus.publish.assert_called_once()
         published_event = mock_event_bus.publish.call_args[0][0]
         assert isinstance(published_event, PlayerEnteredRoom)
-        assert published_event.player_id == "test_player_123"
+        assert published_event.player_id == str(player_id)
         assert published_event.room_id == "test_room_001"
 
     def test_room_player_left_publishes_event(self):
@@ -315,46 +332,55 @@ class TestSimpleConnectionEvents:
         mock_event_bus = Mock()
         mock_event_bus.publish = Mock()
 
+        # Use UUID for player_id
+        player_id = uuid4()
+
         # Create room with event bus
         room_data = {"id": "test_room_001", "name": "Test Room"}
         room = Room(room_data, mock_event_bus)
 
         # First add player to room
-        room.player_entered("test_player_123")
+        room.player_entered(str(player_id))
         mock_event_bus.publish.reset_mock()  # Clear the enter event
 
         # Then remove player from room
-        room.player_left("test_player_123")
+        room.player_left(str(player_id))
 
         # Verify event was published
         mock_event_bus.publish.assert_called_once()
         published_event = mock_event_bus.publish.call_args[0][0]
         assert isinstance(published_event, PlayerLeftRoom)
-        assert published_event.player_id == "test_player_123"
+        assert published_event.player_id == str(player_id)
         assert published_event.room_id == "test_room_001"
 
     def test_room_without_event_bus_handles_gracefully(self):
         """Test that Room works without event bus (should not crash)."""
+        # Use UUID for player_id
+        player_id = uuid4()
+
         room_data = {"id": "test_room_001", "name": "Test Room"}
         room = Room(room_data)  # No event bus
 
         # Should not crash
-        room.player_entered("test_player_123")
-        room.player_left("test_player_123")
+        room.player_entered(str(player_id))
+        room.player_left(str(player_id))
 
         # Verify player was added and removed
-        assert not room.has_player("test_player_123")
+        assert not room.has_player(str(player_id))
 
     def test_event_types_have_correct_attributes(self):
         """Test that event types have the correct attributes."""
+        # Use UUID for player_id
+        player_id = uuid4()
+
         # Test PlayerEnteredRoom
-        entered_event = PlayerEnteredRoom(player_id="test_player", room_id="test_room")
-        assert entered_event.player_id == "test_player"
+        entered_event = PlayerEnteredRoom(player_id=str(player_id), room_id="test_room")
+        assert entered_event.player_id == str(player_id)
         assert entered_event.room_id == "test_room"
         assert entered_event.event_type == "PlayerEnteredRoom"
 
         # Test PlayerLeftRoom
-        left_event = PlayerLeftRoom(player_id="test_player", room_id="test_room")
-        assert left_event.player_id == "test_player"
+        left_event = PlayerLeftRoom(player_id=str(player_id), room_id="test_room")
+        assert left_event.player_id == str(player_id)
         assert left_event.room_id == "test_room"
         assert left_event.event_type == "PlayerLeftRoom"

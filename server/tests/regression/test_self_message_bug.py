@@ -6,6 +6,7 @@ only other players should see them.
 """
 
 from unittest.mock import AsyncMock, Mock
+from uuid import uuid4
 
 import pytest
 
@@ -44,9 +45,9 @@ class TestSelfMessageBug:
         connection_manager._get_player = Mock(return_value=mock_player)
 
         # Create event for Ithaqua entering a room
-        player_id = "ithaqua_player_id"
+        player_id = uuid4()
         room_id = "test_room_001"
-        event = PlayerEnteredRoom(player_id=player_id, room_id=room_id)
+        event = PlayerEnteredRoom(player_id=str(player_id), room_id=room_id)
 
         # Handle the event
         await event_handler._handle_player_entered(event)
@@ -64,8 +65,8 @@ class TestSelfMessageBug:
         print(f"First call kwargs: {first_call[1] if len(first_call) > 1 else 'No kwargs'}")
         exclude_player = first_call[1].get("exclude_player")
 
-        # The exclude_player should match the player_id from the event
-        assert exclude_player == player_id, f"Expected exclude_player to be {player_id}, got {exclude_player}"
+        # The exclude_player should match the player_id from the event (as string)
+        assert exclude_player == str(player_id), f"Expected exclude_player to be {str(player_id)}, got {exclude_player}"
 
     @pytest.mark.asyncio
     async def test_player_left_excludes_self(self, event_handler, connection_manager):
@@ -78,8 +79,11 @@ class TestSelfMessageBug:
         # Mock broadcast_to_room for this test
         connection_manager.broadcast_to_room = AsyncMock()
 
+        # Use UUID for player_id
+        player_id = uuid4()
+
         # Create a PlayerLeftRoom event
-        event = PlayerLeftRoom(player_id="test_player_123", room_id="test_room_456")
+        event = PlayerLeftRoom(player_id=str(player_id), room_id="test_room_456")
         event.timestamp = None
 
         # Mock the player lookup
@@ -104,7 +108,7 @@ class TestSelfMessageBug:
 
         # Mock _create_player_left_message to return a test message
         event_handler._create_player_left_message = Mock(
-            return_value={"event_type": "player_left", "player_id": "test_player_123"}
+            return_value={"event_type": "player_left", "player_id": str(player_id)}
         )
 
         # Handle the event
@@ -113,7 +117,7 @@ class TestSelfMessageBug:
         # Verify broadcast_to_room was called with exclude_player
         connection_manager.broadcast_to_room.assert_called()
         call_args = connection_manager.broadcast_to_room.call_args
-        assert call_args[1]["exclude_player"] == "test_player_123"
+        assert call_args[1]["exclude_player"] == str(player_id)
 
     @pytest.mark.asyncio
     async def test_broadcast_to_room_excludes_player(self):
