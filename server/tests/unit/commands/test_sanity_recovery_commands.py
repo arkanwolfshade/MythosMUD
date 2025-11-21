@@ -53,7 +53,7 @@ async def _create_player(session: AsyncSession, *, player_name: str, room_id: st
         is_verified=True,
     )
     player = Player(
-        player_id=f"player-{uuid.uuid4()}",
+        player_id=str(uuid.uuid4()),
         user_id=user.id,
         name=unique_player_name,
         current_room_id=room_id,

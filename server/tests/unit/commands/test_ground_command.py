@@ -48,7 +48,7 @@ async def create_player(
 ) -> Player:
     """Create a player for testing ground command behaviour."""
 
-    player_id = f"player-{uuid.uuid4()}"
+    player_id = str(uuid.uuid4())
     # Use unique username to avoid IntegrityError in parallel test runs
     unique_username = f"{name}_{uuid.uuid4().hex[:8]}"
     user = User(

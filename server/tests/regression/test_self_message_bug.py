@@ -122,20 +122,27 @@ class TestSelfMessageBug:
     @pytest.mark.asyncio
     async def test_broadcast_to_room_excludes_player(self):
         """Test that broadcast_to_room properly excludes the specified player."""
+        # Generate UUIDs for test players
+        player_id1 = uuid4()
+        player_id2 = uuid4()
+        player_id3 = uuid4()
+
         # Create a fresh connection manager without broadcast_to_room mocked
         cm = ConnectionManager()
         cm.send_personal_message = AsyncMock()
 
-        # Mock room_manager to return subscribers
+        # Mock room_manager to return subscribers (use UUID strings)
         mock_room_manager = Mock()
-        mock_room_manager.get_room_subscribers = Mock(return_value={"player1", "player2", "player3"})
+        mock_room_manager.get_room_subscribers = Mock(
+            return_value={str(player_id1), str(player_id2), str(player_id3)}
+        )
         cm.room_manager = mock_room_manager
 
         # Create a test event
         test_event = {"event_type": "test", "data": "test"}
 
-        # Broadcast to room with exclude_player
-        await cm.broadcast_to_room("test_room", test_event, exclude_player="player2")
+        # Broadcast to room with exclude_player (use UUID string)
+        await cm.broadcast_to_room("test_room", test_event, exclude_player=str(player_id2))
 
         # Verify send_personal_message was called for all players except player2
         assert cm.send_personal_message.call_count == 2
@@ -145,20 +152,27 @@ class TestSelfMessageBug:
         player_ids_sent_to = [call[0][0] for call in calls]
 
         # Should have sent to player1 and player3, but not player2
-        assert "player1" in player_ids_sent_to
-        assert "player3" in player_ids_sent_to
-        assert "player2" not in player_ids_sent_to
+        assert player_id1 in player_ids_sent_to
+        assert player_id3 in player_ids_sent_to
+        assert player_id2 not in player_ids_sent_to
 
     @pytest.mark.asyncio
     async def test_broadcast_to_room_no_exclude(self):
         """Test that broadcast_to_room sends to all players when no exclude_player."""
+        # Generate UUIDs for test players
+        player_id1 = uuid4()
+        player_id2 = uuid4()
+        player_id3 = uuid4()
+
         # Create a fresh connection manager without broadcast_to_room mocked
         cm = ConnectionManager()
         cm.send_personal_message = AsyncMock()
 
-        # Mock room_manager to return subscribers
+        # Mock room_manager to return subscribers (use UUID strings)
         mock_room_manager = Mock()
-        mock_room_manager.get_room_subscribers = Mock(return_value={"player1", "player2", "player3"})
+        mock_room_manager.get_room_subscribers = Mock(
+            return_value={str(player_id1), str(player_id2), str(player_id3)}
+        )
         cm.room_manager = mock_room_manager
 
         # Create a test event
@@ -175,6 +189,6 @@ class TestSelfMessageBug:
         player_ids_sent_to = [call[0][0] for call in calls]
 
         # Should have sent to all players
-        assert "player1" in player_ids_sent_to
-        assert "player2" in player_ids_sent_to
-        assert "player3" in player_ids_sent_to
+        assert player_id1 in player_ids_sent_to
+        assert player_id2 in player_ids_sent_to
+        assert player_id3 in player_ids_sent_to

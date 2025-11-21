@@ -39,7 +39,7 @@ async def session_factory():
 
 
 async def _create_player(session: AsyncSession, *, room_id: str, sanity: int = 100, tier: str = "lucid") -> Player:
-    player_id = f"player-{uuid.uuid4()}"
+    player_id = str(uuid.uuid4())
     user = User(
         id=str(uuid.uuid4()),
         email=f"{player_id}@example.com",

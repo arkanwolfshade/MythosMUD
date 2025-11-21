@@ -7,6 +7,7 @@ and processes PlayerEnteredRoom and PlayerLeftRoom events.
 
 import asyncio
 from unittest.mock import AsyncMock, Mock
+from uuid import uuid4
 
 import pytest
 
@@ -61,10 +62,13 @@ class TestRealTimeEventHandlerIntegration:
         # Set the main loop for async event handling
         event_bus.set_main_loop(asyncio.get_running_loop())
 
-        # Setup mock player
+        # Create and publish event (use UUID for player_id)
+        player_id = uuid4()
+
+        # Setup mock player (must return player for the UUID)
         mock_player = Mock()
         mock_player.name = "TestPlayer"
-        mock_connection_manager._get_player.return_value = mock_player
+        mock_connection_manager._get_player = Mock(return_value=mock_player)
 
         # Setup mock room
         mock_room = Mock()
@@ -72,8 +76,7 @@ class TestRealTimeEventHandlerIntegration:
         mock_room.get_players.return_value = []  # Return empty list to avoid iteration errors
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
-        # Create and publish event
-        event = PlayerEnteredRoom(player_id="test_player_123", room_id="test_room_001")
+        event = PlayerEnteredRoom(player_id=str(player_id), room_id="test_room_001")
 
         # Publish the event
         event_bus.publish(event)
@@ -81,8 +84,8 @@ class TestRealTimeEventHandlerIntegration:
         # Give async handlers time to process
         await asyncio.sleep(0.1)
 
-        # Verify connection manager methods were called
-        mock_connection_manager._get_player.assert_called_with("test_player_123")
+        # Verify connection manager methods were called (_get_player_info converts string to UUID)
+        mock_connection_manager._get_player.assert_called_with(player_id)
         mock_connection_manager.persistence.get_room.assert_called_with("test_room_001")
         # Enhanced synchronization sends both player_entered and room_occupants events
         assert mock_connection_manager.broadcast_to_room.call_count == 2
@@ -94,10 +97,13 @@ class TestRealTimeEventHandlerIntegration:
         # Set the main loop for async event handling
         event_bus.set_main_loop(asyncio.get_running_loop())
 
-        # Setup mock player
+        # Create and publish event (use UUID for player_id)
+        player_id = uuid4()
+
+        # Setup mock player (must return player for the UUID)
         mock_player = Mock()
         mock_player.name = "TestPlayer"
-        mock_connection_manager._get_player.return_value = mock_player
+        mock_connection_manager._get_player = Mock(return_value=mock_player)
 
         # Setup mock room
         mock_room = Mock()
@@ -105,8 +111,7 @@ class TestRealTimeEventHandlerIntegration:
         mock_room.get_players.return_value = []  # Return empty list to avoid iteration errors
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
-        # Create and publish event
-        event = PlayerLeftRoom(player_id="test_player_123", room_id="test_room_001")
+        event = PlayerLeftRoom(player_id=str(player_id), room_id="test_room_001")
 
         # Publish the event
         event_bus.publish(event)
@@ -114,8 +119,8 @@ class TestRealTimeEventHandlerIntegration:
         # Give async handlers time to process
         await asyncio.sleep(0.1)
 
-        # Verify connection manager methods were called
-        mock_connection_manager._get_player.assert_called_with("test_player_123")
+        # Verify connection manager methods were called (_get_player_info converts string to UUID)
+        mock_connection_manager._get_player.assert_called_with(player_id)
         mock_connection_manager.persistence.get_room.assert_called_with("test_room_001")
         mock_connection_manager.unsubscribe_from_room.assert_called_once()
         # Enhanced synchronization sends both player_left and room_occupants events
@@ -186,9 +191,10 @@ class TestRealTimeEventHandlerIntegration:
         event_bus.subscribe(PlayerEnteredRoom, mock_handler)
         event_bus.subscribe(PlayerLeftRoom, mock_handler)
 
-        # Create and publish events
-        entered_event = PlayerEnteredRoom(player_id="test_player", room_id="test_room")
-        left_event = PlayerLeftRoom(player_id="test_player", room_id="test_room")
+        # Create and publish events (use UUIDs for player_ids)
+        player_id = uuid4()
+        entered_event = PlayerEnteredRoom(player_id=str(player_id), room_id="test_room")
+        left_event = PlayerLeftRoom(player_id=str(player_id), room_id="test_room")
 
         # Publish events
         event_bus.publish(entered_event)

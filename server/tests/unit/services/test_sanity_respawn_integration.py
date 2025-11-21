@@ -56,7 +56,7 @@ async def create_test_player(
 ) -> Player:
     """Create a player and associated sanity record for testing."""
 
-    player_id = f"player-{uuid.uuid4()}"
+    player_id = str(uuid.uuid4())
     unique_name = f"{name}-{uuid.uuid4().hex[:8]}"
     user = User(
         id=str(uuid.uuid4()),

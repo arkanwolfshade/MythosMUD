@@ -370,8 +370,12 @@ async def execute_shutdown_sequence(app: Any) -> None:
 
                 for player_id in connected_players:
                     try:
-                        await app.state.connection_manager.force_disconnect_player(player_id)
-                        logger.debug("Disconnected player", player_id=player_id)
+                        # Convert string player_id to UUID if needed (force_disconnect_player expects UUID)
+                        import uuid as uuid_module
+
+                        player_id_uuid = uuid_module.UUID(player_id) if isinstance(player_id, str) else player_id
+                        await app.state.connection_manager.force_disconnect_player(player_id_uuid)
+                        logger.debug("Disconnected player", player_id=player_id_uuid)
                     except Exception as e:
                         logger.error("Failed to disconnect player", player_id=player_id, error=str(e))
 
