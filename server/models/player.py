@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, Any, cast
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text, text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
-from sqlalchemy.ext.mutable import MutableList
+from sqlalchemy.ext.mutable import MutableDict, MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
@@ -51,8 +51,11 @@ class Player(Base):
     name = Column(String(length=50), unique=True, nullable=False, index=True)
 
     # Game data stored as JSONB (migrated from TEXT in migration 006)
+    # BUGFIX: Use MutableDict to track in-place mutations for proper persistence
+    # As documented in "Persistence and Mutation Tracking" - Dr. Armitage, 1930
+    # JSONB columns require mutation tracking to detect in-place changes
     stats = Column(
-        JSONB,
+        MutableDict.as_mutable(JSONB),
         nullable=False,
         default=lambda: {
             "strength": 10,
@@ -102,8 +105,12 @@ class Player(Base):
         return f"<Player(player_id={self.player_id}, name={self.name}, level={self.level})>"
 
     def get_stats(self) -> dict[str, Any]:
-        """Get player stats as dictionary."""
-        # With JSONB, SQLAlchemy returns dict directly, but handle both cases for compatibility
+        """Get player stats as dictionary.
+
+        Returns a MutableDict instance that automatically tracks mutations
+        for proper SQLAlchemy change detection and persistence.
+        """
+        # With JSONB + MutableDict, SQLAlchemy returns MutableDict (dict subclass)
         # Note: mypy sees self.stats as Column[Any], but at runtime SQLAlchemy returns the actual value
         try:
             if isinstance(self.stats, dict):  # type: ignore[unreachable]
@@ -144,8 +151,12 @@ class Player(Base):
         return stats
 
     def set_stats(self, stats: dict[str, Any]) -> None:
-        """Set player stats from dictionary."""
-        # With JSONB, SQLAlchemy accepts dict directly
+        """Set player stats from dictionary.
+
+        Accepts both plain dict and MutableDict instances.
+        SQLAlchemy automatically converts plain dicts to MutableDict.
+        """
+        # With MutableDict.as_mutable(JSONB), SQLAlchemy automatically handles conversion
         self.stats = stats  # type: ignore[assignment]
 
     def get_inventory(self) -> list[dict[str, Any]]:
