@@ -405,7 +405,9 @@ class TestNATSMessageHandler:
 
                     # Should send to player_002 (player_001 is sender, player_003 is in different room)
                     assert self.mock_connection_manager.send_personal_message.call_count == 1
-                    self.mock_connection_manager.send_personal_message.assert_called_with(_str_to_uuid("player_002"), chat_event)
+                    self.mock_connection_manager.send_personal_message.assert_called_with(
+                        _str_to_uuid("player_002"), chat_event
+                    )
 
     @pytest.mark.asyncio
     async def test_broadcast_to_room_with_filtering_muted_player(self):

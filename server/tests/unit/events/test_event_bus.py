@@ -47,6 +47,7 @@ class TestEventTypes:
     def test_player_entered_room_event(self):
         """Test PlayerEnteredRoom event creation."""
         from uuid import uuid4
+
         player_id = uuid4()
         event = PlayerEnteredRoom(player_id=str(player_id), room_id="room456", from_room_id="room789")
 
@@ -58,6 +59,7 @@ class TestEventTypes:
     def test_player_left_room_event(self):
         """Test PlayerLeftRoom event creation."""
         from uuid import uuid4
+
         player_id = uuid4()
         event = PlayerLeftRoom(player_id=str(player_id), room_id="room456", to_room_id="room789")
 

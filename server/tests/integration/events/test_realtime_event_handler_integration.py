@@ -6,6 +6,7 @@ and processes PlayerEnteredRoom and PlayerLeftRoom events.
 """
 
 import asyncio
+import uuid
 from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
 
@@ -147,18 +148,25 @@ class TestRealTimeEventHandlerIntegration:
         room_data = {"id": "test_room_001", "name": "Test Room"}
         room = Room(room_data, event_bus)
 
+        # Generate UUID for test player and setup mock
+        test_player_id = str(uuid4())
+        player_id_uuid = uuid.UUID(test_player_id)
+        mock_player = Mock()
+        mock_player.name = "TestPlayer"
+        mock_connection_manager._get_player = Mock(return_value=mock_player)
+
         # Reset mock to clear any calls from room creation
         mock_connection_manager.broadcast_to_room.reset_mock()
         mock_connection_manager.subscribe_to_room.reset_mock()
 
-        # Add player to room (should trigger PlayerEnteredRoom event)
-        room.player_entered("test_player_123")
+        # Add player to room (should trigger PlayerEnteredRoom event) - use UUID string
+        room.player_entered(test_player_id)
 
         # Give async handlers time to process
         await asyncio.sleep(0.1)
 
-        # Verify event handler processed the event
-        mock_connection_manager._get_player.assert_called_with("test_player_123")
+        # Verify event handler processed the event (_get_player_info converts string to UUID)
+        mock_connection_manager._get_player.assert_called_with(player_id_uuid)
         # Enhanced synchronization sends both player_entered and room_occupants events
         assert mock_connection_manager.broadcast_to_room.call_count == 2
         mock_connection_manager.subscribe_to_room.assert_called_once()
@@ -168,7 +176,7 @@ class TestRealTimeEventHandlerIntegration:
         mock_connection_manager.unsubscribe_from_room.reset_mock()
 
         # Remove player from room (should trigger PlayerLeftRoom event)
-        room.player_left("test_player_123")
+        room.player_left(test_player_id)
 
         # Give async handlers time to process
         await asyncio.sleep(0.1)

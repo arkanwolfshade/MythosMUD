@@ -193,11 +193,17 @@ class TestSelfMessageExclusionBugs:
         calls = connection_manager.send_personal_message.call_args_list
         assert len(calls) == 2
 
-        # Check that player_1 was not called
+        # Check that player_1 was not called (send_personal_message receives UUID objects)
         called_player_ids = [call[0][0] for call in calls]
-        assert player_1_id not in called_player_ids
-        assert player_2_id in called_player_ids
-        assert player_3_id in called_player_ids
+        # Convert string IDs to UUIDs for comparison
+        import uuid as uuid_module
+
+        player_1_uuid = uuid_module.UUID(player_1_id) if isinstance(player_1_id, str) else player_1_id
+        player_2_uuid = uuid_module.UUID(player_2_id) if isinstance(player_2_id, str) else player_2_id
+        player_3_uuid = uuid_module.UUID(player_3_id) if isinstance(player_3_id, str) else player_3_id
+        assert player_1_uuid not in called_player_ids
+        assert player_2_uuid in called_player_ids
+        assert player_3_uuid in called_player_ids
 
 
 class TestEventOrderingAndTimingBugs:

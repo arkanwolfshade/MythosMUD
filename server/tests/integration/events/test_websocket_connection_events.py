@@ -110,7 +110,11 @@ class TestWebSocketConnectionEvents:
             with patch("server.realtime.websocket_handler.handle_websocket_message", AsyncMock()):
                 try:
                     # Pass connection_manager as parameter (handle_websocket_connection expects UUID)
-                    player_id_uuid = uuid.UUID(mock_player.player_id) if isinstance(mock_player.player_id, str) else mock_player.player_id
+                    player_id_uuid = (
+                        uuid.UUID(mock_player.player_id)
+                        if isinstance(mock_player.player_id, str)
+                        else mock_player.player_id
+                    )
                     await handle_websocket_connection(
                         mock_websocket, player_id_uuid, connection_manager=mock_connection_manager
                     )
@@ -151,7 +155,11 @@ class TestWebSocketConnectionEvents:
 
             try:
                 # Pass connection_manager as parameter (handle_websocket_connection expects UUID)
-                player_id_uuid = uuid.UUID(mock_player.player_id) if isinstance(mock_player.player_id, str) else mock_player.player_id
+                player_id_uuid = (
+                    uuid.UUID(mock_player.player_id)
+                    if isinstance(mock_player.player_id, str)
+                    else mock_player.player_id
+                )
                 await handle_websocket_connection(
                     mock_websocket, player_id_uuid, connection_manager=mock_connection_manager
                 )

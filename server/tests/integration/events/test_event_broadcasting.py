@@ -9,6 +9,7 @@ These tests ensure that:
 """
 
 import asyncio
+import uuid
 from unittest.mock import AsyncMock, Mock, patch
 from uuid import uuid4
 
@@ -164,7 +165,8 @@ class TestPlayerMovementMessageExclusion:
         # Verify that only player_2 received the message (player_1 was excluded)
         calls = connection_manager.send_personal_message.call_args_list
         assert len(calls) == 1
-        assert calls[0][0][0] == player_2_id  # Only player_2_id received message
+        # send_personal_message receives UUID objects, so compare UUIDs
+        assert calls[0][0][0] == uuid.UUID(player_2_id) if isinstance(player_2_id, str) else player_2_id
 
 
 class TestRoomEventBroadcasting:

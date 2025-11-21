@@ -133,9 +133,7 @@ class TestSelfMessageBug:
 
         # Mock room_manager to return subscribers (use UUID strings)
         mock_room_manager = Mock()
-        mock_room_manager.get_room_subscribers = Mock(
-            return_value={str(player_id1), str(player_id2), str(player_id3)}
-        )
+        mock_room_manager.get_room_subscribers = Mock(return_value={str(player_id1), str(player_id2), str(player_id3)})
         cm.room_manager = mock_room_manager
 
         # Create a test event
@@ -170,9 +168,7 @@ class TestSelfMessageBug:
 
         # Mock room_manager to return subscribers (use UUID strings)
         mock_room_manager = Mock()
-        mock_room_manager.get_room_subscribers = Mock(
-            return_value={str(player_id1), str(player_id2), str(player_id3)}
-        )
+        mock_room_manager.get_room_subscribers = Mock(return_value={str(player_id1), str(player_id2), str(player_id3)})
         cm.room_manager = mock_room_manager
 
         # Create a test event

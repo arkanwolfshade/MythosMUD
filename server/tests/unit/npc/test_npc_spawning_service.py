@@ -476,6 +476,7 @@ class TestNPCSpawningService:
 
         # Call the method directly (use UUID for player_id)
         from uuid import uuid4
+
         player_id = uuid4()
         event = PlayerEnteredRoom(player_id=str(player_id), room_id="room_001")
         spawning_service._handle_player_entered_room(event)
