@@ -123,6 +123,11 @@ class TestPersistenceErrorLogging:
 
     def test_delete_player_database_error_logging(self):
         """Test error logging for player deletion database errors."""
+        from uuid import UUID
+
+        # Use a valid UUID object for the test (delete_player expects UUID)
+        test_player_id = UUID("12345678-1234-5678-1234-567812345678")
+
         # Mock PostgreSQL connection to raise OperationalError
         with patch("server.postgres_adapter.connect_postgres") as mock_connect:
             mock_conn = Mock()
@@ -134,12 +139,12 @@ class TestPersistenceErrorLogging:
             mock_connect.return_value = mock_conn
 
             with pytest.raises(DatabaseError) as exc_info:
-                self.persistence.delete_player("test-player-id")
+                self.persistence.delete_player(test_player_id)
 
         # Verify error context
         assert "Database error deleting player" in str(exc_info.value)
         assert exc_info.value.context.metadata["operation"] == "delete_player"
-        assert exc_info.value.context.metadata["player_id"] == "test-player-id"
+        assert exc_info.value.context.metadata["player_id"] == test_player_id
 
     def test_sync_room_players_error_logging(self):
         """Test error logging for room player sync errors."""

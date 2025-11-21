@@ -426,7 +426,7 @@ class PersistenceLayer:
             """
             SELECT inventory_json, equipped_json
             FROM player_inventories
-            WHERE player_id = %s
+            WHERE player_id = %s::uuid
             """,
             (player.player_id,),
         )
@@ -767,9 +767,9 @@ class PersistenceLayer:
                 # PostgreSQL uses %s placeholders, not ?
                 # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
                 # Future: Migrate to SQLAlchemy ORM for better query construction
-                # psycopg2 handles UUID objects directly via register_uuid() in postgres_adapter
-                query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE player_id = %s::text"
-                row = conn.execute(query, (str(player_id),)).fetchone()
+                # psycopg2 handles UUID objects directly - pass UUID object directly
+                query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE player_id = %s::uuid"
+                row = conn.execute(query, (player_id,)).fetchone()
                 if row:
                     player_data = self._convert_row_to_player_data(row)
                     player = Player(**player_data)
@@ -1004,10 +1004,9 @@ class PersistenceLayer:
 
                     last_active_iso = last_active.isoformat()
                     # psycopg2 handles UUID objects directly via register_uuid() in postgres_adapter
-                    # Query matches by player_id (UUID) or name (string) - both use same value for flexibility
-                    # Note: This allows updating by UUID or by name, but name comparison uses UUID string
+                    # Pass UUID object directly - psycopg2 will handle the conversion
                     conn.execute(
-                        "UPDATE players SET last_active = %s WHERE player_id = %s",
+                        "UPDATE players SET last_active = %s WHERE player_id = %s::uuid",
                         (last_active_iso, player_id),
                     )
                     conn.commit()
@@ -1224,14 +1223,14 @@ class PersistenceLayer:
             try:
                 # First check if player exists
                 # PostgreSQL uses %s placeholders, not ?
-                # psycopg2 handles UUID objects directly via register_uuid() in postgres_adapter
-                cursor = conn.execute("SELECT player_id FROM players WHERE player_id = %s", (player_id,))
+                # psycopg2 handles UUID objects directly - pass UUID object directly
+                cursor = conn.execute("SELECT player_id FROM players WHERE player_id = %s::uuid", (player_id,))
                 if not cursor.fetchone():
                     self._log("Delete attempted for non-existent player")
                     return False
 
                 # Delete the player (foreign key constraints will handle related data)
-                cursor = conn.execute("DELETE FROM players WHERE player_id = %s", (player_id,))
+                cursor = conn.execute("DELETE FROM players WHERE player_id = %s::uuid", (player_id,))
                 conn.commit()
 
                 if cursor.rowcount > 0:
@@ -1775,9 +1774,9 @@ class PersistenceLayer:
                         to_jsonb((COALESCE(stats->>%s, '0'))::numeric + %s),
                         true
                     )
-                    WHERE player_id = %s::text
+                    WHERE player_id = %s::uuid
                     """,
-                    (field_name, delta, str(player_id)),
+                    (field_name, delta, player_id),
                 )
 
                 if cursor.rowcount == 0:
@@ -1876,7 +1875,7 @@ class PersistenceLayer:
                     """
                     UPDATE players
                     SET experience_points = experience_points + %s
-                    WHERE player_id = %s
+                    WHERE player_id = %s::uuid
                     """,
                     (delta, player_id),
                 )

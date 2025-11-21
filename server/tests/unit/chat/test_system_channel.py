@@ -136,11 +136,14 @@ class TestSystemChannelStrategy:
     @pytest.mark.asyncio
     async def test_send_system_message_nats_failure(self):
         """Test that system messages handle NATS failures gracefully."""
+        from server.services.nats_exceptions import NATSPublishError
+
         # Setup mocks
         self.mock_player_service.get_player_by_id.return_value = self.admin_player
         self.mock_user_manager.is_admin.return_value = True
         self.mock_nats_service.is_connected.return_value = True
-        self.mock_nats_service.publish.return_value = False
+        # NATS publish raises NATSPublishError on failure, doesn't return False
+        self.mock_nats_service.publish = AsyncMock(side_effect=NATSPublishError("NATS publish failed", "test.subject"))
 
         # Test system message
         result = await self.chat_service.send_system_message(self.admin_player.id, "System announcement")

@@ -164,19 +164,23 @@ class TestEmoteService:
             assert len(service.emotes) == 2
 
     def test_emote_service_malformed_json_raises_error(self):
-        """Test that database loading errors raise ValidationError.
+        """Test that database loading errors are handled gracefully.
 
-        AI: Tests lines 88-99 in emote_service.py where we handle exceptions
-        during emote loading. Covers the error handling and logging path.
+        AI: The service now logs a warning and continues with empty emotes
+        instead of raising ValidationError, allowing custom emotes to work
+        even when the database table doesn't exist. This tests the graceful
+        degradation path.
         """
         malformed_file = Path(self.temp_dir) / "malformed.json"
         # Mock database error
         db_error = Exception("Database connection failed")
         with patch.object(EmoteService, "_async_load_emotes", side_effect=self._mock_async_load_emotes(error=db_error)):
-            with pytest.raises(ValidationError) as exc_info:
-                EmoteService(emote_file_path=str(malformed_file))
+            # Service should initialize successfully with empty emotes (graceful degradation)
+            service = EmoteService(emote_file_path=str(malformed_file))
 
-            assert "Failed to load emotes" in str(exc_info.value)
+            # Verify service initialized with empty emotes
+            assert len(service.emotes) == 0
+            assert len(service.alias_to_emote) == 0
 
     def test_emote_service_schema_validation_failure(self):
         """Schema validation is handled by database constraints, not in service."""

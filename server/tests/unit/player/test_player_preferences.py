@@ -58,13 +58,22 @@ async def cleanup_players(session_factory):
 
 
 async def create_test_player(session: AsyncSession, player_id: str) -> Player:
-    """Create a test player for preferences testing."""
-    # Add unique suffix to both player_id and username to avoid conflicts in parallel test runs
-    unique_suffix = str(uuid.uuid4())[:8]
-    unique_player_id = f"{player_id}-{unique_suffix}"
-    unique_username = f"{player_id}-{unique_suffix}"
+    """Create a test player for preferences testing.
+
+    Args:
+        session: Database session
+        player_id: String identifier used only for generating unique username (not used as actual player_id)
+
+    Returns:
+        Player object with valid UUID player_id
+    """
+    # Generate valid UUID for player_id (PostgreSQL requires UUID type)
+    # Use player_id string as seed for username only, not for the actual player_id
+    unique_player_id = uuid.uuid4()  # Generate UUID object
+    unique_username = f"{player_id}-{str(uuid.uuid4())[:8]}"
+    user_uuid = uuid.uuid4()
     user = User(
-        id=str(uuid.uuid4()),
+        id=str(user_uuid),
         email=f"{unique_username}@example.com",
         username=unique_username,
         display_name=unique_username,
@@ -74,8 +83,8 @@ async def create_test_player(session: AsyncSession, player_id: str) -> Player:
         is_verified=True,
     )
     player = Player(
-        player_id=unique_player_id,  # Use unique player_id to avoid duplicate key violations
-        user_id=user.id,
+        player_id=str(unique_player_id),  # Convert UUID to string for UUID(as_uuid=False) column
+        user_id=str(user_uuid),
         name=unique_username,  # Use unique username to avoid duplicate key violations
     )
     session.add_all([user, player])
@@ -184,7 +193,9 @@ class TestPlayerPreferencesService:
         """Test getting preferences for non-existent player."""
         async with session_factory() as session:
             service = PlayerPreferencesService()
-            result = await service.get_player_preferences(session, "non-existent-player")
+            # Use a valid UUID format for non-existent player
+            non_existent_id = uuid.uuid4()
+            result = await service.get_player_preferences(session, non_existent_id)
             assert result["success"] is False
             assert "not found" in result["error"].lower()
 
@@ -408,14 +419,14 @@ class TestPlayerPreferencesValidation:
 
     def test_player_id_validation(self, preferences_service):
         """Test player ID validation."""
-        # Valid player IDs
-        valid_ids = ["player-123", "test_player", "user_456", "admin"]
+        # Valid player IDs (UUID objects)
+        valid_ids = [uuid.uuid4(), uuid.uuid4(), uuid.uuid4()]
 
         for player_id in valid_ids:
             assert preferences_service._is_valid_player_id(player_id) is True
 
-        # Invalid player IDs
-        invalid_ids = ["", None, "a" * 256]  # Too long
+        # Invalid player IDs (non-UUID types)
+        invalid_ids = [None, "", "not-a-uuid", 123]
 
         for player_id in invalid_ids:
             assert preferences_service._is_valid_player_id(player_id) is False
@@ -476,7 +487,9 @@ class TestPlayerPreferencesServiceErrorPaths:
         """Test getting preferences for nonexistent player."""
         async with session_factory() as session:
             service = PlayerPreferencesService()
-            result = await service.get_player_preferences(session, "nonexistent-player")
+            # Use a valid UUID format for non-existent player
+            non_existent_id = uuid.uuid4()
+            result = await service.get_player_preferences(session, non_existent_id)
             assert result["success"] is False
             assert "not found" in result["error"].lower()
 
@@ -551,7 +564,9 @@ class TestPlayerPreferencesServiceErrorPaths:
         """Test getting muted channels for nonexistent player."""
         async with session_factory() as session:
             service = PlayerPreferencesService()
-            result = await service.get_muted_channels(session, "nonexistent-player")
+            # Use a valid UUID format for non-existent player
+            non_existent_id = uuid.uuid4()
+            result = await service.get_muted_channels(session, non_existent_id)
             assert result["success"] is False
             assert "not found" in result["error"].lower()
 
@@ -579,7 +594,9 @@ class TestPlayerPreferencesServiceErrorPaths:
         """Test checking if channel muted for nonexistent player."""
         async with session_factory() as session:
             service = PlayerPreferencesService()
-            result = await service.is_channel_muted(session, "nonexistent-player", "local")
+            # Use a valid UUID format for non-existent player
+            non_existent_id = uuid.uuid4()
+            result = await service.is_channel_muted(session, non_existent_id, "local")
             assert result["success"] is False
             assert "not found" in result["error"].lower()
 

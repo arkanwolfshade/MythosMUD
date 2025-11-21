@@ -794,9 +794,11 @@ class TestEmoteCommand:
         mock_player.player_id = test_player_id
         mock_player.current_room_id = "test_room_001"
 
-        # Configure async service mocks
-        mock_request.app.state.player_service.resolve_player_name.return_value = mock_player
-        mock_request.app.state.chat_service.send_emote_message.return_value = {"success": True}
+        # Configure async service mocks - these must be AsyncMock for await calls
+        mock_request.app.state.player_service = AsyncMock()
+        mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=mock_player)
+        mock_request.app.state.chat_service = AsyncMock()
+        mock_request.app.state.chat_service.send_emote_message = AsyncMock(return_value={"success": True})
 
         result = await handle_emote_command(
             {"action": "adjusts spectacles"},
@@ -818,9 +820,11 @@ class TestEmoteCommand:
         mock_player.player_id = test_player_id
         mock_player.current_room_id = "test_room_001"
 
-        # Configure async service mocks
-        mock_request.app.state.player_service.resolve_player_name.return_value = mock_player
-        mock_request.app.state.chat_service.send_emote_message.return_value = {"success": True}
+        # Configure async service mocks - these must be AsyncMock for await calls
+        mock_request.app.state.player_service = AsyncMock()
+        mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=mock_player)
+        mock_request.app.state.chat_service = AsyncMock()
+        mock_request.app.state.chat_service.send_emote_message = AsyncMock(return_value={"success": True})
 
         result = await handle_emote_command(
             {"action": "opens the forbidden tome with trembling hands"},
@@ -855,9 +859,11 @@ class TestEmoteCommand:
         mock_player.player_id = test_player_id
         mock_player.current_room_id = "test_room_001"
 
-        # Configure async service mocks
-        mock_request.app.state.player_service.resolve_player_name.return_value = mock_player
-        mock_request.app.state.chat_service.send_emote_message.return_value = {"success": True}
+        # Configure async service mocks - these must be AsyncMock for await calls
+        mock_request.app.state.player_service = AsyncMock()
+        mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=mock_player)
+        mock_request.app.state.chat_service = AsyncMock()
+        mock_request.app.state.chat_service.send_emote_message = AsyncMock(return_value={"success": True})
 
         result = await handle_emote_command(
             {"action": "  "},  # Two spaces
@@ -879,9 +885,11 @@ class TestEmoteCommand:
         mock_player.player_id = test_player_id
         mock_player.current_room_id = "test_room_001"
 
-        # Configure async service mocks
-        mock_request.app.state.player_service.resolve_player_name.return_value = mock_player
-        mock_request.app.state.chat_service.send_emote_message.return_value = {"success": True}
+        # Configure async service mocks - these must be AsyncMock for await calls
+        mock_request.app.state.player_service = AsyncMock()
+        mock_request.app.state.player_service.resolve_player_name = AsyncMock(return_value=mock_player)
+        mock_request.app.state.chat_service = AsyncMock()
+        mock_request.app.state.chat_service.send_emote_message = AsyncMock(return_value={"success": True})
 
         result = await handle_emote_command(
             {"action": "whispers something in an ancient tongue..."},

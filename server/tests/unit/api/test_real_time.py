@@ -204,8 +204,11 @@ class TestWebSocketEndpoint:
             await websocket_endpoint(mock_websocket)
 
             # Verify handle_websocket_connection was called with correct parameters
+            # Note: player_id is converted to UUID before calling handle_websocket_connection
+            import uuid
+            expected_player_id = uuid.UUID(test_player_id)
             mock_handle.assert_called_once_with(
-                mock_websocket, "test_player_id", None, connection_manager=mock_connection_manager, token="valid_token"
+                mock_websocket, expected_player_id, None, connection_manager=mock_connection_manager, token="valid_token"
             )
 
     @pytest.mark.asyncio
@@ -239,9 +242,12 @@ class TestWebSocketEndpoint:
 
             # Ensure decode was invoked with token extracted from header
             mock_decode.assert_called_once_with("test_token_from_header")
+            # Note: player_id is converted to UUID before calling handle_websocket_connection
+            import uuid
+            expected_player_id = uuid.UUID(player_from_header_id)
             mock_handle.assert_called_once_with(
                 mock_websocket,
-                player_from_header_id,
+                expected_player_id,
                 None,
                 connection_manager=mock_connection_manager,
                 token="test_token_from_header",
@@ -281,9 +287,12 @@ class TestWebSocketEndpoint:
             await websocket_endpoint(mock_websocket)
 
             # Verify handle_websocket_connection was called with player_id from query params
+            # Note: player_id is converted to UUID before calling handle_websocket_connection
+            import uuid
+            expected_player_id = uuid.UUID(test_player_id)
             mock_handle.assert_called_once_with(
                 mock_websocket,
-                test_player_id,
+                expected_player_id,
                 None,
                 connection_manager=mock_connection_manager,
                 token="invalid_token",
@@ -430,8 +439,11 @@ class TestWebSocketEndpointRoute:
             await websocket_endpoint_route(mock_websocket, path_player_id)
 
             # Verify handle_websocket_connection was called with resolved player_id
+            # Note: player_id is converted to UUID before calling handle_websocket_connection
+            import uuid
+            expected_player_id = uuid.UUID(resolved_player_id)
             mock_handle.assert_called_once_with(
-                mock_websocket, resolved_player_id, None, connection_manager=mock_connection_manager
+                mock_websocket, expected_player_id, None, connection_manager=mock_connection_manager
             )
             mock_logger.info.assert_called_once_with(
                 "WebSocket (compat) connection attempt", player_id=path_player_id, session_id=None
@@ -467,8 +479,11 @@ class TestWebSocketEndpointRoute:
             await websocket_endpoint_route(mock_websocket, path_player_id)
 
             # Verify handle_websocket_connection was called with path player_id
+            # Note: player_id is converted to UUID before calling handle_websocket_connection
+            import uuid
+            expected_player_id = uuid.UUID(path_player_id)
             mock_handle.assert_called_once_with(
-                mock_websocket, path_player_id, None, connection_manager=mock_connection_manager
+                mock_websocket, expected_player_id, None, connection_manager=mock_connection_manager
             )
             mock_logger.info.assert_called_once_with(
                 "WebSocket (compat) connection attempt", player_id=path_player_id, session_id=None
@@ -601,8 +616,11 @@ class TestWebSocketEndpointRoute:
                 await websocket_endpoint_route(mock_websocket, path_player_id)
 
             assert exc_info.value == test_exception
+            # Note: player_id is converted to UUID before logging in the error handler
+            import uuid
+            expected_player_id = uuid.UUID(path_player_id)
             mock_logger.error.assert_called_once_with(
-                "Error in WebSocket endpoint", player_id=path_player_id, error="Test exception", exc_info=True
+                "Error in WebSocket endpoint", player_id=expected_player_id, error="Test exception", exc_info=True
             )
 
 

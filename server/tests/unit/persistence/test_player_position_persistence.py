@@ -126,13 +126,14 @@ async def test_position_persists_across_logout_login_cycle(async_session_factory
     # Use proper UUID format for player_id (PostgreSQL requires valid UUID)
     import uuid as uuid_module
 
-    player_id = str(uuid_module.uuid4())
-    player = build_player(player_id, user_id)
+    player_id = uuid_module.uuid4()  # UUID object, not string
+    player = build_player(str(player_id), user_id)  # build_player expects string
 
     # Initial save representing the player's first login.
     persistence.save_player(player)
 
     # Load the player (simulating a login) and confirm standing.
+    # get_player expects UUID object
     loaded_player = persistence.get_player(player_id)
     assert loaded_player is not None, "player should load successfully after initial save"
     assert loaded_player.get_stats()["position"] == "standing"
@@ -144,6 +145,7 @@ async def test_position_persists_across_logout_login_cycle(async_session_factory
     persistence.save_player(loaded_player)
 
     # Reload and ensure the sitting posture persisted.
+    # get_player expects UUID object
     reloaded_player = persistence.get_player(player_id)
     assert reloaded_player is not None, "player should load successfully after updating position"
     assert reloaded_player.get_stats()["position"] == "sitting"
@@ -176,10 +178,11 @@ async def test_missing_position_defaults_to_standing_on_load(async_session_facto
         # Use proper UUID format for player_id
         import uuid as uuid_module
 
-        player_id = str(uuid_module.uuid4())
+        player_id = uuid_module.uuid4()  # UUID object, not string
         # Create player with legacy stats
+        # Player model expects string for player_id (UUID(as_uuid=False))
         player = Player(
-            player_id=player_id,
+            player_id=str(player_id),
             user_id=user_id,
             name=f"LegacyPlayer-{unique_suffix}",
             current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
@@ -192,6 +195,7 @@ async def test_missing_position_defaults_to_standing_on_load(async_session_facto
         await session.commit()
 
     persistence = PersistenceLayer(db_path=database_url)
+    # get_player expects UUID object
     rehydrated_player = persistence.get_player(player_id)
 
     assert rehydrated_player is not None, "legacy player should load successfully"
