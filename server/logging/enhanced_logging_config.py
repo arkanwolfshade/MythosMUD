@@ -9,6 +9,7 @@ import json
 import logging
 import os
 import sys
+import threading
 import time
 import uuid
 from datetime import UTC, datetime
@@ -303,6 +304,8 @@ def add_request_context(_logger: Any, _name: str, event_dict: dict[str, Any]) ->
 
 # Global player service registry for logging enhancement
 _global_player_service = None
+# Thread-local flag to prevent recursion in enhance_player_ids
+_enhancing_player_ids = threading.local()
 
 
 def set_global_player_service(player_service: Any) -> None:
@@ -336,33 +339,45 @@ def enhance_player_ids(_logger: Any, _name: str, event_dict: dict[str, Any]) -> 
     """
     global _global_player_service
 
-    if _global_player_service and hasattr(_global_player_service, "persistence"):
-        # Process any player_id fields in the event dictionary
-        for key, value in event_dict.items():
-            if key == "player_id" and isinstance(value, str):
-                # Check if this looks like a UUID
-                if len(value) == 36 and value.count("-") == 4:
-                    # Import here to avoid circular import with server.exceptions -> enhanced_logging_config
-                    # Define a local exception type alias for optional dependency
-                    try:
-                        from server.exceptions import DatabaseError as _ImportedDatabaseError  # noqa: F401
+    # Prevent recursion: if we're already enhancing player IDs, skip immediately
+    # Check this FIRST before any other operations
+    if hasattr(_enhancing_player_ids, "active") and _enhancing_player_ids.active:
+        return event_dict
 
-                        _DatabaseErrorType: type[BaseException] = _ImportedDatabaseError
-                    except Exception:  # noqa: BLE001 - fallback if exceptions not yet available
-                        _DatabaseErrorType = Exception
+    # Set recursion guard IMMEDIATELY before any operations that might trigger logging
+    _enhancing_player_ids.active = True
+    try:
+        if _global_player_service and hasattr(_global_player_service, "persistence"):
+            # Process any player_id fields in the event dictionary
+            for key, value in event_dict.items():
+                if key == "player_id" and isinstance(value, str):
+                    # Check if this looks like a UUID
+                    if len(value) == 36 and value.count("-") == 4:
+                        # Import here to avoid circular import with server.exceptions -> enhanced_logging_config
+                        # Define a local exception type alias for optional dependency
+                        try:
+                            from server.exceptions import DatabaseError as _ImportedDatabaseError  # noqa: F401
 
-                    try:
-                        # Try to get the player name
-                        player = _global_player_service.persistence.get_player(value)
-                        if player and hasattr(player, "name"):
-                            # Enhance the player_id field with the player name
-                            event_dict[key] = f"<{player.name}>: {value}"
-                    except (AttributeError, KeyError, TypeError, _DatabaseErrorType) as e:
-                        logger.error(
-                            "Error looking up player name", player_id=value, error=str(e), error_type=type(e).__name__
-                        )
-                        # If lookup fails, leave the original value
-                        pass
+                            _DatabaseErrorType: type[BaseException] = _ImportedDatabaseError
+                        except Exception:  # noqa: BLE001 - fallback if exceptions not yet available
+                            _DatabaseErrorType = Exception
+
+                        try:
+                            # Try to get the player name
+                            # Convert string to UUID if needed
+                            import uuid
+                            player_id_uuid = uuid.UUID(value) if isinstance(value, str) else value
+                            player = _global_player_service.persistence.get_player(player_id_uuid)
+                            if player and hasattr(player, "name"):
+                                # Enhance the player_id field with the player name
+                                event_dict[key] = f"<{player.name}>: {value}"
+                        except (AttributeError, KeyError, TypeError, ValueError, _DatabaseErrorType, RecursionError):
+                            # Silently skip on recursion or other errors - don't log to avoid infinite loop
+                            # If lookup fails, leave the original value
+                            pass
+    finally:
+        # Clear recursion guard - ALWAYS clear it, even if an exception occurs
+        _enhancing_player_ids.active = False
 
     return event_dict
 

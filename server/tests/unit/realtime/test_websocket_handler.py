@@ -442,9 +442,12 @@ class TestWebSocketCommandProcessing:
 
         mock_player = Mock()
         mock_player.current_room_id = "room_1"
+        mock_player.name = "test_player"  # Required for get_username_from_user
         # Mock get_stats to return standing position (required for movement)
         mock_player.get_stats = Mock(return_value={"position": "standing"})
         mock_connection_manager._get_player.return_value = mock_player
+        # Mock persistence.get_player_by_name to return the same player (used by handle_go_command)
+        mock_connection_manager.persistence.get_player_by_name.return_value = mock_player
 
         mock_room = Mock()
         mock_room.exits = {"north": "room_2"}
@@ -465,6 +468,13 @@ class TestWebSocketCommandProcessing:
             return None
 
         mock_connection_manager.persistence.get_room.side_effect = mock_get_room
+
+        # Mock app state for the unified command handler
+        mock_app = Mock()
+        mock_app.state.persistence = mock_connection_manager.persistence
+        mock_app.state.player_service = Mock()
+        mock_app.state.user_manager = Mock()
+        mock_connection_manager.app = mock_app
 
         with patch("server.game.movement_service.MovementService") as mock_movement_service:
             mock_service_instance = Mock()

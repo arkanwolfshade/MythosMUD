@@ -2,6 +2,7 @@
 Tests for target resolution service.
 """
 
+import uuid
 from unittest.mock import Mock, patch
 from uuid import uuid4
 
@@ -42,7 +43,8 @@ class TestTargetResolutionService:
 
         assert result.success is False
         assert "Player not found" in result.error_message
-        mock_persistence.get_player.assert_called_once_with(player_id)
+        # Service converts string to UUID before calling get_player
+        mock_persistence.get_player.assert_called_once_with(uuid.UUID(player_id))
 
     @pytest.mark.asyncio
     async def test_resolve_target_no_current_room(self, target_resolution_service, mock_persistence):

@@ -54,7 +54,7 @@ async def create_player(session: AsyncSession, username: str) -> Player:
         is_verified=True,
     )
     player = Player(
-        player_id=f"player-{uuid.uuid4()}",
+        player_id=str(uuid.uuid4()),
         user_id=user.id,
         name=username.capitalize(),
     )
