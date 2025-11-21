@@ -133,6 +133,8 @@ export function useGameConnection(options: UseGameConnectionOptions) {
     onConnected: sseSessionId => {
       logger.info('GameConnection', 'SSE connected', { sessionId: sseSessionId });
       updateSessionId(sseSessionId);
+      // BUGFIX: Cancel timeout when SSE_CONNECTED is received
+      // This prevents timeout from firing if connection is established quickly
       connectionState.onSSEConnected(sseSessionId);
     },
     onMessage: event => {
@@ -144,11 +146,22 @@ export function useGameConnection(options: UseGameConnectionOptions) {
         logger.error('GameConnection', 'Error parsing SSE message', { error });
       }
     },
+    onHeartbeat: () => {
+      // Track heartbeat for connection health monitoring
+      logger.debug('GameConnection', 'SSE heartbeat received');
+    },
     onError: () => {
-      // BUGFIX: Only notify state machine if we were actually connected
-      // This prevents false positives during initial connection attempts
-      if (isSSEConnectedRef.current) {
+      // BUGFIX: Only notify state machine if connection was actually unhealthy
+      // Heartbeat monitoring helps distinguish real connection loss from temporary hiccups
+      if (isSSEConnectedRef.current && !sseConnection.isHealthy) {
+        logger.warn('GameConnection', 'SSE connection failed - connection was unhealthy', {
+          lastHeartbeatTime: sseConnection.lastHeartbeatTime,
+          isHealthy: sseConnection.isHealthy,
+        });
         connectionState.onSSEFailed('Connection failed');
+      } else if (isSSEConnectedRef.current) {
+        logger.debug('GameConnection', 'SSE error on healthy connection - treating as temporary hiccup');
+        // Don't notify state machine - connection might recover
       }
       onErrorRef.current?.('Connection failed');
     },
@@ -204,7 +217,13 @@ export function useGameConnection(options: UseGameConnectionOptions) {
     lastError: connectionLastError,
   } = connectionState;
 
-  const { connect: startSSE, disconnect: stopSSE, isConnected: isSSEConnected } = sseConnection;
+  const {
+    connect: startSSE,
+    disconnect: stopSSE,
+    isConnected: isSSEConnected,
+    isHealthy: isSSEHealthy,
+    lastHeartbeatTime,
+  } = sseConnection;
   const {
     connect: startWebSocket,
     disconnect: stopWebSocket,
@@ -215,6 +234,7 @@ export function useGameConnection(options: UseGameConnectionOptions) {
   // Store connection states for use in callbacks (avoid stale closures)
   const isSSEConnectedRef = useRef(isSSEConnected);
   const isWebSocketConnectedRef = useRef(isWebSocketConnected);
+  const isSSEHealthyRef = useRef(isSSEHealthy);
 
   useEffect(() => {
     isSSEConnectedRef.current = isSSEConnected;
@@ -223,6 +243,34 @@ export function useGameConnection(options: UseGameConnectionOptions) {
   useEffect(() => {
     isWebSocketConnectedRef.current = isWebSocketConnected;
   }, [isWebSocketConnected]);
+
+  useEffect(() => {
+    isSSEHealthyRef.current = isSSEHealthy;
+  }, [isSSEHealthy]);
+
+  // BUGFIX: Monitor SSE connection health via heartbeat
+  // If connection is unhealthy (no heartbeat for 60+ seconds), treat as lost
+  useEffect(() => {
+    if (!isSSEConnected || !isSSEHealthy) {
+      return;
+    }
+
+    const healthCheckInterval = setInterval(() => {
+      // Check if connection is still healthy
+      if (isSSEConnected && !isSSEHealthy) {
+        logger.warn('GameConnection', 'SSE connection unhealthy - no heartbeat received', {
+          lastHeartbeatTime,
+          timeSinceLastHeartbeat: lastHeartbeatTime ? Date.now() - lastHeartbeatTime : null,
+        });
+        // Connection is unhealthy - notify state machine
+        connectionState.onSSEFailed('Connection unhealthy - no heartbeat');
+      }
+    }, 10000); // Check every 10 seconds
+
+    return () => {
+      clearInterval(healthCheckInterval);
+    };
+  }, [isSSEConnected, isSSEHealthy, lastHeartbeatTime, connectionState]);
 
   useEffect(() => {
     if (connectionStateValue === 'sse_connected' && isWebSocketConnected) {

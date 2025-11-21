@@ -17,6 +17,7 @@ export interface SSEConnectionOptions {
   onMessage?: (event: MessageEvent) => void;
   onError?: (error: Event) => void;
   onDisconnect?: () => void;
+  onHeartbeat?: () => void;
 }
 
 export interface SSEConnectionResult {
@@ -24,6 +25,8 @@ export interface SSEConnectionResult {
   disconnect: () => void;
   isConnected: boolean;
   lastError: string | null;
+  lastHeartbeatTime: number | null;
+  isHealthy: boolean;
 }
 
 /**
@@ -50,12 +53,17 @@ export function useSSEConnection(options: SSEConnectionOptions): SSEConnectionRe
   // Use state instead of refs for values that need to trigger re-renders
   const [isConnected, setIsConnected] = useState(false);
   const [lastError, setLastError] = useState<string | null>(null);
+  const [lastHeartbeatTime, setLastHeartbeatTime] = useState<number | null>(null);
+
+  // Ref to track last heartbeat time for use in error handler (avoid stale closure)
+  const lastHeartbeatTimeRef = useRef<number | null>(null);
 
   // Stable callback refs
   const onConnectedRef = useRef(onConnected);
   const onMessageRef = useRef(onMessage);
   const onErrorRef = useRef(onError);
   const onDisconnectRef = useRef(onDisconnect);
+  const onHeartbeatRef = useRef(options.onHeartbeat);
 
   // Update callback refs
   useEffect(() => {
@@ -63,7 +71,17 @@ export function useSSEConnection(options: SSEConnectionOptions): SSEConnectionRe
     onMessageRef.current = onMessage;
     onErrorRef.current = onError;
     onDisconnectRef.current = onDisconnect;
-  }, [onConnected, onMessage, onError, onDisconnect]);
+    onHeartbeatRef.current = options.onHeartbeat;
+  }, [onConnected, onMessage, onError, onDisconnect, options.onHeartbeat]);
+
+  // Update heartbeat ref when state changes
+  useEffect(() => {
+    lastHeartbeatTimeRef.current = lastHeartbeatTime;
+  }, [lastHeartbeatTime]);
+
+  // Heartbeat health monitoring - connection is healthy if we received a heartbeat within last 60 seconds
+  // Server sends heartbeats every 30 seconds, so 60 seconds gives us 2 missed heartbeats before marking unhealthy
+  const isHealthy = lastHeartbeatTime !== null && Date.now() - lastHeartbeatTime < 60000;
 
   const disconnect = useCallback(() => {
     if (eventSourceRef.current) {
@@ -129,24 +147,68 @@ export function useSSEConnection(options: SSEConnectionOptions): SSEConnectionRe
       resourceManager.registerEventSource(eventSource);
 
       eventSource.onopen = () => {
+        const now = Date.now();
         logger.info('SSEConnection', 'SSE connected successfully');
         setIsConnected(true);
         setLastError(null);
+        setLastHeartbeatTime(now);
+        lastHeartbeatTimeRef.current = now;
         onConnectedRef.current?.(sseSessionId);
       };
 
       eventSource.onmessage = event => {
+        try {
+          const data = JSON.parse(event.data);
+          // Track heartbeat events for connection health monitoring
+          if (data.event_type === 'heartbeat') {
+            const now = Date.now();
+            setLastHeartbeatTime(now);
+            lastHeartbeatTimeRef.current = now;
+            logger.debug('SSEConnection', 'Heartbeat received', { timestamp: now });
+            onHeartbeatRef.current?.();
+          }
+        } catch {
+          // Not JSON, might be plain text - still process it
+        }
         onMessageRef.current?.(event);
       };
 
       eventSource.onerror = error => {
-        logger.error('SSEConnection', 'SSE connection error', { error });
+        // Compute health at error time using ref to avoid stale closure
+        const heartbeatTime = lastHeartbeatTimeRef.current;
+        const currentHealth = heartbeatTime !== null && Date.now() - heartbeatTime < 60000;
+        const timeSinceLastHeartbeat = heartbeatTime ? Date.now() - heartbeatTime : null;
+
+        logger.error('SSEConnection', 'SSE connection error', {
+          error,
+          isHealthy: currentHealth,
+          lastHeartbeatTime: heartbeatTime,
+          timeSinceLastHeartbeat,
+        });
         setLastError('Connection failed');
         setIsConnected(false);
-        onErrorRef.current?.(error);
 
-        // Close and cleanup
-        disconnect();
+        // BUGFIX: Only trigger error callback if connection was actually unhealthy
+        // This distinguishes actual connection loss from temporary network hiccups
+        // If we received a heartbeat recently, this might be a temporary issue
+        if (!currentHealth || heartbeatTime === null) {
+          logger.warn('SSEConnection', 'SSE error on unhealthy connection - treating as real failure', {
+            isHealthy: currentHealth,
+            lastHeartbeatTime: heartbeatTime,
+            timeSinceLastHeartbeat,
+          });
+          onErrorRef.current?.(error);
+          // Close and cleanup only if connection is actually unhealthy
+          disconnect();
+        } else {
+          logger.debug('SSEConnection', 'SSE error on healthy connection - treating as temporary hiccup', {
+            isHealthy: currentHealth,
+            lastHeartbeatTime: heartbeatTime,
+            timeSinceLastHeartbeat,
+          });
+          // Don't disconnect - connection might recover
+          // The heartbeat monitoring will detect if connection is actually lost
+        }
       };
     } catch (error) {
       logger.error('SSEConnection', 'Error creating SSE connection', { error });
@@ -167,5 +229,7 @@ export function useSSEConnection(options: SSEConnectionOptions): SSEConnectionRe
     disconnect,
     isConnected,
     lastError,
+    lastHeartbeatTime,
+    isHealthy,
   };
 }
