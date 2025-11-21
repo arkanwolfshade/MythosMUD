@@ -11,6 +11,7 @@ from typing import Any, cast
 
 from ..logging.enhanced_logging_config import get_logger
 from ..services.chat_logger import chat_logger
+from ..services.nats_exceptions import NATSPublishError
 from ..services.nats_subject_manager import SubjectValidationError
 from ..services.rate_limiter import rate_limiter
 from ..services.user_manager import user_manager
@@ -362,9 +363,15 @@ class ChatService:
 
         success = await self._publish_chat_message_to_nats(chat_message, room_id)
         if not success:
-            # NATS publishing failed - this should not happen as NATS is mandatory
-            logger.error("NATS publishing failed - NATS is mandatory for chat functionality")
-            return {"success": False, "error": "Chat system temporarily unavailable"}
+            # NATS publishing failed - detailed error already logged in _publish_chat_message_to_nats
+            logger.error(
+                "NATS publishing failed - NATS is mandatory for chat functionality",
+                player_id=player_id,
+                player_name=player.name,
+                room_id=room_id,
+                message_id=chat_message.id,
+            )
+            return {"success": False, "error": "Chat system temporarily unavailable. Please try again in a moment."}
         logger.debug("=== CHAT SERVICE DEBUG: NATS publishing completed ===")
 
         chat_message.echo_sent = True
@@ -510,9 +517,15 @@ class ChatService:
         logger.debug("=== CHAT SERVICE DEBUG: About to publish message to NATS ===")
         success = await self._publish_chat_message_to_nats(chat_message, room_id)
         if not success:
-            # NATS publishing failed - this should not happen as NATS is mandatory
-            logger.error("NATS publishing failed - NATS is mandatory for chat functionality")
-            return {"success": False, "error": "Chat system temporarily unavailable"}
+            # NATS publishing failed - detailed error already logged in _publish_chat_message_to_nats
+            logger.error(
+                "NATS publishing failed - NATS is mandatory for chat functionality",
+                player_id=player_id,
+                player_name=player.name,
+                room_id=room_id,
+                message_id=chat_message.id,
+            )
+            return {"success": False, "error": "Chat system temporarily unavailable. Please try again in a moment."}
         logger.debug("=== CHAT SERVICE DEBUG: NATS publishing completed ===")
 
         chat_message.echo_sent = True
@@ -668,9 +681,14 @@ class ChatService:
         logger.debug("=== CHAT SERVICE DEBUG: About to publish global message to NATS ===")
         success = await self._publish_chat_message_to_nats(chat_message, None)  # Global messages don't have room_id
         if not success:
-            # NATS publishing failed - this should not happen as NATS is mandatory
-            logger.error("NATS publishing failed - NATS is mandatory for chat functionality")
-            return {"success": False, "error": "Chat system temporarily unavailable"}
+            # NATS publishing failed - detailed error already logged in _publish_chat_message_to_nats
+            logger.error(
+                "NATS publishing failed - NATS is mandatory for chat functionality",
+                player_id=player_id,
+                player_name=player.name,
+                message_id=chat_message.id,
+            )
+            return {"success": False, "error": "Chat system temporarily unavailable. Please try again in a moment."}
         logger.debug("=== CHAT SERVICE DEBUG: Global NATS publishing completed ===")
 
         return {"success": True, "message": chat_message.to_dict()}
@@ -786,9 +804,14 @@ class ChatService:
         logger.debug("=== CHAT SERVICE DEBUG: About to publish system message to NATS ===")
         success = await self._publish_chat_message_to_nats(chat_message, None)  # System messages don't have room_id
         if not success:
-            # NATS publishing failed - this should not happen as NATS is mandatory
-            logger.error("NATS publishing failed - NATS is mandatory for chat functionality")
-            return {"success": False, "error": "Chat system temporarily unavailable"}
+            # NATS publishing failed - detailed error already logged in _publish_chat_message_to_nats
+            logger.error(
+                "NATS publishing failed - NATS is mandatory for chat functionality",
+                player_id=player_id,
+                player_name=player.name,
+                message_id=chat_message.id,
+            )
+            return {"success": False, "error": "Chat system temporarily unavailable. Please try again in a moment."}
         logger.debug("=== CHAT SERVICE DEBUG: System NATS publishing completed ===")
 
         return {"success": True, "message": chat_message.to_dict()}
@@ -928,9 +951,14 @@ class ChatService:
         logger.debug("=== CHAT SERVICE DEBUG: About to publish whisper message to NATS ===")
         success = await self._publish_chat_message_to_nats(chat_message, None)  # Whisper messages don't have room_id
         if not success:
-            # NATS publishing failed - this should not happen as NATS is mandatory
-            logger.error("NATS publishing failed - NATS is mandatory for chat functionality")
-            return {"success": False, "error": "Chat system temporarily unavailable"}
+            # NATS publishing failed - detailed error already logged in _publish_chat_message_to_nats
+            logger.error(
+                "NATS publishing failed - NATS is mandatory for chat functionality",
+                sender_id=sender_id,
+                sender_name=sender_name,
+                message_id=chat_message.id,
+            )
+            return {"success": False, "error": "Chat system temporarily unavailable. Please try again in a moment."}
         logger.debug("=== CHAT SERVICE DEBUG: Whisper NATS publishing completed ===")
 
         return {"success": True, "message": chat_message.to_dict()}
@@ -1064,9 +1092,15 @@ class ChatService:
         logger.debug("=== CHAT SERVICE DEBUG: About to publish emote message to NATS ===")
         success = await self._publish_chat_message_to_nats(chat_message, room_id)
         if not success:
-            # NATS publishing failed - this should not happen as NATS is mandatory
-            logger.error("NATS publishing failed - NATS is mandatory for chat functionality")
-            return {"success": False, "error": "Chat system temporarily unavailable"}
+            # NATS publishing failed - detailed error already logged in _publish_chat_message_to_nats
+            logger.error(
+                "NATS publishing failed - NATS is mandatory for chat functionality",
+                player_id=player_id,
+                player_name=player.name,
+                room_id=room_id,
+                message_id=chat_message.id,
+            )
+            return {"success": False, "error": "Chat system temporarily unavailable. Please try again in a moment."}
         logger.debug("=== CHAT SERVICE DEBUG: NATS publishing completed ===")
 
         chat_message.echo_sent = True
@@ -1147,9 +1181,15 @@ class ChatService:
         logger.debug("=== CHAT SERVICE DEBUG: About to publish pose message to NATS ===")
         success = await self._publish_chat_message_to_nats(chat_message, room_id)
         if not success:
-            # NATS publishing failed - this should not happen as NATS is mandatory
-            logger.error("NATS publishing failed - NATS is mandatory for chat functionality")
-            return {"success": False, "error": "Chat system temporarily unavailable"}
+            # NATS publishing failed - detailed error already logged in _publish_chat_message_to_nats
+            logger.error(
+                "NATS publishing failed - NATS is mandatory for chat functionality",
+                player_id=player_id,
+                player_name=player.name,
+                room_id=room_id,
+                message_id=chat_message.id,
+            )
+            return {"success": False, "error": "Chat system temporarily unavailable. Please try again in a moment."}
         logger.debug("=== CHAT SERVICE DEBUG: NATS publishing completed ===")
 
         return {"success": True, "pose": pose.strip(), "room_id": room_id}
@@ -1314,9 +1354,15 @@ class ChatService:
         logger.debug("=== CHAT SERVICE DEBUG: About to publish predefined emote message to NATS ===")
         success = await self._publish_chat_message_to_nats(chat_message, room_id)
         if not success:
-            # NATS publishing failed - this should not happen as NATS is mandatory
-            logger.error("NATS publishing failed - NATS is mandatory for chat functionality")
-            return {"success": False, "error": "Chat system temporarily unavailable"}
+            # NATS publishing failed - detailed error already logged in _publish_chat_message_to_nats
+            logger.error(
+                "NATS publishing failed - NATS is mandatory for chat functionality",
+                player_id=player_id,
+                player_name=player.name,
+                room_id=room_id,
+                message_id=chat_message.id,
+            )
+            return {"success": False, "error": "Chat system temporarily unavailable. Please try again in a moment."}
         logger.debug("=== CHAT SERVICE DEBUG: NATS publishing completed ===")
 
         return {
@@ -1352,16 +1398,39 @@ class ChatService:
                 return False
 
             # Check if NATS service is available and connected
-            logger.debug(
-                "Checking NATS service availability",
-                nats_service_available=self.nats_service is not None,
-                nats_service_type=type(self.nats_service).__name__ if self.nats_service else None,
-                nats_connected=self.nats_service.is_connected() if self.nats_service else False,
-            )
-
-            if not self.nats_service or not self.nats_service.is_connected():
-                logger.error("NATS service not available or not connected - NATS is mandatory for chat functionality")
+            if not self.nats_service:
+                logger.error(
+                    "NATS service not available - NATS is mandatory for chat functionality",
+                    message_id=chat_message.id,
+                    room_id=room_id,
+                )
                 return False
+
+            # Check connection status before attempting publish
+            if not self.nats_service.is_connected():
+                logger.error(
+                    "NATS service not connected - NATS is mandatory for chat functionality",
+                    message_id=chat_message.id,
+                    room_id=room_id,
+                    nats_service_type=type(self.nats_service).__name__,
+                )
+                return False
+
+            # Check connection pool initialization (if available)
+            if hasattr(self.nats_service, "_pool_initialized") and not self.nats_service._pool_initialized:
+                logger.error(
+                    "NATS connection pool not initialized - cannot publish",
+                    message_id=chat_message.id,
+                    room_id=room_id,
+                )
+                return False
+
+            logger.debug(
+                "NATS service available and connected",
+                nats_service_type=type(self.nats_service).__name__,
+                nats_connected=True,
+                message_id=chat_message.id,
+            )
 
             # Create message data for NATS
             message_data = {
@@ -1392,30 +1461,39 @@ class ChatService:
             )
 
             # Publish to NATS
-            success = await self.nats_service.publish(subject, message_data)
-            if success:
-                logger.info(
-                    "Chat message published to NATS successfully",
-                    message_id=chat_message.id,
-                    subject=subject,
-                    sender_id=chat_message.sender_id,
-                    room_id=room_id,
-                )
-            else:
-                logger.error(
-                    "Failed to publish chat message to NATS",
-                    message_id=chat_message.id,
-                    subject=subject,
-                )
+            # Note: publish() returns None on success, raises NATSPublishError on failure
+            await self.nats_service.publish(subject, message_data)
+            logger.info(
+                "Chat message published to NATS successfully",
+                message_id=chat_message.id,
+                subject=subject,
+                sender_id=chat_message.sender_id,
+                room_id=room_id,
+            )
+            return True
 
-            return bool(success)
+        except NATSPublishError as e:
+            # NATS publish failed with specific error
+            logger.error(
+                "Failed to publish chat message to NATS",
+                error=str(e),
+                error_type=type(e).__name__,
+                message_id=chat_message.id,
+                subject=getattr(e, "subject", None),
+                room_id=room_id,
+                original_error=str(getattr(e, "original_error", None)) if hasattr(e, "original_error") else None,
+            )
+            return False
 
         except Exception as e:
+            # Unexpected error during publish
             logger.error(
-                "Error publishing chat message to NATS",
+                "Unexpected error publishing chat message to NATS",
                 error=str(e),
+                error_type=type(e).__name__,
                 message_id=chat_message.id,
                 room_id=room_id,
+                exc_info=True,
             )
             return False
 
