@@ -270,23 +270,21 @@ Executing the modular E2E test suite per `@.cursor/rules/run-multiplayer-playboo
 
 ### Findings
 
-#### 1. Muting System Not Blocking Emotes 🔴 **CRITICAL BUG**
+#### 1. Muting System Not Blocking Emotes 🔴 **FIXED**
 
 - **Issue**: AW successfully muted Ithaqua, but AW still saw Ithaqua's emote message ("Ithaqua dances like no one is watching.")
 - **Expected**: AW should NOT see Ithaqua's emote when Ithaqua is muted
-- **Root Cause**: **INVESTIGATING** - Mute filtering logic exists but may not be working correctly
+- **Root Cause**: **IDENTIFIED AND FIXED** - Emotes were being broadcast directly through `connection_manager.broadcast_to_room()` instead of going through the NATS message handler's `_broadcast_to_room_with_filtering()` which includes mute filtering
   - **Code Flow Analysis**:
-    1. Emotes use `RoomBasedChannelStrategy` which calls `_broadcast_to_room_with_filtering` ✅
-    2. `_broadcast_to_room_with_filtering` checks `should_apply_mute` (emote is in `MUTE_SENSITIVE_CHANNELS`) ✅
-    3. Calls `_is_player_muted_by_receiver_with_user_manager` which loads mute data and calls `is_player_muted` ✅
-    4. `is_player_muted` normalizes IDs to UUIDs and checks `_player_mutes` dictionary ✅
-  - **Potential Issues**:
-    1. Mute data may not be loaded before the check (async loading timing issue)
-    2. Player IDs may not match between mute storage and room subscriptions (string vs UUID conversion)
-    3. Mute data may not be persisted correctly when mute command is executed
-    4. Debug check on line 1061 uses string `receiver_id` to check UUID-keyed dictionary (always False, but only for debug)
+    1. `handle_emote_command` returned a direct broadcast result: `{"result": self_message, "broadcast": other_message, "broadcast_type": "emote"}`
+    2. The websocket handler at line 665 in `websocket_handler.py` checked for `result.get("broadcast")` and broadcast directly via `connection_manager.broadcast_to_room()`
+    3. This bypassed the NATS message handler entirely, skipping all mute filtering logic
+    4. Unlike `say` and `local` commands which use `chat_service.send_*_message()` to publish to NATS, emotes were using a direct broadcast path
 - **Impact**: High - muting system core functionality broken, players cannot effectively mute others
-- **Remediation**: **IN PROGRESS**
+- **Remediation**: **FIXED**
+  - **Fix Applied**: Modified `handle_emote_command` to use `chat_service.send_emote_message()` instead of returning a direct broadcast result
+    - Emotes now go through the NATS path with mute filtering, just like `say` and `local` commands
+    - This ensures emotes use `_broadcast_to_room_with_filtering()` which includes mute filtering logic
   - **Unit Test Created**: `server/tests/unit/realtime/test_emote_mute_bug_reproduction.py`
     - Test reproduces the exact bug scenario: AW mutes Ithaqua, Ithaqua sends emote, AW should NOT receive it
     - Uses real UserManager instance (not mocked) to catch actual implementation bugs
@@ -297,10 +295,11 @@ Executing the modular E2E test suite per `@.cursor/rules/run-multiplayer-playboo
     - `is_player_muted` (UserManager): Logs mute data loading, lookup, and result
     - All logs prefixed with `=== MUTE FILTERING:` or `=== USER MANAGER:` for easy filtering
   - **Files Modified**:
-    - `server/realtime/nats_message_handler.py` - Added detailed logging to mute filtering methods
-    - `server/services/user_manager.py` - Added detailed logging to `is_player_muted` method
+    - `server/commands/utility_commands.py` - Modified `handle_emote_command` to use `chat_service.send_emote_message()` instead of direct broadcast
+    - `server/realtime/nats_message_handler.py` - Added detailed logging to mute filtering methods (for future debugging)
+    - `server/services/user_manager.py` - Added detailed logging to `is_player_muted` method (for future debugging)
     - `server/tests/unit/realtime/test_emote_mute_bug_reproduction.py` - New test file
-  - **Status**: Test and logging in place, ready for debugging
+  - **Status**: Fix applied, requires testing
 
 ### Test Results (Partial)
 

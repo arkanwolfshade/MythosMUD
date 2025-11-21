@@ -589,28 +589,68 @@ async def handle_emote_command(
 
     logger.debug("Player performing emote", player=player_name)
 
+    # Get chat service from app state (same pattern as say/local commands)
+    app = request.app if request else None
+    state = getattr(app, "state", None) if app else None
+    chat_service = getattr(state, "chat_service", None) if state else None
+    player_service = getattr(state, "player_service", None) if state else None
+
+    if not chat_service or not player_service:
+        logger.warning("Chat service or player service not available for emote command", player=player_name)
+        return {"result": "Emote functionality is not available."}
+
     try:
-        # Import and use the emote service
+        # Get player object to find current room and get player ID
+        player_obj = await player_service.resolve_player_name(player_name)
+        if not player_obj:
+            return {"result": "Player not found."}
+
+        # Get the player's current room
+        current_room_id = getattr(player_obj, "current_room_id", None)
+        if not current_room_id:
+            return {"result": "You are not in a room."}
+
+        # Use the player object's ID instead of the username
+        player_id = getattr(player_obj, "id", None) or getattr(player_obj, "player_id", None)
+        if not player_id:
+            return {"result": "Player ID not found."}
+
+        # Import and use the emote service to format the emote message
         from ..game.emote_service import EmoteService
 
         emote_service = EmoteService()
 
-        # Check if this is a predefined emote
+        # Format the emote action based on whether it's a predefined emote or custom
         if emote_service.is_emote_alias(action):
-            # Get the emote definition and format messages
-            self_message, other_message = emote_service.format_emote_messages(action, player_name)
-
-            # Return both messages for broadcasting
-            logger.debug("Predefined emote executed", player=player_name, emote=action, message=self_message)
-            return {"result": self_message, "broadcast": other_message, "broadcast_type": "emote"}
+            # Predefined emote - format messages
+            self_message, _ = emote_service.format_emote_messages(action, player_name)
+            # Use the formatted other_message as the emote action for chat service
+            _, formatted_action = emote_service.format_emote_messages(action, player_name)
+            # Extract just the action part (e.g., "dances like no one is watching." from "Ithaqua dances like no one is watching.")
+            # Remove player name prefix if present
+            if formatted_action.startswith(f"{player_name} "):
+                formatted_action = formatted_action[len(f"{player_name} "):]
+            action = formatted_action
         else:
             # Custom emote - use the action as provided
             logger.debug("Custom emote executed")
-            return {
-                "result": f"{player_name} {action}",
-                "broadcast": f"{player_name} {action}",
-                "broadcast_type": "emote",
-            }
+            self_message = f"{player_name} {action}"
+
+        # Use the chat service to send the emote message
+        # This will handle NATS publishing and proper broadcasting with mute filtering
+        result = await chat_service.send_emote_message(player_id, action)
+
+        if result.get("success"):
+            logger.info(
+                f"Emote message sent successfully for {player_name}",
+                room=current_room_id,
+                message_id=result.get("message", {}).get("id"),
+            )
+            return {"result": self_message}
+        else:
+            error_msg = result.get("error", "Unknown error")
+            logger.warning("Emote command failed", player=player_name, error=error_msg)
+            return {"result": f"Error sending emote: {error_msg}"}
 
     except Exception as e:
         import traceback
@@ -618,5 +658,4 @@ async def handle_emote_command(
         logger.error(
             "Emote command error", player=player_name, action=action, error=str(e), traceback=traceback.format_exc()
         )
-        # Fallback to simple emote if emote service fails
-        return {"result": f"{player_name} {action}"}
+        return {"result": f"Error sending emote: {str(e)}"}
