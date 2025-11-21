@@ -11,6 +11,7 @@ Following pytest best practices:
 - Clean setup/teardown via fixtures
 """
 
+import json
 import uuid
 from datetime import UTC, datetime
 from unittest.mock import AsyncMock, Mock
@@ -109,6 +110,10 @@ class TestPlayerAPIIntegration:
         """Sample player data for testing."""
         player_uuid = uuid.uuid4()
         user_uuid = uuid.uuid4()
+        # Parse JSON string to dict - MutableDict.as_mutable(JSONB) requires dict, not string
+        stats_dict = json.loads(
+            '{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100, "position": "standing"}'
+        )
         return Player(
             player_id=str(player_uuid),
             user_id=str(user_uuid),
@@ -116,7 +121,7 @@ class TestPlayerAPIIntegration:
             current_room_id="earth_arkhamcity_northside_intersection_derby_high",
             experience_points=0,
             level=1,
-            stats='{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100, "position": "standing"}',
+            stats=stats_dict,
             inventory="[]",
             status_effects="[]",
             is_admin=0,

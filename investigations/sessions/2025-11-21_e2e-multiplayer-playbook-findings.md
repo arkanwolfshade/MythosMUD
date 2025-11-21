@@ -309,9 +309,26 @@ Executing the modular E2E test suite per `@.cursor/rules/run-multiplayer-playboo
 - 🔴 **BUG**: AW saw Ithaqua's emote message despite muting (should be blocked)
 - ⚠️ **IN PROGRESS**: Testing other communication channels (say messages) to verify muting only affects emotes
 
-### Remediation Priority
+        #### 2. WebSocket Connection Instability 🔴 **FIXED**
 
-1. **HIGH**: 🔴 **CRITICAL** - Fix muting system to properly block emotes from muted players
+        - **Issue**: WebSocket connection experiencing repeated errors: "WebSocket is not connected. Need to call 'accept' first."
+        - **Symptoms**:
+          - Repeated RuntimeError exceptions in WebSocket message loop
+          - Infinite loop of error messages in logs
+          - Connection appears unstable but continues processing (wasting resources)
+        - **Root Cause**: When `await websocket.receive_text()` raises `RuntimeError: WebSocket is not connected`, it's caught by general `except Exception` handler which tries to send error response (fails), then loop continues causing repeated errors
+        - **Impact**: High - causes log spam, wastes resources, may mask other connection issues
+        - **Remediation**: **FIXED**
+          - Added specific `RuntimeError` handler to detect WebSocket connection errors
+          - Break out of message loop when WebSocket is not connected (same as WebSocketDisconnect)
+          - Also break when send fails due to closed WebSocket
+          - **File**: `server/realtime/websocket_handler.py`
+          - **Status**: Fix applied, requires testing
+
+        ### Remediation Priority
+
+        1. **HIGH**: 🔴 **CRITICAL** - Fix muting system to properly block emotes from muted players
+        2. **HIGH**: ✅ **FIXED** - WebSocket connection instability causing log spam and resource waste
 
 ## Next Steps
 

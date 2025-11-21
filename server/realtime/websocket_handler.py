@@ -497,6 +497,21 @@ async def handle_websocket_connection(
                 )
                 break
 
+            except RuntimeError as e:
+                # Check if this is a WebSocket connection error
+                error_message = str(e)
+                if "WebSocket is not connected" in error_message or 'Need to call "accept" first' in error_message:
+                    logger.warning(
+                        "WebSocket connection lost (not connected)",
+                        player_id=player_id_str,
+                        connection_id=connection_id,
+                        error=error_message,
+                    )
+                    # Break out of loop - WebSocket is no longer valid
+                    break
+                # For other RuntimeErrors, fall through to general exception handler
+                raise
+
             except Exception as e:
                 # Enhanced error context for debugging
                 logger.error(
@@ -520,13 +535,28 @@ async def handle_websocket_connection(
                     )
                     await websocket.send_json(error_response)
                 except Exception as send_error:
-                    # If we can't send error response, log and continue
+                    # If we can't send error response, check if WebSocket is closed
+                    send_error_msg = str(send_error)
+                    if (
+                        "WebSocket is not connected" in send_error_msg
+                        or "close message has been sent" in send_error_msg
+                    ):
+                        logger.warning(
+                            "WebSocket closed, breaking message loop",
+                            player_id=player_id_str,
+                            connection_id=connection_id,
+                            original_error=str(e),
+                            send_error=send_error_msg,
+                        )
+                        # WebSocket is closed, break out of loop
+                        break
+                    # For other send errors, log and continue (original behavior)
                     logger.error(
                         "Failed to send error response to client",
                         player_id=player_id_str,
                         connection_id=connection_id,
                         original_error=str(e),
-                        send_error=str(send_error),
+                        send_error=send_error_msg,
                     )
 
     finally:

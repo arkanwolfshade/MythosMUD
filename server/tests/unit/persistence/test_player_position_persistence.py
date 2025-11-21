@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from datetime import UTC, datetime
 
 import pytest
@@ -164,11 +165,13 @@ async def test_missing_position_defaults_to_standing_on_load(async_session_facto
         user_id = await initialize_database(session)
 
         # Insert legacy stats without a position field using PostgreSQL syntax
-        legacy_stats = (
+        legacy_stats_json = (
             '{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, '
             '"wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, '
             '"fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100}'
         )
+        # Parse JSON string to dict - MutableDict.as_mutable(JSONB) requires dict, not string
+        legacy_stats = json.loads(legacy_stats_json)
 
         # Use proper UUID format for player_id
         import uuid as uuid_module
@@ -182,9 +185,9 @@ async def test_missing_position_defaults_to_standing_on_load(async_session_facto
             current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
         )
         # Set legacy stats directly
-        # Testing legacy behavior where stats is assigned as string
-        # SQLAlchemy JSONB column accepts dict at runtime
-        player.stats = legacy_stats  # type: ignore[assignment,unused-ignore]
+        # Testing legacy behavior where stats is assigned as dict (parsed from JSON string)
+        # SQLAlchemy JSONB column with MutableDict requires dict at runtime
+        player.stats = legacy_stats
         session.add(player)
         await session.commit()
 

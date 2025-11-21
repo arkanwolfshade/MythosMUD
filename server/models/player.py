@@ -10,7 +10,7 @@ import uuid
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
 
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text, text
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text, event, text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.ext.mutable import MutableDict, MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -335,3 +335,43 @@ class PlayerChannelPreferences(Base):
     )
 
     player: Mapped["Player"] = relationship("Player", back_populates="channel_preferences")
+
+
+# Event listener to handle legacy string stats in database
+# Converts JSON strings to dicts before MutableDict coercion
+# As documented in "Legacy Data Migration Patterns" - Dr. Armitage, 1931
+@event.listens_for(Player, "load")
+def _convert_legacy_stats_string(target: Player, context: Any) -> None:
+    """
+    Convert legacy string stats to dict during SQLAlchemy load event.
+
+    This handles legacy data where stats were stored as JSON strings
+    instead of JSONB dicts. The conversion happens before MutableDict
+    tries to coerce the value, preventing ValueError exceptions.
+
+    Args:
+        target: The Player instance being loaded
+        context: SQLAlchemy load context
+    """
+    if isinstance(target.stats, str):  # type: ignore[unreachable]
+        try:  # type: ignore[unreachable]
+            # Parse JSON string to dict
+            # MutableDict will automatically wrap this dict
+            target.stats = json.loads(target.stats)
+        except (json.JSONDecodeError, TypeError):
+            # If parsing fails, use default stats
+            target.stats = {
+                "strength": 10,
+                "dexterity": 10,
+                "constitution": 10,
+                "intelligence": 10,
+                "wisdom": 10,
+                "charisma": 10,
+                "sanity": 100,
+                "occult_knowledge": 0,
+                "fear": 0,
+                "corruption": 0,
+                "cult_affiliation": 0,
+                "current_health": 100,
+                "position": "standing",
+            }
