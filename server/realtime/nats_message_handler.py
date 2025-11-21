@@ -691,13 +691,39 @@ class NATSMessageHandler:
                 is_muted = False
 
                 if should_apply_mute:
+                    logger.info(
+                        "=== MUTE FILTERING: Starting mute check ===",
+                        room_id=room_id,
+                        sender_id=sender_id,
+                        sender_name=chat_event_data.get("sender_name", "unknown"),
+                        receiver_id=player_id,
+                        channel=channel,
+                        should_apply_mute=should_apply_mute,
+                    )
                     patched_mute_checker = getattr(self, "_is_player_muted_by_receiver", None)
                     if isinstance(patched_mute_checker, Mock):
                         is_muted = patched_mute_checker(player_id, sender_id)
+                        logger.info(
+                            "=== MUTE FILTERING: Using patched mute checker (test mode) ===",
+                            receiver_id=player_id,
+                            sender_id=sender_id,
+                            is_muted=is_muted,
+                        )
                     else:
                         # Check if the receiving player has muted the sender using the shared UserManager instance
+                        logger.info(
+                            "=== MUTE FILTERING: Calling _is_player_muted_by_receiver_with_user_manager ===",
+                            receiver_id=player_id,
+                            sender_id=sender_id,
+                        )
                         is_muted = await self._is_player_muted_by_receiver_with_user_manager(
                             user_manager, player_id, sender_id
+                        )
+                        logger.info(
+                            "=== MUTE FILTERING: Mute check completed ===",
+                            receiver_id=player_id,
+                            sender_id=sender_id,
+                            is_muted=is_muted,
                         )
                     logger.debug(
                         "=== BROADCAST FILTERING DEBUG: Mute check result ===",
@@ -710,11 +736,12 @@ class NATSMessageHandler:
 
                     if channel in {"emote", "pose"}:
                         logger.info(
-                            "Emote mute filtering evaluation",
+                            "=== EMOTE MUTE FILTERING: Evaluation result ===",
                             receiver_id=player_id,
                             sender_id=sender_id,
                             is_muted=is_muted,
                             channel=channel,
+                            will_filter=should_apply_mute and is_muted,
                         )
                 else:
                     logger.debug(
@@ -726,13 +753,23 @@ class NATSMessageHandler:
                     )
 
                 if should_apply_mute and is_muted:
-                    logger.debug(
-                        "Filtered out message due to mute",
+                    logger.info(
+                        "=== MUTE FILTERING: Message FILTERED OUT due to mute ===",
                         receiver_id=player_id,
                         sender_id=sender_id,
                         channel=channel,
+                        room_id=room_id,
                     )
                     continue
+                else:
+                    logger.info(
+                        "=== MUTE FILTERING: Message ALLOWED (not muted or mute check skipped) ===",
+                        receiver_id=player_id,
+                        sender_id=sender_id,
+                        channel=channel,
+                        is_muted=is_muted,
+                        should_apply_mute=should_apply_mute,
+                    )
 
                 logger.debug(
                     "=== BROADCAST FILTERING DEBUG: Player passed all filters ===",
@@ -964,17 +1001,22 @@ class NATSMessageHandler:
                 )
 
             # Check if receiver has muted sender (personal mute)
+            logger.info(
+                "=== MUTE FILTERING: Checking personal mute ===",
+                receiver_id=receiver_id,
+                sender_id=sender_id,
+            )
             is_personally_muted = user_manager.is_player_muted(receiver_id, sender_id)
-            logger.debug(
-                "=== MUTE FILTERING DEBUG: Personal mute check result ===",
+            logger.info(
+                "=== MUTE FILTERING: Personal mute check result ===",
                 receiver_id=receiver_id,
                 sender_id=sender_id,
                 is_personally_muted=is_personally_muted,
             )
 
             if is_personally_muted:
-                logger.debug(
-                    "Player muted by receiver (personal mute)",
+                logger.info(
+                    "=== MUTE FILTERING: Player IS MUTED (personal mute) ===",
                     receiver_id=receiver_id,
                     sender_id=sender_id,
                 )
@@ -982,11 +1024,16 @@ class NATSMessageHandler:
 
             # Load global mutes and check if sender is globally muted by anyone
             # Only apply global mute if receiver is not an admin (admins can see globally muted players)
+            logger.info(
+                "=== MUTE FILTERING: Checking global mute ===",
+                receiver_id=receiver_id,
+                sender_id=sender_id,
+            )
             is_globally_muted = user_manager.is_player_muted_by_others(sender_id)
             is_receiver_admin = user_manager.is_admin(receiver_id)
 
-            logger.debug(
-                "=== MUTE FILTERING DEBUG: Global mute check ===",
+            logger.info(
+                "=== MUTE FILTERING: Global mute check result ===",
                 receiver_id=receiver_id,
                 sender_id=sender_id,
                 is_globally_muted=is_globally_muted,
@@ -994,15 +1041,15 @@ class NATSMessageHandler:
             )
 
             if is_globally_muted and not is_receiver_admin:
-                logger.debug(
-                    "Player muted by receiver (global mute)",
+                logger.info(
+                    "=== MUTE FILTERING: Player IS MUTED (global mute) ===",
                     receiver_id=receiver_id,
                     sender_id=sender_id,
                 )
                 return True
 
-            logger.debug(
-                "=== MUTE FILTERING DEBUG: No mute found, allowing message ===",
+            logger.info(
+                "=== MUTE FILTERING: Player NOT MUTED by receiver ===",
                 receiver_id=receiver_id,
                 sender_id=sender_id,
             )
@@ -1124,8 +1171,8 @@ class NATSMessageHandler:
                 )
                 return True
 
-            logger.debug(
-                "Player not muted by receiver",
+            logger.info(
+                "=== MUTE FILTERING: Player NOT MUTED by receiver ===",
                 receiver_id=receiver_id,
                 sender_id=sender_id,
             )

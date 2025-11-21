@@ -672,23 +672,77 @@ class UserManager:
             player_id_uuid = self._normalize_to_uuid(player_id)
             target_id_uuid = self._normalize_to_uuid(target_id)
 
+            logger.info(
+                "=== USER MANAGER: is_player_muted called ===",
+                player_id=str(player_id_uuid),
+                target_id=str(target_id_uuid),
+                player_id_type=type(player_id).__name__,
+                target_id_type=type(target_id).__name__,
+            )
+
             # Load player's mute data to ensure it's available
-            self.load_player_mutes(player_id_uuid)
+            load_result = self.load_player_mutes(player_id_uuid)
+            logger.info(
+                "=== USER MANAGER: Mute data load result ===",
+                player_id=str(player_id_uuid),
+                load_result=load_result,
+                has_mute_data=player_id_uuid in self._player_mutes,
+            )
 
             # Check if mute exists and is not expired
-            if player_id_uuid in self._player_mutes and target_id_uuid in self._player_mutes[player_id_uuid]:
-                mute_info = self._player_mutes[player_id_uuid][target_id_uuid]
+            if player_id_uuid in self._player_mutes:
+                muted_players = list(self._player_mutes[player_id_uuid].keys())
+                logger.info(
+                    "=== USER MANAGER: Player's muted players list ===",
+                    player_id=str(player_id_uuid),
+                    muted_players=[str(p) for p in muted_players],
+                    target_id=str(target_id_uuid),
+                    target_in_list=target_id_uuid in self._player_mutes[player_id_uuid],
+                )
 
-                # Check if mute is expired
-                if mute_info["expires_at"] and mute_info["expires_at"] < datetime.now(UTC):
-                    # Remove expired mute
-                    del self._player_mutes[player_id_uuid][target_id_uuid]
-                    if not self._player_mutes[player_id_uuid]:
-                        del self._player_mutes[player_id_uuid]
-                    return False
+                if target_id_uuid in self._player_mutes[player_id_uuid]:
+                    mute_info = self._player_mutes[player_id_uuid][target_id_uuid]
 
-                return True
+                    # Check if mute is expired
+                    if mute_info["expires_at"] and mute_info["expires_at"] < datetime.now(UTC):
+                        logger.info(
+                            "=== USER MANAGER: Mute is EXPIRED ===",
+                            player_id=str(player_id_uuid),
+                            target_id=str(target_id_uuid),
+                            expires_at=mute_info["expires_at"],
+                        )
+                        # Remove expired mute
+                        del self._player_mutes[player_id_uuid][target_id_uuid]
+                        if not self._player_mutes[player_id_uuid]:
+                            del self._player_mutes[player_id_uuid]
+                        return False
 
+                    logger.info(
+                        "=== USER MANAGER: Mute EXISTS and is VALID ===",
+                        player_id=str(player_id_uuid),
+                        target_id=str(target_id_uuid),
+                        mute_info=mute_info,
+                    )
+                    return True
+                else:
+                    logger.info(
+                        "=== USER MANAGER: Target NOT in muted players list ===",
+                        player_id=str(player_id_uuid),
+                        target_id=str(target_id_uuid),
+                        muted_players=[str(p) for p in muted_players],
+                    )
+            else:
+                logger.info(
+                    "=== USER MANAGER: Player has NO mute data loaded ===",
+                    player_id=str(player_id_uuid),
+                    target_id=str(target_id_uuid),
+                )
+
+            logger.info(
+                "=== USER MANAGER: Returning False (not muted) ===",
+                player_id=str(player_id_uuid),
+                target_id=str(target_id_uuid),
+            )
             return False
 
         except Exception as e:

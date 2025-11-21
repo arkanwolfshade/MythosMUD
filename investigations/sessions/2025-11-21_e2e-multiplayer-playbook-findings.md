@@ -264,11 +264,61 @@ Executing the modular E2E test suite per `@.cursor/rules/run-multiplayer-playboo
 
 **Conclusion**: All SSE connection timeout fixes are working correctly. The connection remains stable during movement commands, heartbeat tracking is functioning, and the connection health check successfully distinguishes real connection loss from temporary hiccups.
 
+## Scenario 04: Muting System and Emotes
+
+### Status: ⚠️ **IN PROGRESS** (Critical Bug Found)
+
+### Findings
+
+#### 1. Muting System Not Blocking Emotes 🔴 **CRITICAL BUG**
+
+- **Issue**: AW successfully muted Ithaqua, but AW still saw Ithaqua's emote message ("Ithaqua dances like no one is watching.")
+- **Expected**: AW should NOT see Ithaqua's emote when Ithaqua is muted
+- **Root Cause**: **INVESTIGATING** - Mute filtering logic exists but may not be working correctly
+  - **Code Flow Analysis**:
+    1. Emotes use `RoomBasedChannelStrategy` which calls `_broadcast_to_room_with_filtering` ✅
+    2. `_broadcast_to_room_with_filtering` checks `should_apply_mute` (emote is in `MUTE_SENSITIVE_CHANNELS`) ✅
+    3. Calls `_is_player_muted_by_receiver_with_user_manager` which loads mute data and calls `is_player_muted` ✅
+    4. `is_player_muted` normalizes IDs to UUIDs and checks `_player_mutes` dictionary ✅
+  - **Potential Issues**:
+    1. Mute data may not be loaded before the check (async loading timing issue)
+    2. Player IDs may not match between mute storage and room subscriptions (string vs UUID conversion)
+    3. Mute data may not be persisted correctly when mute command is executed
+    4. Debug check on line 1061 uses string `receiver_id` to check UUID-keyed dictionary (always False, but only for debug)
+- **Impact**: High - muting system core functionality broken, players cannot effectively mute others
+- **Remediation**: **IN PROGRESS**
+  - **Unit Test Created**: `server/tests/unit/realtime/test_emote_mute_bug_reproduction.py`
+    - Test reproduces the exact bug scenario: AW mutes Ithaqua, Ithaqua sends emote, AW should NOT receive it
+    - Uses real UserManager instance (not mocked) to catch actual implementation bugs
+    - Includes positive test cases (unmuted, after unmute) to verify correct behavior
+  - **Detailed Logging Added**: Comprehensive INFO-level logging throughout mute check process
+    - `_broadcast_to_room_with_filtering`: Logs mute check start, result, and filtering decision
+    - `_is_player_muted_by_receiver_with_user_manager`: Logs personal and global mute checks
+    - `is_player_muted` (UserManager): Logs mute data loading, lookup, and result
+    - All logs prefixed with `=== MUTE FILTERING:` or `=== USER MANAGER:` for easy filtering
+  - **Files Modified**:
+    - `server/realtime/nats_message_handler.py` - Added detailed logging to mute filtering methods
+    - `server/services/user_manager.py` - Added detailed logging to `is_player_muted` method
+    - `server/tests/unit/realtime/test_emote_mute_bug_reproduction.py` - New test file
+  - **Status**: Test and logging in place, ready for debugging
+
+### Test Results (Partial)
+
+- ✅ AW successfully muted Ithaqua - received confirmation: "You have muted Ithaqua permanently."
+- ✅ Ithaqua successfully used dance emote - saw own confirmation: "You dance like no one is watching."
+- 🔴 **BUG**: AW saw Ithaqua's emote message despite muting (should be blocked)
+- ⚠️ **IN PROGRESS**: Testing other communication channels (say messages) to verify muting only affects emotes
+
+### Remediation Priority
+
+1. **HIGH**: 🔴 **CRITICAL** - Fix muting system to properly block emotes from muted players
+
 ## Next Steps
 
 1. ✅ **COMPLETED**: Fixed session loss bug - modified disconnect handler to wait for reconnection attempts
 2. ✅ **COMPLETED**: Test the fix by re-running scenario-01 - fix verified working
 3. ✅ **COMPLETED**: Scenario-02 completed successfully - clean game state verified
 4. ✅ **COMPLETED**: Scenario-03 completed successfully - connection stability fixes verified working
-5. **NEXT**: Continue with remaining scenarios (04-21) - connection stability issues resolved
-6. Document additional findings as scenarios execute
+5. ⚠️ **IN PROGRESS**: Scenario-04 - muting system bug found, continuing scenario to verify other communication
+6. **NEXT**: Investigate and fix muting system emote filtering
+7. Document additional findings as scenarios execute
