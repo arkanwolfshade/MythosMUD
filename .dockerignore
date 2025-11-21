@@ -23,4 +23,3 @@ client/test-results/
 client/coverage/
 client/.vite/
 *.log
-*.sqlite

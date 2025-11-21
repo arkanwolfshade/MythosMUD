@@ -194,7 +194,6 @@ no_implicit_reexport = false  # Low priority for now
 
 # Performance optimizations (best practices)
 cache_dir = ".mypy_cache"
-sqlite_cache = true
 namespace_packages = false  # Changed: server is not a namespace package
 explicit_package_bases = false  # Changed: not using explicit package bases
 

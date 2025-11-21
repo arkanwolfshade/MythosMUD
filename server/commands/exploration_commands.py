@@ -203,6 +203,18 @@ async def handle_go_command(
         logger.warning("Go command failed - current room not found", player=player_name, room_id=room_id)
         return {"result": "You can't go that way"}
 
+    # Ensure room ID consistency - use room object's ID if it differs from player's current_room_id
+    # This handles cases where room IDs might be stored in different formats
+    if room.id != room_id:
+        logger.warning(
+            "Room ID mismatch detected",
+            player=player_name,
+            player_room_id=room_id,
+            room_object_id=room.id,
+        )
+        # Use the room object's ID for consistency
+        room_id = room.id
+
     # Enforce posture requirements before attempting movement
     position = "standing"
     if hasattr(player, "get_stats"):
@@ -229,9 +241,39 @@ async def handle_go_command(
         return {"result": "You need to stand up before moving."}
 
     exits = room.exits
+    # Ensure exits is a dictionary and not None
+    if not exits:
+        exits = {}
+        logger.warning(
+            "Room has no exits dictionary",
+            player=player_name,
+            room_id=room_id,
+            room_object_id=room.id,
+        )
+
+    # Debug logging to diagnose movement bug
+    logger.info(
+        "DEBUG: Movement attempt",
+        player=player_name,
+        player_current_room_id=player.current_room_id,
+        room_object_id=room.id,
+        room_id_used=room_id,
+        direction=direction,
+        exits_dict=exits,
+        exits_dict_keys=list(exits.keys()) if exits else [],
+        exits_dict_type=type(exits).__name__,
+    )
     target_room_id = exits.get(direction)
     if not target_room_id:
-        logger.debug("No exit in direction", player=player_name, direction=direction, room_id=room_id)
+        logger.warning(
+            "No exit in direction - movement blocked",
+            player=player_name,
+            direction=direction,
+            room_id=room_id,
+            room_object_id=room.id,
+            exits_dict=exits,
+            exits_dict_keys=list(exits.keys()) if exits else [],
+        )
         return {"result": "You can't go that way"}
 
     target_room = persistence.get_room(target_room_id)
