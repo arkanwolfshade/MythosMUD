@@ -145,7 +145,11 @@ export function useGameConnection(options: UseGameConnectionOptions) {
       }
     },
     onError: () => {
-      connectionState.onSSEFailed('Connection failed');
+      // BUGFIX: Only notify state machine if we were actually connected
+      // This prevents false positives during initial connection attempts
+      if (isSSEConnectedRef.current) {
+        connectionState.onSSEFailed('Connection failed');
+      }
       onErrorRef.current?.('Connection failed');
     },
     onDisconnect: () => {
@@ -174,7 +178,11 @@ export function useGameConnection(options: UseGameConnectionOptions) {
       }
     },
     onError: () => {
-      connectionState.onWSFailed('Connection failed');
+      // BUGFIX: Only notify state machine if we were actually connected
+      // This prevents false positives during initial connection attempts
+      if (isWebSocketConnectedRef.current) {
+        connectionState.onWSFailed('Connection failed');
+      }
       onErrorRef.current?.('Connection failed');
     },
     onDisconnect: () => {
@@ -204,6 +212,18 @@ export function useGameConnection(options: UseGameConnectionOptions) {
     isConnected: isWebSocketConnected,
   } = wsConnection;
 
+  // Store connection states for use in callbacks (avoid stale closures)
+  const isSSEConnectedRef = useRef(isSSEConnected);
+  const isWebSocketConnectedRef = useRef(isWebSocketConnected);
+
+  useEffect(() => {
+    isSSEConnectedRef.current = isSSEConnected;
+  }, [isSSEConnected]);
+
+  useEffect(() => {
+    isWebSocketConnectedRef.current = isWebSocketConnected;
+  }, [isWebSocketConnected]);
+
   useEffect(() => {
     if (connectionStateValue === 'sse_connected' && isWebSocketConnected) {
       // Ensure the connection state machine observes both channels as ready before enabling gameplay
@@ -213,24 +233,29 @@ export function useGameConnection(options: UseGameConnectionOptions) {
   }, [connectionState, connectionStateValue, isWebSocketConnected]);
 
   // Ensure SSE connection attempts align with state machine
+  // BUGFIX: Only trigger SSE when state machine is in connecting states, not from connect() directly
   useEffect(() => {
     if (connectionStateValue === 'connecting_sse' || connectionStateValue === 'reconnecting') {
+      logger.debug('GameConnection', 'State machine triggered SSE connection', { state: connectionStateValue });
       startSSE();
     }
   }, [connectionStateValue, startSSE]);
 
   // Ensure WebSocket connection attempts align with session state
+  // BUGFIX: Only trigger WebSocket when state machine is in connecting states, not from connect() directly
   useEffect(() => {
     if (!sessionId) {
       return;
     }
 
     if (['connecting_sse', 'connecting_ws', 'sse_connected', 'reconnecting'].includes(connectionStateValue)) {
+      logger.debug('GameConnection', 'State machine triggered WebSocket connection', { state: connectionStateValue });
       startWebSocket();
     }
   }, [connectionStateValue, sessionId, startWebSocket]);
 
   // Main connect function
+  // BUGFIX: Don't directly call startSSE/startWebSocket - let the state machine and useEffect hooks handle it
   const connect = useCallback(() => {
     const shouldStartConnection = !isConnectionEstablished && !isConnectionInProgress;
 
@@ -238,17 +263,18 @@ export function useGameConnection(options: UseGameConnectionOptions) {
       setAutoConnectPending(true);
       logger.info('GameConnection', 'Starting connection sequence');
       startConnection();
+      // State machine will trigger connecting_sse, which will trigger SSE via useEffect
     } else {
       setAutoConnectPending(false);
-      logger.debug('GameConnection', 'Connection already in progress');
+      logger.debug('GameConnection', 'Connection already in progress', {
+        isConnected: isConnectionEstablished,
+        isConnecting: isConnectionInProgress,
+        state: connectionStateValue,
+      });
     }
-
-    startSSE();
-
-    if (sessionId) {
-      startWebSocket();
-    }
-  }, [isConnectionEstablished, isConnectionInProgress, startConnection, startSSE, sessionId, startWebSocket]);
+    // REMOVED: Direct calls to startSSE() and startWebSocket() - these cause race conditions
+    // The state machine and useEffect hooks will handle connection sequencing
+  }, [isConnectionEstablished, isConnectionInProgress, startConnection, connectionStateValue]);
 
   // Main disconnect function
   const disconnect = useCallback(() => {

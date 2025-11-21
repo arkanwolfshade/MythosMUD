@@ -2077,11 +2077,14 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   }, []); // Empty dependency array - this function should never change
 
   // Memoize the disconnect handler
+  // BUGFIX: Don't immediately trigger logout on disconnect - wait to see if reconnection happens
+  // This prevents false positives when other players disconnect or during temporary connection issues
   const handleDisconnect = useCallback(() => {
     logger.info('GameTerminalWithPanels', 'Disconnected from game server');
-    // Trigger the connection loss handler
-    handleConnectionLoss();
-  }, [handleConnectionLoss]); // Include handleConnectionLoss in dependencies
+    // Don't immediately trigger logout - wait to see if reconnection happens
+    // The connection state machine will handle reconnection attempts
+    // Only trigger logout if reconnection fails (handled by connection state monitoring)
+  }, []); // Empty dependency array - this function should never change
 
   // Memoize the error handler
   const handleError = useCallback((error: string) => {
@@ -2102,8 +2105,18 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
     sendCommandRef.current = sendCommand;
   }, [sendCommand]);
 
-  // Note: Connection loss handling is now done through the handleDisconnect callback
-  // which is passed to the useGameConnection hook
+  // BUGFIX: Monitor connection state and only trigger logout if reconnection fails
+  // This prevents false positives when other players disconnect or during temporary connection issues
+  useEffect(() => {
+    // Only trigger logout if we were connected, are no longer connected, and reconnection has failed
+    if (!isConnected && !isConnecting && reconnectAttempts >= 5) {
+      logger.warn('GameTerminalWithPanels', 'All reconnection attempts failed, triggering logout');
+      handleConnectionLoss();
+    }
+  }, [isConnected, isConnecting, reconnectAttempts, handleConnectionLoss]);
+
+  // Note: Connection loss handling is now done through connection state monitoring
+  // which waits for reconnection attempts to fail before triggering logout
 
   // Connect once on mount; disconnect on unmount.
   // Important: Avoid including changing dependencies (like connect/disconnect identity or state)

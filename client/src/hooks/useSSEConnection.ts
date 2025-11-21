@@ -83,9 +83,16 @@ export function useSSEConnection(options: SSEConnectionOptions): SSEConnectionRe
       return;
     }
 
+    // Check if EventSource exists AND is actually connected (readyState 0 = CONNECTING, 1 = OPEN)
     if (eventSourceRef.current) {
-      logger.debug('SSEConnection', 'SSE already connected, skipping');
-      return;
+      const readyState = eventSourceRef.current.readyState;
+      if (readyState === EventSource.CONNECTING || readyState === EventSource.OPEN) {
+        logger.debug('SSEConnection', 'SSE already connected, skipping', { readyState });
+        return;
+      }
+      // EventSource exists but is closed - clean it up before reconnecting
+      logger.debug('SSEConnection', 'SSE exists but is closed, cleaning up before reconnect', { readyState });
+      disconnect();
     }
 
     try {

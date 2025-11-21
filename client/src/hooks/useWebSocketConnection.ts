@@ -154,9 +154,18 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
       return;
     }
 
+    // Check if WebSocket exists AND is actually connected (readyState 0 = CONNECTING, 1 = OPEN)
     if (websocketRef.current) {
-      logger.debug('WebSocketConnection', 'WebSocket already connected, skipping');
-      return;
+      const readyState = websocketRef.current.readyState;
+      if (readyState === WebSocket.CONNECTING || readyState === WebSocket.OPEN) {
+        logger.debug('WebSocketConnection', 'WebSocket already connected, skipping', { readyState });
+        return;
+      }
+      // WebSocket exists but is closed/closing - clean it up before reconnecting
+      logger.debug('WebSocketConnection', 'WebSocket exists but is closed, cleaning up before reconnect', {
+        readyState,
+      });
+      disconnect();
     }
 
     try {
@@ -233,33 +242,17 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
           onDisconnectRef.current?.();
         }
 
-        // Schedule reconnect unless disconnect was manual
-        if (!manualDisconnectRef.current) {
-          const attempt = reconnectAttemptsRef.current + 1;
-          reconnectAttemptsRef.current = attempt;
-          // Exponential backoff with jitter
-          const base = Math.min(30000, 1000 * Math.pow(2, attempt - 1));
-          const jitter = Math.floor(Math.random() * 250);
-          const delay = base + jitter;
-          logger.info('WebSocketConnection', 'Scheduling reconnect', { attempt, delay });
-          reconnectTimerRef.current = window.setTimeout(() => {
-            reconnectTimerRef.current = null;
-            // Only reconnect if still not connected and not manually disconnected
-            if (!manualDisconnectRef.current && !websocketRef.current) {
-              if (connectRef.current) {
-                connectRef.current();
-              }
-            }
-          }, delay);
-          resourceManager.registerTimer(reconnectTimerRef.current);
-        }
+        // BUGFIX: Don't schedule reconnection here - let the state machine handle it
+        // The state machine's reconnection logic is more robust and prevents conflicts
+        // The onDisconnect callback will notify the state machine, which will handle reconnection
+        logger.debug('WebSocketConnection', 'WebSocket closed, state machine will handle reconnection');
       };
     } catch (error) {
       logger.error('WebSocketConnection', 'Error creating WebSocket connection', { error });
       setLastError(error instanceof Error ? error.message : 'Unknown WebSocket error');
       onErrorRef.current?.(error as Event);
     }
-  }, [authToken, sessionId, resourceManager]);
+  }, [authToken, sessionId, resourceManager, disconnect]);
 
   useEffect(() => {
     connectRef.current = connect;
