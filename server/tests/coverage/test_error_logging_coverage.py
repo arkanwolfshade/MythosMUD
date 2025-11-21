@@ -29,7 +29,6 @@ from server.exceptions import (
     LoggedHTTPException,
     MythosMUDError,
     RateLimitError,
-    ResourceNotFoundError,
     create_error_context,
 )
 from server.exceptions import (
@@ -587,19 +586,24 @@ class TestAPIErrorLoggingIntegration:
 
     def test_api_player_deletion_error_logging(self, test_mixin, container_test_client):
         """Test error logging in player deletion API endpoint."""
+        from uuid import uuid4
+
+        # Use a valid UUID format for the path parameter
+        nonexistent_player_id = str(uuid4())
+
         with patch("server.api.players.get_current_active_user") as mock_auth:
             mock_auth.return_value = {"user_id": "test-user-id"}
 
             with patch("server.game.player_service.PlayerService.delete_player") as mock_delete_player:
-                # Arrange: Setup mock to raise error
-                mock_delete_player.side_effect = ResourceNotFoundError("Player not found")
+                # Arrange: Setup mock to return (False, "Player not found") to trigger 404
+                mock_delete_player.return_value = (False, "Player not found")
 
                 with patch("server.api.players.create_context_from_request") as mock_create_context:
                     mock_context = create_error_context(user_id="test-user-id")
                     mock_create_context.return_value = mock_context
 
-                    # Act: Make API request
-                    response = container_test_client.delete("/api/players/nonexistent-player-id")
+                    # Act: Make API request with valid UUID format
+                    response = container_test_client.delete(f"/api/players/{nonexistent_player_id}")
 
                     # Assert: Verify error response
                     assert response.status_code == 404
@@ -607,6 +611,11 @@ class TestAPIErrorLoggingIntegration:
 
     def test_api_player_retrieval_error_logging(self, test_mixin, container_test_client):
         """Test error logging in player retrieval API endpoint."""
+        from uuid import uuid4
+
+        # Use a valid UUID format for the path parameter
+        nonexistent_player_id = str(uuid4())
+
         with patch("server.api.players.get_current_active_user") as mock_auth:
             mock_auth.return_value = {"user_id": "test-user-id"}
 
@@ -618,8 +627,8 @@ class TestAPIErrorLoggingIntegration:
                     mock_context = create_error_context(user_id="test-user-id")
                     mock_create_context.return_value = mock_context
 
-                    # Act: Make API request
-                    response = container_test_client.get("/api/players/nonexistent-player-id")
+                    # Act: Make API request with valid UUID format
+                    response = container_test_client.get(f"/api/players/{nonexistent_player_id}")
 
                     # Assert: Verify error response
                     assert response.status_code == 404

@@ -7,6 +7,7 @@ and dual connection management.
 
 from typing import cast
 from unittest.mock import AsyncMock, MagicMock, Mock
+from uuid import uuid4
 
 import pytest
 from fastapi import FastAPI
@@ -59,11 +60,14 @@ class TestAPIEndpointsDualConnection:
 
     def test_get_player_connections_success(self, client, mock_connection_manager):
         """Test getting player connection information successfully."""
+        # Use valid UUID format for path parameter
+        test_player_id = str(uuid4())
+
         # Mock the connection manager
         self._set_container(client, mock_connection_manager)
         # Set up mock return values
         mock_connection_manager.get_player_presence_info.return_value = {
-            "player_id": "test_player",
+            "player_id": test_player_id,
             "is_online": True,
             "connection_types": ["websocket", "sse"],
             "total_connections": 2,
@@ -74,14 +78,14 @@ class TestAPIEndpointsDualConnection:
         mock_connection_manager.get_session_connections.return_value = ["conn1", "conn2"]
         mock_connection_manager.validate_session.return_value = True
         mock_connection_manager.check_connection_health.return_value = {
-            "player_id": "test_player",
+            "player_id": test_player_id,
             "is_healthy": True,
             "websocket_healthy": True,
             "sse_healthy": True,
         }
 
-        # Make request
-        response = client.get("/api/connections/test_player")
+        # Make request with valid UUID format
+        response = client.get(f"/api/connections/{test_player_id}")
 
         # Verify response
         assert response.status_code == 200
@@ -94,11 +98,14 @@ class TestAPIEndpointsDualConnection:
 
     def test_get_player_connections_offline_player(self, client, mock_connection_manager):
         """Test getting connection information for an offline player."""
+        # Use valid UUID format for path parameter
+        test_player_id = str(uuid4())
+
         # Mock the connection manager
         self._set_container(client, mock_connection_manager)
         # Set up mock return values for offline player
         mock_connection_manager.get_player_presence_info.return_value = {
-            "player_id": "test_player",
+            "player_id": test_player_id,
             "is_online": False,
             "connection_types": [],
             "total_connections": 0,
@@ -108,19 +115,19 @@ class TestAPIEndpointsDualConnection:
         mock_connection_manager.get_player_session.return_value = None
         mock_connection_manager.get_session_connections.return_value = []
         mock_connection_manager.check_connection_health.return_value = {
-            "player_id": "test_player",
+            "player_id": test_player_id,
             "is_healthy": False,
             "websocket_healthy": False,
             "sse_healthy": False,
         }
 
-        # Make request
-        response = client.get("/api/connections/test_player")
+        # Make request with valid UUID format
+        response = client.get(f"/api/connections/{test_player_id}")
 
         # Verify response
         assert response.status_code == 200
         data = response.json()
-        assert data["player_id"] == "test_player"
+        assert data["player_id"] == test_player_id
         assert data["presence"]["is_online"] is False
         assert data["session"]["session_id"] is None
         assert data["session"]["is_valid"] is False
@@ -128,11 +135,14 @@ class TestAPIEndpointsDualConnection:
 
     def test_handle_new_game_session_success(self, client, mock_connection_manager):
         """Test handling a new game session successfully."""
+        # Use valid UUID format for path parameter
+        test_player_id = str(uuid4())
+
         # Mock the connection manager
         self._set_container(client, mock_connection_manager)
         # Set up mock return values
         mock_connection_manager.handle_new_game_session.return_value = {
-            "player_id": "test_player",
+            "player_id": test_player_id,
             "new_session_id": "session_456",
             "previous_session_id": "session_123",
             "connections_disconnected": 2,
@@ -142,23 +152,26 @@ class TestAPIEndpointsDualConnection:
             "errors": [],
         }
 
-        # Make request
-        response = client.post("/api/connections/test_player/session", json={"session_id": "session_456"})
+        # Make request with valid UUID format
+        response = client.post(f"/api/connections/{test_player_id}/session", json={"session_id": "session_456"})
 
         # Verify response
         assert response.status_code == 200
         data = response.json()
-        assert data["player_id"] == "test_player"
+        assert data["player_id"] == test_player_id
         assert data["new_session_id"] == "session_456"
         assert data["success"] is True
         assert data["connections_disconnected"] == 2
 
     def test_handle_new_game_session_missing_session_id(self, client, mock_connection_manager):
         """Test handling new game session with missing session_id."""
+        # Use valid UUID format for path parameter
+        test_player_id = str(uuid4())
+
         # Mock the connection manager
         self._set_container(client, mock_connection_manager)
         # Make request without session_id
-        response = client.post("/api/connections/test_player/session", json={})
+        response = client.post(f"/api/connections/{test_player_id}/session", json={})
 
         # Verify response - the HTTPException is caught and re-raised as 500
         assert response.status_code == 500
@@ -167,11 +180,14 @@ class TestAPIEndpointsDualConnection:
 
     def test_handle_new_game_session_invalid_json(self, client, mock_connection_manager):
         """Test handling new game session with invalid JSON."""
+        # Use valid UUID format for path parameter
+        test_player_id = str(uuid4())
+
         # Mock the connection manager
         self._set_container(client, mock_connection_manager)
         # Make request with invalid JSON
         response = client.post(
-            "/api/connections/test_player/session",
+            f"/api/connections/{test_player_id}/session",
             content="invalid json",
             headers={"Content-Type": "application/json"},
         )
@@ -183,11 +199,14 @@ class TestAPIEndpointsDualConnection:
 
     def test_api_endpoint_backward_compatibility(self, client, mock_connection_manager):
         """Test that API endpoints maintain backward compatibility."""
+        # Use valid UUID format for path parameter
+        test_player_id = str(uuid4())
+
         # Mock the connection manager
         self._set_container(client, mock_connection_manager)
         # Test that endpoints work without session_id parameter
         mock_connection_manager.get_player_presence_info.return_value = {
-            "player_id": "test_player",
+            "player_id": test_player_id,
             "is_online": True,
             "connection_types": ["websocket"],
             "total_connections": 1,
@@ -197,28 +216,31 @@ class TestAPIEndpointsDualConnection:
         mock_connection_manager.get_player_session.return_value = None
         mock_connection_manager.get_session_connections.return_value = []
         mock_connection_manager.check_connection_health.return_value = {
-            "player_id": "test_player",
+            "player_id": test_player_id,
             "is_healthy": True,
             "websocket_healthy": True,
             "sse_healthy": False,
         }
 
         # Make request without session_id
-        response = client.get("/api/connections/test_player")
+        response = client.get(f"/api/connections/{test_player_id}")
 
         # Verify response still works
         assert response.status_code == 200
         data = response.json()
-        assert data["player_id"] == "test_player"
+        assert data["player_id"] == test_player_id
         assert data["presence"]["is_online"] is True
 
     def test_connection_metadata_in_responses(self, client, mock_connection_manager):
         """Test that API responses include comprehensive connection metadata."""
+        # Use valid UUID format for path parameter
+        test_player_id = str(uuid4())
+
         # Mock the connection manager
         self._set_container(client, mock_connection_manager)
         # Set up mock return values with comprehensive metadata
         mock_connection_manager.get_player_presence_info.return_value = {
-            "player_id": "test_player",
+            "player_id": test_player_id,
             "is_online": True,
             "connection_types": ["websocket", "sse"],
             "total_connections": 2,
@@ -234,7 +256,7 @@ class TestAPIEndpointsDualConnection:
         mock_connection_manager.get_session_connections.return_value = ["conn1", "conn2"]
         mock_connection_manager.validate_session.return_value = True
         mock_connection_manager.check_connection_health.return_value = {
-            "player_id": "test_player",
+            "player_id": test_player_id,
             "is_healthy": True,
             "websocket_healthy": True,
             "sse_healthy": True,
@@ -244,8 +266,8 @@ class TestAPIEndpointsDualConnection:
             },
         }
 
-        # Make request
-        response = client.get("/api/connections/test_player")
+        # Make request with valid UUID format
+        response = client.get(f"/api/connections/{test_player_id}")
 
         # Verify response includes comprehensive metadata
         assert response.status_code == 200

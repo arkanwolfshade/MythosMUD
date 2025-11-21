@@ -139,7 +139,20 @@ class TestCommunicationCommands:
     async def test_process_command_emote_no_persistence(self):
         """Test emote command with no persistence layer."""
         mock_request = Mock()
+        mock_request.app = Mock()
+        mock_request.app.state = Mock()
         mock_request.app.state.persistence = None
+        # Mock required services for emote command
+        mock_chat_service = AsyncMock()
+        mock_chat_service.send_emote_message.return_value = {"success": True, "message": {"id": "test"}}
+        mock_player_service = AsyncMock()
+        mock_player = Mock()
+        mock_player.current_room_id = "test_room_001"
+        mock_player.id = "test_player_id"
+        mock_player.player_id = "test_player_id"
+        mock_player_service.resolve_player_name.return_value = mock_player
+        mock_request.app.state.chat_service = mock_chat_service
+        mock_request.app.state.player_service = mock_player_service
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
         current_user = {"username": "testuser"}
@@ -171,7 +184,20 @@ class TestCommunicationCommands:
     async def test_process_command_emote_too_long(self):
         """Test emote command with too long action."""
         mock_request = Mock()
+        mock_request.app = Mock()
+        mock_request.app.state = Mock()
         mock_request.app.state.persistence = Mock()
+        # Mock required services for emote command
+        mock_chat_service = AsyncMock()
+        mock_chat_service.send_emote_message.return_value = {"success": True, "message": {"id": "test"}}
+        mock_player_service = AsyncMock()
+        mock_player = Mock()
+        mock_player.current_room_id = "test_room_001"
+        mock_player.id = "test_player_id"
+        mock_player.player_id = "test_player_id"
+        mock_player_service.resolve_player_name.return_value = mock_player
+        mock_request.app.state.chat_service = mock_chat_service
+        mock_request.app.state.player_service = mock_player_service
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
         current_user = {"username": "testuser"}
@@ -189,17 +215,24 @@ class TestCommunicationCommands:
     async def test_process_command_emote_success(self):
         """Test successful emote command."""
         mock_request = Mock()
+        mock_request.app = Mock()
+        mock_request.app.state = Mock()
         mock_request.app.state.persistence = Mock()
+        # Mock required services for emote command
+        mock_chat_service = AsyncMock()
+        mock_chat_service.send_emote_message.return_value = {"success": True, "message": {"id": "test"}}
+        mock_player_service = AsyncMock()
+        mock_player = Mock()
+        mock_player.current_room_id = "test_room_001"
+        mock_player.id = "test_player_id"
+        mock_player.player_id = "test_player_id"
+        mock_player.get_stats.return_value = {"position": "standing"}
+        mock_player_service.resolve_player_name.return_value = mock_player
+        mock_request.app.state.chat_service = mock_chat_service
+        mock_request.app.state.player_service = mock_player_service
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
         current_user = {"username": "testuser"}
-
-        # Mock player data
-        mock_player = Mock()
-        mock_player.current_room_id = "test_room_001"
-        mock_player.get_stats.return_value = {"position": "standing"}
-        mock_player.get_stats.return_value = {"position": "standing"}
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         # Mock room data
         mock_room = Mock(spec=Room)
@@ -767,6 +800,8 @@ class TestMovementAndExplorationCommands:
     async def test_process_command_go_no_exit_in_direction(self):
         """Test go command when no exit in direction."""
         mock_request = Mock()
+        mock_request.app = Mock()
+        mock_request.app.state = Mock()
         mock_request.app.state.persistence = Mock()
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
@@ -775,11 +810,14 @@ class TestMovementAndExplorationCommands:
         # Mock player data
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
+        mock_player.player_id = "test_player_id"
+        mock_player.id = "test_player_id"
         mock_player.get_stats.return_value = {"position": "standing"}
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         # Mock room data with no north exit
         mock_room = Mock(spec=Room)
+        mock_room.id = "test_room_001"
         mock_room.name = "Test Room"
         mock_room.description = "A test room"
         mock_room.exits = {"south": "room2"}  # No north exit
@@ -794,6 +832,8 @@ class TestMovementAndExplorationCommands:
     async def test_process_command_go_target_room_not_found(self):
         """Test go command when target room not found."""
         mock_request = Mock()
+        mock_request.app = Mock()
+        mock_request.app.state = Mock()
         mock_request.app.state.persistence = Mock()
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
@@ -802,11 +842,14 @@ class TestMovementAndExplorationCommands:
         # Mock player data
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
+        mock_player.player_id = "test_player_id"
+        mock_player.id = "test_player_id"
         mock_player.get_stats.return_value = {"position": "standing"}
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         # Mock room data with invalid target
         mock_room = Mock(spec=Room)
+        mock_room.id = "test_room_001"
         mock_room.name = "Test Room"
         mock_room.description = "A test room"
         mock_room.exits = {"north": "nonexistent_room"}
@@ -830,6 +873,8 @@ class TestMovementAndExplorationCommands:
     async def test_process_command_go_blocked_when_not_standing(self):
         """Test go command blocks movement when player is not standing."""
         mock_request = Mock()
+        mock_request.app = Mock()
+        mock_request.app.state = Mock()
         mock_request.app.state.persistence = Mock()
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
@@ -837,10 +882,13 @@ class TestMovementAndExplorationCommands:
 
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
+        mock_player.player_id = "test_player_id"
+        mock_player.id = "test_player_id"
         mock_player.get_stats.return_value = {"position": "sitting"}
         mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         mock_room = Mock(spec=Room)
+        mock_room.id = "test_room_001"
         mock_room.name = "Test Room"
         mock_room.description = "A test room"
         mock_room.exits = {"north": "room2"}

@@ -8,7 +8,8 @@ to ensure robust error handling and edge case coverage.
 
 from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
+from uuid import uuid4
 
 import pytest
 
@@ -498,7 +499,6 @@ class TestStatusCommand:
     @pytest.fixture
     def mock_combat_service(self):
         """Create a mock combat service."""
-        from unittest.mock import AsyncMock
 
         combat_service = MagicMock()
         combat_service.get_combat_by_participant = AsyncMock(return_value=None)
@@ -787,6 +787,17 @@ class TestEmoteCommand:
     @pytest.mark.asyncio
     async def test_emote_command_with_action(self, mock_request, mock_alias_storage):
         """Test emote command with a single action."""
+        # Set up mock player
+        mock_player = MagicMock()
+        test_player_id = str(uuid4())
+        mock_player.id = test_player_id
+        mock_player.player_id = test_player_id
+        mock_player.current_room_id = "test_room_001"
+
+        # Configure async service mocks
+        mock_request.app.state.player_service.resolve_player_name.return_value = mock_player
+        mock_request.app.state.chat_service.send_emote_message.return_value = {"success": True}
+
         result = await handle_emote_command(
             {"action": "adjusts spectacles"},
             {"username": "testuser"},
@@ -800,6 +811,17 @@ class TestEmoteCommand:
     @pytest.mark.asyncio
     async def test_emote_command_complex_action(self, mock_request, mock_alias_storage):
         """Test emote command with complex multi-word action."""
+        # Set up mock player
+        mock_player = MagicMock()
+        test_player_id = str(uuid4())
+        mock_player.id = test_player_id
+        mock_player.player_id = test_player_id
+        mock_player.current_room_id = "test_room_001"
+
+        # Configure async service mocks
+        mock_request.app.state.player_service.resolve_player_name.return_value = mock_player
+        mock_request.app.state.chat_service.send_emote_message.return_value = {"success": True}
+
         result = await handle_emote_command(
             {"action": "opens the forbidden tome with trembling hands"},
             {"username": "testuser"},
@@ -826,6 +848,17 @@ class TestEmoteCommand:
     @pytest.mark.asyncio
     async def test_emote_command_empty_string_args(self, mock_request, mock_alias_storage):
         """Test emote command with empty string arguments."""
+        # Set up mock player
+        mock_player = MagicMock()
+        test_player_id = str(uuid4())
+        mock_player.id = test_player_id
+        mock_player.player_id = test_player_id
+        mock_player.current_room_id = "test_room_001"
+
+        # Configure async service mocks
+        mock_request.app.state.player_service.resolve_player_name.return_value = mock_player
+        mock_request.app.state.chat_service.send_emote_message.return_value = {"success": True}
+
         result = await handle_emote_command(
             {"action": "  "},  # Two spaces
             {"username": "testuser"},
@@ -839,6 +872,17 @@ class TestEmoteCommand:
     @pytest.mark.asyncio
     async def test_emote_command_special_characters(self, mock_request, mock_alias_storage):
         """Test emote command with special characters in action."""
+        # Set up mock player
+        mock_player = MagicMock()
+        test_player_id = str(uuid4())
+        mock_player.id = test_player_id
+        mock_player.player_id = test_player_id
+        mock_player.current_room_id = "test_room_001"
+
+        # Configure async service mocks
+        mock_request.app.state.player_service.resolve_player_name.return_value = mock_player
+        mock_request.app.state.chat_service.send_emote_message.return_value = {"success": True}
+
         result = await handle_emote_command(
             {"action": "whispers something in an ancient tongue..."},
             {"username": "testuser"},

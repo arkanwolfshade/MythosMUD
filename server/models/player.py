@@ -6,7 +6,6 @@ for each user, including stats, inventory, and current location.
 """
 
 import json
-import uuid
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
 
@@ -312,11 +311,13 @@ class PlayerChannelPreferences(Base):
 
     __tablename__ = "player_channel_preferences"
 
-    player_id: Mapped[uuid.UUID] = mapped_column(
+    # Primary key - UUID stored as VARCHAR to match players.player_id exactly
+    # CRITICAL: Must use same type as Player.player_id (UUID(as_uuid=False) = VARCHAR)
+    # Using Column syntax to match Player model exactly
+    player_id = Column(
         UUID(as_uuid=False),
         ForeignKey("players.player_id", ondelete="CASCADE"),
         primary_key=True,
-        nullable=False,
     )
     default_channel: Mapped[str] = mapped_column(String(32), nullable=False, default="local")
     muted_channels: Mapped[list[str]] = mapped_column(MutableList.as_mutable(JSONB), nullable=False, default=list)

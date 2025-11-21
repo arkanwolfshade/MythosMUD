@@ -6,6 +6,7 @@ Server-Sent Events, and authentication flows.
 """
 
 from unittest.mock import AsyncMock, Mock, patch
+from uuid import uuid4
 
 import pytest
 from fastapi import HTTPException, Request, WebSocket
@@ -42,8 +43,11 @@ class TestSSEEvents:
         ):
             mock_stream.return_value = ["event1", "event2"]
 
+            # Use valid UUID format for player_id parameter
+            test_player_id = uuid4()
+
             # Call the endpoint
-            response = await sse_events("test_player", mock_request)
+            response = await sse_events(test_player_id, mock_request)
 
             # Verify response
             assert isinstance(response, StreamingResponse)
@@ -54,7 +58,7 @@ class TestSSEEvents:
             assert response.headers["Access-Control-Allow-Headers"] == "Cache-Control"
 
             # Verify the stream was called with correct player_id and session_id
-            mock_stream.assert_called_once_with("test_player", None)
+            mock_stream.assert_called_once_with(test_player_id, None)
 
 
 class TestSSEEventsToken:
@@ -83,7 +87,9 @@ class TestSSEEventsToken:
             mock_persistence = Mock()
             mock_get_persistence.return_value = mock_persistence
             mock_player = Mock()
-            mock_player.player_id = "test_player_id"
+            # Use valid UUID format for player_id
+            test_player_id = str(uuid4())
+            mock_player.player_id = test_player_id
             mock_persistence.get_player_by_user_id.return_value = mock_player
             mock_stream.return_value = ["event1", "event2"]
 
@@ -189,7 +195,9 @@ class TestWebSocketEndpoint:
             mock_persistence = Mock()
             mock_get_persistence.return_value = mock_persistence
             mock_player = Mock()
-            mock_player.player_id = "test_player_id"
+            # Use valid UUID format for player_id
+            test_player_id = str(uuid4())
+            mock_player.player_id = test_player_id
             mock_persistence.get_player_by_user_id.return_value = mock_player
 
             # Call the endpoint
@@ -222,7 +230,9 @@ class TestWebSocketEndpoint:
             mock_persistence = Mock()
             mock_get_persistence.return_value = mock_persistence
             mock_player = Mock()
-            mock_player.player_id = "player_from_header"
+            # Use valid UUID format for player_id
+            player_from_header_id = str(uuid4())
+            mock_player.player_id = player_from_header_id
             mock_persistence.get_player_by_user_id.return_value = mock_player
 
             await websocket_endpoint(mock_websocket)
@@ -231,7 +241,7 @@ class TestWebSocketEndpoint:
             mock_decode.assert_called_once_with("test_token_from_header")
             mock_handle.assert_called_once_with(
                 mock_websocket,
-                "player_from_header",
+                player_from_header_id,
                 None,
                 connection_manager=mock_connection_manager,
                 token="test_token_from_header",
@@ -260,8 +270,12 @@ class TestWebSocketEndpoint:
             mock_persistence = Mock()
             mock_get_persistence.return_value = mock_persistence
             mock_player = Mock()
-            mock_player.player_id = "test_player_id"
+            # Use valid UUID format for player_id
+            test_player_id = str(uuid4())
+            mock_player.player_id = test_player_id
             mock_persistence.get_player.return_value = mock_player
+            # Update query params to use valid UUID
+            mock_websocket.query_params = {"token": "invalid_token", "player_id": test_player_id}
 
             # Call the endpoint
             await websocket_endpoint(mock_websocket)
@@ -269,7 +283,7 @@ class TestWebSocketEndpoint:
             # Verify handle_websocket_connection was called with player_id from query params
             mock_handle.assert_called_once_with(
                 mock_websocket,
-                "test_player_id",
+                test_player_id,
                 None,
                 connection_manager=mock_connection_manager,
                 token="invalid_token",
@@ -354,7 +368,9 @@ class TestWebSocketEndpoint:
             mock_persistence = Mock()
             mock_get_persistence.return_value = mock_persistence
             mock_player = Mock()
-            mock_player.player_id = "test_player_id"
+            # Use valid UUID format for player_id
+            test_player_id = str(uuid4())
+            mock_player.player_id = test_player_id
             mock_persistence.get_player_by_user_id.return_value = mock_player
             mock_logger = Mock()
             mock_get_logger.return_value = mock_logger
@@ -369,7 +385,7 @@ class TestWebSocketEndpoint:
 
             assert exc_info.value == test_exception
             mock_logger.error.assert_called_once_with(
-                "Error in WebSocket endpoint", player_id="test_player_id", error="Test exception", exc_info=True
+                "Error in WebSocket endpoint", player_id=test_player_id, error="Test exception", exc_info=True
             )
 
 
@@ -400,20 +416,25 @@ class TestWebSocketEndpointRoute:
             mock_persistence = Mock()
             mock_get_persistence.return_value = mock_persistence
             mock_player = Mock()
-            mock_player.player_id = "resolved_player_id"
+            # Use valid UUID format for player_id
+            resolved_player_id = str(uuid4())
+            mock_player.player_id = resolved_player_id
             mock_persistence.get_player_by_user_id.return_value = mock_player
             mock_logger = Mock()
             mock_get_logger.return_value = mock_logger
 
+            # Use valid UUID format for path parameter
+            path_player_id = str(uuid4())
+
             # Call the endpoint
-            await websocket_endpoint_route(mock_websocket, "path_player_id")
+            await websocket_endpoint_route(mock_websocket, path_player_id)
 
             # Verify handle_websocket_connection was called with resolved player_id
             mock_handle.assert_called_once_with(
-                mock_websocket, "resolved_player_id", None, connection_manager=mock_connection_manager
+                mock_websocket, resolved_player_id, None, connection_manager=mock_connection_manager
             )
             mock_logger.info.assert_called_once_with(
-                "WebSocket (compat) connection attempt", player_id="path_player_id", session_id=None
+                "WebSocket (compat) connection attempt", player_id=path_player_id, session_id=None
             )
 
     @pytest.mark.asyncio
@@ -439,15 +460,18 @@ class TestWebSocketEndpointRoute:
             mock_logger = Mock()
             mock_get_logger.return_value = mock_logger
 
+            # Use valid UUID format for path parameter
+            path_player_id = str(uuid4())
+
             # Call the endpoint
-            await websocket_endpoint_route(mock_websocket, "path_player_id")
+            await websocket_endpoint_route(mock_websocket, path_player_id)
 
             # Verify handle_websocket_connection was called with path player_id
             mock_handle.assert_called_once_with(
-                mock_websocket, "path_player_id", None, connection_manager=mock_connection_manager
+                mock_websocket, path_player_id, None, connection_manager=mock_connection_manager
             )
             mock_logger.info.assert_called_once_with(
-                "WebSocket (compat) connection attempt", player_id="path_player_id", session_id=None
+                "WebSocket (compat) connection attempt", player_id=path_player_id, session_id=None
             )
 
     @pytest.mark.asyncio
@@ -473,15 +497,18 @@ class TestWebSocketEndpointRoute:
             mock_logger = Mock()
             mock_get_logger.return_value = mock_logger
 
+            # Use valid UUID format for path parameter
+            path_player_id = str(uuid4())
+
             # Call the endpoint
-            await websocket_endpoint_route(mock_websocket, "path_player_id")
+            await websocket_endpoint_route(mock_websocket, path_player_id)
 
             # Verify handle_websocket_connection was called with path player_id (fallback)
             mock_handle.assert_called_once_with(
-                mock_websocket, "path_player_id", None, connection_manager=mock_connection_manager
+                mock_websocket, path_player_id, None, connection_manager=mock_connection_manager
             )
             mock_logger.info.assert_called_once_with(
-                "WebSocket (compat) connection attempt", player_id="path_player_id", session_id=None
+                "WebSocket (compat) connection attempt", player_id=path_player_id, session_id=None
             )
 
     @pytest.mark.asyncio
@@ -511,15 +538,23 @@ class TestWebSocketEndpointRoute:
             mock_logger = Mock()
             mock_get_logger.return_value = mock_logger
 
+            # Use valid UUID format for path parameter
+            # When token resolves but no player record found, path player_id should be used as fallback
+            path_player_id = str(uuid4())
+            import uuid as uuid_module
+            path_player_uuid = uuid_module.UUID(path_player_id)
+
             # Call the endpoint
-            await websocket_endpoint_route(mock_websocket, "path_player_id")
+            await websocket_endpoint_route(mock_websocket, path_player_id)
 
             # Verify handle_websocket_connection was called with path player_id (fallback)
+            # The endpoint converts path player_id to UUID first, then tries token resolution
+            # If token resolution fails (no player record), it uses the path player_id UUID
             mock_handle.assert_called_once_with(
-                mock_websocket, "path_player_id", None, connection_manager=mock_connection_manager
+                mock_websocket, path_player_uuid, None, connection_manager=mock_connection_manager
             )
             mock_logger.info.assert_called_once_with(
-                "WebSocket (compat) connection attempt", player_id="path_player_id", session_id=None
+                "WebSocket (compat) connection attempt", player_id=path_player_id, session_id=None
             )
 
     @pytest.mark.asyncio
@@ -546,10 +581,15 @@ class TestWebSocketEndpointRoute:
             mock_persistence = Mock()
             mock_get_persistence.return_value = mock_persistence
             mock_player = Mock()
-            mock_player.player_id = "resolved_player_id"
+            # Use valid UUID format for player_id
+            resolved_player_id = str(uuid4())
+            mock_player.player_id = resolved_player_id
             mock_persistence.get_player_by_user_id.return_value = mock_player
             mock_logger = Mock()
             mock_get_logger.return_value = mock_logger
+
+            # Use valid UUID format for path parameter
+            path_player_id = str(uuid4())
 
             # Make handle_websocket_connection raise an exception
             test_exception = Exception("Test exception")
@@ -557,11 +597,11 @@ class TestWebSocketEndpointRoute:
 
             # Call the endpoint and expect the exception to be re-raised
             with pytest.raises(Exception) as exc_info:
-                await websocket_endpoint_route(mock_websocket, "path_player_id")
+                await websocket_endpoint_route(mock_websocket, path_player_id)
 
             assert exc_info.value == test_exception
             mock_logger.error.assert_called_once_with(
-                "Error in WebSocket endpoint", player_id="path_player_id", error="Test exception", exc_info=True
+                "Error in WebSocket endpoint", player_id=path_player_id, error="Test exception", exc_info=True
             )
 
 

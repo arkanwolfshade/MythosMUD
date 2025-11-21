@@ -768,8 +768,8 @@ class PersistenceLayer:
                 # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
                 # Future: Migrate to SQLAlchemy ORM for better query construction
                 # psycopg2 handles UUID objects directly via register_uuid() in postgres_adapter
-                query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE player_id = %s"
-                row = conn.execute(query, (player_id,)).fetchone()
+                query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE player_id = %s::text"
+                row = conn.execute(query, (str(player_id),)).fetchone()
                 if row:
                     player_data = self._convert_row_to_player_data(row)
                     player = Player(**player_data)
@@ -1775,9 +1775,9 @@ class PersistenceLayer:
                         to_jsonb((COALESCE(stats->>%s, '0'))::numeric + %s),
                         true
                     )
-                    WHERE player_id = %s
+                    WHERE player_id = %s::text
                     """,
-                    (field_name, delta, player_id),
+                    (field_name, delta, str(player_id)),
                 )
 
                 if cursor.rowcount == 0:
