@@ -521,6 +521,11 @@ class TestOccupantCountSimpleIntegration:
         connected_player_ids = list(mock_websockets.keys())
         mock_room_manager.get_room_subscribers.return_value = connected_player_ids
 
+        # Set up room manager to return connected players as room subscribers
+        # Convert string IDs to UUID strings to match what broadcast_to_room expects
+        connected_player_ids = [str(_str_to_uuid(pid)) for pid in mock_websockets.keys()]
+        mock_room_manager.get_room_subscribers.return_value = connected_player_ids
+
         # Manually trigger room_occupants event broadcasting
         room_occupants_event = build_event(
             "room_occupants", {"occupants": ["Player1", "Player2"], "count": 2}, room_id=room_id
@@ -558,11 +563,12 @@ class TestOccupantCountSimpleIntegration:
         await connection_manager.connect_websocket(mock_websockets["player_3"], _str_to_uuid("player_3"), session_id)
 
         # Set up room manager to return appropriate players for each room
+        # Convert string IDs to UUID strings to match what broadcast_to_room expects
         def mock_get_room_subscribers(room_id):
             if room_id == room1_id:
-                return ["player_1", "player_2"]
+                return [str(_str_to_uuid("player_1")), str(_str_to_uuid("player_2"))]
             elif room_id == room2_id:
-                return ["player_3"]
+                return [str(_str_to_uuid("player_3"))]
             return []
 
         mock_room_manager.get_room_subscribers.side_effect = mock_get_room_subscribers
@@ -600,7 +606,8 @@ class TestOccupantCountSimpleIntegration:
             await connection_manager.connect_websocket(websocket, player_id_uuid, session_id)
 
         # Set up room manager to return connected players as room subscribers
-        connected_player_ids = list(mock_websockets.keys())
+        # Convert string IDs to UUID strings to match what broadcast_to_room expects
+        connected_player_ids = [str(_str_to_uuid(pid)) for pid in mock_websockets.keys()]
         mock_room_manager.get_room_subscribers.return_value = connected_player_ids
 
         # Send multiple rapid updates

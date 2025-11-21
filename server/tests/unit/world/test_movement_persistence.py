@@ -6,6 +6,7 @@ their location is properly saved to the database.
 """
 
 from unittest.mock import Mock, patch
+from uuid import uuid4
 
 import pytest
 
@@ -23,10 +24,10 @@ class TestMovementPersistence:
         # Create mock persistence layer
         mock_persistence = Mock()
 
-        # Create test player
-        player = Player(
-            player_id="test-player-123", user_id="test-user-123", name="TestPlayer", current_room_id="room_1"
-        )
+        # Create test player (use proper UUID format)
+        test_player_id = str(uuid4())
+        test_user_id = str(uuid4())
+        player = Player(player_id=test_player_id, user_id=test_user_id, name="TestPlayer", current_room_id="room_1")
 
         # Create test rooms
         room_1 = Room({"id": "room_1", "name": "Room 1", "description": "First room", "exits": {"north": "room_2"}})
@@ -41,34 +42,39 @@ class TestMovementPersistence:
             movement_service = MovementService()
 
             # Add player to room_1
-            room_1.player_entered("test-player-123")
+            room_1.player_entered(test_player_id)
 
             # Move player from room_1 to room_2
-            success = movement_service.move_player("test-player-123", "room_1", "room_2")
+            success = movement_service.move_player(test_player_id, "room_1", "room_2")
 
             # Verify movement was successful
             assert success is True
 
-            # Verify player was removed from room_1
-            assert not room_1.has_player("test-player-123")
+            # Verify player was removed from room_1 (service uses UUID objects)
+            import uuid as uuid_module
+
+            player_id_uuid = uuid_module.UUID(test_player_id)
+            assert not room_1.has_player(player_id_uuid)
 
             # Verify player was added to room_2
-            assert room_2.has_player("test-player-123")
+            assert room_2.has_player(player_id_uuid)
 
             # Verify save_player was called with updated player
             mock_persistence.save_player.assert_called_once()
             saved_player = mock_persistence.save_player.call_args[0][0]
             assert saved_player.current_room_id == "room_2"
-            assert saved_player.player_id == "test-player-123"
+            assert saved_player.player_id == test_player_id
 
     def test_move_player_updates_player_current_room_id(self):
         """Test that the player's current_room_id is updated during movement."""
         # Create mock persistence layer
         mock_persistence = Mock()
 
-        # Create test player
+        # Create test player (use proper UUID format)
+        test_player_id = str(uuid4())
+        test_user_id = str(uuid4())
         player = Player(
-            player_id="test-player-456", user_id="test-user-456", name="TestPlayer2", current_room_id="start_room"
+            player_id=test_player_id, user_id=test_user_id, name="TestPlayer2", current_room_id="start_room"
         )
 
         # Create test rooms
@@ -88,13 +94,13 @@ class TestMovementPersistence:
             movement_service = MovementService()
 
             # Add player to start_room
-            start_room.player_entered("test-player-456")
+            start_room.player_entered(test_player_id)
 
             # Verify initial state
             assert player.current_room_id == "start_room"
 
             # Move player
-            success = movement_service.move_player("test-player-456", "start_room", "end_room")
+            success = movement_service.move_player(test_player_id, "start_room", "end_room")
 
             # Verify movement was successful
             assert success is True

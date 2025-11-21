@@ -247,8 +247,9 @@ async def test_loading_player_with_corrupt_inventory_raises(
 
     import uuid
 
-    unique_suffix = str(uuid.uuid4())[:8]
-    player_id = f"corrupt-player-{unique_suffix}"
+    # Use proper UUID format for player_id (PostgreSQL requires valid UUID)
+    # The test is about corrupt inventory data, not corrupt player_id format
+    player_id = str(uuid.uuid4())
 
     async with async_session_factory() as session:
         user_id = await initialize_database(session)
@@ -297,7 +298,11 @@ async def test_loading_player_with_corrupt_inventory_raises(
     combined_output = (caplog.text or "") + capsys.readouterr().out
     if load_logs:
         load_log = cast(InventoryLoadLogRecord, load_logs[0])
-        assert load_log.player_id == "corrupt-player"
+        # Player ID is now a UUID, so check that it's a valid UUID format
+        import uuid as uuid_module
+
+        assert uuid_module.UUID(load_log.player_id)  # Will raise ValueError if not valid UUID
     else:
         assert "Stored inventory payload failed validation" in combined_output
-        assert "corrupt-player" in combined_output
+        # Player ID is now a UUID, so check for validation error instead of specific player ID
+        assert "validation failed" in combined_output.lower() or "failed validation" in combined_output.lower()

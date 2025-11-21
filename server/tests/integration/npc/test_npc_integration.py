@@ -487,8 +487,9 @@ class TestNPCCombatIntegration:
 
                 event_bus.subscribe(NPCAttacked, capture_events)
 
-                # Test enhanced attack
-                result = aggressive_npc.attack_target("test_player_1")
+                # Test enhanced attack with proper UUID
+                test_player_id = str(uuid4())
+                result = aggressive_npc.attack_target(test_player_id)
                 assert result is True
 
                 # Wait for event to be processed
@@ -500,7 +501,7 @@ class TestNPCCombatIntegration:
                 assert len(events_received) == 1
                 assert events_received[0].event_type == "NPCAttacked"
                 assert events_received[0].npc_id == "aggressive_npc_1"
-                assert events_received[0].target_id == "test_player_1"
+                assert events_received[0].target_id == test_player_id
 
 
 class TestNPCCommunicationIntegration:

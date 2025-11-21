@@ -61,8 +61,8 @@ def test_player_sanity_defaults_and_constraints():
     Base.metadata.create_all(engine)
 
     # Generate unique identifiers to avoid constraint violations on repeated test runs
+    player_id = str(uuid.uuid4())  # Use proper UUID format for PostgreSQL
     unique_suffix = str(uuid.uuid4())[:8]
-    player_id = f"investigator-1-{unique_suffix}"
     username = f"arkhamite-{unique_suffix}"
 
     with Session(engine) as session:
@@ -92,7 +92,9 @@ def test_player_sanity_defaults_and_constraints():
             session.flush()
         session.rollback()
 
-        rogue_sanity = PlayerSanity(player_id="nonexistent")
+        # Use a valid UUID format that doesn't exist in the database (for foreign key constraint test)
+        nonexistent_player_id = str(uuid.uuid4())
+        rogue_sanity = PlayerSanity(player_id=nonexistent_player_id)
         session.add(rogue_sanity)
         with pytest.raises(IntegrityError):
             session.flush()
@@ -104,8 +106,8 @@ def test_sanity_relationships_cascade():
     Base.metadata.create_all(engine)
 
     # Generate unique identifiers to avoid constraint violations on repeated test runs
+    player_id = str(uuid.uuid4())  # Use proper UUID format for PostgreSQL
     unique_suffix = str(uuid.uuid4())[:8]
-    player_id = f"investigator-2-{unique_suffix}"
     username = f"miskatonic-{unique_suffix}"
 
     with Session(engine) as session:

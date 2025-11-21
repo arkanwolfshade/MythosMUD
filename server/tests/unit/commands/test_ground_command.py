@@ -194,7 +194,8 @@ async def test_ground_command_emits_rescue_updates(session_factory):
         assert statuses.count("channeling") == 2
         assert statuses.count("success") == 3  # Two explicit messages + sanity service resolution
 
-        def _call_target(call: Any) -> str | None:
+        def _call_target(call: Any) -> uuid.UUID | str | None:
+            """Extract player_id from call, returning as-is (could be UUID or string)."""
             if call.args:
                 return call.args[0]
             return call.kwargs.get("player_id")
@@ -204,13 +205,25 @@ async def test_ground_command_emits_rescue_updates(session_factory):
             for call in mock_rescue_event.await_args_list
             if call.kwargs.get("status") == "channeling"
         }
-        assert channel_targets == {victim.player_id, rescuer.player_id}
+
+        # Convert values to comparable format (normalize UUIDs and strings)
+        def normalize_id(pid: uuid.UUID | str) -> uuid.UUID:
+            """Normalize player ID to UUID for comparison."""
+            if isinstance(pid, uuid.UUID):
+                return pid
+            return uuid.UUID(pid)
+
+        victim_uuid = normalize_id(victim.player_id)
+        rescuer_uuid = normalize_id(rescuer.player_id)
+        channel_targets_normalized = {normalize_id(t) for t in channel_targets}
+        assert channel_targets_normalized == {victim_uuid, rescuer_uuid}
 
         success_targets = [
             _call_target(call) for call in mock_rescue_event.await_args_list if call.kwargs.get("status") == "success"
         ]
-        assert success_targets.count(rescuer.player_id) == 1
-        assert success_targets.count(victim.player_id) == 2
+        success_targets_normalized = [normalize_id(t) for t in success_targets]
+        assert success_targets_normalized.count(rescuer_uuid) == 1
+        assert success_targets_normalized.count(victim_uuid) == 2
 
 
 @pytest.mark.asyncio

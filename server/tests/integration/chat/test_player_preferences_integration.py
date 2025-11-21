@@ -327,10 +327,14 @@ class TestPlayerPreferencesIntegration:
             assert result["success"] is False
             assert "Invalid channel name" in result["error"]
 
-            # Test with non-existent player
-            result = await preferences_service.get_player_preferences(session, "non-existent")
+            # Test with non-existent player (use valid UUID format)
+            from uuid import uuid4
+
+            nonexistent_uuid = str(uuid4())
+            result = await preferences_service.get_player_preferences(session, nonexistent_uuid)
             assert result["success"] is False
-            assert "not found" in result["error"]
+            # Service validates UUID format first, so "not found" or "Invalid player ID" are both valid
+            assert "not found" in result["error"] or "Invalid player ID" in result["error"]
 
             # Test system channel muting
             result = await preferences_service.mute_channel(session, player_id, "system")

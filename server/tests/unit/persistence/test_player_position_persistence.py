@@ -111,14 +111,10 @@ def test_player_stats_include_position_by_default():
 @pytest.mark.asyncio
 async def test_position_persists_across_logout_login_cycle(async_session_factory):
     """Verify that player position changes persist after saving and reloading."""
-    import uuid
 
     database_url = get_database_url()
     if not database_url or not database_url.startswith("postgresql"):
         pytest.skip("DATABASE_URL must be set to a PostgreSQL URL for this test.")
-
-    # Generate unique identifiers to avoid constraint violations on repeated test runs
-    unique_suffix = str(uuid.uuid4())[:8]
 
     async with async_session_factory() as session:
         user_id = await initialize_database(session)
@@ -126,7 +122,10 @@ async def test_position_persists_across_logout_login_cycle(async_session_factory
 
     persistence = PersistenceLayer(db_path=database_url)
 
-    player_id = f"position-player-{unique_suffix}"
+    # Use proper UUID format for player_id (PostgreSQL requires valid UUID)
+    import uuid as uuid_module
+
+    player_id = str(uuid_module.uuid4())
     player = build_player(player_id, user_id)
 
     # Initial save representing the player's first login.
@@ -171,7 +170,10 @@ async def test_missing_position_defaults_to_standing_on_load(async_session_facto
             '"fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100}'
         )
 
-        player_id = f"legacy-player-{unique_suffix}"
+        # Use proper UUID format for player_id
+        import uuid as uuid_module
+
+        player_id = str(uuid_module.uuid4())
         # Create player with legacy stats
         player = Player(
             player_id=player_id,

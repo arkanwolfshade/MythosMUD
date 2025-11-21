@@ -10,6 +10,7 @@ import asyncio
 import re
 from datetime import UTC, datetime
 from unittest.mock import AsyncMock, Mock
+from uuid import uuid4
 
 import pytest
 
@@ -147,8 +148,9 @@ class TestEventHandlerBroadcasting:
         # Mock chat logger
         event_handler.chat_logger.log_player_joined_room = Mock()
 
-        # Create and publish event
-        event = PlayerEnteredRoom(player_id="test_player_123", room_id="test_room_001")
+        # Create and publish event (use UUID for player_id)
+        test_player_id = str(uuid4())
+        event = PlayerEnteredRoom(player_id=test_player_id, room_id="test_room_001")
 
         # Publish the event
         event_bus.publish(event)
@@ -172,7 +174,7 @@ class TestEventHandlerBroadcasting:
         assert message["event_type"] == "player_entered"
         assert message["data"]["player_name"] == "TestPlayer"
         assert message["data"]["message"] == "TestPlayer enters the room."
-        assert exclude_player == "test_player_123"
+        assert exclude_player == test_player_id
 
     @pytest.mark.asyncio
     async def test_player_left_event_broadcasting(self, event_bus, event_handler, mock_connection_manager):
@@ -201,8 +203,9 @@ class TestEventHandlerBroadcasting:
         # Mock chat logger
         event_handler.chat_logger.log_player_left_room = Mock()
 
-        # Create and publish event
-        event = PlayerLeftRoom(player_id="test_player_123", room_id="test_room_001")
+        # Create and publish event (use UUID for player_id)
+        test_player_id = str(uuid4())
+        event = PlayerLeftRoom(player_id=test_player_id, room_id="test_room_001")
 
         # Publish the event
         event_bus.publish(event)
@@ -226,7 +229,7 @@ class TestEventHandlerBroadcasting:
         assert message["event_type"] == "player_left"
         assert message["data"]["player_name"] == "TestPlayer"
         assert message["data"]["message"] == "TestPlayer leaves the room."
-        assert exclude_player == "test_player_123"
+        assert exclude_player == test_player_id
 
     @pytest.mark.asyncio
     async def test_event_handler_handles_missing_player_gracefully(
@@ -264,8 +267,9 @@ class TestEventHandlerBroadcasting:
         # Setup mock to return None for room lookup
         mock_connection_manager.persistence.get_room.return_value = None
 
-        # Create and publish event
-        event = PlayerEnteredRoom(player_id="test_player_123", room_id="nonexistent_room")
+        # Create and publish event (use UUID for player_id)
+        test_player_id = str(uuid4())
+        event = PlayerEnteredRoom(player_id=test_player_id, room_id="nonexistent_room")
 
         # Publish the event
         event_bus.publish(event)
@@ -278,23 +282,25 @@ class TestEventHandlerBroadcasting:
 
     def test_message_creation_formats(self, event_handler):
         """Test that message creation methods return properly formatted messages."""
-        # Test player entered message
-        entered_event = PlayerEnteredRoom(player_id="test_player", room_id="test_room")
+        # Test player entered message (use UUID string for player_id)
+        test_player_id = str(uuid4())
+        entered_event = PlayerEnteredRoom(player_id=test_player_id, room_id="test_room")
         entered_message = event_handler._create_player_entered_message(entered_event, "TestPlayer")
 
         assert entered_message["event_type"] == "player_entered"
-        assert entered_message["data"]["player_id"] == "test_player"
+        assert entered_message["data"]["player_id"] == test_player_id
         assert entered_message["data"]["player_name"] == "TestPlayer"
         assert entered_message["data"]["message"] == "TestPlayer enters the room."
         assert "timestamp" in entered_message
         assert "sequence_number" in entered_message
 
-        # Test player left message
-        left_event = PlayerLeftRoom(player_id="test_player", room_id="test_room")
+        # Test player left message (use UUID string for player_id)
+        test_player_id = str(uuid4())
+        left_event = PlayerLeftRoom(player_id=test_player_id, room_id="test_room")
         left_message = event_handler._create_player_left_message(left_event, "TestPlayer")
 
         assert left_message["event_type"] == "player_left"
-        assert left_message["data"]["player_id"] == "test_player"
+        assert left_message["data"]["player_id"] == test_player_id
         assert left_message["data"]["player_name"] == "TestPlayer"
         assert left_message["data"]["message"] == "TestPlayer leaves the room."
         assert "timestamp" in left_message

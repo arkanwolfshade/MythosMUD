@@ -35,8 +35,11 @@ class TestPlayerHealthPersistence:
     def test_player(self):
         """Create a simple test player without database dependencies."""
         # Create a minimal player object with just the fields we need
+        # Use proper UUID format for player_id (PostgreSQL requires valid UUID)
+        from uuid import uuid4
+
         player = Player(
-            player_id="test-player-id",
+            player_id=str(uuid4()),
             name="TestPlayer",
             level=1,
             experience_points=0,
@@ -121,16 +124,20 @@ class TestPlayerHealthPersistence:
         from unittest.mock import Mock, patch
 
         with patch.object(persistence, "update_player_health", Mock()):
-            with pytest.raises(ValueError, match="Damage amount must be positive"):
-                persistence.damage_player(test_player, -10, "physical")
+            # Patch logger to avoid Unicode encoding issues on Windows
+            with patch.object(persistence._logger, "error", Mock()):
+                with pytest.raises(ValueError, match="Damage amount must be positive"):
+                    persistence.damage_player(test_player, -10, "physical")
 
     def test_heal_player_handles_negative_values(self, test_player, persistence):
         """Test that heal_player() rejects negative heal amounts."""
         from unittest.mock import Mock, patch
 
         with patch.object(persistence, "update_player_health", Mock()):
-            with pytest.raises(ValueError, match="Healing amount must be positive"):
-                persistence.heal_player(test_player, -10)
+            # Patch logger to avoid Unicode encoding issues on Windows
+            with patch.object(persistence._logger, "error", Mock()):
+                with pytest.raises(ValueError, match="Healing amount must be positive"):
+                    persistence.heal_player(test_player, -10)
 
     def test_damage_player_caps_at_zero(self, test_player, persistence):
         """Test that damage_player() doesn't reduce health below zero in memory."""

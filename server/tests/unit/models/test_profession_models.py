@@ -658,20 +658,26 @@ class TestPlayerProfessionIntegration:
 
         # Insert a test player with profession_id (use proper UUID for user_id)
         # Include all required NOT NULL columns
+        # Generate proper UUID for player_id (PostgreSQL requires valid UUID format)
+        import uuid as uuid_module
+
+        test_player_id = str(uuid_module.uuid4())
+
         db_session_with_professions.execute(
             text("""
             INSERT INTO players (player_id, user_id, name, profession_id, stats, inventory, status_effects, current_room_id, experience_points, level, is_admin, created_at, last_active)
-            VALUES ('test_player_1', :user_id, 'TestPlayer', 1, '{}', '[]', '[]', 'earth_arkhamcity_sanitarium_room_foyer_001', 0, 1, 0, NOW(), NOW())
+            VALUES (:player_id, :user_id, 'TestPlayer', 1, '{}', '[]', '[]', 'earth_arkhamcity_sanitarium_room_foyer_001', 0, 1, 0, NOW(), NOW())
         """),
-            {"user_id": test_user_id},
+            {"player_id": test_player_id, "user_id": test_user_id},
         )
         db_session_with_professions.commit()
 
         # Verify the player was created with profession_id
         result = db_session_with_professions.execute(
             text("""
-            SELECT profession_id FROM players WHERE player_id = 'test_player_1'
-        """)
+            SELECT profession_id FROM players WHERE player_id = :player_id
+        """),
+            {"player_id": test_player_id},
         )
         profession_id = result.fetchone()[0]
         assert profession_id == 1
@@ -703,20 +709,25 @@ class TestPlayerProfessionIntegration:
         # Insert a test player without explicitly specifying profession_id
         # The model default is 0, but since we're using raw SQL, we need to include it
         # We'll set it to 0 to test that the default works
+        # Generate proper UUID for player_id (PostgreSQL requires valid UUID format)
+        # Use unique name to avoid constraint violations
+        test_player_id = str(uuid.uuid4())
+        unique_name = f"TestPlayer2_{test_player_id[:8]}"
         db_session_with_professions.execute(
             text("""
             INSERT INTO players (player_id, user_id, name, profession_id, stats, inventory, status_effects, current_room_id, experience_points, level, is_admin, created_at, last_active)
-            VALUES ('test_player_2', :user_id, 'TestPlayer2', 0, '{}', '[]', '[]', 'earth_arkhamcity_sanitarium_room_foyer_001', 0, 1, 0, NOW(), NOW())
+            VALUES (:player_id, :user_id, :name, 0, '{}', '[]', '[]', 'earth_arkhamcity_sanitarium_room_foyer_001', 0, 1, 0, NOW(), NOW())
         """),
-            {"user_id": test_user_id},
+            {"player_id": test_player_id, "user_id": test_user_id, "name": unique_name},
         )
         db_session_with_professions.commit()
 
         # Verify the player defaults to profession_id 0
         result = db_session_with_professions.execute(
             text("""
-            SELECT profession_id FROM players WHERE player_id = 'test_player_2'
-        """)
+            SELECT profession_id FROM players WHERE player_id = :player_id
+        """),
+            {"player_id": test_player_id},
         )
         profession_id = result.fetchone()[0]
         assert profession_id == 0
@@ -754,10 +765,10 @@ class TestPlayerProfessionIntegration:
         )
         db_session_with_professions.commit()
 
-        # Generate unique player IDs to avoid constraint violations on repeated test runs
+        # Generate unique player IDs to avoid constraint violations on repeated test runs (use proper UUIDs)
+        player_id_1 = str(uuid.uuid4())
+        player_id_2 = str(uuid.uuid4())
         unique_suffix = str(uuid.uuid4())[:8]
-        player_id_1 = f"player_1-{unique_suffix}"
-        player_id_2 = f"player_2-{unique_suffix}"
         player_name_1 = f"Player1-{unique_suffix}"
         player_name_2 = f"Player2-{unique_suffix}"
 

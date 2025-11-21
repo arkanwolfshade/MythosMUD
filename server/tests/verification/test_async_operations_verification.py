@@ -295,7 +295,11 @@ class TestAsyncOperationsVerification:
         players = await persistence.async_list_players()
         assert isinstance(players, list)
 
-        player = await persistence.async_get_player("nonexistent")
+        # Use a valid UUID string for testing (not a real player, but valid format)
+        from uuid import uuid4
+
+        nonexistent_uuid = str(uuid4())
+        player = await persistence.async_get_player(nonexistent_uuid)
         assert player is None
 
         room = await persistence.async_get_room("nonexistent")
