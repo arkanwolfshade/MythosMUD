@@ -28,7 +28,29 @@ Tests chat message broadcasting between players in the same room. This scenario 
 
 ## Execution Steps
 
-### Step 1: Both Players in Same Room
+### Step 1: Clean State - Unmute Ithaqua
+
+**Purpose**: Ensure clean state for chat message testing by clearing any persistent mute state from previous scenarios
+
+**Commands**:
+```javascript
+// Switch to AW's tab
+await mcp_playwright_browser_tab_select({index: 0});
+
+// Ensure AW is in the game (click "Enter the Realm" if needed)
+// Then unmute Ithaqua to clear any persistent mute state from previous scenarios
+await page.getByPlaceholder(/Enter game command/i).fill('unmute Ithaqua');
+await page.getByPlaceholder(/Enter game command/i).press('Enter');
+
+// Wait for unmute confirmation
+await mcp_playwright_browser_wait_for({text: "You have unmuted Ithaqua", time: 10});
+```
+
+**Expected Result**: AW successfully unmutes Ithaqua, ensuring clean state for chat message testing
+
+**⚠️ CRITICAL**: This step is required because mute state persists across scenarios. Scenario-04 may have left AW muting Ithaqua, which would filter all chat messages.
+
+### Step 2: Both Players in Same Room
 
 **Purpose**: Ensure both players are ready for chat message testing
 
@@ -37,11 +59,12 @@ Tests chat message broadcasting between players in the same room. This scenario 
 // Ensure both players are logged in from previous scenario
 // AW should be on tab 0, Ithaqua on tab 1
 // Both should be in the same room
+// If Ithaqua is not in the game, switch to tab 1 and click "Enter the Realm"
 ```
 
 **Expected Result**: Both players are connected and in the same room
 
-### Step 2: AW Sends Chat Message
+### Step 3: AW Sends Chat Message
 
 **Purpose**: Test basic chat message sending
 
@@ -60,7 +83,7 @@ await mcp_playwright_browser_wait_for({text: "You say: Hello Ithaqua"});
 
 **Expected Result**: AW sees confirmation of their own message
 
-### Step 3: Verify Ithaqua Sees AW's Message
+### Step 4: Verify Ithaqua Sees AW's Message
 
 **Purpose**: Test that chat messages are properly broadcast to other players
 
@@ -81,7 +104,7 @@ console.log('Ithaqua messages:', ithaquaMessages);
 
 **Expected Result**: Ithaqua sees AW's chat message
 
-### Step 4: Ithaqua Replies
+### Step 5: Ithaqua Replies
 
 **Purpose**: Test bidirectional chat communication
 
@@ -97,7 +120,7 @@ await mcp_playwright_browser_wait_for({text: "You say: Greetings ArkanWolfshade"
 
 **Expected Result**: Ithaqua sees confirmation of their own reply
 
-### Step 5: Verify AW Sees Ithaqua's Reply
+### Step 6: Verify AW Sees Ithaqua's Reply
 
 **Purpose**: Test that replies are properly received
 
@@ -118,7 +141,7 @@ console.log('AW messages:', awMessages);
 
 **Expected Result**: AW sees Ithaqua's reply message
 
-### Step 6: Test Multiple Messages
+### Step 7: Test Multiple Messages
 
 **Purpose**: Test that multiple messages work correctly
 
@@ -150,7 +173,7 @@ await mcp_playwright_browser_wait_for({text: "You say: I'm doing well, thank you
 
 **Expected Result**: Multiple messages are sent and received correctly
 
-### Step 7: Test Message Formatting
+### Step 8: Test Message Formatting
 
 **Purpose**: Verify that messages are properly formatted
 
@@ -177,7 +200,7 @@ console.log('Proper message formatting:', properFormatting);
 
 **Expected Result**: All messages are properly formatted with "PlayerName says: message"
 
-### Step 8: Test Message History
+### Step 9: Test Message History
 
 **Purpose**: Verify that message history is maintained
 
@@ -220,7 +243,7 @@ console.log('📋 PROCEEDING TO SCENARIO 6: Admin Teleportation');
 
 **Expected Result**: All expected messages are present in the chat history
 
-### Step 9: Complete Scenario and Proceed
+### Step 10: Complete Scenario and Proceed
 
 **Purpose**: Finalize scenario execution and prepare for next scenario
 
