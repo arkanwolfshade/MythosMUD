@@ -72,19 +72,31 @@ describe('useGameConnection', () => {
     // Initially, the hook should start connecting automatically
     expect(result.current.isConnecting).toBe(true);
 
-    // Wait for the connection attempt to complete and fail
-    await act(async () => {
-      // Wait for the connection attempt to complete
-      await new Promise(resolve => setTimeout(resolve, 100));
-    });
+    // Wait for the connection attempt to fail and error to be set
+    // The state machine will transition through 'reconnecting' before eventually failing
+    await waitFor(
+      () => {
+        expect(result.current.error).toBe('Connection failed');
+      },
+      { timeout: 2000 }
+    );
 
     // After the auto-connect attempt fails, we should be back to default state
     // but with an error indicating the connection failed
+    // Note: isConnecting might still be true if we're in 'reconnecting' state,
+    // but the error should be set indicating the connection failed
     expect(result.current.isConnected).toBe(false);
-    expect(result.current.isConnecting).toBe(false);
     expect(result.current.error).toBe('Connection failed');
     expect(result.current.sseConnected).toBe(false);
     expect(result.current.websocketConnected).toBe(false);
+
+    // Wait for isConnecting to become false (after reconnect attempts are exhausted)
+    await waitFor(
+      () => {
+        expect(result.current.isConnecting).toBe(false);
+      },
+      { timeout: 5000 }
+    );
   });
 
   it('should connect when connect is called', async () => {
