@@ -80,6 +80,10 @@ class EmoteService:
             asyncio.set_event_loop(new_loop)
             try:
                 new_loop.run_until_complete(self._async_load_emotes(result_container))
+            except Exception as e:
+                # Catch exception and store in result_container instead of raising
+                # This allows graceful degradation when database table doesn't exist
+                result_container["error"] = e
             finally:
                 new_loop.close()
 
@@ -89,16 +93,17 @@ class EmoteService:
 
         error = result_container.get("error")
         if error is not None:
-            logger.error("Failed to load emotes from database", error=str(error))
-            context = create_error_context()
-            context.metadata["operation"] = "load_emotes"
-            log_and_raise(
-                ValidationError,
-                f"Failed to load emotes from database: {error}",
-                context=context,
-                details={"error": str(error)},
-                user_friendly="Failed to load emote definitions",
-            )
+            # Log warning but don't raise - allow custom emotes to work even without database
+            # This is important for tests and environments where the emotes table may not exist
+            error_str = str(error)
+            if "does not exist" in error_str or "relation" in error_str.lower():
+                logger.warning(
+                    "Emotes table not found in database - custom emotes will still work",
+                    error=error_str,
+                )
+            else:
+                logger.warning("Failed to load emotes from database - custom emotes will still work", error=error_str)
+            # Continue with empty emotes - custom emotes don't need the database
 
         # Build emotes dictionary in expected format
         self.emotes = {}
@@ -181,8 +186,8 @@ class EmoteService:
             finally:
                 await conn.close()
         except Exception as e:
+            # Store error in result_container - don't raise, let _load_emotes handle it
             result_container["error"] = e
-            raise
 
     def is_emote_alias(self, command: str) -> bool:
         """

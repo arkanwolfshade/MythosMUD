@@ -112,6 +112,8 @@ RUN service postgresql start && \
     su postgres -c "psql -f /workspace/db/databases/databases.sql" && \
     su postgres -c "psql -d mythos_unit -f /workspace/db/authoritative_schema.sql" && \
     su postgres -c "psql -d mythos_e2e -f /workspace/db/authoritative_schema.sql" && \
+    su postgres -c "psql -d mythos_unit -f /workspace/db/migrations/010_migrate_player_id_to_uuid.sql" && \
+    su postgres -c "psql -d mythos_e2e -f /workspace/db/migrations/010_migrate_player_id_to_uuid.sql" && \
     su postgres -c "psql -d mythos_unit -f /workspace/data/db/00_world_and_emotes.sql" && \
     su postgres -c "psql -d mythos_unit -f /workspace/data/db/01_professions.sql" && \
     su postgres -c "psql -d mythos_unit -f /workspace/data/db/02_item_prototypes.sql" && \

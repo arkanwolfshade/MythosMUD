@@ -629,7 +629,7 @@ async def handle_emote_command(
             # Extract just the action part (e.g., "dances like no one is watching." from "Ithaqua dances like no one is watching.")
             # Remove player name prefix if present
             if formatted_action.startswith(f"{player_name} "):
-                formatted_action = formatted_action[len(f"{player_name} "):]
+                formatted_action = formatted_action[len(f"{player_name} ") :]
             action = formatted_action
         else:
             # Custom emote - use the action as provided

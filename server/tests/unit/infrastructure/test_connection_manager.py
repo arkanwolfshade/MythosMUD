@@ -1973,7 +1973,11 @@ class TestConnectionManagerComprehensive:
 
         # Mock room manager to return subscribers (use UUID strings)
         connection_manager.room_manager = Mock()
-        connection_manager.room_manager.get_room_subscribers.return_value = {str(player1_id), str(player2_id), str(player3_id)}
+        connection_manager.room_manager.get_room_subscribers.return_value = {
+            str(player1_id),
+            str(player2_id),
+            str(player3_id),
+        }
 
         # Broadcast to room excluding player2
         test_event = {"type": "room_broadcast", "content": "Hello Room"}
@@ -2038,24 +2042,24 @@ class TestConnectionManagerComprehensive:
         assert global_stats["excluded_players"] == 0
         assert global_stats["successful_deliveries"] == 3
         assert global_stats["failed_deliveries"] == 0
-        assert str(player1_id) in global_stats["delivery_details"]
-        assert str(player2_id) in global_stats["delivery_details"]
-        assert str(player3_id) in global_stats["delivery_details"]
+        assert player1_id in global_stats["delivery_details"]
+        assert player2_id in global_stats["delivery_details"]
+        assert player3_id in global_stats["delivery_details"]
 
         # Verify player1 received message on all connections
-        player1_delivery = global_stats["delivery_details"][str(player1_id)]
+        player1_delivery = global_stats["delivery_details"][player1_id]
         assert player1_delivery["websocket_delivered"] == 2  # Two WebSocket connections
         assert player1_delivery["sse_delivered"] is True
         assert player1_delivery["total_connections"] == 3
 
         # Verify player2 received message via SSE only
-        player2_delivery = global_stats["delivery_details"][str(player2_id)]
+        player2_delivery = global_stats["delivery_details"][player2_id]
         assert player2_delivery["websocket_delivered"] == 0
         assert player2_delivery["sse_delivered"] is True
         assert player2_delivery["total_connections"] == 1
 
         # Verify player3 received message via WebSocket only
-        player3_delivery = global_stats["delivery_details"][str(player3_id)]
+        player3_delivery = global_stats["delivery_details"][player3_id]
         assert player3_delivery["websocket_delivered"] == 1
         assert player3_delivery["sse_delivered"] is False
         assert player3_delivery["total_connections"] == 1
@@ -2093,9 +2097,9 @@ class TestConnectionManagerComprehensive:
         assert global_stats["excluded_players"] == 1
         assert global_stats["successful_deliveries"] == 2  # Only player1 and player3
         assert global_stats["failed_deliveries"] == 0
-        assert str(player1_id) in global_stats["delivery_details"]
-        assert str(player2_id) not in global_stats["delivery_details"]  # Excluded
-        assert str(player3_id) in global_stats["delivery_details"]
+        assert player1_id in global_stats["delivery_details"]
+        assert player2_id not in global_stats["delivery_details"]  # Excluded
+        assert player3_id in global_stats["delivery_details"]
 
     @pytest.mark.asyncio
     async def test_broadcast_to_room_mixed_connection_types(
@@ -2135,7 +2139,11 @@ class TestConnectionManagerComprehensive:
 
         # Mock room manager to return subscribers (use UUID strings)
         connection_manager.room_manager = Mock()
-        connection_manager.room_manager.get_room_subscribers.return_value = {str(player1_id), str(player2_id), str(player3_id)}
+        connection_manager.room_manager.get_room_subscribers.return_value = {
+            str(player1_id),
+            str(player2_id),
+            str(player3_id),
+        }
 
         # Broadcast to room
         test_event = {"type": "room_broadcast", "content": "Hello Room"}
@@ -2607,16 +2615,23 @@ class TestConnectionManagerComprehensive:
     @pytest.mark.asyncio
     async def test_broadcast_to_room(self, connection_manager, mock_websocket):
         """Test broadcasting to room."""
-        # Setup room subscription
-        connection_manager.room_subscriptions["test_room"] = {"player1", "player2"}
+        # Use UUID strings for player IDs
+        player1_id = _str_to_uuid("player1")
+        player2_id = _str_to_uuid("player2")
+        player1_id_str = str(player1_id)
+        player2_id_str = str(player2_id)
 
-        # Setup WebSocket connections
+        # Mock room manager to return UUID string subscribers
+        connection_manager.room_manager = Mock()
+        connection_manager.room_manager.get_room_subscribers.return_value = {player1_id_str, player2_id_str}
+
+        # Setup WebSocket connections using UUID keys
         connection_id1 = str(uuid.uuid4())
         connection_id2 = str(uuid.uuid4())
         connection_manager.active_websockets[connection_id1] = mock_websocket
         connection_manager.active_websockets[connection_id2] = mock_websocket
-        connection_manager.player_websockets["player1"] = [connection_id1]
-        connection_manager.player_websockets["player2"] = [connection_id2]
+        connection_manager.player_websockets[player1_id] = [connection_id1]
+        connection_manager.player_websockets[player2_id] = [connection_id2]
 
         event = {"type": "room_event", "data": "test_data"}
         await connection_manager.broadcast_to_room("test_room", event)
@@ -2627,19 +2642,26 @@ class TestConnectionManagerComprehensive:
     @pytest.mark.asyncio
     async def test_broadcast_to_room_with_exclude(self, connection_manager, mock_websocket):
         """Test broadcasting to room with excluded player."""
-        # Setup room subscription
-        connection_manager.room_subscriptions["test_room"] = {"player1", "player2"}
+        # Use UUID strings for player IDs
+        player1_id = _str_to_uuid("player1")
+        player2_id = _str_to_uuid("player2")
+        player1_id_str = str(player1_id)
+        player2_id_str = str(player2_id)
 
-        # Setup WebSocket connections
+        # Mock room manager to return UUID string subscribers
+        connection_manager.room_manager = Mock()
+        connection_manager.room_manager.get_room_subscribers.return_value = {player1_id_str, player2_id_str}
+
+        # Setup WebSocket connections using UUID keys
         connection_id1 = str(uuid.uuid4())
         connection_id2 = str(uuid.uuid4())
         connection_manager.active_websockets[connection_id1] = mock_websocket
         connection_manager.active_websockets[connection_id2] = mock_websocket
-        connection_manager.player_websockets["player1"] = [connection_id1]
-        connection_manager.player_websockets["player2"] = [connection_id2]
+        connection_manager.player_websockets[player1_id] = [connection_id1]
+        connection_manager.player_websockets[player2_id] = [connection_id2]
 
         event = {"type": "room_event", "data": "test_data"}
-        await connection_manager.broadcast_to_room("test_room", event, exclude_player="player1")
+        await connection_manager.broadcast_to_room("test_room", event, exclude_player=player1_id)
 
         # Should have sent to only player2
         assert mock_websocket.send_json.call_count == 1

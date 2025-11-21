@@ -542,6 +542,7 @@ class TestWebSocketEndpointRoute:
             # When token resolves but no player record found, path player_id should be used as fallback
             path_player_id = str(uuid4())
             import uuid as uuid_module
+
             path_player_uuid = uuid_module.UUID(path_player_id)
 
             # Call the endpoint

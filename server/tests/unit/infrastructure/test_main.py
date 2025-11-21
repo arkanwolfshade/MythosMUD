@@ -443,6 +443,7 @@ class TestWebSocketEndpoints:
             await websocket_endpoint_route(mock_websocket, test_player_id)
             # The endpoint converts the string player_id to UUID
             import uuid as uuid_module
+
             expected_uuid = uuid_module.UUID(test_player_id)
             mock_handler.assert_called_once_with(
                 mock_websocket, expected_uuid, None, connection_manager=mock_resolve.return_value
@@ -471,6 +472,7 @@ class TestWebSocketEndpoints:
             await websocket_endpoint_route(mock_websocket, test_player_id)
             # The endpoint converts the string player_id to UUID
             import uuid as uuid_module
+
             expected_uuid = uuid_module.UUID(test_player_id)
             mock_handler.assert_called_once_with(
                 mock_websocket, expected_uuid, None, connection_manager=mock_resolve.return_value
@@ -499,6 +501,7 @@ class TestWebSocketEndpoints:
             await websocket_endpoint_route(mock_websocket, test_player_id)
             # The endpoint converts the string player_id to UUID
             import uuid as uuid_module
+
             expected_uuid = uuid_module.UUID(test_player_id)
             mock_handler.assert_called_once_with(
                 mock_websocket, expected_uuid, None, connection_manager=mock_resolve.return_value

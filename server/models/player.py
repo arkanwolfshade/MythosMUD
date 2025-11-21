@@ -311,9 +311,10 @@ class PlayerChannelPreferences(Base):
 
     __tablename__ = "player_channel_preferences"
 
-    # Primary key - UUID stored as VARCHAR to match players.player_id exactly
-    # CRITICAL: Must use same type as Player.player_id (UUID(as_uuid=False) = VARCHAR)
-    # Using Column syntax to match Player model exactly
+    # Primary key - UUID to match players.player_id exactly
+    # CRITICAL: Must use UUID(as_uuid=False) to match Player.player_id type
+    # Both use UUID(as_uuid=False) which creates UUID column type in PostgreSQL
+    # The as_uuid=False parameter only affects Python type handling (strings vs UUID objects)
     player_id = Column(
         UUID(as_uuid=False),
         ForeignKey("players.player_id", ondelete="CASCADE"),
