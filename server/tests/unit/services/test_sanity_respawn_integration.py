@@ -124,15 +124,17 @@ async def test_sanity_respawn_flow_when_sanity_hits_minus_100(session_factory):
             # Actually perform the respawn using a fresh session
             # In production, this would use container.database_manager.get_session_maker()
             # For the test, we'll use the session factory to create a new session
+            # Convert string player_id to UUID for type safety
+            player_id_uuid = uuid.UUID(player_id)
             async with session_maker() as respawn_session:
                 respawn_service = PlayerRespawnService()
-                await respawn_service.move_player_to_limbo(player_id, "catatonia_failover", respawn_session)
-                await respawn_service.respawn_player(player_id, respawn_session)
+                await respawn_service.move_player_to_limbo(player_id_uuid, "catatonia_failover", respawn_session)
+                await respawn_service.respawn_player(player_id_uuid, respawn_session)
 
         # Get session maker for failover callback to use
-        from server.database import DatabaseManager
+        from server.database import get_database_manager
 
-        db_manager = DatabaseManager()
+        db_manager = get_database_manager()
         session_maker = db_manager.get_session_maker()
 
         # Create catatonia registry with failover callback
@@ -202,9 +204,28 @@ async def test_sanity_respawn_flow_from_high_sanity_to_minus_100(session_factory
         async def failover_callback(player_id: str, current_san: int) -> None:
             """Track failover callback invocations."""
             failover_calls.append({"player_id": player_id, "current_san": current_san})
-            respawn_service = PlayerRespawnService()
-            await respawn_service.move_player_to_limbo(player_id, "catatonia_failover", session)
-            await respawn_service.respawn_player(player_id, session)
+            # Note: In production, the failover callback uses container.database_manager
+            # to get a completely independent session. In tests, we need to wait for
+            # the sanity service transaction to complete before attempting respawn.
+            import asyncio
+
+            await asyncio.sleep(0.2)  # Allow sanity service transaction to complete
+
+            # Actually perform the respawn using a fresh session
+            # In production, this would use container.database_manager.get_session_maker()
+            # For the test, we'll use the session factory to create a new session
+            # Convert string player_id to UUID for type safety
+            player_id_uuid = uuid.UUID(player_id)
+            async with session_maker() as respawn_session:
+                respawn_service = PlayerRespawnService()
+                await respawn_service.move_player_to_limbo(player_id_uuid, "catatonia_failover", respawn_session)
+                await respawn_service.respawn_player(player_id_uuid, respawn_session)
+
+        # Get session maker for failover callback to use
+        from server.database import get_database_manager
+
+        db_manager = get_database_manager()
+        session_maker = db_manager.get_session_maker()
 
         registry = CatatoniaRegistry(failover_callback=failover_callback)
 
@@ -224,6 +245,11 @@ async def test_sanity_respawn_flow_from_high_sanity_to_minus_100(session_factory
             reason_code="test_massive_loss",
         )
         await session.commit()
+
+        # Wait for failover callback to complete (it runs as a background task)
+        import asyncio
+
+        await asyncio.sleep(0.5)  # Give failover callback time to execute
 
         # Refresh player
         await session.refresh(player)

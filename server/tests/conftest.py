@@ -574,11 +574,13 @@ def test_client(mock_application_container):
 
 
 @pytest.fixture
-async def async_test_client():
+async def async_test_client(mock_application_container):
     """Create an async test client with properly initialized app state for async tests."""
-    from httpx import AsyncClient
+    from httpx import ASGITransport, AsyncClient
 
     from ..events.event_bus import EventBus
+    from ..game.player_service import PlayerService
+    from ..game.room_service import RoomService
     from ..main import app
     from ..persistence import get_persistence, reset_persistence
     from ..realtime.event_handler import RealTimeEventHandler
@@ -596,9 +598,43 @@ async def async_test_client():
     app.state.persistence = get_persistence(event_bus=event_bus)
     app.state.server_shutdown_pending = False
 
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    # Create real PlayerService and RoomService with real persistence
+    player_service = PlayerService(app.state.persistence)
+    room_service = RoomService(app.state.persistence)
+
+    # Use the comprehensive mock container
+    app.state.container = mock_application_container
+    # Update container's persistence, event_bus, and services with real instances
+    mock_application_container.persistence = app.state.persistence
+    mock_application_container.event_bus = app.state.event_handler.event_bus
+    mock_application_container.event_handler = app.state.event_handler
+    mock_application_container.player_service = player_service
+    mock_application_container.room_service = room_service
+
+    # Also set these on app.state for backward compatibility
+    app.state.event_bus = app.state.event_handler.event_bus
+    app.state.player_service = player_service
+    app.state.room_service = room_service
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        client.app = app  # Attach app for backward compatibility
         client.app.state.server_shutdown_pending = False
-        yield client
+        try:
+            yield client
+        finally:
+            # Cleanup database connections before event loop closes (Windows-specific fix)
+            # This prevents "Event loop is closed" errors when asyncpg tries to use closed loop
+            try:
+                from ..database import get_database_manager
+
+                db_manager = get_database_manager()
+                if db_manager and hasattr(db_manager, "engine") and db_manager.engine:
+                    # Dispose of connection pool to close all connections
+                    await db_manager.engine.dispose()
+            except Exception:
+                # Ignore cleanup errors - connections will be cleaned up by process exit
+                pass
 
 
 @pytest.fixture

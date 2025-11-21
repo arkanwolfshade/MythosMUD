@@ -6,6 +6,7 @@ As documented in the Pnakotic Manuscripts, resurrection requires careful navigat
 the spaces between worlds.
 """
 
+import uuid
 from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -54,7 +55,7 @@ class PlayerRespawnService:
             player_combat_service_available=bool(player_combat_service),
         )
 
-    async def move_player_to_limbo(self, player_id: str, death_location: str, session: AsyncSession) -> bool:
+    async def move_player_to_limbo(self, player_id: uuid.UUID, death_location: str, session: AsyncSession) -> bool:
         """
         Move a dead player to the limbo room.
 
@@ -98,7 +99,7 @@ class PlayerRespawnService:
             await session.rollback()
             return False
 
-    async def get_respawn_room(self, player_id: str, session: AsyncSession) -> str:
+    async def get_respawn_room(self, player_id: uuid.UUID, session: AsyncSession) -> str:
         """
         Get the respawn room for a player.
 
@@ -132,7 +133,7 @@ class PlayerRespawnService:
             logger.error("Error getting respawn room, using default", player_id=player_id, error=str(e))
             return DEFAULT_RESPAWN_ROOM
 
-    async def respawn_player(self, player_id: str, session: AsyncSession) -> bool:
+    async def respawn_player(self, player_id: uuid.UUID, session: AsyncSession) -> bool:
         """
         Respawn a dead player at their respawn location with full HP.
 
@@ -178,10 +179,7 @@ class PlayerRespawnService:
             # Combat state must be cleared upon resurrection to prevent dimensional entanglement
             if self._player_combat_service:
                 try:
-                    from uuid import UUID
-
-                    player_uuid = UUID(player_id)
-                    await self._player_combat_service.clear_player_combat_state(player_uuid)
+                    await self._player_combat_service.clear_player_combat_state(player_id)
                     logger.info("Cleared combat state for respawned player", player_id=player_id)
                 except Exception as e:
                     logger.error(

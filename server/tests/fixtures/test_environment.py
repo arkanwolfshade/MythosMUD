@@ -8,6 +8,7 @@ configuring test databases, and managing test resources.
 import os
 import shutil
 import tempfile
+import uuid
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from typing import Any
@@ -406,11 +407,18 @@ class TestDataSetup:
         """Set up dual connection scenario"""
         assert env.connection_manager is not None, "connection_manager must be initialized"
 
+        # Convert string player_id to UUID for type safety
+        # If player_id is a valid UUID string, use it; otherwise generate a new UUID
+        try:
+            player_id_uuid = uuid.UUID(player_id)
+        except (ValueError, TypeError):
+            player_id_uuid = uuid.uuid4()
+
         # Create WebSocket connection
-        ws_success = await env.connection_manager.connect_websocket(mock_websocket(), player_id, "test_session")
+        ws_success = await env.connection_manager.connect_websocket(mock_websocket(), player_id_uuid, "test_session")
 
         # Create SSE connection
-        sse_connection_id = await env.connection_manager.connect_sse(player_id, "test_session")
+        sse_connection_id = await env.connection_manager.connect_sse(player_id_uuid, "test_session")
 
         return {
             "player_id": player_id,
@@ -441,7 +449,12 @@ class TestDataSetup:
 
         # Switch to new session
         new_session_id = "new_test_session"
-        await env.connection_manager.handle_new_game_session(player_id, new_session_id)
+        # Convert string player_id to UUID for type safety
+        try:
+            player_id_uuid = uuid.UUID(player_id)
+        except (ValueError, TypeError):
+            player_id_uuid = uuid.uuid4()
+        await env.connection_manager.handle_new_game_session(player_id_uuid, new_session_id)
 
         return {
             "player_id": player_id,
@@ -529,7 +542,12 @@ class TestCleanup:
     async def cleanup_player_data(env: Environment, player_id: str):
         """Clean up data for specific player"""
         assert env.connection_manager is not None, "connection_manager must be initialized"
-        await env.connection_manager.force_disconnect_player(player_id)
+        # Convert string player_id to UUID for type safety
+        try:
+            player_id_uuid = uuid.UUID(player_id)
+        except (ValueError, TypeError):
+            player_id_uuid = uuid.uuid4()
+        await env.connection_manager.force_disconnect_player(player_id_uuid)
 
     @staticmethod
     async def cleanup_old_sessions(env: Environment, hours: int = 1):

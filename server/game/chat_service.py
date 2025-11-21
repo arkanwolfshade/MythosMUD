@@ -25,19 +25,27 @@ class ChatMessage:
 
     def __init__(
         self,
-        sender_id: str,
+        sender_id: uuid.UUID | str,
         sender_name: str,
         channel: str,
         content: str,
-        target_id: str | None = None,
+        target_id: uuid.UUID | str | None = None,
         target_name: str | None = None,
     ):
         self.id = str(uuid.uuid4())
-        self.sender_id = sender_id
+        # Convert UUID to string for JSON serialization
+        self.sender_id = str(sender_id) if isinstance(sender_id, uuid.UUID) else sender_id
         self.sender_name = sender_name
         self.channel = channel
         self.content = content
-        self.target_id = target_id
+        # Convert UUID to string for JSON serialization
+        # Type annotation ensures mypy knows this is str | None after conversion
+        if target_id is None:
+            self.target_id: str | None = None
+        elif isinstance(target_id, uuid.UUID):
+            self.target_id = str(target_id)
+        else:
+            self.target_id = target_id
         self.target_name = target_name
         self.timestamp = datetime.now(UTC)
         self.echo_sent = False
@@ -230,7 +238,7 @@ class ChatService:
             # For other channels, use room level subject
             return f"chat.{chat_message.channel}.{room_id}"
 
-    async def send_say_message(self, player_id: str, message: str) -> dict[str, Any]:
+    async def send_say_message(self, player_id: uuid.UUID | str, message: str) -> dict[str, Any]:
         """
         Send a say message to players in the same room.
 
@@ -300,9 +308,8 @@ class ChatService:
             return {"success": False, "error": "You cannot send messages at this time"}
 
         # Create chat message
-        chat_message = ChatMessage(
-            sender_id=str(player_id), sender_name=player.name, channel="say", content=message.strip()
-        )
+        # ChatMessage accepts UUID | str and converts internally
+        chat_message = ChatMessage(sender_id=player_id, sender_name=player.name, channel="say", content=message.strip())
 
         # Log the chat message for AI processing
         self.chat_logger.log_chat_message(
@@ -381,7 +388,7 @@ class ChatService:
 
         return {"success": True, "message": message_dict, "room_id": room_id}
 
-    async def send_local_message(self, player_id: str, message: str) -> dict[str, Any]:
+    async def send_local_message(self, player_id: uuid.UUID | str, message: str) -> dict[str, Any]:
         """
         Send a local message to players in the same sub-zone.
 
@@ -454,8 +461,9 @@ class ChatService:
             return {"success": False, "error": "You cannot send messages at this time"}
 
         # Create chat message
+        # ChatMessage accepts UUID | str and converts internally
         chat_message = ChatMessage(
-            sender_id=str(player_id), sender_name=player.name, channel="local", content=message.strip()
+            sender_id=player_id, sender_name=player.name, channel="local", content=message.strip()
         )
 
         # Log the chat message for AI processing
@@ -533,7 +541,7 @@ class ChatService:
 
         return {"success": True, "message": message_dict, "room_id": room_id}
 
-    async def send_global_message(self, player_id: str, message: str) -> dict[str, Any]:
+    async def send_global_message(self, player_id: uuid.UUID | str, message: str) -> dict[str, Any]:
         """
         Send a global message to all players.
 
@@ -599,8 +607,9 @@ class ChatService:
             return {"success": False, "error": "You cannot send messages at this time"}
 
         # Create chat message
+        # ChatMessage accepts UUID | str and converts internally
         chat_message = ChatMessage(
-            sender_id=str(player_id), sender_name=player.name, channel="global", content=message.strip()
+            sender_id=player_id, sender_name=player.name, channel="global", content=message.strip()
         )
 
         # Log the chat message for AI processing
@@ -666,7 +675,7 @@ class ChatService:
 
         return {"success": True, "message": chat_message.to_dict()}
 
-    async def send_system_message(self, player_id: str, message: str) -> dict[str, Any]:
+    async def send_system_message(self, player_id: uuid.UUID | str, message: str) -> dict[str, Any]:
         """
         Send a system message to all players.
 
@@ -716,8 +725,9 @@ class ChatService:
         # This ensures admins can always communicate important system information
 
         # Create chat message
+        # ChatMessage accepts UUID | str and converts internally
         chat_message = ChatMessage(
-            sender_id=str(player_id), sender_name=player.name, channel="system", content=message.strip()
+            sender_id=player_id, sender_name=player.name, channel="system", content=message.strip()
         )
 
         # Log the chat message for AI processing
@@ -783,7 +793,9 @@ class ChatService:
 
         return {"success": True, "message": chat_message.to_dict()}
 
-    async def send_whisper_message(self, sender_id: str, target_id: str, message: str) -> dict[str, Any]:
+    async def send_whisper_message(
+        self, sender_id: uuid.UUID | str, target_id: uuid.UUID | str, message: str
+    ) -> dict[str, Any]:
         """
         Send a whisper message from one player to another.
 
@@ -840,6 +852,7 @@ class ChatService:
             return {"success": False, "error": "You are sending messages too quickly. Please wait a moment."}
 
         # Create chat message
+        # ChatMessage accepts UUID | str and converts internally
         chat_message = ChatMessage(
             sender_id=sender_id,
             sender_name=sender_name,
@@ -922,7 +935,7 @@ class ChatService:
 
         return {"success": True, "message": chat_message.to_dict()}
 
-    async def send_emote_message(self, player_id: str, action: str) -> dict[str, Any]:
+    async def send_emote_message(self, player_id: uuid.UUID | str, action: str) -> dict[str, Any]:
         """
         Send an emote message to players in the same room.
 
@@ -1002,8 +1015,9 @@ class ChatService:
             return {"success": False, "error": "You cannot send messages at this time"}
 
         # Create chat message for emote
+        # ChatMessage accepts UUID | str and converts internally
         chat_message = ChatMessage(
-            sender_id=str(player_id), sender_name=player.name, channel="emote", content=action.strip()
+            sender_id=player_id, sender_name=player.name, channel="emote", content=action.strip()
         )
 
         # Log the emote message for AI processing
@@ -1079,7 +1093,7 @@ class ChatService:
     # In-memory storage for player poses (not persisted to database)
     _player_poses: dict[str, str] = {}
 
-    async def set_player_pose(self, player_id: str, pose: str) -> dict[str, Any]:
+    async def set_player_pose(self, player_id: uuid.UUID | str, pose: str) -> dict[str, Any]:
         """
         Set a player's pose (temporary, in-memory only).
 
@@ -1118,9 +1132,8 @@ class ChatService:
         self._player_poses[player_id] = pose.strip()
 
         # Create a chat message to notify room of pose change
-        chat_message = ChatMessage(
-            sender_id=str(player_id), sender_name=player.name, channel="pose", content=pose.strip()
-        )
+        # ChatMessage accepts UUID | str and converts internally
+        chat_message = ChatMessage(sender_id=player_id, sender_name=player.name, channel="pose", content=pose.strip())
 
         logger.info(
             "Player pose set successfully",
@@ -1141,7 +1154,7 @@ class ChatService:
 
         return {"success": True, "pose": pose.strip(), "room_id": room_id}
 
-    def get_player_pose(self, player_id: str) -> str | None:
+    def get_player_pose(self, player_id: uuid.UUID | str) -> str | None:
         """
         Get a player's current pose.
 
@@ -1154,7 +1167,7 @@ class ChatService:
         player_id = self._normalize_player_id(player_id)
         return self._player_poses.get(player_id)
 
-    def clear_player_pose(self, player_id: str) -> bool:
+    def clear_player_pose(self, player_id: uuid.UUID | str) -> bool:
         """
         Clear a player's pose.
 
@@ -1192,7 +1205,7 @@ class ChatService:
 
         return poses
 
-    async def send_predefined_emote(self, player_id: str, emote_command: str) -> dict[str, Any]:
+    async def send_predefined_emote(self, player_id: uuid.UUID | str, emote_command: str) -> dict[str, Any]:
         """
         Send a predefined emote message using the EmoteService.
 
@@ -1271,9 +1284,8 @@ class ChatService:
             return {"success": False, "error": str(e)}
 
         # Create chat message for the predefined emote
-        chat_message = ChatMessage(
-            sender_id=str(player_id), sender_name=player.name, channel="emote", content=other_message
-        )
+        # ChatMessage accepts UUID | str and converts internally
+        chat_message = ChatMessage(sender_id=player_id, sender_name=player.name, channel="emote", content=other_message)
 
         # Log the emote message for AI processing
         self.chat_logger.log_chat_message(
@@ -1364,6 +1376,7 @@ class ChatService:
 
             # Add target information for whisper messages
             if hasattr(chat_message, "target_id") and chat_message.target_id:
+                # target_id is guaranteed to be str | None after ChatMessage.__init__
                 message_data["target_id"] = chat_message.target_id
             if hasattr(chat_message, "target_name") and chat_message.target_name:
                 message_data["target_name"] = chat_message.target_name
@@ -1406,7 +1419,7 @@ class ChatService:
             )
             return False
 
-    async def mute_channel(self, player_id: str, channel: str) -> bool:
+    async def mute_channel(self, player_id: uuid.UUID | str, channel: str) -> bool:
         """Mute a specific channel for a player."""
         player_id_str = self._normalize_player_id(player_id)
 
@@ -1419,7 +1432,7 @@ class ChatService:
             logger.info("Player muted channel", player_id=player_id_str, channel=channel)
         return bool(success)
 
-    async def unmute_channel(self, player_id: str, channel: str) -> bool:
+    async def unmute_channel(self, player_id: uuid.UUID | str, channel: str) -> bool:
         """Unmute a specific channel for a player."""
         player_id_str = self._normalize_player_id(player_id)
 
@@ -1432,12 +1445,12 @@ class ChatService:
             logger.info("Player unmuted channel", player_id=player_id_str, channel=channel)
         return bool(success)
 
-    def is_channel_muted(self, player_id: str, channel: str) -> bool:
+    def is_channel_muted(self, player_id: uuid.UUID | str, channel: str) -> bool:
         """Check if a channel is muted for a player."""
         player_id_str = self._normalize_player_id(player_id)
         return bool(self.user_manager.is_channel_muted(player_id_str, channel))
 
-    async def mute_player(self, muter_id: str, target_player_name: str) -> bool:
+    async def mute_player(self, muter_id: uuid.UUID | str, target_player_name: str) -> bool:
         """Mute a specific player for another player."""
         # Get muter name for logging
         muter_id_str = self._normalize_player_id(muter_id)
@@ -1456,7 +1469,7 @@ class ChatService:
             logger.info("Player muted another player", muter_id=muter_id_str, target=target_player_name)
         return bool(success)
 
-    async def unmute_player(self, muter_id: str, target_player_name: str) -> bool:
+    async def unmute_player(self, muter_id: uuid.UUID | str, target_player_name: str) -> bool:
         """Unmute a specific player for another player."""
         # Get muter name for logging
         muter_id_str = self._normalize_player_id(muter_id)
@@ -1475,14 +1488,14 @@ class ChatService:
             logger.info("Player unmuted another player", muter_id=muter_id_str, target=target_player_name)
         return bool(success)
 
-    def is_player_muted(self, muter_id: str, target_player_id: str) -> bool:
+    def is_player_muted(self, muter_id: uuid.UUID | str, target_player_id: uuid.UUID | str) -> bool:
         """Check if a player is muted by another player."""
         muter_id_str = self._normalize_player_id(muter_id)
         target_id_str = self._normalize_player_id(target_player_id)
         return bool(self.user_manager.is_player_muted(muter_id_str, target_id_str))
 
     async def mute_global(
-        self, muter_id: str, target_player_name: str, duration_minutes: int | None = None, reason: str = ""
+        self, muter_id: uuid.UUID | str, target_player_name: str, duration_minutes: int | None = None, reason: str = ""
     ) -> bool:
         """Apply a global mute to a player (cannot use any chat channels)."""
         # Get muter name for logging
@@ -1506,7 +1519,7 @@ class ChatService:
             )
         return bool(success)
 
-    async def unmute_global(self, unmuter_id: str, target_player_name: str) -> bool:
+    async def unmute_global(self, unmuter_id: uuid.UUID | str, target_player_name: str) -> bool:
         """Remove a global mute from a player."""
         # Get unmuter name for logging
         unmuter_id_str = self._normalize_player_id(unmuter_id)
@@ -1525,31 +1538,41 @@ class ChatService:
             logger.info("Player globally unmuted", unmuter_id=unmuter_id_str, target=target_player_name)
         return bool(success)
 
-    def is_globally_muted(self, player_id: str) -> bool:
+    def is_globally_muted(self, player_id: uuid.UUID | str) -> bool:
         """Check if a player is globally muted."""
-        return bool(self.user_manager.is_globally_muted(player_id))
+        # user_manager expects string, normalize UUID to string
+        player_id_str = self._normalize_player_id(player_id)
+        return bool(self.user_manager.is_globally_muted(player_id_str))
 
-    async def add_admin(self, player_id: str) -> bool:
+    async def add_admin(self, player_id: uuid.UUID | str) -> bool:
         """Add a player as an admin."""
-        player = await self.player_service.get_player_by_id(player_id)
-        player_name = player.name if player else player_id
+        # Normalize UUID to string for user_manager and player_service
+        player_id_str = self._normalize_player_id(player_id)
+        player = await self.player_service.get_player_by_id(player_id_str)
+        player_name = player.name if player else player_id_str
 
-        self.user_manager.add_admin(player_id, player_name)
+        self.user_manager.add_admin(player_id_str, player_name)
+        # Structlog handles UUID objects automatically, no need to convert to string
         logger.info("Player added as admin", player_id=player_id, player_name=player_name)
         return True
 
-    async def remove_admin(self, player_id: str) -> bool:
+    async def remove_admin(self, player_id: uuid.UUID | str) -> bool:
         """Remove a player's admin status."""
-        player = await self.player_service.get_player_by_id(player_id)
-        player_name = player.name if player else player_id
+        # Normalize UUID to string for user_manager and player_service
+        player_id_str = self._normalize_player_id(player_id)
+        player = await self.player_service.get_player_by_id(player_id_str)
+        player_name = player.name if player else player_id_str
 
-        self.user_manager.remove_admin(player_id, player_name)
+        self.user_manager.remove_admin(player_id_str, player_name)
+        # Structlog handles UUID objects automatically, no need to convert to string
         logger.info("Player admin status removed", player_id=player_id, player_name=player_name)
         return True
 
-    def is_admin(self, player_id: str) -> bool:
+    def is_admin(self, player_id: uuid.UUID | str) -> bool:
         """Check if a player is an admin."""
-        return bool(self.user_manager.is_admin(player_id))
+        # user_manager expects string, normalize UUID to string
+        player_id_str = self._normalize_player_id(player_id)
+        return bool(self.user_manager.is_admin(player_id_str))
 
     def _validate_chat_message(self, chat_message: ChatMessage) -> bool:
         """Validate chat message before transmission."""
@@ -1630,9 +1653,11 @@ class ChatService:
         """Check if a player can send a message."""
         return bool(self.user_manager.can_send_message(sender_id, target_id, channel))
 
-    def get_player_mutes(self, player_id: str) -> dict[str, Any]:
+    def get_player_mutes(self, player_id: uuid.UUID | str) -> dict[str, Any]:
         """Get all mutes applied by a player."""
-        return cast(dict[str, Any], self.user_manager.get_player_mutes(player_id))
+        # user_manager expects string, normalize UUID to string
+        player_id_str = self._normalize_player_id(player_id)
+        return cast(dict[str, Any], self.user_manager.get_player_mutes(player_id_str))
 
     def get_user_management_stats(self) -> dict[str, Any]:
         """Get user management system statistics."""
@@ -1643,7 +1668,7 @@ class ChatService:
         messages = self._room_messages.get(room_id, [])
         return [msg.to_dict() for msg in messages[-limit:]]
 
-    async def get_mute_status(self, player_id: str) -> str:
+    async def get_mute_status(self, player_id: uuid.UUID | str) -> str:
         """
         Get comprehensive mute status for a player.
 
@@ -1654,21 +1679,34 @@ class ChatService:
             Formatted string with mute status information
         """
         try:
-            # Get player name
-            player = await self.player_service.get_player_by_id(player_id)
+            # Convert player_id to UUID if it's a string
+            if isinstance(player_id, str):
+                try:
+                    player_id_uuid = uuid.UUID(player_id)
+                except (ValueError, AttributeError):
+                    logger.error("Invalid player_id format", player_id=player_id)
+                    return "Invalid player ID format."
+            else:
+                player_id_uuid = player_id
+
+            # Get player name (player_service accepts UUID)
+            player = await self.player_service.get_player_by_id(player_id_uuid)
             if not player:
                 return "Player not found."
 
             player_name = player.name
 
+            # Convert to string for user_manager methods (they expect strings)
+            player_id_str = str(player_id_uuid)
+
             # Load player's mute data first
-            self.user_manager.load_player_mutes(player_id)
+            self.user_manager.load_player_mutes(player_id_str)
 
             # Get mute information from UserManager
-            mute_info = self.user_manager.get_player_mutes(player_id)
+            mute_info = self.user_manager.get_player_mutes(player_id_str)
 
             # Check if player is admin
-            is_admin = self.user_manager.is_admin(player_id)
+            is_admin = self.user_manager.is_admin(player_id_str)
 
             # Build status report
             status_lines = []
@@ -1769,6 +1807,7 @@ class ChatService:
             return "\n".join(status_lines)
 
         except Exception as e:
+            # Structlog handles UUID objects automatically, no need to convert to string
             logger.error("Error getting mute status", error=str(e), player_id=player_id)
             return "Error retrieving mute status."
 

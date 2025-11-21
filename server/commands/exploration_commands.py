@@ -249,7 +249,7 @@ async def handle_go_command(
         # Pass the same event bus that persistence uses to ensure events are published correctly
         # Also pass player_combat_service to enforce combat state validation
         movement_service = MovementService(persistence._event_bus, player_combat_service=player_combat_service)
-        success = movement_service.move_player(str(player.player_id), room_id, target_room_id)
+        success = movement_service.move_player(player.player_id, room_id, target_room_id)
 
         if success:
             logger.info("Player moved successfully", player=player_name, from_room=room_id, to_room=target_room_id)

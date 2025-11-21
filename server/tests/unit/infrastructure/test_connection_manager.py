@@ -989,10 +989,11 @@ class TestConnectionManagerComprehensive:
         assert len(connection_manager.get_session_connections("session_1")) == 2
 
         # Handle new game session
-        session_results = await connection_manager.handle_new_game_session("test_player", "session_2")
+        test_player_id = uuid.UUID("7d5acc31-364a-4aa6-b880-1592298fdeb3")
+        session_results = await connection_manager.handle_new_game_session(test_player_id, "session_2")
 
-        # Verify session results
-        assert session_results["player_id"] == "test_player"
+        # Verify session results (FastAPI serializes UUIDs to strings in JSON, but in Python dict it's a UUID)
+        assert session_results["player_id"] == test_player_id
         assert session_results["new_session_id"] == "session_2"
         assert session_results["previous_session_id"] == "session_1"
         assert session_results["connections_disconnected"] == 2
@@ -1014,10 +1015,11 @@ class TestConnectionManagerComprehensive:
     async def test_handle_new_game_session_no_existing_connections(self, connection_manager):
         """Test new game session handling when player has no existing connections."""
         # Handle new game session for player with no connections
-        session_results = await connection_manager.handle_new_game_session("test_player", "session_1")
+        test_player_id = uuid.UUID("7d5acc31-364a-4aa6-b880-1592298fdeb3")
+        session_results = await connection_manager.handle_new_game_session(test_player_id, "session_1")
 
-        # Verify session results
-        assert session_results["player_id"] == "test_player"
+        # Verify session results (FastAPI serializes UUIDs to strings in JSON, but in Python dict it's a UUID)
+        assert session_results["player_id"] == test_player_id
         assert session_results["new_session_id"] == "session_1"
         assert session_results["previous_session_id"] is None
         assert session_results["connections_disconnected"] == 0
@@ -1055,10 +1057,11 @@ class TestConnectionManagerComprehensive:
             assert success is True
 
             # Handle new game session (should handle errors gracefully)
-            session_results = await connection_manager.handle_new_game_session("test_player", "session_2")
+            test_player_id = uuid.UUID("7d5acc31-364a-4aa6-b880-1592298fdeb3")
+            session_results = await connection_manager.handle_new_game_session(test_player_id, "session_2")
 
-            # Verify session results show error handling
-            assert session_results["player_id"] == "test_player"
+            # Verify session results show error handling (FastAPI serializes UUIDs to strings in JSON, but in Python dict it's a UUID)
+            assert session_results["player_id"] == test_player_id
             assert session_results["new_session_id"] == "session_2"
             assert session_results["success"] is True  # Should still succeed despite connection errors
             # The connection close error is logged but handled gracefully, not reported in errors list
@@ -3033,12 +3036,24 @@ class TestConnectionManagerComprehensive:
         """Test SSE disconnection with sync tracking (no running loop)."""
         # Setup SSE connection
         connection_manager.active_sse_connections["test_player"] = ["sse_conn_id"]
+        # Ensure no websocket connection exists (required for tracking to run)
+        assert not connection_manager.has_websocket_connection("test_player")
 
         with patch("asyncio.get_running_loop", side_effect=RuntimeError("No running loop")):
-            with patch("asyncio.run") as mock_run:
+            with patch("concurrent.futures.ThreadPoolExecutor") as mock_executor_class:
+                mock_executor = Mock()
+                mock_executor_class.return_value = mock_executor
+                mock_future = Mock()
+                mock_executor.submit.return_value = mock_future
+
                 connection_manager.disconnect_sse("test_player")
 
-                mock_run.assert_called_once()
+                # Verify that executor was created and submit was called
+                mock_executor_class.assert_called_once()
+                mock_executor.submit.assert_called_once()
+                # Verify the submitted function would create a new event loop
+                submitted_func = mock_executor.submit.call_args[0][0]
+                assert callable(submitted_func)
 
     @pytest.mark.filterwarnings("ignore:coroutine.*was never awaited:RuntimeWarning")
     def test_disconnect_sse_with_tracking_exception(self, connection_manager):

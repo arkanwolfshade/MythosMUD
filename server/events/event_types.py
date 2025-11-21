@@ -12,6 +12,7 @@ eldritch architecture.
 
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
+from uuid import UUID
 
 
 def _default_timestamp() -> datetime:
@@ -324,7 +325,7 @@ class PlayerHPDecayEvent(BaseEvent):
     state, decreasing their HP by 1 until they reach -10 HP (death).
     """
 
-    player_id: str
+    player_id: UUID
     old_hp: int
     new_hp: int
     decay_amount: int = 1  # Amount of HP lost due to decay
@@ -345,7 +346,7 @@ class PlayerDiedEvent(BaseEvent):
     signaling the transition to the death/respawn sequence.
     """
 
-    player_id: str
+    player_id: UUID
     player_name: str
     room_id: str
     killer_id: str | None = None  # ID of the entity that killed the player
@@ -368,7 +369,7 @@ class PlayerRespawnedEvent(BaseEvent):
     and returns to the game world at their respawn location.
     """
 
-    player_id: str
+    player_id: UUID
     player_name: str
     respawn_room_id: str
     old_hp: int

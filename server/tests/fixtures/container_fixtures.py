@@ -248,13 +248,39 @@ def container_test_client():
         # and engines will be recreated lazily when needed in that loop
         client = TestClient(app)
 
-        yield client
+        try:
+            yield client
+        finally:
+            # CRITICAL: Cleanup database connections before TestClient's loop closes
+            # This prevents "Event loop is closed" errors on Windows
+            # TestClient creates its own event loop for each request, and when the test
+            # finishes, that loop might be closed while async database connections are
+            # still trying to clean up. We need to ensure connections are closed in the
+            # fixture's loop before TestClient tears down.
+            logger.info("Cleaning up database connections before TestClient teardown")
+            try:
+                # Close database connections in the fixture's loop before TestClient closes its loop
+                if not loop.is_closed() and hasattr(container, "database_manager") and container.database_manager:
+                    # Ensure all database operations complete before closing
+                    # Use a timeout to prevent hanging if connections are stuck
+                    try:
+                        loop.run_until_complete(asyncio.wait_for(container.database_manager.close(), timeout=1.0))
+                    except (TimeoutError, RuntimeError):
+                        # Timeout or loop closed - connections will be cleaned up by GC
+                        logger.debug("Database cleanup timed out or loop closed (harmless)")
+            except (RuntimeError, Exception) as e:
+                # Ignore "Event loop is closed" errors - connections will be cleaned up by GC
+                # This can happen if TestClient has already closed its loop
+                # These errors are harmless on Windows where TestClient manages its own loop
+                if "Event loop is closed" not in str(e):
+                    logger.debug("Error closing database connections", error=str(e))
 
         # Cleanup: Shutdown container and dispose all database connections
         logger.info("Shutting down container after test")
         try:
             # Shutdown container (disposes database engines)
-            loop.run_until_complete(container.shutdown())
+            if not loop.is_closed():
+                loop.run_until_complete(container.shutdown())
 
             # CRITICAL: Wait for all async cleanup to complete before closing loop
             # This ensures database connections are fully disposed

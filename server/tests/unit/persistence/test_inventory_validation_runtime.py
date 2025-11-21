@@ -289,7 +289,8 @@ async def test_loading_player_with_corrupt_inventory_raises(
 
     with caplog.at_level(logging.ERROR, logger="server.persistence"):
         with pytest.raises(DatabaseError) as excinfo:
-            persistence.get_player(player_id)
+            # Convert string player_id to UUID for type safety
+            persistence.get_player(uuid.UUID(player_id))
 
     assert "Invalid inventory payload detected in storage" in str(excinfo.value)
     load_logs = [record for record in caplog.records if record.message == "Stored inventory payload failed validation"]

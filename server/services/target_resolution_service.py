@@ -6,6 +6,7 @@ supporting partial name matching, disambiguation, and room-based filtering.
 """
 
 import re
+import uuid
 from typing import Any, Protocol
 
 from ..logging.enhanced_logging_config import get_logger
@@ -17,7 +18,7 @@ logger = get_logger(__name__)
 class PersistenceProtocol(Protocol):
     """Protocol for persistence layer dependency injection."""
 
-    def get_player(self, player_id: str) -> Any: ...
+    def get_player(self, player_id: uuid.UUID) -> Any: ...
     def get_room(self, room_id: str) -> Any: ...
     def get_players_in_room(self, room_id: str) -> list[Any]: ...
 
@@ -47,30 +48,35 @@ class TargetResolutionService:
         self.persistence = persistence
         self.player_service = player_service
 
-    async def resolve_target(self, player_id: str, target_name: str) -> TargetResolutionResult:
+    async def resolve_target(self, player_id: uuid.UUID | str, target_name: str) -> TargetResolutionResult:
         """
         Resolve a target name to specific entities.
 
         Args:
-            player_id: ID of the player performing the action
+            player_id: ID of the player performing the action (UUID or string for backward compatibility)
             target_name: Name or partial name of the target
 
         Returns:
             TargetResolutionResult: Result containing matches and metadata
         """
-        logger.debug("Resolving target", player_id=player_id, target_name=target_name)
+        # Convert to UUID if string (get_player accepts UUID)
+        player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+        # Structlog handles UUID objects automatically, no need to convert to string
+        logger.debug("Resolving target", player_id=player_id_uuid, target_name=target_name)
 
         # Get player's current room
-        player = self.persistence.get_player(player_id)
+        player = self.persistence.get_player(player_id_uuid)
         if not player:
-            logger.warning("Player not found for target resolution", player_id=player_id)
+            # Structlog handles UUID objects automatically, no need to convert to string
+            logger.warning("Player not found for target resolution", player_id=player_id_uuid)
             return TargetResolutionResult(
                 success=False, error_message="Player not found", search_term=target_name, room_id=""
             )
 
         room_id = player.current_room_id
         if not room_id:
-            logger.warning("Player not in a room", player_id=player_id)
+            # Structlog handles UUID objects automatically, no need to convert to string
+            logger.warning("Player not in a room", player_id=player_id_uuid)
             return TargetResolutionResult(
                 success=False, error_message="You are not in a room", search_term=target_name, room_id=""
             )
@@ -103,9 +109,10 @@ class TargetResolutionService:
         npc_matches = await self._search_npcs_in_room(room_id, clean_target, disambiguation_suffix)
         matches.extend(npc_matches)
 
+        # Structlog handles UUID objects automatically, no need to convert to string
         logger.debug(
             "Target resolution completed",
-            player_id=player_id,
+            player_id=player_id_uuid,
             target_name=target_name,
             room_id=room_id,
             player_matches=len(player_matches),

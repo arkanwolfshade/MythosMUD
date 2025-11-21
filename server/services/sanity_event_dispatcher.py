@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import uuid
 from collections.abc import Iterable
 from typing import Any
 
@@ -10,26 +11,31 @@ from ..logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-async def _dispatch_player_event(player_id: str, event_type: str, payload: dict[str, Any]) -> None:
+async def _dispatch_player_event(player_id: uuid.UUID | str, event_type: str, payload: dict[str, Any]) -> None:
     """Send an event to a specific player, swallowing transport errors in headless tests."""
+    # Convert UUID to string for send_game_event (which expects str for JSON serialization)
+    player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
+
     try:
         from ..realtime.sse_handler import send_game_event
     except Exception as exc:  # pragma: no cover - import side effects in tests
         logger.debug(
             "Sanity event dispatch unavailable",
             event_type=event_type,
+            # Structlog handles UUID objects automatically, no need to convert to string
             player_id=player_id,
             error=str(exc),
         )
         return
 
     try:
-        await send_game_event(str(player_id), event_type, payload)
+        await send_game_event(player_id_str, event_type, payload)
     except Exception as exc:  # pragma: no cover - connection manager may be absent in tests
         logger.debug(
             "Failed to deliver sanity event",
             event_type=event_type,
-            player_id=str(player_id),
+            # Structlog handles UUID objects automatically, no need to convert to string
+            player_id=player_id,
             error=str(exc),
         )
 
@@ -58,7 +64,7 @@ def _format_liabilities(liabilities: Iterable[dict[str, Any]] | None) -> list[st
 
 
 async def send_sanity_change_event(
-    player_id: str,
+    player_id: uuid.UUID | str,
     *,
     current_san: int,
     delta: int,
@@ -69,8 +75,10 @@ async def send_sanity_change_event(
     metadata: dict[str, Any] | None = None,
 ) -> None:
     """Notify a player that their SAN changed."""
+    # Convert UUID to string for JSON payload (client expects string)
+    player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
     payload: dict[str, Any] = {
-        "player_id": str(player_id),
+        "player_id": player_id_str,
         "current_san": current_san,
         "max_san": 100,
         "delta": delta,
@@ -87,11 +95,11 @@ async def send_sanity_change_event(
     if metadata:
         payload["metadata"] = metadata
 
-    await _dispatch_player_event(str(player_id), "sanity_change", payload)
+    await _dispatch_player_event(player_id, "sanity_change", payload)
 
 
 async def send_catatonia_event(
-    player_id: str,
+    player_id: uuid.UUID | str,
     *,
     current_san: int | None = None,
     message: str | None = None,
@@ -110,11 +118,11 @@ async def send_catatonia_event(
     if message:
         payload["message"] = message
 
-    await _dispatch_player_event(str(player_id), "catatonia", payload)
+    await _dispatch_player_event(player_id, "catatonia", payload)
 
 
 async def send_rescue_update_event(
-    player_id: str,
+    player_id: uuid.UUID | str,
     *,
     status: str,
     current_san: int | None = None,
@@ -139,7 +147,7 @@ async def send_rescue_update_event(
     if eta_seconds is not None:
         payload["eta_seconds"] = eta_seconds
 
-    await _dispatch_player_event(str(player_id), "rescue_update", payload)
+    await _dispatch_player_event(player_id, "rescue_update", payload)
 
 
 __all__ = [

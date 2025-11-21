@@ -12,6 +12,7 @@ consistency there is power."
 
 import re
 import traceback
+import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
@@ -679,7 +680,8 @@ async def _check_catatonia_block(player_name: str, command: str, request: Reques
     registry = getattr(state, "__dict__", {}).get("catatonia_registry")
     if registry is not None and hasattr(registry, "is_catatonic"):
         try:
-            if registry.is_catatonic(str(player_id)):
+            # is_catatonic accepts UUID | str, converts internally
+            if registry.is_catatonic(player_id):
                 logger.info("Catatonic player command blocked via registry", player=player_name, command=command)
                 return (
                     True,
@@ -689,20 +691,30 @@ async def _check_catatonia_block(player_name: str, command: str, request: Reques
             logger.exception("Catatonia registry lookup failed", player=player_name)
 
     try:
+        # Convert player_id to UUID if needed (Player model stores as string due to UUID(as_uuid=False))
+        player_id_uuid = player_id if isinstance(player_id, uuid.UUID) else uuid.UUID(player_id)
+
         logger.debug(
             "Starting catatonia check",
             player=player_name,
             command=command,
-            player_id=player_id,
+            # Structlog handles UUID objects automatically, no need to convert to string
+            player_id=player_id_uuid,
         )
         async for session in get_async_session():
             try:
-                logger.debug("Database session obtained for catatonia check", player=player_name, player_id=player_id)
-                sanity_record = await session.get(PlayerSanity, str(player_id))
+                # Structlog handles UUID objects automatically, no need to convert to string
+                logger.debug(
+                    "Database session obtained for catatonia check", player=player_name, player_id=player_id_uuid
+                )
+                # PlayerSanity.player_id is UUID type, but stored as string (UUID(as_uuid=False))
+                # SQLAlchemy accepts UUID directly and converts internally
+                sanity_record = await session.get(PlayerSanity, player_id_uuid)
                 logger.debug(
                     "Sanity record retrieved",
                     player=player_name,
-                    player_id=player_id,
+                    # Structlog handles UUID objects automatically, no need to convert to string
+                    player_id=player_id_uuid,
                     sanity_record_exists=bool(sanity_record),
                     current_san=sanity_record.current_san if sanity_record else None,
                     current_tier=sanity_record.current_tier if sanity_record else None,

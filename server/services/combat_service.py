@@ -929,7 +929,7 @@ class CombatService:
                 return
 
             # Get player from database
-            player = await persistence.async_get_player(str(player_id))
+            player = await persistence.async_get_player(player_id)
             if not player:
                 logger.warning("Player not found for HP persistence", player_id=player_id)
                 return

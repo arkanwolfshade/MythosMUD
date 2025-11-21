@@ -44,12 +44,12 @@ class TestPlayerPreferencesIntegration:
                     # Delete test data in reverse dependency order using raw SQL
                     await cleanup_session.execute(
                         text(
-                            "DELETE FROM player_channel_preferences WHERE player_id LIKE 'integration-test-player%' OR player_id LIKE 'player%' OR player_id LIKE 'error-test-player%'"
+                            "DELETE FROM player_channel_preferences WHERE player_id::text LIKE 'integration-test-player%' OR player_id::text LIKE 'player%' OR player_id::text LIKE 'error-test-player%'"
                         )
                     )
                     await cleanup_session.execute(
                         text(
-                            "DELETE FROM players WHERE player_id LIKE 'integration-test-player%' OR player_id LIKE 'player%' OR player_id LIKE 'error-test-player%'"
+                            "DELETE FROM players WHERE player_id::text LIKE 'integration-test-player%' OR player_id::text LIKE 'player%' OR player_id::text LIKE 'error-test-player%'"
                         )
                     )
                     await cleanup_session.execute(text("DELETE FROM users WHERE email LIKE '%@example.com'"))
@@ -77,8 +77,8 @@ class TestPlayerPreferencesIntegration:
             )
             session.add(user)
 
-            # Create test player with unique ID
-            player_id = f"integration-test-player-{unique_suffix}"
+            # Create test player with unique ID (UUID)
+            player_id = uuid.uuid4()
             player = Player(
                 player_id=player_id,
                 user_id=user_id,
@@ -145,23 +145,23 @@ class TestPlayerPreferencesIntegration:
     async def test_multiple_players_preferences(self, async_session_factory, preferences_service):
         """Test managing preferences for multiple players."""
         async with async_session_factory() as session:
-            # Generate unique suffix to avoid constraint violations on repeated test runs
+            # Generate unique player IDs (UUIDs) to avoid constraint violations on repeated test runs
             unique_suffix = str(uuid.uuid4())[:8]
 
             # Create test users and players with unique identifiers
             players_data = [
-                (f"player1-{unique_suffix}", f"Player1-{unique_suffix}"),
-                (f"player2-{unique_suffix}", f"Player2-{unique_suffix}"),
-                (f"player3-{unique_suffix}", f"Player3-{unique_suffix}"),
+                (uuid.uuid4(), f"Player1-{unique_suffix}"),
+                (uuid.uuid4(), f"Player2-{unique_suffix}"),
+                (uuid.uuid4(), f"Player3-{unique_suffix}"),
             ]
 
             for player_id, name in players_data:
                 user_id = str(uuid.uuid4())
                 user = User(
                     id=user_id,
-                    email=f"{player_id}@example.com",
-                    username=player_id,
-                    display_name=player_id,
+                    email=f"{name.lower()}@example.com",
+                    username=name.lower(),
+                    display_name=name,
                     hashed_password="hashed",
                     is_active=True,
                     is_superuser=False,
@@ -283,7 +283,7 @@ class TestPlayerPreferencesIntegration:
             # Test foreign key constraint
             with pytest.raises(IntegrityError):
                 invalid_prefs = PlayerChannelPreferences(
-                    player_id="non-existent-player",
+                    player_id=uuid.uuid4(),  # Non-existent player ID
                     default_channel="local",
                     muted_channels=[],
                 )
@@ -295,10 +295,9 @@ class TestPlayerPreferencesIntegration:
         """Test error handling and recovery scenarios."""
         # Generate unique suffix to avoid constraint violations on repeated test runs
         unique_suffix = str(uuid.uuid4())[:8]
-        player_id = f"error-test-player-{unique_suffix}"
-
         async with async_session_factory() as session:
             # Create test user and player with unique identifiers
+            unique_suffix = str(uuid.uuid4())[:8]
             user_id = str(uuid.uuid4())
             user = User(
                 id=user_id,
@@ -312,6 +311,7 @@ class TestPlayerPreferencesIntegration:
             )
             session.add(user)
 
+            player_id = uuid.uuid4()
             player = Player(player_id=player_id, user_id=user_id, name=f"ErrorPlayer-{unique_suffix}", level=1)
             session.add(player)
             await session.commit()

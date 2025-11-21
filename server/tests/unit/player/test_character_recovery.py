@@ -36,14 +36,15 @@ def stub_invite_manager(monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
 class TestCharacterRecoveryFlow:
     """Test the character recovery flow for disconnected users."""
 
-    # Use the test_client fixture from conftest.py instead of defining our own
+    # Use async_test_client to avoid Windows event loop issues with TestClient
 
-    def test_user_without_character_goes_to_stats_rolling(self, test_client):
+    @pytest.mark.asyncio
+    async def test_user_without_character_goes_to_stats_rolling(self, async_test_client):
         """Test that a user without a character is directed to stats rolling."""
         # Step 1: Register a new user
         unique_username = f"recovery_test_{uuid.uuid4().hex[:8]}"
 
-        register_response = test_client.post(
+        register_response = await async_test_client.post(
             "/auth/register", json={"username": unique_username, "password": "testpass123", "invite_code": "TEST123"}
         )
 
@@ -55,7 +56,9 @@ class TestCharacterRecoveryFlow:
         assert register_data["character_name"] is None
 
         # Step 2: Login with the same user (simulating reconnection)
-        login_response = test_client.post("/auth/login", json={"username": unique_username, "password": "testpass123"})
+        login_response = await async_test_client.post(
+            "/auth/login", json={"username": unique_username, "password": "testpass123"}
+        )
 
         assert login_response.status_code == 200
         login_data = login_response.json()
@@ -66,7 +69,7 @@ class TestCharacterRecoveryFlow:
 
         # Step 3: Verify the user can roll stats (indicating they're in stats rolling flow)
         token = login_data["access_token"]
-        stats_response = test_client.post(
+        stats_response = await async_test_client.post(
             "/api/players/roll-stats",
             headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
             json={"method": "3d6"},
@@ -76,13 +79,14 @@ class TestCharacterRecoveryFlow:
         stats_data = stats_response.json()
         assert "stats" in stats_data
 
-    def test_user_with_character_goes_to_game(self, test_client):
+    @pytest.mark.asyncio
+    async def test_user_with_character_goes_to_game(self, async_test_client):
         """Test that a user with a character goes directly to the game."""
-        test_client.app.state.server_shutdown_pending = False
+        async_test_client.app.state.server_shutdown_pending = False
         # Step 1: Register a user
         unique_username = f"game_test_{uuid.uuid4().hex[:8]}"
 
-        register_response = test_client.post(
+        register_response = await async_test_client.post(
             "/auth/register", json={"username": unique_username, "password": "testpass123", "invite_code": "TEST123"}
         )
 
@@ -91,7 +95,7 @@ class TestCharacterRecoveryFlow:
         token = register_data["access_token"]
 
         # Step 2: Roll stats
-        stats_response = test_client.post(
+        stats_response = await async_test_client.post(
             "/api/players/roll-stats",
             headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
             json={"method": "3d6"},
@@ -102,7 +106,7 @@ class TestCharacterRecoveryFlow:
         stats = stats_data["stats"]
 
         # Step 3: Create character
-        create_response = test_client.post(
+        create_response = await async_test_client.post(
             "/api/players/create-character",
             headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
             json={"name": unique_username, "stats": stats},
@@ -111,7 +115,9 @@ class TestCharacterRecoveryFlow:
         assert create_response.status_code == 200
 
         # Step 4: Login again (simulating reconnection after character creation)
-        login_response = test_client.post("/auth/login", json={"username": unique_username, "password": "testpass123"})
+        login_response = await async_test_client.post(
+            "/auth/login", json={"username": unique_username, "password": "testpass123"}
+        )
 
         assert login_response.status_code == 200
         login_data = login_response.json()
@@ -120,11 +126,12 @@ class TestCharacterRecoveryFlow:
         assert login_data["has_character"]
         assert login_data["character_name"] == unique_username
 
-    def test_registration_returns_no_character(self, test_client):
+    @pytest.mark.asyncio
+    async def test_registration_returns_no_character(self, async_test_client):
         """Test that registration always returns has_character=False."""
         unique_username = f"reg_test_{uuid.uuid4().hex[:8]}"
 
-        register_response = test_client.post(
+        register_response = await async_test_client.post(
             "/auth/register", json={"username": unique_username, "password": "testpass123", "invite_code": "TEST123"}
         )
 

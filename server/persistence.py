@@ -409,12 +409,13 @@ class PersistenceLayer:
         player.set_equipped_items(payload["equipped"])
         return inventory_json, equipped_json
 
-    def _ensure_inventory_row(self, conn: Any, player_id: str, inventory_json: str, equipped_json: str) -> None:
+    def _ensure_inventory_row(self, conn: Any, player_id: UUID, inventory_json: str, equipped_json: str) -> None:
         insert_query = """
             INSERT OR REPLACE INTO player_inventories (player_id, inventory_json, equipped_json)
             VALUES (%s, %s, %s)
             """
         insert_query = self._convert_insert_or_replace(insert_query, "player_inventories", "player_id")
+        # psycopg2 handles UUID objects directly via register_uuid() in postgres_adapter
         conn.execute(
             insert_query,
             (player_id, inventory_json, equipped_json),
@@ -433,7 +434,9 @@ class PersistenceLayer:
         if row is None:
             default_inventory = "[]"
             default_equipped = "{}"
-            self._ensure_inventory_row(conn, str(player.player_id), default_inventory, default_equipped)
+            # player.player_id is already a string (UUID(as_uuid=False)), convert to UUID for method call
+            player_id_uuid = UUID(str(player.player_id))
+            self._ensure_inventory_row(conn, player_id_uuid, default_inventory, default_equipped)
             inventory_json = default_inventory
             equipped_json = default_equipped
         else:
@@ -448,12 +451,14 @@ class PersistenceLayer:
         except (TypeError, json.JSONDecodeError) as exc:
             logger.error(
                 "Stored inventory payload failed to deserialize",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 error=str(exc),
             )
             context = create_error_context()
             context.metadata["operation"] = "load_player_inventory"
-            context.metadata["player_id"] = str(player.player_id)
+            # Structlog handles UUID objects automatically, no need to convert to string
+            context.metadata["player_id"] = player.player_id
             log_and_raise(
                 DatabaseError,
                 "Failed to deserialize stored inventory payload",
@@ -472,12 +477,14 @@ class PersistenceLayer:
         except InventorySchemaValidationError as exc:
             logger.error(
                 "Stored inventory payload failed validation",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 error=str(exc),
             )
             context = create_error_context()
             context.metadata["operation"] = "load_player_inventory"
-            context.metadata["player_id"] = str(player.player_id)
+            # Structlog handles UUID objects automatically, no need to convert to string
+            context.metadata["player_id"] = player.player_id
             log_and_raise(
                 DatabaseError,
                 "Invalid inventory payload detected in storage",
@@ -748,10 +755,11 @@ class PersistenceLayer:
             )
             return None  # type: ignore[unreachable]  # Defensive return after NoReturn
 
-    def get_player(self, player_id: str) -> Player | None:
+    def get_player(self, player_id: UUID) -> Player | None:
         """Get a player by ID."""
         context = create_error_context()
         context.metadata["operation"] = "get_player"
+        # Structlog handles UUID objects automatically, no need to convert to string
         context.metadata["player_id"] = player_id
 
         try:
@@ -759,9 +767,9 @@ class PersistenceLayer:
                 # PostgreSQL uses %s placeholders, not ?
                 # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
                 # Future: Migrate to SQLAlchemy ORM for better query construction
-                player_id_str = str(player_id) if player_id else None
+                # psycopg2 handles UUID objects directly via register_uuid() in postgres_adapter
                 query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE player_id = %s"
-                row = conn.execute(query, (player_id_str,)).fetchone()
+                row = conn.execute(query, (player_id,)).fetchone()
                 if row:
                     player_data = self._convert_row_to_player_data(row)
                     player = Player(**player_data)
@@ -775,6 +783,7 @@ class PersistenceLayer:
                 DatabaseError,
                 f"Database error retrieving player by ID '{player_id}': {e}",
                 context=context,
+                # Structlog handles UUID objects automatically, no need to convert to string
                 details={"player_id": player_id, "error": str(e)},
                 user_friendly="Failed to retrieve player information",
             )
@@ -817,7 +826,8 @@ class PersistenceLayer:
         context = create_error_context()
         context.metadata["operation"] = "save_player"
         context.metadata["player_name"] = player.name
-        context.metadata["player_id"] = str(player.player_id)
+        # Structlog handles UUID objects automatically, no need to convert to string
+        context.metadata["player_id"] = player.player_id
 
         try:
             with self._lock, self._get_connection() as conn:
@@ -838,8 +848,10 @@ class PersistenceLayer:
                         else:
                             last_active = player.last_active.isoformat()
 
-                    # Convert UUIDs to strings for PostgreSQL (VARCHAR storage)
-                    player_id_str = str(player.player_id) if player.player_id else None
+                    # Convert UUIDs to strings for PostgreSQL storage
+                    # Note: player.player_id is always a string (UUID(as_uuid=False) in model)
+                    # Ensure we always have a string for psycopg2
+                    player_id_str = str(player.player_id) if player.player_id is not None else None
                     user_id_str = str(player.user_id) if player.user_id else None
 
                     if player_id_str is None:
@@ -924,7 +936,10 @@ class PersistenceLayer:
                             last_active,
                         ),
                     )
-                    self._ensure_inventory_row(conn, player_id_str, inventory_json, equipped_json)
+                    # Convert player_id_str to UUID for _ensure_inventory_row (which expects UUID)
+                    player_id_uuid = UUID(player_id_str) if player_id_str else None
+                    if player_id_uuid:
+                        self._ensure_inventory_row(conn, player_id_uuid, inventory_json, equipped_json)
                     conn.commit()
                     self._log(f"Saved player {player.name}")
                     self._run_hooks("after_save_player", player)
@@ -933,7 +948,8 @@ class PersistenceLayer:
                         DatabaseError,
                         f"Unique constraint error saving player: {e}",
                         context=context,
-                        details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
+                        # Structlog handles UUID objects automatically, no need to convert to string
+                        details={"player_name": player.name, "player_id": player.player_id, "error": str(e)},
                         user_friendly="Player name already exists",
                     )
                 except psycopg2.Error as e:
@@ -941,7 +957,8 @@ class PersistenceLayer:
                         DatabaseError,
                         f"Database error saving player: {e}",
                         context=context,
-                        details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
+                        # Structlog handles UUID objects automatically, no need to convert to string
+                        details={"player_name": player.name, "player_id": player.player_id, "error": str(e)},
                         user_friendly="Failed to save player",
                     )
         except OSError as e:
@@ -949,7 +966,8 @@ class PersistenceLayer:
                 DatabaseError,
                 f"File system error saving player: {e}",
                 context=context,
-                details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
+                # Structlog handles UUID objects automatically, no need to convert to string
+                details={"player_name": player.name, "player_id": player.player_id, "error": str(e)},
                 user_friendly="Failed to save player - file system error",
             )
         except Exception as e:
@@ -957,11 +975,12 @@ class PersistenceLayer:
                 DatabaseError,
                 f"Unexpected error saving player: {e}",
                 context=context,
-                details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
+                # Structlog handles UUID objects automatically, no need to convert to string
+                details={"player_name": player.name, "player_id": player.player_id, "error": str(e)},
                 user_friendly="Failed to save player",
             )
 
-    def update_player_last_active(self, player_id: str, last_active: datetime | None = None) -> None:
+    def update_player_last_active(self, player_id: UUID, last_active: datetime | None = None) -> None:
         """
         Update the last_active timestamp for a player.
 
@@ -984,11 +1003,12 @@ class PersistenceLayer:
                         last_active = last_active.replace(tzinfo=UTC)
 
                     last_active_iso = last_active.isoformat()
-                    player_id_str = str(player_id) if player_id else None
-
+                    # psycopg2 handles UUID objects directly via register_uuid() in postgres_adapter
+                    # Query matches by player_id (UUID) or name (string) - both use same value for flexibility
+                    # Note: This allows updating by UUID or by name, but name comparison uses UUID string
                     conn.execute(
-                        "UPDATE players SET last_active = %s WHERE player_id = %s OR name = %s",
-                        (last_active_iso, player_id_str, player_id),
+                        "UPDATE players SET last_active = %s WHERE player_id = %s",
+                        (last_active_iso, player_id),
                     )
                     conn.commit()
                 except Exception as e:
@@ -1187,7 +1207,7 @@ class PersistenceLayer:
                 user_friendly="Failed to save players",
             )
 
-    def delete_player(self, player_id: str) -> bool:
+    def delete_player(self, player_id: UUID) -> bool:
         """
         Delete a player from the database.
 
@@ -1204,6 +1224,7 @@ class PersistenceLayer:
             try:
                 # First check if player exists
                 # PostgreSQL uses %s placeholders, not ?
+                # psycopg2 handles UUID objects directly via register_uuid() in postgres_adapter
                 cursor = conn.execute("SELECT player_id FROM players WHERE player_id = %s", (player_id,))
                 if not cursor.fetchone():
                     self._log("Delete attempted for non-existent player")
@@ -1436,11 +1457,14 @@ class PersistenceLayer:
 
             # CRITICAL: Use atomic field update instead of save_player()
             # This prevents race conditions with other systems updating the same player
-            self.update_player_health(str(player.player_id), -amount, f"damage:{damage_type}")
+            # player.player_id is already a string (UUID(as_uuid=False)), convert to UUID for method call
+            player_id_uuid = UUID(str(player.player_id))
+            self.update_player_health(player_id_uuid, -amount, f"damage:{damage_type}")
 
             self._logger.info(
                 "Player health reduced atomically",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 player_name=player.name,
                 damage=amount,
                 old_health=current_health,
@@ -1450,7 +1474,8 @@ class PersistenceLayer:
         except ValueError as e:
             self._logger.error(
                 "Invalid damage amount",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 amount=amount,
                 error=str(e),
                 exc_info=True,
@@ -1459,7 +1484,8 @@ class PersistenceLayer:
         except Exception as e:
             self._logger.critical(
                 "CRITICAL: Failed to persist player damage",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 player_name=player.name,
                 amount=amount,
                 damage_type=damage_type,
@@ -1502,11 +1528,14 @@ class PersistenceLayer:
             player.set_stats(stats)
 
             # CRITICAL: Use atomic field update instead of save_player()
-            self.update_player_health(str(player.player_id), amount, "healing")
+            # player.player_id is already a string (UUID(as_uuid=False)), convert to UUID for method call
+            player_id_uuid = UUID(str(player.player_id))
+            self.update_player_health(player_id_uuid, amount, "healing")
 
             self._logger.info(
                 "Player health increased atomically",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 player_name=player.name,
                 healing=amount,
                 old_health=current_health,
@@ -1515,7 +1544,8 @@ class PersistenceLayer:
         except ValueError as e:
             self._logger.error(
                 "Invalid healing amount",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 amount=amount,
                 error=str(e),
                 exc_info=True,
@@ -1524,7 +1554,8 @@ class PersistenceLayer:
         except Exception as e:
             self._logger.critical(
                 "CRITICAL: Failed to persist player healing",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 player_name=player.name,
                 amount=amount,
                 error=str(e),
@@ -1612,11 +1643,14 @@ class PersistenceLayer:
 
             # CRITICAL: Use atomic field update instead of save_player()
             # This prevents overwriting health or other fields with stale cached values
-            self.update_player_xp(str(player.player_id), amount, source)
+            # player.player_id is already a string (UUID(as_uuid=False)), convert to UUID for method call
+            player_id_uuid = UUID(str(player.player_id))
+            self.update_player_xp(player_id_uuid, amount, source)
 
             self._logger.info(
                 "Player experience increased atomically",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 player_name=player.name,
                 xp_gained=amount,
                 old_xp=old_xp,
@@ -1627,7 +1661,8 @@ class PersistenceLayer:
         except ValueError as e:
             self._logger.error(
                 "Invalid experience amount",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 amount=amount,
                 error=str(e),
                 exc_info=True,
@@ -1636,7 +1671,8 @@ class PersistenceLayer:
         except Exception as e:
             self._logger.critical(
                 "CRITICAL: Failed to persist player experience gain",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 player_name=player.name,
                 amount=amount,
                 source=source,
@@ -1668,9 +1704,7 @@ class PersistenceLayer:
         # This prevents blocking the event loop during database operations
         await asyncio.to_thread(self.gain_experience, player, amount, source)
 
-    def update_player_stat_field(
-        self, player_id: str | UUID, field_name: str, delta: int | float, reason: str = ""
-    ) -> None:
+    def update_player_stat_field(self, player_id: UUID, field_name: str, delta: int | float, reason: str = "") -> None:
         """
         Update a specific numeric field in player stats using atomic database operation.
 
@@ -1681,7 +1715,7 @@ class PersistenceLayer:
         the same player simultaneously (e.g., combat damage + XP awards).
 
         Args:
-            player_id: Player's unique ID (string or UUID)
+            player_id: Player's unique ID (UUID)
             field_name: Name of the stat field to update (e.g., "current_health", "experience_points")
             delta: Amount to add (positive) or subtract (negative) from the field
             reason: Reason for the update (for logging)
@@ -1702,8 +1736,8 @@ class PersistenceLayer:
             Invalidates player cache to ensure fresh data on next get_player().
         """
         try:
-            # Convert UUID to string if needed
-            player_id_str = str(player_id)
+            # psycopg2 handles UUID objects directly via register_uuid() in postgres_adapter
+            # Structlog handles UUID objects automatically, no need to convert to string
 
             # Validate delta type (security: prevent SQL injection via type confusion)
             if not isinstance(delta, (int, float)):
@@ -1743,11 +1777,12 @@ class PersistenceLayer:
                     )
                     WHERE player_id = %s
                     """,
-                    (field_name, delta, player_id_str),
+                    (field_name, delta, player_id),
                 )
 
                 if cursor.rowcount == 0:
-                    raise ValueError(f"Player {player_id_str} not found")
+                    # Structlog handles UUID objects automatically, no need to convert to string
+                    raise ValueError(f"Player {player_id} not found")
 
                 conn.commit()
 
@@ -1756,7 +1791,8 @@ class PersistenceLayer:
 
             self._logger.info(
                 "Player stat field updated atomically",
-                player_id=player_id_str,
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player_id,
                 field_name=field_name,
                 delta=delta,
                 reason=reason,
@@ -1765,7 +1801,8 @@ class PersistenceLayer:
         except ValueError as e:
             self._logger.error(
                 "Invalid stat field update",
-                player_id=str(player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player_id,
                 field_name=field_name,
                 delta=delta,
                 error=str(e),
@@ -1775,7 +1812,8 @@ class PersistenceLayer:
         except Exception as e:
             self._logger.critical(
                 "CRITICAL: Failed to update player stat field",
-                player_id=str(player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player_id,
                 field_name=field_name,
                 delta=delta,
                 reason=reason,
@@ -1785,7 +1823,7 @@ class PersistenceLayer:
             )
             raise
 
-    def update_player_health(self, player_id: str | UUID, delta: int, reason: str = "") -> None:
+    def update_player_health(self, player_id: UUID, delta: int, reason: str = "") -> None:
         """
         Update player health using atomic database operation.
 
@@ -1806,7 +1844,7 @@ class PersistenceLayer:
         """
         self.update_player_stat_field(player_id, "current_health", delta, reason)
 
-    def update_player_xp(self, player_id: str | UUID, delta: int, reason: str = "") -> None:
+    def update_player_xp(self, player_id: UUID, delta: int, reason: str = "") -> None:
         """
         Update player experience points using atomic database operation.
 
@@ -1826,39 +1864,43 @@ class PersistenceLayer:
 
         # experience_points is a separate INTEGER column, not in stats JSONB
         # Use atomic UPDATE to prevent race conditions
-        player_id_str = str(player_id)
         context = create_error_context()
         context.metadata["operation"] = "update_player_xp"
-        context.metadata["player_id"] = player_id_str
+        # Structlog handles UUID objects automatically, no need to convert to string
+        context.metadata["player_id"] = player_id
 
         try:
             with self._lock, self._get_connection() as conn:
+                # psycopg2 handles UUID objects directly via register_uuid() in postgres_adapter
                 cursor = conn.execute(
                     """
                     UPDATE players
                     SET experience_points = experience_points + %s
                     WHERE player_id = %s
                     """,
-                    (delta, player_id_str),
+                    (delta, player_id),
                 )
 
                 if cursor.rowcount == 0:
-                    raise ValueError(f"Player {player_id_str} not found")
+                    # Structlog handles UUID objects automatically, no need to convert to string
+                    raise ValueError(f"Player {player_id} not found")
 
                 conn.commit()
 
                 self._logger.info(
                     "Player XP updated atomically",
-                    player_id=player_id_str,
+                    # Structlog handles UUID objects automatically, no need to convert to string
+                    player_id=player_id,
                     delta=delta,
                     reason=reason,
                 )
         except psycopg2.Error as e:
             log_and_raise(
                 DatabaseError,
-                f"Database error updating XP for player '{player_id_str}': {e}",
+                f"Database error updating XP for player '{player_id}': {e}",
                 context=context,
-                details={"player_id": player_id_str, "delta": delta, "error": str(e)},
+                # Structlog handles UUID objects automatically, no need to convert to string
+                details={"player_id": player_id, "delta": delta, "error": str(e)},
                 user_friendly="Failed to update experience points",
             )
 
@@ -1918,7 +1960,7 @@ class PersistenceLayer:
         async_persistence = get_async_persistence()
         return await async_persistence.get_player_by_name(name)
 
-    async def async_get_player(self, player_id: str) -> Player | None:
+    async def async_get_player(self, player_id: UUID) -> Player | None:
         """Get a player by ID using async database operations."""
         from .async_persistence import get_async_persistence
 
@@ -1960,7 +2002,7 @@ class PersistenceLayer:
         async_persistence = get_async_persistence()
         return await async_persistence.save_players(players)
 
-    async def async_delete_player(self, player_id: str) -> bool:
+    async def async_delete_player(self, player_id: UUID) -> bool:
         """Delete a player using async database operations."""
         from .async_persistence import get_async_persistence
 

@@ -6,7 +6,8 @@ for real-time game communication.
 """
 
 import time
-from typing import Any
+import uuid
+from typing import Any, cast
 from unittest.mock import Mock
 
 from fastapi import APIRouter, HTTPException, Request, WebSocket
@@ -51,7 +52,7 @@ def _ensure_connection_manager(state) -> Any:
 
 
 @realtime_router.get("/events/{player_id}")
-async def sse_events(player_id: str, request: Request) -> StreamingResponse:
+async def sse_events(player_id: uuid.UUID, request: Request) -> StreamingResponse:
     """
     Server-Sent Events stream for real-time game updates.
     Supports session tracking for dual connection management.
@@ -102,7 +103,11 @@ async def sse_events_token(request: Request) -> StreamingResponse:
         context = create_context_from_request(request)
         context.user_id = user_id
         raise LoggedHTTPException(status_code=401, detail="User has no player record", context=context)
-    player_id = str(player.player_id)
+    # player.player_id is a SQLAlchemy Column[str] but returns UUID at runtime
+    # Convert to UUID for type safety - always convert to string first
+    player_id_value = player.player_id
+    player_id = uuid.UUID(str(player_id_value))
+    # Structlog handles UUID objects automatically, no need to convert to string
     logger.info("SSE connection attempt", player_id=player_id, session_id=session_id)
 
     # Note: CORS is handled by global middleware; avoid environment-specific logic here
@@ -168,21 +173,30 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
     session_id = websocket.query_params.get("session_id")  # New session parameter
 
     payload = decode_access_token(token)
+    player_id: uuid.UUID  # Type annotation for final player_id value
     if not payload or "sub" not in payload:
         # Fallback: allow anonymous connection only for tests (no identity)
-        player_id = websocket.query_params.get("player_id")
-        if not player_id:
+        player_id_str = websocket.query_params.get("player_id")
+        if not player_id_str:
             context = create_context_from_websocket(websocket)
             raise LoggedHTTPException(status_code=401, detail="Invalid or missing token", context=context)
 
         # CRITICAL FIX: Validate that the test player exists
         persistence = get_persistence()
-        player = persistence.get_player(player_id)
+        # Convert str player_id to UUID for get_player
+        player_id_uuid = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
+        player = persistence.get_player(player_id_uuid)
         if not player:
-            logger.warning("WebSocket connection attempt for non-existent player", player_id=player_id)
+            logger.warning("WebSocket connection attempt for non-existent player", player_id=player_id_str)
             context = create_context_from_websocket(websocket)
-            context.user_id = player_id
-            raise LoggedHTTPException(status_code=404, detail=f"Player {player_id} not found", context=context)
+            context.user_id = player_id_str
+            raise LoggedHTTPException(status_code=404, detail=f"Player {player_id_str} not found", context=context)
+        # Convert player_id to UUID for consistency
+        # SQLAlchemy Column[str] returns UUID at runtime, cast for type checker
+        player_id_uuid_value = cast(uuid.UUID | str, player.player_id)
+        player_id = (
+            uuid.UUID(str(player_id_uuid_value)) if isinstance(player_id_uuid_value, str) else player_id_uuid_value
+        )
     else:
         user_id = str(payload["sub"]).strip()
         persistence = get_persistence()
@@ -191,8 +205,13 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
             context = create_context_from_websocket(websocket)
             context.user_id = user_id
             raise LoggedHTTPException(status_code=401, detail="User has no player record", context=context)
-        player_id = str(player.player_id)
+        # player.player_id is a SQLAlchemy Column[str] but returns UUID at runtime
+        # Convert to UUID for type safety - always convert to string first
+        # Cast to tell type checker that at runtime this is UUID or str, not Column
+        player_id_value = cast(uuid.UUID | str, player.player_id)
+        player_id = uuid.UUID(str(player_id_value))
 
+    # Structlog handles UUID objects automatically, no need to convert to string
     logger.info("WebSocket connection attempt", player_id=player_id, session_id=session_id)
 
     try:
@@ -200,12 +219,13 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
             websocket, player_id, session_id, connection_manager=connection_manager, token=token
         )
     except Exception as e:
+        # Structlog handles UUID objects automatically, no need to convert to string
         logger.error("Error in WebSocket endpoint", player_id=player_id, error=str(e), exc_info=True)
         raise
 
 
 @realtime_router.get("/connections/{player_id}")
-async def get_player_connections(player_id: str, request: Request) -> dict[str, Any]:
+async def get_player_connections(player_id: uuid.UUID, request: Request) -> dict[str, Any]:
     """
     Get connection information for a player.
     Returns detailed connection metadata including session information.
@@ -243,7 +263,7 @@ async def get_player_connections(player_id: str, request: Request) -> dict[str, 
 
 
 @realtime_router.post("/connections/{player_id}/session")
-async def handle_new_game_session(player_id: str, request: Request) -> dict[str, Any]:
+async def handle_new_game_session(player_id: uuid.UUID, request: Request) -> dict[str, Any]:
     """
     Handle a new game session for a player.
     This will disconnect existing connections and establish a new session.
@@ -263,7 +283,7 @@ async def handle_new_game_session(player_id: str, request: Request) -> dict[str,
 
         if not new_session_id:
             context = create_context_from_request(request)
-            context.user_id = player_id
+            context.user_id = str(player_id)
             raise LoggedHTTPException(status_code=400, detail="session_id is required", context=context)
 
         # Handle new game session
@@ -275,12 +295,13 @@ async def handle_new_game_session(player_id: str, request: Request) -> dict[str,
 
     except json.JSONDecodeError as e:
         context = create_context_from_request(request)
-        context.user_id = player_id
+        context.user_id = str(player_id)
         raise LoggedHTTPException(status_code=400, detail="Invalid JSON in request body", context=context) from e
     except Exception as e:
+        # Structlog handles UUID objects automatically, no need to convert to string
         logger.error("Error handling new game session", player_id=player_id, error=str(e), exc_info=True)
         context = create_context_from_request(request)
-        context.user_id = player_id
+        context.user_id = str(player_id)
         raise LoggedHTTPException(
             status_code=500, detail=f"Error handling new game session: {str(e)}", context=context
         ) from e
@@ -345,17 +366,32 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None
             return
 
         token = websocket.query_params.get("token")
-        resolved_player_id = player_id
+        # Convert path parameter player_id (str) to UUID
+        resolved_player_id: uuid.UUID | None = None
+        try:
+            resolved_player_id = uuid.UUID(player_id)
+        except (ValueError, AttributeError, TypeError):
+            # If conversion fails, try to resolve from token
+            pass
+
         payload = decode_access_token(token)
         if payload and "sub" in payload:
             user_id = str(payload["sub"]).strip()
             persistence = get_persistence()
             player = persistence.get_player_by_user_id(user_id)
             if player:
-                resolved_player_id = str(player.player_id)
+                # player.player_id is a SQLAlchemy Column[str] but returns UUID at runtime
+                # Convert to UUID for type safety - always convert to string first
+                player_id_value = player.player_id
+                resolved_player_id = uuid.UUID(str(player_id_value))
+
+        # resolved_player_id needs to be UUID for handle_websocket_connection
+        if not resolved_player_id:
+            raise HTTPException(status_code=401, detail="Unable to resolve player ID")
         await handle_websocket_connection(
             websocket, resolved_player_id, session_id, connection_manager=connection_manager
         )
     except Exception as e:
+        # Structlog handles UUID objects automatically, no need to convert to string
         logger.error("Error in WebSocket endpoint", player_id=player_id, error=str(e), exc_info=True)
         raise

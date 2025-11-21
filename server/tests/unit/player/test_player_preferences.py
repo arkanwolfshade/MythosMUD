@@ -37,10 +37,31 @@ async def session_factory():
         await engine.dispose()
 
 
+@pytest.fixture(autouse=True)
+async def cleanup_players(session_factory):
+    """Delete all players, preferences, users, and sanity records before each test to ensure isolation."""
+    yield
+    # Cleanup after test
+    async with session_factory() as session:
+        from sqlalchemy import text
+
+        try:
+            # Delete in order to respect foreign key constraints
+            await session.execute(text("DELETE FROM player_channel_preferences"))
+            await session.execute(text("DELETE FROM player_sanity"))
+            await session.execute(text("DELETE FROM players"))
+            await session.execute(text("DELETE FROM users"))
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            # Ignore cleanup errors - test might have already cleaned up
+
+
 async def create_test_player(session: AsyncSession, player_id: str) -> Player:
     """Create a test player for preferences testing."""
-    # Add unique suffix to username to avoid conflicts in parallel test runs
+    # Add unique suffix to both player_id and username to avoid conflicts in parallel test runs
     unique_suffix = str(uuid.uuid4())[:8]
+    unique_player_id = f"{player_id}-{unique_suffix}"
     unique_username = f"{player_id}-{unique_suffix}"
     user = User(
         id=str(uuid.uuid4()),
@@ -53,7 +74,7 @@ async def create_test_player(session: AsyncSession, player_id: str) -> Player:
         is_verified=True,
     )
     player = Player(
-        player_id=player_id,
+        player_id=unique_player_id,  # Use unique player_id to avoid duplicate key violations
         user_id=user.id,
         name=unique_username,  # Use unique username to avoid duplicate key violations
     )
@@ -596,33 +617,38 @@ class TestPlayerPreferencesServiceErrorPaths:
     @pytest.mark.asyncio
     async def test_database_exception_in_update_channel(self, session_factory):
         """Test database exception handling in update_default_channel."""
+        from unittest.mock import patch
+
+        from sqlalchemy.exc import SQLAlchemyError
+
         async with session_factory() as session:
             player = await create_test_player(session, "test-player-update")
             service = PlayerPreferencesService()
             await service.create_player_preferences(session, player.player_id)
 
-            # Close the session to cause an exception
-            await session.close()
-
-            # Try to use closed session
-            result = await service.update_default_channel(session, player.player_id, "global")
-            assert result["success"] is False
-            assert "error" in result
+            # Mock session.execute to raise an exception
+            with patch.object(session, "execute", side_effect=SQLAlchemyError("Database connection error")):
+                result = await service.update_default_channel(session, player.player_id, "global")
+                assert result["success"] is False
+                assert "error" in result
 
     @pytest.mark.asyncio
     async def test_database_exception_in_mute_channel(self, session_factory):
         """Test database exception handling in mute_channel."""
+        from unittest.mock import patch
+
+        from sqlalchemy.exc import SQLAlchemyError
+
         async with session_factory() as session:
             player = await create_test_player(session, "test-player-mute")
             service = PlayerPreferencesService()
             await service.create_player_preferences(session, player.player_id)
 
-            # Close the session to cause an exception
-            await session.close()
-
-            # Try to use closed session
-            result = await service.mute_channel(session, player.player_id, "local")
-            assert result["success"] is False
+            # Mock session.execute to raise an exception
+            with patch.object(session, "execute", side_effect=SQLAlchemyError("Database connection error")):
+                result = await service.mute_channel(session, player.player_id, "local")
+                assert result["success"] is False
+                assert "error" in result
 
     @pytest.mark.asyncio
     async def test_unmute_channel_not_in_muted_list(self, session_factory):
@@ -640,17 +666,20 @@ class TestPlayerPreferencesServiceErrorPaths:
     @pytest.mark.asyncio
     async def test_database_exception_in_unmute_channel(self, session_factory):
         """Test database exception handling in unmute_channel."""
+        from unittest.mock import patch
+
+        from sqlalchemy.exc import SQLAlchemyError
+
         async with session_factory() as session:
             player = await create_test_player(session, "test-player-unmute-err")
             service = PlayerPreferencesService()
             await service.create_player_preferences(session, player.player_id)
 
-            # Close the session to cause an exception
-            await session.close()
-
-            # Try to use closed session
-            result = await service.unmute_channel(session, player.player_id, "local")
-            assert result["success"] is False
+            # Mock session.execute to raise an exception
+            with patch.object(session, "execute", side_effect=SQLAlchemyError("Database connection error")):
+                result = await service.unmute_channel(session, player.player_id, "local")
+                assert result["success"] is False
+                assert "error" in result
 
     @pytest.mark.asyncio
     async def test_database_exception_in_get_muted_channels(self, session_factory):

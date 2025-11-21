@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 import time
+import uuid
 from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
@@ -134,24 +135,29 @@ class PassiveSanityFluxService:
             sanity_records = await self._load_sanity_records(session)
 
             for player in players:
-                player_id = cast(str, player.player_id)
+                # Convert player.player_id to UUID for apply_sanity_adjustment
+                # SQLAlchemy Column[str] returns UUID at runtime, but mypy sees it as Column[str]
+                # Always convert to string first, then to UUID
+                player_id_value = player.player_id
+                player_id_uuid = uuid.UUID(str(player_id_value))
+                player_id_str = str(player_id_uuid)
                 room_id = cast(str, player.current_room_id)
 
-                processed_player_ids.add(player_id)
+                processed_player_ids.add(player_id_str)
                 context = self._resolve_context(player, timestamp)
                 base_flux = context.base_flux
 
                 companion_flux = self._companion_modifier(player, players, sanity_records)
                 total_flux = base_flux + companion_flux
 
-                total_flux = self._apply_adaptive_resistance(player_id, room_id, total_flux)
-                delta = self._apply_residual(player_id, total_flux)
+                total_flux = self._apply_adaptive_resistance(player_id_str, room_id, total_flux)
+                delta = self._apply_residual(player_id_str, total_flux)
 
                 # Log flux calculation for debugging
                 if abs(delta) > 5 or abs(total_flux) > 5:
                     logger.warning(
                         "Large flux or delta calculated for player",
-                        player_id=player_id,
+                        player_id=player_id_str,
                         room_id=room_id,
                         base_flux=base_flux,
                         companion_flux=companion_flux,
@@ -166,7 +172,7 @@ class PassiveSanityFluxService:
                     continue
 
                 result = await sanity_service.apply_sanity_adjustment(
-                    player_id,
+                    player_id_uuid,
                     delta,
                     reason_code="passive_flux",
                     metadata={

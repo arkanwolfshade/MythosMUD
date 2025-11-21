@@ -15,6 +15,7 @@ As noted in the Pnakotic Manuscripts, chronology must be preserved lest causalit
 from __future__ import annotations
 
 import json
+import uuid
 from datetime import UTC, datetime
 from typing import Any
 
@@ -46,7 +47,7 @@ def build_event(
     data: dict[str, Any] | None = None,
     *,
     room_id: str | None = None,
-    player_id: str | None = None,
+    player_id: uuid.UUID | str | None = None,
     sequence_number: int | None = None,
     connection_manager=None,
 ) -> dict[str, Any]:
@@ -57,7 +58,7 @@ def build_event(
         event_type: Type of event
         data: Event data payload
         room_id: Optional room ID for room-scoped events
-        player_id: Optional player ID for player-scoped events
+        player_id: Optional player ID for player-scoped events (UUID or string)
         sequence_number: Optional explicit sequence number
         connection_manager: Optional ConnectionManager for sequence generation
 
@@ -81,7 +82,8 @@ def build_event(
     if room_id is not None:
         event["room_id"] = room_id
     if player_id is not None:
-        event["player_id"] = player_id
+        # Convert UUID to string for JSON serialization
+        event["player_id"] = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
     return event
 
 

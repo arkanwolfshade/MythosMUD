@@ -92,6 +92,7 @@ class PlayerService:
         from datetime import UTC
 
         current_time = datetime.datetime.now(UTC).replace(tzinfo=None)
+        # Generate UUID for player_id - Player model now uses UUID type
         player = Player(
             player_id=uuid.uuid4(),
             user_id=user_id,
@@ -167,6 +168,7 @@ class PlayerService:
         from datetime import UTC
 
         current_time = datetime.datetime.now(UTC).replace(tzinfo=None)
+        # Generate UUID for player_id - Player model now uses UUID type
         player = Player(
             player_id=uuid.uuid4(),
             user_id=user_id,
@@ -200,17 +202,17 @@ class PlayerService:
         # Convert to schema format
         return await self._convert_player_to_schema(player)
 
-    async def get_player_by_id(self, player_id: str) -> PlayerRead | None:
+    async def get_player_by_id(self, player_id: uuid.UUID) -> PlayerRead | None:
         """
         Get a player by their ID.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
 
         Returns:
             PlayerRead: The player data, or None if not found
         """
-        player_id = str(player_id)
+        # Structlog handles UUID objects automatically, no need to convert to string
         logger.debug("Getting player by ID", player_id=player_id)
 
         player = await self.persistence.async_get_player(player_id)
@@ -430,12 +432,12 @@ class PlayerService:
 
         return True, "Valid player name"
 
-    async def delete_player(self, player_id: str) -> tuple[bool, str]:
+    async def delete_player(self, player_id: uuid.UUID) -> tuple[bool, str]:
         """
         Delete a player character.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
 
         Returns:
             tuple[bool, str]: (success, message)
@@ -535,12 +537,12 @@ class PlayerService:
                 user_friendly="Failed to update player location",
             )
 
-    async def apply_sanity_loss(self, player_id: str, amount: int, source: str = "unknown") -> dict:
+    async def apply_sanity_loss(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
         """
         Apply sanity loss to a player.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             amount: Amount of sanity to lose
             source: Source of the sanity loss
 
@@ -570,12 +572,12 @@ class PlayerService:
         logger.info("Sanity loss applied successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Applied {amount} sanity loss to {player.name}"}
 
-    async def apply_fear(self, player_id: str, amount: int, source: str = "unknown") -> dict:
+    async def apply_fear(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
         """
         Apply fear to a player.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             amount: Amount of fear to apply
             source: Source of the fear
 
@@ -605,12 +607,12 @@ class PlayerService:
         logger.info("Fear applied successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Applied {amount} fear to {player.name}"}
 
-    async def apply_corruption(self, player_id: str, amount: int, source: str = "unknown") -> dict:
+    async def apply_corruption(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
         """
         Apply corruption to a player.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             amount: Amount of corruption to apply
             source: Source of the corruption
 
@@ -640,12 +642,12 @@ class PlayerService:
         logger.info("Corruption applied successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Applied {amount} corruption to {player.name}"}
 
-    async def gain_occult_knowledge(self, player_id: str, amount: int, source: str = "unknown") -> dict:
+    async def gain_occult_knowledge(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
         """
         Gain occult knowledge (with sanity loss).
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             amount: Amount of occult knowledge to gain
             source: Source of the knowledge
 
@@ -675,12 +677,12 @@ class PlayerService:
         logger.info("Occult knowledge gained successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Gained {amount} occult knowledge for {player.name}"}
 
-    async def heal_player(self, player_id: str, amount: int) -> dict:
+    async def heal_player(self, player_id: uuid.UUID, amount: int) -> dict:
         """
         Heal a player's health.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             amount: Amount of health to restore
 
         Returns:
@@ -709,12 +711,12 @@ class PlayerService:
         logger.info("Player healed successfully", player_id=player_id, amount=amount)
         return {"message": f"Healed {player.name} for {amount} health"}
 
-    async def damage_player(self, player_id: str, amount: int, damage_type: str = "physical") -> dict:
+    async def damage_player(self, player_id: uuid.UUID, amount: int, damage_type: str = "physical") -> dict:
         """
         Damage a player's health.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             amount: Amount of damage to apply
             damage_type: Type of damage
 
@@ -808,18 +810,25 @@ class PlayerService:
             )
 
         # Respawn the player
-        success = await respawn_service.respawn_player(str(player.player_id), session)
+        # Convert player.player_id to UUID (handles SQLAlchemy Column[str])
+        # SQLAlchemy Column[str] returns UUID at runtime, but mypy sees it as Column[str]
+        # Always convert to string first, then to UUID
+        player_id_value = player.player_id
+        player_id_uuid = uuid.UUID(str(player_id_value))
+        success = await respawn_service.respawn_player(player_id_uuid, session)
         if not success:
             logger.error("Respawn failed", player_id=player.player_id)
             context = create_error_context()
             context.metadata["operation"] = "respawn_player_by_user_id"
             context.metadata["user_id"] = user_id
-            context.metadata["player_id"] = str(player.player_id)
+            # Structlog handles UUID objects automatically, no need to convert to string
+            context.metadata["player_id"] = player.player_id
             log_and_raise_enhanced(
                 ValidationError,
                 "Failed to respawn player",
                 context=context,
-                details={"user_id": user_id, "player_id": str(player.player_id)},
+                # Structlog handles UUID objects automatically, no need to convert to string
+                details={"user_id": user_id, "player_id": player.player_id},
                 user_friendly="Respawn failed",
             )
 

@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import uuid
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
@@ -32,8 +34,8 @@ class PlayerSanity(Base):
         Index("idx_player_sanity_tier", "current_tier"),
     )
 
-    player_id: Mapped[str] = mapped_column(
-        String(length=255),
+    player_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=False),
         ForeignKey("players.player_id", ondelete="CASCADE"),
         primary_key=True,
     )
@@ -57,8 +59,8 @@ class SanityAdjustmentLog(Base):
     __table_args__ = (Index("idx_sanity_adjustment_player_created", "player_id", "created_at"),)
 
     id: Mapped[int] = mapped_column(Integer(), primary_key=True, autoincrement=True)
-    player_id: Mapped[str] = mapped_column(
-        String(length=255),
+    player_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=False),
         ForeignKey("players.player_id", ondelete="CASCADE"),
         nullable=False,
         index=True,
@@ -82,8 +84,8 @@ class SanityExposureState(Base):
     __table_args__ = (UniqueConstraint("player_id", "entity_archetype", name="uq_sanity_exposure_player_archetype"),)
 
     id: Mapped[int] = mapped_column(Integer(), primary_key=True, autoincrement=True)
-    player_id: Mapped[str] = mapped_column(
-        String(length=255),
+    player_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=False),
         ForeignKey("players.player_id", ondelete="CASCADE"),
         nullable=False,
         index=True,
@@ -105,8 +107,8 @@ class SanityCooldown(Base):
     __table_args__ = (UniqueConstraint("player_id", "action_code", name="uq_sanity_cooldown_player_action"),)
 
     id: Mapped[int] = mapped_column(Integer(), primary_key=True, autoincrement=True)
-    player_id: Mapped[str] = mapped_column(
-        String(length=255),
+    player_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=False),
         ForeignKey("players.player_id", ondelete="CASCADE"),
         nullable=False,
         index=True,

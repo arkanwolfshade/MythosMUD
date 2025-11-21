@@ -177,7 +177,7 @@ class CombatCommandHandler:
 
             # Use target resolution service to find targets
             logger.debug("DEBUG: Using target resolution service", player_name=player_name, player_room_id=room_id)
-            target_result = await self.target_resolution_service.resolve_target(str(player.player_id), target_name)
+            target_result = await self.target_resolution_service.resolve_target(player.player_id, target_name)
 
             if not target_result.success:
                 logger.debug("DEBUG: Target resolution failed", error_message=target_result.error_message)

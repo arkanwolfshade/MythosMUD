@@ -6,6 +6,7 @@ for true async PostgreSQL database operations without blocking the event loop.
 """
 
 import asyncio
+import uuid
 from typing import TYPE_CHECKING, Any
 
 from sqlalchemy import select
@@ -352,11 +353,11 @@ class AsyncPersistenceLayer:
             )
 
     @retry_with_backoff(max_attempts=3, initial_delay=1.0, max_delay=10.0)
-    async def get_player_by_id(self, player_id: str) -> Player | None:
+    async def get_player_by_id(self, player_id: uuid.UUID) -> Player | None:
         """Get a player by ID using SQLAlchemy ORM."""
         context = create_error_context()
         context.metadata["operation"] = "async_get_player_by_id"
-        player_id = str(player_id)
+        # Structlog handles UUID objects automatically, no need to convert to string
         context.metadata["player_id"] = player_id
 
         try:
@@ -411,7 +412,8 @@ class AsyncPersistenceLayer:
         context = create_error_context()
         context.metadata["operation"] = "async_save_player"
         context.metadata["player_name"] = player.name
-        context.metadata["player_id"] = str(player.player_id)
+        # Structlog handles UUID objects automatically, no need to convert to string
+        context.metadata["player_id"] = player.player_id
 
         try:
             # Ensure is_admin is an integer (PostgreSQL requires integer, not boolean)
@@ -427,7 +429,8 @@ class AsyncPersistenceLayer:
                 # Use merge() for upsert behavior - inserts if new, updates if exists
                 await session.merge(player)
                 await session.commit()
-                self._logger.debug("Player saved successfully", player_id=str(player.player_id))
+                # Structlog handles UUID objects automatically, no need to convert to string
+                self._logger.debug("Player saved successfully", player_id=player.player_id)
                 return
             # Explicit return after loop to satisfy mypy
             return
@@ -436,7 +439,8 @@ class AsyncPersistenceLayer:
                 DatabaseError,
                 f"Database error saving player: {e}",
                 context=context,
-                details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
+                # Structlog handles UUID objects automatically, no need to convert to string
+                details={"player_name": player.name, "player_id": player.player_id, "error": str(e)},
                 user_friendly="Failed to save player",
             )
 
@@ -517,7 +521,8 @@ class AsyncPersistenceLayer:
                             "Error saving player (data validation error)",
                             error=str(e),
                             error_type=type(e).__name__,
-                            player_id=str(player.player_id),
+                            # Structlog handles UUID objects automatically, no need to convert to string
+                            player_id=player.player_id,
                         )
                         continue
 
@@ -536,10 +541,11 @@ class AsyncPersistenceLayer:
                 user_friendly="Failed to save players",
             )
 
-    async def delete_player(self, player_id: str) -> bool:
+    async def delete_player(self, player_id: uuid.UUID) -> bool:
         """Delete a player using SQLAlchemy ORM."""
         context = create_error_context()
         context.metadata["operation"] = "async_delete_player"
+        # Structlog handles UUID objects automatically, no need to convert to string
         context.metadata["player_id"] = player_id
 
         try:
@@ -624,12 +630,16 @@ class AsyncPersistenceLayer:
         """Validate and fix player room if needed."""
         if not hasattr(player, "current_room_id") or not player.current_room_id:
             player.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"  # type: ignore[assignment]
-            self._logger.warning("Fixed player with missing room", player_id=str(player.player_id))
+            # Structlog handles UUID objects automatically, no need to convert to string
+            self._logger.warning("Fixed player with missing room", player_id=player.player_id)
 
         # Check if room exists in cache
         if hasattr(self, "_room_cache") and player.current_room_id not in self._room_cache:
             self._logger.warning(
-                "Player in unknown room", player_id=str(player.player_id), room_id=player.current_room_id
+                # Structlog handles UUID objects automatically, no need to convert to string
+                "Player in unknown room",
+                player_id=player.player_id,
+                room_id=player.current_room_id,
             )
 
 

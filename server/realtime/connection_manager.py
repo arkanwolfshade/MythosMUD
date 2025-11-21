@@ -84,7 +84,7 @@ class ConnectionMetadata:
     """
 
     connection_id: str
-    player_id: str
+    player_id: uuid.UUID
     connection_type: str  # "websocket" or "sse"
     established_at: float
     last_seen: float
@@ -110,9 +110,9 @@ class ConnectionManager:
         # Active WebSocket connections
         self.active_websockets: dict[str, WebSocket] = {}
         # Player ID to WebSocket connection IDs mapping (supports multiple connections)
-        self.player_websockets: dict[str, list[str]] = {}
+        self.player_websockets: dict[uuid.UUID, list[str]] = {}
         # Active SSE connections (player_id -> list of connection_ids)
-        self.active_sse_connections: dict[str, list[str]] = {}
+        self.active_sse_connections: dict[uuid.UUID, list[str]] = {}
         # Connection metadata tracking
         self.connection_metadata: dict[str, ConnectionMetadata] = {}
         # Global event sequence counter
@@ -130,17 +130,17 @@ class ConnectionManager:
 
         # Player presence tracking
         # player_id -> player_info
-        self.online_players: dict[str, dict[str, Any]] = {}
+        self.online_players: dict[uuid.UUID, dict[str, Any]] = {}
         # player_id -> last seen unix timestamp
-        self.last_seen: dict[str, float] = {}
+        self.last_seen: dict[uuid.UUID, float] = {}
         # Throttled persistence updates for last_active timestamps
         self.last_active_update_interval: float = 60.0
-        self.last_active_update_times: dict[str, float] = {}
+        self.last_active_update_times: dict[uuid.UUID, float] = {}
         # Track players currently being disconnected to prevent duplicate events
-        self.disconnecting_players: set[str] = set()
+        self.disconnecting_players: set[uuid.UUID] = set()
         self.disconnect_lock = asyncio.Lock()
         # Track players whose disconnect has already been processed
-        self.processed_disconnects: set[str] = set()
+        self.processed_disconnects: set[uuid.UUID] = set()
         self.processed_disconnect_lock = asyncio.Lock()
 
         # Connection tracking with timestamps
@@ -175,7 +175,7 @@ class ConnectionManager:
         self.room_manager = RoomSubscriptionManager()
 
         # Session management
-        self.player_sessions: dict[str, str] = {}  # player_id -> current_session_id
+        self.player_sessions: dict[uuid.UUID, str] = {}  # player_id -> current_session_id
         self.session_connections: dict[str, list[str]] = {}  # session_id -> list of connection_ids
 
         # Track safely closed websocket objects to avoid duplicate closes
@@ -277,12 +277,12 @@ class ConnectionManager:
         return self.rate_limiter.connection_window
 
     # Compatibility methods for dual connection system
-    def get_player_websocket_connection_id(self, player_id: str) -> str | None:
+    def get_player_websocket_connection_id(self, player_id: uuid.UUID) -> str | None:
         """
         Get the first WebSocket connection ID for a player (backward compatibility).
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
 
         Returns:
             str: The first connection ID if any exist, None otherwise
@@ -291,12 +291,12 @@ class ConnectionManager:
             return self.player_websockets[player_id][0]
         return None
 
-    def get_player_sse_connection_id(self, player_id: str) -> str | None:
+    def get_player_sse_connection_id(self, player_id: uuid.UUID) -> str | None:
         """
         Get the first SSE connection ID for a player (backward compatibility).
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
 
         Returns:
             str: The first connection ID if any exist, None otherwise
@@ -305,36 +305,36 @@ class ConnectionManager:
             return self.active_sse_connections[player_id][0]
         return None
 
-    def has_websocket_connection(self, player_id: str) -> bool:
+    def has_websocket_connection(self, player_id: uuid.UUID) -> bool:
         """
         Check if a player has any WebSocket connections.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
 
         Returns:
             bool: True if player has WebSocket connections, False otherwise
         """
         return player_id in self.player_websockets and len(self.player_websockets[player_id]) > 0
 
-    def has_sse_connection(self, player_id: str) -> bool:
+    def has_sse_connection(self, player_id: uuid.UUID) -> bool:
         """
         Check if a player has any SSE connections.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
 
         Returns:
             bool: True if player has SSE connections, False otherwise
         """
         return player_id in self.active_sse_connections and len(self.active_sse_connections[player_id]) > 0
 
-    def get_connection_count(self, player_id: str) -> dict[str, int]:
+    def get_connection_count(self, player_id: uuid.UUID) -> dict[str, int]:
         """
         Get the number of connections for a player by type.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
 
         Returns:
             dict: Connection counts by type
@@ -344,17 +344,17 @@ class ConnectionManager:
         return {"websocket": websocket_count, "sse": sse_count, "total": websocket_count + sse_count}
 
     # Add compatibility methods
-    async def subscribe_to_room(self, player_id: str, room_id: str):
+    async def subscribe_to_room(self, player_id: uuid.UUID, room_id: str):
         """Subscribe a player to a room (compatibility method)."""
         # Resolve canonical room ID first
         canonical_id = self._canonical_room_id(room_id) or room_id
-        return self.room_manager.subscribe_to_room(player_id, canonical_id)
+        return self.room_manager.subscribe_to_room(str(player_id), canonical_id)
 
-    async def unsubscribe_from_room(self, player_id: str, room_id: str):
+    async def unsubscribe_from_room(self, player_id: uuid.UUID, room_id: str):
         """Unsubscribe a player from a room (compatibility method)."""
         # Resolve canonical room ID first (must match subscribe_to_room behavior)
         canonical_id = self._canonical_room_id(room_id) or room_id
-        return self.room_manager.unsubscribe_from_room(player_id, canonical_id)
+        return self.room_manager.unsubscribe_from_room(str(player_id), canonical_id)
 
     def _canonical_room_id(self, room_id: str | None) -> str | None:
         """Resolve a room id to the canonical Room.id value (compatibility method)."""
@@ -377,11 +377,13 @@ class ConnectionManager:
 
     def _reconcile_room_presence(self, room_id: str):
         """Ensure room_occupants only contains currently online players (compatibility method)."""
-        return self.room_manager.reconcile_room_presence(room_id, self.online_players)
+        # Convert UUID keys to strings for room manager
+        online_players_str = {str(k): v for k, v in self.online_players.items()}
+        return self.room_manager.reconcile_room_presence(room_id, online_players_str)
 
-    def _prune_player_from_all_rooms(self, player_id: str):
+    def _prune_player_from_all_rooms(self, player_id: uuid.UUID):
         """Remove a player from all room subscriptions and occupant lists (compatibility method)."""
-        return self.room_manager.remove_player_from_all_rooms(player_id)
+        return self.room_manager.remove_player_from_all_rooms(str(player_id))
 
     def set_persistence(self, persistence):
         """Set the persistence layer reference for all components."""
@@ -389,14 +391,14 @@ class ConnectionManager:
         self.room_manager.set_persistence(persistence)
 
     async def connect_websocket(
-        self, websocket: WebSocket, player_id: str, session_id: str | None = None, token: str | None = None
+        self, websocket: WebSocket, player_id: uuid.UUID, session_id: str | None = None, token: str | None = None
     ) -> bool:
         """
         Connect a WebSocket for a player.
 
         Args:
             websocket: The WebSocket connection
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             session_id: Optional session ID for tracking new game client sessions
 
         Returns:
@@ -512,7 +514,7 @@ class ConnectionManager:
             else:
                 canonical_room_id = getattr(player, "current_room_id", None)
                 if canonical_room_id:
-                    self.room_manager.subscribe_to_room(player_id, canonical_room_id)
+                    self.room_manager.subscribe_to_room(str(player_id), canonical_room_id)
 
                 # Track player presence - always call _track_player_connected for WebSocket connections
                 # to ensure connection messages are broadcast to other players
@@ -565,12 +567,12 @@ class ConnectionManager:
 
         return True
 
-    async def disconnect_websocket(self, player_id: str, is_force_disconnect: bool = False):
+    async def disconnect_websocket(self, player_id: uuid.UUID, is_force_disconnect: bool = False):
         """
         Disconnect all WebSocket connections for a player.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             is_force_disconnect: If True, don't broadcast player_left_game
         """
         try:
@@ -631,7 +633,7 @@ class ConnectionManager:
                 # Unsubscribe from all rooms only if it's not a force disconnect and no other connections
                 # During reconnections, we want to preserve room membership
                 if not is_force_disconnect and not self.has_sse_connection(player_id):
-                    self.room_manager.remove_player_from_all_rooms(player_id)
+                    self.room_manager.remove_player_from_all_rooms(str(player_id))
                 else:
                     logger.debug(
                         "Preserving room membership during force disconnect (reconnection)",
@@ -640,9 +642,9 @@ class ConnectionManager:
 
                 # Clean up rate limiting data only if no other connections
                 if not self.has_sse_connection(player_id):
-                    self.rate_limiter.remove_player_data(player_id)
+                    self.rate_limiter.remove_player_data(str(player_id))
                     # Clean up pending messages
-                    self.message_queue.remove_player_messages(player_id)
+                    self.message_queue.remove_player_messages(str(player_id))
                     # Clean up last seen data
                     if player_id in self.last_seen:
                         del self.last_seen[player_id]
@@ -653,12 +655,12 @@ class ConnectionManager:
         except Exception as e:
             logger.error("Error during WebSocket disconnect", player_id=player_id, error=str(e), exc_info=True)
 
-    async def force_disconnect_player(self, player_id: str):
+    async def force_disconnect_player(self, player_id: uuid.UUID):
         """
         Force disconnect a player from all connections (WebSocket and SSE).
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
         """
         try:
             logger.info("Force disconnecting player from all connections", player_id=player_id)
@@ -734,13 +736,13 @@ class ConnectionManager:
 
             # If no connections remain, clean up player data
             if not has_websocket and not has_sse:
-                self.rate_limiter.remove_player_data(player_id)
-                self.message_queue.remove_player_messages(player_id)
+                self.rate_limiter.remove_player_data(str(player_id))
+                self.message_queue.remove_player_messages(str(player_id))
                 if player_id in self.last_seen:
                     del self.last_seen[player_id]
                 self.last_active_update_times.pop(player_id, None)
                 # Remove from room subscriptions
-                self.room_manager.remove_player_from_all_rooms(player_id)
+                self.room_manager.remove_player_from_all_rooms(str(player_id))
                 logger.info("Player has no remaining connections, cleaned up player data", player_id=player_id)
 
             logger.info(
@@ -752,12 +754,12 @@ class ConnectionManager:
             logger.error("Error disconnecting connection", connection_id=connection_id, error=str(e), exc_info=True)
             return False
 
-    async def disconnect_websocket_connection(self, player_id: str, connection_id: str) -> bool:
+    async def disconnect_websocket_connection(self, player_id: uuid.UUID, connection_id: str) -> bool:
         """
         Disconnect a specific WebSocket connection for a player.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             connection_id: The WebSocket connection ID to disconnect
 
         Returns:
@@ -784,12 +786,12 @@ class ConnectionManager:
             )
             return False
 
-    def disconnect_sse_connection(self, player_id: str, connection_id: str) -> bool:
+    def disconnect_sse_connection(self, player_id: uuid.UUID, connection_id: str) -> bool:
         """
         Disconnect a specific SSE connection for a player.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             connection_id: The SSE connection ID to disconnect
 
         Returns:
@@ -824,12 +826,12 @@ class ConnectionManager:
 
             # If no connections remain, clean up player data
             if not has_websocket and not has_sse:
-                self.rate_limiter.remove_player_data(player_id)
-                self.message_queue.remove_player_messages(player_id)
+                self.rate_limiter.remove_player_data(str(player_id))
+                self.message_queue.remove_player_messages(str(player_id))
                 if player_id in self.last_seen:
                     del self.last_seen[player_id]
                 # Remove from room subscriptions
-                self.room_manager.remove_player_from_all_rooms(player_id)
+                self.room_manager.remove_player_from_all_rooms(str(player_id))
                 logger.info("Player has no remaining connections, cleaned up player data", player_id=player_id)
 
             logger.info("Successfully disconnected SSE connection", connection_id=connection_id)
@@ -841,12 +843,12 @@ class ConnectionManager:
             )
             return False
 
-    async def connect_sse(self, player_id: str, session_id: str | None = None) -> str:
+    async def connect_sse(self, player_id: uuid.UUID, session_id: str | None = None) -> str:
         """
         Connect an SSE connection for a player.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             session_id: Optional session ID for tracking new game client sessions
 
         Returns:
@@ -901,7 +903,7 @@ class ConnectionManager:
         )
 
         # Clear pending messages to prevent stale messages from previous connections
-        self.message_queue.remove_player_messages(player_id)
+        self.message_queue.remove_player_messages(str(player_id))
 
         # Track presence on SSE as well so occupants reflect players who have only SSE connected
         try:
@@ -940,7 +942,7 @@ class ConnectionManager:
 
         return connection_id
 
-    async def handle_new_game_session(self, player_id: str, new_session_id: str) -> dict[str, Any]:
+    async def handle_new_game_session(self, player_id: uuid.UUID, new_session_id: str) -> dict[str, Any]:
         """
         Handle a new game session by disconnecting existing connections.
 
@@ -948,13 +950,14 @@ class ConnectionManager:
         a new game client session, existing connections should be disconnected.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             new_session_id: The new session ID
 
         Returns:
             dict: Session handling results with detailed information
         """
         session_results: dict[str, Any] = {
+            # FastAPI automatically serializes UUIDs to strings in JSON responses
             "player_id": player_id,
             "new_session_id": new_session_id,
             "previous_session_id": None,
@@ -1079,14 +1082,14 @@ class ConnectionManager:
             self.session_connections[new_session_id] = []
 
             # Clean up player data
-            self.rate_limiter.remove_player_data(player_id)
-            self.message_queue.remove_player_messages(player_id)
+            self.rate_limiter.remove_player_data(str(player_id))
+            self.message_queue.remove_player_messages(str(player_id))
             if player_id in self.last_seen:
                 del self.last_seen[player_id]
             self.last_active_update_times.pop(player_id, None)
 
             # Remove from room subscriptions
-            self.room_manager.remove_player_from_all_rooms(player_id)
+            self.room_manager.remove_player_from_all_rooms(str(player_id))
 
             session_results["success"] = True
             logger.info(
@@ -1101,12 +1104,12 @@ class ConnectionManager:
 
         return session_results
 
-    def get_player_session(self, player_id: str) -> str | None:
+    def get_player_session(self, player_id: uuid.UUID) -> str | None:
         """
         Get the current session ID for a player.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
 
         Returns:
             str | None: The current session ID, or None if no session
@@ -1125,12 +1128,12 @@ class ConnectionManager:
         """
         return self.session_connections.get(session_id, [])
 
-    def validate_session(self, player_id: str, session_id: str) -> bool:
+    def validate_session(self, player_id: uuid.UUID, session_id: str) -> bool:
         """
         Validate that a session ID matches the player's current session.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             session_id: The session ID to validate
 
         Returns:
@@ -1157,12 +1160,12 @@ class ConnectionManager:
             ),
         }
 
-    def disconnect_sse(self, player_id: str, is_force_disconnect: bool = False):
+    def disconnect_sse(self, player_id: uuid.UUID, is_force_disconnect: bool = False):
         """
         Disconnect all SSE connections for a player.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             is_force_disconnect: If True, don't broadcast player_left_game
         """
         try:
@@ -1182,10 +1185,10 @@ class ConnectionManager:
             # Only clean up player data if no other connections exist
             if not self.has_websocket_connection(player_id):
                 # Clean up rate limiting data
-                self.rate_limiter.remove_player_data(player_id)
+                self.rate_limiter.remove_player_data(str(player_id))
 
                 # Clean up pending messages
-                self.message_queue.remove_player_messages(player_id)
+                self.message_queue.remove_player_messages(str(player_id))
 
                 # Clean up last seen data
                 if player_id in self.last_seen:
@@ -1249,7 +1252,7 @@ class ConnectionManager:
         except Exception as e:
             logger.error("Error during SSE disconnect", player_id=player_id, error=str(e), exc_info=True)
 
-    def mark_player_seen(self, player_id: str):
+    def mark_player_seen(self, player_id: uuid.UUID):
         """Update last-seen timestamp for a player."""
         try:
             now_ts = time.time()
@@ -1281,7 +1284,7 @@ class ConnectionManager:
         """
         try:
             now_ts = time.time()
-            stale_ids: list[str] = []
+            stale_ids: list[uuid.UUID] = []
             for pid, last in list(self.last_seen.items()):
                 if now_ts - last > max_age_seconds:
                     stale_ids.append(pid)
@@ -1297,18 +1300,18 @@ class ConnectionManager:
                             if conn_id in self.active_websockets:
                                 del self.active_websockets[conn_id]
                 # remove from rooms
-                self.room_manager.remove_player_from_all_rooms(pid)
+                self.room_manager.remove_player_from_all_rooms(str(pid))
                 # forget last_seen entry
                 if pid in self.last_seen:
                     del self.last_seen[pid]
                 self.last_active_update_times.pop(pid, None)
                 # Clean up other references
-                self.rate_limiter.remove_player_data(pid)
-                self.message_queue.remove_player_messages(pid)
+                self.rate_limiter.remove_player_data(str(pid))
+                self.message_queue.remove_player_messages(str(pid))
                 if pid in self.active_sse_connections:
                     del self.active_sse_connections[pid]
             if stale_ids:
-                logger.info("Pruned stale players", stale_ids=stale_ids)
+                logger.info("Pruned stale players", stale_ids=[str(pid) for pid in stale_ids])
         except Exception as e:
             logger.error("Error pruning stale players", error=str(e))
 
@@ -1374,36 +1377,36 @@ class ConnectionManager:
         """
         return len(self.active_websockets) + len(self.active_sse_connections)
 
-    def check_rate_limit(self, player_id: str) -> bool:
+    def check_rate_limit(self, player_id: uuid.UUID) -> bool:
         """
         Check if a player has exceeded rate limits.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
 
         Returns:
             bool: True if rate limit not exceeded, False if exceeded
         """
-        return self.rate_limiter.check_rate_limit(player_id)
+        return self.rate_limiter.check_rate_limit(str(player_id))
 
-    def get_rate_limit_info(self, player_id: str) -> dict[str, Any]:
+    def get_rate_limit_info(self, player_id: uuid.UUID) -> dict[str, Any]:
         """
         Get rate limit information for a player.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
 
         Returns:
             Dict[str, Any]: Rate limit information
         """
-        return self.rate_limiter.get_rate_limit_info(player_id)
+        return self.rate_limiter.get_rate_limit_info(str(player_id))
 
-    async def send_personal_message(self, player_id: str, event: dict[str, Any]) -> dict[str, Any]:
+    async def send_personal_message(self, player_id: uuid.UUID, event: dict[str, Any]) -> dict[str, Any]:
         """
         Send a personal message to a player across all active connections.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             event: The event data to send
 
         Returns:
@@ -1491,17 +1494,19 @@ class ConnectionManager:
 
             # Add to pending messages for SSE connections
             if self.has_sse_connection(player_id):
-                if player_id not in self.message_queue.pending_messages:
-                    self.message_queue.pending_messages[player_id] = []
-                self.message_queue.pending_messages[player_id].append(serializable_event)
+                player_id_str = str(player_id)
+                if player_id_str not in self.message_queue.pending_messages:
+                    self.message_queue.pending_messages[player_id_str] = []
+                self.message_queue.pending_messages[player_id_str].append(serializable_event)
                 delivery_status["sse_delivered"] = True
                 delivery_status["active_connections"] += len(self.active_sse_connections.get(player_id, []))
 
             # If no active connections, queue the message for later delivery
             if delivery_status["active_connections"] == 0:
-                if player_id not in self.message_queue.pending_messages:
-                    self.message_queue.pending_messages[player_id] = []
-                self.message_queue.pending_messages[player_id].append(serializable_event)
+                player_id_str = str(player_id)
+                if player_id_str not in self.message_queue.pending_messages:
+                    self.message_queue.pending_messages[player_id_str] = []
+                self.message_queue.pending_messages[player_id_str].append(serializable_event)
                 delivery_status["sse_delivered"] = True  # Mark as queued for later delivery
 
             # Determine overall success - true if message was delivered to active connections
@@ -1524,7 +1529,7 @@ class ConnectionManager:
             delivery_status["success"] = False
             return delivery_status
 
-    def get_message_delivery_stats(self, player_id: str) -> dict[str, Any]:
+    def get_message_delivery_stats(self, player_id: uuid.UUID) -> dict[str, Any]:
         """
         Get message delivery statistics for a player.
 
@@ -1534,12 +1539,14 @@ class ConnectionManager:
         Returns:
             dict: Message delivery statistics
         """
+        # pending_messages uses str keys, so convert UUID to str
+        player_id_str = str(player_id)
         stats: dict[str, Any] = {
             "player_id": player_id,
             "websocket_connections": len(self.player_websockets.get(player_id, [])),
             "sse_connections": len(self.active_sse_connections.get(player_id, [])),
             "total_connections": 0,
-            "pending_messages": len(self.message_queue.pending_messages.get(player_id, [])),
+            "pending_messages": len(self.message_queue.pending_messages.get(player_id_str, [])),
             "has_active_connections": False,
         }
 
@@ -1548,7 +1555,7 @@ class ConnectionManager:
 
         return stats
 
-    async def check_connection_health(self, player_id: str) -> dict[str, Any]:
+    async def check_connection_health(self, player_id: uuid.UUID) -> dict[str, Any]:
         """
         Check the health of all connections for a player.
 
@@ -1614,7 +1621,7 @@ class ConnectionManager:
             health_status["overall_health"] = "error"
             return health_status
 
-    async def cleanup_dead_connections(self, player_id: str | None = None) -> dict[str, Any]:
+    async def cleanup_dead_connections(self, player_id: uuid.UUID | None = None) -> dict[str, Any]:
         """
         Clean up dead connections for a specific player or all players.
 
@@ -1672,7 +1679,7 @@ class ConnectionManager:
             cleanup_results["errors"].append(str(e))
             return cleanup_results
 
-    async def _cleanup_dead_websocket(self, player_id: str, connection_id: str):
+    async def _cleanup_dead_websocket(self, player_id: uuid.UUID, connection_id: str):
         """
         Clean up a dead WebSocket connection.
 
@@ -1729,7 +1736,7 @@ class ConnectionManager:
         start_time = time.time()
         try:
             now = time.time()
-            stale_connections: list[tuple[str, str]] = []  # (player_id, connection_id)
+            stale_connections: list[tuple[uuid.UUID, str]] = []  # (player_id, connection_id)
 
             # Check WebSocket connections
             for connection_id, websocket in list(self.active_websockets.items()):
@@ -1739,12 +1746,13 @@ class ConnectionManager:
                     if not metadata:
                         # Missing metadata - mark for cleanup
                         # Try to find player_id from player_websockets mapping
-                        player_id_for_cleanup = "unknown"
+                        player_id_for_cleanup: uuid.UUID | None = None
                         for pid, conn_ids in self.player_websockets.items():
                             if connection_id in conn_ids:
                                 player_id_for_cleanup = pid
                                 break
-                        stale_connections.append((player_id_for_cleanup, connection_id))
+                        if player_id_for_cleanup is not None:
+                            stale_connections.append((player_id_for_cleanup, connection_id))
                         continue
 
                     # Check if connection is stale (no activity for timeout period)
@@ -1932,7 +1940,7 @@ class ConnectionManager:
         except Exception as e:
             logger.debug("Task cancellation wait completed", error=str(e))
 
-    def _validate_token(self, token: str, player_id: str) -> bool:
+    def _validate_token(self, token: str, player_id: uuid.UUID) -> bool:
         """
         Validate a JWT token for a connection.
 
@@ -1997,7 +2005,7 @@ class ConnectionManager:
         return None
 
     async def broadcast_to_room(
-        self, room_id: str, event: dict[str, Any], exclude_player: str | None = None
+        self, room_id: str, event: dict[str, Any], exclude_player: uuid.UUID | str | None = None
     ) -> dict[str, Any]:
         """
         Broadcast a message to all players in a room.
@@ -2005,7 +2013,7 @@ class ConnectionManager:
         Args:
             room_id: The room's ID
             event: The event data to send
-            exclude_player: Player ID to exclude from broadcast
+            exclude_player: Player ID to exclude from broadcast (UUID or string)
 
         Returns:
             dict: Broadcast delivery statistics
@@ -2021,42 +2029,64 @@ class ConnectionManager:
             "delivery_details": {},
         }
 
+        # Convert exclude_player to string for comparison with targets (room_manager uses strings)
+        exclude_player_str = str(exclude_player) if exclude_player else None
+
         # Debug logging for self-message exclusion
-        logger.debug("broadcast_to_room", room_id=room_id, exclude_player=exclude_player)
+        logger.debug("broadcast_to_room", room_id=room_id, exclude_player=exclude_player_str)
         logger.debug("broadcast_to_room targets", targets=targets)
 
         # OPTIMIZATION: Batch send messages concurrently to all recipients
         # This significantly improves performance when broadcasting to multiple players
-        target_list = [pid for pid in targets if pid != exclude_player]
+        # Compare with string since targets are strings (room_manager uses strings internally)
+        target_list = [pid for pid in targets if pid != exclude_player_str]
         excluded_count = len(targets) - len(target_list)
 
         if excluded_count > 0:
             broadcast_stats["excluded_players"] = excluded_count
 
         if target_list:
+            # Convert string player IDs to UUIDs for send_personal_message (room_manager uses strings, but send_personal_message expects UUIDs)
+            # Keep mapping of string ID to UUID for proper result tracking
+            target_mapping: list[tuple[str, uuid.UUID]] = []
+            for pid_str in target_list:
+                try:
+                    pid_uuid = uuid.UUID(pid_str)
+                    target_mapping.append((pid_str, pid_uuid))
+                except (ValueError, TypeError, AttributeError):
+                    logger.warning("Invalid player ID format in room subscribers", player_id=pid_str, room_id=room_id)
+                    broadcast_stats["delivery_details"][pid_str] = {
+                        "success": False,
+                        "error": "Invalid player ID format",
+                    }
+                    broadcast_stats["failed_deliveries"] += 1
+                    continue
+
             # Send to all targets concurrently using asyncio.gather
             try:
                 delivery_results = await asyncio.gather(
-                    *[self.send_personal_message(pid, event) for pid in target_list],
+                    *[self.send_personal_message(pid_uuid, event) for _pid_str, pid_uuid in target_mapping],
                     return_exceptions=True,
                 )
 
-                # Process results
-                for i, pid in enumerate(target_list):
+                # Process results (use original string IDs for stats dictionary keys)
+                for i, (pid_str, _pid_uuid) in enumerate(target_mapping):
+                    if i >= len(delivery_results):
+                        continue
                     result = delivery_results[i]
                     if isinstance(result, Exception):
                         logger.error(
                             "Error sending message in batch broadcast",
-                            player_id=pid,
+                            player_id=pid_str,
                             room_id=room_id,
                             error=str(result),
                         )
-                        broadcast_stats["delivery_details"][pid] = {"success": False, "error": str(result)}
+                        broadcast_stats["delivery_details"][pid_str] = {"success": False, "error": str(result)}
                         broadcast_stats["failed_deliveries"] += 1
                     else:
                         # Type narrowing: result is dict[str, Any] when not an exception
                         delivery_status: dict[str, Any] = result  # type: ignore[assignment]
-                        broadcast_stats["delivery_details"][pid] = delivery_status
+                        broadcast_stats["delivery_details"][pid_str] = delivery_status
                         if delivery_status["success"]:
                             broadcast_stats["successful_deliveries"] += 1
                         else:
@@ -2070,10 +2100,10 @@ class ConnectionManager:
                     exc_info=True,
                 )
                 # Fallback: send individually if batch fails
-                for pid in target_list:
+                for pid_str, pid_uuid in target_mapping:
                     try:
-                        delivery_status = await self.send_personal_message(pid, event)
-                        broadcast_stats["delivery_details"][pid] = delivery_status
+                        delivery_status = await self.send_personal_message(pid_uuid, event)
+                        broadcast_stats["delivery_details"][pid_str] = delivery_status
                         if delivery_status["success"]:
                             broadcast_stats["successful_deliveries"] += 1
                         else:
@@ -2081,7 +2111,7 @@ class ConnectionManager:
                     except Exception as individual_error:
                         logger.error(
                             "Error sending individual message in fallback",
-                            player_id=pid,
+                            player_id=pid_str,
                             error=str(individual_error),
                         )
                         broadcast_stats["failed_deliveries"] += 1
@@ -2238,7 +2268,7 @@ class ConnectionManager:
                 "error": str(e),
             }
 
-    def get_pending_messages(self, player_id: str) -> list[dict[str, Any]]:
+    def get_pending_messages(self, player_id: uuid.UUID) -> list[dict[str, Any]]:
         """
         Get pending messages for a player.
 
@@ -2248,19 +2278,20 @@ class ConnectionManager:
         Returns:
             List[Dict[str, Any]]: List of pending messages
         """
-        return self.message_queue.get_messages(player_id)
+        return self.message_queue.get_messages(str(player_id))
 
-    def _get_player(self, player_id: str) -> Player | None:
+    def _get_player(self, player_id: uuid.UUID) -> Player | None:
         """
         Get a player from the persistence layer.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
 
         Returns:
             Optional[Player]: The player object or None if not found
         """
         if self.persistence is None:
+            # Structlog handles UUID objects automatically, no need to convert to string
             logger.warning("Persistence layer not initialized for player lookup", player_id=player_id)
             return None
 
@@ -2275,7 +2306,7 @@ class ConnectionManager:
                 logger.warning("Player not found by name", player_id=player_id)
         return player
 
-    def _get_players_batch(self, player_ids: list[str]) -> dict[str, Player]:
+    def _get_players_batch(self, player_ids: list[uuid.UUID]) -> dict[uuid.UUID, Player]:
         """
         Get multiple players from the persistence layer in a single batch operation.
 
@@ -2283,7 +2314,7 @@ class ConnectionManager:
         batch operation.
 
         Args:
-            player_ids: List of player IDs to retrieve
+            player_ids: List of player IDs to retrieve (UUIDs)
 
         Returns:
             dict: Mapping of player_id to Player object (only includes found players)
@@ -2294,7 +2325,7 @@ class ConnectionManager:
             logger.warning("Persistence layer not initialized for batch player lookup", player_count=len(player_ids))
             return {}
 
-        players: dict[str, Player] = {}
+        players: dict[uuid.UUID, Player] = {}
         if not player_ids:
             return players
 
@@ -2305,12 +2336,8 @@ class ConnectionManager:
                 player = self.persistence.get_player(player_id)
                 if player:
                     players[player_id] = player
-                else:
-                    # Fallback to get_player_by_name for this specific player
-                    player = self.persistence.get_player_by_name(player_id)
-                    if player:
-                        players[player_id] = player
             except Exception as e:
+                # Structlog handles UUID objects automatically, no need to convert to string
                 logger.debug("Error loading player in batch", player_id=player_id, error=str(e))
 
         logger.debug(
@@ -2398,7 +2425,7 @@ class ConnectionManager:
         self.sequence_counter += 1
         return self.sequence_counter
 
-    async def _track_player_connected(self, player_id: str, player: Player, connection_type: str = "unknown"):
+    async def _track_player_connected(self, player_id: uuid.UUID, player: Player, connection_type: str = "unknown"):
         """
         Track when a player connects.
 
@@ -2471,7 +2498,7 @@ class ConnectionManager:
                         logger.warning("Failed to update last_active for player", player_id=player_id, error=str(e))
 
                 # Clear any pending messages to ensure fresh game state
-                self.message_queue.remove_player_messages(player_id)
+                self.message_queue.remove_player_messages(str(player_id))
 
                 # Clear processed disconnect flag to allow future disconnect processing
                 async with self.processed_disconnect_lock:
@@ -2484,17 +2511,18 @@ class ConnectionManager:
                     if room and getattr(room, "id", None):
                         room_id = room.id
                 if room_id:
-                    self.room_manager.add_room_occupant(player_id, room_id)
+                    self.room_manager.add_room_occupant(str(player_id), room_id)
 
                     # Prune any stale occupant ids not currently online
-                    self.room_manager.reconcile_room_presence(room_id, self.online_players)
+                    online_players_str = {str(k): v for k, v in self.online_players.items()}
+                    self.room_manager.reconcile_room_presence(room_id, online_players_str)
 
                     # Add player to the Room object and trigger player_entered event
                     if self.persistence:
                         room = self.persistence.get_room(room_id)
                         if room:
                             # Call room.player_entered() to ensure proper event publishing
-                            room.player_entered(player_id)
+                            room.player_entered(str(player_id))
                             logger.info(
                                 "Player entered room via player_entered()", player_id=player_id, room_id=room_id
                             )
@@ -2541,7 +2569,7 @@ class ConnectionManager:
         except Exception as e:
             logger.error("Error tracking player connection", error=str(e), exc_info=True)
 
-    async def _broadcast_connection_message(self, player_id: str, player: Player) -> None:
+    async def _broadcast_connection_message(self, player_id: uuid.UUID, player: Player) -> None:
         """
         Broadcast a connection message for a player who is already tracked as online.
         This is used when a player connects via WebSocket but is already in the online_players list.
@@ -2570,7 +2598,7 @@ class ConnectionManager:
         except Exception as e:
             logger.error("Error broadcasting connection message", player_id=player_id, error=str(e), exc_info=True)
 
-    async def _track_player_disconnected(self, player_id: str, connection_type: str | None = None) -> None:
+    async def _track_player_disconnected(self, player_id: uuid.UUID, connection_type: str | None = None) -> None:
         """
         Track when a player disconnects.
 
@@ -2611,17 +2639,26 @@ class ConnectionManager:
             # Remove from online and room presence
             # Remove possible variants (provided id, canonical id, and name)
             keys_to_remove = {player_id}
+            keys_to_remove_str: set[str] = set()
             if pl is not None:
                 canonical_id = getattr(pl, "player_id", None) or getattr(pl, "user_id", None)
                 if canonical_id:
-                    keys_to_remove.add(str(canonical_id))
+                    if isinstance(canonical_id, uuid.UUID):
+                        keys_to_remove.add(canonical_id)
+                    else:
+                        keys_to_remove_str.add(str(canonical_id))
                 if player_name:
-                    keys_to_remove.add(player_name)
+                    keys_to_remove_str.add(player_name)
 
+            # Remove UUID keys from online_players
             for key in list(keys_to_remove):
                 if key in self.online_players:
                     del self.online_players[key]
-                self.room_manager.remove_player_from_all_rooms(key)
+                self.room_manager.remove_player_from_all_rooms(str(key))
+
+            # Remove string keys (for backward compatibility with room_manager)
+            for str_key in keys_to_remove_str:
+                self.room_manager.remove_player_from_all_rooms(str_key)
 
                 # CRITICAL FIX: Also remove player from room's internal _players set
                 if room_id and self.persistence:
@@ -2639,8 +2676,8 @@ class ConnectionManager:
             if player_id in self.last_seen:
                 del self.last_seen[player_id]
             self.last_active_update_times.pop(player_id, None)
-            self.rate_limiter.remove_player_data(player_id)
-            self.message_queue.remove_player_messages(player_id)
+            self.rate_limiter.remove_player_data(str(player_id))
+            self.message_queue.remove_player_messages(str(player_id))
 
             # Notify current room that player left the game and refresh occupants
             if room_id:
@@ -2657,7 +2694,8 @@ class ConnectionManager:
                 await self.broadcast_to_room(room_id, left_event, exclude_player=player_id)
 
                 # 2) occupants update (names only)
-                occ_infos = self.room_manager.get_room_occupants(room_id, self.online_players)
+                online_players_str = {str(k): v for k, v in self.online_players.items()}
+                occ_infos = self.room_manager.get_room_occupants(room_id, online_players_str)
                 names: list[str] = []
                 for occ in occ_infos:
                     name = occ.get("player_name") if isinstance(occ, dict) else None
@@ -2716,7 +2754,7 @@ class ConnectionManager:
             logger.error("Error cleaning up ghost players", error=str(e), exc_info=True)
 
     async def detect_and_handle_error_state(
-        self, player_id: str, error_type: str, error_details: str, connection_id: str | None = None
+        self, player_id: uuid.UUID, error_type: str, error_details: str, connection_id: str | None = None
     ) -> dict[str, Any]:
         """
         Detect when a client is in an error state and handle it appropriately.
@@ -2846,7 +2884,7 @@ class ConnectionManager:
         return error_results
 
     async def handle_websocket_error(
-        self, player_id: str, connection_id: str, error_type: str, error_details: str
+        self, player_id: uuid.UUID, connection_id: str, error_type: str, error_details: str
     ) -> dict[str, Any]:
         """
         Handle WebSocket-specific errors.
@@ -2883,7 +2921,7 @@ class ConnectionManager:
             )
 
     async def handle_sse_error(
-        self, player_id: str, connection_id: str, error_type: str, error_details: str
+        self, player_id: uuid.UUID, connection_id: str, error_type: str, error_details: str
     ) -> dict[str, Any]:
         """
         Handle SSE-specific errors.
@@ -2918,7 +2956,9 @@ class ConnectionManager:
                 player_id, "SSE_ERROR", f"{error_type}: {error_details}", connection_id
             )
 
-    async def handle_authentication_error(self, player_id: str, error_type: str, error_details: str) -> dict[str, Any]:
+    async def handle_authentication_error(
+        self, player_id: uuid.UUID, error_type: str, error_details: str
+    ) -> dict[str, Any]:
         """
         Handle authentication-related errors.
 
@@ -2939,7 +2979,7 @@ class ConnectionManager:
         )
 
     async def handle_security_violation(
-        self, player_id: str, violation_type: str, violation_details: str
+        self, player_id: uuid.UUID, violation_type: str, violation_details: str
     ) -> dict[str, Any]:
         """
         Handle security violations.
@@ -2963,7 +3003,7 @@ class ConnectionManager:
             player_id, "SECURITY_VIOLATION", f"{violation_type}: {violation_details}"
         )
 
-    async def recover_from_error(self, player_id: str, recovery_type: str = "FULL") -> dict[str, Any]:
+    async def recover_from_error(self, player_id: uuid.UUID, recovery_type: str = "FULL") -> dict[str, Any]:
         """
         Attempt to recover from an error state for a player.
 
@@ -3011,7 +3051,7 @@ class ConnectionManager:
 
         return recovery_results
 
-    def get_player_presence_info(self, player_id: str) -> dict[str, Any]:
+    def get_player_presence_info(self, player_id: uuid.UUID) -> dict[str, Any]:
         """
         Get detailed presence information for a player.
 
@@ -3051,7 +3091,7 @@ class ConnectionManager:
             "level": player_info.get("level"),
         }
 
-    def validate_player_presence(self, player_id: str) -> dict[str, Any]:
+    def validate_player_presence(self, player_id: uuid.UUID) -> dict[str, Any]:
         """
         Validate player presence and clean up any inconsistencies.
 
@@ -3183,7 +3223,7 @@ class ConnectionManager:
             "error_log_path": str(error_log_path),
         }
 
-    async def handle_new_login(self, player_id: str):
+    async def handle_new_login(self, player_id: uuid.UUID):
         """
         Handle a new login by terminating all existing connections for the player.
         This ensures that only one session per player is active at a time.
@@ -3222,7 +3262,7 @@ class ConnectionManager:
         except Exception as e:
             logger.error("Error handling new login", player_id=player_id, error=str(e), exc_info=True)
 
-    async def _check_and_process_disconnect(self, player_id: str):
+    async def _check_and_process_disconnect(self, player_id: uuid.UUID):
         """
         Check if disconnect has already been processed for a player and process it if not.
 
@@ -3276,9 +3316,10 @@ class ConnectionManager:
         Returns:
             List[Dict[str, Any]]: List of occupant information
         """
-        return self.room_manager.get_room_occupants(room_id, self.online_players)
+        online_players_str = {str(k): v for k, v in self.online_players.items()}
+        return self.room_manager.get_room_occupants(room_id, online_players_str)
 
-    async def _send_initial_game_state(self, player_id: str, player: Player, room_id: str):
+    async def _send_initial_game_state(self, player_id: uuid.UUID, player: Player, room_id: str):
         """
         Send initial game_state event to a newly connected player.
 
@@ -3304,7 +3345,8 @@ class ConnectionManager:
             occupants = []
             if room_id:
                 # Get player occupants
-                occ_infos = self.room_manager.get_room_occupants(room_id, self.online_players)
+                online_players_str = {str(k): v for k, v in self.online_players.items()}
+                occ_infos = self.room_manager.get_room_occupants(room_id, online_players_str)
                 for occ_player_info in occ_infos:
                     if isinstance(occ_player_info, dict) and occ_player_info.get("player_id") != player_id:
                         occupants.append(occ_player_info.get("player_name", "Unknown"))

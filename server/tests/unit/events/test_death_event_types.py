@@ -1,6 +1,7 @@
 """Tests for death and respawn event types."""
 
 from datetime import UTC, datetime
+from uuid import uuid4
 
 from server.events.event_types import (
     PlayerDiedEvent,
@@ -51,14 +52,15 @@ class TestPlayerHPDecayEvent:
 
     def test_event_creation_basic(self):
         """Test basic HP decay event creation."""
+        test_player_id = uuid4()
         event = PlayerHPDecayEvent(
-            player_id="player-123",
+            player_id=test_player_id,
             old_hp=-3,
             new_hp=-4,
         )
         event.timestamp = datetime.now(UTC)
 
-        assert event.player_id == "player-123"
+        assert event.player_id == test_player_id
         assert event.old_hp == -3
         assert event.new_hp == -4
         assert event.decay_amount == 1
@@ -66,8 +68,9 @@ class TestPlayerHPDecayEvent:
 
     def test_event_creation_with_room(self):
         """Test event creation with room info."""
+        test_player_id = uuid4()
         event = PlayerHPDecayEvent(
-            player_id="player-123",
+            player_id=test_player_id,
             old_hp=0,
             new_hp=-1,
             decay_amount=1,
@@ -83,14 +86,15 @@ class TestPlayerDiedEvent:
 
     def test_event_creation_basic(self):
         """Test basic death event creation."""
+        test_player_id = uuid4()
         event = PlayerDiedEvent(
-            player_id="player-123",
+            player_id=test_player_id,
             player_name="TestPlayer",
             room_id="death-room",
         )
         event.timestamp = datetime.now(UTC)
 
-        assert event.player_id == "player-123"
+        assert event.player_id == test_player_id
         assert event.player_name == "TestPlayer"
         assert event.room_id == "death-room"
         assert event.event_type == "PlayerDiedEvent"
@@ -99,8 +103,9 @@ class TestPlayerDiedEvent:
 
     def test_event_creation_with_killer(self):
         """Test event creation with killer info."""
+        test_player_id = uuid4()
         event = PlayerDiedEvent(
-            player_id="player-123",
+            player_id=test_player_id,
             player_name="TestPlayer",
             room_id="death-room",
             killer_id="npc-456",
@@ -121,8 +126,9 @@ class TestPlayerRespawnedEvent:
 
     def test_event_creation_basic(self):
         """Test basic respawn event creation."""
+        test_player_id = uuid4()
         event = PlayerRespawnedEvent(
-            player_id="player-123",
+            player_id=test_player_id,
             player_name="TestPlayer",
             respawn_room_id="sanitarium-foyer",
             old_hp=-10,
@@ -130,7 +136,7 @@ class TestPlayerRespawnedEvent:
         )
         event.timestamp = datetime.now(UTC)
 
-        assert event.player_id == "player-123"
+        assert event.player_id == test_player_id
         assert event.player_name == "TestPlayer"
         assert event.respawn_room_id == "sanitarium-foyer"
         assert event.old_hp == -10
@@ -139,8 +145,9 @@ class TestPlayerRespawnedEvent:
 
     def test_event_creation_with_death_room(self):
         """Test event creation with death room info."""
+        test_player_id = uuid4()
         event = PlayerRespawnedEvent(
-            player_id="player-123",
+            player_id=test_player_id,
             player_name="TestPlayer",
             respawn_room_id="sanitarium-foyer",
             old_hp=-10,

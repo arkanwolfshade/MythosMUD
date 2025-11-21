@@ -1,6 +1,7 @@
 """Tests for player respawn service."""
 
 from unittest.mock import AsyncMock, Mock
+from uuid import uuid4
 
 import pytest
 
@@ -8,6 +9,9 @@ from server.models.player import Player
 from server.services.player_respawn_service import LIMBO_ROOM_ID, PlayerRespawnService
 
 DEFAULT_RESPAWN_ROOM = "earth_arkhamcity_sanitarium_room_foyer_001"
+
+# Test UUID constant for consistent testing
+TEST_PLAYER_ID = uuid4()
 
 
 @pytest.fixture
@@ -20,7 +24,7 @@ def player_respawn_service():
 def mock_player():
     """Create a mock player."""
     player = Mock(spec=Player)
-    player.player_id = "test-player-id"
+    player.player_id = TEST_PLAYER_ID
     player.name = "TestPlayer"
     player.current_room_id = "test-room-id"
     player.respawn_room_id = DEFAULT_RESPAWN_ROOM
@@ -38,7 +42,7 @@ class TestPlayerRespawnService:
         mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
-        result = await player_respawn_service.move_player_to_limbo("test-player-id", death_location, mock_session)
+        result = await player_respawn_service.move_player_to_limbo(TEST_PLAYER_ID, death_location, mock_session)
 
         assert result is True
         # Verify player was moved to limbo room
@@ -63,7 +67,7 @@ class TestPlayerRespawnService:
         mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
-        result = await player_respawn_service.get_respawn_room("test-player-id", mock_session)
+        result = await player_respawn_service.get_respawn_room(TEST_PLAYER_ID, mock_session)
 
         assert result == "custom-respawn-room"
 
@@ -75,7 +79,7 @@ class TestPlayerRespawnService:
         mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
-        result = await player_respawn_service.get_respawn_room("test-player-id", mock_session)
+        result = await player_respawn_service.get_respawn_room(TEST_PLAYER_ID, mock_session)
 
         assert result == DEFAULT_RESPAWN_ROOM
 
@@ -101,7 +105,7 @@ class TestPlayerRespawnService:
         mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
-        result = await player_respawn_service.respawn_player("test-player-id", mock_session)
+        result = await player_respawn_service.respawn_player(TEST_PLAYER_ID, mock_session)
 
         assert result is True
         # Verify HP was restored to 100
@@ -123,7 +127,7 @@ class TestPlayerRespawnService:
         mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
-        result = await player_respawn_service.respawn_player("test-player-id", mock_session)
+        result = await player_respawn_service.respawn_player(TEST_PLAYER_ID, mock_session)
 
         assert result is True
         assert mock_player.current_room_id == "custom-respawn-room"
@@ -150,7 +154,7 @@ class TestPlayerRespawnService:
             mock_session = AsyncMock()
             mock_session.get.return_value = mock_player
 
-            await player_respawn_service.respawn_player("test-player-id", mock_session)
+            await player_respawn_service.respawn_player(TEST_PLAYER_ID, mock_session)
 
             # Verify HP was set to exactly 100
             updated_stats = mock_player.set_stats.call_args[0][0]
@@ -167,7 +171,7 @@ class TestPlayerRespawnService:
         mock_session.get.return_value = mock_player
         mock_session.commit.side_effect = Exception("Database error")
 
-        result = await player_respawn_service.move_player_to_limbo("test-player-id", "death-room", mock_session)
+        result = await player_respawn_service.move_player_to_limbo(TEST_PLAYER_ID, "death-room", mock_session)
 
         assert result is False
         mock_session.rollback.assert_called_once()
@@ -178,7 +182,7 @@ class TestPlayerRespawnService:
         mock_session = AsyncMock()
         mock_session.get.side_effect = Exception("Database error")
 
-        result = await player_respawn_service.get_respawn_room("test-player-id", mock_session)
+        result = await player_respawn_service.get_respawn_room(TEST_PLAYER_ID, mock_session)
 
         # Should return default room on error
         assert result == DEFAULT_RESPAWN_ROOM
@@ -199,14 +203,14 @@ class TestPlayerRespawnService:
         mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
-        result = await service.respawn_player("test-player-id", mock_session)
+        result = await service.respawn_player(TEST_PLAYER_ID, mock_session)
 
         assert result is True
         # Verify event was published
         mock_event_bus.publish.assert_called_once()
         event = mock_event_bus.publish.call_args[0][0]
         assert event.event_type == "PlayerRespawnedEvent"
-        assert event.player_id == "test-player-id"
+        assert event.player_id == TEST_PLAYER_ID
         assert event.old_hp == -10
         assert event.new_hp == 100
         assert event.respawn_room_id == DEFAULT_RESPAWN_ROOM
@@ -220,7 +224,7 @@ class TestPlayerRespawnService:
 
         mock_player.get_stats.return_value = {"current_health": -10}
 
-        result = await player_respawn_service.respawn_player("test-player-id", mock_session)
+        result = await player_respawn_service.respawn_player(TEST_PLAYER_ID, mock_session)
 
         assert result is False
         mock_session.rollback.assert_called_once()
@@ -277,7 +281,7 @@ class TestPlayerRespawnService:
         mock_session.get.return_value = mock_player
 
         # Should not raise exception even without combat service
-        result = await service.respawn_player("test-player-id", mock_session)
+        result = await service.respawn_player(TEST_PLAYER_ID, mock_session)
 
         assert result is True
         mock_session.commit.assert_called_once()

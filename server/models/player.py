@@ -6,6 +6,7 @@ for each user, including stats, inventory, and current location.
 """
 
 import json
+import uuid
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
 
@@ -39,8 +40,8 @@ class Player(Base):
     __tablename__ = "players"
     __table_args__ = {"extend_existing": True}
 
-    # Primary key - TEXT (matches database schema)
-    player_id = Column(String(length=255), primary_key=True)
+    # Primary key - UUID (matches user_id type for consistency)
+    player_id = Column(UUID(as_uuid=False), primary_key=True)
 
     # Foreign key to users table - use UUID to match users.id (UUID type in PostgreSQL)
     # Explicit index=True for clarity (unique=True already creates index, but explicit is better)
@@ -300,8 +301,8 @@ class PlayerChannelPreferences(Base):
 
     __tablename__ = "player_channel_preferences"
 
-    player_id: Mapped[str] = mapped_column(
-        String(255),
+    player_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=False),
         ForeignKey("players.player_id", ondelete="CASCADE"),
         primary_key=True,
         nullable=False,

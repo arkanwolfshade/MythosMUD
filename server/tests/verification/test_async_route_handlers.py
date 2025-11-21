@@ -97,7 +97,12 @@ class TestAsyncRouteHandlers:
         assert len(handlers_with_io) > 0
 
     def test_async_handler_performance_comparison(self, client):
-        """Test performance comparison between sync and async handlers."""
+        """Test performance comparison between sync and async handlers.
+
+        Note: This test may produce harmless "Event loop is closed" warnings
+        on Windows due to TestClient creating its own event loop per request.
+        These warnings are expected and do not affect test correctness.
+        """
         start_time = time.time()
         responses = []
         for _ in range(10):

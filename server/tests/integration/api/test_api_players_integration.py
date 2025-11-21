@@ -222,12 +222,13 @@ class TestPlayerAPIIntegration:
     def test_apply_sanity_loss_success(self, container_test_client, mock_persistence_for_api, sample_player_data):
         """Test successful sanity loss application via API."""
         # Arrange
+        player_id = str(uuid.uuid4())
         mock_persistence_for_api.async_get_player.return_value = sample_player_data
         mock_persistence_for_api.apply_sanity_loss.return_value = None
 
         # Act
         response = container_test_client.post(
-            "/api/players/test-player-id/sanity-loss", json={"amount": 10, "source": "test"}
+            f"/api/players/{player_id}/sanity-loss", json={"amount": 10, "source": "test"}
         )
 
         # Assert
@@ -240,7 +241,8 @@ class TestPlayerAPIIntegration:
         mock_persistence_for_api.apply_fear.return_value = None
 
         # Act
-        response = container_test_client.post("/api/players/test-player-id/fear", json={"amount": 5, "source": "test"})
+        player_id = str(uuid.uuid4())
+        response = container_test_client.post(f"/api/players/{player_id}/fear", json={"amount": 5, "source": "test"})
 
         # Assert
         assert response.status_code in [200, 401]
@@ -252,8 +254,9 @@ class TestPlayerAPIIntegration:
         mock_persistence_for_api.apply_corruption.return_value = None
 
         # Act
+        player_id = str(uuid.uuid4())
         response = container_test_client.post(
-            "/api/players/test-player-id/corruption", json={"amount": 3, "source": "test"}
+            f"/api/players/{player_id}/corruption", json={"amount": 3, "source": "test"}
         )
 
         # Assert
@@ -266,8 +269,9 @@ class TestPlayerAPIIntegration:
         mock_persistence_for_api.gain_occult_knowledge.return_value = None
 
         # Act
+        player_id = str(uuid.uuid4())
         response = container_test_client.post(
-            "/api/players/test-player-id/occult-knowledge", json={"amount": 2, "source": "test"}
+            f"/api/players/{player_id}/occult-knowledge", json={"amount": 2, "source": "test"}
         )
 
         # Assert
@@ -280,7 +284,8 @@ class TestPlayerAPIIntegration:
         mock_persistence_for_api.heal_player.return_value = None
 
         # Act
-        response = container_test_client.post("/api/players/test-player-id/heal", json={"amount": 20})
+        player_id = str(uuid.uuid4())
+        response = container_test_client.post(f"/api/players/{player_id}/heal", json={"amount": 20})
 
         # Assert
         assert response.status_code in [200, 401]
@@ -292,8 +297,9 @@ class TestPlayerAPIIntegration:
         mock_persistence_for_api.damage_player.return_value = None
 
         # Act
+        player_id = str(uuid.uuid4())
         response = container_test_client.post(
-            "/api/players/test-player-id/damage", json={"amount": 15, "damage_type": "physical"}
+            f"/api/players/{player_id}/damage", json={"amount": 15, "damage_type": "physical"}
         )
 
         # Assert

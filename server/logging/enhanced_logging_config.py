@@ -12,6 +12,7 @@ import sys
 import time
 import uuid
 from datetime import UTC, datetime
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import Any, cast
 
@@ -447,6 +448,31 @@ def configure_enhanced_structlog(
         )
 
 
+class SafeRotatingFileHandler(RotatingFileHandler):
+    """
+    RotatingFileHandler that ensures directory exists before file operations.
+
+    This handler wraps RotatingFileHandler to prevent FileNotFoundError
+    when shouldRollover() is called from different threads in CI environments.
+    """
+
+    def shouldRollover(self, record):  # noqa: N802
+        """
+        Determine if rollover should occur, ensuring directory exists first.
+
+        This overrides the parent method to ensure the log directory exists
+        before attempting to open the log file, preventing race conditions
+        in CI environments where directories might be cleaned up.
+        """
+        # Ensure directory exists before checking rollover
+        if self.baseFilename:
+            log_path = Path(self.baseFilename)
+            log_path.parent.mkdir(parents=True, exist_ok=True)
+
+        # Call parent method to perform actual rollover check
+        return super().shouldRollover(record)
+
+
 def _setup_enhanced_file_logging(
     environment: str,
     log_config: dict[str, Any],
@@ -455,16 +481,17 @@ def _setup_enhanced_file_logging(
     enable_async: bool = True,  # noqa: ARG001
 ) -> None:
     """Set up enhanced file logging handlers with async support."""
-    from logging.handlers import RotatingFileHandler
-
     # Use Windows-safe rotation handlers when available
-    _WinSafeHandler = RotatingFileHandler
+    _WinSafeHandler: type[RotatingFileHandler] = RotatingFileHandler
     try:
         from server.logging.windows_safe_rotation import WindowsSafeRotatingFileHandler as _ImportedWinSafeHandler
 
         _WinSafeHandler = _ImportedWinSafeHandler
     except Exception:  # noqa: BLE001 - optional enhancement
         _WinSafeHandler = RotatingFileHandler
+
+    # Use SafeRotatingFileHandler as base for all handlers to prevent CI race conditions
+    _BaseHandler = SafeRotatingFileHandler
 
     log_base = _resolve_log_base(log_config.get("log_base", "logs"))
     env_log_dir = log_base / environment
@@ -521,22 +548,42 @@ def _setup_enhanced_file_logging(
     for log_file, prefixes in log_categories.items():
         log_path = env_log_dir / f"{log_file}.log"
 
-        # Create rotating file handler (Windows-safe on win32)
-        handler_class = RotatingFileHandler
+        # Create rotating file handler (Windows-safe on win32, with directory safety)
+        handler_class = _BaseHandler
         try:
             if sys.platform == "win32":
-                handler_class = _WinSafeHandler
-        except Exception:
-            # Fallback to standard handler on any detection error
-            handler_class = RotatingFileHandler
+                # Windows-safe handler also needs directory safety
+                # Create a hybrid class that combines both features
+                class SafeWinHandlerCategory(_WinSafeHandler):  # type: ignore[misc, valid-type]
+                    def shouldRollover(self, record):  # noqa: N802
+                        if self.baseFilename:
+                            log_path = Path(self.baseFilename)
+                            log_path.parent.mkdir(parents=True, exist_ok=True)
+                        return super().shouldRollover(record)
 
+                handler_class = SafeWinHandlerCategory
+        except Exception:
+            # Fallback to safe handler on any detection error
+            handler_class = _BaseHandler
+
+        # Ensure directory exists right before creating handler to prevent race conditions
         log_path.parent.mkdir(parents=True, exist_ok=True)
-        handler = handler_class(
-            log_path,
-            maxBytes=max_bytes,
-            backupCount=backup_count,
-            encoding="utf-8",
-        )
+        try:
+            handler = handler_class(
+                log_path,
+                maxBytes=max_bytes,
+                backupCount=backup_count,
+                encoding="utf-8",
+            )
+        except (FileNotFoundError, OSError):
+            # If directory doesn't exist or was deleted, recreate it and try again
+            log_path.parent.mkdir(parents=True, exist_ok=True)
+            handler = handler_class(
+                log_path,
+                maxBytes=max_bytes,
+                backupCount=backup_count,
+                encoding="utf-8",
+            )
         handler.setLevel(logging.DEBUG)
 
         # Create formatter - use PlayerGuidFormatter if player_service is available
@@ -569,20 +616,39 @@ def _setup_enhanced_file_logging(
 
     # Enhanced console handler with structured output
     console_log_path = env_log_dir / "console.log"
-    handler_class = RotatingFileHandler
+    handler_class = _BaseHandler
     try:
         if sys.platform == "win32":
-            handler_class = _WinSafeHandler
-    except Exception:
-        handler_class = RotatingFileHandler
+            # Windows-safe handler also needs directory safety
+            class SafeWinHandlerConsole(_WinSafeHandler):  # type: ignore[misc, valid-type]
+                def shouldRollover(self, record):  # noqa: N802
+                    if self.baseFilename:
+                        log_path = Path(self.baseFilename)
+                        log_path.parent.mkdir(parents=True, exist_ok=True)
+                    return super().shouldRollover(record)
 
+            handler_class = SafeWinHandlerConsole
+    except Exception:
+        handler_class = _BaseHandler
+
+    # Ensure directory exists right before creating handler to prevent race conditions
     console_log_path.parent.mkdir(parents=True, exist_ok=True)
-    console_handler = handler_class(
-        console_log_path,
-        maxBytes=max_bytes,
-        backupCount=backup_count,
-        encoding="utf-8",
-    )
+    try:
+        console_handler = handler_class(
+            console_log_path,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
+    except (FileNotFoundError, OSError):
+        # If directory doesn't exist or was deleted, recreate it and try again
+        console_log_path.parent.mkdir(parents=True, exist_ok=True)
+        console_handler = handler_class(
+            console_log_path,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
     console_handler.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
 
     # Use enhanced formatter for console handler
@@ -605,20 +671,39 @@ def _setup_enhanced_file_logging(
 
     # Enhanced errors handler with security focus
     errors_log_path = env_log_dir / "errors.log"
-    handler_class = RotatingFileHandler
+    handler_class = _BaseHandler
     try:
         if sys.platform == "win32":
-            handler_class = _WinSafeHandler
-    except Exception:
-        handler_class = RotatingFileHandler
+            # Windows-safe handler also needs directory safety
+            class SafeWinHandlerErrors(_WinSafeHandler):  # type: ignore[misc, valid-type]
+                def shouldRollover(self, record):  # noqa: N802
+                    if self.baseFilename:
+                        log_path = Path(self.baseFilename)
+                        log_path.parent.mkdir(parents=True, exist_ok=True)
+                    return super().shouldRollover(record)
 
+            handler_class = SafeWinHandlerErrors
+    except Exception:
+        handler_class = _BaseHandler
+
+    # Ensure directory exists right before creating handler to prevent race conditions
     errors_log_path.parent.mkdir(parents=True, exist_ok=True)
-    errors_handler = handler_class(
-        errors_log_path,
-        maxBytes=max_bytes,
-        backupCount=backup_count,
-        encoding="utf-8",
-    )
+    try:
+        errors_handler = handler_class(
+            errors_log_path,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
+    except (FileNotFoundError, OSError):
+        # If directory doesn't exist or was deleted, recreate it and try again
+        errors_log_path.parent.mkdir(parents=True, exist_ok=True)
+        errors_handler = handler_class(
+            errors_log_path,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
     errors_handler.setLevel(logging.WARNING)
 
     # Use enhanced formatter for errors handler
@@ -644,13 +729,24 @@ def _setup_enhanced_file_logging(
     # This ensures ALL error-level logs from ANY module are captured
     # AI Agent: This fixes the observability gap where critical errors in combat,
     # persistence, and game mechanics were being silently suppressed
+    # Ensure directory exists right before creating handler to prevent race conditions
     errors_log_path.parent.mkdir(parents=True, exist_ok=True)
-    global_errors_handler = handler_class(
-        errors_log_path,  # Same file as errors_handler
-        maxBytes=max_bytes,
-        backupCount=backup_count,
-        encoding="utf-8",
-    )
+    try:
+        global_errors_handler = handler_class(
+            errors_log_path,  # Same file as errors_handler
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
+    except (FileNotFoundError, OSError):
+        # If directory doesn't exist or was deleted, recreate it and try again
+        errors_log_path.parent.mkdir(parents=True, exist_ok=True)
+        global_errors_handler = handler_class(
+            errors_log_path,  # Same file as errors_handler
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
     global_errors_handler.setLevel(logging.ERROR)  # ERROR and CRITICAL only
     global_errors_handler.setFormatter(errors_formatter)
 

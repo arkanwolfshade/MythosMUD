@@ -42,10 +42,14 @@ class TestEventLoopChangeDetection:
         db_manager._creation_loop_id = id(asyncio.get_running_loop()) + 1  # Different loop ID
 
         # Get engine again - should detect change and recreate
-        with patch.object(db_manager, "_initialize_database") as mock_init:
-            _ = db_manager.get_engine()  # Should trigger re-initialization
+        # We'll verify by checking that _initialize_database was called
+        # and that the engine was recreated (different instance or reinitialized)
+        with patch.object(db_manager, "_initialize_database", wraps=db_manager._initialize_database) as mock_init:
+            engine2 = db_manager.get_engine()  # Should trigger re-initialization
             # Should have called re-initialization
-            assert mock_init.called
+            assert mock_init.called, "_initialize_database should be called when event loop changes"
+            # Engine should still be valid after re-initialization
+            assert engine2 is not None, "Engine should be recreated after loop change"
 
     @pytest.mark.asyncio
     async def test_no_running_loop_handling(self, db_manager):
@@ -103,18 +107,25 @@ class TestAsyncOperationScheduling:
         # Should NOT use deprecated get_event_loop() in actual code (comments are OK)
         # Filter out comments and docstrings to check only actual code
         lines = []
-        for line in source.split('\n'):
+        for line in source.split("\n"):
             stripped = line.strip()
             # Skip empty lines, comments, and docstrings
-            if stripped and not stripped.startswith('#') and not stripped.startswith('"""') and not stripped.startswith("'''"):
+            if (
+                stripped
+                and not stripped.startswith("#")
+                and not stripped.startswith('"""')
+                and not stripped.startswith("'''")
+            ):
                 # Remove inline comments
-                code_part = re.sub(r'#.*$', '', line).strip()
+                code_part = re.sub(r"#.*$", "", line).strip()
                 if code_part:
                     lines.append(code_part)
 
-        code_only = '\n'.join(lines)
+        code_only = "\n".join(lines)
         # Check that get_event_loop() is not used in actual code (only in comments)
-        assert "get_event_loop()" not in code_only, "get_event_loop() should not be used in actual code, only get_running_loop()"
+        assert "get_event_loop()" not in code_only, (
+            "get_event_loop() should not be used in actual code, only get_running_loop()"
+        )
 
     @pytest.mark.asyncio
     async def test_runtime_error_handling_no_loop(self):

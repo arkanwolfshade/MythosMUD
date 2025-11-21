@@ -259,7 +259,9 @@ class NPCCombatIntegrationService:
 
                 # Fetch actual player stats from persistence to ensure correct HP
                 # BUGFIX: Was hardcoded to 100, causing HP to reset between combats
-                player = self._persistence.get_player(player_id)
+                # Convert player_id to UUID if it's a string
+                player_id_uuid = UUID(player_id) if isinstance(player_id, str) else player_id
+                player = self._persistence.get_player(player_id_uuid)
                 if not player:
                     logger.error("Player not found when starting combat", player_id=player_id)
                     return False
@@ -518,7 +520,9 @@ class NPCCombatIntegrationService:
     def _get_player_name(self, player_id: str) -> str:
         """Get player name for messaging."""
         try:
-            player = self._persistence.get_player(player_id)
+            # Convert player_id to UUID if it's a string
+            player_id_uuid = UUID(player_id) if isinstance(player_id, str) else player_id
+            player = self._persistence.get_player(player_id_uuid)
             return str(player.name) if player else "Unknown Player"
         except (OSError, ValueError, TypeError, Exception) as e:
             logger.error("Error getting player name", player_id=player_id, error=str(e), error_type=type(e).__name__)
@@ -556,7 +560,9 @@ class NPCCombatIntegrationService:
             Room ID if found, None otherwise
         """
         try:
-            player = self._persistence.get_player(player_id)
+            # Convert player_id to UUID if it's a string
+            player_id_uuid = UUID(player_id) if isinstance(player_id, str) else player_id
+            player = self._persistence.get_player(player_id_uuid)
             if player:
                 return str(player.current_room_id)
             return None

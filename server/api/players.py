@@ -5,6 +5,7 @@ This module handles all player-related API operations including
 creation, retrieval, listing, and deletion of player characters.
 """
 
+import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -186,7 +187,7 @@ async def get_available_classes(
 
 @player_router.get("/{player_id}", response_model=PlayerRead)
 async def get_player(
-    player_id: str,
+    player_id: uuid.UUID,
     request: Request,
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
@@ -218,7 +219,7 @@ async def get_player_by_name(
 
 @player_router.delete("/{player_id}")
 async def delete_player(
-    player_id: str,
+    player_id: uuid.UUID,
     request: Request,
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
@@ -239,7 +240,7 @@ async def delete_player(
 # Player stats and effects endpoints
 @player_router.post("/{player_id}/sanity-loss")
 async def apply_sanity_loss(
-    player_id: str,
+    player_id: uuid.UUID,
     request_data: SanityLossRequest,
     request: Request,
     current_user: User = Depends(get_current_user),
@@ -258,7 +259,7 @@ async def apply_sanity_loss(
 
 @player_router.post("/{player_id}/fear")
 async def apply_fear(
-    player_id: str,
+    player_id: uuid.UUID,
     request_data: FearRequest,
     request: Request,
     current_user: User = Depends(get_current_user),
@@ -277,7 +278,7 @@ async def apply_fear(
 
 @player_router.post("/{player_id}/corruption")
 async def apply_corruption(
-    player_id: str,
+    player_id: uuid.UUID,
     request_data: CorruptionRequest,
     request: Request,
     current_user: User = Depends(get_current_user),
@@ -296,7 +297,7 @@ async def apply_corruption(
 
 @player_router.post("/{player_id}/occult-knowledge")
 async def gain_occult_knowledge(
-    player_id: str,
+    player_id: uuid.UUID,
     request_data: OccultKnowledgeRequest,
     request: Request,
     current_user: User = Depends(get_current_user),
@@ -317,7 +318,7 @@ async def gain_occult_knowledge(
 
 @player_router.post("/{player_id}/heal")
 async def heal_player(
-    player_id: str,
+    player_id: uuid.UUID,
     request_data: HealRequest,
     request: Request,
     current_user: User = Depends(get_current_user),
@@ -336,7 +337,7 @@ async def heal_player(
 
 @player_router.post("/{player_id}/damage")
 async def damage_player(
-    player_id: str,
+    player_id: uuid.UUID,
     request_data: DamageRequest,
     request: Request,
     current_user: User = Depends(get_current_user),

@@ -5,9 +5,10 @@ This module handles incoming NATS messages and broadcasts them to WebSocket clie
 It replaces the previous Redis message handler with NATS-based messaging.
 """
 
+import uuid
 from datetime import UTC, datetime
 from types import SimpleNamespace
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 from unittest.mock import Mock
 
 from ..logging.enhanced_logging_config import get_logger
@@ -601,7 +602,10 @@ class NATSMessageHandler:
                 )
                 try:
                     # Use async batch loading to prevent blocking the event loop
-                    load_results = await user_manager.load_player_mutes_batch(receiver_ids)
+                    # Cast to list[UUID | str] since load_player_mutes_batch accepts this type
+                    # and receiver_ids is list[str] which is compatible
+                    receiver_ids_typed: list[uuid.UUID | str] = cast(list[uuid.UUID | str], receiver_ids)
+                    load_results = await user_manager.load_player_mutes_batch(receiver_ids_typed)
                     logger.debug(
                         "=== BROADCAST FILTERING DEBUG: Batch loaded mute data ===",
                         room_id=room_id,
@@ -921,8 +925,18 @@ class NATSMessageHandler:
                         available_mute_data=available_mute_data,
                     )
 
-                    if receiver_id in user_manager._player_mutes:
-                        receiver_mutes = list(user_manager._player_mutes[receiver_id].keys())
+                    # Convert receiver_id to UUID if it's a valid UUID string
+                    # _player_mutes uses UUID keys, so we need to convert
+                    # receiver_id is typed as str in function parameter, so always convert
+                    receiver_id_uuid: uuid.UUID | None = None
+                    try:
+                        receiver_id_uuid = uuid.UUID(receiver_id)
+                    except (ValueError, AttributeError, TypeError):
+                        # If conversion fails, receiver_id is not a valid UUID, skip
+                        receiver_id_uuid = None
+
+                    if receiver_id_uuid and receiver_id_uuid in user_manager._player_mutes:
+                        receiver_mutes = list(user_manager._player_mutes[receiver_id_uuid].keys())
                         logger.debug(
                             "=== MUTE FILTERING DEBUG: Receiver's muted players ===",
                             receiver_id=receiver_id,

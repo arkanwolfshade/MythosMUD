@@ -145,14 +145,16 @@ class PlayerCombatService:
         if result:
             logger.critical(
                 "Combat movement violation detected",
-                player_id=str(player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player_id,
                 total_players_in_combat=len(self._player_combat_states),
                 combat_states=str(list(self._player_combat_states.keys())),
             )
         else:
             logger.debug(
                 "Combat sync check cleared",
-                player_id=str(player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player_id,
                 total_players_in_combat=len(self._player_combat_states),
             )
         return result
@@ -264,7 +266,7 @@ class PlayerCombatService:
         )
         try:
             # Get player from persistence
-            player = await self._persistence.async_get_player(str(player_id))
+            player = await self._persistence.async_get_player(player_id)
             if not player:
                 logger.warning("Player not found for XP award", player_id=player_id)
                 return
@@ -291,7 +293,8 @@ class PlayerCombatService:
         except Exception as e:
             logger.error(
                 "Error awarding XP to player",
-                player_id=str(player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player_id,
                 error=str(e),
             )
 

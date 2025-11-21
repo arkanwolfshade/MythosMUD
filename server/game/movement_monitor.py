@@ -9,6 +9,7 @@ systems is essential for maintaining the integrity of our eldritch architecture.
 """
 
 import threading
+import uuid
 from collections import defaultdict
 from datetime import UTC, datetime
 from typing import Any
@@ -62,7 +63,7 @@ class MovementMonitor:
         self._logger.info("MovementMonitor initialized")
 
     def record_movement_attempt(
-        self, player_id: str, from_room_id: str, to_room_id: str, success: bool, duration_ms: float
+        self, player_id: uuid.UUID | str, from_room_id: str, to_room_id: str, success: bool, duration_ms: float
     ):
         """Record a movement attempt with metrics."""
         with self._lock:
@@ -71,7 +72,9 @@ class MovementMonitor:
                 self._failed_movements += 1
 
             self._movement_times.append(duration_ms)
-            self._player_movements[player_id] += 1
+            # Convert UUID to string for dictionary key (UUIDs are hashable but we use strings for JSON serialization)
+            player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
+            self._player_movements[player_id_str] += 1
             self._last_movement_time = datetime.now(UTC)
 
             # Update room occupancy
@@ -80,9 +83,14 @@ class MovementMonitor:
                 self._room_occupancy[to_room_id] += 1
 
             # Log movement details
+            # Structlog handles UUID objects automatically, no need to convert to string
             self._logger.debug(
-                f"Movement recorded: {player_id} {from_room_id}->{to_room_id} "
-                f"(success={success}, duration={duration_ms:.2f}ms)"
+                "Movement recorded",
+                player_id=player_id,
+                from_room=from_room_id,
+                to_room=to_room_id,
+                success=success,
+                duration_ms=duration_ms,
             )
 
             # Check for alerts

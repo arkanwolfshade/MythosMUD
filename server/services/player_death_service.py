@@ -6,6 +6,7 @@ and death detection. As documented in the Necronomicon's chapter on mortality,
 the threshold between life and death requires careful management.
 """
 
+import uuid
 from typing import Any
 
 from sqlalchemy import select
@@ -90,7 +91,7 @@ class PlayerDeathService:
             )
             return []
 
-    async def process_mortally_wounded_tick(self, player_id: str, session: AsyncSession) -> bool:
+    async def process_mortally_wounded_tick(self, player_id: uuid.UUID, session: AsyncSession) -> bool:
         """
         Process HP decay for a single mortally wounded player.
 
@@ -181,7 +182,7 @@ class PlayerDeathService:
             return False
 
     async def handle_player_death(
-        self, player_id: str, death_location: str, killer_info: dict | None, session: AsyncSession
+        self, player_id: uuid.UUID, death_location: str, killer_info: dict | None, session: AsyncSession
     ) -> bool:
         """
         Handle player death when HP reaches -10.
@@ -230,10 +231,7 @@ class PlayerDeathService:
             # A player's combat essence must be severed upon death to prevent lingering in combat
             if self._player_combat_service:
                 try:
-                    from uuid import UUID
-
-                    player_uuid = UUID(player_id)
-                    await self._player_combat_service.clear_player_combat_state(player_uuid)
+                    await self._player_combat_service.clear_player_combat_state(player_id)
                     logger.info("Cleared combat state for deceased player", player_id=player_id)
                 except Exception as e:
                     log_exception_once(

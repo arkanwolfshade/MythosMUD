@@ -10,6 +10,7 @@ for maintaining the balance between mortal investigators and the eldritch
 entities they encounter.
 """
 
+import uuid
 from typing import Any
 
 from ..events import EventBus
@@ -103,7 +104,9 @@ class NPCCombatIntegration:
         """
         try:
             # Check if target is a player (has player data)
-            player = self._persistence.get_player(target_id)
+            # Convert target_id to UUID if it's a string
+            target_id_uuid = uuid.UUID(target_id) if isinstance(target_id, str) else target_id
+            player = self._persistence.get_player(target_id_uuid)
             if player:
                 # Apply damage to player using game mechanics service
                 success, message = self._game_mechanics.damage_player(target_id, damage, damage_type)
@@ -195,7 +198,9 @@ class NPCCombatIntegration:
         try:
             # Get target stats
             target_stats = {}
-            player = self._persistence.get_player(target_id)
+            # Convert target_id to UUID if it's a string
+            target_id_uuid = uuid.UUID(target_id) if isinstance(target_id, str) else target_id
+            player = self._persistence.get_player(target_id_uuid)
             if player:
                 target_stats = player.stats.model_dump()
             else:
@@ -257,7 +262,9 @@ class NPCCombatIntegration:
                 xp_reward = 10  # Default XP reward for aggressive mobs
 
                 # Apply effects to killer if it's a player
-                player = self._persistence.get_player(killer_id)
+                # Convert killer_id to UUID if it's a string
+                killer_id_uuid = uuid.UUID(killer_id) if isinstance(killer_id, str) else killer_id
+                player = self._persistence.get_player(killer_id_uuid)
                 if player:
                     # Gain occult knowledge for killing NPCs
                     occult_gain = 5  # Small amount of occult knowledge
@@ -296,7 +303,9 @@ class NPCCombatIntegration:
         """
         try:
             # Check if it's a player
-            player = self._persistence.get_player(entity_id)
+            # Convert entity_id to UUID if it's a string
+            entity_id_uuid = uuid.UUID(entity_id) if isinstance(entity_id, str) else entity_id
+            player = self._persistence.get_player(entity_id_uuid)
             if player:
                 stats = player.stats.model_dump()
                 return {

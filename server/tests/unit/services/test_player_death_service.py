@@ -1,6 +1,7 @@
 """Tests for player death service."""
 
 from unittest.mock import AsyncMock, Mock
+from uuid import uuid4
 
 import pytest
 
@@ -14,11 +15,15 @@ def player_death_service():
     return PlayerDeathService()
 
 
+# Test UUID constant for consistent testing
+TEST_PLAYER_ID = uuid4()
+
+
 @pytest.fixture
 def mock_player():
     """Create a mock player with configurable HP."""
     player = Mock(spec=Player)
-    player.player_id = "test-player-id"
+    player.player_id = TEST_PLAYER_ID
     player.name = "TestPlayer"
     player.current_room_id = "test-room-id"
     return player
@@ -90,7 +95,7 @@ class TestPlayerDeathService:
         mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
-        result = await player_death_service.process_mortally_wounded_tick("test-player-id", mock_session)
+        result = await player_death_service.process_mortally_wounded_tick(TEST_PLAYER_ID, mock_session)
 
         # Verify HP was decreased by 1
         assert result is True
@@ -110,7 +115,7 @@ class TestPlayerDeathService:
         mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
-        result = await player_death_service.process_mortally_wounded_tick("test-player-id", mock_session)
+        result = await player_death_service.process_mortally_wounded_tick(TEST_PLAYER_ID, mock_session)
 
         # Verify HP was decreased to exactly -10 (capped)
         assert result is True
@@ -129,7 +134,7 @@ class TestPlayerDeathService:
         mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
-        result = await player_death_service.process_mortally_wounded_tick("test-player-id", mock_session)
+        result = await player_death_service.process_mortally_wounded_tick(TEST_PLAYER_ID, mock_session)
 
         # Should not process decay for dead player
         assert result is False
@@ -160,9 +165,7 @@ class TestPlayerDeathService:
 
         killer_info = {"killer_id": "npc-123", "killer_name": "Terrible Beast"}
 
-        result = await player_death_service.handle_player_death(
-            "test-player-id", "death-room", killer_info, mock_session
-        )
+        result = await player_death_service.handle_player_death(TEST_PLAYER_ID, "death-room", killer_info, mock_session)
 
         assert result is True
         mock_session.commit.assert_called_once()
@@ -179,7 +182,7 @@ class TestPlayerDeathService:
         mock_session = AsyncMock()
         mock_session.get.return_value = mock_player
 
-        result = await player_death_service.handle_player_death("test-player-id", "death-room", None, mock_session)
+        result = await player_death_service.handle_player_death(TEST_PLAYER_ID, "death-room", None, mock_session)
 
         assert result is True
         mock_session.commit.assert_called_once()
@@ -241,7 +244,7 @@ class TestPlayerDeathService:
         mock_player.get_stats.return_value = {"current_health": -5}
         mock_player.is_dead.return_value = False
 
-        result = await player_death_service.process_mortally_wounded_tick("test-player-id", mock_session)
+        result = await player_death_service.process_mortally_wounded_tick(TEST_PLAYER_ID, mock_session)
 
         assert result is False
         mock_session.rollback.assert_called_once()
@@ -264,14 +267,14 @@ class TestPlayerDeathService:
 
         killer_info = {"killer_id": "npc-123", "killer_name": "Beast"}
 
-        result = await service.handle_player_death("test-player-id", "death-room", killer_info, mock_session)
+        result = await service.handle_player_death(TEST_PLAYER_ID, "death-room", killer_info, mock_session)
 
         assert result is True
         # Verify event was published
         mock_event_bus.publish.assert_called_once()
         event = mock_event_bus.publish.call_args[0][0]
         assert event.event_type == "PlayerDiedEvent"
-        assert event.player_id == "test-player-id"
+        assert event.player_id == TEST_PLAYER_ID
         assert event.killer_id == "npc-123"
 
     @pytest.mark.asyncio
@@ -287,7 +290,7 @@ class TestPlayerDeathService:
         mock_session.get.return_value = mock_player
         mock_session.commit.side_effect = Exception("Database error")
 
-        result = await player_death_service.handle_player_death("test-player-id", "death-room", None, mock_session)
+        result = await player_death_service.handle_player_death(TEST_PLAYER_ID, "death-room", None, mock_session)
 
         assert result is False
         mock_session.rollback.assert_called_once()

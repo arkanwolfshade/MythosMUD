@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import uuid
 from datetime import UTC, datetime
 from typing import Any
 
@@ -53,11 +54,24 @@ async def handle_ground_command(
     if not rescuer_room or rescuer_room != target_room:
         return {"result": f"{target_name} is not within reach to be grounded."}
 
-    target_player_id = str(target.player_id)
-    rescuer_player_id = str(rescuer.player_id)
+    # Convert player.player_id to UUID if needed (handles SQLAlchemy Column[str])
+    target_player_id_value = target.player_id
+    target_player_id = (
+        target_player_id_value
+        if isinstance(target_player_id_value, uuid.UUID)
+        else uuid.UUID(str(target_player_id_value))
+    )
+    rescuer_player_id_value = rescuer.player_id
+    rescuer_player_id = (
+        rescuer_player_id_value
+        if isinstance(rescuer_player_id_value, uuid.UUID)
+        else uuid.UUID(str(rescuer_player_id_value))
+    )
+    target_player_id_str = str(target_player_id)
+    rescuer_player_id_str = str(rescuer_player_id)
 
     async for session in get_async_session():
-        sanity_record = await session.get(PlayerSanity, target_player_id)
+        sanity_record = await session.get(PlayerSanity, target_player_id_str)
         if sanity_record is None:
             logger.warning("Ground command missing sanity record", target_id=target.player_id)
             return {"result": "The target's aura cannot be located among the ledgers of the mind."}
@@ -66,7 +80,7 @@ async def handle_ground_command(
             return {"result": f"{target_name} isn't catatonic and needs no grounding."}
 
         await send_rescue_update_event(
-            target_player_id,
+            target_player_id_str,
             status="channeling",
             rescuer_name=rescuer_username,
             target_name=target_name,
@@ -74,7 +88,7 @@ async def handle_ground_command(
             progress=10.0,
         )
         await send_rescue_update_event(
-            rescuer_player_id,
+            rescuer_player_id_str,
             status="channeling",
             rescuer_name=rescuer_username,
             target_name=target_name,

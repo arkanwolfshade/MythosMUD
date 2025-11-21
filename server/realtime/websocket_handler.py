@@ -7,6 +7,7 @@ and real-time updates for the game.
 
 import json
 import time
+import uuid
 from typing import Any
 
 from fastapi import WebSocket, WebSocketDisconnect
@@ -54,7 +55,7 @@ def _get_npc_name_from_instance(npc_id: str) -> str | None:
 
 async def handle_websocket_connection(
     websocket: WebSocket,
-    player_id: str,
+    player_id: uuid.UUID,
     session_id: str | None = None,
     connection_manager=None,
     token: str | None = None,
@@ -86,27 +87,27 @@ async def handle_websocket_connection(
     except Exception as e:
         logger.debug("Could not check shutdown status in WebSocket connection", error=str(e))
 
-    # Convert player_id to string to ensure JSON serialization compatibility
-    player_id_str = str(player_id)
-
-    # Connect the WebSocket with session tracking and token for revalidation
-    success = await connection_manager.connect_websocket(websocket, player_id_str, session_id, token=token)
+    # Connect the WebSocket with session tracking and token for revalidation (accepts UUID directly)
+    success = await connection_manager.connect_websocket(websocket, player_id, session_id, token=token)
     if not success:
-        logger.error("Failed to connect WebSocket", player_id=player_id_str)
+        logger.error("Failed to connect WebSocket", player_id=player_id)
         return
+
+    # Convert to string for user_manager (expects string) and other string-based operations
+    player_id_str = str(player_id)
 
     # Load player mute data when they connect to the game
     try:
         from ..services.user_manager import user_manager
 
         user_manager.load_player_mutes(player_id_str)
-        logger.info("Loaded mute data", player_id=player_id_str)
+        logger.info("Loaded mute data", player_id=player_id)
     except Exception as e:
-        logger.error("Error loading mute data", player_id=player_id_str, error=str(e))
+        logger.error("Error loading mute data", player_id=player_id, error=str(e))
 
     try:
         # Send initial game state
-        player = connection_manager._get_player(player_id_str)
+        player = connection_manager._get_player(player_id)
         if player and hasattr(player, "current_room_id"):
             persistence = connection_manager.persistence
             if persistence:
@@ -115,9 +116,7 @@ async def handle_websocket_connection(
                     # Ensure player is added to their current room and track if we actually added them
                     logger.info("DEBUG: Room object ID before player_entered", room_id=id(room))
                     if not room.has_player(player_id_str):
-                        logger.info(
-                            "Adding player to room", player_id=player_id_str, room_id=str(player.current_room_id)
-                        )
+                        logger.info("Adding player to room", player_id=player_id, room_id=str(player.current_room_id))
                         room.player_entered(player_id_str)
                         logger.info(
                             f"DEBUG: After player_entered, room {player.current_room_id} has players: {room.get_players()}"
@@ -125,7 +124,8 @@ async def handle_websocket_connection(
                         logger.info("DEBUG: Room object ID after player_entered", room_id=id(room))
                     else:
                         logger.info(
-                            f"DEBUG: Player {player_id_str} already in room {player.current_room_id}, players: {room.get_players()}"
+                            f"DEBUG: Player {player_id_str} already in room {player.current_room_id}, players: {room.get_players()}",
+                            player_id=player_id,
                         )
                         logger.info("DEBUG: Room object ID (already in room)", room_id=id(room))
 
@@ -218,7 +218,7 @@ async def handle_websocket_connection(
                             complete_player_data = await player_service._convert_player_to_schema(player)
                             logger.debug(
                                 "WebSocket handler: Retrieved complete player data with profession",
-                                player_id=player_id_str,
+                                player_id=player_id,
                                 has_profession=bool(getattr(complete_player_data, "profession_name", None)),
                             )
 
@@ -235,7 +235,7 @@ async def handle_websocket_connection(
                             # Fallback to basic player data if PlayerService not available
                             logger.warning(
                                 "PlayerService not available in websocket handler, using basic player data",
-                                player_id=player_id_str,
+                                player_id=player_id,
                             )
                             player_data_for_client = {
                                 "name": player.name,
@@ -244,7 +244,7 @@ async def handle_websocket_connection(
                                 "stats": stats_data,
                             }
                     except Exception as e:
-                        logger.error("Error getting complete player data", error=str(e), player_id=player_id_str)
+                        logger.error("Error getting complete player data", error=str(e), player_id=player_id)
                         # Fallback to basic player data
                         player_data_for_client = {
                             "name": player.name,
@@ -283,7 +283,7 @@ async def handle_websocket_connection(
                     # This handles players who connect with HP already at death threshold
                     # CRITICAL: Refresh player from database to ensure we have latest HP and room after respawn
                     # The persistence layer might have cached player data, so we need fresh data
-                    fresh_player = persistence.get_player(player_id_str)
+                    fresh_player = persistence.get_player(player_id)
                     if fresh_player:
                         player = fresh_player
                         # Update canonical_room_id with fresh player's room to ensure accurate death check
@@ -393,7 +393,7 @@ async def handle_websocket_connection(
                                 occupants_sent=occupant_names,
                             )
                     except Exception as e:
-                        logger.error("Error sending initial room state", player_id=player_id_str, error=str(e))
+                        logger.error("Error sending initial room state", player_id=player_id, error=str(e))
 
                     # Note: Removed synthetic player_entered event generation to prevent duplicates
                     # The natural PlayerEnteredRoom event from Room.player_entered() will handle
@@ -480,7 +480,7 @@ async def handle_websocket_connection(
                 await handle_websocket_message(websocket, player_id_str, message)
 
             except json.JSONDecodeError:
-                logger.warning("Invalid JSON from player", player_id=player_id_str)
+                logger.warning("Invalid JSON from player", player_id=player_id)
                 error_response = create_websocket_error_response(
                     ErrorType.INVALID_FORMAT,
                     "Invalid JSON format",
@@ -531,16 +531,16 @@ async def handle_websocket_connection(
 
     finally:
         # Clean up connection
-        await connection_manager.disconnect_websocket(player_id_str)
+        await connection_manager.disconnect_websocket(player_id)
 
         # Clean up player mute data when they disconnect
         try:
             from ..services.user_manager import user_manager
 
             user_manager.cleanup_player_mutes(player_id_str)
-            logger.info("Cleaned up mute data", player_id=player_id_str)
+            logger.info("Cleaned up mute data", player_id=player_id)
         except Exception as e:
-            logger.error("Error cleaning up mute data", player_id=player_id_str, error=str(e))
+            logger.error("Error cleaning up mute data", player_id=player_id, error=str(e))
 
 
 async def handle_websocket_message(websocket: WebSocket, player_id: str, message: dict) -> None:

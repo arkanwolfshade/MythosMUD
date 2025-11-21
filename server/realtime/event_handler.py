@@ -9,6 +9,7 @@ for maintaining awareness of the dimensional shifts that occur throughout our
 eldritch architecture.
 """
 
+import uuid
 from datetime import UTC, datetime
 from typing import Any, cast
 
@@ -86,24 +87,30 @@ class RealTimeEventHandler:
         self._sequence_counter += 1
         return self._sequence_counter
 
-    def _get_player_info(self, player_id: str) -> tuple[Any, str] | None:
+    def _get_player_info(self, player_id: uuid.UUID | str) -> tuple[Any, str] | None:
         """
         Get player information and name.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID or string for backward compatibility)
 
         Returns:
             tuple: (player, player_name) or None if player not found
         """
-        player = self.connection_manager._get_player(player_id)
+        # Convert to UUID if string (for backward compatibility)
+        player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+        player = self.connection_manager._get_player(player_id_uuid)
         if not player:
-            self._logger.warning("Player not found", player_id=player_id)
+            # Structlog handles UUID objects automatically, no need to convert to string
+            self._logger.warning("Player not found", player_id=player_id_uuid)
             return None
-        player_name = getattr(player, "name", player_id)
+        # Use string representation for player name fallback
+        player_name = getattr(player, "name", str(player_id_uuid))
         return (player, player_name)
 
-    def _log_player_movement(self, player_id: str, player_name: str, room_id: str, movement_type: str) -> None:
+    def _log_player_movement(
+        self, player_id: uuid.UUID | str, player_name: str, room_id: str, movement_type: str
+    ) -> None:
         """
         Log player movement for AI processing.
 
@@ -121,14 +128,14 @@ class RealTimeEventHandler:
 
             if movement_type == "joined":
                 self.chat_logger.log_player_joined_room(
-                    player_id=player_id,
+                    player_id=str(player_id),
                     player_name=player_name,
                     room_id=room_id,
                     room_name=room_name,
                 )
             elif movement_type == "left":
                 self.chat_logger.log_player_left_room(
-                    player_id=player_id,
+                    player_id=str(player_id),
                     player_name=player_name,
                     room_id=room_id,
                     room_name=room_name,
@@ -156,14 +163,16 @@ class RealTimeEventHandler:
                 names.append(occ)
         return names
 
-    async def _send_room_update_to_player(self, player_id: str, room_id: str) -> None:
+    async def _send_room_update_to_player(self, player_id: uuid.UUID | str, room_id: str) -> None:
         """
         Send full room update to a player.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID or string for backward compatibility)
             room_id: The room ID
         """
+        # Convert to UUID if string (send_personal_message accepts UUID)
+        player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
         try:
             room = (
                 self.connection_manager.persistence.get_room(room_id) if self.connection_manager.persistence else None
@@ -190,24 +199,28 @@ class RealTimeEventHandler:
                 },
             }
             # Send as personal message
-            await self.connection_manager.send_personal_message(player_id, room_update_event)
+            await self.connection_manager.send_personal_message(player_id_uuid, room_update_event)
             self._logger.debug(
                 "Sent room_update to player",
-                player_id=player_id,
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player_id_uuid,
                 room_id=room_id,
                 occupants=occupant_names,
             )
         except Exception as e:
-            self._logger.error("Error sending room update to player", player_id=player_id, error=str(e))
+            # Structlog handles UUID objects automatically, no need to convert to string
+            self._logger.error("Error sending room update to player", player_id=player_id_uuid, error=str(e))
 
-    async def _send_occupants_snapshot_to_player(self, player_id: str, room_id: str) -> None:
+    async def _send_occupants_snapshot_to_player(self, player_id: uuid.UUID | str, room_id: str) -> None:
         """
         Send occupants snapshot to a player.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID or string for backward compatibility)
             room_id: The room ID
         """
+        # Convert to UUID if string (send_personal_message accepts UUID)
+        player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
         try:
             occupants_snapshot = self._get_room_occupants(room_id)
             names = self._extract_occupant_names(occupants_snapshot)
@@ -219,9 +232,10 @@ class RealTimeEventHandler:
                 "room_id": room_id,
                 "data": {"occupants": names, "count": len(names)},
             }
-            await self.connection_manager.send_personal_message(player_id, personal)
+            await self.connection_manager.send_personal_message(player_id_uuid, personal)
         except Exception as e:
-            self._logger.error("Error sending occupants snapshot to player", player_id=player_id, error=str(e))
+            # Structlog handles UUID objects automatically, no need to convert to string
+            self._logger.error("Error sending occupants snapshot to player", player_id=player_id_uuid, error=str(e))
 
     async def _handle_player_entered(self, event: PlayerEnteredRoom) -> None:
         """
@@ -267,15 +281,37 @@ class RealTimeEventHandler:
                 await self.connection_manager.broadcast_to_room(room_id_str, message, exclude_player=exclude_player_id)
 
             # Subscribe player to the room so they will receive subsequent broadcasts
-            if exclude_player_id is not None and room_id_str is not None:
-                await self.connection_manager.subscribe_to_room(exclude_player_id, room_id_str)
+            # Convert string player_id to UUID for subscribe_to_room (which expects UUID)
+            if processed_event.player_id and room_id_str is not None:
+                try:
+                    player_id_uuid = (
+                        uuid.UUID(processed_event.player_id)
+                        if isinstance(processed_event.player_id, str)
+                        else processed_event.player_id
+                    )
+                    await self.connection_manager.subscribe_to_room(player_id_uuid, room_id_str)
+                except (ValueError, AttributeError):
+                    self._logger.warning(
+                        "Failed to convert player_id to UUID for room subscription", player_id=processed_event.player_id
+                    )
 
             # Send room occupants update to the entering player as a personal message
             # so they immediately see who is present on joining
-            if room_id_str is not None and exclude_player_id is not None:
+            if room_id_str is not None and processed_event.player_id:
                 await self._send_room_occupants_update(room_id_str, exclude_player=exclude_player_id)
-                await self._send_room_update_to_player(exclude_player_id, room_id_str)
-                await self._send_occupants_snapshot_to_player(exclude_player_id, room_id_str)
+                # Functions accept UUID | str, so convert string to UUID if needed
+                try:
+                    player_id_for_personal = (
+                        uuid.UUID(processed_event.player_id)
+                        if isinstance(processed_event.player_id, str)
+                        else processed_event.player_id
+                    )
+                    await self._send_room_update_to_player(player_id_for_personal, room_id_str)
+                    await self._send_occupants_snapshot_to_player(player_id_for_personal, room_id_str)
+                except (ValueError, AttributeError):
+                    # Fallback to string if conversion fails
+                    await self._send_room_update_to_player(processed_event.player_id, room_id_str)
+                    await self._send_occupants_snapshot_to_player(processed_event.player_id, room_id_str)
 
             self._logger.info(
                 "Player entered room with enhanced synchronization",
@@ -316,7 +352,18 @@ class RealTimeEventHandler:
             message = self._create_player_left_message(processed_event, player_name)
 
             # Unsubscribe player from the room
-            await self.connection_manager.unsubscribe_from_room(processed_event.player_id, processed_event.room_id)
+            # Convert string player_id to UUID for unsubscribe_from_room (which expects UUID)
+            try:
+                player_id_uuid = (
+                    uuid.UUID(processed_event.player_id)
+                    if isinstance(processed_event.player_id, str)
+                    else processed_event.player_id
+                )
+                await self.connection_manager.unsubscribe_from_room(player_id_uuid, processed_event.room_id)
+            except (ValueError, AttributeError):
+                self._logger.warning(
+                    "Failed to convert player_id to UUID for room unsubscription", player_id=processed_event.player_id
+                )
 
             # CRITICAL FIX: Ensure player_id is always a string for proper comparison
             exclude_player_id = str(processed_event.player_id) if processed_event.player_id else None
@@ -854,7 +901,8 @@ class RealTimeEventHandler:
             event: The PlayerDiedEvent containing death information
         """
         try:
-            player_id_str = event.player_id
+            # Convert UUID to string for build_event (which expects str)
+            player_id_str = str(event.player_id)
 
             # Send personal message to the player
             from .envelope import build_event
@@ -888,7 +936,8 @@ class RealTimeEventHandler:
             event: The PlayerHPDecayEvent containing HP decay information
         """
         try:
-            player_id_str = event.player_id
+            # Convert UUID to string for build_event (which expects str)
+            player_id_str = str(event.player_id)
 
             # Send personal message to the player
             from .envelope import build_event
@@ -920,7 +969,8 @@ class RealTimeEventHandler:
             event: The PlayerRespawnedEvent containing respawn information
         """
         try:
-            player_id_str = event.player_id
+            # Convert UUID to string for build_event (which expects str)
+            player_id_str = str(event.player_id)
 
             # Send personal message to the player
             from .envelope import build_event

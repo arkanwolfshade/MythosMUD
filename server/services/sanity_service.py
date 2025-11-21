@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import uuid
 from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -105,14 +106,14 @@ class SanityRepository:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
-    async def get_player_sanity(self, player_id: str) -> PlayerSanity | None:
+    async def get_player_sanity(self, player_id: uuid.UUID) -> PlayerSanity | None:
         stmt: Select[tuple[PlayerSanity]] = (
             select(PlayerSanity).options(selectinload(PlayerSanity.player)).where(PlayerSanity.player_id == player_id)
         )
         result = await self._session.execute(stmt)
         return result.scalar_one_or_none()
 
-    async def get_or_create_player_sanity(self, player_id: str) -> PlayerSanity:
+    async def get_or_create_player_sanity(self, player_id: uuid.UUID) -> PlayerSanity:
         record = await self.get_player_sanity(player_id)
         if record is not None:
             return record
@@ -124,7 +125,7 @@ class SanityRepository:
 
     async def add_adjustment_log(
         self,
-        player_id: str,
+        player_id: uuid.UUID,
         delta: int,
         reason_code: str,
         metadata: str,
@@ -142,7 +143,7 @@ class SanityRepository:
         await self._session.flush()
         return log_entry
 
-    async def get_exposure_state(self, player_id: str, entity_archetype: str) -> SanityExposureState | None:
+    async def get_exposure_state(self, player_id: uuid.UUID, entity_archetype: str) -> SanityExposureState | None:
         stmt: Select[tuple[SanityExposureState]] = select(SanityExposureState).where(
             SanityExposureState.player_id == player_id,
             SanityExposureState.entity_archetype == entity_archetype,
@@ -150,7 +151,7 @@ class SanityRepository:
         result = await self._session.execute(stmt)
         return result.scalar_one_or_none()
 
-    async def increment_exposure_state(self, player_id: str, entity_archetype: str) -> SanityExposureState:
+    async def increment_exposure_state(self, player_id: uuid.UUID, entity_archetype: str) -> SanityExposureState:
         exposure = await self.get_exposure_state(player_id, entity_archetype)
         if exposure is None:
             exposure = SanityExposureState(
@@ -166,7 +167,7 @@ class SanityRepository:
         await self._session.flush()
         return exposure
 
-    async def get_cooldown(self, player_id: str, action_code: str) -> SanityCooldown | None:
+    async def get_cooldown(self, player_id: uuid.UUID, action_code: str) -> SanityCooldown | None:
         stmt: Select[tuple[SanityCooldown]] = select(SanityCooldown).where(
             SanityCooldown.player_id == player_id,
             SanityCooldown.action_code == action_code,
@@ -174,7 +175,7 @@ class SanityRepository:
         result = await self._session.execute(stmt)
         return result.scalar_one_or_none()
 
-    async def set_cooldown(self, player_id: str, action_code: str, expires_at: datetime) -> SanityCooldown:
+    async def set_cooldown(self, player_id: uuid.UUID, action_code: str, expires_at: datetime) -> SanityCooldown:
         cooldown = await self.get_cooldown(player_id, action_code)
         if cooldown is None:
             cooldown = SanityCooldown(
@@ -192,13 +193,13 @@ class SanityRepository:
 class CatatoniaObserverProtocol(Protocol):
     """Protocol for observers interested in catatonia state changes."""
 
-    def on_catatonia_entered(self, *, player_id: str, entered_at: datetime, current_san: int) -> None:
+    def on_catatonia_entered(self, *, player_id: uuid.UUID, entered_at: datetime, current_san: int) -> None:
         """Handle a player crossing into catatonia."""
 
-    def on_catatonia_cleared(self, *, player_id: str, resolved_at: datetime) -> None:
+    def on_catatonia_cleared(self, *, player_id: uuid.UUID, resolved_at: datetime) -> None:
         """Handle a player returning from catatonia."""
 
-    def on_sanitarium_failover(self, *, player_id: str, current_san: int) -> None:
+    def on_sanitarium_failover(self, *, player_id: uuid.UUID, current_san: int) -> None:
         """Handle a player requiring sanitarium failover."""
 
 
@@ -206,7 +207,7 @@ class CatatoniaObserverProtocol(Protocol):
 class SanityUpdateResult:
     """Normalized response describing the outcome of a sanity adjustment."""
 
-    player_id: str
+    player_id: uuid.UUID
     previous_san: int
     new_san: int
     previous_tier: Tier
@@ -234,7 +235,7 @@ class SanityService:
 
     async def apply_sanity_adjustment(
         self,
-        player_id: str,
+        player_id: uuid.UUID,
         delta: int,
         *,
         reason_code: str,
@@ -309,7 +310,7 @@ class SanityService:
             )
             self._catatonia_observer.on_sanitarium_failover(player_id=player_id, current_san=new_san)
             await send_rescue_update_event(
-                player_id=player_id,
+                player_id=str(player_id),
                 status="sanitarium",
                 current_san=new_san,
                 message="Orderlies whisk you to Arkham Sanitarium for observation.",
@@ -321,13 +322,13 @@ class SanityService:
 
         liabilities_added: list[str] = []
         if delta < 0 and abs(delta) >= self._liability_threshold:
-            liability_code = self._liability_picker(player_id, previous_san, new_san, reason_code)
+            liability_code = self._liability_picker(str(player_id), previous_san, new_san, reason_code)
             if liability_code:
                 liability_added = await self.add_liability(player_id, liability_code)
                 if liability_added:
                     liabilities_added.append(liability_added)
         elif self._worsened_tier(previous_tier, new_tier):
-            liability_code = self._liability_picker(player_id, previous_san, new_san, reason_code)
+            liability_code = self._liability_picker(str(player_id), previous_san, new_san, reason_code)
             if liability_code:
                 liability_added = await self.add_liability(player_id, liability_code)
                 if liability_added:
@@ -374,7 +375,7 @@ class SanityService:
             liabilities_added=liabilities_added,
         )
 
-    async def add_liability(self, player_id: str, liability_code: str) -> str | None:
+    async def add_liability(self, player_id: uuid.UUID, liability_code: str) -> str | None:
         """Add or stack a liability on the player."""
 
         record = await self._repo.get_or_create_player_sanity(player_id)
@@ -400,7 +401,7 @@ class SanityService:
         logger.info("Liability added", player_id=player_id, liability_code=liability_code, stacks=1)
         return liability_code
 
-    async def clear_liability(self, player_id: str, liability_code: str, *, remove_all: bool = False) -> bool:
+    async def clear_liability(self, player_id: uuid.UUID, liability_code: str, *, remove_all: bool = False) -> bool:
         """Reduce or remove a liability stack."""
 
         record = await self._repo.get_or_create_player_sanity(player_id)
@@ -427,19 +428,19 @@ class SanityService:
             logger.info("Liability updated", player_id=player_id, liability_code=liability_code, remove_all=remove_all)
         return changed
 
-    async def get_player_sanity(self, player_id: str) -> PlayerSanity:
+    async def get_player_sanity(self, player_id: uuid.UUID) -> PlayerSanity:
         """Retrieve the player's sanity record, creating it if needed."""
         return await self._repo.get_or_create_player_sanity(player_id)
 
-    async def increment_exposure_state(self, player_id: str, entity_archetype: str) -> SanityExposureState:
+    async def increment_exposure_state(self, player_id: uuid.UUID, entity_archetype: str) -> SanityExposureState:
         """Increment encounter count for a player/entity archetype exposure."""
         return await self._repo.increment_exposure_state(player_id, entity_archetype)
 
-    async def get_cooldown(self, player_id: str, action_code: str) -> SanityCooldown | None:
+    async def get_cooldown(self, player_id: uuid.UUID, action_code: str) -> SanityCooldown | None:
         """Retrieve cooldown record for a specific action."""
         return await self._repo.get_cooldown(player_id, action_code)
 
-    async def set_cooldown(self, player_id: str, action_code: str, expires_at: datetime) -> SanityCooldown:
+    async def set_cooldown(self, player_id: uuid.UUID, action_code: str, expires_at: datetime) -> SanityCooldown:
         """Set or update an action cooldown."""
         return await self._repo.set_cooldown(player_id, action_code, expires_at)
 
@@ -464,7 +465,9 @@ class SanityService:
         # Implementations can provide more complex logic with randomization or weighting.
         existing = set()
         # Attempt to read liabilities from session identity map if available.
-        identity_key = self._session.identity_key(PlayerSanity, (player_id,))
+        # Convert string player_id to UUID for identity_key
+        player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+        identity_key = self._session.identity_key(PlayerSanity, (player_id_uuid,))
         instance = self._session.identity_map.get(identity_key)
         if instance is not None:
             for entry in decode_liabilities(instance.liabilities):

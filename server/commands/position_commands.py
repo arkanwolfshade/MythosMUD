@@ -73,23 +73,31 @@ async def _handle_position_change(
 
         if connection_manager and hasattr(connection_manager, "broadcast_to_room") and room_id and player_id:
             try:
+                # build_event accepts UUID directly and converts internally
+                # Convert to string only for data dict (JSON serialization)
                 event = build_event(
                     "player_posture_change",
                     {
-                        "player_id": player_id,
+                        "player_id": str(player_id)
+                        if player_id
+                        else None,  # Convert to string for JSON serialization in data dict
                         "player_name": player_display_name,
                         "previous_position": previous_position,
                         "position": result["position"],
                         "message": room_message,
                     },
-                    room_id=str(room_id),
-                    player_id=str(player_id),
+                    room_id=str(room_id) if room_id else None,  # Convert to string for JSON serialization
+                    player_id=player_id,  # build_event accepts UUID and converts internally
                     connection_manager=connection_manager,
                 )
-                await connection_manager.broadcast_to_room(str(room_id), event, exclude_player=str(player_id))
+                # broadcast_to_room now accepts UUID for exclude_player and converts internally
+                await connection_manager.broadcast_to_room(
+                    str(room_id) if room_id else "", event, exclude_player=player_id
+                )
                 logger.info(
                     "Broadcasted posture change",
                     player_name=player_display_name,
+                    # Structlog handles UUID objects automatically, no need to convert to string
                     player_id=player_id,
                     previous_position=previous_position,
                     new_position=result["position"],
@@ -99,6 +107,7 @@ async def _handle_position_change(
                 logger.warning(
                     "Failed to broadcast posture change",
                     player_name=player_display_name,
+                    # Structlog handles UUID objects automatically, no need to convert to string
                     player_id=player_id,
                     error=str(exc),
                 )

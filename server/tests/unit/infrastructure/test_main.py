@@ -136,23 +136,25 @@ class TestEndpoints:
         mock_player.profession_name = "Scholar"
         mock_player.profession_description = "A learned academic"
         mock_player.profession_flavor_text = "Knowledge is power"
-        mock_player.model_dump = Mock(return_value={
-            "player_id": mock_player.player_id,
-            "name": mock_player.name,
-            "current_room_id": mock_player.current_room_id,
-            "user_id": mock_player.user_id,
-            "experience_points": mock_player.experience_points,
-            "level": mock_player.level,
-            "stats": mock_player.stats,
-            "inventory": mock_player.inventory,
-            "status_effects": mock_player.status_effects,
-            "created_at": mock_player.created_at,
-            "last_active": mock_player.last_active,
-            "profession_id": mock_player.profession_id,
-            "profession_name": mock_player.profession_name,
-            "profession_description": mock_player.profession_description,
-            "profession_flavor_text": mock_player.profession_flavor_text,
-        })
+        mock_player.model_dump = Mock(
+            return_value={
+                "id": mock_player.id,  # PlayerRead expects 'id', not 'player_id'
+                "name": mock_player.name,
+                "current_room_id": mock_player.current_room_id,
+                "user_id": mock_player.user_id,
+                "experience_points": mock_player.experience_points,
+                "level": mock_player.level,
+                "stats": mock_player.stats,
+                "inventory": mock_player.inventory,
+                "status_effects": mock_player.status_effects,
+                "created_at": mock_player.created_at,
+                "last_active": mock_player.last_active,
+                "profession_id": mock_player.profession_id,
+                "profession_name": mock_player.profession_name,
+                "profession_description": mock_player.profession_description,
+                "profession_flavor_text": mock_player.profession_flavor_text,
+            }
+        )
         mock_service_instance.create_player = AsyncMock(return_value=mock_player)
 
         # Override the app dependencies

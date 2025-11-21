@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import uuid
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any, TypedDict, cast
@@ -138,9 +139,13 @@ class InventoryService:
         normalized_inventory.insert(slot_index + 1, split_stack)
         return normalized_inventory
 
-    def begin_mutation(self, player_id: str, token: str | None):
+    def begin_mutation(self, player_id: uuid.UUID | str, token: str | None):
         """
         Acquire a guarded mutation context for the given player.
+
+        Args:
+            player_id: The player's ID (UUID or string - converted to string for mutation guard)
+            token: Optional idempotency token
 
         Returns a context manager decision that should be used via:
 
@@ -150,8 +155,9 @@ class InventoryService:
 
         This pattern ensures per-player serialization and idempotent behaviour.
         """
-
-        return self.mutation_guard.acquire(player_id, token)
+        # Convert UUID to string for mutation guard (uses strings as dictionary keys)
+        player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
+        return self.mutation_guard.acquire(player_id_str, token)
 
     def _clone_stack(self, stack: Mapping[str, Any]) -> InventoryStack:
         try:
