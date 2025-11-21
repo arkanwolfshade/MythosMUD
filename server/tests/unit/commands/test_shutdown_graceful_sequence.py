@@ -9,10 +9,16 @@ requires a specific sequence of rituals.
 """
 
 from unittest.mock import AsyncMock, MagicMock
+from uuid import NAMESPACE_DNS, UUID, uuid5
 
 import pytest
 
 from server.commands.admin_shutdown_command import execute_shutdown_sequence
+
+
+def _str_to_uuid(player_id_str: str) -> UUID:
+    """Convert string player_id to UUID deterministically for tests."""
+    return uuid5(NAMESPACE_DNS, player_id_str)
 
 
 class TestGracefulShutdownSequence:
@@ -103,11 +109,11 @@ class TestGracefulShutdownSequence:
         mock_npc_lifecycle_manager.despawn_npc.assert_any_call("npc1", reason="server_shutdown")
         mock_npc_lifecycle_manager.despawn_npc.assert_any_call("npc2", reason="server_shutdown")
 
-        # Verify Phase 3: Player disconnection
+        # Verify Phase 3: Player disconnection (force_disconnect_player expects UUIDs)
         assert mock_connection_manager.force_disconnect_player.call_count == 3
-        mock_connection_manager.force_disconnect_player.assert_any_call("player1")
-        mock_connection_manager.force_disconnect_player.assert_any_call("player2")
-        mock_connection_manager.force_disconnect_player.assert_any_call("player3")
+        mock_connection_manager.force_disconnect_player.assert_any_call(_str_to_uuid("player1"))
+        mock_connection_manager.force_disconnect_player.assert_any_call(_str_to_uuid("player2"))
+        mock_connection_manager.force_disconnect_player.assert_any_call(_str_to_uuid("player3"))
 
         # Verify Phase 4: NATS message handler stopped
         mock_nats_message_handler.stop.assert_called_once()

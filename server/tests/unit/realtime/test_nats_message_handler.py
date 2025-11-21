@@ -8,11 +8,17 @@ and broadcasts them to WebSocket clients based on channel type and room subscrip
 import uuid
 from datetime import datetime
 from unittest.mock import AsyncMock, Mock, patch
+from uuid import NAMESPACE_DNS, UUID, uuid5
 
 import pytest
 
 from server.realtime.nats_message_handler import NATSMessageHandler
 from server.services.nats_service import NATSService
+
+
+def _str_to_uuid(player_id_str: str) -> UUID:
+    """Convert string player_id to UUID deterministically for tests."""
+    return uuid5(NAMESPACE_DNS, player_id_str)
 
 
 class TestNATSMessageHandler:
@@ -399,7 +405,7 @@ class TestNATSMessageHandler:
 
                     # Should send to player_002 (player_001 is sender, player_003 is in different room)
                     assert self.mock_connection_manager.send_personal_message.call_count == 1
-                    self.mock_connection_manager.send_personal_message.assert_called_with("player_002", chat_event)
+                    self.mock_connection_manager.send_personal_message.assert_called_with(_str_to_uuid("player_002"), chat_event)
 
     @pytest.mark.asyncio
     async def test_broadcast_to_room_with_filtering_muted_player(self):

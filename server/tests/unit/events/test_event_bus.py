@@ -46,18 +46,22 @@ class TestEventTypes:
 
     def test_player_entered_room_event(self):
         """Test PlayerEnteredRoom event creation."""
-        event = PlayerEnteredRoom(player_id="player123", room_id="room456", from_room_id="room789")
+        from uuid import uuid4
+        player_id = uuid4()
+        event = PlayerEnteredRoom(player_id=str(player_id), room_id="room456", from_room_id="room789")
 
-        assert event.player_id == "player123"
+        assert event.player_id == str(player_id)
         assert event.room_id == "room456"
         assert event.from_room_id == "room789"
         assert event.event_type == "PlayerEnteredRoom"
 
     def test_player_left_room_event(self):
         """Test PlayerLeftRoom event creation."""
-        event = PlayerLeftRoom(player_id="player123", room_id="room456", to_room_id="room789")
+        from uuid import uuid4
+        player_id = uuid4()
+        event = PlayerLeftRoom(player_id=str(player_id), room_id="room456", to_room_id="room789")
 
-        assert event.player_id == "player123"
+        assert event.player_id == str(player_id)
         assert event.room_id == "room456"
         assert event.to_room_id == "room789"
         assert event.event_type == "PlayerLeftRoom"

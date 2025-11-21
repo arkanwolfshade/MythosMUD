@@ -7,6 +7,7 @@ is running and the EventBus can properly execute async handlers.
 
 import asyncio
 from unittest.mock import AsyncMock, Mock
+from uuid import uuid4
 
 import pytest
 
@@ -192,11 +193,13 @@ class TestRunningEventLoop:
         mock_room.get_players.return_value = []  # Return empty list to avoid iteration errors
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
-        # Create multiple events
+        # Create multiple events (use UUIDs for player_ids)
+        player_id1 = uuid4()
+        player_id2 = uuid4()
         events = [
-            PlayerEnteredRoom(player_id="player1", room_id="room1"),
-            PlayerEnteredRoom(player_id="player2", room_id="room1"),
-            PlayerLeftRoom(player_id="player1", room_id="room1"),
+            PlayerEnteredRoom(player_id=str(player_id1), room_id="room1"),
+            PlayerEnteredRoom(player_id=str(player_id2), room_id="room1"),
+            PlayerLeftRoom(player_id=str(player_id1), room_id="room1"),
         ]
 
         # Publish all events

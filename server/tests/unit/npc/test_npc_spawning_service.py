@@ -474,17 +474,22 @@ class TestNPCSpawningService:
             return_value=MagicMock(npcs_by_definition={1: 0})
         )
 
-        # Call the method directly
-        event = PlayerEnteredRoom(player_id="player1", room_id="room_001")
+        # Call the method directly (use UUID for player_id)
+        from uuid import uuid4
+        player_id = uuid4()
+        event = PlayerEnteredRoom(player_id=str(player_id), room_id="room_001")
         spawning_service._handle_player_entered_room(event)
 
         # No assertion needed, just ensuring no exception is raised
 
     def test_handle_player_left_room(self, spawning_service):
         """Test _handle_player_left_room method directly."""
+        from uuid import uuid4
+
         from server.events.event_types import PlayerLeftRoom
 
-        event = PlayerLeftRoom(player_id="player1", room_id="room_001")
+        player_id = uuid4()
+        event = PlayerLeftRoom(player_id=str(player_id), room_id="room_001")
         # This method does nothing but should not raise an exception
         spawning_service._handle_player_left_room(event)
 

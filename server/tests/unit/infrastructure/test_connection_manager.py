@@ -9,11 +9,17 @@ player tracking, rate limiting, and error handling.
 import time
 import uuid
 from unittest.mock import AsyncMock, Mock, patch
+from uuid import NAMESPACE_DNS, UUID, uuid5
 
 import pytest
 from fastapi import WebSocket
 
 from server.realtime.connection_manager import ConnectionManager, ConnectionMetadata, MemoryMonitor
+
+
+def _str_to_uuid(player_id_str: str) -> UUID:
+    """Convert string player_id to UUID deterministically for tests."""
+    return uuid5(NAMESPACE_DNS, player_id_str)
 
 
 class TestConnectionManagerComprehensive:
@@ -945,9 +951,9 @@ class TestConnectionManagerComprehensive:
         websocket2.close = AsyncMock()
         websocket2.ping = AsyncMock(side_effect=Exception("Connection closed"))
 
-        # Connect WebSockets for two players
-        success1 = await connection_manager.connect_websocket(websocket1, "player1", "session_1")
-        success2 = await connection_manager.connect_websocket(websocket2, "player2", "session_2")
+        # Connect WebSockets for two players (convert string IDs to UUIDs)
+        success1 = await connection_manager.connect_websocket(websocket1, _str_to_uuid("player1"), "session_1")
+        success2 = await connection_manager.connect_websocket(websocket2, _str_to_uuid("player2"), "session_2")
         assert success1 is True
         assert success2 is True
 
@@ -1894,20 +1900,22 @@ class TestConnectionManagerComprehensive:
         websocket1a = self._create_mock_websocket()
         websocket1b = self._create_mock_websocket()
 
-        # Connect multiple WebSockets for player1
-        success1a = await connection_manager.connect_websocket(websocket1a, "player1", "session_1a")
-        success1b = await connection_manager.connect_websocket(websocket1b, "player1", "session_1b")
+        # Connect multiple WebSockets for player1 (convert string IDs to UUIDs)
+        player1_id = _str_to_uuid("player1")
+        player2_id = _str_to_uuid("player2")
+        success1a = await connection_manager.connect_websocket(websocket1a, player1_id, "session_1a")
+        success1b = await connection_manager.connect_websocket(websocket1b, player1_id, "session_1b")
         assert success1a is True
         assert success1b is True
 
         # Connect SSE for player1
-        sse_connection_id = await connection_manager.connect_sse("player1", "session_1c")
+        sse_connection_id = await connection_manager.connect_sse(player1_id, "session_1c")
         assert sse_connection_id is not None
 
         # Connect single WebSocket for player2
         websocket2 = self._create_mock_websocket()
 
-        success2 = await connection_manager.connect_websocket(websocket2, "player2", "session_2")
+        success2 = await connection_manager.connect_websocket(websocket2, player2_id, "session_2")
         assert success2 is True
 
         # Broadcast to room
@@ -1952,10 +1960,10 @@ class TestConnectionManagerComprehensive:
         connection_manager.room_manager = Mock()
         connection_manager.room_manager.get_room_subscribers.return_value = {"player1", "player2", "player3"}
 
-        # Connect players
-        success1 = await connection_manager.connect_websocket(mock_websocket, "player1", "session_1")
-        success2 = await connection_manager.connect_websocket(mock_websocket, "player2", "session_2")
-        success3 = await connection_manager.connect_websocket(mock_websocket, "player3", "session_3")
+        # Connect players (convert string IDs to UUIDs)
+        success1 = await connection_manager.connect_websocket(mock_websocket, _str_to_uuid("player1"), "session_1")
+        success2 = await connection_manager.connect_websocket(mock_websocket, _str_to_uuid("player2"), "session_2")
+        success3 = await connection_manager.connect_websocket(mock_websocket, _str_to_uuid("player3"), "session_3")
         assert success1 is True
         assert success2 is True
         assert success3 is True
@@ -1991,24 +1999,27 @@ class TestConnectionManagerComprehensive:
         websocket1a = self._create_mock_websocket()
         websocket1b = self._create_mock_websocket()
 
-        # Connect multiple WebSockets for player1
-        success1a = await connection_manager.connect_websocket(websocket1a, "player1", "session_1a")
-        success1b = await connection_manager.connect_websocket(websocket1b, "player1", "session_1b")
+        # Connect multiple WebSockets for player1 (convert string IDs to UUIDs)
+        player1_id = _str_to_uuid("player1")
+        player2_id = _str_to_uuid("player2")
+        player3_id = _str_to_uuid("player3")
+        success1a = await connection_manager.connect_websocket(websocket1a, player1_id, "session_1a")
+        success1b = await connection_manager.connect_websocket(websocket1b, player1_id, "session_1b")
         assert success1a is True
         assert success1b is True
 
         # Connect SSE for player1
-        sse_connection_id = await connection_manager.connect_sse("player1", "session_1c")
+        sse_connection_id = await connection_manager.connect_sse(player1_id, "session_1c")
         assert sse_connection_id is not None
 
         # Connect only SSE for player2 (no WebSocket)
-        sse_connection_id2 = await connection_manager.connect_sse("player2", "session_2")
+        sse_connection_id2 = await connection_manager.connect_sse(player2_id, "session_2")
         assert sse_connection_id2 is not None
 
         # Connect only WebSocket for player3 (no SSE)
         websocket3 = self._create_mock_websocket()
 
-        success3 = await connection_manager.connect_websocket(websocket3, "player3", "session_3")
+        success3 = await connection_manager.connect_websocket(websocket3, player3_id, "session_3")
         assert success3 is True
 
         # Broadcast globally
@@ -2055,10 +2066,10 @@ class TestConnectionManagerComprehensive:
         mock_room.id = "test_room_001"
         mock_persistence.get_room.return_value = mock_room
 
-        # Connect players
-        success1 = await connection_manager.connect_websocket(mock_websocket, "player1", "session_1")
-        success2 = await connection_manager.connect_websocket(mock_websocket, "player2", "session_2")
-        success3 = await connection_manager.connect_websocket(mock_websocket, "player3", "session_3")
+        # Connect players (convert string IDs to UUIDs)
+        success1 = await connection_manager.connect_websocket(mock_websocket, _str_to_uuid("player1"), "session_1")
+        success2 = await connection_manager.connect_websocket(mock_websocket, _str_to_uuid("player2"), "session_2")
+        success3 = await connection_manager.connect_websocket(mock_websocket, _str_to_uuid("player3"), "session_3")
         assert success1 is True
         assert success2 is True
         assert success3 is True
@@ -2093,12 +2104,15 @@ class TestConnectionManagerComprehensive:
         connection_manager.room_manager = Mock()
         connection_manager.room_manager.get_room_subscribers.return_value = {"player1", "player2", "player3"}
 
-        # Player1: WebSocket only
-        success1 = await connection_manager.connect_websocket(mock_websocket, "player1", "session_1")
+        # Player1: WebSocket only (convert string IDs to UUIDs)
+        player1_id = _str_to_uuid("player1")
+        player2_id = _str_to_uuid("player2")
+        player3_id = _str_to_uuid("player3")
+        success1 = await connection_manager.connect_websocket(mock_websocket, player1_id, "session_1")
         assert success1 is True
 
         # Player2: SSE only
-        sse_connection_id2 = await connection_manager.connect_sse("player2", "session_2")
+        sse_connection_id2 = await connection_manager.connect_sse(player2_id, "session_2")
         assert sse_connection_id2 is not None
 
         # Player3: Both WebSocket and SSE
@@ -2108,8 +2122,8 @@ class TestConnectionManagerComprehensive:
         websocket3.ping = AsyncMock()
         websocket3.send_json = AsyncMock()
 
-        success3 = await connection_manager.connect_websocket(websocket3, "player3", "session_3a")
-        sse_connection_id3 = await connection_manager.connect_sse("player3", "session_3b")
+        success3 = await connection_manager.connect_websocket(websocket3, player3_id, "session_3a")
+        sse_connection_id3 = await connection_manager.connect_sse(player3_id, "session_3b")
         assert success3 is True
         assert sse_connection_id3 is not None
 

@@ -8,6 +8,7 @@ and synchronization across multiple connected clients.
 
 import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
+from uuid import NAMESPACE_DNS, UUID, uuid4, uuid5
 
 import pytest
 
@@ -16,6 +17,11 @@ from server.events.event_types import PlayerEnteredRoom, PlayerLeftRoom
 from server.models import Player
 from server.realtime.connection_manager import ConnectionManager
 from server.realtime.envelope import build_event
+
+
+def _str_to_uuid(player_id_str: str) -> UUID:
+    """Convert string player_id to UUID deterministically for tests."""
+    return uuid5(NAMESPACE_DNS, player_id_str)
 
 
 class TestOccupantCountIntegration:
@@ -36,8 +42,15 @@ class TestOccupantCountIntegration:
             mock_persistence_instance = MagicMock()
             mock_persistence_instance._event_bus = event_bus
 
-            # Mock get_player to return our mock players
+            # Mock get_player to return our mock players (handle both string and UUID)
             def mock_get_player(player_id):
+                # Convert UUID to string for lookup, or use string directly
+                if isinstance(player_id, UUID):
+                    # Try to find matching player by converting back
+                    for key, player in mock_players.items():
+                        if _str_to_uuid(key) == player_id:
+                            return player
+                    return None
                 return mock_players.get(player_id)
 
             mock_persistence_instance.get_player = MagicMock(side_effect=mock_get_player)
@@ -125,26 +138,28 @@ class TestOccupantCountIntegration:
         session_id = "test_session"
 
         connected_players = []
-        for player_id, websocket in mock_websockets.items():
-            await connection_manager.connect_websocket(websocket, player_id, session_id)
-            connected_players.append(player_id)
+        for player_id_str, websocket in mock_websockets.items():
+            # Convert string ID to UUID for connect_websocket
+            player_id_uuid = _str_to_uuid(player_id_str)
+            await connection_manager.connect_websocket(websocket, player_id_uuid, session_id)
+            connected_players.append(player_id_str)
 
         # Subscribe to room events
         await connection_manager.subscribe_to_room_events()
 
         # Simulate a player entering the room
-        player_id = "player_4"
+        player_id = uuid4()
         new_player = MagicMock(spec=Player)
         new_player.name = "Player4"
         new_player.player_id = player_id
         new_player.current_room_id = room_id
 
         # Create player entered event
-        enter_event = PlayerEnteredRoom(player_id=player_id, room_id=room_id)
+        enter_event = PlayerEnteredRoom(player_id=str(player_id), room_id=room_id)
         enter_event.timestamp = None
 
         # Update mock to include new player in occupants
-        updated_occupants = sample_occupants + [{"player_name": "Player4", "player_id": "player_4"}]
+        updated_occupants = sample_occupants + [{"player_name": "Player4", "player_id": str(player_id)}]
         mock_room_manager.get_room_occupants.return_value = updated_occupants
 
         # Publish the event and manually trigger the async handler
@@ -183,20 +198,23 @@ class TestOccupantCountIntegration:
         room_id = "arkham_001"
         session_id = "test_session"
 
-        for player_id, websocket in mock_websockets.items():
-            await connection_manager.connect_websocket(websocket, player_id, session_id)
+        for player_id_str, websocket in mock_websockets.items():
+            # Convert string ID to UUID for connect_websocket
+            player_id_uuid = _str_to_uuid(player_id_str)
+            await connection_manager.connect_websocket(websocket, player_id_uuid, session_id)
 
         await connection_manager.subscribe_to_room_events()
 
-        # Simulate a player leaving the room
-        leaving_player_id = "player_2"
+        # Simulate a player leaving the room (use one of the existing players)
+        leaving_player_str = "player_2"
+        leaving_player_id = _str_to_uuid(leaving_player_str)
 
         # Create player left event
-        leave_event = PlayerLeftRoom(player_id=leaving_player_id, room_id=room_id)
+        leave_event = PlayerLeftRoom(player_id=str(leaving_player_id), room_id=room_id)
         leave_event.timestamp = None
 
         # Update mock to reflect player leaving (remove player_2)
-        updated_occupants = [occ for occ in sample_occupants if occ["player_id"] != "player_2"]
+        updated_occupants = [occ for occ in sample_occupants if occ["player_id"] != leaving_player_str]
         mock_room_manager.get_room_occupants.return_value = updated_occupants
 
         # Publish the event and manually trigger the async handler
@@ -232,20 +250,22 @@ class TestOccupantCountIntegration:
         room_id = "arkham_001"
         session_id = "test_session"
 
-        for player_id, websocket in mock_websockets.items():
-            await connection_manager.connect_websocket(websocket, player_id, session_id)
+        for player_id_str, websocket in mock_websockets.items():
+            # Convert string ID to UUID for connect_websocket
+            player_id_uuid = _str_to_uuid(player_id_str)
+            await connection_manager.connect_websocket(websocket, player_id_uuid, session_id)
 
         await connection_manager.subscribe_to_room_events()
 
         # Simulate rapid movement: player enters, then immediately leaves
-        player_id = "player_5"
+        player_id = uuid4()
 
         # Player enters
-        enter_event = PlayerEnteredRoom(player_id=player_id, room_id=room_id)
+        enter_event = PlayerEnteredRoom(player_id=str(player_id), room_id=room_id)
         enter_event.timestamp = None
 
         # Update mock for player entering
-        updated_occupants = sample_occupants + [{"player_name": "Player5", "player_id": "player_5"}]
+        updated_occupants = sample_occupants + [{"player_name": "Player5", "player_id": str(player_id)}]
         mock_room_manager.get_room_occupants.return_value = updated_occupants
 
         event_bus.publish(enter_event)
@@ -254,7 +274,7 @@ class TestOccupantCountIntegration:
         await connection_manager._handle_player_entered_room(enter_event.__dict__)
 
         # Player immediately leaves
-        leave_event = PlayerLeftRoom(player_id=player_id, room_id=room_id)
+        leave_event = PlayerLeftRoom(player_id=str(player_id), room_id=room_id)
         leave_event.timestamp = None
 
         # Update mock for player leaving
@@ -291,8 +311,10 @@ class TestOccupantCountIntegration:
         room_id = "arkham_001"
         session_id = "test_session"
 
-        for player_id, websocket in mock_websockets.items():
-            await connection_manager.connect_websocket(websocket, player_id, session_id)
+        for player_id_str, websocket in mock_websockets.items():
+            # Convert string ID to UUID for connect_websocket
+            player_id_uuid = _str_to_uuid(player_id_str)
+            await connection_manager.connect_websocket(websocket, player_id_uuid, session_id)
 
         # Make one connection fail
         failing_websocket = mock_websockets["player_3"]
@@ -301,11 +323,11 @@ class TestOccupantCountIntegration:
         await connection_manager.subscribe_to_room_events()
 
         # Simulate a player entering
-        player_id = "player_6"
-        enter_event = PlayerEnteredRoom(player_id=player_id, room_id=room_id)
+        player_id = uuid4()
+        enter_event = PlayerEnteredRoom(player_id=str(player_id), room_id=room_id)
         enter_event.timestamp = None
 
-        updated_occupants = sample_occupants + [{"player_name": "Player6", "player_id": "player_6"}]
+        updated_occupants = sample_occupants + [{"player_name": "Player6", "player_id": str(player_id)}]
         mock_room_manager.get_room_occupants.return_value = updated_occupants
 
         event_bus.publish(enter_event)
@@ -317,8 +339,8 @@ class TestOccupantCountIntegration:
         await asyncio.sleep(0.1)
 
         # Verify that successful connections received the event
-        for player_id, websocket in mock_websockets.items():
-            if player_id != "player_3":  # Skip the failing connection
+        for player_id_str, websocket in mock_websockets.items():
+            if player_id_str != "player_3":  # Skip the failing connection
                 websocket.send_json.assert_called()
                 call_args = websocket.send_json.call_args[0][0]
                 assert call_args["event_type"] == "room_occupants"
@@ -343,23 +365,23 @@ class TestOccupantCountIntegration:
         mock_players["player_3"].current_room_id = room2_id
         mock_players["player_4"].current_room_id = room2_id
 
-        # Connect some players to room 1
-        await connection_manager.connect_websocket(mock_websockets["player_1"], "player_1", session_id)
-        await connection_manager.connect_websocket(mock_websockets["player_2"], "player_2", session_id)
+        # Connect some players to room 1 (convert string IDs to UUIDs)
+        await connection_manager.connect_websocket(mock_websockets["player_1"], _str_to_uuid("player_1"), session_id)
+        await connection_manager.connect_websocket(mock_websockets["player_2"], _str_to_uuid("player_2"), session_id)
 
         # Connect some players to room 2
-        await connection_manager.connect_websocket(mock_websockets["player_3"], "player_3", session_id)
-        await connection_manager.connect_websocket(mock_websockets["player_4"], "player_4", session_id)
+        await connection_manager.connect_websocket(mock_websockets["player_3"], _str_to_uuid("player_3"), session_id)
+        await connection_manager.connect_websocket(mock_websockets["player_4"], _str_to_uuid("player_4"), session_id)
 
         await connection_manager.subscribe_to_room_events()
 
         # Simulate player entering room 1
-        player_id = "player_5"
-        enter_event = PlayerEnteredRoom(player_id=player_id, room_id=room1_id)
+        player_id = uuid4()
+        enter_event = PlayerEnteredRoom(player_id=str(player_id), room_id=room1_id)
         enter_event.timestamp = None
 
         # Mock room 1 occupants
-        room1_occupants = sample_occupants[:2] + [{"player_name": "Player5", "player_id": "player_5"}]
+        room1_occupants = sample_occupants[:2] + [{"player_name": "Player5", "player_id": str(player_id)}]
 
         def mock_get_occupants(room_id, players):
             if room_id == room1_id:
@@ -490,8 +512,10 @@ class TestOccupantCountSimpleIntegration:
         room_id = "arkham_001"
         session_id = "test_session"
 
-        for player_id, websocket in mock_websockets.items():
-            await connection_manager.connect_websocket(websocket, player_id, session_id)
+        for player_id_str, websocket in mock_websockets.items():
+            # Convert string ID to UUID for connect_websocket
+            player_id_uuid = _str_to_uuid(player_id_str)
+            await connection_manager.connect_websocket(websocket, player_id_uuid, session_id)
 
         # Set up room manager to return connected players as room subscribers
         connected_player_ids = list(mock_websockets.keys())
@@ -526,12 +550,12 @@ class TestOccupantCountSimpleIntegration:
         room2_id = "arkham_002"
         session_id = "test_session"
 
-        # Connect some players to room 1
-        await connection_manager.connect_websocket(mock_websockets["player_1"], "player_1", session_id)
-        await connection_manager.connect_websocket(mock_websockets["player_2"], "player_2", session_id)
+        # Connect some players to room 1 (convert string IDs to UUIDs)
+        await connection_manager.connect_websocket(mock_websockets["player_1"], _str_to_uuid("player_1"), session_id)
+        await connection_manager.connect_websocket(mock_websockets["player_2"], _str_to_uuid("player_2"), session_id)
 
         # Connect some players to room 2
-        await connection_manager.connect_websocket(mock_websockets["player_3"], "player_3", session_id)
+        await connection_manager.connect_websocket(mock_websockets["player_3"], _str_to_uuid("player_3"), session_id)
 
         # Set up room manager to return appropriate players for each room
         def mock_get_room_subscribers(room_id):
@@ -570,8 +594,10 @@ class TestOccupantCountSimpleIntegration:
         room_id = "arkham_001"
         session_id = "test_session"
 
-        for player_id, websocket in mock_websockets.items():
-            await connection_manager.connect_websocket(websocket, player_id, session_id)
+        for player_id_str, websocket in mock_websockets.items():
+            # Convert string ID to UUID for connect_websocket
+            player_id_uuid = _str_to_uuid(player_id_str)
+            await connection_manager.connect_websocket(websocket, player_id_uuid, session_id)
 
         # Set up room manager to return connected players as room subscribers
         connected_player_ids = list(mock_websockets.keys())

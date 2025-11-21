@@ -7,6 +7,7 @@ are not being fired or broadcast properly when players connect/disconnect.
 
 import json
 from unittest.mock import AsyncMock, Mock, patch
+from uuid import uuid4
 
 import pytest
 from fastapi import WebSocket
@@ -237,8 +238,9 @@ class TestWebSocketConnectionEvents:
         event_handler = RealTimeEventHandler(mock_event_bus)
         event_handler.connection_manager = mock_connection_manager
 
-        # Create a PlayerEnteredRoom event
-        event = PlayerEnteredRoom(player_id="test_player_123", room_id="test_room_001")
+        # Create a PlayerEnteredRoom event (use UUID for player_id)
+        player_id = uuid4()
+        event = PlayerEnteredRoom(player_id=str(player_id), room_id="test_room_001")
 
         # Mock the room sync service to return the original event
         mock_room_sync_service = Mock()
@@ -287,8 +289,9 @@ class TestWebSocketConnectionEvents:
         event_handler = RealTimeEventHandler(mock_event_bus)
         event_handler.connection_manager = mock_connection_manager
 
-        # Create a PlayerLeftRoom event
-        event = PlayerLeftRoom(player_id="test_player_123", room_id="test_room_001")
+        # Create a PlayerLeftRoom event (use UUID for player_id)
+        player_id = uuid4()
+        event = PlayerLeftRoom(player_id=str(player_id), room_id="test_room_001")
 
         # Mock the room sync service to return the original event
         mock_room_sync_service = Mock()
