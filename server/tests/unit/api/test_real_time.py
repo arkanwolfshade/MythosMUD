@@ -105,7 +105,10 @@ class TestSSEEventsToken:
             assert response.headers["Access-Control-Allow-Headers"] == "Cache-Control"
 
             # Verify the stream was called with correct player_id and session_id
-            mock_stream.assert_called_once_with("test_player_id", None)
+            # player_id is converted to UUID in sse_events_token
+            import uuid
+            expected_player_id = uuid.UUID(test_player_id)
+            mock_stream.assert_called_once_with(expected_player_id, None)
 
     @pytest.mark.asyncio
     async def test_sse_events_token_missing_token(self):
@@ -393,8 +396,11 @@ class TestWebSocketEndpoint:
                 await websocket_endpoint(mock_websocket)
 
             assert exc_info.value == test_exception
+            # player_id is converted to UUID before logging
+            import uuid
+            expected_player_id = uuid.UUID(test_player_id)
             mock_logger.error.assert_called_once_with(
-                "Error in WebSocket endpoint", player_id=test_player_id, error="Test exception", exc_info=True
+                "Error in WebSocket endpoint", player_id=expected_player_id, error="Test exception", exc_info=True
             )
 
 
@@ -519,8 +525,11 @@ class TestWebSocketEndpointRoute:
             await websocket_endpoint_route(mock_websocket, path_player_id)
 
             # Verify handle_websocket_connection was called with path player_id (fallback)
+            # path_player_id is converted to UUID in websocket_endpoint_route
+            import uuid
+            expected_player_id = uuid.UUID(path_player_id)
             mock_handle.assert_called_once_with(
-                mock_websocket, path_player_id, None, connection_manager=mock_connection_manager
+                mock_websocket, expected_player_id, None, connection_manager=mock_connection_manager
             )
             mock_logger.info.assert_called_once_with(
                 "WebSocket (compat) connection attempt", player_id=path_player_id, session_id=None
@@ -616,11 +625,10 @@ class TestWebSocketEndpointRoute:
                 await websocket_endpoint_route(mock_websocket, path_player_id)
 
             assert exc_info.value == test_exception
-            # Note: player_id is converted to UUID before logging in the error handler
-            import uuid
-            expected_player_id = uuid.UUID(path_player_id)
+            # Note: The error handler in websocket_endpoint_route logs the path player_id (string),
+            # not the resolved_player_id (UUID), for backward compatibility
             mock_logger.error.assert_called_once_with(
-                "Error in WebSocket endpoint", player_id=expected_player_id, error="Test exception", exc_info=True
+                "Error in WebSocket endpoint", player_id=path_player_id, error="Test exception", exc_info=True
             )
 
 

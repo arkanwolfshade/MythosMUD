@@ -19,6 +19,15 @@ import uuid
 from datetime import UTC, datetime
 from typing import Any
 
+
+class UUIDEncoder(json.JSONEncoder):
+    """Custom JSON encoder that handles UUID objects."""
+
+    def default(self, obj: Any) -> Any:
+        if isinstance(obj, uuid.UUID):
+            return str(obj)
+        return super().default(obj)
+
 # Global sequence counter for events (when connection_manager not available)
 _global_sequence_counter = 0
 _sequence_lock = None
@@ -82,11 +91,11 @@ def build_event(
     if room_id is not None:
         event["room_id"] = room_id
     if player_id is not None:
-        # Convert UUID to string for JSON serialization
-        event["player_id"] = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
+        # Keep UUID as UUID object - JSON serialization will handle it
+        event["player_id"] = player_id
     return event
 
 
 def sse_line(event: dict[str, Any]) -> str:
     """Encode an event dict as an SSE data line."""
-    return f"data: {json.dumps(event)}\n\n"
+    return f"data: {json.dumps(event, cls=UUIDEncoder)}\n\n"

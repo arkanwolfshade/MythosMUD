@@ -42,19 +42,23 @@ class PlayerPreferencesService:
 
         logger.info("PlayerPreferencesService initialized (PostgreSQL)")
 
-    async def create_player_preferences(self, session: AsyncSession, player_id: uuid.UUID) -> dict[str, Any]:
+    async def create_player_preferences(self, session: AsyncSession, player_id: uuid.UUID | str) -> dict[str, Any]:
         """
         Create default preferences for a new player.
 
         Args:
             session: Database session
-            player_id: The player's unique identifier
+            player_id: The player's unique identifier (UUID or string)
 
         Returns:
             Dictionary with success status and optional error message
         """
         if not self._is_valid_player_id(player_id):
             return {"success": False, "error": "Invalid player ID"}
+
+        # Normalize player_id to UUID object for database operations
+        if isinstance(player_id, str):
+            player_id = uuid.UUID(player_id)
 
         try:
             # Check if preferences already exist
@@ -92,19 +96,23 @@ class PlayerPreferencesService:
             logger.error("Failed to create player preferences", player_id=player_id, error=str(e))
             return {"success": False, "error": f"Unexpected error: {str(e)}"}
 
-    async def get_player_preferences(self, session: AsyncSession, player_id: uuid.UUID) -> dict[str, Any]:
+    async def get_player_preferences(self, session: AsyncSession, player_id: uuid.UUID | str) -> dict[str, Any]:
         """
         Get preferences for a player.
 
         Args:
             session: Database session
-            player_id: The player's unique identifier
+            player_id: The player's unique identifier (UUID or string)
 
         Returns:
             Dictionary with success status and preferences data or error message
         """
         if not self._is_valid_player_id(player_id):
             return {"success": False, "error": "Invalid player ID"}
+
+        # Normalize player_id to UUID object for database operations
+        if isinstance(player_id, str):
+            player_id = uuid.UUID(player_id)
 
         try:
             result = await session.execute(
@@ -133,7 +141,9 @@ class PlayerPreferencesService:
             logger.error("Failed to get player preferences", player_id=player_id, error=str(e))
             return {"success": False, "error": f"Unexpected error: {str(e)}"}
 
-    async def update_default_channel(self, session: AsyncSession, player_id: uuid.UUID, channel: str) -> dict[str, Any]:
+    async def update_default_channel(
+        self, session: AsyncSession, player_id: uuid.UUID | str, channel: str
+    ) -> dict[str, Any]:
         """
         Update a player's default channel.
 
@@ -147,6 +157,10 @@ class PlayerPreferencesService:
         """
         if not self._is_valid_player_id(player_id):
             return {"success": False, "error": "Invalid player ID"}
+
+        # Normalize player_id to UUID object for database operations
+        if isinstance(player_id, str):
+            player_id = uuid.UUID(player_id)
 
         if not self._is_valid_channel(channel):
             return {"success": False, "error": "Invalid channel name"}
@@ -177,7 +191,7 @@ class PlayerPreferencesService:
             logger.error("Failed to update default channel", player_id=player_id, channel=channel, error=str(e))
             return {"success": False, "error": f"Unexpected error: {str(e)}"}
 
-    async def mute_channel(self, session: AsyncSession, player_id: uuid.UUID, channel: str) -> dict[str, Any]:
+    async def mute_channel(self, session: AsyncSession, player_id: uuid.UUID | str, channel: str) -> dict[str, Any]:
         """
         Mute a channel for a player.
 
@@ -191,6 +205,10 @@ class PlayerPreferencesService:
         """
         if not self._is_valid_player_id(player_id):
             return {"success": False, "error": "Invalid player ID"}
+
+        # Normalize player_id to UUID object for database operations
+        if isinstance(player_id, str):
+            player_id = uuid.UUID(player_id)
 
         if not self._is_valid_channel(channel):
             return {"success": False, "error": "Invalid channel name"}
@@ -227,7 +245,7 @@ class PlayerPreferencesService:
             logger.error("Failed to mute channel", player_id=player_id, channel=channel, error=str(e))
             return {"success": False, "error": f"Unexpected error: {str(e)}"}
 
-    async def unmute_channel(self, session: AsyncSession, player_id: uuid.UUID, channel: str) -> dict[str, Any]:
+    async def unmute_channel(self, session: AsyncSession, player_id: uuid.UUID | str, channel: str) -> dict[str, Any]:
         """
         Unmute a channel for a player.
 
@@ -241,6 +259,10 @@ class PlayerPreferencesService:
         """
         if not self._is_valid_player_id(player_id):
             return {"success": False, "error": "Invalid player ID"}
+
+        # Normalize player_id to UUID object for database operations
+        if isinstance(player_id, str):
+            player_id = uuid.UUID(player_id)
 
         if not self._is_valid_channel(channel):
             return {"success": False, "error": "Invalid channel name"}
@@ -273,7 +295,7 @@ class PlayerPreferencesService:
             logger.error("Failed to unmute channel", player_id=player_id, channel=channel, error=str(e))
             return {"success": False, "error": f"Unexpected error: {str(e)}"}
 
-    async def get_muted_channels(self, session: AsyncSession, player_id: uuid.UUID) -> dict[str, Any]:
+    async def get_muted_channels(self, session: AsyncSession, player_id: uuid.UUID | str) -> dict[str, Any]:
         """
         Get list of muted channels for a player.
 
@@ -286,6 +308,10 @@ class PlayerPreferencesService:
         """
         if not self._is_valid_player_id(player_id):
             return {"success": False, "error": "Invalid player ID"}
+
+        # Normalize player_id to UUID object for database operations
+        if isinstance(player_id, str):
+            player_id = uuid.UUID(player_id)
 
         try:
             result = await session.execute(
@@ -304,7 +330,7 @@ class PlayerPreferencesService:
             logger.error("Failed to get muted channels", player_id=player_id, error=str(e))
             return {"success": False, "error": f"Unexpected error: {str(e)}"}
 
-    async def is_channel_muted(self, session: AsyncSession, player_id: uuid.UUID, channel: str) -> dict[str, Any]:
+    async def is_channel_muted(self, session: AsyncSession, player_id: uuid.UUID | str, channel: str) -> dict[str, Any]:
         """
         Check if a specific channel is muted for a player.
 
@@ -318,6 +344,10 @@ class PlayerPreferencesService:
         """
         if not self._is_valid_player_id(player_id):
             return {"success": False, "error": "Invalid player ID"}
+
+        # Normalize player_id to UUID object for database operations
+        if isinstance(player_id, str):
+            player_id = uuid.UUID(player_id)
 
         if not self._is_valid_channel(channel):
             return {"success": False, "error": "Invalid channel name"}
@@ -341,7 +371,7 @@ class PlayerPreferencesService:
             logger.error("Failed to check channel mute status", player_id=player_id, channel=channel, error=str(e))
             return {"success": False, "error": f"Unexpected error: {str(e)}"}
 
-    async def delete_player_preferences(self, session: AsyncSession, player_id: uuid.UUID) -> dict[str, Any]:
+    async def delete_player_preferences(self, session: AsyncSession, player_id: uuid.UUID | str) -> dict[str, Any]:
         """
         Delete preferences for a player.
 
@@ -354,6 +384,10 @@ class PlayerPreferencesService:
         """
         if not self._is_valid_player_id(player_id):
             return {"success": False, "error": "Invalid player ID"}
+
+        # Normalize player_id to UUID object for database operations
+        if isinstance(player_id, str):
+            player_id = uuid.UUID(player_id)
 
         try:
             result = await session.execute(
@@ -379,21 +413,34 @@ class PlayerPreferencesService:
             logger.error("Failed to delete player preferences", player_id=player_id, error=str(e))
             return {"success": False, "error": f"Unexpected error: {str(e)}"}
 
-    def _is_valid_player_id(self, player_id: uuid.UUID) -> bool:
+    def _is_valid_player_id(self, player_id: uuid.UUID | str) -> bool:
         """
         Validate player ID.
 
         Args:
-            player_id: The player ID to validate (UUID)
+            player_id: The player ID to validate (UUID or string)
 
         Returns:
             True if valid, False otherwise
         """
-        if not player_id or not isinstance(player_id, uuid.UUID):
+        if not player_id:
             return False
 
-        # UUID validation - UUIDs are always valid format if they're UUID instances
-        return True
+        # Accept both UUID objects and UUID strings
+        if isinstance(player_id, uuid.UUID):
+            return True
+
+        if isinstance(player_id, str):
+            # Try to parse as UUID
+            try:
+                uuid.UUID(player_id)
+                return True
+            except (ValueError, AttributeError, TypeError):
+                return False
+
+        # Type signature guarantees player_id is uuid.UUID | str, so all cases are handled above
+        # This line is unreachable but kept for defensive programming
+        return False  # type: ignore[unreachable]
 
     def _is_valid_channel(self, channel: str) -> bool:
         """

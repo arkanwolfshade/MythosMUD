@@ -6,6 +6,7 @@ communication streams, event broadcasting, and player notifications.
 """
 
 import asyncio
+import uuid
 from contextlib import contextmanager
 from unittest.mock import AsyncMock, Mock, patch
 
@@ -64,8 +65,8 @@ class TestSSEHandlerFunctions:
     @pytest.mark.asyncio
     async def test_send_game_event_success(self):
         """Test successful game event sending."""
-        # Setup
-        player_id = "test_player_123"
+        # Setup - use UUID object directly since send_game_event accepts UUID | str
+        test_player_id = uuid.uuid4()
         event_type = "player_move"
         data = {"direction": "north", "room_id": "room_002"}
 
@@ -74,22 +75,25 @@ class TestSSEHandlerFunctions:
 
         with _override_connection_manager(mock_connection_manager):
             # Execute
-            await send_game_event(player_id, event_type, data)
+            await send_game_event(test_player_id, event_type, data)
 
             # Verify
             mock_connection_manager.send_personal_message.assert_called_once()
             call_args = mock_connection_manager.send_personal_message.call_args
-            assert call_args[0][0] == "test_player_123"  # player_id
+            # player_id is passed as UUID object
+            assert call_args[0][0] == test_player_id
             event_data = call_args[0][1]  # event data
             assert event_data["event_type"] == event_type
             assert event_data["data"] == data
-            assert event_data["player_id"] == "test_player_123"
+            # player_id should be UUID object, not string
+            assert event_data["player_id"] == test_player_id
+            assert isinstance(event_data["player_id"], uuid.UUID)
 
     @pytest.mark.asyncio
     async def test_send_game_event_exception_handling(self):
         """Test game event sending when an exception occurs."""
-        # Setup
-        player_id = "test_player_123"
+        # Setup - use UUID object directly
+        player_id = uuid.uuid4()
         event_type = "player_move"
         data = {"direction": "north"}
 
@@ -232,8 +236,8 @@ class TestSSEHandlerFunctions:
     @pytest.mark.asyncio
     async def test_send_system_notification_success(self):
         """Test successful system notification sending."""
-        # Setup
-        player_id = "test_player_123"
+        # Setup - use UUID object directly
+        test_player_id = uuid.uuid4()
         message = "Welcome to MythosMUD!"
         notification_type = "info"
 
@@ -242,23 +246,26 @@ class TestSSEHandlerFunctions:
 
         with _override_connection_manager(mock_connection_manager):
             # Execute
-            await send_system_notification(player_id, message, notification_type)
+            await send_system_notification(test_player_id, message, notification_type)
 
             # Verify
             mock_connection_manager.send_personal_message.assert_called_once()
             call_args = mock_connection_manager.send_personal_message.call_args
-            assert call_args[0][0] == "test_player_123"  # player_id
+            # player_id is passed as UUID object
+            assert call_args[0][0] == test_player_id
             event_data = call_args[0][1]  # event data
             assert event_data["event_type"] == "system_notification"
             assert event_data["data"]["message"] == message
             assert event_data["data"]["notification_type"] == notification_type
-            assert event_data["player_id"] == "test_player_123"
+            # player_id should be UUID object, not string
+            assert event_data["player_id"] == test_player_id
+            assert isinstance(event_data["player_id"], uuid.UUID)
 
     @pytest.mark.asyncio
     async def test_send_system_notification_default_type(self):
         """Test system notification sending with default notification type."""
-        # Setup
-        player_id = "test_player_123"
+        # Setup - use UUID object directly
+        player_id = uuid.uuid4()
         message = "Warning message"
 
         mock_connection_manager = Mock()
@@ -277,8 +284,8 @@ class TestSSEHandlerFunctions:
     @pytest.mark.asyncio
     async def test_send_system_notification_exception_handling(self):
         """Test system notification sending when an exception occurs."""
-        # Setup
-        player_id = "test_player_123"
+        # Setup - use UUID object directly
+        player_id = uuid.uuid4()
         message = "Test message"
 
         mock_connection_manager = Mock()
@@ -294,8 +301,8 @@ class TestSSEHandlerFunctions:
     @pytest.mark.asyncio
     async def test_send_player_status_update_success(self):
         """Test successful player status update sending."""
-        # Setup
-        player_id = "test_player_123"
+        # Setup - use UUID object directly
+        test_player_id = uuid.uuid4()
         status_data = {"health": 85, "sanity": 70, "level": 5}
 
         mock_connection_manager = Mock()
@@ -303,22 +310,25 @@ class TestSSEHandlerFunctions:
 
         with _override_connection_manager(mock_connection_manager):
             # Execute
-            await send_player_status_update(player_id, status_data)
+            await send_player_status_update(test_player_id, status_data)
 
             # Verify
             mock_connection_manager.send_personal_message.assert_called_once()
             call_args = mock_connection_manager.send_personal_message.call_args
-            assert call_args[0][0] == "test_player_123"  # player_id
+            # player_id is passed as UUID object
+            assert call_args[0][0] == test_player_id
             event_data = call_args[0][1]  # event data
             assert event_data["event_type"] == "player_status"
             assert event_data["data"] == status_data
-            assert event_data["player_id"] == "test_player_123"
+            # player_id should be UUID object, not string
+            assert event_data["player_id"] == test_player_id
+            assert isinstance(event_data["player_id"], uuid.UUID)
 
     @pytest.mark.asyncio
     async def test_send_player_status_update_exception_handling(self):
         """Test player status update sending when an exception occurs."""
-        # Setup
-        player_id = "test_player_123"
+        # Setup - use UUID object directly
+        player_id = uuid.uuid4()
         status_data = {"health": 85}
 
         mock_connection_manager = Mock()
@@ -334,8 +344,8 @@ class TestSSEHandlerFunctions:
     @pytest.mark.asyncio
     async def test_send_room_description_success(self):
         """Test successful room description sending."""
-        # Setup
-        player_id = "test_player_123"
+        # Setup - use UUID object directly
+        test_player_id = uuid.uuid4()
         room_data = {
             "name": "Miskatonic Library",
             "description": "Ancient tomes line the walls...",
@@ -347,22 +357,25 @@ class TestSSEHandlerFunctions:
 
         with _override_connection_manager(mock_connection_manager):
             # Execute
-            await send_room_description(player_id, room_data)
+            await send_room_description(test_player_id, room_data)
 
             # Verify
             mock_connection_manager.send_personal_message.assert_called_once()
             call_args = mock_connection_manager.send_personal_message.call_args
-            assert call_args[0][0] == "test_player_123"  # player_id
+            # player_id is passed as UUID object
+            assert call_args[0][0] == test_player_id
             event_data = call_args[0][1]  # event data
             assert event_data["event_type"] == "room_description"
             assert event_data["data"] == room_data
-            assert event_data["player_id"] == "test_player_123"
+            # player_id should be UUID object, not string
+            assert event_data["player_id"] == test_player_id
+            assert isinstance(event_data["player_id"], uuid.UUID)
 
     @pytest.mark.asyncio
     async def test_send_room_description_exception_handling(self):
         """Test room description sending when an exception occurs."""
-        # Setup
-        player_id = "test_player_123"
+        # Setup - use UUID object directly
+        player_id = uuid.uuid4()
         room_data = {"name": "Test Room"}
 
         mock_connection_manager = Mock()

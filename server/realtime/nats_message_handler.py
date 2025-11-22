@@ -798,7 +798,16 @@ class NATSMessageHandler:
                     target_player_id=player_id,
                     channel=channel,
                 )
-                await self.connection_manager.send_personal_message(player_id, chat_event)
+                # Convert string player_id to UUID for send_personal_message
+                try:
+                    player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+                    await self.connection_manager.send_personal_message(player_id_uuid, chat_event)
+                except (ValueError, AttributeError, TypeError) as e:
+                    logger.warning(
+                        "Invalid player_id format for send_personal_message",
+                        player_id=player_id,
+                        error=str(e),
+                    )
 
             # Echo emotes/poses back to the sender so they see their own action
             if isinstance(chat_event_data, dict):
@@ -822,7 +831,9 @@ class NATSMessageHandler:
 
             if needs_sender_echo:
                 try:
-                    await self.connection_manager.send_personal_message(sender_id, chat_event)
+                    # Convert string sender_id to UUID for send_personal_message
+                    sender_id_uuid = uuid.UUID(sender_id) if isinstance(sender_id, str) else sender_id
+                    await self.connection_manager.send_personal_message(sender_id_uuid, chat_event)
                     logger.debug(
                         "=== BROADCAST FILTERING DEBUG: Echoed message to sender ===",
                         room_id=room_id,

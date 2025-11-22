@@ -175,10 +175,9 @@ async def send_game_event(player_id: uuid.UUID | str, event_type: str, data: dic
                 return
         else:
             player_id_uuid = player_id
-        # Convert to string for build_event (expects string)
-        player_id_str = str(player_id_uuid)
+        # Pass UUID object directly to build_event (it accepts UUID | str)
         await connection_manager.send_personal_message(
-            player_id_uuid, build_event(event_type, data, player_id=player_id_str)
+            player_id_uuid, build_event(event_type, data, player_id=player_id_uuid)
         )
 
     except Exception as e:
@@ -228,7 +227,7 @@ async def send_room_event(room_id: str, event_type: str, data: dict, exclude_pla
         logger.error("Error sending room event", room_id=room_id, error=str(e))
 
 
-async def send_system_notification(player_id: str, message: str, notification_type: str = "info") -> None:
+async def send_system_notification(player_id: uuid.UUID | str, message: str, notification_type: str = "info") -> None:
     """
     Send a system notification to a player.
 
@@ -249,7 +248,7 @@ async def send_system_notification(player_id: str, message: str, notification_ty
         logger.error("Error sending system notification", player_id=player_id, error=str(e))
 
 
-async def send_player_status_update(player_id: str, status_data: dict) -> None:
+async def send_player_status_update(player_id: uuid.UUID | str, status_data: dict) -> None:
     """
     Send a player status update to a player.
 
@@ -264,7 +263,7 @@ async def send_player_status_update(player_id: str, status_data: dict) -> None:
         logger.error("Error sending status update", player_id=player_id, error=str(e))
 
 
-async def send_room_description(player_id: str, room_data: dict) -> None:
+async def send_room_description(player_id: uuid.UUID | str, room_data: dict) -> None:
     """
     Send room description to a player.
 

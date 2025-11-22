@@ -90,7 +90,7 @@ class TestAPIEndpointsDualConnection:
         # Verify response
         assert response.status_code == 200
         data = response.json()
-        assert data["player_id"] == "test_player"
+        assert data["player_id"] == test_player_id
         assert data["presence"]["is_online"] is True
         assert data["session"]["session_id"] == "session_123"
         assert data["session"]["is_valid"] is True
