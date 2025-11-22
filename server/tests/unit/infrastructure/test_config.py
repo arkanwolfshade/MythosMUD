@@ -608,8 +608,8 @@ class TestConfigValidationEdgeCases:
         assert config.strength == 1
 
         # Maximum valid stat
-        config = PlayerStatsConfig(strength=20)
-        assert config.strength == 20
+        config = PlayerStatsConfig(strength=100)
+        assert config.strength == 100
 
         # Below minimum
         with pytest.raises(ValidationError):
@@ -617,7 +617,7 @@ class TestConfigValidationEdgeCases:
 
         # Above maximum
         with pytest.raises(ValidationError):
-            PlayerStatsConfig(strength=21)
+            PlayerStatsConfig(strength=101)
 
 
 class TestConfigErrorMessages:
