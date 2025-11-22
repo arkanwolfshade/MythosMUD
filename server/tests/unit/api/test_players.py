@@ -992,8 +992,8 @@ class TestStatsValidation:
             "investigator": {AttributeType.INT: 12, AttributeType.WIS: 10},
             "occultist": {AttributeType.INT: 14, AttributeType.WIS: 12},
         }
-        mock_generator.MIN_STAT = 3
-        mock_generator.MAX_STAT = 18
+        mock_generator.MIN_STAT = 15
+        mock_generator.MAX_STAT = 90
         mock_stats_generator_class.return_value = mock_generator
 
         result = await get_available_classes(mock_current_user, stats_generator=mock_generator)

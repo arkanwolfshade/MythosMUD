@@ -72,7 +72,9 @@ class TestRoomBasedMuteFiltering:
         # Say channel invokes mute checks and filters muted senders
         mock_mute_check.assert_called_once_with(ANY, self.receiver_id, self.sender_id)
         # send_personal_message receives UUID object, not string
-        self.mock_connection_manager.send_personal_message.assert_called_once_with(uuid.UUID(self.sender_id), chat_event)
+        self.mock_connection_manager.send_personal_message.assert_called_once_with(
+            uuid.UUID(self.sender_id), chat_event
+        )
 
     @pytest.mark.asyncio
     async def test_local_message_mute_filtering(self) -> None:
@@ -87,7 +89,9 @@ class TestRoomBasedMuteFiltering:
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "local")
 
         # send_personal_message receives UUID object, not string
-        self.mock_connection_manager.send_personal_message.assert_called_once_with(uuid.UUID(self.sender_id), chat_event)
+        self.mock_connection_manager.send_personal_message.assert_called_once_with(
+            uuid.UUID(self.sender_id), chat_event
+        )
 
     @pytest.mark.asyncio
     async def test_emote_message_mute_filtering(self) -> None:
@@ -102,7 +106,9 @@ class TestRoomBasedMuteFiltering:
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "emote")
 
         # send_personal_message receives UUID object, not string
-        self.mock_connection_manager.send_personal_message.assert_called_once_with(uuid.UUID(self.sender_id), chat_event)
+        self.mock_connection_manager.send_personal_message.assert_called_once_with(
+            uuid.UUID(self.sender_id), chat_event
+        )
 
     @pytest.mark.asyncio
     async def test_pose_message_mute_filtering(self) -> None:
@@ -117,7 +123,9 @@ class TestRoomBasedMuteFiltering:
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "pose")
 
         # send_personal_message receives UUID object, not string
-        self.mock_connection_manager.send_personal_message.assert_called_once_with(uuid.UUID(self.sender_id), chat_event)
+        self.mock_connection_manager.send_personal_message.assert_called_once_with(
+            uuid.UUID(self.sender_id), chat_event
+        )
 
     @pytest.mark.asyncio
     async def test_all_room_based_channels_allow_unmuted_messages(self) -> None:
@@ -199,7 +207,9 @@ class TestRoomBasedMuteFiltering:
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "local")
 
         # send_personal_message receives UUID object, not string
-        self.mock_connection_manager.send_personal_message.assert_called_once_with(uuid.UUID(self.sender_id), chat_event)
+        self.mock_connection_manager.send_personal_message.assert_called_once_with(
+            uuid.UUID(self.sender_id), chat_event
+        )
 
     @pytest.mark.asyncio
     async def test_room_based_channels_handle_players_not_in_room(self) -> None:
@@ -214,7 +224,9 @@ class TestRoomBasedMuteFiltering:
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "say")
 
         # send_personal_message receives UUID object, not string
-        self.mock_connection_manager.send_personal_message.assert_called_once_with(uuid.UUID(self.sender_id), chat_event)
+        self.mock_connection_manager.send_personal_message.assert_called_once_with(
+            uuid.UUID(self.sender_id), chat_event
+        )
 
     @pytest.mark.asyncio
     async def test_room_based_channels_performance_with_optimized_user_manager(self) -> None:

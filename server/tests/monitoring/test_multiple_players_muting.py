@@ -203,7 +203,9 @@ class TestMultiplePlayersMuting:
 
                 # Only sender should receive the echo
                 # send_personal_message receives UUID object, not string
-                self.mock_connection_manager.send_personal_message.assert_called_once_with(uuid.UUID(self.sender_id), chat_event)
+                self.mock_connection_manager.send_personal_message.assert_called_once_with(
+                    uuid.UUID(self.sender_id), chat_event
+                )
 
     @pytest.mark.asyncio
     async def test_partial_muting_with_mixed_room_status(self):

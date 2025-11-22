@@ -439,13 +439,14 @@ class TestNPCCombatIntegration:
         aggressive_npc.combat_integration = combat_integration
 
         # Test damage calculation
-        attacker_stats = {"strength": 15, "constitution": 12}
-        target_stats = {"constitution": 10}
+        # Using new 1-100 stat range (scaled from old 1-20 range)
+        attacker_stats = {"strength": 75, "constitution": 60}  # Scaled from 15, 12
+        target_stats = {"constitution": 50}  # Scaled from 10
         damage = combat_integration.calculate_damage(attacker_stats, target_stats, 20, "physical")
 
         # Should be base damage + strength bonus - constitution reduction
-        # 20 + 2 (strength bonus) - 0 (constitution reduction) = 22
-        assert damage == 22
+        # 20 + 12 (strength bonus: (75-50)//2) - 0 (constitution reduction: (50-50)//4) = 32
+        assert damage == 32
 
         # Test combat stats retrieval
         npc_stats = aggressive_npc.get_stats()

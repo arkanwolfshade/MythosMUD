@@ -135,9 +135,9 @@ class TestCombatDatabaseSchema:
             # Verify data integrity
             stats = npc.get_base_stats()
             assert stats["xp_value"] >= 0  # XP should be non-negative
-            assert 1 <= stats["dexterity"] <= 20  # Dexterity should be 1-20
-            assert 1 <= stats["strength"] <= 20  # Strength should be 1-20
-            assert 1 <= stats["constitution"] <= 20  # Constitution 1-20
+            assert 1 <= stats["dexterity"] <= 100  # Dexterity should be 1-100
+            assert 1 <= stats["strength"] <= 100  # Strength should be 1-100
+            assert 1 <= stats["constitution"] <= 100  # Constitution 1-100
 
     @pytest.mark.asyncio
     async def test_invalid_combat_data_handling(self):

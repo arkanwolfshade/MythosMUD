@@ -301,23 +301,36 @@ class TestCORSConfig:
 class TestPlayerStatsConfig:
     """Test PlayerStatsConfig validation."""
 
-    def test_valid_player_stats_config(self):
+    def test_valid_player_stats_config(self, monkeypatch):
         """Test valid player stats configuration."""
+        # Clear any environment variables that might override defaults
+        monkeypatch.delenv("DEFAULT_STATS_STRENGTH", raising=False)
+        monkeypatch.delenv("DEFAULT_STATS_DEXTERITY", raising=False)
+        monkeypatch.delenv("DEFAULT_STATS_CONSTITUTION", raising=False)
+        monkeypatch.delenv("DEFAULT_STATS_INTELLIGENCE", raising=False)
+        monkeypatch.delenv("DEFAULT_STATS_WISDOM", raising=False)
+        monkeypatch.delenv("DEFAULT_STATS_CHARISMA", raising=False)
+
         config = PlayerStatsConfig()
-        assert config.strength == 10
+        assert config.strength == 50
+        assert config.dexterity == 50
+        assert config.constitution == 50
+        assert config.intelligence == 50
+        assert config.wisdom == 50
+        assert config.charisma == 50
         assert config.max_health == 100
 
     def test_invalid_stat_too_low(self):
         """Test stat validation rejects values below 1."""
         with pytest.raises(ValidationError) as exc_info:
             PlayerStatsConfig(strength=0)
-        assert "Stats must be between 1 and 20" in str(exc_info.value)
+        assert "Stats must be between 1 and 100" in str(exc_info.value)
 
     def test_invalid_stat_too_high(self):
-        """Test stat validation rejects values above 20."""
+        """Test stat validation rejects values above 100."""
         with pytest.raises(ValidationError) as exc_info:
-            PlayerStatsConfig(dexterity=25)
-        assert "Stats must be between 1 and 20" in str(exc_info.value)
+            PlayerStatsConfig(dexterity=101)
+        assert "Stats must be between 1 and 100" in str(exc_info.value)
 
     def test_invalid_health_too_low(self):
         """Test health validation rejects values below 1."""
@@ -327,9 +340,9 @@ class TestPlayerStatsConfig:
 
     def test_to_dict_format(self):
         """Test conversion to dict format."""
-        config = PlayerStatsConfig(strength=15, max_health=150)
+        config = PlayerStatsConfig(strength=75, max_health=150)
         stats_dict = config.to_dict()
-        assert stats_dict["strength"] == 15
+        assert stats_dict["strength"] == 75
         assert stats_dict["max_health"] == 150
         assert "dexterity" in stats_dict
 
@@ -548,14 +561,16 @@ class TestLegacyDictConversion:
         assert legacy["rotation"]["max_size"] == "100MB"
         assert legacy["rotation"]["backup_count"] == 5
 
-    def test_player_stats_to_dict(self):
+    def test_player_stats_to_dict(self, monkeypatch):
         """Test PlayerStatsConfig.to_dict() produces correct structure."""
-        config = PlayerStatsConfig(strength=15, health=80)
+        # Clear any environment variables that might override defaults
+        monkeypatch.delenv("DEFAULT_STATS_DEXTERITY", raising=False)
+        config = PlayerStatsConfig(strength=75, health=80)
         stats_dict = config.to_dict()
 
-        assert stats_dict["strength"] == 15
+        assert stats_dict["strength"] == 75
         assert stats_dict["health"] == 80
-        assert stats_dict["dexterity"] == 10  # Default value
+        assert stats_dict["dexterity"] == 50  # Default value
         assert len(stats_dict) == 13  # All 13 stats present
 
 

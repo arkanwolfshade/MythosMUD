@@ -101,7 +101,9 @@ class TestAsyncRouteHandlers:
         assert len(synchronous_handlers) > 0
         assert len(handlers_with_io) > 0
 
-    @pytest.mark.skip(reason="Temporarily disabled: Failing with 503 Service Unavailable - persistence/readiness gate issue")
+    @pytest.mark.skip(
+        reason="Temporarily disabled: Failing with 503 Service Unavailable - persistence/readiness gate issue"
+    )
     def test_async_handler_performance_comparison(self, client):
         """Test performance comparison between sync and async handlers.
 

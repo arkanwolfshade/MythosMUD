@@ -28,6 +28,7 @@ class UUIDEncoder(json.JSONEncoder):
             return str(obj)
         return super().default(obj)
 
+
 # Global sequence counter for events (when connection_manager not available)
 _global_sequence_counter = 0
 _sequence_lock = None

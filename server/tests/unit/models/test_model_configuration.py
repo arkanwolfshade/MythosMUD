@@ -146,8 +146,8 @@ class TestModelConfigurationConsistency:
         with pytest.raises(ValidationError, match="Input should be greater than or equal to 1"):
             Stats(strength=0)
 
-        with pytest.raises(ValidationError, match="Input should be less than or equal to 20"):
-            Stats(strength=21)
+        with pytest.raises(ValidationError, match="Input should be less than or equal to 100"):
+            Stats(strength=101)
 
         # Test Alias model field validation
         with pytest.raises(ValidationError, match="Field required"):
@@ -175,11 +175,11 @@ class TestModelConfigurationConsistency:
 
     def test_computed_field_consistency(self):
         """Test that computed fields work consistently."""
-        stats = Stats(constitution=15, wisdom=12)
+        stats = Stats(constitution=75, wisdom=60)
 
         # Test computed fields
-        assert stats.max_health == 150  # constitution * 10
-        assert stats.max_sanity == 60  # wisdom * 5
+        assert stats.max_health == 75  # Direct constitution value
+        assert stats.max_sanity == 60  # Direct wisdom value
 
     def test_model_repr_consistency(self):
         """Test that model string representations are consistent."""
@@ -220,12 +220,12 @@ class TestModelConfigurationConsistency:
         stats = Stats()
 
         # Should have random values for physical/mental attributes
-        assert 3 <= stats.strength <= 18
-        assert 3 <= stats.dexterity <= 18
-        assert 3 <= stats.constitution <= 18
-        assert 3 <= stats.intelligence <= 18
-        assert 3 <= stats.wisdom <= 18
-        assert 3 <= stats.charisma <= 18
+        assert 15 <= stats.strength <= 90
+        assert 15 <= stats.dexterity <= 90
+        assert 15 <= stats.constitution <= 90
+        assert 15 <= stats.intelligence <= 90
+        assert 15 <= stats.wisdom <= 90
+        assert 15 <= stats.charisma <= 90
 
         # Test that other models use standard Pydantic initialization
         alias = Alias(name="test", command="say hello")
