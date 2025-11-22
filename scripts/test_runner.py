@@ -74,18 +74,43 @@ class TestRunner:
         """
         env = os.environ.copy()
 
+        # Load test environment variables from .env.unit_test if not already set
+        test_env_file = self.server_dir / "tests" / ".env.unit_test"
+        if test_env_file.exists() and "DATABASE_URL" not in env:
+            from dotenv import load_dotenv
+
+            load_dotenv(test_env_file, override=True)
+            # Reload environment after loading .env file
+            env = os.environ.copy()
+
         # Test environment configuration
         env.update(
             {
                 "LOGGING_ENVIRONMENT": "unit_test",
                 "MYTHOSMUD_TEST_MODE": "true",
-                "DATABASE_URL": f"sqlite+aiosqlite:///{self.data_dir}/players/unit_test_players.db",
-                "DATABASE_NPC_URL": f"sqlite+aiosqlite:///{self.data_dir}/npcs/unit_test_npcs.db",
                 # Use absolute paths for aliases to avoid accidental relative path resolution
                 "GAME_ALIASES_DIR": str(self.data_dir / "players" / "aliases"),
                 "PYTHONPATH": str(self.server_dir),
             }
         )
+
+        # Ensure DATABASE_URL is set (should come from .env.unit_test or environment)
+        if "DATABASE_URL" not in env:
+            # Default PostgreSQL URL for unit tests (matches .env.unit_test)
+            env["DATABASE_URL"] = "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
+            logger.warning(
+                "DATABASE_URL not set, using default PostgreSQL URL",
+                database_url=env["DATABASE_URL"],
+            )
+
+        # Ensure DATABASE_NPC_URL is set (should come from .env.unit_test or environment)
+        if "DATABASE_NPC_URL" not in env:
+            # Default to same database as DATABASE_URL if not specified
+            env["DATABASE_NPC_URL"] = env["DATABASE_URL"]
+            logger.info(
+                "DATABASE_NPC_URL not set, using same as DATABASE_URL",
+                database_npc_url=env["DATABASE_NPC_URL"],
+            )
 
         # Ensure legacy ALIASES_DIR is set explicitly and absolutely for any code that still reads it
         env["ALIASES_DIR"] = env["GAME_ALIASES_DIR"]
@@ -101,41 +126,61 @@ class TestRunner:
 
     def clean_test_databases(self, env: dict[str, str]) -> bool:
         """
-        Clean test databases before running tests.
+        Verify test database configuration.
 
-        Note: NPC database is persistent and should not be deleted during unit testing
-        to maintain test performance and reliability.
+        Note: For PostgreSQL databases, schema is managed externally via SQL scripts.
+        The database should already exist and be properly initialized. This function
+        only verifies that PostgreSQL URLs are configured correctly.
 
         Args:
             env: Environment variables dictionary
 
         Returns:
-            True if cleanup was successful, False otherwise
+            True if configuration is valid, False otherwise
         """
-        logger.info("Cleaning test databases")
+        logger.info("Checking test database configuration")
 
         try:
-            # Clean player database only
-            player_db_path = self.data_dir / "players" / "unit_test_players.db"
-            if player_db_path.exists():
-                player_db_path.unlink()
-                logger.info("Cleaned player database", path=str(player_db_path))
+            database_url = env.get("DATABASE_URL", "")
+            npc_database_url = env.get("DATABASE_NPC_URL", "")
 
-            # NPC database should be persistent - do not delete
-            npc_db_path = self.data_dir / "npcs" / "unit_test_npcs.db"
-            if npc_db_path.exists():
-                logger.info("Preserving NPC database for performance", path=str(npc_db_path))
-            else:
-                logger.info("NPC database does not exist yet", path=str(npc_db_path))
+            # Validate PostgreSQL database URL
+            if not database_url:
+                logger.error("DATABASE_URL is not set")
+                return False
 
-            # Ensure directories exist
-            player_db_path.parent.mkdir(parents=True, exist_ok=True)
-            npc_db_path.parent.mkdir(parents=True, exist_ok=True)
+            if not database_url.startswith("postgresql"):
+                logger.error(
+                    "DATABASE_URL must be a PostgreSQL URL.",
+                    database_url=database_url[:50] + "..." if len(database_url) > 50 else database_url,
+                )
+                return False
+
+            logger.info(
+                "Using PostgreSQL database - schema managed externally",
+                database_url=database_url[:50] + "..." if len(database_url) > 50 else database_url,
+            )
+
+            # Validate PostgreSQL NPC database URL
+            if npc_database_url:
+                if not npc_database_url.startswith("postgresql"):
+                    logger.error(
+                        "DATABASE_NPC_URL must be a PostgreSQL URL.",
+                        npc_database_url=npc_database_url[:50] + "..."
+                        if len(npc_database_url) > 50
+                        else npc_database_url,
+                    )
+                    return False
+
+                logger.info(
+                    "Using PostgreSQL NPC database - schema managed externally",
+                    npc_database_url=npc_database_url[:50] + "..." if len(npc_database_url) > 50 else npc_database_url,
+                )
 
             return True
 
         except Exception as e:
-            logger.error("Failed to clean test databases", error=str(e))
+            logger.error("Failed to check test database configuration", error=str(e))
             return False
 
     def get_pytest_command(self, test_paths: list[str], extra_args: list[str]) -> list[str]:

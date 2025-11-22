@@ -17,6 +17,8 @@ from ..models.game import PositionState
 class PlayerBase(BaseModel):
     """Base player schema with common fields."""
 
+    __slots__ = ()  # Performance optimization
+
     name: str = Field(..., min_length=1, max_length=50, description="Player name")
     current_room_id: str = Field(default="earth_arkhamcity_sanitarium_room_foyer_001", description="Current room ID")
     experience_points: int = Field(default=0, ge=0, description="Experience points")
@@ -25,6 +27,8 @@ class PlayerBase(BaseModel):
 
 class PlayerCreate(PlayerBase):
     """Schema for creating a new player."""
+
+    __slots__ = ()  # Performance optimization
 
     user_id: uuid.UUID = Field(..., description="Associated user ID")
     stats: dict[str, Any] = Field(default={"health": 100, "sanity": 100, "strength": 10}, description="Player stats")
@@ -49,6 +53,8 @@ class PlayerCreate(PlayerBase):
 
 class PlayerRead(PlayerBase):
     """Schema for reading player data."""
+
+    __slots__ = ()  # Performance optimization
 
     id: uuid.UUID = Field(..., description="Player's unique identifier")
     user_id: uuid.UUID = Field(..., description="Associated user ID")
@@ -92,6 +98,8 @@ class PlayerRead(PlayerBase):
 
 class PlayerUpdate(BaseModel):
     """Schema for updating player data."""
+
+    __slots__ = ()  # Performance optimization
 
     name: str | None = Field(None, min_length=1, max_length=50, description="Player name")
     current_room_id: str | None = Field(None, description="Current room ID")

@@ -189,6 +189,8 @@ class TestWhisperChannelStrategy:
     @pytest.mark.asyncio
     async def test_send_whisper_message_nats_failure(self):
         """Test that whisper fails when NATS publishing fails."""
+        from server.services.nats_exceptions import NATSPublishError
+
         # Setup mocks
         self.mock_player_service.get_player_by_id.side_effect = lambda pid: {
             self.sender_player.id: self.sender_player,
@@ -196,7 +198,8 @@ class TestWhisperChannelStrategy:
         }.get(pid)
         self.mock_user_manager.is_player_muted.return_value = False
         self.mock_rate_limiter.check_rate_limit.return_value = True
-        self.mock_nats_service.publish.return_value = False
+        # NATS publish raises NATSPublishError on failure, doesn't return False
+        self.mock_nats_service.publish = AsyncMock(side_effect=NATSPublishError("NATS publish failed", "test.subject"))
 
         # Test whisper message
         result = await self.chat_service.send_whisper_message(

@@ -66,7 +66,8 @@ class TestMultiplePlayersMuting:
         with patch.object(self.handler, "_is_player_in_room", return_value=True):
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "say")
 
-        expected_calls = [call(player_id, chat_event) for player_id in self.all_players]
+        # send_personal_message receives UUID objects, not strings
+        expected_calls = [call(uuid.UUID(player_id), chat_event) for player_id in self.all_players]
         self.mock_connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
         assert self.mock_connection_manager.send_personal_message.await_count == len(self.all_players)
 
@@ -93,8 +94,9 @@ class TestMultiplePlayersMuting:
                 await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "emote")
 
                 # Verify that only unmuted receivers got the message
-                expected_calls = [call(receiver_id, chat_event) for receiver_id in self.unmuted_receivers]
-                expected_calls.append(call(self.sender_id, chat_event))
+                # send_personal_message receives UUID objects, not strings
+                expected_calls = [call(uuid.UUID(receiver_id), chat_event) for receiver_id in self.unmuted_receivers]
+                expected_calls.append(call(uuid.UUID(self.sender_id), chat_event))
                 self.mock_connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
 
                 # Verify muted receivers didn't get the message
@@ -128,8 +130,9 @@ class TestMultiplePlayersMuting:
                 await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "local")
 
                 # Verify that only unmuted receivers got the message
-                expected_calls = [call(receiver_id, chat_event) for receiver_id in self.unmuted_receivers]
-                expected_calls.append(call(self.sender_id, chat_event))
+                # send_personal_message receives UUID objects, not strings
+                expected_calls = [call(uuid.UUID(receiver_id), chat_event) for receiver_id in self.unmuted_receivers]
+                expected_calls.append(call(uuid.UUID(self.sender_id), chat_event))
                 self.mock_connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
 
                 # Verify muted receivers didn't get the message
@@ -163,8 +166,9 @@ class TestMultiplePlayersMuting:
                 await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "pose")
 
                 # Verify that only unmuted receivers got the message
-                expected_calls = [call(receiver_id, chat_event) for receiver_id in self.unmuted_receivers]
-                expected_calls.append(call(self.sender_id, chat_event))
+                # send_personal_message receives UUID objects, not strings
+                expected_calls = [call(uuid.UUID(receiver_id), chat_event) for receiver_id in self.unmuted_receivers]
+                expected_calls.append(call(uuid.UUID(self.sender_id), chat_event))
                 self.mock_connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
 
                 # Verify muted receivers didn't get the message
@@ -198,7 +202,8 @@ class TestMultiplePlayersMuting:
                 await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "local")
 
                 # Only sender should receive the echo
-                self.mock_connection_manager.send_personal_message.assert_called_once_with(self.sender_id, chat_event)
+                # send_personal_message receives UUID object, not string
+                self.mock_connection_manager.send_personal_message.assert_called_once_with(uuid.UUID(self.sender_id), chat_event)
 
     @pytest.mark.asyncio
     async def test_partial_muting_with_mixed_room_status(self):
@@ -232,9 +237,10 @@ class TestMultiplePlayersMuting:
                 await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "local")
 
                 # Verify that only unmuted players who are in the room got the message
+                # send_personal_message receives UUID objects, not strings
                 expected_recipients = [pid for pid in self.unmuted_receivers if pid in players_in_room]
-                expected_calls = [call(receiver_id, chat_event) for receiver_id in expected_recipients]
-                expected_calls.append(call(self.sender_id, chat_event))
+                expected_calls = [call(uuid.UUID(receiver_id), chat_event) for receiver_id in expected_recipients]
+                expected_calls.append(call(uuid.UUID(self.sender_id), chat_event))
                 self.mock_connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
 
                 # Verify muted players didn't get the message (even if they're in the room)
@@ -274,12 +280,17 @@ class TestMultiplePlayersMuting:
             ):
                 # Mock the global user_manager instance
                 with patch("server.services.user_manager.user_manager") as mock_user_manager:
+                    # Mock batch loading method (implementation now uses batch loading for efficiency)
+                    mock_user_manager.load_player_mutes_batch = AsyncMock(return_value={})
+
                     # Execute
                     await self.handler._broadcast_to_room_with_filtering(
                         self.room_id, chat_event, self.sender_id, "local"
                     )
 
-                    # Verify that mute data was pre-loaded for all receivers
+                    # Verify that mute data was pre-loaded for all receivers using batch loading
                     expected_receivers = [pid for pid in self.all_players if pid != self.sender_id]
-                    for receiver_id in expected_receivers:
-                        mock_user_manager.load_player_mutes.assert_any_call(receiver_id)
+                    # Implementation now uses load_player_mutes_batch instead of individual calls
+                    mock_user_manager.load_player_mutes_batch.assert_called_once()
+                    call_args = mock_user_manager.load_player_mutes_batch.call_args[0][0]
+                    assert set(call_args) == set(expected_receivers), "Batch load should include all expected receivers"

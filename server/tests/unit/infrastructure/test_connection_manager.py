@@ -9,11 +9,17 @@ player tracking, rate limiting, and error handling.
 import time
 import uuid
 from unittest.mock import AsyncMock, Mock, patch
+from uuid import NAMESPACE_DNS, UUID, uuid5
 
 import pytest
 from fastapi import WebSocket
 
 from server.realtime.connection_manager import ConnectionManager, ConnectionMetadata, MemoryMonitor
+
+
+def _str_to_uuid(player_id_str: str) -> UUID:
+    """Convert string player_id to UUID deterministically for tests."""
+    return uuid5(NAMESPACE_DNS, player_id_str)
 
 
 class TestConnectionManagerComprehensive:
@@ -945,9 +951,9 @@ class TestConnectionManagerComprehensive:
         websocket2.close = AsyncMock()
         websocket2.ping = AsyncMock(side_effect=Exception("Connection closed"))
 
-        # Connect WebSockets for two players
-        success1 = await connection_manager.connect_websocket(websocket1, "player1", "session_1")
-        success2 = await connection_manager.connect_websocket(websocket2, "player2", "session_2")
+        # Connect WebSockets for two players (convert string IDs to UUIDs)
+        success1 = await connection_manager.connect_websocket(websocket1, _str_to_uuid("player1"), "session_1")
+        success2 = await connection_manager.connect_websocket(websocket2, _str_to_uuid("player2"), "session_2")
         assert success1 is True
         assert success2 is True
 
@@ -976,23 +982,26 @@ class TestConnectionManagerComprehensive:
         mock_room.id = "test_room_001"
         mock_persistence.get_room.return_value = mock_room
 
+        # Use consistent UUID for player
+        test_player_id = uuid.UUID("7d5acc31-364a-4aa6-b880-1592298fdeb3")
+
         # Connect WebSocket
-        success = await connection_manager.connect_websocket(mock_websocket, "test_player", "session_1")
+        success = await connection_manager.connect_websocket(mock_websocket, test_player_id, "session_1")
         assert success is True
 
         # Connect SSE
-        sse_connection_id = await connection_manager.connect_sse("test_player", "session_1")
+        sse_connection_id = await connection_manager.connect_sse(test_player_id, "session_1")
         assert sse_connection_id is not None
 
         # Verify initial session tracking
-        assert connection_manager.get_player_session("test_player") == "session_1"
+        assert connection_manager.get_player_session(test_player_id) == "session_1"
         assert len(connection_manager.get_session_connections("session_1")) == 2
 
         # Handle new game session
-        session_results = await connection_manager.handle_new_game_session("test_player", "session_2")
+        session_results = await connection_manager.handle_new_game_session(test_player_id, "session_2")
 
-        # Verify session results
-        assert session_results["player_id"] == "test_player"
+        # Verify session results (FastAPI serializes UUIDs to strings in JSON, but in Python dict it's a UUID)
+        assert session_results["player_id"] == test_player_id
         assert session_results["new_session_id"] == "session_2"
         assert session_results["previous_session_id"] == "session_1"
         assert session_results["connections_disconnected"] == 2
@@ -1002,22 +1011,23 @@ class TestConnectionManagerComprehensive:
         assert len(session_results["errors"]) == 0
 
         # Verify session tracking updated
-        assert connection_manager.get_player_session("test_player") == "session_2"
+        assert connection_manager.get_player_session(test_player_id) == "session_2"
         assert len(connection_manager.get_session_connections("session_2")) == 0
         assert "session_1" not in connection_manager.session_connections
 
         # Verify connections were disconnected
-        assert connection_manager.has_websocket_connection("test_player") is False
-        assert connection_manager.has_sse_connection("test_player") is False
+        assert connection_manager.has_websocket_connection(test_player_id) is False
+        assert connection_manager.has_sse_connection(test_player_id) is False
 
     @pytest.mark.asyncio
     async def test_handle_new_game_session_no_existing_connections(self, connection_manager):
         """Test new game session handling when player has no existing connections."""
         # Handle new game session for player with no connections
-        session_results = await connection_manager.handle_new_game_session("test_player", "session_1")
+        test_player_id = uuid.UUID("7d5acc31-364a-4aa6-b880-1592298fdeb3")
+        session_results = await connection_manager.handle_new_game_session(test_player_id, "session_1")
 
-        # Verify session results
-        assert session_results["player_id"] == "test_player"
+        # Verify session results (FastAPI serializes UUIDs to strings in JSON, but in Python dict it's a UUID)
+        assert session_results["player_id"] == test_player_id
         assert session_results["new_session_id"] == "session_1"
         assert session_results["previous_session_id"] is None
         assert session_results["connections_disconnected"] == 0
@@ -1027,7 +1037,7 @@ class TestConnectionManagerComprehensive:
         assert len(session_results["errors"]) == 0
 
         # Verify session tracking
-        assert connection_manager.get_player_session("test_player") == "session_1"
+        assert connection_manager.get_player_session(test_player_id) == "session_1"
         assert len(connection_manager.get_session_connections("session_1")) == 0
 
     @pytest.mark.asyncio
@@ -1041,6 +1051,9 @@ class TestConnectionManagerComprehensive:
         mock_room.id = "test_room_001"
         mock_persistence.get_room.return_value = mock_room
 
+        # Use consistent UUID for player
+        test_player_id = uuid.UUID("7d5acc31-364a-4aa6-b880-1592298fdeb3")
+
         # Create a mock websocket that will fail to close
         websocket = Mock(spec=WebSocket)
         websocket.accept = AsyncMock()
@@ -1051,21 +1064,21 @@ class TestConnectionManagerComprehensive:
         # Mock the logger to avoid Unicode encoding issues on Windows during error logging
         with patch("server.realtime.connection_manager.logger"):
             # Connect WebSocket
-            success = await connection_manager.connect_websocket(websocket, "test_player", "session_1")
+            success = await connection_manager.connect_websocket(websocket, test_player_id, "session_1")
             assert success is True
 
             # Handle new game session (should handle errors gracefully)
-            session_results = await connection_manager.handle_new_game_session("test_player", "session_2")
+            session_results = await connection_manager.handle_new_game_session(test_player_id, "session_2")
 
-            # Verify session results show error handling
-            assert session_results["player_id"] == "test_player"
+            # Verify session results show error handling (FastAPI serializes UUIDs to strings in JSON, but in Python dict it's a UUID)
+            assert session_results["player_id"] == test_player_id
             assert session_results["new_session_id"] == "session_2"
             assert session_results["success"] is True  # Should still succeed despite connection errors
             # The connection close error is logged but handled gracefully, not reported in errors list
             assert len(session_results["errors"]) == 0  # Errors are handled internally
 
             # Verify session tracking still updated
-            assert connection_manager.get_player_session("test_player") == "session_2"
+            assert connection_manager.get_player_session(test_player_id) == "session_2"
 
     def test_get_player_session(self, connection_manager):
         """Test getting player session."""
@@ -1882,30 +1895,32 @@ class TestConnectionManagerComprehensive:
         # Mock room
         _mock_room = self._setup_mock_room(mock_persistence, "test_room_001")
 
-        # Mock room manager to return subscribers and occupants
-        connection_manager.room_manager = Mock()
-        connection_manager.room_manager.get_room_subscribers.return_value = {"player1", "player2"}
-        connection_manager.room_manager.get_room_occupants.return_value = []
-
         # Create multiple mock websockets for player1
         websocket1a = self._create_mock_websocket()
         websocket1b = self._create_mock_websocket()
 
-        # Connect multiple WebSockets for player1
-        success1a = await connection_manager.connect_websocket(websocket1a, "player1", "session_1a")
-        success1b = await connection_manager.connect_websocket(websocket1b, "player1", "session_1b")
+        # Connect multiple WebSockets for player1 (convert string IDs to UUIDs)
+        player1_id = _str_to_uuid("player1")
+        player2_id = _str_to_uuid("player2")
+        success1a = await connection_manager.connect_websocket(websocket1a, player1_id, "session_1a")
+        success1b = await connection_manager.connect_websocket(websocket1b, player1_id, "session_1b")
         assert success1a is True
         assert success1b is True
 
         # Connect SSE for player1
-        sse_connection_id = await connection_manager.connect_sse("player1", "session_1c")
+        sse_connection_id = await connection_manager.connect_sse(player1_id, "session_1c")
         assert sse_connection_id is not None
 
         # Connect single WebSocket for player2
         websocket2 = self._create_mock_websocket()
 
-        success2 = await connection_manager.connect_websocket(websocket2, "player2", "session_2")
+        success2 = await connection_manager.connect_websocket(websocket2, player2_id, "session_2")
         assert success2 is True
+
+        # Mock room manager to return subscribers and occupants (use UUID strings)
+        connection_manager.room_manager = Mock()
+        connection_manager.room_manager.get_room_subscribers.return_value = {str(player1_id), str(player2_id)}
+        connection_manager.room_manager.get_room_occupants.return_value = []
 
         # Broadcast to room
         test_event = {"type": "room_broadcast", "content": "Hello Room"}
@@ -1917,17 +1932,17 @@ class TestConnectionManagerComprehensive:
         assert broadcast_stats["excluded_players"] == 0
         assert broadcast_stats["successful_deliveries"] == 2
         assert broadcast_stats["failed_deliveries"] == 0
-        assert "player1" in broadcast_stats["delivery_details"]
-        assert "player2" in broadcast_stats["delivery_details"]
+        assert str(player1_id) in broadcast_stats["delivery_details"]
+        assert str(player2_id) in broadcast_stats["delivery_details"]
 
         # Verify player1 received message on all connections
-        player1_delivery = broadcast_stats["delivery_details"]["player1"]
+        player1_delivery = broadcast_stats["delivery_details"][str(player1_id)]
         assert player1_delivery["websocket_delivered"] == 2  # Two WebSocket connections
         assert player1_delivery["sse_delivered"] is True
         assert player1_delivery["total_connections"] == 3
 
         # Verify player2 received message
-        player2_delivery = broadcast_stats["delivery_details"]["player2"]
+        player2_delivery = broadcast_stats["delivery_details"][str(player2_id)]
         assert player2_delivery["websocket_delivered"] == 1  # One WebSocket connection
         assert player2_delivery["sse_delivered"] is False
         assert player2_delivery["total_connections"] == 1
@@ -1945,22 +1960,29 @@ class TestConnectionManagerComprehensive:
         mock_room.id = "test_room_001"
         mock_persistence.get_room.return_value = mock_room
 
-        # Mock room manager to return subscribers
-        connection_manager.room_manager = Mock()
-        connection_manager.room_manager.get_room_subscribers.return_value = {"player1", "player2", "player3"}
-
-        # Connect players
-        success1 = await connection_manager.connect_websocket(mock_websocket, "player1", "session_1")
-        success2 = await connection_manager.connect_websocket(mock_websocket, "player2", "session_2")
-        success3 = await connection_manager.connect_websocket(mock_websocket, "player3", "session_3")
+        # Connect players (convert string IDs to UUIDs)
+        player1_id = _str_to_uuid("player1")
+        player2_id = _str_to_uuid("player2")
+        player3_id = _str_to_uuid("player3")
+        success1 = await connection_manager.connect_websocket(mock_websocket, player1_id, "session_1")
+        success2 = await connection_manager.connect_websocket(mock_websocket, player2_id, "session_2")
+        success3 = await connection_manager.connect_websocket(mock_websocket, player3_id, "session_3")
         assert success1 is True
         assert success2 is True
         assert success3 is True
 
+        # Mock room manager to return subscribers (use UUID strings)
+        connection_manager.room_manager = Mock()
+        connection_manager.room_manager.get_room_subscribers.return_value = {
+            str(player1_id),
+            str(player2_id),
+            str(player3_id),
+        }
+
         # Broadcast to room excluding player2
         test_event = {"type": "room_broadcast", "content": "Hello Room"}
         broadcast_stats = await connection_manager.broadcast_to_room(
-            "test_room_001", test_event, exclude_player="player2"
+            "test_room_001", test_event, exclude_player=player2_id
         )
 
         # Verify broadcast statistics
@@ -1969,9 +1991,9 @@ class TestConnectionManagerComprehensive:
         assert broadcast_stats["excluded_players"] == 1
         assert broadcast_stats["successful_deliveries"] == 2  # Only player1 and player3
         assert broadcast_stats["failed_deliveries"] == 0
-        assert "player1" in broadcast_stats["delivery_details"]
-        assert "player2" not in broadcast_stats["delivery_details"]  # Excluded
-        assert "player3" in broadcast_stats["delivery_details"]
+        assert str(player1_id) in broadcast_stats["delivery_details"]
+        assert str(player2_id) not in broadcast_stats["delivery_details"]  # Excluded
+        assert str(player3_id) in broadcast_stats["delivery_details"]
 
     @pytest.mark.asyncio
     async def test_broadcast_global_multiple_connections(
@@ -1988,24 +2010,27 @@ class TestConnectionManagerComprehensive:
         websocket1a = self._create_mock_websocket()
         websocket1b = self._create_mock_websocket()
 
-        # Connect multiple WebSockets for player1
-        success1a = await connection_manager.connect_websocket(websocket1a, "player1", "session_1a")
-        success1b = await connection_manager.connect_websocket(websocket1b, "player1", "session_1b")
+        # Connect multiple WebSockets for player1 (convert string IDs to UUIDs)
+        player1_id = _str_to_uuid("player1")
+        player2_id = _str_to_uuid("player2")
+        player3_id = _str_to_uuid("player3")
+        success1a = await connection_manager.connect_websocket(websocket1a, player1_id, "session_1a")
+        success1b = await connection_manager.connect_websocket(websocket1b, player1_id, "session_1b")
         assert success1a is True
         assert success1b is True
 
         # Connect SSE for player1
-        sse_connection_id = await connection_manager.connect_sse("player1", "session_1c")
+        sse_connection_id = await connection_manager.connect_sse(player1_id, "session_1c")
         assert sse_connection_id is not None
 
         # Connect only SSE for player2 (no WebSocket)
-        sse_connection_id2 = await connection_manager.connect_sse("player2", "session_2")
+        sse_connection_id2 = await connection_manager.connect_sse(player2_id, "session_2")
         assert sse_connection_id2 is not None
 
         # Connect only WebSocket for player3 (no SSE)
         websocket3 = self._create_mock_websocket()
 
-        success3 = await connection_manager.connect_websocket(websocket3, "player3", "session_3")
+        success3 = await connection_manager.connect_websocket(websocket3, player3_id, "session_3")
         assert success3 is True
 
         # Broadcast globally
@@ -2017,24 +2042,24 @@ class TestConnectionManagerComprehensive:
         assert global_stats["excluded_players"] == 0
         assert global_stats["successful_deliveries"] == 3
         assert global_stats["failed_deliveries"] == 0
-        assert "player1" in global_stats["delivery_details"]
-        assert "player2" in global_stats["delivery_details"]
-        assert "player3" in global_stats["delivery_details"]
+        assert player1_id in global_stats["delivery_details"]
+        assert player2_id in global_stats["delivery_details"]
+        assert player3_id in global_stats["delivery_details"]
 
         # Verify player1 received message on all connections
-        player1_delivery = global_stats["delivery_details"]["player1"]
+        player1_delivery = global_stats["delivery_details"][player1_id]
         assert player1_delivery["websocket_delivered"] == 2  # Two WebSocket connections
         assert player1_delivery["sse_delivered"] is True
         assert player1_delivery["total_connections"] == 3
 
         # Verify player2 received message via SSE only
-        player2_delivery = global_stats["delivery_details"]["player2"]
+        player2_delivery = global_stats["delivery_details"][player2_id]
         assert player2_delivery["websocket_delivered"] == 0
         assert player2_delivery["sse_delivered"] is True
         assert player2_delivery["total_connections"] == 1
 
         # Verify player3 received message via WebSocket only
-        player3_delivery = global_stats["delivery_details"]["player3"]
+        player3_delivery = global_stats["delivery_details"][player3_id]
         assert player3_delivery["websocket_delivered"] == 1
         assert player3_delivery["sse_delivered"] is False
         assert player3_delivery["total_connections"] == 1
@@ -2052,26 +2077,29 @@ class TestConnectionManagerComprehensive:
         mock_room.id = "test_room_001"
         mock_persistence.get_room.return_value = mock_room
 
-        # Connect players
-        success1 = await connection_manager.connect_websocket(mock_websocket, "player1", "session_1")
-        success2 = await connection_manager.connect_websocket(mock_websocket, "player2", "session_2")
-        success3 = await connection_manager.connect_websocket(mock_websocket, "player3", "session_3")
+        # Connect players (convert string IDs to UUIDs)
+        player1_id = _str_to_uuid("player1")
+        player2_id = _str_to_uuid("player2")
+        player3_id = _str_to_uuid("player3")
+        success1 = await connection_manager.connect_websocket(mock_websocket, player1_id, "session_1")
+        success2 = await connection_manager.connect_websocket(mock_websocket, player2_id, "session_2")
+        success3 = await connection_manager.connect_websocket(mock_websocket, player3_id, "session_3")
         assert success1 is True
         assert success2 is True
         assert success3 is True
 
         # Broadcast globally excluding player2
         test_event = {"type": "global_broadcast", "content": "Hello World"}
-        global_stats = await connection_manager.broadcast_global(test_event, exclude_player="player2")
+        global_stats = await connection_manager.broadcast_global(test_event, exclude_player=player2_id)
 
         # Verify global broadcast statistics
         assert global_stats["total_players"] == 3
         assert global_stats["excluded_players"] == 1
         assert global_stats["successful_deliveries"] == 2  # Only player1 and player3
         assert global_stats["failed_deliveries"] == 0
-        assert "player1" in global_stats["delivery_details"]
-        assert "player2" not in global_stats["delivery_details"]  # Excluded
-        assert "player3" in global_stats["delivery_details"]
+        assert player1_id in global_stats["delivery_details"]
+        assert player2_id not in global_stats["delivery_details"]  # Excluded
+        assert player3_id in global_stats["delivery_details"]
 
     @pytest.mark.asyncio
     async def test_broadcast_to_room_mixed_connection_types(
@@ -2086,16 +2114,15 @@ class TestConnectionManagerComprehensive:
         mock_room.id = "test_room_001"
         mock_persistence.get_room.return_value = mock_room
 
-        # Mock room manager to return subscribers
-        connection_manager.room_manager = Mock()
-        connection_manager.room_manager.get_room_subscribers.return_value = {"player1", "player2", "player3"}
-
-        # Player1: WebSocket only
-        success1 = await connection_manager.connect_websocket(mock_websocket, "player1", "session_1")
+        # Player1: WebSocket only (convert string IDs to UUIDs)
+        player1_id = _str_to_uuid("player1")
+        player2_id = _str_to_uuid("player2")
+        player3_id = _str_to_uuid("player3")
+        success1 = await connection_manager.connect_websocket(mock_websocket, player1_id, "session_1")
         assert success1 is True
 
         # Player2: SSE only
-        sse_connection_id2 = await connection_manager.connect_sse("player2", "session_2")
+        sse_connection_id2 = await connection_manager.connect_sse(player2_id, "session_2")
         assert sse_connection_id2 is not None
 
         # Player3: Both WebSocket and SSE
@@ -2105,10 +2132,18 @@ class TestConnectionManagerComprehensive:
         websocket3.ping = AsyncMock()
         websocket3.send_json = AsyncMock()
 
-        success3 = await connection_manager.connect_websocket(websocket3, "player3", "session_3a")
-        sse_connection_id3 = await connection_manager.connect_sse("player3", "session_3b")
+        success3 = await connection_manager.connect_websocket(websocket3, player3_id, "session_3a")
+        sse_connection_id3 = await connection_manager.connect_sse(player3_id, "session_3b")
         assert success3 is True
         assert sse_connection_id3 is not None
+
+        # Mock room manager to return subscribers (use UUID strings)
+        connection_manager.room_manager = Mock()
+        connection_manager.room_manager.get_room_subscribers.return_value = {
+            str(player1_id),
+            str(player2_id),
+            str(player3_id),
+        }
 
         # Broadcast to room
         test_event = {"type": "room_broadcast", "content": "Hello Room"}
@@ -2121,17 +2156,17 @@ class TestConnectionManagerComprehensive:
         assert broadcast_stats["failed_deliveries"] == 0
 
         # Verify delivery details for each player
-        player1_delivery = broadcast_stats["delivery_details"]["player1"]
+        player1_delivery = broadcast_stats["delivery_details"][str(player1_id)]
         assert player1_delivery["websocket_delivered"] == 1
         assert player1_delivery["sse_delivered"] is False
         assert player1_delivery["total_connections"] == 1
 
-        player2_delivery = broadcast_stats["delivery_details"]["player2"]
+        player2_delivery = broadcast_stats["delivery_details"][str(player2_id)]
         assert player2_delivery["websocket_delivered"] == 0
         assert player2_delivery["sse_delivered"] is True
         assert player2_delivery["total_connections"] == 1
 
-        player3_delivery = broadcast_stats["delivery_details"]["player3"]
+        player3_delivery = broadcast_stats["delivery_details"][str(player3_id)]
         assert player3_delivery["websocket_delivered"] == 1
         assert player3_delivery["sse_delivered"] is True
         assert player3_delivery["total_connections"] == 2
@@ -2580,16 +2615,23 @@ class TestConnectionManagerComprehensive:
     @pytest.mark.asyncio
     async def test_broadcast_to_room(self, connection_manager, mock_websocket):
         """Test broadcasting to room."""
-        # Setup room subscription
-        connection_manager.room_subscriptions["test_room"] = {"player1", "player2"}
+        # Use UUID strings for player IDs
+        player1_id = _str_to_uuid("player1")
+        player2_id = _str_to_uuid("player2")
+        player1_id_str = str(player1_id)
+        player2_id_str = str(player2_id)
 
-        # Setup WebSocket connections
+        # Mock room manager to return UUID string subscribers
+        connection_manager.room_manager = Mock()
+        connection_manager.room_manager.get_room_subscribers.return_value = {player1_id_str, player2_id_str}
+
+        # Setup WebSocket connections using UUID keys
         connection_id1 = str(uuid.uuid4())
         connection_id2 = str(uuid.uuid4())
         connection_manager.active_websockets[connection_id1] = mock_websocket
         connection_manager.active_websockets[connection_id2] = mock_websocket
-        connection_manager.player_websockets["player1"] = [connection_id1]
-        connection_manager.player_websockets["player2"] = [connection_id2]
+        connection_manager.player_websockets[player1_id] = [connection_id1]
+        connection_manager.player_websockets[player2_id] = [connection_id2]
 
         event = {"type": "room_event", "data": "test_data"}
         await connection_manager.broadcast_to_room("test_room", event)
@@ -2600,19 +2642,26 @@ class TestConnectionManagerComprehensive:
     @pytest.mark.asyncio
     async def test_broadcast_to_room_with_exclude(self, connection_manager, mock_websocket):
         """Test broadcasting to room with excluded player."""
-        # Setup room subscription
-        connection_manager.room_subscriptions["test_room"] = {"player1", "player2"}
+        # Use UUID strings for player IDs
+        player1_id = _str_to_uuid("player1")
+        player2_id = _str_to_uuid("player2")
+        player1_id_str = str(player1_id)
+        player2_id_str = str(player2_id)
 
-        # Setup WebSocket connections
+        # Mock room manager to return UUID string subscribers
+        connection_manager.room_manager = Mock()
+        connection_manager.room_manager.get_room_subscribers.return_value = {player1_id_str, player2_id_str}
+
+        # Setup WebSocket connections using UUID keys
         connection_id1 = str(uuid.uuid4())
         connection_id2 = str(uuid.uuid4())
         connection_manager.active_websockets[connection_id1] = mock_websocket
         connection_manager.active_websockets[connection_id2] = mock_websocket
-        connection_manager.player_websockets["player1"] = [connection_id1]
-        connection_manager.player_websockets["player2"] = [connection_id2]
+        connection_manager.player_websockets[player1_id] = [connection_id1]
+        connection_manager.player_websockets[player2_id] = [connection_id2]
 
         event = {"type": "room_event", "data": "test_data"}
-        await connection_manager.broadcast_to_room("test_room", event, exclude_player="player1")
+        await connection_manager.broadcast_to_room("test_room", event, exclude_player=player1_id)
 
         # Should have sent to only player2
         assert mock_websocket.send_json.call_count == 1
@@ -3033,12 +3082,24 @@ class TestConnectionManagerComprehensive:
         """Test SSE disconnection with sync tracking (no running loop)."""
         # Setup SSE connection
         connection_manager.active_sse_connections["test_player"] = ["sse_conn_id"]
+        # Ensure no websocket connection exists (required for tracking to run)
+        assert not connection_manager.has_websocket_connection("test_player")
 
         with patch("asyncio.get_running_loop", side_effect=RuntimeError("No running loop")):
-            with patch("asyncio.run") as mock_run:
+            with patch("concurrent.futures.ThreadPoolExecutor") as mock_executor_class:
+                mock_executor = Mock()
+                mock_executor_class.return_value = mock_executor
+                mock_future = Mock()
+                mock_executor.submit.return_value = mock_future
+
                 connection_manager.disconnect_sse("test_player")
 
-                mock_run.assert_called_once()
+                # Verify that executor was created and submit was called
+                mock_executor_class.assert_called_once()
+                mock_executor.submit.assert_called_once()
+                # Verify the submitted function would create a new event loop
+                submitted_func = mock_executor.submit.call_args[0][0]
+                assert callable(submitted_func)
 
     @pytest.mark.filterwarnings("ignore:coroutine.*was never awaited:RuntimeWarning")
     def test_disconnect_sse_with_tracking_exception(self, connection_manager):

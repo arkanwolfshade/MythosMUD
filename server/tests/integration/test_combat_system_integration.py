@@ -146,8 +146,8 @@ class TestCombatSystemIntegration:
             xp_amount=xp_amount,
         )
 
-        # Verify persistence was called
-        mock_persistence.async_get_player.assert_called_once_with(str(player_id))
+        # Verify persistence was called (async_get_player now expects UUID, not string)
+        mock_persistence.async_get_player.assert_called_once_with(player_id)
         mock_persistence.async_save_player.assert_called_once_with(mock_player)
 
     @pytest.mark.asyncio

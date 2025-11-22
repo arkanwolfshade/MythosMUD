@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock all components before importing GameTerminal
 vi.mock('./DraggablePanel', () => ({
@@ -77,6 +77,14 @@ describe('GameTerminal Panel Sizing', () => {
     },
     messages: [{ text: 'Welcome to MythosMUD', timestamp: '2024-01-01T00:00:00Z', isHtml: false }],
     commandHistory: ['look', 'inventory'],
+    hallucinations: [],
+    sanityStatus: null,
+    healthStatus: null,
+    rescueState: null,
+    isLoggingOut: false,
+    isMortallyWounded: false,
+    isDead: false,
+    mythosTime: null,
     onConnect: vi.fn(),
     onDisconnect: vi.fn(),
     onLogout: vi.fn(),
@@ -87,7 +95,11 @@ describe('GameTerminal Panel Sizing', () => {
     onClearHistory: vi.fn(),
   };
 
+  const originalInnerWidth = window.innerWidth;
+  const originalInnerHeight = window.innerHeight;
+
   beforeEach(() => {
+    vi.clearAllMocks();
     // Mock window dimensions for testing
     Object.defineProperty(window, 'innerWidth', {
       writable: true,
@@ -101,7 +113,22 @@ describe('GameTerminal Panel Sizing', () => {
     });
   });
 
-  test('renders all panels with proper sizing', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    // Restore window dimensions
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      configurable: true,
+      value: originalInnerWidth,
+    });
+    Object.defineProperty(window, 'innerHeight', {
+      writable: true,
+      configurable: true,
+      value: originalInnerHeight,
+    });
+  });
+
+  it('renders all panels with proper sizing', () => {
     render(<GameTerminal {...defaultProps} />);
 
     // Check that all panels are rendered
@@ -112,7 +139,7 @@ describe('GameTerminal Panel Sizing', () => {
     expect(screen.getByTestId('panel-Status')).toBeInTheDocument();
   });
 
-  test('game log panel has auto-sizing enabled', () => {
+  it('game log panel has auto-sizing enabled', () => {
     render(<GameTerminal {...defaultProps} />);
 
     const gameLogPanel = screen.getByTestId('panel-Game Log');
@@ -121,7 +148,7 @@ describe('GameTerminal Panel Sizing', () => {
     expect(autoSize).toBe('true');
   });
 
-  test('panels have appropriate default sizes', () => {
+  it('panels have appropriate default sizes', () => {
     render(<GameTerminal {...defaultProps} />);
 
     const chatPanel = screen.getByTestId('panel-Chat');
@@ -134,7 +161,7 @@ describe('GameTerminal Panel Sizing', () => {
     expect(chatSize.height).toBeLessThan(500);
   });
 
-  test('panels are positioned to avoid overlap', () => {
+  it('panels are positioned to avoid overlap', () => {
     render(<GameTerminal {...defaultProps} />);
 
     const chatPanel = screen.getByTestId('panel-Chat');
@@ -150,7 +177,7 @@ describe('GameTerminal Panel Sizing', () => {
     expect(gameLogPosition.x).toBeGreaterThan(chatPosition.x);
   });
 
-  test('status panel displays current position', () => {
+  it('status panel displays current position', () => {
     render(<GameTerminal {...defaultProps} />);
 
     expect(screen.getByText('Position:')).toBeInTheDocument();

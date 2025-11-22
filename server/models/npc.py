@@ -80,7 +80,7 @@ class NPCDefinition(Base):
     max_population = Column(Integer, default=1, nullable=False)
     spawn_probability = Column(Float, default=1.0, nullable=False)
 
-    # Configuration stored as JSON (SQLite compatible)
+    # Configuration stored as JSON
     base_stats = Column(
         Text, nullable=False, default="{}", comment="Base statistics for the NPC (HP, MP, attributes, etc.)"
     )
@@ -141,7 +141,10 @@ class NPCDefinition(Base):
 
     def can_spawn(self, current_population: int) -> bool:
         """Check if this NPC can spawn given current population."""
-        return bool(current_population < self.max_population)
+        # At runtime, SQLAlchemy Column[int] returns int, but mypy sees Column type
+        # Handle MagicMock in tests by converting to int
+        max_pop: int = int(self.max_population)
+        return bool(current_population < max_pop)
 
 
 class NPCSpawnRule(Base):
@@ -194,7 +197,9 @@ class NPCSpawnRule(Base):
 
     def can_spawn_with_population(self, current_population: int) -> bool:
         """Check if this rule allows spawning given current NPC population."""
-        return bool(current_population < self.max_population)
+        # At runtime, SQLAlchemy Column[int] returns int, but handle MagicMock in tests
+        max_pop: int = int(self.max_population)
+        return bool(current_population < max_pop)
 
     def check_spawn_conditions(self, game_state: dict[str, Any]) -> bool:
         """Check if current game state meets spawn conditions."""

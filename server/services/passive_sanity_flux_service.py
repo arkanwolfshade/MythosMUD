@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 import time
+import uuid
 from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
@@ -17,12 +18,11 @@ from ..models.player import Player
 from ..models.sanity import PlayerSanity
 from ..persistence import PersistenceLayer
 from ..services.sanity_service import CatatoniaObserverProtocol, SanityService, SanityUpdateResult
-from ..world_loader import load_hierarchical_world
 
 try:
-    from ..monitoring.performance_monitor import PerformanceMonitor
+    from server.monitoring.performance_monitor import PerformanceMonitor
 except ImportError:  # pragma: no cover - monitoring is optional in some test harnesses
-    PerformanceMonitor = None  # type: ignore[misc,assignment]
+    PerformanceMonitor = None  # type: ignore[assignment, misc]
 
 logger = get_logger(__name__)
 
@@ -117,6 +117,13 @@ class PassiveSanityFluxService:
         if not self._should_process_tick(tick_count):
             return {"evaluated": 0, "adjustments": 0, "skipped": True}
 
+        logger.debug(
+            "Processing passive SAN flux tick",
+            tick_count=tick_count,
+            ticks_per_minute=self._ticks_per_minute,
+            should_process=self._should_process_tick(tick_count),
+        )
+
         evaluation_start = time.perf_counter()
         timestamp = now or self._now_provider()
         processed_player_ids: set[str] = set()
@@ -128,24 +135,44 @@ class PassiveSanityFluxService:
             sanity_records = await self._load_sanity_records(session)
 
             for player in players:
-                player_id = cast(str, player.player_id)
+                # Convert player.player_id to UUID for apply_sanity_adjustment
+                # SQLAlchemy Column[str] returns UUID at runtime, but mypy sees it as Column[str]
+                # Always convert to string first, then to UUID
+                player_id_value = player.player_id
+                player_id_uuid = uuid.UUID(str(player_id_value))
+                player_id_str = str(player_id_uuid)
                 room_id = cast(str, player.current_room_id)
 
-                processed_player_ids.add(player_id)
+                processed_player_ids.add(player_id_str)
                 context = self._resolve_context(player, timestamp)
                 base_flux = context.base_flux
 
                 companion_flux = self._companion_modifier(player, players, sanity_records)
                 total_flux = base_flux + companion_flux
 
-                total_flux = self._apply_adaptive_resistance(player_id, room_id, total_flux)
-                delta = self._apply_residual(player_id, total_flux)
+                total_flux = self._apply_adaptive_resistance(player_id_str, room_id, total_flux)
+                delta = self._apply_residual(player_id_str, total_flux)
+
+                # Log flux calculation for debugging
+                if abs(delta) > 5 or abs(total_flux) > 5:
+                    logger.warning(
+                        "Large flux or delta calculated for player",
+                        player_id=player_id_str,
+                        room_id=room_id,
+                        base_flux=base_flux,
+                        companion_flux=companion_flux,
+                        total_flux_before_adaptive=base_flux + companion_flux,
+                        total_flux_after_adaptive=total_flux,
+                        delta=delta,
+                        source=context.source,
+                        metadata=context.metadata,
+                    )
 
                 if delta == 0:
                     continue
 
                 result = await sanity_service.apply_sanity_adjustment(
-                    player_id,
+                    player_id_uuid,
                     delta,
                     reason_code="passive_flux",
                     metadata={
@@ -318,7 +345,8 @@ class PassiveSanityFluxService:
         return flux * multiplier
 
     def _apply_residual(self, player_id: str, flux: float) -> int:
-        residual = self._residuals.get(player_id, 0.0) + flux
+        previous_residual = self._residuals.get(player_id, 0.0)
+        residual = previous_residual + flux
         delta = 0
 
         if residual >= 1.0 - self._epsilon:
@@ -328,6 +356,19 @@ class PassiveSanityFluxService:
 
         residual -= delta
         self._residuals[player_id] = residual
+
+        # Log residual accumulation for debugging massive sanity losses
+        if abs(delta) > 10 or abs(flux) > 10:
+            logger.warning(
+                "Large sanity flux or delta detected",
+                player_id=player_id,
+                flux=flux,
+                previous_residual=previous_residual,
+                residual_before_apply=residual + delta,
+                delta=delta,
+                residual_after_apply=residual,
+            )
+
         return delta
 
     def _prune_trackers(self, active_player_ids: Iterable[str]) -> None:
@@ -389,34 +430,136 @@ class PassiveSanityFluxService:
         return normalized
 
     def _load_sanity_rate_overrides(self) -> dict[str, float]:
+        """Load sanity rate overrides from PostgreSQL zone_configurations table."""
+        import asyncio
+        import threading
+
         overrides: dict[str, float] = {}
-        try:
-            world_data = load_hierarchical_world(enable_schema_validation=False)
-        except Exception as exc:  # pragma: no cover - defensive
-            logger.warning("Could not load world data for sanity rate overrides", error=str(exc))
+        result_container: dict[str, Any] = {"overrides": {}, "error": None}
+
+        def run_async():
+            new_loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(new_loop)
+            try:
+                new_loop.run_until_complete(self._async_load_sanity_rate_overrides(result_container))
+            finally:
+                new_loop.close()
+
+        thread = threading.Thread(target=run_async)
+        thread.start()
+        thread.join()
+
+        error = result_container.get("error")
+        if error is not None:
+            logger.warning("Could not load sanity rate overrides from database", error=str(error))
             return overrides
 
-        for path, config in world_data.get("zone_configs", {}).items():
-            rate = self._extract_sanity_rate(config)
-            if rate is None:
-                continue
-            plane, zone, _ = self._parse_hierarchy_path(path)
-            key = self._build_override_key(plane, zone, None)
-            overrides[key] = self._rate_to_flux(rate)
-
-        for path, config in world_data.get("subzone_configs", {}).items():
-            rate = self._extract_sanity_rate(config)
-            if rate is None:
-                continue
-            plane, zone, sub_zone = self._parse_hierarchy_path(path)
-            key = self._build_override_key(plane, zone, sub_zone)
-            overrides[key] = self._rate_to_flux(rate)
-
+        overrides = result_container.get("overrides", {})
         if overrides:
-            logger.info("Loaded sanity rate overrides", count=len(overrides))
+            logger.info("Loaded sanity rate overrides from database", count=len(overrides))
         else:
-            logger.info("No sanity rate overrides discovered in world data")
+            logger.info("No sanity rate overrides found in database")
         return overrides
+
+    async def _async_load_sanity_rate_overrides(self, result_container: dict[str, Any]) -> None:
+        """Async helper to load sanity rate overrides from PostgreSQL."""
+        import json
+        import os
+
+        import asyncpg
+
+        try:
+            # Get database URL from environment
+            database_url = os.getenv("DATABASE_URL")
+            if not database_url:
+                raise ValueError("DATABASE_URL environment variable not set")
+
+            # Convert SQLAlchemy-style URL to asyncpg-compatible format
+            if database_url.startswith("postgresql+asyncpg://"):
+                database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
+
+            # Use asyncpg directly to avoid event loop conflicts
+            conn = await asyncpg.connect(database_url)
+            try:
+                # Query zone configurations
+                query = """
+                    -- Query zones (authoritative zone data)
+                    SELECT
+                        z.stable_id as zone_stable_id,
+                        NULL::text as subzone_stable_id,
+                        z.special_rules
+                    FROM zones z
+                    WHERE z.special_rules IS NOT NULL
+                    UNION ALL
+                    -- Query subzones (authoritative subzone data)
+                    SELECT
+                        z.stable_id as zone_stable_id,
+                        sz.stable_id as subzone_stable_id,
+                        sz.special_rules
+                    FROM subzones sz
+                    JOIN zones z ON sz.zone_id = z.id
+                    WHERE sz.special_rules IS NOT NULL
+                    ORDER BY zone_stable_id, subzone_stable_id
+                """
+                rows = await conn.fetch(query)
+
+                for row in rows:
+                    zone_stable_id = row["zone_stable_id"]
+                    subzone_stable_id = row["subzone_stable_id"]
+                    # asyncpg returns JSONB as dict/list, but ensure proper types
+                    special_rules = row["special_rules"] if row["special_rules"] else {}
+                    if isinstance(special_rules, str):
+                        special_rules = json.loads(special_rules)
+
+                    # Extract sanity drain rate from special_rules
+                    rate = self._extract_sanity_rate({"special_rules": special_rules})
+                    if rate is None:
+                        continue
+
+                    # Validate rate before conversion
+                    if rate > 10.0:
+                        logger.warning(
+                            "Sanity drain rate from database exceeds threshold",
+                            rate=rate,
+                            zone_stable_id=zone_stable_id,
+                            subzone_stable_id=subzone_stable_id,
+                            message="This may indicate a configuration error (e.g., 100 instead of 0.1)",
+                        )
+
+                    # Parse zone stable_id (format: 'plane/zone')
+                    zone_parts = zone_stable_id.split("/")
+                    plane = zone_parts[0] if len(zone_parts) > 0 else None
+                    zone = zone_parts[1] if len(zone_parts) > 1 else None
+
+                    if subzone_stable_id:
+                        # Subzone-level config
+                        key = self._build_override_key(plane, zone, subzone_stable_id)
+                        flux = self._rate_to_flux(rate)
+                        result_container["overrides"][key] = flux
+                        logger.debug(
+                            "Loaded sanity rate override from database",
+                            key=key,
+                            rate=rate,
+                            flux=flux,
+                            source="subzone_config",
+                        )
+                    else:
+                        # Zone-level config
+                        key = self._build_override_key(plane, zone, None)
+                        flux = self._rate_to_flux(rate)
+                        result_container["overrides"][key] = flux
+                        logger.debug(
+                            "Loaded sanity rate override from database",
+                            key=key,
+                            rate=rate,
+                            flux=flux,
+                            source="zone_config",
+                        )
+            finally:
+                await conn.close()
+        except Exception as e:
+            result_container["error"] = e
+            raise
 
     @staticmethod
     def _extract_sanity_rate(config: dict[str, Any]) -> float | None:
@@ -445,7 +588,28 @@ class PassiveSanityFluxService:
 
     @staticmethod
     def _rate_to_flux(rate: float) -> float:
-        return -float(rate)
+        """
+        Convert sanity_drain_rate to flux value.
+
+        Args:
+            rate: Sanity drain rate (expected range: 0.0 to ~2.0 per minute)
+
+        Returns:
+            Negative flux value (since drain is negative)
+
+        Raises:
+            ValueError: If rate is unreasonably large (possible configuration error)
+        """
+        rate_float = float(rate)
+        # Sanity check: rates > 10.0 are likely configuration errors (100 instead of 0.1, etc.)
+        if rate_float > 10.0:
+            logger.error(
+                "Sanity drain rate exceeds maximum threshold - possible configuration error",
+                rate=rate_float,
+                message="Rates > 10.0 are likely configuration errors (e.g., 100 instead of 0.1). Clamping to 10.0.",
+            )
+            rate_float = 10.0
+        return -rate_float
 
     def _lookup_world_override_flux(self, room: Any) -> tuple[float | None, str | None]:
         if not self._sanity_rate_overrides:

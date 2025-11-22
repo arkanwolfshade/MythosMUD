@@ -9,9 +9,11 @@ import json
 import logging
 import os
 import sys
+import threading
 import time
 import uuid
 from datetime import UTC, datetime
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import Any, cast
 
@@ -302,6 +304,8 @@ def add_request_context(_logger: Any, _name: str, event_dict: dict[str, Any]) ->
 
 # Global player service registry for logging enhancement
 _global_player_service = None
+# Thread-local flag to prevent recursion in enhance_player_ids
+_enhancing_player_ids = threading.local()
 
 
 def set_global_player_service(player_service: Any) -> None:
@@ -335,33 +339,45 @@ def enhance_player_ids(_logger: Any, _name: str, event_dict: dict[str, Any]) -> 
     """
     global _global_player_service
 
-    if _global_player_service and hasattr(_global_player_service, "persistence"):
-        # Process any player_id fields in the event dictionary
-        for key, value in event_dict.items():
-            if key == "player_id" and isinstance(value, str):
-                # Check if this looks like a UUID
-                if len(value) == 36 and value.count("-") == 4:
-                    # Import here to avoid circular import with server.exceptions -> enhanced_logging_config
-                    # Define a local exception type alias for optional dependency
-                    try:
-                        from server.exceptions import DatabaseError as _ImportedDatabaseError  # noqa: F401
+    # Prevent recursion: if we're already enhancing player IDs, skip immediately
+    # Check this FIRST before any other operations
+    if hasattr(_enhancing_player_ids, "active") and _enhancing_player_ids.active:
+        return event_dict
 
-                        _DatabaseErrorType: type[BaseException] = _ImportedDatabaseError
-                    except Exception:  # noqa: BLE001 - fallback if exceptions not yet available
-                        _DatabaseErrorType = Exception
+    # Set recursion guard IMMEDIATELY before any operations that might trigger logging
+    _enhancing_player_ids.active = True
+    try:
+        if _global_player_service and hasattr(_global_player_service, "persistence"):
+            # Process any player_id fields in the event dictionary
+            for key, value in event_dict.items():
+                if key == "player_id" and isinstance(value, str):
+                    # Check if this looks like a UUID
+                    if len(value) == 36 and value.count("-") == 4:
+                        # Import here to avoid circular import with server.exceptions -> enhanced_logging_config
+                        # Define a local exception type alias for optional dependency
+                        try:
+                            from server.exceptions import DatabaseError as _ImportedDatabaseError  # noqa: F401
 
-                    try:
-                        # Try to get the player name
-                        player = _global_player_service.persistence.get_player(value)
-                        if player and hasattr(player, "name"):
-                            # Enhance the player_id field with the player name
-                            event_dict[key] = f"<{player.name}>: {value}"
-                    except (AttributeError, KeyError, TypeError, _DatabaseErrorType) as e:
-                        logger.error(
-                            "Error looking up player name", player_id=value, error=str(e), error_type=type(e).__name__
-                        )
-                        # If lookup fails, leave the original value
-                        pass
+                            _DatabaseErrorType: type[BaseException] = _ImportedDatabaseError
+                        except Exception:  # noqa: BLE001 - fallback if exceptions not yet available
+                            _DatabaseErrorType = Exception
+
+                        try:
+                            # Try to get the player name
+                            # Convert string to UUID if needed
+                            import uuid
+                            player_id_uuid = uuid.UUID(value) if isinstance(value, str) else value
+                            player = _global_player_service.persistence.get_player(player_id_uuid)
+                            if player and hasattr(player, "name"):
+                                # Enhance the player_id field with the player name
+                                event_dict[key] = f"<{player.name}>: {value}"
+                        except (AttributeError, KeyError, TypeError, ValueError, _DatabaseErrorType, RecursionError):
+                            # Silently skip on recursion or other errors - don't log to avoid infinite loop
+                            # If lookup fails, leave the original value
+                            pass
+    finally:
+        # Clear recursion guard - ALWAYS clear it, even if an exception occurs
+        _enhancing_player_ids.active = False
 
     return event_dict
 
@@ -447,6 +463,31 @@ def configure_enhanced_structlog(
         )
 
 
+class SafeRotatingFileHandler(RotatingFileHandler):
+    """
+    RotatingFileHandler that ensures directory exists before file operations.
+
+    This handler wraps RotatingFileHandler to prevent FileNotFoundError
+    when shouldRollover() is called from different threads in CI environments.
+    """
+
+    def shouldRollover(self, record):  # noqa: N802
+        """
+        Determine if rollover should occur, ensuring directory exists first.
+
+        This overrides the parent method to ensure the log directory exists
+        before attempting to open the log file, preventing race conditions
+        in CI environments where directories might be cleaned up.
+        """
+        # Ensure directory exists before checking rollover
+        if self.baseFilename:
+            log_path = Path(self.baseFilename)
+            log_path.parent.mkdir(parents=True, exist_ok=True)
+
+        # Call parent method to perform actual rollover check
+        return super().shouldRollover(record)
+
+
 def _setup_enhanced_file_logging(
     environment: str,
     log_config: dict[str, Any],
@@ -455,16 +496,17 @@ def _setup_enhanced_file_logging(
     enable_async: bool = True,  # noqa: ARG001
 ) -> None:
     """Set up enhanced file logging handlers with async support."""
-    from logging.handlers import RotatingFileHandler
-
     # Use Windows-safe rotation handlers when available
-    _WinSafeHandler = RotatingFileHandler
+    _WinSafeHandler: type[RotatingFileHandler] = RotatingFileHandler
     try:
         from server.logging.windows_safe_rotation import WindowsSafeRotatingFileHandler as _ImportedWinSafeHandler
 
         _WinSafeHandler = _ImportedWinSafeHandler
     except Exception:  # noqa: BLE001 - optional enhancement
         _WinSafeHandler = RotatingFileHandler
+
+    # Use SafeRotatingFileHandler as base for all handlers to prevent CI race conditions
+    _BaseHandler = SafeRotatingFileHandler
 
     log_base = _resolve_log_base(log_config.get("log_base", "logs"))
     env_log_dir = log_base / environment
@@ -498,7 +540,7 @@ def _setup_enhanced_file_logging(
     # Enhanced log categories with security and performance considerations
     log_categories = {
         "server": ["server", "uvicorn"],
-        "persistence": ["persistence", "PersistenceLayer", "aiosqlite"],
+        "persistence": ["persistence", "PersistenceLayer", "asyncpg"],
         "authentication": ["auth"],
         "world": ["world"],
         "communications": ["realtime", "communications"],
@@ -521,22 +563,42 @@ def _setup_enhanced_file_logging(
     for log_file, prefixes in log_categories.items():
         log_path = env_log_dir / f"{log_file}.log"
 
-        # Create rotating file handler (Windows-safe on win32)
-        handler_class = RotatingFileHandler
+        # Create rotating file handler (Windows-safe on win32, with directory safety)
+        handler_class = _BaseHandler
         try:
             if sys.platform == "win32":
-                handler_class = _WinSafeHandler
-        except Exception:
-            # Fallback to standard handler on any detection error
-            handler_class = RotatingFileHandler
+                # Windows-safe handler also needs directory safety
+                # Create a hybrid class that combines both features
+                class SafeWinHandlerCategory(_WinSafeHandler):  # type: ignore[misc, valid-type]
+                    def shouldRollover(self, record):  # noqa: N802
+                        if self.baseFilename:
+                            log_path = Path(self.baseFilename)
+                            log_path.parent.mkdir(parents=True, exist_ok=True)
+                        return super().shouldRollover(record)
 
+                handler_class = SafeWinHandlerCategory
+        except Exception:
+            # Fallback to safe handler on any detection error
+            handler_class = _BaseHandler
+
+        # Ensure directory exists right before creating handler to prevent race conditions
         log_path.parent.mkdir(parents=True, exist_ok=True)
-        handler = handler_class(
-            log_path,
-            maxBytes=max_bytes,
-            backupCount=backup_count,
-            encoding="utf-8",
-        )
+        try:
+            handler = handler_class(
+                log_path,
+                maxBytes=max_bytes,
+                backupCount=backup_count,
+                encoding="utf-8",
+            )
+        except (FileNotFoundError, OSError):
+            # If directory doesn't exist or was deleted, recreate it and try again
+            log_path.parent.mkdir(parents=True, exist_ok=True)
+            handler = handler_class(
+                log_path,
+                maxBytes=max_bytes,
+                backupCount=backup_count,
+                encoding="utf-8",
+            )
         handler.setLevel(logging.DEBUG)
 
         # Create formatter - use PlayerGuidFormatter if player_service is available
@@ -569,20 +631,39 @@ def _setup_enhanced_file_logging(
 
     # Enhanced console handler with structured output
     console_log_path = env_log_dir / "console.log"
-    handler_class = RotatingFileHandler
+    handler_class = _BaseHandler
     try:
         if sys.platform == "win32":
-            handler_class = _WinSafeHandler
-    except Exception:
-        handler_class = RotatingFileHandler
+            # Windows-safe handler also needs directory safety
+            class SafeWinHandlerConsole(_WinSafeHandler):  # type: ignore[misc, valid-type]
+                def shouldRollover(self, record):  # noqa: N802
+                    if self.baseFilename:
+                        log_path = Path(self.baseFilename)
+                        log_path.parent.mkdir(parents=True, exist_ok=True)
+                    return super().shouldRollover(record)
 
+            handler_class = SafeWinHandlerConsole
+    except Exception:
+        handler_class = _BaseHandler
+
+    # Ensure directory exists right before creating handler to prevent race conditions
     console_log_path.parent.mkdir(parents=True, exist_ok=True)
-    console_handler = handler_class(
-        console_log_path,
-        maxBytes=max_bytes,
-        backupCount=backup_count,
-        encoding="utf-8",
-    )
+    try:
+        console_handler = handler_class(
+            console_log_path,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
+    except (FileNotFoundError, OSError):
+        # If directory doesn't exist or was deleted, recreate it and try again
+        console_log_path.parent.mkdir(parents=True, exist_ok=True)
+        console_handler = handler_class(
+            console_log_path,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
     console_handler.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
 
     # Use enhanced formatter for console handler
@@ -605,20 +686,39 @@ def _setup_enhanced_file_logging(
 
     # Enhanced errors handler with security focus
     errors_log_path = env_log_dir / "errors.log"
-    handler_class = RotatingFileHandler
+    handler_class = _BaseHandler
     try:
         if sys.platform == "win32":
-            handler_class = _WinSafeHandler
-    except Exception:
-        handler_class = RotatingFileHandler
+            # Windows-safe handler also needs directory safety
+            class SafeWinHandlerErrors(_WinSafeHandler):  # type: ignore[misc, valid-type]
+                def shouldRollover(self, record):  # noqa: N802
+                    if self.baseFilename:
+                        log_path = Path(self.baseFilename)
+                        log_path.parent.mkdir(parents=True, exist_ok=True)
+                    return super().shouldRollover(record)
 
+            handler_class = SafeWinHandlerErrors
+    except Exception:
+        handler_class = _BaseHandler
+
+    # Ensure directory exists right before creating handler to prevent race conditions
     errors_log_path.parent.mkdir(parents=True, exist_ok=True)
-    errors_handler = handler_class(
-        errors_log_path,
-        maxBytes=max_bytes,
-        backupCount=backup_count,
-        encoding="utf-8",
-    )
+    try:
+        errors_handler = handler_class(
+            errors_log_path,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
+    except (FileNotFoundError, OSError):
+        # If directory doesn't exist or was deleted, recreate it and try again
+        errors_log_path.parent.mkdir(parents=True, exist_ok=True)
+        errors_handler = handler_class(
+            errors_log_path,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
     errors_handler.setLevel(logging.WARNING)
 
     # Use enhanced formatter for errors handler
@@ -644,13 +744,24 @@ def _setup_enhanced_file_logging(
     # This ensures ALL error-level logs from ANY module are captured
     # AI Agent: This fixes the observability gap where critical errors in combat,
     # persistence, and game mechanics were being silently suppressed
+    # Ensure directory exists right before creating handler to prevent race conditions
     errors_log_path.parent.mkdir(parents=True, exist_ok=True)
-    global_errors_handler = handler_class(
-        errors_log_path,  # Same file as errors_handler
-        maxBytes=max_bytes,
-        backupCount=backup_count,
-        encoding="utf-8",
-    )
+    try:
+        global_errors_handler = handler_class(
+            errors_log_path,  # Same file as errors_handler
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
+    except (FileNotFoundError, OSError):
+        # If directory doesn't exist or was deleted, recreate it and try again
+        errors_log_path.parent.mkdir(parents=True, exist_ok=True)
+        global_errors_handler = handler_class(
+            errors_log_path,  # Same file as errors_handler
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
     global_errors_handler.setLevel(logging.ERROR)  # ERROR and CRITICAL only
     global_errors_handler.setFormatter(errors_formatter)
 

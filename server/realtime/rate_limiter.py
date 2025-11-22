@@ -21,12 +21,31 @@ class RateLimiter:
     windows and thresholds for different types of operations.
     """
 
-    def __init__(self) -> None:
-        """Initialize the rate limiter with default settings."""
+    def __init__(
+        self,
+        max_connection_attempts: int = 5,
+        connection_window: int = 60,
+        max_messages_per_minute: int = 100,
+        message_window: int = 60,
+    ) -> None:
+        """
+        Initialize the rate limiter with configurable settings.
+
+        Args:
+            max_connection_attempts: Maximum connection attempts per window (default: 5)
+            connection_window: Connection rate limit window in seconds (default: 60)
+            max_messages_per_minute: Maximum messages per minute per connection (default: 100)
+            message_window: Message rate limit window in seconds (default: 60)
+        """
         # Connection rate limiting
         self.connection_attempts: dict[str, list[float]] = {}
-        self.max_connection_attempts = 5  # Max attempts per minute
-        self.connection_window = 60  # Time window in seconds
+        self.max_connection_attempts = max_connection_attempts
+        self.connection_window = connection_window
+
+        # Message rate limiting (per connection)
+        self.message_attempts: dict[str, list[float]] = {}  # connection_id -> list of timestamps
+        self.max_messages_per_minute = max_messages_per_minute
+        self.message_window = message_window
 
     def check_rate_limit(self, player_id: str) -> bool:
         """
@@ -200,3 +219,122 @@ class RateLimiter:
                 exc_info=True,
             )
             return {}
+
+    def check_message_rate_limit(self, connection_id: str) -> bool:
+        """
+        Check if a connection has exceeded message rate limits.
+
+        Args:
+            connection_id: The connection ID (not player_id, for per-connection tracking)
+
+        Returns:
+            bool: True if rate limit not exceeded, False if exceeded
+
+        AI: Per-connection rate limiting prevents DoS attacks from individual connections.
+        """
+        current_time = time.time()
+        if connection_id not in self.message_attempts:
+            self.message_attempts[connection_id] = []
+
+        # Remove old attempts outside the window
+        self.message_attempts[connection_id] = [
+            attempt_time
+            for attempt_time in self.message_attempts[connection_id]
+            if current_time - attempt_time < self.message_window
+        ]
+
+        # Check if limit exceeded
+        if len(self.message_attempts[connection_id]) >= self.max_messages_per_minute:
+            logger.warning(
+                "Message rate limit exceeded",
+                connection_id=connection_id,
+                message_count=len(self.message_attempts[connection_id]),
+                max_messages=self.max_messages_per_minute,
+            )
+            return False
+
+        # Add current attempt
+        self.message_attempts[connection_id].append(current_time)
+        return True
+
+    def get_message_rate_limit_info(self, connection_id: str) -> dict[str, Any]:
+        """
+        Get message rate limit information for a connection.
+
+        Args:
+            connection_id: The connection ID
+
+        Returns:
+            dict: Rate limit information including attempts, limits, and reset time
+        """
+        current_time = time.time()
+        attempts = self.message_attempts.get(connection_id, [])
+
+        # Filter recent attempts
+        recent_attempts = [
+            attempt_time for attempt_time in attempts if current_time - attempt_time < self.message_window
+        ]
+
+        return {
+            "attempts": len(recent_attempts),
+            "current_attempts": len(recent_attempts),  # Alias for test compatibility
+            "max_attempts": self.max_messages_per_minute,
+            "window_seconds": self.message_window,
+            "attempts_remaining": max(0, self.max_messages_per_minute - len(recent_attempts)),
+            "reset_time": current_time + self.message_window if recent_attempts else 0,
+        }
+
+    def remove_connection_message_data(self, connection_id: str) -> None:
+        """
+        Remove message rate limit data for a specific connection.
+
+        Args:
+            connection_id: The connection ID to remove data for
+        """
+        try:
+            if connection_id in self.message_attempts:
+                del self.message_attempts[connection_id]
+                logger.debug("Removed message rate limit data", connection_id=connection_id)
+        except (OSError, ValueError, TypeError, KeyError) as e:
+            logger.error(
+                "Error removing message rate limit data",
+                connection_id=connection_id,
+                error=str(e),
+                error_type=type(e).__name__,
+                exc_info=True,
+            )
+
+    def cleanup_old_message_attempts(self, max_age_seconds: int = 3600) -> None:
+        """
+        Clean up old message rate limit attempts to prevent memory bloat.
+
+        Args:
+            max_age_seconds: Maximum age of attempts to keep (default: 1 hour)
+        """
+        try:
+            current_time = time.time()
+            orphaned_connections = []
+
+            for connection_id, attempts in list(self.message_attempts.items()):
+                # Remove attempts older than max_age_seconds
+                self.message_attempts[connection_id] = [
+                    attempt_time for attempt_time in attempts if current_time - attempt_time < max_age_seconds
+                ]
+
+                # Remove empty entries
+                if not self.message_attempts[connection_id]:
+                    orphaned_connections.append(connection_id)
+
+            for connection_id in orphaned_connections:
+                del self.message_attempts[connection_id]
+
+            if orphaned_connections:
+                logger.debug("Cleaned up message rate limit data", connection_count=len(orphaned_connections))
+
+        except (OSError, ValueError, TypeError, KeyError) as e:
+            logger.error(
+                "Error cleaning up message rate limit attempts",
+                error=str(e),
+                error_type=type(e).__name__,
+                exc_info=True,
+            )

@@ -7,8 +7,9 @@ FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Human reader: install baseline system packages required for Python/Node builds,
-# sqlite usage, and Playwright runtime dependencies used in CI.
+# PostgreSQL 18 server and client libraries, and Playwright runtime dependencies used in CI.
 # AI reader: keep package list minimal and aligned with workflow requirements.
+# Install PostgreSQL 18 from official PostgreSQL APT repository (Ubuntu 24.04 default is PostgreSQL 16).
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         ca-certificates \
@@ -21,8 +22,16 @@ RUN apt-get update && \
         python3.12-venv \
         python3.12-dev \
         python3-pip \
-        sqlite3 \
-        libsqlite3-dev \
+        wget \
+        lsb-release \
+    && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
+    && apt-get update && \
+    apt-get install -y --no-install-recommends \
+        postgresql-18 \
+        postgresql-contrib-18 \
+        postgresql-client-18 \
+        libpq-dev \
         libssl-dev \
         libffi-dev \
         libnss3 \
@@ -69,6 +78,10 @@ RUN npm install
 WORKDIR /workspace
 COPY . /workspace
 
+# Human reader: make diagnostic scripts executable for troubleshooting.
+# AI reader: PostgreSQL diagnostic scripts available at scripts/check_postgresql.sh and scripts/setup_postgresql_test_db.sh.
+RUN chmod +x scripts/*.sh 2>/dev/null || true
+
 # Human reader: create directories required by MythosMUD database placement rules.
 # AI reader: ensures init/verify scripts succeed without manual mkdir.
 RUN mkdir -p /workspace/data/unit_test/players /workspace/data/unit_test/npcs
@@ -87,19 +100,45 @@ RUN . .venv/bin/activate && \
 # Restore default workspace after Node setup.
 WORKDIR /workspace
 
-# Initialize and verify test databases to mirror CI preparation steps.
+# Human reader: initialize PostgreSQL server, create databases, and apply schema DDL scripts.
+# AI reader: PostgreSQL must be self-contained in Docker image for CI workflows (no host dependency).
+# All operations in single RUN to keep service running during execution.
+# Note: Running as root in Docker, use su to execute as postgres user.
+RUN service postgresql start && \
+    sleep 3 && \
+    pg_isready -U postgres && \
+    su postgres -c "psql -c \"ALTER USER postgres PASSWORD 'Cthulhu1';\"" && \
+    su postgres -c "psql -f /workspace/db/roles/roles.sql" && \
+    su postgres -c "psql -f /workspace/db/databases/databases.sql" && \
+    su postgres -c "psql -d mythos_unit -f /workspace/db/authoritative_schema.sql" && \
+    su postgres -c "psql -d mythos_e2e -f /workspace/db/authoritative_schema.sql" && \
+    su postgres -c "psql -d mythos_unit -f /workspace/db/migrations/010_migrate_player_id_to_uuid.sql" && \
+    su postgres -c "psql -d mythos_e2e -f /workspace/db/migrations/010_migrate_player_id_to_uuid.sql" && \
+    su postgres -c "psql -d mythos_unit -f /workspace/data/db/00_world_and_emotes.sql" && \
+    su postgres -c "psql -d mythos_unit -f /workspace/data/db/01_professions.sql" && \
+    su postgres -c "psql -d mythos_unit -f /workspace/data/db/02_item_prototypes.sql" && \
+    su postgres -c "psql -d mythos_unit -f /workspace/data/db/03_npc_definitions.sql" && \
+    su postgres -c "psql -d mythos_e2e -f /workspace/data/db/00_world_and_emotes.sql" && \
+    su postgres -c "psql -d mythos_e2e -f /workspace/data/db/01_professions.sql" && \
+    su postgres -c "psql -d mythos_e2e -f /workspace/data/db/02_item_prototypes.sql" && \
+    su postgres -c "psql -d mythos_e2e -f /workspace/data/db/03_npc_definitions.sql" && \
+    su postgres -c "psql -c '\\l'" | grep -q "mythos_unit" && \
+    su postgres -c "psql -c '\\l'" | grep -q "mythos_e2e" && \
+    su postgres -c "psql -d mythos_unit -c '\\dt'" | grep -q "users" && \
+    su postgres -c "psql -d mythos_unit -c '\\dt'" | grep -q "players" && \
+    su postgres -c "psql -d mythos_e2e -c '\\dt'" | grep -q "users" && \
+    su postgres -c "psql -d mythos_e2e -c '\\dt'" | grep -q "players"
+
+# Set environment variables for test execution (matches CI workflow expectations).
 # Human reader: supply actual secrets via docker run -e / compose; do NOT bake them into the image.
 # AI reader: runtime env vars should match GitHub Actions workflow exports.
-RUN . .venv/bin/activate && \
-    export DATABASE_URL="sqlite+aiosqlite:///workspace/data/unit_test/players/unit_test_players.db" && \
-    export DATABASE_NPC_URL="sqlite+aiosqlite:///workspace/data/unit_test/npcs/unit_test_npcs.db" && \
-    export MYTHOSMUD_ADMIN_PASSWORD="test-admin-password" && \
-    export MYTHOSMUD_SECRET_KEY="test-secret-key-for-ci-workflow" && \
-    export MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow" && \
-    export MYTHOSMUD_RESET_TOKEN_SECRET="test-reset-token-secret-for-ci-workflow" && \
-    export MYTHOSMUD_VERIFICATION_TOKEN_SECRET="test-verification-token-secret-for-ci-workflow" && \
-    python server/tests/scripts/init_test_db.py && \
-    python server/tests/scripts/verify_test_db.py
+ENV DATABASE_URL="postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit" \
+    DATABASE_NPC_URL="postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit" \
+    MYTHOSMUD_ADMIN_PASSWORD="test-admin-password" \
+    MYTHOSMUD_SECRET_KEY="test-secret-key-for-ci-workflow" \
+    MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow" \
+    MYTHOSMUD_RESET_TOKEN_SECRET="test-reset-token-secret-for-ci-workflow" \
+    MYTHOSMUD_VERIFICATION_TOKEN_SECRET="test-verification-token-secret-for-ci-workflow"
 
 # Default shell for interactive troubleshooting.
 CMD ["/bin/bash"]

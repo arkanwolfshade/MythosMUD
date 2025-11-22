@@ -12,6 +12,7 @@ that dimensional shifts are properly recorded.
 
 import threading
 import time
+import uuid
 
 from ..events import EventBus
 from ..exceptions import DatabaseError, ValidationError
@@ -52,7 +53,7 @@ class MovementService:
 
         self._logger.info("MovementService initialized", has_combat_service=bool(player_combat_service))
 
-    def move_player(self, player_id: str, from_room_id: str, to_room_id: str) -> bool:
+    def move_player(self, player_id: uuid.UUID | str, from_room_id: str, to_room_id: str) -> bool:
         """
         Move a player from one room to another atomically.
 
@@ -63,7 +64,7 @@ class MovementService:
         - Durability: Changes are persisted
 
         Args:
-            player_id: The ID of the player to move (can be player_id or player name)
+            player_id: The ID of the player to move (UUID or string UUID/name for backward compatibility)
             from_room_id: The ID of the room the player is leaving
             to_room_id: The ID of the room the player is entering
 
@@ -74,6 +75,7 @@ class MovementService:
             ValueError: If any parameters are invalid
             RuntimeError: If the move cannot be completed
         """
+        # Validate player_id is not empty
         if not player_id:
             context = create_error_context()
             context.metadata["operation"] = "move_player"
@@ -117,28 +119,48 @@ class MovementService:
         start_time = time.time()
         monitor = get_movement_monitor()
 
+        # Track timing breakdown for each operation phase
+        timing_breakdown = {}
+
         with self._lock:
             try:
+                # Measure lock acquisition wait time
+                lock_acquisition_time = time.time()
+                timing_breakdown["lock_wait_ms"] = (lock_acquisition_time - start_time) * 1000
+
                 # Step 1: Resolve the player (prefer by ID, fallback to name)
                 self._logger.debug("MovementService using persistence instance", persistence_id=id(self._persistence))
-                player = self._persistence.get_player(player_id)
-                if not player:
-                    # Fallback to name lookup only if player_id doesn't look like a UUID
-                    if len(player_id) != 36 or player_id.count("-") != 4:
+                player_lookup_start = time.time()
+                # Convert player_id to UUID if it's a string, otherwise use directly
+                if isinstance(player_id, uuid.UUID):
+                    player_uuid = player_id
+                    player = self._persistence.get_player(player_uuid)
+                else:
+                    # Try to convert string to UUID first
+                    try:
+                        player_uuid = uuid.UUID(player_id)
+                        player = self._persistence.get_player(player_uuid)
+                    except (ValueError, AttributeError):
+                        # If player_id is not a valid UUID, try name lookup
                         player = self._persistence.get_player_by_name(player_id)
                         if player:
                             self._logger.info(
                                 "Resolved player by name", player_name=player_id, player_id=player.player_id
                             )
+                player_lookup_end = time.time()
+                timing_breakdown["player_lookup_ms"] = (player_lookup_end - player_lookup_start) * 1000
 
                 if not player:
+                    # Structlog handles UUID objects automatically, no need to convert to string
                     self._logger.error("Player not found", player_id=player_id)
                     context = create_error_context()
+                    # Structlog handles UUID objects automatically, no need to convert to string
                     context.metadata["player_id"] = player_id
                     context.metadata["from_room_id"] = from_room_id
                     context.metadata["to_room_id"] = to_room_id
                     context.metadata["operation"] = "move_player"
                     duration_ms = (time.time() - start_time) * 1000
+                    # record_movement_attempt accepts uuid.UUID | str
                     monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
                     log_and_raise(
                         ValidationError,
@@ -149,21 +171,41 @@ class MovementService:
                     )
 
                 # Use the resolved player ID consistently
-                resolved_player_id = player.player_id
+                # Convert to UUID for consistency (player.player_id is a string from UUID(as_uuid=False))
+                resolved_player_id_str = str(player.player_id)  # Ensure it's a string
+                try:
+                    resolved_player_id: uuid.UUID | str = uuid.UUID(resolved_player_id_str)
+                except (ValueError, AttributeError, TypeError):
+                    # Fallback to string if conversion fails (shouldn't happen for valid UUIDs)
+                    resolved_player_id = resolved_player_id_str
 
                 # Log the resolution for debugging
-                if resolved_player_id != player_id:
+                if str(resolved_player_id) != str(player_id):
                     self._logger.info("Player ID resolved", player_name=player_id, player_id=resolved_player_id)
 
                 # Step 2: Validate the move
+                validation_start = time.time()
                 if not self._validate_movement(player, from_room_id, to_room_id):
+                    validation_end = time.time()
+                    timing_breakdown["validation_ms"] = (validation_end - validation_start) * 1000
                     duration_ms = (time.time() - start_time) * 1000
+                    self._logger.debug(
+                        "Movement validation failed",
+                        player_id=resolved_player_id,
+                        duration_ms=duration_ms,
+                        **timing_breakdown,
+                    )
                     monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
                     return False
+                validation_end = time.time()
+                timing_breakdown["validation_ms"] = (validation_end - validation_start) * 1000
 
                 # Step 3: Get the rooms
+                room_lookup_start = time.time()
                 from_room = self._persistence.get_room(from_room_id)
                 to_room = self._persistence.get_room(to_room_id)
+                room_lookup_end = time.time()
+                timing_breakdown["room_lookup_ms"] = (room_lookup_end - room_lookup_start) * 1000
 
                 if not from_room:
                     self._logger.error("From room not found", room_id=from_room_id)
@@ -173,6 +215,7 @@ class MovementService:
                     context.metadata["to_room_id"] = to_room_id
                     context.metadata["operation"] = "move_player"
                     duration_ms = (time.time() - start_time) * 1000
+                    # record_movement_attempt accepts uuid.UUID | str
                     monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
                     log_and_raise(
                         ValidationError,
@@ -194,6 +237,7 @@ class MovementService:
                     context.metadata["to_room_id"] = to_room_id
                     context.metadata["operation"] = "move_player"
                     duration_ms = (time.time() - start_time) * 1000
+                    # record_movement_attempt accepts uuid.UUID | str
                     monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
                     log_and_raise(
                         ValidationError,
@@ -208,9 +252,10 @@ class MovementService:
                     )
 
                     # Step 4: Verify player is in the from_room (auto-add logic is now in _validate_movement)
-                if not from_room.has_player(str(resolved_player_id)):
+                if not from_room.has_player(resolved_player_id):
                     self._logger.error("Player not in room", player_id=resolved_player_id, room_id=from_room_id)
                     duration_ms = (time.time() - start_time) * 1000
+                    # record_movement_attempt accepts uuid.UUID | str
                     monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
                     return False
 
@@ -220,34 +265,71 @@ class MovementService:
                 )
 
                 # Remove from old room
+                room_update_start = time.time()
                 self._logger.debug("Removing player from room", player_id=resolved_player_id, room_id=from_room_id)
-                from_room.player_left(str(resolved_player_id))
+                from_room.player_left(resolved_player_id)
 
                 # Add to new room
                 self._logger.debug("Adding player to room", player_id=resolved_player_id, room_id=to_room_id)
-                to_room.player_entered(str(resolved_player_id))
+                to_room.player_entered(resolved_player_id)
+                room_update_end = time.time()
+                timing_breakdown["room_update_ms"] = (room_update_end - room_update_start) * 1000
 
                 # Update player's room in persistence
+                db_write_start = time.time()
                 self._logger.debug("Updating player room in database", player_id=resolved_player_id, room_id=to_room_id)
                 player.current_room_id = to_room_id  # type: ignore[assignment]
                 self._persistence.save_player(player)
+                db_write_end = time.time()
+                timing_breakdown["db_write_ms"] = (db_write_end - db_write_start) * 1000
 
-                # Record successful movement
+                # Record successful movement with timing breakdown
                 duration_ms = (time.time() - start_time) * 1000
+                timing_breakdown["total_ms"] = duration_ms
+
+                # Log detailed timing breakdown for performance analysis
+                self._logger.info(
+                    "Movement timing breakdown",
+                    player_id=resolved_player_id,
+                    from_room=from_room_id,
+                    to_room=to_room_id,
+                    total_ms=duration_ms,
+                    lock_wait_ms=timing_breakdown.get("lock_wait_ms", 0),
+                    player_lookup_ms=timing_breakdown.get("player_lookup_ms", 0),
+                    validation_ms=timing_breakdown.get("validation_ms", 0),
+                    room_lookup_ms=timing_breakdown.get("room_lookup_ms", 0),
+                    room_update_ms=timing_breakdown.get("room_update_ms", 0),
+                    db_write_ms=timing_breakdown.get("db_write_ms", 0),
+                )
+
+                # record_movement_attempt accepts uuid.UUID | str
                 monitor.record_movement_attempt(player_id, from_room_id, to_room_id, True, duration_ms)
 
                 self._logger.info("Successfully moved player", player_id=resolved_player_id, room_id=to_room_id)
                 return True
 
             except Exception as e:
-                self._logger.error("Error moving player", player_id=player_id, error=str(e))
+                duration_ms = (time.time() - start_time) * 1000
+                timing_breakdown["total_ms"] = duration_ms
+
+                self._logger.error(
+                    "Error moving player",
+                    player_id=player_id,
+                    error=str(e),
+                    total_ms=duration_ms,
+                    lock_wait_ms=timing_breakdown.get("lock_wait_ms", 0),
+                    player_lookup_ms=timing_breakdown.get("player_lookup_ms", 0),
+                    validation_ms=timing_breakdown.get("validation_ms", 0),
+                    room_lookup_ms=timing_breakdown.get("room_lookup_ms", 0),
+                    room_update_ms=timing_breakdown.get("room_update_ms", 0),
+                    db_write_ms=timing_breakdown.get("db_write_ms", 0),
+                )
                 context = create_error_context()
                 context.metadata["player_id"] = player_id
                 context.metadata["from_room_id"] = from_room_id
                 context.metadata["to_room_id"] = to_room_id
                 context.metadata["operation"] = "move_player"
-                duration_ms = (time.time() - start_time) * 1000
-                monitor.record_movement_attempt(player_id, from_room_id, to_room_id, False, duration_ms)
+                monitor.record_movement_attempt(str(player_id), from_room_id, to_room_id, False, duration_ms)
                 log_and_raise(
                     DatabaseError,
                     f"Error moving player {player_id}: {e}",
@@ -281,9 +363,30 @@ class MovementService:
             )
             return False
 
-        player_id = str(getattr(player_obj, "player_id", "")) or str(player_obj)
+        # Extract player_id as UUID directly from player_obj.player_id (which is a string from UUID(as_uuid=False))
+        # If extraction fails, allow movement to prevent blocking players
+        try:
+            if not hasattr(player_obj, "player_id") or not player_obj.player_id:
+                self._logger.warning(
+                    "COMBAT CHECK: Player object missing player_id attribute, allowing movement",
+                    from_room=from_room_id,
+                    to_room=to_room_id,
+                )
+                return True  # Allow movement if we can't determine player ID
+
+            player_id = uuid.UUID(player_obj.player_id)
+        except (ValueError, AttributeError, TypeError) as e:
+            self._logger.warning(
+                "COMBAT CHECK: Failed to extract player_id as UUID, allowing movement",
+                from_room=from_room_id,
+                to_room=to_room_id,
+                error=str(e),
+            )
+            return True  # Allow movement if we can't determine player UUID
+
         self._logger.info(
             "VALIDATION START: Checking movement",
+            # Structlog handles UUID objects automatically, no need to convert to string
             player_id=player_id,
             from_room=from_room_id,
             to_room=to_room_id,
@@ -295,6 +398,7 @@ class MovementService:
         # must not escape through dimensional gateways until the conflict is resolved
         self._logger.debug(
             "COMBAT CHECK: Starting combat validation",
+            # Structlog handles UUID objects automatically, no need to convert to string
             player_id=player_id,
             has_combat_service=bool(self._player_combat_service),
             service_type=type(self._player_combat_service).__name__ if self._player_combat_service else "None",
@@ -302,70 +406,37 @@ class MovementService:
 
         if self._player_combat_service:
             try:
-                from uuid import UUID
+                # Use synchronous combat check - no async complications
+                self._logger.debug(
+                    "COMBAT CHECK: About to check combat state",
+                    # Structlog handles UUID objects automatically, no need to convert to string
+                    player_id=player_id,
+                    service=type(self._player_combat_service).__name__,
+                )
+                is_in_combat = self._player_combat_service.is_player_in_combat_sync(player_id)
+                self._logger.debug(
+                    "COMBAT CHECK: Combat state result",
+                    # Structlog handles UUID objects automatically, no need to convert to string
+                    player_id=player_id,
+                    is_in_combat=is_in_combat,
+                )
 
-                # Convert player_id string to UUID if needed
-                try:
-                    player_uuid = UUID(player_id)
-                    self._logger.debug("COMBAT CHECK: Player ID is valid UUID", player_uuid=str(player_uuid))
-                except (ValueError, AttributeError):
-                    # If player_id is not a valid UUID, it might be a name
-                    # Get the player to retrieve their UUID
-                    self._logger.debug(
-                        "COMBAT CHECK: Player ID not UUID, fetching from persistence", player_id=player_id
-                    )
-                    player = self._persistence.get_player(player_id)
-                    if player and hasattr(player, "player_id"):
-                        # Convert player_id to UUID (handle Column[str] from SQLAlchemy)
-                        try:
-                            player_uuid = UUID(str(player.player_id))
-                            self._logger.debug(
-                                "COMBAT CHECK: Got UUID from player object", player_uuid=str(player_uuid)
-                            )
-                        except (ValueError, AttributeError, TypeError):
-                            player_uuid = None
-                            self._logger.warning("COMBAT CHECK: Failed to convert player.player_id to UUID")
-                    else:
-                        self._logger.warning(
-                            "Unable to convert player_id to UUID for combat check",
-                            player_id=player_id,
-                            player_found=bool(player),
-                            has_player_id_attr=hasattr(player, "player_id") if player else False,
-                        )
-                        # Allow movement if we can't determine player UUID
-                        player_uuid = None
-
-                if player_uuid:
-                    # Use synchronous combat check - no async complications
-                    self._logger.debug(
-                        "COMBAT CHECK: About to check combat state",
-                        player_uuid=str(player_uuid),
-                        service=type(self._player_combat_service).__name__,
-                    )
-                    is_in_combat = self._player_combat_service.is_player_in_combat_sync(player_uuid)
-                    self._logger.debug(
-                        "COMBAT CHECK: Combat state result",
+                if is_in_combat:
+                    self._logger.warning(
+                        "COMBAT CHECK: BLOCKING MOVEMENT - Player is in combat",
+                        # Structlog handles UUID objects automatically, no need to convert to string
                         player_id=player_id,
-                        player_uuid=str(player_uuid),
-                        is_in_combat=is_in_combat,
+                        from_room=from_room_id,
+                        to_room=to_room_id,
                     )
-
-                    if is_in_combat:
-                        self._logger.warning(
-                            "COMBAT CHECK: BLOCKING MOVEMENT - Player is in combat",
-                            player_id=player_id,
-                            from_room=from_room_id,
-                            to_room=to_room_id,
-                        )
-                        return False
-                    else:
-                        self._logger.debug("COMBAT CHECK: Player not in combat, allowing movement")
+                    return False
                 else:
-                    self._logger.warning("COMBAT CHECK: No player_uuid, allowing movement by default")
+                    self._logger.debug("COMBAT CHECK: Player not in combat, allowing movement")
 
             except Exception as e:
                 self._logger.warning(
                     "COMBAT CHECK: Exception during combat check, allowing movement",
+                    # Structlog handles UUID objects automatically, no need to convert to string
                     player_id=player_id,
                     error=str(e),
                     exc_info=True,
@@ -419,17 +490,23 @@ class MovementService:
             return False
 
         # Check if player is in the from_room
+        # Room methods now accept UUID directly
         if not from_room.has_player(player_id):
             # Player might not be in the room's in-memory state yet
             # Check if their current_room_id matches the from_room_id
-            player = self._persistence.get_player(player_id)
+            # player_id is a UUID, use directly for get_player
+            try:
+                player = self._persistence.get_player(player_id)
+            except (ValueError, AttributeError):
+                player = None
             if player and player.current_room_id == from_room_id:
                 # Player should be in this room, add them to the in-memory state
                 # Use direct state update to avoid triggering events during validation
+                # Room._players is set[str], so convert UUID to string for internal storage
                 self._logger.info(
                     "Adding player to room in-memory state (direct update)", player_id=player_id, room_id=from_room_id
                 )
-                from_room._players.add(player_id)
+                from_room._players.add(str(player_id))
             else:
                 self._logger.error(
                     f"Player {player_id} not found in expected from_room {from_room_id}; movement invalid"
@@ -462,7 +539,7 @@ class MovementService:
         # Check if any exit in the room leads to the target room
         exits = from_room.exits
         if not exits:
-            self._logger.debug("No exits found in room", room_id=from_room.id)
+            self._logger.warning("No exits found in room", room_id=from_room.id, room_name=from_room.name)
             return False
 
         # Check each exit direction
@@ -471,10 +548,30 @@ class MovementService:
                 self._logger.debug("Valid exit found", direction=direction, room_id=to_room_id)
                 return True
 
-        self._logger.debug("No valid exit", from_room=from_room.id, to_room=to_room_id, available_exits=exits)
+        # Enhanced logging for debugging exit mismatches
+        # As noted in the Pnakotic Manuscripts, dimensional gateways must be precisely aligned
+        self._logger.warning(
+            "Exit validation failed - room ID mismatch",
+            from_room_id=from_room.id,
+            from_room_name=from_room.name,
+            to_room_id=to_room_id,
+            available_exits=exits,
+            exit_directions=list(exits.keys()),
+            exit_targets=list(exits.values()),
+        )
+
+        # Check if target room exists (might be a room ID format issue)
+        target_room = self._persistence.get_room(to_room_id)
+        if not target_room:
+            self._logger.error(
+                "Target room not found in persistence",
+                to_room_id=to_room_id,
+                from_room_id=from_room.id,
+            )
+
         return False
 
-    def add_player_to_room(self, player_id: str, room_id: str) -> bool:
+    def add_player_to_room(self, player_id: uuid.UUID | str, room_id: str) -> bool:
         """
         Add a player to a room (for initial placement, teleportation, etc.).
 
@@ -521,10 +618,25 @@ class MovementService:
                     return True  # Consider this a success
 
                 # Add player to room (direct addition to avoid triggering movement events during initial setup)
-                room._players.add(player_id)
+                # Room._players is set[str], so convert UUID to string for internal storage
+                player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
+                room._players.add(player_id_str)
 
                 # Update player's room in persistence
-                player = self._persistence.get_player(player_id)
+                # Convert to UUID for get_player if needed
+                if isinstance(player_id, str):
+                    try:
+                        player_uuid = uuid.UUID(player_id)
+                    except (ValueError, AttributeError):
+                        player = None
+                        return True  # Consider this a success if we can't convert
+                else:
+                    player_uuid = player_id
+
+                try:
+                    player = self._persistence.get_player(player_uuid)
+                except (ValueError, AttributeError):
+                    player = None
                 if player:
                     player.current_room_id = room_id  # type: ignore[assignment]
                     self._persistence.save_player(player)
@@ -546,7 +658,7 @@ class MovementService:
                     user_friendly="Failed to add player to room",
                 )
 
-    def remove_player_from_room(self, player_id: str, room_id: str) -> bool:
+    def remove_player_from_room(self, player_id: uuid.UUID | str, room_id: str) -> bool:
         """
         Remove a player from a room (for logout, teleportation, etc.).
 
@@ -614,12 +726,12 @@ class MovementService:
                     user_friendly="Failed to remove player from room",
                 )
 
-    def get_player_room(self, player_id: str) -> str | None:
+    def get_player_room(self, player_id: uuid.UUID | str) -> str | None:
         """
         Get the room ID where a player is currently located.
 
         Args:
-            player_id: The ID of the player to look up
+            player_id: The ID of the player to look up (UUID or string)
 
         Returns:
             The room ID where the player is located, or None if not found
@@ -631,7 +743,20 @@ class MovementService:
                 ValidationError, "Player ID cannot be empty", context=context, user_friendly="Player ID is required"
             )
 
-        player = self._persistence.get_player(player_id)
+        # Convert to UUID for get_player if needed
+        if isinstance(player_id, str):
+            try:
+                player_uuid = uuid.UUID(player_id)
+            except (ValueError, AttributeError):
+                player = None
+                return None
+        else:
+            player_uuid = player_id
+
+        try:
+            player = self._persistence.get_player(player_uuid)
+        except (ValueError, AttributeError):
+            player = None
         if player:
             return str(player.current_room_id)
 

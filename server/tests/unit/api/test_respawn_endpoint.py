@@ -5,6 +5,7 @@ from unittest.mock import AsyncMock, Mock
 import pytest
 
 from server.models.player import Player
+from server.services.player_respawn_service import LIMBO_ROOM_ID
 
 
 @pytest.fixture
@@ -13,7 +14,7 @@ def mock_dead_player():
     player = Mock(spec=Player)
     player.player_id = "test-player-id"
     player.name = "DeadPlayer"
-    player.current_room_id = "limbo_death_void"
+    player.current_room_id = LIMBO_ROOM_ID
     player.respawn_room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
     stats = {"current_health": -10}
     player.get_stats.return_value = stats
@@ -141,4 +142,4 @@ class TestRespawnEndpoint:
         # Verify updates
         updated_stats = mock_dead_player.get_stats()
         assert updated_stats["current_health"] == 100
-        assert mock_dead_player.current_room_id != "limbo_death_void"
+        assert mock_dead_player.current_room_id != LIMBO_ROOM_ID

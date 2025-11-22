@@ -80,7 +80,10 @@ export const EldritchEffectsDemo: React.FC<EldritchEffectsDemoProps> = ({ onExit
   ];
 
   return (
-    <div className="p-8 bg-mythos-terminal-background min-h-screen text-mythos-terminal-text">
+    <div
+      data-testid="eldritch-effects-demo"
+      className="p-8 bg-mythos-terminal-background min-h-screen text-mythos-terminal-text"
+    >
       {/* Simple Test Section - Always Visible Effects */}
       <div className="mb-8 p-4 border border-mythos-terminal-primary">
         <h2 className="text-mythos-terminal-primary text-xl mb-4">Always Active Effects Test</h2>

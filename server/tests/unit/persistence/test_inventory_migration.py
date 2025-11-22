@@ -16,7 +16,8 @@ CREATE TABLE users (
     id TEXT PRIMARY KEY NOT NULL,
     email TEXT NOT NULL,
     username TEXT NOT NULL,
-    hashed_password TEXT NOT NULL
+    hashed_password TEXT NOT NULL,
+    display_name TEXT NOT NULL DEFAULT ''
 );
 
 CREATE TABLE players (
@@ -35,8 +36,8 @@ CREATE TABLE players (
 """
 
 SAMPLE_USERS = [
-    ("legacy-user-1", "legacy1@example.com", "legacy1", "hashed-password-1"),
-    ("legacy-user-2", "legacy2@example.com", "legacy2", "hashed-password-2"),
+    ("legacy-user-1", "legacy1@example.com", "legacy1", "hashed-password-1", "legacy1"),
+    ("legacy-user-2", "legacy2@example.com", "legacy2", "hashed-password-2", "legacy2"),
 ]
 
 SAMPLE_PLAYERS = [
@@ -52,7 +53,7 @@ def legacy_database(tmp_path: Path) -> Path:
     with sqlite3.connect(db_path) as conn:
         conn.executescript(LEGACY_SCHEMA)
         conn.executemany(
-            "INSERT INTO users (id, email, username, hashed_password) VALUES (?, ?, ?, ?)",
+            "INSERT INTO users (id, email, username, hashed_password, display_name) VALUES (?, ?, ?, ?, ?)",
             SAMPLE_USERS,
         )
         conn.executemany(

@@ -1,6 +1,6 @@
 # MythosMUD Makefile
 
-.PHONY: help clean lint format test test-fast test-fast-serial test-ci test-comprehensive test-coverage test-client test-client-e2e test-e2e test-slow coverage build install run semgrep semgrep-autofix mypy lint-sqlalchemy setup-test-env
+.PHONY: help clean lint format test test-fast test-fast-serial test-ci test-comprehensive test-coverage test-client test-client-e2e test-e2e test-slow coverage build install run semgrep semgrep-autofix mypy lint-sqlalchemy setup-test-env check-postgresql setup-postgresql-test-db verify-schema
 
 # Determine project root for worktree contexts
 PROJECT_ROOT := $(shell python -c "import os; print(os.path.dirname(os.getcwd()) if 'MythosMUD-' in os.getcwd() else os.getcwd())")
@@ -15,6 +15,12 @@ help:
 	@echo "  mypy            - Run mypy static type checking"
 	@echo "  format          - Run ruff format (Python) and Prettier (Node)"
 	@echo ""
+	@echo "Database Setup:"
+	@echo "  setup-test-env         - Create test environment files"
+	@echo "  check-postgresql       - Verify PostgreSQL connectivity for tests"
+	@echo "  setup-postgresql-test-db - Create PostgreSQL test database"
+	@echo "  verify-schema          - Verify authoritative_schema.sql matches mythos_dev"
+	@echo ""
 	@echo "Testing - Daily Development:"
 	@echo "  test-fast        - Quick unit tests with parallelization (~2-3 min)"
 	@echo "  test-fast-serial - Quick unit tests serially (for debugging)"
@@ -23,7 +29,7 @@ help:
 	@echo "  test-client-e2e  - Automated client E2E tests (Playwright)"
 	@echo ""
 	@echo "Testing - CI/CD:"
-	@echo "  test-comprehensive - Full test suite for CI/CD (~30 min)"
+	@echo "  test-comprehensive - Full test suite for CI/CD (~30 min, rebuilds Docker image)"
 	@echo "  test-coverage      - Generate coverage reports"
 	@echo ""
 	@echo "Testing - On-Demand:"
@@ -44,6 +50,18 @@ clean:
 setup-test-env:
 	@echo "Setting up test environment files..."
 	cd $(PROJECT_ROOT) && powershell -ExecutionPolicy Bypass -File scripts/setup_test_environment.ps1
+
+check-postgresql:
+	@echo "Checking PostgreSQL connectivity for tests..."
+	cd $(PROJECT_ROOT) && powershell -ExecutionPolicy Bypass -File scripts/check_postgresql.ps1
+
+setup-postgresql-test-db:
+	@echo "Setting up PostgreSQL test database..."
+	cd $(PROJECT_ROOT) && powershell -ExecutionPolicy Bypass -File scripts/setup_postgresql_test_db.ps1
+
+verify-schema:
+	@echo "Verifying authoritative_schema.sql matches mythos_dev..."
+	cd $(PROJECT_ROOT) && bash scripts/verify_schema_match.sh
 
 lint:
 	cd $(PROJECT_ROOT) && python scripts/lint.py
@@ -97,9 +115,13 @@ test-comprehensive: setup-test-env
 	@if not exist "$(PROJECT_ROOT)\\.act.secrets" ( \
 		echo ERROR: Missing $(PROJECT_ROOT)\\.act.secrets. Copy .act.secrets.example and populate secrets before running act. & \
 		exit 1 )
-	cd $(PROJECT_ROOT) && docker build -t $(ACT_RUNNER_IMAGE) -f $(ACT_RUNNER_DOCKERFILE) .
+	@echo "Building Docker runner image (this ensures dependencies are up-to-date)..."
+	cd $(PROJECT_ROOT) && docker build --pull -t $(ACT_RUNNER_IMAGE) -f $(ACT_RUNNER_DOCKERFILE) .
+	@echo "Running backend tests..."
 	cd $(PROJECT_ROOT) && act --env ACT=1 --env UV_PROJECT_ENVIRONMENT=.venv-ci --env UV_LINK_MODE=copy -W .github/workflows/ci.yml -j backend
+	@echo "Running frontend tests..."
 	cd $(PROJECT_ROOT) && act --reuse --env ACT=1 --env UV_PROJECT_ENVIRONMENT=.venv-ci --env UV_LINK_MODE=copy -W .github/workflows/ci.yml -j frontend
+	@echo "Test comprehensive run completed."
 
 test-coverage: setup-test-env
 	@echo "Generating coverage report..."
@@ -143,6 +165,6 @@ all:
 	cd $(PROJECT_ROOT) && make mypy
 	cd $(PROJECT_ROOT) && make lint
 	cd $(PROJECT_ROOT) && make semgrep
-	cd $(PROJECT_ROOT) && make test-comprehensive
-	cd $(PROJECT_ROOT) && make test-client
 	cd $(PROJECT_ROOT) && make build
+	cd $(PROJECT_ROOT) && make test-client
+	cd $(PROJECT_ROOT) && make test-comprehensive

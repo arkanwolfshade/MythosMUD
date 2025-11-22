@@ -182,7 +182,7 @@ class TestPlayerCombatServiceUnit:
         )
 
         # Verify player was retrieved and saved
-        mock_persistence.async_get_player.assert_called_once_with(str(player_id))
+        mock_persistence.async_get_player.assert_called_once_with(player_id)
         mock_persistence.async_save_player.assert_called_once()
 
         # Verify XP was added
@@ -207,7 +207,7 @@ class TestPlayerCombatServiceUnit:
         )
 
         # Verify player was retrieved but not saved
-        mock_persistence.async_get_player.assert_called_once_with(str(player_id))
+        mock_persistence.async_get_player.assert_called_once_with(player_id)
         mock_persistence.async_save_player.assert_not_called()
 
     @pytest.mark.asyncio
@@ -386,7 +386,7 @@ class TestPlayerCombatServiceUnit:
         )
 
         # Verify award_xp_on_npc_death was called
-        mock_persistence.async_get_player.assert_called_once_with(str(player_id))
+        mock_persistence.async_get_player.assert_called_once_with(player_id)
         mock_persistence.async_save_player.assert_called_once()
 
     @pytest.mark.asyncio
@@ -407,4 +407,4 @@ class TestPlayerCombatServiceUnit:
         )
 
         # Should have attempted to get player
-        mock_persistence.async_get_player.assert_called_once_with(str(player_id))
+        mock_persistence.async_get_player.assert_called_once_with(player_id)

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ChatMessage } from '../../stores/gameStore';
 import { GameTerminal } from '../GameTerminal';
@@ -248,49 +248,17 @@ describe('GameTerminal', () => {
     it('should display player stats in status panel', () => {
       render(<GameTerminal {...defaultProps} />);
 
-      expect(screen.getByText('Health:')).toBeInTheDocument();
-      expect(screen.getByText('100')).toBeInTheDocument();
-      expect(screen.getByText('Sanity:')).toBeInTheDocument();
-      expect(screen.getByText('80')).toBeInTheDocument();
+      // HealthMeter renders "Health" (without colon) and value as "100 / 100"
+      expect(screen.getByText('Health')).toBeInTheDocument();
+      const healthMeter = screen.getByTestId('health-meter');
+      expect(healthMeter).toHaveTextContent(/100/);
+      // SanityMeter renders "Sanity" (without colon) and value as "80 / 100"
+      expect(screen.getByText('Sanity')).toBeInTheDocument();
+      // Sanity value should be 80, not 100
+      expect(screen.getByText(/^80/)).toBeInTheDocument();
+      // Core attributes still use colon format
       expect(screen.getByText('STR:')).toBeInTheDocument();
       expect(screen.getByText('10')).toBeInTheDocument();
-    });
-
-    // SKIPPED: GameTerminal no longer displays message/command counts in status panel
-    // This UI was changed and the test is outdated
-    it.skip('should display message and command counts in status panel', () => {
-      render(<GameTerminal {...defaultProps} />);
-
-      expect(screen.getByText('Messages:')).toBeInTheDocument();
-      const messagesLabel = screen.getByText('Messages:');
-      const messagesValue = messagesLabel.parentElement?.querySelector('span:last-child');
-      expect(messagesValue).toHaveTextContent('1');
-
-      expect(screen.getByText('Commands:')).toBeInTheDocument();
-      const commandsLabel = screen.getByText('Commands:');
-      const commandsValue = commandsLabel.parentElement?.querySelector('span:last-child');
-      expect(commandsValue).toHaveTextContent('3');
-    });
-  });
-
-  // MOTD functionality has been moved to App.tsx interstitial screen
-  // These tests are outdated and should be moved to App.test.tsx or converted to E2E tests
-  describe.skip('MOTD Overlay', () => {
-    it('should show MOTD overlay by default', () => {
-      render(<GameTerminal {...defaultProps} />);
-
-      expect(screen.getByTestId('motd-content')).toBeInTheDocument();
-    });
-
-    it('should hide MOTD overlay when continue button is clicked', async () => {
-      render(<GameTerminal {...defaultProps} />);
-
-      const continueButton = screen.getByText('Continue');
-      fireEvent.click(continueButton);
-
-      await waitFor(() => {
-        expect(screen.queryByTestId('motd-content')).not.toBeInTheDocument();
-      });
     });
   });
 

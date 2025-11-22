@@ -12,6 +12,7 @@ existing dimensional architecture.
 import asyncio
 import time
 from unittest.mock import MagicMock, patch
+from uuid import uuid4
 
 import pytest
 
@@ -486,8 +487,9 @@ class TestNPCCombatIntegration:
 
                 event_bus.subscribe(NPCAttacked, capture_events)
 
-                # Test enhanced attack
-                result = aggressive_npc.attack_target("test_player_1")
+                # Test enhanced attack with proper UUID
+                test_player_id = str(uuid4())
+                result = aggressive_npc.attack_target(test_player_id)
                 assert result is True
 
                 # Wait for event to be processed
@@ -499,7 +501,7 @@ class TestNPCCombatIntegration:
                 assert len(events_received) == 1
                 assert events_received[0].event_type == "NPCAttacked"
                 assert events_received[0].npc_id == "aggressive_npc_1"
-                assert events_received[0].target_id == "test_player_1"
+                assert events_received[0].target_id == test_player_id
 
 
 class TestNPCCommunicationIntegration:
@@ -832,7 +834,8 @@ class TestNPCEventIntegration:
         initial_room = test_npc.current_room
 
         # Simulate a player entering the room
-        event = PlayerEnteredRoom(player_id="test_player_1", room_id=initial_room)
+        player_id = uuid4()
+        event = PlayerEnteredRoom(player_id=str(player_id), room_id=initial_room)
         event.timestamp = None
         event_bus.publish(event)
 
@@ -1157,8 +1160,9 @@ class TestNPCEventReactionSystem:
         event_reaction_system.register_npc_reactions("test_npc", [reaction])
 
         # Simulate multiple rapid events
-        for i in range(3):
-            player_entered_event = PlayerEnteredRoom(player_id=f"test_player_{i}", room_id="test_room")
+        for _ in range(3):
+            player_id = uuid4()
+            player_entered_event = PlayerEnteredRoom(player_id=str(player_id), room_id="test_room")
             player_entered_event.timestamp = time.time()
             event_bus.publish(player_entered_event)
 

@@ -44,8 +44,13 @@ class TestNATSMessageHandlerStandardizedPatterns:
     @pytest.mark.asyncio
     async def test_message_handler_uses_standardized_patterns_with_subject_manager(self):
         """Test that NATSMessageHandler uses standardized patterns when subject manager is provided."""
-        # Create NATSMessageHandler with subject manager
-        handler = NATSMessageHandler(self.nats_service, self.subject_manager)
+        # Create NATSMessageHandler with subject manager and connection manager
+        from unittest.mock import MagicMock
+
+        mock_connection_manager = MagicMock()
+        handler = NATSMessageHandler(
+            self.nats_service, self.subject_manager, connection_manager=mock_connection_manager
+        )
 
         # Mock the subscribe method
         self.nats_service.subscribe = AsyncMock(return_value=True)
@@ -62,9 +67,8 @@ class TestNATSMessageHandlerStandardizedPatterns:
             "chat.system",
             "chat.emote.room.*",
             "chat.pose.room.*",
-            "chat.local.*",  # Legacy compatibility
-            "chat.party.*",
-            "chat.admin",
+            # Note: chat.local.* is not used - replaced by chat.local.subzone.*
+            # chat.party.* and chat.admin are not in NATSSubjectManager patterns
         ]
 
         # Check that subscribe was called with standardized patterns
@@ -76,42 +80,31 @@ class TestNATSMessageHandlerStandardizedPatterns:
 
     @pytest.mark.asyncio
     async def test_message_handler_uses_legacy_patterns_without_subject_manager(self):
-        """Test that NATSMessageHandler uses legacy patterns when no subject manager is provided."""
+        """Test that NATSMessageHandler requires subject manager (legacy mode removed)."""
         # Create NATSMessageHandler without subject manager
-        handler = NATSMessageHandler(self.nats_service, None)
+        from unittest.mock import MagicMock
+
+        mock_connection_manager = MagicMock()
+        handler = NATSMessageHandler(self.nats_service, None, connection_manager=mock_connection_manager)
 
         # Mock the subscribe method
         self.nats_service.subscribe = AsyncMock(return_value=True)
 
-        # Start the handler
-        await handler.start()
-
-        # Verify legacy patterns were used
-        expected_legacy_patterns = [
-            "chat.say.*",
-            "chat.local.*",
-            "chat.local.subzone.*",
-            "chat.emote.*",
-            "chat.pose.*",
-            "chat.global",
-            "chat.party.*",
-            "chat.whisper.player.*",  # Standardized whisper pattern with player segment
-            "chat.system",
-            "chat.admin",
-        ]
-
-        # Check that subscribe was called with legacy patterns
-        subscribe_calls = self.nats_service.subscribe.call_args_list
-        subscribed_patterns = [call[0][0] for call in subscribe_calls]
-
-        for pattern in expected_legacy_patterns:
-            assert pattern in subscribed_patterns, f"Expected legacy pattern {pattern} not found in subscriptions"
+        # Start the handler - should return False because subject_manager is required
+        # (start() catches RuntimeError and returns False instead of raising)
+        result = await handler.start()
+        assert result is False, "Handler should fail to start without subject_manager"
 
     @pytest.mark.asyncio
     async def test_subscription_patterns_match_publishing_patterns(self):
         """Test that subscription patterns match the patterns used for publishing."""
-        # Create NATSMessageHandler with subject manager
-        handler = NATSMessageHandler(self.nats_service, self.subject_manager)
+        # Create NATSMessageHandler with subject manager and connection manager
+        from unittest.mock import MagicMock
+
+        mock_connection_manager = MagicMock()
+        handler = NATSMessageHandler(
+            self.nats_service, self.subject_manager, connection_manager=mock_connection_manager
+        )
 
         # Mock the subscribe method
         self.nats_service.subscribe = AsyncMock(return_value=True)
@@ -141,22 +134,27 @@ class TestNATSMessageHandlerStandardizedPatterns:
     @pytest.mark.asyncio
     async def test_subscription_failure_handling(self):
         """Test that subscription failures are handled gracefully."""
-        # Create NATSMessageHandler with subject manager
-        handler = NATSMessageHandler(self.nats_service, self.subject_manager)
+        # Create NATSMessageHandler with subject manager and connection manager
+        from unittest.mock import MagicMock
 
-        # Mock subscribe to fail for some patterns
+        mock_connection_manager = MagicMock()
+        handler = NATSMessageHandler(
+            self.nats_service, self.subject_manager, connection_manager=mock_connection_manager
+        )
+
+        # Mock subscribe to raise exception for some patterns (subscribe now raises instead of returning False)
         async def mock_subscribe(subject, callback):
             if "chat.say.room.*" in subject:
-                return False  # Simulate failure
+                raise Exception("Subscription failed")  # Simulate failure
             return True
 
         self.nats_service.subscribe = mock_subscribe
 
-        # Start the handler
+        # Start the handler - should handle the exception gracefully
         await handler.start()
 
-        # Verify that failed subscriptions are tracked
-        assert "chat.say.room.*" not in handler.subscriptions or handler.subscriptions.get("chat.say.room.*") is False
+        # Verify that failed subscriptions are not tracked (exception prevents subscription)
+        assert "chat.say.room.*" not in handler.subscriptions
 
     @pytest.mark.asyncio
     async def test_subject_manager_integration_with_nats_service(self):
@@ -169,8 +167,15 @@ class TestNATSMessageHandlerStandardizedPatterns:
         nats_service_with_manager.nc = mock_nc
         nats_service_with_manager._running = True
 
-        # Create NATSMessageHandler
-        handler = NATSMessageHandler(nats_service_with_manager, nats_service_with_manager.subject_manager)
+        # Create NATSMessageHandler with connection manager
+        from unittest.mock import MagicMock
+
+        mock_connection_manager = MagicMock()
+        handler = NATSMessageHandler(
+            nats_service_with_manager,
+            nats_service_with_manager.subject_manager,
+            connection_manager=mock_connection_manager,
+        )
 
         # Mock the subscribe method
         nats_service_with_manager.subscribe = AsyncMock(return_value=True)
@@ -183,30 +188,31 @@ class TestNATSMessageHandlerStandardizedPatterns:
 
     @pytest.mark.asyncio
     async def test_backward_compatibility_without_subject_manager(self):
-        """Test that the system maintains backward compatibility without subject manager."""
+        """Test that the system requires subject manager (backward compatibility removed)."""
         # Create NATSMessageHandler without subject manager
-        handler = NATSMessageHandler(self.nats_service, None)
+        from unittest.mock import MagicMock
+
+        mock_connection_manager = MagicMock()
+        handler = NATSMessageHandler(self.nats_service, None, connection_manager=mock_connection_manager)
 
         # Mock the subscribe method
         self.nats_service.subscribe = AsyncMock(return_value=True)
 
-        # Start the handler
-        await handler.start()
-
-        # Verify that legacy patterns are still used
-        subscribe_calls = self.nats_service.subscribe.call_args_list
-        subscribed_patterns = [call[0][0] for call in subscribe_calls]
-
-        # Should include legacy patterns
-        legacy_patterns = ["chat.say.*", "chat.local.*", "chat.emote.*", "chat.pose.*"]
-        for pattern in legacy_patterns:
-            assert pattern in subscribed_patterns, f"Legacy pattern {pattern} not found in subscriptions"
+        # Start the handler - should return False because subject_manager is required
+        # (start() catches RuntimeError and returns False instead of raising)
+        result = await handler.start()
+        assert result is False, "Handler should fail to start without subject_manager"
 
     @pytest.mark.asyncio
     async def test_subscription_logging_includes_pattern_type(self):
         """Test that subscription logging includes information about pattern type."""
-        # Create NATSMessageHandler with subject manager
-        handler = NATSMessageHandler(self.nats_service, self.subject_manager)
+        # Create NATSMessageHandler with subject manager and connection manager
+        from unittest.mock import MagicMock
+
+        mock_connection_manager = MagicMock()
+        handler = NATSMessageHandler(
+            self.nats_service, self.subject_manager, connection_manager=mock_connection_manager
+        )
 
         # Mock the subscribe method
         self.nats_service.subscribe = AsyncMock(return_value=True)
@@ -226,8 +232,13 @@ class TestNATSMessageHandlerStandardizedPatterns:
     @pytest.mark.asyncio
     async def test_subscription_patterns_are_valid_nats_subjects(self):
         """Test that all subscription patterns are valid NATS subjects."""
-        # Create NATSMessageHandler with subject manager
-        handler = NATSMessageHandler(self.nats_service, self.subject_manager)
+        # Create NATSMessageHandler with subject manager and connection manager
+        from unittest.mock import MagicMock
+
+        mock_connection_manager = MagicMock()
+        handler = NATSMessageHandler(
+            self.nats_service, self.subject_manager, connection_manager=mock_connection_manager
+        )
 
         # Mock the subscribe method
         self.nats_service.subscribe = AsyncMock(return_value=True)

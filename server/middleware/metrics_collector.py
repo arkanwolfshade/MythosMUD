@@ -36,10 +36,10 @@ class MetricsCollector:
         self._lock = Lock()
 
         # Message counters
-        self.messages_processed = Counter()
-        self.messages_failed = Counter()
-        self.messages_retried = Counter()
-        self.messages_dlq = Counter()
+        self.messages_processed: Counter[str] = Counter()
+        self.messages_failed: Counter[str] = Counter()
+        self.messages_retried: Counter[str] = Counter()
+        self.messages_dlq: Counter[str] = Counter()
 
         # Circuit breaker state tracking
         self.circuit_state_changes: list[dict[str, Any]] = []

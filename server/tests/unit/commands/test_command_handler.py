@@ -655,7 +655,24 @@ class TestCommandHandlerV2:
     async def test_process_command_unified_basic(self):
         """Test basic command processing through unified handler."""
         # Test that the unified command handler can process basic commands
-        result = await process_command_unified("look", {"username": "testuser"}, Mock(), player_name="testuser")
+        mock_request = Mock()
+        mock_request.app = Mock()
+        mock_request.app.state = Mock()
+        mock_request.app.state.persistence = Mock()
+
+        # Mock room data
+        mock_room = Mock()
+        mock_room.name = "Test Room"
+        mock_room.description = "A test room"
+        mock_room.exits = {}  # Empty exits dict
+        mock_request.app.state.persistence.get_room.return_value = mock_room
+
+        # Mock player data
+        mock_player = Mock()
+        mock_player.current_room_id = "test_room_001"
+        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+
+        result = await process_command_unified("look", {"username": "testuser"}, mock_request, player_name="testuser")
         # The result should be a dict with a result key
         assert isinstance(result, dict)
         assert "result" in result

@@ -390,7 +390,21 @@ class NPCLifecycleManager:
             persistence = get_persistence()
             room = persistence.get_room(room_id)
             if not room:
-                logger.warning("Room not found for NPC spawn", room_id=room_id, npc_id=npc_id)
+                logger.warning(
+                    "Room not found for NPC spawn",
+                    room_id=room_id,
+                    npc_id=npc_id,
+                    npc_name=definition.name,
+                    definition_id=definition.id,
+                )
+                # Clean up the lifecycle record since spawn failed
+                if npc_id in self.lifecycle_records:
+                    record = self.lifecycle_records[npc_id]
+                    record.change_state(NPCLifecycleState.ERROR, f"Room not found: {room_id}")
+                    record.add_event(NPCLifecycleEvent.ERROR_OCCURRED, {"error": f"Room not found: {room_id}"})
+                # Remove from active NPCs if it was added
+                if npc_id in self.active_npcs:
+                    del self.active_npcs[npc_id]
                 return None
 
             # Single source of truth: mutate via Room API; Room will publish the event

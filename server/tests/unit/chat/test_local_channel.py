@@ -253,8 +253,11 @@ class TestLocalChannelService:
         self, chat_service, mock_player_service, mock_player, mock_nats_service
     ):
         """Test local message when NATS publishing fails."""
+        from server.services.nats_exceptions import NATSPublishError
+
         mock_player_service.get_player_by_id.return_value = mock_player
-        mock_nats_service.publish.return_value = False
+        # NATS publish raises NATSPublishError on failure, doesn't return False
+        mock_nats_service.publish = AsyncMock(side_effect=NATSPublishError("NATS publish failed", "test.subject"))
 
         result = await chat_service.send_local_message("test-player-123", "Hello!")
 

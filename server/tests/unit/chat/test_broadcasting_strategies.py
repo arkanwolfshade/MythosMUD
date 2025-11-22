@@ -5,6 +5,7 @@ This module tests the strategy pattern implementation for channel broadcasting,
 ensuring it correctly handles all channel types and maintains backward compatibility.
 """
 
+import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -26,6 +27,12 @@ from server.realtime.nats_message_handler import NATSMessageHandler
 class TestChannelBroadcastingStrategies:
     """Test suite for channel broadcasting strategies."""
 
+    # Test player IDs - use UUID objects
+    PLAYER_1 = uuid.uuid4()
+    PLAYER_2 = uuid.uuid4()
+    SENDER_1 = uuid.uuid4()
+    TARGET_1 = uuid.uuid4()
+
     @pytest.fixture
     def nats_handler(self):
         """Create a NATS message handler for testing."""
@@ -39,10 +46,16 @@ class TestChannelBroadcastingStrategies:
         mock_cm.broadcast_global = AsyncMock()
         mock_cm.send_personal_message = AsyncMock()
         mock_cm._canonical_room_id.return_value = "test_room"
-        mock_cm.room_subscriptions = {"test_room": {"player1", "player2"}}
+        # room_subscriptions expects string player IDs
+        mock_cm.room_subscriptions = {
+            "test_room": {
+                str(TestChannelBroadcastingStrategies.PLAYER_1),
+                str(TestChannelBroadcastingStrategies.PLAYER_2),
+            }
+        }
         mock_cm.online_players = {
-            "player1": {"current_room_id": "test_room"},
-            "player2": {"current_room_id": "test_room"},
+            TestChannelBroadcastingStrategies.PLAYER_1: {"current_room_id": "test_room"},
+            TestChannelBroadcastingStrategies.PLAYER_2: {"current_room_id": "test_room"},
         }
         return mock_cm
 
@@ -53,10 +66,16 @@ class TestChannelBroadcastingStrategies:
         mock_cm.broadcast_global = AsyncMock()
         mock_cm.send_personal_message = AsyncMock()
         mock_cm._canonical_room_id.return_value = "test_room"
-        mock_cm.room_subscriptions = {"test_room": {"player1", "player2"}}
+        # room_subscriptions expects string player IDs
+        mock_cm.room_subscriptions = {
+            "test_room": {
+                str(TestChannelBroadcastingStrategies.PLAYER_1),
+                str(TestChannelBroadcastingStrategies.PLAYER_2),
+            }
+        }
         mock_cm.online_players = {
-            "player1": {"current_room_id": "test_room"},
-            "player2": {"current_room_id": "test_room"},
+            TestChannelBroadcastingStrategies.PLAYER_1: {"current_room_id": "test_room"},
+            TestChannelBroadcastingStrategies.PLAYER_2: {"current_room_id": "test_room"},
         }
         return mock_cm
 
@@ -67,9 +86,9 @@ class TestChannelBroadcastingStrategies:
         nats_handler.connection_manager = mock_connection_manager
 
         with patch.object(nats_handler, "_broadcast_to_room_with_filtering") as mock_broadcast:
-            await nats_handler._broadcast_by_channel_type("say", chat_event, "test_room", "", "", "sender1")
+            await nats_handler._broadcast_by_channel_type("say", chat_event, "test_room", "", None, self.SENDER_1)
 
-            mock_broadcast.assert_called_once_with("test_room", chat_event, "sender1", "say")
+            mock_broadcast.assert_called_once_with("test_room", chat_event, str(self.SENDER_1), "say")
 
     @pytest.mark.asyncio
     async def test_room_based_channels_local(self, nats_handler, mock_connection_manager):
@@ -78,9 +97,9 @@ class TestChannelBroadcastingStrategies:
         nats_handler.connection_manager = mock_connection_manager
 
         with patch.object(nats_handler, "_broadcast_to_room_with_filtering") as mock_broadcast:
-            await nats_handler._broadcast_by_channel_type("local", chat_event, "test_room", "", "", "sender1")
+            await nats_handler._broadcast_by_channel_type("local", chat_event, "test_room", "", None, self.SENDER_1)
 
-            mock_broadcast.assert_called_once_with("test_room", chat_event, "sender1", "local")
+            mock_broadcast.assert_called_once_with("test_room", chat_event, str(self.SENDER_1), "local")
 
     @pytest.mark.asyncio
     async def test_room_based_channels_emote(self, nats_handler, mock_connection_manager):
@@ -89,9 +108,9 @@ class TestChannelBroadcastingStrategies:
         nats_handler.connection_manager = mock_connection_manager
 
         with patch.object(nats_handler, "_broadcast_to_room_with_filtering") as mock_broadcast:
-            await nats_handler._broadcast_by_channel_type("emote", chat_event, "test_room", "", "", "sender1")
+            await nats_handler._broadcast_by_channel_type("emote", chat_event, "test_room", "", None, self.SENDER_1)
 
-            mock_broadcast.assert_called_once_with("test_room", chat_event, "sender1", "emote")
+            mock_broadcast.assert_called_once_with("test_room", chat_event, str(self.SENDER_1), "emote")
 
     @pytest.mark.asyncio
     async def test_room_based_channels_pose(self, nats_handler, mock_connection_manager):
@@ -100,9 +119,9 @@ class TestChannelBroadcastingStrategies:
         nats_handler.connection_manager = mock_connection_manager
 
         with patch.object(nats_handler, "_broadcast_to_room_with_filtering") as mock_broadcast:
-            await nats_handler._broadcast_by_channel_type("pose", chat_event, "test_room", "", "", "sender1")
+            await nats_handler._broadcast_by_channel_type("pose", chat_event, "test_room", "", None, self.SENDER_1)
 
-            mock_broadcast.assert_called_once_with("test_room", chat_event, "sender1", "pose")
+            mock_broadcast.assert_called_once_with("test_room", chat_event, str(self.SENDER_1), "pose")
 
     @pytest.mark.asyncio
     async def test_room_based_channels_missing_room_id(self, nats_handler, mock_connection_manager):
@@ -111,7 +130,7 @@ class TestChannelBroadcastingStrategies:
         nats_handler.connection_manager = mock_connection_manager
 
         with patch.object(nats_handler, "_broadcast_to_room_with_filtering") as mock_broadcast:
-            await nats_handler._broadcast_by_channel_type("say", chat_event, "", "", "", "sender1")
+            await nats_handler._broadcast_by_channel_type("say", chat_event, "", "", None, self.SENDER_1)
 
             # Should not call broadcast when room_id is missing
             mock_broadcast.assert_not_called()
@@ -122,9 +141,11 @@ class TestChannelBroadcastingStrategies:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         nats_handler.connection_manager = mock_connection_manager_strategy
 
-        await nats_handler._broadcast_by_channel_type("global", chat_event, "", "", "", "sender1")
+        await nats_handler._broadcast_by_channel_type("global", chat_event, "", "", None, self.SENDER_1)
 
-        mock_connection_manager_strategy.broadcast_global.assert_called_once_with(chat_event, exclude_player="sender1")
+        mock_connection_manager_strategy.broadcast_global.assert_called_once_with(
+            chat_event, exclude_player=str(self.SENDER_1)
+        )
 
     @pytest.mark.asyncio
     async def test_party_channel_with_party_id(self, nats_handler, mock_connection_manager):
@@ -132,7 +153,7 @@ class TestChannelBroadcastingStrategies:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         nats_handler.connection_manager = mock_connection_manager
 
-        await nats_handler._broadcast_by_channel_type("party", chat_event, "", "party123", "", "sender1")
+        await nats_handler._broadcast_by_channel_type("party", chat_event, "", "party123", None, self.SENDER_1)
 
         # Currently just logs, no actual broadcasting
         # This will be implemented when party system is available
@@ -143,7 +164,7 @@ class TestChannelBroadcastingStrategies:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         nats_handler.connection_manager = mock_connection_manager
 
-        await nats_handler._broadcast_by_channel_type("party", chat_event, "", "", "", "sender1")
+        await nats_handler._broadcast_by_channel_type("party", chat_event, "", "", None, self.SENDER_1)
 
         # Should log warning but not broadcast
 
@@ -153,9 +174,11 @@ class TestChannelBroadcastingStrategies:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         nats_handler.connection_manager = mock_connection_manager_strategy
 
-        await nats_handler._broadcast_by_channel_type("whisper", chat_event, "", "", "target1", "sender1")
+        await nats_handler._broadcast_by_channel_type(
+            "whisper", chat_event, "", "", self.TARGET_1, self.SENDER_1
+        )
 
-        mock_connection_manager_strategy.send_personal_message.assert_called_once_with("target1", chat_event)
+        mock_connection_manager_strategy.send_personal_message.assert_called_once_with(self.TARGET_1, chat_event)
 
     @pytest.mark.asyncio
     async def test_whisper_channel_missing_target(self, nats_handler, mock_connection_manager_strategy):
@@ -163,7 +186,7 @@ class TestChannelBroadcastingStrategies:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         nats_handler.connection_manager = mock_connection_manager_strategy
 
-        await nats_handler._broadcast_by_channel_type("whisper", chat_event, "", "", "", "sender1")
+        await nats_handler._broadcast_by_channel_type("whisper", chat_event, "", "", None, self.SENDER_1)
 
         # Should not send when target_player_id is missing
         mock_connection_manager_strategy.send_personal_message.assert_not_called()
@@ -174,9 +197,11 @@ class TestChannelBroadcastingStrategies:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         nats_handler.connection_manager = mock_connection_manager_strategy
 
-        await nats_handler._broadcast_by_channel_type("system", chat_event, "", "", "", "sender1")
+        await nats_handler._broadcast_by_channel_type("system", chat_event, "", "", None, self.SENDER_1)
 
-        mock_connection_manager_strategy.broadcast_global.assert_called_once_with(chat_event, exclude_player="sender1")
+        mock_connection_manager_strategy.broadcast_global.assert_called_once_with(
+            chat_event, exclude_player=str(self.SENDER_1)
+        )
 
     @pytest.mark.asyncio
     async def test_admin_channel(self, nats_handler, mock_connection_manager_strategy):
@@ -184,9 +209,11 @@ class TestChannelBroadcastingStrategies:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         nats_handler.connection_manager = mock_connection_manager_strategy
 
-        await nats_handler._broadcast_by_channel_type("admin", chat_event, "", "", "", "sender1")
+        await nats_handler._broadcast_by_channel_type("admin", chat_event, "", "", None, self.SENDER_1)
 
-        mock_connection_manager_strategy.broadcast_global.assert_called_once_with(chat_event, exclude_player="sender1")
+        mock_connection_manager_strategy.broadcast_global.assert_called_once_with(
+            chat_event, exclude_player=str(self.SENDER_1)
+        )
 
     @pytest.mark.asyncio
     async def test_unknown_channel_type(self, nats_handler, mock_connection_manager_strategy):
@@ -194,7 +221,7 @@ class TestChannelBroadcastingStrategies:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         nats_handler.connection_manager = mock_connection_manager_strategy
 
-        await nats_handler._broadcast_by_channel_type("unknown", chat_event, "", "", "", "sender1")
+        await nats_handler._broadcast_by_channel_type("unknown", chat_event, "", "", None, self.SENDER_1)
 
         # Should not call any broadcast methods for unknown channels
         mock_connection_manager_strategy.broadcast_global.assert_not_called()
@@ -212,7 +239,7 @@ class TestChannelBroadcastingStrategies:
             patch.object(nats_handler, "_is_player_muted_by_receiver", return_value=False),
         ):
             # Test through the strategy pattern
-            await nats_handler._broadcast_by_channel_type("say", chat_event, "test_room", "", "", "sender1")
+            await nats_handler._broadcast_by_channel_type("say", chat_event, "test_room", "", None, self.SENDER_1)
 
             # Should call send_personal_message for each filtered player
             mock_connection_manager.send_personal_message.assert_called()
@@ -234,8 +261,8 @@ class TestChannelBroadcastingStrategies:
                 chat_event,
                 "test_room",
                 "",
-                "",
-                "player1",  # sender is player1
+                None,
+                self.PLAYER_1,  # sender is player1
             )
 
             # Should call send_personal_message for filtered players (excluding sender)
@@ -249,14 +276,15 @@ class TestChannelBroadcastingStrategies:
 
         # Mock the filtering methods - player2 is muted
         def mock_is_muted(player_id, sender_id):
-            return player_id == "player2"
+            # player_id comes from room_subscriptions as string, so compare as string
+            return player_id == str(self.PLAYER_2)
 
         with (
             patch.object(nats_handler, "_is_player_in_room", return_value=True),
             patch.object(nats_handler, "_is_player_muted_by_receiver", side_effect=mock_is_muted),
         ):
             # Test through the strategy pattern
-            await nats_handler._broadcast_by_channel_type("say", chat_event, "test_room", "", "", "sender1")
+            await nats_handler._broadcast_by_channel_type("say", chat_event, "test_room", "", None, self.SENDER_1)
 
             # Should call send_personal_message for non-muted players
             mock_connection_manager.send_personal_message.assert_called()
@@ -269,14 +297,15 @@ class TestChannelBroadcastingStrategies:
 
         # Mock the filtering methods - player2 is not in room
         def mock_is_in_room(player_id, room_id):
-            return player_id == "player1"
+            # player_id comes from room_subscriptions as string, so compare as string
+            return player_id == str(self.PLAYER_1)
 
         with (
             patch.object(nats_handler, "_is_player_in_room", side_effect=mock_is_in_room),
             patch.object(nats_handler, "_is_player_muted_by_receiver", return_value=False),
         ):
             # Test through the strategy pattern
-            await nats_handler._broadcast_by_channel_type("say", chat_event, "test_room", "", "", "sender1")
+            await nats_handler._broadcast_by_channel_type("say", chat_event, "test_room", "", None, self.SENDER_1)
 
             # Should call send_personal_message for players in room
             mock_connection_manager.send_personal_message.assert_called()
@@ -291,7 +320,7 @@ class TestChannelBroadcastingStrategies:
         mock_connection_manager.broadcast_global.side_effect = Exception("Broadcast failed")
 
         # Should not raise exception, should be handled gracefully
-        await nats_handler._broadcast_by_channel_type("global", chat_event, "", "", "", "sender1")
+        await nats_handler._broadcast_by_channel_type("global", chat_event, "", "", None, self.SENDER_1)
 
     @pytest.mark.asyncio
     async def test_error_handling_in_room_broadcast(self, nats_handler, mock_connection_manager):
@@ -304,7 +333,7 @@ class TestChannelBroadcastingStrategies:
             nats_handler, "_broadcast_to_room_with_filtering", side_effect=Exception("Room broadcast failed")
         ):
             # Should not raise exception, should be handled gracefully
-            await nats_handler._broadcast_by_channel_type("say", chat_event, "test_room", "", "", "sender1")
+            await nats_handler._broadcast_by_channel_type("say", chat_event, "test_room", "", None, self.SENDER_1)
 
     @pytest.mark.asyncio
     async def test_all_channel_types_covered(self, nats_handler, mock_connection_manager):
@@ -315,7 +344,7 @@ class TestChannelBroadcastingStrategies:
         for channel in channel_types:
             with patch.object(nats_handler, "_broadcast_to_room_with_filtering"):
                 await nats_handler._broadcast_by_channel_type(
-                    channel, chat_event, "test_room", "party123", "target1", "sender1"
+                    channel, chat_event, "test_room", "party123", self.TARGET_1, self.SENDER_1
                 )
 
                 # Each channel type should be handled without raising exceptions
@@ -329,6 +358,10 @@ class TestChannelBroadcastingStrategies:
 
 class TestChannelBroadcastingStrategiesLegacy:
     """Test suite for channel broadcasting strategies."""
+
+    # Test player IDs - use UUID objects
+    SENDER_1 = uuid.uuid4()
+    TARGET_1 = uuid.uuid4()
 
     @pytest.fixture
     def mock_nats_handler(self):
@@ -352,10 +385,10 @@ class TestChannelBroadcastingStrategiesLegacy:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         mock_nats_handler.connection_manager = mock_connection_manager
 
-        await strategy.broadcast(chat_event, "test_room", "", "", "sender1", mock_nats_handler)
+        await strategy.broadcast(chat_event, "test_room", "", None, self.SENDER_1, mock_nats_handler)
 
         mock_nats_handler._broadcast_to_room_with_filtering.assert_called_once_with(
-            "test_room", chat_event, "sender1", "say"
+            "test_room", chat_event, str(self.SENDER_1), "say"
         )
 
     @pytest.mark.asyncio
@@ -365,7 +398,9 @@ class TestChannelBroadcastingStrategiesLegacy:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         mock_nats_handler.connection_manager = mock_connection_manager
 
-        await strategy.broadcast(chat_event, "", "", "", "sender1", mock_nats_handler)
+        await strategy.broadcast(
+            chat_event, "", "", None, TestChannelBroadcastingStrategiesLegacy.SENDER_1, mock_nats_handler
+        )
 
         # Should not call broadcast when room_id is missing
         mock_nats_handler._broadcast_to_room_with_filtering.assert_not_called()
@@ -377,9 +412,9 @@ class TestChannelBroadcastingStrategiesLegacy:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         mock_nats_handler.connection_manager = mock_connection_manager
 
-        await strategy.broadcast(chat_event, "", "", "", "sender1", mock_nats_handler)
+        await strategy.broadcast(chat_event, "", "", None, self.SENDER_1, mock_nats_handler)
 
-        mock_connection_manager.broadcast_global.assert_called_once_with(chat_event, exclude_player="sender1")
+        mock_connection_manager.broadcast_global.assert_called_once_with(chat_event, exclude_player=str(self.SENDER_1))
 
     @pytest.mark.asyncio
     async def test_party_channel_strategy_with_party_id(self, mock_nats_handler, mock_connection_manager):
@@ -388,7 +423,7 @@ class TestChannelBroadcastingStrategiesLegacy:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         mock_nats_handler.connection_manager = mock_connection_manager
 
-        await strategy.broadcast(chat_event, "", "party123", "", "sender1", mock_nats_handler)
+        await strategy.broadcast(chat_event, "", "party123", None, self.SENDER_1, mock_nats_handler)
 
         # Currently just logs, no actual broadcasting
         # This will be implemented when party system is available
@@ -400,7 +435,9 @@ class TestChannelBroadcastingStrategiesLegacy:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         mock_nats_handler.connection_manager = mock_connection_manager
 
-        await strategy.broadcast(chat_event, "", "", "", "sender1", mock_nats_handler)
+        await strategy.broadcast(
+            chat_event, "", "", None, TestChannelBroadcastingStrategiesLegacy.SENDER_1, mock_nats_handler
+        )
 
         # Should log warning but not broadcast
 
@@ -411,9 +448,9 @@ class TestChannelBroadcastingStrategiesLegacy:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         mock_nats_handler.connection_manager = mock_connection_manager
 
-        await strategy.broadcast(chat_event, "", "", "target1", "sender1", mock_nats_handler)
+        await strategy.broadcast(chat_event, "", "", self.TARGET_1, self.SENDER_1, mock_nats_handler)
 
-        mock_connection_manager.send_personal_message.assert_called_once_with("target1", chat_event)
+        mock_connection_manager.send_personal_message.assert_called_once_with(self.TARGET_1, chat_event)
 
     @pytest.mark.asyncio
     async def test_whisper_channel_strategy_missing_target(self, mock_nats_handler, mock_connection_manager):
@@ -422,7 +459,9 @@ class TestChannelBroadcastingStrategiesLegacy:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         mock_nats_handler.connection_manager = mock_connection_manager
 
-        await strategy.broadcast(chat_event, "", "", "", "sender1", mock_nats_handler)
+        await strategy.broadcast(
+            chat_event, "", "", None, TestChannelBroadcastingStrategiesLegacy.SENDER_1, mock_nats_handler
+        )
 
         # Should not send when target_player_id is missing
         mock_connection_manager.send_personal_message.assert_not_called()
@@ -434,9 +473,9 @@ class TestChannelBroadcastingStrategiesLegacy:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         mock_nats_handler.connection_manager = mock_connection_manager
 
-        await strategy.broadcast(chat_event, "", "", "", "sender1", mock_nats_handler)
+        await strategy.broadcast(chat_event, "", "", None, self.SENDER_1, mock_nats_handler)
 
-        mock_connection_manager.broadcast_global.assert_called_once_with(chat_event, exclude_player="sender1")
+        mock_connection_manager.broadcast_global.assert_called_once_with(chat_event, exclude_player=str(self.SENDER_1))
 
     @pytest.mark.asyncio
     async def test_system_admin_channel_strategy_admin(self, mock_nats_handler, mock_connection_manager):
@@ -445,9 +484,9 @@ class TestChannelBroadcastingStrategiesLegacy:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         mock_nats_handler.connection_manager = mock_connection_manager
 
-        await strategy.broadcast(chat_event, "", "", "", "sender1", mock_nats_handler)
+        await strategy.broadcast(chat_event, "", "", None, self.SENDER_1, mock_nats_handler)
 
-        mock_connection_manager.broadcast_global.assert_called_once_with(chat_event, exclude_player="sender1")
+        mock_connection_manager.broadcast_global.assert_called_once_with(chat_event, exclude_player=str(self.SENDER_1))
 
     @pytest.mark.asyncio
     async def test_unknown_channel_strategy(self, mock_nats_handler, mock_connection_manager):
@@ -456,7 +495,9 @@ class TestChannelBroadcastingStrategiesLegacy:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         mock_nats_handler.connection_manager = mock_connection_manager
 
-        await strategy.broadcast(chat_event, "", "", "", "sender1", mock_nats_handler)
+        await strategy.broadcast(
+            chat_event, "", "", None, TestChannelBroadcastingStrategiesLegacy.SENDER_1, mock_nats_handler
+        )
 
         # Should not call any broadcast methods for unknown channels
         mock_connection_manager.broadcast_global.assert_not_called()
@@ -548,6 +589,10 @@ class TestChannelBroadcastingStrategyFactory:
 class TestStrategyIntegration:
     """Test integration of strategies with NATS handler."""
 
+    # Test player IDs - use UUID objects
+    SENDER_1 = uuid.uuid4()
+    TARGET_1 = uuid.uuid4()
+
     @pytest.fixture
     def mock_connection_manager(self):
         """Return a mock connection manager for integration tests."""
@@ -572,11 +617,12 @@ class TestStrategyIntegration:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         nats_handler.connection_manager = mock_connection_manager
 
-        await nats_handler._broadcast_by_channel_type("say", chat_event, "test_room", "", "", "sender1")
+        await nats_handler._broadcast_by_channel_type("say", chat_event, "test_room", "", None, self.SENDER_1)
 
         # Should call the room filtering method
+        # _broadcast_to_room_with_filtering expects string sender_id, so assert against string
         nats_handler._broadcast_to_room_with_filtering.assert_called_once_with(
-            "test_room", chat_event, "sender1", "say"
+            "test_room", chat_event, str(self.SENDER_1), "say"
         )
 
     @pytest.mark.asyncio
@@ -592,10 +638,10 @@ class TestStrategyIntegration:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         nats_handler.connection_manager = mock_connection_manager
 
-        await nats_handler._broadcast_by_channel_type("global", chat_event, "", "", "", "sender1")
+        await nats_handler._broadcast_by_channel_type("global", chat_event, "", "", None, self.SENDER_1)
 
         # Should call broadcast_global
-        mock_connection_manager.broadcast_global.assert_called_once_with(chat_event, exclude_player="sender1")
+        mock_connection_manager.broadcast_global.assert_called_once_with(chat_event, exclude_player=str(self.SENDER_1))
 
     @pytest.mark.asyncio
     async def test_strategy_integration_whisper_channel(self, mock_connection_manager):
@@ -610,10 +656,12 @@ class TestStrategyIntegration:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         nats_handler.connection_manager = mock_connection_manager
 
-        await nats_handler._broadcast_by_channel_type("whisper", chat_event, "", "", "target1", "sender1")
+        await nats_handler._broadcast_by_channel_type(
+            "whisper", chat_event, "", "", self.TARGET_1, self.SENDER_1
+        )
 
         # Should call send_personal_message
-        mock_connection_manager.send_personal_message.assert_called_once_with("target1", chat_event)
+        mock_connection_manager.send_personal_message.assert_called_once_with(self.TARGET_1, chat_event)
 
     @pytest.mark.asyncio
     async def test_strategy_integration_unknown_channel(self, mock_connection_manager):
@@ -629,7 +677,7 @@ class TestStrategyIntegration:
         nats_handler.connection_manager = mock_connection_manager
 
         # Should not raise exception
-        await nats_handler._broadcast_by_channel_type("unknown", chat_event, "", "", "", "sender1")
+        await nats_handler._broadcast_by_channel_type("unknown", chat_event, "", "", None, self.SENDER_1)
 
         # Should not call any broadcast methods
         mock_connection_manager.broadcast_global.assert_not_called()

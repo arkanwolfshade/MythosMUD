@@ -115,9 +115,10 @@ class UsernameAuthenticationBackend(AuthenticationBackend):
     def __init__(self, name: str, transport, get_strategy):
         super().__init__(name, transport, get_strategy)
 
-    async def login(self, strategy, user_manager, user):
+    async def login(self, strategy: Any, user: Any) -> Any:
         """Custom login that uses username."""
-        return await super().login(strategy, user_manager, user)
+        # Note: Parent class login signature is (strategy, user), not (strategy, user_manager, user)
+        return await super().login(strategy, user)
 
 
 def get_username_auth_backend() -> UsernameAuthenticationBackend:

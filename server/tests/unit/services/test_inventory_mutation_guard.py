@@ -157,8 +157,13 @@ def test_guard_serializes_mutations_per_player():
     assert order == ["first-enter"]
 
     release_first.set()
-    first_thread.join()
-    second_thread.join()
+    # CRITICAL: Add timeout to prevent indefinite hang if threads don't complete
+    first_thread.join(timeout=5.0)
+    if first_thread.is_alive():
+        raise TimeoutError(f"First thread {first_thread.ident} did not complete within 5 second timeout")
+    second_thread.join(timeout=5.0)
+    if second_thread.is_alive():
+        raise TimeoutError(f"Second thread {second_thread.ident} did not complete within 5 second timeout")
 
     assert order == ["first-enter", "first-exit", "second-enter", "second-exit"]
 

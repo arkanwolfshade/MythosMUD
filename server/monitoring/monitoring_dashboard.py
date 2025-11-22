@@ -13,10 +13,11 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger, log_with_context
-from ..logging.log_aggregator import LogAggregationStats, get_log_aggregator
-from ..monitoring.exception_tracker import ExceptionStats, get_exception_tracker
-from ..monitoring.performance_monitor import PerformanceStats, get_performance_monitor
+from server.logging.enhanced_logging_config import get_logger, log_with_context
+from server.logging.log_aggregator import LogAggregationStats, get_log_aggregator
+
+from .exception_tracker import ExceptionStats, get_exception_tracker
+from .performance_monitor import PerformanceStats, get_performance_monitor
 
 logger = get_logger(__name__)
 
@@ -98,7 +99,9 @@ class MonitoringDashboard:
             Current system health status
         """
         # Get performance statistics
-        perf_stats = self.performance_monitor.get_all_stats()
+        perf_stats_raw = self.performance_monitor.get_all_stats()
+        # Filter out None values for type safety
+        perf_stats: dict[str, PerformanceStats] = {k: v for k, v in perf_stats_raw.items() if v is not None}
 
         # Get exception statistics
         exc_stats = self.exception_tracker.get_stats()
@@ -143,7 +146,11 @@ class MonitoringDashboard:
             Complete monitoring summary with all metrics
         """
         system_health = self.get_system_health()
-        performance_stats = self.performance_monitor.get_all_stats()
+        performance_stats_raw = self.performance_monitor.get_all_stats()
+        # Filter out None values for type safety
+        performance_stats: dict[str, PerformanceStats] = {
+            k: v for k, v in performance_stats_raw.items() if v is not None
+        }
         exception_stats = self.exception_tracker.get_stats()
         log_stats = self.log_aggregator.get_stats()
 

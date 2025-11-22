@@ -27,6 +27,12 @@ A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulh
     - [Utility Scripts](#utility-scripts)
     - [Development Tools](#development-tools)
   - [Documentation](#documentation)
+    - [Core Documentation](#core-documentation)
+    - [Development Guides](#development-guides)
+    - [Testing Documentation](#testing-documentation)
+    - [Architecture \& Technical Specs](#architecture--technical-specs)
+    - [Logging \& Monitoring](#logging--monitoring)
+    - [Security \& Error Handling](#security--error-handling)
   - [License](#license)
 
 ---
@@ -38,9 +44,9 @@ A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulh
 - **Authors:** @arkanwolfshade & @TylerWolfshade
 - **Audience:** Friends, family, and invited contributors (not public)
 - **Tech Stack:**
-  - Frontend: React 19 + TypeScript (Vite 7)
-  - Backend: Python 3.12+ (FastAPI 0.119+)
-  - Database: SQLite (MVP) → PostgreSQL (production)
+  - Frontend: React 19.1+ + TypeScript 5.9 (Vite 7.1+)
+  - Backend: Python 3.12+ (FastAPI 0.121+)
+  - Database: PostgreSQL (development, tests, and production)
   - Real-time: WebSockets + NATS messaging
   - Authentication: FastAPI Users + Argon2 + JWT
   - Testing: pytest + Playwright + Vitest
@@ -57,15 +63,15 @@ A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulh
 
 - **Authentication & User Management** - Complete JWT-based auth with Argon2 password hashing and invite system
 - **Real-time Communication** - Dual connection system with NATS-based messaging and WebSocket/SSE clients
-- **Player Management** - Character creation, stats generation, and persistence with SQLite
+- **Player Management** - Character creation, stats generation, and persistence with PostgreSQL
 - **Room System** - Hierarchical room structure with movement, navigation, and dynamic descriptions
 - **Chat System** - Multi-channel communication (say, local, whisper, system, emotes)
 - **Command Processing** - Unified command handler with alias system and help system
 - **Admin Tools** - Teleportation, player management, and monitoring commands
 - **NPC System** - Basic NPC spawning, behavior, and combat interactions
-- **Database Layer** - SQLite persistence with thread-safe operations and migration support
+- **Database Layer** - PostgreSQL persistence with async operations, connection pooling, and migration support
 - **Enhanced Logging** - Structured logging with MDC, correlation IDs, security sanitization, and performance monitoring
-- **Testing Framework** - Comprehensive test suite with 80%+ coverage and 114 automated E2E tests
+- **Testing Framework** - Comprehensive test suite with 80%+ coverage, 304 test files, and automated E2E tests
 - **Security Framework** - Input validation, rate limiting, XSS protection, and COPPA compliance measures
 
 ### 🔄 In Progress
@@ -102,14 +108,14 @@ A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulh
 - **Dual Connection System** - WebSocket for commands + Server-Sent Events for real-time updates
 - **Secure Authentication** - JWT tokens with Argon2 password hashing and invite-only system
 - **COPPA Compliant** - Privacy-first design for minor users with no personal data collection
-- **Comprehensive Testing** - 80%+ test coverage with automated CI/CD and 114 automated E2E tests
+- **Comprehensive Testing** - 80%+ test coverage with automated CI/CD and comprehensive E2E test suite
 - **Enhanced Structured Logging** - Enterprise-grade logging with:
   - MDC (Mapped Diagnostic Context) for automatic context propagation
   - Correlation IDs for request tracing across service boundaries
   - Automatic security sanitization of sensitive data
   - Built-in performance monitoring and metrics collection
   - 100% exception coverage with rich context
-- **Modular Test Framework** - Hierarchical test organization with 210+ test files across unit, integration, E2E, security, and performance categories
+- **Modular Test Framework** - Hierarchical test organization with 304 test files across unit, integration, E2E, security, and performance categories
 
 ### Security & Privacy
 
@@ -130,6 +136,7 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
 1. **Prerequisites:**
    - Python 3.12+ (managed via pyenv-win recommended)
    - Node.js 22+ and npm (NVM for Windows recommended)
+   - PostgreSQL 15+ (for database - required for tests and development)
    - [uv](https://github.com/astral-sh/uv) for Python dependency management
    - Git
 
@@ -148,7 +155,14 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
    git submodule update --init --recursive
    ```
 
-3. **Install dependencies:**
+3. **Set up test environment:**
+
+   ```powershell
+   # Create test environment files (required before running tests)
+   .\scripts\setup_test_environment.ps1
+   ```
+
+4. **Install dependencies:**
 
    ```sh
    # Python dependencies
@@ -161,7 +175,7 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
    npm install
    ```
 
-4. **Start the development environment:**
+5. **Start the development environment:**
 
    ```powershell
    # Windows PowerShell - Start both server and client
@@ -178,12 +192,12 @@ See [DEVELOPMENT.md](docs/DEVELOPMENT.md) for full setup instructions.
    .\scripts\start_client.ps1
    ```
 
-5. **Visit:**
+6. **Visit:**
    - Frontend: <http://localhost:5173>
    - Backend API: <http://localhost:54731>
    - API Documentation: <http://localhost:54731/docs>
 
-6. **Test the setup:**
+7. **Test the setup:**
 
    ```sh
    # Run tests
@@ -234,9 +248,9 @@ MythosMUD/
 │   ├── app/                   # Application factory (factory, lifespan, memory management)
 │   ├── npc/                   # NPC system (behaviors, combat, communication, state machines)
 │   ├── logging/               # Enhanced logging (MDC, correlation IDs, security sanitization)
-│   ├── tests/                 # Hierarchical test suite (210+ test files organized by type)
-│   │   ├── unit/              # Unit tests (130 files, 61.9% of suite)
-│   │   ├── integration/       # Integration tests (30 files, 14.3% of suite)
+│   ├── tests/                 # Hierarchical test suite (304 test files organized by type)
+│   │   ├── unit/              # Unit tests
+│   │   ├── integration/       # Integration tests
 │   │   ├── e2e/               # End-to-end tests
 │   │   ├── security/          # Security-specific tests
 │   │   ├── performance/       # Performance and load tests
@@ -249,7 +263,7 @@ MythosMUD/
 │   └── [core files]           # Main app, persistence, config, etc.
 │
 ├── data/                      # World data (git submodule)
-│   ├── players/               # Player database files (SQLite)
+│   ├── players/               # Player database files (legacy SQLite, now PostgreSQL)
 │   ├── npcs/                  # NPC database files
 │   ├── rooms/                 # Hierarchical room structure (earth/yeng planes)
 │   ├── user_management/       # User management data
@@ -287,8 +301,8 @@ MythosMUD/
 ├── .cursor/                   # Cursor IDE configuration
 ├── .agent-os/                 # AI agent specifications and tasks
 ├── PLANNING.md                # Comprehensive project planning
-├── DEVELOPMENT.md             # Development environment setup
-├── DEVELOPMENT_AI.md          # AI agent development guide
+├── docs/DEVELOPMENT.md         # Development environment setup
+├── docs/DEVELOPMENT_AI.md     # AI agent development guide
 ├── TASKS.md                   # Task tracking (deprecated - use GitHub Issues)
 ├── TASKS.local.md             # Local task tracking
 ├── Makefile                   # Build and development commands
@@ -327,10 +341,10 @@ The `scripts/` directory contains PowerShell and Python utility scripts for mana
 
 **Make Commands:**
 
-- `make test` - Run all tests from project root
-- `make test-comprehensive` - Run server tests only
+- `make test` - Run default test suite from project root (~5-7 min)
+- `make test-comprehensive` - Run comprehensive test suite via act (mirrors CI, ~30 min)
 - `make test-client` - Run client unit tests only (Vitest)
-- `make test-client-runtime` - Run automated E2E tests (Playwright)
+- `make test-client-e2e` - Run automated E2E tests (Playwright)
 - `make lint` - Run linting for both server and client
 - `make format` - Format code for both server and client
 - `make semgrep` - Run security analysis
@@ -353,9 +367,9 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 - **Testing:**
   - Server: pytest with 80%+ coverage (target 90%)
   - Client: Vitest for unit tests, Playwright for E2E tests
-  - Test Organization: Hierarchical structure with 210+ test files across 9 categories
-  - E2E Automated: 114 automated Playwright CLI tests (10 scenarios, ~50% faster execution)
-  - E2E Manual: 11 multiplayer MCP scenarios requiring AI Agent coordination
+  - Test Organization: Hierarchical structure with 304 test files across 9 categories
+  - E2E Automated: Comprehensive Playwright CLI tests for runtime scenarios
+  - E2E Manual: 21 multiplayer MCP scenarios requiring AI Agent coordination (see e2e-tests/scenarios/)
   - See [E2E Testing Guide](docs/E2E_TESTING_GUIDE.md) for details
   - **CRITICAL**: Run `make setup-test-env` before running server tests for the first time
   - **CRITICAL**: Always use `make test` from project root, NEVER from `/server/` directory

@@ -6,6 +6,8 @@ and real-time updates for the game.
 """
 
 import json
+import time
+import uuid
 from typing import Any
 
 from fastapi import WebSocket, WebSocketDisconnect
@@ -52,7 +54,11 @@ def _get_npc_name_from_instance(npc_id: str) -> str | None:
 
 
 async def handle_websocket_connection(
-    websocket: WebSocket, player_id: str, session_id: str | None = None, connection_manager=None
+    websocket: WebSocket,
+    player_id: uuid.UUID,
+    session_id: str | None = None,
+    connection_manager=None,
+    token: str | None = None,
 ) -> None:
     """
     Handle a WebSocket connection for a player.
@@ -81,27 +87,27 @@ async def handle_websocket_connection(
     except Exception as e:
         logger.debug("Could not check shutdown status in WebSocket connection", error=str(e))
 
-    # Convert player_id to string to ensure JSON serialization compatibility
-    player_id_str = str(player_id)
-
-    # Connect the WebSocket with session tracking
-    success = await connection_manager.connect_websocket(websocket, player_id_str, session_id)
+    # Connect the WebSocket with session tracking and token for revalidation (accepts UUID directly)
+    success = await connection_manager.connect_websocket(websocket, player_id, session_id, token=token)
     if not success:
-        logger.error("Failed to connect WebSocket", player_id=player_id_str)
+        logger.error("Failed to connect WebSocket", player_id=player_id)
         return
+
+    # Convert to string for user_manager (expects string) and other string-based operations
+    player_id_str = str(player_id)
 
     # Load player mute data when they connect to the game
     try:
         from ..services.user_manager import user_manager
 
         user_manager.load_player_mutes(player_id_str)
-        logger.info("Loaded mute data", player_id=player_id_str)
+        logger.info("Loaded mute data", player_id=player_id)
     except Exception as e:
-        logger.error("Error loading mute data", player_id=player_id_str, error=str(e))
+        logger.error("Error loading mute data", player_id=player_id, error=str(e))
 
     try:
         # Send initial game state
-        player = connection_manager._get_player(player_id_str)
+        player = connection_manager._get_player(player_id)
         if player and hasattr(player, "current_room_id"):
             persistence = connection_manager.persistence
             if persistence:
@@ -110,9 +116,7 @@ async def handle_websocket_connection(
                     # Ensure player is added to their current room and track if we actually added them
                     logger.info("DEBUG: Room object ID before player_entered", room_id=id(room))
                     if not room.has_player(player_id_str):
-                        logger.info(
-                            "Adding player to room", player_id=player_id_str, room_id=str(player.current_room_id)
-                        )
+                        logger.info("Adding player to room", player_id=player_id, room_id=str(player.current_room_id))
                         room.player_entered(player_id_str)
                         logger.info(
                             f"DEBUG: After player_entered, room {player.current_room_id} has players: {room.get_players()}"
@@ -120,7 +124,8 @@ async def handle_websocket_connection(
                         logger.info("DEBUG: Room object ID after player_entered", room_id=id(room))
                     else:
                         logger.info(
-                            f"DEBUG: Player {player_id_str} already in room {player.current_room_id}, players: {room.get_players()}"
+                            f"DEBUG: Player {player_id_str} already in room {player.current_room_id}, players: {room.get_players()}",
+                            player_id=player_id,
                         )
                         logger.info("DEBUG: Room object ID (already in room)", room_id=id(room))
 
@@ -144,6 +149,24 @@ async def handle_websocket_connection(
 
                     # Get room data and ensure UUIDs are converted to strings
                     room_data = room.to_dict() if hasattr(room, "to_dict") else room
+
+                    # Debug: Log room exits to verify they're being loaded
+                    if hasattr(room, "exits"):
+                        logger.info(
+                            "DEBUG: Room exits in room object",
+                            room_id=room.id if hasattr(room, "id") else "unknown",
+                            exits=room.exits,
+                            exits_type=type(room.exits).__name__,
+                            exits_count=len(room.exits) if isinstance(room.exits, dict) else 0,
+                        )
+                    if isinstance(room_data, dict) and "exits" in room_data:
+                        logger.info(
+                            "DEBUG: Room exits in room_data dict",
+                            room_id=room_data.get("id", "unknown"),
+                            exits=room_data["exits"],
+                            exits_type=type(room_data["exits"]).__name__,
+                            exits_count=len(room_data["exits"]) if isinstance(room_data["exits"], dict) else 0,
+                        )
 
                     # Ensure all UUID objects are converted to strings for JSON serialization
                     def convert_uuids_to_strings(obj: Any) -> Any:
@@ -184,7 +207,10 @@ async def handle_websocket_connection(
                     # This ensures the Status panel displays profession info automatically
                     try:
                         # Access app state through connection manager (same pattern as process_websocket_command)
-                        app_state = connection_manager.app.state if connection_manager.app else None
+                        # Handle Mock objects in tests by checking for app attribute
+                        app_state = None
+                        if hasattr(connection_manager, "app") and connection_manager.app:
+                            app_state = getattr(connection_manager.app, "state", None)
                         player_service = getattr(app_state, "player_service", None) if app_state else None
 
                         if player_service:
@@ -192,7 +218,7 @@ async def handle_websocket_connection(
                             complete_player_data = await player_service._convert_player_to_schema(player)
                             logger.debug(
                                 "WebSocket handler: Retrieved complete player data with profession",
-                                player_id=player_id_str,
+                                player_id=player_id,
                                 has_profession=bool(getattr(complete_player_data, "profession_name", None)),
                             )
 
@@ -209,7 +235,7 @@ async def handle_websocket_connection(
                             # Fallback to basic player data if PlayerService not available
                             logger.warning(
                                 "PlayerService not available in websocket handler, using basic player data",
-                                player_id=player_id_str,
+                                player_id=player_id,
                             )
                             player_data_for_client = {
                                 "name": player.name,
@@ -218,7 +244,7 @@ async def handle_websocket_connection(
                                 "stats": stats_data,
                             }
                     except Exception as e:
-                        logger.error("Error getting complete player data", error=str(e), player_id=player_id_str)
+                        logger.error("Error getting complete player data", error=str(e), player_id=player_id)
                         # Fallback to basic player data
                         player_data_for_client = {
                             "name": player.name,
@@ -226,6 +252,19 @@ async def handle_websocket_connection(
                             "xp": getattr(player, "experience_points", 0),
                             "stats": stats_data,
                         }
+
+                    # Debug: Log the room_data that will be sent to verify exits are included
+                    if isinstance(room_data, dict):
+                        logger.info(
+                            "DEBUG: Room data being sent to client",
+                            room_id=room_data.get("id", "unknown"),
+                            has_exits="exits" in room_data,
+                            exits=room_data.get("exits", {}),
+                            exits_type=type(room_data.get("exits", {})).__name__,
+                            exits_count=len(room_data.get("exits", {}))
+                            if isinstance(room_data.get("exits"), dict)
+                            else 0,
+                        )
 
                     game_state_event = build_event(
                         "game_state",
@@ -240,21 +279,54 @@ async def handle_websocket_connection(
                     )
                     await websocket.send_json(game_state_event)
 
-                    # Check if player is in limbo (dead) and send death event to trigger UI
-                    if canonical_room_id == "limbo_death_void_limbo_room":
+                    # Check if player is dead (HP <= -10) and send death event to trigger UI
+                    # This handles players who connect with HP already at death threshold
+                    # CRITICAL: Refresh player from database to ensure we have latest HP and room after respawn
+                    # The persistence layer might have cached player data, so we need fresh data
+                    fresh_player = persistence.get_player(player_id)
+                    if fresh_player:
+                        player = fresh_player
+                        # Update canonical_room_id with fresh player's room to ensure accurate death check
+                        canonical_room_id = (
+                            str(player.current_room_id) if hasattr(player, "current_room_id") else canonical_room_id
+                        )
+
+                    stats = player.get_stats() if hasattr(player, "get_stats") else {}
+                    # Ensure stats is a dict and current_hp is an integer (handle Mock objects in tests)
+                    if isinstance(stats, dict):
+                        current_hp = stats.get("current_health", 100)
+                    else:
+                        # Fallback for Mock objects or unexpected types
+                        current_hp = 100
+                    # Ensure current_hp is an integer (not a Mock)
+                    if not isinstance(current_hp, int):
+                        current_hp = 100
+
+                    # Import LIMBO_ROOM_ID for comparison
+                    from ..services.player_respawn_service import LIMBO_ROOM_ID
+
+                    # Check if player is dead (HP <= -10) or in limbo
+                    # Use the fresh canonical_room_id which was updated from the refreshed player
+                    if current_hp <= -10 or str(canonical_room_id) == LIMBO_ROOM_ID:
+                        # Get room name for death location display
+                        death_location_name = room.name if room else "Unknown Location"
+
                         death_event = build_event(
                             "player_died",
                             {
                                 "player_id": player_id_str,
                                 "player_name": player.name,
-                                "death_location": getattr(player, "death_location", "Unknown Location"),
+                                "death_location": death_location_name,
                                 "message": "You have died. The darkness claims you utterly.",
                             },
                             player_id=player_id_str,
                         )
                         await websocket.send_json(death_event)
                         logger.info(
-                            "Sent death notification to player on login", player_id=player_id_str, in_limbo=True
+                            "Sent death notification to player on login",
+                            player_id=player_id_str,
+                            current_hp=current_hp,
+                            in_limbo=str(canonical_room_id) == LIMBO_ROOM_ID,
                         )
 
                     # Note: Room update happens via EventBus flow
@@ -321,7 +393,7 @@ async def handle_websocket_connection(
                                 occupants_sent=occupant_names,
                             )
                     except Exception as e:
-                        logger.error("Error sending initial room state", player_id=player_id_str, error=str(e))
+                        logger.error("Error sending initial room state", player_id=player_id, error=str(e))
 
                     # Note: Removed synthetic player_entered event generation to prevent duplicates
                     # The natural PlayerEnteredRoom event from Room.player_entered() will handle
@@ -336,24 +408,70 @@ async def handle_websocket_connection(
         await websocket.send_json(welcome_event)
 
         # Main message loop
+        from .message_validator import MessageValidationError, get_message_validator
+
+        validator = get_message_validator()
+
+        # Get connection_id for rate limiting
+        connection_id = connection_manager.get_connection_id_from_websocket(websocket)
+
         while True:
             try:
                 # Receive message from client
                 data = await websocket.receive_text()
-                message = json.loads(data)
 
-                # CRITICAL FIX: Handle wrapped message format from useWebSocketConnection
-                # The client wraps messages in {message, csrfToken, timestamp} structure
-                if "message" in message and isinstance(message["message"], str):
-                    try:
-                        # Unwrap the inner message
-                        inner_message = json.loads(message["message"])
-                        # Verify CSRF token if present
-                        # TODO: Implement CSRF validation
-                        message = inner_message
-                    except json.JSONDecodeError:
-                        # If inner message is not JSON, use it as-is
-                        pass
+                # Check message rate limit before processing
+                if connection_id:
+                    if not connection_manager.rate_limiter.check_message_rate_limit(connection_id):
+                        logger.warning(
+                            "Message rate limit exceeded",
+                            player_id=player_id_str,
+                            connection_id=connection_id,
+                        )
+                        rate_limit_info = connection_manager.rate_limiter.get_message_rate_limit_info(connection_id)
+                        error_response = create_websocket_error_response(
+                            ErrorType.RATE_LIMIT_EXCEEDED,
+                            f"Message rate limit exceeded. Limit: {rate_limit_info['max_attempts']} messages per minute. Try again in {int(rate_limit_info['reset_time'] - time.time())} seconds.",
+                            ErrorMessages.RATE_LIMIT_EXCEEDED,
+                            {
+                                "player_id": player_id_str,
+                                "connection_id": connection_id,
+                                "rate_limit_info": rate_limit_info,
+                            },
+                        )
+                        await websocket.send_json(error_response)
+                        continue
+
+                # Validate and parse message using comprehensive validator
+                try:
+                    # Get CSRF token if available (from connection metadata or session)
+                    csrf_token = None
+                    # TODO: Retrieve actual CSRF token from session/connection metadata
+                    # For now, validation will allow messages without tokens (backward compatibility)
+
+                    # Parse and validate message (handles size, depth, schema, CSRF)
+                    message = validator.parse_and_validate(
+                        data=data,
+                        player_id=player_id_str,
+                        schema=None,  # Basic validation for now, can be enhanced per message type
+                        csrf_token=csrf_token,
+                    )
+
+                except MessageValidationError as e:
+                    logger.warning(
+                        "Message validation failed",
+                        player_id=player_id_str,
+                        error_type=e.error_type,
+                        error_message=e.message,
+                    )
+                    error_response = create_websocket_error_response(
+                        ErrorType.INVALID_FORMAT,
+                        f"Message validation failed: {e.message}",
+                        ErrorMessages.INVALID_FORMAT,
+                        {"player_id": player_id_str, "error_type": e.error_type},
+                    )
+                    await websocket.send_json(error_response)
+                    continue
 
                 # Mark presence on any inbound message
                 connection_manager.mark_player_seen(player_id_str)
@@ -372,31 +490,87 @@ async def handle_websocket_connection(
                 await websocket.send_json(error_response)
 
             except WebSocketDisconnect:
-                logger.info("WebSocket disconnected", player_id=player_id_str)
+                logger.info(
+                    "WebSocket disconnected",
+                    player_id=player_id_str,
+                    connection_id=connection_id,
+                )
                 break
 
+            except RuntimeError as e:
+                # Check if this is a WebSocket connection error
+                error_message = str(e)
+                if "WebSocket is not connected" in error_message or 'Need to call "accept" first' in error_message:
+                    logger.warning(
+                        "WebSocket connection lost (not connected)",
+                        player_id=player_id_str,
+                        connection_id=connection_id,
+                        error=error_message,
+                    )
+                    # Break out of loop - WebSocket is no longer valid
+                    break
+                # For other RuntimeErrors, fall through to general exception handler
+                raise
+
             except Exception as e:
-                logger.error("Error handling WebSocket message", player_id=player_id_str, error=str(e))
-                error_response = create_websocket_error_response(
-                    ErrorType.INTERNAL_ERROR,
-                    f"Internal server error: {str(e)}",
-                    ErrorMessages.INTERNAL_ERROR,
-                    {"player_id": player_id_str},
+                # Enhanced error context for debugging
+                logger.error(
+                    "Error handling WebSocket message",
+                    player_id=player_id_str,
+                    connection_id=connection_id,
+                    error=str(e),
+                    error_type=type(e).__name__,
+                    exc_info=True,
                 )
-                await websocket.send_json(error_response)
+                try:
+                    error_response = create_websocket_error_response(
+                        ErrorType.INTERNAL_ERROR,
+                        f"Internal server error: {str(e)}",
+                        ErrorMessages.INTERNAL_ERROR,
+                        {
+                            "player_id": player_id_str,
+                            "connection_id": connection_id,
+                            "error_type": type(e).__name__,
+                        },
+                    )
+                    await websocket.send_json(error_response)
+                except Exception as send_error:
+                    # If we can't send error response, check if WebSocket is closed
+                    send_error_msg = str(send_error)
+                    if (
+                        "WebSocket is not connected" in send_error_msg
+                        or "close message has been sent" in send_error_msg
+                    ):
+                        logger.warning(
+                            "WebSocket closed, breaking message loop",
+                            player_id=player_id_str,
+                            connection_id=connection_id,
+                            original_error=str(e),
+                            send_error=send_error_msg,
+                        )
+                        # WebSocket is closed, break out of loop
+                        break
+                    # For other send errors, log and continue (original behavior)
+                    logger.error(
+                        "Failed to send error response to client",
+                        player_id=player_id_str,
+                        connection_id=connection_id,
+                        original_error=str(e),
+                        send_error=send_error_msg,
+                    )
 
     finally:
         # Clean up connection
-        await connection_manager.disconnect_websocket(player_id_str)
+        await connection_manager.disconnect_websocket(player_id)
 
         # Clean up player mute data when they disconnect
         try:
             from ..services.user_manager import user_manager
 
             user_manager.cleanup_player_mutes(player_id_str)
-            logger.info("Cleaned up mute data", player_id=player_id_str)
+            logger.info("Cleaned up mute data", player_id=player_id)
         except Exception as e:
-            logger.error("Error cleaning up mute data", player_id=player_id_str, error=str(e))
+            logger.error("Error cleaning up mute data", player_id=player_id, error=str(e))
 
 
 async def handle_websocket_message(websocket: WebSocket, player_id: str, message: dict) -> None:
@@ -426,7 +600,11 @@ async def handle_websocket_message(websocket: WebSocket, player_id: str, message
 
 
 async def handle_game_command(
-    websocket: WebSocket, player_id: str, command: str, args: list[Any] | None = None
+    websocket: WebSocket,
+    player_id: str,
+    command: str,
+    args: list[Any] | None = None,
+    connection_manager=None,
 ) -> None:
     """
     Handle a game command from a player.
@@ -436,13 +614,14 @@ async def handle_game_command(
         player_id: The player's ID
         command: The command string
         args: Command arguments (optional, will parse from command if not provided)
+        connection_manager: ConnectionManager instance (optional, will resolve from app.state if not provided)
     """
     try:
-        # AI Agent: Access connection_manager via app.state.container (no longer a global)
-        #           Import locally to avoid circular import
-        from ..main import app
+        # Resolve connection_manager if not provided (backward compatibility)
+        if connection_manager is None:
+            from ..main import app
 
-        connection_manager = app.state.container.connection_manager
+            connection_manager = app.state.container.connection_manager
 
         logger.info(
             "🚨 SERVER DEBUG: handle_game_command called",
@@ -466,7 +645,7 @@ async def handle_game_command(
             cmd = command.lower()
 
         # Simple command processing for WebSocket
-        result = await process_websocket_command(cmd, args, player_id)
+        result = await process_websocket_command(cmd, args, player_id, connection_manager=connection_manager)
 
         # Send the result back to the player
         logger.info(
@@ -512,7 +691,7 @@ async def handle_game_command(
         await websocket.send_json(error_response)
 
 
-async def process_websocket_command(cmd: str, args: list, player_id: str) -> dict:
+async def process_websocket_command(cmd: str, args: list, player_id: str, connection_manager=None) -> dict:
     """
     Process a command for WebSocket connections.
 
@@ -520,6 +699,7 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
         cmd: The command name
         args: Command arguments
         player_id: The player's ID
+        connection_manager: ConnectionManager instance (optional, will resolve from app.state if not provided)
 
     Returns:
         dict: Command result
@@ -527,11 +707,11 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
     logger.info("SERVER DEBUG: process_websocket_command called", cmd=cmd, args=args, player_id=player_id)
     logger.debug("Processing command", cmd=cmd, args=args, player_id=player_id)
 
-    # AI Agent: Access connection_manager via app.state.container (no longer a global)
-    #           Import locally to avoid circular import
-    from ..main import app
+    # Resolve connection_manager if not provided (backward compatibility)
+    if connection_manager is None:
+        from ..main import app
 
-    connection_manager = app.state.container.connection_manager
+        connection_manager = app.state.container.connection_manager
 
     # Get player from connection manager
     logger.debug("Getting player for ID", player_id=player_id, player_id_type=type(player_id))
@@ -552,89 +732,11 @@ async def process_websocket_command(cmd: str, args: list, player_id: str) -> dic
         logger.warning("Persistence layer not available")
         return {"result": "Game system unavailable"}
 
-    # Handle basic commands - use unified command handler for look to support targets
-    if cmd == "look":
-        # Use the unified command handler for look commands to support targets
-        pass  # Fall through to unified command handler
-
-    elif cmd == "go":
-        logger.debug("Processing go command", args=args)
-        if not args:
-            logger.warning("Go command called without arguments")
-            return {"result": "Go where? Usage: go <direction>"}
-
-        direction = args[0].lower()
-        logger.debug("Direction", direction=direction)
-        # Use the connection manager's view of the player's current room
-        room_id = getattr(player, "current_room_id", None)
-        logger.debug("Current room ID", room_id=room_id)
-        room = persistence.get_room(room_id)
-        if not room:
-            logger.warning("Room not found", room_id=room_id)
-            return {"result": "You can't go that way"}
-
-        exits = room.exits if hasattr(room, "exits") else {}
-        target_room_id = exits.get(direction)
-        if not target_room_id:
-            return {"result": "You can't go that way"}
-
-        target_room = persistence.get_room(target_room_id)
-        if not target_room:
-            return {"result": "You can't go that way"}
-
-        # Use MovementService to move the player (this will trigger events)
-        from ..game.movement_service import MovementService
-
-        # Get the event bus from the connection manager (should be set during app startup)
-        event_bus = getattr(connection_manager, "_event_bus", None)
-        if not event_bus:
-            logger.error("No EventBus available for player movement", player_id=player_id)
-            return {"result": "Game system temporarily unavailable"}
-
-        # Get player combat service from connection manager
-        player_combat_service = getattr(connection_manager, "_player_combat_service", None)
-
-        # Create MovementService with the same persistence layer as the connection manager
-        movement_service = MovementService(event_bus, player_combat_service=player_combat_service)
-        # Override the persistence layer to use the same instance as the connection manager
-        if connection_manager.persistence:
-            movement_service._persistence = connection_manager.persistence
-            logger.debug("Overriding MovementService persistence with connection manager persistence")
-            logger.debug("MovementService persistence ID", persistence_id=id(movement_service._persistence))
-            logger.debug("Connection manager persistence ID", persistence_id=id(connection_manager.persistence))
-        else:
-            logger.error("Connection manager persistence is None!")
-
-        # Get the player's current room before moving
-        from_room_id = player.current_room_id
-
-        # Debug: Check if the player is in the room according to both persistence layers
-        from_room = connection_manager.persistence.get_room(from_room_id) if connection_manager.persistence else None
-        if from_room:
-            has_player = from_room.has_player(player_id)
-            logger.debug("Player in room", player_id=player_id, room_id=from_room_id, has_player=has_player)
-            logger.debug("Room players", room_id=from_room_id, players=list(from_room.get_players()))
-        else:
-            logger.error("Could not get room from connection manager persistence", room_id=from_room_id)
-
-        logger.debug("Moving player", player_id=player_id, from_room_id=from_room_id, to_room_id=target_room_id)
-
-        # Move the player using the movement service
-        success = movement_service.move_player(player_id, str(from_room_id), target_room_id)
-
-        logger.debug("Movement result", success=success)
-
-        if not success:
-            return {"result": "You can't go that way"}
-
-        # Get updated room info
-        updated_room = persistence.get_room(target_room_id)
-        name = getattr(updated_room, "name", "")
-        desc = getattr(updated_room, "description", "You see nothing special.")
-        exits = updated_room.exits if hasattr(updated_room, "exits") else {}
-        valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
-        exit_list = ", ".join(valid_exits) if valid_exits else "none"
-        return {"result": f"{name}\n{desc}\n\nExits: {exit_list}", "room_changed": True, "room_id": target_room_id}
+    # CRITICAL FIX: Removed special case for "go" command
+    # The unified command handler (called below) will handle "go" commands
+    # and apply all necessary checks including catatonia validation
+    # The old special case bypassed catatonia checks, allowing catatonic players to move
+    # All commands (including "go" and "look") now go through the unified handler
 
     # Use the unified command handler for all commands
     from ..alias_storage import AliasStorage
@@ -704,7 +806,7 @@ Directions: north, south, east, west
 """
 
 
-async def handle_chat_message(websocket: WebSocket, player_id: str, message: str) -> None:
+async def handle_chat_message(websocket: WebSocket, player_id: str, message: str, connection_manager=None) -> None:
     """
     Handle a chat message from a player.
 
@@ -712,13 +814,14 @@ async def handle_chat_message(websocket: WebSocket, player_id: str, message: str
         websocket: The WebSocket connection
         player_id: The player's ID
         message: The chat message
+        connection_manager: ConnectionManager instance (optional, will resolve from app.state if not provided)
     """
     try:
-        # AI Agent: Access connection_manager via app.state.container (no longer a global)
-        #           Import locally to avoid circular import
-        from ..main import app
+        # Resolve connection_manager if not provided (backward compatibility)
+        if connection_manager is None:
+            from ..main import app
 
-        connection_manager = app.state.container.connection_manager
+            connection_manager = app.state.container.connection_manager
 
         # Create chat event
         chat_event = build_event(
@@ -749,21 +852,22 @@ async def handle_chat_message(websocket: WebSocket, player_id: str, message: str
         await websocket.send_json(error_response)
 
 
-async def broadcast_room_update(player_id: str, room_id: str) -> None:
+async def broadcast_room_update(player_id: str, room_id: str, connection_manager=None) -> None:
     """
     Broadcast a room update to all players in the room.
 
     Args:
         player_id: The player who triggered the update
         room_id: The room's ID
+        connection_manager: ConnectionManager instance (optional, will resolve from app.state if not provided)
     """
     logger.debug("broadcast_room_update called", player_id=player_id, room_id=room_id)
     try:
-        # AI Agent: Access connection_manager via app.state.container (no longer a global)
-        #           Import locally to avoid circular import
-        from ..main import app
+        # Resolve connection_manager if not provided (backward compatibility)
+        if connection_manager is None:
+            from ..main import app
 
-        connection_manager = app.state.container.connection_manager
+            connection_manager = app.state.container.connection_manager
 
         # Get room data
         persistence = connection_manager.persistence

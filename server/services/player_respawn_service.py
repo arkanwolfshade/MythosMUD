@@ -6,12 +6,14 @@ As documented in the Pnakotic Manuscripts, resurrection requires careful navigat
 the spaces between worlds.
 """
 
+import uuid
 from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.events.event_types import PlayerRespawnedEvent
 from server.logging.enhanced_logging_config import get_logger
+from server.models.game import PositionState
 from server.models.player import Player
 
 logger = get_logger(__name__)
@@ -20,7 +22,9 @@ logger = get_logger(__name__)
 DEFAULT_RESPAWN_ROOM = "earth_arkhamcity_sanitarium_room_foyer_001"
 
 # Limbo room for death state isolation
-LIMBO_ROOM_ID = "limbo_death_void"
+# NOTE: Room ID is generated as {plane}_{zone}_{sub_zone}_{stable_id}
+# For limbo room: limbo_death_void_limbo_death_void
+LIMBO_ROOM_ID = "limbo_death_void_limbo_death_void"
 
 
 class PlayerRespawnService:
@@ -51,7 +55,7 @@ class PlayerRespawnService:
             player_combat_service_available=bool(player_combat_service),
         )
 
-    async def move_player_to_limbo(self, player_id: str, death_location: str, session: AsyncSession) -> bool:
+    async def move_player_to_limbo(self, player_id: uuid.UUID, death_location: str, session: AsyncSession) -> bool:
         """
         Move a dead player to the limbo room.
 
@@ -95,7 +99,7 @@ class PlayerRespawnService:
             await session.rollback()
             return False
 
-    async def get_respawn_room(self, player_id: str, session: AsyncSession) -> str:
+    async def get_respawn_room(self, player_id: uuid.UUID, session: AsyncSession) -> str:
         """
         Get the respawn room for a player.
 
@@ -129,7 +133,7 @@ class PlayerRespawnService:
             logger.error("Error getting respawn room, using default", player_id=player_id, error=str(e))
             return DEFAULT_RESPAWN_ROOM
 
-    async def respawn_player(self, player_id: str, session: AsyncSession) -> bool:
+    async def respawn_player(self, player_id: uuid.UUID, session: AsyncSession) -> bool:
         """
         Respawn a dead player at their respawn location with full HP.
 
@@ -160,6 +164,11 @@ class PlayerRespawnService:
             old_hp = stats.get("current_health", -10)
             stats["current_health"] = 100
 
+            # BUGFIX: Restore posture to standing when player respawns
+            # As documented in "Resurrection and Corporeal Restoration" - Dr. Armitage, 1930
+            # Upon resurrection, the body is restored to full function including upright posture
+            stats["position"] = PositionState.STANDING
+
             # Update player stats and location
             player.set_stats(stats)
             old_room = player.current_room_id
@@ -170,10 +179,7 @@ class PlayerRespawnService:
             # Combat state must be cleared upon resurrection to prevent dimensional entanglement
             if self._player_combat_service:
                 try:
-                    from uuid import UUID
-
-                    player_uuid = UUID(player_id)
-                    await self._player_combat_service.clear_player_combat_state(player_uuid)
+                    await self._player_combat_service.clear_player_combat_state(player_id)
                     logger.info("Cleared combat state for respawned player", player_id=player_id)
                 except Exception as e:
                     logger.error(

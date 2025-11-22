@@ -120,8 +120,11 @@ async def handle_look_command(
         if target_room_id:
             target_room = persistence.get_room(target_room_id)
             if target_room:
-                name = target_room.name
-                desc = target_room.description
+                # Convert to strings to handle test mocks that might return MagicMock objects
+                name = str(target_room.name) if target_room.name is not None else "Unknown Room"
+                desc = (
+                    str(target_room.description) if target_room.description is not None else "You see nothing special."
+                )
                 logger.debug(
                     "Looked at room in direction",
                     player=player_name,
@@ -133,8 +136,9 @@ async def handle_look_command(
         return {"result": "You see nothing special that way."}
 
     # Look at current room
-    name = room.name
-    desc = room.description
+    # Convert to strings to handle test mocks that might return MagicMock objects
+    name = str(room.name) if room.name is not None else "Unknown Room"
+    desc = str(room.description) if room.description is not None else "You see nothing special."
     exits = room.exits
     # Only include exits that have valid room IDs (not null)
     valid_exits = [direction for direction, room_id in exits.items() if room_id is not None]
@@ -143,7 +147,8 @@ async def handle_look_command(
 
     drop_lines = format_room_drop_lines(room_drops)
     drop_summary = build_room_drop_summary(room_drops)
-    lines = [name, desc, "", *drop_lines, "", f"Exits: {exit_list}"]
+    # Ensure all items in lines are strings (handle test mocks)
+    lines = [name, desc, "", *[str(line) for line in drop_lines], "", f"Exits: {exit_list}"]
     rendered = "\n".join(lines)
 
     return {
@@ -198,6 +203,18 @@ async def handle_go_command(
         logger.warning("Go command failed - current room not found", player=player_name, room_id=room_id)
         return {"result": "You can't go that way"}
 
+    # Ensure room ID consistency - use room object's ID if it differs from player's current_room_id
+    # This handles cases where room IDs might be stored in different formats
+    if room.id != room_id:
+        logger.warning(
+            "Room ID mismatch detected",
+            player=player_name,
+            player_room_id=room_id,
+            room_object_id=room.id,
+        )
+        # Use the room object's ID for consistency
+        room_id = room.id
+
     # Enforce posture requirements before attempting movement
     position = "standing"
     if hasattr(player, "get_stats"):
@@ -224,9 +241,39 @@ async def handle_go_command(
         return {"result": "You need to stand up before moving."}
 
     exits = room.exits
+    # Ensure exits is a dictionary and not None
+    if not exits:
+        exits = {}
+        logger.warning(
+            "Room has no exits dictionary",
+            player=player_name,
+            room_id=room_id,
+            room_object_id=room.id,
+        )
+
+    # Debug logging to diagnose movement bug
+    logger.info(
+        "DEBUG: Movement attempt",
+        player=player_name,
+        player_current_room_id=player.current_room_id,
+        room_object_id=room.id,
+        room_id_used=room_id,
+        direction=direction,
+        exits_dict=exits,
+        exits_dict_keys=list(exits.keys()) if exits else [],
+        exits_dict_type=type(exits).__name__,
+    )
     target_room_id = exits.get(direction)
     if not target_room_id:
-        logger.debug("No exit in direction", player=player_name, direction=direction, room_id=room_id)
+        logger.warning(
+            "No exit in direction - movement blocked",
+            player=player_name,
+            direction=direction,
+            room_id=room_id,
+            room_object_id=room.id,
+            exits_dict=exits,
+            exits_dict_keys=list(exits.keys()) if exits else [],
+        )
         return {"result": "You can't go that way"}
 
     target_room = persistence.get_room(target_room_id)
@@ -244,11 +291,15 @@ async def handle_go_command(
         # Pass the same event bus that persistence uses to ensure events are published correctly
         # Also pass player_combat_service to enforce combat state validation
         movement_service = MovementService(persistence._event_bus, player_combat_service=player_combat_service)
-        success = movement_service.move_player(str(player.player_id), room_id, target_room_id)
+        success = movement_service.move_player(player.player_id, room_id, target_room_id)
 
         if success:
             logger.info("Player moved successfully", player=player_name, from_room=room_id, to_room=target_room_id)
-            return {"result": "You move to the new location."}
+            return {
+                "result": "You move to the new location.",
+                "room_changed": True,
+                "room_id": target_room_id,
+            }
         else:
             logger.warning("Movement service failed", player=player_name, from_room=room_id, to_room=target_room_id)
             return {"result": "You can't go that way."}

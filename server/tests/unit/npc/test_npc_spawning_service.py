@@ -123,9 +123,19 @@ class TestNPCSpawningService:
     @pytest.fixture
     def population_controller(self, event_bus):
         """Create a population controller for testing."""
-        with patch("server.npc.population_control.Path") as mock_path:
-            mock_path.return_value.iterdir.return_value = []
-            return NPCPopulationController(event_bus, "test_path")
+        # Create a mock async_persistence that doesn't actually load from database
+        from unittest.mock import MagicMock
+
+        mock_persistence = MagicMock()
+
+        # Patch the _load_zone_configurations method to skip database loading
+        with patch.object(NPCPopulationController, "_load_zone_configurations", return_value=None):
+            return NPCPopulationController(
+                event_bus,
+                spawning_service=None,
+                lifecycle_manager=None,
+                async_persistence=mock_persistence,
+            )
 
     @pytest.fixture
     def spawning_service(self, event_bus, population_controller):
@@ -464,17 +474,23 @@ class TestNPCSpawningService:
             return_value=MagicMock(npcs_by_definition={1: 0})
         )
 
-        # Call the method directly
-        event = PlayerEnteredRoom(player_id="player1", room_id="room_001")
+        # Call the method directly (use UUID for player_id)
+        from uuid import uuid4
+
+        player_id = uuid4()
+        event = PlayerEnteredRoom(player_id=str(player_id), room_id="room_001")
         spawning_service._handle_player_entered_room(event)
 
         # No assertion needed, just ensuring no exception is raised
 
     def test_handle_player_left_room(self, spawning_service):
         """Test _handle_player_left_room method directly."""
+        from uuid import uuid4
+
         from server.events.event_types import PlayerLeftRoom
 
-        event = PlayerLeftRoom(player_id="player1", room_id="room_001")
+        player_id = uuid4()
+        event = PlayerLeftRoom(player_id=str(player_id), room_id="room_001")
         # This method does nothing but should not raise an exception
         spawning_service._handle_player_left_room(event)
 

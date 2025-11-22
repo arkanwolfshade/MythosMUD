@@ -3,6 +3,7 @@ End-to-end integration tests for complete NATS event flow.
 """
 
 import asyncio
+import uuid
 from datetime import UTC, datetime
 from unittest.mock import AsyncMock, Mock, patch
 
@@ -14,6 +15,7 @@ from server.realtime.nats_message_handler import NATSMessageHandler
 from server.services.game_tick_service import GameTickService
 
 
+@pytest.mark.e2e
 class TestNATSIntegrationE2E:
     """End-to-end integration tests for NATS event flow."""
 
@@ -53,6 +55,9 @@ class TestNATSIntegrationE2E:
         # Mock broadcast methods
         self.connection_manager.broadcast_to_room = AsyncMock()
         self.connection_manager.broadcast_global = AsyncMock()
+        # Ensure broadcast_room_event and broadcast_global_event exist and are callable
+        self.connection_manager.broadcast_room_event = AsyncMock()
+        self.connection_manager.broadcast_global_event = AsyncMock()
 
     @pytest.mark.asyncio
     async def test_complete_player_entered_event_flow(self):
@@ -171,9 +176,11 @@ class TestNATSIntegrationE2E:
         await self.nats_handler.start()
 
         # Simulate NATS message for player_entered event
+        # EventMessageSchema requires message_id and timestamp from BaseMessageSchema
         player_entered_message = {
+            "message_id": str(uuid.uuid4()),
             "event_type": "player_entered",
-            "data": {"player_id": "player1", "room_id": "test_room_1"},
+            "event_data": {"player_id": "player1", "room_id": "test_room_1"},
             "timestamp": datetime.now(UTC).isoformat(),
         }
 
@@ -201,9 +208,11 @@ class TestNATSIntegrationE2E:
         await self.nats_handler.start()
 
         # Simulate NATS message for game_tick event
+        # EventMessageSchema requires message_id and timestamp from BaseMessageSchema
         game_tick_message = {
+            "message_id": str(uuid.uuid4()),
             "event_type": "game_tick",
-            "data": {"tick_number": 1, "tick_interval": 10.0},
+            "event_data": {"tick_number": 1, "tick_interval": 10.0},
             "timestamp": datetime.now(UTC).isoformat(),
         }
 

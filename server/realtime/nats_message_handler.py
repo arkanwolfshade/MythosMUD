@@ -5,9 +5,10 @@ This module handles incoming NATS messages and broadcasts them to WebSocket clie
 It replaces the previous Redis message handler with NATS-based messaging.
 """
 
+import uuid
 from datetime import UTC, datetime
 from types import SimpleNamespace
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 from unittest.mock import Mock
 
 from ..logging.enhanced_logging_config import get_logger
@@ -16,6 +17,7 @@ from ..realtime.circuit_breaker import CircuitBreaker, CircuitBreakerOpen
 from ..realtime.dead_letter_queue import DeadLetterMessage, DeadLetterQueue
 from ..realtime.envelope import build_event
 from ..realtime.nats_retry_handler import NATSRetryHandler
+from ..schemas.nats_messages import validate_message
 from .connection_manager import (
     get_global_connection_manager as _get_global_connection_manager,
 )
@@ -202,13 +204,21 @@ class NATSMessageHandler:
             return False
 
     async def _subscribe_to_chat_subjects(self):
-        """Subscribe to all chat-related NATS subjects using standardized patterns."""
-        if self.subject_manager:
-            # Use NATSSubjectManager for standardized subscription patterns
-            await self._subscribe_to_standardized_chat_subjects()
-        else:
-            # Fallback to legacy hardcoded patterns for backward compatibility
-            await self._subscribe_to_legacy_chat_subjects()
+        """
+        Subscribe to all chat-related NATS subjects using NATSSubjectManager patterns.
+
+        AI: All subscriptions now use standardized patterns from NATSSubjectManager.
+            Legacy hardcoded patterns have been removed. Subject manager is required.
+        """
+        if not self.subject_manager:
+            logger.error(
+                "NATSSubjectManager not available - cannot subscribe to chat subjects",
+                handler_initialized=hasattr(self, "nats_service"),
+            )
+            raise RuntimeError("NATSSubjectManager is required for chat subject subscriptions")
+
+        # Use NATSSubjectManager for standardized subscription patterns
+        await self._subscribe_to_standardized_chat_subjects()
 
     async def _subscribe_to_standardized_chat_subjects(self):
         """
@@ -228,67 +238,37 @@ class NATSMessageHandler:
         # Get standardized chat subscription patterns from subject manager
         subscription_patterns = self.subject_manager.get_chat_subscription_patterns()
 
-        # Add legacy patterns for backward compatibility
-        # TODO: Remove these after full migration to standardized patterns
-        legacy_patterns = [
-            "chat.local.*",  # Local messages per room (legacy)
-            "chat.party.*",  # Party messages per party
-            "chat.admin",  # Admin messages
-        ]
-
-        # Combine standardized and legacy patterns
-        all_patterns = subscription_patterns + legacy_patterns
-
         logger.info(
-            "Subscribing to chat subjects",
-            standardized_count=len(subscription_patterns),
-            legacy_count=len(legacy_patterns),
-            total_count=len(all_patterns),
+            "Subscribing to chat subjects using NATSSubjectManager patterns",
+            pattern_count=len(subscription_patterns),
         )
 
-        for pattern in all_patterns:
+        for pattern in subscription_patterns:
             logger.info("About to subscribe to pattern", pattern=pattern, debug=True)
             await self._subscribe_to_subject(pattern)
 
         logger.info("Finished _subscribe_to_standardized_chat_subjects", debug=True)
 
-    async def _subscribe_to_legacy_chat_subjects(self):
-        """Subscribe to chat subjects using legacy hardcoded patterns."""
-        subjects = [
-            "chat.say.*",  # Say messages per room
-            "chat.local.*",  # Local messages per room (for backward compatibility)
-            "chat.local.subzone.*",  # Local messages per subzone
-            "chat.emote.*",  # Emote messages per room
-            "chat.pose.*",  # Pose messages per room
-            "chat.global",  # Global messages
-            "chat.party.*",  # Party messages per party
-            "chat.whisper.player.*",  # Whisper messages per player
-            "chat.system",  # System messages
-            "chat.admin",  # Admin messages
-            # Combat event subjects (moved to event subjects to avoid duplicates)
-        ]
-
-        logger.info("Starting _subscribe_to_legacy_chat_subjects - subscribing to legacy chat subjects", debug=True)
-        for subject in subjects:
-            logger.info("About to subscribe to legacy subject", subject=subject, debug=True)
-            await self._subscribe_to_subject(subject)
-        logger.info("Finished _subscribe_to_legacy_chat_subjects", debug=True)
-
     async def _subscribe_to_subject(self, subject: str):
-        """Subscribe to a specific NATS subject."""
+        """
+        Subscribe to a specific NATS subject.
+
+        Args:
+            subject: Subject string to subscribe to (built by caller using NATSSubjectManager)
+
+        Raises:
+            NATSSubscribeError: If subscription fails
+        """
         try:
             logger.info("Attempting to subscribe to NATS subject", subject=subject, debug=True)
-            success = await self.nats_service.subscribe(subject, self._handle_nats_message)
-            if success:
-                self.subscriptions[subject] = True
-                logger.info("Successfully subscribed to NATS subject", subject=subject, debug=True)
-                return True
-            else:
-                logger.error("Failed to subscribe to NATS subject", subject=subject, debug=True)
-                return False
+            # subscribe() now raises exceptions instead of returning False
+            await self.nats_service.subscribe(subject, self._handle_nats_message)
+            self.subscriptions[subject] = True
+            logger.info("Successfully subscribed to NATS subject", subject=subject, debug=True)
         except Exception as e:
             logger.error("Error subscribing to NATS subject", subject=subject, error=str(e), debug=True)
-            return False
+            # Re-raise to propagate error
+            raise
 
     async def _unsubscribe_from_subject(self, subject: str):
         """Unsubscribe from a specific NATS subject."""
@@ -323,6 +303,14 @@ class NATSMessageHandler:
         message_id = message_data.get("message_id", "unknown")
 
         try:
+            # Validate incoming message schema
+            # Determine message type from channel or data structure
+            message_type = "chat"
+            if "event_type" in message_data or "event_data" in message_data:
+                message_type = "event"
+            # Validate message - fail if validation fails
+            validate_message(message_data, message_type=message_type)
+
             # Process through circuit breaker
             # AI: Circuit breaker fails fast when service is degraded
             await self.circuit_breaker.call(self._process_message_with_retry, message_data)
@@ -489,18 +477,31 @@ class NATSMessageHandler:
 
         # Broadcast based on channel type
         # AI: This can raise exceptions if broadcasting fails
-        # Provide defaults for optional parameters
+        # Convert string IDs to UUIDs for _broadcast_by_channel_type
+        sender_id_uuid = uuid.UUID(sender_id) if isinstance(sender_id, str) else sender_id
+        target_player_id_uuid: uuid.UUID | None = None
+        if target_player_id:
+            target_player_id_uuid = (
+                uuid.UUID(target_player_id) if isinstance(target_player_id, str) else target_player_id
+            )
+
         await self._broadcast_by_channel_type(
             channel,
             chat_event,
             room_id or "",
             party_id or "",
-            target_player_id or "",
-            sender_id,
+            target_player_id_uuid,
+            sender_id_uuid,
         )
 
     async def _broadcast_by_channel_type(
-        self, channel: str, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str
+        self,
+        channel: str,
+        chat_event: dict,
+        room_id: str,
+        party_id: str,
+        target_player_id: uuid.UUID | None,
+        sender_id: uuid.UUID,
     ):
         """
         Broadcast message based on channel type using strategy pattern.
@@ -510,8 +511,8 @@ class NATSMessageHandler:
             chat_event: WebSocket event to broadcast
             room_id: Room ID for room-based channels
             party_id: Party ID for party-based channels
-            target_player_id: Target player ID for whisper messages
-            sender_id: Sender player ID
+            target_player_id: Target player ID for whisper messages (UUID or None)
+            sender_id: Sender player ID (UUID)
         """
         try:
             # Import here to avoid circular imports
@@ -602,7 +603,7 @@ class NATSMessageHandler:
                 channel=channel,
             )
 
-            # Pre-load mute data for all potential receivers to ensure consistency
+            # Pre-load mute data for all potential receivers to ensure consistency (async batch loading)
             receiver_ids = [pid for pid in targets if pid != sender_id]
             if receiver_ids:
                 logger.debug(
@@ -612,25 +613,29 @@ class NATSMessageHandler:
                     channel=channel,
                     receiver_count=len(receiver_ids),
                 )
-                for receiver_id in receiver_ids:
-                    try:
-                        user_manager.load_player_mutes(receiver_id)
-                        logger.debug(
-                            "=== BROADCAST FILTERING DEBUG: Loaded mute data for receiver ===",
-                            room_id=room_id,
-                            sender_id=sender_id,
-                            channel=channel,
-                            receiver_id=receiver_id,
-                        )
-                    except Exception as e:
-                        logger.warning(
-                            "Failed to load mute data for receiver",
-                            room_id=room_id,
-                            sender_id=sender_id,
-                            channel=channel,
-                            receiver_id=receiver_id,
-                            error=str(e),
-                        )
+                try:
+                    # Use async batch loading to prevent blocking the event loop
+                    # Cast to list[UUID | str] since load_player_mutes_batch accepts this type
+                    # and receiver_ids is list[str] which is compatible
+                    receiver_ids_typed: list[uuid.UUID | str] = cast(list[uuid.UUID | str], receiver_ids)
+                    load_results = await user_manager.load_player_mutes_batch(receiver_ids_typed)
+                    logger.debug(
+                        "=== BROADCAST FILTERING DEBUG: Batch loaded mute data ===",
+                        room_id=room_id,
+                        sender_id=sender_id,
+                        channel=channel,
+                        loaded_count=sum(1 for v in load_results.values() if v),
+                        failed_count=sum(1 for v in load_results.values() if not v),
+                    )
+                except Exception as e:
+                    logger.warning(
+                        "Failed to batch load mute data for receivers",
+                        room_id=room_id,
+                        sender_id=sender_id,
+                        channel=channel,
+                        receiver_count=len(receiver_ids),
+                        error=str(e),
+                    )
 
             event_type = chat_event.get("event_type") if isinstance(chat_event, dict) else None
             if not event_type and isinstance(chat_event, dict):
@@ -699,13 +704,39 @@ class NATSMessageHandler:
                 is_muted = False
 
                 if should_apply_mute:
+                    logger.info(
+                        "=== MUTE FILTERING: Starting mute check ===",
+                        room_id=room_id,
+                        sender_id=sender_id,
+                        sender_name=chat_event_data.get("sender_name", "unknown"),
+                        receiver_id=player_id,
+                        channel=channel,
+                        should_apply_mute=should_apply_mute,
+                    )
                     patched_mute_checker = getattr(self, "_is_player_muted_by_receiver", None)
                     if isinstance(patched_mute_checker, Mock):
                         is_muted = patched_mute_checker(player_id, sender_id)
+                        logger.info(
+                            "=== MUTE FILTERING: Using patched mute checker (test mode) ===",
+                            receiver_id=player_id,
+                            sender_id=sender_id,
+                            is_muted=is_muted,
+                        )
                     else:
                         # Check if the receiving player has muted the sender using the shared UserManager instance
-                        is_muted = self._is_player_muted_by_receiver_with_user_manager(
+                        logger.info(
+                            "=== MUTE FILTERING: Calling _is_player_muted_by_receiver_with_user_manager ===",
+                            receiver_id=player_id,
+                            sender_id=sender_id,
+                        )
+                        is_muted = await self._is_player_muted_by_receiver_with_user_manager(
                             user_manager, player_id, sender_id
+                        )
+                        logger.info(
+                            "=== MUTE FILTERING: Mute check completed ===",
+                            receiver_id=player_id,
+                            sender_id=sender_id,
+                            is_muted=is_muted,
                         )
                     logger.debug(
                         "=== BROADCAST FILTERING DEBUG: Mute check result ===",
@@ -718,11 +749,12 @@ class NATSMessageHandler:
 
                     if channel in {"emote", "pose"}:
                         logger.info(
-                            "Emote mute filtering evaluation",
+                            "=== EMOTE MUTE FILTERING: Evaluation result ===",
                             receiver_id=player_id,
                             sender_id=sender_id,
                             is_muted=is_muted,
                             channel=channel,
+                            will_filter=should_apply_mute and is_muted,
                         )
                 else:
                     logger.debug(
@@ -734,13 +766,23 @@ class NATSMessageHandler:
                     )
 
                 if should_apply_mute and is_muted:
-                    logger.debug(
-                        "Filtered out message due to mute",
+                    logger.info(
+                        "=== MUTE FILTERING: Message FILTERED OUT due to mute ===",
                         receiver_id=player_id,
                         sender_id=sender_id,
                         channel=channel,
+                        room_id=room_id,
                     )
                     continue
+                else:
+                    logger.info(
+                        "=== MUTE FILTERING: Message ALLOWED (not muted or mute check skipped) ===",
+                        receiver_id=player_id,
+                        sender_id=sender_id,
+                        channel=channel,
+                        is_muted=is_muted,
+                        should_apply_mute=should_apply_mute,
+                    )
 
                 logger.debug(
                     "=== BROADCAST FILTERING DEBUG: Player passed all filters ===",
@@ -769,7 +811,16 @@ class NATSMessageHandler:
                     target_player_id=player_id,
                     channel=channel,
                 )
-                await self.connection_manager.send_personal_message(player_id, chat_event)
+                # Convert string player_id to UUID for send_personal_message
+                try:
+                    player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+                    await self.connection_manager.send_personal_message(player_id_uuid, chat_event)
+                except (ValueError, AttributeError, TypeError) as e:
+                    logger.warning(
+                        "Invalid player_id format for send_personal_message",
+                        player_id=player_id,
+                        error=str(e),
+                    )
 
             # Echo emotes/poses back to the sender so they see their own action
             if isinstance(chat_event_data, dict):
@@ -793,7 +844,9 @@ class NATSMessageHandler:
 
             if needs_sender_echo:
                 try:
-                    await self.connection_manager.send_personal_message(sender_id, chat_event)
+                    # Convert string sender_id to UUID for send_personal_message
+                    sender_id_uuid = uuid.UUID(sender_id) if isinstance(sender_id, str) else sender_id
+                    await self.connection_manager.send_personal_message(sender_id_uuid, chat_event)
                     logger.debug(
                         "=== BROADCAST FILTERING DEBUG: Echoed message to sender ===",
                         room_id=room_id,
@@ -933,8 +986,18 @@ class NATSMessageHandler:
                         available_mute_data=available_mute_data,
                     )
 
-                    if receiver_id in user_manager._player_mutes:
-                        receiver_mutes = list(user_manager._player_mutes[receiver_id].keys())
+                    # Convert receiver_id to UUID if it's a valid UUID string
+                    # _player_mutes uses UUID keys, so we need to convert
+                    # receiver_id is typed as str in function parameter, so always convert
+                    receiver_id_uuid: uuid.UUID | None = None
+                    try:
+                        receiver_id_uuid = uuid.UUID(receiver_id)
+                    except (ValueError, AttributeError, TypeError):
+                        # If conversion fails, receiver_id is not a valid UUID, skip
+                        receiver_id_uuid = None
+
+                    if receiver_id_uuid and receiver_id_uuid in user_manager._player_mutes:
+                        receiver_mutes = list(user_manager._player_mutes[receiver_id_uuid].keys())
                         logger.debug(
                             "=== MUTE FILTERING DEBUG: Receiver's muted players ===",
                             receiver_id=receiver_id,
@@ -962,17 +1025,22 @@ class NATSMessageHandler:
                 )
 
             # Check if receiver has muted sender (personal mute)
+            logger.info(
+                "=== MUTE FILTERING: Checking personal mute ===",
+                receiver_id=receiver_id,
+                sender_id=sender_id,
+            )
             is_personally_muted = user_manager.is_player_muted(receiver_id, sender_id)
-            logger.debug(
-                "=== MUTE FILTERING DEBUG: Personal mute check result ===",
+            logger.info(
+                "=== MUTE FILTERING: Personal mute check result ===",
                 receiver_id=receiver_id,
                 sender_id=sender_id,
                 is_personally_muted=is_personally_muted,
             )
 
             if is_personally_muted:
-                logger.debug(
-                    "Player muted by receiver (personal mute)",
+                logger.info(
+                    "=== MUTE FILTERING: Player IS MUTED (personal mute) ===",
                     receiver_id=receiver_id,
                     sender_id=sender_id,
                 )
@@ -980,11 +1048,16 @@ class NATSMessageHandler:
 
             # Load global mutes and check if sender is globally muted by anyone
             # Only apply global mute if receiver is not an admin (admins can see globally muted players)
+            logger.info(
+                "=== MUTE FILTERING: Checking global mute ===",
+                receiver_id=receiver_id,
+                sender_id=sender_id,
+            )
             is_globally_muted = user_manager.is_player_muted_by_others(sender_id)
             is_receiver_admin = user_manager.is_admin(receiver_id)
 
-            logger.debug(
-                "=== MUTE FILTERING DEBUG: Global mute check ===",
+            logger.info(
+                "=== MUTE FILTERING: Global mute check result ===",
                 receiver_id=receiver_id,
                 sender_id=sender_id,
                 is_globally_muted=is_globally_muted,
@@ -992,15 +1065,15 @@ class NATSMessageHandler:
             )
 
             if is_globally_muted and not is_receiver_admin:
-                logger.debug(
-                    "Player muted by receiver (global mute)",
+                logger.info(
+                    "=== MUTE FILTERING: Player IS MUTED (global mute) ===",
                     receiver_id=receiver_id,
                     sender_id=sender_id,
                 )
                 return True
 
-            logger.debug(
-                "=== MUTE FILTERING DEBUG: No mute found, allowing message ===",
+            logger.info(
+                "=== MUTE FILTERING: Player NOT MUTED by receiver ===",
                 receiver_id=receiver_id,
                 sender_id=sender_id,
             )
@@ -1015,7 +1088,9 @@ class NATSMessageHandler:
             )
             return False
 
-    def _is_player_muted_by_receiver_with_user_manager(self, user_manager, receiver_id: str, sender_id: str) -> bool:
+    async def _is_player_muted_by_receiver_with_user_manager(
+        self, user_manager, receiver_id: str, sender_id: str
+    ) -> bool:
         """
         Check if a receiving player has muted the sender using a provided UserManager instance.
 
@@ -1034,10 +1109,10 @@ class NATSMessageHandler:
         )
 
         try:
-            # Load the receiver's mute data before checking (if not already loaded)
-            mute_load_result = user_manager.load_player_mutes(receiver_id)
+            # Load the receiver's mute data before checking (if not already loaded) - async version
+            mute_load_result = await user_manager.load_player_mutes_async(receiver_id)
             logger.debug(
-                "=== MUTE FILTERING DEBUG: Mute data load result ===",
+                "=== BROADCAST FILTERING DEBUG: Mute data load result (async) ===",
                 receiver_id=receiver_id,
                 sender_id=sender_id,
                 mute_load_result=mute_load_result,
@@ -1120,8 +1195,8 @@ class NATSMessageHandler:
                 )
                 return True
 
-            logger.debug(
-                "Player not muted by receiver",
+            logger.info(
+                "=== MUTE FILTERING: Player NOT MUTED by receiver ===",
                 receiver_id=receiver_id,
                 sender_id=sender_id,
             )
@@ -1142,23 +1217,19 @@ class NATSMessageHandler:
         Args:
             room_id: Room ID to subscribe to
 
+        Raises:
+            RuntimeError: If subject manager is not available
+
         AI: Uses subject manager to build standardized subscription subjects.
-        AI: Falls back to legacy patterns if subject manager not available.
+            Subject manager is required - no legacy fallback.
         """
-        # Build subjects using standardized patterns if available
-        if self.subject_manager:
-            subjects = [
-                self.subject_manager.build_subject("chat_say_room", room_id=room_id),
-                # Note: chat.local.{room_id} is legacy and not in standardized patterns
-                # The standard pattern is chat.local.subzone.{subzone}
-                # For now, we skip this deprecated pattern
-            ]
-        else:
-            # Legacy fallback
-            subjects = [
-                f"chat.say.{room_id}",
-                f"chat.local.{room_id}",  # Deprecated pattern
-            ]
+        if not self.subject_manager:
+            raise RuntimeError("NATSSubjectManager is required for room subscriptions")
+
+        # Build subjects using standardized patterns
+        subjects = [
+            self.subject_manager.build_subject("chat_say_room", room_id=room_id),
+        ]
 
         for subject in subjects:
             if subject not in self.subscriptions:
@@ -1171,22 +1242,19 @@ class NATSMessageHandler:
         Args:
             room_id: Room ID to unsubscribe from
 
+        Raises:
+            RuntimeError: If subject manager is not available
+
         AI: Uses subject manager to build standardized unsubscription subjects.
-        AI: Falls back to legacy patterns if subject manager not available.
+            Subject manager is required - no legacy fallback.
         """
-        # Build subjects using standardized patterns if available
-        if self.subject_manager:
-            subjects = [
-                self.subject_manager.build_subject("chat_say_room", room_id=room_id),
-                # Note: chat.local.{room_id} is legacy and not in standardized patterns
-                # For now, we skip this deprecated pattern
-            ]
-        else:
-            # Legacy fallback
-            subjects = [
-                f"chat.say.{room_id}",
-                f"chat.local.{room_id}",  # Deprecated pattern
-            ]
+        if not self.subject_manager:
+            raise RuntimeError("NATSSubjectManager is required for room unsubscriptions")
+
+        # Build subjects using standardized patterns
+        subjects = [
+            self.subject_manager.build_subject("chat_say_room", room_id=room_id),
+        ]
 
         for subject in subjects:
             if subject in self.subscriptions:
@@ -1211,12 +1279,10 @@ class NATSMessageHandler:
             True if subscribed successfully, False otherwise
         """
         try:
-            # Build subject using standardized pattern if available
-            if self.subject_manager:
-                subzone_subject = self.subject_manager.build_subject("chat_local_subzone", subzone=subzone)
-            else:
-                # Legacy fallback
-                subzone_subject = f"chat.local.subzone.{subzone}"
+            # Build subject using standardized pattern - subject manager required
+            if not self.subject_manager:
+                raise RuntimeError("NATSSubjectManager is required for subzone subscriptions")
+            subzone_subject = self.subject_manager.build_subject("chat_local_subzone", subzone=subzone)
 
             # Check if already subscribed
             if subzone_subject in self.subscriptions:
@@ -1251,12 +1317,10 @@ class NATSMessageHandler:
             True if unsubscribed successfully, False otherwise
         """
         try:
-            # Build subject using standardized pattern if available
-            if self.subject_manager:
-                subzone_subject = self.subject_manager.build_subject("chat_local_subzone", subzone=subzone)
-            else:
-                # Legacy fallback
-                subzone_subject = f"chat.local.subzone.{subzone}"
+            # Build subject using standardized pattern - subject manager required
+            if not self.subject_manager:
+                raise RuntimeError("NATSSubjectManager is required for subzone unsubscriptions")
+            subzone_subject = self.subject_manager.build_subject("chat_local_subzone", subzone=subzone)
 
             # Decrease subscription count
             if subzone in self.subzone_subscriptions:
@@ -1446,53 +1510,36 @@ class NATSMessageHandler:
         """
         Subscribe to all event-related NATS subjects using standardized patterns.
 
-        This method retrieves event subscription patterns from the subject manager
-        when available, ensuring consistency with pattern definitions. Falls back
-        to legacy hardcoded patterns when subject manager is not available.
-
-        Returns:
-            True if all subscriptions successful, False otherwise
+        Raises:
+            RuntimeError: If subject manager is not available
 
         AI: Uses subject manager to generate event subscription patterns dynamically.
-        AI: Falls back to legacy patterns when subject manager is not available.
+            Subject manager is required - no legacy fallback.
         """
+        if not self.subject_manager:
+            raise RuntimeError("NATSSubjectManager is required for event subscriptions")
+
         try:
-            if self.subject_manager:
-                # Use standardized event subscription patterns from subject manager
-                event_subjects = self.subject_manager.get_event_subscription_patterns()
-                logger.info(
-                    "Subscribing to event subjects using standardized patterns",
-                    pattern_count=len(event_subjects),
-                )
-            else:
-                # Fallback to legacy hardcoded patterns for backward compatibility
-                event_subjects = [
-                    "events.player_entered.*",  # Player entered events per room
-                    "events.player_left.*",  # Player left events per room
-                    "events.game_tick",  # Global game tick events
-                    "combat.attack.*",  # Combat attack events per room
-                    "combat.npc_attacked.*",  # NPC attack events per room
-                    "combat.npc_action.*",  # NPC action events per room
-                    "combat.started.*",  # Combat started events per room
-                    "combat.ended.*",  # Combat ended events per room
-                    "combat.npc_died.*",  # NPC death events per room
-                    "events.player_mortally_wounded.*",  # Player mortally wounded events per room
-                    "events.player_hp_decay.*",  # Player HP decay events per room
-                    "events.player_died.*",  # Player death events per room
-                    "events.player_respawned.*",  # Player respawn events per room
-                ]
-                logger.info(
-                    "Subscribing to event subjects using legacy patterns",
-                    pattern_count=len(event_subjects),
-                )
+            # Use standardized event subscription patterns from subject manager
+            event_subjects = self.subject_manager.get_event_subscription_patterns()
+            logger.info(
+                "Subscribing to event subjects using standardized patterns",
+                pattern_count=len(event_subjects),
+            )
 
             logger.debug("Event subscription patterns", subjects=event_subjects)
 
             success_count = 0
             for subject in event_subjects:
-                success = await self._subscribe_to_subject(subject)
-                if success:
+                try:
+                    await self._subscribe_to_subject(subject)
                     success_count += 1
+                except Exception as e:
+                    logger.error(
+                        "Failed to subscribe to event subject",
+                        subject=subject,
+                        error=str(e),
+                    )
 
             if success_count == len(event_subjects):
                 logger.info("Successfully subscribed to all event subjects", count=success_count)
@@ -1509,21 +1556,27 @@ class NATSMessageHandler:
 
     async def unsubscribe_from_event_subjects(self) -> bool:
         """
-        Unsubscribe from all event-related NATS subjects.
+        Unsubscribe from all event-related NATS subjects using standardized patterns.
+
+        Raises:
+            RuntimeError: If subject manager is not available
 
         Returns:
             True if all unsubscriptions successful, False otherwise
+
+        AI: Uses subject manager to get event subscription patterns dynamically.
+            Subject manager is required - no legacy fallback.
         """
+        if not self.subject_manager:
+            raise RuntimeError("NATSSubjectManager is required for event unsubscriptions")
+
         try:
-            event_subjects = [
-                "events.player_entered.*",
-                "events.player_left.*",
-                "events.game_tick",
-                "combat.attack.*",
-                "combat.npc_action.*",
-                "combat.started.*",
-                "combat.ended.*",
-            ]
+            # Use standardized event subscription patterns from subject manager
+            event_subjects = self.subject_manager.get_event_subscription_patterns()
+            logger.info(
+                "Unsubscribing from event subjects using standardized patterns",
+                pattern_count=len(event_subjects),
+            )
 
             logger.debug("Unsubscribing from event subjects", subjects=event_subjects)
 
@@ -1561,7 +1614,7 @@ class NATSMessageHandler:
 
             # Extract event details
             event_type = message_data.get("event_type")
-            data = message_data.get("data", {})
+            data = message_data.get("event_data", {})
 
             # Debug logging for all messages
             logger.debug("NATS message received", event_type=event_type, data=data)

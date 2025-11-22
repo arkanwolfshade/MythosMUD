@@ -94,7 +94,7 @@ class TestLoggingIntegration:
         # Expected log categories from logging_config.py
         expected_categories = {
             "server": ["server", "uvicorn"],
-            "persistence": ["persistence", "PersistenceLayer", "aiosqlite"],
+            "persistence": ["persistence", "PersistenceLayer", "asyncpg"],
             "authentication": ["auth"],
             "world": ["world"],
             "communications": ["realtime", "communications"],

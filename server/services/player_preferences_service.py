@@ -6,11 +6,16 @@ including default channel settings and channel muting preferences.
 """
 
 import json
-import sqlite3
-import threading
+import uuid
+from datetime import UTC, datetime
 from typing import Any
 
+from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from server.logging.enhanced_logging_config import get_logger
+from server.models.player import PlayerChannelPreferences
 
 logger = get_logger(__name__)
 
@@ -21,78 +26,29 @@ class PlayerPreferencesService:
 
     This service handles:
     - Player default channel preferences
-    - Channel muting preferences (stored in database, not JSON files)
+    - Channel muting preferences (stored in PostgreSQL database)
     - Preference persistence across sessions
     """
 
-    def __init__(self, db_path: str):
+    def __init__(self):
         """
         Initialize the PlayerPreferencesService.
 
-        Args:
-            db_path: Path to the SQLite database file
+        Note: This service now uses PostgreSQL via SQLAlchemy async sessions.
+        The session must be provided to each method call.
         """
-        self.db_path = db_path
-        self._lock = threading.Lock()
-
         # Valid channel names
         self._valid_channels = {"local", "global", "whisper", "system"}
 
-        # Initialize the database table
-        self._init_database()
+        logger.info("PlayerPreferencesService initialized (PostgreSQL)")
 
-        logger.info("PlayerPreferencesService initialized", db_path=db_path)
-
-    def _init_database(self) -> None:
-        """Initialize the player_channel_preferences table."""
-        try:
-            with sqlite3.connect(self.db_path) as conn:
-                # Create the table if it doesn't exist
-                conn.execute("""
-                    CREATE TABLE IF NOT EXISTS player_channel_preferences (
-                        player_id TEXT PRIMARY KEY NOT NULL,
-                        default_channel TEXT NOT NULL DEFAULT 'local',
-                        muted_channels TEXT NOT NULL DEFAULT '[]',
-                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                        FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE
-                    )
-                """)
-
-                # Create indexes
-                conn.execute("""
-                    CREATE INDEX IF NOT EXISTS idx_player_channel_preferences_player_id
-                    ON player_channel_preferences(player_id)
-                """)
-                conn.execute("""
-                    CREATE INDEX IF NOT EXISTS idx_player_channel_preferences_default_channel
-                    ON player_channel_preferences(default_channel)
-                """)
-
-                # Create trigger for updated_at
-                conn.execute("""
-                    CREATE TRIGGER IF NOT EXISTS update_player_channel_preferences_updated_at
-                    AFTER UPDATE ON player_channel_preferences
-                    FOR EACH ROW
-                    BEGIN
-                        UPDATE player_channel_preferences
-                        SET updated_at = CURRENT_TIMESTAMP
-                        WHERE player_id = NEW.player_id;
-                    END
-                """)
-
-                conn.commit()
-
-        except Exception as e:
-            logger.error("Failed to initialize player_channel_preferences table", error=str(e))
-            raise
-
-    def create_player_preferences(self, player_id: str) -> dict[str, Any]:
+    async def create_player_preferences(self, session: AsyncSession, player_id: uuid.UUID | str) -> dict[str, Any]:
         """
         Create default preferences for a new player.
 
         Args:
-            player_id: The player's unique identifier
+            session: Database session
+            player_id: The player's unique identifier (UUID or string)
 
         Returns:
             Dictionary with success status and optional error message
@@ -100,40 +56,53 @@ class PlayerPreferencesService:
         if not self._is_valid_player_id(player_id):
             return {"success": False, "error": "Invalid player ID"}
 
+        # Normalize player_id to UUID object for database operations
+        if isinstance(player_id, str):
+            player_id = uuid.UUID(player_id)
+
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
-                # Check if preferences already exist
-                cursor = conn.execute(
-                    "SELECT player_id FROM player_channel_preferences WHERE player_id = ?", (player_id,)
-                )
-                if cursor.fetchone():
-                    return {"success": False, "error": "Player preferences already exist"}
+            # Check if preferences already exist
+            result = await session.execute(
+                select(PlayerChannelPreferences).where(PlayerChannelPreferences.player_id == player_id)
+            )
+            existing = result.scalar_one_or_none()
+            if existing:
+                return {"success": False, "error": "Player preferences already exist"}
 
-                # Insert default preferences
-                conn.execute(
-                    """
-                    INSERT INTO player_channel_preferences
-                    (player_id, default_channel, muted_channels, created_at, updated_at)
-                    VALUES (?, 'local', '[]', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-                """,
-                    (player_id,),
-                )
+            # Create new preferences
+            preferences = PlayerChannelPreferences(
+                player_id=player_id,
+                default_channel="local",
+                muted_channels=[],
+                created_at=datetime.now(UTC),
+                updated_at=datetime.now(UTC),
+            )
+            session.add(preferences)
+            await session.commit()
 
-                conn.commit()
+            logger.info("Created player preferences", player_id=player_id)
+            return {"success": True}
 
-                logger.info("Created player preferences", player_id=player_id)
-                return {"success": True}
-
-        except Exception as e:
-            logger.error("Failed to create player preferences", player_id=player_id, error=str(e))
+        except IntegrityError as e:
+            await session.rollback()
+            logger.error("Failed to create player preferences - integrity error", player_id=player_id, error=str(e))
+            return {"success": False, "error": f"Database integrity error: {str(e)}"}
+        except SQLAlchemyError as e:
+            await session.rollback()
+            logger.error("Failed to create player preferences - database error", player_id=player_id, error=str(e))
             return {"success": False, "error": f"Database error: {str(e)}"}
+        except Exception as e:
+            await session.rollback()
+            logger.error("Failed to create player preferences", player_id=player_id, error=str(e))
+            return {"success": False, "error": f"Unexpected error: {str(e)}"}
 
-    def get_player_preferences(self, player_id: str) -> dict[str, Any]:
+    async def get_player_preferences(self, session: AsyncSession, player_id: uuid.UUID | str) -> dict[str, Any]:
         """
         Get preferences for a player.
 
         Args:
-            player_id: The player's unique identifier
+            session: Database session
+            player_id: The player's unique identifier (UUID or string)
 
         Returns:
             Dictionary with success status and preferences data or error message
@@ -141,42 +110,45 @@ class PlayerPreferencesService:
         if not self._is_valid_player_id(player_id):
             return {"success": False, "error": "Invalid player ID"}
 
+        # Normalize player_id to UUID object for database operations
+        if isinstance(player_id, str):
+            player_id = uuid.UUID(player_id)
+
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
-                conn.row_factory = sqlite3.Row
-                cursor = conn.execute(
-                    """
-                    SELECT player_id, default_channel, muted_channels, created_at, updated_at
-                    FROM player_channel_preferences
-                    WHERE player_id = ?
-                """,
-                    (player_id,),
-                )
+            result = await session.execute(
+                select(PlayerChannelPreferences).where(PlayerChannelPreferences.player_id == player_id)
+            )
+            preferences = result.scalar_one_or_none()
 
-                row = cursor.fetchone()
-                if not row:
-                    return {"success": False, "error": "Player preferences not found"}
+            if not preferences:
+                return {"success": False, "error": "Player preferences not found"}
 
-                # Convert row to dictionary
-                preferences = {
-                    "player_id": row["player_id"],
-                    "default_channel": row["default_channel"],
-                    "muted_channels": row["muted_channels"],
-                    "created_at": row["created_at"],
-                    "updated_at": row["updated_at"],
-                }
+            # Convert to dictionary
+            prefs_dict = {
+                "player_id": preferences.player_id,
+                "default_channel": preferences.default_channel,
+                "muted_channels": preferences.muted_channels,
+                "created_at": preferences.created_at.isoformat() if preferences.created_at else None,
+                "updated_at": preferences.updated_at.isoformat() if preferences.updated_at else None,
+            }
 
-                return {"success": True, "data": preferences}
+            return {"success": True, "data": prefs_dict}
 
-        except Exception as e:
+        except SQLAlchemyError as e:
             logger.error("Failed to get player preferences", player_id=player_id, error=str(e))
             return {"success": False, "error": f"Database error: {str(e)}"}
+        except Exception as e:
+            logger.error("Failed to get player preferences", player_id=player_id, error=str(e))
+            return {"success": False, "error": f"Unexpected error: {str(e)}"}
 
-    def update_default_channel(self, player_id: str, channel: str) -> dict[str, Any]:
+    async def update_default_channel(
+        self, session: AsyncSession, player_id: uuid.UUID | str, channel: str
+    ) -> dict[str, Any]:
         """
         Update a player's default channel.
 
         Args:
+            session: Database session
             player_id: The player's unique identifier
             channel: The new default channel name
 
@@ -186,42 +158,45 @@ class PlayerPreferencesService:
         if not self._is_valid_player_id(player_id):
             return {"success": False, "error": "Invalid player ID"}
 
+        # Normalize player_id to UUID object for database operations
+        if isinstance(player_id, str):
+            player_id = uuid.UUID(player_id)
+
         if not self._is_valid_channel(channel):
             return {"success": False, "error": "Invalid channel name"}
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
-                # Check if player preferences exist
-                cursor = conn.execute(
-                    "SELECT player_id FROM player_channel_preferences WHERE player_id = ?", (player_id,)
-                )
-                if not cursor.fetchone():
-                    return {"success": False, "error": "Player preferences not found"}
+            # Check if player preferences exist
+            result = await session.execute(
+                select(PlayerChannelPreferences).where(PlayerChannelPreferences.player_id == player_id)
+            )
+            preferences = result.scalar_one_or_none()
+            if not preferences:
+                return {"success": False, "error": "Player preferences not found"}
 
-                # Update default channel
-                conn.execute(
-                    """
-                    UPDATE player_channel_preferences
-                    SET default_channel = ?, updated_at = CURRENT_TIMESTAMP
-                    WHERE player_id = ?
-                """,
-                    (channel, player_id),
-                )
+            # Update default channel
+            preferences.default_channel = channel
+            preferences.updated_at = datetime.now(UTC)
+            await session.commit()
 
-                conn.commit()
+            logger.info("Updated default channel", player_id=player_id, channel=channel)
+            return {"success": True}
 
-                logger.info("Updated default channel", player_id=player_id, channel=channel)
-                return {"success": True}
-
-        except Exception as e:
+        except SQLAlchemyError as e:
+            await session.rollback()
             logger.error("Failed to update default channel", player_id=player_id, channel=channel, error=str(e))
             return {"success": False, "error": f"Database error: {str(e)}"}
+        except Exception as e:
+            await session.rollback()
+            logger.error("Failed to update default channel", player_id=player_id, channel=channel, error=str(e))
+            return {"success": False, "error": f"Unexpected error: {str(e)}"}
 
-    def mute_channel(self, player_id: str, channel: str) -> dict[str, Any]:
+    async def mute_channel(self, session: AsyncSession, player_id: uuid.UUID | str, channel: str) -> dict[str, Any]:
         """
         Mute a channel for a player.
 
         Args:
+            session: Database session
             player_id: The player's unique identifier
             channel: The channel to mute
 
@@ -231,6 +206,10 @@ class PlayerPreferencesService:
         if not self._is_valid_player_id(player_id):
             return {"success": False, "error": "Invalid player ID"}
 
+        # Normalize player_id to UUID object for database operations
+        if isinstance(player_id, str):
+            player_id = uuid.UUID(player_id)
+
         if not self._is_valid_channel(channel):
             return {"success": False, "error": "Invalid channel name"}
 
@@ -239,47 +218,39 @@ class PlayerPreferencesService:
             return {"success": False, "error": "System channel cannot be muted"}
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
-                # Get current muted channels
-                cursor = conn.execute(
-                    "SELECT muted_channels FROM player_channel_preferences WHERE player_id = ?", (player_id,)
-                )
-                row = cursor.fetchone()
-                if not row:
-                    return {"success": False, "error": "Player preferences not found"}
+            # Get current preferences
+            result = await session.execute(
+                select(PlayerChannelPreferences).where(PlayerChannelPreferences.player_id == player_id)
+            )
+            preferences = result.scalar_one_or_none()
+            if not preferences:
+                return {"success": False, "error": "Player preferences not found"}
 
-                # Parse current muted channels
-                muted_channels = json.loads(row[0])
+            # Add channel if not already muted
+            if channel not in preferences.muted_channels:
+                preferences.muted_channels.append(channel)
+                preferences.updated_at = datetime.now(UTC)
+                await session.commit()
 
-                # Add channel if not already muted
-                if channel not in muted_channels:
-                    muted_channels.append(channel)
+                logger.info("Muted channel for player", player_id=player_id, channel=channel)
 
-                    # Update database
-                    conn.execute(
-                        """
-                        UPDATE player_channel_preferences
-                        SET muted_channels = ?, updated_at = CURRENT_TIMESTAMP
-                        WHERE player_id = ?
-                    """,
-                        (json.dumps(muted_channels), player_id),
-                    )
+            return {"success": True}
 
-                    conn.commit()
-
-                    logger.info("Muted channel for player", player_id=player_id, channel=channel)
-
-                return {"success": True}
-
-        except Exception as e:
+        except SQLAlchemyError as e:
+            await session.rollback()
             logger.error("Failed to mute channel", player_id=player_id, channel=channel, error=str(e))
             return {"success": False, "error": f"Database error: {str(e)}"}
+        except Exception as e:
+            await session.rollback()
+            logger.error("Failed to mute channel", player_id=player_id, channel=channel, error=str(e))
+            return {"success": False, "error": f"Unexpected error: {str(e)}"}
 
-    def unmute_channel(self, player_id: str, channel: str) -> dict[str, Any]:
+    async def unmute_channel(self, session: AsyncSession, player_id: uuid.UUID | str, channel: str) -> dict[str, Any]:
         """
         Unmute a channel for a player.
 
         Args:
+            session: Database session
             player_id: The player's unique identifier
             channel: The channel to unmute
 
@@ -289,51 +260,47 @@ class PlayerPreferencesService:
         if not self._is_valid_player_id(player_id):
             return {"success": False, "error": "Invalid player ID"}
 
+        # Normalize player_id to UUID object for database operations
+        if isinstance(player_id, str):
+            player_id = uuid.UUID(player_id)
+
         if not self._is_valid_channel(channel):
             return {"success": False, "error": "Invalid channel name"}
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
-                # Get current muted channels
-                cursor = conn.execute(
-                    "SELECT muted_channels FROM player_channel_preferences WHERE player_id = ?", (player_id,)
-                )
-                row = cursor.fetchone()
-                if not row:
-                    return {"success": False, "error": "Player preferences not found"}
+            # Get current preferences
+            result = await session.execute(
+                select(PlayerChannelPreferences).where(PlayerChannelPreferences.player_id == player_id)
+            )
+            preferences = result.scalar_one_or_none()
+            if not preferences:
+                return {"success": False, "error": "Player preferences not found"}
 
-                # Parse current muted channels
-                muted_channels = json.loads(row[0])
+            # Remove channel if muted
+            if channel in preferences.muted_channels:
+                preferences.muted_channels.remove(channel)
+                preferences.updated_at = datetime.now(UTC)
+                await session.commit()
 
-                # Remove channel if muted
-                if channel in muted_channels:
-                    muted_channels.remove(channel)
+                logger.info("Unmuted channel for player", player_id=player_id, channel=channel)
 
-                    # Update database
-                    conn.execute(
-                        """
-                        UPDATE player_channel_preferences
-                        SET muted_channels = ?, updated_at = CURRENT_TIMESTAMP
-                        WHERE player_id = ?
-                    """,
-                        (json.dumps(muted_channels), player_id),
-                    )
+            return {"success": True}
 
-                    conn.commit()
-
-                    logger.info("Unmuted channel for player", player_id=player_id, channel=channel)
-
-                return {"success": True}
-
-        except Exception as e:
+        except SQLAlchemyError as e:
+            await session.rollback()
             logger.error("Failed to unmute channel", player_id=player_id, channel=channel, error=str(e))
             return {"success": False, "error": f"Database error: {str(e)}"}
+        except Exception as e:
+            await session.rollback()
+            logger.error("Failed to unmute channel", player_id=player_id, channel=channel, error=str(e))
+            return {"success": False, "error": f"Unexpected error: {str(e)}"}
 
-    def get_muted_channels(self, player_id: str) -> dict[str, Any]:
+    async def get_muted_channels(self, session: AsyncSession, player_id: uuid.UUID | str) -> dict[str, Any]:
         """
         Get list of muted channels for a player.
 
         Args:
+            session: Database session
             player_id: The player's unique identifier
 
         Returns:
@@ -342,27 +309,33 @@ class PlayerPreferencesService:
         if not self._is_valid_player_id(player_id):
             return {"success": False, "error": "Invalid player ID"}
 
+        # Normalize player_id to UUID object for database operations
+        if isinstance(player_id, str):
+            player_id = uuid.UUID(player_id)
+
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
-                cursor = conn.execute(
-                    "SELECT muted_channels FROM player_channel_preferences WHERE player_id = ?", (player_id,)
-                )
-                row = cursor.fetchone()
-                if not row:
-                    return {"success": False, "error": "Player preferences not found"}
+            result = await session.execute(
+                select(PlayerChannelPreferences).where(PlayerChannelPreferences.player_id == player_id)
+            )
+            preferences = result.scalar_one_or_none()
+            if not preferences:
+                return {"success": False, "error": "Player preferences not found"}
 
-                muted_channels = json.loads(row[0])
-                return {"success": True, "data": muted_channels}
+            return {"success": True, "data": preferences.muted_channels}
 
-        except Exception as e:
+        except SQLAlchemyError as e:
             logger.error("Failed to get muted channels", player_id=player_id, error=str(e))
             return {"success": False, "error": f"Database error: {str(e)}"}
+        except Exception as e:
+            logger.error("Failed to get muted channels", player_id=player_id, error=str(e))
+            return {"success": False, "error": f"Unexpected error: {str(e)}"}
 
-    def is_channel_muted(self, player_id: str, channel: str) -> dict[str, Any]:
+    async def is_channel_muted(self, session: AsyncSession, player_id: uuid.UUID | str, channel: str) -> dict[str, Any]:
         """
         Check if a specific channel is muted for a player.
 
         Args:
+            session: Database session
             player_id: The player's unique identifier
             channel: The channel to check
 
@@ -372,32 +345,38 @@ class PlayerPreferencesService:
         if not self._is_valid_player_id(player_id):
             return {"success": False, "error": "Invalid player ID"}
 
+        # Normalize player_id to UUID object for database operations
+        if isinstance(player_id, str):
+            player_id = uuid.UUID(player_id)
+
         if not self._is_valid_channel(channel):
             return {"success": False, "error": "Invalid channel name"}
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
-                cursor = conn.execute(
-                    "SELECT muted_channels FROM player_channel_preferences WHERE player_id = ?", (player_id,)
-                )
-                row = cursor.fetchone()
-                if not row:
-                    return {"success": False, "error": "Player preferences not found"}
+            result = await session.execute(
+                select(PlayerChannelPreferences).where(PlayerChannelPreferences.player_id == player_id)
+            )
+            preferences = result.scalar_one_or_none()
+            if not preferences:
+                return {"success": False, "error": "Player preferences not found"}
 
-                muted_channels = json.loads(row[0])
-                is_muted = channel in muted_channels
+            is_muted = channel in preferences.muted_channels
 
-                return {"success": True, "data": is_muted}
+            return {"success": True, "data": is_muted}
 
-        except Exception as e:
+        except SQLAlchemyError as e:
             logger.error("Failed to check channel mute status", player_id=player_id, channel=channel, error=str(e))
             return {"success": False, "error": f"Database error: {str(e)}"}
+        except Exception as e:
+            logger.error("Failed to check channel mute status", player_id=player_id, channel=channel, error=str(e))
+            return {"success": False, "error": f"Unexpected error: {str(e)}"}
 
-    def delete_player_preferences(self, player_id: str) -> dict[str, Any]:
+    async def delete_player_preferences(self, session: AsyncSession, player_id: uuid.UUID | str) -> dict[str, Any]:
         """
         Delete preferences for a player.
 
         Args:
+            session: Database session
             player_id: The player's unique identifier
 
         Returns:
@@ -406,39 +385,62 @@ class PlayerPreferencesService:
         if not self._is_valid_player_id(player_id):
             return {"success": False, "error": "Invalid player ID"}
 
+        # Normalize player_id to UUID object for database operations
+        if isinstance(player_id, str):
+            player_id = uuid.UUID(player_id)
+
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
-                cursor = conn.execute("DELETE FROM player_channel_preferences WHERE player_id = ?", (player_id,))
+            result = await session.execute(
+                select(PlayerChannelPreferences).where(PlayerChannelPreferences.player_id == player_id)
+            )
+            preferences = result.scalar_one_or_none()
 
-                if cursor.rowcount == 0:
-                    return {"success": False, "error": "Player preferences not found"}
+            if not preferences:
+                return {"success": False, "error": "Player preferences not found"}
 
-                conn.commit()
+            await session.delete(preferences)
+            await session.commit()
 
-                logger.info("Deleted player preferences", player_id=player_id)
-                return {"success": True}
+            logger.info("Deleted player preferences", player_id=player_id)
+            return {"success": True}
 
-        except Exception as e:
+        except SQLAlchemyError as e:
+            await session.rollback()
             logger.error("Failed to delete player preferences", player_id=player_id, error=str(e))
             return {"success": False, "error": f"Database error: {str(e)}"}
+        except Exception as e:
+            await session.rollback()
+            logger.error("Failed to delete player preferences", player_id=player_id, error=str(e))
+            return {"success": False, "error": f"Unexpected error: {str(e)}"}
 
-    def _is_valid_player_id(self, player_id: str) -> bool:
+    def _is_valid_player_id(self, player_id: uuid.UUID | str) -> bool:
         """
         Validate player ID.
 
         Args:
-            player_id: The player ID to validate
+            player_id: The player ID to validate (UUID or string)
 
         Returns:
             True if valid, False otherwise
         """
-        if not player_id or not isinstance(player_id, str):
+        if not player_id:
             return False
 
-        if len(player_id) > 255:  # Reasonable limit
-            return False
+        # Accept both UUID objects and UUID strings
+        if isinstance(player_id, uuid.UUID):
+            return True
 
-        return True
+        if isinstance(player_id, str):
+            # Try to parse as UUID
+            try:
+                uuid.UUID(player_id)
+                return True
+            except (ValueError, AttributeError, TypeError):
+                return False
+
+        # Type signature guarantees player_id is uuid.UUID | str, so all cases are handled above
+        # This line is unreachable but kept for defensive programming
+        return False  # type: ignore[unreachable]
 
     def _is_valid_channel(self, channel: str) -> bool:
         """

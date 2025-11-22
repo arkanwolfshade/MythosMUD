@@ -8,7 +8,7 @@ from datetime import UTC, datetime
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from sqlalchemy import select, text
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from server.models.base import Base
@@ -24,9 +24,14 @@ from server.services.sanity_service import (
 
 @pytest.fixture
 async def session_factory():
-    engine = create_async_engine("sqlite+aiosqlite:///:memory:", future=True)
+    import os
+
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url or not database_url.startswith("postgresql"):
+        raise ValueError("DATABASE_URL must be set to a PostgreSQL URL for this test.")
+    engine = create_async_engine(database_url, future=True)
     async with engine.begin() as conn:
-        await conn.execute(text("PRAGMA foreign_keys=ON"))
+        # PostgreSQL always enforces foreign keys - no PRAGMA needed
         await conn.run_sync(Base.metadata.create_all)
 
     factory = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
@@ -42,13 +47,14 @@ async def create_player(session: AsyncSession, username: str) -> Player:
         id=str(uuid.uuid4()),
         email=f"{username}@example.com",
         username=username,
+        display_name=username,
         hashed_password="hashed",
         is_active=True,
         is_superuser=False,
         is_verified=True,
     )
     player = Player(
-        player_id=f"player-{uuid.uuid4()}",
+        player_id=str(uuid.uuid4()),
         user_id=user.id,
         name=username.capitalize(),
     )
@@ -170,7 +176,7 @@ async def test_apply_sanity_adjustment_emits_failover_rescue_update(session_fact
                 player_id=player.player_id,
                 current_san=-99,
                 current_tier="catatonic",
-                catatonia_entered_at=datetime(2025, 1, 1, tzinfo=UTC),
+                catatonia_entered_at=datetime(2025, 1, 1, tzinfo=UTC).replace(tzinfo=None),
             )
         )
         await session.flush()
@@ -209,7 +215,7 @@ async def test_apply_sanity_adjustment_emits_success_rescue_update_on_recovery(s
                 player_id=player.player_id,
                 current_san=-10,
                 current_tier="catatonic",
-                catatonia_entered_at=datetime(2025, 1, 1, tzinfo=UTC),
+                catatonia_entered_at=datetime(2025, 1, 1, tzinfo=UTC).replace(tzinfo=None),
             )
         )
         await session.flush()

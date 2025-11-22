@@ -9,6 +9,7 @@ requires a specific sequence of rituals.
 """
 
 from unittest.mock import AsyncMock, MagicMock
+from uuid import uuid4
 
 import pytest
 
@@ -24,19 +25,24 @@ class TestGracefulShutdownSequence:
         # Create mock app with all services
         mock_app = MagicMock()
 
+        # Generate UUIDs for test players
+        player_id1 = uuid4()
+        player_id2 = uuid4()
+        player_id3 = uuid4()
+
         # Mock connection manager
         mock_connection_manager = MagicMock()
         mock_connection_manager.get_online_players = MagicMock(
             side_effect=[
                 [
-                    {"player_id": "player1"},
-                    {"player_id": "player2"},
-                    {"player_id": "player3"},
+                    {"player_id": player_id1},
+                    {"player_id": player_id2},
+                    {"player_id": player_id3},
                 ],  # First call for persistence
                 [
-                    {"player_id": "player1"},
-                    {"player_id": "player2"},
-                    {"player_id": "player3"},
+                    {"player_id": player_id1},
+                    {"player_id": player_id2},
+                    {"player_id": player_id3},
                 ],  # Second call for disconnection
             ]
         )
@@ -49,16 +55,16 @@ class TestGracefulShutdownSequence:
         mock_persistence.save_player = MagicMock()
         # Mock get_player to return Player objects
         mock_player1 = MagicMock()
-        mock_player1.player_id = "player1"
+        mock_player1.player_id = player_id1
         mock_player2 = MagicMock()
-        mock_player2.player_id = "player2"
+        mock_player2.player_id = player_id2
         mock_player3 = MagicMock()
-        mock_player3.player_id = "player3"
+        mock_player3.player_id = player_id3
         mock_persistence.get_player = MagicMock(
             side_effect=lambda player_id: {
-                "player1": mock_player1,
-                "player2": mock_player2,
-                "player3": mock_player3,
+                player_id1: mock_player1,
+                player_id2: mock_player2,
+                player_id3: mock_player3,
             }.get(player_id)
         )
         mock_app.state.persistence = mock_persistence
@@ -103,11 +109,11 @@ class TestGracefulShutdownSequence:
         mock_npc_lifecycle_manager.despawn_npc.assert_any_call("npc1", reason="server_shutdown")
         mock_npc_lifecycle_manager.despawn_npc.assert_any_call("npc2", reason="server_shutdown")
 
-        # Verify Phase 3: Player disconnection
+        # Verify Phase 3: Player disconnection (force_disconnect_player expects UUIDs)
         assert mock_connection_manager.force_disconnect_player.call_count == 3
-        mock_connection_manager.force_disconnect_player.assert_any_call("player1")
-        mock_connection_manager.force_disconnect_player.assert_any_call("player2")
-        mock_connection_manager.force_disconnect_player.assert_any_call("player3")
+        mock_connection_manager.force_disconnect_player.assert_any_call(player_id1)
+        mock_connection_manager.force_disconnect_player.assert_any_call(player_id2)
+        mock_connection_manager.force_disconnect_player.assert_any_call(player_id3)
 
         # Verify Phase 4: NATS message handler stopped
         mock_nats_message_handler.stop.assert_called_once()
@@ -166,12 +172,16 @@ class TestGracefulShutdownSequence:
         """Test shutdown sequence continues even if player persistence fails."""
         mock_app = MagicMock()
 
+        # Generate UUIDs for test players
+        player_id1 = uuid4()
+        player_id2 = uuid4()
+
         # Mock connection manager
         mock_connection_manager = MagicMock()
         mock_connection_manager.get_online_players = MagicMock(
             side_effect=[
-                [{"player_id": "player1"}, {"player_id": "player2"}],  # First call for persistence
-                [{"player_id": "player1"}, {"player_id": "player2"}],  # Second call for disconnection
+                [{"player_id": player_id1}, {"player_id": player_id2}],  # First call for persistence
+                [{"player_id": player_id1}, {"player_id": player_id2}],  # Second call for disconnection
             ]
         )
         mock_connection_manager.force_disconnect_player = AsyncMock()
@@ -185,6 +195,17 @@ class TestGracefulShutdownSequence:
                 Exception("Database error"),
                 None,  # Second save succeeds
             ]
+        )
+        # Mock get_player to return Player objects
+        mock_player1 = MagicMock()
+        mock_player1.player_id = player_id1
+        mock_player2 = MagicMock()
+        mock_player2.player_id = player_id2
+        mock_persistence.get_player = MagicMock(
+            side_effect=lambda player_id: {
+                player_id1: mock_player1,
+                player_id2: mock_player2,
+            }.get(player_id)
         )
         mock_app.state.persistence = mock_persistence
 
@@ -326,12 +347,15 @@ class TestGracefulShutdownSequence:
         mock_app = MagicMock()
         execution_order = []
 
+        # Generate UUID for test player
+        player_id = uuid4()
+
         # Mock connection manager
         mock_connection_manager = MagicMock()
 
         def record_get_players_call():
             execution_order.append("get_players")
-            return [{"player_id": "player1"}]
+            return [{"player_id": player_id}]
 
         mock_connection_manager.get_online_players = MagicMock(side_effect=record_get_players_call)
 
@@ -406,18 +430,15 @@ class TestGracefulShutdownSequence:
         # Execute shutdown sequence
         await execute_shutdown_sequence(mock_app)
 
-        # Verify execution order
-        expected_order = [
-            "get_players",  # Phase 1: Get players for persistence
-            "get_player_player1",  # Phase 1: Get player object
-            "save_player_player1",  # Phase 1: Save player
-            "despawn_npc_npc1",  # Phase 2: Despawn NPC
-            "get_players",  # Phase 3: Get players for disconnection
-            "disconnect_player",  # Phase 3: Disconnect player
-            "stop_nats_handler",  # Phase 4: Stop NATS handler
-            "disconnect_nats",  # Phase 5: Disconnect NATS
-            "cleanup_connection_manager",  # Phase 6: Cleanup connection manager
-            "shutdown_tasks",  # Phase 7: Shutdown tasks
-        ]
-
-        assert execution_order == expected_order
+        # Verify execution order (player_id will be UUID, so check pattern instead of exact match)
+        assert execution_order[0] == "get_players"  # Phase 1: Get players for persistence
+        assert execution_order[1].startswith("get_player_")  # Phase 1: Get player object
+        assert execution_order[2].startswith("save_player_")  # Phase 1: Save player
+        assert execution_order[3] == "despawn_npc_npc1"  # Phase 2: Despawn NPC
+        assert execution_order[4] == "get_players"  # Phase 3: Get players for disconnection
+        assert execution_order[5] == "disconnect_player"  # Phase 3: Disconnect player
+        assert execution_order[6] == "stop_nats_handler"  # Phase 4: Stop NATS handler
+        assert execution_order[7] == "disconnect_nats"  # Phase 5: Disconnect NATS
+        assert execution_order[8] == "cleanup_connection_manager"  # Phase 6: Cleanup connection manager
+        assert execution_order[9] == "shutdown_tasks"  # Phase 7: Shutdown tasks
+        assert len(execution_order) == 10  # Verify all phases executed

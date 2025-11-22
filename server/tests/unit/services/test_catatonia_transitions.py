@@ -7,7 +7,6 @@ from unittest.mock import ANY, MagicMock
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy.pool import StaticPool
 
 from server.models.base import Base
 from server.models.player import Player
@@ -18,16 +17,16 @@ from server.services.sanity_service import SanityService
 
 @pytest.fixture
 async def session_factory():
-    """Create an in-memory SQLite session factory."""
+    """Create a PostgreSQL session factory for tests."""
 
-    engine = create_async_engine(
-        "sqlite+aiosqlite:///:memory:",
-        future=True,
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
-    )
+    import os
+
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url or not database_url.startswith("postgresql"):
+        raise ValueError("DATABASE_URL must be set to a PostgreSQL URL for this test.")
+    engine = create_async_engine(database_url, future=True)
     async with engine.begin() as conn:
-        await conn.exec_driver_sql("PRAGMA foreign_keys=ON")
+        # PostgreSQL always enforces foreign keys - no PRAGMA needed
         await conn.run_sync(Base.metadata.create_all)
 
     factory = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
@@ -46,11 +45,15 @@ async def create_player(
 ) -> Player:
     """Create a player and associated sanity record for testing."""
 
-    player_id = f"player-{uuid.uuid4()}"
+    player_id = str(uuid.uuid4())
+    # Add unique suffix to username to avoid conflicts in parallel test runs
+    unique_suffix = str(uuid.uuid4())[:8]
+    unique_username = f"{name}-{unique_suffix}"
     user = User(
         id=str(uuid.uuid4()),
         email=f"{player_id}@example.org",
-        username=name,
+        username=unique_username,
+        display_name=unique_username,
         hashed_password="hashed",
         is_active=True,
         is_superuser=False,
@@ -59,7 +62,7 @@ async def create_player(
     player = Player(
         player_id=player_id,
         user_id=user.id,
-        name=name,
+        name=unique_username,  # Use unique username to avoid duplicate key violations
         current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
     )
     sanity_record = PlayerSanity(

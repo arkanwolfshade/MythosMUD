@@ -230,7 +230,10 @@ class TestSystemChannelIntegration:
         # Setup mocks
         self.mock_player_service.resolve_player_name = AsyncMock(return_value=self.admin_player)
         self.mock_user_manager.is_admin.return_value = True
-        self.mock_nats_service.publish = AsyncMock(return_value=False)
+        # NATS publish raises NATSPublishError on failure, not returns False
+        from server.services.nats_exceptions import NATSPublishError
+
+        self.mock_nats_service.publish = AsyncMock(side_effect=NATSPublishError("NATS unavailable"))
 
         # Create mock request context
         mock_request = Mock()

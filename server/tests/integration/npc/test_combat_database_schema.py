@@ -25,9 +25,16 @@ class TestCombatDatabaseSchema:
         await init_npc_db()
 
         async for session in get_npc_session():
-            # Check that base_stats and behavior_config columns exist
-            result = await session.execute(text("PRAGMA table_info(npc_definitions)"))
-            columns = [row[1] for row in result.fetchall()]
+            # Check that base_stats and behavior_config columns exist (PostgreSQL)
+            result = await session.execute(
+                text("""
+                    SELECT column_name
+                    FROM information_schema.columns
+                    WHERE table_schema = 'public'
+                    AND table_name = 'npc_definitions'
+                """)
+            )
+            columns = [row[0] for row in result.fetchall()]
 
             assert "base_stats" in columns
             assert "behavior_config" in columns

@@ -8,22 +8,23 @@ CRITICAL: Database initialization is LAZY and requires configuration to be loade
          The system will FAIL LOUDLY if configuration is not properly set.
 """
 
+import asyncio
 import os
 from collections.abc import AsyncGenerator
 from pathlib import Path
+from typing import Any
 
-from sqlalchemy import event, text
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.pool import NullPool, StaticPool
+from sqlalchemy.pool import NullPool
 
 from .exceptions import ValidationError
 from .logging.enhanced_logging_config import get_logger
-from .npc_metadata import npc_metadata
 from .utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
@@ -32,6 +33,7 @@ logger = get_logger(__name__)
 _npc_engine: AsyncEngine | None = None
 _npc_async_session_maker: async_sessionmaker | None = None
 _npc_database_url: str | None = None
+_npc_creation_loop_id: int | None = None  # Track which loop created the NPC engine
 
 
 def _initialize_npc_database() -> None:
@@ -92,40 +94,46 @@ def _initialize_npc_database() -> None:
     _npc_database_url = npc_database_url
     logger.info("Using NPC database URL from configuration", npc_database_url=_npc_database_url)
 
-    # Determine pool class based on database URL
-    # Use NullPool for tests to prevent SQLite file locking issues
-    pool_class = NullPool if "test" in _npc_database_url else StaticPool
+    # PostgreSQL connection args (no SQLite-specific args)
+    connect_args: dict[str, Any] = {}
+    if not _npc_database_url.startswith("postgresql"):
+        log_and_raise(
+            ValidationError,
+            f"Unsupported database URL: {_npc_database_url}. Only PostgreSQL is supported.",
+            context=context,
+            details={"database_url": _npc_database_url},
+            user_friendly="NPC database configuration error - PostgreSQL required",
+        )
 
-    # Create async engine for NPC database
+    # Configure pool settings based on database URL
+    # Use NullPool for tests, default AsyncAdaptedQueuePool for production
+    # For async engines, AsyncAdaptedQueuePool is used automatically if poolclass not specified
+    pool_kwargs: dict[str, Any] = {}
+    if "test" in _npc_database_url:
+        pool_kwargs["poolclass"] = NullPool
+    else:
+        # For production, use default AsyncAdaptedQueuePool with configured pool size
+        # AsyncAdaptedQueuePool is automatically used by create_async_engine()
+        # Get pool configuration from config (NPC database uses same pool settings as main database)
+        config = get_config()
+        pool_kwargs.update(
+            {
+                "pool_size": config.database.pool_size,
+                "max_overflow": config.database.max_overflow,
+                "pool_timeout": config.database.pool_timeout,
+            }
+        )
+
     _npc_engine = create_async_engine(
         _npc_database_url,
         echo=False,
-        poolclass=pool_class,
         pool_pre_ping=True,
-        connect_args={
-            "check_same_thread": False,
-            "timeout": 30,
-        },
+        connect_args=connect_args,
+        **pool_kwargs,
     )
 
-    # Enable foreign key constraints for SQLite
-    @event.listens_for(_npc_engine.sync_engine, "connect")
-    def set_sqlite_pragma(dbapi_connection, connection_record):
-        """Enable foreign key constraints for SQLite connections."""
-        conn_str = str(dbapi_connection)
-        conn_type = str(type(dbapi_connection))
-        logger.debug("NPC database connect event fired", conn_type=conn_type, conn_str=conn_str[:100])
-
-        # Check both the connection string and type for sqlite
-        if "sqlite" in conn_str.lower() or "sqlite" in conn_type.lower():
-            cursor = dbapi_connection.cursor()
-            cursor.execute("PRAGMA foreign_keys=ON")
-            cursor.close()
-            logger.debug("Foreign keys enabled for NPC database connection")
-        else:
-            logger.warning("Skipping PRAGMA for non-SQLite connection", conn_type=conn_type)
-
-    logger.info("NPC Database engine created", pool_class=pool_class.__name__)
+    pool_type = "NullPool" if "test" in _npc_database_url else "AsyncAdaptedQueuePool"
+    logger.info("NPC Database engine created", pool_type=pool_type)
 
     # Create async session maker for NPC database
     _npc_async_session_maker = async_sessionmaker(
@@ -137,6 +145,14 @@ def _initialize_npc_database() -> None:
     )
 
     logger.info("NPC Database session maker created")
+    # Track the event loop that created this engine
+    try:
+        loop = asyncio.get_running_loop()
+        global _npc_creation_loop_id
+        _npc_creation_loop_id = id(loop)
+    except RuntimeError:
+        # No running loop - that's okay, we'll track it as None
+        _npc_creation_loop_id = None
 
 
 def get_npc_engine() -> AsyncEngine | None:
@@ -149,8 +165,48 @@ def get_npc_engine() -> AsyncEngine | None:
     Raises:
         ValidationError: If NPC database cannot be initialized
     """
+    global _npc_engine, _npc_async_session_maker, _npc_creation_loop_id
+
     if _npc_engine is None:
         _initialize_npc_database()
+
+    # CRITICAL: Check if we're in a different event loop than when engine was created
+    # asyncpg connections must be created in the same loop they're used in
+    try:
+        current_loop = asyncio.get_running_loop()
+        current_loop_id = id(current_loop)
+        if _npc_creation_loop_id is not None and current_loop_id != _npc_creation_loop_id:
+            logger.warning(
+                "Event loop changed, disposing and recreating NPC database engine",
+                old_loop_id=_npc_creation_loop_id,
+                new_loop_id=current_loop_id,
+            )
+            # Dispose old engine (best effort, may fail if loop is closed)
+            # CRITICAL: Don't try to dispose if loop is closed - just set to None
+            # asyncpg will handle cleanup when the loop closes
+            try:
+                if _npc_engine is not None:
+                    # Check if loop is still valid before attempting disposal
+                    try:
+                        loop = asyncio.get_running_loop()
+                        if not loop.is_closed():
+                            # Try to dispose synchronously if possible, but don't block
+                            # Note: dispose() is async, but we can't await here
+                            # The engine will be cleaned up when the loop closes
+                            pass  # Let the old engine be garbage collected
+                    except RuntimeError:
+                        # Loop is closed or not running - just set to None
+                        pass
+            except Exception as e:
+                logger.warning("Error disposing NPC engine during loop change", error=str(e))
+            # Reset and recreate in current loop
+            _npc_engine = None
+            _npc_async_session_maker = None
+            _initialize_npc_database()
+    except RuntimeError:
+        # No running loop - that's okay, engine will be created when needed
+        pass
+
     return _npc_engine
 
 
@@ -207,6 +263,7 @@ async def get_npc_session() -> AsyncGenerator[AsyncSession, None]:
             )
             try:
                 await session.rollback()
+                logger.debug("NPC database session rolled back after error")
             except Exception as rollback_error:
                 logger.error(
                     "Failed to rollback NPC database session",
@@ -214,18 +271,31 @@ async def get_npc_session() -> AsyncGenerator[AsyncSession, None]:
                     rollback_error=str(rollback_error),
                 )
             raise
+        finally:
+            # Session is automatically closed by the async context manager
+            # Log session closure for monitoring (debug level to avoid noise)
+            logger.debug("NPC database session closed")
 
 
 async def init_npc_db():
     """
-    Initialize NPC database with all tables.
+    Initialize NPC database connection and verify configuration.
 
-    Creates all tables defined in the NPC metadata.
+    NOTE: DDL (table creation) is NOT managed by this function.
+    All database schema must be created via SQL script db/authoritative_schema.sql
+    and applied using database management scripts (e.g., psql).
+
+    This function only:
+    - Initializes the NPC database engine and session maker
+    - Configures SQLAlchemy mappers for ORM relationships
+    - Verifies database connectivity
+
+    To create tables, use the SQL script db/authoritative_schema.sql.
     """
     context = create_error_context()
     context.metadata["operation"] = "init_npc_db"
 
-    logger.info("Initializing NPC database")
+    logger.info("Initializing NPC database connection")
 
     try:
         # Import all NPC models to ensure they're registered with metadata
@@ -236,18 +306,22 @@ async def init_npc_db():
         logger.debug("Configuring NPC SQLAlchemy mappers")
         configure_mappers()
 
+        # Initialize engine to verify connectivity
         engine = get_npc_engine()  # Initialize if needed
-        async with engine.begin() as conn:
-            # For unit tests, ensure a clean slate each run
-            if _npc_database_url and "unit_test" in _npc_database_url:
-                logger.info("Dropping NPC database tables for clean unit test state")
-                await conn.run_sync(npc_metadata.drop_all)
 
-            logger.info("Creating NPC database tables")
-            await conn.run_sync(npc_metadata.create_all)
-            # Enable foreign key constraints for SQLite
-            await conn.execute(text("PRAGMA foreign_keys = ON"))
-            logger.info("NPC database tables created successfully")
+        # Verify database connectivity with a simple query
+        if engine is None:
+            log_and_raise(
+                ValidationError,
+                "NPC database engine is None - initialization failed",
+                context=context,
+                user_friendly="Critical system error: NPC database not available",
+            )
+        async with engine.begin() as conn:
+            await conn.execute(text("SELECT 1"))
+            logger.info("NPC database connection verified successfully")
+
+        logger.info("NPC database initialization complete - DDL must be applied separately via SQL scripts")
     except Exception as e:
         context.metadata["error_type"] = type(e).__name__
         context.metadata["error_message"] = str(e)
@@ -262,32 +336,71 @@ async def init_npc_db():
 
 async def close_npc_db():
     """Close NPC database connections."""
+    global _npc_engine, _npc_async_session_maker, _npc_creation_loop_id
+
     context = create_error_context()
     context.metadata["operation"] = "close_npc_db"
 
     logger.info("Closing NPC database connections")
     try:
         engine = get_npc_engine()  # Initialize if needed
-        await engine.dispose()
-        logger.info("NPC database connections closed")
+        if engine is not None:
+            try:
+                # Check if event loop is still running before disposing
+                try:
+                    loop = asyncio.get_running_loop()
+                    if loop.is_closed():
+                        logger.warning("Event loop is closed, skipping NPC engine disposal")
+                        # Reset global state before returning
+                        _npc_engine = None
+                        _npc_async_session_maker = None
+                        _npc_creation_loop_id = None
+                        return
+                except RuntimeError:
+                    # No running loop - that's okay, we can still try to dispose
+                    pass
+
+                await engine.dispose()
+                logger.info("NPC database connections closed")
+            except (RuntimeError, AttributeError) as e:
+                # Event loop is closed or proactor is None - this is expected during cleanup
+                # Don't log as error, just as debug since this is normal during test teardown
+                logger.debug("Event loop closed during NPC engine disposal (expected during cleanup)", error=str(e))
+            except Exception as e:
+                # Any other error - log but don't raise
+                logger.warning("Error disposing NPC database engine", error=str(e), error_type=type(e).__name__)
+            finally:
+                # Always reset global state, even if disposal failed
+                _npc_engine = None
+                _npc_async_session_maker = None
+                _npc_creation_loop_id = None
     except Exception as e:
+        # Only log, don't raise - best effort cleanup
         context.metadata["error_type"] = type(e).__name__
         context.metadata["error_message"] = str(e)
-        logger.error(
+        logger.warning(
             "Error closing NPC database connections",
             context=context.to_dict(),
             error=str(e),
             error_type=type(e).__name__,
         )
-        raise
+        # Don't raise - allow cleanup to continue
+        # Reset global state anyway
+        _npc_engine = None
+        _npc_async_session_maker = None
+        _npc_creation_loop_id = None
 
 
-def get_npc_database_path() -> Path:
+def get_npc_database_path() -> Path | None:
     """
     Get the NPC database file path.
 
+    DEPRECATED: PostgreSQL does not use file paths. This function always returns None
+    for PostgreSQL databases. Kept for backward compatibility with code that may
+    check for database paths.
+
     Returns:
-        Path: Path to the NPC database file
+        Path | None: Always None for PostgreSQL (no file path)
     """
     # Initialize database if needed
     if _npc_database_url is None:
@@ -296,25 +409,35 @@ def get_npc_database_path() -> Path:
     # After initialization, database URL should be set
     assert _npc_database_url is not None, "NPC database URL should be initialized"
 
-    if _npc_database_url.startswith("sqlite+aiosqlite:///"):
-        db_path = _npc_database_url.replace("sqlite+aiosqlite:///", "")
-        return Path(db_path)
+    if _npc_database_url.startswith("postgresql"):
+        # PostgreSQL doesn't have a file path
+        return None
     else:
         context = create_error_context()
         context.metadata["operation"] = "get_npc_database_path"
         context.metadata["database_url"] = _npc_database_url
         log_and_raise(
             ValidationError,
-            f"Unsupported NPC database URL: {_npc_database_url}",
+            f"Unsupported NPC database URL: {_npc_database_url}. Only PostgreSQL is supported.",
             context=context,
             details={"database_url": _npc_database_url},
-            user_friendly="Unsupported NPC database configuration",
+            user_friendly="Unsupported NPC database configuration - PostgreSQL required",
         )
         # Satisfy type checker: log_and_raise raises
         raise AssertionError("unreachable")
 
 
 def ensure_npc_database_directory():
-    """Ensure NPC database directory exists."""
+    """
+    Ensure NPC database directory exists.
+
+    DEPRECATED: PostgreSQL does not use file paths or directories. This function
+    is a no-op for PostgreSQL databases. Kept for backward compatibility.
+
+    For PostgreSQL, database directories are managed by the PostgreSQL server,
+    not by the application.
+    """
     db_path = get_npc_database_path()
-    db_path.parent.mkdir(parents=True, exist_ok=True)
+    # PostgreSQL always returns None, so this is effectively a no-op
+    if db_path is not None:
+        db_path.parent.mkdir(parents=True, exist_ok=True)

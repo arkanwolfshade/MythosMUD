@@ -59,11 +59,11 @@ class TestServerConfig:
 class TestDatabaseConfig:
     """Test DatabaseConfig validation."""
 
-    def test_valid_sqlite_url(self):
-        """Test valid SQLite database URL."""
-        config = DatabaseConfig(url="sqlite+aiosqlite:///data/test.db", npc_url="sqlite+aiosqlite:///data/npcs.db")
-        assert config.url == "sqlite+aiosqlite:///data/test.db"
-        assert config.npc_url == "sqlite+aiosqlite:///data/npcs.db"
+    def test_sqlite_url_rejected(self):
+        """Test that SQLite database URLs are rejected."""
+        with pytest.raises(ValidationError) as exc_info:
+            DatabaseConfig(url="sqlite+aiosqlite:///data/test.db", npc_url="sqlite+aiosqlite:///data/npcs.db")
+        assert "postgresql" in str(exc_info.value).lower() or "unsupported" in str(exc_info.value).lower()
 
     def test_valid_postgres_url(self):
         """Test valid PostgreSQL database URL."""
@@ -75,8 +75,8 @@ class TestDatabaseConfig:
     def test_invalid_database_url(self):
         """Test invalid database URL is rejected."""
         with pytest.raises(ValidationError) as exc_info:
-            DatabaseConfig(url="mysql://localhost/db", npc_url="sqlite://test.db")
-        assert "Database URL must start with 'sqlite' or 'postgresql'" in str(exc_info.value)
+            DatabaseConfig(url="mysql://localhost/db", npc_url="postgresql://localhost/npcs")
+        assert "postgresql" in str(exc_info.value).lower() or "unsupported" in str(exc_info.value).lower()
 
     def test_database_url_required(self, monkeypatch):
         """Test that database URLs are required."""
@@ -340,10 +340,10 @@ class TestAppConfig:
     @pytest.fixture(autouse=True)
     def setup_test_env(self, monkeypatch):
         """Set up test environment variables."""
-        # Set required environment variables
+        # Set required environment variables - PostgreSQL only
         monkeypatch.setenv("SERVER_PORT", "54731")
-        monkeypatch.setenv("DATABASE_URL", "sqlite+aiosqlite:///test.db")
-        monkeypatch.setenv("DATABASE_NPC_URL", "sqlite+aiosqlite:///test_npcs.db")
+        monkeypatch.setenv("DATABASE_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
+        monkeypatch.setenv("DATABASE_NPC_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
         monkeypatch.setenv("MYTHOSMUD_ADMIN_PASSWORD", "test_admin_pass")
         monkeypatch.setenv("LOGGING_ENVIRONMENT", "unit_test")
         monkeypatch.setenv("GAME_ALIASES_DIR", "data/unit_test/players/aliases")
@@ -360,7 +360,7 @@ class TestAppConfig:
         """Test that AppConfig loads from environment variables."""
         config = AppConfig()
         assert config.server.port == 54731
-        assert config.database.url == "sqlite+aiosqlite:///test.db"
+        assert config.database.url == "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
         assert config.security.admin_password == "test_admin_pass"
         assert config.logging.environment == "unit_test"
         assert config.cors.allow_origins == ["http://localhost:5173", "http://127.0.0.1:5173"]
@@ -371,8 +371,8 @@ class TestAppConfig:
         # Instantiate config to trigger environment variable setup
         AppConfig()
         # Check that DATABASE_URL environment variable is set
-        assert os.environ.get("DATABASE_URL") == "sqlite+aiosqlite:///test.db"
-        assert os.environ.get("NPC_DATABASE_URL") == "sqlite+aiosqlite:///test_npcs.db"
+        assert os.environ.get("DATABASE_URL") == "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
+        assert os.environ.get("NPC_DATABASE_URL") == "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
         assert os.environ.get("ALIASES_DIR") == os.environ.get("GAME_ALIASES_DIR")
 
     def test_to_legacy_dict_format(self, monkeypatch):
@@ -386,7 +386,7 @@ class TestAppConfig:
         # Test top-level fields
         assert legacy["host"] == "127.0.0.1"
         assert legacy["port"] == 54731
-        assert legacy["database_url"] == "sqlite+aiosqlite:///test.db"
+        assert legacy["database_url"] == "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
         assert legacy["admin_password"] == "test_admin_pass"
 
         # Test nested dicts
@@ -473,12 +473,12 @@ class TestEnvironmentVariableLoading:
 
     def test_database_config_from_env(self, monkeypatch):
         """Test DatabaseConfig loads from environment variables with prefix."""
-        monkeypatch.setenv("DATABASE_URL", "sqlite:///custom.db")
-        monkeypatch.setenv("DATABASE_NPC_URL", "sqlite:///custom_npcs.db")
+        monkeypatch.setenv("DATABASE_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
+        monkeypatch.setenv("DATABASE_NPC_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
 
         config = DatabaseConfig()
-        assert config.url == "sqlite:///custom.db"
-        assert config.npc_url == "sqlite:///custom_npcs.db"
+        assert config.url == "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
+        assert config.npc_url == "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
 
     def test_logging_config_from_env(self, monkeypatch):
         """Test LoggingConfig loads from environment variables with prefix."""
@@ -510,8 +510,8 @@ class TestLegacyDictConversion:
         """Test that AppConfig.to_legacy_dict() produces correct structure."""
         # Set up environment
         monkeypatch.setenv("SERVER_PORT", "54731")
-        monkeypatch.setenv("DATABASE_URL", "sqlite:///test.db")
-        monkeypatch.setenv("DATABASE_NPC_URL", "sqlite:///test_npcs.db")
+        monkeypatch.setenv("DATABASE_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
+        monkeypatch.setenv("DATABASE_NPC_URL", "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit")
         monkeypatch.setenv("MYTHOSMUD_ADMIN_PASSWORD", "test_password")
         monkeypatch.setenv("LOGGING_ENVIRONMENT", "unit_test")
         monkeypatch.setenv("GAME_ALIASES_DIR", "data/aliases")
@@ -565,7 +565,7 @@ class TestConfigValidationEdgeCases:
     def test_empty_string_database_url(self):
         """Test that empty string database URL is rejected."""
         with pytest.raises(ValidationError) as exc_info:
-            DatabaseConfig(url="", npc_url="sqlite:///test.db")
+            DatabaseConfig(url="", npc_url="postgresql://localhost/test")
         assert "Database URL cannot be empty" in str(exc_info.value)
 
     def test_boundary_port_values(self):
@@ -627,6 +627,6 @@ class TestConfigErrorMessages:
     def test_database_url_error_message_clarity(self):
         """Test that database URL validation error is clear."""
         with pytest.raises(ValidationError) as exc_info:
-            DatabaseConfig(url="mongodb://localhost/db", npc_url="sqlite://test.db")
+            DatabaseConfig(url="mongodb://localhost/db", npc_url="postgresql://localhost/test")
         error = str(exc_info.value)
-        assert "sqlite" in error.lower() or "postgresql" in error.lower()
+        assert "postgresql" in error.lower() or "unsupported" in error.lower()

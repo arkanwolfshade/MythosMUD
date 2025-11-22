@@ -21,9 +21,14 @@ from server.services.passive_sanity_flux_service import (
 
 @pytest.fixture
 async def session_factory():
-    engine = create_async_engine("sqlite+aiosqlite:///:memory:", future=True)
+    import os
+
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url or not database_url.startswith("postgresql"):
+        raise ValueError("DATABASE_URL must be set to a PostgreSQL URL for this test.")
+    engine = create_async_engine(database_url, future=True)
     async with engine.begin() as conn:
-        await conn.exec_driver_sql("PRAGMA foreign_keys=ON")
+        # PostgreSQL always enforces foreign keys - no PRAGMA needed
         await conn.run_sync(Base.metadata.create_all)
 
     factory = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
@@ -34,11 +39,12 @@ async def session_factory():
 
 
 async def _create_player(session: AsyncSession, *, room_id: str, sanity: int = 100, tier: str = "lucid") -> Player:
-    player_id = f"player-{uuid.uuid4()}"
+    player_id = str(uuid.uuid4())
     user = User(
         id=str(uuid.uuid4()),
         email=f"{player_id}@example.com",
         username=player_id,
+        display_name=player_id,
         hashed_password="hashed",
         is_active=True,
         is_superuser=False,
@@ -65,6 +71,25 @@ async def _create_player(session: AsyncSession, *, room_id: str, sanity: int = 1
 @pytest.mark.asyncio
 async def test_positive_flux_accumulates_and_applies(session_factory):
     async with session_factory() as session:
+        # Clean up any existing players to ensure test isolation
+        # This prevents the test from processing players created by other tests
+        from sqlalchemy import delete, select
+
+        # Delete all existing players and their related data in correct order (respecting foreign keys)
+        existing_players = await session.execute(select(Player))
+        player_list = list(existing_players.scalars().all())
+        for p in player_list:
+            # Delete related sanity records first (foreign key constraint)
+            await session.execute(delete(PlayerSanity).where(PlayerSanity.player_id == p.player_id))
+        # Delete all players
+        if player_list:
+            player_ids = [p.player_id for p in player_list]
+            user_ids = [p.user_id for p in player_list]
+            await session.execute(delete(Player).where(Player.player_id.in_(player_ids)))
+            # Delete users (players reference users, so delete after players)
+            await session.execute(delete(User).where(User.id.in_(user_ids)))
+        await session.commit()
+
         player = await _create_player(session, room_id="earth_sunlit_garden", sanity=90)
 
         flux_service = PassiveSanityFluxService(

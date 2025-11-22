@@ -15,7 +15,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass, field
 from typing import Any
 
-from ..logging.enhanced_logging_config import get_logger, log_with_context
+from server.logging.enhanced_logging_config import get_logger, log_with_context
 
 logger = get_logger(__name__)
 

@@ -70,10 +70,16 @@ class TestNPCStartupService:
             ),
             patch("server.services.npc_startup_service.get_npc_session") as mock_session,
             patch("server.services.npc_startup_service.npc_service") as mock_npc_service,
+            patch("server.persistence.get_persistence") as mock_get_persistence,
         ):
             # Setup mocks
             mock_session.return_value.__aiter__.return_value = [MagicMock()]
             mock_npc_service.get_npc_definitions = AsyncMock(return_value=mock_npc_definitions)
+
+            # Mock persistence to return rooms for room validation
+            mock_persistence = MagicMock()
+            mock_persistence.get_room.return_value = MagicMock()  # Return a room object
+            mock_get_persistence.return_value = mock_persistence
 
             # Run the startup spawning
             results = await startup_service.spawn_npcs_on_startup()
@@ -102,13 +108,19 @@ class TestNPCStartupService:
             "message": "NPC spawned successfully",
         }
 
-        results = await startup_service._spawn_required_npcs(required_npcs, mock_npc_instance_service)
+        # Mock persistence to return rooms for room validation
+        with patch("server.persistence.get_persistence") as mock_get_persistence:
+            mock_persistence = MagicMock()
+            mock_persistence.get_room.return_value = MagicMock()  # Return a room object
+            mock_get_persistence.return_value = mock_persistence
 
-        assert results["attempted"] == 1
-        assert results["spawned"] == 1
-        assert results["failed"] == 0
-        assert len(results["spawned_npcs"]) == 1
-        assert results["spawned_npcs"][0]["name"] == "Test Shopkeeper"
+            results = await startup_service._spawn_required_npcs(required_npcs, mock_npc_instance_service)
+
+            assert results["attempted"] == 1
+            assert results["spawned"] == 1
+            assert results["failed"] == 0
+            assert len(results["spawned_npcs"]) == 1
+            assert results["spawned_npcs"][0]["name"] == "Test Shopkeeper"
 
     @pytest.mark.asyncio
     async def test_spawn_optional_npcs_with_probability(
@@ -118,7 +130,15 @@ class TestNPCStartupService:
         optional_npcs = [npc for npc in mock_npc_definitions if not npc.required_npc]
 
         # Mock random to always return 0.3 (below the 0.5 probability)
-        with patch("random.random", return_value=0.3):
+        with (
+            patch("random.random", return_value=0.3),
+            patch("server.persistence.get_persistence") as mock_get_persistence,
+        ):
+            # Mock persistence to return rooms for room validation
+            mock_persistence = MagicMock()
+            mock_persistence.get_room.return_value = MagicMock()  # Return a room object
+            mock_get_persistence.return_value = mock_persistence
+
             results = await startup_service._spawn_optional_npcs(optional_npcs, mock_npc_instance_service)
 
             # Should attempt to spawn (probability 0.5 > random 0.3)
@@ -148,10 +168,18 @@ class TestNPCStartupService:
         npc_def = MagicMock()
         npc_def.room_id = "specific_room_123"
         npc_def.sub_zone_id = "test_zone"
+        npc_def.name = "TestNPC"  # Add name attribute for logging
+        npc_def.id = 1  # Add id attribute for logging
 
-        room_id = startup_service._determine_spawn_room(npc_def)
+        # Mock persistence to return a room for the specific room_id
+        with patch("server.persistence.get_persistence") as mock_get_persistence:
+            mock_persistence = MagicMock()
+            mock_persistence.get_room.return_value = MagicMock()  # Return a room object
+            mock_get_persistence.return_value = mock_persistence
 
-        assert room_id == "specific_room_123"
+            room_id = startup_service._determine_spawn_room(npc_def)
+
+            assert room_id == "specific_room_123"
 
     @pytest.mark.asyncio
     async def test_determine_spawn_room_with_sub_zone(self, startup_service):
@@ -159,10 +187,18 @@ class TestNPCStartupService:
         npc_def = MagicMock()
         npc_def.room_id = None
         npc_def.sub_zone_id = "sanitarium"
+        npc_def.name = "TestNPC"
+        npc_def.id = 1
 
-        room_id = startup_service._determine_spawn_room(npc_def)
+        # Mock persistence to return a room for the default room
+        with patch("server.persistence.get_persistence") as mock_get_persistence:
+            mock_persistence = MagicMock()
+            mock_persistence.get_room.return_value = MagicMock()  # Return a room object
+            mock_get_persistence.return_value = mock_persistence
 
-        assert room_id == "earth_arkhamcity_sanitarium_room_foyer_001"
+            room_id = startup_service._determine_spawn_room(npc_def)
+
+            assert room_id == "earth_arkhamcity_sanitarium_room_foyer_001"
 
     @pytest.mark.asyncio
     async def test_determine_spawn_room_fallback(self, startup_service):
@@ -170,10 +206,21 @@ class TestNPCStartupService:
         npc_def = MagicMock()
         npc_def.room_id = None
         npc_def.sub_zone_id = "unknown_zone"
+        npc_def.name = "TestNPC"
+        npc_def.id = 1
 
-        room_id = startup_service._determine_spawn_room(npc_def)
+        # Mock persistence to return room for fallback (since unknown sub-zone returns None, fallback is used)
+        with patch("server.persistence.get_persistence") as mock_get_persistence:
+            mock_persistence = MagicMock()
+            # Fallback room lookup (first and only call since sub-zone default returns None) returns a room
+            mock_room = MagicMock()
+            mock_room.id = "earth_arkhamcity_northside_intersection_derby_high"
+            mock_persistence.get_room.return_value = mock_room
+            mock_get_persistence.return_value = mock_persistence
 
-        assert room_id == "earth_arkhamcity_northside_intersection_derby_high"
+            room_id = startup_service._determine_spawn_room(npc_def)
+
+            assert room_id == "earth_arkhamcity_northside_intersection_derby_high"
 
     @pytest.mark.asyncio
     async def test_get_default_room_for_sub_zone(self, startup_service):
@@ -199,14 +246,21 @@ class TestNPCStartupService:
         npc_def.name = "Test NPC"
         npc_def.required_npc = True
         npc_def.room_id = "test_room"
+        npc_def.sub_zone_id = None
 
-        results = await startup_service._spawn_required_npcs([npc_def], mock_service)
+        # Mock persistence to return rooms for room validation
+        with patch("server.persistence.get_persistence") as mock_get_persistence:
+            mock_persistence = MagicMock()
+            mock_persistence.get_room.return_value = MagicMock()  # Return a room object
+            mock_get_persistence.return_value = mock_persistence
 
-        assert results["attempted"] == 1
-        assert results["spawned"] == 0
-        assert results["failed"] == 1
-        assert len(results["errors"]) == 1
-        assert "Failed to spawn required NPC" in results["errors"][0]
+            results = await startup_service._spawn_required_npcs([npc_def], mock_service)
+
+            assert results["attempted"] == 1
+            assert results["spawned"] == 0
+            assert results["failed"] == 1
+            assert len(results["errors"]) == 1
+            assert "Failed to spawn required NPC" in results["errors"][0]
 
     @pytest.mark.asyncio
     async def test_error_handling_in_startup_spawning(self, startup_service):
@@ -241,19 +295,30 @@ class TestNPCStartupService:
         earth_innsmouth_waterfront_room_waterfront_001 which didn't exist.
         """
         from server.npc_database import get_npc_session
-        from server.services.npc_service import npc_service
-        from server.world_loader import load_hierarchical_world
+        from server.persistence import get_persistence
 
-        # AI Agent: Load world data to get all existing rooms
-        world_data = load_hierarchical_world()
-        existing_rooms = set(world_data["rooms"].keys())
-
-        # AI Agent: Also check room_mappings for backward compatibility
-        existing_rooms.update(world_data["room_mappings"].keys())
+        # AI Agent: Get all existing rooms from database via persistence layer
+        persistence = get_persistence()
+        all_rooms = persistence.list_rooms()
+        existing_rooms = {room.id for room in all_rooms if room.id}
 
         # AI Agent: Get all NPC definitions from database
+        # Ensure NPC database is initialized before use
+        from server.npc_database import get_npc_engine, init_npc_db
+        from server.services.npc_service import NPCService
+
+        # Initialize NPC database if needed
+        engine = get_npc_engine()
+        if engine is None:
+            await init_npc_db()
+
+        npc_service_instance = NPCService()
+        npc_definitions = []
+        # Use async for to properly handle the async generator and context manager
         async for session in get_npc_session():
-            npc_definitions = await npc_service.get_npc_definitions(session)
+            npc_definitions = await npc_service_instance.get_npc_definitions(session)
+            # Break after first iteration to exit the async for loop
+            # The generator will be properly closed by the async for loop
             break
 
         # AI Agent: Validate all NPC spawn locations

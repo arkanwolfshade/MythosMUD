@@ -5,6 +5,7 @@ This module provides the main command processing service that orchestrates
 command validation, routing, and execution.
 """
 
+import traceback
 from collections.abc import Awaitable, Callable
 from typing import Any
 
@@ -12,6 +13,7 @@ from ..alias_storage import AliasStorage
 from ..exceptions import ValidationError as MythosValidationError
 from ..logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import parse_command
+from ..validators.security_validator import strip_ansi_codes
 from .admin_commands import (
     handle_add_admin_command,
     handle_admin_command,
@@ -207,16 +209,34 @@ class CommandService:
             assert isinstance(result, dict)
             return result
         except Exception as e:
-            logger.error(
-                "Error in command handler",
-                player=player_name,
-                command_type=command_type,
-                command_data=command_data,
-                handler_function=str(handler),
-                error_type=type(e).__name__,
-                error_message=str(e),
-                exc_info=True,
-            )
+            # Format exception traceback and sanitize ANSI codes for Windows compatibility
+            try:
+                exc_traceback = traceback.format_exc()
+                # Strip ANSI codes to prevent UnicodeEncodeError on Windows console
+                sanitized_traceback = strip_ansi_codes(exc_traceback)
+                logger.error(
+                    "Error in command handler",
+                    player=player_name,
+                    command_type=command_type,
+                    command_data=command_data,
+                    handler_function=str(handler),
+                    error_type=type(e).__name__,
+                    error_message=str(e),
+                    traceback=sanitized_traceback,
+                )
+            except Exception as log_error:
+                # If logging itself fails, use a minimal safe log
+                try:
+                    logger.error(
+                        "Error in command handler (logging error occurred)",
+                        player=player_name,
+                        command_type=command_type,
+                        error=str(e)[:200],  # Truncate to avoid encoding issues
+                        log_error=str(log_error)[:200],
+                    )
+                except Exception:
+                    # Last resort: silent failure to prevent test crashes
+                    pass
             return {"result": f"Error processing {command_type} command: {str(e)}"}
 
     async def process_command(

@@ -18,8 +18,10 @@ jobs:
       ACTIONS_RUNNER_DEBUG: true
       UV_PROJECT_ENVIRONMENT: .venv-ci
       UV_LINK_MODE: copy
-      DATABASE_URL: sqlite+aiosqlite:///${{ github.workspace }}/data/unit_test/players/unit_test_players.db
-      DATABASE_NPC_URL: sqlite+aiosqlite:///${{ github.workspace }}/data/unit_test/npcs/unit_test_npcs.db
+      # Suppress Node.js punycode deprecation warning (DEP0040) from transitive dependencies
+      NODE_OPTIONS: --no-deprecation
+      DATABASE_URL: postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit
+      DATABASE_NPC_URL: postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit
       MYTHOSMUD_ADMIN_PASSWORD: ${{ secrets.MYTHOSMUD_ADMIN_PASSWORD_CI }}
       MYTHOSMUD_SECRET_KEY: ${{ secrets.MYTHOSMUD_SECRET_KEY_CI }}
       MYTHOSMUD_JWT_SECRET: ${{ secrets.MYTHOSMUD_JWT_SECRET_CI }}
@@ -27,6 +29,7 @@ jobs:
       MYTHOSMUD_VERIFICATION_TOKEN_SECRET: ${{ secrets.MYTHOSMUD_VERIFICATION_TOKEN_SECRET_CI }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
+        if: ${{ !env.ACT }}
         uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
         with:
           egress-policy: audit
@@ -56,14 +59,41 @@ jobs:
           source .venv-ci/bin/activate
           playwright install chromium
           playwright install-deps
-      - name: Initialize test database
+      - name: Install PostgreSQL 18
+        if: ${{ !env.ACT }}
         run: |
-          source .venv-ci/bin/activate
-          python server/tests/scripts/init_test_db.py
-      - name: Verify test database
+          sudo apt-get update
+          sudo apt-get install -y wget lsb-release gnupg
+          wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+          sudo apt-get update
+          sudo apt-get install -y postgresql-18 postgresql-contrib-18
+      - name: Initialize PostgreSQL databases
+        if: ${{ !env.ACT }}
         run: |
-          source .venv-ci/bin/activate
-          python server/tests/scripts/verify_test_db.py
+          sudo service postgresql start
+          sleep 3
+          pg_isready -U postgres
+          # Set postgres user password to match DATABASE_URL
+          sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'Cthulhu1';"
+          sudo -u postgres psql -f db/roles/roles.sql
+          sudo -u postgres psql -f db/databases/databases.sql
+          sudo -u postgres psql -d mythos_unit -f db/authoritative_schema.sql
+          # Apply UUID migration for players.player_id
+          sudo -u postgres psql -d mythos_unit -f db/migrations/010_migrate_player_id_to_uuid.sql
+          sudo -u postgres psql -d mythos_unit -f data/db/00_world_and_emotes.sql
+          sudo -u postgres psql -d mythos_unit -f data/db/01_professions.sql
+          sudo -u postgres psql -d mythos_unit -f data/db/02_item_prototypes.sql
+          sudo -u postgres psql -d mythos_unit -f data/db/03_npc_definitions.sql
+      - name: Start PostgreSQL service
+        run: |
+          # Start PostgreSQL - try service command first, fall back to direct start
+          service postgresql start 2>/dev/null || \
+          (command -v sudo >/dev/null 2>&1 && sudo service postgresql start) || \
+          (PGDATA=$(find /var/lib/postgresql -type d -name "main" 2>/dev/null | head -1) && \
+           [ -n "$PGDATA" ] && su postgres -c "postgres -D $PGDATA" &) || true
+          sleep 3
+          pg_isready -U postgres || (sleep 3 && pg_isready -U postgres)
       - name: Lint with ruff
         run: |
           source .venv-ci/bin/activate
@@ -73,6 +103,28 @@ jobs:
           source .venv-ci/bin/activate
           # Use pre-commit to run mypy with identical config to local development
           pre-commit run mypy --all-files
+      - name: Set up test environment file
+        run: |
+          # Create test environment file from example for CI
+          # CI already has all env vars set, but conftest.py validates the file exists
+          mkdir -p server/tests
+          if [ -f env.unit_test.example ]; then
+            cp env.unit_test.example server/tests/.env.unit_test
+            echo "Created server/tests/.env.unit_test from example"
+          else
+            echo "Warning: env.unit_test.example not found, creating minimal .env.unit_test"
+            # Use environment variables that are already set in the job env section
+            cat > server/tests/.env.unit_test << 'EOF'
+          SERVER_PORT=54731
+          EOF
+            echo "DATABASE_URL=${DATABASE_URL}" >> server/tests/.env.unit_test
+            echo "DATABASE_NPC_URL=${DATABASE_NPC_URL}" >> server/tests/.env.unit_test
+            echo "MYTHOSMUD_ADMIN_PASSWORD=${MYTHOSMUD_ADMIN_PASSWORD}" >> server/tests/.env.unit_test
+            echo "MYTHOSMUD_SECRET_KEY=${MYTHOSMUD_SECRET_KEY}" >> server/tests/.env.unit_test
+            echo "MYTHOSMUD_JWT_SECRET=${MYTHOSMUD_JWT_SECRET}" >> server/tests/.env.unit_test
+            echo "MYTHOSMUD_RESET_TOKEN_SECRET=${MYTHOSMUD_RESET_TOKEN_SECRET}" >> server/tests/.env.unit_test
+            echo "MYTHOSMUD_VERIFICATION_TOKEN_SECRET=${MYTHOSMUD_VERIFICATION_TOKEN_SECRET}" >> server/tests/.env.unit_test
+          fi
       - name: Run tests with coverage
         run: |
           source .venv-ci/bin/activate
@@ -101,6 +153,14 @@ jobs:
         with:
           name: coverage-html
           path: htmlcov/
+      - name: Cleanup PostgreSQL (for act)
+        if: ${{ env.ACT }}
+        run: |
+          # Stop PostgreSQL gracefully when running with act to prevent hang
+          service postgresql stop 2>/dev/null || \
+          (command -v sudo >/dev/null 2>&1 && sudo service postgresql stop) || \
+          pkill -f postgres || true
+          sleep 1
       # FastAPI app smoke test removed; not needed for unit tests
 
   frontend:
@@ -109,11 +169,14 @@ jobs:
     env:
       ACTIONS_STEP_DEBUG: true
       ACTIONS_RUNNER_DEBUG: true
+      # Suppress Node.js punycode deprecation warning (DEP0040) from transitive dependencies
+      NODE_OPTIONS: --no-deprecation
     defaults:
       run:
         working-directory: client
     steps:
       - name: Harden the runner (Audit all outbound calls)
+        if: ${{ !env.ACT }}
         uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
         with:
           egress-policy: audit

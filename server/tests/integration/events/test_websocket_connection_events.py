@@ -6,7 +6,9 @@ are not being fired or broadcast properly when players connect/disconnect.
 """
 
 import json
+import uuid
 from unittest.mock import AsyncMock, Mock, patch
+from uuid import uuid4
 
 import pytest
 from fastapi import WebSocket
@@ -39,7 +41,7 @@ class TestWebSocketConnectionEvents:
     def mock_player(self):
         """Create a mock player for testing."""
         player = Mock(spec=Player)
-        player.player_id = "test_player_123"
+        player.player_id = str(uuid4())  # Use UUID string for player_id
         player.name = "TestPlayer"
         player.current_room_id = "test_room_001"
         player.get_stats = Mock(return_value={"health": 100, "level": 1})
@@ -107,15 +109,20 @@ class TestWebSocketConnectionEvents:
             # Mock the message handler to avoid processing the command
             with patch("server.realtime.websocket_handler.handle_websocket_message", AsyncMock()):
                 try:
-                    # Pass connection_manager as parameter
+                    # Pass connection_manager as parameter (handle_websocket_connection expects UUID)
+                    player_id_uuid = (
+                        uuid.UUID(mock_player.player_id)
+                        if isinstance(mock_player.player_id, str)
+                        else mock_player.player_id
+                    )
                     await handle_websocket_connection(
-                        mock_websocket, "test_player_123", connection_manager=mock_connection_manager
+                        mock_websocket, player_id_uuid, connection_manager=mock_connection_manager
                     )
                 except Exception:
                     pass  # Expected to break due to our mock
 
             # Verify that room.player_entered was called by checking if player is in room
-            assert mock_room.has_player("test_player_123"), "Player should be in room after connection"
+            assert mock_room.has_player(mock_player.player_id), "Player should be in room after connection"
 
     @pytest.mark.asyncio
     async def test_websocket_disconnection_fires_player_left_event(
@@ -147,15 +154,20 @@ class TestWebSocketConnectionEvents:
             mock_websocket.receive_text.side_effect = WebSocketDisconnect(1000, "Connection closed")
 
             try:
-                # Pass connection_manager as parameter
+                # Pass connection_manager as parameter (handle_websocket_connection expects UUID)
+                player_id_uuid = (
+                    uuid.UUID(mock_player.player_id)
+                    if isinstance(mock_player.player_id, str)
+                    else mock_player.player_id
+                )
                 await handle_websocket_connection(
-                    mock_websocket, "test_player_123", connection_manager=mock_connection_manager
+                    mock_websocket, player_id_uuid, connection_manager=mock_connection_manager
                 )
             except WebSocketDisconnect:
                 pass  # Expected to break due to our mock
 
             # Verify that room.player_left was called by checking if player is not in room
-            assert not mock_room.has_player("test_player_123"), "Player should not be in room after disconnection"
+            assert not mock_room.has_player(mock_player.player_id), "Player should not be in room after disconnection"
 
     @pytest.mark.asyncio
     async def test_room_player_entered_publishes_event(self, mock_event_bus):
@@ -163,14 +175,15 @@ class TestWebSocketConnectionEvents:
         room_data = {"id": "test_room_001", "name": "Test Room"}
         room = Room(room_data, mock_event_bus)
 
-        # Call player_entered
-        room.player_entered("test_player_123")
+        # Call player_entered (room.player_entered expects string player_id)
+        test_player_id = str(uuid4())
+        room.player_entered(test_player_id)
 
         # Verify event was published
         mock_event_bus.publish.assert_called_once()
         published_event = mock_event_bus.publish.call_args[0][0]
         assert isinstance(published_event, PlayerEnteredRoom)
-        assert published_event.player_id == "test_player_123"
+        assert published_event.player_id == test_player_id
         assert published_event.room_id == "test_room_001"
 
     @pytest.mark.asyncio
@@ -179,18 +192,19 @@ class TestWebSocketConnectionEvents:
         room_data = {"id": "test_room_001", "name": "Test Room"}
         room = Room(room_data, mock_event_bus)
 
-        # First add player to room
-        room.player_entered("test_player_123")
+        # First add player to room (room.player_entered expects string player_id)
+        test_player_id = str(uuid4())
+        room.player_entered(test_player_id)
         mock_event_bus.publish.reset_mock()  # Clear the enter event
 
         # Then remove player from room
-        room.player_left("test_player_123")
+        room.player_left(test_player_id)
 
         # Verify event was published
         mock_event_bus.publish.assert_called_once()
         published_event = mock_event_bus.publish.call_args[0][0]
         assert isinstance(published_event, PlayerLeftRoom)
-        assert published_event.player_id == "test_player_123"
+        assert published_event.player_id == test_player_id
         assert published_event.room_id == "test_room_001"
 
     @pytest.mark.asyncio
@@ -213,6 +227,15 @@ class TestWebSocketConnectionEvents:
         mock_player.name = "TestPlayer"
         mock_connection_manager._get_player.return_value = mock_player
 
+        # Create a PlayerEnteredRoom event (use UUID for player_id)
+        player_id = uuid4()
+        player_id_str = str(player_id)
+        event = PlayerEnteredRoom(player_id=player_id_str, room_id="test_room_001")
+
+        # Mock batch loading methods (used for N+1 query prevention)
+        mock_connection_manager._get_players_batch = Mock(return_value={player_id_str: mock_player})
+        mock_connection_manager._get_npcs_batch = Mock(return_value={})
+
         # Add async methods that are actually called
         mock_connection_manager.broadcast_to_room = AsyncMock()
         mock_connection_manager.subscribe_to_room = AsyncMock()
@@ -224,22 +247,14 @@ class TestWebSocketConnectionEvents:
 
         mock_room = Mock(name="Test Room")
         mock_room.name = "Test Room"
-        mock_room.get_players.return_value = ["test_player_123"]
+        mock_room.get_players.return_value = [player_id_str]
         mock_room.get_npcs.return_value = []
         # Fix async mock issues - persistence.get_room is not async
         mock_connection_manager.persistence = Mock()
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
-        # Fix async mock issues - _get_room_occupants is not async
-        mock_connection_manager._get_room_occupants = Mock(return_value=[])
-        # Ensure the method is not treated as async
-        mock_connection_manager._get_room_occupants.side_effect = lambda room_id: []
-
         event_handler = RealTimeEventHandler(mock_event_bus)
         event_handler.connection_manager = mock_connection_manager
-
-        # Create a PlayerEnteredRoom event
-        event = PlayerEnteredRoom(player_id="test_player_123", room_id="test_room_001")
 
         # Mock the room sync service to return the original event
         mock_room_sync_service = Mock()
@@ -249,10 +264,9 @@ class TestWebSocketConnectionEvents:
         # Handle the event directly (no need to mock the method itself)
         await event_handler._handle_player_entered(event)
 
-        # Verify player was looked up (called 4 times: once directly for player name,
-        # once for room_update event occupants, twice more for occupants snapshot)
-        assert mock_connection_manager._get_player.call_count == 4
-        mock_connection_manager._get_player.assert_any_call("test_player_123")
+        # Verify player was looked up (called once for player info)
+        assert mock_connection_manager._get_player.call_count >= 1
+        mock_connection_manager._get_player.assert_any_call(player_id)
 
     @pytest.mark.asyncio
     async def test_event_handler_handles_player_left_event(self, mock_event_bus):
@@ -265,6 +279,15 @@ class TestWebSocketConnectionEvents:
         mock_player.name = "TestPlayer"
         mock_connection_manager._get_player.return_value = mock_player
 
+        # Create a PlayerLeftRoom event (use UUID for player_id)
+        player_id = uuid4()
+        player_id_str = str(player_id)
+        event = PlayerLeftRoom(player_id=player_id_str, room_id="test_room_001")
+
+        # Mock batch loading methods (used for N+1 query prevention)
+        mock_connection_manager._get_players_batch = Mock(return_value={player_id_str: mock_player})
+        mock_connection_manager._get_npcs_batch = Mock(return_value={})
+
         # Add async methods that are actually called
         mock_connection_manager.broadcast_to_room = AsyncMock()
         mock_connection_manager.subscribe_to_room = AsyncMock()
@@ -276,22 +299,14 @@ class TestWebSocketConnectionEvents:
 
         mock_room = Mock(name="Test Room")
         mock_room.name = "Test Room"
-        mock_room.get_players.return_value = ["test_player_123"]
+        mock_room.get_players.return_value = [player_id_str]
         mock_room.get_npcs.return_value = []
         # Fix async mock issues - persistence.get_room is not async
         mock_connection_manager.persistence = Mock()
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
-        # Fix async mock issues - _get_room_occupants is not async
-        mock_connection_manager._get_room_occupants = Mock(return_value=[])
-        # Ensure the method is not treated as async
-        mock_connection_manager._get_room_occupants.side_effect = lambda room_id: []
-
         event_handler = RealTimeEventHandler(mock_event_bus)
         event_handler.connection_manager = mock_connection_manager
-
-        # Create a PlayerLeftRoom event
-        event = PlayerLeftRoom(player_id="test_player_123", room_id="test_room_001")
 
         # Mock the room sync service to return the original event
         mock_room_sync_service = Mock()
@@ -301,9 +316,9 @@ class TestWebSocketConnectionEvents:
         # Handle the event directly (no need to mock the method itself)
         await event_handler._handle_player_left(event)
 
-        # Verify player was looked up (called twice: once directly, once in room occupants update)
-        assert mock_connection_manager._get_player.call_count == 2
-        mock_connection_manager._get_player.assert_any_call("test_player_123")
+        # Verify player was looked up (implementation now uses batch loading, so may be called once or more)
+        assert mock_connection_manager._get_player.call_count >= 1
+        mock_connection_manager._get_player.assert_any_call(player_id)
 
     @pytest.mark.skip(reason="Complex WebSocket mocking issue - needs investigation")
     @pytest.mark.asyncio

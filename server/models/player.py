@@ -9,8 +9,10 @@ import json
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
 
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text, event, text
+from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy.ext.mutable import MutableDict, MutableList
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
 
@@ -37,26 +39,46 @@ class Player(Base):
     __tablename__ = "players"
     __table_args__ = {"extend_existing": True}
 
-    # Primary key - TEXT (matches database schema)
-    player_id = Column(String(length=255), primary_key=True)
+    # Primary key - UUID (matches user_id type for consistency)
+    player_id = Column(UUID(as_uuid=False), primary_key=True)
 
-    # Foreign key to users table
-    user_id = Column(String(length=255), ForeignKey("users.id"), unique=True, nullable=False)
+    # Foreign key to users table - use UUID to match users.id (UUID type in PostgreSQL)
+    # Explicit index=True for clarity (unique=True already creates index, but explicit is better)
+    user_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), unique=True, nullable=False, index=True)
 
     # Player information
     name = Column(String(length=50), unique=True, nullable=False, index=True)
 
-    # Game data stored as JSON in TEXT fields (SQLite compatible)
+    # Game data stored as JSONB (migrated from TEXT in migration 006)
+    # BUGFIX: Use MutableDict to track in-place mutations for proper persistence
+    # As documented in "Persistence and Mutation Tracking" - Dr. Armitage, 1930
+    # JSONB columns require mutation tracking to detect in-place changes
     stats = Column(
-        Text(),
+        MutableDict.as_mutable(JSONB),
         nullable=False,
-        default='{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100, "position": "standing"}',
+        default=lambda: {
+            "strength": 10,
+            "dexterity": 10,
+            "constitution": 10,
+            "intelligence": 10,
+            "wisdom": 10,
+            "charisma": 10,
+            "sanity": 100,
+            "occult_knowledge": 0,
+            "fear": 0,
+            "corruption": 0,
+            "cult_affiliation": 0,
+            "current_health": 100,
+            "position": "standing",
+        },
     )
     inventory = Column(Text(), nullable=False, default="[]")
     status_effects = Column(Text(), nullable=False, default="[]")
 
     # Location and progression
-    current_room_id = Column(String(length=50), nullable=False, default="earth_arkhamcity_sanitarium_room_foyer_001")
+    # CRITICAL FIX: Increased from 50 to 255 to accommodate hierarchical room IDs
+    # Room IDs like "earth_arkhamcity_sanitarium_room_foyer_entrance_001" are 54 characters
+    current_room_id = Column(String(length=255), nullable=False, default="earth_arkhamcity_sanitarium_room_foyer_001")
     respawn_room_id = Column(
         String(length=100), nullable=True, default="earth_arkhamcity_sanitarium_room_foyer_001"
     )  # Player's respawn location (NULL = use default)
@@ -68,12 +90,10 @@ class Player(Base):
 
     # ARCHITECTURE FIX Phase 3.1: Relationships defined directly in model (no circular imports)
     # Using simple string reference - SQLAlchemy resolves via registry after all models imported
-    user: Mapped["User"] = relationship(
-        "User", back_populates="player", overlaps="player"
-    )  # SQLite doesn't have BOOLEAN, use INTEGER
+    user: Mapped["User"] = relationship("User", back_populates="player", overlaps="player")
 
-    # Profession
-    profession_id = Column(Integer(), default=0, nullable=False)
+    # Profession - add index for queries filtering by profession
+    profession_id = Column(Integer(), default=0, nullable=False, index=True)
 
     # Timestamps (persist naive UTC)
     created_at = Column(DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
@@ -84,10 +104,24 @@ class Player(Base):
         return f"<Player(player_id={self.player_id}, name={self.name}, level={self.level})>"
 
     def get_stats(self) -> dict[str, Any]:
-        """Get player stats as dictionary."""
+        """Get player stats as dictionary.
+
+        Returns a MutableDict instance that automatically tracks mutations
+        for proper SQLAlchemy change detection and persistence.
+        """
+        # With JSONB + MutableDict, SQLAlchemy returns MutableDict (dict subclass)
+        # Note: mypy sees self.stats as Column[Any], but at runtime SQLAlchemy returns the actual value
         try:
-            stats = cast(dict[str, Any], json.loads(cast(str, self.stats)))
-        except (json.JSONDecodeError, TypeError):
+            if isinstance(self.stats, dict):  # type: ignore[unreachable]
+                # JSONB column returns dict directly
+                stats = cast(dict[str, Any], self.stats)  # type: ignore[unreachable]
+            elif isinstance(self.stats, str):  # type: ignore[unreachable]
+                # Fallback for TEXT column (backward compatibility during migration)
+                stats = cast(dict[str, Any], json.loads(self.stats))  # type: ignore[unreachable]
+            else:
+                # Handle None or other types
+                raise TypeError(f"Unexpected stats type: {type(self.stats)}")
+        except (json.JSONDecodeError, TypeError, AttributeError):
             stats = {
                 "strength": 10,
                 "dexterity": 10,
@@ -105,7 +139,7 @@ class Player(Base):
             }
             return stats
 
-        if "position" not in stats:
+        if "position" not in stats:  # type: ignore[unreachable]
             stats["position"] = "standing"
             try:
                 self.set_stats(stats)
@@ -116,8 +150,13 @@ class Player(Base):
         return stats
 
     def set_stats(self, stats: dict[str, Any]) -> None:
-        """Set player stats from dictionary."""
-        self.stats = json.dumps(stats)  # type: ignore[assignment]
+        """Set player stats from dictionary.
+
+        Accepts both plain dict and MutableDict instances.
+        SQLAlchemy automatically converts plain dicts to MutableDict.
+        """
+        # With MutableDict.as_mutable(JSONB), SQLAlchemy automatically handles conversion
+        self.stats = stats  # type: ignore[assignment]
 
     def get_inventory(self) -> list[dict[str, Any]]:
         """Get player inventory as list."""
@@ -252,3 +291,89 @@ class Player(Base):
         back_populates="player",
         cascade="all, delete-orphan",
     )
+
+    channel_preferences: Mapped["PlayerChannelPreferences | None"] = relationship(
+        "PlayerChannelPreferences",
+        back_populates="player",
+        uselist=False,
+        cascade="all, delete-orphan",
+        single_parent=True,
+    )
+
+
+class PlayerChannelPreferences(Base):
+    """
+    Player channel preferences model for Advanced Chat Channels.
+
+    Stores player preferences for chat channels including default channel
+    and muted channels list.
+    """
+
+    __tablename__ = "player_channel_preferences"
+
+    # Primary key - UUID to match players.player_id exactly
+    # CRITICAL: Must use UUID(as_uuid=False) to match Player.player_id type
+    # Both use UUID(as_uuid=False) which creates UUID column type in PostgreSQL
+    # The as_uuid=False parameter only affects Python type handling (strings vs UUID objects)
+    player_id = Column(
+        UUID(as_uuid=False),
+        ForeignKey("players.player_id", ondelete="CASCADE"),
+        primary_key=True,
+    )
+    default_channel: Mapped[str] = mapped_column(String(32), nullable=False, default="local")
+    muted_channels: Mapped[list[str]] = mapped_column(MutableList.as_mutable(JSONB), nullable=False, default=list)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(UTC),
+        server_default=text("CURRENT_TIMESTAMP"),
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
+        server_default=text("CURRENT_TIMESTAMP"),
+    )
+
+    player: Mapped["Player"] = relationship("Player", back_populates="channel_preferences")
+
+
+# Event listener to handle legacy string stats in database
+# Converts JSON strings to dicts before MutableDict coercion
+# As documented in "Legacy Data Migration Patterns" - Dr. Armitage, 1931
+@event.listens_for(Player, "load")
+def _convert_legacy_stats_string(target: Player, context: Any) -> None:
+    """
+    Convert legacy string stats to dict during SQLAlchemy load event.
+
+    This handles legacy data where stats were stored as JSON strings
+    instead of JSONB dicts. The conversion happens before MutableDict
+    tries to coerce the value, preventing ValueError exceptions.
+
+    Args:
+        target: The Player instance being loaded
+        context: SQLAlchemy load context
+    """
+    if isinstance(target.stats, str):  # type: ignore[unreachable]
+        try:  # type: ignore[unreachable]
+            # Parse JSON string to dict
+            # MutableDict will automatically wrap this dict
+            target.stats = json.loads(target.stats)
+        except (json.JSONDecodeError, TypeError):
+            # If parsing fails, use default stats
+            target.stats = {
+                "strength": 10,
+                "dexterity": 10,
+                "constitution": 10,
+                "intelligence": 10,
+                "wisdom": 10,
+                "charisma": 10,
+                "sanity": 100,
+                "occult_knowledge": 0,
+                "fear": 0,
+                "corruption": 0,
+                "cult_affiliation": 0,
+                "current_health": 100,
+                "position": "standing",
+            }

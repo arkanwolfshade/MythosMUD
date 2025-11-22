@@ -57,7 +57,7 @@ async def _perform_recovery_action(
             await session.commit()
         except SanityActionOnCooldownError:
             await session.rollback()
-            cooldown = await service.get_action_cooldown(str(player.player_id), action_code)
+            cooldown = await service.get_action_cooldown(player.player_id, action_code)
             if cooldown and cooldown.cooldown_expires_at:
                 expiry = cooldown.cooldown_expires_at
                 if expiry.tzinfo is None:

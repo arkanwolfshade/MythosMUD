@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import inspect
+import uuid
 from collections.abc import Mapping
 from copy import deepcopy
 from typing import Any, cast
@@ -352,7 +353,8 @@ async def handle_pickup_command(
         logger.warning(
             "Pickup attempted without room manager",
             player=player.name,
-            player_id=str(player.player_id),
+            # Structlog handles UUID objects automatically, no need to convert to string
+            player_id=player.player_id,
             room_id=player.current_room_id,
         )
         return {"result": "Room inventory is unavailable."}
@@ -375,7 +377,8 @@ async def handle_pickup_command(
             logger.info(
                 "No matching room drop found for pickup",
                 player=player.name,
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 search_term=search_term,
                 room_id=room_id,
             )
@@ -385,7 +388,8 @@ async def handle_pickup_command(
         logger.debug(
             "Pickup resolved via fuzzy search",
             player=player.name,
-            player_id=str(player.player_id),
+            # Structlog handles UUID objects automatically, no need to convert to string
+            player_id=player.player_id,
             room_id=room_id,
             search_term=search_term,
             resolved_index=index,
@@ -412,7 +416,8 @@ async def handle_pickup_command(
         logger.info(
             "Pickup rejected",
             player=player.name,
-            player_id=str(player.player_id),
+            # Structlog handles UUID objects automatically, no need to convert to string
+            player_id=player.player_id,
             reason=str(exc),
             room_id=room_id,
         )
@@ -483,7 +488,8 @@ async def handle_drop_command(
         logger.warning(
             "Drop attempted without room manager",
             player=player.name,
-            player_id=str(player.player_id),
+            # Structlog handles UUID objects automatically, no need to convert to string
+            player_id=player.player_id,
             room_id=player.current_room_id,
         )
         return {"result": "Room inventory is unavailable."}
@@ -601,7 +607,8 @@ async def handle_equip_command(
             logger.info(
                 "No matching inventory item found for equip",
                 player=player.name,
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 search_term=search_term,
                 room_id=room_id,
             )
@@ -610,7 +617,8 @@ async def handle_equip_command(
         logger.debug(
             "Equip resolved via fuzzy search",
             player=player.name,
-            player_id=str(player.player_id),
+            # Structlog handles UUID objects automatically, no need to convert to string
+            player_id=player.player_id,
             room_id=room_id,
             search_term=search_term,
             inventory_index=match_index + 1,
@@ -631,12 +639,18 @@ async def handle_equip_command(
     previous_inventory = _clone_inventory(player)
     previous_equipped = deepcopy(player.get_equipped_items())
 
-    with inventory_service.begin_mutation(str(player.player_id), mutation_token) as decision:
+    # Convert player.player_id to UUID | str for begin_mutation
+    # SQLAlchemy Column[str] returns UUID at runtime, but mypy sees it as Column[str]
+    # begin_mutation accepts UUID | str, so convert to string and let it handle
+    player_id_value = player.player_id
+    player_id_for_mutation: uuid.UUID | str = str(player_id_value)
+    with inventory_service.begin_mutation(player_id_for_mutation, mutation_token) as decision:
         if not decision.should_apply:
             logger.info(
                 "Equip suppressed by mutation guard",
                 player=player.name,
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 requested_slot=target_slot,
                 inventory_index=index,
                 room_id=room_id,
@@ -655,7 +669,8 @@ async def handle_equip_command(
             logger.info(
                 "Equip rejected",
                 player=player.name,
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 reason=str(exc),
                 requested_slot=target_slot,
                 inventory_index=index,
@@ -790,12 +805,18 @@ async def handle_unequip_command(
     if resolved_slot is None:
         return {"result": "You do not have an item equipped in that slot."}
 
-    with inventory_service.begin_mutation(str(player.player_id), mutation_token) as decision:
+    # Convert player.player_id to UUID | str for begin_mutation
+    # SQLAlchemy Column[str] returns UUID at runtime, but mypy sees it as Column[str]
+    # begin_mutation accepts UUID | str, so convert to string and let it handle
+    player_id_value = player.player_id
+    player_id_for_mutation: uuid.UUID | str = str(player_id_value)
+    with inventory_service.begin_mutation(player_id_for_mutation, mutation_token) as decision:
         if not decision.should_apply:
             logger.info(
                 "Unequip suppressed by mutation guard",
                 player=player.name,
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 slot=resolved_slot,
                 room_id=str(player.current_room_id),
                 mutation_token=mutation_token,
@@ -812,7 +833,8 @@ async def handle_unequip_command(
             logger.info(
                 "Unequip rejected",
                 player=player.name,
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 reason=str(exc),
                 slot=resolved_slot,
                 room_id=str(player.current_room_id),

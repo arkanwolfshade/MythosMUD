@@ -256,24 +256,63 @@ class NPCStartupService:
             Room ID where the NPC should spawn, or None if no valid room found
         """
         try:
-            # If NPC has a specific room_id, use it
-            if hasattr(npc_def, "room_id") and npc_def.room_id:
-                logger.debug("Using specific room for NPC", npc_name=npc_def.name, room_id=npc_def.room_id)
-                return npc_def.room_id
+            from ..persistence import get_persistence
 
-            # If NPC has a sub_zone_id, we could implement zone-based spawning logic here
-            # For now, we'll use a default room for each sub-zone
+            persistence = get_persistence()
+            if not persistence:
+                logger.error("Persistence layer not available for room validation")
+                return None
+
+            # If NPC has a specific room_id, verify it exists
+            if hasattr(npc_def, "room_id") and npc_def.room_id:
+                room_id = npc_def.room_id
+                room = persistence.get_room(room_id)
+                if room:
+                    logger.debug("Using specific room for NPC", npc_name=npc_def.name, room_id=room_id)
+                    return room_id
+                else:
+                    logger.warning(
+                        "NPC room_id not found in database",
+                        npc_name=npc_def.name,
+                        room_id=room_id,
+                        definition_id=npc_def.id,
+                    )
+                    # Try fallback to sub-zone default
+
+            # If NPC has a sub_zone_id, try to find a valid room in that sub-zone
             if hasattr(npc_def, "sub_zone_id") and npc_def.sub_zone_id:
                 default_room = self._get_default_room_for_sub_zone(npc_def.sub_zone_id)
                 if default_room:
-                    logger.debug(
-                        f"Using default room for {npc_def.name} in sub-zone {npc_def.sub_zone_id}: {default_room}"
-                    )
-                    return default_room
+                    room = persistence.get_room(default_room)
+                    if room:
+                        logger.debug(
+                            "Using default room for NPC in sub-zone",
+                            npc_name=npc_def.name,
+                            sub_zone_id=npc_def.sub_zone_id,
+                            room_id=default_room,
+                        )
+                        return default_room
+                    else:
+                        logger.warning(
+                            "Default room for sub-zone not found in database",
+                            npc_name=npc_def.name,
+                            sub_zone_id=npc_def.sub_zone_id,
+                            room_id=default_room,
+                        )
 
             # Fallback to a default starting room
-            logger.debug("Using fallback room for NPC", npc_name=npc_def.name)
-            return "earth_arkhamcity_northside_intersection_derby_high"
+            fallback_room_id = "earth_arkhamcity_northside_intersection_derby_high"
+            room = persistence.get_room(fallback_room_id)
+            if room:
+                logger.debug("Using fallback room for NPC", npc_name=npc_def.name, room_id=fallback_room_id)
+                return fallback_room_id
+            else:
+                logger.error(
+                    "Fallback room not found in database",
+                    npc_name=npc_def.name,
+                    room_id=fallback_room_id,
+                )
+                return None
 
         except Exception as e:
             logger.error("Error determining spawn room for NPC", npc_name=npc_def.name, error=str(e))

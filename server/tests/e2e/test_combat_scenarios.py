@@ -306,7 +306,8 @@ class TestCombatScenarios:
         )
 
         # Verify XP was awarded
-        mock_persistence.async_get_player.assert_called_once_with(str(player_id))
+        # Note: async_get_player is called with UUID object, not string
+        mock_persistence.async_get_player.assert_called_once_with(player_id)
         mock_persistence.async_save_player.assert_called_once_with(mock_player)
         mock_event_bus.publish.assert_called_once()
 

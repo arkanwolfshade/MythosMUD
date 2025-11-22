@@ -7,12 +7,21 @@ and validating system stability under various conditions.
 
 import asyncio
 import time
+import uuid
 from dataclasses import dataclass
 from typing import Any
 
 import structlog
 
 from server.realtime.connection_manager import ConnectionManager
+
+
+def _str_to_uuid(player_id: str) -> uuid.UUID:
+    """Convert string player_id to UUID, generating new UUID if string is not valid UUID."""
+    try:
+        return uuid.UUID(player_id)
+    except (ValueError, TypeError):
+        return uuid.uuid4()
 
 
 @dataclass
@@ -160,14 +169,15 @@ class RiskMitigationTester:
             players: list[dict[str, Any]] = []
             for i in range(50):  # Create 50 players with dual connections
                 player_id = f"complexity_test_player_{i}"
+                player_id_uuid = _str_to_uuid(player_id)
                 try:
                     # Establish WebSocket connection
                     ws_result = await self.connection_manager.connect_websocket(
-                        self._mock_websocket(), player_id, f"session_{i}"
+                        self._mock_websocket(), player_id_uuid, f"session_{i}"
                     )
 
                     # Establish SSE connection
-                    sse_result = await self.connection_manager.connect_sse(player_id, f"session_{i}")
+                    sse_result = await self.connection_manager.connect_sse(player_id_uuid, f"session_{i}")
 
                     players.append({"player_id": player_id, "ws_connection": ws_result, "sse_connection": sse_result})
 
@@ -179,7 +189,8 @@ class RiskMitigationTester:
             cleanup_start = time.time()
             for player in players:
                 try:
-                    await self.connection_manager.force_disconnect_player(player["player_id"])
+                    player_id_uuid = _str_to_uuid(player["player_id"])
+                    await self.connection_manager.force_disconnect_player(player_id_uuid)
                 except Exception as e:
                     error_count += 1
                     self.logger.error("Connection cleanup failed", player_id=player["player_id"], error=str(e))
@@ -234,8 +245,9 @@ class RiskMitigationTester:
         try:
             # Set up test player with dual connections
             player_id = "delivery_test_player"
-            await self.connection_manager.connect_websocket(self._mock_websocket(), player_id, "delivery_session")
-            await self.connection_manager.connect_sse(player_id, "delivery_session")
+            player_id_uuid = _str_to_uuid(player_id)
+            await self.connection_manager.connect_websocket(self._mock_websocket(), player_id_uuid, "delivery_session")
+            await self.connection_manager.connect_sse(player_id_uuid, "delivery_session")
 
             # Test message delivery reliability
             messages_sent = 0
@@ -246,7 +258,7 @@ class RiskMitigationTester:
                 message = {"type": "test", "content": f"Test message {i}", "timestamp": time.time()}
 
                 try:
-                    result = await self.connection_manager.send_personal_message(player_id, message)
+                    result = await self.connection_manager.send_personal_message(player_id_uuid, message)
                     messages_sent += 1
 
                     if result.get("success", False):
@@ -265,9 +277,9 @@ class RiskMitigationTester:
             duplicate_message = {"type": "test", "content": "Duplicate test message", "timestamp": time.time()}
 
             # Send same message twice quickly
-            await self.connection_manager.send_personal_message(player_id, duplicate_message)
+            await self.connection_manager.send_personal_message(player_id_uuid, duplicate_message)
             await asyncio.sleep(0.1)  # Small delay
-            await self.connection_manager.send_personal_message(player_id, duplicate_message)
+            await self.connection_manager.send_personal_message(player_id_uuid, duplicate_message)
 
             delivery_rate = (messages_delivered / messages_sent * 100) if messages_sent > 0 else 0
 
@@ -286,7 +298,7 @@ class RiskMitigationTester:
             mitigation_effective = test_passed and error_count == 0
 
             # Cleanup
-            await self.connection_manager.force_disconnect_player(player_id)
+            await self.connection_manager.force_disconnect_player(player_id_uuid)
 
         except Exception as e:
             error_count += 1
@@ -322,9 +334,10 @@ class RiskMitigationTester:
 
             for i in range(max_connections + 10):  # Try to exceed limit
                 player_id = f"resource_test_player_{i}"
+                player_id_uuid = _str_to_uuid(player_id)
                 try:
                     result = await self.connection_manager.connect_websocket(
-                        self._mock_websocket(), player_id, f"resource_session_{i}"
+                        self._mock_websocket(), player_id_uuid, f"resource_session_{i}"
                     )
                     if result:
                         connections_created += 1
@@ -343,8 +356,9 @@ class RiskMitigationTester:
             cleanup_start = time.time()
             for i in range(connections_created):
                 player_id = f"resource_test_player_{i}"
+                player_id_uuid = _str_to_uuid(player_id)
                 try:
-                    await self.connection_manager.force_disconnect_player(player_id)
+                    await self.connection_manager.force_disconnect_player(player_id_uuid)
                 except Exception as e:
                     error_count += 1
                     self.logger.error("Resource cleanup failed", player_id=player_id, error=str(e))
@@ -399,8 +413,9 @@ class RiskMitigationTester:
 
             for i in range(10):  # Create 10 players for baseline
                 player_id = f"baseline_player_{i}"
+                player_id_uuid = _str_to_uuid(player_id)
                 await self.connection_manager.connect_websocket(
-                    self._mock_websocket(), player_id, f"baseline_session_{i}"
+                    self._mock_websocket(), player_id_uuid, f"baseline_session_{i}"
                 )
                 baseline_players.append(player_id)
 
@@ -412,9 +427,10 @@ class RiskMitigationTester:
 
             for i in range(50):  # Create 50 players for load test
                 player_id = f"load_player_{i}"
+                player_id_uuid = _str_to_uuid(player_id)
                 try:
                     await self.connection_manager.connect_websocket(
-                        self._mock_websocket(), player_id, f"load_session_{i}"
+                        self._mock_websocket(), player_id_uuid, f"load_session_{i}"
                     )
                     load_players.append(player_id)
                 except Exception as e:
@@ -428,6 +444,7 @@ class RiskMitigationTester:
             messages_sent = 0
 
             for player_id in load_players[:20]:  # Send messages to first 20 players
+                player_id_uuid = _str_to_uuid(player_id)
                 for j in range(10):  # 10 messages per player
                     message = {
                         "type": "performance_test",
@@ -435,7 +452,7 @@ class RiskMitigationTester:
                         "timestamp": time.time(),
                     }
                     try:
-                        await self.connection_manager.send_personal_message(player_id, message)
+                        await self.connection_manager.send_personal_message(player_id_uuid, message)
                         messages_sent += 1
                     except Exception as e:
                         error_count += 1
@@ -474,7 +491,8 @@ class RiskMitigationTester:
             all_players = baseline_players + load_players
             for player_id in all_players:
                 try:
-                    await self.connection_manager.force_disconnect_player(player_id)
+                    player_id_uuid = _str_to_uuid(player_id)
+                    await self.connection_manager.force_disconnect_player(player_id_uuid)
                 except Exception as e:
                     self.logger.error("Cleanup failed", player_id=player_id, error=str(e))
 
@@ -517,9 +535,10 @@ class RiskMitigationTester:
                 # Rapid connection establishment
                 for i in range(connections_per_cycle):
                     player_id = f"stress_player_{cycle}_{i}"
+                    player_id_uuid = _str_to_uuid(player_id)
                     try:
                         await self.connection_manager.connect_websocket(
-                            self._mock_websocket(), player_id, f"stress_session_{cycle}"
+                            self._mock_websocket(), player_id_uuid, f"stress_session_{cycle}"
                         )
                         cycle_players.append(player_id)
                     except Exception as e:
@@ -531,7 +550,8 @@ class RiskMitigationTester:
                 # Rapid disconnection
                 for player_id in cycle_players:
                     try:
-                        await self.connection_manager.force_disconnect_player(player_id)
+                        player_id_uuid = _str_to_uuid(player_id)
+                        await self.connection_manager.force_disconnect_player(player_id_uuid)
                     except Exception as e:
                         error_count += 1
                         self.logger.error(

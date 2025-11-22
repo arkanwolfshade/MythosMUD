@@ -6,6 +6,7 @@ and ensures that the fixes are working correctly.
 """
 
 from unittest.mock import Mock
+from uuid import uuid4
 
 from server.events import EventBus
 from server.game.movement_service import MovementService
@@ -26,10 +27,10 @@ class TestMovementFixes:
         self.mock_persistence = Mock(spec=PersistenceLayer)
         self.movement_service._persistence = self.mock_persistence
 
-        # Create test player
+        # Create test player (use proper UUIDs)
         self.test_player = Player(
-            player_id="test-player-123",
-            user_id="test-user-123",
+            player_id=str(uuid4()),
+            user_id=str(uuid4()),
             name="TestPlayer",
             current_room_id="earth_arkhamcity_northside_Derby_St_013",
         )

@@ -101,7 +101,8 @@ async def _handle_admin_status_command(
             logger.error(
                 "Admin status cache lookup failed",
                 player_name=player_name,
-                player_identifier=str(player_identifier),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_identifier=player_identifier,
                 error=str(exc),
                 error_type=type(exc).__name__,
             )
@@ -449,7 +450,7 @@ async def notify_player_of_teleport(
                     player_id=str(player_id),
                     connection_manager=connection_manager,
                 )
-                await connection_manager.send_personal_message(str(player_id), event)
+                await connection_manager.send_personal_message(player_id, event)
 
         logger.debug("Teleport notification sent", target_player_name=target_player_name, admin_name=admin_name)
 
@@ -968,7 +969,8 @@ async def handle_teleport_command(
                             error=str(exc),
                         )
 
-            await broadcast_room_update(target_player_info["player_id"], target_room_id)
+            # broadcast_room_update expects player_id as string
+            await broadcast_room_update(str(target_player_info["player_id"]), target_room_id)
 
             current_player_identifier = getattr(current_player, "player_id", getattr(current_player, "id", None))
             if current_player_identifier:
@@ -1133,7 +1135,8 @@ async def handle_goto_command(
             admin_player_info["room_id"] = target_room_id
 
         # Broadcast room update to the admin player
-        await broadcast_room_update(admin_player_info["player_id"], target_room_id)
+        # broadcast_room_update expects player_id as string
+        await broadcast_room_update(str(admin_player_info["player_id"]), target_room_id)
 
         target_player_identifier = getattr(target_player, "player_id", getattr(target_player, "id", None))
         if target_player_identifier:
@@ -1286,7 +1289,8 @@ async def handle_confirm_teleport_command(
             target_player_info["room_id"] = target_room_id
 
         # Broadcast room update to the teleported player
-        await broadcast_room_update(target_player_info["player_id"], target_room_id)
+        # broadcast_room_update expects player_id as string
+        await broadcast_room_update(str(target_player_info["player_id"]), target_room_id)
 
         # Broadcast visual effects
         await broadcast_teleport_effects(
@@ -1435,7 +1439,8 @@ async def handle_confirm_goto_command(
             admin_player_info["room_id"] = target_room_id
 
         # Broadcast room update to the admin player
-        await broadcast_room_update(admin_player_info["player_id"], target_room_id)
+        # broadcast_room_update expects player_id as string
+        await broadcast_room_update(str(admin_player_info["player_id"]), target_room_id)
 
         # Broadcast visual effects
         await broadcast_teleport_effects(

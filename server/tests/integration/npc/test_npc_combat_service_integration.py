@@ -252,8 +252,9 @@ class TestNPCCombatIntegrationServiceComprehensive:
             player_id=player_id, npc_id=npc_id, room_id=room_id, damage=15
         )
 
-        assert result is True
-        self.combat_service.start_combat.assert_called_once()
+        # Invalid UUIDs should be rejected and return False
+        assert result is False
+        self.combat_service.start_combat.assert_not_called()
 
     def test_handle_npc_death_with_xp_reward(self):
         """Test NPC death with XP reward."""

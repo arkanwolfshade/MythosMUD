@@ -58,8 +58,6 @@ cover/
 # Django stuff:
 *.log
 local_settings.py
-db.sqlite3
-db.sqlite3-journal
 
 # Flask stuff:
 instance/
@@ -134,10 +132,9 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
-# # Environment files (CRITICAL: Never commit actual .env files)
-# .env.local
-# .env.production
-# Environment files (CRITICAL: Never commit actual environment files with secrets)
+# Environment files (CRITICAL: Never commit actual .env files)
+.env.local
+.env.production
 .env
 .env.*
 .env.prod
@@ -253,3 +250,5 @@ playwright-report/
 test-results/
 .cache/
 .playwright-mcp/
+
+node_modules/

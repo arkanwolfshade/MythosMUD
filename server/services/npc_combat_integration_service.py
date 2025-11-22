@@ -42,6 +42,7 @@ class NPCCombatIntegrationService:
         event_bus: EventBus | None = None,
         combat_service: "CombatService | None" = None,
         player_combat_service=None,
+        connection_manager=None,
     ):
         """
         Initialize the NPC combat integration service.
@@ -55,6 +56,10 @@ class NPCCombatIntegrationService:
                 If None, will create a new one (for testing).
                 CRITICAL: Production code should ALWAYS pass the shared instance
                 from app.state to prevent instance mismatch bugs.
+            connection_manager: Optional ConnectionManager instance to use.
+                If None, CombatMessagingIntegration will try to lazy-load from container.
+                CRITICAL: Production code should ALWAYS pass the shared instance
+                from container to prevent initialization failures.
         """
         self.event_bus = event_bus or EventBus()
         self._persistence = get_persistence(event_bus)
@@ -108,7 +113,9 @@ class NPCCombatIntegrationService:
         self._combat_service.auto_progression_enabled = True
         self._combat_service.turn_interval_seconds = 6
 
-        self._messaging_integration = CombatMessagingIntegration()
+        # CRITICAL FIX: Pass connection_manager to CombatMessagingIntegration
+        # If not provided, it will try to lazy-load from container (for backward compatibility)
+        self._messaging_integration = CombatMessagingIntegration(connection_manager=connection_manager)
         self._event_publisher = CombatEventPublisher(event_bus)
 
         logger.info("NPC Combat Integration Service initialized with auto-progression enabled")
@@ -252,7 +259,9 @@ class NPCCombatIntegrationService:
 
                 # Fetch actual player stats from persistence to ensure correct HP
                 # BUGFIX: Was hardcoded to 100, causing HP to reset between combats
-                player = self._persistence.get_player(player_id)
+                # Convert player_id to UUID if it's a string
+                player_id_uuid = UUID(player_id) if isinstance(player_id, str) else player_id
+                player = self._persistence.get_player(player_id_uuid)
                 if not player:
                     logger.error("Player not found when starting combat", player_id=player_id)
                     return False
@@ -312,8 +321,51 @@ class NPCCombatIntegrationService:
                 )
 
                 # If combat ended, handle NPC death
+                # BUGFIX: Add defensive exception handling to prevent disconnections during NPC death
+                # As documented in investigation: 2025-11-20_combat-disconnect-bug-investigation.md
+                # NPC death operations can fail and disconnect players if not properly handled
                 if combat_result.combat_ended:
-                    self.handle_npc_death(npc_id, room_id, player_id, str(combat_result.combat_id))
+                    logger.info(
+                        "Combat ended, handling NPC death",
+                        player_id=player_id,
+                        npc_id=npc_id,
+                        combat_id=str(combat_result.combat_id),
+                        room_id=room_id,
+                    )
+                    try:
+                        # Check player connection state before handling death
+                        from ..realtime.connection_manager import get_global_connection_manager
+
+                        connection_manager = get_global_connection_manager()
+                        player_uuid = UUID(player_id) if self._is_valid_uuid(player_id) else None
+                        if player_uuid and connection_manager is not None:
+                            has_websocket = player_uuid in connection_manager.player_websockets
+                            has_sse = player_uuid in connection_manager.active_sse_connections
+                            logger.debug(
+                                "Player connection state before NPC death handling",
+                                player_id=player_id,
+                                has_websocket=has_websocket,
+                                has_sse=has_sse,
+                            )
+
+                        self.handle_npc_death(npc_id, room_id, player_id, str(combat_result.combat_id))
+                        logger.info(
+                            "NPC death handled successfully",
+                            player_id=player_id,
+                            npc_id=npc_id,
+                            combat_id=str(combat_result.combat_id),
+                        )
+                    except Exception as death_error:
+                        # CRITICAL: Log but don't fail - prevent disconnection
+                        logger.error(
+                            "Error handling NPC death - preventing disconnect",
+                            player_id=player_id,
+                            npc_id=npc_id,
+                            combat_id=str(combat_result.combat_id),
+                            error=str(death_error),
+                            exc_info=True,
+                        )
+                        # Continue execution - don't raise exception that could disconnect player
 
                 logger.info(
                     "Player attack on NPC handled with auto-progression",
@@ -362,7 +414,17 @@ class NPCCombatIntegrationService:
 
         Returns:
             bool: True if death was handled successfully
+
+        BUGFIX: Enhanced logging and defensive exception handling to prevent player disconnections
+        during NPC death operations. See: investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md
         """
+        logger.info(
+            "NPC death handling started",
+            npc_id=npc_id,
+            room_id=room_id,
+            killer_id=killer_id,
+            combat_id=combat_id,
+        )
         try:
             # Get NPC instance
             npc_instance = self._get_npc_instance(npc_id)
@@ -384,7 +446,36 @@ class NPCCombatIntegrationService:
                     xp_reward = base_stats.get("xp_value", xp_reward)
 
             # Award XP to killer if it's a player
+            # BUGFIX: Enhanced exception handling with connection state preservation
             if killer_id:
+                logger.info(
+                    "Awarding XP to player for NPC kill",
+                    player_id=killer_id,
+                    npc_id=npc_id,
+                    xp_reward=xp_reward,
+                )
+                # Check connection state before XP award
+                try:
+                    from ..realtime.connection_manager import get_global_connection_manager
+
+                    connection_manager = get_global_connection_manager()
+                    player_uuid = UUID(killer_id) if self._is_valid_uuid(killer_id) else None
+                    if player_uuid and connection_manager is not None:
+                        has_websocket = player_uuid in connection_manager.player_websockets
+                        has_sse = player_uuid in connection_manager.active_sse_connections
+                        logger.debug(
+                            "Player connection state before XP award",
+                            player_id=killer_id,
+                            has_websocket=has_websocket,
+                            has_sse=has_sse,
+                        )
+                except Exception as conn_check_error:
+                    logger.warning(
+                        "Could not check connection state before XP award",
+                        player_id=killer_id,
+                        error=str(conn_check_error),
+                    )
+
                 # CRITICAL FIX: Use GameMechanicsService.gain_experience() to prevent
                 # XP awards from overwriting combat damage with stale health values
                 try:
@@ -404,26 +495,42 @@ class NPCCombatIntegrationService:
                             message=message,
                         )
                 except Exception as e:
+                    # CRITICAL: Don't let XP award errors disconnect player
                     logger.error(
-                        "Error awarding XP to player",
+                        "Error awarding XP to player - preventing disconnect",
                         player_id=killer_id,
                         error=str(e),
                         exc_info=True,
                     )
+                    # Continue - don't raise exception
 
             # Note: NPCDiedEvent is now published by CombatService to avoid duplication
             # The CombatService handles the npc_died event publishing when combat ends
             # We no longer call broadcast_combat_death() to prevent duplicate messages
 
             # Clear combat memory for this NPC
+            logger.debug("Clearing combat memory for NPC", npc_id=npc_id)
             if str(npc_id) in self._npc_combat_memory:
                 del self._npc_combat_memory[str(npc_id)]
 
-            # Despawn NPC
-            self._despawn_npc(str(npc_id), room_id)
+            # Despawn NPC with defensive error handling
+            logger.debug("Despawning NPC", npc_id=npc_id, room_id=room_id)
+            try:
+                self._despawn_npc(str(npc_id), room_id)
+                logger.debug("NPC despawned successfully", npc_id=npc_id, room_id=room_id)
+            except Exception as despawn_error:
+                # CRITICAL: Don't let despawn errors disconnect player
+                logger.error(
+                    "Error despawning NPC - preventing disconnect",
+                    npc_id=npc_id,
+                    room_id=room_id,
+                    error=str(despawn_error),
+                    exc_info=True,
+                )
+                # Continue - despawn failure shouldn't disconnect player
 
             logger.info(
-                "NPC death handled",
+                "NPC death handled successfully",
                 npc_id=npc_id,
                 killer_id=killer_id,
                 xp_reward=xp_reward,
@@ -433,7 +540,17 @@ class NPCCombatIntegrationService:
             return True
 
         except Exception as e:
-            logger.error("Error handling NPC death", npc_id=npc_id, error=str(e))
+            # CRITICAL: Prevent NPC death handling errors from disconnecting players
+            logger.error(
+                "Error handling NPC death - preventing player disconnect",
+                npc_id=npc_id,
+                room_id=room_id,
+                killer_id=killer_id,
+                combat_id=combat_id,
+                error=str(e),
+                exc_info=True,
+            )
+            # Return False but don't raise - prevents exception propagation
             return False
 
     def get_npc_combat_memory(self, npc_id: str) -> str | None:
@@ -511,7 +628,9 @@ class NPCCombatIntegrationService:
     def _get_player_name(self, player_id: str) -> str:
         """Get player name for messaging."""
         try:
-            player = self._persistence.get_player(player_id)
+            # Convert player_id to UUID if it's a string
+            player_id_uuid = UUID(player_id) if isinstance(player_id, str) else player_id
+            player = self._persistence.get_player(player_id_uuid)
             return str(player.name) if player else "Unknown Player"
         except (OSError, ValueError, TypeError, Exception) as e:
             logger.error("Error getting player name", player_id=player_id, error=str(e), error_type=type(e).__name__)
@@ -549,7 +668,9 @@ class NPCCombatIntegrationService:
             Room ID if found, None otherwise
         """
         try:
-            player = self._persistence.get_player(player_id)
+            # Convert player_id to UUID if it's a string
+            player_id_uuid = UUID(player_id) if isinstance(player_id, str) else player_id
+            player = self._persistence.get_player(player_id_uuid)
             if player:
                 return str(player.current_room_id)
             return None

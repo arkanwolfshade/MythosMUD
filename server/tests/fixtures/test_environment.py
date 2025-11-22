@@ -8,6 +8,7 @@ configuring test databases, and managing test resources.
 import os
 import shutil
 import tempfile
+import uuid
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from typing import Any
@@ -71,16 +72,26 @@ class Environment:
 
     async def _setup_database(self):
         """Set up test database"""
-        self.database_path = os.path.join(self.temp_dir, "unit_test_players.db")
-        self.npc_database_path = os.path.join(self.temp_dir, "test_npcs.db")
+        # Check if we're using PostgreSQL from environment
+        existing_db_url = os.getenv("DATABASE_URL", "")
+        existing_npc_url = os.getenv("DATABASE_NPC_URL", "")
 
-        # Create database directory
-        os.makedirs(os.path.dirname(self.database_path), exist_ok=True)
-        os.makedirs(os.path.dirname(self.npc_database_path), exist_ok=True)
+        if not existing_db_url:
+            raise ValueError(
+                "DATABASE_URL environment variable is required. PostgreSQL is required - SQLite is no longer supported."
+            )
 
-        # Set environment variable for database URL
-        os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{self.database_path}"
-        os.environ["NPC_DATABASE_URL"] = f"sqlite+aiosqlite:///{self.npc_database_path}"
+        if not existing_db_url.startswith("postgresql"):
+            raise ValueError(
+                f"Unsupported database URL: {existing_db_url}. Only PostgreSQL (postgresql+asyncpg://) is supported."
+            )
+
+        # PostgreSQL - use URLs from environment, no file paths needed
+        self.database_path = None
+        self.npc_database_path = None
+        # URLs are already set in environment, just ensure DATABASE_NPC_URL is set
+        if not existing_npc_url:
+            os.environ["DATABASE_NPC_URL"] = existing_db_url  # Use same DB for NPCs
 
         try:
             # Recreate database engine with new URL using the new getter-based API
@@ -103,7 +114,13 @@ class Environment:
 
             # Initialize main database (will read from DATABASE_URL environment variable)
             await init_db()
-            self.logger.info("Database setup complete", db_path=self.database_path)
+            if self.database_path:
+                self.logger.info("Database setup complete", db_path=self.database_path)
+            else:
+                self.logger.info(
+                    "Database setup complete",
+                    database_url=existing_db_url[:50] + "..." if len(existing_db_url) > 50 else existing_db_url,
+                )
 
             # Recreate NPC database engine with new URL using the new getter-based API
             import server.npc_database
@@ -126,7 +143,13 @@ class Environment:
             from server.npc_database import init_npc_db
 
             await init_npc_db()
-            self.logger.info("NPC Database setup complete", npc_db_path=self.npc_database_path)
+            if self.npc_database_path:
+                self.logger.info("NPC Database setup complete", npc_db_path=self.npc_database_path)
+            else:
+                npc_url = os.getenv("DATABASE_NPC_URL", existing_db_url)
+                self.logger.info(
+                    "NPC Database setup complete", database_url=npc_url[:50] + "..." if len(npc_url) > 50 else npc_url
+                )
         except Exception as e:
             self.logger.error("Database setup failed", error=str(e))
             # For tests, we can continue without a real database
@@ -384,11 +407,18 @@ class TestDataSetup:
         """Set up dual connection scenario"""
         assert env.connection_manager is not None, "connection_manager must be initialized"
 
+        # Convert string player_id to UUID for type safety
+        # If player_id is a valid UUID string, use it; otherwise generate a new UUID
+        try:
+            player_id_uuid = uuid.UUID(player_id)
+        except (ValueError, TypeError):
+            player_id_uuid = uuid.uuid4()
+
         # Create WebSocket connection
-        ws_success = await env.connection_manager.connect_websocket(mock_websocket(), player_id, "test_session")
+        ws_success = await env.connection_manager.connect_websocket(mock_websocket(), player_id_uuid, "test_session")
 
         # Create SSE connection
-        sse_connection_id = await env.connection_manager.connect_sse(player_id, "test_session")
+        sse_connection_id = await env.connection_manager.connect_sse(player_id_uuid, "test_session")
 
         return {
             "player_id": player_id,
@@ -419,7 +449,12 @@ class TestDataSetup:
 
         # Switch to new session
         new_session_id = "new_test_session"
-        await env.connection_manager.handle_new_game_session(player_id, new_session_id)
+        # Convert string player_id to UUID for type safety
+        try:
+            player_id_uuid = uuid.UUID(player_id)
+        except (ValueError, TypeError):
+            player_id_uuid = uuid.uuid4()
+        await env.connection_manager.handle_new_game_session(player_id_uuid, new_session_id)
 
         return {
             "player_id": player_id,
@@ -507,7 +542,12 @@ class TestCleanup:
     async def cleanup_player_data(env: Environment, player_id: str):
         """Clean up data for specific player"""
         assert env.connection_manager is not None, "connection_manager must be initialized"
-        await env.connection_manager.force_disconnect_player(player_id)
+        # Convert string player_id to UUID for type safety
+        try:
+            player_id_uuid = uuid.UUID(player_id)
+        except (ValueError, TypeError):
+            player_id_uuid = uuid.uuid4()
+        await env.connection_manager.force_disconnect_player(player_id_uuid)
 
     @staticmethod
     async def cleanup_old_sessions(env: Environment, hours: int = 1):

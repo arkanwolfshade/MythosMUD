@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { logger } from '../utils/logger';
 import './StatsRollingScreen.css';
 
@@ -50,28 +50,13 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
   const [timeoutMessage, setTimeoutMessage] = useState('');
 
   // Roll initial stats when component mounts and authToken is available
-  useEffect(() => {
-    if (authToken) {
-      rollStats();
-    }
-  }, [authToken]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Handle reroll cooldown
-  useEffect(() => {
-    if (rerollCooldown > 0) {
-      const timer = setTimeout(() => {
-        setRerollCooldown(rerollCooldown - 1);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [rerollCooldown]);
-
-  const rollStats = async () => {
+  // AI: useCallback ensures rollStats has stable reference and proper dependency tracking
+  const rollStats = useCallback(async () => {
     setIsLoading(true);
     setError('');
 
     try {
-      const response = await fetch(`${baseUrl}/players/roll-stats`, {
+      const response = await fetch(`${baseUrl}/api/players/roll-stats`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -122,7 +107,24 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [authToken, baseUrl, professionId, profession, onError]);
+
+  // Roll initial stats when component mounts and authToken is available
+  useEffect(() => {
+    if (authToken) {
+      rollStats();
+    }
+  }, [authToken, rollStats]);
+
+  // Handle reroll cooldown
+  useEffect(() => {
+    if (rerollCooldown > 0) {
+      const timer = setTimeout(() => {
+        setRerollCooldown(rerollCooldown - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [rerollCooldown]);
 
   const handleReroll = async () => {
     if (rerollCooldown > 0) {
@@ -133,7 +135,7 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
     setRerollCooldown(1); // 1 second cooldown
 
     try {
-      const response = await fetch(`${baseUrl}/players/roll-stats`, {
+      const response = await fetch(`${baseUrl}/api/players/roll-stats`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -186,7 +188,7 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
     setError('');
 
     try {
-      const response = await fetch(`${baseUrl}/players/create-character`, {
+      const response = await fetch(`${baseUrl}/api/players/create-character`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

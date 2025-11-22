@@ -6,10 +6,12 @@ with simple commands like 'twibble' or 'dance', automatically expanding them
 to appropriate messages for both the player and room occupants.
 """
 
-import json
+import asyncio
 import os
-from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+import threading
+from typing import TYPE_CHECKING, Any, Optional
+
+import asyncpg
 
 from ..exceptions import ValidationError
 from ..logging.enhanced_logging_config import get_logger
@@ -59,101 +61,133 @@ class EmoteService:
         Initialize the EmoteService.
 
         Args:
-            emote_file_path: Path to the emote definitions JSON file.
-                            Defaults to environment-aware path based on CONFIG_PATH.
+            emote_file_path: DEPRECATED - kept for backward compatibility only.
+                            Emotes are now loaded from PostgreSQL database.
         """
-        if emote_file_path is None:
-            # Determine environment from Pydantic config
-            project_root = Path(__file__).parent.parent.parent
-
-            # Use LOGGING_ENVIRONMENT from Pydantic config, with fallback to legacy config path
-            environment = os.getenv("LOGGING_ENVIRONMENT", "local")
-            if not environment or environment not in ["local", "unit_test", "e2e_test", "production"]:
-                # Fallback: try to extract from legacy config path
-                config_path = os.getenv("MYTHOSMUD_CONFIG_PATH", "")
-                if "unit_test" in config_path:
-                    environment = "unit_test"
-                elif "e2e_test" in config_path:
-                    environment = "e2e_test"
-
-            # Try environment-specific path first, fallback to generic data/emotes.json
-            # AI Agent: Use Path directly to avoid type compatibility issues
-            env_emote_path = project_root / "data" / environment / "emotes.json"
-            generic_emote_path = project_root / "data" / "emotes.json"
-
-            if env_emote_path.exists():
-                self.emote_file_path = env_emote_path
-            else:
-                self.emote_file_path = generic_emote_path
-        else:
-            self.emote_file_path = Path(emote_file_path)
+        # Keep emote_file_path for backward compatibility but don't use it
+        self.emote_file_path = emote_file_path
         self.emotes: dict[str, dict] = {}
         self.alias_to_emote: dict[str, str] = {}
 
         self._load_emotes()
 
     def _load_emotes(self) -> None:
-        """Load emote definitions from the JSON file."""
+        """Load emote definitions from PostgreSQL database."""
+        result_container: dict[str, Any] = {"emotes": {}, "aliases": {}, "error": None}
+
+        def run_async():
+            new_loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(new_loop)
+            try:
+                new_loop.run_until_complete(self._async_load_emotes(result_container))
+            except Exception as e:
+                # Catch exception and store in result_container instead of raising
+                # This allows graceful degradation when database table doesn't exist
+                result_container["error"] = e
+            finally:
+                new_loop.close()
+
+        thread = threading.Thread(target=run_async)
+        thread.start()
+        thread.join()
+
+        error = result_container.get("error")
+        if error is not None:
+            # Log warning but don't raise - allow custom emotes to work even without database
+            # This is important for tests and environments where the emotes table may not exist
+            error_str = str(error)
+            if "does not exist" in error_str or "relation" in error_str.lower():
+                logger.warning(
+                    "Emotes table not found in database - custom emotes will still work",
+                    error=error_str,
+                )
+            else:
+                logger.warning("Failed to load emotes from database - custom emotes will still work", error=error_str)
+            # Continue with empty emotes - custom emotes don't need the database
+
+        # Build emotes dictionary in expected format
+        self.emotes = {}
+        for stable_id, emote_data in result_container["emotes"].items():
+            aliases = result_container["aliases"].get(stable_id, [])
+            self.emotes[stable_id] = {
+                "self_message": emote_data["self_message"],
+                "other_message": emote_data["other_message"],
+                "aliases": aliases,
+            }
+
+        # Build alias mapping
+        self.alias_to_emote = {}
+        for emote_name, emote_data in self.emotes.items():
+            # The emote name itself is also an alias
+            self.alias_to_emote[emote_name] = emote_name
+
+            # Add explicit aliases
+            aliases = emote_data.get("aliases", [])
+            for alias in aliases:
+                if alias in self.alias_to_emote:
+                    logger.warning("Duplicate emote alias", alias=alias, existing_emote=self.alias_to_emote[alias])
+                else:
+                    self.alias_to_emote[alias] = emote_name
+
+        logger.info("Loaded emotes from database", emote_count=len(self.emotes), alias_count=len(self.alias_to_emote))
+
+    async def _async_load_emotes(self, result_container: dict[str, Any]) -> None:
+        """Async helper to load emotes from PostgreSQL database."""
         try:
-            if not self.emote_file_path.exists():
-                logger.warning("Emote file not found", file_path=self.emote_file_path)
-                return
+            # Get database URL from environment
+            database_url = os.getenv("DATABASE_URL")
+            if not database_url:
+                raise ValueError("DATABASE_URL environment variable not set")
 
-            with open(self.emote_file_path, encoding="utf-8") as f:
-                data = json.load(f)
+            # Convert SQLAlchemy-style URL to asyncpg-compatible format
+            if database_url.startswith("postgresql+asyncpg://"):
+                database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
 
-            validation_errors = self._validate_emote_payload(data)
-            if validation_errors:
-                logger.error(
-                    "Emote schema validation failed",
-                    file_path=str(self.emote_file_path),
-                    errors=validation_errors,
-                )
-                context = create_error_context()
-                context.metadata["emote_file_path"] = str(self.emote_file_path)
-                context.metadata["operation"] = "load_emotes"
-                context.metadata["schema_errors"] = validation_errors
-                log_and_raise(
-                    ValidationError,
-                    f"Emote schema validation failed for {self.emote_file_path}",
-                    context=context,
-                    details={
-                        "emote_file_path": str(self.emote_file_path),
-                        "validation_errors": validation_errors,
-                    },
-                    user_friendly="Failed to load emote definitions",
-                )
+            # Use asyncpg directly to avoid event loop conflicts
+            conn = await asyncpg.connect(database_url)
+            try:
+                # Query emotes
+                emotes_query = """
+                    SELECT
+                        stable_id,
+                        self_message,
+                        other_message
+                    FROM emotes
+                    ORDER BY stable_id
+                """
+                emote_rows = await conn.fetch(emotes_query)
 
-            self.emotes = data.get("emotes", {})
+                # Query emote aliases
+                aliases_query = """
+                    SELECT
+                        e.stable_id,
+                        ea.alias
+                    FROM emote_aliases ea
+                    JOIN emotes e ON ea.emote_id = e.id
+                    ORDER BY e.stable_id, ea.alias
+                """
+                alias_rows = await conn.fetch(aliases_query)
 
-            # Build alias mapping
-            self.alias_to_emote = {}
-            for emote_name, emote_data in self.emotes.items():
-                # The emote name itself is also an alias
-                self.alias_to_emote[emote_name] = emote_name
+                # Build emotes dictionary
+                for row in emote_rows:
+                    stable_id = row["stable_id"]
+                    result_container["emotes"][stable_id] = {
+                        "self_message": row["self_message"],
+                        "other_message": row["other_message"],
+                    }
+                    result_container["aliases"][stable_id] = []
 
-                # Add explicit aliases
-                aliases = emote_data.get("aliases", [])
-                for alias in aliases:
-                    if alias in self.alias_to_emote:
-                        logger.warning("Duplicate emote alias", alias=alias, existing_emote=self.alias_to_emote[alias])
-                    else:
-                        self.alias_to_emote[alias] = emote_name
-
-            logger.info("Loaded emotes", emote_count=len(self.emotes), alias_count=len(self.alias_to_emote))
-
+                # Build aliases dictionary
+                for row in alias_rows:
+                    stable_id = row["stable_id"]
+                    alias = row["alias"]
+                    if stable_id in result_container["aliases"]:
+                        result_container["aliases"][stable_id].append(alias)
+            finally:
+                await conn.close()
         except Exception as e:
-            logger.error("Failed to load emotes", file_path=self.emote_file_path, error=str(e))
-            context = create_error_context()
-            context.metadata["emote_file_path"] = str(self.emote_file_path)
-            context.metadata["operation"] = "load_emotes"
-            log_and_raise(
-                ValidationError,
-                f"Failed to load emotes from {self.emote_file_path}: {e}",
-                context=context,
-                details={"emote_file_path": str(self.emote_file_path), "error": str(e)},
-                user_friendly="Failed to load emote definitions",
-            )
+            # Store error in result_container - don't raise, let _load_emotes handle it
+            result_container["error"] = e
 
     def is_emote_alias(self, command: str) -> bool:
         """

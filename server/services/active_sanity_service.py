@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+import uuid
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
@@ -80,7 +81,7 @@ class ActiveSanityService:
 
     async def apply_encounter_sanity_loss(
         self,
-        player_id: str,
+        player_id: uuid.UUID | str,
         entity_archetype: str,
         *,
         category: str,
@@ -88,12 +89,24 @@ class ActiveSanityService:
     ):
         """Apply SAN loss for a Mythos encounter."""
 
+        # Convert player_id to UUID if it's a string
+        if isinstance(player_id, str):
+            try:
+                player_id_uuid = uuid.UUID(player_id)
+            except (ValueError, AttributeError):
+                logger.error("Invalid player_id format", player_id=player_id)
+                raise ValueError(f"Invalid player_id format: {player_id}") from None
+        else:
+            player_id_uuid = player_id
+
         category_key = category.lower()
         profile = self.ENCOUNTER_PROFILES.get(category_key)
         if profile is None:
             raise UnknownEncounterCategoryError(category)
 
-        exposure: SanityExposureState = await self._sanity_service.increment_exposure_state(player_id, entity_archetype)
+        exposure: SanityExposureState = await self._sanity_service.increment_exposure_state(
+            player_id_uuid, entity_archetype
+        )
         encounter_count = exposure.encounter_count
 
         if encounter_count == 1:
@@ -114,7 +127,7 @@ class ActiveSanityService:
         }
 
         return await self._sanity_service.apply_sanity_adjustment(
-            player_id,
+            player_id_uuid,
             delta,
             reason_code=f"encounter_{category_key}",
             metadata=metadata,
@@ -123,12 +136,22 @@ class ActiveSanityService:
 
     async def perform_recovery_action(
         self,
-        player_id: str,
+        player_id: uuid.UUID | str,
         *,
         action_code: str,
         location_id: str | None = None,
     ):
         """Perform a recovery action and enforce cooldowns."""
+
+        # Convert player_id to UUID if it's a string
+        if isinstance(player_id, str):
+            try:
+                player_id_uuid = uuid.UUID(player_id)
+            except (ValueError, AttributeError):
+                logger.error("Invalid player_id format", player_id=player_id)
+                raise ValueError(f"Invalid player_id format: {player_id}") from None
+        else:
+            player_id_uuid = player_id
 
         action_key = action_code.lower()
         profile = self.RECOVERY_ACTIONS.get(action_key)
@@ -136,7 +159,7 @@ class ActiveSanityService:
             raise UnknownSanityActionError(action_code)
 
         now = self._now_provider()
-        cooldown = await self._sanity_service.get_cooldown(player_id, action_key)
+        cooldown = await self._sanity_service.get_cooldown(player_id_uuid, action_key)
         if cooldown and cooldown.cooldown_expires_at:
             cooldown_expiry = cooldown.cooldown_expires_at
             if cooldown_expiry.tzinfo is None:
@@ -149,7 +172,7 @@ class ActiveSanityService:
         }
 
         result = await self._sanity_service.apply_sanity_adjustment(
-            player_id,
+            player_id_uuid,
             profile.san_delta,
             reason_code=f"recovery_{action_key}",
             metadata=metadata,
@@ -157,11 +180,12 @@ class ActiveSanityService:
         )
 
         expires_at = (now + profile.cooldown).replace(tzinfo=None)
-        await self._sanity_service.set_cooldown(player_id, action_key, expires_at)
+        await self._sanity_service.set_cooldown(player_id_uuid, action_key, expires_at)
 
         logger.info(
             "Recovery action performed",
-            player_id=player_id,
+            # Structlog handles UUID objects automatically, no need to convert to string
+            player_id=player_id_uuid,
             action=action_key,
             san_delta=profile.san_delta,
             cooldown_minutes=profile.cooldown.total_seconds() / 60,
@@ -169,9 +193,18 @@ class ActiveSanityService:
 
         return result
 
-    async def get_action_cooldown(self, player_id: str, action_code: str):
+    async def get_action_cooldown(self, player_id: uuid.UUID | str, action_code: str):
         """Fetch the cooldown record for a recovery action."""
-        return await self._sanity_service.get_cooldown(player_id, action_code.lower())
+        # Convert player_id to UUID if it's a string
+        if isinstance(player_id, str):
+            try:
+                player_id_uuid = uuid.UUID(player_id)
+            except (ValueError, AttributeError):
+                logger.error("Invalid player_id format", player_id=player_id)
+                raise ValueError(f"Invalid player_id format: {player_id}") from None
+        else:
+            player_id_uuid = player_id
+        return await self._sanity_service.get_cooldown(player_id_uuid, action_code.lower())
 
 
 __all__ = [

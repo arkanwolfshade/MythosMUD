@@ -31,15 +31,20 @@ logger = get_logger(__name__)
 
 # Third-party exception mapping for proper error categorization
 THIRD_PARTY_EXCEPTION_MAPPING = {
-    # Database exceptions
-    "sqlite3.Error": DatabaseError,
-    "sqlite3.OperationalError": DatabaseError,
-    "sqlite3.IntegrityError": DatabaseError,
-    "sqlite3.DatabaseError": DatabaseError,
-    "aiosqlite.Error": DatabaseError,
-    "aiosqlite.OperationalError": DatabaseError,
-    "aiosqlite.IntegrityError": DatabaseError,
-    "aiosqlite.DatabaseError": DatabaseError,
+    # Database exceptions - PostgreSQL/asyncpg
+    "asyncpg.exceptions.PostgresError": DatabaseError,
+    "asyncpg.exceptions.OperationalError": DatabaseError,
+    "asyncpg.exceptions.IntegrityConstraintViolationError": DatabaseError,
+    "asyncpg.exceptions.DatabaseError": DatabaseError,
+    "asyncpg.exceptions.InvalidPasswordError": DatabaseError,
+    "asyncpg.exceptions.ConnectionDoesNotExistError": DatabaseError,
+    "asyncpg.exceptions.TooManyConnectionsError": DatabaseError,
+    # Database exceptions - SQLAlchemy (wraps asyncpg)
+    "sqlalchemy.exc.OperationalError": DatabaseError,
+    "sqlalchemy.exc.IntegrityError": DatabaseError,
+    "sqlalchemy.exc.DatabaseError": DatabaseError,
+    "sqlalchemy.exc.ProgrammingError": DatabaseError,
+    "sqlalchemy.exc.DataError": DatabaseError,
     # Authentication exceptions
     "argon2.exceptions.HashingError": AuthenticationError,
     "argon2.exceptions.VerificationError": AuthenticationError,
@@ -106,7 +111,7 @@ def log_and_raise_enhanced(
     }
 
     # Log the error with structured data
-    log_with_context(error_logger, "error", f"Error logged and exception raised: {message}", **log_data)
+    log_with_context(error_logger, "error", "Error logged and exception raised", **log_data)
 
     # Raise the exception
     raise exception_class(
@@ -153,7 +158,7 @@ def log_and_raise_http_enhanced(
     }
 
     # Log the HTTP error with structured data
-    log_with_context(error_logger, "warning", f"HTTP error logged and exception raised: {detail}", **log_data)
+    log_with_context(error_logger, "warning", "HTTP error logged and exception raised", **log_data)
 
     # Raise the HTTPException
     raise HTTPException(status_code=status_code, detail=detail)
@@ -196,7 +201,7 @@ def log_structured_error(
     }
 
     # Log with structured data
-    log_with_context(error_logger, level, f"Error logged with context: {str(error)}", **log_data)
+    log_with_context(error_logger, level, "Error logged with context", **log_data)
 
 
 def wrap_third_party_exception_enhanced(
@@ -375,7 +380,7 @@ def log_performance_metric(
     }
 
     # Log the performance metric
-    log_with_context(metric_logger, "info", f"Performance metric: {operation}", **log_data)
+    log_with_context(metric_logger, "info", "Performance metric logged", **log_data)
 
 
 def log_security_event_enhanced(
@@ -415,4 +420,4 @@ def log_security_event_enhanced(
     # Log at appropriate level based on severity
     level = "critical" if severity == "critical" else "warning"
 
-    log_with_context(security_logger, level, f"Security event: {event_type}", **log_data)
+    log_with_context(security_logger, level, "Security event logged", **log_data)

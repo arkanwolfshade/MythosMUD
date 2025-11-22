@@ -11,10 +11,8 @@ that lurk in the shadows of our world. The spawn modifiers found in zone
 configurations reflect the inherent mystical properties of different locations.
 """
 
-import json
 import random
 import time
-from pathlib import Path
 from typing import Any
 
 from server.events.event_bus import EventBus
@@ -41,6 +39,7 @@ class ZoneConfiguration:
         Args:
             config_data: Dictionary containing zone configuration data
         """
+        self.zone_type = config_data.get("zone_type")  # Only populated for zone-level configs
         self.environment = config_data.get("environment", "outdoors")
         self.description = config_data.get("description", "")
         self.weather_patterns = config_data.get("weather_patterns", [])
@@ -180,7 +179,7 @@ class NPCPopulationController:
         event_bus: EventBus,
         spawning_service=None,
         lifecycle_manager=None,
-        rooms_data_path: str = "data/local/rooms",
+        async_persistence=None,
     ):
         """
         Initialize the NPC population controller.
@@ -189,12 +188,15 @@ class NPCPopulationController:
             event_bus: Event bus for publishing and subscribing to events
             spawning_service: Optional NPC spawning service for proper NPC creation
             lifecycle_manager: Optional NPC lifecycle manager for consistent ID generation
-            rooms_data_path: Path to the rooms data directory
+            async_persistence: Async persistence layer for loading zone configs from database (required)
         """
         self.event_bus = event_bus
         self.spawning_service = spawning_service
         self.lifecycle_manager = lifecycle_manager
-        self.rooms_data_path = Path(rooms_data_path)
+        self.async_persistence = async_persistence
+
+        if self.async_persistence is None:
+            raise ValueError("async_persistence is required for NPCPopulationController")
 
         # Population tracking
         self.population_stats: dict[str, PopulationStats] = {}
@@ -226,55 +228,185 @@ class NPCPopulationController:
         logger.info("NPC Population Controller initialized", zones_loaded=len(self.zone_configurations))
 
     def _load_zone_configurations(self) -> None:
-        """Load zone and sub-zone configurations from JSON files.
+        """Load zone and sub-zone configurations from PostgreSQL database."""
+        import asyncio
+        import threading
 
-        The directory structure is: data/local/rooms/plane/zone/subzone/
-        We need to traverse: plane -> zone -> subzone to find configurations.
-        """
-        try:
-            # First level: plane directories (earth, yeng, etc.)
-            for plane_dir in self.rooms_data_path.iterdir():
-                if not plane_dir.is_dir():
-                    continue
+        result_container: dict[str, Any] = {"configs": {"zone": {}, "subzone": {}}, "error": None}
 
-                logger.debug("Processing plane", plane_name=plane_dir.name)
+        def run_async():
+            new_loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(new_loop)
+            try:
+                new_loop.run_until_complete(self._async_load_zone_configurations(result_container))
+            finally:
+                new_loop.close()
 
-                # Second level: zone directories (arkhamcity, innsmouth, katmandu, etc.)
-                for zone_dir in plane_dir.iterdir():
-                    if not zone_dir.is_dir():
-                        continue
+        thread = threading.Thread(target=run_async)
+        thread.start()
+        thread.join()
 
-                    logger.debug("Processing zone", zone_name=zone_dir.name)
-
-                    # Load zone configuration
-                    zone_config_file = zone_dir / "zone_config.json"
-                    if zone_config_file.exists():
-                        with open(zone_config_file) as f:
-                            zone_data = json.load(f)
-                            zone_config = ZoneConfiguration(zone_data)
-                            self.zone_configurations[zone_dir.name] = zone_config
-                            logger.debug("Loaded zone config", zone_name=zone_dir.name)
-
-                    # Third level: sub-zone directories (sanitarium, downtown, etc.)
-                    for sub_zone_dir in zone_dir.iterdir():
-                        if not sub_zone_dir.is_dir():
-                            continue
-
-                        sub_zone_config_file = sub_zone_dir / "subzone_config.json"
-                        if sub_zone_config_file.exists():
-                            with open(sub_zone_config_file) as f:
-                                sub_zone_data = json.load(f)
-                                sub_zone_config = ZoneConfiguration(sub_zone_data)
-                                sub_zone_key = f"{zone_dir.name}/{sub_zone_dir.name}"
-                                self.zone_configurations[sub_zone_key] = sub_zone_config
-                                logger.debug("Loaded sub-zone config", sub_zone_key=sub_zone_key)
-
-            logger.info(
-                f"Loaded {len(self.zone_configurations)} zone configurations: {list(self.zone_configurations.keys())}"
+        error = result_container.get("error")
+        if error is not None:
+            logger.error(
+                "Failed to load zone configs from database",
+                error=str(error),
+                error_type=type(error).__name__,
             )
+            if isinstance(error, BaseException):
+                raise RuntimeError("Failed to load zone configurations from database") from error
+            raise RuntimeError(f"Failed to load zone configurations from database: {error}")
 
+        # Note: The old code stored both zone and subzone configs in a single dict
+        # For now, we'll merge them into zone_configurations for backward compatibility
+        # TODO: Consider separating zone and subzone configs into separate attributes
+        configs = result_container.get("configs")
+        if configs is None or not isinstance(configs, dict):
+            logger.error("Invalid configs in result_container", configs_type=type(configs).__name__)
+            raise RuntimeError("Failed to load zone configurations: invalid configs structure")
+        zone_configs = configs.get("zone", {})
+        subzone_configs = configs.get("subzone", {})
+        self.zone_configurations = {**zone_configs, **subzone_configs}
+        logger.info(
+            "Loaded zone configurations from PostgreSQL database",
+            zone_count=len(zone_configs),
+            subzone_count=len(subzone_configs),
+            total_count=len(self.zone_configurations),
+        )
+
+    async def _async_load_zone_configurations(self, result_container: dict[str, Any]) -> None:
+        """Async helper to load zone configurations from PostgreSQL database."""
+        import os
+
+        import asyncpg
+
+        try:
+            # Get database URL from environment
+            database_url = os.getenv("DATABASE_URL")
+            if not database_url:
+                raise ValueError("DATABASE_URL environment variable not set")
+
+            # Convert SQLAlchemy-style URL to asyncpg-compatible format
+            if database_url.startswith("postgresql+asyncpg://"):
+                database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
+
+            # Use asyncpg directly to avoid event loop conflicts
+            conn = await asyncpg.connect(database_url)
+            try:
+                # Query zones (authoritative zone data)
+                zone_query = """
+                    SELECT
+                        z.id,
+                        z.stable_id as zone_stable_id,
+                        z.zone_type,
+                        z.environment,
+                        z.description,
+                        z.weather_patterns,
+                        z.special_rules
+                    FROM zones z
+                    ORDER BY z.stable_id
+                """
+                zone_rows = await conn.fetch(zone_query)
+
+                for row in zone_rows:
+                    zone_stable_id = row["zone_stable_id"]
+                    zone_type = row["zone_type"]
+                    environment = row["environment"]
+                    description = row["description"]
+                    # asyncpg returns JSONB as dict/list, but ensure proper types
+                    weather_patterns = row["weather_patterns"] if row["weather_patterns"] else []
+                    if isinstance(weather_patterns, str):
+                        import json
+
+                        weather_patterns = json.loads(weather_patterns)
+
+                    special_rules = row["special_rules"] if row["special_rules"] else {}
+                    if isinstance(special_rules, str):
+                        import json
+
+                        special_rules = json.loads(special_rules)
+
+                    # Extract zone name from stable_id (format: 'plane/zone')
+                    zone_parts = zone_stable_id.split("/")
+                    zone_name = zone_parts[1] if len(zone_parts) > 1 else zone_stable_id
+
+                    # Build config data dictionary for zone
+                    config_data = {
+                        "zone_type": zone_type,
+                        "environment": environment,
+                        "description": description,
+                        "weather_patterns": weather_patterns,
+                        "special_rules": special_rules,
+                    }
+
+                    zone_config = ZoneConfiguration(config_data)
+                    result_container["configs"]["zone"][zone_name] = zone_config
+
+                # Query subzones (authoritative subzone data) with zone info via zone_configurations
+                subzone_query = """
+                    SELECT
+                        sz.id,
+                        z.stable_id as zone_stable_id,
+                        sz.stable_id as subzone_stable_id,
+                        sz.environment,
+                        sz.description,
+                        sz.special_rules,
+                        z.zone_type,
+                        z.weather_patterns
+                    FROM subzones sz
+                    JOIN zones z ON sz.zone_id = z.id
+                    ORDER BY z.stable_id, sz.stable_id
+                """
+                subzone_rows = await conn.fetch(subzone_query)
+
+                for row in subzone_rows:
+                    zone_stable_id = row["zone_stable_id"]
+                    subzone_stable_id = row["subzone_stable_id"]
+                    environment = row["environment"]
+                    description = row["description"]
+                    # asyncpg returns JSONB as dict/list, but ensure proper types
+                    special_rules = row["special_rules"] if row["special_rules"] else {}
+                    if isinstance(special_rules, str):
+                        import json
+
+                        special_rules = json.loads(special_rules)
+
+                    # Subzones inherit zone_type and weather_patterns from parent zone
+                    zone_type = row["zone_type"]
+                    weather_patterns = row["weather_patterns"] if row["weather_patterns"] else []
+                    if isinstance(weather_patterns, str):
+                        import json
+
+                        weather_patterns = json.loads(weather_patterns)
+
+                    # Extract zone name from stable_id (format: 'plane/zone')
+                    zone_parts = zone_stable_id.split("/")
+                    zone_name = zone_parts[1] if len(zone_parts) > 1 else zone_stable_id
+
+                    # Build config data dictionary for subzone
+                    config_data = {
+                        "zone_type": zone_type,  # Inherited from zone
+                        "environment": environment,
+                        "description": description,
+                        "weather_patterns": weather_patterns,  # Inherited from zone
+                        "special_rules": special_rules,
+                    }
+
+                    zone_config = ZoneConfiguration(config_data)
+                    subzone_key = f"{zone_name}/{subzone_stable_id}"
+                    result_container["configs"]["subzone"][subzone_key] = zone_config
+                    logger.debug(
+                        "Loaded subzone configuration",
+                        subzone_key=subzone_key,
+                        zone_stable_id=zone_stable_id,
+                        subzone_stable_id=subzone_stable_id,
+                        zone_name=zone_name,
+                    )
+            finally:
+                await conn.close()
         except Exception as e:
-            logger.error("Error loading zone configurations", error=str(e))
+            result_container["error"] = e
+            raise
 
     def _subscribe_to_events(self) -> None:
         """Subscribe to relevant game events."""
@@ -393,12 +525,29 @@ class NPCPopulationController:
         Get zone configuration for a given zone key.
 
         Args:
-            zone_key: Zone key in format "zone/sub_zone"
+            zone_key: Zone key in format "zone/sub_zone" or "zone"
 
         Returns:
             Zone configuration or None if not found
         """
-        return self.zone_configurations.get(zone_key)
+        # First, try exact match
+        config = self.zone_configurations.get(zone_key)
+        if config:
+            return config
+
+        # If zone_key is "zone/subzone" format and not found, try zone-level config as fallback
+        if "/" in zone_key:
+            zone_name = zone_key.split("/")[0]
+            config = self.zone_configurations.get(zone_name)
+            if config:
+                logger.debug(
+                    "Subzone config not found, using zone-level config as fallback",
+                    requested_zone_key=zone_key,
+                    fallback_zone_key=zone_name,
+                )
+                return config
+
+        return None
 
     def get_population_stats(self, zone_key: str) -> PopulationStats | None:
         """
@@ -425,7 +574,18 @@ class NPCPopulationController:
         zone_config = self.get_zone_configuration(zone_key)
 
         if not zone_config:
-            logger.warning("No zone configuration found", zone_key=zone_key, room_id=room_id)
+            # Check if we have any zone configurations loaded at all
+            available_keys = list(self.zone_configurations.keys())
+            logger.warning(
+                "No zone configuration found",
+                zone_key=zone_key,
+                room_id=room_id,
+                total_configs_loaded=len(self.zone_configurations),
+                available_keys=available_keys[:10] if len(available_keys) > 10 else available_keys,
+                message="This may indicate a missing zone configuration in the database or a key mismatch",
+            )
+            # Don't return early - some rooms may not need NPC spawning
+            # Instead, we'll just skip NPC spawning for this room
             return
 
         logger.info("Zone configuration found", zone_key=zone_key)

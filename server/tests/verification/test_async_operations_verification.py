@@ -277,33 +277,43 @@ class TestAsyncOperationsVerification:
     async def test_async_operations_with_real_persistence_layer(self):
         """Test async operations with a real persistence layer instance."""
         import os
-        from pathlib import Path
-        from unittest.mock import patch
 
-        # Set DATABASE_URL environment variable for test with ABSOLUTE path
-        # Path: server/tests/verification/test_async_operations_verification.py -> server/tests/verification -> server/tests -> server -> project root
-        project_root = Path(__file__).parent.parent.parent.parent
-        test_db_path = project_root / "data" / "unit_test" / "players" / "unit_test_players.db"
-        test_db_url = f"sqlite+aiosqlite:///{test_db_path}"
+        # Use PostgreSQL from environment
+        database_url = os.getenv("DATABASE_URL")
+        if not database_url or not database_url.startswith("postgresql"):
+            pytest.skip("DATABASE_URL must be set to a PostgreSQL URL for this test.")
 
-        with patch.dict(os.environ, {"DATABASE_URL": test_db_url}):
-            # Create a real persistence layer (this will use SQLite)
-            persistence = PersistenceLayer()
+        # CRITICAL: Reset database manager and async persistence to ensure
+        # they're initialized in the current event loop (pytest's event loop)
+        # This prevents "Future attached to different loop" errors
+        from server.async_persistence import reset_async_persistence
+        from server.database import DatabaseManager
 
-            # Test that async methods exist and are callable
-            assert hasattr(persistence, "async_list_players")
-            assert hasattr(persistence, "async_get_player")
-            assert hasattr(persistence, "async_get_room")
+        DatabaseManager.reset_instance()
+        reset_async_persistence()
 
-            # Test that they return values (even if empty)
-            players = await persistence.async_list_players()
-            assert isinstance(players, list)
+        # Create a real persistence layer (this will use PostgreSQL)
+        # This will initialize the database manager in the current event loop
+        persistence = PersistenceLayer()
 
-            player = await persistence.async_get_player("nonexistent")
-            assert player is None
+        # Test that async methods exist and are callable
+        assert hasattr(persistence, "async_list_players")
+        assert hasattr(persistence, "async_get_player")
+        assert hasattr(persistence, "async_get_room")
 
-            room = await persistence.async_get_room("nonexistent")
-            assert room is None
+        # Test that they return values (even if empty)
+        players = await persistence.async_list_players()
+        assert isinstance(players, list)
+
+        # Use a valid UUID string for testing (not a real player, but valid format)
+        from uuid import uuid4
+
+        nonexistent_uuid = str(uuid4())
+        player = await persistence.async_get_player(nonexistent_uuid)
+        assert player is None
+
+        room = await persistence.async_get_room("nonexistent")
+        assert room is None
 
     @pytest.mark.asyncio
     async def test_async_operations_performance_benchmark(self, mock_persistence):

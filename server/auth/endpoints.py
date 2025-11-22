@@ -12,12 +12,12 @@ from typing import Any
 from fastapi import APIRouter, Depends, Request
 from fastapi_users import schemas
 from pydantic import BaseModel, field_validator
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database import get_async_session
 from ..exceptions import LoggedHTTPException
 from ..logging.enhanced_logging_config import get_logger
-from ..models.invite import Invite
 from ..models.user import User
 from ..schemas.invite import InviteRead
 from ..utils.error_logging import create_context_from_request
@@ -48,6 +48,8 @@ class UserUpdate(schemas.BaseUserUpdate):
 class UserCreate(BaseModel):
     """Schema for user creation with invite code validation."""
 
+    __slots__ = ()  # Performance optimization
+
     username: str
     password: str
     invite_code: str | None = None
@@ -67,6 +69,8 @@ class UserCreate(BaseModel):
 class LoginRequest(BaseModel):
     """Schema for login requests."""
 
+    __slots__ = ()  # Performance optimization
+
     username: str
     password: str
 
@@ -74,6 +78,8 @@ class LoginRequest(BaseModel):
 # Define login response schema
 class LoginResponse(BaseModel):
     """Schema for login responses."""
+
+    __slots__ = ()  # Performance optimization
 
     access_token: str
     token_type: str = "bearer"
@@ -113,10 +119,11 @@ async def register_user(
         user_create.email = f"{user_create.username}@wolfshade.org"
         logger.info("Generated simple bogus email", username=user_create.username, email=user_create.email)
 
-    # Validate invite code (but don't use it yet)
+    # Validate invite code
+    validated_invite = None
     if user_create.invite_code:
         try:
-            await invite_manager.validate_invite(user_create.invite_code, request)
+            validated_invite = await invite_manager.validate_invite(user_create.invite_code, request)
         except LoggedHTTPException as e:
             raise e
 
@@ -151,11 +158,13 @@ async def register_user(
         # Create a minimal user object to avoid FastAPI Users issues
         user = User()
         user.username = user_create_clean.username
+        user.display_name = user_create_clean.username  # Default display_name to username
         user.email = user_create_clean.email
         user.hashed_password = hashed_password
         user.is_active = True
         user.is_superuser = False
         user.is_verified = False
+        user.is_admin = False  # New users are not admins by default
         user.created_at = datetime.now(UTC).replace(tzinfo=None)
         user.updated_at = datetime.now(UTC).replace(tzinfo=None)
 
@@ -163,25 +172,84 @@ async def register_user(
         await session.commit()
         await session.refresh(user)
 
+        # Mark invite as used now that user registration is successful
+        if validated_invite and user_create.invite_code:
+            try:
+                # Re-query the invite in the current session to ensure it's attached
+                from sqlalchemy import text
+
+                # Use raw SQL update to avoid UUID type mismatch issues
+                # Cast used_by_user_id to UUID in the SQL to match the column type
+                await session.execute(
+                    text("""
+                        UPDATE invites
+                        SET is_active = :is_active, used_by_user_id = CAST(:used_by_user_id AS UUID)
+                        WHERE invite_code = :invite_code
+                    """),
+                    {
+                        "is_active": False,
+                        "used_by_user_id": str(user.id),
+                        "invite_code": user_create.invite_code,
+                    },
+                )
+                await session.commit()
+                logger.info(
+                    "Invite marked as used during registration",
+                    invite_code=user_create.invite_code,
+                    user_id=user.id,
+                    username=user.username,
+                )
+            except Exception as invite_error:
+                # Log error but don't fail registration if invite marking fails
+                logger.error(
+                    "Failed to mark invite as used during registration",
+                    error=str(invite_error),
+                    error_type=type(invite_error).__name__,
+                    invite_code=user_create.invite_code,
+                    user_id=user.id,
+                )
+
     except LoggedHTTPException:
         raise
+    except IntegrityError as e:
+        # Handle database integrity constraint violations (duplicate username, email, etc.)
+        # Check both the exception message and the underlying exception
+        error_str = str(e).lower()
+        orig_error_str = str(e.orig).lower() if hasattr(e, "orig") else ""
+        combined_error = f"{error_str} {orig_error_str}".lower()
+
+        # Any IntegrityError during registration is likely a constraint violation
+        # (duplicate username, email, etc.) - return 400 instead of 500
+        # Try to determine the specific constraint, but default to generic message
+
+        # Determine if it's username or email constraint
+        if "username" in combined_error or "users_username_key" in combined_error:
+            detail = "Username already exists"
+        elif "email" in combined_error or "users_email_key" in combined_error:
+            detail = "Email already exists"
+        else:
+            # Generic message for any integrity constraint violation
+            detail = "A user with this information already exists"
+
+        context = create_context_from_request(request)
+        context.metadata["username"] = user_create_clean.username
+        context.metadata["operation"] = "register_user"
+        context.metadata["constraint_error"] = str(e)
+        context.metadata["original_error"] = orig_error_str if hasattr(e, "orig") else ""
+        raise LoggedHTTPException(status_code=400, detail=detail, context=context) from e
     except Exception as e:
-        # Check if it's a duplicate username error
-        constraint_error = "UNIQUE constraint failed: users.username"
-        if constraint_error in str(e):
-            context = create_context_from_request(request)
-            context.metadata["username"] = user_create_clean.username
-            context.metadata["operation"] = "register_user"
-            context.metadata["constraint_error"] = constraint_error
-            raise LoggedHTTPException(status_code=400, detail="Username already exists", context=context) from e
+        # Log unexpected exceptions for debugging
+        logger.error(
+            "Unexpected error during registration",
+            error=str(e),
+            error_type=type(e).__name__,
+            username=user_create_clean.username,
+            exc_info=True,
+        )
         # Re-raise other exceptions
         raise e
 
-    # Store invite code in user session for later use during character creation
-    # We'll mark it as used when the character is actually created
-    logger.info(
-        f"User {user.username} registered successfully - invite code reserved, player creation pending stats acceptance"
-    )
+    logger.info("User registered successfully", username=user.username, user_id=user.id)
 
     # Generate JWT token using FastAPI Users' built-in method
     import os
@@ -393,7 +461,7 @@ async def list_invites(
         {
             "id": str(invite.id),
             "invite_code": invite.invite_code,
-            "used": invite.used,
+            "is_active": invite.is_active,
             "used_by_user_id": str(invite.used_by_user_id) if invite.used_by_user_id else None,
             "expires_at": invite.expires_at.isoformat() if invite.expires_at else None,
             "created_at": invite.created_at.isoformat() if invite.created_at else None,
@@ -406,13 +474,16 @@ async def list_invites(
 async def create_invite(
     current_user: User = Depends(get_current_superuser),
     invite_manager: InviteManager = Depends(get_invite_manager),
-) -> Invite:  # FastAPI response_model handles conversion to InviteRead
+) -> dict[str, Any]:  # Return dict for better performance
     """
     Create a new invite code.
 
     This endpoint creates a new invite code for user registration.
     """
-    return await invite_manager.create_invite()
+    invite = await invite_manager.create_invite()
+    # Convert SQLAlchemy model to Pydantic schema, then to dict
+    invite_read = InviteRead.model_validate(invite)
+    return invite_read.model_dump()
 
 
 # Note: FastAPI Users authentication endpoints are included in app/factory.py

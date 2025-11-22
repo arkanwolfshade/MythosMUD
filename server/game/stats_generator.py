@@ -13,6 +13,33 @@ from typing import Any
 from ..logging.enhanced_logging_config import get_logger
 from ..models import AttributeType, Stats
 
+
+def generate_random_stats(seed: int | None = None) -> Stats:
+    """
+    Generate Stats with random attribute values (3-18 range).
+
+    Factory function for creating Stats objects with randomly generated attributes.
+    This separates business logic from the model's __init__ method.
+
+    Args:
+        seed: Optional random seed for reproducible generation (useful for testing)
+
+    Returns:
+        Stats: A new Stats object with randomly generated attribute values
+    """
+    import random
+
+    local_rng = random.Random(seed) if seed is not None else random.Random()
+    return Stats(
+        strength=local_rng.randint(3, 18),
+        dexterity=local_rng.randint(3, 18),
+        constitution=local_rng.randint(3, 18),
+        intelligence=local_rng.randint(3, 18),
+        wisdom=local_rng.randint(3, 18),
+        charisma=local_rng.randint(3, 18),
+    )
+
+
 logger = get_logger(__name__)
 
 

@@ -11,6 +11,7 @@ from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, relationship
 
 from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
@@ -28,11 +29,13 @@ class Invite(Base):
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     invite_code = Column(String, unique=True, nullable=False, index=True)
-    created_by_user_id = Column(String, ForeignKey("users.id"), nullable=True)
-    used_by_user_id = Column(String, ForeignKey("users.id"), nullable=True)
-    used = Column(Boolean, default=False, nullable=False)
+    # Add indexes on foreign keys for query performance
+    created_by_user_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), nullable=True, index=True)
+    used_by_user_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), nullable=True, index=True)
+    # is_active: True means invite is available, False means used
+    is_active = Column(Boolean, default=True, nullable=False)
     expires_at = Column(DateTime, nullable=False)
-    # Store datetimes in database as naive UTC to keep SQLite comparisons simple.
+    # Store datetimes in database as naive UTC for PostgreSQL TIMESTAMP WITHOUT TIME ZONE compatibility.
     created_at = Column(DateTime, default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
 
     # ARCHITECTURE FIX Phase 3.1: Relationships defined directly in model (no circular imports)
@@ -41,11 +44,11 @@ class Invite(Base):
         "User", foreign_keys=[created_by_user_id], back_populates="created_invites"
     )
     used_by_user: Mapped["User | None"] = relationship(
-        "User", foreign_keys=[used_by_user_id], back_populates="used_invite"
+        "User", foreign_keys=[used_by_user_id], back_populates="used_invite", uselist=False
     )
 
     def __repr__(self) -> str:
-        return f"<Invite(id='{self.id}', code='{self.invite_code}', used={self.used})>"
+        return f"<Invite(id='{self.id}', code='{self.invite_code}', is_active={self.is_active})>"
 
     def is_expired(self) -> bool:
         """Check if the invite has expired. Handles naive timestamps as UTC."""
@@ -58,12 +61,12 @@ class Invite(Base):
         return bool(now_utc > expires_at_utc)
 
     def is_valid(self) -> bool:
-        """Check if the invite is valid (not used and not expired)."""
-        return not self.used and not self.is_expired()
+        """Check if the invite is valid (active and not expired)."""
+        return bool(self.is_active) and not self.is_expired()
 
     def use_invite(self, user_id: str) -> None:
         """Mark this invite as used by a specific user."""
-        self.used = True  # type: ignore[assignment]
+        self.is_active = False  # type: ignore[assignment]  # Mark as used (inactive)
         self.used_by_user_id = user_id  # type: ignore[assignment]
 
     @classmethod
@@ -72,7 +75,7 @@ class Invite(Base):
         return cls(
             invite_code=cls._generate_invite_code(),
             created_by_user_id=created_by_user_id,
-            # Persist naive UTC in DB
+            # Persist naive UTC for PostgreSQL TIMESTAMP WITHOUT TIME ZONE
             expires_at=(datetime.now(UTC) + timedelta(days=expires_in_days)).replace(tzinfo=None),
         )
 

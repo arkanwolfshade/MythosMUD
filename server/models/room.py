@@ -10,6 +10,8 @@ for maintaining the integrity of our eldritch architecture and ensuring
 that dimensional shifts are properly tracked.
 """
 
+import uuid
+
 from ..events import EventBus
 from ..events.event_types import (
     NPCEnteredRoom,
@@ -64,48 +66,56 @@ class Room:
 
         self._logger.debug("Initialized room", room_name=self.name, room_id=self.id)
 
-    def player_entered(self, player_id: str) -> None:
+    def player_entered(self, player_id: uuid.UUID | str) -> None:
         """
         Add a player to the room and trigger event.
 
         Args:
-            player_id: The ID of the player entering the room
+            player_id: The ID of the player entering the room (UUID or string)
         """
         if not player_id:
             raise ValueError("Player ID cannot be empty")
 
-        if player_id in self._players:
+        # Convert to string for internal storage (Room uses set[str] for _players)
+        player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
+
+        if player_id_str in self._players:
             self._logger.warning("Player already in room", player_id=player_id, room_id=self.id)
             return
 
-        self._players.add(player_id)
+        self._players.add(player_id_str)
         self._logger.debug("Player entered room", player_id=player_id, room_id=self.id)
 
         # Publish event if event bus is available
+        # Events still expect string, so convert for event creation
         if self._event_bus:
-            event = PlayerEnteredRoom(player_id=player_id, room_id=self.id)
+            event = PlayerEnteredRoom(player_id=player_id_str, room_id=self.id)
             self._event_bus.publish(event)
 
-    def player_left(self, player_id: str) -> None:
+    def player_left(self, player_id: uuid.UUID | str) -> None:
         """
         Remove a player from the room and trigger event.
 
         Args:
-            player_id: The ID of the player leaving the room
+            player_id: The ID of the player leaving the room (UUID or string)
         """
         if not player_id:
             raise ValueError("Player ID cannot be empty")
 
-        if player_id not in self._players:
+        # Convert to string for internal storage (Room uses set[str] for _players)
+        player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
+
+        if player_id_str not in self._players:
             self._logger.warning("Player not in room", player_id=player_id, room_id=self.id)
             return
 
-        self._players.remove(player_id)
+        self._players.remove(player_id_str)
         self._logger.debug("Player left room", player_id=player_id, room_id=self.id)
 
         # Publish event if event bus is available
+        # Events still expect string, so convert for event creation
         if self._event_bus:
-            event = PlayerLeftRoom(player_id=player_id, room_id=self.id)
+            event = PlayerLeftRoom(player_id=player_id_str, room_id=self.id)
             self._event_bus.publish(event)
 
     def object_added(self, object_id: str, player_id: str | None = None) -> None:
@@ -225,17 +235,19 @@ class Room:
         """
         return list(self._npcs)
 
-    def has_player(self, player_id: str) -> bool:
+    def has_player(self, player_id: uuid.UUID | str) -> bool:
         """
         Check if a player is in the room.
 
         Args:
-            player_id: The ID of the player to check
+            player_id: The ID of the player to check (UUID or string)
 
         Returns:
             True if the player is in the room, False otherwise
         """
-        return player_id in self._players
+        # Convert to string for set lookup (Room uses set[str] for _players)
+        player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
+        return player_id_str in self._players
 
     def has_object(self, object_id: str) -> bool:
         """

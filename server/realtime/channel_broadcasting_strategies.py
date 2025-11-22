@@ -7,6 +7,7 @@ and extensible approach. As noted in the restricted archives, this pattern provi
 O(1) lookup and eliminates the need for repetitive conditional logic.
 """
 
+import uuid
 from abc import ABC, abstractmethod
 
 from ..logging.enhanced_logging_config import get_logger
@@ -19,7 +20,13 @@ class ChannelBroadcastingStrategy(ABC):
 
     @abstractmethod
     async def broadcast(
-        self, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str, nats_handler
+        self,
+        chat_event: dict,
+        room_id: str,
+        party_id: str,
+        target_player_id: uuid.UUID | None,
+        sender_id: uuid.UUID,
+        nats_handler,
     ) -> None:
         """
         Broadcast message according to channel strategy.
@@ -28,8 +35,8 @@ class ChannelBroadcastingStrategy(ABC):
             chat_event: WebSocket event to broadcast
             room_id: Room ID for room-based channels
             party_id: Party ID for party-based channels
-            target_player_id: Target player ID for whisper messages
-            sender_id: Sender player ID
+            target_player_id: Target player ID for whisper messages (UUID or None)
+            sender_id: Sender player ID (UUID)
             nats_handler: NATS message handler instance
         """
         pass
@@ -48,11 +55,19 @@ class RoomBasedChannelStrategy(ChannelBroadcastingStrategy):
         self.channel_type = channel_type
 
     async def broadcast(
-        self, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str, nats_handler
+        self,
+        chat_event: dict,
+        room_id: str,
+        party_id: str,
+        target_player_id: uuid.UUID | None,
+        sender_id: uuid.UUID,
+        nats_handler,
     ) -> None:
         """Broadcast room-based message with server-side filtering."""
         if room_id:
-            await nats_handler._broadcast_to_room_with_filtering(room_id, chat_event, sender_id, self.channel_type)
+            # Convert UUID to string for _broadcast_to_room_with_filtering which expects string
+            sender_id_str = str(sender_id)
+            await nats_handler._broadcast_to_room_with_filtering(room_id, chat_event, sender_id_str, self.channel_type)
             logger.debug(
                 "Broadcasted room message with server-side filtering",
                 channel=self.channel_type,
@@ -67,11 +82,19 @@ class GlobalChannelStrategy(ChannelBroadcastingStrategy):
     """Strategy for global channel broadcasting."""
 
     async def broadcast(
-        self, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str, nats_handler
+        self,
+        chat_event: dict,
+        room_id: str,
+        party_id: str,
+        target_player_id: uuid.UUID | None,
+        sender_id: uuid.UUID,
+        nats_handler,
     ) -> None:
         """Broadcast global message to all connected players."""
         # AI Agent: Use connection_manager from nats_handler (injected dependency)
-        await nats_handler.connection_manager.broadcast_global(chat_event, exclude_player=sender_id)
+        # Convert UUID to string for broadcast_global which expects string
+        sender_id_str = str(sender_id)
+        await nats_handler.connection_manager.broadcast_global(chat_event, exclude_player=sender_id_str)
         logger.debug("Broadcasted global message", sender_id=sender_id)
 
 
@@ -79,7 +102,13 @@ class PartyChannelStrategy(ChannelBroadcastingStrategy):
     """Strategy for party channel broadcasting."""
 
     async def broadcast(
-        self, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str, nats_handler
+        self,
+        chat_event: dict,
+        room_id: str,
+        party_id: str,
+        target_player_id: uuid.UUID | None,
+        sender_id: uuid.UUID,
+        nats_handler,
     ) -> None:
         """Broadcast party message to party members."""
         if party_id:
@@ -93,7 +122,13 @@ class WhisperChannelStrategy(ChannelBroadcastingStrategy):
     """Strategy for whisper channel broadcasting."""
 
     async def broadcast(
-        self, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str, nats_handler
+        self,
+        chat_event: dict,
+        room_id: str,
+        party_id: str,
+        target_player_id: uuid.UUID | None,
+        sender_id: uuid.UUID,
+        nats_handler,
     ) -> None:
         """Send whisper message to specific player."""
         if target_player_id:
@@ -121,11 +156,19 @@ class SystemAdminChannelStrategy(ChannelBroadcastingStrategy):
         self.channel_type = channel_type
 
     async def broadcast(
-        self, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str, nats_handler
+        self,
+        chat_event: dict,
+        room_id: str,
+        party_id: str,
+        target_player_id: uuid.UUID | None,
+        sender_id: uuid.UUID,
+        nats_handler,
     ) -> None:
         """Broadcast system/admin message to all players."""
         # AI Agent: Use connection_manager from nats_handler (injected dependency)
-        await nats_handler.connection_manager.broadcast_global(chat_event, exclude_player=sender_id)
+        # Convert UUID to string for broadcast_global which expects string
+        sender_id_str = str(sender_id)
+        await nats_handler.connection_manager.broadcast_global(chat_event, exclude_player=sender_id_str)
         logger.debug("Broadcasted message", channel_type=self.channel_type, sender_id=sender_id)
 
 
@@ -142,7 +185,13 @@ class UnknownChannelStrategy(ChannelBroadcastingStrategy):
         self.channel_type = channel_type
 
     async def broadcast(
-        self, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str, nats_handler
+        self,
+        chat_event: dict,
+        room_id: str,
+        party_id: str,
+        target_player_id: uuid.UUID | None,
+        sender_id: uuid.UUID,
+        nats_handler,
     ) -> None:
         """Handle unknown channel type."""
         logger.warning("Unknown channel type")

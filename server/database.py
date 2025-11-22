@@ -8,23 +8,23 @@ CRITICAL: Database initialization is LAZY and requires configuration to be loade
          The system will FAIL LOUDLY if configuration is not properly set.
 """
 
+import asyncio
 import threading
 from collections.abc import AsyncGenerator
 from pathlib import Path
 from typing import Any
 
-from sqlalchemy import event, text
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.pool import NullPool, StaticPool
+from sqlalchemy.pool import NullPool
 
 from .exceptions import ValidationError
 from .logging.enhanced_logging_config import get_logger
-from .metadata import metadata
 from .utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
@@ -55,6 +55,7 @@ class DatabaseManager:
         self.session_maker: async_sessionmaker | None = None
         self.database_url: str | None = None
         self._initialized: bool = False
+        self._creation_loop_id: int | None = None  # Track which loop created the engine
 
     @classmethod
     def get_instance(cls) -> "DatabaseManager":
@@ -117,47 +118,52 @@ class DatabaseManager:
                     user_friendly="Database cannot be initialized: configuration not loaded or invalid",
                 )
 
-        # Handle database_url - could be a path or a full SQLite URL
-        if database_url.startswith("sqlite"):
-            # Already a full SQLite URL (from environment variable)
-            self.database_url = database_url
-            logger.info("Using database URL from environment", database_url=self.database_url)
+        # PostgreSQL-only: Verify we have a PostgreSQL URL
+        if not database_url.startswith("postgresql"):
+            log_and_raise(
+                ValidationError,
+                f"Unsupported database URL: {database_url}. Only PostgreSQL is supported.",
+                context=context,
+                user_friendly="Database configuration error - PostgreSQL required",
+            )
+
+        # PostgreSQL URL (postgresql+asyncpg:// or postgresql://)
+        if not database_url.startswith("postgresql+asyncpg"):
+            # Convert postgresql:// to postgresql+asyncpg:// for async support
+            self.database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
         else:
-            # It's a path from YAML - convert to absolute path and construct SQLite URL
-            db_path_obj = Path(database_url).resolve()
-            self.database_url = f"sqlite+aiosqlite:///{db_path_obj}"
-            logger.info("Database URL configured from YAML", database_url=self.database_url, db_path=str(db_path_obj))
+            self.database_url = database_url
+        logger.info("Using PostgreSQL database URL from environment", database_url=self.database_url)
 
         # Determine pool class based on database URL
-        # Use NullPool for tests to prevent SQLite file locking issues
-        pool_class = NullPool if "test" in self.database_url else StaticPool
+        # Use NullPool for tests, default AsyncAdaptedQueuePool for production
+        # For async engines, AsyncAdaptedQueuePool is used automatically if poolclass not specified
+        pool_kwargs: dict[str, Any] = {}
+        if "test" in self.database_url:
+            pool_kwargs["poolclass"] = NullPool
+        else:
+            # For production, use default AsyncAdaptedQueuePool with configured pool size
+            # AsyncAdaptedQueuePool is automatically used by create_async_engine()
+            # Get pool configuration from config
+            config = get_config()
+            pool_kwargs.update(
+                {
+                    "pool_size": config.database.pool_size,
+                    "max_overflow": config.database.max_overflow,
+                    "pool_timeout": config.database.pool_timeout,
+                }
+            )
 
-        # Create async engine
+        # Create async engine with PostgreSQL configuration
         self.engine = create_async_engine(
             self.database_url,
             echo=False,
-            poolclass=pool_class,
             pool_pre_ping=True,
-            connect_args={
-                "check_same_thread": False,
-                "timeout": 30,
-            },
+            **pool_kwargs,
         )
 
-        # Enable foreign key constraints for SQLite
-        @event.listens_for(self.engine.sync_engine, "connect")
-        def set_sqlite_pragma(dbapi_connection: Any, connection_record: Any) -> None:
-            """Enable foreign key constraints for SQLite connections."""
-            conn_str = str(dbapi_connection)
-            conn_type = str(type(dbapi_connection))
-
-            # Check both the connection string and type for sqlite (case-insensitive)
-            if "sqlite" in conn_str.lower() or "sqlite" in conn_type.lower():
-                cursor = dbapi_connection.cursor()
-                cursor.execute("PRAGMA foreign_keys=ON")
-                cursor.close()
-
-        logger.info("Database engine created", pool_class=pool_class.__name__)
+        pool_type = "NullPool" if "test" in self.database_url else "AsyncAdaptedQueuePool"
+        logger.info("Database engine created", pool_type=pool_type)
 
         # Create async session maker
         self.session_maker = async_sessionmaker(
@@ -170,6 +176,13 @@ class DatabaseManager:
 
         logger.info("Database session maker created")
         self._initialized = True
+        # Track the event loop that created this engine
+        try:
+            loop = asyncio.get_running_loop()
+            self._creation_loop_id = id(loop)
+        except RuntimeError:
+            # No running loop - that's okay, we'll track it as None
+            self._creation_loop_id = None
 
     def get_engine(self) -> AsyncEngine:
         """
@@ -183,6 +196,35 @@ class DatabaseManager:
         """
         if not self._initialized:
             self._initialize_database()
+        # Double-check: if initialization didn't set engine, try again
+        if self.engine is None:
+            logger.warning("Engine is None after initialization, attempting re-initialization")
+            self._initialized = False  # Force re-initialization
+            self._initialize_database()
+
+        # CRITICAL: Check if we're in a different event loop than when engine was created
+        # asyncpg connections must be created in the same loop they're used in
+        # If the event loop changes, we need to recreate the engine for the new loop
+        try:
+            current_loop = asyncio.get_running_loop()
+            current_loop_id = id(current_loop)
+            if self._creation_loop_id is not None and current_loop_id != self._creation_loop_id:
+                logger.warning(
+                    "Event loop changed, recreating database engine",
+                    old_loop_id=self._creation_loop_id,
+                    new_loop_id=current_loop_id,
+                )
+                # asyncpg will handle cleanup of old engine when the old loop closes
+                # We just need to recreate for the new loop
+                self.engine = None
+                self.session_maker = None
+                self._initialized = False
+                self._initialize_database()
+        except RuntimeError:
+            # No running loop - that's okay, engine will be created when needed
+            logger.debug("No running event loop, engine will be created when needed")
+            pass
+
         assert self.engine is not None, "Database engine not initialized"
         return self.engine
 
@@ -215,12 +257,16 @@ class DatabaseManager:
             self._initialize_database()
         return self.database_url
 
-    def get_database_path(self) -> Path:
+    def get_database_path(self) -> Path | None:
         """
         Get the database file path.
 
+        DEPRECATED: PostgreSQL does not use file paths. This method always returns None
+        for PostgreSQL databases. Kept for backward compatibility with code that may
+        check for database paths.
+
         Returns:
-            Path: Path to the database file
+            Path | None: Always None for PostgreSQL (no file path)
         """
         database_url = self.get_database_url()
 
@@ -236,19 +282,19 @@ class DatabaseManager:
             # This should never be reached due to log_and_raise above
             raise RuntimeError("Unreachable code")
 
-        if database_url.startswith("sqlite+aiosqlite:///"):
-            db_path = database_url.replace("sqlite+aiosqlite:///", "")
-            return Path(db_path)
+        if database_url.startswith("postgresql"):
+            # PostgreSQL doesn't have a file path
+            return None
         else:
             context = create_error_context()
             context.metadata["operation"] = "get_database_path"
             context.metadata["database_url"] = database_url
             log_and_raise(
                 ValidationError,
-                f"Unsupported database URL: {database_url}",
+                f"Unsupported database URL: {database_url}. Only PostgreSQL is supported.",
                 context=context,
                 details={"database_url": database_url},
-                user_friendly="Unsupported database configuration",
+                user_friendly="Unsupported database configuration - PostgreSQL required",
             )
             # This should never be reached due to log_and_raise above
             raise RuntimeError("Unreachable code")
@@ -256,8 +302,55 @@ class DatabaseManager:
     async def close(self) -> None:
         """Close database connections."""
         if self.engine is not None:
-            await self.engine.dispose()
-            logger.info("Database connections closed")
+            # Store engine in local variable for type narrowing
+            engine = self.engine
+            try:
+                # Check if event loop is still running before disposing
+                try:
+                    loop = asyncio.get_running_loop()
+                    if loop.is_closed():
+                        logger.warning("Event loop is closed, skipping engine disposal")
+                        self.engine = None
+                        self._initialized = False
+                        self._creation_loop_id = None
+                        return
+                except RuntimeError:
+                    # No running loop - that's okay, we can still try to dispose
+                    pass
+
+                # For Windows/asyncpg: Use a timeout and force close if needed
+                try:
+                    # Try graceful disposal first
+                    await asyncio.wait_for(engine.dispose(), timeout=1.0)
+                    logger.info("Database connections closed")
+                except TimeoutError:
+                    # If disposal times out, try to force close connections
+                    logger.warning("Engine disposal timed out, attempting force close")
+                    try:
+                        # Force close by setting pool to None and clearing connections
+                        if hasattr(engine, "sync_engine") and hasattr(engine.sync_engine, "pool"):
+                            pool = engine.sync_engine.pool
+                            if pool:
+                                pool.dispose()
+                    except Exception:
+                        pass  # Ignore errors during force close
+                    logger.info("Database connections force closed")
+            except (RuntimeError, AttributeError) as e:
+                # Event loop is closed or proactor is None - this is expected during cleanup
+                # Don't log as error, just as debug since this is normal during test teardown
+                logger.debug("Event loop closed during engine disposal (expected during cleanup)", error=str(e))
+            except Exception as e:
+                # Any other error - log but don't raise
+                logger.warning("Error disposing database engine", error=str(e), error_type=type(e).__name__)
+            finally:
+                # Always reset state, even if disposal failed
+                self.engine = None
+                self._initialized = False
+                self._creation_loop_id = None
+        else:
+            # Engine already None, but reset flag if it was initialized
+            self._initialized = False
+            self._creation_loop_id = None
 
 
 # DEPRECATED: Module-level global removed - use ApplicationContainer instead
@@ -302,6 +395,19 @@ def get_session_maker() -> async_sessionmaker:
     return get_database_manager().get_session_maker()
 
 
+def get_database_url() -> str | None:
+    """
+    Get the database URL, initializing if necessary.
+
+    Returns:
+        str | None: The database URL, or None if not configured
+
+    Raises:
+        ValidationError: If database cannot be initialized
+    """
+    return get_database_manager().get_database_url()
+
+
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
     """
     Dependency to get database session.
@@ -329,6 +435,7 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
             )
             try:
                 await session.rollback()
+                logger.debug("Database session rolled back after error")
             except Exception as rollback_error:
                 logger.error(
                     "Failed to rollback database session",
@@ -336,19 +443,31 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
                     rollback_error=str(rollback_error),
                 )
             raise
-        # Session is automatically closed by the async context manager
+        finally:
+            # Session is automatically closed by the async context manager
+            # Log session closure for monitoring (debug level to avoid noise)
+            logger.debug("Database session closed")
 
 
 async def init_db() -> None:
     """
-    Initialize database with all tables.
+    Initialize database connection and verify configuration.
 
-    Creates all tables defined in the metadata.
+    NOTE: DDL (table creation) is NOT managed by this function.
+    All database schema must be created via SQL scripts in db/authoritative_schema.sql
+    and applied using database management scripts (e.g., psql).
+
+    This function only:
+    - Initializes the database engine and session maker
+    - Configures SQLAlchemy mappers for ORM relationships
+    - Verifies database connectivity
+
+    To create tables, use the SQL script db/authoritative_schema.sql.
     """
     context = create_error_context()
     context.metadata["operation"] = "init_db"
 
-    logger.info("Initializing database")
+    logger.info("Initializing database connection")
 
     try:
         # Import all models to ensure they're registered with metadata
@@ -359,7 +478,6 @@ async def init_db() -> None:
         # CRITICAL: Import ALL models that use metadata before configure_mappers()
         # This allows SQLAlchemy to resolve string references in relationships
         # Do NOT import NPC models here - they use npc_metadata, not metadata
-        # from server.models.npc import NPCDefinition, NPCSpawnRule  # noqa: F401
         from server.models.invite import Invite  # noqa: F401
         from server.models.player import Player  # noqa: F401
         from server.models.sanity import (  # noqa: F401
@@ -375,30 +493,15 @@ async def init_db() -> None:
         # String references resolved via SQLAlchemy registry after all models imported
         configure_mappers()
 
+        # Initialize engine to verify connectivity
         engine = get_engine()  # Initialize if needed
+
+        # Verify database connectivity with a simple query
         async with engine.begin() as conn:
-            logger.info("Creating database tables")
-            await conn.run_sync(metadata.create_all)
-            # Enable foreign key constraints for SQLite
-            await conn.execute(text("PRAGMA foreign_keys = ON"))
+            await conn.execute(text("SELECT 1"))
+            logger.info("Database connection verified successfully")
 
-            # MIGRATION: Add respawn_room_id column if it doesn't exist
-            # This handles existing databases that were created before this column was added
-            try:
-                # Check if column exists by attempting to select it
-                result = await conn.execute(text("SELECT respawn_room_id FROM players LIMIT 1"))
-                result.fetchone()  # Consume result (already resolved, not awaitable)
-            except Exception:
-                # Column doesn't exist, add it
-                logger.info("Adding respawn_room_id column to players table (migration)")
-                await conn.execute(
-                    text(
-                        "ALTER TABLE players ADD COLUMN respawn_room_id TEXT DEFAULT 'earth_arkhamcity_sanitarium_room_foyer_001'"
-                    )
-                )
-                logger.info("Migration completed: respawn_room_id column added")
-
-            logger.info("Database tables created successfully")
+        logger.info("Database initialization complete - DDL must be applied separately via SQL scripts")
     except Exception as e:
         context.metadata["error_type"] = type(e).__name__
         context.metadata["error_message"] = str(e)
@@ -436,27 +539,42 @@ async def close_db() -> None:
         raise RuntimeError("Failed to close database connections") from e
 
 
-def get_database_path() -> Path:
+def get_database_path() -> Path | None:
     """
     Get the database file path.
 
+    DEPRECATED: PostgreSQL does not use file paths. This function always returns None
+    for PostgreSQL databases. Kept for backward compatibility with code that may
+    check for database paths.
+
     Returns:
-        Path: Path to the database file
+        Path | None: Always None for PostgreSQL (no file path)
     """
     # Test override path handling without requiring initialization
     if _database_url is not None:
         url = _database_url
         if not url:
             raise ValidationError("Database URL is None")
-        if url.startswith("sqlite+aiosqlite:///"):
-            return Path(url.replace("sqlite+aiosqlite:///", ""))
+        if url.startswith("postgresql"):
+            # PostgreSQL doesn't have a file path
+            return None
         # Unsupported URL schemes should raise
-        raise ValidationError(f"Unsupported database URL: {url}")
+        raise ValidationError(f"Unsupported database URL: {url}. Only PostgreSQL is supported.")
 
     return get_database_manager().get_database_path()
 
 
 def ensure_database_directory() -> None:
-    """Ensure database directory exists."""
+    """
+    Ensure database directory exists.
+
+    DEPRECATED: PostgreSQL does not use file paths or directories. This function
+    is a no-op for PostgreSQL databases. Kept for backward compatibility.
+
+    For PostgreSQL, database directories are managed by the PostgreSQL server,
+    not by the application.
+    """
     db_path = get_database_path()
-    db_path.parent.mkdir(parents=True, exist_ok=True)
+    # PostgreSQL always returns None, so this is effectively a no-op
+    if db_path is not None:
+        db_path.parent.mkdir(parents=True, exist_ok=True)

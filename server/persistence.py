@@ -1,25 +1,37 @@
+import asyncio
 import json
 import os
-import sqlite3
 import threading
 from collections.abc import Callable
+from contextlib import contextmanager
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, TypedDict, cast
 from uuid import UUID
 
-from server.logging.enhanced_logging_config import get_logger
+import psycopg2
 
 from .exceptions import DatabaseError, ValidationError
+from .logging.enhanced_logging_config import get_logger
 from .models.player import Player
 from .models.room import Room
+from .postgres_adapter import connect_postgres
 from .schemas.inventory_schema import InventorySchemaValidationError, validate_inventory_payload
 from .utils.error_logging import create_error_context, log_and_raise
-from .world_loader import ROOMS_BASE_PATH
 
 if TYPE_CHECKING:
     from .models.profession import Profession
 
 logger = get_logger(__name__)
+
+# Player table columns for explicit SELECT queries (avoids SELECT * anti-pattern)
+PLAYER_COLUMNS = (
+    "player_id, user_id, name, current_room_id, profession_id, "
+    "experience_points, level, stats, inventory, status_effects, "
+    "created_at, last_active, is_admin"
+)
+
+# Profession table columns for explicit SELECT queries
+PROFESSION_COLUMNS = "id, name, description, flavor_text, is_available"
 
 
 # --- Custom Exceptions ---
@@ -109,21 +121,101 @@ def reset_persistence():
 # --- PersistenceLayer Class ---
 class PersistenceLayer:
     """
+    Synchronous persistence layer using psycopg2 for PostgreSQL operations.
+
     Unified persistence layer for all game data (players, rooms, inventory, etc.).
     Thread-safe, supports hooks, context management, and batch operations.
+
+    DUAL-LAYER PERSISTENCE ARCHITECTURE:
+
+    This codebase maintains two persistence layers to support both synchronous
+    and asynchronous code paths:
+
+    1. PersistenceLayer (this class):
+       - Synchronous operations using psycopg2
+       - Used by legacy sync code
+       - Thread-safe with locks
+       - Provides async_* wrapper methods that use asyncio.to_thread()
+
+    2. AsyncPersistenceLayer (server/async_persistence.py):
+       - Asynchronous operations using asyncpg
+       - Used by new async code
+       - Non-blocking, event-loop friendly
+       - Better performance for async contexts
+
+    MIGRATION STRATEGY:
+
+    Phase 1 (Current): Dual-layer support
+    - Legacy sync code uses PersistenceLayer directly
+    - New async code uses AsyncPersistenceLayer
+    - Async wrappers (async_*) available for gradual migration
+    - Both layers share the same database schema
+
+    Phase 2 (Future): Full async migration
+    - Migrate all sync code to async
+    - Deprecate PersistenceLayer sync methods
+    - Standardize on AsyncPersistenceLayer
+    - Remove async_* wrapper methods
+
+    Timeline: TBD - Migration will be gradual to avoid breaking changes
+
+    USAGE GUIDELINES:
+
+    For Sync Code:
+    - Use PersistenceLayer methods directly
+    - Example: persistence.get_player(player_id)
+    - Thread-safe, can be called from any thread
+
+    For Async Code:
+    - Use AsyncPersistenceLayer for best performance
+    - Example: await async_persistence.get_player_by_id(player_id)
+    - Non-blocking, event-loop friendly
+
+    For Migration:
+    - Use async_* wrapper methods during transition
+    - Example: await persistence.async_get_player(player_id)
+    - Wraps sync method with asyncio.to_thread() - adds overhead
+    - Temporary solution - migrate to AsyncPersistenceLayer when possible
+
+    DEPRECATION WARNING:
+    - Async methods (async_*) in this class delegate to sync methods using asyncio.to_thread()
+    - This prevents event loop blocking but adds overhead
+    - New async code should use AsyncPersistenceLayer directly
+    - Legacy sync code can continue using this class
     """
 
     _hooks: dict[str, list[Callable]] = {}
+
+    # Mapping dictionary for field names to PostgreSQL array literals
+    # SECURITY: This provides an additional safety layer beyond whitelist validation
+    # Each field name maps to its PostgreSQL ARRAY literal, preventing any possibility
+    # of SQL injection even if validation is bypassed
+    FIELD_NAME_TO_ARRAY: dict[str, str] = {
+        "current_health": "ARRAY['current_health']::text[]",
+        "sanity": "ARRAY['sanity']::text[]",
+        "occult_knowledge": "ARRAY['occult_knowledge']::text[]",
+        "fear": "ARRAY['fear']::text[]",
+        "corruption": "ARRAY['corruption']::text[]",
+        "cult_affiliation": "ARRAY['cult_affiliation']::text[]",
+        "strength": "ARRAY['strength']::text[]",
+        "dexterity": "ARRAY['dexterity']::text[]",
+        "constitution": "ARRAY['constitution']::text[]",
+        "intelligence": "ARRAY['intelligence']::text[]",
+        "wisdom": "ARRAY['wisdom']::text[]",
+        "charisma": "ARRAY['charisma']::text[]",
+    }
+    # Note: experience_points is NOT in stats JSONB - it's a separate INTEGER column
 
     def __init__(self, db_path: str | None = None, log_path: str | None = None, event_bus=None):
         # Use environment variable for database path - require it to be set
         if db_path:
             self.db_path = db_path
         elif os.environ.get("DATABASE_URL"):
-            # Derive database path from DATABASE_URL
-            from .database import get_database_path
-
-            self.db_path = str(get_database_path())
+            # Use DATABASE_URL directly (PostgreSQL only)
+            # Type assertion: we've already checked it's not None above
+            database_url = os.environ.get("DATABASE_URL")
+            assert database_url is not None, "DATABASE_URL should not be None here"
+            self.db_path = database_url
         else:
             context = create_error_context()
             context.metadata["operation"] = "persistence_init"
@@ -142,6 +234,16 @@ class PersistenceLayer:
         self._lock = threading.RLock()
         self._logger = self._setup_logger()
         self._event_bus = event_bus
+        # PostgreSQL-only: Verify we have a PostgreSQL URL
+        if self.db_path and not self.db_path.startswith("postgresql"):
+            context = create_error_context()
+            context.metadata["operation"] = "persistence_init"
+            log_and_raise(
+                ValidationError,
+                f"Unsupported database URL: {self.db_path}. Only PostgreSQL is supported.",
+                context=context,
+                user_friendly="Database configuration error - PostgreSQL required",
+            )
         # TODO: Load config for SQL logging verbosity
         self._load_room_cache()
 
@@ -154,12 +256,46 @@ class PersistenceLayer:
     def _log(self, msg: str):
         self._logger.info(msg)
 
-    def _convert_row_to_player_data(self, row: sqlite3.Row) -> dict:
+    @contextmanager
+    def _get_connection(self):
+        """Get a PostgreSQL database connection context manager."""
+        conn = connect_postgres(self.db_path)
+        try:
+            yield conn
+        finally:
+            conn.close()
+
+    def _convert_insert_or_replace(self, query: str, table_name: str, primary_key: str) -> str:
+        """Convert INSERT OR REPLACE to PostgreSQL INSERT ... ON CONFLICT."""
+        # Convert INSERT OR REPLACE to PostgreSQL UPSERT syntax
+        if "INSERT OR REPLACE" in query.upper():
+            # Replace INSERT OR REPLACE with INSERT
+            query = query.replace("INSERT OR REPLACE", "INSERT")
+            # Find the VALUES clause
+            values_idx = query.upper().find("VALUES")
+            if values_idx != -1:
+                # Extract columns from the INSERT statement
+                insert_part = query[:values_idx]
+                values_part = query[values_idx:]
+                # Find column list
+                col_start = insert_part.find("(")
+                col_end = insert_part.find(")", col_start)
+                if col_start != -1 and col_end != -1:
+                    columns_str = insert_part[col_start + 1 : col_end]
+                    columns = [col.strip() for col in columns_str.split(",")]
+                    # Build ON CONFLICT clause
+                    conflict_clause = f" ON CONFLICT ({primary_key}) DO UPDATE SET "
+                    update_parts = [f"{col} = EXCLUDED.{col}" for col in columns if col != primary_key]
+                    conflict_clause += ", ".join(update_parts)
+                    return insert_part + values_part + conflict_clause
+        return query
+
+    def _convert_row_to_player_data(self, row: Any) -> dict:
         """
-        Convert SQLite row data to proper types for Player constructor.
+        Convert database row data to proper types for Player constructor.
 
         Args:
-            row: SQLite Row object from query result
+            row: Database row object from query result (PostgreSQL PostgresRow)
 
         Returns:
             dict: Data with proper types for Player constructor
@@ -184,6 +320,33 @@ class PersistenceLayer:
         # Convert is_admin from integer to boolean
         if "is_admin" in data:
             data["is_admin"] = bool(data["is_admin"])
+
+        # Handle stats: JSONB column may return as dict (psycopg2) or string
+        # Player model's get_stats() handles both, but we ensure dict for consistency
+        if "stats" in data:
+            stats_value = data["stats"]
+            if isinstance(stats_value, str):
+                # JSONB returned as string - parse to dict
+                try:
+                    data["stats"] = json.loads(stats_value)
+                except (json.JSONDecodeError, TypeError):
+                    # Invalid JSON - use default stats
+                    data["stats"] = {
+                        "strength": 10,
+                        "dexterity": 10,
+                        "constitution": 10,
+                        "intelligence": 10,
+                        "wisdom": 10,
+                        "charisma": 10,
+                        "sanity": 100,
+                        "occult_knowledge": 0,
+                        "fear": 0,
+                        "corruption": 0,
+                        "cult_affiliation": 0,
+                        "current_health": 100,
+                        "position": "standing",
+                    }
+            # If it's already a dict, keep it as-is (psycopg2 may return JSONB as dict)
 
         # Convert datetime strings back to datetime objects if needed
         # (Player model handles this internally, but we could add explicit conversion here)
@@ -246,23 +409,24 @@ class PersistenceLayer:
         player.set_equipped_items(payload["equipped"])
         return inventory_json, equipped_json
 
-    def _ensure_inventory_row(
-        self, conn: sqlite3.Connection, player_id: str, inventory_json: str, equipped_json: str
-    ) -> None:
-        conn.execute(
-            """
+    def _ensure_inventory_row(self, conn: Any, player_id: UUID, inventory_json: str, equipped_json: str) -> None:
+        insert_query = """
             INSERT OR REPLACE INTO player_inventories (player_id, inventory_json, equipped_json)
-            VALUES (?, ?, ?)
-            """,
+            VALUES (%s, %s, %s)
+            """
+        insert_query = self._convert_insert_or_replace(insert_query, "player_inventories", "player_id")
+        # psycopg2 handles UUID objects directly via register_uuid() in postgres_adapter
+        conn.execute(
+            insert_query,
             (player_id, inventory_json, equipped_json),
         )
 
-    def _load_player_inventory(self, conn: sqlite3.Connection, player: Player) -> None:
+    def _load_player_inventory(self, conn: Any, player: Player) -> None:
         cursor = conn.execute(
             """
             SELECT inventory_json, equipped_json
             FROM player_inventories
-            WHERE player_id = ?
+            WHERE player_id = %s::uuid
             """,
             (player.player_id,),
         )
@@ -270,7 +434,9 @@ class PersistenceLayer:
         if row is None:
             default_inventory = "[]"
             default_equipped = "{}"
-            self._ensure_inventory_row(conn, str(player.player_id), default_inventory, default_equipped)
+            # player.player_id is already a string (UUID(as_uuid=False)), convert to UUID for method call
+            player_id_uuid = UUID(str(player.player_id))
+            self._ensure_inventory_row(conn, player_id_uuid, default_inventory, default_equipped)
             inventory_json = default_inventory
             equipped_json = default_equipped
         else:
@@ -285,12 +451,14 @@ class PersistenceLayer:
         except (TypeError, json.JSONDecodeError) as exc:
             logger.error(
                 "Stored inventory payload failed to deserialize",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 error=str(exc),
             )
             context = create_error_context()
             context.metadata["operation"] = "load_player_inventory"
-            context.metadata["player_id"] = str(player.player_id)
+            # Structlog handles UUID objects automatically, no need to convert to string
+            context.metadata["player_id"] = player.player_id
             log_and_raise(
                 DatabaseError,
                 "Failed to deserialize stored inventory payload",
@@ -309,12 +477,14 @@ class PersistenceLayer:
         except InventorySchemaValidationError as exc:
             logger.error(
                 "Stored inventory payload failed validation",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 error=str(exc),
             )
             context = create_error_context()
             context.metadata["operation"] = "load_player_inventory"
-            context.metadata["player_id"] = str(player.player_id)
+            # Structlog handles UUID objects automatically, no need to convert to string
+            context.metadata["player_id"] = player.player_id
             log_and_raise(
                 DatabaseError,
                 "Invalid inventory payload detected in storage",
@@ -329,34 +499,228 @@ class PersistenceLayer:
         player.set_equipped_items(validated_payload["equipped"])
 
     # --- Room Cache (Loaded at Startup) ---
-    def _load_room_cache(self):
-        """Load rooms from JSON files using world_loader and convert to Room objects."""
+    def _load_room_cache(self) -> None:
+        """Load rooms from PostgreSQL database and convert to Room objects."""
         self._room_cache = {}
-        self._room_mappings = {}
+        self._room_mappings: dict[str, str] = {}
         try:
-            # Use the world_loader to load the full world data including room mappings
-            from .world_loader import load_hierarchical_world
+            from .world_loader import generate_room_id
 
-            world_data = load_hierarchical_world()
-            room_data = world_data["rooms"]
-            self._room_mappings = world_data["room_mappings"]
+            with self._get_connection() as conn:
+                # Query rooms with zone/subzone hierarchy
+                query = """
+                    SELECT
+                        r.id as room_uuid,
+                        r.stable_id,
+                        r.name,
+                        r.description,
+                        r.attributes,
+                        sz.stable_id as subzone_stable_id,
+                        z.stable_id as zone_stable_id,
+                        -- Extract plane from zone stable_id (format: 'plane/zone')
+                        SPLIT_PART(z.stable_id, '/', 1) as plane,
+                        SPLIT_PART(z.stable_id, '/', 2) as zone
+                    FROM rooms r
+                    JOIN subzones sz ON r.subzone_id = sz.id
+                    JOIN zones z ON sz.zone_id = z.id
+                    ORDER BY z.stable_id, sz.stable_id, r.stable_id
+                """
+                cursor = conn.execute(query)
+                rooms_rows = cursor.fetchall()
 
-            # Convert dictionary data to Room objects
-            for room_id, room_data_dict in room_data.items():
-                self._room_cache[room_id] = Room(room_data_dict, self._event_bus)
+                # Query room links (exits) for all rooms
+                # Include both source and destination room zone/subzone info
+                exits_query = """
+                    SELECT
+                        r.stable_id as from_room_stable_id,
+                        r2.stable_id as to_room_stable_id,
+                        rl.direction,
+                        sz.stable_id as from_subzone_stable_id,
+                        z.stable_id as from_zone_stable_id,
+                        sz2.stable_id as to_subzone_stable_id,
+                        z2.stable_id as to_zone_stable_id
+                    FROM room_links rl
+                    JOIN rooms r ON rl.from_room_id = r.id
+                    JOIN rooms r2 ON rl.to_room_id = r2.id
+                    JOIN subzones sz ON r.subzone_id = sz.id
+                    JOIN zones z ON sz.zone_id = z.id
+                    JOIN subzones sz2 ON r2.subzone_id = sz2.id
+                    JOIN zones z2 ON sz2.zone_id = z2.id
+                """
+                cursor = conn.execute(exits_query)
+                exits_rows = cursor.fetchall()
 
-            self._log(f"Loaded {len(self._room_cache)} rooms into cache from JSON files.")
-            self._log(f"Loaded {len(self._room_mappings)} room mappings for backward compatibility.")
+                # Process rooms and build room data list
+                room_data_list = []
+
+                for row in rooms_rows:
+                    stable_id = row[1]
+                    name = row[2]
+                    description = row[3]
+                    attributes = row[4] if row[4] else {}
+                    subzone_stable_id = row[5]
+                    zone_stable_id = row[6]
+
+                    # Generate hierarchical room ID
+                    zone_parts = zone_stable_id.split("/")
+                    plane_name = zone_parts[0] if len(zone_parts) > 0 else ""
+                    zone_name = zone_parts[1] if len(zone_parts) > 1 else zone_stable_id
+
+                    # Check if stable_id already contains the full hierarchical path
+                    # Expected format: plane_zone_subzone_room_xxx or plane_zone_subzone_intersection_xxx
+                    # If stable_id already starts with plane_zone_subzone, it's a full room ID
+                    expected_prefix = f"{plane_name}_{zone_name}_{subzone_stable_id}_"
+                    if stable_id.startswith(expected_prefix):
+                        # stable_id is already a full hierarchical room ID, use it directly
+                        room_id = stable_id
+                    else:
+                        # stable_id is just the room identifier (e.g., "room_boundary_st_001"), generate full ID
+                        room_id = generate_room_id(plane_name, zone_name, subzone_stable_id, stable_id)
+
+                    # Store room data for processing
+                    room_data_list.append(
+                        {
+                            "room_id": room_id,
+                            "stable_id": stable_id,
+                            "name": name,
+                            "description": description,
+                            "attributes": attributes,
+                            "plane": plane_name,
+                            "zone": zone_name,
+                            "sub_zone": subzone_stable_id,
+                        }
+                    )
+
+                # Build exits dictionary keyed by room_id (not stable_id)
+                exits_by_room: dict[str, dict[str, str]] = {}
+                exit_count = 0
+                for row in exits_rows:
+                    from_stable_id = row[0]
+                    to_stable_id = row[1]
+                    direction = row[2]
+                    from_subzone = row[3]
+                    from_zone = row[4]
+                    to_subzone = row[5]
+                    to_zone = row[6]
+
+                    # Generate hierarchical room IDs for both source and destination
+                    from_zone_parts = from_zone.split("/")
+                    from_plane = from_zone_parts[0] if len(from_zone_parts) > 0 else ""
+                    from_zone_name = from_zone_parts[1] if len(from_zone_parts) > 1 else from_zone
+
+                    to_zone_parts = to_zone.split("/")
+                    to_plane = to_zone_parts[0] if len(to_zone_parts) > 0 else ""
+                    to_zone_name = to_zone_parts[1] if len(to_zone_parts) > 1 else to_zone
+
+                    # Check if stable_id already contains the full hierarchical path
+                    # Expected format: plane_zone_subzone_room_xxx or plane_zone_subzone_intersection_xxx
+                    # If stable_id already starts with plane_zone_subzone, it's a full room ID
+                    from_expected_prefix = f"{from_plane}_{from_zone_name}_{from_subzone}_"
+                    if from_stable_id.startswith(from_expected_prefix):
+                        # stable_id is already a full hierarchical room ID, use it directly
+                        from_room_id = from_stable_id
+                    else:
+                        # stable_id is just the room identifier, generate full ID
+                        from_room_id = generate_room_id(from_plane, from_zone_name, from_subzone, from_stable_id)
+
+                    to_expected_prefix = f"{to_plane}_{to_zone_name}_{to_subzone}_"
+                    if to_stable_id.startswith(to_expected_prefix):
+                        # stable_id is already a full hierarchical room ID, use it directly
+                        to_room_id = to_stable_id
+                    else:
+                        # stable_id is just the room identifier, generate full ID
+                        to_room_id = generate_room_id(to_plane, to_zone_name, to_subzone, to_stable_id)
+
+                    # Debug logging for sanitarium exits
+                    if from_room_id in (
+                        "earth_arkhamcity_sanitarium_room_foyer_001",
+                        "earth_arkhamcity_sanitarium_room_foyer_entrance_001",
+                    ) or to_room_id in (
+                        "earth_arkhamcity_sanitarium_room_foyer_001",
+                        "earth_arkhamcity_sanitarium_room_foyer_entrance_001",
+                    ):
+                        self._logger.info(
+                            "DEBUG: Building sanitarium exit",
+                            direction=direction,
+                            from_stable_id=from_stable_id,
+                            from_room_id=from_room_id,
+                            to_stable_id=to_stable_id,
+                            to_room_id=to_room_id,
+                            from_zone=from_zone,
+                            from_subzone=from_subzone,
+                            to_zone=to_zone,
+                            to_subzone=to_subzone,
+                        )
+
+                    if from_room_id not in exits_by_room:
+                        exits_by_room[from_room_id] = {}
+
+                    exits_by_room[from_room_id][direction] = to_room_id
+                    exit_count += 1
+
+                # Convert database rows to Room objects
+                for room_data_item in room_data_list:
+                    room_id = room_data_item["room_id"]
+                    name = room_data_item["name"]
+                    description = room_data_item["description"]
+                    attributes = room_data_item["attributes"]
+                    plane_name = room_data_item["plane"]
+                    zone_name = room_data_item["zone"]
+                    subzone_stable_id = room_data_item["sub_zone"]
+
+                    # Get exits for this room (already resolved to full room IDs)
+                    exits = exits_by_room.get(room_id, {})
+
+                    # Debug: Log exits for specific rooms to verify loading
+                    if room_id in (
+                        "earth_arkhamcity_sanitarium_room_foyer_001",
+                        "earth_arkhamcity_sanitarium_room_foyer_entrance_001",
+                    ):
+                        self._logger.info(
+                            "DEBUG: Loading sanitarium room with exits",
+                            room_id=room_id,
+                            room_name=name,
+                            exits=exits,
+                            exits_count=len(exits),
+                            exits_by_room_keys=list(exits_by_room.keys())[:10],
+                        )
+
+                    # Build room data dictionary matching Room class expectations
+                    room_data = {
+                        "id": room_id,
+                        "name": name,
+                        "description": description,
+                        "plane": plane_name,
+                        "zone": zone_name,
+                        "sub_zone": subzone_stable_id,
+                        "resolved_environment": attributes.get("environment", "outdoors")
+                        if isinstance(attributes, dict)
+                        else "outdoors",
+                        "exits": exits,
+                    }
+
+                    self._room_cache[room_id] = Room(room_data, self._event_bus)
+
+            self._logger.info(
+                "Loaded rooms into cache from PostgreSQL database",
+                room_count=len(self._room_cache),
+                mapping_count=len(self._room_mappings),
+                exit_count=exit_count,
+                exits_by_room_count=len(exits_by_room),
+            )
+            # Debug: Log sample room IDs for troubleshooting
+            if self._room_cache:
+                sample_room_ids = list(self._room_cache.keys())[:5]
+                self._logger.debug("Sample room IDs loaded", sample_room_ids=sample_room_ids)
         except Exception as e:
             context = create_error_context()
             context.metadata["operation"] = "load_room_cache"
-            context.metadata["rooms_base_path"] = ROOMS_BASE_PATH
             log_and_raise(
                 DatabaseError,
                 f"Room cache load failed: {e}",
                 context=context,
-                details={"rooms_base_path": ROOMS_BASE_PATH, "error": str(e)},
-                user_friendly="Failed to load world data",
+                details={"error": str(e)},
+                user_friendly="Failed to load world data from database",
             )
 
     # --- CRUD for Players ---
@@ -367,9 +731,12 @@ class PersistenceLayer:
         context.metadata["player_name"] = name
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
-                conn.row_factory = sqlite3.Row
-                row = conn.execute("SELECT * FROM players WHERE name = ?", (name,)).fetchone()
+            with self._lock, self._get_connection() as conn:
+                # PostgreSQL uses %s placeholders, not ?
+                # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
+                query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE name = %s"
+                row = conn.execute(query, (name,)).fetchone()
                 if row:
                     player_data = self._convert_row_to_player_data(row)
                     player = Player(**player_data)
@@ -378,7 +745,7 @@ class PersistenceLayer:
                     self._load_player_inventory(conn, player)
                     return player
                 return None
-        except sqlite3.Error as e:
+        except psycopg2.Error as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player by name '{name}': {e}",
@@ -388,18 +755,21 @@ class PersistenceLayer:
             )
             return None  # type: ignore[unreachable]  # Defensive return after NoReturn
 
-    def get_player(self, player_id: str) -> Player | None:
+    def get_player(self, player_id: UUID) -> Player | None:
         """Get a player by ID."""
         context = create_error_context()
         context.metadata["operation"] = "get_player"
+        # Structlog handles UUID objects automatically, no need to convert to string
         context.metadata["player_id"] = player_id
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
-                conn.row_factory = sqlite3.Row
-                # Convert player_id to string to ensure SQLite compatibility
-                player_id_str = str(player_id) if player_id else None
-                row = conn.execute("SELECT * FROM players WHERE player_id = ?", (player_id_str,)).fetchone()
+            with self._lock, self._get_connection() as conn:
+                # PostgreSQL uses %s placeholders, not ?
+                # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
+                # psycopg2 handles UUID objects directly - pass UUID object directly
+                query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE player_id = %s::uuid"
+                row = conn.execute(query, (player_id,)).fetchone()
                 if row:
                     player_data = self._convert_row_to_player_data(row)
                     player = Player(**player_data)
@@ -408,11 +778,12 @@ class PersistenceLayer:
                     self._load_player_inventory(conn, player)
                     return player
                 return None
-        except sqlite3.Error as e:
+        except psycopg2.Error as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player by ID '{player_id}': {e}",
                 context=context,
+                # Structlog handles UUID objects automatically, no need to convert to string
                 details={"player_id": player_id, "error": str(e)},
                 user_friendly="Failed to retrieve player information",
             )
@@ -425,11 +796,13 @@ class PersistenceLayer:
         context.metadata["user_id"] = user_id
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
-                conn.row_factory = sqlite3.Row
-                # Convert user_id to string to ensure SQLite compatibility
+            with self._lock, self._get_connection() as conn:
+                # PostgreSQL uses %s placeholders, not ?
+                # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
                 user_id_str = str(user_id) if user_id else None
-                row = conn.execute("SELECT * FROM players WHERE user_id = ?", (user_id_str,)).fetchone()
+                query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE user_id = %s"
+                row = conn.execute(query, (user_id_str,)).fetchone()
                 if row:
                     player_data = self._convert_row_to_player_data(row)
                     player = Player(**player_data)
@@ -438,7 +811,7 @@ class PersistenceLayer:
                     self._load_player_inventory(conn, player)
                     return player
                 return None
-        except sqlite3.Error as e:
+        except psycopg2.Error as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving player by user ID '{user_id}': {e}",
@@ -453,10 +826,11 @@ class PersistenceLayer:
         context = create_error_context()
         context.metadata["operation"] = "save_player"
         context.metadata["player_name"] = player.name
-        context.metadata["player_id"] = str(player.player_id)
+        # Structlog handles UUID objects automatically, no need to convert to string
+        context.metadata["player_id"] = player.player_id
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
+            with self._lock, self._get_connection() as conn:
                 try:
                     # Handle datetime fields that might be strings
                     created_at = None
@@ -474,8 +848,10 @@ class PersistenceLayer:
                         else:
                             last_active = player.last_active.isoformat()
 
-                    # Convert UUIDs to strings for SQLite compatibility
-                    player_id_str = str(player.player_id) if player.player_id else None
+                    # Convert UUIDs to strings for PostgreSQL storage
+                    # Note: player.player_id is always a string (UUID(as_uuid=False) in model)
+                    # Ensure we always have a string for psycopg2
+                    player_id_str = str(player.player_id) if player.player_id is not None else None
                     user_id_str = str(player.user_id) if player.user_id else None
 
                     if player_id_str is None:
@@ -508,47 +884,81 @@ class PersistenceLayer:
                             user_friendly="Player inventory data is invalid",
                         )
 
-                    conn.execute(
-                        """
+                    # Serialize stats to JSON if it's a dict (JSONB column expects JSON string for psycopg2)
+                    # Note: mypy sees player.stats as Column[Any], but at runtime SQLAlchemy returns the actual value
+                    stats_json = player.stats
+                    if isinstance(stats_json, dict):  # type: ignore[unreachable]
+                        stats_json = json.dumps(stats_json)  # type: ignore[unreachable]
+                    elif stats_json is None:
+                        # Use default stats if None
+                        stats_json = json.dumps(  # type: ignore[unreachable]
+                            {
+                                "strength": 10,
+                                "dexterity": 10,
+                                "constitution": 10,
+                                "intelligence": 10,
+                                "wisdom": 10,
+                                "charisma": 10,
+                                "sanity": 100,
+                                "occult_knowledge": 0,
+                                "fear": 0,
+                                "corruption": 0,
+                                "cult_affiliation": 0,
+                                "current_health": 100,
+                                "position": "standing",
+                            }
+                        )
+
+                    insert_query = """
                         INSERT OR REPLACE INTO players (
                             player_id, user_id, name, stats, inventory, status_effects,
                             current_room_id, experience_points, level, is_admin, profession_id, created_at, last_active
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                        """,
+                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        """
+                    insert_query = self._convert_insert_or_replace(insert_query, "players", "player_id")
+                    # Ensure is_admin is an integer (not boolean) for PostgreSQL
+                    is_admin_int = int(player.is_admin) if player.is_admin is not None else 0
+                    conn.execute(
+                        insert_query,
                         (
                             player_id_str,
                             user_id_str,
                             player.name,
-                            player.stats,
+                            stats_json,
                             inventory_json,
                             player.status_effects,
                             player.current_room_id,
                             player.experience_points,
                             player.level,
-                            player.is_admin,
+                            is_admin_int,
                             player.profession_id,
                             created_at,
                             last_active,
                         ),
                     )
-                    self._ensure_inventory_row(conn, player_id_str, inventory_json, equipped_json)
+                    # Convert player_id_str to UUID for _ensure_inventory_row (which expects UUID)
+                    player_id_uuid = UUID(player_id_str) if player_id_str else None
+                    if player_id_uuid:
+                        self._ensure_inventory_row(conn, player_id_uuid, inventory_json, equipped_json)
                     conn.commit()
                     self._log(f"Saved player {player.name}")
                     self._run_hooks("after_save_player", player)
-                except sqlite3.IntegrityError as e:
+                except psycopg2.IntegrityError as e:
                     log_and_raise(
                         DatabaseError,
                         f"Unique constraint error saving player: {e}",
                         context=context,
-                        details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
+                        # Structlog handles UUID objects automatically, no need to convert to string
+                        details={"player_name": player.name, "player_id": player.player_id, "error": str(e)},
                         user_friendly="Player name already exists",
                     )
-                except sqlite3.Error as e:
+                except psycopg2.Error as e:
                     log_and_raise(
                         DatabaseError,
                         f"Database error saving player: {e}",
                         context=context,
-                        details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
+                        # Structlog handles UUID objects automatically, no need to convert to string
+                        details={"player_name": player.name, "player_id": player.player_id, "error": str(e)},
                         user_friendly="Failed to save player",
                     )
         except OSError as e:
@@ -556,7 +966,8 @@ class PersistenceLayer:
                 DatabaseError,
                 f"File system error saving player: {e}",
                 context=context,
-                details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
+                # Structlog handles UUID objects automatically, no need to convert to string
+                details={"player_name": player.name, "player_id": player.player_id, "error": str(e)},
                 user_friendly="Failed to save player - file system error",
             )
         except Exception as e:
@@ -564,11 +975,12 @@ class PersistenceLayer:
                 DatabaseError,
                 f"Unexpected error saving player: {e}",
                 context=context,
-                details={"player_name": player.name, "player_id": str(player.player_id), "error": str(e)},
+                # Structlog handles UUID objects automatically, no need to convert to string
+                details={"player_name": player.name, "player_id": player.player_id, "error": str(e)},
                 user_friendly="Failed to save player",
             )
 
-    def update_player_last_active(self, player_id: str, last_active: datetime | None = None) -> None:
+    def update_player_last_active(self, player_id: UUID, last_active: datetime | None = None) -> None:
         """
         Update the last_active timestamp for a player.
 
@@ -581,7 +993,7 @@ class PersistenceLayer:
         context.metadata["player_id"] = player_id
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
+            with self._lock, self._get_connection() as conn:
                 try:
                     if last_active is None:
                         last_active = datetime.now(UTC)
@@ -591,14 +1003,14 @@ class PersistenceLayer:
                         last_active = last_active.replace(tzinfo=UTC)
 
                     last_active_iso = last_active.isoformat()
-                    player_id_str = str(player_id) if player_id else None
-
+                    # psycopg2 handles UUID objects directly via register_uuid() in postgres_adapter
+                    # Pass UUID object directly - psycopg2 will handle the conversion
                     conn.execute(
-                        "UPDATE players SET last_active = ? WHERE player_id = ? OR name = ?",
-                        (last_active_iso, player_id_str, player_id),
+                        "UPDATE players SET last_active = %s WHERE player_id = %s::uuid",
+                        (last_active_iso, player_id),
                     )
                     conn.commit()
-                except sqlite3.Error as e:
+                except Exception as e:
                     log_and_raise(
                         DatabaseError,
                         f"Database error updating last_active for player '{player_id}': {e}",
@@ -629,9 +1041,11 @@ class PersistenceLayer:
         context.metadata["operation"] = "list_players"
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
-                conn.row_factory = sqlite3.Row
-                rows = conn.execute("SELECT * FROM players").fetchall()
+            with self._lock, self._get_connection() as conn:
+                # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
+                query = f"SELECT {PLAYER_COLUMNS} FROM players"
+                rows = conn.execute(query).fetchall()
                 players = []
                 for row in rows:
                     player_data = self._convert_row_to_player_data(row)
@@ -641,7 +1055,7 @@ class PersistenceLayer:
                     self._load_player_inventory(conn, player)
                     players.append(player)
                 return players
-        except sqlite3.Error as e:
+        except psycopg2.Error as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error listing players: {e}",
@@ -658,9 +1072,13 @@ class PersistenceLayer:
         context.metadata["room_id"] = room_id
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
-                conn.row_factory = sqlite3.Row
-                rows = conn.execute("SELECT * FROM players WHERE current_room_id = ?", (room_id,)).fetchall()
+            with self._lock, self._get_connection() as conn:
+                # PostgreSQL uses %s placeholders, not ?
+                # Get all players in a room for message broadcasting. Uses index on current_room_id.
+                # NOTE: PLAYER_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
+                query = f"SELECT {PLAYER_COLUMNS} FROM players WHERE current_room_id = %s"
+                rows = conn.execute(query, (room_id,)).fetchall()
                 players = []
                 for row in rows:
                     player_data = self._convert_row_to_player_data(row)
@@ -670,7 +1088,7 @@ class PersistenceLayer:
                     self._load_player_inventory(conn, player)
                     players.append(player)
                 return players
-        except sqlite3.Error as e:
+        except psycopg2.Error as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving players in room '{room_id}': {e}",
@@ -687,7 +1105,7 @@ class PersistenceLayer:
         context.metadata["player_count"] = len(players)
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
+            with self._lock, self._get_connection() as conn:
                 try:
                     for player in players:
                         # Handle datetime fields that might be strings
@@ -706,22 +1124,49 @@ class PersistenceLayer:
                             else:
                                 last_active = player.last_active.isoformat()
 
-                        # Convert UUIDs to strings for SQLite compatibility
+                        # Convert UUIDs to strings for PostgreSQL (VARCHAR storage)
                         player_id_str = str(player.player_id) if player.player_id else None
                         user_id_str = str(player.user_id) if player.user_id else None
 
-                        conn.execute(
-                            """
+                        # Serialize stats to JSON if it's a dict (JSONB column expects JSON string for psycopg2)
+                        # Note: mypy sees player.stats as Column[Any], but at runtime SQLAlchemy returns the actual value
+                        stats_json = player.stats
+                        if isinstance(stats_json, dict):  # type: ignore[unreachable]
+                            stats_json = json.dumps(stats_json)  # type: ignore[unreachable]
+                        elif stats_json is None:
+                            # Use default stats if None
+                            stats_json = json.dumps(  # type: ignore[unreachable]
+                                {
+                                    "strength": 10,
+                                    "dexterity": 10,
+                                    "constitution": 10,
+                                    "intelligence": 10,
+                                    "wisdom": 10,
+                                    "charisma": 10,
+                                    "sanity": 100,
+                                    "occult_knowledge": 0,
+                                    "fear": 0,
+                                    "corruption": 0,
+                                    "cult_affiliation": 0,
+                                    "current_health": 100,
+                                    "position": "standing",
+                                }
+                            )
+
+                        insert_query = """
                             INSERT OR REPLACE INTO players (
                                 player_id, user_id, name, stats, inventory, status_effects,
                                 current_room_id, experience_points, level, is_admin, profession_id, created_at, last_active
-                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                            """,
+                            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                            """
+                        insert_query = self._convert_insert_or_replace(insert_query, "players", "player_id")
+                        conn.execute(
+                            insert_query,
                             (
                                 player_id_str,
                                 user_id_str,
                                 player.name,
-                                player.stats,
+                                stats_json,
                                 player.inventory,
                                 player.status_effects,
                                 player.current_room_id,
@@ -736,7 +1181,7 @@ class PersistenceLayer:
                     conn.commit()
                     self._log(f"Batch saved {len(players)} players.")
                     self._run_hooks("after_save_players", players)
-                except sqlite3.IntegrityError as e:
+                except psycopg2.IntegrityError as e:
                     log_and_raise(
                         DatabaseError,
                         f"Batch unique constraint error: {e}",
@@ -744,7 +1189,7 @@ class PersistenceLayer:
                         details={"player_count": len(players), "error": str(e)},
                         user_friendly="Failed to save players - duplicate data",
                     )
-                except sqlite3.Error as e:
+                except psycopg2.Error as e:
                     log_and_raise(
                         DatabaseError,
                         f"Database error in batch save: {e}",
@@ -761,7 +1206,7 @@ class PersistenceLayer:
                 user_friendly="Failed to save players",
             )
 
-    def delete_player(self, player_id: str) -> bool:
+    def delete_player(self, player_id: UUID) -> bool:
         """
         Delete a player from the database.
 
@@ -774,16 +1219,18 @@ class PersistenceLayer:
         Raises:
             PersistenceError: If deletion fails due to database constraints or errors
         """
-        with self._lock, sqlite3.connect(self.db_path) as conn:
+        with self._lock, self._get_connection() as conn:
             try:
                 # First check if player exists
-                cursor = conn.execute("SELECT player_id FROM players WHERE player_id = ?", (player_id,))
+                # PostgreSQL uses %s placeholders, not ?
+                # psycopg2 handles UUID objects directly - pass UUID object directly
+                cursor = conn.execute("SELECT player_id FROM players WHERE player_id = %s::uuid", (player_id,))
                 if not cursor.fetchone():
                     self._log("Delete attempted for non-existent player")
                     return False
 
                 # Delete the player (foreign key constraints will handle related data)
-                cursor = conn.execute("DELETE FROM players WHERE player_id = ?", (player_id,))
+                cursor = conn.execute("DELETE FROM players WHERE player_id = %s::uuid", (player_id,))
                 conn.commit()
 
                 if cursor.rowcount > 0:
@@ -794,7 +1241,7 @@ class PersistenceLayer:
                     self._log("No rows affected when deleting player")
                     return False
 
-            except sqlite3.Error as e:
+            except Exception as e:
                 context = create_error_context()
                 context.metadata["operation"] = "delete_player"
                 context.metadata["player_id"] = player_id
@@ -814,9 +1261,11 @@ class PersistenceLayer:
         context.metadata["operation"] = "get_all_professions"
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
-                conn.row_factory = sqlite3.Row
-                rows = conn.execute("SELECT * FROM professions WHERE is_available = 1 ORDER BY id").fetchall()
+            with self._lock, self._get_connection() as conn:
+                # NOTE: PROFESSION_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
+                query = f"SELECT {PROFESSION_COLUMNS} FROM professions WHERE is_available = true ORDER BY id"
+                rows = conn.execute(query).fetchall()
 
                 professions = []
                 for row in rows:
@@ -828,7 +1277,7 @@ class PersistenceLayer:
                     professions.append(profession)
 
                 return professions
-        except sqlite3.Error as e:
+        except psycopg2.Error as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving professions: {e}",
@@ -845,9 +1294,12 @@ class PersistenceLayer:
         context.metadata["profession_id"] = profession_id
 
         try:
-            with self._lock, sqlite3.connect(self.db_path) as conn:
-                conn.row_factory = sqlite3.Row
-                row = conn.execute("SELECT * FROM professions WHERE id = ?", (profession_id,)).fetchone()
+            with self._lock, self._get_connection() as conn:
+                # PostgreSQL uses %s placeholders, not ?
+                # NOTE: PROFESSION_COLUMNS is a compile-time constant, so f-string is safe
+                # Future: Migrate to SQLAlchemy ORM for better query construction
+                query = f"SELECT {PROFESSION_COLUMNS} FROM professions WHERE id = %s"
+                row = conn.execute(query, (profession_id,)).fetchone()
 
                 if row:
                     profession_data = dict(row)
@@ -857,7 +1309,7 @@ class PersistenceLayer:
                     profession = Profession(**profession_data)
                     return profession
                 return None
-        except sqlite3.Error as e:
+        except psycopg2.Error as e:
             log_and_raise(
                 DatabaseError,
                 f"Database error retrieving profession {profession_id}: {e}",
@@ -883,6 +1335,22 @@ class PersistenceLayer:
             # Sync the room's player state with the database
             self._sync_room_players(room)
             return room
+
+        # Debug logging for missing rooms (only log once per room to avoid spam)
+        if not hasattr(self, "_missing_room_warnings"):
+            self._missing_room_warnings: set[str] = set()
+        if room_id not in self._missing_room_warnings:
+            self._missing_room_warnings.add(room_id)
+            # Log available room IDs that are similar (for debugging)
+            similar_rooms = [
+                rid for rid in self._room_cache.keys() if room_id.split("_")[-1] in rid or rid.split("_")[-1] in room_id
+            ][:5]
+            self._logger.warning(
+                "Room not found in cache",
+                requested_room_id=room_id,
+                cache_size=len(self._room_cache),
+                similar_rooms=similar_rooms,
+            )
 
         return None
 
@@ -988,11 +1456,14 @@ class PersistenceLayer:
 
             # CRITICAL: Use atomic field update instead of save_player()
             # This prevents race conditions with other systems updating the same player
-            self.update_player_health(str(player.player_id), -amount, f"damage:{damage_type}")
+            # player.player_id is already a string (UUID(as_uuid=False)), convert to UUID for method call
+            player_id_uuid = UUID(str(player.player_id))
+            self.update_player_health(player_id_uuid, -amount, f"damage:{damage_type}")
 
             self._logger.info(
                 "Player health reduced atomically",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 player_name=player.name,
                 damage=amount,
                 old_health=current_health,
@@ -1002,7 +1473,8 @@ class PersistenceLayer:
         except ValueError as e:
             self._logger.error(
                 "Invalid damage amount",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 amount=amount,
                 error=str(e),
                 exc_info=True,
@@ -1011,7 +1483,8 @@ class PersistenceLayer:
         except Exception as e:
             self._logger.critical(
                 "CRITICAL: Failed to persist player damage",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 player_name=player.name,
                 amount=amount,
                 damage_type=damage_type,
@@ -1054,11 +1527,14 @@ class PersistenceLayer:
             player.set_stats(stats)
 
             # CRITICAL: Use atomic field update instead of save_player()
-            self.update_player_health(str(player.player_id), amount, "healing")
+            # player.player_id is already a string (UUID(as_uuid=False)), convert to UUID for method call
+            player_id_uuid = UUID(str(player.player_id))
+            self.update_player_health(player_id_uuid, amount, "healing")
 
             self._logger.info(
                 "Player health increased atomically",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 player_name=player.name,
                 healing=amount,
                 old_health=current_health,
@@ -1067,7 +1543,8 @@ class PersistenceLayer:
         except ValueError as e:
             self._logger.error(
                 "Invalid healing amount",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 amount=amount,
                 error=str(e),
                 exc_info=True,
@@ -1076,7 +1553,8 @@ class PersistenceLayer:
         except Exception as e:
             self._logger.critical(
                 "CRITICAL: Failed to persist player healing",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 player_name=player.name,
                 amount=amount,
                 error=str(e),
@@ -1097,14 +1575,14 @@ class PersistenceLayer:
             damage_type: Type of damage
 
         Note:
-            Currently delegates to synchronous method since SQLite operations
-            are blocking. Future enhancement: use asyncio.to_thread() for
-            true async when migrating to PostgreSQL or other async databases.
+            Uses asyncio.to_thread() to run blocking synchronous operations in a thread pool,
+            preventing event loop blocking. The underlying persistence layer uses PostgreSQL
+            via psycopg2 (synchronous driver). For true async operations, use the
+            async_persistence layer methods instead.
         """
-        # Since the underlying operations are synchronous (SQLite),
-        # we call the sync version directly
-        # Future: Could use asyncio.to_thread(self.damage_player, player, amount, damage_type)
-        self.damage_player(player, amount, damage_type)
+        # Use asyncio.to_thread() to run blocking operations in thread pool
+        # This prevents blocking the event loop during database operations
+        await asyncio.to_thread(self.damage_player, player, amount, damage_type)
 
     async def async_heal_player(self, player: Player, amount: int) -> None:
         """
@@ -1117,14 +1595,17 @@ class PersistenceLayer:
             amount: Amount of healing to apply
 
         Note:
-            Currently delegates to synchronous method since SQLite operations
-            are blocking. Future enhancement: use asyncio.to_thread() for
-            true async when migrating to PostgreSQL or other async databases.
+            Uses asyncio.to_thread() to run blocking synchronous operations in a thread pool,
+            preventing event loop blocking. The underlying persistence layer uses PostgreSQL
+            via psycopg2 (synchronous driver). For true async operations, use the
+            async_persistence layer methods instead.
+
+        DEPRECATION: This async wrapper exists for backward compatibility. New async code
+        should use AsyncPersistenceLayer directly for better performance.
         """
-        # Since the underlying operations are synchronous (SQLite),
-        # we call the sync version directly
-        # Future: Could use asyncio.to_thread(self.heal_player, player, amount)
-        self.heal_player(player, amount)
+        # Use asyncio.to_thread() to run blocking operations in thread pool
+        # This prevents blocking the event loop during database operations
+        await asyncio.to_thread(self.heal_player, player, amount)
 
     def gain_experience(self, player: Player, amount: int, source: str = "unknown") -> None:
         """
@@ -1161,11 +1642,14 @@ class PersistenceLayer:
 
             # CRITICAL: Use atomic field update instead of save_player()
             # This prevents overwriting health or other fields with stale cached values
-            self.update_player_xp(str(player.player_id), amount, source)
+            # player.player_id is already a string (UUID(as_uuid=False)), convert to UUID for method call
+            player_id_uuid = UUID(str(player.player_id))
+            self.update_player_xp(player_id_uuid, amount, source)
 
             self._logger.info(
                 "Player experience increased atomically",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 player_name=player.name,
                 xp_gained=amount,
                 old_xp=old_xp,
@@ -1176,7 +1660,8 @@ class PersistenceLayer:
         except ValueError as e:
             self._logger.error(
                 "Invalid experience amount",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 amount=amount,
                 error=str(e),
                 exc_info=True,
@@ -1185,7 +1670,8 @@ class PersistenceLayer:
         except Exception as e:
             self._logger.critical(
                 "CRITICAL: Failed to persist player experience gain",
-                player_id=str(player.player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player.player_id,
                 player_name=player.name,
                 amount=amount,
                 source=source,
@@ -1205,18 +1691,19 @@ class PersistenceLayer:
             source: Source of the XP for logging purposes
 
         Note:
-            Currently delegates to synchronous method since SQLite operations
-            are blocking. Future enhancement: use asyncio.to_thread() for
-            true async when migrating to PostgreSQL or other async databases.
-        """
-        # Since the underlying operations are synchronous (SQLite),
-        # we call the sync version directly
-        # Future: Could use asyncio.to_thread(self.gain_experience, player, amount, source)
-        self.gain_experience(player, amount, source)
+            Uses asyncio.to_thread() to run blocking synchronous operations in a thread pool,
+            preventing event loop blocking. The underlying persistence layer uses PostgreSQL
+            via psycopg2 (synchronous driver). For true async operations, use the
+            async_persistence layer methods instead.
 
-    def update_player_stat_field(
-        self, player_id: str | UUID, field_name: str, delta: int | float, reason: str = ""
-    ) -> None:
+        DEPRECATION: This async wrapper exists for backward compatibility. New async code
+        should use AsyncPersistenceLayer directly for better performance.
+        """
+        # Use asyncio.to_thread() to run blocking operations in thread pool
+        # This prevents blocking the event loop during database operations
+        await asyncio.to_thread(self.gain_experience, player, amount, source)
+
+    def update_player_stat_field(self, player_id: UUID, field_name: str, delta: int | float, reason: str = "") -> None:
         """
         Update a specific numeric field in player stats using atomic database operation.
 
@@ -1227,7 +1714,7 @@ class PersistenceLayer:
         the same player simultaneously (e.g., combat damage + XP awards).
 
         Args:
-            player_id: Player's unique ID (string or UUID)
+            player_id: Player's unique ID (UUID)
             field_name: Name of the stat field to update (e.g., "current_health", "experience_points")
             delta: Amount to add (positive) or subtract (negative) from the field
             reason: Reason for the update (for logging)
@@ -1244,51 +1731,57 @@ class PersistenceLayer:
             persistence.update_player_stat_field(player_id, "experience_points", 100, "killed_npc")
 
         Note:
-            Uses SQLite's json_set() function for atomic field updates.
+            Uses PostgreSQL's jsonb_set() function for atomic field updates.
             Invalidates player cache to ensure fresh data on next get_player().
         """
         try:
-            # Convert UUID to string if needed
-            player_id_str = str(player_id)
+            # psycopg2 handles UUID objects directly via register_uuid() in postgres_adapter
+            # Structlog handles UUID objects automatically, no need to convert to string
+
+            # Validate delta type (security: prevent SQL injection via type confusion)
+            if not isinstance(delta, (int, float)):
+                raise TypeError(f"delta must be int or float, got {type(delta).__name__}")
 
             # Validate field name (whitelist approach for security)
-            allowed_fields = {
-                "current_health",
-                "experience_points",
-                "sanity",
-                "occult_knowledge",
-                "fear",
-                "corruption",
-                "cult_affiliation",
-                "strength",
-                "dexterity",
-                "constitution",
-                "intelligence",
-                "wisdom",
-                "charisma",
-            }
-            if field_name not in allowed_fields:
+            # Use the mapping dictionary as the source of truth for allowed fields
+            if field_name not in self.FIELD_NAME_TO_ARRAY:
+                allowed_fields = set(self.FIELD_NAME_TO_ARRAY.keys())
                 raise ValueError(f"Invalid stat field name: {field_name}. Must be one of {allowed_fields}")
 
-            # Execute atomic field update using SQLite json_set()
+            # Get the PostgreSQL array literal from the mapping dictionary
+            # SECURITY: This provides defense in depth - even if validation is bypassed,
+            # the field name cannot be injected into SQL since we use a pre-defined mapping
+            array_literal = self.FIELD_NAME_TO_ARRAY[field_name]
+
+            # Execute atomic field update using PostgreSQL jsonb_set()
             # AI Agent: This prevents race conditions by updating ONLY this field
             # without loading/saving the entire player object which might have stale data
-            with self._lock, sqlite3.connect(self.db_path) as conn:
+            # SECURITY NOTE: field_name is validated against FIELD_NAME_TO_ARRAY dictionary
+            # and the array literal is retrieved from the mapping, providing multiple layers
+            # of protection against SQL injection. The value access (stats->>%s) is still
+            # parameterized for additional defense in depth.
+            with self._lock, self._get_connection() as conn:
+                # PostgreSQL JSONB path format: array of path elements
+                # jsonb_set() requires path as text array, which we get from the mapping dictionary
+                # After migration 006, stats is JSONB, so no casting needed
+                # Use COALESCE to handle null stats and default to 0 for missing fields
                 cursor = conn.execute(
                     f"""
                     UPDATE players
-                    SET stats = json_set(
-                        stats,
-                        '$.{field_name}',
-                        CAST(json_extract(stats, '$.{field_name}') + ? AS INTEGER)
+                    SET stats = jsonb_set(
+                        COALESCE(stats, '{{}}'::jsonb),
+                        {array_literal},
+                        to_jsonb((COALESCE(stats->>%s, '0'))::numeric + %s),
+                        true
                     )
-                    WHERE player_id = ?
+                    WHERE player_id = %s::uuid
                     """,
-                    (delta, player_id_str),
+                    (field_name, delta, player_id),
                 )
 
                 if cursor.rowcount == 0:
-                    raise ValueError(f"Player {player_id_str} not found")
+                    # Structlog handles UUID objects automatically, no need to convert to string
+                    raise ValueError(f"Player {player_id} not found")
 
                 conn.commit()
 
@@ -1297,7 +1790,8 @@ class PersistenceLayer:
 
             self._logger.info(
                 "Player stat field updated atomically",
-                player_id=player_id_str,
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player_id,
                 field_name=field_name,
                 delta=delta,
                 reason=reason,
@@ -1306,7 +1800,8 @@ class PersistenceLayer:
         except ValueError as e:
             self._logger.error(
                 "Invalid stat field update",
-                player_id=str(player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player_id,
                 field_name=field_name,
                 delta=delta,
                 error=str(e),
@@ -1316,7 +1811,8 @@ class PersistenceLayer:
         except Exception as e:
             self._logger.critical(
                 "CRITICAL: Failed to update player stat field",
-                player_id=str(player_id),
+                # Structlog handles UUID objects automatically, no need to convert to string
+                player_id=player_id,
                 field_name=field_name,
                 delta=delta,
                 reason=reason,
@@ -1326,7 +1822,7 @@ class PersistenceLayer:
             )
             raise
 
-    def update_player_health(self, player_id: str | UUID, delta: int, reason: str = "") -> None:
+    def update_player_health(self, player_id: UUID, delta: int, reason: str = "") -> None:
         """
         Update player health using atomic database operation.
 
@@ -1347,7 +1843,7 @@ class PersistenceLayer:
         """
         self.update_player_stat_field(player_id, "current_health", delta, reason)
 
-    def update_player_xp(self, player_id: str | UUID, delta: int, reason: str = "") -> None:
+    def update_player_xp(self, player_id: UUID, delta: int, reason: str = "") -> None:
         """
         Update player experience points using atomic database operation.
 
@@ -1364,7 +1860,48 @@ class PersistenceLayer:
         """
         if delta < 0:
             raise ValueError(f"XP delta must be non-negative, got {delta}")
-        self.update_player_stat_field(player_id, "experience_points", delta, reason)
+
+        # experience_points is a separate INTEGER column, not in stats JSONB
+        # Use atomic UPDATE to prevent race conditions
+        context = create_error_context()
+        context.metadata["operation"] = "update_player_xp"
+        # Structlog handles UUID objects automatically, no need to convert to string
+        context.metadata["player_id"] = player_id
+
+        try:
+            with self._lock, self._get_connection() as conn:
+                # psycopg2 handles UUID objects directly via register_uuid() in postgres_adapter
+                cursor = conn.execute(
+                    """
+                    UPDATE players
+                    SET experience_points = experience_points + %s
+                    WHERE player_id = %s::uuid
+                    """,
+                    (delta, player_id),
+                )
+
+                if cursor.rowcount == 0:
+                    # Structlog handles UUID objects automatically, no need to convert to string
+                    raise ValueError(f"Player {player_id} not found")
+
+                conn.commit()
+
+                self._logger.info(
+                    "Player XP updated atomically",
+                    # Structlog handles UUID objects automatically, no need to convert to string
+                    player_id=player_id,
+                    delta=delta,
+                    reason=reason,
+                )
+        except psycopg2.Error as e:
+            log_and_raise(
+                DatabaseError,
+                f"Database error updating XP for player '{player_id}': {e}",
+                context=context,
+                # Structlog handles UUID objects automatically, no need to convert to string
+                details={"player_id": player_id, "delta": delta, "error": str(e)},
+                user_friendly="Failed to update experience points",
+            )
 
     # --- TODO: Inventory, status effects, etc. ---
     # def get_inventory(self, ...): ...
@@ -1422,7 +1959,7 @@ class PersistenceLayer:
         async_persistence = get_async_persistence()
         return await async_persistence.get_player_by_name(name)
 
-    async def async_get_player(self, player_id: str) -> Player | None:
+    async def async_get_player(self, player_id: UUID) -> Player | None:
         """Get a player by ID using async database operations."""
         from .async_persistence import get_async_persistence
 
@@ -1464,7 +2001,7 @@ class PersistenceLayer:
         async_persistence = get_async_persistence()
         return await async_persistence.save_players(players)
 
-    async def async_delete_player(self, player_id: str) -> bool:
+    async def async_delete_player(self, player_id: UUID) -> bool:
         """Delete a player using async database operations."""
         from .async_persistence import get_async_persistence
 

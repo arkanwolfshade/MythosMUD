@@ -107,51 +107,78 @@ class TestEndpoints:
 
     def test_create_player_success(self, client):
         """Test creating a new player."""
-        # Mock the authentication dependency
-        with patch("server.api.players.get_current_user") as mock_auth:
-            mock_auth.return_value = {"user_id": "test-user-id"}
+        # Create a proper mock User object (not a dict)
+        mock_user = Mock()
+        mock_user.id = uuid.uuid4()
+        mock_user.username = "testuser"
+        mock_user.email = "test@example.com"
 
-            # Mock the PlayerService to return a successful result
-            mock_service_instance = Mock()
-            mock_player = Mock()
-            mock_player.name = "testplayer"
-            mock_player.current_room_id = "earth_arkhamcity_intersection_derby_high"
-            mock_player.player_id = "550e8400-e29b-41d4-a716-446655440000"
-            mock_player.id = "550e8400-e29b-41d4-a716-446655440000"
-            mock_player.user_id = "550e8400-e29b-41d4-a716-446655440001"
-            mock_player.experience_points = 0
-            mock_player.level = 1
-            mock_player.stats = {"health": 100, "sanity": 90, "position": "standing"}
-            mock_player.inventory = []
-            mock_player.status_effects = []
-            mock_player.created_at = "2024-01-01T00:00:00Z"
-            mock_player.last_active = "2024-01-01T00:00:00Z"
-            mock_player.is_admin = False
-            mock_player.in_combat = False
-            mock_player.position = "standing"
-            # Add profession fields that are now required by PlayerRead schema
-            mock_player.profession_id = 0
-            mock_player.profession_name = "Scholar"
-            mock_player.profession_description = "A learned academic"
-            mock_player.profession_flavor_text = "Knowledge is power"
-            mock_service_instance.create_player = AsyncMock(return_value=mock_player)
+        # Mock the PlayerService to return a successful result
+        mock_service_instance = Mock()
+        mock_player = Mock()
+        mock_player.name = "testplayer"
+        mock_player.current_room_id = "earth_arkhamcity_intersection_derby_high"
+        mock_player.player_id = "550e8400-e29b-41d4-a716-446655440000"
+        mock_player.id = "550e8400-e29b-41d4-a716-446655440000"
+        mock_player.user_id = "550e8400-e29b-41d4-a716-446655440001"
+        mock_player.experience_points = 0
+        mock_player.level = 1
+        mock_player.stats = {"health": 100, "sanity": 90, "position": "standing"}
+        mock_player.inventory = []
+        mock_player.status_effects = []
+        mock_player.created_at = "2024-01-01T00:00:00Z"
+        mock_player.last_active = "2024-01-01T00:00:00Z"
+        mock_player.is_admin = False
+        mock_player.in_combat = False
+        mock_player.position = "standing"
+        # Add profession fields that are now required by PlayerRead schema
+        mock_player.profession_id = 0
+        mock_player.profession_name = "Scholar"
+        mock_player.profession_description = "A learned academic"
+        mock_player.profession_flavor_text = "Knowledge is power"
+        mock_player.model_dump = Mock(
+            return_value={
+                "id": mock_player.id,  # PlayerRead expects 'id', not 'player_id'
+                "name": mock_player.name,
+                "current_room_id": mock_player.current_room_id,
+                "user_id": mock_player.user_id,
+                "experience_points": mock_player.experience_points,
+                "level": mock_player.level,
+                "stats": mock_player.stats,
+                "inventory": mock_player.inventory,
+                "status_effects": mock_player.status_effects,
+                "created_at": mock_player.created_at,
+                "last_active": mock_player.last_active,
+                "profession_id": mock_player.profession_id,
+                "profession_name": mock_player.profession_name,
+                "profession_description": mock_player.profession_description,
+                "profession_flavor_text": mock_player.profession_flavor_text,
+            }
+        )
+        mock_service_instance.create_player = AsyncMock(return_value=mock_player)
 
-            # Override the app dependency to use our mock
-            import server.dependencies
-            from server.main import app
+        # Override the app dependencies
+        import server.dependencies
+        from server.api.players import get_current_user
+        from server.main import app
 
-            app.dependency_overrides[server.dependencies.get_player_service] = lambda: mock_service_instance
+        # Mock the authentication dependency - get_current_user is async
+        async def mock_get_current_user():
+            return mock_user
 
-            try:
-                response = client.post(
-                    "/api/players?name=testplayer&starting_room_id=earth_arkhamcity_intersection_derby_high"
-                )
+        app.dependency_overrides[get_current_user] = mock_get_current_user
+        app.dependency_overrides[server.dependencies.get_player_service] = lambda: mock_service_instance
 
-                assert response.status_code == 200
-                # The response will be handled by the PlayerService
-            finally:
-                # Clean up the dependency override
-                app.dependency_overrides.clear()
+        try:
+            response = client.post(
+                "/api/players?name=testplayer&starting_room_id=earth_arkhamcity_intersection_derby_high"
+            )
+
+            assert response.status_code == 200
+            # The response will be handled by the PlayerService
+        finally:
+            # Clean up the dependency overrides
+            app.dependency_overrides.clear()
 
     def test_create_player_already_exists(self, client):
         """Test creating a player that already exists."""
@@ -272,10 +299,11 @@ class TestEndpoints:
 
     def test_get_player_by_id_not_found(self, client):
         """Test getting a non-existent player by ID."""
+        test_uuid = str(uuid.uuid4())
         with patch.object(client.app.state.persistence, "async_get_player", new_callable=AsyncMock) as mock_get_player:
             mock_get_player.return_value = None
 
-            response = client.get("/api/players/nonexistent")
+            response = client.get(f"/api/players/{test_uuid}")
 
             assert response.status_code == 404
             assert "not found" in response.json()["error"]["message"]
@@ -333,17 +361,20 @@ class TestEndpoints:
 
     def test_delete_player_not_found(self, client):
         """Test that delete player endpoint returns 404 for non-existent player."""
+        test_uuid = str(uuid.uuid4())
         with patch.object(client.app.state.persistence, "async_get_player", new_callable=AsyncMock) as mock_get_player:
             # Mock that player doesn't exist
             mock_get_player.return_value = None
 
-            response = client.delete("/api/players/non_existent_id")
+            response = client.delete(f"/api/players/{test_uuid}")
 
             assert response.status_code == 404
             assert "Player not found" in response.text
 
     def test_delete_player_success(self, client):
         """Test that delete player endpoint successfully deletes a player."""
+        test_uuid = uuid.uuid4()
+        test_uuid_str = str(test_uuid)
         # Mock the persistence methods
         with patch.object(client.app.state.persistence, "async_get_player", new_callable=AsyncMock) as mock_get_player:
             with patch.object(
@@ -358,14 +389,14 @@ class TestEndpoints:
                 mock_delete_player.return_value = True
 
                 # Test the delete endpoint
-                response = client.delete("/api/players/test_player_id")
+                response = client.delete(f"/api/players/{test_uuid_str}")
 
                 assert response.status_code == 200
                 assert "has been deleted" in response.text
 
                 # Verify the persistence methods were called
-                mock_get_player.assert_called_once_with("test_player_id")
-                mock_delete_player.assert_called_once_with("test_player_id")
+                mock_get_player.assert_called_once_with(test_uuid)
+                mock_delete_player.assert_called_once_with(test_uuid)
 
     def test_get_game_status(self, client):
         """Test getting game status."""
@@ -392,8 +423,14 @@ class TestWebSocketEndpoints:
     @pytest.mark.asyncio
     async def test_websocket_endpoint_route_no_token(self):
         """Test WebSocket endpoint without token."""
+        test_player_id = str(uuid.uuid4())
         mock_websocket = AsyncMock(spec=WebSocket)
         mock_websocket.query_params = {}
+        mock_websocket.app = Mock()
+        mock_websocket.app.state = Mock()
+        mock_websocket.app.state.container = Mock()
+        mock_websocket.app.state.container.connection_manager = Mock()
+        mock_websocket.app.state.container.connection_manager.persistence = Mock()
 
         # Patch at the point of use in server.api.real_time
         with (
@@ -403,16 +440,26 @@ class TestWebSocketEndpoints:
             mock_resolve.return_value = Mock(persistence=Mock())
             from server.api.real_time import websocket_endpoint_route
 
-            await websocket_endpoint_route(mock_websocket, "testplayer")
+            await websocket_endpoint_route(mock_websocket, test_player_id)
+            # The endpoint converts the string player_id to UUID
+            import uuid as uuid_module
+
+            expected_uuid = uuid_module.UUID(test_player_id)
             mock_handler.assert_called_once_with(
-                mock_websocket, "testplayer", None, connection_manager=mock_resolve.return_value
+                mock_websocket, expected_uuid, None, connection_manager=mock_resolve.return_value
             )
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_route_invalid_token(self):
         """Test WebSocket endpoint with invalid token."""
+        test_player_id = str(uuid.uuid4())
         mock_websocket = AsyncMock(spec=WebSocket)
         mock_websocket.query_params = {"token": "invalid_token"}
+        mock_websocket.app = Mock()
+        mock_websocket.app.state = Mock()
+        mock_websocket.app.state.container = Mock()
+        mock_websocket.app.state.container.connection_manager = Mock()
+        mock_websocket.app.state.container.connection_manager.persistence = Mock()
 
         # Patch at the point of use in server.api.real_time
         with (
@@ -422,16 +469,26 @@ class TestWebSocketEndpoints:
             mock_resolve.return_value = Mock(persistence=Mock())
             from server.api.real_time import websocket_endpoint_route
 
-            await websocket_endpoint_route(mock_websocket, "testplayer")
+            await websocket_endpoint_route(mock_websocket, test_player_id)
+            # The endpoint converts the string player_id to UUID
+            import uuid as uuid_module
+
+            expected_uuid = uuid_module.UUID(test_player_id)
             mock_handler.assert_called_once_with(
-                mock_websocket, "testplayer", None, connection_manager=mock_resolve.return_value
+                mock_websocket, expected_uuid, None, connection_manager=mock_resolve.return_value
             )
 
     @pytest.mark.asyncio
     async def test_websocket_endpoint_route_token_mismatch(self):
         """Test WebSocket endpoint with token mismatch."""
+        test_player_id = str(uuid.uuid4())
         mock_websocket = AsyncMock(spec=WebSocket)
         mock_websocket.query_params = {"token": "valid_token"}
+        mock_websocket.app = Mock()
+        mock_websocket.app.state = Mock()
+        mock_websocket.app.state.container = Mock()
+        mock_websocket.app.state.container.connection_manager = Mock()
+        mock_websocket.app.state.container.connection_manager.persistence = Mock()
 
         # Patch at the point of use in server.api.real_time
         with (
@@ -441,9 +498,13 @@ class TestWebSocketEndpoints:
             mock_resolve.return_value = Mock(persistence=Mock())
             from server.api.real_time import websocket_endpoint_route
 
-            await websocket_endpoint_route(mock_websocket, "testplayer")
+            await websocket_endpoint_route(mock_websocket, test_player_id)
+            # The endpoint converts the string player_id to UUID
+            import uuid as uuid_module
+
+            expected_uuid = uuid_module.UUID(test_player_id)
             mock_handler.assert_called_once_with(
-                mock_websocket, "testplayer", None, connection_manager=mock_resolve.return_value
+                mock_websocket, expected_uuid, None, connection_manager=mock_resolve.return_value
             )
 
 
@@ -458,15 +519,16 @@ class TestSSEEndpoints:
     @pytest.mark.asyncio
     async def test_game_events_stream_no_token(self, client):
         """Test SSE endpoint without token."""
+        test_player_id = uuid.uuid4()
         # Mock the game_event_stream to return immediately
         with patch("server.api.real_time.game_event_stream") as mock_stream:
             mock_stream.return_value = iter(
                 [
-                    'data: {"type": "connected", "data": {"player_id": "testplayer"}, "timestamp": "2023-01-01T00:00:00Z"}\n\n'
+                    f'data: {{"type": "connected", "data": {{"player_id": "{test_player_id}"}}, "timestamp": "2023-01-01T00:00:00Z"}}\n\n'
                 ]
             )
 
-            response = client.get("/api/events/testplayer")
+            response = client.get(f"/api/events/{test_player_id}")
 
             # New simplified endpoint returns 200 with streaming response
             assert response.status_code == 200
@@ -475,14 +537,15 @@ class TestSSEEndpoints:
     @pytest.mark.asyncio
     async def test_game_events_stream_invalid_token(self, client):
         """Test SSE endpoint with invalid token."""
+        test_player_id = uuid.uuid4()
         with patch("server.api.real_time.game_event_stream") as mock_stream:
             mock_stream.return_value = iter(
                 [
-                    'data: {"type": "connected", "data": {"player_id": "testplayer"}, "timestamp": "2023-01-01T00:00:00Z"}\n\n'
+                    f'data: {{"type": "connected", "data": {{"player_id": "{test_player_id}"}}, "timestamp": "2023-01-01T00:00:00Z"}}\n\n'
                 ]
             )
 
-            response = client.get("/api/events/testplayer?token=invalid")
+            response = client.get(f"/api/events/{test_player_id}?token=invalid")
 
             # New simplified endpoint returns 200 with streaming response
             assert response.status_code == 200
@@ -491,14 +554,15 @@ class TestSSEEndpoints:
     @pytest.mark.asyncio
     async def test_game_events_stream_player_not_found(self, client):
         """Test SSE endpoint with player not found."""
+        test_player_id = uuid.uuid4()
         with patch("server.api.real_time.game_event_stream") as mock_stream:
             mock_stream.return_value = iter(
                 [
-                    'data: {"type": "connected", "data": {"player_id": "testplayer"}, "timestamp": "2023-01-01T00:00:00Z"}\n\n'
+                    f'data: {{"type": "connected", "data": {{"player_id": "{test_player_id}"}}, "timestamp": "2023-01-01T00:00:00Z"}}\n\n'
                 ]
             )
 
-            response = client.get("/api/events/testplayer?token=valid")
+            response = client.get(f"/api/events/{test_player_id}?token=valid")
 
             # New simplified endpoint returns 200 with streaming response
             assert response.status_code == 200
@@ -507,14 +571,15 @@ class TestSSEEndpoints:
     @pytest.mark.asyncio
     async def test_game_events_stream_token_mismatch(self, client):
         """Test SSE endpoint with token mismatch."""
+        test_player_id = uuid.uuid4()
         with patch("server.api.real_time.game_event_stream") as mock_stream:
             mock_stream.return_value = iter(
                 [
-                    'data: {"type": "connected", "data": {"player_id": "testplayer"}, "timestamp": "2023-01-01T00:00:00Z"}\n\n'
+                    f'data: {{"type": "connected", "data": {{"player_id": "{test_player_id}"}}, "timestamp": "2023-01-01T00:00:00Z"}}\n\n'
                 ]
             )
 
-            response = client.get("/api/events/testplayer?token=valid")
+            response = client.get(f"/api/events/{test_player_id}?token=valid")
 
             # New simplified endpoint returns 200 with streaming response
             assert response.status_code == 200

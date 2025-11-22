@@ -590,24 +590,30 @@ describe('App', () => {
   });
 
   describe('Demo Mode', () => {
-    it('should show demo mode when demo button is clicked', () => {
+    it('should show demo mode when demo button is clicked', async () => {
       render(<App />);
 
       const demoButton = screen.getByText('View Eldritch Effects Demo');
       fireEvent.click(demoButton);
 
-      expect(screen.getByTestId('eldritch-effects-demo')).toBeInTheDocument();
+      // Wait for lazy-loaded component to render
+      await waitFor(() => {
+        expect(screen.getByTestId('eldritch-effects-demo')).toBeInTheDocument();
+      });
       expect(screen.getByText('Exit Demo')).toBeInTheDocument();
     });
 
-    it('should exit demo mode when exit button is clicked', () => {
+    it('should exit demo mode when exit button is clicked', async () => {
       render(<App />);
 
       // Enter demo mode
       const demoButton = screen.getByText('View Eldritch Effects Demo');
       fireEvent.click(demoButton);
 
-      expect(screen.getByTestId('eldritch-effects-demo')).toBeInTheDocument();
+      // Wait for lazy-loaded component to render
+      await waitFor(() => {
+        expect(screen.getByTestId('eldritch-effects-demo')).toBeInTheDocument();
+      });
 
       // Exit demo mode
       const exitButton = screen.getByText('Exit Demo');

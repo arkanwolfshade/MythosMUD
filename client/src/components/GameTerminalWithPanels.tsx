@@ -538,6 +538,26 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
               };
               updates.room = roomWithOccupants;
 
+              // BUGFIX: Check if player is dead (HP <= -10) on connection and show death screen
+              // This handles players who connect with HP already at death threshold
+              const playerHp = playerData.stats?.current_health ?? playerData.stats?.health ?? 100;
+              if (playerHp <= -10) {
+                setIsDead(true);
+                setIsMortallyWounded(false);
+                setDeathLocation(roomData.name || 'Unknown Location');
+                logger.info('GameTerminalWithPanels', 'Player connected with HP <= -10, showing death screen', {
+                  playerHp,
+                  roomName: roomData.name,
+                });
+              } else if (playerHp <= 0 && playerHp > -10) {
+                // Player is mortally wounded but not dead yet
+                setIsMortallyWounded(true);
+                setIsDead(false);
+                logger.info('GameTerminalWithPanels', 'Player connected with HP <= 0, mortally wounded', {
+                  playerHp,
+                });
+              }
+
               logger.info('GameTerminalWithPanels', 'Received game state', {
                 playerName: playerData.name,
                 roomName: roomData.name,
@@ -654,6 +674,27 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
 
             setHealthStatus(updatedHealthStatus);
             applyHealthToPlayer(updatedHealthStatus.current, updatedHealthStatus.max);
+
+            // BUGFIX: Update full player stats including posture/position when HP updates
+            // The server now sends full stats in the player_hp_updated event
+            if (event.data.player && currentPlayerRef.current) {
+              const playerData = event.data.player as Player;
+              if (playerData.stats) {
+                updates.player = {
+                  ...currentPlayerRef.current,
+                  stats: {
+                    ...currentPlayerRef.current.stats,
+                    ...playerData.stats, // Merge in updated stats including position/posture
+                    current_health: updatedHealthStatus.current, // Ensure HP is correct
+                    max_health: updatedHealthStatus.max, // Ensure max HP is correct
+                  },
+                };
+                logger.info('GameTerminalWithPanels', 'Updated player stats including posture', {
+                  position: playerData.stats.position,
+                  current_health: updatedHealthStatus.current,
+                });
+              }
+            }
 
             const messageText = buildHealthChangeMessage(updatedHealthStatus, delta, event.data);
             appendMessage(
@@ -1517,27 +1558,39 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             const turnOrder = Array.isArray(event.data.turn_order) ? (event.data.turn_order as string[]) : [];
             const participants = event.data.participants as Record<string, CombatParticipant> | undefined;
 
+            // Convert UUIDs in turn order to participant names (handles players, NPCs, and mobs)
+            // Fallback to UUID if participant not found or name missing
+            const participantNames = turnOrder.map(uuid => {
+              const participant = participants?.[uuid];
+              return participant?.name || uuid;
+            });
+
             // Check if we've already processed this combat_started event
-            // Look for any message that contains "Combat has begun!" and the same turn order
+            // Look for any message that contains "Combat has begun!" and the same turn order (using names now)
             // Check both current messages and pending updates
             const allMessages = [...currentMessagesRef.current, ...(updates.messages || [])];
             const existingMessage = allMessages.find(
-              msg => msg.text.includes('Combat has begun!') && msg.text.includes(turnOrder.join(', '))
+              msg => msg.text.includes('Combat has begun!') && participantNames.some(name => msg.text.includes(name))
             );
 
             console.log('🔍 DEBUG: Checking for duplicate combat_started', {
               combatId,
               turnOrder,
+              participantNames,
               existingMessage: existingMessage ? existingMessage.text : null,
               currentMessagesCount: currentMessagesRef.current.length,
             });
 
             if (existingMessage) {
-              console.log('🔍 DEBUG: Duplicate combat_started event detected, skipping', { combatId, turnOrder });
+              console.log('🔍 DEBUG: Duplicate combat_started event detected, skipping', {
+                combatId,
+                turnOrder,
+                participantNames,
+              });
               break;
             }
 
-            const message = `Combat has begun! Turn order: ${turnOrder.join(', ')}`;
+            const message = `Combat has begun! Turn order: ${participantNames.join(', ')}`;
             const messageObj = {
               text: message,
               timestamp: event.timestamp,
@@ -2024,11 +2077,14 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   }, []); // Empty dependency array - this function should never change
 
   // Memoize the disconnect handler
+  // BUGFIX: Don't immediately trigger logout on disconnect - wait to see if reconnection happens
+  // This prevents false positives when other players disconnect or during temporary connection issues
   const handleDisconnect = useCallback(() => {
     logger.info('GameTerminalWithPanels', 'Disconnected from game server');
-    // Trigger the connection loss handler
-    handleConnectionLoss();
-  }, [handleConnectionLoss]); // Include handleConnectionLoss in dependencies
+    // Don't immediately trigger logout - wait to see if reconnection happens
+    // The connection state machine will handle reconnection attempts
+    // Only trigger logout if reconnection fails (handled by connection state monitoring)
+  }, []); // Empty dependency array - this function should never change
 
   // Memoize the error handler
   const handleError = useCallback((error: string) => {
@@ -2049,8 +2105,18 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
     sendCommandRef.current = sendCommand;
   }, [sendCommand]);
 
-  // Note: Connection loss handling is now done through the handleDisconnect callback
-  // which is passed to the useGameConnection hook
+  // BUGFIX: Monitor connection state and only trigger logout if reconnection fails
+  // This prevents false positives when other players disconnect or during temporary connection issues
+  useEffect(() => {
+    // Only trigger logout if we were connected, are no longer connected, and reconnection has failed
+    if (!isConnected && !isConnecting && reconnectAttempts >= 5) {
+      logger.warn('GameTerminalWithPanels', 'All reconnection attempts failed, triggering logout');
+      handleConnectionLoss();
+    }
+  }, [isConnected, isConnecting, reconnectAttempts, handleConnectionLoss]);
+
+  // Note: Connection loss handling is now done through connection state monitoring
+  // which waits for reconnection attempts to fail before triggering logout
 
   // Connect once on mount; disconnect on unmount.
   // Important: Avoid including changing dependencies (like connect/disconnect identity or state)
@@ -2278,6 +2344,11 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
     setHallucinationFeed(prev => prev.filter(entry => entry.id !== id));
   }, []);
 
+  const handleDismissIncapacitated = useCallback(() => {
+    // Reset incapacitated dismissal state when health recovers
+    // This is handled in GameTerminal component, but we can add additional logic here if needed
+  }, []);
+
   const handleDismissRescue = useCallback(() => {
     setRescueState(null);
   }, []);
@@ -2300,6 +2371,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
         rescueState={rescueState}
         onDismissHallucination={handleDismissHallucination}
         onDismissRescue={handleDismissRescue}
+        onDismissIncapacitated={handleDismissIncapacitated}
         onConnect={connect}
         onDisconnect={disconnect}
         onLogout={handleLogout}

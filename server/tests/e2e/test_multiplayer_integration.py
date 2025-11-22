@@ -6,6 +6,7 @@ and ConnectionManager to ensure players can see each other in real-time.
 """
 
 from unittest.mock import MagicMock, patch
+from uuid import uuid4
 
 import pytest
 
@@ -83,14 +84,15 @@ class TestMultiplayerIntegration:
         with patch.object(event_handler.connection_manager, "_get_player", return_value=mock_player):
             with patch.object(event_handler.connection_manager, "subscribe_to_room") as mock_subscribe:
                 with patch.object(event_handler.connection_manager, "broadcast_to_room") as mock_broadcast:
-                    # Create and publish a player entered event
-                    event = PlayerEnteredRoom(player_id="player1", room_id="test_room_001")
+                    # Create and publish a player entered event (use UUID for player_id)
+                    player_id = uuid4()
+                    event = PlayerEnteredRoom(player_id=str(player_id), room_id="test_room_001")
 
                     # Call the event handler directly instead of using the EventBus
                     await event_handler._handle_player_entered(event)
 
                     # Verify that the connection manager methods were called
-                    mock_subscribe.assert_called_once_with("player1", "test_room_001")
+                    mock_subscribe.assert_called_once_with(player_id, "test_room_001")
                     mock_broadcast.assert_called()
 
     @pytest.mark.asyncio
@@ -100,37 +102,40 @@ class TestMultiplayerIntegration:
         with patch.object(event_handler.connection_manager, "_get_player", return_value=mock_player):
             with patch.object(event_handler.connection_manager, "unsubscribe_from_room") as mock_unsubscribe:
                 with patch.object(event_handler.connection_manager, "broadcast_to_room") as mock_broadcast:
-                    # Create and publish a player left event
-                    event = PlayerLeftRoom(player_id="player1", room_id="test_room_001")
+                    # Create and publish a player left event (use UUID for player_id)
+                    player_id = uuid4()
+                    event = PlayerLeftRoom(player_id=str(player_id), room_id="test_room_001")
 
                     # Call the event handler directly instead of using the EventBus
                     await event_handler._handle_player_left(event)
 
                     # Verify that the connection manager methods were called
-                    mock_unsubscribe.assert_called_once_with("player1", "test_room_001")
+                    mock_unsubscribe.assert_called_once_with(player_id, "test_room_001")
                     mock_broadcast.assert_called()
 
     def test_message_format_player_entered(self, event_handler):
         """Test that player entered messages are formatted correctly."""
-        event = PlayerEnteredRoom(player_id="player1", room_id="test_room_001")
+        player_id = uuid4()
+        event = PlayerEnteredRoom(player_id=str(player_id), room_id="test_room_001")
 
         message = event_handler._create_player_entered_message(event, "TestPlayer")
 
         assert message["event_type"] == "player_entered"
         assert message["room_id"] == "test_room_001"
-        assert message["data"]["player_id"] == "player1"
+        assert message["data"]["player_id"] == str(player_id)
         assert message["data"]["player_name"] == "TestPlayer"
         assert "enters the room" in message["data"]["message"]
 
     def test_message_format_player_left(self, event_handler):
         """Test that player left messages are formatted correctly."""
-        event = PlayerLeftRoom(player_id="player1", room_id="test_room_001")
+        player_id = uuid4()
+        event = PlayerLeftRoom(player_id=str(player_id), room_id="test_room_001")
 
         message = event_handler._create_player_left_message(event, "TestPlayer")
 
         assert message["event_type"] == "player_left"
         assert message["room_id"] == "test_room_001"
-        assert message["data"]["player_id"] == "player1"
+        assert message["data"]["player_id"] == str(player_id)
         assert message["data"]["player_name"] == "TestPlayer"
         assert "leaves the room" in message["data"]["message"]
 

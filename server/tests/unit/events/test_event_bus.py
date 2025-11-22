@@ -46,18 +46,24 @@ class TestEventTypes:
 
     def test_player_entered_room_event(self):
         """Test PlayerEnteredRoom event creation."""
-        event = PlayerEnteredRoom(player_id="player123", room_id="room456", from_room_id="room789")
+        from uuid import uuid4
 
-        assert event.player_id == "player123"
+        player_id = uuid4()
+        event = PlayerEnteredRoom(player_id=str(player_id), room_id="room456", from_room_id="room789")
+
+        assert event.player_id == str(player_id)
         assert event.room_id == "room456"
         assert event.from_room_id == "room789"
         assert event.event_type == "PlayerEnteredRoom"
 
     def test_player_left_room_event(self):
         """Test PlayerLeftRoom event creation."""
-        event = PlayerLeftRoom(player_id="player123", room_id="room456", to_room_id="room789")
+        from uuid import uuid4
 
-        assert event.player_id == "player123"
+        player_id = uuid4()
+        event = PlayerLeftRoom(player_id=str(player_id), room_id="room456", to_room_id="room789")
+
+        assert event.player_id == str(player_id)
         assert event.room_id == "room456"
         assert event.to_room_id == "room789"
         assert event.event_type == "PlayerLeftRoom"
@@ -406,3 +412,187 @@ class TestEventBus(TestingAsyncMixin):
 
         # Give time for cleanup
         await asyncio.sleep(0.1)
+
+    @pytest.mark.asyncio
+    async def test_structured_concurrency_multiple_async_subscribers(self):
+        """
+        Test that EventBus uses structured concurrency for multiple async subscribers.
+
+        AnyIO Pattern: All async subscribers should run concurrently and complete
+        even if some fail, using asyncio.gather with return_exceptions=True.
+        """
+        event_bus = EventBus()
+        results = []
+        errors = []
+
+        async def subscriber1(event):
+            await asyncio.sleep(0.01)
+            results.append("subscriber1")
+            return "result1"
+
+        async def subscriber2(event):
+            await asyncio.sleep(0.01)
+            results.append("subscriber2")
+            return "result2"
+
+        async def failing_subscriber(event):
+            await asyncio.sleep(0.01)
+            errors.append("failing_subscriber")
+            raise ValueError("Test error")
+
+        # Subscribe all handlers
+        event_bus.subscribe(PlayerEnteredRoom, subscriber1)
+        event_bus.subscribe(PlayerEnteredRoom, subscriber2)
+        event_bus.subscribe(PlayerEnteredRoom, failing_subscriber)
+
+        # Publish an event
+        event = PlayerEnteredRoom(player_id="player123", room_id="room456")
+        event_bus.publish(event)
+
+        # Give time for all subscribers to complete
+        await asyncio.sleep(0.2)
+
+        # All subscribers should have run (structured concurrency ensures all complete)
+        assert len(results) == 2
+        assert "subscriber1" in results
+        assert "subscriber2" in results
+        assert len(errors) == 1  # Failing subscriber should have run and failed
+
+        # Verify tasks are cleaned up - wait for tasks to complete and be removed
+        # Tasks are removed from _active_tasks via done callbacks, so we need to wait
+        # until either _active_tasks is empty or all remaining tasks are done
+        # The processing task waits on asyncio.wait_for with 1.0s timeout, so we need to wait at least that long
+        max_wait = 150  # Wait up to 15 seconds (processing task has 1s timeout, plus cleanup time)
+        wait_count = 0
+        while wait_count < max_wait:
+            # Check if all tasks are done or if _active_tasks is empty
+            if len(event_bus._active_tasks) == 0:
+                # All tasks have been cleaned up - this is the expected state
+                break
+            # Check if all tasks are done (not pending)
+            tasks_list = list(event_bus._active_tasks)
+            # Filter out cancelled tasks
+            active_tasks = [t for t in tasks_list if not t.cancelled()]
+            if not active_tasks:
+                # All tasks are cancelled or removed
+                break
+            all_done = all(task.done() for task in active_tasks)
+            if all_done:
+                # All tasks are done, waiting for cleanup callbacks
+                # Give a bit more time for callbacks to execute
+                await asyncio.sleep(0.5)
+                # Check again after waiting
+                if len(event_bus._active_tasks) == 0:
+                    break
+                # If tasks still exist, they should all be done
+                remaining_tasks = [t for t in list(event_bus._active_tasks) if not t.cancelled()]
+                if all(task.done() for task in remaining_tasks):
+                    break
+            await asyncio.sleep(0.1)
+            wait_count += 1
+
+        # Shutdown the event bus to stop the processing task
+        # This ensures all tasks are properly cleaned up
+        await event_bus.shutdown()
+
+        # After shutdown, verify all tasks are cleaned up
+        # Give a moment for shutdown to complete
+        await asyncio.sleep(0.2)
+
+        # Active tasks should be empty after shutdown
+        # If any tasks remain, they should all be done or cancelled
+        if event_bus._active_tasks:
+            remaining_tasks = list(event_bus._active_tasks)
+            for task in remaining_tasks:
+                # After shutdown, all tasks should be done or cancelled
+                assert task.done() or task.cancelled(), f"Task {task} is not done or cancelled after shutdown"
+
+    @pytest.mark.asyncio
+    async def test_structured_concurrency_task_cleanup(self):
+        """
+        Test that EventBus properly cleans up tasks after structured concurrency execution.
+
+        AnyIO Pattern: Tasks created for async subscribers should be properly tracked
+        and cleaned up after completion.
+        """
+        event_bus = EventBus()
+
+        async def subscriber(event):
+            await asyncio.sleep(0.05)
+            return "done"
+
+        event_bus.subscribe(PlayerEnteredRoom, subscriber)
+
+        # Publish an event
+        event = PlayerEnteredRoom(player_id="player123", room_id="room456")
+        event_bus.publish(event)
+
+        # Wait for processing
+        await asyncio.sleep(0.1)
+
+        # Tasks should be created and then cleaned up
+        # After completion, active tasks should be empty or only contain done tasks
+        # Tasks are removed from _active_tasks via done callbacks, so we need to wait
+        # until either _active_tasks is empty or all remaining tasks are done
+        max_wait = 100  # Increased wait time significantly
+        wait_count = 0
+        while wait_count < max_wait:
+            # Check if all tasks are done or if _active_tasks is empty
+            if len(event_bus._active_tasks) == 0:
+                # All tasks have been cleaned up - this is the expected state
+                break
+            # Check if all tasks are done (not pending)
+            tasks_list = list(event_bus._active_tasks)
+            # Filter out cancelled tasks
+            active_tasks = [t for t in tasks_list if not t.cancelled()]
+            if not active_tasks:
+                # All tasks are cancelled or removed
+                break
+            all_done = all(task.done() for task in active_tasks)
+            if all_done:
+                # All tasks are done, waiting for cleanup callbacks
+                # Give a bit more time for callbacks to execute
+                await asyncio.sleep(0.3)
+                # Check again after waiting
+                if len(event_bus._active_tasks) == 0:
+                    break
+                # If tasks are still there but done, that's okay - they'll be cleaned up
+                break
+            await asyncio.sleep(0.1)
+            wait_count += 1
+
+        # If we've waited the full time and tasks are still pending, cancel them
+        if event_bus._active_tasks:
+            tasks_list = list(event_bus._active_tasks)
+            for task in tasks_list:
+                if not task.done() and not task.cancelled():
+                    task.cancel()
+            # Wait longer for cancellation to complete, especially for processing task
+            await asyncio.sleep(0.5)
+            # Try cancelling again if still pending
+            tasks_list = list(event_bus._active_tasks)
+            for task in tasks_list:
+                if not task.done() and not task.cancelled():
+                    task.cancel()
+            await asyncio.sleep(0.2)
+
+        # Also ensure the main processing task is cancelled if it exists
+        if hasattr(event_bus, "_processing_task") and event_bus._processing_task:
+            if not event_bus._processing_task.done() and not event_bus._processing_task.cancelled():
+                event_bus._processing_task.cancel()
+                try:
+                    await event_bus._processing_task
+                except asyncio.CancelledError:
+                    pass
+            await asyncio.sleep(0.1)
+
+        # Active tasks should be empty or contain only completed tasks
+        # (empty is preferred as tasks are removed via done callbacks)
+        if event_bus._active_tasks:
+            # If tasks remain, they should all be done (not pending) or cancelled
+            for task in list(event_bus._active_tasks):
+                # Task should be done or cancelled, not pending
+                assert task.done() or task.cancelled(), f"Task {task} is not done or cancelled (state: pending)"
+
+        # Clean up
+        await event_bus.shutdown()

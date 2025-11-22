@@ -198,3 +198,4 @@ class ErrorMessages:
     WEBSOCKET_ERROR = "WebSocket connection error"
     SSE_ERROR = "Server-Sent Events connection error"
     MESSAGE_PROCESSING_ERROR = "Error processing message"
+    RATE_LIMIT_EXCEEDED = "Rate limit exceeded. Please slow down your requests."

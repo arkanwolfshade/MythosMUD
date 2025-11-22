@@ -696,35 +696,35 @@ jobs:
 
 # Run client runtime E2E tests (no server required)
 test-client-runtime:
-	@echo "Running client runtime E2E tests..."
-	cd client && npm run test:e2e:runtime
+ @echo "Running client runtime E2E tests..."
+ cd client && npm run test:e2e:runtime
 
 # Run server runtime E2E tests (starts server automatically)
 test-server-runtime:
-	@echo "Starting server and running runtime E2E tests..."
-	@./scripts/start_local.ps1 &
-	@sleep 10
-	@echo "Server started, running tests..."
-	cd client && npm run test:e2e:runtime
-	@echo "Tests complete, stopping server..."
-	@./scripts/stop_server.ps1
+ @echo "Starting server and running runtime E2E tests..."
+ @./scripts/start_local.ps1 &
+ @sleep 10
+ @echo "Server started, running tests..."
+ cd client && npm run test:e2e:runtime
+ @echo "Tests complete, stopping server..."
+ @./scripts/stop_server.ps1
 
 # Run all runtime E2E tests
 test-runtime: test-client-runtime
-	@echo "All runtime E2E tests complete"
+ @echo "All runtime E2E tests complete"
 
 # Update main test target to include runtime tests
 test: test-server test-client test-runtime
-	@echo "✅ All tests (unit + integration + E2E runtime) complete"
+ @echo "✅ All tests (unit + integration + E2E runtime) complete"
 
 .PHONY: help
 help:
-	@echo "E2E Testing Commands:"
-	@echo "  make test-client-runtime  - Run client E2E runtime tests"
-	@echo "  make test-server-runtime  - Start server and run E2E runtime tests"
-	@echo "  make test-runtime         - Run all E2E runtime tests"
-	@echo ""
-	@echo "For MCP multiplayer scenarios, see e2e-tests/MULTIPLAYER_TEST_RULES.md"
+ @echo "E2E Testing Commands:"
+ @echo "  make test-client-runtime  - Run client E2E runtime tests"
+ @echo "  make test-comprehensive  - Start server and run E2E runtime tests"
+ @echo "  make test-runtime         - Run all E2E runtime tests"
+ @echo ""
+ @echo "For MCP multiplayer scenarios, see e2e-tests/MULTIPLAYER_TEST_RULES.md"
 ```
 
 ## Pattern: Error Handling Test Template
@@ -838,6 +838,7 @@ test.describe('[Feature] Integration', () => {
 ## Common Patterns
 
 ### Pattern 1: Command Execution with Verification
+
 ```typescript
 await sendCommand(page, 'command arg1 arg2');
 await waitForMessage(page, 'Expected response');
@@ -846,6 +847,7 @@ expect(messages).toContain('Expected response');
 ```
 
 ### Pattern 2: Error Condition Testing
+
 ```typescript
 await sendCommand(page, 'invalid command');
 await waitForMessage(page, 'Error message');
@@ -855,6 +857,7 @@ await waitForMessage(page, 'Success message');
 ```
 
 ### Pattern 3: Accessibility Verification
+
 ```typescript
 const element = page.locator('[data-testid="element"]');
 await expect(element).toHaveAttribute('aria-label');
@@ -864,6 +867,7 @@ expect(box!.width).toBeGreaterThanOrEqual(44);
 ```
 
 ### Pattern 4: State Reset Between Tests
+
 ```typescript
 test.beforeEach(async ({ page }) => {
   await loginAsPlayer(page, 'ArkanWolfshade', 'Cthulhu1');
@@ -878,30 +882,35 @@ test.afterEach(async ({ page }) => {
 ## Debugging Tips
 
 ### Enable Headed Mode for Debugging
+
 ```bash
 cd client
 npm run test:e2e:runtime:headed
 ```
 
 ### Run Specific Test File
+
 ```bash
 cd client
 npx playwright test tests/e2e/runtime/error-handling/local-channel-errors.spec.ts
 ```
 
 ### Use Playwright Inspector
+
 ```bash
 cd client
 npm run test:e2e:runtime:debug
 ```
 
 ### View Test Report
+
 ```bash
 cd client
 npx playwright show-report playwright-report/runtime/
 ```
 
 ### Increase Timeout for Debugging
+
 ```typescript
 test('my test', async ({ page }) => {
   test.setTimeout(60000); // 60 seconds for this specific test

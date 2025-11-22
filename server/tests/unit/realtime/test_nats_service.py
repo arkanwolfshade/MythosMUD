@@ -5,6 +5,7 @@ This module tests the NATSService class which handles all NATS pub/sub operation
 and real-time messaging for the chat system.
 """
 
+import asyncio
 import json
 from unittest.mock import AsyncMock, Mock, patch
 
@@ -56,6 +57,9 @@ class TestNATSService:
         assert self.nats_service._running is False
         assert self.nats_service._connection_retries == 0
         assert self.nats_service._max_retries == 3
+        # Verify background tasks tracking is initialized
+        assert hasattr(self.nats_service, "_background_tasks")
+        assert isinstance(self.nats_service._background_tasks, set)
 
     def test_nats_service_initialization_with_config(self):
         """Test NATSService initialization with custom config."""
@@ -248,15 +252,18 @@ class TestNATSService:
     @pytest.mark.asyncio
     async def test_publish_success(self):
         """Test successful message publishing."""
-        # Setup connected state
+        # Setup connected state and connection pool
         self.nats_service.nc = self.mock_nats_client
         self.nats_service._running = True
+        self.nats_service._pool_initialized = True
+        # Add mock connection to pool queue
+        await self.nats_service.available_connections.put(self.mock_nats_client)
+        self.nats_service.connection_pool.append(self.mock_nats_client)
 
         # Execute
-        result = await self.nats_service.publish(self.test_subject, self.test_data)
+        await self.nats_service.publish(self.test_subject, self.test_data)
 
         # Verify
-        assert result is True
         self.mock_nats_client.publish.assert_called_once()
 
         # Verify the published data
@@ -268,26 +275,32 @@ class TestNATSService:
     @pytest.mark.asyncio
     async def test_publish_not_connected(self):
         """Test publishing when not connected."""
-        # Execute
-        result = await self.nats_service.publish(self.test_subject, self.test_data)
+        # Execute - should raise NATSPublishError when pool not initialized
+        from server.services.nats_exceptions import NATSPublishError
+
+        with pytest.raises(NATSPublishError, match="Connection pool not initialized"):
+            await self.nats_service.publish(self.test_subject, self.test_data)
 
         # Verify
-        assert result is False
         self.mock_nats_client.publish.assert_not_called()
 
     @pytest.mark.asyncio
     async def test_publish_exception(self):
         """Test publishing when an exception occurs."""
-        # Setup connected state
+        # Setup connected state and connection pool
         self.nats_service.nc = self.mock_nats_client
         self.nats_service._running = True
+        self.nats_service._pool_initialized = True
+        # Add mock connection to pool queue
+        await self.nats_service.available_connections.put(self.mock_nats_client)
+        self.nats_service.connection_pool.append(self.mock_nats_client)
         self.mock_nats_client.publish.side_effect = Exception("Publish failed")
 
-        # Execute
-        result = await self.nats_service.publish(self.test_subject, self.test_data)
+        # Execute - should raise NATSPublishError when exception occurs
+        from server.services.nats_exceptions import NATSPublishError
 
-        # Verify
-        assert result is False
+        with pytest.raises(NATSPublishError):
+            await self.nats_service.publish(self.test_subject, self.test_data)
 
     @pytest.mark.asyncio
     async def test_subscribe_success(self):
@@ -307,31 +320,33 @@ class TestNATSService:
             callback_called = True
             assert data == self.test_data
 
-        # Execute
-        result = await self.nats_service.subscribe(self.test_subject, test_callback)
+        # Execute - subscribe now returns None, not True
+        await self.nats_service.subscribe(self.test_subject, test_callback)
 
         # Verify
-        assert result is True
         assert self.test_subject in self.nats_service.subscriptions
         assert self.nats_service.subscriptions[self.test_subject] == mock_subscription
 
     @pytest.mark.asyncio
     async def test_subscribe_not_connected(self):
         """Test subscription when not connected."""
+        from server.services.nats_exceptions import NATSSubscribeError
 
         def test_callback(data):
             pass
 
-        # Execute
-        result = await self.nats_service.subscribe(self.test_subject, test_callback)
+        # Execute - should raise NATSSubscribeError when not connected
+        with pytest.raises(NATSSubscribeError, match="NATS client not connected"):
+            await self.nats_service.subscribe(self.test_subject, test_callback)
 
         # Verify
-        assert result is False
         assert self.test_subject not in self.nats_service.subscriptions
 
     @pytest.mark.asyncio
     async def test_subscribe_exception(self):
         """Test subscription when an exception occurs."""
+        from server.services.nats_exceptions import NATSSubscribeError
+
         # Setup connected state
         self.nats_service.nc = self.mock_nats_client
         self.nats_service._running = True
@@ -340,11 +355,9 @@ class TestNATSService:
         def test_callback(data):
             pass
 
-        # Execute
-        result = await self.nats_service.subscribe(self.test_subject, test_callback)
-
-        # Verify
-        assert result is False
+        # Execute - should raise NATSSubscribeError when exception occurs
+        with pytest.raises(NATSSubscribeError, match="Failed to subscribe to NATS subject"):
+            await self.nats_service.subscribe(self.test_subject, test_callback)
 
     @pytest.mark.asyncio
     async def test_subscribe_with_async_callback(self):
@@ -364,11 +377,10 @@ class TestNATSService:
             callback_called = True
             assert data == self.test_data
 
-        # Execute
-        result = await self.nats_service.subscribe(self.test_subject, test_async_callback)
+        # Execute - subscribe now returns None, not True
+        await self.nats_service.subscribe(self.test_subject, test_async_callback)
 
         # Verify
-        assert result is True
         assert self.test_subject in self.nats_service.subscriptions
 
     @pytest.mark.asyncio
@@ -384,11 +396,11 @@ class TestNATSService:
         def test_callback(data):
             pass
 
-        # Execute
-        result = await self.nats_service.subscribe(self.test_subject, test_callback)
+        # Execute - subscribe now returns None, not True
+        await self.nats_service.subscribe(self.test_subject, test_callback)
 
-        # Verify
-        assert result is True
+        # Verify subscription was created
+        assert self.test_subject in self.nats_service.subscriptions
 
         # Get the message handler that was registered
         message_handler = self.mock_nats_client.subscribe.call_args[1]["cb"]
@@ -413,11 +425,12 @@ class TestNATSService:
         def test_callback(data):
             raise Exception("Callback error")
 
-        # Execute
+        # Execute - subscribe returns None, but should not raise exception
         result = await self.nats_service.subscribe(self.test_subject, test_callback)
 
-        # Verify
-        assert result is True
+        # Verify subscription was registered
+        assert result is None
+        assert self.mock_nats_client.subscribe.called
 
         # Get the message handler that was registered
         message_handler = self.mock_nats_client.subscribe.call_args[1]["cb"]
@@ -639,6 +652,46 @@ class TestNATSService:
         # Verify
         assert self.nats_service._running is True
         assert self.nats_service._connection_retries == 0
+
+    @pytest.mark.asyncio
+    async def test_background_task_cleanup_on_disconnect(self):
+        """
+        Test that NATS service properly cleans up background tasks on disconnect.
+
+        AnyIO Pattern: All tracked background tasks should be cancelled and cleaned up
+        during service shutdown.
+        """
+        service = NATSService(
+            {
+                "url": "nats://localhost:4222",
+                "max_reconnect_attempts": 3,
+                "connect_timeout": 5,
+            }
+        )
+
+        # Create some background tasks manually to test cleanup
+        async def background_task():
+            await asyncio.sleep(10)  # Long-running task
+
+        # Create tracked tasks
+        task1 = service._create_tracked_task(background_task(), task_name="test_task_1")
+        task2 = service._create_tracked_task(background_task(), task_name="test_task_2")
+
+        # Verify tasks are tracked
+        assert len(service._background_tasks) == 2
+        assert task1 in service._background_tasks
+        assert task2 in service._background_tasks
+
+        # Disconnect should cancel all background tasks
+        await service.disconnect()
+
+        # Wait a bit for cancellation to complete
+        await asyncio.sleep(0.1)
+
+        # Background tasks should be cancelled and cleaned up
+        assert len(service._background_tasks) == 0
+        assert task1.done()
+        assert task2.done()
 
 
 class TestGlobalNATSService:

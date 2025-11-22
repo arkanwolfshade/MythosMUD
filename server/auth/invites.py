@@ -40,7 +40,7 @@ class InviteManager:
         # Persist naive UTC timestamps
         expires_at = (datetime.now(UTC) + timedelta(days=expires_in_days)).replace(tzinfo=None)
 
-        invite = Invite(invite_code=invite_code, used=False, expires_at=expires_at)
+        invite = Invite(invite_code=invite_code, is_active=True, expires_at=expires_at)
 
         self.session.add(invite)
         await self.session.commit()
@@ -86,13 +86,13 @@ class InviteManager:
             logger.warning(
                 "Invalid invite - expired or already used",
                 invite_code=invite_code,
-                used=invite.used,
+                is_active=invite.is_active,
                 expires_at=invite.expires_at,
             )
             context = create_context_from_request(request) if request else None
             if context:
                 context.metadata["invite_code"] = invite_code
-                context.metadata["used"] = invite.used
+                context.metadata["is_active"] = invite.is_active
                 context.metadata["expires_at"] = str(invite.expires_at)
                 context.metadata["operation"] = "validate_invite"
             raise LoggedHTTPException(status_code=400, detail="Invite code is expired or already used", context=context)
@@ -127,7 +127,7 @@ class InviteManager:
         """Get all unused invites."""
         logger.debug("Getting unused invites")
 
-        result = await self.session.execute(select(Invite).where(Invite.used.is_(False)))
+        result = await self.session.execute(select(Invite).where(Invite.is_active.is_(True)))
         invites = result.scalars().all()
 
         logger.debug("Unused invites retrieved", count=len(invites))
@@ -138,7 +138,7 @@ class InviteManager:
         logger.info("Cleaning up expired invites")
 
         # Find expired invites
-        # Compare using naive UTC to match SQLite stored values
+        # Compare using naive UTC to match PostgreSQL TIMESTAMP WITHOUT TIME ZONE stored values
         result = await self.session.execute(
             select(Invite).where(Invite.expires_at < datetime.now(UTC).replace(tzinfo=None))
         )

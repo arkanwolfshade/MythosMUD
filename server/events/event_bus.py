@@ -89,6 +89,22 @@ class EventBus:
             # Signal shutdown to async processing loop - Task 1.3
             self._shutdown_event.set()
 
+            # Put sentinel in queue to wake up processing task immediately
+            # This ensures the task waiting on asyncio.wait_for() wakes up right away
+            try:
+                self._event_queue.put_nowait(None)  # Sentinel to wake up waiting task
+            except asyncio.QueueFull:
+                # Queue is full, but that's okay - task will wake up on timeout or cancellation
+                pass
+
+            # Cancel processing task explicitly if it exists
+            if self._processing_task and not self._processing_task.done():
+                self._processing_task.cancel()
+                try:
+                    await self._processing_task
+                except asyncio.CancelledError:
+                    pass
+
             # Cancel all active tasks and wait for graceful shutdown
             if self._active_tasks:
                 for task in list(self._active_tasks):
@@ -167,7 +183,17 @@ class EventBus:
             self._logger.info("EventBus pure async processing stopped")
 
     async def _handle_event_async(self, event: BaseEvent) -> None:
-        """Handle a single event by calling all registered subscribers with pure async coordination."""
+        """
+        Handle a single event by calling all registered subscribers with structured concurrency.
+
+        Uses asyncio.TaskGroup (Python 3.11+) for structured concurrency to ensure:
+        - Proper exception propagation
+        - Automatic cancellation of all tasks if one fails
+        - Clean resource management
+        - No orphaned tasks
+
+        AnyIO Pattern: Task groups provide structured concurrency similar to anyio.create_task_group()
+        """
         event_type = type(event)
         subscribers = self._subscribers.get(event_type, [])
 
@@ -181,35 +207,73 @@ class EventBus:
 
         import inspect
 
-        # Process subscribers with proper async handling and task lifecycle management - Task 1.5
+        # Separate async and sync subscribers
+        async_subscribers: list[Callable[[BaseEvent], Any]] = []
+        sync_subscribers: list[Callable[[BaseEvent], Any]] = []
+
         for subscriber in subscribers:
+            if inspect.iscoroutinefunction(subscriber):
+                async_subscribers.append(subscriber)
+            else:
+                sync_subscribers.append(subscriber)
+
+        # Process sync subscribers first (they're blocking but quick)
+        for subscriber in sync_subscribers:
             try:
-                # Check if subscriber is async
-                if inspect.iscoroutinefunction(subscriber):
-                    # Create and track task properly for cancellation - Task 1.5: Task References
+                subscriber(event)
+            except Exception as e:
+                subscriber_name = getattr(subscriber, "__name__", "unknown")
+                self._logger.error("Error in sync event subscriber", subscriber_name=subscriber_name, error=str(e))
+
+        # Process async subscribers with structured concurrency
+        # Use asyncio.gather with return_exceptions=True to ensure all subscribers run
+        # even if individual ones fail (appropriate for event subscribers)
+        if async_subscribers:
+            # Create all subscriber tasks first
+            tasks: list[asyncio.Task] = []
+            subscriber_names: dict[asyncio.Task, str] = {}
+
+            for subscriber in async_subscribers:
+                subscriber_name = getattr(subscriber, "__name__", "unknown")
+                try:
+                    # Create task and track it
                     task = asyncio.create_task(subscriber(event))
+                    tasks.append(task)
+                    subscriber_names[task] = subscriber_name
                     self._active_tasks.add(task)
 
                     # Remove from active tasks when complete
-                    def remove_task(t: asyncio.Task) -> None:
+                    def remove_task(t: asyncio.Task, sn: str = subscriber_name) -> None:
                         self._active_tasks.discard(t)
 
                     task.add_done_callback(remove_task)
-                    # Handle task completion with proper exception handling
-                    subscriber_name = subscriber.__name__
+                    self._logger.debug("Created tracked task for async subscriber", subscriber_name=subscriber_name)
+                except Exception as e:
+                    # If task creation fails, log but continue with other subscribers
+                    self._logger.error(
+                        "Failed to create task for subscriber", subscriber_name=subscriber_name, error=str(e)
+                    )
 
-                    # Create a typed callback to avoid lambda type inference issues
-                    def task_done_callback(t: asyncio.Task, sn: str = subscriber_name) -> None:
-                        self._handle_task_result_async(t, sn)
-
-                    task.add_done_callback(task_done_callback)
-
-                    self._logger.debug("Created tracked task for async subscriber", subscriber_name=subscriber.__name__)
-                else:
-                    # Call sync subscriber directly without threading hybrid antipattern
-                    subscriber(event)
-            except Exception as e:
-                self._logger.error("Error in event subscriber", subscriber_name=subscriber.__name__, error=str(e))
+            # Wait for all tasks with structured concurrency pattern
+            # return_exceptions=True ensures all tasks complete even if some fail
+            if tasks:
+                try:
+                    results = await asyncio.gather(*tasks, return_exceptions=True)
+                    # Log any exceptions from subscribers
+                    for task, result in zip(tasks, results, strict=False):
+                        subscriber_name = subscriber_names.get(task, "unknown")
+                        if isinstance(result, Exception):
+                            self._logger.error(
+                                "Error in async subscriber",
+                                subscriber_name=subscriber_name,
+                                error=str(result),
+                                error_type=type(result).__name__,
+                            )
+                except Exception as e:
+                    # This should not happen with return_exceptions=True, but handle defensively
+                    self._logger.error(
+                        "Unexpected error in subscriber task group", error=str(e), error_type=type(e).__name__
+                    )
 
     def _handle_task_result_async(self, task: asyncio.Task, subscriber_name: str) -> None:
         """Handle async task completion with proper exception extraction."""

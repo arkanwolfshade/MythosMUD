@@ -7,8 +7,15 @@ creation, retrieval, validation, and state management.
 
 import datetime
 import uuid
+from typing import TYPE_CHECKING, Any
 
 from ..alias_storage import AliasStorage
+
+if TYPE_CHECKING:
+    from sqlalchemy.ext.asyncio import AsyncSession
+
+    from ..persistence import PersistenceLayer
+    from ..services.player_respawn_service import PlayerRespawnService
 from ..config import get_config
 from ..exceptions import DatabaseError, ValidationError
 from ..logging.enhanced_logging_config import get_logger
@@ -81,7 +88,11 @@ class PlayerService:
             user_id = uuid.uuid4()
             logger.debug("Generated user_id for new player")
 
-        current_time = datetime.datetime.now()
+        # Use naive UTC datetime for PostgreSQL TIMESTAMP WITHOUT TIME ZONE compatibility
+        from datetime import UTC
+
+        current_time = datetime.datetime.now(UTC).replace(tzinfo=None)
+        # Generate UUID for player_id - Player model now uses UUID type
         player = Player(
             player_id=uuid.uuid4(),
             user_id=user_id,
@@ -153,7 +164,11 @@ class PlayerService:
             user_id = uuid.uuid4()
             logger.debug("Generated user_id for new player")
 
-        current_time = datetime.datetime.now()
+        # Use naive UTC datetime for PostgreSQL TIMESTAMP WITHOUT TIME ZONE compatibility
+        from datetime import UTC
+
+        current_time = datetime.datetime.now(UTC).replace(tzinfo=None)
+        # Generate UUID for player_id - Player model now uses UUID type
         player = Player(
             player_id=uuid.uuid4(),
             user_id=user_id,
@@ -174,7 +189,7 @@ class PlayerService:
             # Dictionary
             player.set_stats(stats)  # type: ignore[arg-type]
 
-        # Ensure JSON TEXT fields are initialized (SQLite NOT NULL constraints)
+        # Ensure JSONB fields are initialized (PostgreSQL NOT NULL constraints)
         if not getattr(player, "inventory", None):
             player.set_inventory([])
         if not getattr(player, "status_effects", None):
@@ -187,17 +202,17 @@ class PlayerService:
         # Convert to schema format
         return await self._convert_player_to_schema(player)
 
-    async def get_player_by_id(self, player_id: str) -> PlayerRead | None:
+    async def get_player_by_id(self, player_id: uuid.UUID) -> PlayerRead | None:
         """
         Get a player by their ID.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
 
         Returns:
             PlayerRead: The player data, or None if not found
         """
-        player_id = str(player_id)
+        # Structlog handles UUID objects automatically, no need to convert to string
         logger.debug("Getting player by ID", player_id=player_id)
 
         player = await self.persistence.async_get_player(player_id)
@@ -417,12 +432,12 @@ class PlayerService:
 
         return True, "Valid player name"
 
-    async def delete_player(self, player_id: str) -> tuple[bool, str]:
+    async def delete_player(self, player_id: uuid.UUID) -> tuple[bool, str]:
         """
         Delete a player character.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
 
         Returns:
             tuple[bool, str]: (success, message)
@@ -522,12 +537,12 @@ class PlayerService:
                 user_friendly="Failed to update player location",
             )
 
-    async def apply_sanity_loss(self, player_id: str, amount: int, source: str = "unknown") -> dict:
+    async def apply_sanity_loss(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
         """
         Apply sanity loss to a player.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             amount: Amount of sanity to lose
             source: Source of the sanity loss
 
@@ -557,12 +572,12 @@ class PlayerService:
         logger.info("Sanity loss applied successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Applied {amount} sanity loss to {player.name}"}
 
-    async def apply_fear(self, player_id: str, amount: int, source: str = "unknown") -> dict:
+    async def apply_fear(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
         """
         Apply fear to a player.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             amount: Amount of fear to apply
             source: Source of the fear
 
@@ -592,12 +607,12 @@ class PlayerService:
         logger.info("Fear applied successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Applied {amount} fear to {player.name}"}
 
-    async def apply_corruption(self, player_id: str, amount: int, source: str = "unknown") -> dict:
+    async def apply_corruption(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
         """
         Apply corruption to a player.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             amount: Amount of corruption to apply
             source: Source of the corruption
 
@@ -627,12 +642,12 @@ class PlayerService:
         logger.info("Corruption applied successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Applied {amount} corruption to {player.name}"}
 
-    async def gain_occult_knowledge(self, player_id: str, amount: int, source: str = "unknown") -> dict:
+    async def gain_occult_knowledge(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
         """
         Gain occult knowledge (with sanity loss).
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             amount: Amount of occult knowledge to gain
             source: Source of the knowledge
 
@@ -662,12 +677,12 @@ class PlayerService:
         logger.info("Occult knowledge gained successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Gained {amount} occult knowledge for {player.name}"}
 
-    async def heal_player(self, player_id: str, amount: int) -> dict:
+    async def heal_player(self, player_id: uuid.UUID, amount: int) -> dict:
         """
         Heal a player's health.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             amount: Amount of health to restore
 
         Returns:
@@ -696,12 +711,12 @@ class PlayerService:
         logger.info("Player healed successfully", player_id=player_id, amount=amount)
         return {"message": f"Healed {player.name} for {amount} health"}
 
-    async def damage_player(self, player_id: str, amount: int, damage_type: str = "physical") -> dict:
+    async def damage_player(self, player_id: uuid.UUID, amount: int, damage_type: str = "physical") -> dict:
         """
         Damage a player's health.
 
         Args:
-            player_id: The player's ID
+            player_id: The player's ID (UUID)
             amount: Amount of damage to apply
             damage_type: Type of damage
 
@@ -730,6 +745,120 @@ class PlayerService:
         await self.persistence.async_damage_player(player, amount, damage_type)
         logger.info("Player damaged successfully", player_id=player_id, amount=amount, damage_type=damage_type)
         return {"message": f"Damaged {player.name} for {amount} {damage_type} damage"}
+
+    async def respawn_player_by_user_id(
+        self,
+        user_id: str,
+        session: "AsyncSession",
+        respawn_service: "PlayerRespawnService",
+        persistence: "PersistenceLayer",
+    ) -> dict[str, Any]:
+        """
+        Respawn a dead player by user ID.
+
+        This method handles the complete respawn flow:
+        1. Gets player by user_id
+        2. Verifies player is dead
+        3. Calls respawn service to respawn player
+        4. Gets respawn room data
+        5. Returns structured response
+
+        Args:
+            user_id: The user ID to respawn
+            session: Database session for player data access
+            respawn_service: PlayerRespawnService instance
+            persistence: PersistenceLayer for room data access
+
+        Returns:
+            dict: Respawn response with player and room data
+
+        Raises:
+            ValidationError: If player not found or not dead
+        """
+        from sqlalchemy import select
+        from sqlalchemy.orm import selectinload
+
+        # Look up player by user_id (not primary key player_id)
+        # Eagerly load user relationship to prevent N+1 queries
+        stmt = select(Player).options(selectinload(Player.user)).where(Player.user_id == user_id)
+        result = await session.execute(stmt)
+        player = result.scalar_one_or_none()
+        if not player:
+            context = create_error_context()
+            context.metadata["operation"] = "respawn_player_by_user_id"
+            context.metadata["user_id"] = user_id
+            log_and_raise_enhanced(
+                ValidationError,
+                "Player not found for respawn",
+                context=context,
+                details={"user_id": user_id},
+                user_friendly="Player not found",
+            )
+
+        # Verify player is dead
+        if not player.is_dead():
+            context = create_error_context()
+            context.metadata["operation"] = "respawn_player_by_user_id"
+            context.metadata["user_id"] = user_id
+            context.metadata["player_hp"] = player.get_stats().get("current_health", 0)
+            log_and_raise_enhanced(
+                ValidationError,
+                "Player must be dead to respawn (HP must be -10 or below)",
+                context=context,
+                details={"user_id": user_id, "player_hp": player.get_stats().get("current_health", 0)},
+                user_friendly="Player must be dead to respawn",
+            )
+
+        # Respawn the player
+        # Convert player.player_id to UUID (handles SQLAlchemy Column[str])
+        # SQLAlchemy Column[str] returns UUID at runtime, but mypy sees it as Column[str]
+        # Always convert to string first, then to UUID
+        player_id_value = player.player_id
+        player_id_uuid = uuid.UUID(str(player_id_value))
+        success = await respawn_service.respawn_player(player_id_uuid, session)
+        if not success:
+            logger.error("Respawn failed", player_id=player.player_id)
+            context = create_error_context()
+            context.metadata["operation"] = "respawn_player_by_user_id"
+            context.metadata["user_id"] = user_id
+            # Structlog handles UUID objects automatically, no need to convert to string
+            context.metadata["player_id"] = player.player_id
+            log_and_raise_enhanced(
+                ValidationError,
+                "Failed to respawn player",
+                context=context,
+                # Structlog handles UUID objects automatically, no need to convert to string
+                details={"user_id": user_id, "player_id": player.player_id},
+                user_friendly="Respawn failed",
+            )
+
+        # Get respawn room data
+        respawn_room_id = player.current_room_id  # Updated by respawn_player
+        room = persistence.get_room(str(respawn_room_id))
+
+        if not room:
+            logger.warning("Respawn room not found", respawn_room_id=respawn_room_id)
+            room_data = {"id": respawn_room_id, "name": "Unknown Room"}
+        else:
+            room_data = room.to_dict()
+
+        # Get updated player state
+        updated_stats = player.get_stats()
+
+        logger.info("Player respawned successfully", player_id=player.player_id, respawn_room=respawn_room_id)
+
+        return {
+            "success": True,
+            "player": {
+                "id": player.player_id,
+                "name": player.name,
+                "hp": updated_stats.get("current_health", 100),
+                "max_hp": 100,
+                "current_room_id": respawn_room_id,
+            },
+            "room": room_data,
+            "message": "You have been resurrected and returned to the waking world",
+        }
 
     async def _convert_player_to_schema(self, player) -> PlayerRead:
         """

@@ -7,6 +7,7 @@ is working correctly with the proper number of broadcast calls.
 
 import asyncio
 from unittest.mock import AsyncMock, Mock
+from uuid import uuid4
 
 import pytest
 
@@ -49,8 +50,9 @@ class TestWorkingEventSystem:
         mock_room.get_players.return_value = []  # Empty list of players
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
-        # Create and publish event
-        event = PlayerEnteredRoom(player_id="test_player_123", room_id="test_room_001")
+        # Create and publish event (use UUID for player_id)
+        test_player_id = str(uuid4())
+        event = PlayerEnteredRoom(player_id=test_player_id, room_id="test_room_001")
 
         # Publish event
         event_bus.publish(event)
@@ -107,8 +109,9 @@ class TestWorkingEventSystem:
         mock_room.get_players.return_value = []  # Empty list of players
         mock_connection_manager.persistence.get_room.return_value = mock_room
 
-        # Create and publish event
-        event = PlayerLeftRoom(player_id="test_player_123", room_id="test_room_001")
+        # Create and publish event (use UUID for player_id)
+        test_player_id = str(uuid4())
+        event = PlayerLeftRoom(player_id=test_player_id, room_id="test_room_001")
 
         # Publish event
         event_bus.publish(event)
@@ -160,8 +163,9 @@ class TestWorkingEventSystem:
         mock_connection_manager._get_player.return_value = mock_player
         mock_connection_manager.persistence.get_room.return_value = room
 
-        # Test 1: Player enters room
-        room.player_entered("test_player_123")
+        # Test 1: Player enters room (use UUID string for player_id)
+        test_player_id = str(uuid4())
+        room.player_entered(test_player_id)
         await asyncio.sleep(0.3)
 
         # Verify player entered event was broadcast (2 calls: player_entered + room_occupants)
@@ -176,7 +180,7 @@ class TestWorkingEventSystem:
         mock_connection_manager.broadcast_to_room.reset_mock()
 
         # Test 2: Player leaves room
-        room.player_left("test_player_123")
+        room.player_left(test_player_id)
         await asyncio.sleep(0.3)
 
         # Verify player left event was broadcast (2 calls: player_left + room_occupants)

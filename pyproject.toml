@@ -26,7 +26,8 @@ dependencies = [
     "pre-commit>=4.4.0",
     "pytest>=8.4.2",
     "pytest-cov>=7.0.0",
-    "aiosqlite>=0.21.0",
+    "psycopg2-binary>=2.9.9",
+    "asyncpg>=0.29.0",
     "pytest-asyncio>=1.2.0",
     "jsonschema>=4.20.0",
     "bleach>=6.3.0",
@@ -54,7 +55,6 @@ dev = [
     "pytest-asyncio>=1.2.0",
     "debugpy>=1.8.15",
     "ruff>=0.14.4",
-    "aiosqlite>=0.21.0",
     "pre-commit>=4.4.0",
     "mypy>=1.13.0",  # Static type checking
     "types-requests>=2.32.0",  # Type stubs for requests
@@ -116,7 +116,6 @@ known_third_party = [
     "structlog",
     "fastapi_users",
     "pytest",
-    "aiosqlite",
     "jsonschema",
     "bleach",
     "tqdm",
@@ -195,9 +194,8 @@ no_implicit_reexport = false  # Low priority for now
 
 # Performance optimizations (best practices)
 cache_dir = ".mypy_cache"
-sqlite_cache = true
-namespace_packages = true
-explicit_package_bases = true
+namespace_packages = false  # Changed: server is not a namespace package
+explicit_package_bases = false  # Changed: not using explicit package bases
 
 # Discovery settings
 follow_imports = "normal"
@@ -216,10 +214,15 @@ exclude = [
     "^scripts/",
     "^docs/",
     "^tools/",
-    "^monitoring/",
     "^server/alembic/",
     "^server/test_who_command_direct.py$",
+    "^server/tests/scripts/",
 ]
+
+# Per-module options - Allow imports from server.scripts (excluded from type checking but imports allowed)
+[[tool.mypy.overrides]]
+module = "server.scripts.*"
+ignore_missing_imports = true
 
 # Per-module options - Third-party libraries without stubs or with incomplete stubs
 [[tool.mypy.overrides]]
@@ -235,18 +238,29 @@ module = [
     "jose.*",
     "faker.*",
     "dotenv.*",
-    "aiosqlite.*",
     "jsonschema.*",
     "pwdlib.*",
     "alembic.*",
     "flask.*",
     "pytest.*",
     "prometheus_client.*",
+    "psycopg2.*",
+    "asyncpg.*",
     "analyze_error_logs",
     "error_monitoring",
     "server.async_utils.tracked_task_manager",
     "server.tests.windows_logging_fix",
     "server.tests.windows_event_loop_fix",
+]
+ignore_missing_imports = true
+
+# Test files - ignore missing imports to focus on production code
+# Human reader: Test files have many dynamic imports and mocks that confuse mypy
+# AI reader: Test files use extensive mocking and dynamic imports that mypy can't resolve
+[[tool.mypy.overrides]]
+module = [
+    "server.tests.*",
+    "tests.*",
 ]
 ignore_missing_imports = true
 

@@ -184,7 +184,7 @@ Describe "NATS Manager Environment Variable Support" {
             # Arrange
             $envContent = @"
 NATS_SERVER_PATH=C:\custom\nats-server.exe
-DATABASE_URL=sqlite:///./data/players/players.db
+DATABASE_URL=postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit
 "@
             $envFile = Join-Path $TestDrive ".env"
             $envContent | Out-File -FilePath $envFile -Encoding UTF8

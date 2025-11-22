@@ -257,6 +257,45 @@ describe('ChatPanel', () => {
       expect(screen.queryByText('System: Welcome to the game!')).not.toBeInTheDocument();
     });
 
+    it('should exclude combat messages from chat panel', () => {
+      const messagesWithCombat = [
+        ...mockMessages,
+        {
+          text: 'You hit Player2 for 10 damage! (90/100 HP)',
+          timestamp: '2024-01-01T10:05:00Z',
+          isHtml: false,
+          messageType: 'combat',
+          channel: 'combat',
+        },
+        {
+          text: 'NPC attacks you for 5 damage! (95/100 HP)',
+          timestamp: '2024-01-01T10:06:00Z',
+          isHtml: false,
+          messageType: 'combat',
+          channel: 'game',
+        },
+        {
+          text: 'Combat has begun! Turn order: Player1, Player2',
+          timestamp: '2024-01-01T10:07:00Z',
+          isHtml: false,
+          messageType: 'system',
+          channel: 'combat',
+        },
+      ];
+
+      render(<ChatPanel {...defaultProps} messages={messagesWithCombat} selectedChannel="all" />);
+
+      // Combat messages should not appear in chat panel
+      expect(screen.queryByText('You hit Player2 for 10 damage! (90/100 HP)')).not.toBeInTheDocument();
+      expect(screen.queryByText('NPC attacks you for 5 damage! (95/100 HP)')).not.toBeInTheDocument();
+      // Combat start message should also be excluded (it's a system message)
+      expect(screen.queryByText('Combat has begun! Turn order: Player1, Player2')).not.toBeInTheDocument();
+
+      // Chat messages should still appear
+      expect(screen.getByText('[local] Player1 says: Hello everyone!')).toBeInTheDocument();
+      expect(screen.getByText('[whisper] Player2 whispers: Secret message')).toBeInTheDocument();
+    });
+
     it('should display empty state when no messages', () => {
       render(<ChatPanel {...defaultProps} messages={[]} />);
 

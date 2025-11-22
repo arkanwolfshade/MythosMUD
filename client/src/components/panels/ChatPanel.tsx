@@ -92,6 +92,11 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         return false;
       }
 
+      // Exclude combat messages - they belong in Game Info panel only
+      if (message.messageType === 'combat') {
+        return false;
+      }
+
       if (isAllChannelSelected) {
         return true;
       }

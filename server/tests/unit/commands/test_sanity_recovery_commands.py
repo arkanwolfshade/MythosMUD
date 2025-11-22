@@ -19,9 +19,14 @@ from server.models.user import User
 
 @pytest.fixture
 async def session_factory():
-    engine = create_async_engine("sqlite+aiosqlite:///:memory:", future=True)
+    import os
+
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url or not database_url.startswith("postgresql"):
+        raise ValueError("DATABASE_URL must be set to a PostgreSQL URL. SQLite is no longer supported.")
+    engine = create_async_engine(database_url, future=True)
     async with engine.begin() as conn:
-        await conn.exec_driver_sql("PRAGMA foreign_keys=ON")
+        # PostgreSQL always enforces foreign keys - no PRAGMA needed
         await conn.run_sync(Base.metadata.create_all)
     maker = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
     try:
@@ -31,19 +36,26 @@ async def session_factory():
 
 
 async def _create_player(session: AsyncSession, *, player_name: str, room_id: str, san: int = 50) -> Player:
+    # Use unique identifiers to avoid IntegrityError in parallel test runs
+    unique_suffix = uuid.uuid4().hex[:8]
+    unique_username = f"{player_name}_{unique_suffix}"
+    unique_email = f"{player_name}_{unique_suffix}@example.com"
+    unique_player_name = f"{player_name}_{unique_suffix}"
+
     user = User(
         id=str(uuid.uuid4()),
-        email=f"{player_name}@example.com",
-        username=player_name,
+        email=unique_email,
+        username=unique_username,
+        display_name=unique_username,
         hashed_password="hashed",
         is_active=True,
         is_superuser=False,
         is_verified=True,
     )
     player = Player(
-        player_id=f"player-{uuid.uuid4()}",
+        player_id=str(uuid.uuid4()),
         user_id=user.id,
-        name=player_name,
+        name=unique_player_name,
         current_room_id=room_id,
     )
     session.add_all([user, player])

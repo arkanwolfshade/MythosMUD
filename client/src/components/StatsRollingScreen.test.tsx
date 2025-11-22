@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor, act } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { StatsRollingScreen } from './StatsRollingScreen';
 
 // Mock fetch globally
@@ -25,6 +25,10 @@ describe('StatsRollingScreen', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   describe('Initial Rendering', () => {
@@ -79,7 +83,7 @@ describe('StatsRollingScreen', () => {
       render(<StatsRollingScreen {...defaultProps} />);
 
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith('http://localhost:54731/players/roll-stats', {
+        expect(mockFetch).toHaveBeenCalledWith('http://localhost:54731/api/players/roll-stats', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

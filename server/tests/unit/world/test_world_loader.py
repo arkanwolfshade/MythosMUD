@@ -1,10 +1,14 @@
 # Import the module to ensure coverage tracking
 from pathlib import Path
 
+import pytest
+
 import server.world_loader
-from server.world_loader import load_rooms
+
+# Note: load_rooms has been removed - rooms are now loaded from database
 
 
+@pytest.mark.skip(reason="load_rooms removed - rooms now loaded from database")
 def test_load_rooms():
     """Test loading rooms from the unit_test environment."""
     # Configure path to unit_test environment rooms
@@ -17,7 +21,7 @@ def test_load_rooms():
     try:
         server.world_loader.ROOMS_BASE_PATH = str(unit_test_rooms_path)
 
-        rooms = load_rooms()
+        rooms = load_rooms()  # noqa: F821
         assert isinstance(rooms, dict)
         assert len(rooms) > 0, "No rooms loaded. Add at least one room JSON file."
         for _room_id, room in rooms.items():
@@ -32,6 +36,7 @@ def test_load_rooms():
         server.world_loader.ROOMS_BASE_PATH = original_path
 
 
+@pytest.mark.skip(reason="load_rooms removed - rooms now loaded from database")
 def test_loader_as_script(capsys):
     """Test that world_loader can be run as a script."""
     # Configure path to unit_test environment rooms
@@ -44,7 +49,7 @@ def test_loader_as_script(capsys):
     try:
         server.world_loader.ROOMS_BASE_PATH = str(unit_test_rooms_path)
 
-        rooms = load_rooms()
+        rooms = load_rooms()  # noqa: F821
         print(f"Loaded {len(rooms)} rooms:")
         for _room_id, room in rooms.items():
             print(f"- {_room_id}: {room['name']}")
@@ -56,6 +61,7 @@ def test_loader_as_script(capsys):
         server.world_loader.ROOMS_BASE_PATH = original_path
 
 
+@pytest.mark.skip(reason="load_rooms removed - rooms now loaded from database")
 def test_corrupted_room_file(tmp_path):
     # Create a zone and a corrupted room file
     zone_dir = tmp_path / "arkham"
@@ -73,9 +79,7 @@ def test_corrupted_room_file(tmp_path):
 def test_module_coverage():
     """Test to ensure world_loader module is properly imported for coverage."""
     # This test ensures the module is executed and tracked by coverage
-    assert hasattr(server.world_loader, "load_rooms")
-    assert hasattr(server.world_loader, "load_hierarchical_world")
+    # Note: load_rooms, load_hierarchical_world, and resolve_room_reference have been removed
+    # as rooms are now loaded from database instead of files
     assert hasattr(server.world_loader, "generate_room_id")
     assert hasattr(server.world_loader, "get_room_environment")
-    assert hasattr(server.world_loader, "resolve_room_reference")
-    assert hasattr(server.world_loader, "ROOMS_BASE_PATH")

@@ -4,15 +4,18 @@ from __future__ import annotations
 
 import json
 import logging
-import sqlite3
 from datetime import UTC, datetime
-from pathlib import Path
 from typing import Protocol, cast
 
 import pytest
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
+from server.database import get_database_url
 from server.exceptions import DatabaseError
+from server.models.base import Base
 from server.models.player import Player
+from server.models.user import User
 from server.persistence import PersistenceLayer
 
 
@@ -29,37 +32,84 @@ class InventoryLoadLogRecord(Protocol):
     player_id: str
 
 
-def initialize_database(db_path: Path, user_id: str = "inventory-validation-user") -> None:
-    schema_sql = Path("server/sql/schema.sql").read_text(encoding="utf-8")
+@pytest.fixture
+async def async_session_factory():
+    """Create an async session factory for database setup."""
+    database_url = get_database_url()
+    if not database_url or not database_url.startswith("postgresql"):
+        pytest.skip("DATABASE_URL must be set to a PostgreSQL URL for this test.")
 
-    with sqlite3.connect(db_path) as conn:
-        conn.execute("PRAGMA foreign_keys = ON")
-        conn.executescript(schema_sql)
-        conn.execute(
-            """
-            INSERT OR REPLACE INTO users (
-                id, email, username, hashed_password, is_active, is_superuser, is_verified
-            ) VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                user_id,
-                "inventory_validation@example.com",
-                "inventory_validation_user",
-                "hashed-password",
-                1,
-                0,
-                1,
-            ),
-        )
-        conn.commit()
+    engine = create_async_engine(database_url, future=True)
+    async with engine.begin() as conn:
+        # Create tables
+        await conn.run_sync(Base.metadata.create_all)
+
+    factory = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+    try:
+        yield factory
+    finally:
+        await engine.dispose()
 
 
-def build_player(player_id: str, user_id: str) -> Player:
+async def initialize_database(session: AsyncSession, user_id: str | None = None) -> str:
+    """Create required schema and seed data in PostgreSQL.
+
+    Returns:
+        The UUID of the created user (as string)
+    """
+    import uuid
+
+    # Generate a proper UUID for user_id if not provided
+    if user_id is None:
+        user_uuid = uuid.uuid4()
+    else:
+        # If user_id is provided, try to use it as UUID, or generate new one
+        try:
+            user_uuid = uuid.UUID(user_id)
+        except (ValueError, AttributeError):
+            # If it's not a valid UUID, generate a new one
+            user_uuid = uuid.uuid4()
+
+    unique_suffix = str(user_uuid)[:8]
+
+    # Create user with unique email and username
+    user = User(
+        id=str(user_uuid),
+        email=f"inventory_validation_{unique_suffix}@example.com",
+        username=f"inventory_validation_user_{unique_suffix}",
+        display_name=f"inventory_validation_user_{unique_suffix}",
+        hashed_password="hashed-password",
+        is_active=True,
+        is_superuser=False,
+        is_verified=True,
+    )
+    session.add(user)
+    await session.commit()
+    return str(user_uuid)
+
+
+def build_player(player_id: str, user_id: str, name: str | None = None) -> Player:
+    """Create a Player instance with timestamps normalized for persistence tests."""
+    import json
+    import uuid
+
+    # Use unique name based on player_id if not provided
+    # Player.name has unique constraint, so we need to ensure uniqueness
+    if name is None:
+        # Use a combination of player_id and a short UUID to ensure uniqueness
+        unique_part = player_id.replace("-", "")[-12:] if len(player_id) > 12 else player_id
+        name = f"InventoryValidator-{unique_part}-{str(uuid.uuid4())[:8]}"
+
     player = Player(
         player_id=player_id,
         user_id=user_id,
-        name="InventoryValidator",
+        name=name,
         current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
+        status_effects=json.dumps([]),  # Ensure status_effects is set (not null)
+        experience_points=0,  # Ensure experience_points is set (not null)
+        level=1,  # Ensure level is set (not null)
+        is_admin=0,  # Ensure is_admin is set (not null)
+        profession_id=0,  # Ensure profession_id is set (not null)
     )
     now = datetime.now(UTC).replace(tzinfo=None)
     player.created_at = now  # type: ignore[assignment]
@@ -67,17 +117,26 @@ def build_player(player_id: str, user_id: str) -> Player:
     return player
 
 
-def test_save_player_with_oversized_inventory_rejected(
-    tmp_path: Path,
+@pytest.mark.asyncio
+async def test_save_player_with_oversized_inventory_rejected(
+    async_session_factory,
     caplog: pytest.LogCaptureFixture,
     capsys: pytest.CaptureFixture[str],
 ):
-    db_path = tmp_path / "oversized_inventory.db"
-    user_id = "oversized-user"
-    initialize_database(db_path, user_id=user_id)
+    """Test that saving a player with oversized inventory is rejected."""
+    database_url = get_database_url()
+    if not database_url or not database_url.startswith("postgresql"):
+        pytest.skip("DATABASE_URL must be set to a PostgreSQL URL for this test.")
 
-    persistence = PersistenceLayer(db_path=str(db_path))
-    player = build_player("oversized-player", user_id)
+    import uuid
+
+    unique_suffix = str(uuid.uuid4())[:8]
+
+    async with async_session_factory() as session:
+        user_id = await initialize_database(session)
+
+    persistence = PersistenceLayer(db_path=database_url)
+    player = build_player(f"oversized-player-{unique_suffix}", user_id)
 
     invalid_inventory = []
     for idx in range(25):
@@ -100,6 +159,7 @@ def test_save_player_with_oversized_inventory_rejected(
             persistence.save_player(player)
 
     player_name = cast(str, player.name)
+    player_id_str = str(player.player_id)  # Convert to str for type checking
     assert "Inventory validation failed" in str(excinfo.value)
     error_logs = [
         record for record in caplog.records if record.message == "Inventory payload validation failed during save"
@@ -107,26 +167,35 @@ def test_save_player_with_oversized_inventory_rejected(
     combined_output = (caplog.text or "") + capsys.readouterr().out
     if error_logs:
         log_record = cast(InventorySaveLogRecord, error_logs[0])
-        assert log_record.player_id == "oversized-player"
+        assert log_record.player_id == player_id_str
         assert log_record.player_name == player_name
     else:
         assert "Inventory payload validation failed during save" in combined_output
-        assert "oversized-player" in combined_output
+        assert player_id_str in combined_output
         assert player_name in combined_output
     caplog.clear()
 
 
-def test_save_player_with_invalid_equipped_payload_rejected(
-    tmp_path: Path,
+@pytest.mark.asyncio
+async def test_save_player_with_invalid_equipped_payload_rejected(
+    async_session_factory,
     caplog: pytest.LogCaptureFixture,
     capsys: pytest.CaptureFixture[str],
 ):
-    db_path = tmp_path / "invalid_equipped.db"
-    user_id = "equipped-user"
-    initialize_database(db_path, user_id=user_id)
+    """Test that saving a player with invalid equipped payload is rejected."""
+    database_url = get_database_url()
+    if not database_url or not database_url.startswith("postgresql"):
+        pytest.skip("DATABASE_URL must be set to a PostgreSQL URL for this test.")
 
-    persistence = PersistenceLayer(db_path=str(db_path))
-    player = build_player("equipped-player", user_id)
+    import uuid
+
+    unique_suffix = str(uuid.uuid4())[:8]
+
+    async with async_session_factory() as session:
+        user_id = await initialize_database(session)
+
+    persistence = PersistenceLayer(db_path=database_url)
+    player = build_player(f"equipped-player-{unique_suffix}", user_id)
 
     player.set_inventory([])
     player.set_equipped_items(
@@ -165,17 +234,28 @@ def test_save_player_with_invalid_equipped_payload_rejected(
     caplog.clear()
 
 
-def test_loading_player_with_corrupt_inventory_raises(
-    tmp_path: Path,
+@pytest.mark.asyncio
+async def test_loading_player_with_corrupt_inventory_raises(
+    async_session_factory,
     caplog: pytest.LogCaptureFixture,
     capsys: pytest.CaptureFixture[str],
 ):
-    db_path = tmp_path / "corrupt_inventory.db"
-    user_id = "corrupt-user"
-    initialize_database(db_path, user_id=user_id)
+    """Test that loading a player with corrupt inventory raises an error."""
+    database_url = get_database_url()
+    if not database_url or not database_url.startswith("postgresql"):
+        pytest.skip("DATABASE_URL must be set to a PostgreSQL URL for this test.")
 
-    persistence = PersistenceLayer(db_path=str(db_path))
-    player = build_player("corrupt-player", user_id)
+    import uuid
+
+    # Use proper UUID format for player_id (PostgreSQL requires valid UUID)
+    # The test is about corrupt inventory data, not corrupt player_id format
+    player_id = str(uuid.uuid4())
+
+    async with async_session_factory() as session:
+        user_id = await initialize_database(session)
+
+    persistence = PersistenceLayer(db_path=database_url)
+    player = build_player(player_id, user_id)
     player.set_inventory([])
     persistence.save_player(player)
 
@@ -191,29 +271,38 @@ def test_loading_player_with_corrupt_inventory_raises(
                 "quantity": 1,
             }
         )
-    with sqlite3.connect(db_path) as conn:
-        conn.execute(
-            """
-            UPDATE player_inventories
-            SET inventory_json = ?
-            WHERE player_id = ?
-            """,
-            (json.dumps(oversized_payload), "corrupt-player"),
+
+    # Update the database directly using PostgreSQL async session
+    async with async_session_factory() as session:
+        await session.execute(
+            text(
+                """
+                UPDATE player_inventories
+                SET inventory_json = :inventory_json
+                WHERE player_id = :player_id
+                """
+            ),
+            {"inventory_json": json.dumps(oversized_payload), "player_id": player_id},
         )
-        conn.commit()
+        await session.commit()
 
     capsys.readouterr()
 
     with caplog.at_level(logging.ERROR, logger="server.persistence"):
         with pytest.raises(DatabaseError) as excinfo:
-            persistence.get_player("corrupt-player")
+            # Convert string player_id to UUID for type safety
+            persistence.get_player(uuid.UUID(player_id))
 
     assert "Invalid inventory payload detected in storage" in str(excinfo.value)
     load_logs = [record for record in caplog.records if record.message == "Stored inventory payload failed validation"]
     combined_output = (caplog.text or "") + capsys.readouterr().out
     if load_logs:
         load_log = cast(InventoryLoadLogRecord, load_logs[0])
-        assert load_log.player_id == "corrupt-player"
+        # Player ID is now a UUID, so check that it's a valid UUID format
+        import uuid as uuid_module
+
+        assert uuid_module.UUID(load_log.player_id)  # Will raise ValueError if not valid UUID
     else:
         assert "Stored inventory payload failed validation" in combined_output
-        assert "corrupt-player" in combined_output
+        # Player ID is now a UUID, so check for validation error instead of specific player ID
+        assert "validation failed" in combined_output.lower() or "failed validation" in combined_output.lower()

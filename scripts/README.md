@@ -93,58 +93,14 @@ Formats code using ruff.
 
 Installs project dependencies.
 
-### `init_database.py`
+### Database Initialization (PostgreSQL)
 
-Unified database initialization script that creates a database with the current schema.
-Supports both production and test databases by taking a target database path as a parameter.
+Database initialization is now handled via the authoritative schema file `db/authoritative_schema.sql`.
+See `db/README.md` for database setup instructions.
 
-**Usage:**
+**Note:** SQLite database initialization scripts have been removed as the project
+now uses PostgreSQL exclusively.
 
-```bash
-python init_database.py <database_path>
-```
-
-**Examples:**
-
-```bash
-# Initialize production database
-python init_database.py data/local/players/local_players.db
-
-# Initialize test database
-python init_database.py data/unit_test/players/unit_test_players.db
-```
-
-**Features:**
-
-- Creates database with current schema from `server/sql/schema.sql`
-- Includes case-insensitive unique constraints on username and player name
-- Automatically backs up existing databases before initialization
-- Verifies schema creation and constraint functionality
-- FastAPI Users v14 compatible schema
-
-### `init_prod_db.ps1`
-
-PowerShell wrapper to initialize the production database.
-
-**Usage:**
-
-```powershell
-.\init_prod_db.ps1
-```
-
-### `init_test_db.ps1`
-
-PowerShell wrapper to initialize the test database.
-
-**Usage:**
-
-```powershell
-.\init_test_db.ps1
-```
-
-### `bootstrap_db.py` (DEPRECATED)
-
-Legacy database bootstrapping script. Use `init_database.py` instead.
 
 ### `build.py`
 

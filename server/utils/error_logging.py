@@ -13,6 +13,8 @@ from typing import Any, NoReturn
 from fastapi import HTTPException, Request
 from fastapi.websockets import WebSocket
 
+from server.monitoring.exception_metrics import increment_exception
+
 from ..exceptions import (
     AuthenticationError,
     ConfigurationError,
@@ -24,7 +26,6 @@ from ..exceptions import (
     create_error_context,
 )
 from ..logging.enhanced_logging_config import get_logger
-from ..monitoring.exception_metrics import increment_exception
 
 logger = get_logger(__name__)
 
@@ -32,15 +33,20 @@ logger = get_logger(__name__)
 # As noted in the restricted archives, this mapping ensures that external
 # library exceptions are properly converted to our internal error taxonomy
 THIRD_PARTY_EXCEPTION_MAPPING = {
-    # Database exceptions
-    "sqlite3.Error": DatabaseError,
-    "sqlite3.OperationalError": DatabaseError,
-    "sqlite3.IntegrityError": DatabaseError,
-    "sqlite3.DatabaseError": DatabaseError,
-    "aiosqlite.Error": DatabaseError,
-    "aiosqlite.OperationalError": DatabaseError,
-    "aiosqlite.IntegrityError": DatabaseError,
-    "aiosqlite.DatabaseError": DatabaseError,
+    # Database exceptions - PostgreSQL/asyncpg
+    "asyncpg.exceptions.PostgresError": DatabaseError,
+    "asyncpg.exceptions.OperationalError": DatabaseError,
+    "asyncpg.exceptions.IntegrityConstraintViolationError": DatabaseError,
+    "asyncpg.exceptions.DatabaseError": DatabaseError,
+    "asyncpg.exceptions.InvalidPasswordError": DatabaseError,
+    "asyncpg.exceptions.ConnectionDoesNotExistError": DatabaseError,
+    "asyncpg.exceptions.TooManyConnectionsError": DatabaseError,
+    # Database exceptions - SQLAlchemy (wraps asyncpg)
+    "sqlalchemy.exc.OperationalError": DatabaseError,
+    "sqlalchemy.exc.IntegrityError": DatabaseError,
+    "sqlalchemy.exc.DatabaseError": DatabaseError,
+    "sqlalchemy.exc.ProgrammingError": DatabaseError,
+    "sqlalchemy.exc.DataError": DatabaseError,
     # Authentication exceptions
     "argon2.exceptions.HashingError": AuthenticationError,
     "argon2.exceptions.VerificationError": AuthenticationError,
@@ -95,8 +101,9 @@ def log_and_raise(
 
     # Log the error with full context
     error_logger.error(
-        f"Error logged and exception raised: {message}",
+        "Error logged and exception raised",
         error_type=exception_class.__name__,
+        error_message=message,
         details=details or {},
         user_friendly=user_friendly,
     )

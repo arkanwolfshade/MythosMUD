@@ -89,24 +89,76 @@ class DatabaseConfig(BaseSettings):
     url: str = Field(..., description="Primary database URL (required)")
     npc_url: str = Field(..., description="NPC database URL (required)")
 
+    # Connection pool configuration (SQLAlchemy)
+    pool_size: int = Field(default=5, description="Number of connections to maintain in pool")
+    max_overflow: int = Field(default=10, description="Additional connections that can be created beyond pool_size")
+    pool_timeout: int = Field(default=30, description="Seconds to wait for connection from pool")
+
+    # AsyncPG connection pool configuration
+    asyncpg_pool_min_size: int = Field(default=1, description="Minimum connections in asyncpg pool")
+    asyncpg_pool_max_size: int = Field(default=10, description="Maximum connections in asyncpg pool")
+    asyncpg_command_timeout: int = Field(default=60, description="Command timeout for asyncpg operations (seconds)")
+
     @field_validator("url", "npc_url")
     @classmethod
     def validate_database_url(cls, v: str) -> str:
-        """Validate database URL format."""
+        """Validate database URL format - PostgreSQL only."""
         logger.debug("Validating database URL", url_length=len(v) if v else 0)
         if not v:
             logger.error("Database URL validation failed - empty URL")
             raise ValueError("Database URL cannot be empty")
-        # Accept both sqlite:/// and sqlite+aiosqlite:/// formats
-        if not (v.startswith("sqlite") or v.startswith("postgresql")):
+        # PostgreSQL only - SQLite is no longer supported
+        if not v.startswith("postgresql"):
             logger.error(
                 "Database URL validation failed - invalid protocol",
                 url_preview=v[:50] if len(v) > 50 else v,
-                expected_protocols=["sqlite", "postgresql"],
+                expected_protocol="postgresql",
             )
-            raise ValueError("Database URL must start with 'sqlite' or 'postgresql'")
+            raise ValueError("Database URL must start with 'postgresql'. SQLite is no longer supported.")
         logger.debug("Database URL validation successful", url_preview=v[:50] if len(v) > 50 else v)
         return v
+
+    @field_validator(
+        "pool_size",
+        "max_overflow",
+        "pool_timeout",
+        "asyncpg_pool_min_size",
+        "asyncpg_pool_max_size",
+        "asyncpg_command_timeout",
+    )
+    @classmethod
+    def validate_pool_config(cls, v: int) -> int:
+        """Validate pool configuration values are positive."""
+        if v < 1:
+            raise ValueError("Pool configuration values must be at least 1")
+        return v
+
+    @model_validator(mode="before")
+    @classmethod
+    def ensure_url_set(cls, data: Any) -> Any:
+        """
+        Ensure url is set - use npc_url as fallback if url is missing.
+
+        This handles cases where DatabaseConfig is instantiated with only npc_url
+        (e.g., from environment variables where DATABASE_URL might not be set but
+        DATABASE_NPC_URL is). In such cases, we use npc_url as the url value.
+        """
+        # Human reader: If url is missing but npc_url is set, use npc_url as url
+        # AI reader: Fallback logic for missing url field when npc_url is available
+        if isinstance(data, dict):
+            # If url is missing but npc_url is present, use npc_url as url
+            if "url" not in data and "npc_url" in data and data["npc_url"]:
+                logger.debug("url missing but npc_url available, using npc_url as url fallback")
+                data["url"] = data["npc_url"]
+            # Also check environment variables if data is empty or url is missing
+            elif "url" not in data or not data.get("url"):
+                # Check if DATABASE_URL is in environment but not in data
+                db_url = os.getenv("DATABASE_URL")
+                npc_url = os.getenv("DATABASE_NPC_URL")
+                if not db_url and npc_url:
+                    logger.debug("DATABASE_URL missing but DATABASE_NPC_URL available, using as fallback")
+                    data["url"] = npc_url
+        return data
 
     model_config = {"env_prefix": "DATABASE_", "case_sensitive": False, "extra": "ignore"}
 
@@ -123,6 +175,9 @@ class NATSConfig(BaseSettings):
     ping_interval: int = Field(default=30, description="Ping interval in seconds")
     max_outstanding_pings: int = Field(default=5, description="Maximum outstanding pings")
 
+    # Connection health monitoring
+    health_check_interval: int = Field(default=30, description="Health check interval in seconds")
+
     # Connection pooling configuration
     connection_pool_size: int = Field(default=5, description="Number of connections in pool")
     enable_connection_pooling: bool = Field(default=True, description="Enable connection pooling")
@@ -137,6 +192,60 @@ class NATSConfig(BaseSettings):
     strict_subject_validation: bool = Field(
         default=False, description="Enable strict subject validation (reject invalid subjects)"
     )
+
+    # Message acknowledgment configuration
+    manual_ack: bool = Field(default=False, description="Enable manual message acknowledgment (ack/nak)")
+
+    # TLS/SSL configuration
+    tls_enabled: bool = Field(default=False, description="Enable TLS/SSL encryption for NATS connections")
+    tls_cert_file: str | None = Field(default=None, description="Path to TLS certificate file (.crt)")
+    tls_key_file: str | None = Field(default=None, description="Path to TLS private key file (.key)")
+    tls_ca_file: str | None = Field(default=None, description="Path to TLS CA certificate file for verification")
+    tls_verify: bool = Field(default=True, description="Verify TLS certificates (set False for self-signed certs)")
+
+    @field_validator("tls_cert_file", "tls_key_file", "tls_ca_file")
+    @classmethod
+    def validate_tls_files(cls, v: str | None, info) -> str | None:
+        """Validate TLS file paths exist when TLS is enabled."""
+        # Only validate if TLS is enabled and file is provided
+        # We can't access other fields in field_validator, so we'll do full validation in model_validator
+        if v is not None:
+            from pathlib import Path
+
+            file_path = Path(v)
+            if not file_path.exists():
+                logger.warning("TLS file path does not exist", file_path=str(file_path), field=info.field_name)
+        return v
+
+    @model_validator(mode="after")
+    def validate_tls_config(self) -> "NATSConfig":
+        """Validate TLS configuration is complete when enabled."""
+        if self.tls_enabled:
+            if not self.tls_cert_file or not self.tls_key_file:
+                logger.error(
+                    "TLS enabled but certificate or key file not provided",
+                    cert_file=self.tls_cert_file,
+                    key_file=self.tls_key_file,
+                )
+                raise ValueError("TLS certificate and key files are required when TLS is enabled")
+            # Verify files exist
+            from pathlib import Path
+
+            cert_path = Path(self.tls_cert_file)
+            key_path = Path(self.tls_key_file)
+            if not cert_path.exists():
+                raise ValueError(f"TLS certificate file not found: {self.tls_cert_file}")
+            if not key_path.exists():
+                raise ValueError(f"TLS key file not found: {self.tls_key_file}")
+            if self.tls_ca_file:
+                ca_path = Path(self.tls_ca_file)
+                if not ca_path.exists():
+                    raise ValueError(f"TLS CA file not found: {self.tls_ca_file}")
+            # Update URL to use tls:// if still using nats://
+            if self.url.startswith("nats://"):
+                logger.info("TLS enabled, updating URL scheme to tls://", old_url=self.url)
+                self.url = self.url.replace("nats://", "tls://", 1)
+        return self
 
     @field_validator("max_payload")
     @classmethod

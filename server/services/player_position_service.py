@@ -109,9 +109,10 @@ class PlayerPositionService:
         player_display_name = getattr(player, "name", player_name)
 
         if player_id_value is not None:
-            response["player_id"] = str(player_id_value)
+            # Return UUID directly - let callers convert to string if needed
+            response["player_id"] = player_id_value
         if room_id_value is not None:
-            response["room_id"] = str(room_id_value)
+            response["room_id"] = room_id_value
         response["player_display_name"] = player_display_name
 
         stats: dict[str, Any]

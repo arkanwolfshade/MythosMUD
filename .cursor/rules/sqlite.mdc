@@ -1,6 +1,5 @@
 ---
-description: This rule provides comprehensive guidance for SQLite development, covering best practices for schema design, performance optimization, security, testing, and more. It aims to ensure efficient, secure, and maintainable SQLite database applications.
-globs: *.db,*.sqlite,*.sqlite3,*.sql
+alwaysApply: false
 ---
 # SQLite Best Practices and Coding Standards
 
@@ -45,7 +44,7 @@ project_root/
 
     python
 
-    # database.py
+  # database.py
 
     import sqlite3
 
@@ -64,7 +63,7 @@ project_root/
 
     python
 
-    # models.py
+  # models.py
 
     class User:
         def **init**(self, id, username, email):
@@ -76,7 +75,7 @@ project_root/
 
     python
 
-    # queries.py
+  # queries.py
 
     CREATE_USER = """INSERT INTO users (username, email) VALUES (?, ?);"""
     GET_USER_BY_ID = """SELECT id, username, email FROM users WHERE id = ?;"""
@@ -221,7 +220,7 @@ A layered architecture helps separate concerns and improve testability.
 
     python
 
-    # tests/conftest.py
+  # tests/conftest.py
 
     import pytest
     import sqlite3
@@ -238,7 +237,7 @@ A layered architecture helps separate concerns and improve testability.
         yield conn
         conn.close()
 
-    # tests/test_database.py
+  # tests/test_database.py
 
     def test_get_user(test_db):
         cursor = test_db.cursor()
