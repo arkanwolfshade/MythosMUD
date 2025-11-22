@@ -46,6 +46,11 @@ class TestAsyncRouteHandlers:
         app.state.container = mock_application_container
         app.state.persistence = mock_persistence
 
+        # CRITICAL: Ensure connection_manager has persistence set
+        # This prevents 503 errors from readiness gate checks
+        if hasattr(mock_application_container, "connection_manager"):
+            mock_application_container.connection_manager.persistence = mock_persistence
+
         # Set additional app state attributes that middleware and routes may access
         app.state.player_service = mock_application_container.player_service
         app.state.room_service = mock_application_container.room_service

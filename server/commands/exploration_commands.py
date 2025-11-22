@@ -295,7 +295,11 @@ async def handle_go_command(
 
         if success:
             logger.info("Player moved successfully", player=player_name, from_room=room_id, to_room=target_room_id)
-            return {"result": "You move to the new location."}
+            return {
+                "result": "You move to the new location.",
+                "room_changed": True,
+                "room_id": target_room_id,
+            }
         else:
             logger.warning("Movement service failed", player=player_name, from_room=room_id, to_room=target_room_id)
             return {"result": "You can't go that way."}
