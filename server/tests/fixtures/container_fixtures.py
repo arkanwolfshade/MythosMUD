@@ -212,6 +212,12 @@ def container_test_client():
         app.state.room_cache_service = container.room_cache_service
         app.state.profession_cache_service = container.profession_cache_service
 
+        # CRITICAL: Ensure connection_manager has persistence set
+        # This prevents 503 errors from readiness gate checks
+        if container.connection_manager and container.persistence:
+            container.connection_manager.persistence = container.persistence
+            logger.info("Connection manager persistence set from container")
+
         logger.info("TestClient created with container services")
 
         # CRITICAL: Dispose database engines and reset singletons before creating TestClient
@@ -278,30 +284,36 @@ def container_test_client():
         # Cleanup: Shutdown container and dispose all database connections
         logger.info("Shutting down container after test")
         try:
-            # Shutdown container (disposes database engines)
+            # Shutdown container (disposes database engines and shuts down EventBus)
             if not loop.is_closed():
-                loop.run_until_complete(container.shutdown())
-
-            # CRITICAL: Wait for all async cleanup to complete before closing loop
-            # This ensures database connections are fully disposed
-            pending_tasks = [task for task in asyncio.all_tasks(loop) if not task.done()]
-            if pending_tasks:
-                logger.debug("Waiting for pending tasks to complete", task_count=len(pending_tasks))
-                # Give tasks a short time to complete, then cancel remaining ones
+                # Use a timeout to prevent hanging if shutdown takes too long
                 try:
-                    loop.run_until_complete(
-                        asyncio.wait_for(asyncio.gather(*pending_tasks, return_exceptions=True), timeout=2.0)
-                    )
+                    loop.run_until_complete(asyncio.wait_for(container.shutdown(), timeout=5.0))
                 except TimeoutError:
-                    logger.warning("Some tasks did not complete in time, cancelling", task_count=len(pending_tasks))
+                    logger.warning("Container shutdown timed out, forcing cleanup")
+                    # Force shutdown by cancelling all tasks
+                    pending = [task for task in asyncio.all_tasks(loop) if not task.done()]
+                    for task in pending:
+                        task.cancel()
+
+            # CRITICAL: Aggressively cancel any remaining tasks to prevent hanging
+            # Don't wait for tasks - just cancel them immediately after shutdown
+            if not loop.is_closed():
+                pending_tasks = [task for task in asyncio.all_tasks(loop) if not task.done()]
+                if pending_tasks:
+                    logger.debug("Cancelling remaining tasks", task_count=len(pending_tasks))
+                    # Cancel all remaining tasks immediately
                     for task in pending_tasks:
                         if not task.done():
                             task.cancel()
-                    # Wait briefly for cancellations
+                    # Give a very short time for cancellations, then move on
                     try:
-                        loop.run_until_complete(asyncio.gather(*pending_tasks, return_exceptions=True))
-                    except Exception:
-                        pass  # Ignore errors during cancellation
+                        loop.run_until_complete(
+                            asyncio.wait_for(asyncio.gather(*pending_tasks, return_exceptions=True), timeout=0.5)
+                        )
+                    except (TimeoutError, RuntimeError, Exception):
+                        # Ignore all errors - we're cleaning up and moving on
+                        pass
         except Exception as e:
             logger.error("Error during container shutdown", error=str(e))
     finally:
@@ -311,13 +323,24 @@ def container_test_client():
         # Only close if loop is not already closed
         if not loop.is_closed():
             try:
-                # Cancel any remaining tasks before closing
+                # Aggressively cancel any remaining tasks before closing
+                # This prevents hanging if tasks are stuck waiting
                 pending = [task for task in asyncio.all_tasks(loop) if not task.done()]
-                for task in pending:
-                    task.cancel()
+                if pending:
+                    logger.debug("Cancelling remaining tasks before loop close", task_count=len(pending))
+                    for task in pending:
+                        if not task.done():
+                            task.cancel()
+                    # Don't wait for cancellations - just close the loop
                 loop.close()
             except Exception as e:
                 logger.warning("Error closing event loop", error=str(e))
+                # Force close even if there are errors
+                try:
+                    if not loop.is_closed():
+                        loop.close()
+                except Exception:
+                    pass  # Ignore errors during forced close
         asyncio.set_event_loop(None)
 
 
