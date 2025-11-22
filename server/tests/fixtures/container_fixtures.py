@@ -216,6 +216,8 @@ def container_test_client():
         # CRITICAL: Ensure persistence is set on container and connection_manager
         # This prevents 503 errors from readiness gate checks and service failures
         # Always set persistence, even if container.persistence is None (defensive)
+        # Also ensure services have valid persistence even if container.persistence exists
+        # (services might have been created with None persistence before persistence was set)
         if container.persistence is None:
             # Defensive: If persistence is None, create a mock to prevent 503 errors
             # This can happen in test environments where database isn't fully initialized
@@ -233,25 +235,28 @@ def container_test_client():
             mock_persistence.get_room = Mock(return_value=None)
             # Set mock persistence on container
             container.persistence = mock_persistence
-            # Recreate player_service and room_service with mock persistence
-            # CRITICAL: Check if services are None OR if they have None persistence
-            # Services might have been created with None persistence before this fix runs
-            if container.player_service is None or getattr(container.player_service, "persistence", None) is None:
-                from server.game.player_service import PlayerService
-                from server.game.room_service import RoomService
-
-                container.player_service = PlayerService(persistence=mock_persistence)
-                container.room_service = RoomService(persistence=mock_persistence)
-                logger.info("PlayerService and RoomService recreated with mock persistence")
-            else:
-                # If services exist but persistence was None, update them directly
-                # This handles the case where services were created before persistence was set
-                if hasattr(container.player_service, "persistence"):
-                    container.player_service.persistence = mock_persistence
-                if hasattr(container.room_service, "persistence"):
-                    container.room_service.persistence = mock_persistence
-                logger.info("PlayerService and RoomService persistence updated to mock")
             logger.info("Container persistence set to mock (defensive)")
+
+        # CRITICAL: Always ensure services have valid persistence
+        # Even if container.persistence is not None, services might have None persistence
+        # This can happen if services were created before persistence was initialized
+        persistence_to_use = container.persistence
+        if container.player_service is None or getattr(container.player_service, "persistence", None) is None:
+            from server.game.player_service import PlayerService
+            from server.game.room_service import RoomService
+
+            container.player_service = PlayerService(persistence=persistence_to_use)
+            container.room_service = RoomService(persistence=persistence_to_use)
+            logger.info("PlayerService and RoomService recreated with valid persistence")
+        else:
+            # If services exist but persistence was None, update them directly
+            # This handles the case where services were created before persistence was set
+            if hasattr(container.player_service, "persistence") and container.player_service.persistence is None:
+                container.player_service.persistence = persistence_to_use
+                logger.info("PlayerService persistence updated")
+            if hasattr(container.room_service, "persistence") and container.room_service.persistence is None:
+                container.room_service.persistence = persistence_to_use
+                logger.info("RoomService persistence updated")
 
         # CRITICAL: Now set app.state.persistence AFTER ensuring it's not None
         # This ensures app.state.persistence always has a valid persistence object
@@ -306,12 +311,36 @@ def container_test_client():
         try:
             yield client
         finally:
-            # CRITICAL: Cleanup database connections before TestClient's loop closes
-            # This prevents "Event loop is closed" errors on Windows
-            # TestClient creates its own event loop for each request, and when the test
-            # finishes, that loop might be closed while async database connections are
-            # still trying to clean up. We need to ensure connections are closed in the
-            # fixture's loop before TestClient tears down.
+            # CRITICAL: All cleanup must happen in this finally block to ensure it always runs
+            # This prevents hanging if exceptions occur during cleanup
+
+            # Step 1: Cancel EventBus tasks BEFORE shutdown to prevent hanging
+            # EventBus shutdown waits for tasks to complete, so we must cancel them first
+            logger.info("Cancelling EventBus tasks before shutdown")
+            try:
+                if not loop.is_closed() and container.event_bus:
+                    # Cancel all EventBus active tasks immediately
+                    if hasattr(container.event_bus, "_active_tasks") and container.event_bus._active_tasks:
+                        active_tasks = list(container.event_bus._active_tasks)
+                        logger.debug("Cancelling EventBus tasks", task_count=len(active_tasks))
+                        for task in active_tasks:
+                            if not task.done():
+                                task.cancel()
+                        # Clear the task set to prevent EventBus from waiting for them
+                        container.event_bus._active_tasks.clear()
+                    # Set running flag to False to stop EventBus processing
+                    if hasattr(container.event_bus, "_running"):
+                        container.event_bus._running = False
+                    # Set shutdown event if it exists
+                    if hasattr(container.event_bus, "_shutdown_event"):
+                        try:
+                            container.event_bus._shutdown_event.set()
+                        except Exception:
+                            pass  # Ignore errors setting shutdown event
+            except Exception as e:
+                logger.debug("Error cancelling EventBus tasks", error=str(e))
+
+            # Step 2: Cleanup database connections before TestClient's loop closes
             logger.info("Cleaning up database connections before TestClient teardown")
             try:
                 # Close database connections in the fixture's loop before TestClient closes its loop
@@ -330,41 +359,44 @@ def container_test_client():
                 if "Event loop is closed" not in str(e):
                     logger.debug("Error closing database connections", error=str(e))
 
-        # Cleanup: Shutdown container and dispose all database connections
-        logger.info("Shutting down container after test")
-        try:
-            # Shutdown container (disposes database engines and shuts down EventBus)
-            if not loop.is_closed():
-                # Use a timeout to prevent hanging if shutdown takes too long
-                try:
-                    loop.run_until_complete(asyncio.wait_for(container.shutdown(), timeout=5.0))
-                except TimeoutError:
-                    logger.warning("Container shutdown timed out, forcing cleanup")
-                    # Force shutdown by cancelling all tasks
-                    pending = [task for task in asyncio.all_tasks(loop) if not task.done()]
-                    for task in pending:
-                        task.cancel()
-
-            # CRITICAL: Aggressively cancel any remaining tasks to prevent hanging
-            # Don't wait for tasks - just cancel them immediately after shutdown
-            if not loop.is_closed():
-                pending_tasks = [task for task in asyncio.all_tasks(loop) if not task.done()]
-                if pending_tasks:
-                    logger.debug("Cancelling remaining tasks", task_count=len(pending_tasks))
-                    # Cancel all remaining tasks immediately
-                    for task in pending_tasks:
-                        if not task.done():
-                            task.cancel()
-                    # Give a very short time for cancellations, then move on
+            # Step 3: Shutdown container (disposes database engines and shuts down EventBus)
+            logger.info("Shutting down container after test")
+            try:
+                if not loop.is_closed():
+                    # Use a timeout to prevent hanging if shutdown takes too long
                     try:
-                        loop.run_until_complete(
-                            asyncio.wait_for(asyncio.gather(*pending_tasks, return_exceptions=True), timeout=0.5)
-                        )
-                    except (TimeoutError, RuntimeError, Exception):
-                        # Ignore all errors - we're cleaning up and moving on
-                        pass
-        except Exception as e:
-            logger.error("Error during container shutdown", error=str(e))
+                        loop.run_until_complete(asyncio.wait_for(container.shutdown(), timeout=3.0))
+                    except TimeoutError:
+                        logger.warning("Container shutdown timed out, forcing cleanup")
+                        # Force shutdown by cancelling all tasks
+                        pending = [task for task in asyncio.all_tasks(loop) if not task.done()]
+                        for task in pending:
+                            task.cancel()
+            except Exception as e:
+                logger.error("Error during container shutdown", error=str(e))
+
+            # Step 4: Aggressively cancel any remaining tasks to prevent hanging
+            # Don't wait for tasks - just cancel them immediately after shutdown
+            logger.info("Cancelling remaining tasks")
+            try:
+                if not loop.is_closed():
+                    pending_tasks = [task for task in asyncio.all_tasks(loop) if not task.done()]
+                    if pending_tasks:
+                        logger.debug("Cancelling remaining tasks", task_count=len(pending_tasks))
+                        # Cancel all remaining tasks immediately
+                        for task in pending_tasks:
+                            if not task.done():
+                                task.cancel()
+                        # Give a very short time for cancellations, then move on
+                        try:
+                            loop.run_until_complete(
+                                asyncio.wait_for(asyncio.gather(*pending_tasks, return_exceptions=True), timeout=0.5)
+                            )
+                        except (TimeoutError, RuntimeError, Exception):
+                            # Ignore all errors - we're cleaning up and moving on
+                            pass
+            except Exception as e:
+                logger.debug("Error cancelling remaining tasks", error=str(e))
     finally:
         # Cleanup: Close event loop and reset to None
         # AI: This prevents "Event loop is closed" errors in subsequent tests
