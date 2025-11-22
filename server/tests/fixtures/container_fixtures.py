@@ -204,10 +204,11 @@ def container_test_client():
         app.state.task_registry = container.task_registry
         app.state.event_bus = container.event_bus
         app.state.event_handler = container.real_time_event_handler
-        app.state.persistence = container.persistence
+        # CRITICAL: Don't set app.state.persistence yet - check for None first
+        # app.state.persistence will be set after ensuring it's not None
         app.state.connection_manager = container.connection_manager
-        app.state.player_service = container.player_service
-        app.state.room_service = container.room_service
+        # CRITICAL: Don't set app.state.player_service and room_service yet
+        # They will be set after ensuring persistence is valid
         app.state.user_manager = container.user_manager
         app.state.room_cache_service = container.room_cache_service
         app.state.profession_cache_service = container.profession_cache_service
@@ -233,14 +234,33 @@ def container_test_client():
             # Set mock persistence on container
             container.persistence = mock_persistence
             # Recreate player_service and room_service with mock persistence
-            if container.player_service is None:
+            # CRITICAL: Check if services are None OR if they have None persistence
+            # Services might have been created with None persistence before this fix runs
+            if container.player_service is None or getattr(container.player_service, "persistence", None) is None:
                 from server.game.player_service import PlayerService
                 from server.game.room_service import RoomService
 
                 container.player_service = PlayerService(persistence=mock_persistence)
                 container.room_service = RoomService(persistence=mock_persistence)
                 logger.info("PlayerService and RoomService recreated with mock persistence")
+            else:
+                # If services exist but persistence was None, update them directly
+                # This handles the case where services were created before persistence was set
+                if hasattr(container.player_service, "persistence"):
+                    container.player_service.persistence = mock_persistence
+                if hasattr(container.room_service, "persistence"):
+                    container.room_service.persistence = mock_persistence
+                logger.info("PlayerService and RoomService persistence updated to mock")
             logger.info("Container persistence set to mock (defensive)")
+
+        # CRITICAL: Now set app.state.persistence AFTER ensuring it's not None
+        # This ensures app.state.persistence always has a valid persistence object
+        app.state.persistence = container.persistence
+
+        # CRITICAL: Now set app.state.player_service and room_service AFTER ensuring persistence is valid
+        # This ensures services always have valid persistence
+        app.state.player_service = container.player_service
+        app.state.room_service = container.room_service
 
         # Ensure connection_manager has persistence set
         if container.connection_manager:
