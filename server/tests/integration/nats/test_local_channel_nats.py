@@ -5,6 +5,7 @@ This module tests the NATS integration for local channels, including
 sub-zone subscription management and dynamic subscription changes.
 """
 
+import uuid
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -68,11 +69,12 @@ class TestLocalChannelNATSIntegration:
         # Mock the broadcast method
         nats_handler._broadcast_to_room_with_filtering = AsyncMock()
 
-        # Create a local channel message
+        # Create a local channel message with valid UUID
+        test_sender_id = str(uuid.uuid4())
         message_data = {
             "channel": "local",
             "room_id": "earth_arkhamcity_northside_intersection_derby_high",
-            "sender_id": "test-player-123",
+            "sender_id": test_sender_id,
             "sender_name": "TestPlayer",
             "content": "Hello, local area!",
             "message_id": "msg-123",
@@ -92,16 +94,17 @@ class TestLocalChannelNATSIntegration:
         # Check event structure
         event = call_args[0][1]
         assert event["event_type"] == "chat_message"
-        assert event["data"]["sender_id"] == "test-player-123"
+        assert event["data"]["sender_id"] == test_sender_id
         assert event["data"]["player_name"] == "TestPlayer"
         assert event["data"]["channel"] == "local"
         assert event["data"]["message"] == "TestPlayer (local): Hello, local area!"
         assert event["data"]["message_id"] == "msg-123"
         assert event["data"]["timestamp"] == "2025-08-27T18:00:00Z"
-        assert event["player_id"] == "test-player-123"
+        assert event["player_id"] == test_sender_id
 
         # Check sender_id and channel
-        assert call_args[0][2] == "test-player-123"
+        # _broadcast_to_room_with_filtering expects string sender_id (converted from UUID)
+        assert call_args[0][2] == test_sender_id
         assert call_args[0][3] == "local"
 
     @pytest.mark.asyncio

@@ -279,9 +279,11 @@ class TestNATSMessageHandler:
             with patch.object(
                 self.handler, "_broadcast_to_room_with_filtering", new_callable=AsyncMock
             ) as mock_room_broadcast:
-                await self.handler._broadcast_by_channel_type("say", chat_event, "room_001", None, None, "player_001")
+                player_id_uuid = uuid.uuid4()
+                await self.handler._broadcast_by_channel_type("say", chat_event, "room_001", None, None, player_id_uuid)
 
-                mock_room_broadcast.assert_called_once_with("room_001", chat_event, "player_001", "say")
+                # _broadcast_to_room_with_filtering expects string sender_id
+                mock_room_broadcast.assert_called_once_with("room_001", chat_event, str(player_id_uuid), "say")
 
     @pytest.mark.asyncio
     async def test_broadcast_by_channel_type_local(self):
@@ -292,9 +294,11 @@ class TestNATSMessageHandler:
             with patch.object(
                 self.handler, "_broadcast_to_room_with_filtering", new_callable=AsyncMock
             ) as mock_room_broadcast:
-                await self.handler._broadcast_by_channel_type("local", chat_event, "room_001", None, None, "player_001")
+                player_id_uuid = uuid.uuid4()
+                await self.handler._broadcast_by_channel_type("local", chat_event, "room_001", None, None, player_id_uuid)
 
-                mock_room_broadcast.assert_called_once_with("room_001", chat_event, "player_001", "local")
+                # _broadcast_to_room_with_filtering expects string sender_id
+                mock_room_broadcast.assert_called_once_with("room_001", chat_event, str(player_id_uuid), "local")
 
     @pytest.mark.asyncio
     async def test_broadcast_by_channel_type_global(self):
@@ -304,9 +308,11 @@ class TestNATSMessageHandler:
         self.handler.connection_manager = self.mock_connection_manager
 
         try:
-            await self.handler._broadcast_by_channel_type("global", chat_event, None, None, None, "player_001")
+            player_id_uuid = uuid.uuid4()
+            await self.handler._broadcast_by_channel_type("global", chat_event, None, None, None, player_id_uuid)
+            # broadcast_global expects string exclude_player
             self.mock_connection_manager.broadcast_global.assert_called_once_with(
-                chat_event, exclude_player="player_001"
+                chat_event, exclude_player=str(player_id_uuid)
             )
         finally:
             self.handler.connection_manager = None
@@ -319,10 +325,12 @@ class TestNATSMessageHandler:
         self.handler.connection_manager = self.mock_connection_manager
 
         try:
+            target_player_uuid = uuid.uuid4()
+            player_id_uuid = uuid.uuid4()
             await self.handler._broadcast_by_channel_type(
-                "whisper", chat_event, None, None, "target_player", "player_001"
+                "whisper", chat_event, None, None, target_player_uuid, player_id_uuid
             )
-            self.mock_connection_manager.send_personal_message.assert_called_once_with("target_player", chat_event)
+            self.mock_connection_manager.send_personal_message.assert_called_once_with(target_player_uuid, chat_event)
         finally:
             self.handler.connection_manager = None
 
@@ -334,9 +342,11 @@ class TestNATSMessageHandler:
         self.handler.connection_manager = self.mock_connection_manager
 
         try:
-            await self.handler._broadcast_by_channel_type("system", chat_event, None, None, None, "player_001")
+            player_id_uuid = uuid.uuid4()
+            await self.handler._broadcast_by_channel_type("system", chat_event, None, None, None, player_id_uuid)
+            # broadcast_global expects string exclude_player
             self.mock_connection_manager.broadcast_global.assert_called_once_with(
-                chat_event, exclude_player="player_001"
+                chat_event, exclude_player=str(player_id_uuid)
             )
         finally:
             self.handler.connection_manager = None
@@ -349,9 +359,11 @@ class TestNATSMessageHandler:
         self.handler.connection_manager = self.mock_connection_manager
 
         try:
-            await self.handler._broadcast_by_channel_type("admin", chat_event, None, None, None, "player_001")
+            player_id_uuid = uuid.uuid4()
+            await self.handler._broadcast_by_channel_type("admin", chat_event, None, None, None, player_id_uuid)
+            # broadcast_global expects string exclude_player
             self.mock_connection_manager.broadcast_global.assert_called_once_with(
-                chat_event, exclude_player="player_001"
+                chat_event, exclude_player=str(player_id_uuid)
             )
         finally:
             self.handler.connection_manager = None

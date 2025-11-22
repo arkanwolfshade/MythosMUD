@@ -159,7 +159,8 @@ class TestEmoteMuteFiltering:
                 )
 
                 # Verify sender gets echo but muted receiver does not
-                mock_conn_mgr.send_personal_message.assert_called_once_with(self.sender_id, chat_event)
+                # send_personal_message receives UUID object, not string
+                mock_conn_mgr.send_personal_message.assert_called_once_with(uuid.UUID(self.sender_id), chat_event)
 
     @pytest.mark.asyncio
     async def test_broadcast_to_room_with_filtering_allows_unmuted_emote(self):
@@ -192,9 +193,10 @@ class TestEmoteMuteFiltering:
                 )
 
                 # Verify both sender echo and receiver delivery
+                # send_personal_message receives UUID objects, not strings
                 expected_calls = [
-                    call(self.receiver_id, chat_event),
-                    call(self.sender_id, chat_event),
+                    call(uuid.UUID(self.receiver_id), chat_event),
+                    call(uuid.UUID(self.sender_id), chat_event),
                 ]
                 connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
                 connection_manager.send_personal_message.reset_mock()
@@ -361,9 +363,10 @@ class TestEmoteMuteFiltering:
                 )
 
                 # Verify that ArkanWolfshade received the emote
+                # send_personal_message receives UUID objects, not strings
                 expected_calls = [
-                    call(self.receiver_id, chat_event),
-                    call(self.sender_id, chat_event),
+                    call(uuid.UUID(self.receiver_id), chat_event),
+                    call(uuid.UUID(self.sender_id), chat_event),
                 ]
                 connection_manager.send_personal_message.assert_has_calls(expected_calls, any_order=True)
 

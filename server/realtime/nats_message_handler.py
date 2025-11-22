@@ -477,18 +477,31 @@ class NATSMessageHandler:
 
         # Broadcast based on channel type
         # AI: This can raise exceptions if broadcasting fails
-        # Provide defaults for optional parameters
+        # Convert string IDs to UUIDs for _broadcast_by_channel_type
+        sender_id_uuid = uuid.UUID(sender_id) if isinstance(sender_id, str) else sender_id
+        target_player_id_uuid: uuid.UUID | None = None
+        if target_player_id:
+            target_player_id_uuid = (
+                uuid.UUID(target_player_id) if isinstance(target_player_id, str) else target_player_id
+            )
+
         await self._broadcast_by_channel_type(
             channel,
             chat_event,
             room_id or "",
             party_id or "",
-            target_player_id or "",
-            sender_id,
+            target_player_id_uuid,
+            sender_id_uuid,
         )
 
     async def _broadcast_by_channel_type(
-        self, channel: str, chat_event: dict, room_id: str, party_id: str, target_player_id: str, sender_id: str
+        self,
+        channel: str,
+        chat_event: dict,
+        room_id: str,
+        party_id: str,
+        target_player_id: uuid.UUID | None,
+        sender_id: uuid.UUID,
     ):
         """
         Broadcast message based on channel type using strategy pattern.
@@ -498,8 +511,8 @@ class NATSMessageHandler:
             chat_event: WebSocket event to broadcast
             room_id: Room ID for room-based channels
             party_id: Party ID for party-based channels
-            target_player_id: Target player ID for whisper messages
-            sender_id: Sender player ID
+            target_player_id: Target player ID for whisper messages (UUID or None)
+            sender_id: Sender player ID (UUID)
         """
         try:
             # Import here to avoid circular imports

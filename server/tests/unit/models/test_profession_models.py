@@ -1255,9 +1255,10 @@ class TestProfessionHelperMethods:
 
         # Arrange - Use timestamp + random to ensure uniqueness even in parallel tests
         unique_id = int(time.time() * 1000) % 1000000 + int(str(uuid.uuid4().int)[:6])
+        unique_name = f"Tramp_{unique_id}"  # Make name unique to avoid conflicts
         profession = Profession(
             id=unique_id,
-            name="Tramp",
+            name=unique_name,
             description="No requirements",
             flavor_text="Freedom",
             stat_requirements="{}",
