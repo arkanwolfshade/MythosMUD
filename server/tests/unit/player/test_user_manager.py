@@ -587,7 +587,7 @@ class TestUserManager:
         self.user_manager.mute_channel(player_id=TEST_PLAYER_003, player_name="TestPlayer", channel="global")
 
         self.user_manager.mute_global(
-            muter_id=TEST_PLAYER_001, muter_name="MuterPlayer", target_id="player_004", target_name="GlobalTarget"
+            muter_id=TEST_PLAYER_001, muter_name="MuterPlayer", target_id=TEST_PLAYER_002, target_name="GlobalTarget"
         )
 
         self.user_manager._admin_players.add(TEST_PLAYER_001)
@@ -598,7 +598,8 @@ class TestUserManager:
         assert stats["total_channel_mutes"] == 1
         assert stats["total_global_mutes"] == 1
         assert stats["total_admin_players"] == 1
-        assert TEST_PLAYER_001 in stats["admin_players"]
+        # admin_players is converted to strings for JSON serialization (acceptable)
+        assert str(TEST_PLAYER_001) in stats["admin_players"]
 
     def test_cleanup_expired_mutes(self):
         """Test cleanup of expired mutes."""
@@ -627,7 +628,7 @@ class TestUserManager:
         """Test getting player mute file path."""
         file_path = self.user_manager._get_player_mute_file(TEST_PLAYER_001)
 
-        expected_path = self.test_data_dir / "mutes_player_001.json"
+        expected_path = self.test_data_dir / f"mutes_{TEST_PLAYER_001}.json"
         assert file_path == expected_path
 
     def test_load_player_mutes_file_not_exists(self):
@@ -638,15 +639,15 @@ class TestUserManager:
 
     def test_load_player_mutes_success(self):
         """Test successful loading of player mutes."""
-        # Create test data
+        # Create test data - UUIDs as strings for JSON (will be converted back to UUID objects on load)
         test_data = {
-            "player_id": TEST_PLAYER_001,
+            "player_id": str(TEST_PLAYER_001),
             "last_updated": datetime.now(UTC).isoformat(),
             "player_mutes": {
-                TEST_PLAYER_002: {
-                    "target_id": TEST_PLAYER_002,
+                str(TEST_PLAYER_002): {
+                    "target_id": str(TEST_PLAYER_002),  # String in JSON
                     "target_name": "TargetPlayer",
-                    "muted_by": TEST_PLAYER_001,
+                    "muted_by": str(TEST_PLAYER_001),  # String in JSON
                     "muted_by_name": "MuterPlayer",
                     "muted_at": datetime.now(UTC).isoformat(),
                     "expires_at": None,
@@ -702,11 +703,11 @@ class TestUserManager:
         mute_file = self.user_manager._get_player_mute_file(TEST_PLAYER_001)
         assert mute_file.exists()
 
-        # Verify file contents
+        # Verify file contents (UUIDs are strings in JSON)
         with open(mute_file, encoding="utf-8") as f:
             data = json.load(f)
 
-        assert data["player_id"] == TEST_PLAYER_001
+        assert data["player_id"] == str(TEST_PLAYER_001)  # String in JSON is correct
         assert "player_mutes" in data
         assert "channel_mutes" in data
         assert data["is_admin"] is True
@@ -820,8 +821,6 @@ class TestUserManagerIntegration:
 
         self.user_manager.mute_channel(player_id=TEST_PLAYER_001, player_name="TestPlayer", channel="global")
 
-        import uuid
-
         self.user_manager._admin_players.add(TEST_PLAYER_001)
 
         # 2. Save
@@ -839,7 +838,7 @@ class TestUserManagerIntegration:
         assert TEST_PLAYER_002 in new_user_manager._player_mutes[TEST_PLAYER_001]
         assert TEST_PLAYER_001 in new_user_manager._channel_mutes
         assert "global" in new_user_manager._channel_mutes[TEST_PLAYER_001]
-        assert uuid.UUID(TEST_PLAYER_001) in new_user_manager._admin_players
+        assert TEST_PLAYER_001 in new_user_manager._admin_players
 
     def test_expired_mute_cleanup(self):
         """Test that expired mutes are automatically cleaned up."""

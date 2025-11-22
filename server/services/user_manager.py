@@ -259,11 +259,11 @@ class UserManager:
             if duration_minutes:
                 expiry_time = datetime.now(UTC) + timedelta(minutes=duration_minutes)
 
-            # Store mute information (UUIDs stored as strings in mute_info for JSON serialization)
+            # Store mute information (use UUID objects - convert to string only for JSON serialization)
             mute_info = {
-                "target_id": str(target_id_uuid),  # Use string for JSON serialization
+                "target_id": target_id_uuid,  # Store as UUID object
                 "target_name": target_name,
-                "muted_by": str(muter_id_uuid),  # Use string for JSON serialization
+                "muted_by": muter_id_uuid,  # Store as UUID object
                 "muted_by_name": muter_name,
                 "muted_at": datetime.now(UTC),
                 "expires_at": expiry_time,
@@ -546,11 +546,11 @@ class UserManager:
             if duration_minutes:
                 expiry_time = datetime.now(UTC) + timedelta(minutes=duration_minutes)
 
-            # Store global mute information (UUIDs stored as strings in mute_info for JSON serialization)
+            # Store global mute information (use UUID objects - convert to string only for JSON serialization)
             mute_info = {
-                "target_id": str(target_id_uuid),  # Use string for JSON serialization
+                "target_id": target_id_uuid,  # Store as UUID object
                 "target_name": target_name,
-                "muted_by": str(muter_id_uuid),  # Use string for JSON serialization
+                "muted_by": muter_id_uuid,  # Store as UUID object
                 "muted_by_name": muter_name,
                 "muted_at": datetime.now(UTC),
                 "expires_at": expiry_time,
@@ -939,14 +939,15 @@ class UserManager:
             # Normalize to UUID for dictionary operations
             player_id_uuid = self._normalize_to_uuid(player_id)
 
-            mutes: dict[str, dict[str, Any]] = {"player_mutes": {}, "channel_mutes": {}, "global_mutes": {}}
+            # Type annotation: player_mutes and global_mutes use UUID keys, channel_mutes uses string keys
+            mutes: dict[str, Any] = {"player_mutes": {}, "channel_mutes": {}, "global_mutes": {}}
 
-            # Get player mutes (convert UUID keys to strings for return value)
+            # Get player mutes (keep UUID objects)
             if player_id_uuid in self._player_mutes:
                 for target_id_uuid, mute_info in self._player_mutes[player_id_uuid].items():
                     # Check if not expired
                     if not mute_info["expires_at"] or mute_info["expires_at"] > datetime.now(UTC):
-                        mutes["player_mutes"][str(target_id_uuid)] = mute_info
+                        mutes["player_mutes"][target_id_uuid] = mute_info
 
             # Get channel mutes
             if player_id_uuid in self._channel_mutes:
@@ -955,12 +956,12 @@ class UserManager:
                     if not mute_info["expires_at"] or mute_info["expires_at"] > datetime.now(UTC):
                         mutes["channel_mutes"][channel] = mute_info
 
-            # Get global mutes applied by this player (convert UUID keys to strings for return value)
+            # Get global mutes applied by this player (keep UUID objects)
             for target_id_uuid, mute_info in self._global_mutes.items():
-                if mute_info["muted_by"] == str(player_id_uuid):  # Compare with string
+                if mute_info["muted_by"] == player_id_uuid:  # Compare UUID objects
                     # Check if not expired
                     if not mute_info["expires_at"] or mute_info["expires_at"] > datetime.now(UTC):
-                        mutes["global_mutes"][str(target_id_uuid)] = mute_info
+                        mutes["global_mutes"][target_id_uuid] = mute_info
 
             return mutes
 
@@ -1120,7 +1121,7 @@ class UserManager:
             with open(mute_file, encoding="utf-8") as f:
                 data = json.load(f)
 
-            # Load player mutes (convert string keys from JSON to UUID keys)
+            # Load player mutes (convert string keys from JSON to UUID keys and UUID strings to UUID objects)
             if "player_mutes" in data:
                 self._player_mutes[player_id_uuid] = {}
                 for target_id_str, mute_info in data["player_mutes"].items():
@@ -1129,6 +1130,11 @@ class UserManager:
                         mute_info["muted_at"] = datetime.fromisoformat(mute_info["muted_at"])
                     if "expires_at" in mute_info and mute_info["expires_at"]:
                         mute_info["expires_at"] = datetime.fromisoformat(mute_info["expires_at"])
+                    # Convert string UUIDs in mute_info back to UUID objects
+                    if "target_id" in mute_info and isinstance(mute_info["target_id"], str):
+                        mute_info["target_id"] = uuid.UUID(mute_info["target_id"])
+                    if "muted_by" in mute_info and isinstance(mute_info["muted_by"], str):
+                        mute_info["muted_by"] = uuid.UUID(mute_info["muted_by"])
                     # Convert string key to UUID
                     try:
                         target_id_uuid = uuid.UUID(target_id_str)
@@ -1148,7 +1154,7 @@ class UserManager:
                         mute_info["expires_at"] = datetime.fromisoformat(mute_info["expires_at"])
                     self._channel_mutes[player_id_uuid][channel] = mute_info
 
-            # Load global mutes applied by this player (convert string keys from JSON to UUID keys)
+            # Load global mutes applied by this player (convert string keys from JSON to UUID keys and UUID strings to UUID objects)
             if "global_mutes" in data:
                 for target_id_str, mute_info in data["global_mutes"].items():
                     # Convert timestamp strings back to datetime objects
@@ -1156,6 +1162,11 @@ class UserManager:
                         mute_info["muted_at"] = datetime.fromisoformat(mute_info["muted_at"])
                     if "expires_at" in mute_info and mute_info["expires_at"]:
                         mute_info["expires_at"] = datetime.fromisoformat(mute_info["expires_at"])
+                    # Convert string UUIDs in mute_info back to UUID objects
+                    if "target_id" in mute_info and isinstance(mute_info["target_id"], str):
+                        mute_info["target_id"] = uuid.UUID(mute_info["target_id"])
+                    if "muted_by" in mute_info and isinstance(mute_info["muted_by"], str):
+                        mute_info["muted_by"] = uuid.UUID(mute_info["muted_by"])
                     # Convert string key to UUID
                     try:
                         target_id_uuid = uuid.UUID(target_id_str)
@@ -1346,9 +1357,11 @@ class UserManager:
                         serialized_mute["muted_at"] = serialized_mute["muted_at"].isoformat()
                     if "expires_at" in serialized_mute and serialized_mute["expires_at"]:
                         serialized_mute["expires_at"] = serialized_mute["expires_at"].isoformat()
-                    # Convert UUID to string for JSON serialization
-                    if "target_id" in serialized_mute:
+                    # Convert UUID objects to strings for JSON serialization
+                    if "target_id" in serialized_mute and isinstance(serialized_mute["target_id"], uuid.UUID):
                         serialized_mute["target_id"] = str(serialized_mute["target_id"])
+                    if "muted_by" in serialized_mute and isinstance(serialized_mute["muted_by"], uuid.UUID):
+                        serialized_mute["muted_by"] = str(serialized_mute["muted_by"])
                     data["player_mutes"][str(target_id_uuid)] = serialized_mute
 
             # Save channel mutes
@@ -1364,16 +1377,18 @@ class UserManager:
 
             # Save global mutes applied by this player (convert UUID keys to strings for JSON)
             for target_id_uuid, mute_info in self._global_mutes.items():
-                if mute_info.get("muted_by") == player_id_str:  # Compare with string
+                if mute_info.get("muted_by") == player_id_uuid:  # Compare UUID objects
                     # Convert datetime objects to ISO strings for JSON serialization
                     serialized_mute = mute_info.copy()
                     if "muted_at" in serialized_mute:
                         serialized_mute["muted_at"] = serialized_mute["muted_at"].isoformat()
                     if "expires_at" in serialized_mute and serialized_mute["expires_at"]:
                         serialized_mute["expires_at"] = serialized_mute["expires_at"].isoformat()
-                    # Convert UUID to string for JSON serialization
-                    if "target_id" in serialized_mute:
+                    # Convert UUID objects to strings for JSON serialization
+                    if "target_id" in serialized_mute and isinstance(serialized_mute["target_id"], uuid.UUID):
                         serialized_mute["target_id"] = str(serialized_mute["target_id"])
+                    if "muted_by" in serialized_mute and isinstance(serialized_mute["muted_by"], uuid.UUID):
+                        serialized_mute["muted_by"] = str(serialized_mute["muted_by"])
                     data["global_mutes"][str(target_id_uuid)] = serialized_mute
 
             # Validate data is serializable before writing

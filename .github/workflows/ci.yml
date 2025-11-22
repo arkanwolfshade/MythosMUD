@@ -74,9 +74,13 @@ jobs:
           sudo service postgresql start
           sleep 3
           pg_isready -U postgres
+          # Set postgres user password to match DATABASE_URL
+          sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'Cthulhu1';"
           sudo -u postgres psql -f db/roles/roles.sql
           sudo -u postgres psql -f db/databases/databases.sql
           sudo -u postgres psql -d mythos_unit -f db/authoritative_schema.sql
+          # Apply UUID migration for players.player_id
+          sudo -u postgres psql -d mythos_unit -f db/migrations/010_migrate_player_id_to_uuid.sql
           sudo -u postgres psql -d mythos_unit -f data/db/00_world_and_emotes.sql
           sudo -u postgres psql -d mythos_unit -f data/db/01_professions.sql
           sudo -u postgres psql -d mythos_unit -f data/db/02_item_prototypes.sql

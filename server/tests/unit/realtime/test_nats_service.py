@@ -425,11 +425,12 @@ class TestNATSService:
         def test_callback(data):
             raise Exception("Callback error")
 
-        # Execute
+        # Execute - subscribe returns None, but should not raise exception
         result = await self.nats_service.subscribe(self.test_subject, test_callback)
 
-        # Verify
-        assert result is True
+        # Verify subscription was registered
+        assert result is None
+        assert self.mock_nats_client.subscribe.called
 
         # Get the message handler that was registered
         message_handler = self.mock_nats_client.subscribe.call_args[1]["cb"]

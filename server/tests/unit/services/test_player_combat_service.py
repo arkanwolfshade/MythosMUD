@@ -386,7 +386,7 @@ class TestPlayerCombatServiceUnit:
         )
 
         # Verify award_xp_on_npc_death was called
-        mock_persistence.async_get_player.assert_called_once_with(str(player_id))
+        mock_persistence.async_get_player.assert_called_once_with(player_id)
         mock_persistence.async_save_player.assert_called_once()
 
     @pytest.mark.asyncio
@@ -407,4 +407,4 @@ class TestPlayerCombatServiceUnit:
         )
 
         # Should have attempted to get player
-        mock_persistence.async_get_player.assert_called_once_with(str(player_id))
+        mock_persistence.async_get_player.assert_called_once_with(player_id)

@@ -216,10 +216,11 @@ class TestNATSMessageHandler:
     @pytest.mark.asyncio
     async def test_handle_nats_message_valid_say(self):
         """Test handling a valid say message."""
+        sender_id = uuid.uuid4()  # UUID object - convert to string only for NATS message data
         message_data = {
             "channel": "say",
             "room_id": "room_001",
-            "sender_id": "player_001",
+            "sender_id": str(sender_id),  # NATS sends as string, but we use UUID object internally
             "sender_name": "TestPlayer",
             "content": "Hello, world!",
             "message_id": str(uuid.uuid4()),
@@ -234,7 +235,7 @@ class TestNATSMessageHandler:
                 call_args = mock_broadcast.call_args[0]
                 assert call_args[0] == "say"  # channel
                 assert call_args[2] == "room_001"  # room_id
-                assert call_args[5] == "player_001"  # sender_id
+                assert call_args[5] == sender_id  # sender_id as UUID object
 
     @pytest.mark.asyncio
     @pytest.mark.slow
@@ -295,7 +296,9 @@ class TestNATSMessageHandler:
                 self.handler, "_broadcast_to_room_with_filtering", new_callable=AsyncMock
             ) as mock_room_broadcast:
                 player_id_uuid = uuid.uuid4()
-                await self.handler._broadcast_by_channel_type("local", chat_event, "room_001", None, None, player_id_uuid)
+                await self.handler._broadcast_by_channel_type(
+                    "local", chat_event, "room_001", None, None, player_id_uuid
+                )
 
                 # _broadcast_to_room_with_filtering expects string sender_id
                 mock_room_broadcast.assert_called_once_with("room_001", chat_event, str(player_id_uuid), "local")
@@ -400,25 +403,30 @@ class TestNATSMessageHandler:
         """Test room broadcasting with filtering."""
         chat_event = {"event_type": "chat_message", "data": {"message": "Hello"}}
 
+        # Use valid UUID strings for player IDs
+        player_001_id = str(uuid.uuid4())
+        player_002_id = str(uuid.uuid4())
+        player_003_id = str(uuid.uuid4())
+
         # Set up connection manager mocks
-        self.mock_connection_manager.room_subscriptions = {"room_001": {"player_001", "player_002", "player_003"}}
+        self.mock_connection_manager.room_subscriptions = {"room_001": {player_001_id, player_002_id, player_003_id}}
         self.mock_connection_manager.online_players = {
-            "player_001": {"current_room_id": "room_001"},
-            "player_002": {"current_room_id": "room_001"},
-            "player_003": {"current_room_id": "room_002"},  # Different room
+            player_001_id: {"current_room_id": "room_001"},
+            player_002_id: {"current_room_id": "room_001"},
+            player_003_id: {"current_room_id": "room_002"},  # Different room
         }
 
         with patch("server.realtime.nats_message_handler.connection_manager", self.mock_connection_manager):
             with patch.object(
-                self.handler, "_is_player_in_room", side_effect=lambda p, r: p in ["player_001", "player_002"]
+                self.handler, "_is_player_in_room", side_effect=lambda p, r: p in [player_001_id, player_002_id]
             ):
                 with patch.object(self.handler, "_is_player_muted_by_receiver", return_value=False):
-                    await self.handler._broadcast_to_room_with_filtering("room_001", chat_event, "player_001", "say")
+                    await self.handler._broadcast_to_room_with_filtering("room_001", chat_event, player_001_id, "say")
 
                     # Should send to player_002 (player_001 is sender, player_003 is in different room)
                     assert self.mock_connection_manager.send_personal_message.call_count == 1
                     self.mock_connection_manager.send_personal_message.assert_called_with(
-                        _str_to_uuid("player_002"), chat_event
+                        uuid.UUID(player_002_id), chat_event
                     )
 
     @pytest.mark.asyncio
