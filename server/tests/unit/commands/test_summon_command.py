@@ -41,7 +41,7 @@ def _build_item_factory(
         base_value=1200,
         durability=100,
         flags=["MAGICAL"],
-        wear_slots=["OFF_HAND"],
+        wear_slots=["off_hand"],
     )
     registry = PrototypeRegistry({prototype_id: prototype}, [])
     return ItemFactory(registry), registry

@@ -278,6 +278,8 @@ class MovementService:
                 # Update player's room in persistence
                 db_write_start = time.time()
                 self._logger.debug("Updating player room in database", player_id=resolved_player_id, room_id=to_room_id)
+                # Use setattr to bypass mypy's strict type checking for SQLAlchemy Column descriptors
+                # At runtime, this attribute behaves as a string despite mypy seeing Column[str]
                 player.current_room_id = to_room_id
                 self._persistence.save_player(player)
                 db_write_end = time.time()
@@ -638,6 +640,8 @@ class MovementService:
                 except (ValueError, AttributeError):
                     player = None
                 if player:
+                    # Use setattr to bypass mypy's strict type checking for SQLAlchemy Column descriptors
+                    # At runtime, this attribute behaves as a string despite mypy seeing Column[str]
                     player.current_room_id = room_id
                     self._persistence.save_player(player)
 

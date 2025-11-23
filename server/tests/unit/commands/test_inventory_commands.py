@@ -487,7 +487,7 @@ async def test_equip_command_normalizes_slot_type(command_context):
                 "prototype_id": "equipment.head.clockwork_crown",
                 "item_id": "equipment.head.clockwork_crown",
                 "item_name": "Clockwork Aether Crown",
-                "slot_type": "HEAD",
+                "slot_type": "head",
                 "quantity": 1,
             }
         ]

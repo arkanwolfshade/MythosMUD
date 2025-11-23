@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import uuid
+from contextlib import asynccontextmanager
 from datetime import UTC, datetime, timedelta
 
 import pytest
@@ -21,43 +22,82 @@ from server.logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
+@asynccontextmanager
+async def _use_async_session():
+    """
+    Context manager helper to properly handle async session generator lifecycle.
+
+    This helper ensures the generator completes cleanup properly before
+    test teardown, preventing "orphaned test loops" warnings and event
+    loop closure errors that occur with asyncpg on Windows.
+
+    Usage:
+        async with _use_async_session() as session:
+            # Use session here
+            await session.execute(...)
+    """
+    from server.database import get_async_session
+
+    gen = get_async_session()
+    session = None
+    try:
+        # Get the session from the generator
+        session = await anext(gen)
+        yield session
+    finally:
+        # Explicitly close session first to ensure all operations complete
+        # and connections are returned to the pool before generator cleanup
+        if session is not None:
+            try:
+                # Commit/rollback any pending transaction before closing
+                if hasattr(session, "in_transaction") and session.in_transaction():
+                    await session.rollback()
+                # Close the session to return connection to pool
+                await session.close()
+            except (RuntimeError, AttributeError, Exception):
+                # Ignore errors if session is already closed or event loop is closed
+                # This is expected behavior with asyncpg on Windows when running in parallel
+                pass
+        # Then close the generator
+        try:
+            await gen.aclose()
+        except (StopAsyncIteration, RuntimeError, GeneratorExit, AttributeError):
+            # Ignore cleanup errors - expected when event loop is closing
+            # or generator is already closed
+            pass
+
+
 @pytest.mark.asyncio
 async def test_containers_table_exists():
     """Test that containers table exists after migration."""
-    from server.database import get_async_session
-
-    # Check if table exists
-    async for session in get_async_session():
+    async with _use_async_session() as session:
+        # Check if table exists
         result = await session.execute(
             text("""
-            SELECT EXISTS (
-                SELECT FROM information_schema.tables
-                WHERE table_schema = 'public'
-                AND table_name = 'containers'
-            )
-        """)
+        SELECT EXISTS (
+            SELECT FROM information_schema.tables
+            WHERE table_schema = 'public'
+            AND table_name = 'containers'
+        )
+    """)
         )
         table_exists = result.scalar()
         assert table_exists, "containers table should exist after migration"
-        break
 
 
 @pytest.mark.asyncio
 async def test_containers_table_schema():
     """Test that containers table has correct schema."""
-    from server.database import get_async_session
-
-    # Get column information
-    # Use async for pattern - pytest.ini filters event loop closure warnings
-    async for session in get_async_session():
+    async with _use_async_session() as session:
+        # Get column information
         result = await session.execute(
             text("""
-                SELECT column_name, data_type, is_nullable, column_default
-                FROM information_schema.columns
-                WHERE table_schema = 'public'
-                AND table_name = 'containers'
-                ORDER BY ordinal_position
-            """)
+            SELECT column_name, data_type, is_nullable, column_default
+            FROM information_schema.columns
+            WHERE table_schema = 'public'
+            AND table_name = 'containers'
+            ORDER BY ordinal_position
+        """)
         )
         columns = {
             row[0]: {"type": row[1], "nullable": row[2] == "YES", "default": row[3]} for row in result.fetchall()
@@ -115,22 +155,19 @@ async def test_containers_table_schema():
 
         assert "created_at" in columns
         assert "updated_at" in columns
-        break
 
 
 @pytest.mark.asyncio
 async def test_containers_table_indexes():
     """Test that containers table has required indexes."""
-    from server.database import get_async_session
-
-    async for session in get_async_session():
+    async with _use_async_session() as session:
         result = await session.execute(
             text("""
-                SELECT indexname
-                FROM pg_indexes
-                WHERE schemaname = 'public'
-                AND tablename = 'containers'
-            """)
+            SELECT indexname
+            FROM pg_indexes
+            WHERE schemaname = 'public'
+            AND tablename = 'containers'
+        """)
         )
         indexes = {row[0] for row in result.fetchall()}
 
@@ -141,23 +178,20 @@ async def test_containers_table_indexes():
         assert "idx_containers_owner_id" in indexes, "Owner ID index should exist"
         assert "idx_containers_source_type" in indexes, "Source type index should exist"
         assert "idx_containers_decay_at" in indexes, "Decay timestamp index should exist"
-        break
 
 
 @pytest.mark.asyncio
 async def test_containers_table_constraints():
     """Test that containers table has correct constraints."""
     # Check CHECK constraints
-    from server.database import get_async_session
-
-    async for session in get_async_session():
+    async with _use_async_session() as session:
         result = await session.execute(
             text("""
-                SELECT conname, pg_get_constraintdef(oid) as definition
-                FROM pg_constraint
-                WHERE conrelid = 'public.containers'::regclass
-                AND contype = 'c'
-            """)
+            SELECT conname, pg_get_constraintdef(oid) as definition
+            FROM pg_constraint
+            WHERE conrelid = 'public.containers'::regclass
+            AND contype = 'c'
+        """)
         )
         check_constraints = {row[0]: row[1] for row in result.fetchall()}
 
@@ -175,28 +209,25 @@ async def test_containers_table_constraints():
         # Verify capacity_slots constraint
         capacity_constraint = next((defn for name, defn in check_constraints.items() if "capacity_slots" in defn), None)
         assert capacity_constraint is not None, "capacity_slots CHECK constraint should exist"
-        break
 
 
 @pytest.mark.asyncio
 async def test_containers_table_insert_environment():
     """Test inserting an environmental container."""
-    from server.database import get_async_session
+    async with _use_async_session() as session:
+        container_id = uuid.uuid4()
+        room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
 
-    container_id = uuid.uuid4()
-    room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
-
-    async for session in get_async_session():
         await session.execute(
             text("""
-                INSERT INTO containers (
-                    container_instance_id, source_type, room_id,
-                    capacity_slots, items_json
-                ) VALUES (
-                    :container_id, 'environment', :room_id,
-                    8, '[]'::jsonb
-                )
-            """),
+            INSERT INTO containers (
+                container_instance_id, source_type, room_id,
+                capacity_slots, items_json
+            ) VALUES (
+                :container_id, 'environment', :room_id,
+                8, '[]'::jsonb
+            )
+        """),
             {"container_id": container_id, "room_id": room_id},
         )
         await session.commit()
@@ -212,20 +243,54 @@ async def test_containers_table_insert_environment():
         assert row.room_id == room_id
         assert row.capacity_slots == 8
         assert row.items_json == []
-        break
 
 
 @pytest.mark.asyncio
 async def test_containers_table_insert_corpse():
     """Test inserting a corpse container with decay timestamp."""
-    from server.database import get_async_session
+    async with _use_async_session() as session:
+        container_id = uuid.uuid4()
+        owner_id = uuid.uuid4()
+        room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
+        decay_at = datetime.now(UTC) + timedelta(hours=1)
 
-    container_id = uuid.uuid4()
-    owner_id = uuid.uuid4()
-    room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
-    decay_at = datetime.now(UTC) + timedelta(hours=1)
+        # Get or create minimal test profession (required for players)
+        # Test Profession with id=1 should already exist, but ensure it does
+        await session.execute(
+            text("""
+                INSERT INTO professions (id, name, description, flavor_text, stat_requirements, mechanical_effects, is_available)
+                VALUES (1, 'Test Profession', 'Test profession for migration tests', 'Test flavor', '{}', '{}', true)
+                ON CONFLICT (id) DO UPDATE SET name = professions.name
+            """),
+        )
+        profession_id = 1  # Use known profession_id
 
-    async for session in get_async_session():
+        # Create a minimal test player to satisfy foreign key constraint
+        # These migration tests only verify schema, not full application logic
+        user_id = uuid.uuid4()
+        # Use unique username/email to avoid conflicts
+        username = f"test_player_{user_id.hex[:8]}"
+        email = f"test_{user_id.hex[:8]}@example.com"
+        await session.execute(
+            text("""
+                INSERT INTO users (id, username, email, hashed_password, display_name, is_active, is_superuser, is_verified, is_admin, created_at, updated_at)
+                VALUES (:user_id, :username, :email, 'dummy_hash', 'TestPlayer', true, false, false, false, NOW(), NOW())
+                ON CONFLICT DO NOTHING
+            """),
+            {"user_id": user_id, "username": username, "email": email},
+        )
+        # For migration tests, we need minimal test players
+        # Use unique names to avoid conflicts
+        player_name = f"TestPlayer_{owner_id.hex[:8]}"
+        await session.execute(
+            text("""
+                INSERT INTO players (player_id, user_id, name, inventory, status_effects, current_room_id, experience_points, level, is_admin, profession_id, created_at, last_active)
+                VALUES (:player_id, :user_id, :player_name, '[]', '[]', 'earth_arkhamcity_sanitarium_room_foyer_001', 0, 1, 0, :profession_id, NOW(), NOW())
+                ON CONFLICT DO NOTHING
+            """),
+            {"player_id": owner_id, "user_id": user_id, "player_name": player_name, "profession_id": profession_id},
+        )
+
         await session.execute(
             text("""
                 INSERT INTO containers (
@@ -256,18 +321,52 @@ async def test_containers_table_insert_corpse():
         assert str(row.owner_id) == str(owner_id)
         assert row.room_id == room_id
         assert row.decay_at is not None
-        break
 
 
 @pytest.mark.asyncio
 async def test_containers_table_insert_equipment():
     """Test inserting a wearable equipment container."""
-    from server.database import get_async_session
+    async with _use_async_session() as session:
+        container_id = uuid.uuid4()
+        entity_id = uuid.uuid4()
 
-    container_id = uuid.uuid4()
-    entity_id = uuid.uuid4()
+        # Get or create minimal test profession (required for players)
+        # Test Profession with id=1 should already exist, but ensure it does
+        await session.execute(
+            text("""
+                INSERT INTO professions (id, name, description, flavor_text, stat_requirements, mechanical_effects, is_available)
+                VALUES (1, 'Test Profession', 'Test profession for migration tests', 'Test flavor', '{}', '{}', true)
+                ON CONFLICT (id) DO UPDATE SET name = professions.name
+            """),
+        )
+        profession_id = 1  # Use known profession_id
 
-    async for session in get_async_session():
+        # Create a minimal test player to satisfy foreign key constraint
+        # These migration tests only verify schema, not full application logic
+        user_id = uuid.uuid4()
+        # Use unique username/email to avoid conflicts
+        username = f"test_entity_{user_id.hex[:8]}"
+        email = f"test_entity_{user_id.hex[:8]}@example.com"
+        await session.execute(
+            text("""
+                INSERT INTO users (id, username, email, hashed_password, display_name, is_active, is_superuser, is_verified, is_admin, created_at, updated_at)
+                VALUES (:user_id, :username, :email, 'dummy_hash', 'TestEntity', true, false, false, false, NOW(), NOW())
+                ON CONFLICT DO NOTHING
+            """),
+            {"user_id": user_id, "username": username, "email": email},
+        )
+        # For migration tests, we need minimal test players
+        # Use unique names to avoid conflicts
+        player_name = f"TestEntity_{entity_id.hex[:8]}"
+        await session.execute(
+            text("""
+                INSERT INTO players (player_id, user_id, name, inventory, status_effects, current_room_id, experience_points, level, is_admin, profession_id, created_at, last_active)
+                VALUES (:player_id, :user_id, :player_name, '[]', '[]', 'earth_arkhamcity_sanitarium_room_foyer_001', 0, 1, 0, :profession_id, NOW(), NOW())
+                ON CONFLICT DO NOTHING
+            """),
+            {"player_id": entity_id, "user_id": user_id, "player_name": player_name, "profession_id": profession_id},
+        )
+
         await session.execute(
             text("""
                 INSERT INTO containers (
@@ -291,31 +390,28 @@ async def test_containers_table_insert_equipment():
         assert row is not None, "Equipment container should be inserted"
         assert row.source_type == "equipment"
         assert str(row.entity_id) == str(entity_id)
-        break
 
 
 @pytest.mark.asyncio
 async def test_containers_table_jsonb_items():
     """Test that items_json can store InventoryStack arrays."""
-    from server.database import get_async_session
+    async with _use_async_session() as session:
+        container_id = uuid.uuid4()
+        items = [
+            {
+                "item_id": "elder_sign",
+                "item_name": "Elder Sign",
+                "slot_type": "backpack",
+                "quantity": 1,
+            },
+            {
+                "item_id": "tome_of_forbidden_knowledge",
+                "item_name": "Tome of Forbidden Knowledge",
+                "slot_type": "backpack",
+                "quantity": 1,
+            },
+        ]
 
-    container_id = uuid.uuid4()
-    items = [
-        {
-            "item_id": "elder_sign",
-            "item_name": "Elder Sign",
-            "slot_type": "backpack",
-            "quantity": 1,
-        },
-        {
-            "item_id": "tome_of_forbidden_knowledge",
-            "item_name": "Tome of Forbidden Knowledge",
-            "slot_type": "backpack",
-            "quantity": 1,
-        },
-    ]
-
-    async for session in get_async_session():
         await session.execute(
             text("""
                 INSERT INTO containers (
@@ -323,7 +419,7 @@ async def test_containers_table_jsonb_items():
                     capacity_slots, items_json
                 ) VALUES (
                     :container_id, 'environment', :room_id,
-                    8, :items_json::jsonb
+                    8, cast(:items_json as jsonb)
                 )
             """),
             {
@@ -345,17 +441,14 @@ async def test_containers_table_jsonb_items():
         assert len(retrieved_items) == 2
         assert retrieved_items[0]["item_id"] == "elder_sign"
         assert retrieved_items[1]["item_id"] == "tome_of_forbidden_knowledge"
-        break
 
 
 @pytest.mark.asyncio
 async def test_containers_table_defaults():
     """Test that containers table uses correct default values."""
-    from server.database import get_async_session
+    async with _use_async_session() as session:
+        container_id = uuid.uuid4()
 
-    container_id = uuid.uuid4()
-
-    async for session in get_async_session():
         await session.execute(
             text("""
                 INSERT INTO containers (
@@ -379,20 +472,17 @@ async def test_containers_table_defaults():
         assert row.items_json == []
         assert row.created_at is not None
         assert row.updated_at is not None
-        break
 
 
 @pytest.mark.asyncio
 async def test_containers_table_constraint_violations():
     """Test that constraints properly reject invalid data."""
-    from server.database import get_async_session
-
     container_id = uuid.uuid4()
 
     # Test invalid source_type
-    async for session in get_async_session():
+    async with _use_async_session() as session1:
         with pytest.raises(IntegrityError):
-            await session.execute(
+            await session1.execute(
                 text("""
                     INSERT INTO containers (
                         container_instance_id, source_type, capacity_slots
@@ -402,14 +492,13 @@ async def test_containers_table_constraint_violations():
                 """),
                 {"container_id": container_id},
             )
-            await session.commit()
-        break
+            await session1.commit()
 
     # Test invalid capacity_slots (too high)
     container_id2 = uuid.uuid4()
-    async for session in get_async_session():
+    async with _use_async_session() as session2:
         with pytest.raises(IntegrityError):
-            await session.execute(
+            await session2.execute(
                 text("""
                     INSERT INTO containers (
                         container_instance_id, source_type, capacity_slots
@@ -419,14 +508,13 @@ async def test_containers_table_constraint_violations():
                 """),
                 {"container_id": container_id2},
             )
-            await session.commit()
-        break
+            await session2.commit()
 
     # Test invalid capacity_slots (zero)
     container_id3 = uuid.uuid4()
-    async for session in get_async_session():
+    async with _use_async_session() as session3:
         with pytest.raises(IntegrityError):
-            await session.execute(
+            await session3.execute(
                 text("""
                     INSERT INTO containers (
                         container_instance_id, source_type, capacity_slots
@@ -436,5 +524,4 @@ async def test_containers_table_constraint_violations():
                 """),
                 {"container_id": container_id3},
             )
-            await session.commit()
-        break
+            await session3.commit()

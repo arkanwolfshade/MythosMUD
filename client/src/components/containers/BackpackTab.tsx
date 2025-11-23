@@ -31,6 +31,7 @@ export interface BackpackTabProps {
 export const BackpackTab: React.FC<BackpackTabProps> = ({ onSelect, className = '' }) => {
   const getWearableContainers = useContainerStore(state => state.getWearableContainersForPlayer);
   const selectContainer = useContainerStore(state => state.selectContainer);
+  const deselectContainer = useContainerStore(state => state.deselectContainer);
   const selectedContainerId = useContainerStore(state => state.selectedContainerId);
   const player = useGameStore(state => state.player);
 
@@ -48,9 +49,15 @@ export const BackpackTab: React.FC<BackpackTabProps> = ({ onSelect, className = 
   }
 
   const handleTabClick = (containerId: string) => {
-    const newSelection = selectedContainerId === containerId ? null : containerId;
-    selectContainer(newSelection);
-    onSelect?.(newSelection);
+    if (selectedContainerId === containerId) {
+      // Deselecting: call deselectContainer instead of selectContainer(null)
+      deselectContainer();
+      onSelect?.(null);
+    } else {
+      // Selecting: call selectContainer with the container ID
+      selectContainer(containerId);
+      onSelect?.(containerId);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent, containerId: string, index: number) => {
