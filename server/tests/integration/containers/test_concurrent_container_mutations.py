@@ -202,9 +202,11 @@ class TestConcurrentContainerMutations:
     async def test_concurrent_transfer_operations(self, container_service: ContainerService) -> None:
         """Test that concurrent transfers are handled correctly with mutation tokens."""
         # Create test container
-        container_id = uuid4()
-        room_id = "test_room_001"
+        room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
         player_id = uuid4()
+
+        # Create test player in database
+        _create_test_player(container_service.persistence, player_id, f"TestPlayer_{player_id.hex[:8]}", room_id)
 
         # Create container with items
         container_result = container_service.persistence.create_container(
@@ -281,9 +283,13 @@ class TestConcurrentContainerMutations:
     async def test_concurrent_transfer_different_tokens(self, container_service: ContainerService) -> None:
         """Test that transfers with different mutation tokens work correctly."""
         # Create test container
-        room_id = "test_room_001"
+        room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
         player1_id = uuid4()
         player2_id = uuid4()
+
+        # Create test players in database
+        _create_test_player(container_service.persistence, player1_id, f"TestPlayer1_{player1_id.hex[:8]}", room_id)
+        _create_test_player(container_service.persistence, player2_id, f"TestPlayer2_{player2_id.hex[:8]}", room_id)
 
         # Create container
         container_result = container_service.persistence.create_container(
@@ -343,8 +349,11 @@ class TestConcurrentContainerMutations:
     async def test_concurrent_close_operations(self, container_service: ContainerService) -> None:
         """Test that concurrent close operations are handled correctly."""
         # Create test container
-        room_id = "test_room_001"
+        room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
         player_id = uuid4()
+
+        # Create test player in database
+        _create_test_player(container_service.persistence, player_id, f"TestPlayer_{player_id.hex[:8]}", room_id)
 
         # Create container
         container_result = container_service.persistence.create_container(
@@ -392,8 +401,11 @@ class TestConcurrentContainerMutations:
     async def test_concurrent_open_close_race_condition(self, container_service: ContainerService) -> None:
         """Test that open/close race conditions are handled correctly."""
         # Create test container
-        room_id = "test_room_001"
+        room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
         player_id = uuid4()
+
+        # Create test player in database
+        _create_test_player(container_service.persistence, player_id, f"TestPlayer_{player_id.hex[:8]}", room_id)
 
         # Create container
         container_result = container_service.persistence.create_container(
@@ -451,8 +463,11 @@ class TestConcurrentContainerMutations:
     async def test_concurrent_capacity_validation(self, container_service: ContainerService) -> None:
         """Test that capacity validation works correctly under concurrent load."""
         # Create test container with limited capacity
-        room_id = "test_room_001"
+        room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
         player_id = uuid4()
+
+        # Create test player in database
+        _create_test_player(container_service.persistence, player_id, f"TestPlayer_{player_id.hex[:8]}", room_id)
 
         # Create container with capacity of 2 items
         container_result = container_service.persistence.create_container(

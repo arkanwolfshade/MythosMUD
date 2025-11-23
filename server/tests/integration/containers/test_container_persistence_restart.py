@@ -179,15 +179,21 @@ class TestContainerPersistenceRestart:
             items_json=[
                 {
                     "item_id": "item_1",
+                    "item_instance_id": "inst_item_1",
+                    "prototype_id": "item_1",
+                    "item_name": "Test Item 1",
+                    "slot_type": "backpack",
                     "quantity": 10,
                     "weight": 1.0,
-                    "name": "Test Item 1",
                 },
                 {
                     "item_id": "item_2",
+                    "item_instance_id": "inst_item_2",
+                    "prototype_id": "item_2",
+                    "item_name": "Test Item 2",
+                    "slot_type": "backpack",
                     "quantity": 5,
                     "weight": 2.0,
-                    "name": "Test Item 2",
                 },
             ],
             metadata_json={"type": "chest", "description": "A wooden chest"},
@@ -241,9 +247,12 @@ class TestContainerPersistenceRestart:
             items_json=[
                 {
                     "item_id": "item_1",
+                    "item_instance_id": "inst_item_1",
+                    "prototype_id": "item_1",
+                    "item_name": "Test Item 1",
+                    "slot_type": "backpack",
                     "quantity": 3,
                     "weight": 1.0,
-                    "name": "Test Item 1",
                 }
             ],
             metadata_json={"type": "backpack", "equipped": True},
@@ -305,9 +314,12 @@ class TestContainerPersistenceRestart:
             items_json=[
                 {
                     "item_id": "item_1",
+                    "item_instance_id": "inst_item_1",
+                    "prototype_id": "item_1",
+                    "item_name": "Test Item 1",
+                    "slot_type": "backpack",
                     "quantity": 1,
                     "weight": 1.0,
-                    "name": "Test Item 1",
                 }
             ],
             metadata_json={

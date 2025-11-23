@@ -133,7 +133,7 @@ class CorpseLifecycleService:
                 items_json=list(corpse.items),
                 metadata_json=corpse.metadata,
             )
-            corpse.container_id = UUID(container_data["container_instance_id"])
+            corpse.container_id = UUID(container_data["container_id"])
 
             logger.info(
                 "Corpse container created",

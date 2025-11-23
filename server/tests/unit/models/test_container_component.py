@@ -203,7 +203,7 @@ class TestContainerComponentSerialization:
             metadata={"key_item_id": "arkham_library_key"},
         )
 
-        data = container.model_dump()
+        data = container.model_dump(mode="json")
 
         assert data["container_id"] == str(container_id)
         assert data["source_type"] == "corpse"
@@ -356,10 +356,12 @@ class TestContainerComponentFactoryMethods:
             },
         ]
 
+        decay_at = datetime.now(UTC) + timedelta(hours=1)
         corpse_container = ContainerComponent.create_corpse(
             container_id=uuid.uuid4(),
             owner_id=owner_id,
             room_id="test_room",
+            decay_at=decay_at,
             items=items,
         )
 

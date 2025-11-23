@@ -9,6 +9,7 @@ of investigator artifacts.
 from __future__ import annotations
 
 import uuid
+from collections.abc import Iterator
 from datetime import UTC, datetime, timedelta
 
 import pytest
@@ -27,9 +28,85 @@ def persistence():
 
 
 @pytest.fixture
-def sample_player_id() -> uuid.UUID:
-    """Generate a sample player UUID for testing."""
-    return uuid.uuid4()
+def sample_player_id(persistence) -> Iterator[uuid.UUID]:
+    """Create a test player in the database and return its UUID."""
+    import os
+    from datetime import UTC, datetime
+
+    import psycopg2
+
+    from server.models.player import Player
+
+    # Create a test user first
+    user_id = uuid.uuid4()
+    player_id = uuid.uuid4()
+
+    # Create user using direct database connection with autocommit
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url or not database_url.startswith("postgresql"):
+        raise ValueError("DATABASE_URL must be set to a PostgreSQL URL")
+
+    url = database_url.replace("postgresql+psycopg2://", "postgresql://").replace(
+        "postgresql+asyncpg://", "postgresql://"
+    )
+    conn = psycopg2.connect(url)
+    conn.autocommit = True  # Enable autocommit for user creation
+    cursor = conn.cursor()
+    try:
+        now = datetime.now(UTC).replace(tzinfo=None)
+        cursor.execute(
+            """
+            INSERT INTO users (id, email, username, display_name, hashed_password, is_active, is_superuser, is_verified, created_at, updated_at)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (id) DO NOTHING
+            """,
+            (
+                str(user_id),
+                f"test-{player_id}@example.com",
+                f"testuser-{player_id}",
+                f"Test User {player_id}",
+                "hashed_password",
+                True,
+                False,
+                True,
+                now,
+                now,
+            ),
+        )
+    finally:
+        cursor.close()
+        conn.close()
+
+    # Create player using persistence layer
+    player = Player(
+        player_id=player_id,
+        user_id=user_id,
+        name=f"TestPlayer-{player_id}",
+        current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
+        level=1,
+        experience_points=0,
+        profession_id=0,
+        inventory="[]",
+        status_effects="[]",
+        created_at=now,
+        last_active=now,
+    )
+    persistence.save_player(player)
+
+    yield player_id
+
+    # Cleanup: delete test player and user
+    try:
+        persistence.delete_player(player_id)
+        # Delete user using direct connection
+        conn = psycopg2.connect(url)
+        conn.autocommit = True
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM users WHERE id = %s", (str(user_id),))
+        cursor.close()
+        conn.close()
+    except Exception:
+        pass  # Ignore cleanup errors
 
 
 @pytest.fixture
@@ -54,8 +131,8 @@ class TestCreateContainer:
         assert container["room_id"] == sample_room_id
         assert container["capacity_slots"] == 8
         assert container["lock_state"] == "unlocked"
-        assert container["items_json"] == []
-        assert "container_instance_id" in container
+        assert container["items"] == []
+        assert "container_id" in container
 
     def test_create_corpse_container(self, persistence, sample_player_id: uuid.UUID, sample_room_id: str):
         """Test creating a corpse container with decay timestamp."""
@@ -71,7 +148,8 @@ class TestCreateContainer:
 
         assert container is not None
         assert container["source_type"] == "corpse"
-        assert container["owner_id"] == str(sample_player_id)
+        # owner_id should be converted to string by to_dict()
+        assert str(container["owner_id"]) == str(sample_player_id)
         assert container["room_id"] == sample_room_id
         assert container["decay_at"] is not None
 
@@ -85,7 +163,8 @@ class TestCreateContainer:
 
         assert container is not None
         assert container["source_type"] == "equipment"
-        assert container["entity_id"] == str(sample_player_id)
+        # entity_id should be converted to string by to_dict()
+        assert str(container["entity_id"]) == str(sample_player_id)
         assert container["room_id"] is None
 
     def test_create_container_with_items(self, persistence, sample_room_id: str):
@@ -113,9 +192,9 @@ class TestCreateContainer:
         )
 
         assert container is not None
-        assert len(container["items_json"]) == 2
-        assert container["items_json"][0]["item_id"] == "elder_sign"
-        assert container["items_json"][1]["item_id"] == "tome_of_forbidden_knowledge"
+        assert len(container["items"]) == 2
+        assert container["items"][0]["item_id"] == "elder_sign"
+        assert container["items"][1]["item_id"] == "tome_of_forbidden_knowledge"
 
     def test_create_container_invalid_source_type(self, persistence):
         """Test that invalid source_type is rejected."""
@@ -164,13 +243,18 @@ class TestGetContainer:
             room_id=sample_room_id,
             capacity_slots=8,
         )
-        container_id = uuid.UUID(created["container_instance_id"])
+        # container_id should be a string from to_dict(), but handle both cases
+        container_id = (
+            created["container_id"]
+            if isinstance(created["container_id"], uuid.UUID)
+            else uuid.UUID(created["container_id"])
+        )
 
         # Retrieve container
         retrieved = persistence.get_container(container_id)
 
         assert retrieved is not None
-        assert retrieved["container_instance_id"] == created["container_instance_id"]
+        assert retrieved["container_id"] == created["container_id"]
         assert retrieved["source_type"] == "environment"
         assert retrieved["room_id"] == sample_room_id
 
@@ -198,9 +282,9 @@ class TestGetContainer:
         containers = persistence.get_containers_by_room_id(sample_room_id)
 
         assert len(containers) >= 2
-        container_ids = {c["container_instance_id"] for c in containers}
-        assert container1["container_instance_id"] in container_ids
-        assert container2["container_instance_id"] in container_ids
+        container_ids = {c["container_id"] for c in containers}
+        assert container1["container_id"] in container_ids
+        assert container2["container_id"] in container_ids
 
     def test_get_containers_by_entity_id(self, persistence, sample_player_id: uuid.UUID):
         """Test retrieving all containers owned by an entity."""
@@ -220,9 +304,9 @@ class TestGetContainer:
         containers = persistence.get_containers_by_entity_id(sample_player_id)
 
         assert len(containers) >= 2
-        container_ids = {c["container_instance_id"] for c in containers}
-        assert container1["container_instance_id"] in container_ids
-        assert container2["container_instance_id"] in container_ids
+        container_ids = {c["container_id"] for c in containers}
+        assert container1["container_id"] in container_ids
+        assert container2["container_id"] in container_ids
 
 
 class TestUpdateContainer:
@@ -236,7 +320,12 @@ class TestUpdateContainer:
             room_id=sample_room_id,
             capacity_slots=8,
         )
-        container_id = uuid.UUID(created["container_instance_id"])
+        # container_id should be a string from to_dict(), but handle both cases
+        container_id = (
+            created["container_id"]
+            if isinstance(created["container_id"], uuid.UUID)
+            else uuid.UUID(created["container_id"])
+        )
 
         # Update items
         new_items = [
@@ -251,8 +340,8 @@ class TestUpdateContainer:
         updated = persistence.update_container(container_id, items_json=new_items)
 
         assert updated is not None
-        assert len(updated["items_json"]) == 1
-        assert updated["items_json"][0]["item_id"] == "elder_sign"
+        assert len(updated["items"]) == 1
+        assert updated["items"][0]["item_id"] == "elder_sign"
 
     def test_update_container_lock_state(self, persistence, sample_room_id: str):
         """Test updating container lock state."""
@@ -263,7 +352,12 @@ class TestUpdateContainer:
             capacity_slots=8,
             lock_state="unlocked",
         )
-        container_id = uuid.UUID(created["container_instance_id"])
+        # container_id should be a string from to_dict(), but handle both cases
+        container_id = (
+            created["container_id"]
+            if isinstance(created["container_id"], uuid.UUID)
+            else uuid.UUID(created["container_id"])
+        )
 
         # Update lock state
         updated = persistence.update_container(container_id, lock_state="locked")
@@ -279,15 +373,20 @@ class TestUpdateContainer:
             room_id=sample_room_id,
             capacity_slots=8,
         )
-        container_id = uuid.UUID(created["container_instance_id"])
+        # container_id should be a string from to_dict(), but handle both cases
+        container_id = (
+            created["container_id"]
+            if isinstance(created["container_id"], uuid.UUID)
+            else uuid.UUID(created["container_id"])
+        )
 
         # Update metadata
         new_metadata = {"key_item_id": "arkham_library_key", "requires_key": True}
         updated = persistence.update_container(container_id, metadata_json=new_metadata)
 
         assert updated is not None
-        assert updated["metadata_json"]["key_item_id"] == "arkham_library_key"
-        assert updated["metadata_json"]["requires_key"] is True
+        assert updated["metadata"]["key_item_id"] == "arkham_library_key"
+        assert updated["metadata"]["requires_key"] is True
 
     def test_update_nonexistent_container(self, persistence):
         """Test updating a non-existent container."""
@@ -303,7 +402,12 @@ class TestUpdateContainer:
             room_id=sample_room_id,
             capacity_slots=8,
         )
-        container_id = uuid.UUID(created["container_instance_id"])
+        # container_id should be a string from to_dict(), but handle both cases
+        container_id = (
+            created["container_id"]
+            if isinstance(created["container_id"], uuid.UUID)
+            else uuid.UUID(created["container_id"])
+        )
 
         # Try to update with invalid lock state
         with pytest.raises(ValidationError):
@@ -321,7 +425,12 @@ class TestDeleteContainer:
             room_id=sample_room_id,
             capacity_slots=8,
         )
-        container_id = uuid.UUID(created["container_instance_id"])
+        # container_id should be a string from to_dict(), but handle both cases
+        container_id = (
+            created["container_id"]
+            if isinstance(created["container_id"], uuid.UUID)
+            else uuid.UUID(created["container_id"])
+        )
 
         # Delete container
         deleted = persistence.delete_container(container_id)

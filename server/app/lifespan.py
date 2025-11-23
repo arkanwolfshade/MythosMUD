@@ -85,13 +85,16 @@ async def lifespan(app: FastAPI):
 
     _persistence_module_path = Path(__file__).parent.parent / "persistence.py"
     if _persistence_module_path.exists():
-        _persistence_spec = importlib.util.spec_from_file_location("server.persistence_module", _persistence_module_path)
+        _persistence_spec = importlib.util.spec_from_file_location(
+            "server.persistence_module", _persistence_module_path
+        )
         if _persistence_spec and _persistence_spec.loader:
             _persistence_module = importlib.util.module_from_spec(_persistence_spec)
             _persistence_spec.loader.exec_module(_persistence_module)
             _persistence_lock = _persistence_module._persistence_lock
     else:
         import threading
+
         _persistence_lock = threading.Lock()  # Fallback
 
     with _persistence_lock:

@@ -145,7 +145,7 @@ class EnvironmentalContainerLoader:
         for existing in existing_containers:
             if existing.get("source_type") == "environment":
                 # Container already exists, return its ID
-                existing_id = existing.get("container_instance_id")
+                existing_id = existing.get("container_id")
                 if existing_id:
                     logger.debug(
                         "Container already exists for room",
@@ -167,7 +167,7 @@ class EnvironmentalContainerLoader:
                 metadata_json=container.metadata,
             )
 
-            container_id = UUID(container_data["container_instance_id"])
+            container_id = UUID(container_data["container_id"])
 
             logger.info(
                 "Container migrated to PostgreSQL",

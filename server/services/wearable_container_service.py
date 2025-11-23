@@ -96,10 +96,10 @@ class WearableContainerService:
         for existing in existing_containers:
             if existing.get("source_type") == "equipment":
                 # Check if this is the same item instance
-                existing_metadata = existing.get("metadata_json", {})
+                existing_metadata = existing.get("metadata", {})
                 if existing_metadata.get("item_instance_id") == item_instance_id:
                     # Container already exists, return its ID
-                    existing_id = existing.get("container_instance_id")
+                    existing_id = existing.get("container_id")
                     logger.debug(
                         "Container already exists for item",
                         player_id=str(player_id),
@@ -124,7 +124,7 @@ class WearableContainerService:
                 },
             )
 
-            container_id = UUID(container_data["container_instance_id"])
+            container_id = UUID(container_data["container_id"])
 
             logger.info(
                 "Wearable container created on equip",
@@ -172,7 +172,7 @@ class WearableContainerService:
         existing_containers = self.persistence.get_containers_by_entity_id(player_id)
         for existing in existing_containers:
             if existing.get("source_type") == "equipment":
-                existing_metadata = existing.get("metadata_json", {})
+                existing_metadata = existing.get("metadata", {})
                 if existing_metadata.get("item_instance_id") == item_instance_id:
                     # Found the container, update inner_container in item stack
                     container = ContainerComponent.model_validate(existing)

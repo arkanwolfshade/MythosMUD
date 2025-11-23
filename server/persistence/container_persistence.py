@@ -23,6 +23,30 @@ from ..utils.error_logging import create_error_context, log_and_raise
 logger = get_logger(__name__)
 
 
+def _parse_jsonb_column(value: Any, default: Any) -> Any:
+    """
+    Parse a JSONB column value from database.
+
+    JSONB columns may be returned as:
+    - Python objects (dict/list) when using RealDictCursor
+    - Strings that need parsing
+    - None values
+
+    Args:
+        value: The JSONB column value from database
+        default: Default value if value is None or empty
+
+    Returns:
+        Parsed Python object (dict/list) or default value
+    """
+    if value is None:
+        return default
+    if isinstance(value, str):
+        return json.loads(value) if value else default
+    # Already a Python object (dict/list)
+    return value if value else default
+
+
 class ContainerData:
     """Data class for container information."""
 
@@ -59,9 +83,14 @@ class ContainerData:
         self.updated_at = updated_at
 
     def to_dict(self) -> dict[str, Any]:
-        """Convert container data to dictionary."""
+        """
+        Convert container data to dictionary.
+
+        Returns dictionary with model field names (container_id, items, metadata)
+        to match ContainerComponent model expectations.
+        """
         return {
-            "container_instance_id": str(self.container_instance_id),
+            "container_id": str(self.container_instance_id),
             "source_type": self.source_type,
             "owner_id": str(self.owner_id) if self.owner_id else None,
             "room_id": self.room_id,
@@ -71,8 +100,8 @@ class ContainerData:
             "weight_limit": self.weight_limit,
             "decay_at": self.decay_at.isoformat() if self.decay_at else None,
             "allowed_roles": self.allowed_roles,
-            "items_json": self.items_json,
-            "metadata_json": self.metadata_json,
+            "items": self.items_json,
+            "metadata": self.metadata_json,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }
@@ -290,9 +319,9 @@ def get_container(conn: Any, container_id: UUID) -> ContainerData | None:
             capacity_slots=row["capacity_slots"],
             weight_limit=row["weight_limit"],
             decay_at=row["decay_at"],
-            allowed_roles=row["allowed_roles"] if row["allowed_roles"] else [],
-            items_json=row["items_json"] if row["items_json"] else [],
-            metadata_json=row["metadata_json"] if row["metadata_json"] else {},
+            allowed_roles=_parse_jsonb_column(row["allowed_roles"], []),
+            items_json=_parse_jsonb_column(row["items_json"], []),
+            metadata_json=_parse_jsonb_column(row["metadata_json"], {}),
             created_at=row["created_at"],
             updated_at=row["updated_at"],
         )
@@ -355,9 +384,9 @@ def get_containers_by_room_id(conn: Any, room_id: str) -> list[ContainerData]:
                     capacity_slots=row["capacity_slots"],
                     weight_limit=row["weight_limit"],
                     decay_at=row["decay_at"],
-                    allowed_roles=row["allowed_roles"] if row["allowed_roles"] else [],
-                    items_json=row["items_json"] if row["items_json"] else [],
-                    metadata_json=row["metadata_json"] if row["metadata_json"] else {},
+                    allowed_roles=_parse_jsonb_column(row["allowed_roles"], []),
+                    items_json=_parse_jsonb_column(row["items_json"], []),
+                    metadata_json=_parse_jsonb_column(row["metadata_json"], {}),
                     created_at=row["created_at"],
                     updated_at=row["updated_at"],
                 )
@@ -423,9 +452,9 @@ def get_containers_by_entity_id(conn: Any, entity_id: UUID) -> list[ContainerDat
                     capacity_slots=row["capacity_slots"],
                     weight_limit=row["weight_limit"],
                     decay_at=row["decay_at"],
-                    allowed_roles=row["allowed_roles"] if row["allowed_roles"] else [],
-                    items_json=row["items_json"] if row["items_json"] else [],
-                    metadata_json=row["metadata_json"] if row["metadata_json"] else {},
+                    allowed_roles=_parse_jsonb_column(row["allowed_roles"], []),
+                    items_json=_parse_jsonb_column(row["items_json"], []),
+                    metadata_json=_parse_jsonb_column(row["metadata_json"], {}),
                     created_at=row["created_at"],
                     updated_at=row["updated_at"],
                 )
@@ -593,9 +622,9 @@ def get_decayed_containers(conn: Any, current_time: datetime | None = None) -> l
                     capacity_slots=row["capacity_slots"],
                     weight_limit=row["weight_limit"],
                     decay_at=row["decay_at"],
-                    allowed_roles=row["allowed_roles"] if row["allowed_roles"] else [],
-                    items_json=row["items_json"] if row["items_json"] else [],
-                    metadata_json=row["metadata_json"] if row["metadata_json"] else {},
+                    allowed_roles=_parse_jsonb_column(row["allowed_roles"], []),
+                    items_json=_parse_jsonb_column(row["items_json"], []),
+                    metadata_json=_parse_jsonb_column(row["metadata_json"], {}),
                     created_at=row["created_at"],
                     updated_at=row["updated_at"],
                 )
