@@ -156,11 +156,18 @@ class EnvironmentalContainerLoader:
 
         # Create new container in PostgreSQL
         try:
+            # Handle enum values - they may be strings due to use_enum_values=True
+            source_type_value = (
+                container.source_type.value if hasattr(container.source_type, "value") else str(container.source_type)
+            )
+            lock_state_value = (
+                container.lock_state.value if hasattr(container.lock_state, "value") else str(container.lock_state)
+            )
             container_data = self.persistence.create_container(
-                source_type=container.source_type.value,
+                source_type=source_type_value,
                 room_id=container.room_id,
                 capacity_slots=container.capacity_slots,
-                lock_state=container.lock_state.value,
+                lock_state=lock_state_value,
                 weight_limit=container.weight_limit,
                 allowed_roles=container.allowed_roles,
                 items_json=[],

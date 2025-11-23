@@ -8,7 +8,7 @@ of equip/unequip transitions, nested container capacity, and inventory spill.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 from uuid import UUID
 
 from ..exceptions import MythosMUDError
@@ -291,8 +291,10 @@ class WearableContainerService:
                 user_friendly="Container capacity exceeded",
             )
 
-        # Add items
-        new_items = current_items + items
+        # Add items - convert InventoryStack objects to dicts
+        new_items: list[dict[str, Any]] = [
+            cast(dict[str, Any], dict(item) if not isinstance(item, dict) else item) for item in current_items + items
+        ]
 
         # Update container
         updated_data = self.persistence.update_container(
@@ -307,6 +309,15 @@ class WearableContainerService:
             items_added=len(items),
             total_items=len(new_items),
         )
+
+        if updated_data is None:
+            log_and_raise(
+                WearableContainerServiceError,
+                f"Failed to update container: {container_id}",
+                context=context,
+                details={"container_id": str(container_id)},
+                user_friendly="Failed to update container",
+            )
 
         return updated_data
 
@@ -384,6 +395,15 @@ class WearableContainerService:
             container_id=str(container_id),
             items_count=len(items),
         )
+
+        if updated_data is None:
+            log_and_raise(
+                WearableContainerServiceError,
+                f"Failed to update container: {container_id}",
+                context=context,
+                details={"container_id": str(container_id)},
+                user_friendly="Failed to update container",
+            )
 
         return updated_data
 

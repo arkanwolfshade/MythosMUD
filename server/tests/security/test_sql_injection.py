@@ -9,6 +9,7 @@ import json
 import os
 import uuid
 from datetime import datetime
+from typing import cast
 
 import pytest
 
@@ -332,7 +333,7 @@ class TestSQLInjectionPrevention:
             persistence.update_player_stat_field(
                 player_id_uuid,
                 "current_health",
-                malicious_delta,  # Intentionally passing wrong type to test type checking
+                cast(int | float, malicious_delta),  # Intentionally passing wrong type to test type checking
                 "test",
             )
 

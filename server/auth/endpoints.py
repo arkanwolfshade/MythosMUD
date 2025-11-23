@@ -393,7 +393,7 @@ async def login_user(
     player = persistence.get_player_by_user_id(str(user.id))
 
     has_character = player is not None
-    character_name = player.name if player else None
+    character_name: str | None = str(player.name) if player else None
 
     # CRITICAL FIX: Handle new game session to disconnect any existing connections
     # This prevents the duplicate login bug where the same player can be logged in multiple times

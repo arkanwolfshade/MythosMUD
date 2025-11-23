@@ -18,7 +18,7 @@ import pytest
 
 from server.models.player import Player
 from server.persistence import get_persistence
-from server.services.container_service import ContainerService
+from server.services.container_service import ContainerService, ContainerServiceError
 from server.services.inventory_service import InventoryStack
 
 
@@ -217,15 +217,17 @@ class TestConcurrentContainerMutations:
             items_json=[
                 {
                     "item_id": "item_1",
+                    "item_name": "Test Item 1",
                     "quantity": 10,
                     "weight": 1.0,
-                    "name": "Test Item 1",
+                    "slot_type": "backpack",
                 },
                 {
                     "item_id": "item_2",
+                    "item_name": "Test Item 2",
                     "quantity": 5,
                     "weight": 2.0,
-                    "name": "Test Item 2",
+                    "slot_type": "backpack",
                 },
             ],
         )
@@ -243,15 +245,17 @@ class TestConcurrentContainerMutations:
         # This should fail for the second transfer due to token invalidation
         stack1 = {
             "item_id": "item_1",
+            "item_name": "Test Item 1",
             "quantity": 1,
             "weight": 1.0,
-            "name": "Test Item 1",
+            "slot_type": "backpack",
         }
         stack2 = {
             "item_id": "item_2",
+            "item_name": "Test Item 2",
             "quantity": 1,
             "weight": 2.0,
-            "name": "Test Item 2",
+            "slot_type": "backpack",
         }
 
         async def transfer_item(stack: dict[str, Any]) -> dict[str, Any] | Exception:
@@ -314,15 +318,17 @@ class TestConcurrentContainerMutations:
         # Create test stacks
         stack1 = {
             "item_id": "item_1",
+            "item_name": "Test Item 1",
             "quantity": 1,
             "weight": 1.0,
-            "name": "Test Item 1",
+            "slot_type": "backpack",
         }
         stack2 = {
             "item_id": "item_2",
+            "item_name": "Test Item 2",
             "quantity": 1,
             "weight": 2.0,
-            "name": "Test Item 2",
+            "slot_type": "backpack",
         }
 
         # Transfer concurrently with different tokens
@@ -486,40 +492,51 @@ class TestConcurrentContainerMutations:
         open_result = container_service.open_container(container_id, player_id)
         mutation_token = open_result["mutation_token"]
 
-        # Attempt to add 3 items concurrently (should fail for some)
+        # Attempt to add 3 items sequentially (should fail for the 3rd due to capacity)
+        # Note: We test sequentially because mutation tokens are invalidated after each transfer,
+        # so concurrent transfers with the same token would fail due to token invalidation, not capacity.
         stacks = [
             {
                 "item_id": f"item_{i}",
+                "item_name": f"Test Item {i}",
                 "quantity": 1,
                 "weight": 1.0,
-                "name": f"Test Item {i}",
+                "slot_type": "backpack",
             }
             for i in range(3)
         ]
 
-        async def transfer_item(stack: dict[str, Any]) -> dict[str, Any] | Exception:
-            """Transfer item to container."""
-            try:
-                return container_service.transfer_to_container(
-                    container_id=container_id,
-                    player_id=player_id,
-                    mutation_token=mutation_token,
-                    item=cast(InventoryStack, stack),
-                    quantity=1,
-                )
-            except Exception as e:
-                return e
+        # Transfer first 2 items (should succeed)
+        for i in range(2):
+            container_service.transfer_to_container(
+                container_id=container_id,
+                player_id=player_id,
+                mutation_token=mutation_token,
+                item=cast(InventoryStack, stacks[i]),
+                quantity=1,
+            )
+            # Close container after transfer (using token before it's fully invalidated)
+            # Then reopen to get new mutation token for next transfer
+            container_service.close_container(container_id, player_id, mutation_token)
+            open_result = container_service.open_container(container_id, player_id)
+            mutation_token = open_result["mutation_token"]
 
-        results = await asyncio.gather(
-            *[transfer_item(stack) for stack in stacks],
-            return_exceptions=True,
-        )
-
-        # Only 2 items should succeed (capacity limit)
-        success_count = sum(1 for r in results if not isinstance(r, Exception))
-        assert success_count == 2, "Only 2 items should fit in container"
-
-        # Verify final container state
+        # Verify container has 2 items before attempting 3rd
         container = container_service.persistence.get_container(container_id)
         assert container is not None
-        assert len(container.items) == 2, "Container should have exactly 2 items"
+        assert len(container["items"]) == 2, "Container should have 2 items before attempting 3rd"
+
+        # Attempt to add 3rd item (should fail due to capacity limit)
+        with pytest.raises(ContainerServiceError):  # Should raise ContainerServiceError due to capacity
+            container_service.transfer_to_container(
+                container_id=container_id,
+                player_id=player_id,
+                mutation_token=mutation_token,
+                item=cast(InventoryStack, stacks[2]),
+                quantity=1,
+            )
+
+        # Verify final container state - still has only 2 items
+        container = container_service.persistence.get_container(container_id)
+        assert container is not None
+        assert len(container["items"]) == 2, "Container should still have exactly 2 items after failed 3rd transfer"

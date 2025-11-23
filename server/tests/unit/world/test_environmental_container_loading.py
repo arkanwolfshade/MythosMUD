@@ -154,9 +154,9 @@ class TestContainerMigrationToPostgreSQL:
         """Test migrating a container from room JSON to PostgreSQL."""
         loader = EnvironmentalContainerLoader(persistence=mock_persistence)
 
-        # Mock container creation
+        # Mock container creation (returns to_dict() which uses container_id)
         mock_persistence.create_container.return_value = {
-            "container_instance_id": str(uuid.uuid4()),
+            "container_id": str(uuid.uuid4()),
         }
 
         container_id = loader.migrate_room_container_to_postgresql(sample_room_json_with_container, sample_room_id)
@@ -175,11 +175,11 @@ class TestContainerMigrationToPostgreSQL:
         self, mock_persistence, sample_room_json_with_container, sample_room_id
     ):
         """Test that existing containers are not recreated."""
-        # Mock existing container
+        # Mock existing container (using container_id as returned by to_dict())
         existing_container_id = uuid.uuid4()
         mock_persistence.get_containers_by_room_id.return_value = [
             {
-                "container_instance_id": str(existing_container_id),
+                "container_id": str(existing_container_id),
                 "source_type": "environment",
                 "room_id": sample_room_id,
             },
@@ -208,15 +208,15 @@ class TestContainerLoadingFromPostgreSQL:
 
     def test_load_containers_for_room(self, mock_persistence, sample_room_id):
         """Test loading containers for a room from PostgreSQL."""
-        # Mock container data
+        # Mock container data (using container_id as returned by to_dict())
         container_data = {
-            "container_instance_id": str(uuid.uuid4()),
+            "container_id": str(uuid.uuid4()),
             "source_type": "environment",
             "room_id": sample_room_id,
             "capacity_slots": 8,
             "lock_state": "locked",
-            "items_json": [],
-            "metadata_json": {"key_item_id": "arkham_library_key"},
+            "items": [],
+            "metadata": {"key_item_id": "arkham_library_key"},
         }
 
         mock_persistence.get_containers_by_room_id.return_value = [container_data]
@@ -242,23 +242,23 @@ class TestContainerLoadingFromPostgreSQL:
     def test_load_containers_for_room_multiple(self, mock_persistence, sample_room_id):
         """Test loading multiple containers for a room."""
         container_data_1 = {
-            "container_instance_id": str(uuid.uuid4()),
+            "container_id": str(uuid.uuid4()),
             "source_type": "environment",
             "room_id": sample_room_id,
             "capacity_slots": 8,
             "lock_state": "unlocked",
-            "items_json": [],
-            "metadata_json": {},
+            "items": [],
+            "metadata": {},
         }
 
         container_data_2 = {
-            "container_instance_id": str(uuid.uuid4()),
+            "container_id": str(uuid.uuid4()),
             "source_type": "environment",
             "room_id": sample_room_id,
             "capacity_slots": 12,
             "lock_state": "locked",
-            "items_json": [],
-            "metadata_json": {},
+            "items": [],
+            "metadata": {},
         }
 
         mock_persistence.get_containers_by_room_id.return_value = [container_data_1, container_data_2]
@@ -275,15 +275,15 @@ class TestRoomContainerIntegration:
 
     def test_room_with_container_includes_containers(self, mock_persistence, sample_room_id):
         """Test that rooms loaded from database include their containers."""
-        # Mock container data
+        # Mock container data (using container_id as returned by to_dict())
         container_data = {
-            "container_instance_id": str(uuid.uuid4()),
+            "container_id": str(uuid.uuid4()),
             "source_type": "environment",
             "room_id": sample_room_id,
             "capacity_slots": 8,
             "lock_state": "unlocked",
-            "items_json": [],
-            "metadata_json": {},
+            "items": [],
+            "metadata": {},
         }
 
         mock_persistence.get_containers_by_room_id.return_value = [container_data]

@@ -825,7 +825,7 @@ async def loot_all_items(
             items_count = len(container.items) - len(final_container.items)
             audit_logger.log_container_interaction(
                 player_id=str(player_id),
-                player_name=player.name,
+                player_name=str(player.name),
                 container_id=str(request_data.container_id),
                 event_type="container_loot_all",
                 source_type=final_container.source_type.value,

@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import UTC, datetime, timedelta
-from typing import Any
+from typing import Any, cast
 from uuid import UUID
 
 from ..exceptions import MythosMUDError
@@ -124,13 +124,17 @@ class CorpseLifecycleService:
 
         # Persist corpse container
         try:
+            # Convert InventoryStack objects to dicts for persistence
+            items_dicts: list[dict[str, Any]] = [
+                cast(dict[str, Any], dict(item) if not isinstance(item, dict) else item) for item in corpse.items
+            ]
             container_data = self.persistence.create_container(
                 source_type=corpse.source_type.value,
                 owner_id=corpse.owner_id,
                 room_id=corpse.room_id,
                 capacity_slots=corpse.capacity_slots,
                 decay_at=corpse.decay_at,
-                items_json=list(corpse.items),
+                items_json=items_dicts,
                 metadata_json=corpse.metadata,
             )
             corpse.container_id = UUID(container_data["container_id"])

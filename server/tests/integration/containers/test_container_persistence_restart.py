@@ -419,6 +419,7 @@ class TestContainerPersistenceRestart:
             "item_name": "Test Item 1",
             "quantity": 5,
             "weight": 1.0,
+            "slot_type": "backpack",
         }
         container_service.transfer_to_container(
             container_id=container_id,
