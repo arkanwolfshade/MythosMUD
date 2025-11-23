@@ -55,6 +55,9 @@ class Room:
         self.environment = room_data.get("resolved_environment", "outdoors")
         self.exits = room_data.get("exits", {})
 
+        # Containers in this room (loaded from PostgreSQL)
+        self._containers: list = room_data.get("containers", [])
+
         # Dynamic state (tracked in memory)
         self._players: set[str] = set()
         self._objects: set[str] = set()
@@ -291,6 +294,15 @@ class Room:
         """
         return self.get_occupant_count() == 0
 
+    def get_containers(self) -> list:
+        """
+        Get list of containers in this room.
+
+        Returns:
+            List of container data dictionaries
+        """
+        return list(self._containers)
+
     def to_dict(self) -> dict:
         """
         Convert the room to a dictionary representation.
@@ -307,6 +319,7 @@ class Room:
             "sub_zone": self.sub_zone,
             "environment": self.environment,
             "exits": self.exits,
+            "containers": self.get_containers(),
             "players": self.get_players(),
             "objects": self.get_objects(),
             "npcs": self.get_npcs(),

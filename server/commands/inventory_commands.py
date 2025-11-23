@@ -7,6 +7,7 @@ import uuid
 from collections.abc import Mapping
 from copy import deepcopy
 from typing import Any, cast
+from uuid import UUID
 
 from ..alias_storage import AliasStorage
 from ..exceptions import ValidationError as MythosValidationError
@@ -21,6 +22,7 @@ from ..services.inventory_service import (
     InventoryStack,
     InventoryValidationError,
 )
+from ..services.wearable_container_service import WearableContainerService
 from ..utils.command_parser import get_username_from_user
 
 logger = get_logger(__name__)
@@ -28,7 +30,11 @@ logger = get_logger(__name__)
 DEFAULT_SLOT_CAPACITY = 20
 
 _SHARED_INVENTORY_SERVICE = InventoryService()
-_SHARED_EQUIPMENT_SERVICE = EquipmentService(inventory_service=_SHARED_INVENTORY_SERVICE)
+_SHARED_WEARABLE_CONTAINER_SERVICE = WearableContainerService()
+_SHARED_EQUIPMENT_SERVICE = EquipmentService(
+    inventory_service=_SHARED_INVENTORY_SERVICE,
+    wearable_container_service=_SHARED_WEARABLE_CONTAINER_SERVICE,
+)
 
 
 def _match_room_drop_by_name(drop_list: list[dict[str, Any]], search_term: str) -> int | None:
@@ -721,6 +727,29 @@ async def handle_equip_command(
     if equipped_slot is None:
         equipped_slot = preferred_slot or next(iter(equipped_mapping.keys()), "unknown")
 
+    # Handle wearable container creation if this is a container item
+    if equipped_item and equipped_item.get("inner_container"):
+        try:
+            container_result = _SHARED_WEARABLE_CONTAINER_SERVICE.handle_equip_wearable_container(
+                player_id=UUID(str(player.player_id)),
+                item_stack=cast(dict[str, Any], equipped_item),
+            )
+            if container_result:
+                logger.debug(
+                    "Wearable container created on equip",
+                    player_id=player.player_id,
+                    item_id=equipped_item.get("item_id"),
+                    container_id=container_result.get("container_id"),
+                )
+        except Exception as e:
+            # Log but don't fail - container creation is not critical
+            logger.warning(
+                "Failed to create wearable container on equip",
+                error=str(e),
+                player_id=player.player_id,
+                item_id=equipped_item.get("item_id"),
+            )
+
     fallback_item: dict[str, Any] = {}
     item_payload: dict[str, Any] = cast(dict[str, Any], equipped_item) if equipped_item is not None else fallback_item
 
@@ -866,6 +895,37 @@ async def handle_unequip_command(
             return persist_error
 
     unequipped_item = previous_equipped.get(resolved_slot, {})
+
+    # Handle wearable container preservation if this is a container item
+    if unequipped_item.get("inner_container"):
+        try:
+            container_result = _SHARED_WEARABLE_CONTAINER_SERVICE.handle_unequip_wearable_container(
+                player_id=UUID(str(player.player_id)),
+                item_stack=cast(dict[str, Any], unequipped_item),
+            )
+            if container_result:
+                # Update inventory item with preserved inner_container
+                # Find the item in inventory and update it
+                inventory_view = player.get_inventory()
+                for inv_item in inventory_view:
+                    if inv_item.get("item_instance_id") == unequipped_item.get("item_instance_id"):
+                        inv_item["inner_container"] = container_result["inner_container"]
+                        player.set_inventory(inventory_view)
+                        _persist_player(persistence, player)
+                        logger.debug(
+                            "Wearable container preserved on unequip",
+                            player_id=player.player_id,
+                            item_id=unequipped_item.get("item_id"),
+                        )
+                        break
+        except Exception as e:
+            # Log but don't fail - container preservation is not critical
+            logger.warning(
+                "Failed to preserve wearable container on unequip",
+                error=str(e),
+                player_id=player.player_id,
+                item_id=unequipped_item.get("item_id"),
+            )
     item_name = unequipped_item.get("item_name") or unequipped_item.get("item_id", "item")
 
     room_id = str(player.current_room_id)

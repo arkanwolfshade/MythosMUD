@@ -453,9 +453,12 @@ def ensure_test_db_ready(test_database):
 
     reset_config()
     # Reset persistence to ensure fresh instance with new environment variables
-    from ..persistence import reset_persistence
+    # Import from main persistence module (persistence.py), not package (persistence/)
+    import importlib
 
-    reset_persistence()
+    persistence_module = importlib.import_module("server.persistence")
+    if hasattr(persistence_module, "reset_persistence"):
+        persistence_module.reset_persistence()
     pass
 
 

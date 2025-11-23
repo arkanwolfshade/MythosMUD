@@ -425,7 +425,7 @@ async def login_user(
         access_token=access_token,
         user_id=str(user.id),
         has_character=has_character,
-        character_name=character_name,  # type: ignore[arg-type]
+        character_name=character_name,
     )
 
 

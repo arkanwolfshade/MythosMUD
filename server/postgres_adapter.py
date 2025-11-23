@@ -76,6 +76,25 @@ class PostgresConnection:
         cursor.execute(query, params)
         return PostgresCursor(cursor)
 
+    def cursor(self, cursor_factory=None):
+        """
+        Get a cursor from the underlying connection.
+
+        This method provides direct access to the psycopg2 cursor API
+        for code that needs lower-level control (e.g., container_persistence).
+
+        Args:
+            cursor_factory: Optional cursor factory (defaults to RealDictCursor)
+
+        Returns:
+            psycopg2.extensions.cursor: Raw psycopg2 cursor
+        """
+        from psycopg2.extras import RealDictCursor
+
+        if cursor_factory is None:
+            cursor_factory = RealDictCursor
+        return self._conn.cursor(cursor_factory=cursor_factory)
+
     def commit(self) -> None:
         """Commit the current transaction."""
         self._conn.commit()

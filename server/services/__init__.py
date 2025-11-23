@@ -14,6 +14,14 @@ from .active_sanity_service import (
 )
 from .admin_auth_service import AdminAuthService, admin_auth_service, get_admin_auth_service
 from .catatonia_registry import CatatoniaRegistry
+from .container_service import (
+    ContainerAccessDeniedError,
+    ContainerCapacityError,
+    ContainerLockedError,
+    ContainerNotFoundError,
+    ContainerService,
+    ContainerServiceError,
+)
 from .equipment_service import (
     EquipmentCapacityError,
     EquipmentService,
@@ -33,6 +41,10 @@ from .npc_instance_service import NPCInstanceService, get_npc_instance_service, 
 from .npc_service import NPCService, npc_service
 from .passive_sanity_flux_service import PassiveFluxContext, PassiveSanityFluxService
 from .schedule_service import ScheduleService
+from .wearable_container_service import (
+    WearableContainerService,
+    WearableContainerServiceError,
+)
 
 __all__ = [
     "NPCService",
@@ -43,10 +55,18 @@ __all__ = [
     "AdminAuthService",
     "get_admin_auth_service",
     "admin_auth_service",
+    "ContainerService",
+    "ContainerServiceError",
+    "ContainerNotFoundError",
+    "ContainerLockedError",
+    "ContainerCapacityError",
+    "ContainerAccessDeniedError",
     "EquipmentService",
     "EquipmentServiceError",
     "SlotValidationError",
     "EquipmentCapacityError",
+    "WearableContainerService",
+    "WearableContainerServiceError",
     "InventoryService",
     "InventoryServiceError",
     "InventoryValidationError",

@@ -332,7 +332,7 @@ class TestSQLInjectionPrevention:
             persistence.update_player_stat_field(
                 player_id_uuid,
                 "current_health",
-                malicious_delta,  # type: ignore[arg-type]  # Intentionally passing wrong type to test type checking
+                malicious_delta,  # Intentionally passing wrong type to test type checking
                 "test",
             )
 

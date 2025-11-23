@@ -278,7 +278,7 @@ class MovementService:
                 # Update player's room in persistence
                 db_write_start = time.time()
                 self._logger.debug("Updating player room in database", player_id=resolved_player_id, room_id=to_room_id)
-                player.current_room_id = to_room_id  # type: ignore[assignment]
+                player.current_room_id = to_room_id
                 self._persistence.save_player(player)
                 db_write_end = time.time()
                 timing_breakdown["db_write_ms"] = (db_write_end - db_write_start) * 1000
@@ -638,7 +638,7 @@ class MovementService:
                 except (ValueError, AttributeError):
                     player = None
                 if player:
-                    player.current_room_id = room_id  # type: ignore[assignment]
+                    player.current_room_id = room_id
                     self._persistence.save_player(player)
 
                 self._logger.info("Added player to room", player_id=player_id, room_id=room_id)

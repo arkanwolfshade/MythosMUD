@@ -503,16 +503,14 @@ async def process_command_with_validation(
         # NEW: Audit logging for security-sensitive commands (CRITICAL-3)
         # AI: Log admin/privileged commands for security auditing and compliance
         if CommandValidator.is_security_sensitive(command_line):
-            # Extract session and IP if available
+            # Extract session if available
             session_id = getattr(request.state, "session_id", None) if hasattr(request, "state") else None
-            ip_address = getattr(request.client, "host", None) if hasattr(request, "client") else None
 
             audit_logger.log_command(
                 player_name=player_name,
                 command=command_line,
                 success=True,  # If we got here, command was successful
                 result=str(result.get("result", ""))[:500],  # Truncate result
-                ip_address=ip_address,
                 session_id=session_id,
                 metadata={"command_type": command_type},
             )

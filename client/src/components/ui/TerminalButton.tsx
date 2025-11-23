@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface TerminalButtonProps {
+interface TerminalButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   onClick?: () => void;
   variant?: 'primary' | 'secondary' | 'danger' | 'warning' | 'success';
@@ -20,6 +20,7 @@ export const TerminalButton: React.FC<TerminalButtonProps> = ({
   className = '',
   type = 'button',
   fullWidth = false,
+  ...rest
 }) => {
   const baseClasses =
     'font-mono border rounded transition-eldritch duration-eldritch ease-eldritch focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-mythos-terminal-background';
@@ -59,7 +60,7 @@ export const TerminalButton: React.FC<TerminalButtonProps> = ({
   ].join(' ');
 
   return (
-    <button type={type} onClick={onClick} disabled={disabled} className={classes}>
+    <button type={type} onClick={onClick} disabled={disabled} className={classes} {...rest}>
       {children}
     </button>
   );

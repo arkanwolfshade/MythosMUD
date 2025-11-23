@@ -77,7 +77,22 @@ async def lifespan(app: FastAPI):
     # AI Agent: CRITICAL FIX - Ensure global persistence singleton uses container's instance
     #           This prevents the dual-cache bug where NPCs are added to one cache
     #           but player connections see a different cache
-    from ..persistence import _persistence_lock
+    # Import _persistence_lock from the module file (not the package)
+    # Note: _persistence_lock exists in server/persistence.py but is not exported via the package
+    # We import it directly from the module file using importlib
+    import importlib.util
+    from pathlib import Path
+
+    _persistence_module_path = Path(__file__).parent.parent / "persistence.py"
+    if _persistence_module_path.exists():
+        _persistence_spec = importlib.util.spec_from_file_location("server.persistence_module", _persistence_module_path)
+        if _persistence_spec and _persistence_spec.loader:
+            _persistence_module = importlib.util.module_from_spec(_persistence_spec)
+            _persistence_spec.loader.exec_module(_persistence_module)
+            _persistence_lock = _persistence_module._persistence_lock
+    else:
+        import threading
+        _persistence_lock = threading.Lock()  # Fallback
 
     with _persistence_lock:
         globals_module = __import__("server.persistence", fromlist=["_persistence_instance"])
@@ -681,6 +696,65 @@ async def game_tick_loop(app: FastAPI):
                     logger.info("NPC maintenance completed", tick_count=tick_count, **maintenance_results)
                 except Exception as e:
                     logger.error("Error during NPC maintenance", tick_count=tick_count, error=str(e))
+
+            # Cleanup decayed corpse containers (every 60 ticks = 1 minute)
+            if tick_count % 60 == 0:
+                try:
+                    from ..services.corpse_lifecycle_service import CorpseLifecycleService
+                    from ..time.time_service import get_mythos_chronicle
+
+                    persistence = app.state.container.persistence
+                    connection_manager = app.state.container.connection_manager
+                    time_service = get_mythos_chronicle()
+
+                    corpse_service = CorpseLifecycleService(
+                        persistence=persistence,
+                        connection_manager=connection_manager,
+                        time_service=time_service,
+                    )
+
+                    # Get all decayed corpses and clean them up
+                    decayed = corpse_service.get_all_decayed_corpses()
+                    cleaned_count = 0
+
+                    for corpse in decayed:
+                        try:
+                            # Emit decay event before cleanup
+                            if connection_manager and corpse.room_id:
+                                from ..services.container_websocket_events import emit_container_decayed
+
+                                await emit_container_decayed(
+                                    connection_manager=connection_manager,
+                                    container_id=corpse.container_id,
+                                    room_id=corpse.room_id,
+                                )
+
+                            # Cleanup corpse (this will delete it)
+                            corpse_service.cleanup_decayed_corpse(corpse.container_id)
+                            cleaned_count += 1
+                        except Exception as cleanup_error:
+                            logger.error(
+                                "Error cleaning up individual decayed corpse",
+                                error=str(cleanup_error),
+                                container_id=str(corpse.container_id),
+                                exc_info=True,
+                            )
+                            continue
+
+                    if cleaned_count > 0:
+                        logger.info(
+                            "Decayed corpses cleaned up",
+                            tick_count=tick_count,
+                            cleaned_count=cleaned_count,
+                            total_decayed=len(decayed),
+                        )
+                except Exception as corpse_cleanup_error:
+                    logger.warning(
+                        "Error cleaning up decayed corpses",
+                        error=str(corpse_cleanup_error),
+                        tick_count=tick_count,
+                        exc_info=True,
+                    )
 
             # Broadcast game tick to all connected players
             # AI Agent: Use container instance instead of global singleton

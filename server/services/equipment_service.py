@@ -7,11 +7,15 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any, cast
 
+from ..logging.enhanced_logging_config import get_logger
 from .inventory_service import (
     InventoryCapacityError,
     InventoryService,
     InventoryStack,
 )
+from .wearable_container_service import WearableContainerService
+
+logger = get_logger(__name__)
 
 
 class EquipmentServiceError(Exception):
@@ -43,6 +47,7 @@ class EquipmentService:
     """
 
     inventory_service: InventoryService = field(default_factory=InventoryService)
+    wearable_container_service: WearableContainerService | None = field(default=None)
 
     def equip_from_inventory(
         self,
@@ -93,6 +98,25 @@ class EquipmentService:
                 ) from exc
 
         working_equipped[slot_type] = equipped_item
+
+        # Handle wearable container creation if this is a container item
+        if self.wearable_container_service and equipped_item.get("inner_container"):
+            try:
+                # Import here to avoid circular dependency
+
+                # Get player_id from context if available
+                # For now, we'll need to pass player_id separately or get it from context
+                # This is a limitation - we may need to refactor EquipmentService to accept player_id
+                # For now, we'll skip container creation here and handle it at the API/command layer
+                pass
+            except Exception as e:
+                # Log but don't fail - container creation is not critical for equip operation
+                logger.warning(
+                    "Failed to create wearable container on equip",
+                    error=str(e),
+                    item_id=equipped_item.get("item_id"),
+                )
+
         return working_inventory, working_equipped
 
     def unequip_to_inventory(
@@ -120,6 +144,24 @@ class EquipmentService:
             raise EquipmentCapacityError(
                 f"Cannot move '{equipped_item['item_name']}' into inventory; capacity reached."
             ) from exc
+
+        # Handle wearable container preservation if this is a container item
+        if self.wearable_container_service and equipped_item.get("inner_container"):
+            try:
+                # Import here to avoid circular dependency
+
+                # Get player_id from context if available
+                # For now, we'll need to pass player_id separately or get it from context
+                # This is a limitation - we may need to refactor EquipmentService to accept player_id
+                # For now, we'll skip container preservation here and handle it at the API/command layer
+                pass
+            except Exception as e:
+                # Log but don't fail - container preservation is not critical for unequip operation
+                logger.warning(
+                    "Failed to preserve wearable container on unequip",
+                    error=str(e),
+                    item_id=equipped_item.get("item_id"),
+                )
 
         return working_inventory, working_equipped
 
