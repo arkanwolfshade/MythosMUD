@@ -372,8 +372,7 @@ class TestLoginEndpoints:
         assert response.status_code == 401
         assert "Invalid credentials" in response.json()["error"]["message"]
 
-    @patch("server.auth.endpoints.get_async_session")
-    def test_login_user_no_email(self, mock_get_session, container_test_client_class, mock_auth_persistence):
+    def test_login_user_no_email(self, container_test_client_class, mock_auth_persistence):
         """Test login with user that has no email."""
         # Create mock user with no email
         mock_user = MagicMock()
@@ -392,15 +391,18 @@ class TestLoginEndpoints:
         mock_manager.authenticate.return_value = None
 
         # Override the dependencies at the app level
-        from server.auth.endpoints import get_async_session, get_user_manager
+        # CRITICAL: get_async_session is an async generator, so we must yield the session
+        from server.auth.endpoints import get_user_manager
+        from server.database import get_async_session
 
         async def mock_get_async_session():
-            return mock_session
+            yield mock_session
 
         async def mock_get_user_manager():
             return mock_manager
 
         # Override the dependencies in the app
+        # Use the function from database module (which is what endpoints imports)
         container_test_client_class.app.dependency_overrides[get_async_session] = mock_get_async_session
         container_test_client_class.app.dependency_overrides[get_user_manager] = mock_get_user_manager
 

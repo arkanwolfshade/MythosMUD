@@ -833,11 +833,18 @@ async def async_container_test_client(test_container):
     app.state.user_manager = container.user_manager
 
     # Create async client with proper transport
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://testserver") as client:
-        logger.info("AsyncClient created with container services")
+    transport = ASGITransport(app=app)
+    client = AsyncClient(transport=transport, base_url="http://testserver")
+    logger.info("AsyncClient created with container services")
+    try:
         yield client
-
-    logger.info("AsyncClient closed")
+    finally:
+        # Explicitly close the client and transport to prevent ResourceWarnings
+        try:
+            await client.aclose()
+        except Exception:
+            pass
+        logger.info("AsyncClient closed")
 
 
 @pytest.fixture

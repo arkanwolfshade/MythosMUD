@@ -321,8 +321,8 @@ class TestPlayerAPIIntegration:
 
     def test_roll_stats_success(self, container_test_client_class):
         """Test successful stats rolling via API."""
-        # Act
-        response = container_test_client_class.post("/api/players/roll-stats")
+        # Act - RollStatsRequest has defaults, but FastAPI requires JSON body
+        response = container_test_client_class.post("/api/players/roll-stats", json={})
 
         # Assert
         assert response.status_code in [200, 401]
