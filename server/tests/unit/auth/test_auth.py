@@ -372,7 +372,8 @@ class TestLoginEndpoints:
         assert response.status_code == 401
         assert "Invalid credentials" in response.json()["error"]["message"]
 
-    def test_login_user_no_email(self, container_test_client_class, mock_auth_persistence):
+    @patch("server.auth.endpoints.get_async_session")
+    def test_login_user_no_email(self, mock_get_session, container_test_client_class, mock_auth_persistence):
         """Test login with user that has no email."""
         # Create mock user with no email
         mock_user = MagicMock()
