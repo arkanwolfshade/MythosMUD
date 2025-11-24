@@ -22,6 +22,24 @@ from ..utils.error_logging import create_error_context, log_and_raise
 logger = get_logger(__name__)
 
 
+def _get_enum_value(enum_or_str: Any) -> str:
+    """
+    Safely get enum value, handling both enum instances and string values.
+
+    When containers are deserialized from the database, enum fields may be strings
+    instead of enum instances. This helper handles both cases.
+
+    Args:
+        enum_or_str: Either an enum instance or a string value
+
+    Returns:
+        String value of the enum
+    """
+    if hasattr(enum_or_str, "value"):
+        return enum_or_str.value
+    return str(enum_or_str)
+
+
 class CorpseServiceError(MythosMUDError):
     """Base exception for corpse service operations."""
 
@@ -129,7 +147,7 @@ class CorpseLifecycleService:
                 cast(dict[str, Any], dict(item) if not isinstance(item, dict) else item) for item in corpse.items
             ]
             container_data = self.persistence.create_container(
-                source_type=corpse.source_type.value,
+                source_type=_get_enum_value(corpse.source_type),
                 owner_id=corpse.owner_id,
                 room_id=corpse.room_id,
                 capacity_slots=corpse.capacity_slots,
@@ -306,7 +324,7 @@ class CorpseLifecycleService:
                 CorpseServiceError,
                 f"Container is not a corpse: {container_id}",
                 context=context,
-                details={"container_id": str(container_id), "source_type": container.source_type.value},
+                details={"container_id": str(container_id), "source_type": _get_enum_value(container.source_type)},
                 user_friendly="Container is not a corpse",
             )
 

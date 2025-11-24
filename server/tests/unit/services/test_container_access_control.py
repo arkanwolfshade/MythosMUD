@@ -17,6 +17,7 @@ import pytest
 from server.models.container import ContainerComponent, ContainerLockState, ContainerSourceType
 from server.services.container_service import (
     ContainerAccessDeniedError,
+    ContainerLockedError,
     ContainerService,
 )
 
@@ -333,7 +334,7 @@ class TestContainerLockUnlock:
         mock_persistence.get_container.return_value = container.to_dict()
         mock_persistence.get_player.return_value = player
 
-        with pytest.raises(ContainerAccessDeniedError, match="locked"):
+        with pytest.raises(ContainerLockedError):
             container_service.open_container(sample_container_id, sample_player_id)
 
     def test_open_locked_container_with_key(

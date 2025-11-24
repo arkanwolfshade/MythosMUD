@@ -25,6 +25,24 @@ from .inventory_service import InventoryCapacityError, InventoryService, Invento
 logger = get_logger(__name__)
 
 
+def _get_enum_value(enum_or_str: Any) -> str:
+    """
+    Safely get enum value, handling both enum instances and string values.
+
+    When containers are deserialized from the database, enum fields may be strings
+    instead of enum instances. This helper handles both cases.
+
+    Args:
+        enum_or_str: Either an enum instance or a string value
+
+    Returns:
+        String value of the enum
+    """
+    if hasattr(enum_or_str, "value"):
+        return enum_or_str.value
+    return str(enum_or_str)
+
+
 class ContainerServiceError(MythosMUDError):
     """Base exception for container service operations."""
 
@@ -121,7 +139,7 @@ class ContainerService:
                     context=context,
                     details={
                         "container_id": str(container_id),
-                        "lock_state": container.lock_state.value,
+                        "lock_state": _get_enum_value(container.lock_state),
                     },
                     user_friendly="Container is sealed",
                 )
@@ -134,7 +152,7 @@ class ContainerService:
                     ContainerLockedError,
                     f"Container is locked: {container_id}",
                     context=context,
-                    details={"container_id": str(container_id), "lock_state": container.lock_state.value},
+                    details={"container_id": str(container_id), "lock_state": _get_enum_value(container.lock_state)},
                     user_friendly="Container is locked",
                 )
 
@@ -574,7 +592,7 @@ class ContainerService:
                     player_name=player.name,
                     container_id=str(container_id),
                     event_type="container_transfer",
-                    source_type=container.source_type.value,
+                    source_type=_get_enum_value(container.source_type),
                     room_id=container.room_id,
                     direction="from_container",
                     item_id=item.get("item_id"),
@@ -588,6 +606,129 @@ class ContainerService:
                 "container": container.model_dump(),
                 "player_inventory": new_player_inventory,
             }
+
+    def loot_all(
+        self,
+        container_id: UUID,
+        player_id: UUID,
+        mutation_token: str,
+    ) -> dict[str, Any]:
+        """
+        Loot all eligible items from a container.
+
+        Convenience method to transfer all items from container to player inventory,
+        subject to capacity constraints. Requires a valid mutation token from open_container.
+
+        Args:
+            container_id: Container UUID
+            player_id: Player UUID
+            mutation_token: Mutation token from open operation
+
+        Returns:
+            dict containing updated container and player_inventory
+
+        Raises:
+            ContainerServiceError: If container is not open or token is invalid
+            ContainerCapacityError: If player inventory capacity is exceeded (stops at that point)
+        """
+        context = create_error_context()
+        context.metadata["operation"] = "loot_all"
+        context.metadata["container_id"] = str(container_id)
+        context.metadata["player_id"] = str(player_id)
+
+        logger.info(
+            "Looting all items from container",
+            container_id=str(container_id),
+            player_id=str(player_id),
+        )
+
+        # Verify container is open
+        self._verify_container_open(container_id, player_id, mutation_token)
+
+        # Get container
+        container_data = self.persistence.get_container(container_id)
+        if not container_data:
+            log_and_raise(
+                ContainerNotFoundError,
+                f"Container not found: {container_id}",
+                context=context,
+                details={"container_id": str(container_id)},
+                user_friendly="Container not found",
+            )
+
+        container = ContainerComponent.model_validate(container_data)
+
+        # Store initial item count for audit logging
+        initial_items_count = len(container.items)
+
+        # Get player
+        player = self.persistence.get_player(player_id)
+        if not player:
+            log_and_raise(
+                ContainerServiceError,
+                f"Player not found: {player_id}",
+                context=context,
+                details={"player_id": str(player_id)},
+                user_friendly="Player not found",
+            )
+
+        player_inventory = getattr(player, "inventory", [])
+
+        # Try to transfer each item
+        for item in container.items:
+            try:
+                result = self.transfer_from_container(
+                    container_id,
+                    player_id,
+                    mutation_token,
+                    item,
+                    item.get("quantity", 1),
+                )
+                # Update container and player inventory from result
+                container_data = result.get("container", {})
+                container = ContainerComponent.model_validate(container_data)
+                player_inventory = result.get("player_inventory", player_inventory)
+            except ContainerCapacityError:
+                # Stop if capacity exceeded
+                logger.warning(
+                    "Loot-all stopped due to capacity",
+                    container_id=str(container_id),
+                    player_id=str(player_id),
+                )
+                break
+            except Exception as e:
+                # Log but continue with other items
+                logger.warning(
+                    "Error transferring item during loot-all",
+                    error=str(e),
+                    container_id=str(container_id),
+                    player_id=str(player_id),
+                )
+                continue
+
+        # Get final container state
+        final_container_data = self.persistence.get_container(container_id)
+        if final_container_data:
+            final_container = ContainerComponent.model_validate(final_container_data)
+        else:
+            final_container = container
+
+        # Log audit event
+        audit_logger.log_container_interaction(
+            player_id=str(player_id),
+            player_name=getattr(player, "name", "Unknown"),
+            container_id=str(container_id),
+            event_type="container_loot_all",
+            source_type=_get_enum_value(final_container.source_type),
+            room_id=final_container.room_id,
+            items_count=initial_items_count,
+        )
+
+        return {
+            "container": final_container.to_dict(),
+            "player_inventory": player_inventory,
+            "mutation_token": mutation_token,
+        }
 
     def _verify_container_open(self, container_id: UUID, player_id: UUID, mutation_token: str) -> None:
         """
@@ -745,9 +886,10 @@ class ContainerService:
             for item in player_inventory:
                 if item.get("item_id") == key_item_id:
                     return True
+            # Player doesn't have the key
             return False
 
-        # If no key required, locked containers can be unlocked by anyone in the same room
+        # Locked containers without a key requirement can be unlocked by anyone
         # (access validation happens separately in _validate_container_access)
         if container.lock_state == ContainerLockState.LOCKED:
             return True

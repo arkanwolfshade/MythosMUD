@@ -20,6 +20,24 @@ from ..utils.error_logging import create_error_context, log_and_raise
 logger = get_logger(__name__)
 
 
+def _get_enum_value(enum_or_str: Any) -> str:
+    """
+    Safely get enum value, handling both enum instances and string values.
+
+    When containers are deserialized from the database, enum fields may be strings
+    instead of enum instances. This helper handles both cases.
+
+    Args:
+        enum_or_str: Either an enum instance or a string value
+
+    Returns:
+        String value of the enum
+    """
+    if hasattr(enum_or_str, "value"):
+        return enum_or_str.value
+    return str(enum_or_str)
+
+
 class WearableContainerServiceError(MythosMUDError):
     """Base exception for wearable container service operations."""
 
@@ -179,7 +197,7 @@ class WearableContainerService:
                     inner_container = {
                         "capacity_slots": container.capacity_slots,
                         "items": container.items,
-                        "lock_state": container.lock_state.value,
+                        "lock_state": _get_enum_value(container.lock_state),
                     }
                     if container.allowed_roles:
                         inner_container["allowed_roles"] = container.allowed_roles
@@ -270,7 +288,7 @@ class WearableContainerService:
                 context=context,
                 details={
                     "container_id": str(container_id),
-                    "source_type": container.source_type.value,
+                    "source_type": _get_enum_value(container.source_type),
                     "entity_id": str(container.entity_id),
                 },
                 user_friendly="Invalid container",
@@ -364,7 +382,7 @@ class WearableContainerService:
                 context=context,
                 details={
                     "container_id": str(container_id),
-                    "source_type": container.source_type.value,
+                    "source_type": _get_enum_value(container.source_type),
                     "entity_id": str(container.entity_id),
                 },
                 user_friendly="Invalid container",

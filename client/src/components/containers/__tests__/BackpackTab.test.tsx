@@ -14,6 +14,7 @@ import type { ContainerComponent, InventoryStack } from '../../../stores/contain
 // Mock the stores
 const mockGetWearableContainersForPlayer = vi.fn();
 const mockSelectContainer = vi.fn();
+const mockDeselectContainer = vi.fn();
 const mockSelectedContainerId = vi.fn();
 
 vi.mock('../../../stores/containerStore', () => ({
@@ -21,6 +22,7 @@ vi.mock('../../../stores/containerStore', () => ({
     const mockState = {
       getWearableContainersForPlayer: mockGetWearableContainersForPlayer,
       selectContainer: mockSelectContainer,
+      deselectContainer: mockDeselectContainer,
       selectedContainerId: mockSelectedContainerId(),
     };
     return selector(mockState);
@@ -150,7 +152,8 @@ describe('BackpackTab', () => {
       const tab = screen.getByRole('tab', { name: /leather backpack/i });
       fireEvent.click(tab);
 
-      expect(mockSelectContainer).toHaveBeenCalledWith(null);
+      expect(mockDeselectContainer).toHaveBeenCalled();
+      expect(mockSelectContainer).not.toHaveBeenCalled();
     });
   });
 

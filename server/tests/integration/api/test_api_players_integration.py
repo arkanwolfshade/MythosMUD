@@ -322,7 +322,10 @@ class TestPlayerAPIIntegration:
     def test_roll_stats_success(self, container_test_client_class):
         """Test successful stats rolling via API."""
         # Act
-        response = container_test_client_class.post("/api/players/roll-stats")
+        response = container_test_client_class.post(
+            "/api/players/roll-stats",
+            json={"method": "3d6", "required_class": None, "timeout_seconds": 1.0, "profession_id": None},
+        )
 
         # Assert
         assert response.status_code in [200, 401]

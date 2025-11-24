@@ -13,6 +13,9 @@ jobs:
   backend:
     name: Python Backend
     runs-on: ubuntu-latest
+    # Optional: Use GitHub Environments for different deployment stages
+    # Uncomment and set environment name to use environment-specific secrets:
+    # environment: production  # or staging, development
     env:
       ACTIONS_STEP_DEBUG: true
       ACTIONS_RUNNER_DEBUG: true
@@ -20,8 +23,11 @@ jobs:
       UV_LINK_MODE: copy
       # Suppress Node.js punycode deprecation warning (DEP0040) from transitive dependencies
       NODE_OPTIONS: --no-deprecation
+      # Database password is test value for CI (self-contained PostgreSQL setup)
+      # For production deployments, use GitHub Secrets: ${{ secrets.POSTGRES_PASSWORD }}
       DATABASE_URL: postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit
       DATABASE_NPC_URL: postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit
+      # Using GitHub Secrets for application secrets (CI-specific naming convention)
       MYTHOSMUD_ADMIN_PASSWORD: ${{ secrets.MYTHOSMUD_ADMIN_PASSWORD_CI }}
       MYTHOSMUD_SECRET_KEY: ${{ secrets.MYTHOSMUD_SECRET_KEY_CI }}
       MYTHOSMUD_JWT_SECRET: ${{ secrets.MYTHOSMUD_JWT_SECRET_CI }}
