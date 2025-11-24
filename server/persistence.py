@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Any, TypedDict, cast
 from uuid import UUID
 
 import psycopg2
+import psycopg2.errors
 
 from .exceptions import DatabaseError, ValidationError
 from .logging.enhanced_logging_config import get_logger
@@ -732,6 +733,17 @@ class PersistenceLayer:
             if self._room_cache:
                 sample_room_ids = list(self._room_cache.keys())[:5]
                 self._logger.debug("Sample room IDs loaded", sample_room_ids=sample_room_ids)
+        except psycopg2.errors.UndefinedTable as e:
+            # Handle case where rooms table doesn't exist yet (e.g., during test collection)
+            # This can happen when database schema hasn't been initialized
+            self._logger.warning(
+                "Rooms table does not exist yet, leaving room cache empty",
+                error=str(e),
+                operation="load_room_cache",
+            )
+            # Leave cache empty - it will be populated when schema is ready
+            self._room_cache = {}
+            self._room_mappings = {}
         except Exception as e:
             context = create_error_context()
             context.metadata["operation"] = "load_room_cache"
