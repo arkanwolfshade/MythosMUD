@@ -121,27 +121,20 @@ class ContainerService:
                     context=context,
                     details={
                         "container_id": str(container_id),
-                        "lock_state": container.lock_state.value
-                        if hasattr(container.lock_state, "value")
-                        else str(container.lock_state),
+                        "lock_state": container.lock_state.value,
                     },
                     user_friendly="Container is sealed",
                 )
 
         # Check if container is locked (after access validation)
-        if container.lock_state == ContainerLockState.LOCKED:
+        if container.is_locked():
             # Check if player has key or is admin
             if not self._can_unlock_container(container, player):
                 log_and_raise(
                     ContainerLockedError,
                     f"Container is locked: {container_id}",
                     context=context,
-                    details={
-                        "container_id": str(container_id),
-                        "lock_state": container.lock_state.value
-                        if hasattr(container.lock_state, "value")
-                        else str(container.lock_state),
-                    },
+                    details={"container_id": str(container_id), "lock_state": container.lock_state.value},
                     user_friendly="Container is locked",
                 )
 
@@ -581,9 +574,7 @@ class ContainerService:
                     player_name=player.name,
                     container_id=str(container_id),
                     event_type="container_transfer",
-                    source_type=container.source_type.value
-                    if hasattr(container.source_type, "value")
-                    else str(container.source_type),
+                    source_type=container.source_type.value,
                     room_id=container.room_id,
                     direction="from_container",
                     item_id=item.get("item_id"),
@@ -692,8 +683,6 @@ class ContainerService:
             grace_period_seconds = container.metadata.get("grace_period_seconds", 300)  # Default 5 minutes
             grace_period_start_str = container.metadata.get("grace_period_start")
 
-            # If grace_period_start is set, check if grace period has expired
-            # If not set, assume grace period is still active (just created)
             if grace_period_start_str:
                 grace_period_start = datetime.fromisoformat(grace_period_start_str.replace("Z", "+00:00"))
                 grace_period_end = grace_period_start + timedelta(seconds=grace_period_seconds)
@@ -787,9 +776,8 @@ class ContainerService:
         context.metadata["container_id"] = str(container_id)
         context.metadata["player_id"] = str(player_id)
 
-        lock_state_value = lock_state.value if hasattr(lock_state, "value") else str(lock_state)
         logger.info(
-            "Locking container", container_id=str(container_id), player_id=str(player_id), lock_state=lock_state_value
+            "Locking container", container_id=str(container_id), player_id=str(player_id), lock_state=lock_state.value
         )
 
         # Get container
@@ -840,8 +828,7 @@ class ContainerService:
                 )
 
         # Update lock state
-        lock_state_value = lock_state.value if hasattr(lock_state, "value") else str(lock_state)
-        updated = self.persistence.update_container(container_id, lock_state=lock_state_value)
+        updated = self.persistence.update_container(container_id, lock_state=lock_state.value)
         if not updated:
             log_and_raise(
                 ContainerServiceError,
@@ -852,7 +839,7 @@ class ContainerService:
             )
 
         logger.info(
-            "Container locked", container_id=str(container_id), player_id=str(player_id), lock_state=lock_state_value
+            "Container locked", container_id=str(container_id), player_id=str(player_id), lock_state=lock_state.value
         )
 
         return updated

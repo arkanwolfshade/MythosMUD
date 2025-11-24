@@ -176,13 +176,10 @@ class WearableContainerService:
                 if existing_metadata.get("item_instance_id") == item_instance_id:
                     # Found the container, update inner_container in item stack
                     container = ContainerComponent.model_validate(existing)
-                    lock_state_value = (
-                        container.lock_state.value if hasattr(container.lock_state, "value") else str(container.lock_state)
-                    )
                     inner_container = {
                         "capacity_slots": container.capacity_slots,
                         "items": container.items,
-                        "lock_state": lock_state_value,
+                        "lock_state": container.lock_state.value,
                     }
                     if container.allowed_roles:
                         inner_container["allowed_roles"] = container.allowed_roles

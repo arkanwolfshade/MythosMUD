@@ -2186,7 +2186,7 @@ class PersistenceLayer:
         Raises:
             DatabaseError: If database operation fails
         """
-        from server.container_persistence import get_containers_by_room_id
+        from .container_persistence import get_containers_by_room_id
 
         with self._lock, self._get_connection() as conn:
             containers = get_containers_by_room_id(conn, room_id)
@@ -2205,7 +2205,7 @@ class PersistenceLayer:
         Raises:
             DatabaseError: If database operation fails
         """
-        from server.container_persistence import get_containers_by_entity_id
+        from .container_persistence import get_containers_by_entity_id
 
         with self._lock, self._get_connection() as conn:
             containers = get_containers_by_entity_id(conn, entity_id)

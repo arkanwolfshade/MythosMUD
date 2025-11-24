@@ -31,31 +31,12 @@ async def _use_async_session():
     test teardown, preventing "orphaned test loops" warnings and event
     loop closure errors that occur with asyncpg on Windows.
 
-    CRITICAL: Forces database engine recreation for the current event loop
-    to prevent "Task got Future attached to a different loop" errors.
-
     Usage:
         async with _use_async_session() as session:
             # Use session here
             await session.execute(...)
     """
-    import asyncio
-
-    from server.database import get_async_session, get_database_manager
-
-    # CRITICAL: Ensure database engine is recreated for the current event loop
-    # This prevents "Task got Future attached to a different loop" errors
-    # when tests run in parallel or event loops change between test collection and execution
-    try:
-        # Verify we're in a running event loop (get_running_loop() raises if not)
-        asyncio.get_running_loop()
-        db_manager = get_database_manager()
-        # Force engine recreation check by calling get_engine() which checks loop ID
-        # This ensures the engine is bound to the current test's event loop
-        _ = db_manager.get_engine()
-    except RuntimeError:
-        # No running loop yet - that's okay, engine will be created when needed
-        pass
+    from server.database import get_async_session
 
     gen = get_async_session()
     session = None
