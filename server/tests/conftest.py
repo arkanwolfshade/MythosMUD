@@ -582,12 +582,28 @@ async def async_test_client(mock_application_container):
     """Create an async test client with properly initialized app state for async tests."""
     from httpx import ASGITransport, AsyncClient
 
+    from ..database import get_database_manager
     from ..events.event_bus import EventBus
     from ..game.player_service import PlayerService
     from ..game.room_service import RoomService
     from ..main import app
     from ..persistence import get_persistence, reset_persistence
     from ..realtime.event_handler import RealTimeEventHandler
+
+    # CRITICAL FIX: Dispose database engine before test to prevent event loop mismatch errors
+    # This ensures the engine is recreated in the current event loop (the test's loop)
+    # rather than using an engine created in a different loop
+    try:
+        db_manager = get_database_manager()
+        if db_manager and db_manager.engine:
+            await db_manager.engine.dispose()
+            # Reset initialization state to force recreation in current loop
+            db_manager._initialized = False
+            db_manager.engine = None
+            db_manager.session_maker = None
+    except Exception:
+        # Ignore errors - engine might not exist yet
+        pass
 
     # Reset persistence to ensure fresh state
     reset_persistence()

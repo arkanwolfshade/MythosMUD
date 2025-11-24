@@ -372,28 +372,47 @@ class TestLoginEndpoints:
         assert response.status_code == 401
         assert "Invalid credentials" in response.json()["error"]["message"]
 
-    @patch("server.auth.endpoints.get_async_session")
-    def test_login_user_no_email(self, mock_get_session, container_test_client_class, mock_auth_persistence):
+    def test_login_user_no_email(self, container_test_client_class, mock_auth_persistence):
         """Test login with user that has no email."""
-        mock_session = AsyncMock()
-        mock_get_session.return_value = mock_session
-
-        # Mock user lookup with no email
+        # Create mock user with no email
         mock_user = MagicMock()
         mock_user.id = uuid.uuid4()  # FastAPI Users v14 uses 'id' instead of 'user_id'
         mock_user.email = None
         mock_user.username = "testuser"
 
+        # Create mock session with proper user lookup
+        mock_session = AsyncMock()
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = mock_user
         mock_session.execute.return_value = mock_result
 
-        response = container_test_client_class.post(
-            "/auth/login", json={"username": "testuser", "password": "testpass123"}
-        )
+        # Create mock user manager (won't be used since email check happens first)
+        mock_manager = AsyncMock()
+        mock_manager.authenticate.return_value = None
 
-        assert response.status_code == 401
-        assert "Invalid credentials" in response.json()["error"]["message"]
+        # Override the dependencies at the app level
+        from server.auth.endpoints import get_async_session, get_user_manager
+
+        async def mock_get_async_session():
+            return mock_session
+
+        async def mock_get_user_manager():
+            return mock_manager
+
+        # Override the dependencies in the app
+        container_test_client_class.app.dependency_overrides[get_async_session] = mock_get_async_session
+        container_test_client_class.app.dependency_overrides[get_user_manager] = mock_get_user_manager
+
+        try:
+            response = container_test_client_class.post(
+                "/auth/login", json={"username": "testuser", "password": "testpass123"}
+            )
+
+            assert response.status_code == 401
+            assert "Invalid credentials" in response.json()["error"]["message"]
+        finally:
+            # Clean up the override
+            container_test_client_class.app.dependency_overrides.clear()
 
 
 @pytest.mark.slow  # Mark as slow due to 26-30 second setup times (container_test_client_class fixture)
