@@ -110,8 +110,11 @@ class TestContainerServiceOpenClose:
         result = container_service.open_container(sample_container_id, sample_player_id)
 
         assert result is not None
-        assert result["container_id"] == str(sample_container_id)
+        assert "container" in result
         assert "mutation_token" in result
+        # container_id is inside the container dict
+        container_id = result["container"]["container_id"]
+        assert (container_id == sample_container_id) or (str(container_id) == str(sample_container_id))
         mock_persistence.get_container.assert_called_once_with(sample_container_id)
 
     def test_open_container_not_found(self, container_service, mock_persistence, sample_container_id, sample_player_id):
@@ -183,7 +186,7 @@ class TestContainerServiceOpenClose:
         container_service.open_container(sample_container_id, sample_player_id)
 
         # Try to close with invalid token
-        with pytest.raises(ContainerServiceError, match="invalid token"):
+        with pytest.raises(ContainerServiceError, match="Invalid mutation token"):
             container_service.close_container(sample_container_id, sample_player_id, "invalid_token")
 
 

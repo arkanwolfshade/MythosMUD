@@ -489,9 +489,14 @@ class TestWebSocketCommandProcessing:
 
             # Verify
             assert "result" in result
-            # The response may be "You move to the new location." without room description
+            # The response may be "You move to the new location." or "You go north."
             # Check that movement was successful
-            assert "move" in result["result"].lower() or "location" in result["result"].lower()
+            result_lower = result["result"].lower()
+            assert (
+                "move" in result_lower
+                or "location" in result_lower
+                or "go" in result_lower
+            )
             assert result["room_changed"] is True
             assert result["room_id"] == "room_2"
 

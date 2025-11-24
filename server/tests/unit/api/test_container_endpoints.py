@@ -110,9 +110,8 @@ def test_client(mock_persistence, authenticated_user, mock_player):
     app.dependency_overrides[get_current_user] = get_current_user_override
 
     with patch("server.api.containers.get_persistence", return_value=mock_persistence):
-        with patch("server.dependencies.get_persistence", return_value=mock_persistence):
-            client = TestClient(app)
-            yield client
+        client = TestClient(app)
+        yield client
 
     # Clean up
     app.dependency_overrides.clear()

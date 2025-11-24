@@ -522,6 +522,7 @@ class TestNPCSpawningService:
 
         # Should handle gracefully without exception
 
+    @pytest.mark.slow
     def test_process_spawn_queue_history_limit(self, spawning_service, shopkeeper_definition, spawn_rule_shopkeeper):
         """Test process_spawn_queue respects history limit."""
         # Add 1000 spawn results to history

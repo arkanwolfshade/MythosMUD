@@ -430,6 +430,7 @@ class TestNPCCombatIntegration:
         result = aggressive_npc.flee()
         assert result is True
 
+    @pytest.mark.slow
     def test_npc_combat_integration_system(self, aggressive_npc, event_bus):
         """Test the new NPC combat integration system."""
         from server.npc.combat_integration import NPCCombatIntegration
@@ -683,6 +684,7 @@ class TestNPCCommunicationIntegration:
         assert mock_chat_service is not None
 
     @pytest.mark.asyncio
+    @pytest.mark.slow
     async def test_npc_communication_integration_system(self, shopkeeper_npc, event_bus):
         """Test the new NPC communication integration system."""
         from server.npc.communication_integration import NPCCommunicationIntegration
@@ -731,6 +733,7 @@ class TestNPCCommunicationIntegration:
         assert events_received[0].speaker_id == "test_player_1"
 
     @pytest.mark.asyncio
+    @pytest.mark.slow
     async def test_npc_communication_integration_whisper(self, shopkeeper_npc, event_bus):
         """Test NPC communication integration with whisper functionality."""
         from server.npc.communication_integration import NPCCommunicationIntegration

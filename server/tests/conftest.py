@@ -292,6 +292,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 from .fixtures.container_fixtures import (  # noqa: F401, E402
     async_container_test_client,
     container_test_client,
+    container_test_client_class,  # Class-scoped variant for performance optimization
     mock_container,
     player_factory,
     room_factory,

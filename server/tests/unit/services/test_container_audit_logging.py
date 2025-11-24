@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import json
 import uuid
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -46,8 +46,13 @@ def sample_container_id():
 class TestContainerAuditLogging:
     """Test container interaction audit logging."""
 
-    def test_audit_log_container_open(self, audit_logger, mock_persistence, sample_player_id, sample_container_id):
+    @patch("server.services.container_service.audit_logger")
+    def test_audit_log_container_open(self, mock_audit_logger, audit_logger, mock_persistence, sample_player_id, sample_container_id):
         """Test that opening a container is audited."""
+        # Patch the global audit_logger with our test instance
+        mock_audit_logger.log_container_interaction = audit_logger.log_container_interaction
+        mock_audit_logger._get_log_file_path = audit_logger._get_log_file_path
+
         # Mock container data
         container_data = {
             "container_id": str(sample_container_id),
@@ -93,8 +98,13 @@ class TestContainerAuditLogging:
 
             assert found, "Container open audit log entry not found"
 
-    def test_audit_log_container_transfer(self, audit_logger, mock_persistence, sample_player_id, sample_container_id):
+    @patch("server.services.container_service.audit_logger")
+    def test_audit_log_container_transfer(self, mock_audit_logger, audit_logger, mock_persistence, sample_player_id, sample_container_id):
         """Test that transferring items to/from containers is audited."""
+        # Patch the global audit_logger with our test instance
+        mock_audit_logger.log_container_interaction = audit_logger.log_container_interaction
+        mock_audit_logger._get_log_file_path = audit_logger._get_log_file_path
+
         # Mock container data
         container_data = {
             "container_id": str(sample_container_id),
@@ -110,6 +120,7 @@ class TestContainerAuditLogging:
         player = MagicMock()
         player.player_id = sample_player_id
         player.name = "TestPlayer"
+        player.current_room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
         player.inventory = [
             {
                 "item_instance_id": "inst_item_001",
@@ -163,8 +174,13 @@ class TestContainerAuditLogging:
 
             assert found, "Container transfer audit log entry not found"
 
-    def test_audit_log_container_close(self, audit_logger, mock_persistence, sample_player_id, sample_container_id):
+    @patch("server.services.container_service.audit_logger")
+    def test_audit_log_container_close(self, mock_audit_logger, audit_logger, mock_persistence, sample_player_id, sample_container_id):
         """Test that closing a container is audited."""
+        # Patch the global audit_logger with our test instance
+        mock_audit_logger.log_container_interaction = audit_logger.log_container_interaction
+        mock_audit_logger._get_log_file_path = audit_logger._get_log_file_path
+
         # Mock container data
         container_data = {
             "container_id": str(sample_container_id),
@@ -213,8 +229,13 @@ class TestContainerAuditLogging:
 
             assert found, "Container close audit log entry not found"
 
-    def test_audit_log_container_loot_all(self, audit_logger, mock_persistence, sample_player_id, sample_container_id):
+    @patch("server.services.container_service.audit_logger")
+    def test_audit_log_container_loot_all(self, mock_audit_logger, audit_logger, mock_persistence, sample_player_id, sample_container_id):
         """Test that looting all items from a container is audited."""
+        # Patch the global audit_logger with our test instance
+        mock_audit_logger.log_container_interaction = audit_logger.log_container_interaction
+        mock_audit_logger._get_log_file_path = audit_logger._get_log_file_path
+
         # Mock container data with items
         container_data = {
             "container_id": str(sample_container_id),
@@ -239,6 +260,7 @@ class TestContainerAuditLogging:
         player = MagicMock()
         player.player_id = sample_player_id
         player.name = "TestPlayer"
+        player.current_room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
         player.inventory = []
         mock_persistence.get_player.return_value = player
 
@@ -273,10 +295,15 @@ class TestContainerAuditLogging:
 
             assert found, "Container loot_all audit log entry not found"
 
+    @patch("server.services.container_service.audit_logger")
     def test_audit_log_contains_security_fields(
-        self, audit_logger, mock_persistence, sample_player_id, sample_container_id
+        self, mock_audit_logger, audit_logger, mock_persistence, sample_player_id, sample_container_id
     ):
         """Test that audit logs contain all required security fields."""
+        # Patch the global audit_logger with our test instance
+        mock_audit_logger.log_container_interaction = audit_logger.log_container_interaction
+        mock_audit_logger._get_log_file_path = audit_logger._get_log_file_path
+
         # Mock container data
         container_data = {
             "container_id": str(sample_container_id),

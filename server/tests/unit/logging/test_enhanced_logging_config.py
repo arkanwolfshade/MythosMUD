@@ -4,6 +4,7 @@ Tests for enhanced logging configuration.
 
 import logging
 import tempfile
+import time
 from pathlib import Path
 from unittest.mock import Mock, patch
 
@@ -21,6 +22,61 @@ from server.logging.enhanced_logging_config import (
     sanitize_sensitive_data,
     setup_enhanced_logging,
 )
+
+
+def _close_all_logging_handlers():
+    """
+    Close all logging handlers to release file handles on Windows.
+
+    This is necessary because Windows holds file handles open until explicitly closed,
+    which prevents tempfile.TemporaryDirectory from cleaning up.
+    """
+    # Get all loggers
+    root_logger = logging.getLogger()
+
+    # List of all known subsystem loggers
+    subsystem_loggers = [
+        "server", "persistence", "authentication", "inventory", "npc", "game",
+        "api", "middleware", "monitoring", "time", "caching", "communications",
+        "commands", "events", "infrastructure", "validators", "combat", "access",
+        "security", "uvicorn", "uvicorn.access", "uvicorn.error"
+    ]
+
+    # Close all root logger handlers
+    for handler in root_logger.handlers[:]:
+        try:
+            handler.flush()
+            handler.close()
+            root_logger.removeHandler(handler)
+        except Exception:
+            pass  # Ignore errors during cleanup
+
+    # Close all subsystem logger handlers
+    for subsystem in subsystem_loggers:
+        logger = logging.getLogger(subsystem)
+        for handler in logger.handlers[:]:
+            try:
+                handler.flush()
+                handler.close()
+                logger.removeHandler(handler)
+            except Exception:
+                pass  # Ignore errors during cleanup
+
+    # Also check for any other loggers that might have handlers
+    # This is a fallback to catch any we might have missed
+    manager = logging.Logger.manager
+    for logger_name in list(manager.loggerDict.keys()):
+        logger = logging.getLogger(logger_name)
+        for handler in logger.handlers[:]:
+            try:
+                handler.flush()
+                handler.close()
+                logger.removeHandler(handler)
+            except Exception:
+                pass  # Ignore errors during cleanup
+
+    # Give Windows a moment to release file handles
+    time.sleep(0.1)
 
 
 class TestEnhancedLoggingConfig:
@@ -156,6 +212,7 @@ class TestEnhancedLoggingConfig:
 
     def test_subsystem_log_files_created(self):
         """Test that all subsystem log files are created."""
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_config = {
                 "log_base": tmpdir,
@@ -199,8 +256,12 @@ class TestEnhancedLoggingConfig:
                 log_file = log_dir / f"{subsystem}.log"
                 assert log_file.exists(), f"{subsystem}.log should exist"
 
+            # Close all handlers to release file handles (Windows requirement)
+            _close_all_logging_handlers()
+
     def test_world_log_not_created(self):
         """Test that world.log is NOT created (removed from subsystems)."""
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_config = {
                 "log_base": tmpdir,
@@ -220,8 +281,12 @@ class TestEnhancedLoggingConfig:
 
             assert not world_log.exists(), "world.log should NOT exist"
 
+            # Close all handlers to release file handles (Windows requirement)
+            _close_all_logging_handlers()
+
     def test_warnings_aggregator_created(self):
         """Test that warnings.log aggregator is created."""
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_config = {
                 "log_base": tmpdir,
@@ -241,8 +306,12 @@ class TestEnhancedLoggingConfig:
 
             assert warnings_log.exists(), "warnings.log should exist"
 
+            # Close all handlers to release file handles (Windows requirement)
+            _close_all_logging_handlers()
+
     def test_errors_aggregator_created(self):
         """Test that errors.log aggregator is created."""
+
         with tempfile.TemporaryDirectory() as tmpdir:
             log_config = {
                 "log_base": tmpdir,
@@ -261,6 +330,9 @@ class TestEnhancedLoggingConfig:
             errors_log = log_dir / "errors.log"
 
             assert errors_log.exists(), "errors.log should exist"
+
+            # Close all handlers to release file handles (Windows requirement)
+            _close_all_logging_handlers()
 
     def test_dual_logging_warnings(self):
         """Test that warnings appear in both subsystem log and warnings.log."""
@@ -302,6 +374,9 @@ class TestEnhancedLoggingConfig:
             assert "Test warning message" in persistence_content, "Warning should be in persistence.log"
             assert "Test warning message" in warnings_content, "Warning should be in warnings.log"
 
+            # Close all handlers to release file handles (Windows requirement)
+            _close_all_logging_handlers()
+
     def test_errors_not_in_warnings_log(self):
         """Test that ERROR level logs do NOT appear in warnings.log (only in errors.log)."""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -342,6 +417,9 @@ class TestEnhancedLoggingConfig:
             assert "Test error message" not in warnings_content, "ERROR should NOT be in warnings.log"
             assert "Test error message" in errors_content, "ERROR should be in errors.log"
 
+            # Close all handlers to release file handles (Windows requirement)
+            _close_all_logging_handlers()
+
     def test_dual_logging_errors(self):
         """Test that errors appear in both subsystem log and errors.log."""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -381,6 +459,9 @@ class TestEnhancedLoggingConfig:
 
             assert "Test error message" in auth_content, "Error should be in authentication.log"
             assert "Test error message" in errors_content, "Error should be in errors.log"
+
+            # Close all handlers to release file handles (Windows requirement)
+            _close_all_logging_handlers()
 
     def test_new_subsystem_loggers(self):
         """Test that new subsystem loggers (inventory, npc, game, etc.) work correctly."""
@@ -441,3 +522,6 @@ class TestEnhancedLoggingConfig:
             validators_logger.info("Validators test message")
             validators_log = log_dir / "validators.log"
             assert validators_log.exists(), "validators.log should exist"
+
+            # Close all handlers to release file handles (Windows requirement)
+            _close_all_logging_handlers()

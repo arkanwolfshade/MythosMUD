@@ -10,12 +10,19 @@ from unittest.mock import Mock
 import pytest
 
 
+@pytest.mark.slow  # Mark as slow due to 26-30 second setup times (container_test_client fixture)
 class TestGameApiBroadcast:
     """Test game API broadcast endpoint."""
 
+    @pytest.fixture(scope="class")
+    def client(self, container_test_client_class):
+        """Class-scoped client fixture."""
+        return container_test_client_class
+
     @pytest.fixture(autouse=True)
-    def _setup(self, container_test_client):
-        self.client = container_test_client
+    def _setup(self, client):
+        """Set client as instance variable for backward compatibility."""
+        self.client = client
 
     def test_broadcast_endpoint_requires_superuser(self):
         """Test broadcast endpoint with authenticated superuser.
