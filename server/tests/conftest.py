@@ -292,6 +292,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 from .fixtures.container_fixtures import (  # noqa: F401, E402
     async_container_test_client,
     container_test_client,
+    container_test_client_class,  # Class-scoped variant for performance optimization
     mock_container,
     player_factory,
     room_factory,
@@ -1203,7 +1204,14 @@ def pytest_sessionfinish(session, exitstatus):
 
         # Try to close database connections if event loop is still available
         try:
-            loop = asyncio.get_event_loop()
+            # Use get_running_loop() for Python 3.12+ compatibility
+            # Falls back to get_event_loop() if no running loop exists
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:
+                # No running loop, use new_event_loop() instead of deprecated get_event_loop()
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
             if loop and not loop.is_closed():
                 db_manager = get_database_manager()
                 # Schedule cleanup in the event loop

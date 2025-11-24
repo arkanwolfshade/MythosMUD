@@ -447,13 +447,10 @@ async def respawn_player(
 # Character Creation and Stats Generation Endpoints
 @player_router.post("/roll-stats")
 async def roll_character_stats(
+    request_data: RollStatsRequest,
     request: Request,
-    method: str = "3d6",
-    required_class: str | None = None,
     max_attempts: int = 10,
-    profession_id: int | None = None,
     current_user: User = Depends(get_current_user),
-    timeout_seconds: float = 1.0,
     stats_generator: StatsGenerator = StatsGeneratorDep,
 ) -> dict[str, Any]:
     """
@@ -499,6 +496,12 @@ async def roll_character_stats(
         ) from e
 
     try:
+        # Extract parameters from request data
+        method = request_data.method
+        profession_id = request_data.profession_id
+        required_class = request_data.required_class
+        timeout_seconds = request_data.timeout_seconds
+
         if profession_id is not None:
             # Use profession-based stat rolling
             stats, meets_requirements = stats_generator.roll_stats_with_profession(

@@ -104,6 +104,18 @@ class TestCorpseCreationOnDeath:
 
         mock_persistence.get_player.return_value = player
 
+        # Mock create_container to return container data with container_id as string
+        container_id = uuid.uuid4()
+        mock_persistence.create_container.return_value = {
+            "container_id": str(container_id),
+            "source_type": "corpse",
+            "owner_id": str(sample_player_id),
+            "room_id": sample_room_id,
+            "capacity_slots": 20,
+            "items": player.inventory,
+            "metadata": {},
+        }
+
         # Create service
         service = CorpseLifecycleService(
             persistence=mock_persistence,
@@ -139,6 +151,18 @@ class TestCorpseCreationOnDeath:
         player.name = "TestPlayer"
 
         mock_persistence.get_player.return_value = player
+
+        # Mock create_container to return container data with container_id as string
+        container_id = uuid.uuid4()
+        mock_persistence.create_container.return_value = {
+            "container_id": str(container_id),
+            "source_type": "corpse",
+            "owner_id": str(sample_player_id),
+            "room_id": sample_room_id,
+            "capacity_slots": 20,
+            "items": [],
+            "metadata": {},
+        }
 
         service = CorpseLifecycleService(
             persistence=mock_persistence,
@@ -265,6 +289,7 @@ class TestCorpseDecayTimer:
             source_type=ContainerSourceType.CORPSE,
             owner_id=uuid.uuid4(),
             room_id=sample_room_id,
+            capacity_slots=20,
             decay_at=datetime.now(UTC) - timedelta(hours=1),
             items=[],
         )
@@ -275,6 +300,7 @@ class TestCorpseDecayTimer:
             source_type=ContainerSourceType.CORPSE,
             owner_id=uuid.uuid4(),
             room_id=sample_room_id,
+            capacity_slots=20,
             decay_at=datetime.now(UTC) + timedelta(hours=1),
             items=[],
         )
@@ -308,6 +334,7 @@ class TestCorpseCleanup:
             source_type=ContainerSourceType.CORPSE,
             owner_id=uuid.uuid4(),
             room_id=sample_room_id,
+            capacity_slots=20,
             decay_at=datetime.now(UTC) - timedelta(hours=1),
             items=[
                 {
@@ -360,15 +387,20 @@ class TestCorpseCleanup:
                 source_type=ContainerSourceType.CORPSE,
                 owner_id=uuid.uuid4(),
                 room_id=sample_room_id,
+                capacity_slots=20,
                 decay_at=datetime.now(UTC) - timedelta(hours=1),
                 items=[],
             )
             for _ in range(3)
         ]
 
-        mock_persistence.get_containers_by_room_id.return_value = [corpse.model_dump() for corpse in decayed_corpses]
+        # Serialize corpses properly - use model_dump with json-compatible mode
+        containers_data = [corpse.model_dump(mode="json") for corpse in decayed_corpses]
+        mock_persistence.get_containers_by_room_id.return_value = containers_data
 
-        mock_time_service.get_current_mythos_datetime.return_value = datetime.now(UTC)
+        # Set current time to be after decay_at (1 hour later)
+        current_time = datetime.now(UTC)
+        mock_time_service.get_current_mythos_datetime.return_value = current_time
 
         service = CorpseLifecycleService(
             persistence=mock_persistence,

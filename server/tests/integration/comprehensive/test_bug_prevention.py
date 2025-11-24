@@ -146,6 +146,7 @@ class TestEventStormPrevention:
     """Test that prevents the event storm bug from multiple EventBus instances."""
 
     @pytest.mark.asyncio
+    @pytest.mark.slow
     async def test_movement_service_uses_shared_event_bus(self):
         """Test that MovementService uses the shared EventBus from PersistenceLayer."""
         # Create a shared EventBus

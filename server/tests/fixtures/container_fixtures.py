@@ -505,6 +505,292 @@ def container_test_client():
         asyncio.set_event_loop(None)
 
 
+@pytest.fixture(scope="class")
+def container_test_client_class():
+    """
+    Create FastAPI TestClient with ApplicationContainer initialized (class-scoped).
+
+    This is a class-scoped version of container_test_client that shares the same
+    container/app instance across all tests in a test class. This dramatically
+    reduces setup time from 26-30s per test to 26-30s per class.
+
+    Use this for test classes where:
+    - Tests don't modify the container/app instance itself
+    - Tests use mocks to isolate behavior (mocks are still function-scoped)
+    - Tests only read from container state or use dependency overrides
+
+    Scope: Class (shared across all tests in a class)
+    Type: Sync fixture (creates its own event loop)
+    Cleanup: Automatic (TestClient handles cleanup)
+
+    Usage:
+        class TestMyAPI:
+            def test_one(self, container_test_client_class):
+                # Uses shared container/app
+                response = container_test_client_class.get("/api/endpoint")
+
+            def test_two(self, container_test_client_class):
+                # Same shared container/app instance
+                response = container_test_client_class.post("/api/endpoint")
+
+    Note: Dependency overrides (app.dependency_overrides) are still per-test
+          since they're managed by individual test functions, not the fixture.
+    """
+    # Reuse the same implementation as container_test_client
+    # This is a wrapper to maintain the same behavior with different scope
+    from server.app.factory import create_app
+    from server.container import ApplicationContainer
+
+    logger.info("Creating class-scoped TestClient with ApplicationContainer")
+
+    # CRITICAL: Ensure test environment variables are loaded before config initialization
+    import os
+    from pathlib import Path
+
+    from dotenv import load_dotenv
+
+    # Load test environment file explicitly to ensure variables are set
+    test_env_path = Path(__file__).parent.parent.parent / "tests" / ".env.unit_test"
+    if test_env_path.exists():
+        load_dotenv(test_env_path, override=True)
+        logger.info("Loaded test environment file", env_path=str(test_env_path))
+    else:
+        logger.warning("Test environment file not found", env_path=str(test_env_path))
+
+    # Verify DATABASE_URL is set before proceeding
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url:
+        raise ValueError(
+            "DATABASE_URL environment variable is not set. "
+            "Please ensure server/tests/.env.unit_test exists and contains DATABASE_URL."
+        )
+    if not database_url.startswith("postgresql"):
+        raise ValueError(f"DATABASE_URL must be a PostgreSQL URL, got: {database_url}. SQLite is no longer supported.")
+
+    # CRITICAL: Reset config cache to ensure fresh environment variables are loaded
+    from server.config import reset_config
+
+    reset_config()
+
+    # Create new event loop for container initialization
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    try:
+        # Initialize container synchronously using event loop
+        container = ApplicationContainer()
+        try:
+            loop.run_until_complete(container.initialize())
+        except Exception as init_error:
+            logger.warning("Container initialization failed, using defensive setup", error=str(init_error))
+            container.persistence = None
+
+        app = create_app()
+
+        # Set container in app.state (same setup as function-scoped version)
+        app.state.container = container
+        app.state.task_registry = container.task_registry
+        app.state.event_bus = container.event_bus
+        app.state.event_handler = container.real_time_event_handler
+        app.state.connection_manager = container.connection_manager
+        app.state.user_manager = container.user_manager
+        app.state.room_cache_service = container.room_cache_service
+        app.state.profession_cache_service = container.profession_cache_service
+
+        # Same defensive persistence setup as function-scoped version
+        if container.persistence is None:
+            from unittest.mock import AsyncMock, Mock
+
+            mock_persistence = Mock()
+            mock_persistence.async_list_players = AsyncMock(return_value=[])
+            mock_persistence.async_get_player = AsyncMock(return_value=None)
+            mock_persistence.async_get_room = AsyncMock(return_value=None)
+            mock_persistence.list_players = Mock(return_value=[])
+            mock_persistence.get_player = Mock(return_value=None)
+            mock_persistence.get_room = Mock(return_value=None)
+            container.persistence = mock_persistence
+
+        persistence_to_use = container.persistence
+        needs_mock_persistence = persistence_to_use is None
+
+        if not needs_mock_persistence:
+            required_methods = [
+                "async_list_players",
+                "async_get_player",
+                "async_get_room",
+                "list_players",
+                "get_player",
+                "get_room",
+            ]
+            for method_name in required_methods:
+                if not hasattr(persistence_to_use, method_name) or not callable(
+                    getattr(persistence_to_use, method_name, None)
+                ):
+                    needs_mock_persistence = True
+                    break
+
+        if needs_mock_persistence:
+            from unittest.mock import AsyncMock, Mock
+
+            mock_persistence = Mock()
+            mock_persistence.async_list_players = AsyncMock(return_value=[])
+            mock_persistence.async_get_player = AsyncMock(return_value=None)
+            mock_persistence.async_get_room = AsyncMock(return_value=None)
+            mock_persistence.list_players = Mock(return_value=[])
+            mock_persistence.get_player = Mock(return_value=None)
+            mock_persistence.get_room = Mock(return_value=None)
+            persistence_to_use = mock_persistence
+            container.persistence = mock_persistence
+
+        # Ensure services have valid persistence
+        if container.player_service is None or getattr(container.player_service, "persistence", None) is None:
+            from server.game.player_service import PlayerService
+            from server.game.room_service import RoomService
+
+            container.player_service = PlayerService(persistence=persistence_to_use)
+            container.room_service = RoomService(persistence=persistence_to_use)
+        else:
+            if hasattr(container.player_service, "persistence") and container.player_service.persistence is None:
+                container.player_service.persistence = persistence_to_use
+            if hasattr(container.room_service, "persistence") and container.room_service.persistence is None:
+                container.room_service.persistence = persistence_to_use
+
+        app.state.persistence = container.persistence
+        app.state.player_service = container.player_service
+        app.state.room_service = container.room_service
+
+        if container.connection_manager:
+            container.connection_manager.persistence = container.persistence
+
+        if container.persistence is None:
+            from unittest.mock import AsyncMock, Mock
+
+            emergency_mock = Mock()
+            emergency_mock.async_list_players = AsyncMock(return_value=[])
+            emergency_mock.async_get_player = AsyncMock(return_value=None)
+            emergency_mock.async_get_room = AsyncMock(return_value=None)
+            emergency_mock.list_players = Mock(return_value=[])
+            emergency_mock.get_player = Mock(return_value=None)
+            emergency_mock.get_room = Mock(return_value=None)
+            container.persistence = emergency_mock
+            app.state.persistence = emergency_mock
+            if container.player_service:
+                container.player_service.persistence = emergency_mock
+            if container.room_service:
+                container.room_service.persistence = emergency_mock
+            if container.connection_manager:
+                container.connection_manager.persistence = emergency_mock
+
+        logger.info("Class-scoped TestClient created with container services")
+
+        # Dispose database engines before creating TestClient (same as function-scoped)
+        try:
+            if container.database_manager and container.database_manager.engine:
+                loop.run_until_complete(container.database_manager.close())
+        except Exception as e:
+            logger.warning("Error disposing database engine before TestClient creation", error=str(e))
+
+        try:
+            from server.npc_database import close_npc_db
+
+            loop.run_until_complete(close_npc_db())
+        except Exception as e:
+            logger.warning("Error disposing NPC database engine before TestClient creation", error=str(e))
+
+        from server.database import DatabaseManager
+
+        DatabaseManager.reset_instance()
+
+        import server.npc_database
+
+        server.npc_database._npc_engine = None
+        server.npc_database._npc_async_session_maker = None
+        server.npc_database._npc_database_url = None
+
+        client = TestClient(app)
+
+        try:
+            yield client
+        finally:
+            # Same cleanup as function-scoped version
+            logger.info("Cancelling EventBus tasks before shutdown")
+            try:
+                if not loop.is_closed() and container.event_bus:
+                    if hasattr(container.event_bus, "_active_tasks") and container.event_bus._active_tasks:
+                        active_tasks = list(container.event_bus._active_tasks)
+                        for task in active_tasks:
+                            if not task.done():
+                                task.cancel()
+                        container.event_bus._active_tasks.clear()
+                    if hasattr(container.event_bus, "_running"):
+                        container.event_bus._running = False
+                    if hasattr(container.event_bus, "_shutdown_event"):
+                        try:
+                            container.event_bus._shutdown_event.set()
+                        except Exception:
+                            pass
+            except Exception as e:
+                logger.debug("Error cancelling EventBus tasks", error=str(e))
+
+            logger.info("Cleaning up database connections before TestClient teardown")
+            try:
+                if not loop.is_closed() and hasattr(container, "database_manager") and container.database_manager:
+                    try:
+                        loop.run_until_complete(asyncio.wait_for(container.database_manager.close(), timeout=1.0))
+                    except (TimeoutError, RuntimeError):
+                        logger.debug("Database cleanup timed out or loop closed (harmless)")
+            except (RuntimeError, Exception) as e:
+                if "Event loop is closed" not in str(e):
+                    logger.debug("Error closing database connections", error=str(e))
+
+            logger.info("Shutting down container after test class")
+            try:
+                if not loop.is_closed():
+                    try:
+                        loop.run_until_complete(asyncio.wait_for(container.shutdown(), timeout=3.0))
+                    except TimeoutError:
+                        logger.warning("Container shutdown timed out, forcing cleanup")
+                        pending = [task for task in asyncio.all_tasks(loop) if not task.done()]
+                        for task in pending:
+                            task.cancel()
+            except Exception as e:
+                logger.error("Error during container shutdown", error=str(e))
+
+            logger.info("Cancelling remaining tasks")
+            try:
+                if not loop.is_closed():
+                    pending_tasks = [task for task in asyncio.all_tasks(loop) if not task.done()]
+                    if pending_tasks:
+                        for task in pending_tasks:
+                            if not task.done():
+                                task.cancel()
+                        try:
+                            loop.run_until_complete(
+                                asyncio.wait_for(asyncio.gather(*pending_tasks, return_exceptions=True), timeout=0.5)
+                            )
+                        except (TimeoutError, RuntimeError, Exception):
+                            pass
+            except Exception as e:
+                logger.debug("Error cancelling remaining tasks", error=str(e))
+    finally:
+        if not loop.is_closed():
+            try:
+                pending = [task for task in asyncio.all_tasks(loop) if not task.done()]
+                if pending:
+                    for task in pending:
+                        if not task.done():
+                            task.cancel()
+                loop.close()
+            except Exception as e:
+                logger.warning("Error closing event loop", error=str(e))
+                try:
+                    if not loop.is_closed():
+                        loop.close()
+                except Exception:
+                    pass
+        asyncio.set_event_loop(None)
+
+
 @pytest.fixture
 async def async_container_test_client(test_container):
     """

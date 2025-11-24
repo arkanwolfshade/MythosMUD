@@ -4,7 +4,7 @@ Tests for authentication endpoints.
 This module tests the authentication system including registration,
 login, and user management endpoints.
 
-ARCHITECTURE FIX: Updated to use container_test_client fixture
+ARCHITECTURE FIX: Updated to use container_test_client_class fixture
 Following pytest best practices for API endpoint testing.
 """
 
@@ -23,13 +23,13 @@ logger = get_logger(__name__)
 
 
 @pytest.fixture
-def mock_auth_persistence(container_test_client):
+def mock_auth_persistence(container_test_client_class):
     """
     Mock persistence for auth testing.
 
-    AI: Reuses container_test_client following pytest best practices
+    AI: Reuses container_test_client_class following pytest best practices
     """
-    app = container_test_client.app
+    app = container_test_client_class.app
     mock_persistence = AsyncMock()
 
     # Configure mock behaviors for auth operations
@@ -127,12 +127,13 @@ class TestSchemaValidation:
         assert login_response.user_id == "test-user-id"
 
 
+@pytest.mark.slow  # Mark as slow due to 26-30 second setup times (container_test_client_class fixture)
 class TestRegistrationEndpoints:
     """Test registration endpoint functionality."""
 
     def test_successful_registration(
         self,
-        container_test_client,
+        container_test_client_class,
         mock_auth_persistence,
     ):
         """Test successful user registration with real database (isolated test)."""
@@ -145,7 +146,7 @@ class TestRegistrationEndpoints:
         unique_username = f"newuser_{uuid.uuid4().hex[:8]}"
 
         # Test registration
-        response = container_test_client.post(
+        response = container_test_client_class.post(
             "/auth/register",
             json={"username": unique_username, "password": "testpass123", "invite_code": "TEST123"},
         )
@@ -159,7 +160,7 @@ class TestRegistrationEndpoints:
 
     def test_registration_invalid_invite_code(
         self,
-        container_test_client,
+        container_test_client_class,
         mock_auth_persistence,
         stub_invite_manager: SimpleNamespace,
     ):
@@ -168,7 +169,7 @@ class TestRegistrationEndpoints:
             status_code=400, detail="Invalid invite code"
         )
 
-        response = container_test_client.post(
+        response = container_test_client_class.post(
             "/auth/register", json={"username": "newuser", "password": "testpass123", "invite_code": "INVALID"}
         )
 
@@ -177,7 +178,7 @@ class TestRegistrationEndpoints:
 
     def test_registration_duplicate_username(
         self,
-        container_test_client,
+        container_test_client_class,
         mock_auth_persistence,
         stub_invite_manager: SimpleNamespace,
     ):
@@ -221,11 +222,11 @@ class TestRegistrationEndpoints:
             yield mock_session
 
         # Override the dependency
-        container_test_client.app.dependency_overrides[get_async_session] = mock_get_session
+        container_test_client_class.app.dependency_overrides[get_async_session] = mock_get_session
 
         try:
             # First, register a user to create the duplicate condition
-            first_response = container_test_client.post(
+            first_response = container_test_client_class.post(
                 "/auth/register",
                 json={"username": unique_username, "password": "testpass123", "invite_code": "TEST456"},
             )
@@ -234,7 +235,7 @@ class TestRegistrationEndpoints:
             assert first_response.status_code == 200
 
             # Now try to register with the same username
-            response = container_test_client.post(
+            response = container_test_client_class.post(
                 "/auth/register",
                 json={"username": unique_username, "password": "testpass123", "invite_code": "TEST456"},
             )
@@ -244,9 +245,9 @@ class TestRegistrationEndpoints:
             assert "Username already exists" in response.json()["error"]["message"]
         finally:
             # Clean up dependency override
-            container_test_client.app.dependency_overrides.pop(get_async_session, None)
+            container_test_client_class.app.dependency_overrides.pop(get_async_session, None)
 
-    def test_registration_with_empty_password(self, container_test_client, mock_auth_persistence):
+    def test_registration_with_empty_password(self, container_test_client_class, mock_auth_persistence):
         """Test registration with empty password should be rejected for security."""
         # Use a unique username to avoid conflicts
         import uuid
@@ -254,7 +255,7 @@ class TestRegistrationEndpoints:
         unique_username = f"weakuser_{uuid.uuid4().hex[:8]}"
 
         # Test with an empty password which should fail validation
-        response = container_test_client.post(
+        response = container_test_client_class.post(
             "/auth/register", json={"username": unique_username, "password": "", "invite_code": "TEST456"}
         )
 
@@ -275,7 +276,7 @@ class TestRegistrationEndpoints:
         error_msg = error_detail[0].get("msg", "").lower()
         assert any(keyword in error_msg for keyword in ["password", "empty"])
 
-    def test_registration_with_whitespace_password(self, container_test_client, mock_auth_persistence):
+    def test_registration_with_whitespace_password(self, container_test_client_class, mock_auth_persistence):
         """Test registration with whitespace-only password should be rejected."""
         # Use a unique username to avoid conflicts
         import uuid
@@ -283,7 +284,7 @@ class TestRegistrationEndpoints:
         unique_username = f"whitespaceuser_{uuid.uuid4().hex[:8]}"
 
         # Test with a whitespace-only password which should fail validation
-        response = container_test_client.post(
+        response = container_test_client_class.post(
             "/auth/register", json={"username": unique_username, "password": "   ", "invite_code": "TEST456"}
         )
 
@@ -304,10 +305,11 @@ class TestRegistrationEndpoints:
         assert any(keyword in error_msg for keyword in ["password", "empty"])
 
 
+@pytest.mark.slow  # Mark as slow due to 26-30 second setup times (container_test_client_class fixture)
 class TestLoginEndpoints:
     """Test login endpoint functionality."""
 
-    def test_successful_login(self, container_test_client, mock_auth_persistence):
+    def test_successful_login(self, container_test_client_class, mock_auth_persistence):
         """Test successful login with valid credentials."""
         # Create mock user
         mock_user = MagicMock()
@@ -335,11 +337,11 @@ class TestLoginEndpoints:
             return mock_manager
 
         # Override the dependencies in the app
-        container_test_client.app.dependency_overrides[get_async_session] = mock_get_async_session
-        container_test_client.app.dependency_overrides[get_user_manager] = mock_get_user_manager
+        container_test_client_class.app.dependency_overrides[get_async_session] = mock_get_async_session
+        container_test_client_class.app.dependency_overrides[get_user_manager] = mock_get_user_manager
 
         try:
-            response = container_test_client.post(
+            response = container_test_client_class.post(
                 "/auth/login", json={"username": "testuser", "password": "testpass123"}
             )
 
@@ -350,10 +352,10 @@ class TestLoginEndpoints:
             assert data["token_type"] == "bearer"
         finally:
             # Clean up the override
-            container_test_client.app.dependency_overrides.clear()
+            container_test_client_class.app.dependency_overrides.clear()
 
     @patch("server.auth.endpoints.get_async_session")
-    def test_login_user_not_found(self, mock_get_session, container_test_client, mock_auth_persistence):
+    def test_login_user_not_found(self, mock_get_session, container_test_client_class, mock_auth_persistence):
         """Test login with nonexistent user."""
         mock_session = AsyncMock()
         mock_get_session.return_value = mock_session
@@ -363,7 +365,7 @@ class TestLoginEndpoints:
         mock_result.scalar_one_or_none.return_value = None
         mock_session.execute.return_value = mock_result
 
-        response = container_test_client.post(
+        response = container_test_client_class.post(
             "/auth/login", json={"username": "nonexistent", "password": "testpass123"}
         )
 
@@ -371,7 +373,7 @@ class TestLoginEndpoints:
         assert "Invalid credentials" in response.json()["error"]["message"]
 
     @patch("server.auth.endpoints.get_async_session")
-    def test_login_user_no_email(self, mock_get_session, container_test_client, mock_auth_persistence):
+    def test_login_user_no_email(self, mock_get_session, container_test_client_class, mock_auth_persistence):
         """Test login with user that has no email."""
         mock_session = AsyncMock()
         mock_get_session.return_value = mock_session
@@ -386,17 +388,22 @@ class TestLoginEndpoints:
         mock_result.scalar_one_or_none.return_value = mock_user
         mock_session.execute.return_value = mock_result
 
-        response = container_test_client.post("/auth/login", json={"username": "testuser", "password": "testpass123"})
+        response = container_test_client_class.post(
+            "/auth/login", json={"username": "testuser", "password": "testpass123"}
+        )
 
         assert response.status_code == 401
         assert "Invalid credentials" in response.json()["error"]["message"]
 
 
+@pytest.mark.slow  # Mark as slow due to 26-30 second setup times (container_test_client_class fixture)
 class TestUserInfoEndpoints:
     """Test user information endpoint functionality."""
 
     @patch("server.auth.endpoints.get_current_active_user")
-    def test_get_current_user_info_superuser(self, mock_get_current, container_test_client, mock_auth_persistence):
+    def test_get_current_user_info_superuser(
+        self, mock_get_current, container_test_client_class, mock_auth_persistence
+    ):
         """Test /auth/me endpoint with superuser."""
         mock_user = MagicMock()
         mock_user.id = uuid.uuid4()  # FastAPI Users v14 uses 'id' instead of 'user_id'
@@ -411,10 +418,10 @@ class TestUserInfoEndpoints:
             return mock_user
 
         # Override the dependency in the app
-        container_test_client.app.dependency_overrides[get_current_active_user] = mock_get_current_active_user
+        container_test_client_class.app.dependency_overrides[get_current_active_user] = mock_get_current_active_user
 
         try:
-            response = container_test_client.get("/auth/me")
+            response = container_test_client_class.get("/auth/me")
 
             assert response.status_code == 200
             data = response.json()
@@ -424,10 +431,12 @@ class TestUserInfoEndpoints:
             assert data["is_superuser"] is True
         finally:
             # Clean up the override
-            container_test_client.app.dependency_overrides.clear()
+            container_test_client_class.app.dependency_overrides.clear()
 
     @patch("server.auth.endpoints.get_current_active_user")
-    def test_get_current_user_info_regular_user(self, mock_get_current, container_test_client, mock_auth_persistence):
+    def test_get_current_user_info_regular_user(
+        self, mock_get_current, container_test_client_class, mock_auth_persistence
+    ):
         """Test /auth/me endpoint with regular user."""
         mock_user = MagicMock()
         mock_user.id = uuid.uuid4()  # FastAPI Users v14 uses 'id' instead of 'user_id'
@@ -442,10 +451,10 @@ class TestUserInfoEndpoints:
             return mock_user
 
         # Override the dependency in the app
-        container_test_client.app.dependency_overrides[get_current_active_user] = mock_get_current_active_user
+        container_test_client_class.app.dependency_overrides[get_current_active_user] = mock_get_current_active_user
 
         try:
-            response = container_test_client.get("/auth/me")
+            response = container_test_client_class.get("/auth/me")
 
             assert response.status_code == 200
             data = response.json()
@@ -455,15 +464,16 @@ class TestUserInfoEndpoints:
             assert data["is_superuser"] is False
         finally:
             # Clean up the override
-            container_test_client.app.dependency_overrides.clear()
+            container_test_client_class.app.dependency_overrides.clear()
 
 
+@pytest.mark.slow  # Mark as slow due to 26-30 second setup times (container_test_client_class fixture)
 class TestInviteManagementEndpoints:
     """Test invite management endpoint functionality."""
 
     @patch("server.auth.endpoints.get_current_superuser")
     @patch("server.auth.endpoints.get_invite_manager")
-    def test_list_invites(self, mock_get_invite, mock_get_current, container_test_client, mock_auth_persistence):
+    def test_list_invites(self, mock_get_invite, mock_get_current, container_test_client_class, mock_auth_persistence):
         """Test listing all invite codes."""
         mock_user = MagicMock()
         mock_user.is_superuser = True
@@ -502,11 +512,11 @@ class TestInviteManagementEndpoints:
             return mock_manager
 
         # Override the dependencies in the app
-        container_test_client.app.dependency_overrides[get_current_superuser] = mock_get_current_superuser
-        container_test_client.app.dependency_overrides[get_invite_manager] = mock_get_invite_manager
+        container_test_client_class.app.dependency_overrides[get_current_superuser] = mock_get_current_superuser
+        container_test_client_class.app.dependency_overrides[get_invite_manager] = mock_get_invite_manager
 
         try:
-            response = container_test_client.get("/auth/invites")
+            response = container_test_client_class.get("/auth/invites")
 
             assert response.status_code == 200
             data = response.json()
@@ -515,11 +525,11 @@ class TestInviteManagementEndpoints:
             assert data[1]["invite_code"] == "TEST456"
         finally:
             # Clean up the override
-            container_test_client.app.dependency_overrides.clear()
+            container_test_client_class.app.dependency_overrides.clear()
 
     @patch("server.auth.endpoints.get_current_superuser")
     @patch("server.auth.endpoints.get_invite_manager")
-    def test_create_invite(self, mock_get_invite, mock_get_current, container_test_client, mock_auth_persistence):
+    def test_create_invite(self, mock_get_invite, mock_get_current, container_test_client_class, mock_auth_persistence):
         """Test creating a new invite code."""
         mock_user = MagicMock()
         mock_user.is_superuser = True
@@ -550,20 +560,20 @@ class TestInviteManagementEndpoints:
             return mock_manager
 
         # Override the dependencies in the app
-        container_test_client.app.dependency_overrides[get_current_superuser] = mock_get_current_superuser
-        container_test_client.app.dependency_overrides[get_invite_manager] = mock_get_invite_manager
+        container_test_client_class.app.dependency_overrides[get_current_superuser] = mock_get_current_superuser
+        container_test_client_class.app.dependency_overrides[get_invite_manager] = mock_get_invite_manager
 
         try:
-            response = container_test_client.post("/auth/invites")
+            response = container_test_client_class.post("/auth/invites")
 
             assert response.status_code == 200
             data = response.json()
             assert data["invite_code"] == "NEW123"
         finally:
             # Clean up the override
-            container_test_client.app.dependency_overrides.clear()
+            container_test_client_class.app.dependency_overrides.clear()
 
-    def test_database_connection(self, container_test_client, mock_auth_persistence):
+    def test_database_connection(self, container_test_client_class, mock_auth_persistence):
         """Test that the database connection and invite table work."""
         import os
         from datetime import UTC, datetime, timedelta

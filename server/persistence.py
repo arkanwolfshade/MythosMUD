@@ -11,16 +11,16 @@ from uuid import UUID
 import psycopg2
 import psycopg2.errors
 
-from .exceptions import DatabaseError, ValidationError
-from .logging.enhanced_logging_config import get_logger
-from .models.player import Player
-from .models.room import Room
-from .postgres_adapter import connect_postgres
-from .schemas.inventory_schema import InventorySchemaValidationError, validate_inventory_payload
-from .utils.error_logging import create_error_context, log_and_raise
+from server.exceptions import DatabaseError, ValidationError
+from server.logging.enhanced_logging_config import get_logger
+from server.models.player import Player
+from server.models.room import Room
+from server.postgres_adapter import connect_postgres
+from server.schemas.inventory_schema import InventorySchemaValidationError, validate_inventory_payload
+from server.utils.error_logging import create_error_context, log_and_raise
 
 if TYPE_CHECKING:
-    from .models.profession import Profession
+    from server.models.profession import Profession
 
 logger = get_logger(__name__)
 
@@ -250,7 +250,7 @@ class PersistenceLayer:
 
     def _setup_logger(self):
         # Use centralized logging configuration
-        from .logging.enhanced_logging_config import get_logger
+        from server.logging.enhanced_logging_config import get_logger
 
         return get_logger("PersistenceLayer")
 
@@ -505,7 +505,7 @@ class PersistenceLayer:
         self._room_cache = {}
         self._room_mappings: dict[str, str] = {}
         try:
-            from .world_loader import generate_room_id
+            from server.world_loader import generate_room_id
 
             with self._get_connection() as conn:
                 # Query rooms with zone/subzone hierarchy
@@ -581,7 +581,7 @@ class PersistenceLayer:
                     # Load containers for this room
                     containers = []
                     try:
-                        from .services.environmental_container_loader import EnvironmentalContainerLoader
+                        from server.services.environmental_container_loader import EnvironmentalContainerLoader
 
                         container_loader = EnvironmentalContainerLoader(persistence=self)
                         containers_data = container_loader.load_containers_for_room(room_id)
@@ -1957,7 +1957,7 @@ class PersistenceLayer:
         # Room doesn't exist, move player to default starting room from config
         old_room = player.current_room_id
         try:
-            from .config import get_config
+            from server.config import get_config
 
             config = get_config()
             default_room = config.game.default_player_room
@@ -1986,35 +1986,35 @@ class PersistenceLayer:
 
     async def async_get_player_by_name(self, name: str) -> Player | None:
         """Get a player by name using async database operations."""
-        from .async_persistence import get_async_persistence
+        from server.async_persistence import get_async_persistence
 
         async_persistence = get_async_persistence()
         return await async_persistence.get_player_by_name(name)
 
     async def async_get_player(self, player_id: UUID) -> Player | None:
         """Get a player by ID using async database operations."""
-        from .async_persistence import get_async_persistence
+        from server.async_persistence import get_async_persistence
 
         async_persistence = get_async_persistence()
         return await async_persistence.get_player_by_id(player_id)
 
     async def async_get_player_by_user_id(self, user_id: str) -> Player | None:
         """Get a player by user ID using async database operations."""
-        from .async_persistence import get_async_persistence
+        from server.async_persistence import get_async_persistence
 
         async_persistence = get_async_persistence()
         return await async_persistence.get_player_by_user_id(user_id)
 
     async def async_save_player(self, player: Player):
         """Save a player using async database operations."""
-        from .async_persistence import get_async_persistence
+        from server.async_persistence import get_async_persistence
 
         async_persistence = get_async_persistence()
         return await async_persistence.save_player(player)
 
     async def async_list_players(self) -> list[Player]:
         """List all players using async database operations."""
-        from .async_persistence import get_async_persistence
+        from server.async_persistence import get_async_persistence
 
         async_persistence = get_async_persistence()
         return await async_persistence.list_players()
@@ -2135,7 +2135,7 @@ class PersistenceLayer:
             ValidationError: If validation fails
             DatabaseError: If database operation fails
         """
-        from .container_persistence import create_container
+        from server.container_persistence import create_container
 
         with self._lock, self._get_connection() as conn:
             container = create_container(
@@ -2167,7 +2167,7 @@ class PersistenceLayer:
         Raises:
             DatabaseError: If database operation fails
         """
-        from .container_persistence import get_container
+        from server.container_persistence import get_container
 
         with self._lock, self._get_connection() as conn:
             container = get_container(conn, container_id)
@@ -2234,7 +2234,7 @@ class PersistenceLayer:
             ValidationError: If validation fails
             DatabaseError: If database operation fails
         """
-        from .container_persistence import update_container
+        from server.container_persistence import update_container
 
         with self._lock, self._get_connection() as conn:
             container = update_container(conn, container_id, items_json, lock_state, metadata_json)
@@ -2250,7 +2250,7 @@ class PersistenceLayer:
         Returns:
             list[dict[str, Any]]: List of decayed container data
         """
-        from .persistence.container_persistence import get_decayed_containers as _get_decayed_containers
+        from server.persistence.container_persistence import get_decayed_containers as _get_decayed_containers
 
         with self._lock, self._get_connection() as conn:
             containers = _get_decayed_containers(conn, current_time)
@@ -2269,7 +2269,7 @@ class PersistenceLayer:
         Raises:
             DatabaseError: If database operation fails
         """
-        from .container_persistence import delete_container
+        from server.container_persistence import delete_container
 
         with self._lock, self._get_connection() as conn:
             return delete_container(conn, container_id)

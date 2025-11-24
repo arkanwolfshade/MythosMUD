@@ -22,6 +22,7 @@ class TestContainerCOPPACompliance:
         """Test that container metadata does not contain personal information."""
         # Create container with metadata
         container = ContainerComponent(
+            container_id=uuid.uuid4(),
             source_type=ContainerSourceType.ENVIRONMENT,
             room_id="earth_arkhamcity_sanitarium_room_foyer_001",
             capacity_slots=10,
@@ -57,6 +58,7 @@ class TestContainerCOPPACompliance:
 
         # Create corpse container
         container = ContainerComponent(
+            container_id=uuid.uuid4(),
             source_type=ContainerSourceType.CORPSE,
             owner_id=owner_id,
             room_id="earth_arkhamcity_sanitarium_room_foyer_001",
@@ -97,6 +99,7 @@ class TestContainerCOPPACompliance:
 
         # Create wearable container
         container = ContainerComponent(
+            container_id=uuid.uuid4(),
             source_type=ContainerSourceType.EQUIPMENT,
             entity_id=entity_id,
             capacity_slots=8,
@@ -135,6 +138,7 @@ class TestContainerCOPPACompliance:
         # Attempt to create container with personal data in metadata
         with pytest.raises(ValidationError):
             ContainerComponent(
+                container_id=uuid.uuid4(),
                 source_type=ContainerSourceType.ENVIRONMENT,
                 room_id="earth_arkhamcity_sanitarium_room_foyer_001",
                 capacity_slots=10,
@@ -148,6 +152,7 @@ class TestContainerCOPPACompliance:
         """Test that container items do not contain personal information."""
         # Create container with items
         container = ContainerComponent(
+            container_id=uuid.uuid4(),
             source_type=ContainerSourceType.ENVIRONMENT,
             room_id="earth_arkhamcity_sanitarium_room_foyer_001",
             capacity_slots=10,

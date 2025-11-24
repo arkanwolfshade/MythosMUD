@@ -88,7 +88,7 @@ class TestWearableContainerEquipUnequip:
         # Mock container creation
         container_id = uuid.uuid4()
         mock_persistence.create_container.return_value = {
-            "container_instance_id": str(container_id),
+            "container_id": str(container_id),
         }
 
         # Equip backpack
@@ -112,11 +112,11 @@ class TestWearableContainerEquipUnequip:
         # Mock existing container
         container_id = uuid.uuid4()
         container_data = {
-            "container_instance_id": str(container_id),
+            "container_id": str(container_id),
             "source_type": "equipment",
             "entity_id": sample_player_id,
             "capacity_slots": 8,
-            "items_json": [
+            "items": [
                 {
                     "item_instance_id": "inst_potion_001",
                     "prototype_id": "healing_potion",
@@ -126,6 +126,11 @@ class TestWearableContainerEquipUnequip:
                     "quantity": 1,
                 },
             ],
+            "metadata": {
+                "item_instance_id": "inst_backpack_002",  # Must match sample_backpack_with_items
+                "item_id": "backpack",
+                "item_name": "Leather Backpack",
+            },
         }
 
         mock_persistence.get_containers_by_entity_id.return_value = [container_data]
@@ -174,14 +179,14 @@ class TestNestedContainerCapacity:
         # Create container
         container_id = uuid.uuid4()
         mock_persistence.create_container.return_value = {
-            "container_instance_id": str(container_id),
+            "container_id": str(container_id),
         }
         mock_persistence.get_container.return_value = {
-            "container_instance_id": str(container_id),
+            "container_id": str(container_id),
             "source_type": "equipment",
             "entity_id": sample_player_id,
             "capacity_slots": 8,
-            "items_json": [],
+            "items": [],
         }
 
         # Try to add more items than capacity allows
@@ -249,11 +254,11 @@ class TestInventorySpillRules:
         # Create container at capacity
         container_id = uuid.uuid4()
         container_data = {
-            "container_instance_id": str(container_id),
+            "container_id": str(container_id),
             "source_type": "equipment",
             "entity_id": sample_player_id,
             "capacity_slots": 8,
-            "items_json": [
+            "items": [
                 {
                     "item_instance_id": f"inst_item_{i}",
                     "prototype_id": "test_item",
@@ -302,11 +307,11 @@ class TestInventorySpillRules:
         # Create container at capacity
         container_id = uuid.uuid4()
         container_data = {
-            "container_instance_id": str(container_id),
+            "container_id": str(container_id),
             "source_type": "equipment",
             "entity_id": sample_player_id,
             "capacity_slots": 8,
-            "items_json": [
+            "items": [
                 {
                     "item_instance_id": f"inst_item_{i}",
                     "prototype_id": "test_item",
@@ -365,11 +370,11 @@ class TestWearableContainerPersistence:
     def test_get_containers_by_entity_id(self, mock_persistence, sample_player_id):
         """Test getting containers for a player entity."""
         container_data = {
-            "container_instance_id": str(uuid.uuid4()),
+            "container_id": str(uuid.uuid4()),
             "source_type": "equipment",
             "entity_id": sample_player_id,
             "capacity_slots": 8,
-            "items_json": [],
+            "items": [],
         }
 
         mock_persistence.get_containers_by_entity_id.return_value = [container_data]
@@ -386,11 +391,11 @@ class TestWearableContainerPersistence:
         """Test updating items in a wearable container."""
         container_id = uuid.uuid4()
         container_data = {
-            "container_instance_id": str(container_id),
+            "container_id": str(container_id),
             "source_type": "equipment",
             "entity_id": sample_player_id,
             "capacity_slots": 8,
-            "items_json": [],
+            "items": [],
         }
 
         mock_persistence.get_container.return_value = container_data

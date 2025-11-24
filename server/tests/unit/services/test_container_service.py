@@ -73,6 +73,18 @@ def sample_room_id():
 
 
 @pytest.fixture
+def mock_player(sample_player_id, sample_room_id):
+    """Create a mock player with required attributes."""
+    player = MagicMock()
+    player.player_id = sample_player_id
+    player.current_room_id = sample_room_id
+    player.is_admin = False
+    player.inventory = []
+    player.name = "TestPlayer"
+    return player
+
+
+@pytest.fixture
 def sample_environment_container(sample_container_id, sample_room_id):
     """Create a sample environmental container."""
     return ContainerComponent(
@@ -89,16 +101,26 @@ class TestContainerServiceOpenClose:
     """Test ContainerService open/close operations."""
 
     def test_open_container_success(
-        self, container_service, mock_persistence, sample_container_id, sample_environment_container
+        self,
+        container_service,
+        mock_persistence,
+        sample_container_id,
+        sample_environment_container,
+        mock_player,
+        sample_player_id,
     ):
         """Test successfully opening a container."""
         mock_persistence.get_container.return_value = sample_environment_container.to_dict()
+        mock_persistence.get_player.return_value = mock_player
 
         result = container_service.open_container(sample_container_id, sample_player_id)
 
         assert result is not None
-        assert result["container_id"] == str(sample_container_id)
+        assert "container" in result
         assert "mutation_token" in result
+        # container_id is inside the container dict
+        container_id = result["container"]["container_id"]
+        assert (container_id == sample_container_id) or (str(container_id) == str(sample_container_id))
         mock_persistence.get_container.assert_called_once_with(sample_container_id)
 
     def test_open_container_not_found(self, container_service, mock_persistence, sample_container_id, sample_player_id):
@@ -109,20 +131,34 @@ class TestContainerServiceOpenClose:
             container_service.open_container(sample_container_id, sample_player_id)
 
     def test_open_container_locked(
-        self, container_service, mock_persistence, sample_container_id, sample_environment_container, sample_player_id
+        self,
+        container_service,
+        mock_persistence,
+        sample_container_id,
+        sample_environment_container,
+        sample_player_id,
+        mock_player,
     ):
         """Test opening a locked container."""
         sample_environment_container.lock_state = ContainerLockState.LOCKED
         mock_persistence.get_container.return_value = sample_environment_container.to_dict()
+        mock_persistence.get_player.return_value = mock_player
 
         with pytest.raises(ContainerLockedError):
             container_service.open_container(sample_container_id, sample_player_id)
 
     def test_open_container_already_open(
-        self, container_service, mock_persistence, sample_container_id, sample_environment_container, sample_player_id
+        self,
+        container_service,
+        mock_persistence,
+        sample_container_id,
+        sample_environment_container,
+        sample_player_id,
+        mock_player,
     ):
         """Test opening a container that is already open."""
         mock_persistence.get_container.return_value = sample_environment_container.to_dict()
+        mock_persistence.get_player.return_value = mock_player
 
         # Open container first time
         result1 = container_service.open_container(sample_container_id, sample_player_id)
@@ -133,10 +169,17 @@ class TestContainerServiceOpenClose:
             container_service.open_container(sample_container_id, sample_player_id)
 
     def test_close_container_success(
-        self, container_service, mock_persistence, sample_container_id, sample_environment_container, sample_player_id
+        self,
+        container_service,
+        mock_persistence,
+        sample_container_id,
+        sample_environment_container,
+        sample_player_id,
+        mock_player,
     ):
         """Test successfully closing a container."""
         mock_persistence.get_container.return_value = sample_environment_container.to_dict()
+        mock_persistence.get_player.return_value = mock_player
 
         # Open container first
         result = container_service.open_container(sample_container_id, sample_player_id)
@@ -157,16 +200,23 @@ class TestContainerServiceOpenClose:
             container_service.close_container(sample_container_id, sample_player_id, mutation_token)
 
     def test_close_container_invalid_token(
-        self, container_service, mock_persistence, sample_container_id, sample_environment_container, sample_player_id
+        self,
+        container_service,
+        mock_persistence,
+        sample_container_id,
+        sample_environment_container,
+        sample_player_id,
+        mock_player,
     ):
         """Test closing a container with invalid token."""
         mock_persistence.get_container.return_value = sample_environment_container.to_dict()
+        mock_persistence.get_player.return_value = mock_player
 
         # Open container
         container_service.open_container(sample_container_id, sample_player_id)
 
         # Try to close with invalid token
-        with pytest.raises(ContainerServiceError, match="invalid token"):
+        with pytest.raises(ContainerServiceError, match="Invalid mutation token"):
             container_service.close_container(sample_container_id, sample_player_id, "invalid_token")
 
 
@@ -180,9 +230,11 @@ class TestContainerServiceTransfer:
         sample_container_id,
         sample_environment_container,
         sample_player_id,
+        mock_player,
     ):
         """Test successfully transferring items to container."""
         mock_persistence.get_container.return_value = sample_environment_container.to_dict()
+        mock_persistence.get_player.return_value = mock_player
 
         # Open container
         result = container_service.open_container(sample_container_id, sample_player_id)
@@ -199,7 +251,6 @@ class TestContainerServiceTransfer:
         }
 
         # Mock player inventory
-        mock_persistence.get_player.return_value = MagicMock()
         mock_persistence.get_player.return_value.inventory = [item]
 
         # Transfer item
@@ -218,6 +269,7 @@ class TestContainerServiceTransfer:
         sample_container_id,
         sample_environment_container,
         sample_player_id,
+        mock_player,
     ):
         """Test successfully transferring items from container."""
         # Add item to container
@@ -231,13 +283,13 @@ class TestContainerServiceTransfer:
         }
         sample_environment_container.items = [item]
         mock_persistence.get_container.return_value = sample_environment_container.to_dict()
+        mock_persistence.get_player.return_value = mock_player
 
         # Open container
         result = container_service.open_container(sample_container_id, sample_player_id)
         mutation_token = result["mutation_token"]
 
         # Mock player inventory
-        mock_persistence.get_player.return_value = MagicMock()
         mock_persistence.get_player.return_value.inventory = []
 
         # Transfer item from container
@@ -256,6 +308,7 @@ class TestContainerServiceTransfer:
         sample_container_id,
         sample_environment_container,
         sample_player_id,
+        mock_player,
     ):
         """Test transfer when container capacity is exceeded."""
         # Fill container to capacity
@@ -271,6 +324,7 @@ class TestContainerServiceTransfer:
             for i in range(8)  # Fill all 8 slots
         ]
         mock_persistence.get_container.return_value = sample_environment_container.to_dict()
+        mock_persistence.get_player.return_value = mock_player
 
         # Open container
         result = container_service.open_container(sample_container_id, sample_player_id)
@@ -286,7 +340,6 @@ class TestContainerServiceTransfer:
             "quantity": 1,
         }
 
-        mock_persistence.get_player.return_value = MagicMock()
         mock_persistence.get_player.return_value.inventory = [item]
 
         with pytest.raises(ContainerCapacityError):
@@ -321,9 +374,11 @@ class TestContainerServiceMutationGuard:
         sample_container_id,
         sample_environment_container,
         sample_player_id,
+        mock_player,
     ):
         """Test that mutation guard prevents duplicate transfers."""
         mock_persistence.get_container.return_value = sample_environment_container.to_dict()
+        mock_persistence.get_player.return_value = mock_player
 
         # Open container
         result = container_service.open_container(sample_container_id, sample_player_id)
@@ -338,7 +393,6 @@ class TestContainerServiceMutationGuard:
             "quantity": 1,
         }
 
-        mock_persistence.get_player.return_value = MagicMock()
         mock_persistence.get_player.return_value.inventory = [item]
 
         # First transfer should succeed
@@ -357,9 +411,11 @@ class TestContainerServiceMutationGuard:
         sample_container_id,
         sample_environment_container,
         sample_player_id,
+        mock_player,
     ):
         """Test that mutation guard serializes operations."""
         mock_persistence.get_container.return_value = sample_environment_container.to_dict()
+        mock_persistence.get_player.return_value = mock_player
 
         # Open container
         container_service.open_container(sample_container_id, sample_player_id)

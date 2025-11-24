@@ -282,6 +282,7 @@ class TestNPCStartupService:
             assert "NPC instance service not initialized" in results["errors"][0]
 
     @pytest.mark.asyncio
+    @pytest.mark.slow
     async def test_npc_spawn_locations_reference_existing_rooms(self):
         """
         Test that all NPC spawn locations in the database reference existing room files.

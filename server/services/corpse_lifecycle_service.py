@@ -310,7 +310,6 @@ class CorpseLifecycleService:
                 user_friendly="Container is not a corpse",
             )
 
-        # Emit decay event if connection manager available
         # Note: emit_container_decayed is async, but this method is sync
         # We'll handle event emission in the async cleanup task in lifespan.py
 

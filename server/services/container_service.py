@@ -112,6 +112,20 @@ class ContainerService:
         # Validate access control (proximity, roles, ownership)
         self._validate_container_access(container, player, context)
 
+        # Check if container is sealed (raises access denied, not locked error)
+        if container.lock_state == ContainerLockState.SEALED:
+            if not getattr(player, "is_admin", False):
+                log_and_raise(
+                    ContainerAccessDeniedError,
+                    f"Container is sealed: {container_id}",
+                    context=context,
+                    details={
+                        "container_id": str(container_id),
+                        "lock_state": container.lock_state.value,
+                    },
+                    user_friendly="Container is sealed",
+                )
+
         # Check if container is locked (after access validation)
         if container.is_locked():
             # Check if player has key or is admin
@@ -688,6 +702,21 @@ class ContainerService:
                         },
                         user_friendly="The corpse's owner has exclusive access during the grace period",
                     )
+            else:
+                # No grace_period_start means grace period is still active (just created)
+                # Only owner can access during grace period
+                if container.owner_id != player_id and not is_admin:
+                    log_and_raise(
+                        ContainerAccessDeniedError,
+                        f"Corpse grace period active: {container.container_id}",
+                        context=context,
+                        details={
+                            "container_id": str(container.container_id),
+                            "player_id": str(player_id),
+                            "owner_id": str(container.owner_id),
+                        },
+                        user_friendly="The corpse's owner has exclusive access during the grace period",
+                    )
 
     def _can_unlock_container(self, container: ContainerComponent, player: Any) -> bool:
         """
@@ -717,6 +746,11 @@ class ContainerService:
                 if item.get("item_id") == key_item_id:
                     return True
             return False
+
+        # If no key required, locked containers can be unlocked by anyone in the same room
+        # (access validation happens separately in _validate_container_access)
+        if container.lock_state == ContainerLockState.LOCKED:
+            return True
 
         # Unlocked containers can be opened
         return container.lock_state == ContainerLockState.UNLOCKED
@@ -855,6 +889,9 @@ class ContainerService:
                 details={"player_id": str(player_id)},
                 user_friendly="Player not found",
             )
+
+        # Validate access control (proximity, roles, ownership)
+        self._validate_container_access(container, player, context)
 
         # Check if player can unlock
         if not self._can_unlock_container(container, player):

@@ -214,6 +214,7 @@ exclude = [
     "^scripts/",
     "^docs/",
     "^tools/",
+    "^monitoring/",
     "^server/alembic/",
     "^server/test_who_command_direct.py$",
     "^server/tests/scripts/",
@@ -234,14 +235,10 @@ module = [
     "playwright.*",
     "networkx.*",
     "statemachine.*",
-    "passlib.*",
     "jose.*",
-    "faker.*",
     "dotenv.*",
     "jsonschema.*",
     "pwdlib.*",
-    "alembic.*",
-    "flask.*",
     "pytest.*",
     "prometheus_client.*",
     "psycopg2.*",
@@ -260,7 +257,6 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = [
     "server.tests.*",
-    "tests.*",
 ]
 ignore_missing_imports = true
 

@@ -54,18 +54,55 @@ bind_request_context(
 
 ### Log Categories
 
-The system automatically routes logs to category-specific files:
+The system automatically routes logs to subsystem-specific files. Each subsystem has its own log file for better organization and debugging:
 
-- **server.log**: Core server operations
-- **persistence.log**: Database operations
-- **authentication.log**: Auth-related events
-- **world.log**: Game world operations
-- **communications.log**: Chat, messaging, real-time events
-- **commands.log**: Player commands
-- **combat.log**: Combat system events
-- **errors.log**: Error and exception tracking
-- **access.log**: Access control and permissions
-- **security.log**: Security events and audit trails
+**Core Subsystems:**
+- **server.log**: Core server operations, uvicorn lifecycle
+- **persistence.log**: Database operations, SQL queries, persistence layer
+- **authentication.log**: Authentication, authorization, user management
+- **inventory.log**: Inventory management, containers, equipment
+- **npc.log**: NPC services, NPC instances, NPC lifecycle
+- **game.log**: Game mechanics, movement, room services, world loading
+- **api.log**: API endpoints, REST operations
+- **middleware.log**: Middleware operations, request processing
+- **monitoring.log**: Performance metrics, monitoring, system health
+- **time.log**: Time services, game ticks, scheduling
+- **caching.log**: Cache operations, cache management
+- **communications.log**: Real-time messaging, chat, WebSocket, SSE
+- **commands.log**: Player commands, command processing
+- **events.log**: Event bus, event publishing, event subscriptions
+- **infrastructure.log**: NATS broker, message broker, infrastructure components
+- **validators.log**: Input validation, command validation, security validation
+- **combat.log**: Combat system, combat events, combat services
+- **access.log**: Access control, permissions, API access
+- **security.log**: Security events, audit trails, security violations
+
+**Aggregator Logs:**
+- **warnings.log**: ALL WARNING level logs from ALL subsystems (dual logging)
+- **errors.log**: ALL ERROR and CRITICAL level logs from ALL subsystems (dual logging)
+- **console.log**: Console output, general logging
+
+### Dual Logging Behavior
+
+The system implements dual logging for warnings and errors:
+
+- **Warnings**: All WARNING level logs appear in BOTH their subsystem log file AND `warnings.log`
+- **Errors**: All ERROR and CRITICAL level logs appear in BOTH their subsystem log file AND `errors.log`
+
+This enables:
+- **Subsystem-specific debugging**: Find all logs for a specific subsystem in its dedicated file
+- **Centralized monitoring**: Quickly scan all warnings or errors across the entire system
+- **Better observability**: No need to search multiple files to find all warnings or errors
+
+Example:
+```python
+# In persistence subsystem
+logger.warning("Database connection slow", query_time=1.5)
+# This appears in: persistence.log AND warnings.log
+
+logger.error("Database connection failed", error=str(e))
+# This appears in: persistence.log AND errors.log
+```
 
 ## F-String Logging Anti-Pattern
 
