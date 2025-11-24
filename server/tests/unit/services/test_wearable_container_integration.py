@@ -126,6 +126,11 @@ class TestWearableContainerEquipUnequip:
                     "quantity": 1,
                 },
             ],
+            "metadata": {
+                "item_instance_id": "inst_backpack_002",  # Must match sample_backpack_with_items
+                "item_id": "backpack",
+                "item_name": "Leather Backpack",
+            },
         }
 
         mock_persistence.get_containers_by_entity_id.return_value = [container_data]

@@ -120,7 +120,12 @@ class ContainerService:
                     ContainerLockedError,
                     f"Container is locked: {container_id}",
                     context=context,
-                    details={"container_id": str(container_id), "lock_state": container.lock_state.value},
+                    details={
+                        "container_id": str(container_id),
+                        "lock_state": container.lock_state.value
+                        if hasattr(container.lock_state, "value")
+                        else str(container.lock_state),
+                    },
                     user_friendly="Container is locked",
                 )
 
@@ -560,7 +565,9 @@ class ContainerService:
                     player_name=player.name,
                     container_id=str(container_id),
                     event_type="container_transfer",
-                    source_type=container.source_type.value,
+                    source_type=container.source_type.value
+                    if hasattr(container.source_type, "value")
+                    else str(container.source_type),
                     room_id=container.room_id,
                     direction="from_container",
                     item_id=item.get("item_id"),
@@ -742,8 +749,9 @@ class ContainerService:
         context.metadata["container_id"] = str(container_id)
         context.metadata["player_id"] = str(player_id)
 
+        lock_state_value = lock_state.value if hasattr(lock_state, "value") else str(lock_state)
         logger.info(
-            "Locking container", container_id=str(container_id), player_id=str(player_id), lock_state=lock_state.value
+            "Locking container", container_id=str(container_id), player_id=str(player_id), lock_state=lock_state_value
         )
 
         # Get container
@@ -794,7 +802,8 @@ class ContainerService:
                 )
 
         # Update lock state
-        updated = self.persistence.update_container(container_id, lock_state=lock_state.value)
+        lock_state_value = lock_state.value if hasattr(lock_state, "value") else str(lock_state)
+        updated = self.persistence.update_container(container_id, lock_state=lock_state_value)
         if not updated:
             log_and_raise(
                 ContainerServiceError,
@@ -805,7 +814,7 @@ class ContainerService:
             )
 
         logger.info(
-            "Container locked", container_id=str(container_id), player_id=str(player_id), lock_state=lock_state.value
+            "Container locked", container_id=str(container_id), player_id=str(player_id), lock_state=lock_state_value
         )
 
         return updated

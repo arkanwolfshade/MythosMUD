@@ -128,8 +128,11 @@ class CorpseLifecycleService:
             items_dicts: list[dict[str, Any]] = [
                 cast(dict[str, Any], dict(item) if not isinstance(item, dict) else item) for item in corpse.items
             ]
+            source_type_value = (
+                corpse.source_type.value if hasattr(corpse.source_type, "value") else str(corpse.source_type)
+            )
             container_data = self.persistence.create_container(
-                source_type=corpse.source_type.value,
+                source_type=source_type_value,
                 owner_id=corpse.owner_id,
                 room_id=corpse.room_id,
                 capacity_slots=corpse.capacity_slots,
@@ -306,7 +309,10 @@ class CorpseLifecycleService:
                 CorpseServiceError,
                 f"Container is not a corpse: {container_id}",
                 context=context,
-                details={"container_id": str(container_id), "source_type": container.source_type.value},
+                details={
+                    "container_id": str(container_id),
+                    "source_type": container.source_type.value if hasattr(container.source_type, "value") else str(container.source_type),
+                },
                 user_friendly="Container is not a corpse",
             )
 

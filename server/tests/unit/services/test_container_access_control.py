@@ -115,7 +115,7 @@ class TestContainerProximityValidation:
         mock_persistence.get_container.return_value = container.to_dict()
         mock_persistence.get_player.return_value = player
 
-        with pytest.raises(ContainerAccessDeniedError, match="proximity"):
+        with pytest.raises(ContainerAccessDeniedError, match="not in same room"):
             container_service.open_container(sample_container_id, sample_player_id)
 
     def test_open_equipment_container_owned_by_player(
@@ -163,7 +163,7 @@ class TestContainerProximityValidation:
         mock_persistence.get_container.return_value = container.to_dict()
         mock_persistence.get_player.return_value = player
 
-        with pytest.raises(ContainerAccessDeniedError, match="owner"):
+        with pytest.raises(ContainerAccessDeniedError, match="does not own"):
             container_service.open_container(sample_container_id, sample_player_id)
 
 
@@ -264,15 +264,21 @@ class TestContainerLockUnlock:
             lock_state=ContainerLockState.UNLOCKED,
         )
 
+        # Mock player
+        player = MagicMock()
+        player.player_id = sample_player_id
+        player.current_room_id = sample_room_id
+        player.is_admin = False
+
         mock_persistence.get_container.return_value = container.to_dict()
-        mock_persistence.get_player.return_value = MagicMock()
+        mock_persistence.get_player.return_value = player
 
         # Lock container
         container_service.lock_container(sample_container_id, sample_player_id, ContainerLockState.LOCKED)
 
         # Verify container is locked
-        updated_container = ContainerComponent.model_validate(mock_persistence.update_container.call_args[0][1])
-        assert updated_container.lock_state == ContainerLockState.LOCKED
+        call_kwargs = mock_persistence.update_container.call_args.kwargs
+        assert call_kwargs.get("lock_state") == ContainerLockState.LOCKED.value
 
     def test_unlock_container(
         self, container_service, mock_persistence, sample_container_id, sample_player_id, sample_room_id
@@ -287,15 +293,21 @@ class TestContainerLockUnlock:
             lock_state=ContainerLockState.LOCKED,
         )
 
+        # Mock player
+        player = MagicMock()
+        player.player_id = sample_player_id
+        player.current_room_id = sample_room_id
+        player.is_admin = False
+
         mock_persistence.get_container.return_value = container.to_dict()
-        mock_persistence.get_player.return_value = MagicMock()
+        mock_persistence.get_player.return_value = player
 
         # Unlock container
         container_service.unlock_container(sample_container_id, sample_player_id)
 
         # Verify container is unlocked
-        updated_container = ContainerComponent.model_validate(mock_persistence.update_container.call_args[0][1])
-        assert updated_container.lock_state == ContainerLockState.UNLOCKED
+        call_kwargs = mock_persistence.update_container.call_args.kwargs
+        assert call_kwargs.get("lock_state") == ContainerLockState.UNLOCKED.value
 
     def test_open_locked_container_without_key(
         self, container_service, mock_persistence, sample_container_id, sample_player_id, sample_room_id

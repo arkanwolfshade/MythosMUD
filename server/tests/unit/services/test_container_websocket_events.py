@@ -101,8 +101,9 @@ class TestContainerOpenedEvent:
         mock_connection_manager.send_personal_message.assert_called_once()
         call_args = mock_connection_manager.send_personal_message.call_args
 
-        # Check player_id
-        assert call_args[0][0] == sample_player_id
+        # Check player_id - handle both UUID and string comparison
+        player_id_arg = call_args[0][0]
+        assert (player_id_arg == sample_player_id) or (str(player_id_arg) == str(sample_player_id))
 
         # Check event structure
         event = call_args[0][1]
@@ -139,14 +140,14 @@ class TestContainerOpenedEvent:
 
         # Verify broadcast_room_event was called
         mock_connection_manager.broadcast_room_event.assert_called_once()
-        call_args = mock_connection_manager.broadcast_room_event.call_args
+        call_kwargs = mock_connection_manager.broadcast_room_event.call_args.kwargs
 
         # Check event_type and room_id
-        assert call_args[0][0] == "container.opened"
-        assert call_args[0][1] == sample_room_id
+        assert call_kwargs["event_type"] == "container.opened"
+        assert call_kwargs["room_id"] == sample_room_id
 
         # Check event data
-        data = call_args[0][2]
+        data = call_kwargs["data"]
         assert "container" in data
         assert data["container"]["container_id"] == str(sample_container_id)
         assert data["actor_id"] == str(player_id)
@@ -180,14 +181,14 @@ class TestContainerUpdatedEvent:
 
         # Verify broadcast_room_event was called
         mock_connection_manager.broadcast_room_event.assert_called_once()
-        call_args = mock_connection_manager.broadcast_room_event.call_args
+        call_kwargs = mock_connection_manager.broadcast_room_event.call_args.kwargs
 
         # Check event_type and room_id
-        assert call_args[0][0] == "container.updated"
-        assert call_args[0][1] == sample_room_id
+        assert call_kwargs["event_type"] == "container.updated"
+        assert call_kwargs["room_id"] == sample_room_id
 
         # Check event data
-        data = call_args[0][2]
+        data = call_kwargs["data"]
         assert data["container_id"] == str(sample_container_id)
         assert data["actor_id"] == str(sample_player_id)
         assert "diff" in data
@@ -213,14 +214,14 @@ class TestContainerClosedEvent:
 
         # Verify broadcast_room_event was called
         mock_connection_manager.broadcast_room_event.assert_called_once()
-        call_args = mock_connection_manager.broadcast_room_event.call_args
+        call_kwargs = mock_connection_manager.broadcast_room_event.call_args.kwargs
 
         # Check event_type and room_id
-        assert call_args[0][0] == "container.closed"
-        assert call_args[0][1] == sample_room_id
+        assert call_kwargs["event_type"] == "container.closed"
+        assert call_kwargs["room_id"] == sample_room_id
 
         # Check event data
-        data = call_args[0][2]
+        data = call_kwargs["data"]
         assert data["container_id"] == str(sample_container_id)
 
 
@@ -240,14 +241,14 @@ class TestContainerDecayedEvent:
 
         # Verify broadcast_room_event was called
         mock_connection_manager.broadcast_room_event.assert_called_once()
-        call_args = mock_connection_manager.broadcast_room_event.call_args
+        call_kwargs = mock_connection_manager.broadcast_room_event.call_args.kwargs
 
         # Check event_type and room_id
-        assert call_args[0][0] == "container.decayed"
-        assert call_args[0][1] == sample_room_id
+        assert call_kwargs["event_type"] == "container.decayed"
+        assert call_kwargs["room_id"] == sample_room_id
 
         # Check event data
-        data = call_args[0][2]
+        data = call_kwargs["data"]
         assert data["container_id"] == str(sample_container_id)
         assert data["room_id"] == sample_room_id
 

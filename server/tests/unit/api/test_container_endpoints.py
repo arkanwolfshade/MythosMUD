@@ -104,8 +104,10 @@ def test_client(mock_persistence, authenticated_user, mock_player):
 
     mock_persistence.get_player_by_user_id = get_player_by_user_id_override
 
-    # Override dependencies
-    app.dependency_overrides[container_router.dependencies[2]] = get_current_user_override
+    # Override dependencies - FastAPI routers don't have a dependencies list
+    # Override get_current_user directly
+    from server.auth.users import get_current_user
+    app.dependency_overrides[get_current_user] = get_current_user_override
 
     with patch("server.api.containers.get_persistence", return_value=mock_persistence):
         with patch("server.dependencies.get_persistence", return_value=mock_persistence):

@@ -62,6 +62,8 @@ class TestContainerAuditLogging:
         player = MagicMock()
         player.player_id = sample_player_id
         player.name = "TestPlayer"
+        player.current_room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
+        player.is_admin = False
         mock_persistence.get_player.return_value = player
 
         service = ContainerService(persistence=mock_persistence)
@@ -177,6 +179,8 @@ class TestContainerAuditLogging:
         player = MagicMock()
         player.player_id = sample_player_id
         player.name = "TestPlayer"
+        player.current_room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
+        player.is_admin = False
         mock_persistence.get_player.return_value = player
 
         service = ContainerService(persistence=mock_persistence)
@@ -287,6 +291,8 @@ class TestContainerAuditLogging:
         player = MagicMock()
         player.player_id = sample_player_id
         player.name = "TestPlayer"
+        player.current_room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
+        player.is_admin = False
         mock_persistence.get_player.return_value = player
 
         service = ContainerService(persistence=mock_persistence)

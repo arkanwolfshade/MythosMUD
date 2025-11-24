@@ -379,7 +379,10 @@ class ContainerComponent(BaseModel):
         Backward compatibility method that delegates to model_dump().
         This allows tests and legacy code to continue using to_dict().
 
+        Note: Uses mode="python" to preserve enum types instead of converting
+        them to strings, which allows code to access .value on enums.
+
         Returns:
             Dictionary representation of the container component
         """
-        return self.model_dump(mode="python", exclude_none=False)
+        return self.model_dump(mode="python", exclude_none=False, by_alias=False)
