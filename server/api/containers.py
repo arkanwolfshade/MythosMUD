@@ -12,7 +12,7 @@ from __future__ import annotations
 from typing import Any, cast
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel, Field, field_validator
 
 from ..auth.users import get_current_user
@@ -881,11 +881,15 @@ async def loot_all_items(
             context=context,
         ) from e
 
+    except (LoggedHTTPException, HTTPException):
+        # Re-raise HTTP exceptions (including LoggedHTTPException) to let FastAPI handle them
+        raise
     except Exception as e:
         context = _create_error_context(
             request, current_user, container_id=str(request_data.container_id), operation="loot_all"
         )
-        logger.error("Unexpected error in loot-all", error=str(e), exc_info=True, context=context.to_dict())
+        # Use error=str(e) instead of exc_info=True to avoid Unicode encoding issues on Windows
+        logger.error("Unexpected error in loot-all", error=str(e), context=context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error",

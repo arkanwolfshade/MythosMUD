@@ -37,7 +37,7 @@ class TestPlayerAPIIntegration:
     """
 
     @pytest.fixture
-    def mock_persistence_for_api(self, container_test_client_class_class):
+    def mock_persistence_for_api(self, container_test_client_class):
         """
         Mock persistence layer for API testing.
 
@@ -46,12 +46,12 @@ class TestPlayerAPIIntegration:
 
         AI: Following pytest fixture best practices:
         - Descriptive name indicating purpose
-        - Reuses container_test_client_class_class (class-scoped for performance)
+        - Reuses container_test_client_class (class-scoped for performance)
         - Scoped to function for test isolation (mocks are still per-test)
         - Properly mocks BOTH sync and async methods
         """
         # Access app and container from test client
-        app = container_test_client_class_class.app
+        app = container_test_client_class.app
         mock_persistence = AsyncMock()
 
         # Configure async mock behaviors (used by API endpoints)

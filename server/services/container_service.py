@@ -889,10 +889,10 @@ class ContainerService:
             # Player doesn't have the key
             return False
 
-        # Locked containers without a key requirement can be unlocked by anyone
-        # (access validation happens separately in _validate_container_access)
+        # Locked containers without a key requirement still require admin to unlock
+        # If no key is specified, only admins can unlock locked containers
         if container.lock_state == ContainerLockState.LOCKED:
-            return True
+            return False
 
         # Unlocked containers can be opened
         return container.lock_state == ContainerLockState.UNLOCKED
