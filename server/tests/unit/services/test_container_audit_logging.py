@@ -50,11 +50,11 @@ class TestContainerAuditLogging:
         """Test that opening a container is audited."""
         # Mock container data
         container_data = {
-            "container_instance_id": str(sample_container_id),
+            "container_id": str(sample_container_id),
             "source_type": "environment",
             "room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
             "capacity_slots": 10,
-            "items_json": [],
+            "items": [],
         }
         mock_persistence.get_container.return_value = container_data
 
@@ -95,11 +95,11 @@ class TestContainerAuditLogging:
         """Test that transferring items to/from containers is audited."""
         # Mock container data
         container_data = {
-            "container_instance_id": str(sample_container_id),
+            "container_id": str(sample_container_id),
             "source_type": "environment",
             "room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
             "capacity_slots": 10,
-            "items_json": [],
+            "items": [],
         }
         mock_persistence.get_container.return_value = container_data
         mock_persistence.update_container.return_value = container_data
@@ -165,11 +165,11 @@ class TestContainerAuditLogging:
         """Test that closing a container is audited."""
         # Mock container data
         container_data = {
-            "container_instance_id": str(sample_container_id),
+            "container_id": str(sample_container_id),
             "source_type": "environment",
             "room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
             "capacity_slots": 10,
-            "items_json": [],
+            "items": [],
         }
         mock_persistence.get_container.return_value = container_data
 
@@ -213,11 +213,11 @@ class TestContainerAuditLogging:
         """Test that looting all items from a container is audited."""
         # Mock container data with items
         container_data = {
-            "container_instance_id": str(sample_container_id),
+            "container_id": str(sample_container_id),
             "source_type": "corpse",
             "room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
             "capacity_slots": 10,
-            "items_json": [
+            "items": [
                 {
                     "item_instance_id": "inst_item_001",
                     "prototype_id": "test_item",
@@ -275,11 +275,11 @@ class TestContainerAuditLogging:
         """Test that audit logs contain all required security fields."""
         # Mock container data
         container_data = {
-            "container_instance_id": str(sample_container_id),
+            "container_id": str(sample_container_id),
             "source_type": "environment",
             "room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
             "capacity_slots": 10,
-            "items_json": [],
+            "items": [],
         }
         mock_persistence.get_container.return_value = container_data
 

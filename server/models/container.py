@@ -371,3 +371,15 @@ class ContainerComponent(BaseModel):
             items=items or [],
             metadata=metadata or {},
         )
+
+    def to_dict(self) -> dict[str, Any]:
+        """
+        Convert container component to dictionary representation.
+
+        Backward compatibility method that delegates to model_dump().
+        This allows tests and legacy code to continue using to_dict().
+
+        Returns:
+            Dictionary representation of the container component
+        """
+        return self.model_dump(mode="python", exclude_none=False)
