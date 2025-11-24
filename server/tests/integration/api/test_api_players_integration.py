@@ -176,7 +176,9 @@ class TestPlayerAPIIntegration:
         # Assert
         assert response.status_code in [200, 401]
 
-    def test_get_player_includes_position(self, container_test_client_class, mock_persistence_for_api, sample_player_data):
+    def test_get_player_includes_position(
+        self, container_test_client_class, mock_persistence_for_api, sample_player_data
+    ):
         """Ensure player API response exposes posture information."""
         from server.auth.users import get_current_user
 
@@ -201,7 +203,9 @@ class TestPlayerAPIIntegration:
         finally:
             app.dependency_overrides.pop(get_current_user, None)
 
-    def test_get_player_by_name_success(self, container_test_client_class, mock_persistence_for_api, sample_player_data):
+    def test_get_player_by_name_success(
+        self, container_test_client_class, mock_persistence_for_api, sample_player_data
+    ):
         """Test successful player retrieval by name via API."""
         # Arrange
         mock_persistence_for_api.async_get_player_by_name.return_value = sample_player_data
@@ -248,7 +252,9 @@ class TestPlayerAPIIntegration:
 
         # Act
         player_id = str(uuid.uuid4())
-        response = container_test_client_class.post(f"/api/players/{player_id}/fear", json={"amount": 5, "source": "test"})
+        response = container_test_client_class.post(
+            f"/api/players/{player_id}/fear", json={"amount": 5, "source": "test"}
+        )
 
         # Assert
         assert response.status_code in [200, 401]
@@ -268,7 +274,9 @@ class TestPlayerAPIIntegration:
         # Assert
         assert response.status_code in [200, 401]
 
-    def test_gain_occult_knowledge_success(self, container_test_client_class, mock_persistence_for_api, sample_player_data):
+    def test_gain_occult_knowledge_success(
+        self, container_test_client_class, mock_persistence_for_api, sample_player_data
+    ):
         """Test successful occult knowledge gain."""
         # Arrange
         mock_persistence_for_api.async_get_player.return_value = sample_player_data

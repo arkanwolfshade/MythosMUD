@@ -302,13 +302,13 @@ class CorpseLifecycleService:
 
         # Verify it's a corpse
         if container.source_type != ContainerSourceType.CORPSE:
-                log_and_raise(
-                    CorpseServiceError,
-                    f"Container is not a corpse: {container_id}",
-                    context=context,
-                    details={"container_id": str(container_id), "source_type": container.source_type.value},
-                    user_friendly="Container is not a corpse",
-                )
+            log_and_raise(
+                CorpseServiceError,
+                f"Container is not a corpse: {container_id}",
+                context=context,
+                details={"container_id": str(container_id), "source_type": container.source_type.value},
+                user_friendly="Container is not a corpse",
+            )
 
         # Note: emit_container_decayed is async, but this method is sync
         # We'll handle event emission in the async cleanup task in lifespan.py

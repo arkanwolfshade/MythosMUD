@@ -101,7 +101,13 @@ class TestContainerServiceOpenClose:
     """Test ContainerService open/close operations."""
 
     def test_open_container_success(
-        self, container_service, mock_persistence, sample_container_id, sample_environment_container, mock_player, sample_player_id
+        self,
+        container_service,
+        mock_persistence,
+        sample_container_id,
+        sample_environment_container,
+        mock_player,
+        sample_player_id,
     ):
         """Test successfully opening a container."""
         mock_persistence.get_container.return_value = sample_environment_container.to_dict()
@@ -125,7 +131,13 @@ class TestContainerServiceOpenClose:
             container_service.open_container(sample_container_id, sample_player_id)
 
     def test_open_container_locked(
-        self, container_service, mock_persistence, sample_container_id, sample_environment_container, sample_player_id, mock_player
+        self,
+        container_service,
+        mock_persistence,
+        sample_container_id,
+        sample_environment_container,
+        sample_player_id,
+        mock_player,
     ):
         """Test opening a locked container."""
         sample_environment_container.lock_state = ContainerLockState.LOCKED
@@ -136,7 +148,13 @@ class TestContainerServiceOpenClose:
             container_service.open_container(sample_container_id, sample_player_id)
 
     def test_open_container_already_open(
-        self, container_service, mock_persistence, sample_container_id, sample_environment_container, sample_player_id, mock_player
+        self,
+        container_service,
+        mock_persistence,
+        sample_container_id,
+        sample_environment_container,
+        sample_player_id,
+        mock_player,
     ):
         """Test opening a container that is already open."""
         mock_persistence.get_container.return_value = sample_environment_container.to_dict()
@@ -151,7 +169,13 @@ class TestContainerServiceOpenClose:
             container_service.open_container(sample_container_id, sample_player_id)
 
     def test_close_container_success(
-        self, container_service, mock_persistence, sample_container_id, sample_environment_container, sample_player_id, mock_player
+        self,
+        container_service,
+        mock_persistence,
+        sample_container_id,
+        sample_environment_container,
+        sample_player_id,
+        mock_player,
     ):
         """Test successfully closing a container."""
         mock_persistence.get_container.return_value = sample_environment_container.to_dict()
@@ -176,7 +200,13 @@ class TestContainerServiceOpenClose:
             container_service.close_container(sample_container_id, sample_player_id, mutation_token)
 
     def test_close_container_invalid_token(
-        self, container_service, mock_persistence, sample_container_id, sample_environment_container, sample_player_id, mock_player
+        self,
+        container_service,
+        mock_persistence,
+        sample_container_id,
+        sample_environment_container,
+        sample_player_id,
+        mock_player,
     ):
         """Test closing a container with invalid token."""
         mock_persistence.get_container.return_value = sample_environment_container.to_dict()

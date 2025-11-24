@@ -47,7 +47,9 @@ class TestContainerAuditLogging:
     """Test container interaction audit logging."""
 
     @patch("server.services.container_service.audit_logger")
-    def test_audit_log_container_open(self, mock_audit_logger, audit_logger, mock_persistence, sample_player_id, sample_container_id):
+    def test_audit_log_container_open(
+        self, mock_audit_logger, audit_logger, mock_persistence, sample_player_id, sample_container_id
+    ):
         """Test that opening a container is audited."""
         # Patch the global audit_logger with our test instance
         mock_audit_logger.log_container_interaction = audit_logger.log_container_interaction
@@ -99,7 +101,9 @@ class TestContainerAuditLogging:
             assert found, "Container open audit log entry not found"
 
     @patch("server.services.container_service.audit_logger")
-    def test_audit_log_container_transfer(self, mock_audit_logger, audit_logger, mock_persistence, sample_player_id, sample_container_id):
+    def test_audit_log_container_transfer(
+        self, mock_audit_logger, audit_logger, mock_persistence, sample_player_id, sample_container_id
+    ):
         """Test that transferring items to/from containers is audited."""
         # Patch the global audit_logger with our test instance
         mock_audit_logger.log_container_interaction = audit_logger.log_container_interaction
@@ -175,7 +179,9 @@ class TestContainerAuditLogging:
             assert found, "Container transfer audit log entry not found"
 
     @patch("server.services.container_service.audit_logger")
-    def test_audit_log_container_close(self, mock_audit_logger, audit_logger, mock_persistence, sample_player_id, sample_container_id):
+    def test_audit_log_container_close(
+        self, mock_audit_logger, audit_logger, mock_persistence, sample_player_id, sample_container_id
+    ):
         """Test that closing a container is audited."""
         # Patch the global audit_logger with our test instance
         mock_audit_logger.log_container_interaction = audit_logger.log_container_interaction
@@ -230,7 +236,9 @@ class TestContainerAuditLogging:
             assert found, "Container close audit log entry not found"
 
     @patch("server.services.container_service.audit_logger")
-    def test_audit_log_container_loot_all(self, mock_audit_logger, audit_logger, mock_persistence, sample_player_id, sample_container_id):
+    def test_audit_log_container_loot_all(
+        self, mock_audit_logger, audit_logger, mock_persistence, sample_player_id, sample_container_id
+    ):
         """Test that looting all items from a container is audited."""
         # Patch the global audit_logger with our test instance
         mock_audit_logger.log_container_interaction = audit_logger.log_container_interaction

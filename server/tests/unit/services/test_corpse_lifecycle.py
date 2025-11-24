@@ -384,11 +384,11 @@ class TestCorpseCleanup:
         decayed_corpses = [
             ContainerComponent(
                 container_id=uuid.uuid4(),
-            source_type=ContainerSourceType.CORPSE,
-            owner_id=uuid.uuid4(),
-            room_id=sample_room_id,
-            capacity_slots=20,
-            decay_at=datetime.now(UTC) - timedelta(hours=1),
+                source_type=ContainerSourceType.CORPSE,
+                owner_id=uuid.uuid4(),
+                room_id=sample_room_id,
+                capacity_slots=20,
+                decay_at=datetime.now(UTC) - timedelta(hours=1),
                 items=[],
             )
             for _ in range(3)

@@ -164,7 +164,9 @@ class TestComprehensiveIntegration:
         assert "x-frame-options" in response.headers
 
         # Check that CORS headers are present (middleware integration) - need Origin header
-        response_with_origin = container_test_client_class.get("/api/players/", headers={"Origin": "http://localhost:5173"})
+        response_with_origin = container_test_client_class.get(
+            "/api/players/", headers={"Origin": "http://localhost:5173"}
+        )
         assert "access-control-allow-origin" in response_with_origin.headers
 
     def test_error_handling_integration(self, container_test_client_class, mock_persistence_comprehensive):

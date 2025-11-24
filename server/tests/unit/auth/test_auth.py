@@ -388,7 +388,9 @@ class TestLoginEndpoints:
         mock_result.scalar_one_or_none.return_value = mock_user
         mock_session.execute.return_value = mock_result
 
-        response = container_test_client_class.post("/auth/login", json={"username": "testuser", "password": "testpass123"})
+        response = container_test_client_class.post(
+            "/auth/login", json={"username": "testuser", "password": "testpass123"}
+        )
 
         assert response.status_code == 401
         assert "Invalid credentials" in response.json()["error"]["message"]
@@ -399,7 +401,9 @@ class TestUserInfoEndpoints:
     """Test user information endpoint functionality."""
 
     @patch("server.auth.endpoints.get_current_active_user")
-    def test_get_current_user_info_superuser(self, mock_get_current, container_test_client_class, mock_auth_persistence):
+    def test_get_current_user_info_superuser(
+        self, mock_get_current, container_test_client_class, mock_auth_persistence
+    ):
         """Test /auth/me endpoint with superuser."""
         mock_user = MagicMock()
         mock_user.id = uuid.uuid4()  # FastAPI Users v14 uses 'id' instead of 'user_id'
@@ -430,7 +434,9 @@ class TestUserInfoEndpoints:
             container_test_client_class.app.dependency_overrides.clear()
 
     @patch("server.auth.endpoints.get_current_active_user")
-    def test_get_current_user_info_regular_user(self, mock_get_current, container_test_client_class, mock_auth_persistence):
+    def test_get_current_user_info_regular_user(
+        self, mock_get_current, container_test_client_class, mock_auth_persistence
+    ):
         """Test /auth/me endpoint with regular user."""
         mock_user = MagicMock()
         mock_user.id = uuid.uuid4()  # FastAPI Users v14 uses 'id' instead of 'user_id'

@@ -36,10 +36,28 @@ def _close_all_logging_handlers():
 
     # List of all known subsystem loggers
     subsystem_loggers = [
-        "server", "persistence", "authentication", "inventory", "npc", "game",
-        "api", "middleware", "monitoring", "time", "caching", "communications",
-        "commands", "events", "infrastructure", "validators", "combat", "access",
-        "security", "uvicorn", "uvicorn.access", "uvicorn.error"
+        "server",
+        "persistence",
+        "authentication",
+        "inventory",
+        "npc",
+        "game",
+        "api",
+        "middleware",
+        "monitoring",
+        "time",
+        "caching",
+        "communications",
+        "commands",
+        "events",
+        "infrastructure",
+        "validators",
+        "combat",
+        "access",
+        "security",
+        "uvicorn",
+        "uvicorn.access",
+        "uvicorn.error",
     ]
 
     # Close all root logger handlers
