@@ -294,11 +294,11 @@ class TestContainerLockUnlock:
             lock_state=ContainerLockState.LOCKED,
         )
 
-        # Mock player
+        # Mock player (admin can unlock locked containers without keys)
         player = MagicMock()
         player.player_id = sample_player_id
         player.current_room_id = sample_room_id
-        player.is_admin = False
+        player.is_admin = True
 
         mock_persistence.get_container.return_value = container.to_dict()
         mock_persistence.get_player.return_value = player
