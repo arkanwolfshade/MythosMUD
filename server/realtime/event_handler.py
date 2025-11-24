@@ -212,6 +212,29 @@ class RealTimeEventHandler:
                 room_id=room_id,
                 occupants=occupant_names,
             )
+
+            # Send room description as a message to the Game Info panel
+            # AI Agent: Room descriptions should be displayed when entering a room
+            if room.description:
+                from .envelope import build_event
+
+                room_description_event = build_event(
+                    "command_response",
+                    {
+                        "result": room.description,
+                        "suppress_chat": False,
+                        "is_html": False,
+                    },
+                    player_id=player_id_uuid,
+                    connection_manager=self.connection_manager,
+                )
+                await self.connection_manager.send_personal_message(player_id_uuid, room_description_event)
+                self._logger.debug(
+                    "Sent room description message to player",
+                    player_id=player_id_uuid,
+                    room_id=room_id,
+                    description_length=len(room.description),
+                )
         except Exception as e:
             # Structlog handles UUID objects automatically, no need to convert to string
             self._logger.error("Error sending room update to player", player_id=player_id_uuid, error=str(e))
