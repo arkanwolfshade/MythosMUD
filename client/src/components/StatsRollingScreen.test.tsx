@@ -48,7 +48,9 @@ describe('StatsRollingScreen', () => {
       };
       mockFetch.mockResolvedValue(mockResponse);
 
-      render(<StatsRollingScreen {...defaultProps} />);
+      await act(async () => {
+        render(<StatsRollingScreen {...defaultProps} />);
+      });
 
       await waitFor(() => {
         expect(screen.getByText('Character Creation')).toBeInTheDocument();
@@ -56,10 +58,43 @@ describe('StatsRollingScreen', () => {
       });
     });
 
-    it('should show loading state initially', () => {
+    it('should show loading state initially', async () => {
+      // Create a promise that we can control to delay the fetch response
+      let resolveFetch: (value: Response) => void;
+      const fetchPromise = new Promise<Response>(resolve => {
+        resolveFetch = resolve;
+      });
+
+      const mockResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({
+          stats: {
+            strength: 12,
+            dexterity: 14,
+            constitution: 10,
+            intelligence: 16,
+            wisdom: 8,
+            charisma: 13,
+          },
+        }),
+      } as unknown as Response;
+
+      // Mock fetch to return our controlled promise
+      mockFetch.mockReturnValue(fetchPromise);
+
+      // Render without waiting for async operations to complete
       render(<StatsRollingScreen {...defaultProps} />);
 
+      // Check loading state immediately (before fetch completes)
       expect(screen.getByText("Rolling your character's stats...")).toBeInTheDocument();
+
+      // Now resolve the fetch to clean up and prevent hanging
+      await act(async () => {
+        resolveFetch!(mockResponse);
+        await fetchPromise;
+        // Wait a bit for state updates to complete
+        await new Promise(resolve => setTimeout(resolve, 0));
+      });
     });
   });
 
@@ -80,7 +115,9 @@ describe('StatsRollingScreen', () => {
       };
       mockFetch.mockResolvedValue(mockResponse);
 
-      render(<StatsRollingScreen {...defaultProps} />);
+      await act(async () => {
+        render(<StatsRollingScreen {...defaultProps} />);
+      });
 
       await waitFor(() => {
         expect(mockFetch).toHaveBeenCalledWith('http://localhost:54731/api/players/roll-stats', {
@@ -119,7 +156,9 @@ describe('StatsRollingScreen', () => {
       };
       mockFetch.mockResolvedValue(mockResponse);
 
-      render(<StatsRollingScreen {...defaultProps} />);
+      await act(async () => {
+        render(<StatsRollingScreen {...defaultProps} />);
+      });
 
       await waitFor(() => {
         expect(screen.getByText('15')).toBeInTheDocument();
@@ -144,7 +183,9 @@ describe('StatsRollingScreen', () => {
       };
       mockFetch.mockResolvedValue(mockResponse);
 
-      render(<StatsRollingScreen {...defaultProps} />);
+      await act(async () => {
+        render(<StatsRollingScreen {...defaultProps} />);
+      });
 
       await waitFor(() => {
         expect(screen.getByText('Failed to load stats. Please try again.')).toBeInTheDocument();
@@ -154,7 +195,9 @@ describe('StatsRollingScreen', () => {
     it('should handle network error', async () => {
       mockFetch.mockRejectedValue(new Error('Network error'));
 
-      render(<StatsRollingScreen {...defaultProps} />);
+      await act(async () => {
+        render(<StatsRollingScreen {...defaultProps} />);
+      });
 
       await waitFor(() => {
         expect(screen.getByText('Failed to load stats. Please try again.')).toBeInTheDocument();
@@ -194,7 +237,9 @@ describe('StatsRollingScreen', () => {
         .mockResolvedValueOnce(mockStatsResponse) // First call for stats rolling
         .mockResolvedValueOnce(mockCreateResponse); // Second call for character creation
 
-      render(<StatsRollingScreen {...defaultProps} />);
+      await act(async () => {
+        render(<StatsRollingScreen {...defaultProps} />);
+      });
 
       await waitFor(() => {
         expect(screen.getByText('Accept Stats & Create Character')).toBeInTheDocument();
@@ -235,7 +280,9 @@ describe('StatsRollingScreen', () => {
       };
       mockFetch.mockResolvedValue(mockResponse);
 
-      render(<StatsRollingScreen {...defaultProps} />);
+      await act(async () => {
+        render(<StatsRollingScreen {...defaultProps} />);
+      });
 
       await waitFor(() => {
         expect(screen.getByText('Reroll Stats')).toBeInTheDocument();
@@ -247,7 +294,9 @@ describe('StatsRollingScreen', () => {
       });
 
       // Should make another API call
-      expect(mockFetch).toHaveBeenCalledTimes(2);
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledTimes(2);
+      });
     });
   });
 });
