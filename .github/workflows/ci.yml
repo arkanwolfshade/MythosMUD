@@ -129,6 +129,24 @@ jobs:
         run: |
           source .venv-ci/bin/activate
           make test-ci
+      - name: Check for excessive warnings
+        run: |
+          source .venv-ci/bin/activate
+          # Temporarily disable --disable-warnings to check warning count
+          # Fail if warnings exceed 100 (should be ~72 after fixes)
+          # Use --override-ini to temporarily disable --disable-warnings
+          WARNING_OUTPUT=$(uv run pytest server/tests/ -m "not slow and not e2e" -n auto --tb=short --override-ini=addopts="--strict-markers --strict-config" 2>&1 || true)
+          WARNING_COUNT=$(echo "$WARNING_OUTPUT" | grep -oP '\d+ warnings' | grep -oP '\d+' | tail -1 || echo "0")
+          if [ -z "$WARNING_COUNT" ]; then
+            WARNING_COUNT=0
+          fi
+          echo "Warning count: $WARNING_COUNT"
+          if [ "$WARNING_COUNT" -gt 100 ]; then
+            echo "ERROR: Warning count ($WARNING_COUNT) exceeds threshold (100)"
+            echo "$WARNING_OUTPUT" | tail -50
+            exit 1
+          fi
+          echo "✓ Warning count ($WARNING_COUNT) is within acceptable range (≤100)"
       - name: Cache benchmark (LRU cache)
         run: |
           source .venv-ci/bin/activate

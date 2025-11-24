@@ -211,7 +211,11 @@ class TestContainerComponentSerialization:
         assert data["room_id"] == "earth_arkhamcity_sanitarium_room_foyer_001"
         assert data["capacity_slots"] == 20
         assert data["lock_state"] == "locked"
-        assert data["decay_at"] == decay_at.isoformat()
+        # Pydantic v2 serializes UTC datetime with 'Z' suffix, not '+00:00'
+        # Both formats are valid ISO 8601, but Pydantic v2 uses 'Z' by default
+        serialized_decay = data["decay_at"]
+        expected_decay = decay_at.isoformat().replace("+00:00", "Z")
+        assert serialized_decay == expected_decay or serialized_decay == decay_at.isoformat()
         assert data["allowed_roles"] == ["admin", "moderator"]
         assert data["metadata"] == {"key_item_id": "arkham_library_key"}
 

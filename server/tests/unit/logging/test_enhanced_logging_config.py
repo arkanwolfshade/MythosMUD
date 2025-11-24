@@ -2,6 +2,9 @@
 Tests for enhanced logging configuration.
 """
 
+import logging
+import tempfile
+from pathlib import Path
 from unittest.mock import Mock, patch
 
 from server.exceptions import LoggedException
@@ -10,8 +13,10 @@ from server.logging.enhanced_logging_config import (
     add_request_context,
     bind_request_context,
     clear_request_context,
+    configure_enhanced_structlog,
     get_current_context,
     get_enhanced_logger,
+    get_logger,
     log_exception_once,
     sanitize_sensitive_data,
     setup_enhanced_logging,
@@ -148,3 +153,291 @@ class TestEnhancedLoggingConfig:
 
         logger.error.assert_called_once()
         assert error.already_logged is True
+
+    def test_subsystem_log_files_created(self):
+        """Test that all subsystem log files are created."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            log_config = {
+                "log_base": tmpdir,
+                "environment": "unit_test",
+                "level": "INFO",
+                "rotation": {"max_size": "10MB", "backup_count": 5},
+            }
+
+            configure_enhanced_structlog(
+                environment="unit_test",
+                log_level="INFO",
+                log_config=log_config,
+            )
+
+            log_dir = Path(tmpdir) / "unit_test"
+
+            # Check that subsystem log files exist
+            expected_subsystems = [
+                "server",
+                "persistence",
+                "authentication",
+                "inventory",
+                "npc",
+                "game",
+                "api",
+                "middleware",
+                "monitoring",
+                "time",
+                "caching",
+                "communications",
+                "commands",
+                "events",
+                "infrastructure",
+                "validators",
+                "combat",
+                "access",
+                "security",
+            ]
+
+            for subsystem in expected_subsystems:
+                log_file = log_dir / f"{subsystem}.log"
+                assert log_file.exists(), f"{subsystem}.log should exist"
+
+    def test_world_log_not_created(self):
+        """Test that world.log is NOT created (removed from subsystems)."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            log_config = {
+                "log_base": tmpdir,
+                "environment": "unit_test",
+                "level": "INFO",
+                "rotation": {"max_size": "10MB", "backup_count": 5},
+            }
+
+            configure_enhanced_structlog(
+                environment="unit_test",
+                log_level="INFO",
+                log_config=log_config,
+            )
+
+            log_dir = Path(tmpdir) / "unit_test"
+            world_log = log_dir / "world.log"
+
+            assert not world_log.exists(), "world.log should NOT exist"
+
+    def test_warnings_aggregator_created(self):
+        """Test that warnings.log aggregator is created."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            log_config = {
+                "log_base": tmpdir,
+                "environment": "unit_test",
+                "level": "INFO",
+                "rotation": {"max_size": "10MB", "backup_count": 5},
+            }
+
+            configure_enhanced_structlog(
+                environment="unit_test",
+                log_level="INFO",
+                log_config=log_config,
+            )
+
+            log_dir = Path(tmpdir) / "unit_test"
+            warnings_log = log_dir / "warnings.log"
+
+            assert warnings_log.exists(), "warnings.log should exist"
+
+    def test_errors_aggregator_created(self):
+        """Test that errors.log aggregator is created."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            log_config = {
+                "log_base": tmpdir,
+                "environment": "unit_test",
+                "level": "INFO",
+                "rotation": {"max_size": "10MB", "backup_count": 5},
+            }
+
+            configure_enhanced_structlog(
+                environment="unit_test",
+                log_level="INFO",
+                log_config=log_config,
+            )
+
+            log_dir = Path(tmpdir) / "unit_test"
+            errors_log = log_dir / "errors.log"
+
+            assert errors_log.exists(), "errors.log should exist"
+
+    def test_dual_logging_warnings(self):
+        """Test that warnings appear in both subsystem log and warnings.log."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            log_config = {
+                "log_base": tmpdir,
+                "environment": "unit_test",
+                "level": "INFO",
+                "rotation": {"max_size": "10MB", "backup_count": 5},
+            }
+
+            configure_enhanced_structlog(
+                environment="unit_test",
+                log_level="INFO",
+                log_config=log_config,
+            )
+
+            log_dir = Path(tmpdir) / "unit_test"
+
+            # Get a logger for a specific subsystem (persistence)
+            logger = get_logger("persistence.test")
+            logger.warning("Test warning message", test_key="test_value")
+
+            # Force handlers to flush
+            root_logger = logging.getLogger()
+            for handler in root_logger.handlers:
+                handler.flush()
+
+            # Check that warning appears in both files
+            persistence_log = log_dir / "persistence.log"
+            warnings_log = log_dir / "warnings.log"
+
+            assert persistence_log.exists(), "persistence.log should exist"
+            assert warnings_log.exists(), "warnings.log should exist"
+
+            persistence_content = persistence_log.read_text(encoding="utf-8")
+            warnings_content = warnings_log.read_text(encoding="utf-8")
+
+            assert "Test warning message" in persistence_content, "Warning should be in persistence.log"
+            assert "Test warning message" in warnings_content, "Warning should be in warnings.log"
+
+    def test_errors_not_in_warnings_log(self):
+        """Test that ERROR level logs do NOT appear in warnings.log (only in errors.log)."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            log_config = {
+                "log_base": tmpdir,
+                "environment": "unit_test",
+                "level": "INFO",
+                "rotation": {"max_size": "10MB", "backup_count": 5},
+            }
+
+            configure_enhanced_structlog(
+                environment="unit_test",
+                log_level="INFO",
+                log_config=log_config,
+            )
+
+            log_dir = Path(tmpdir) / "unit_test"
+
+            # Get a logger and log an ERROR
+            logger = get_logger("test.module")
+            logger.error("Test error message - should NOT be in warnings.log", test_key="test_value")
+
+            # Force handlers to flush
+            root_logger = logging.getLogger()
+            for handler in root_logger.handlers:
+                handler.flush()
+
+            # Check that error does NOT appear in warnings.log
+            warnings_log = log_dir / "warnings.log"
+            errors_log = log_dir / "errors.log"
+
+            assert warnings_log.exists(), "warnings.log should exist"
+            assert errors_log.exists(), "errors.log should exist"
+
+            warnings_content = warnings_log.read_text(encoding="utf-8")
+            errors_content = errors_log.read_text(encoding="utf-8")
+
+            assert "Test error message" not in warnings_content, "ERROR should NOT be in warnings.log"
+            assert "Test error message" in errors_content, "ERROR should be in errors.log"
+
+    def test_dual_logging_errors(self):
+        """Test that errors appear in both subsystem log and errors.log."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            log_config = {
+                "log_base": tmpdir,
+                "environment": "unit_test",
+                "level": "INFO",
+                "rotation": {"max_size": "10MB", "backup_count": 5},
+            }
+
+            configure_enhanced_structlog(
+                environment="unit_test",
+                log_level="INFO",
+                log_config=log_config,
+            )
+
+            log_dir = Path(tmpdir) / "unit_test"
+
+            # Get a logger for a specific subsystem (authentication)
+            logger = get_logger("auth.test")
+            logger.error("Test error message", test_key="test_value")
+
+            # Force handlers to flush
+            root_logger = logging.getLogger()
+            for handler in root_logger.handlers:
+                handler.flush()
+
+            # Check that error appears in both files
+            auth_log = log_dir / "authentication.log"
+            errors_log = log_dir / "errors.log"
+
+            assert auth_log.exists(), "authentication.log should exist"
+            assert errors_log.exists(), "errors.log should exist"
+
+            auth_content = auth_log.read_text(encoding="utf-8")
+            errors_content = errors_log.read_text(encoding="utf-8")
+
+            assert "Test error message" in auth_content, "Error should be in authentication.log"
+            assert "Test error message" in errors_content, "Error should be in errors.log"
+
+    def test_new_subsystem_loggers(self):
+        """Test that new subsystem loggers (inventory, npc, game, etc.) work correctly."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            log_config = {
+                "log_base": tmpdir,
+                "environment": "unit_test",
+                "level": "INFO",
+                "rotation": {"max_size": "10MB", "backup_count": 5},
+            }
+
+            configure_enhanced_structlog(
+                environment="unit_test",
+                log_level="INFO",
+                log_config=log_config,
+            )
+
+            log_dir = Path(tmpdir) / "unit_test"
+
+            # Test inventory subsystem
+            inventory_logger = get_logger("inventory.test")
+            inventory_logger.info("Inventory test message")
+            inventory_log = log_dir / "inventory.log"
+            assert inventory_log.exists(), "inventory.log should exist"
+
+            # Test npc subsystem
+            npc_logger = get_logger("npc.test")
+            npc_logger.info("NPC test message")
+            npc_log = log_dir / "npc.log"
+            assert npc_log.exists(), "npc.log should exist"
+
+            # Test game subsystem
+            game_logger = get_logger("game.test")
+            game_logger.info("Game test message")
+            game_log = log_dir / "game.log"
+            assert game_log.exists(), "game.log should exist"
+
+            # Test api subsystem
+            api_logger = get_logger("api.test")
+            api_logger.info("API test message")
+            api_log = log_dir / "api.log"
+            assert api_log.exists(), "api.log should exist"
+
+            # Test events subsystem
+            events_logger = get_logger("events.test")
+            events_logger.info("Events test message")
+            events_log = log_dir / "events.log"
+            assert events_log.exists(), "events.log should exist"
+
+            # Test infrastructure subsystem
+            infrastructure_logger = get_logger("infrastructure.test")
+            infrastructure_logger.info("Infrastructure test message")
+            infrastructure_log = log_dir / "infrastructure.log"
+            assert infrastructure_log.exists(), "infrastructure.log should exist"
+
+            # Test validators subsystem
+            validators_logger = get_logger("validators.test")
+            validators_logger.info("Validators test message")
+            validators_log = log_dir / "validators.log"
+            assert validators_log.exists(), "validators.log should exist"

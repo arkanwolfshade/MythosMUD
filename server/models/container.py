@@ -61,11 +61,8 @@ class ContainerComponent(BaseModel):
         use_enum_values=True,
         # Validate default values
         validate_default=True,
-        # JSON serialization configuration
-        json_encoders={
-            UUID: str,
-            datetime: lambda v: v.isoformat() if v else None,
-        },
+        # Pydantic v2 automatically serializes UUID to str and datetime to ISO format
+        # No need for json_encoders (deprecated in v2)
     )
 
     # Identifiers
