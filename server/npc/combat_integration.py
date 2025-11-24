@@ -70,13 +70,13 @@ class NPCCombatIntegration:
 
             # Add strength modifier for physical attacks
             if damage_type == "physical":
-                strength_mod = attacker_stats.get("strength", 10)
-                strength_bonus = max(0, (strength_mod - 10) // 2)
+                strength_mod = attacker_stats.get("strength", 50)
+                strength_bonus = max(0, (strength_mod - 50) // 2)
                 base_damage += strength_bonus
 
             # Apply target's constitution for damage reduction
-            target_con = target_stats.get("constitution", 10)
-            damage_reduction = max(0, (target_con - 10) // 4)
+            target_con = target_stats.get("constitution", 50)
+            damage_reduction = max(0, (target_con - 50) // 4)
             final_damage = max(1, base_damage - damage_reduction)
 
             logger.debug(
@@ -206,11 +206,11 @@ class NPCCombatIntegration:
             else:
                 # For NPC vs NPC combat, we'd need the target NPC stats
                 # This is a limitation of the current design
-                target_stats = {"constitution": 10}  # Default stats
+                target_stats = {"constitution": 50}  # Default stats
 
             # Use provided NPC stats or default
             if not npc_stats:
-                npc_stats = {"strength": 10, "constitution": 10}  # Default stats
+                npc_stats = {"strength": 50, "constitution": 50}  # Default stats
 
             # Calculate actual damage
             actual_damage = self.calculate_damage(npc_stats, target_stats, attack_damage, attack_type)
@@ -311,8 +311,8 @@ class NPCCombatIntegration:
                 return {
                     "hp": stats.get("current_health", 100),
                     "max_hp": stats.get("max_health", 100),
-                    "strength": stats.get("strength", 10),
-                    "constitution": stats.get("constitution", 10),
+                    "strength": stats.get("strength", 50),
+                    "constitution": stats.get("constitution", 50),
                     "sanity": stats.get("sanity", 100),
                     "fear": stats.get("fear", 0),
                     "corruption": stats.get("corruption", 0),

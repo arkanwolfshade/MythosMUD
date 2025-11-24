@@ -92,14 +92,14 @@ class Stats(BaseModel):
     )
 
     # Physical Attributes
-    strength: int | None = Field(ge=1, le=20, default=None, description="Physical power and combat damage")
-    dexterity: int | None = Field(ge=1, le=20, default=None, description="Agility, reflexes, and speed")
-    constitution: int | None = Field(ge=1, le=20, default=None, description="Health, stamina, and resistance")
+    strength: int | None = Field(ge=1, le=100, default=None, description="Physical power and combat damage")
+    dexterity: int | None = Field(ge=1, le=100, default=None, description="Agility, reflexes, and speed")
+    constitution: int | None = Field(ge=1, le=100, default=None, description="Health, stamina, and resistance")
 
     # Mental Attributes
-    intelligence: int | None = Field(ge=1, le=20, default=None, description="Problem-solving and magical aptitude")
-    wisdom: int | None = Field(ge=1, le=20, default=None, description="Perception, common sense, and willpower")
-    charisma: int | None = Field(ge=1, le=20, default=None, description="Social skills and influence")
+    intelligence: int | None = Field(ge=1, le=100, default=None, description="Problem-solving and magical aptitude")
+    wisdom: int | None = Field(ge=1, le=100, default=None, description="Perception, common sense, and willpower")
+    charisma: int | None = Field(ge=1, le=100, default=None, description="Social skills and influence")
 
     # Horror-Specific Attributes
     sanity: int = Field(ge=0, le=100, default=100, description="Mental stability (0 = complete madness)")
@@ -157,17 +157,17 @@ class Stats(BaseModel):
     @computed_field
     def max_health(self) -> int:
         """Calculate max health based on constitution."""
-        return (self.constitution or 10) * 10
+        return self.constitution or 50
 
     @computed_field
     def max_sanity(self) -> int:
         """Calculate max sanity based on wisdom."""
-        return (self.wisdom or 10) * 5
+        return self.wisdom or 50
 
     def get_attribute_modifier(self, attribute: AttributeType) -> int:
         """Get the modifier for a given attribute (standard D&D-style calculation)."""
-        attr_value = getattr(self, attribute.value, 10)
-        return (attr_value - 10) // 2
+        attr_value = getattr(self, attribute.value, 50)
+        return (attr_value - 50) // 2
 
     def is_sane(self) -> bool:
         """Check if the character is still mentally stable."""

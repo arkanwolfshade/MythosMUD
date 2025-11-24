@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Any, TypedDict, cast
 from uuid import UUID
 
 import psycopg2
+import psycopg2.errors
 
 from .exceptions import DatabaseError, ValidationError
 from .logging.enhanced_logging_config import get_logger
@@ -577,6 +578,21 @@ class PersistenceLayer:
                         # stable_id is just the room identifier (e.g., "room_boundary_st_001"), generate full ID
                         room_id = generate_room_id(plane_name, zone_name, subzone_stable_id, stable_id)
 
+                    # Load containers for this room
+                    containers = []
+                    try:
+                        from .services.environmental_container_loader import EnvironmentalContainerLoader
+
+                        container_loader = EnvironmentalContainerLoader(persistence=self)
+                        containers_data = container_loader.load_containers_for_room(room_id)
+                        containers = [container.model_dump() for container in containers_data]
+                    except Exception as e:
+                        self._logger.warning(
+                            "Error loading containers for room",
+                            error=str(e),
+                            room_id=room_id,
+                        )
+
                     # Store room data for processing
                     room_data_list.append(
                         {
@@ -588,6 +604,7 @@ class PersistenceLayer:
                             "plane": plane_name,
                             "zone": zone_name,
                             "sub_zone": subzone_stable_id,
+                            "containers": containers,
                         }
                     )
 
@@ -685,6 +702,9 @@ class PersistenceLayer:
                             exits_by_room_keys=list(exits_by_room.keys())[:10],
                         )
 
+                    # Get containers for this room (already loaded above)
+                    containers = room_data_item.get("containers", [])
+
                     # Build room data dictionary matching Room class expectations
                     room_data = {
                         "id": room_id,
@@ -697,6 +717,7 @@ class PersistenceLayer:
                         if isinstance(attributes, dict)
                         else "outdoors",
                         "exits": exits,
+                        "containers": containers,
                     }
 
                     self._room_cache[room_id] = Room(room_data, self._event_bus)
@@ -712,6 +733,17 @@ class PersistenceLayer:
             if self._room_cache:
                 sample_room_ids = list(self._room_cache.keys())[:5]
                 self._logger.debug("Sample room IDs loaded", sample_room_ids=sample_room_ids)
+        except psycopg2.errors.UndefinedTable as e:
+            # Handle case where rooms table doesn't exist yet (e.g., during test collection)
+            # This can happen when database schema hasn't been initialized
+            self._logger.warning(
+                "Rooms table does not exist yet, leaving room cache empty",
+                error=str(e),
+                operation="load_room_cache",
+            )
+            # Leave cache empty - it will be populated when schema is ready
+            self._room_cache = {}
+            self._room_mappings = {}
         except Exception as e:
             context = create_error_context()
             context.metadata["operation"] = "load_room_cache"
@@ -2063,5 +2095,183 @@ class PersistenceLayer:
         except Exception as e:
             logger.debug("get_npc_lifecycle_manager failed", error=str(e))
             return None
+
+    # --- Container Persistence Methods ---
+
+    def create_container(
+        self,
+        source_type: str,
+        owner_id: UUID | None = None,
+        room_id: str | None = None,
+        entity_id: UUID | None = None,
+        lock_state: str = "unlocked",
+        capacity_slots: int = 20,
+        weight_limit: int | None = None,
+        decay_at: datetime | None = None,
+        allowed_roles: list[str] | None = None,
+        items_json: list[dict[str, Any]] | None = None,
+        metadata_json: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """
+        Create a new container in the database.
+
+        Args:
+            source_type: Type of container ('environment', 'equipment', 'corpse')
+            owner_id: UUID of container owner (optional)
+            room_id: Room identifier for environmental/corpse containers (optional)
+            entity_id: Player/NPC UUID for wearable containers (optional)
+            lock_state: Lock state ('unlocked', 'locked', 'sealed')
+            capacity_slots: Maximum number of inventory slots (1-20)
+            weight_limit: Optional maximum weight capacity
+            decay_at: Timestamp when corpse container should decay (optional)
+            allowed_roles: List of role names allowed to access container (optional)
+            items_json: List of InventoryStack items (optional)
+            metadata_json: Optional metadata dictionary (optional)
+
+        Returns:
+            dict: Container data dictionary
+
+        Raises:
+            ValidationError: If validation fails
+            DatabaseError: If database operation fails
+        """
+        from .container_persistence import create_container
+
+        with self._lock, self._get_connection() as conn:
+            container = create_container(
+                conn,
+                source_type=source_type,
+                owner_id=owner_id,
+                room_id=room_id,
+                entity_id=entity_id,
+                lock_state=lock_state,
+                capacity_slots=capacity_slots,
+                weight_limit=weight_limit,
+                decay_at=decay_at,
+                allowed_roles=allowed_roles,
+                items_json=items_json,
+                metadata_json=metadata_json,
+            )
+            return container.to_dict()
+
+    def get_container(self, container_id: UUID) -> dict[str, Any] | None:
+        """
+        Get a container by ID.
+
+        Args:
+            container_id: Container UUID
+
+        Returns:
+            dict: Container data dictionary if found, None otherwise
+
+        Raises:
+            DatabaseError: If database operation fails
+        """
+        from .container_persistence import get_container
+
+        with self._lock, self._get_connection() as conn:
+            container = get_container(conn, container_id)
+            return container.to_dict() if container else None
+
+    def get_containers_by_room_id(self, room_id: str) -> list[dict[str, Any]]:
+        """
+        Get all containers in a room.
+
+        Args:
+            room_id: Room identifier
+
+        Returns:
+            list[dict]: List of container data dictionaries
+
+        Raises:
+            DatabaseError: If database operation fails
+        """
+        from .container_persistence import get_containers_by_room_id
+
+        with self._lock, self._get_connection() as conn:
+            containers = get_containers_by_room_id(conn, room_id)
+            return [container.to_dict() for container in containers]
+
+    def get_containers_by_entity_id(self, entity_id: UUID) -> list[dict[str, Any]]:
+        """
+        Get all containers owned by an entity (player/NPC).
+
+        Args:
+            entity_id: Player/NPC UUID
+
+        Returns:
+            list[dict]: List of container data dictionaries
+
+        Raises:
+            DatabaseError: If database operation fails
+        """
+        from .container_persistence import get_containers_by_entity_id
+
+        with self._lock, self._get_connection() as conn:
+            containers = get_containers_by_entity_id(conn, entity_id)
+            return [container.to_dict() for container in containers]
+
+    def update_container(
+        self,
+        container_id: UUID,
+        items_json: list[dict[str, Any]] | None = None,
+        lock_state: str | None = None,
+        metadata_json: dict[str, Any] | None = None,
+    ) -> dict[str, Any] | None:
+        """
+        Update a container's items, lock state, or metadata.
+
+        Args:
+            container_id: Container UUID
+            items_json: New items list (optional)
+            lock_state: New lock state (optional)
+            metadata_json: New metadata (optional)
+
+        Returns:
+            dict: Updated container data dictionary if found, None otherwise
+
+        Raises:
+            ValidationError: If validation fails
+            DatabaseError: If database operation fails
+        """
+        from .container_persistence import update_container
+
+        with self._lock, self._get_connection() as conn:
+            container = update_container(conn, container_id, items_json, lock_state, metadata_json)
+            return container.to_dict() if container else None
+
+    def get_decayed_containers(self, current_time: datetime | None = None) -> list[dict[str, Any]]:
+        """
+        Get all containers that have decayed (decay_at < current_time).
+
+        Args:
+            current_time: Current time for decay comparison (defaults to now() if not provided)
+
+        Returns:
+            list[dict[str, Any]]: List of decayed container data
+        """
+        from .persistence.container_persistence import get_decayed_containers as _get_decayed_containers
+
+        with self._lock, self._get_connection() as conn:
+            containers = _get_decayed_containers(conn, current_time)
+            return [container.to_dict() for container in containers]
+
+    def delete_container(self, container_id: UUID) -> bool:
+        """
+        Delete a container.
+
+        Args:
+            container_id: Container UUID
+
+        Returns:
+            bool: True if container was deleted, False if not found
+
+        Raises:
+            DatabaseError: If database operation fails
+        """
+        from .container_persistence import delete_container
+
+        with self._lock, self._get_connection() as conn:
+            return delete_container(conn, container_id)
 
     # --- TODO: Add async support, other backends, migrations, etc. ---

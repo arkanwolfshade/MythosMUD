@@ -45,7 +45,6 @@ class TestAuditLogger:
             command="teleport player1 earth_arkhamcity",
             success=True,
             result="Teleported player1",
-            ip_address="127.0.0.1",
         )
 
         # Read log file
@@ -57,7 +56,7 @@ class TestAuditLogger:
         assert log_entry["command"] == "teleport player1 earth_arkhamcity"
         assert log_entry["success"] is True
         assert log_entry["result"] == "Teleported player1"
-        assert log_entry["ip_address"] == "127.0.0.1"
+        assert "ip_address" not in log_entry  # IP addresses are not logged (PII)
         assert log_entry["event_type"] == "command_execution"
 
     def test_log_command_failure(self, audit_logger):
@@ -67,7 +66,6 @@ class TestAuditLogger:
             command="admin_nuke_server",
             success=False,
             result="insufficient_permissions",
-            ip_address="192.168.1.100",
         )
 
         log_file = audit_logger._get_log_file_path()

@@ -16,17 +16,18 @@ from server.models.base import Base
 logger = get_logger(__name__)
 
 EXPECTED_SLOTS = {
-    "HEAD",
-    "TORSO",
-    "LEGS",
-    "MAIN_HAND",
-    "OFF_HAND",
-    "FEET",
-    "HANDS",
-    "ACCESSORY",
-    "RING",
-    "AMULET",
-    "BELT",
+    "head",
+    "torso",
+    "legs",
+    "main_hand",
+    "off_hand",
+    "feet",
+    "hands",
+    "accessory",
+    "ring",
+    "amulet",
+    "belt",
+    "backpack",
 }
 
 

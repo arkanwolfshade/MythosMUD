@@ -66,9 +66,9 @@ class TestJWTAuthenticationFlow:
         assert "wisdom" in stats
         assert "charisma" in stats
 
-        # Verify stat values are within expected ranges (3d6 = 3-18)
+        # Verify stat values are within expected ranges (3d6 = 15-90)
         for stat_name in ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]:
-            assert 3 <= stats[stat_name] <= 18
+            assert 15 <= stats[stat_name] <= 90
 
     def test_authentication_without_token_fails(self, test_client):
         """Test that stats rolling fails without authentication token."""

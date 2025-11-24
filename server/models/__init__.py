@@ -9,6 +9,7 @@ This package contains all database models including:
 """
 
 from .alias import Alias
+from .container import ContainerComponent, ContainerLockState, ContainerSourceType
 from .game import AttributeType, Stats, StatusEffect, StatusEffectType
 from .health import HealthErrorResponse, HealthResponse, HealthStatus
 from .invite import Invite
@@ -43,4 +44,7 @@ __all__ = [
     "NPCDefinition",
     "NPCDefinitionType",
     "NPCSpawnRule",
+    "ContainerComponent",
+    "ContainerSourceType",
+    "ContainerLockState",
 ]

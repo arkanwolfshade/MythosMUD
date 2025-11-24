@@ -21,18 +21,6 @@ from ..logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-def _safe_json_loads(value: Any) -> Any:
-    """Safely decode JSON for environment-sourced values."""
-
-    if value in (None, "", b""):
-        return ""
-
-    try:
-        return json.loads(value)
-    except (json.JSONDecodeError, TypeError):
-        return value
-
-
 def _parse_env_list(candidate: Any) -> list[str]:
     """Parse a string from the environment as JSON list or CSV."""
     if candidate is None:
@@ -568,7 +556,6 @@ class CORSConfig(BaseSettings):
         "env_prefix": "CORS_",
         "case_sensitive": False,
         "extra": "ignore",
-        "json_loads": _safe_json_loads,  # type: ignore[typeddict-unknown-key]
     }
 
     def __init__(self, **kwargs: Any) -> None:
@@ -782,12 +769,12 @@ class CORSConfig(BaseSettings):
 class PlayerStatsConfig(BaseSettings):
     """Default player statistics configuration."""
 
-    strength: int = Field(default=10, description="Default strength")
-    dexterity: int = Field(default=10, description="Default dexterity")
-    constitution: int = Field(default=10, description="Default constitution")
-    intelligence: int = Field(default=10, description="Default intelligence")
-    wisdom: int = Field(default=10, description="Default wisdom")
-    charisma: int = Field(default=10, description="Default charisma")
+    strength: int = Field(default=50, description="Default strength")
+    dexterity: int = Field(default=50, description="Default dexterity")
+    constitution: int = Field(default=50, description="Default constitution")
+    intelligence: int = Field(default=50, description="Default intelligence")
+    wisdom: int = Field(default=50, description="Default wisdom")
+    charisma: int = Field(default=50, description="Default charisma")
     max_health: int = Field(default=100, description="Default max health")
     max_sanity: int = Field(default=100, description="Default max sanity")
     health: int = Field(default=100, description="Default starting health")
@@ -800,8 +787,8 @@ class PlayerStatsConfig(BaseSettings):
     @classmethod
     def validate_stat_range(cls, v: int) -> int:
         """Validate stats are in valid range."""
-        if v < 1 or v > 20:
-            raise ValueError("Stats must be between 1 and 20")
+        if v < 1 or v > 100:
+            raise ValueError("Stats must be between 1 and 100")
         return v
 
     @field_validator("max_health", "max_sanity", "health", "sanity")

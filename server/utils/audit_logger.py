@@ -84,7 +84,6 @@ class AuditLogger:
         command: str,
         success: bool,
         result: str | None = None,
-        ip_address: str | None = None,
         session_id: str | None = None,
         metadata: dict[str, Any] | None = None,
     ) -> None:
@@ -98,11 +97,11 @@ class AuditLogger:
             command: Command that was executed
             success: Whether command executed successfully
             result: Result/output of the command
-            ip_address: IP address of the player (if available)
             session_id: Session identifier
             metadata: Additional context-specific data
 
         AI: Include as much context as possible for forensic analysis.
+        Note: IP addresses are not logged to protect user privacy (PII).
         """
         entry = {
             "timestamp": datetime.now(UTC).isoformat(),
@@ -111,7 +110,6 @@ class AuditLogger:
             "command": command,
             "success": success,
             "result": result[:500] if result and len(result) > 500 else result,  # Truncate long results
-            "ip_address": ip_address,
             "session_id": session_id,
             "metadata": metadata or {},
         }
@@ -162,6 +160,73 @@ class AuditLogger:
 
         logger.warning(
             "Permission change logged", admin=admin_name, target=target_player, permission=permission, action=action
+        )
+
+    def log_container_interaction(
+        self,
+        player_id: str,
+        player_name: str,
+        container_id: str,
+        event_type: str,  # 'container_open', 'container_close', 'container_transfer', 'container_loot_all'
+        source_type: str | None = None,
+        room_id: str | None = None,
+        direction: str | None = None,  # 'to_container' or 'from_container' for transfers
+        item_id: str | None = None,
+        item_name: str | None = None,
+        items_count: int | None = None,
+        success: bool = True,
+        session_id: str | None = None,
+        metadata: dict[str, Any] | None = None,
+    ) -> None:
+        """
+        Log container interaction events for security and compliance.
+
+        Args:
+            player_id: UUID of the player interacting with the container
+            player_name: Name of the player
+            container_id: UUID of the container
+            event_type: Type of container interaction
+            source_type: Type of container (environment, equipment, corpse)
+            room_id: Room ID where container is located
+            direction: Transfer direction for container_transfer events
+            item_id: Item ID for transfer events
+            item_name: Item name for transfer events
+            items_count: Number of items for loot_all events
+            success: Whether the operation succeeded
+            session_id: Session identifier
+            metadata: Additional context-specific data
+
+        AI: Container interactions are security-sensitive and must be audited
+        for compliance and forensic analysis.
+        Note: IP addresses are not logged to protect user privacy (PII).
+        """
+        entry = {
+            "timestamp": datetime.now(UTC).isoformat(),
+            "event_type": event_type,
+            "player_id": player_id,
+            "player_name": player_name,
+            "container_id": container_id,
+            "source_type": source_type,
+            "room_id": room_id,
+            "direction": direction,
+            "item_id": item_id,
+            "item_name": item_name,
+            "items_count": items_count,
+            "success": success,
+            "session_id": session_id,
+            "security_level": "medium",
+            "compliance_required": True,
+            "metadata": metadata or {},
+        }
+
+        self._write_entry(entry)
+
+        logger.info(
+            "Container interaction logged",
+            player_id=player_id,
+            player_name=player_name,
+            container_id=container_id,
+            event_type=event_type,
         )
 
     def log_player_action(

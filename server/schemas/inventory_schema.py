@@ -72,6 +72,35 @@ PLAYER_INVENTORY_SCHEMA: dict[str, Any] = {
                     "type": "object",
                     "description": "Optional structured metadata recorded for arcane bookkeeping.",
                 },
+                "inner_container": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["capacity_slots", "items"],
+                    "description": "Optional nested container for wearable items like backpacks and bandoliers.",
+                    "properties": {
+                        "capacity_slots": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 20,
+                            "description": "Maximum number of inventory slots in the nested container.",
+                        },
+                        "items": {
+                            "type": "array",
+                            "items": {"$ref": "#/$defs/itemStack"},
+                            "description": "Array of InventoryStack items stored in the nested container.",
+                        },
+                        "lock_state": {
+                            "type": "string",
+                            "enum": ["unlocked", "locked", "sealed"],
+                            "description": "Lock state of the nested container.",
+                        },
+                        "allowed_roles": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "Array of role names allowed to access the nested container.",
+                        },
+                    },
+                },
             },
         },
         "equippedStack": {

@@ -16,7 +16,7 @@ from ..models import AttributeType, Stats
 
 def generate_random_stats(seed: int | None = None) -> Stats:
     """
-    Generate Stats with random attribute values (3-18 range).
+    Generate Stats with random attribute values (15-90 range).
 
     Factory function for creating Stats objects with randomly generated attributes.
     This separates business logic from the model's __init__ method.
@@ -31,12 +31,12 @@ def generate_random_stats(seed: int | None = None) -> Stats:
 
     local_rng = random.Random(seed) if seed is not None else random.Random()
     return Stats(
-        strength=local_rng.randint(3, 18),
-        dexterity=local_rng.randint(3, 18),
-        constitution=local_rng.randint(3, 18),
-        intelligence=local_rng.randint(3, 18),
-        wisdom=local_rng.randint(3, 18),
-        charisma=local_rng.randint(3, 18),
+        strength=local_rng.randint(15, 90),
+        dexterity=local_rng.randint(15, 90),
+        constitution=local_rng.randint(15, 90),
+        intelligence=local_rng.randint(15, 90),
+        wisdom=local_rng.randint(15, 90),
+        charisma=local_rng.randint(15, 90),
     )
 
 
@@ -46,36 +46,37 @@ logger = get_logger(__name__)
 class StatsGenerator:
     """Service for generating random character statistics."""
 
-    # Standard D&D-style stat ranges (3-18)
-    MIN_STAT = 3
-    MAX_STAT = 18
+    # Standard D&D-style stat ranges (15-90, scaled from 3-18)
+    MIN_STAT = 15
+    MAX_STAT = 90
 
     # Class prerequisites (minimum stats required for each class)
     # Based on Lovecraftian investigator archetypes
+    # Values scaled by 5x from original 1-20 range to 1-100 range
     CLASS_PREREQUISITES = {
         "investigator": {
-            AttributeType.INT: 12,  # High intelligence for research
-            AttributeType.WIS: 10,  # Good perception
+            AttributeType.INT: 60,  # High intelligence for research (scaled from 12)
+            AttributeType.WIS: 50,  # Good perception (scaled from 10)
         },
         "occultist": {
-            AttributeType.INT: 14,  # Very high intelligence for forbidden knowledge
-            AttributeType.WIS: 12,  # Good willpower to resist corruption
+            AttributeType.INT: 70,  # Very high intelligence for forbidden knowledge (scaled from 14)
+            AttributeType.WIS: 60,  # Good willpower to resist corruption (scaled from 12)
         },
         "survivor": {
-            AttributeType.CON: 12,  # High constitution for survival
-            AttributeType.DEX: 10,  # Good reflexes
+            AttributeType.CON: 60,  # High constitution for survival (scaled from 12)
+            AttributeType.DEX: 50,  # Good reflexes (scaled from 10)
         },
         "cultist": {
-            AttributeType.CHA: 12,  # High charisma for cult leadership
-            AttributeType.INT: 10,  # Basic intelligence for rituals
+            AttributeType.CHA: 60,  # High charisma for cult leadership (scaled from 12)
+            AttributeType.INT: 50,  # Basic intelligence for rituals (scaled from 10)
         },
         "academic": {
-            AttributeType.INT: 14,  # Very high intelligence for research
-            AttributeType.WIS: 10,  # Good perception
+            AttributeType.INT: 70,  # Very high intelligence for research (scaled from 14)
+            AttributeType.WIS: 50,  # Good perception (scaled from 10)
         },
         "detective": {
-            AttributeType.INT: 12,  # High intelligence for investigation
-            AttributeType.WIS: 12,  # Good perception and intuition
+            AttributeType.INT: 60,  # High intelligence for investigation (scaled from 12)
+            AttributeType.WIS: 60,  # Good perception and intuition (scaled from 12)
         },
     }
 
@@ -115,23 +116,24 @@ class StatsGenerator:
         return stats
 
     def _roll_3d6(self) -> Stats:
-        """Roll stats using 3d6 method (standard D&D)."""
+        """Roll stats using 3d6 method (standard D&D, scaled to 15-90 range)."""
         return Stats(
-            strength=random.randint(3, 18),
-            dexterity=random.randint(3, 18),
-            constitution=random.randint(3, 18),
-            intelligence=random.randint(3, 18),
-            wisdom=random.randint(3, 18),
-            charisma=random.randint(3, 18),
+            strength=random.randint(15, 90),
+            dexterity=random.randint(15, 90),
+            constitution=random.randint(15, 90),
+            intelligence=random.randint(15, 90),
+            wisdom=random.randint(15, 90),
+            charisma=random.randint(15, 90),
         )
 
     def _roll_4d6_drop_lowest(self) -> Stats:
-        """Roll stats using 4d6 drop lowest method (more generous)."""
+        """Roll stats using 4d6 drop lowest method (more generous, scaled to 15-90 range)."""
 
         def roll_4d6_drop_lowest() -> int:
             rolls = [random.randint(1, 6) for _ in range(4)]
             rolls.remove(min(rolls))
-            return sum(rolls)
+            # Scale from 3-18 range to 15-90 range (multiply by 5)
+            return sum(rolls) * 5
 
         return Stats(
             strength=roll_4d6_drop_lowest(),
@@ -143,31 +145,31 @@ class StatsGenerator:
         )
 
     def _roll_point_buy(self) -> Stats:
-        """Generate stats using a point-buy system (balanced)."""
-        # Start with 8 in all stats, then distribute 27 points
-        # Each point increases a stat by 1, up to 15
-        # Stats 16-18 cost 2 points each
+        """Generate stats using a point-buy system (balanced, scaled to 1-100 range)."""
+        # Start with 40 in all stats (scaled from 8), then distribute 135 points (scaled from 27)
+        # Each point increases a stat by 1, up to 75 (scaled from 15)
+        # Stats 76-90 cost 2 points each (scaled from 16-18)
         base_stats = {
-            "strength": 8,
-            "dexterity": 8,
-            "constitution": 8,
-            "intelligence": 8,
-            "wisdom": 8,
-            "charisma": 8,
+            "strength": 40,
+            "dexterity": 40,
+            "constitution": 40,
+            "intelligence": 40,
+            "wisdom": 40,
+            "charisma": 40,
         }
 
-        points_remaining = 27
+        points_remaining = 135
         stat_names = list(base_stats.keys())
 
         while points_remaining > 0:
             stat = random.choice(stat_names)
             current_value = base_stats[stat]
 
-            if current_value >= 18:
+            if current_value >= 90:
                 continue  # Stat is maxed out
 
             # Calculate cost for next point
-            if current_value < 15:
+            if current_value < 75:
                 cost = 1
             else:
                 cost = 2
@@ -429,22 +431,22 @@ class StatsGenerator:
             },
             "total_points": sum(
                 [
-                    stats.strength or 10,
-                    stats.dexterity or 10,
-                    stats.constitution or 10,
-                    stats.intelligence or 10,
-                    stats.wisdom or 10,
-                    stats.charisma or 10,
+                    stats.strength or 50,
+                    stats.dexterity or 50,
+                    stats.constitution or 50,
+                    stats.intelligence or 50,
+                    stats.wisdom or 50,
+                    stats.charisma or 50,
                 ]
             ),
             "average_stat": sum(
                 [
-                    stats.strength or 10,
-                    stats.dexterity or 10,
-                    stats.constitution or 10,
-                    stats.intelligence or 10,
-                    stats.wisdom or 10,
-                    stats.charisma or 10,
+                    stats.strength or 50,
+                    stats.dexterity or 50,
+                    stats.constitution or 50,
+                    stats.intelligence or 50,
+                    stats.wisdom or 50,
+                    stats.charisma or 50,
                 ]
             )
             / 6,

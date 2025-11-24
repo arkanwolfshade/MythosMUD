@@ -174,9 +174,7 @@ class TestChannelBroadcastingStrategies:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         nats_handler.connection_manager = mock_connection_manager_strategy
 
-        await nats_handler._broadcast_by_channel_type(
-            "whisper", chat_event, "", "", self.TARGET_1, self.SENDER_1
-        )
+        await nats_handler._broadcast_by_channel_type("whisper", chat_event, "", "", self.TARGET_1, self.SENDER_1)
 
         mock_connection_manager_strategy.send_personal_message.assert_called_once_with(self.TARGET_1, chat_event)
 
@@ -656,9 +654,7 @@ class TestStrategyIntegration:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         nats_handler.connection_manager = mock_connection_manager
 
-        await nats_handler._broadcast_by_channel_type(
-            "whisper", chat_event, "", "", self.TARGET_1, self.SENDER_1
-        )
+        await nats_handler._broadcast_by_channel_type("whisper", chat_event, "", "", self.TARGET_1, self.SENDER_1)
 
         # Should call send_personal_message
         mock_connection_manager.send_personal_message.assert_called_once_with(self.TARGET_1, chat_event)

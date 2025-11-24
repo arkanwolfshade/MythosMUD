@@ -295,8 +295,33 @@ async def handle_go_command(
 
         if success:
             logger.info("Player moved successfully", player=player_name, from_room=room_id, to_room=target_room_id)
+
+            # CRITICAL FIX: Explicitly send room_update event to ensure Room Info panel updates
+            # The EventBus flow should handle this, but we send it directly as a fallback
+            # to ensure the client always receives the room update during movement
+            try:
+                connection_manager = getattr(app.state, "connection_manager", None) if app else None
+                event_handler = getattr(app.state, "event_handler", None) if app else None
+
+                if connection_manager and event_handler:
+                    # Send room update directly to the moving player
+                    await event_handler._send_room_update_to_player(player.player_id, target_room_id)
+                    logger.debug(
+                        "Sent explicit room_update after movement",
+                        player=player_name,
+                        room_id=target_room_id,
+                    )
+            except Exception as e:
+                # Log but don't fail the movement if room update sending fails
+                logger.warning(
+                    "Failed to send room_update after movement",
+                    player=player_name,
+                    room_id=target_room_id,
+                    error=str(e),
+                )
+
             return {
-                "result": "You move to the new location.",
+                "result": f"You go {direction}.",
                 "room_changed": True,
                 "room_id": target_room_id,
             }

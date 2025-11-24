@@ -22,13 +22,13 @@ class TestStats:
         """Test that Stats has correct default values."""
         stats = Stats()
 
-        # Attributes are randomly generated between 3-18, so we check the range
-        assert 3 <= stats.strength <= 18
-        assert 3 <= stats.dexterity <= 18
-        assert 3 <= stats.constitution <= 18
-        assert 3 <= stats.intelligence <= 18
-        assert 3 <= stats.wisdom <= 18
-        assert 3 <= stats.charisma <= 18
+        # Attributes are randomly generated between 15-90, so we check the range
+        assert 15 <= stats.strength <= 90
+        assert 15 <= stats.dexterity <= 90
+        assert 15 <= stats.constitution <= 90
+        assert 15 <= stats.intelligence <= 90
+        assert 15 <= stats.wisdom <= 90
+        assert 15 <= stats.charisma <= 90
         assert stats.sanity == 100
         assert stats.occult_knowledge == 0
         assert stats.fear == 0
@@ -39,12 +39,12 @@ class TestStats:
     def test_stats_custom_values(self):
         """Test that Stats can be created with custom values."""
         stats = Stats(
-            strength=15,
-            dexterity=12,
-            constitution=14,
-            intelligence=16,
-            wisdom=13,
-            charisma=11,
+            strength=75,
+            dexterity=60,
+            constitution=70,
+            intelligence=80,
+            wisdom=65,
+            charisma=55,
             sanity=85,
             occult_knowledge=25,
             fear=15,
@@ -53,12 +53,12 @@ class TestStats:
             current_health=95,
         )
 
-        assert stats.strength == 15
-        assert stats.dexterity == 12
-        assert stats.constitution == 14
-        assert stats.intelligence == 16
-        assert stats.wisdom == 13
-        assert stats.charisma == 11
+        assert stats.strength == 75
+        assert stats.dexterity == 60
+        assert stats.constitution == 70
+        assert stats.intelligence == 80
+        assert stats.wisdom == 65
+        assert stats.charisma == 55
         assert stats.sanity == 85
         assert stats.occult_knowledge == 25
         assert stats.fear == 15
@@ -68,21 +68,21 @@ class TestStats:
 
     def test_stats_max_health_property(self):
         """Test the max_health computed property."""
-        stats = Stats(constitution=15)
-        assert stats.max_health == 150  # 10 * constitution
+        stats = Stats(constitution=75)
+        assert stats.max_health == 75  # Direct constitution value
 
     def test_stats_max_sanity_property(self):
         """Test the max_sanity computed property."""
-        stats = Stats(wisdom=18)
-        assert stats.max_sanity == 90  # 5 * wisdom
+        stats = Stats(wisdom=90)
+        assert stats.max_sanity == 90  # Direct wisdom value
 
     def test_stats_get_attribute_modifier(self):
         """Test the get_attribute_modifier method."""
-        stats = Stats(strength=15, dexterity=8, intelligence=12)
+        stats = Stats(strength=75, dexterity=40, intelligence=60)
 
-        assert stats.get_attribute_modifier(AttributeType.STR) == 2  # (15-10)/2
-        assert stats.get_attribute_modifier(AttributeType.DEX) == -1  # (8-10)/2
-        assert stats.get_attribute_modifier(AttributeType.INT) == 1  # (12-10)/2
+        assert stats.get_attribute_modifier(AttributeType.STR) == 12  # (75-50)/2
+        assert stats.get_attribute_modifier(AttributeType.DEX) == -5  # (40-50)/2
+        assert stats.get_attribute_modifier(AttributeType.INT) == 5  # (60-50)/2
 
     def test_stats_is_sane(self):
         """Test the is_sane method."""

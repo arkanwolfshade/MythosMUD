@@ -36,11 +36,21 @@ class InventoryStackRequired(TypedDict):
     quantity: int
 
 
+class InnerContainer(TypedDict, total=False):
+    """Nested container structure for wearable items."""
+
+    capacity_slots: int
+    items: list[dict[str, Any]]  # Use dict[str, Any] to avoid forward reference issues
+    lock_state: str
+    allowed_roles: list[str]
+
+
 class InventoryStack(InventoryStackRequired, total=False):
     metadata: dict[str, Any]
     flags: list[str]
     origin: dict[str, Any]
     created_at: str
+    inner_container: InnerContainer
 
 
 @dataclass(frozen=True)
@@ -207,6 +217,12 @@ class InventoryService:
         created_at = stack.get("created_at")
         if created_at is not None:
             clone["created_at"] = str(created_at)
+
+        inner_container = stack.get("inner_container")
+        if inner_container is not None:
+            if not isinstance(inner_container, dict):
+                raise InventoryValidationError("Inner container must be a mapping when provided.")
+            clone["inner_container"] = cast(InnerContainer, copy.deepcopy(inner_container))
 
         return clone
 

@@ -14,7 +14,7 @@ alwaysApply: false
 
 ```bash
 # Step 1: Run mypy to get current type checking state
-uv run mypy .
+make mypy
 ```
 
 **AI ACTION**: Capture the complete mypy output. If mypy passes, STOP - no remediation needed.

@@ -107,6 +107,7 @@ class TestSSEEventsToken:
             # Verify the stream was called with correct player_id and session_id
             # player_id is converted to UUID in sse_events_token
             import uuid
+
             expected_player_id = uuid.UUID(test_player_id)
             mock_stream.assert_called_once_with(expected_player_id, None)
 
@@ -209,9 +210,14 @@ class TestWebSocketEndpoint:
             # Verify handle_websocket_connection was called with correct parameters
             # Note: player_id is converted to UUID before calling handle_websocket_connection
             import uuid
+
             expected_player_id = uuid.UUID(test_player_id)
             mock_handle.assert_called_once_with(
-                mock_websocket, expected_player_id, None, connection_manager=mock_connection_manager, token="valid_token"
+                mock_websocket,
+                expected_player_id,
+                None,
+                connection_manager=mock_connection_manager,
+                token="valid_token",
             )
 
     @pytest.mark.asyncio
@@ -247,6 +253,7 @@ class TestWebSocketEndpoint:
             mock_decode.assert_called_once_with("test_token_from_header")
             # Note: player_id is converted to UUID before calling handle_websocket_connection
             import uuid
+
             expected_player_id = uuid.UUID(player_from_header_id)
             mock_handle.assert_called_once_with(
                 mock_websocket,
@@ -292,6 +299,7 @@ class TestWebSocketEndpoint:
             # Verify handle_websocket_connection was called with player_id from query params
             # Note: player_id is converted to UUID before calling handle_websocket_connection
             import uuid
+
             expected_player_id = uuid.UUID(test_player_id)
             mock_handle.assert_called_once_with(
                 mock_websocket,
@@ -398,6 +406,7 @@ class TestWebSocketEndpoint:
             assert exc_info.value == test_exception
             # player_id is converted to UUID before logging
             import uuid
+
             expected_player_id = uuid.UUID(test_player_id)
             mock_logger.error.assert_called_once_with(
                 "Error in WebSocket endpoint", player_id=expected_player_id, error="Test exception", exc_info=True
@@ -447,6 +456,7 @@ class TestWebSocketEndpointRoute:
             # Verify handle_websocket_connection was called with resolved player_id
             # Note: player_id is converted to UUID before calling handle_websocket_connection
             import uuid
+
             expected_player_id = uuid.UUID(resolved_player_id)
             mock_handle.assert_called_once_with(
                 mock_websocket, expected_player_id, None, connection_manager=mock_connection_manager
@@ -487,6 +497,7 @@ class TestWebSocketEndpointRoute:
             # Verify handle_websocket_connection was called with path player_id
             # Note: player_id is converted to UUID before calling handle_websocket_connection
             import uuid
+
             expected_player_id = uuid.UUID(path_player_id)
             mock_handle.assert_called_once_with(
                 mock_websocket, expected_player_id, None, connection_manager=mock_connection_manager
@@ -527,6 +538,7 @@ class TestWebSocketEndpointRoute:
             # Verify handle_websocket_connection was called with path player_id (fallback)
             # path_player_id is converted to UUID in websocket_endpoint_route
             import uuid
+
             expected_player_id = uuid.UUID(path_player_id)
             mock_handle.assert_called_once_with(
                 mock_websocket, expected_player_id, None, connection_manager=mock_connection_manager

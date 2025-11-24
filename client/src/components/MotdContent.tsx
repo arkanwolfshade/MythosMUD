@@ -19,12 +19,14 @@ export function MotdContent() {
         <br />
         *---+---*
         <br />
-        / \ | / \
+        / | /
         <br />
-        *---\-+-/---*
+        * +-/---*
         <br />
-        \|/
-        <br />*
+        |/
+        <br />
+        *
+        <br />
       </div>
 
       <div className="welcome-text">

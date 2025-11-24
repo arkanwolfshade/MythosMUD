@@ -35,7 +35,7 @@ def test_item_models_persist_and_cascade():
             base_value=320,
             durability=50,
             flags=["MAGICAL"],
-            wear_slots=["HEAD"],
+            wear_slots=["head"],
             stacking_rules={"max_stack": 1},
             usage_restrictions={"profession": ["trainee"]},
             effect_components=["component.sanity_guard"],

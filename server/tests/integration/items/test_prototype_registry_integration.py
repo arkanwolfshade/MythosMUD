@@ -21,7 +21,7 @@ def test_registry_emits_observability_warning_for_malformed_payload(tmp_path: Pa
         "base_value": 1200,
         "durability": 100,
         "flags": ["MAGICAL"],
-        "wear_slots": ["OFF_HAND"],
+        "wear_slots": ["off_hand"],
         "usage_restrictions": {},
         "stacking_rules": {"max_stack": 1},
         "effect_components": ["component.sanity_whisper"],

@@ -22,8 +22,8 @@ class TestStatsGenerator:
 
     def test_init(self):
         """Test StatsGenerator initialization."""
-        assert self.stats_generator.MIN_STAT == 3
-        assert self.stats_generator.MAX_STAT == 18
+        assert self.stats_generator.MIN_STAT == 15
+        assert self.stats_generator.MAX_STAT == 90
         assert "investigator" in self.stats_generator.CLASS_PREREQUISITES
         assert "occultist" in self.stats_generator.CLASS_PREREQUISITES
 
@@ -32,36 +32,36 @@ class TestStatsGenerator:
         stats = self.stats_generator._roll_3d6()
 
         assert isinstance(stats, Stats)
-        assert 3 <= stats.strength <= 18
-        assert 3 <= stats.dexterity <= 18
-        assert 3 <= stats.constitution <= 18
-        assert 3 <= stats.intelligence <= 18
-        assert 3 <= stats.wisdom <= 18
-        assert 3 <= stats.charisma <= 18
+        assert 15 <= stats.strength <= 90
+        assert 15 <= stats.dexterity <= 90
+        assert 15 <= stats.constitution <= 90
+        assert 15 <= stats.intelligence <= 90
+        assert 15 <= stats.wisdom <= 90
+        assert 15 <= stats.charisma <= 90
 
     def test_roll_4d6_drop_lowest(self):
         """Test 4d6 drop lowest rolling method."""
         stats = self.stats_generator._roll_4d6_drop_lowest()
 
         assert isinstance(stats, Stats)
-        assert 3 <= stats.strength <= 18
-        assert 3 <= stats.dexterity <= 18
-        assert 3 <= stats.constitution <= 18
-        assert 3 <= stats.intelligence <= 18
-        assert 3 <= stats.wisdom <= 18
-        assert 3 <= stats.charisma <= 18
+        assert 15 <= stats.strength <= 90
+        assert 15 <= stats.dexterity <= 90
+        assert 15 <= stats.constitution <= 90
+        assert 15 <= stats.intelligence <= 90
+        assert 15 <= stats.wisdom <= 90
+        assert 15 <= stats.charisma <= 90
 
     def test_roll_point_buy(self):
         """Test point-buy rolling method."""
         stats = self.stats_generator._roll_point_buy()
 
         assert isinstance(stats, Stats)
-        assert 8 <= stats.strength <= 18
-        assert 8 <= stats.dexterity <= 18
-        assert 8 <= stats.constitution <= 18
-        assert 8 <= stats.intelligence <= 18
-        assert 8 <= stats.wisdom <= 18
-        assert 8 <= stats.charisma <= 18
+        assert 40 <= stats.strength <= 90
+        assert 40 <= stats.dexterity <= 90
+        assert 40 <= stats.constitution <= 90
+        assert 40 <= stats.intelligence <= 90
+        assert 40 <= stats.wisdom <= 90
+        assert 40 <= stats.charisma <= 90
 
     def test_roll_stats_3d6(self):
         """Test roll_stats with 3d6 method."""
@@ -85,8 +85,8 @@ class TestStatsGenerator:
 
     def test_validate_class_prerequisites_investigator(self):
         """Test class prerequisite validation for investigator."""
-        # Valid stats for investigator
-        stats = Stats(strength=10, dexterity=10, constitution=10, intelligence=12, wisdom=10, charisma=10)
+        # Valid stats for investigator (scaled values)
+        stats = Stats(strength=50, dexterity=50, constitution=50, intelligence=60, wisdom=50, charisma=50)
 
         meets_prerequisites, failed_requirements = self.stats_generator.validate_class_prerequisites(
             stats, "investigator"
@@ -98,7 +98,7 @@ class TestStatsGenerator:
     def test_validate_class_prerequisites_investigator_fails(self):
         """Test class prerequisite validation failure for investigator."""
         # Invalid stats for investigator (low intelligence)
-        stats = Stats(strength=10, dexterity=10, constitution=10, intelligence=10, wisdom=10, charisma=10)
+        stats = Stats(strength=50, dexterity=50, constitution=50, intelligence=50, wisdom=50, charisma=50)
 
         meets_prerequisites, failed_requirements = self.stats_generator.validate_class_prerequisites(
             stats, "investigator"
@@ -106,11 +106,11 @@ class TestStatsGenerator:
 
         assert not meets_prerequisites
         assert len(failed_requirements) > 0
-        assert "Intelligence 10 < 12" in failed_requirements
+        assert "Intelligence 50 < 60" in failed_requirements
 
     def test_validate_class_prerequisites_unknown_class(self):
         """Test class prerequisite validation for unknown class."""
-        stats = Stats(strength=10, dexterity=10, constitution=10, intelligence=10, wisdom=10, charisma=10)
+        stats = Stats(strength=50, dexterity=50, constitution=50, intelligence=50, wisdom=50, charisma=50)
 
         meets_prerequisites, failed_requirements = self.stats_generator.validate_class_prerequisites(
             stats, "unknown_class"
@@ -121,8 +121,8 @@ class TestStatsGenerator:
 
     def test_get_available_classes(self):
         """Test getting available classes for stats."""
-        # High stats that should qualify for multiple classes
-        stats = Stats(strength=14, dexterity=14, constitution=14, intelligence=14, wisdom=14, charisma=14)
+        # High stats that should qualify for multiple classes (scaled values)
+        stats = Stats(strength=70, dexterity=70, constitution=70, intelligence=70, wisdom=70, charisma=70)
 
         available_classes = self.stats_generator.get_available_classes(stats)
 
@@ -133,8 +133,8 @@ class TestStatsGenerator:
 
     def test_get_available_classes_none(self):
         """Test getting available classes for low stats."""
-        # Low stats that shouldn't qualify for any classes
-        stats = Stats(strength=8, dexterity=8, constitution=8, intelligence=8, wisdom=8, charisma=8)
+        # Low stats that shouldn't qualify for any classes (scaled values)
+        stats = Stats(strength=40, dexterity=40, constitution=40, intelligence=40, wisdom=40, charisma=40)
 
         available_classes = self.stats_generator.get_available_classes(stats)
 
@@ -153,7 +153,7 @@ class TestStatsGenerator:
         # Mock the roll_stats method to return high stats
         with patch.object(self.stats_generator, "roll_stats") as mock_roll:
             mock_roll.return_value = Stats(
-                strength=10, dexterity=10, constitution=10, intelligence=14, wisdom=12, charisma=10
+                strength=50, dexterity=50, constitution=50, intelligence=70, wisdom=60, charisma=50
             )
 
             stats, available_classes = self.stats_generator.roll_stats_with_validation(required_class="investigator")
@@ -164,7 +164,7 @@ class TestStatsGenerator:
 
     def test_get_stat_summary(self):
         """Test getting stat summary."""
-        stats = Stats(strength=14, dexterity=12, constitution=16, intelligence=18, wisdom=10, charisma=8)
+        stats = Stats(strength=70, dexterity=60, constitution=80, intelligence=90, wisdom=50, charisma=40)
 
         summary = self.stats_generator.get_stat_summary(stats)
 
@@ -175,12 +175,12 @@ class TestStatsGenerator:
         assert "average_stat" in summary
 
         # Check specific values
-        assert summary["attributes"]["strength"]["value"] == 14
-        assert summary["attributes"]["strength"]["modifier"] == 2
-        assert summary["derived_stats"]["max_health"] == 160  # 16 * 10
-        assert summary["derived_stats"]["max_sanity"] == 50  # 10 * 5
-        assert summary["total_points"] == 78  # 14+12+16+18+10+8
-        assert summary["average_stat"] == 13.0  # 78/6
+        assert summary["attributes"]["strength"]["value"] == 70
+        assert summary["attributes"]["strength"]["modifier"] == 10  # (70-50)/2
+        assert summary["derived_stats"]["max_health"] == 80  # Direct constitution value
+        assert summary["derived_stats"]["max_sanity"] == 50  # Direct wisdom value
+        assert summary["total_points"] == 390  # 70+60+80+90+50+40
+        assert summary["average_stat"] == 65.0  # 390/6
 
     def test_class_prerequisites_structure(self):
         """Test that class prerequisites have the correct structure."""
@@ -191,7 +191,7 @@ class TestStatsGenerator:
             for attribute, min_value in prerequisites.items():
                 assert isinstance(attribute, AttributeType)
                 assert isinstance(min_value, int)
-                assert 1 <= min_value <= 20
+                assert 1 <= min_value <= 100
 
     def test_rolling_methods_produce_different_distributions(self):
         """Test that different rolling methods produce different stat distributions."""
@@ -205,13 +205,13 @@ class TestStatsGenerator:
         assert isinstance(stats_4d6, Stats)
         assert isinstance(stats_point_buy, Stats)
 
-        # Point buy should start with at least 8 in all stats
-        assert stats_point_buy.strength >= 8
-        assert stats_point_buy.dexterity >= 8
-        assert stats_point_buy.constitution >= 8
-        assert stats_point_buy.intelligence >= 8
-        assert stats_point_buy.wisdom >= 8
-        assert stats_point_buy.charisma >= 8
+        # Point buy should start with at least 40 in all stats (scaled from 8)
+        assert stats_point_buy.strength >= 40
+        assert stats_point_buy.dexterity >= 40
+        assert stats_point_buy.constitution >= 40
+        assert stats_point_buy.intelligence >= 40
+        assert stats_point_buy.wisdom >= 40
+        assert stats_point_buy.charisma >= 40
 
 
 class TestProfessionStatPrerequisites:
@@ -223,47 +223,47 @@ class TestProfessionStatPrerequisites:
 
     def test_check_profession_requirements_meets_all(self):
         """Test checking profession requirements when all requirements are met."""
-        # Stats that meet the requirement
-        stats = Stats(strength=12, dexterity=10, constitution=10, intelligence=10, wisdom=10, charisma=10)
+        # Stats that meet the requirement (scaled values)
+        stats = Stats(strength=60, dexterity=50, constitution=50, intelligence=50, wisdom=50, charisma=50)
 
-        meets_requirements = self.stats_generator._check_profession_requirements(stats, {"strength": 10})
+        meets_requirements = self.stats_generator._check_profession_requirements(stats, {"strength": 50})
 
         assert meets_requirements is True
 
     def test_check_profession_requirements_fails_single(self):
         """Test checking profession requirements when single requirement fails."""
-        # Stats that don't meet the requirement
-        stats = Stats(strength=9, dexterity=10, constitution=10, intelligence=10, wisdom=10, charisma=10)
+        # Stats that don't meet the requirement (scaled values)
+        stats = Stats(strength=45, dexterity=50, constitution=50, intelligence=50, wisdom=50, charisma=50)
 
-        meets_requirements = self.stats_generator._check_profession_requirements(stats, {"strength": 10})
+        meets_requirements = self.stats_generator._check_profession_requirements(stats, {"strength": 50})
 
         assert meets_requirements is False
 
     def test_check_profession_requirements_multiple_requirements(self):
         """Test checking profession requirements with multiple requirements."""
-        # Stats that meet all requirements
-        stats = Stats(strength=14, dexterity=10, constitution=10, intelligence=15, wisdom=10, charisma=10)
+        # Stats that meet all requirements (scaled values)
+        stats = Stats(strength=70, dexterity=50, constitution=50, intelligence=75, wisdom=50, charisma=50)
 
         meets_requirements = self.stats_generator._check_profession_requirements(
-            stats, {"strength": 12, "intelligence": 14}
+            stats, {"strength": 60, "intelligence": 70}
         )
 
         assert meets_requirements is True
 
     def test_check_profession_requirements_multiple_failures(self):
         """Test checking profession requirements when multiple requirements fail."""
-        # Stats that don't meet requirements
-        stats = Stats(strength=10, dexterity=10, constitution=10, intelligence=12, wisdom=10, charisma=10)
+        # Stats that don't meet requirements (scaled values)
+        stats = Stats(strength=50, dexterity=50, constitution=50, intelligence=60, wisdom=50, charisma=50)
 
         meets_requirements = self.stats_generator._check_profession_requirements(
-            stats, {"strength": 12, "intelligence": 14}
+            stats, {"strength": 60, "intelligence": 70}
         )
 
         assert meets_requirements is False
 
     def test_check_profession_requirements_unknown_stat(self):
         """Test checking profession requirements with unknown stat name."""
-        stats = Stats(strength=12, dexterity=10, constitution=10, intelligence=10, wisdom=10, charisma=10)
+        stats = Stats(strength=60, dexterity=50, constitution=50, intelligence=50, wisdom=50, charisma=50)
 
         meets_requirements = self.stats_generator._check_profession_requirements(stats, {"unknown_stat": 10})
 
@@ -288,9 +288,9 @@ class TestProfessionStatPrerequisites:
     @patch("server.persistence.get_persistence")
     def test_roll_stats_with_profession_with_requirements_success(self, mock_get_persistence):
         """Test rolling stats with profession that has requirements - successful roll."""
-        # Mock profession with strength requirement of 10 (should be easy to meet)
+        # Mock profession with strength requirement of 50 (should be easy to meet)
         mock_profession = Mock()
-        mock_profession.get_stat_requirements.return_value = {"strength": 10}
+        mock_profession.get_stat_requirements.return_value = {"strength": 50}
 
         mock_persistence = Mock()
         mock_persistence.get_profession_by_id.return_value = mock_profession
@@ -299,14 +299,14 @@ class TestProfessionStatPrerequisites:
         # Mock the roll_stats method to return stats that meet requirements
         with patch.object(self.stats_generator, "roll_stats") as mock_roll_stats:
             mock_roll_stats.return_value = Stats(
-                strength=12, dexterity=10, constitution=10, intelligence=10, wisdom=10, charisma=10
+                strength=60, dexterity=50, constitution=50, intelligence=50, wisdom=50, charisma=50
             )
 
             stats, meets_requirements = self.stats_generator.roll_stats_with_profession(profession_id=2, max_attempts=1)
 
             assert isinstance(stats, Stats)
             assert meets_requirements is True
-            assert stats.strength >= 10
+            assert stats.strength >= 50
 
     @patch("server.persistence.get_persistence")
     def test_roll_stats_with_profession_invalid_profession_id(self, mock_get_persistence):
@@ -333,7 +333,7 @@ class TestProfessionStatPrerequisites:
         """Test rolling stats with profession when max attempts are exceeded."""
         # Mock profession with very high requirement that's unlikely to be met
         mock_profession = Mock()
-        mock_profession.get_stat_requirements.return_value = {"strength": 18}  # Very unlikely
+        mock_profession.get_stat_requirements.return_value = {"strength": 90}  # Very unlikely
 
         mock_persistence = Mock()
         mock_persistence.get_profession_by_id.return_value = mock_profession
@@ -350,16 +350,16 @@ class TestProfessionStatPrerequisites:
     def test_check_profession_requirements_edge_cases(self):
         """Test edge cases for profession requirements checking."""
         # Test with empty requirements
-        stats = Stats(strength=10, dexterity=10, constitution=10, intelligence=10, wisdom=10, charisma=10)
+        stats = Stats(strength=50, dexterity=50, constitution=50, intelligence=50, wisdom=50, charisma=50)
         meets_requirements = self.stats_generator._check_profession_requirements(stats, {})
         assert meets_requirements is True
 
         # Test with exact minimum requirement
-        meets_requirements = self.stats_generator._check_profession_requirements(stats, {"strength": 10})
+        meets_requirements = self.stats_generator._check_profession_requirements(stats, {"strength": 50})
         assert meets_requirements is True
 
         # Test with requirement one above minimum
-        meets_requirements = self.stats_generator._check_profession_requirements(stats, {"strength": 11})
+        meets_requirements = self.stats_generator._check_profession_requirements(stats, {"strength": 51})
         assert meets_requirements is False
 
     def test_roll_stats_with_validation_never_succeeds(self):
@@ -370,8 +370,8 @@ class TestProfessionStatPrerequisites:
         in roll_stats_with_validation method (lines 235-248 in stats_generator.py).
         """
         # Mock roll_stats to always return stats that don't meet occultist requirements
-        # (occultist needs intelligence >= 14, wisdom >= 12)
-        low_stats = Stats(strength=10, dexterity=10, constitution=10, intelligence=8, wisdom=8, charisma=10)
+        # (occultist needs intelligence >= 70, wisdom >= 60)
+        low_stats = Stats(strength=50, dexterity=50, constitution=50, intelligence=40, wisdom=40, charisma=50)
 
         with patch.object(self.stats_generator, "roll_stats", return_value=low_stats):
             stats, available_classes = self.stats_generator.roll_stats_with_validation(
@@ -444,22 +444,22 @@ class TestStatsRandomGeneration:
         assert isinstance(stats.charisma, int)
 
         # Random values should be in valid range
-        assert 3 <= stats.dexterity <= 18
-        assert 3 <= stats.constitution <= 18
-        assert 3 <= stats.wisdom <= 18
-        assert 3 <= stats.charisma <= 18
+        assert 15 <= stats.dexterity <= 90
+        assert 15 <= stats.constitution <= 90
+        assert 15 <= stats.wisdom <= 90
+        assert 15 <= stats.charisma <= 90
 
     def test_stats_random_values_in_valid_range(self):
         """Test that randomly generated values are in valid range."""
         stats = Stats()
 
-        # All random values should be in valid range (3-18)
-        assert 3 <= stats.strength <= 18
-        assert 3 <= stats.dexterity <= 18
-        assert 3 <= stats.constitution <= 18
-        assert 3 <= stats.intelligence <= 18
-        assert 3 <= stats.wisdom <= 18
-        assert 3 <= stats.charisma <= 18
+        # All random values should be in valid range (15-90)
+        assert 15 <= stats.strength <= 90
+        assert 15 <= stats.dexterity <= 90
+        assert 15 <= stats.constitution <= 90
+        assert 15 <= stats.intelligence <= 90
+        assert 15 <= stats.wisdom <= 90
+        assert 15 <= stats.charisma <= 90
 
     def test_stats_default_values_unchanged(self):
         """Test that default values for other fields are unchanged."""
@@ -477,9 +477,9 @@ class TestStatsRandomGeneration:
         """Test that computed fields work correctly with random values."""
         stats = Stats()
 
-        # Computed fields should work
-        assert stats.max_health == stats.constitution * 10
-        assert stats.max_sanity == stats.wisdom * 5
+        # Computed fields should work (direct values now, not multiplied)
+        assert stats.max_health == stats.constitution
+        assert stats.max_sanity == stats.wisdom
 
         # Values should be positive
         assert stats.max_health > 0
@@ -490,12 +490,12 @@ class TestStatsRandomGeneration:
         stats = Stats()
 
         # All values should pass validation
-        assert 1 <= stats.strength <= 20
-        assert 1 <= stats.dexterity <= 20
-        assert 1 <= stats.constitution <= 20
-        assert 1 <= stats.intelligence <= 20
-        assert 1 <= stats.wisdom <= 20
-        assert 1 <= stats.charisma <= 20
+        assert 1 <= stats.strength <= 100
+        assert 1 <= stats.dexterity <= 100
+        assert 1 <= stats.constitution <= 100
+        assert 1 <= stats.intelligence <= 100
+        assert 1 <= stats.wisdom <= 100
+        assert 1 <= stats.charisma <= 100
 
     def test_stats_serialization_with_random_values(self):
         """Test that serialization works correctly with random values."""

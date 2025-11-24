@@ -366,6 +366,7 @@ def enhance_player_ids(_logger: Any, _name: str, event_dict: dict[str, Any]) -> 
                             # Try to get the player name
                             # Convert string to UUID if needed
                             import uuid
+
                             player_id_uuid = uuid.UUID(value) if isinstance(value, str) else value
                             player = _global_player_service.persistence.get_player(player_id_uuid)
                             if player and hasattr(player, "name"):

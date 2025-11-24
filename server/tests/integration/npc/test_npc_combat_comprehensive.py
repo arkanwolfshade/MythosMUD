@@ -34,39 +34,39 @@ class TestNPCCombatIntegrationComprehensive:
 
     def test_calculate_damage_physical_attack(self):
         """Test damage calculation for physical attacks."""
-        attacker_stats = {"strength": 15}
-        target_stats = {"constitution": 10}
+        attacker_stats = {"strength": 75}
+        target_stats = {"constitution": 50}
         weapon_damage = 5
 
         damage = self.integration.calculate_damage(attacker_stats, target_stats, weapon_damage, "physical")
 
-        # Strength 15 = +2 bonus, constitution 10 = 0 reduction
-        # Expected: 5 (base) + 2 (strength) - 0 (constitution) = 7
-        assert damage == 7
+        # Strength 75 = +12 bonus ((75-50)//2), constitution 50 = 0 reduction ((50-50)//4)
+        # Expected: 5 (base) + 12 (strength) - 0 (constitution) = 17
+        assert damage == 17
 
     def test_calculate_damage_high_strength_attacker(self):
         """Test damage calculation with high strength attacker."""
-        attacker_stats = {"strength": 18}
-        target_stats = {"constitution": 10}
+        attacker_stats = {"strength": 90}
+        target_stats = {"constitution": 50}
         weapon_damage = 3
 
         damage = self.integration.calculate_damage(attacker_stats, target_stats, weapon_damage, "physical")
 
-        # Strength 18 = +4 bonus, constitution 10 = 0 reduction
-        # Expected: 3 (base) + 4 (strength) - 0 (constitution) = 7
-        assert damage == 7
+        # Strength 90 = +20 bonus ((90-50)//2), constitution 50 = 0 reduction ((50-50)//4)
+        # Expected: 3 (base) + 20 (strength) - 0 (constitution) = 23
+        assert damage == 23
 
     def test_calculate_damage_high_constitution_target(self):
         """Test damage calculation against high constitution target."""
-        attacker_stats = {"strength": 12}
-        target_stats = {"constitution": 18}
+        attacker_stats = {"strength": 60}
+        target_stats = {"constitution": 90}
         weapon_damage = 8
 
         damage = self.integration.calculate_damage(attacker_stats, target_stats, weapon_damage, "physical")
 
-        # Strength 12 = +1 bonus, constitution 18 = +2 reduction
-        # Expected: 8 (base) + 1 (strength) - 2 (constitution) = 7
-        assert damage == 7
+        # Strength 60 = +5 bonus ((60-50)//2), constitution 90 = +10 reduction ((90-50)//4)
+        # Expected: 8 (base) + 5 (strength) - 10 (constitution) = 3
+        assert damage == 3
 
     def test_calculate_damage_non_physical_attack(self):
         """Test damage calculation for non-physical attacks."""
