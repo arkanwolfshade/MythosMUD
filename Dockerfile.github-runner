@@ -70,7 +70,9 @@ WORKDIR /workspace
 COPY pyproject.toml uv.lock ./
 
 # Copy Node manifests before installing client dependencies.
+# Also copy scripts directory needed for postinstall script.
 COPY client/package.json client/package-lock.json ./client/
+COPY client/scripts ./client/scripts/
 WORKDIR /workspace/client
 RUN npm install
 

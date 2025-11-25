@@ -124,6 +124,13 @@ class LookCommand(BaseCommand):
     command_type: Literal[CommandType.LOOK] = CommandType.LOOK
     direction: Direction | None = Field(default=None, description="Direction to look")
     target: str | None = Field(default=None, description="Target to look at (NPC name or direction)")
+    target_type: Literal["player", "npc", "item", "container", "direction"] | None = Field(
+        default=None, description="Explicit target type specification"
+    )
+    look_in: bool = Field(default=False, description="Flag for container inspection mode")
+    instance_number: int | None = Field(
+        default=None, ge=1, description="Instance number for targeting specific items/containers when multiple exist"
+    )
 
     @field_validator("direction")
     @classmethod
