@@ -21,7 +21,7 @@ interface CommandPanelProps {
 export const CommandPanel: React.FC<CommandPanelProps> = ({
   commandHistory,
   onSendCommand,
-  onClearHistory: _onClearHistory,
+  onClearHistory,
   onLogout,
   disabled = false,
   isConnected = true,
@@ -186,7 +186,14 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
 
       {/* Command History */}
       <div className="flex-1 overflow-y-auto p-3 space-y-1 min-h-[150px]" style={{ minHeight: '150px' }}>
-        <h4 className="text-sm font-bold text-mythos-terminal-primary mb-2">Recent Commands</h4>
+        <div className="flex items-center justify-between mb-2">
+          <h4 className="text-sm font-bold text-mythos-terminal-primary">Recent Commands</h4>
+          {onClearHistory && commandHistory.length > 0 && (
+            <TerminalButton variant="secondary" size="sm" onClick={onClearHistory} className="px-2 py-1 text-xs">
+              Clear
+            </TerminalButton>
+          )}
+        </div>
         {commandHistory.length === 0 ? (
           <div className="text-center text-mythos-terminal-text-secondary py-4">
             <EldritchIcon name={MythosIcons.command} size={24} className="mx-auto mb-2 opacity-50" />

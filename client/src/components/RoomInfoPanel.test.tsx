@@ -47,15 +47,17 @@ describe('RoomInfoPanel', () => {
     it('should format and display zone information', () => {
       render(<RoomInfoPanel room={mockRoom} />);
 
-      expect(screen.getByText('Zone:')).toBeInTheDocument();
-      expect(screen.getByText('Arkham')).toBeInTheDocument();
+      // Component shows "Location: {zone} / {sub_zone}" format
+      expect(screen.getByText('Location:')).toBeInTheDocument();
+      expect(screen.getByTestId('location-value')).toHaveTextContent('Arkham / University');
     });
 
     it('should format and display subzone information', () => {
       render(<RoomInfoPanel room={mockRoom} />);
 
-      expect(screen.getByText('Subzone:')).toBeInTheDocument();
-      expect(screen.getByText('University')).toBeInTheDocument();
+      // Component shows "Location: {zone} / {sub_zone}" format
+      expect(screen.getByText('Location:')).toBeInTheDocument();
+      expect(screen.getByTestId('location-value')).toHaveTextContent('Arkham / University');
     });
 
     it('should display room description', () => {
@@ -94,11 +96,9 @@ describe('RoomInfoPanel', () => {
 
       render(<RoomInfoPanel room={roomWithUnknown} />);
 
-      expect(screen.getByText('Zone:')).toBeInTheDocument();
-      expect(screen.getByText('Subzone:')).toBeInTheDocument();
-      // Check that both zone and subzone show "Unknown" by using getAllByText
-      const unknownElements = screen.getAllByText('Unknown');
-      expect(unknownElements).toHaveLength(2);
+      // Component shows "Location: {zone} / {sub_zone}" format
+      expect(screen.getByText('Location:')).toBeInTheDocument();
+      expect(screen.getByTestId('location-value')).toHaveTextContent('Unknown / Unknown');
     });
 
     it('should handle room with no description', () => {
@@ -156,8 +156,9 @@ describe('RoomInfoPanel', () => {
 
       render(<RoomInfoPanel room={roomWithUnderscores} />);
 
-      expect(screen.getByText('Arkham City')).toBeInTheDocument();
-      expect(screen.getByText('University Library')).toBeInTheDocument();
+      // Component formats underscores and displays as "Location: {zone} / {sub_zone}"
+      const locationValue = screen.getByTestId('location-value');
+      expect(locationValue).toHaveTextContent('Arkham City / University Library');
     });
 
     it('should handle room without occupant count', () => {
