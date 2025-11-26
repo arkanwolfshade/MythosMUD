@@ -122,11 +122,35 @@ try {
         }
     }
 
-    # Note: Schema initialization is handled by DDL scripts, not this script
-    # The database will be initialized when tests run or when DDL scripts are executed
-    Write-Host ""
-    Write-Host "[INFO] Database created. Schema will be initialized by DDL scripts or test fixtures." -ForegroundColor Cyan
-    Write-Host "[INFO] You may need to run database initialization scripts separately." -ForegroundColor Cyan
+    # Apply authoritative schema if it exists
+    $schemaFile = Join-Path -Path $PSScriptRoot -ChildPath ".." | Join-Path -ChildPath "db" | Join-Path -ChildPath "authoritative_schema.sql"
+    if (Test-Path $schemaFile) {
+        Write-Host "Applying authoritative schema..." -ForegroundColor Yellow
+        $schemaResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -f $schemaFile 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "[OK] Authoritative schema applied" -ForegroundColor Green
+        } else {
+            Write-Host "[WARNING] Failed to apply authoritative schema: $schemaResult" -ForegroundColor Yellow
+            Write-Host "[INFO] Schema may be initialized by test fixtures instead" -ForegroundColor Cyan
+        }
+    } else {
+        Write-Host "[INFO] Authoritative schema file not found, schema will be initialized by test fixtures" -ForegroundColor Cyan
+    }
+
+    # Apply container migration if it exists
+    $migrationFile = Join-Path -Path $PSScriptRoot -ChildPath ".." | Join-Path -ChildPath "db" | Join-Path -ChildPath "migrations" | Join-Path -ChildPath "011_add_container_item_instance_id.sql"
+    if (Test-Path $migrationFile) {
+        Write-Host "Applying container migration..." -ForegroundColor Yellow
+        $migrationResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -f $migrationFile 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "[OK] Container migration applied" -ForegroundColor Green
+        } else {
+            Write-Host "[WARNING] Failed to apply container migration: $migrationResult" -ForegroundColor Yellow
+            Write-Host "[INFO] Migration may have already been applied or schema may differ" -ForegroundColor Cyan
+        }
+    } else {
+        Write-Host "[WARNING] Container migration file not found: $migrationFile" -ForegroundColor Yellow
+    }
 
     Write-Host ""
     Write-Host "Setup completed successfully! ✓" -ForegroundColor Green
