@@ -408,45 +408,6 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
           </div>
         )}
       </div>
-
-      {/* Chat Statistics */}
-      <div
-        className="p-2 border-t border-gray-700 bg-mythos-terminal-surface"
-        role="status"
-        aria-label="Chat Statistics"
-      >
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-mythos-terminal-text-secondary gap-2 sm:gap-0">
-          <div className="flex flex-wrap items-center gap-2 sm:gap-4">
-            <div className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-mythos-terminal-success rounded-full"></div>
-              <span>Connected</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <EldritchIcon name={MythosIcons.chat} size={12} variant="secondary" />
-              <span>{chatStats.currentChannelMessages} messages</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <EldritchIcon name={MythosIcons.connection} size={12} variant="secondary" />
-              <span>Channel: {viewingLabel}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <EldritchIcon name={MythosIcons.clock} size={12} variant="secondary" />
-              <span>0 sent</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <div className="w-2 h-2 rounded-full bg-gray-600"></div>
-              <span>Activity: none</span>
-            </div>
-            {Object.values(unreadCounts).reduce((sum, count) => sum + count, 0) > 0 && (
-              <div className="flex items-center gap-1">
-                <EldritchIcon name={MythosIcons.chat} size={12} variant="error" />
-                <span>{Object.values(unreadCounts).reduce((sum, count) => sum + count, 0)} unread</span>
-              </div>
-            )}
-          </div>
-          <div className="text-xs opacity-75">MythosMUD Terminal</div>
-        </div>
-      </div>
     </div>
   );
 };

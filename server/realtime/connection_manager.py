@@ -2487,12 +2487,12 @@ class ConnectionManager:
             # Only perform these actions for new connections (not additional connections)
             if is_new_connection:
                 # Update last_active timestamp in database when player connects
+                # Use update_player_last_active instead of save_player to avoid overwriting inventory
                 if self.persistence:
                     try:
                         from datetime import UTC, datetime
 
-                        player.last_active = datetime.now(UTC)  # type: ignore[assignment]
-                        self.persistence.save_player(player)
+                        self.persistence.update_player_last_active(player_id, datetime.now(UTC))
                         logger.debug("Updated last_active for player on connection", player_id=player_id)
                     except Exception as e:
                         logger.warning("Failed to update last_active for player", player_id=player_id, error=str(e))

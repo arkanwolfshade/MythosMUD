@@ -6,13 +6,17 @@ This module contains handlers for exploration-related commands like look and go.
 
 import re
 from typing import Any
+from uuid import UUID
 
 from ..alias_storage import AliasStorage
 from ..logging.enhanced_logging_config import get_logger
+from ..services.wearable_container_service import WearableContainerService
 from ..utils.command_parser import get_username_from_user
 from ..utils.room_renderer import build_room_drop_summary, clone_room_drops, format_room_drop_lines
 
 logger = get_logger(__name__)
+
+_SHARED_WEARABLE_CONTAINER_SERVICE = WearableContainerService()
 
 
 def _parse_instance_number(target: str) -> tuple[str, int | None]:
@@ -315,6 +319,9 @@ def _find_container_wearable(
     """
     Find a wearable container in equipped items by name or prototype_id.
 
+    This function finds items that are containers, either by checking for inner_container
+    or by matching item names that suggest they are containers (e.g., "backpack", "bag").
+
     Args:
         equipped: Dictionary of equipped items (slot -> item dict)
         target: Container name or prototype_id to search for
@@ -327,13 +334,18 @@ def _find_container_wearable(
     matching_containers = []
 
     for slot, item in equipped.items():
-        # Check if item has inner_container (wearable container)
-        if item.get("inner_container"):
-            item_name = str(item.get("item_name", item.get("name", ""))).lower()
-            prototype_id = str(item.get("prototype_id", item.get("item_id", ""))).lower()
-            item_id = str(item.get("item_id", "")).lower()
+        item_name = str(item.get("item_name", item.get("name", ""))).lower()
+        prototype_id = str(item.get("prototype_id", item.get("item_id", ""))).lower()
+        item_id = str(item.get("item_id", "")).lower()
 
-            if target_lower in item_name or target_lower in prototype_id or target_lower in item_id:
+        # Check if this item matches the target name
+        name_matches = target_lower in item_name or target_lower in prototype_id or target_lower in item_id
+
+        # Include items that:
+        # 1. Have inner_container (explicit container)
+        # 2. Match the target name (might be a container we need to look up)
+        if item.get("inner_container") or name_matches:
+            if name_matches:
                 matching_containers.append((slot, item))
 
     if not matching_containers:
@@ -505,20 +517,22 @@ async def handle_look_command(
                     return {"result": f"{item_name}\nYou see nothing remarkable about it."}
 
         # Try finding item in equipped items
-        equipped = player.get_equipped_items() if hasattr(player, "get_equipped_items") else {}
-        equipped_result = _find_item_in_equipped(equipped, target_lower, instance_number)
-        if equipped_result:
-            slot, item_found = equipped_result
-            prototype_id = item_found.get("prototype_id") or item_found.get("item_id")
-            if prototype_registry and prototype_id:
-                try:
-                    prototype = prototype_registry.get(prototype_id)
-                    item_name = item_found.get("item_name", item_found.get("name", prototype.name))
-                    description = prototype.long_description
-                    return {"result": f"{item_name} (equipped in {slot})\n{description}"}
-                except Exception:
-                    item_name = item_found.get("item_name", item_found.get("name", "Unknown Item"))
-                    return {"result": f"{item_name} (equipped in {slot})\nYou see nothing remarkable about it."}
+        # BUT: If look_in is True, skip item lookup and go straight to container lookup
+        if not command_data.get("look_in", False):
+            equipped = player.get_equipped_items() if hasattr(player, "get_equipped_items") else {}
+            equipped_result = _find_item_in_equipped(equipped, target_lower, instance_number)
+            if equipped_result:
+                slot, item_found = equipped_result
+                prototype_id = item_found.get("prototype_id") or item_found.get("item_id")
+                if prototype_registry and prototype_id:
+                    try:
+                        prototype = prototype_registry.get(prototype_id)
+                        item_name = item_found.get("item_name", item_found.get("name", prototype.name))
+                        description = prototype.long_description
+                        return {"result": f"{item_name} (equipped in {slot})\n{description}"}
+                    except Exception:
+                        item_name = item_found.get("item_name", item_found.get("name", "Unknown Item"))
+                        return {"result": f"{item_name} (equipped in {slot})\nYou see nothing remarkable about it."}
 
         # Item not found
         logger.debug("Item not found", player=player_name, target=target, room_id=room_id)
@@ -535,9 +549,13 @@ async def handle_look_command(
             look_in=command_data.get("look_in", False),
         )
 
+        # Get prototype registry for container descriptions
+        prototype_registry = getattr(app.state, "prototype_registry", None) if app else None
+
         # Get containers in room
         room_containers = room.get_containers() if hasattr(room, "get_containers") else []
         container_found = _find_container_in_room(room_containers, target_lower, instance_number)
+        container_item = None  # Track the item for wearable containers to get prototype
 
         # Also check wearable containers
         if not container_found:
@@ -545,14 +563,96 @@ async def handle_look_command(
             wearable_result = _find_container_wearable(equipped, target_lower, instance_number)
             if wearable_result:
                 slot, item = wearable_result
-                # Get container from item's inner_container
+                container_item = item  # Store item to get prototype_id later
+                # Try to get container from item's inner_container first
                 inner_container_id = item.get("inner_container")
                 if inner_container_id:
-                    container_data = (
-                        persistence.get_container(inner_container_id) if hasattr(persistence, "get_container") else None
-                    )
-                    if container_data:
-                        container_found = container_data
+                    try:
+                        container_id = (
+                            UUID(inner_container_id) if isinstance(inner_container_id, str) else inner_container_id
+                        )
+                        container_data = (
+                            persistence.get_container(container_id) if hasattr(persistence, "get_container") else None
+                        )
+                        if container_data:
+                            container_found = container_data
+                    except (ValueError, TypeError):
+                        # inner_container might not be a valid UUID, try wearable container service
+                        pass
+
+                # If not found via inner_container, use wearable container service
+                if not container_found:
+                    try:
+                        player_id_uuid = UUID(str(player.player_id))
+                        wearable_containers = _SHARED_WEARABLE_CONTAINER_SERVICE.get_wearable_containers_for_player(
+                            player_id_uuid
+                        )
+                        slot_lower = slot.lower() if slot else ""
+                        item_instance_id = item.get("item_instance_id")
+
+                        for container_component in wearable_containers:
+                            # Match by item_instance_id (most reliable), slot name, or container metadata item_name
+                            container_metadata = (
+                                container_component.metadata if hasattr(container_component, "metadata") else {}
+                            )
+                            container_item_name = str(container_metadata.get("item_name", "")).lower()
+                            container_slot = str(container_metadata.get("slot", "")).lower()
+                            container_item_instance_id = container_metadata.get("item_instance_id")
+
+                            # Match by item_instance_id first (most reliable)
+                            if (
+                                item_instance_id
+                                and container_item_instance_id
+                                and str(item_instance_id) == str(container_item_instance_id)
+                            ):
+                                # Found matching container, get full container data
+                                container_id_from_component = container_component.container_id
+                                if container_id_from_component:
+                                    container_data = (
+                                        persistence.get_container(container_id_from_component)
+                                        if hasattr(persistence, "get_container")
+                                        else None
+                                    )
+                                    if container_data:
+                                        container_found = container_data
+                                        logger.debug(
+                                            "Found container via wearable container service (item_instance_id match) for look command",
+                                            container_id=str(container_id_from_component),
+                                            slot=slot,
+                                            item_instance_id=item_instance_id,
+                                            player=player_name,
+                                        )
+                                        break
+                            # Fallback: match by slot name or container metadata item_name
+                            elif (
+                                container_slot == slot_lower
+                                or target_lower in container_item_name
+                                or target_lower in container_slot
+                            ):
+                                # Found matching container, get full container data
+                                container_id_from_component = container_component.container_id
+                                if container_id_from_component:
+                                    container_data = (
+                                        persistence.get_container(container_id_from_component)
+                                        if hasattr(persistence, "get_container")
+                                        else None
+                                    )
+                                    if container_data:
+                                        container_found = container_data
+                                        logger.debug(
+                                            "Found container via wearable container service (name match) for look command",
+                                            container_id=str(container_id_from_component),
+                                            slot=slot,
+                                            player=player_name,
+                                        )
+                                        break
+                    except Exception as e:
+                        logger.debug(
+                            "Error finding container via wearable container service for look command",
+                            error=str(e),
+                            slot=slot,
+                            player=player_name,
+                        )
 
         if not container_found:
             logger.debug("Container not found", player=player_name, target=target, room_id=room_id)
@@ -569,6 +669,35 @@ async def handle_look_command(
         # Build container display
         lines = [container_name]
 
+        # Get and display container description from prototype
+        container_description = None
+        if container_item:
+            # For wearable containers, get prototype from the item
+            prototype_id = container_item.get("prototype_id") or container_item.get("item_id")
+            if prototype_registry and prototype_id:
+                try:
+                    prototype = prototype_registry.get(prototype_id)
+                    if prototype and hasattr(prototype, "long_description"):
+                        container_description = prototype.long_description
+                except Exception:
+                    logger.debug("Failed to get prototype for container", prototype_id=prototype_id)
+        else:
+            # For room containers, try to get prototype from container metadata
+            prototype_id = container_found.get("metadata", {}).get("prototype_id") or container_found.get(
+                "prototype_id"
+            )
+            if prototype_registry and prototype_id:
+                try:
+                    prototype = prototype_registry.get(prototype_id)
+                    if prototype and hasattr(prototype, "long_description"):
+                        container_description = prototype.long_description
+                except Exception:
+                    logger.debug("Failed to get prototype for container", prototype_id=prototype_id)
+
+        # Add description if available
+        if container_description:
+            lines.append(container_description)
+
         # Lock status
         if lock_state == "locked":
             lines.append("Locked")
@@ -581,8 +710,8 @@ async def handle_look_command(
 
         # Contents (if look_in is True or explicit container look)
         if command_data.get("look_in", False) or target_type == "container":
+            lines.append("Contents:")
             if items:
-                lines.append("Contents:")
                 for idx, item_stack in enumerate(items, start=1):
                     item_name = item_stack.get("item_name", item_stack.get("name", "Unknown Item"))
                     quantity = item_stack.get("quantity", 1)
@@ -591,7 +720,7 @@ async def handle_look_command(
                     else:
                         lines.append(f"  {idx}. {item_name}")
             else:
-                lines.append("Empty")
+                lines.append("  (empty)")
 
         result_text = "\n".join(lines)
         logger.debug("Container look completed", player=player_name, target=target, container_name=container_name)

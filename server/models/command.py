@@ -77,6 +77,8 @@ class CommandType(str, Enum):
     INVENTORY = "inventory"
     PICKUP = "pickup"
     DROP = "drop"
+    PUT = "put"
+    GET = "get"
     EQUIP = "equip"
     UNEQUIP = "unequip"
     QUIT = "quit"
@@ -545,6 +547,24 @@ class DropCommand(BaseCommand):
     quantity: int | None = Field(None, ge=1, description="Quantity to drop (defaults to full stack)")
 
 
+class PutCommand(BaseCommand):
+    """Command for putting items from inventory into a container."""
+
+    command_type: Literal[CommandType.PUT] = CommandType.PUT
+    item: str = Field(..., min_length=1, description="Item name or inventory index to put")
+    container: str = Field(..., min_length=1, description="Container name to put item into")
+    quantity: int | None = Field(None, ge=1, description="Quantity to put (defaults to full stack)")
+
+
+class GetCommand(BaseCommand):
+    """Command for getting items from a container into inventory."""
+
+    command_type: Literal[CommandType.GET] = CommandType.GET
+    item: str = Field(..., min_length=1, description="Item name or container index to get")
+    container: str = Field(..., min_length=1, description="Container name to get item from")
+    quantity: int | None = Field(None, ge=1, description="Quantity to get (defaults to full stack)")
+
+
 class EquipCommand(BaseCommand):
     """Command for equipping an item from inventory."""
 
@@ -809,6 +829,8 @@ Command = (
     | InventoryCommand
     | PickupCommand
     | DropCommand
+    | PutCommand
+    | GetCommand
     | EquipCommand
     | UnequipCommand
     | QuitCommand

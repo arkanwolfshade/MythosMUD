@@ -158,6 +158,12 @@ class CommandProcessor:
         if hasattr(validated_command, "quantity"):
             command_data["quantity"] = validated_command.quantity
 
+        if hasattr(validated_command, "item"):
+            command_data["item"] = validated_command.item
+
+        if hasattr(validated_command, "container"):
+            command_data["container"] = validated_command.container
+
         if hasattr(validated_command, "prototype_id"):
             command_data["prototype_id"] = validated_command.prototype_id
 
@@ -199,6 +205,12 @@ class CommandProcessor:
 
         if hasattr(validated_command, "slot"):
             command_data["slot"] = validated_command.slot
+
+        if hasattr(validated_command, "look_in"):
+            command_data["look_in"] = validated_command.look_in
+
+        if hasattr(validated_command, "instance_number"):
+            command_data["instance_number"] = validated_command.instance_number
 
         # Extract args field for commands that need it (like shutdown)
         if hasattr(validated_command, "args"):

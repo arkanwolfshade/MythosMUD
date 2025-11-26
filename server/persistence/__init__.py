@@ -16,6 +16,14 @@ from .container_persistence import (
     update_container,
 )
 
+# Import item instance persistence functions
+from .item_instance_persistence import (
+    create_item_instance,
+    ensure_item_instance,
+    get_item_instance,
+    item_instance_exists,
+)
+
 # Re-export get_persistence and reset_persistence from the module file (server/persistence.py)
 # Modern Python pattern: Package re-exports functions from module file for backward compatibility
 # This allows both "from server.persistence import get_persistence" (package) and
@@ -66,6 +74,10 @@ __all__ = [
     "get_decayed_containers",
     "update_container",
     "delete_container",
+    "create_item_instance",
+    "ensure_item_instance",
+    "get_item_instance",
+    "item_instance_exists",
 ]
 
 # Add re-exported functions to __all__ if they were successfully imported

@@ -38,6 +38,27 @@ def _get_enum_value(enum_or_str: Any) -> str:
     return str(enum_or_str)
 
 
+def _filter_container_data(container_data: dict[str, Any]) -> dict[str, Any]:
+    """
+    Filter out database-only fields from container data before validation.
+
+    The ContainerComponent model doesn't include created_at and updated_at fields,
+    so we need to filter them out before calling model_validate.
+
+    Args:
+        container_data: Raw container data from database
+
+    Returns:
+        Filtered container data without database-only fields
+    """
+    # Create a copy to avoid modifying the original
+    filtered = container_data.copy()
+    # Remove database-only fields that aren't part of the model
+    filtered.pop("created_at", None)
+    filtered.pop("updated_at", None)
+    return filtered
+
+
 class WearableContainerServiceError(MythosMUDError):
     """Base exception for wearable container service operations."""
 
@@ -193,7 +214,7 @@ class WearableContainerService:
                 existing_metadata = existing.get("metadata", {})
                 if existing_metadata.get("item_instance_id") == item_instance_id:
                     # Found the container, update inner_container in item stack
-                    container = ContainerComponent.model_validate(existing)
+                    container = ContainerComponent.model_validate(_filter_container_data(existing))
                     inner_container = {
                         "capacity_slots": container.capacity_slots,
                         "items": container.items,
@@ -232,7 +253,7 @@ class WearableContainerService:
         for container_data in containers_data:
             try:
                 if container_data.get("source_type") == "equipment":
-                    container = ContainerComponent.model_validate(container_data)
+                    container = ContainerComponent.model_validate(_filter_container_data(container_data))
                     containers.append(container)
             except Exception as e:
                 logger.warning(
@@ -278,7 +299,7 @@ class WearableContainerService:
                 user_friendly="Container not found",
             )
 
-        container = ContainerComponent.model_validate(container_data)
+        container = ContainerComponent.model_validate(_filter_container_data(container_data))
 
         # Verify it's a wearable container for this player
         if container.source_type != ContainerSourceType.EQUIPMENT or container.entity_id != player_id:
@@ -372,7 +393,7 @@ class WearableContainerService:
                 user_friendly="Container not found",
             )
 
-        container = ContainerComponent.model_validate(container_data)
+        container = ContainerComponent.model_validate(_filter_container_data(container_data))
 
         # Verify it's a wearable container for this player
         if container.source_type != ContainerSourceType.EQUIPMENT or container.entity_id != player_id:

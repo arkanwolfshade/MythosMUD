@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ALL_MESSAGES_CHANNEL, CHAT_CHANNEL_OPTIONS, DEFAULT_CHANNEL } from '../../config/channels';
-import { ChannelSelector } from '../ui/ChannelSelector';
 import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
 import { LogoutButton } from '../ui/LogoutButton';
 import { TerminalButton } from '../ui/TerminalButton';
@@ -22,7 +21,7 @@ interface CommandPanelProps {
 export const CommandPanel: React.FC<CommandPanelProps> = ({
   commandHistory,
   onSendCommand,
-  onClearHistory,
+  onClearHistory: _onClearHistory,
   onLogout,
   disabled = false,
   isConnected = true,
@@ -33,7 +32,8 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
 }) => {
   const [commandInput, setCommandInput] = useState('');
   const isControlled = onChannelSelect !== undefined;
-  const [uncontrolledChannel, setUncontrolledChannel] = useState(selectedChannel ?? DEFAULT_CHANNEL);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [uncontrolledChannel, _setUncontrolledChannel] = useState(selectedChannel ?? DEFAULT_CHANNEL);
   const currentChannel = isControlled ? (selectedChannel ?? DEFAULT_CHANNEL) : uncontrolledChannel;
 
   // Debug logging for isConnected prop
@@ -157,27 +157,6 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
           <EldritchIcon name={MythosIcons.command} size={20} className="text-mythos-terminal-primary" />
           <span className="text-sm font-bold text-mythos-terminal-primary">Commands</span>
         </div>
-        <div className="flex items-center space-x-2">
-          <ChannelSelector
-            channels={CHAT_CHANNEL_OPTIONS}
-            selectedChannel={currentChannel}
-            onChannelSelect={channelId => {
-              if (!isControlled) {
-                setUncontrolledChannel(channelId);
-              }
-              onChannelSelect?.(channelId);
-            }}
-            disabled={disabled || !isConnected}
-          />
-          <TerminalButton
-            variant="secondary"
-            size="sm"
-            onClick={() => onClearHistory?.()}
-            className="px-2 py-1 text-xs"
-          >
-            Clear
-          </TerminalButton>
-        </div>
       </div>
 
       {/* Command Input */}
@@ -232,27 +211,6 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
               ))}
           </div>
         )}
-      </div>
-
-      {/* Quick Commands */}
-      <div className="p-3 border-t border-gray-700 bg-mythos-terminal-background">
-        <h4 className="text-sm font-bold text-mythos-terminal-primary mb-2">Quick Commands</h4>
-        <div className="grid grid-cols-2 gap-2">
-          {['look', 'inventory', 'health', 'status'].map(cmd => (
-            <TerminalButton
-              key={cmd}
-              variant="secondary"
-              size="sm"
-              onClick={() => {
-                setCommandInput(cmd);
-                inputRef.current?.focus();
-              }}
-              className="text-xs"
-            >
-              {cmd}
-            </TerminalButton>
-          ))}
-        </div>
       </div>
 
       {/* Logout Button */}

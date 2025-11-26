@@ -24,6 +24,7 @@ from ..models.command import (
     DropCommand,
     EmoteCommand,
     EquipCommand,
+    GetCommand,
     GoCommand,
     GotoCommand,
     GroundCommand,
@@ -41,6 +42,7 @@ from ..models.command import (
     PickupCommand,
     PoseCommand,
     PunchCommand,
+    PutCommand,
     QuitCommand,
     ReplyCommand,
     SayCommand,
@@ -110,6 +112,8 @@ class CommandParser:
             CommandType.INVENTORY.value: self._create_inventory_command,
             CommandType.PICKUP.value: self._create_pickup_command,
             CommandType.DROP.value: self._create_drop_command,
+            CommandType.PUT.value: self._create_put_command,
+            CommandType.GET.value: self._create_get_command,
             CommandType.EQUIP.value: self._create_equip_command,
             CommandType.UNEQUIP.value: self._create_unequip_command,
             CommandType.QUIT.value: self._create_quit_command,
@@ -967,6 +971,114 @@ class CommandParser:
                 )
 
         return DropCommand(index=index, quantity=quantity)
+
+    def _create_put_command(self, args: list[str]) -> PutCommand:
+        """
+        Create put command.
+
+        Supports: put <item> [in] <container> [quantity]
+        The "in" keyword is optional.
+        """
+        if not args:
+            context = create_error_context()
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: put <item> [in] <container> [quantity]",
+                context=context,
+                logger_name=__name__,
+            )
+
+        # Remove optional "in" keyword
+        args_clean = [arg for arg in args if arg.lower() != "in"]
+
+        if len(args_clean) < 2:
+            context = create_error_context()
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: put <item> [in] <container> [quantity]",
+                context=context,
+                logger_name=__name__,
+            )
+
+        item = args_clean[0]
+        container = args_clean[1]
+        quantity = None
+
+        # Check if last argument is a quantity
+        if len(args_clean) > 2:
+            try:
+                quantity = int(args_clean[-1])
+                if quantity <= 0:
+                    context = create_error_context()
+                    context.metadata = {"quantity": quantity}
+                    log_and_raise_enhanced(
+                        MythosValidationError,
+                        "Quantity must be a positive integer",
+                        context=context,
+                        logger_name=__name__,
+                    )
+                # If quantity was parsed, container might be multi-word
+                if len(args_clean) > 3:
+                    container = " ".join(args_clean[1:-1])
+            except ValueError:
+                # Last arg is not a number, container might be multi-word
+                container = " ".join(args_clean[1:])
+
+        return PutCommand(item=item, container=container, quantity=quantity)
+
+    def _create_get_command(self, args: list[str]) -> GetCommand:
+        """
+        Create get command.
+
+        Supports: get <item> [from] <container> [quantity]
+        The "from" keyword is optional.
+        """
+        if not args:
+            context = create_error_context()
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: get <item> [from] <container> [quantity]",
+                context=context,
+                logger_name=__name__,
+            )
+
+        # Remove optional "from" keyword
+        args_clean = [arg for arg in args if arg.lower() != "from"]
+
+        if len(args_clean) < 2:
+            context = create_error_context()
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: get <item> [from] <container> [quantity]",
+                context=context,
+                logger_name=__name__,
+            )
+
+        item = args_clean[0]
+        container = args_clean[1]
+        quantity = None
+
+        # Check if last argument is a quantity
+        if len(args_clean) > 2:
+            try:
+                quantity = int(args_clean[-1])
+                if quantity <= 0:
+                    context = create_error_context()
+                    context.metadata = {"quantity": quantity}
+                    log_and_raise_enhanced(
+                        MythosValidationError,
+                        "Quantity must be a positive integer",
+                        context=context,
+                        logger_name=__name__,
+                    )
+                # If quantity was parsed, container might be multi-word
+                if len(args_clean) > 3:
+                    container = " ".join(args_clean[1:-1])
+            except ValueError:
+                # Last arg is not a number, container might be multi-word
+                container = " ".join(args_clean[1:])
+
+        return GetCommand(item=item, container=container, quantity=quantity)
 
     def _create_equip_command(self, args: list[str]) -> EquipCommand:
         """Create equip command."""

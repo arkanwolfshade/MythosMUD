@@ -85,6 +85,90 @@ or peer into the unknown.</p>
 </div>
 """,
     },
+    "put": {
+        "category": "Inventory",
+        "description": "Put an item from your inventory into a container",
+        "usage": "put <item> [in] <container> [quantity]",
+        "examples": [
+            "put lantern in backpack",
+            "put lantern backpack",
+            "put 1 in backpack",
+            "put lantern in backpack 2",
+        ],
+        "detailed_help": """
+<div style="color: #8B4513;">
+<h3>PUT Command</h3>
+<p>Transfer items from your inventory into a container. The "in" keyword is optional,
+making the command more natural to use.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>put &lt;item&gt; [in] &lt;container&gt; [quantity]</strong> - Put item into container</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>put lantern in backpack</li>
+<li>put lantern backpack</li>
+<li>put 1 in backpack</li>
+<li>put lantern in backpack 2</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>The "in" keyword is optional - both "put lantern backpack" and "put lantern in backpack" work</li>
+<li>You can use item names or inventory numbers</li>
+<li>You can specify quantity to put only part of a stack</li>
+<li>Container must be accessible (in room or equipped)</li>
+<li>Container must have available capacity</li>
+</ul>
+
+<p>As noted in the restricted archives: "Proper storage of artifacts prevents dimensional contamination."</p>
+</div>
+""",
+    },
+    "get": {
+        "category": "Inventory",
+        "description": "Get an item from a container into your inventory",
+        "usage": "get <item> [from] <container> [quantity]",
+        "examples": [
+            "get lantern from backpack",
+            "get lantern backpack",
+            "get 1 from backpack",
+            "get lantern from backpack 2",
+        ],
+        "detailed_help": """
+<div style="color: #8B4513;">
+<h3>GET Command</h3>
+<p>Transfer items from a container into your inventory. The "from" keyword is optional,
+making the command more natural to use.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>get &lt;item&gt; [from] &lt;container&gt; [quantity]</strong> - Get item from container</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>get lantern from backpack</li>
+<li>get lantern backpack</li>
+<li>get 1 from backpack</li>
+<li>get lantern from backpack 2</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>The "from" keyword is optional - both "get lantern backpack" and "get lantern from backpack" work</li>
+<li>You can use item names or container item numbers</li>
+<li>You can specify quantity to get only part of a stack</li>
+<li>Container must be accessible (in room or equipped)</li>
+<li>Your inventory must have available capacity</li>
+</ul>
+
+<p>As noted in the restricted archives: "Retrieval of stored artifacts requires careful handling."</p>
+</div>
+""",
+    },
     "go": {
         "category": "Movement",
         "description": "Move in a specific direction",

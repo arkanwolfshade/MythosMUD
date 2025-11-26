@@ -113,6 +113,7 @@ async def lifespan(app: FastAPI):
     app.state.player_service = container.player_service
     app.state.room_service = container.room_service
     app.state.user_manager = container.user_manager
+    app.state.container_service = container.container_service
     app.state.holiday_service = container.holiday_service
     app.state.schedule_service = container.schedule_service
     app.state.room_cache_service = container.room_cache_service
