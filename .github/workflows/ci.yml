@@ -87,6 +87,8 @@ jobs:
           sudo -u postgres psql -d mythos_unit -f db/authoritative_schema.sql
           # Apply UUID migration for players.player_id
           sudo -u postgres psql -v ON_ERROR_STOP=1 -d mythos_unit -f db/migrations/010_migrate_player_id_to_uuid.sql
+          # Create containers table (must run before 011 which adds column to it)
+          sudo -u postgres psql -v ON_ERROR_STOP=1 -d mythos_unit -f db/migrations/012_create_containers_table.sql
           # Apply container schema normalization migration (adds container_item_instance_id column)
           sudo -u postgres psql -v ON_ERROR_STOP=1 -d mythos_unit -f db/migrations/011_add_container_item_instance_id.sql
           sudo -u postgres psql -d mythos_unit -f data/db/00_world_and_emotes.sql

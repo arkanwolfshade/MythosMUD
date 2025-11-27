@@ -28,7 +28,8 @@ $envContent = Get-Content $TestEnvPath -Raw
 $databaseUrl = ""
 if ($envContent -match 'DATABASE_URL=(.+)') {
     $databaseUrl = $matches[1].Trim()
-} else {
+}
+else {
     Write-Host "[ERROR] DATABASE_URL not found in .env.unit_test" -ForegroundColor Red
     exit 1
 }
@@ -76,7 +77,8 @@ if (-not $psqlPath) {
         Write-Host "[SOLUTION] Install PostgreSQL from: https://www.postgresql.org/download/windows/" -ForegroundColor Yellow
         exit 1
     }
-} else {
+}
+else {
     $psqlPath = $psqlPath.Path
 }
 
@@ -100,7 +102,8 @@ try {
                 exit 1
             }
             Write-Host "[OK] Database dropped" -ForegroundColor Green
-        } else {
+        }
+        else {
             Write-Host "[OK] Database '$dbName' already exists" -ForegroundColor Green
             Write-Host "[INFO] Use -Force to recreate the database" -ForegroundColor Cyan
             exit 0
@@ -113,10 +116,12 @@ try {
 
     if ($LASTEXITCODE -eq 0) {
         Write-Host "[OK] Database '$dbName' created successfully" -ForegroundColor Green
-    } else {
+    }
+    else {
         if ($createResult -match 'already exists') {
             Write-Host "[WARNING] Database already exists (may have been created concurrently)" -ForegroundColor Yellow
-        } else {
+        }
+        else {
             Write-Host "[ERROR] Failed to create database: $createResult" -ForegroundColor Red
             exit 1
         }
@@ -129,36 +134,59 @@ try {
         $schemaResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -f $schemaFile 2>&1
         if ($LASTEXITCODE -eq 0) {
             Write-Host "[OK] Authoritative schema applied" -ForegroundColor Green
-        } else {
+        }
+        else {
             Write-Host "[WARNING] Failed to apply authoritative schema: $schemaResult" -ForegroundColor Yellow
             Write-Host "[INFO] Schema may be initialized by test fixtures instead" -ForegroundColor Cyan
         }
-    } else {
+    }
+    else {
         Write-Host "[INFO] Authoritative schema file not found, schema will be initialized by test fixtures" -ForegroundColor Cyan
     }
 
-    # Apply container migration if it exists
+    # Apply container table creation migration (must run before 011)
+    $migration012File = Join-Path -Path $PSScriptRoot -ChildPath ".." | Join-Path -ChildPath "db" | Join-Path -ChildPath "migrations" | Join-Path -ChildPath "012_create_containers_table.sql"
+    if (Test-Path $migration012File) {
+        Write-Host "Applying container table creation migration (012)..." -ForegroundColor Yellow
+        $migrationResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -v ON_ERROR_STOP=1 -f $migration012File 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "[OK] Container table creation migration applied" -ForegroundColor Green
+        }
+        else {
+            Write-Host "[ERROR] Failed to apply container table creation migration: $migrationResult" -ForegroundColor Red
+            exit 1
+        }
+    }
+    else {
+        Write-Host "[WARNING] Container table creation migration file not found: $migration012File" -ForegroundColor Yellow
+    }
+
+    # Apply container schema normalization migration (adds container_item_instance_id column)
     $migrationFile = Join-Path -Path $PSScriptRoot -ChildPath ".." | Join-Path -ChildPath "db" | Join-Path -ChildPath "migrations" | Join-Path -ChildPath "011_add_container_item_instance_id.sql"
     if (Test-Path $migrationFile) {
-        Write-Host "Applying container migration..." -ForegroundColor Yellow
-        $migrationResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -f $migrationFile 2>&1
+        Write-Host "Applying container schema normalization migration (011)..." -ForegroundColor Yellow
+        $migrationResult = & $psqlPath -h $dbHost -p $dbPort -U $dbUser -d $dbName -v ON_ERROR_STOP=1 -f $migrationFile 2>&1
         if ($LASTEXITCODE -eq 0) {
-            Write-Host "[OK] Container migration applied" -ForegroundColor Green
-        } else {
-            Write-Host "[WARNING] Failed to apply container migration: $migrationResult" -ForegroundColor Yellow
-            Write-Host "[INFO] Migration may have already been applied or schema may differ" -ForegroundColor Cyan
+            Write-Host "[OK] Container schema normalization migration applied" -ForegroundColor Green
         }
-    } else {
-        Write-Host "[WARNING] Container migration file not found: $migrationFile" -ForegroundColor Yellow
+        else {
+            Write-Host "[ERROR] Failed to apply container schema normalization migration: $migrationResult" -ForegroundColor Red
+            exit 1
+        }
+    }
+    else {
+        Write-Host "[WARNING] Container schema normalization migration file not found: $migrationFile" -ForegroundColor Yellow
     }
 
     Write-Host ""
     Write-Host "Setup completed successfully! ✓" -ForegroundColor Green
     Write-Host "You can now run: scripts/check_postgresql.ps1 to verify the connection" -ForegroundColor Cyan
 
-} catch {
+}
+catch {
     Write-Host "[ERROR] Setup failed: $_" -ForegroundColor Red
     exit 1
-} finally {
+}
+finally {
     Remove-Item Env:\PGPASSWORD -ErrorAction SilentlyContinue
 }
