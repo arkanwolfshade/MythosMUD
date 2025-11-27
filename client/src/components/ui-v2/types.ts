@@ -1,5 +1,5 @@
 // TypeScript interfaces for UI v2 panel system
-// Based on existing game state types from GameTerminalWithPanels
+// Type definitions for UI v2 components
 
 export interface Player {
   name: string;

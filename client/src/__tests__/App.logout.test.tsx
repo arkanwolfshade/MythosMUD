@@ -32,9 +32,9 @@ vi.mock('../utils/security', () => ({
   },
 }));
 
-// Mock the GameTerminalWithPanels component
-vi.mock('../components/GameTerminalWithPanels', () => ({
-  GameTerminalWithPanels: ({ onLogout, isLoggingOut }: { onLogout: () => void; isLoggingOut: boolean }) => (
+// Mock the GameClientV2Container component
+vi.mock('../components/ui-v2/GameClientV2Container', () => ({
+  GameClientV2Container: ({ onLogout, isLoggingOut }: { onLogout: () => void; isLoggingOut: boolean }) => (
     <div data-testid="game-terminal">
       <button data-testid="logout-button" onClick={onLogout} disabled={isLoggingOut}>
         {isLoggingOut ? 'Logging out...' : 'Logout'}

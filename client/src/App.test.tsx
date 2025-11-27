@@ -13,8 +13,8 @@ vi.mock('./components/EldritchEffectsDemo', () => ({
   ),
 }));
 
-vi.mock('./components/GameTerminalWithPanels', () => ({
-  GameTerminalWithPanels: ({ playerName, authToken }: { playerName: string; authToken: string }) => (
+vi.mock('./components/ui-v2/GameClientV2Container', () => ({
+  GameClientV2Container: ({ playerName, authToken }: { playerName: string; authToken: string }) => (
     <div data-testid="game-terminal">
       Game Terminal for {playerName} with token: {authToken ? 'present' : 'missing'}
     </div>

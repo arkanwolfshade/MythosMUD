@@ -237,6 +237,21 @@ server/tests/data/players/unit_test_players.db
 server\tests\data\players\unit_test_players.db
 data/players/local_players.db
 
+# TypeScript build artifacts
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Build output directories
+dist/
+client/dist/
+build/
+out/
+
+# Performance and benchmark artifacts
+artifacts/
+*.bench.json
+*.perf.json
+
 # Client test output and coverage reports
 client/coverage/
 client/.nyc_output/
@@ -251,4 +266,52 @@ test-results/
 .cache/
 .playwright-mcp/
 
+# Test output files
+*-out.txt
+test-*.txt
+*.test.log
+
+# Node.js
 node_modules/
+.npm/
+.node_repl_history
+.yarn/
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# OS-specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+*.bak
+*.backup
+*.orig
+
+# Debug and development files
+*.log
+*.debug
+debug-*.png
+debug-*.jpg
+debug-*.jpeg
+
+# Coverage reports (additional patterns)
+coverage/
+.nyc_output/
+*.lcov
+coverage-final.json

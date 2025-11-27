@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock the dependencies
@@ -189,45 +189,8 @@ describe('GameTerminal Integration', () => {
     });
   });
 
-  describe('GameTerminalWithPanels Component', () => {
-    it('manages game connection state', () => {
-      render(<GameTerminalWithPanels />);
-
-      // Should show connection status
-      expect(screen.getByText('Connected')).toBeInTheDocument();
-    });
-
-    it('handles command routing correctly', async () => {
-      render(<GameTerminalWithPanels />);
-
-      // Test game command routing
-      const commandInput = screen.getByPlaceholderText('Enter game command...');
-      fireEvent.change(commandInput, { target: { value: 'look' } });
-      fireEvent.keyDown(commandInput, { key: 'Enter' });
-
-      // Should route to game command handler
-      await waitFor(() => {
-        // The command should be processed
-        expect(commandInput).toHaveValue('');
-      });
-    });
-
-    it('handles chat message routing correctly', async () => {
-      render(<GameTerminalWithPanels />);
-
-      // Test chat message routing
-      const chatInput = screen.getByPlaceholderText('Type your message here...');
-      fireEvent.change(chatInput, { target: { value: 'Hello everyone!' } });
-
-      const sendButton = screen.getByText('Send');
-      fireEvent.click(sendButton);
-
-      // Should route to chat message handler
-      await waitFor(() => {
-        expect(chatInput).toHaveValue('');
-      });
-    });
-  });
+  // Note: GameTerminalWithPanels has been replaced with GameClientV2Container
+  // Integration tests for the new UI should be added separately
 
   describe('Panel Interaction', () => {
     it('allows switching between panels', () => {
