@@ -1,0 +1,294 @@
+import React, { createContext, useCallback, useContext, useMemo, useReducer, useEffect } from 'react';
+import type { PanelPosition, PanelSize, PanelState } from '../types';
+
+// Panel manager state and actions
+// Implementing centralized panel state management using useReducer pattern
+// Based on findings from "State Management in Non-Euclidean Interfaces" - Dr. Armitage, 1928
+
+interface PanelManagerState {
+  panels: Record<string, PanelState>;
+  focusedPanelId: string | null;
+  nextZIndex: number;
+}
+
+type PanelAction =
+  | { type: 'INIT_PANELS'; payload: Record<string, PanelState> }
+  | { type: 'UPDATE_POSITION'; payload: { id: string; position: PanelPosition } }
+  | { type: 'UPDATE_SIZE'; payload: { id: string; size: PanelSize } }
+  | { type: 'TOGGLE_MINIMIZE'; payload: { id: string } }
+  | { type: 'TOGGLE_MAXIMIZE'; payload: { id: string } }
+  | { type: 'SET_VISIBILITY'; payload: { id: string; isVisible: boolean } }
+  | { type: 'FOCUS_PANEL'; payload: { id: string } }
+  | { type: 'CLOSE_PANEL'; payload: { id: string } };
+
+const STORAGE_KEY = 'mythosmud-ui-v2-panel-layout';
+
+// Load panel layout from localStorage
+const loadPanelLayout = (): Record<string, PanelState> | null => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch (error) {
+    console.warn('Failed to load panel layout from localStorage', error);
+  }
+  return null;
+};
+
+// Save panel layout to localStorage
+const savePanelLayout = (panels: Record<string, PanelState>): void => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(panels));
+  } catch (error) {
+    console.warn('Failed to save panel layout to localStorage', error);
+  }
+};
+
+// Panel reducer
+const panelReducer = (state: PanelManagerState, action: PanelAction): PanelManagerState => {
+  switch (action.type) {
+    case 'INIT_PANELS': {
+      return {
+        ...state,
+        panels: action.payload,
+        nextZIndex: Math.max(...Object.values(action.payload).map(p => p.zIndex), 1000) + 1,
+      };
+    }
+
+    case 'UPDATE_POSITION': {
+      const { id, position } = action.payload;
+      const panel = state.panels[id];
+      if (!panel) return state;
+
+      const updatedPanels = {
+        ...state.panels,
+        [id]: { ...panel, position },
+      };
+
+      savePanelLayout(updatedPanels);
+      return {
+        ...state,
+        panels: updatedPanels,
+      };
+    }
+
+    case 'UPDATE_SIZE': {
+      const { id, size } = action.payload;
+      const panel = state.panels[id];
+      if (!panel) return state;
+
+      const updatedPanels = {
+        ...state.panels,
+        [id]: { ...panel, size },
+      };
+
+      savePanelLayout(updatedPanels);
+      return {
+        ...state,
+        panels: updatedPanels,
+      };
+    }
+
+    case 'TOGGLE_MINIMIZE': {
+      const { id } = action.payload;
+      const panel = state.panels[id];
+      if (!panel) return state;
+
+      const updatedPanels = {
+        ...state.panels,
+        [id]: { ...panel, isMinimized: !panel.isMinimized, isMaximized: false },
+      };
+
+      savePanelLayout(updatedPanels);
+      return {
+        ...state,
+        panels: updatedPanels,
+      };
+    }
+
+    case 'TOGGLE_MAXIMIZE': {
+      const { id } = action.payload;
+      const panel = state.panels[id];
+      if (!panel) return state;
+
+      // If maximizing, minimize all other panels first
+      const updatedPanels = { ...state.panels };
+      if (!panel.isMaximized) {
+        Object.keys(updatedPanels).forEach(panelId => {
+          if (panelId !== id && updatedPanels[panelId].isMaximized) {
+            updatedPanels[panelId] = { ...updatedPanels[panelId], isMaximized: false };
+          }
+        });
+      }
+
+      updatedPanels[id] = {
+        ...panel,
+        isMaximized: !panel.isMaximized,
+        isMinimized: false,
+      };
+
+      savePanelLayout(updatedPanels);
+      return {
+        ...state,
+        panels: updatedPanels,
+      };
+    }
+
+    case 'SET_VISIBILITY': {
+      const { id, isVisible } = action.payload;
+      const panel = state.panels[id];
+      if (!panel) return state;
+
+      const updatedPanels = {
+        ...state.panels,
+        [id]: { ...panel, isVisible },
+      };
+
+      savePanelLayout(updatedPanels);
+      return {
+        ...state,
+        panels: updatedPanels,
+      };
+    }
+
+    case 'FOCUS_PANEL': {
+      const { id } = action.payload;
+      const panel = state.panels[id];
+      if (!panel) return state;
+
+      // Bring focused panel to front
+      const updatedPanels = {
+        ...state.panels,
+        [id]: { ...panel, zIndex: state.nextZIndex },
+      };
+
+      return {
+        ...state,
+        panels: updatedPanels,
+        focusedPanelId: id,
+        nextZIndex: state.nextZIndex + 1,
+      };
+    }
+
+    case 'CLOSE_PANEL': {
+      const { id } = action.payload;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [id]: _removed, ...remainingPanels } = state.panels;
+
+      savePanelLayout(remainingPanels);
+      return {
+        ...state,
+        panels: remainingPanels,
+        focusedPanelId: state.focusedPanelId === id ? null : state.focusedPanelId,
+      };
+    }
+
+    default:
+      return state;
+  }
+};
+
+interface PanelManagerContextValue {
+  panels: Record<string, PanelState>;
+  updatePosition: (id: string, position: PanelPosition) => void;
+  updateSize: (id: string, size: PanelSize) => void;
+  toggleMinimize: (id: string) => void;
+  toggleMaximize: (id: string) => void;
+  setVisibility: (id: string, isVisible: boolean) => void;
+  focusPanel: (id: string) => void;
+  closePanel: (id: string) => void;
+  getPanel: (id: string) => PanelState | undefined;
+}
+
+const PanelManagerContext = createContext<PanelManagerContextValue | null>(null);
+
+interface PanelManagerProviderProps {
+  children: React.ReactNode;
+  defaultPanels: Record<string, PanelState>;
+}
+
+export const PanelManagerProvider: React.FC<PanelManagerProviderProps> = ({ children, defaultPanels }) => {
+  const [state, dispatch] = useReducer(panelReducer, {
+    panels: {},
+    focusedPanelId: null,
+    nextZIndex: 1000,
+  });
+
+  // Initialize panels from localStorage or defaults
+  useEffect(() => {
+    const stored = loadPanelLayout();
+    const panelsToUse = stored || defaultPanels;
+    dispatch({ type: 'INIT_PANELS', payload: panelsToUse });
+  }, [defaultPanels]);
+
+  const updatePosition = useCallback((id: string, position: PanelPosition) => {
+    dispatch({ type: 'UPDATE_POSITION', payload: { id, position } });
+  }, []);
+
+  const updateSize = useCallback((id: string, size: PanelSize) => {
+    dispatch({ type: 'UPDATE_SIZE', payload: { id, size } });
+  }, []);
+
+  const toggleMinimize = useCallback((id: string) => {
+    dispatch({ type: 'TOGGLE_MINIMIZE', payload: { id } });
+  }, []);
+
+  const toggleMaximize = useCallback((id: string) => {
+    dispatch({ type: 'TOGGLE_MAXIMIZE', payload: { id } });
+  }, []);
+
+  const setVisibility = useCallback((id: string, isVisible: boolean) => {
+    dispatch({ type: 'SET_VISIBILITY', payload: { id, isVisible } });
+  }, []);
+
+  const focusPanel = useCallback((id: string) => {
+    dispatch({ type: 'FOCUS_PANEL', payload: { id } });
+  }, []);
+
+  const closePanel = useCallback((id: string) => {
+    dispatch({ type: 'CLOSE_PANEL', payload: { id } });
+  }, []);
+
+  const getPanel = useCallback(
+    (id: string): PanelState | undefined => {
+      return state.panels[id];
+    },
+    [state.panels]
+  );
+
+  const value = useMemo(
+    () => ({
+      panels: state.panels,
+      updatePosition,
+      updateSize,
+      toggleMinimize,
+      toggleMaximize,
+      setVisibility,
+      focusPanel,
+      closePanel,
+      getPanel,
+    }),
+    [
+      state.panels,
+      updatePosition,
+      updateSize,
+      toggleMinimize,
+      toggleMaximize,
+      setVisibility,
+      focusPanel,
+      closePanel,
+      getPanel,
+    ]
+  );
+
+  return <PanelManagerContext.Provider value={value}>{children}</PanelManagerContext.Provider>;
+};
+
+export const usePanelManager = (): PanelManagerContextValue => {
+  const context = useContext(PanelManagerContext);
+  if (!context) {
+    throw new Error('usePanelManager must be used within PanelManagerProvider');
+  }
+  return context;
+};

@@ -1,0 +1,783 @@
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useGameConnection } from '../../hooks/useGameConnectionRefactored';
+import { useContainerStore } from '../../stores/containerStore';
+import type { HealthStatus } from '../../types/health';
+import type { MythosTimePayload, MythosTimeState } from '../../types/mythosTime';
+import type { HallucinationMessage, RescueState, SanityStatus } from '../../types/sanity';
+import { buildHealthStatusFromEvent } from '../../utils/healthEventUtils';
+import { logger } from '../../utils/logger';
+import { useMemoryMonitor } from '../../utils/memoryMonitor';
+import { determineMessageType } from '../../utils/messageTypeUtils';
+import { DAYPART_MESSAGES, buildMythosTimeState } from '../../utils/mythosTime';
+import { buildSanityStatus } from '../../utils/sanityEventUtils';
+import { inputSanitizer } from '../../utils/security';
+import { convertToPlayerInterface, parseStatusResponse } from '../../utils/statusParser';
+import { GameClientV2 } from './GameClientV2';
+import { DeathInterstitial } from '../DeathInterstitial';
+import type { ChatMessage, Player, Room } from './types';
+
+// Import GameEvent interface from useGameConnection
+interface GameEvent {
+  event_type: string;
+  timestamp: string;
+  sequence_number: number;
+  player_id?: string;
+  room_id?: string;
+  data: Record<string, unknown>;
+  alias_chain?: Array<{
+    original: string;
+    expanded: string;
+    alias_name: string;
+  }>;
+}
+
+interface GameClientV2ContainerProps {
+  playerName: string;
+  authToken: string;
+  onLogout?: () => void;
+  isLoggingOut?: boolean;
+  onDisconnect?: (disconnectFn: () => void) => void;
+}
+
+interface GameState {
+  player: Player | null;
+  room: Room | null;
+  messages: ChatMessage[];
+  commandHistory: string[];
+}
+
+const GAME_LOG_CHANNEL = 'game-log';
+
+const resolveChatTypeFromChannel = (channel: string): string => {
+  switch (channel) {
+    case 'whisper':
+      return 'whisper';
+    case 'shout':
+      return 'shout';
+    case 'emote':
+      return 'emote';
+    case 'party':
+    case 'tell':
+      return 'tell';
+    case 'system':
+    case 'game':
+      return 'system';
+    case 'local':
+    case 'say':
+    default:
+      return 'say';
+  }
+};
+
+const sanitizeChatMessageForState = (message: ChatMessage): ChatMessage => {
+  const rawText = (message as ChatMessage & { rawText?: string }).rawText ?? message.text;
+  const sanitizedText = message.isHtml ? inputSanitizer.sanitizeIncomingHtml(rawText) : rawText;
+
+  const existingType = message.type ?? 'system';
+  const existingChannel = (message as { channel?: string }).channel ?? 'system';
+  const messageType = (message as { messageType?: string }).messageType ?? (existingType as unknown as string);
+
+  return {
+    ...message,
+    type: existingType,
+    messageType,
+    channel: existingChannel,
+    rawText,
+    text: sanitizedText,
+  };
+};
+
+// Container component that manages game state and renders GameClientV2
+// Based on findings from "State Management Patterns" - Dr. Armitage, 1928
+export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
+  playerName,
+  authToken,
+  onLogout,
+  isLoggingOut = false,
+  onDisconnect: _onDisconnect,
+}) => {
+  const [gameState, setGameState] = useState<GameState>({
+    player: null,
+    room: null,
+    messages: [],
+    commandHistory: [],
+  });
+
+  const [isMortallyWounded, setIsMortallyWounded] = useState(false);
+  const [isDead, setIsDead] = useState(false);
+  const [deathLocation] = useState<string>('Unknown Location');
+  const [isRespawning, setIsRespawning] = useState(false);
+  const [sanityStatus, setSanityStatus] = useState<SanityStatus | null>(null);
+  const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
+  const [, setHallucinationFeed] = useState<HallucinationMessage[]>([]);
+  const [rescueState, setRescueState] = useState<RescueState | null>(null);
+  const [mythosTime, setMythosTime] = useState<MythosTimeState | null>(null);
+
+  // Memory monitoring
+  const { detector } = useMemoryMonitor('GameClientV2Container');
+
+  // Container store hooks - kept for future use
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _openContainer = useContainerStore(state => state.openContainer);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _closeContainer = useContainerStore(state => state.closeContainer);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _updateContainer = useContainerStore(state => state.updateContainer);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _handleContainerDecayed = useContainerStore(state => state.handleContainerDecayed);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _getContainer = useContainerStore(state => state.getContainer);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _isContainerOpen = useContainerStore(state => state.isContainerOpen);
+
+  useEffect(() => {
+    detector.start();
+    return () => detector.stop();
+  }, [detector]);
+
+  // Refs for stable references and event processing
+  const hasAttemptedConnection = useRef(false);
+  const isProcessingEvent = useRef(false);
+  const lastProcessedEvent = useRef<string>('');
+  const eventQueue = useRef<GameEvent[]>([]);
+  const processingTimeout = useRef<number | null>(null);
+  const currentMessagesRef = useRef<ChatMessage[]>([]);
+  const currentRoomRef = useRef<Room | null>(null);
+  const currentPlayerRef = useRef<Player | null>(null);
+  const sanityStatusRef = useRef<SanityStatus | null>(null);
+  const healthStatusRef = useRef<HealthStatus | null>(null);
+  const rescueStateRef = useRef<RescueState | null>(null);
+  const lastDaypartRef = useRef<string | null>(null);
+  const lastHolidayIdsRef = useRef<string[]>([]);
+  const rescueTimeoutRef = useRef<number | null>(null);
+  const lastRoomUpdateTime = useRef<number>(0);
+  const sendCommandRef = useRef<((command: string, args?: string[]) => Promise<boolean>) | null>(null);
+
+  // Keep refs in sync with state
+  useEffect(() => {
+    currentMessagesRef.current = gameState.messages;
+  }, [gameState.messages]);
+
+  useEffect(() => {
+    currentRoomRef.current = gameState.room;
+  }, [gameState.room]);
+
+  useEffect(() => {
+    currentPlayerRef.current = gameState.player;
+  }, [gameState.player]);
+
+  useEffect(() => {
+    sanityStatusRef.current = sanityStatus;
+  }, [sanityStatus]);
+
+  useEffect(() => {
+    healthStatusRef.current = healthStatus;
+  }, [healthStatus]);
+
+  useEffect(() => {
+    rescueStateRef.current = rescueState;
+
+    if (rescueState && ['success', 'failed', 'sanitarium'].includes(rescueState.status)) {
+      rescueTimeoutRef.current = window.setTimeout(() => setRescueState(null), 8_000);
+    }
+
+    return () => {
+      if (rescueTimeoutRef.current) {
+        window.clearTimeout(rescueTimeoutRef.current);
+        rescueTimeoutRef.current = null;
+      }
+    };
+  }, [rescueState]);
+
+  // Bootstrap Mythos time
+  useEffect(() => {
+    if (typeof fetch !== 'function') {
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    const bootstrapMythosTime = async () => {
+      try {
+        const headers: HeadersInit = { Accept: 'application/json' };
+        if (authToken) {
+          headers.Authorization = `Bearer ${authToken}`;
+        }
+        const response = await fetch('/game/time', { headers });
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const payload = (await response.json()) as MythosTimePayload;
+        if (cancelled) {
+          return;
+        }
+        const nextState = buildMythosTimeState(payload);
+        setMythosTime(nextState);
+        lastDaypartRef.current = nextState.daypart;
+        lastHolidayIdsRef.current = nextState.active_holidays.map(h => h.id);
+      } catch (error) {
+        logger.warn('GameClientV2Container', 'Failed to bootstrap Mythos time', { error: String(error) });
+      }
+    };
+
+    bootstrapMythosTime();
+    return () => {
+      cancelled = true;
+    };
+  }, [authToken]);
+
+  // Clean up hallucination feed
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setHallucinationFeed(prev =>
+        prev.filter(entry => {
+          const timestamp = new Date(entry.timestamp).getTime();
+          return Number.isFinite(timestamp) ? Date.now() - timestamp < 60_000 : false;
+        })
+      );
+    }, 10_000);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  // Event processing - simplified version (full version would process all event types)
+  // For greenfield, we'll process the essential events and can extend later
+  const processEventQueue = useCallback(() => {
+    if (isProcessingEvent.current || eventQueue.current.length === 0) {
+      return;
+    }
+
+    isProcessingEvent.current = true;
+
+    try {
+      const events = [...eventQueue.current];
+      eventQueue.current = [];
+
+      const updates: Partial<GameState> = {};
+
+      events.forEach(event => {
+        const eventKey = `${event.event_type}_${event.sequence_number}`;
+        if (eventKey === lastProcessedEvent.current) {
+          return;
+        }
+        lastProcessedEvent.current = eventKey;
+
+        const eventType = (event.event_type || '').toString().trim().toLowerCase();
+
+        logger.info('GameClientV2Container', 'Processing event', { event_type: eventType });
+
+        const appendMessage = (message: ChatMessage) => {
+          if (!updates.messages) {
+            updates.messages = [...currentMessagesRef.current];
+          }
+          updates.messages.push(message);
+        };
+
+        switch (eventType) {
+          case 'game_state': {
+            const playerData = event.data.player as Player;
+            const roomData = event.data.room as Room;
+            const occupants = event.data.occupants as string[] | undefined;
+            if (playerData && roomData) {
+              lastRoomUpdateTime.current = new Date(event.timestamp).getTime();
+              updates.player = playerData;
+              updates.room = {
+                ...roomData,
+                ...(occupants && { occupants, occupant_count: occupants.length }),
+              };
+            }
+            break;
+          }
+          case 'room_update':
+          case 'room_state': {
+            const roomData = (event.data.room || event.data.room_data) as Room;
+            if (roomData) {
+              lastRoomUpdateTime.current = new Date(event.timestamp).getTime();
+              updates.room = roomData;
+            }
+            break;
+          }
+          case 'sanity_change':
+          case 'sanitychange': {
+            const { status: updatedStatus } = buildSanityStatus(sanityStatusRef.current, event.data, event.timestamp);
+            setSanityStatus(updatedStatus);
+            if (currentPlayerRef.current) {
+              updates.player = {
+                ...currentPlayerRef.current,
+                stats: {
+                  ...currentPlayerRef.current.stats,
+                  sanity: updatedStatus.current,
+                },
+              };
+            }
+            break;
+          }
+          case 'player_hp_updated':
+          case 'playerhpupdated': {
+            const { status: updatedHealthStatus } = buildHealthStatusFromEvent(
+              healthStatusRef.current,
+              event.data,
+              event.timestamp
+            );
+            setHealthStatus(updatedHealthStatus);
+            if (currentPlayerRef.current) {
+              updates.player = {
+                ...currentPlayerRef.current,
+                stats: {
+                  ...currentPlayerRef.current.stats,
+                  current_health: updatedHealthStatus.current,
+                  max_health: updatedHealthStatus.max,
+                },
+              };
+            }
+            break;
+          }
+          case 'command_response': {
+            const suppressChat = Boolean(event.data?.suppress_chat);
+            const message = typeof event.data?.result === 'string' ? (event.data.result as string) : '';
+            const isHtml = Boolean(event.data?.is_html);
+            const gameLogChannel =
+              typeof event.data?.game_log_channel === 'string' && event.data.game_log_channel
+                ? (event.data.game_log_channel as string)
+                : GAME_LOG_CHANNEL;
+            const gameLogMessage =
+              (typeof event.data?.game_log_message === 'string' && event.data.game_log_message.length > 0
+                ? (event.data.game_log_message as string)
+                : undefined) || message;
+
+            if (message) {
+              if (message.includes('Name:') && message.includes('Health:') && message.includes('Sanity:')) {
+                try {
+                  const parsedPlayerData = parseStatusResponse(message);
+                  const playerData = convertToPlayerInterface(parsedPlayerData);
+                  updates.player = playerData;
+                } catch (error) {
+                  logger.error('GameClientV2Container', 'Failed to parse status response', {
+                    error: error instanceof Error ? error.message : String(error),
+                  });
+                }
+              }
+            }
+
+            if (!suppressChat && message) {
+              const messageTypeResult = determineMessageType(message);
+              appendMessage({
+                text: message,
+                timestamp: event.timestamp,
+                isHtml,
+                messageType: messageTypeResult.type,
+                channel: messageTypeResult.channel ?? 'game',
+                type: resolveChatTypeFromChannel(messageTypeResult.channel ?? 'game'),
+              });
+            } else if (gameLogMessage) {
+              appendMessage({
+                text: gameLogMessage,
+                timestamp: event.timestamp,
+                isHtml,
+                messageType: 'system',
+                channel: gameLogChannel,
+                type: 'system',
+              });
+            }
+            break;
+          }
+          case 'chat_message': {
+            const message = event.data.message as string;
+            const channel = event.data.channel as string;
+            if (message) {
+              let messageType: string;
+              switch (channel) {
+                case 'whisper':
+                  messageType = 'whisper';
+                  break;
+                case 'shout':
+                  messageType = 'shout';
+                  break;
+                case 'emote':
+                  messageType = 'emote';
+                  break;
+                case 'say':
+                case 'local':
+                default:
+                  messageType = 'chat';
+                  break;
+              }
+
+              appendMessage({
+                text: message,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: messageType,
+                channel: channel,
+                type: resolveChatTypeFromChannel(channel),
+              });
+            }
+            break;
+          }
+          case 'room_occupants': {
+            const occupants = event.data.occupants as string[];
+            const occupantCount = event.data.count as number;
+            if (occupants && Array.isArray(occupants) && currentRoomRef.current) {
+              updates.room = {
+                ...currentRoomRef.current,
+                occupants: occupants,
+                occupant_count: occupantCount,
+              };
+            }
+            break;
+          }
+          case 'mythos_time_update': {
+            const payload = event.data as MythosTimePayload;
+            if (payload && payload.mythos_clock) {
+              const nextState = buildMythosTimeState(payload);
+              setMythosTime(nextState);
+              const previousDaypart = lastDaypartRef.current;
+              if (previousDaypart && previousDaypart !== nextState.daypart) {
+                const description =
+                  DAYPART_MESSAGES[nextState.daypart] ?? `The Mythos clock shifts into the ${nextState.daypart} watch.`;
+                appendMessage(
+                  sanitizeChatMessageForState({
+                    text: `[Time] ${description}`,
+                    timestamp: event.timestamp,
+                    messageType: 'system',
+                    channel: 'system',
+                  })
+                );
+              }
+              lastDaypartRef.current = nextState.daypart;
+            }
+            break;
+          }
+          // Add more event types as needed - this is a simplified version
+          default: {
+            logger.info('GameClientV2Container', 'Unhandled event type', {
+              event_type: event.event_type,
+              data_keys: event.data ? Object.keys(event.data) : [],
+            });
+            break;
+          }
+        }
+      });
+
+      if (updates.messages) {
+        updates.messages = updates.messages.map(sanitizeChatMessageForState);
+      }
+
+      if (Object.keys(updates).length > 0) {
+        setGameState(prev => ({
+          ...prev,
+          ...updates,
+          messages: updates.messages || prev.messages,
+          player: updates.player || prev.player,
+        }));
+      }
+    } catch (error) {
+      logger.error('GameClientV2Container', 'Error processing events', { error });
+    } finally {
+      isProcessingEvent.current = false;
+
+      if (eventQueue.current.length > 0) {
+        processingTimeout.current = window.setTimeout(processEventQueue, 10);
+      }
+    }
+  }, []);
+
+  const handleGameEvent = useCallback(
+    (event: GameEvent) => {
+      logger.info('GameClientV2Container', 'Received game event', { event_type: event.event_type });
+      eventQueue.current.push(event);
+
+      if (!isProcessingEvent.current && !processingTimeout.current) {
+        processingTimeout.current = window.setTimeout(() => {
+          processingTimeout.current = null;
+          processEventQueue();
+        }, 10);
+      }
+    },
+    [processEventQueue]
+  );
+
+  const handleConnectionLoss = useCallback(() => {
+    logger.info('GameClientV2Container', 'Connection lost, triggering logout flow');
+    const connectionLostMessage: ChatMessage = sanitizeChatMessageForState({
+      text: 'Connection to server lost. Returning to login screen...',
+      timestamp: new Date().toISOString(),
+      messageType: 'system',
+      isHtml: false,
+    });
+
+    setGameState(prev => ({
+      ...prev,
+      messages: [...prev.messages, connectionLostMessage],
+    }));
+
+    setTimeout(() => {
+      if (onLogout) {
+        onLogout();
+      }
+    }, 1000);
+  }, [onLogout]);
+
+  const handleConnect = useCallback(() => {
+    logger.info('GameClientV2Container', 'Connected to game server');
+  }, []);
+
+  const handleDisconnect = useCallback(() => {
+    logger.info('GameClientV2Container', 'Disconnected from game server');
+  }, []);
+
+  const handleError = useCallback((error: string) => {
+    logger.error('GameClientV2Container', 'Game connection error', { error });
+  }, []);
+
+  const { isConnected, isConnecting, error, reconnectAttempts, connect, disconnect, sendCommand } = useGameConnection({
+    authToken,
+    onEvent: handleGameEvent,
+    onConnect: handleConnect,
+    onDisconnect: handleDisconnect,
+    onError: handleError,
+  });
+
+  useEffect(() => {
+    sendCommandRef.current = sendCommand;
+  }, [sendCommand]);
+
+  useEffect(() => {
+    if (!isConnected && !isConnecting && reconnectAttempts >= 5) {
+      logger.warn('GameClientV2Container', 'All reconnection attempts failed, triggering logout');
+      handleConnectionLoss();
+    }
+  }, [isConnected, isConnecting, reconnectAttempts, handleConnectionLoss]);
+
+  useEffect(() => {
+    if (!hasAttemptedConnection.current) {
+      hasAttemptedConnection.current = true;
+      logger.info('GameClientV2Container', 'Initiating connection', {
+        hasAuthToken: !!authToken,
+        playerName,
+      });
+      connect();
+    }
+
+    return () => {
+      logger.info('GameClientV2Container', 'Cleaning up connection on unmount');
+      disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleCommandSubmit = async (command: string) => {
+    if (!command.trim() || !isConnected) return;
+
+    let normalized = command.trim();
+    const lower = normalized.toLowerCase();
+    const dirMap: Record<string, string> = {
+      n: 'north',
+      s: 'south',
+      e: 'east',
+      w: 'west',
+      ne: 'northeast',
+      nw: 'northwest',
+      se: 'southeast',
+      sw: 'southwest',
+      u: 'up',
+      d: 'down',
+      up: 'up',
+      down: 'down',
+    };
+
+    const parts = normalized.split(/\s+/);
+    if (parts.length === 1 && dirMap[lower]) {
+      normalized = `go ${dirMap[lower]}`;
+    } else if (parts.length === 2) {
+      const [verb, arg] = [parts[0].toLowerCase(), parts[1].toLowerCase()];
+      if ((verb === 'go' || verb === 'look') && dirMap[arg]) {
+        normalized = `${verb} ${dirMap[arg]}`;
+      }
+    }
+
+    setGameState(prev => ({ ...prev, commandHistory: [...prev.commandHistory, normalized] }));
+
+    const commandParts = normalized.split(/\s+/);
+    const commandName = commandParts[0];
+    const commandArgs = commandParts.slice(1);
+
+    const success = await sendCommand(commandName, commandArgs);
+    if (!success) {
+      logger.error('GameClientV2Container', 'Failed to send command', { command: commandName, args: commandArgs });
+    }
+  };
+
+  const handleChatMessage = async (message: string, channel: string) => {
+    if (!message.trim() || !isConnected) return;
+
+    const sanitizedMessage = inputSanitizer.sanitizeChatMessage(message);
+    const sanitizedChannel = inputSanitizer.sanitizeCommand(channel);
+
+    if (!sanitizedMessage.trim()) {
+      logger.warn('GameClientV2Container', 'Chat message was empty after sanitization');
+      return;
+    }
+
+    const success = await sendCommand('chat', [sanitizedChannel, sanitizedMessage]);
+    if (!success) {
+      logger.error('GameClientV2Container', 'Failed to send chat message', {
+        channel: sanitizedChannel,
+        message: sanitizedMessage,
+      });
+    }
+  };
+
+  const handleClearMessages = () => {
+    setGameState(prev => ({ ...prev, messages: [] }));
+  };
+
+  const handleClearHistory = () => {
+    setGameState(prev => ({ ...prev, commandHistory: [] }));
+  };
+
+  const handleLogout = () => {
+    const logoutMessage: ChatMessage = sanitizeChatMessageForState({
+      text: 'You have been logged out of the MythosMUD server.',
+      timestamp: new Date().toISOString(),
+      messageType: 'system',
+      isHtml: false,
+    });
+
+    setGameState(prev => ({
+      ...prev,
+      messages: [...prev.messages, logoutMessage],
+    }));
+
+    setTimeout(() => {
+      if (onLogout) {
+        onLogout();
+      } else {
+        disconnect();
+      }
+    }, 500);
+  };
+
+  const handleRespawn = async () => {
+    logger.info('GameClientV2Container', 'Respawn requested');
+    setIsRespawning(true);
+
+    try {
+      const response = await fetch('/api/players/respawn', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        logger.error('GameClientV2Container', 'Respawn failed', {
+          status: response.status,
+          error: errorData,
+        });
+
+        const errorMessage: ChatMessage = sanitizeChatMessageForState({
+          text: `Respawn failed: ${errorData.detail || 'Unknown error'}`,
+          timestamp: new Date().toISOString(),
+          messageType: 'error',
+          isHtml: false,
+        });
+
+        setGameState(prev => ({
+          ...prev,
+          messages: [...prev.messages, errorMessage],
+        }));
+
+        setIsRespawning(false);
+        return;
+      }
+
+      const respawnData = await response.json();
+      logger.info('GameClientV2Container', 'Respawn successful', {
+        room: respawnData.room,
+        player: respawnData.player,
+      });
+
+      setIsDead(false);
+      setIsMortallyWounded(false);
+      setIsRespawning(false);
+
+      setGameState(prev => ({
+        ...prev,
+        player: {
+          ...prev.player,
+          ...respawnData.player,
+          stats: {
+            ...prev.player?.stats,
+            current_health: respawnData.player.hp,
+          },
+        } as Player,
+        room: respawnData.room as Room,
+      }));
+
+      const respawnMessage: ChatMessage = sanitizeChatMessageForState({
+        text: 'You feel a chilling wind as your form reconstitutes in Arkham General Hospital...',
+        timestamp: new Date().toISOString(),
+        messageType: 'system',
+        isHtml: false,
+      });
+
+      setGameState(prev => ({
+        ...prev,
+        messages: [...prev.messages, respawnMessage],
+      }));
+    } catch (error) {
+      logger.error('GameClientV2Container', 'Error calling respawn API', { error });
+
+      const errorMessage: ChatMessage = sanitizeChatMessageForState({
+        text: 'Failed to respawn due to network error. Please try again.',
+        timestamp: new Date().toISOString(),
+        messageType: 'error',
+        isHtml: false,
+      });
+
+      setGameState(prev => ({
+        ...prev,
+        messages: [...prev.messages, errorMessage],
+      }));
+
+      setIsRespawning(false);
+    }
+  };
+
+  return (
+    <div className={`game-terminal-container ${isMortallyWounded ? 'mortally-wounded' : ''} ${isDead ? 'dead' : ''}`}>
+      <GameClientV2
+        playerName={playerName}
+        authToken={authToken}
+        onLogout={handleLogout}
+        isLoggingOut={isLoggingOut}
+        player={gameState.player}
+        room={gameState.room}
+        messages={gameState.messages}
+        commandHistory={gameState.commandHistory}
+        isConnected={isConnected}
+        isConnecting={isConnecting}
+        error={error}
+        reconnectAttempts={reconnectAttempts}
+        mythosTime={mythosTime}
+        healthStatus={healthStatus}
+        sanityStatus={sanityStatus}
+        onSendCommand={handleCommandSubmit}
+        onSendChatMessage={handleChatMessage}
+        onClearMessages={handleClearMessages}
+        onClearHistory={handleClearHistory}
+        onDownloadLogs={() => logger.downloadLogs()}
+      />
+
+      <DeathInterstitial
+        isVisible={isDead}
+        deathLocation={deathLocation}
+        onRespawn={handleRespawn}
+        isRespawning={isRespawning}
+      />
+    </div>
+  );
+};

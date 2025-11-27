@@ -6,18 +6,18 @@
  * AI: Extracted from useGameConnection to reduce complexity and improve testability.
  */
 
-
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { logger } from '../utils/logger';
 import { useResourceCleanup } from '../utils/resourceCleanup';
-
 
 // Helper to generate a secure random string of given length
 function generateSecureRandomString(length: number): string {
   const array = new Uint8Array(length);
   window.crypto.getRandomValues(array);
   // Convert bytes to hex string
-  return Array.from(array, b => b.toString(16).padStart(2, '0')).join('').substr(0, length);
+  return Array.from(array, b => b.toString(16).padStart(2, '0'))
+    .join('')
+    .substr(0, length);
 }
 export interface SSEConnectionOptions {
   authToken: string;

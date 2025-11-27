@@ -10,8 +10,8 @@ import { inputSanitizer, secureTokenStorage } from './utils/security';
 const EldritchEffectsDemo = lazy(() =>
   import('./components/EldritchEffectsDemo').then(m => ({ default: m.EldritchEffectsDemo }))
 );
-const GameTerminalWithPanels = lazy(() =>
-  import('./components/GameTerminalWithPanels').then(m => ({ default: m.GameTerminalWithPanels }))
+const GameClientV2Container = lazy(() =>
+  import('./components/ui-v2/GameClientV2Container').then(m => ({ default: m.GameClientV2Container }))
 );
 const MotdInterstitialScreen = lazy(() =>
   import('./components/MotdInterstitialScreen').then(m => ({ default: m.MotdInterstitialScreen }))
@@ -286,13 +286,13 @@ function App() {
     focusUsernameInput();
   };
 
-  // Reference to store the disconnect callback from GameTerminalWithPanels
+  // Reference to store the disconnect callback from GameClientV2Container
   const disconnectCallbackRef = useRef<(() => void) | null>(null);
 
   // Reference to the username input for focus management
   const usernameInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Callback to register the disconnect function from GameTerminalWithPanels
+  // Callback to register the disconnect function from GameClientV2Container
   const handleDisconnectCallback = (disconnectFn: () => void) => {
     disconnectCallbackRef.current = disconnectFn;
   };
@@ -333,7 +333,7 @@ function App() {
       await logoutHandler({
         authToken,
         disconnect: () => {
-          // Call the disconnect callback from GameTerminalWithPanels
+          // Call the disconnect callback from GameClientV2Container
           if (disconnectCallbackRef.current) {
             disconnectCallbackRef.current();
           }
@@ -539,7 +539,7 @@ function App() {
     );
   }
 
-  // Ensure we have a valid token before rendering GameTerminalWithPanels
+  // Ensure we have a valid token before rendering GameClientV2Container
   // Restore from secure storage if state was lost (defensive check)
   const finalAuthToken = authToken || secureTokenStorage.getToken() || '';
 
@@ -562,7 +562,7 @@ function App() {
   return (
     <div className="App">
       <Suspense fallback={<LoadingFallback />}>
-        <GameTerminalWithPanels
+        <GameClientV2Container
           playerName={characterName || playerName}
           authToken={finalAuthToken}
           onLogout={handleLogout}
