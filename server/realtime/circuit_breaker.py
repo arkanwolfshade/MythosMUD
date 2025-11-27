@@ -208,6 +208,21 @@ class CircuitBreaker:
 
         AI: Timeout gives downstream service time to recover.
         """
+        # Use last_state_change when circuit is OPEN to track when it opened
+        # This is more reliable than last_failure_time which might be set earlier
+        if self.state == CircuitState.OPEN:
+            time_since_open = datetime.now(UTC) - self.last_state_change
+            should_reset = time_since_open >= self.timeout
+
+            if should_reset:
+                logger.info(
+                    "Circuit breaker timeout expired, attempting reset",
+                    time_since_open=time_since_open.total_seconds(),
+                )
+
+            return should_reset
+
+        # Fallback to last_failure_time for other states (shouldn't happen in normal flow)
         if self.last_failure_time is None:
             return True
 
@@ -231,11 +246,12 @@ class CircuitBreaker:
 
         AI: For user feedback and monitoring.
         """
-        if self.last_failure_time is None or self.state != CircuitState.OPEN:
+        if self.state != CircuitState.OPEN:
             return 0.0
 
-        time_since_failure = datetime.now(UTC) - self.last_failure_time
-        time_until = self.timeout - time_since_failure
+        # Use last_state_change when circuit is OPEN to track when it opened
+        time_since_open = datetime.now(UTC) - self.last_state_change
+        time_until = self.timeout - time_since_open
         return max(0.0, time_until.total_seconds())
 
     def _transition_to(self, new_state: CircuitState) -> None:
