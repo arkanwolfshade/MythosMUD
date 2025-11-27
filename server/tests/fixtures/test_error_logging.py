@@ -651,6 +651,8 @@ class TestCreateContextFromWebSocket:
         # Mock WebSocket
         mock_websocket = Mock(spec=WebSocket)
         mock_websocket.url = Mock()
+        # nosemgrep: javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket
+        # This is a test mock, not a production WebSocket connection
         mock_websocket.url.__str__ = Mock(return_value="ws://test.com/ws/game")
         mock_websocket.headers = {"user-agent": "websocket-client/1.0"}
         mock_websocket.client = Mock()
@@ -672,6 +674,8 @@ class TestCreateContextFromWebSocket:
 
         mock_websocket = Mock(spec=WebSocket)
         mock_websocket.url = Mock()
+        # nosemgrep: javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket
+        # This is a test mock, not a production WebSocket connection
         mock_websocket.url.__str__ = Mock(return_value="ws://test.com/ws/game")
         mock_websocket.headers = {}
         mock_websocket.client = None
@@ -692,6 +696,8 @@ class TestCreateContextFromWebSocket:
 
         mock_websocket = Mock(spec=WebSocket)
         mock_websocket.url = Mock()
+        # nosemgrep: javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket
+        # This is a test mock, not a production WebSocket connection
         mock_websocket.url.__str__ = Mock(return_value="ws://test.com/ws/game")
         mock_websocket.headers = {}
         mock_websocket.client = None

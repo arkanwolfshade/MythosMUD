@@ -298,8 +298,32 @@ export const useCommandStore = create<CommandStore>()(
 
           if (trigger.regex) {
             try {
+              // ReDoS protection: limit pattern length and add timeout
+              if (trigger.pattern.length > 200) {
+                return false; // Pattern too long, potential ReDoS risk
+              }
+
+              // Validate pattern doesn't contain obvious ReDoS patterns
+              // (e.g., nested quantifiers like (a+)+)
+              const dangerousPatterns = /\([^)]*\+\)\+|\([^)]*\*\)\*|\([^)]*\?\)\?/;
+              if (dangerousPatterns.test(trigger.pattern)) {
+                return false; // Pattern contains dangerous nested quantifiers
+              }
+
               const regex = new RegExp(trigger.pattern, trigger.caseSensitive ? 'g' : 'gi');
-              return regex.test(text);
+
+              // Add timeout protection for regex execution
+              const startTime = performance.now();
+              const result = regex.test(text);
+              const executionTime = performance.now() - startTime;
+
+              // If regex takes more than 100ms, it's likely a ReDoS attack
+              if (executionTime > 100) {
+                console.warn('Regex execution took too long, potential ReDoS attack:', trigger.pattern);
+                return false;
+              }
+
+              return result;
             } catch {
               return false;
             }

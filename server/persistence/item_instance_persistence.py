@@ -271,25 +271,22 @@ def ensure_item_instance(
         origin_source: Origin source string (optional)
         origin_metadata: Origin metadata dictionary (optional)
     """
-    if not item_instance_exists(conn, item_instance_id):
-        create_item_instance(
-            conn=conn,
-            item_instance_id=item_instance_id,
-            prototype_id=prototype_id,
-            owner_type=owner_type,
-            owner_id=owner_id,
-            quantity=quantity,
-            metadata=metadata,
-            origin_source=origin_source,
-            origin_metadata=origin_metadata,
-        )
-        logger.debug(
-            "Item instance ensured (created)",
-            item_instance_id=item_instance_id,
-            prototype_id=prototype_id,
-        )
-    else:
-        logger.debug(
-            "Item instance already exists",
-            item_instance_id=item_instance_id,
-        )
+    # Always call create_item_instance - it uses ON CONFLICT DO UPDATE
+    # which will update the quantity and other fields if the item instance already exists
+    create_item_instance(
+        conn=conn,
+        item_instance_id=item_instance_id,
+        prototype_id=prototype_id,
+        owner_type=owner_type,
+        owner_id=owner_id,
+        quantity=quantity,
+        metadata=metadata,
+        origin_source=origin_source,
+        origin_metadata=origin_metadata,
+    )
+    logger.debug(
+        "Item instance ensured",
+        item_instance_id=item_instance_id,
+        prototype_id=prototype_id,
+        quantity=quantity,
+    )

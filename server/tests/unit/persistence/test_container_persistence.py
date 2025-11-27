@@ -11,6 +11,7 @@ from __future__ import annotations
 import uuid
 from collections.abc import Iterator
 from datetime import UTC, datetime, timedelta
+from uuid import UUID
 
 import pytest
 
@@ -169,16 +170,18 @@ class TestCreateContainer:
 
     def test_create_container_with_items(self, persistence, sample_room_id: str):
         """Test creating a container with initial items."""
+        # Use item prototype IDs that exist in the database
+        # These must match actual prototype_ids from item_prototypes table
         items = [
             {
-                "item_id": "elder_sign",
-                "item_name": "Elder Sign",
+                "item_id": "equipment.accessory.phosphor_charm",
+                "item_name": "Phosphor Charm",
                 "slot_type": "backpack",
                 "quantity": 1,
             },
             {
-                "item_id": "tome_of_forbidden_knowledge",
-                "item_name": "Tome of Forbidden Knowledge",
+                "item_id": "equipment.off_hand.mirror_ward_tome",
+                "item_name": "Mirror Ward Tome",
                 "slot_type": "backpack",
                 "quantity": 1,
             },
@@ -193,8 +196,8 @@ class TestCreateContainer:
 
         assert container is not None
         assert len(container["items"]) == 2
-        assert container["items"][0]["item_id"] == "elder_sign"
-        assert container["items"][1]["item_id"] == "tome_of_forbidden_knowledge"
+        assert container["items"][0]["item_id"] == "equipment.accessory.phosphor_charm"
+        assert container["items"][1]["item_id"] == "equipment.off_hand.mirror_ward_tome"
 
     def test_create_container_invalid_source_type(self, persistence):
         """Test that invalid source_type is rejected."""
@@ -282,9 +285,22 @@ class TestGetContainer:
         containers = persistence.get_containers_by_room_id(sample_room_id)
 
         assert len(containers) >= 2
-        container_ids = {c["container_id"] for c in containers}
-        assert container1["container_id"] in container_ids
-        assert container2["container_id"] in container_ids
+        # Convert container_ids to strings for comparison (to_dict() returns strings)
+        container_ids = {
+            str(c["container_id"]) if isinstance(c["container_id"], UUID) else c["container_id"] for c in containers
+        }
+        container1_id = (
+            str(container1["container_id"])
+            if isinstance(container1["container_id"], UUID)
+            else container1["container_id"]
+        )
+        container2_id = (
+            str(container2["container_id"])
+            if isinstance(container2["container_id"], UUID)
+            else container2["container_id"]
+        )
+        assert container1_id in container_ids
+        assert container2_id in container_ids
 
     def test_get_containers_by_entity_id(self, persistence, sample_player_id: uuid.UUID):
         """Test retrieving all containers owned by an entity."""
@@ -304,9 +320,22 @@ class TestGetContainer:
         containers = persistence.get_containers_by_entity_id(sample_player_id)
 
         assert len(containers) >= 2
-        container_ids = {c["container_id"] for c in containers}
-        assert container1["container_id"] in container_ids
-        assert container2["container_id"] in container_ids
+        # Convert container_ids to strings for comparison (to_dict() returns strings)
+        container_ids = {
+            str(c["container_id"]) if isinstance(c["container_id"], UUID) else c["container_id"] for c in containers
+        }
+        container1_id = (
+            str(container1["container_id"])
+            if isinstance(container1["container_id"], UUID)
+            else container1["container_id"]
+        )
+        container2_id = (
+            str(container2["container_id"])
+            if isinstance(container2["container_id"], UUID)
+            else container2["container_id"]
+        )
+        assert container1_id in container_ids
+        assert container2_id in container_ids
 
 
 class TestUpdateContainer:
@@ -327,11 +356,12 @@ class TestUpdateContainer:
             else uuid.UUID(created["container_id"])
         )
 
-        # Update items
+        # Update items - use item prototype ID that exists in database
         new_items = [
             {
-                "item_id": "elder_sign",
-                "item_name": "Elder Sign",
+                "item_id": "equipment.accessory.phosphor_charm",
+                "item_instance_id": "equipment.accessory.phosphor_charm",  # Add item_instance_id for foreign key
+                "item_name": "Phosphor Charm",
                 "slot_type": "backpack",
                 "quantity": 1,
             },
@@ -341,7 +371,7 @@ class TestUpdateContainer:
 
         assert updated is not None
         assert len(updated["items"]) == 1
-        assert updated["items"][0]["item_id"] == "elder_sign"
+        assert updated["items"][0]["item_id"] == "equipment.accessory.phosphor_charm"
 
     def test_update_container_lock_state(self, persistence, sample_room_id: str):
         """Test updating container lock state."""

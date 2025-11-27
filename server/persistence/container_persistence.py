@@ -132,6 +132,7 @@ def _fetch_container_items(conn: Any, container_id: UUID) -> list[dict[str, Any]
             "condition": str(condition) if condition else "pristine",
             "position": int(position) if position is not None else 0,
             "metadata": metadata,
+            "slot_type": "backpack",  # Container items need slot_type for inventory validation
         }
         items.append(item)
 
@@ -328,11 +329,38 @@ def create_container(
         updated_at = row["updated_at"]
 
         # Add items to container_contents using stored procedure
+        # First ensure item instances exist, then add them to container
         if items_json:
             cursor = conn.cursor()
             for position, item in enumerate(items_json):
                 item_instance_id = item.get("item_instance_id") or item.get("item_id")
-                if item_instance_id:
+                prototype_id = item.get("item_id") or item.get("prototype_id")
+
+                if item_instance_id and prototype_id:
+                    # Ensure item instance exists in database before adding to container
+                    # This is required for foreign key constraint on container_contents
+                    from .item_instance_persistence import ensure_item_instance
+
+                    try:
+                        ensure_item_instance(
+                            conn,
+                            item_instance_id=item_instance_id,
+                            prototype_id=prototype_id,
+                            owner_type="container",
+                            owner_id=str(container_id),
+                            quantity=item.get("quantity", 1),
+                            metadata=item.get("metadata", {}),
+                        )
+                    except Exception as e:
+                        logger.warning(
+                            "Failed to ensure item instance exists, skipping item",
+                            item_instance_id=item_instance_id,
+                            prototype_id=prototype_id,
+                            error=str(e),
+                        )
+                        continue
+
+                    # Now add item to container
                     cursor.execute(
                         "SELECT add_item_to_container(%s, %s, %s)",
                         (container_id, item_instance_id, position),
@@ -641,9 +669,36 @@ def update_container(
             cursor.execute("SELECT clear_container_contents(%s)", (container_id,))
 
             # Then add each item using stored procedure
+            # First ensure item instances exist, then add them to container
+            from .item_instance_persistence import ensure_item_instance
+
             for position, item in enumerate(items_json):
                 item_instance_id = item.get("item_instance_id") or item.get("item_id")
-                if item_instance_id:
+                prototype_id = item.get("item_id") or item.get("prototype_id")
+
+                if item_instance_id and prototype_id:
+                    # Ensure item instance exists in database before adding to container
+                    # This is required for foreign key constraint on container_contents
+                    try:
+                        ensure_item_instance(
+                            conn,
+                            item_instance_id=item_instance_id,
+                            prototype_id=prototype_id,
+                            owner_type="container",
+                            owner_id=str(container_id),
+                            quantity=item.get("quantity", 1),
+                            metadata=item.get("metadata", {}),
+                        )
+                    except Exception as e:
+                        logger.warning(
+                            "Failed to ensure item instance exists, skipping item",
+                            item_instance_id=item_instance_id,
+                            prototype_id=prototype_id,
+                            error=str(e),
+                        )
+                        continue
+
+                    # Now add item to container
                     cursor.execute(
                         "SELECT add_item_to_container(%s, %s, %s)",
                         (container_id, item_instance_id, position),
@@ -657,7 +712,11 @@ def update_container(
             updates.append("metadata_json = %s::jsonb")
             params.append(json.dumps(metadata_json))
 
+        # Initialize row variable
+        row = None
+
         if updates:
+            # Always update updated_at
             updates.append("updated_at = %s")
             params.append(current_time)
             params.append(container_id)
@@ -672,8 +731,22 @@ def update_container(
                 params,
             )
             row = cursor.fetchone()
-        else:
-            row = None
+        elif items_json is not None:
+            # If only items_json was provided, still update updated_at
+            updates.append("updated_at = %s")
+            params.append(current_time)
+            params.append(container_id)
+
+            cursor.execute(
+                f"""
+                UPDATE containers
+                SET {", ".join(updates)}
+                WHERE container_instance_id = %s
+                RETURNING container_instance_id
+                """,
+                params,
+            )
+            row = cursor.fetchone()
 
         conn.commit()
         cursor.close()

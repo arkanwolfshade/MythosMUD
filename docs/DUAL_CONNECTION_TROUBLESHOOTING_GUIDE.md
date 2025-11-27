@@ -85,6 +85,8 @@ ping yourdomain.com
 telnet yourdomain.com 8000
 
 # Test WebSocket connectivity
+<!-- nosemgrep: javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket -->
+<!-- This is documentation showing example WebSocket URLs, not production code -->
 wscat -c ws://yourdomain.com/ws/test_player
 
 # Test SSE connectivity

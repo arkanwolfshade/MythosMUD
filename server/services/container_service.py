@@ -359,9 +359,10 @@ class ContainerService:
         # Verify container is open (using the open token)
         self._verify_container_open(container_id, player_id, mutation_token)
 
-        # Generate a new unique mutation token for this transfer operation
-        # This prevents false duplicate detection when multiple operations use the same open token
-        transfer_mutation_token = str(uuid.uuid4())
+        # Use the original mutation token for the mutation guard
+        # This ensures that duplicate operations with the same token are prevented
+        # The mutation guard will detect if the same token is used multiple times
+        transfer_mutation_token = mutation_token
 
         # Get container
         container_data = self.persistence.get_container(container_id)
@@ -449,10 +450,13 @@ class ContainerService:
 
             # Prepare item for transfer
             transfer_item = item.copy()
-            if quantity and quantity < transfer_item.get("quantity", 1):
+            if quantity is not None:
+                # Use the provided quantity (may be less than or equal to item quantity)
                 transfer_item["quantity"] = quantity
 
             # Add item to container using InventoryService
+            # Note: slot_type is always present in items from containers and player inventory
+            # If missing, add_stack will raise InventoryValidationError
             try:
                 new_container_items = self.inventory_service.add_stack(container.items, transfer_item)
             except InventoryCapacityError as e:
@@ -563,9 +567,10 @@ class ContainerService:
         # Verify container is open (using the open token)
         self._verify_container_open(container_id, player_id, mutation_token)
 
-        # Generate a new unique mutation token for this transfer operation
-        # This prevents false duplicate detection when multiple operations use the same open token
-        transfer_mutation_token = str(uuid.uuid4())
+        # Use the original mutation token for the mutation guard
+        # This ensures that duplicate operations with the same token are prevented
+        # The mutation guard will detect if the same token is used multiple times
+        transfer_mutation_token = mutation_token
 
         # Get container
         container_data = self.persistence.get_container(container_id)

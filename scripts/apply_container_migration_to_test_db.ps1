@@ -122,7 +122,8 @@ try {
     Write-Host "Migration completed successfully! ✓" -ForegroundColor Green
 
 } catch {
-    Write-Host "[ERROR] Migration failed: $_" -ForegroundColor Red
+    $errorMessage = $_.Exception.Message
+    Write-Host "[ERROR] Migration failed: $errorMessage" -ForegroundColor Red
     exit 1
 } finally {
     Remove-Item Env:\PGPASSWORD -ErrorAction SilentlyContinue

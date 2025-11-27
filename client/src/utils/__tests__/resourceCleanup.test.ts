@@ -70,6 +70,8 @@ describe('ResourceManager', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     resourceManager = new ResourceManager();
+    // nosemgrep: javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket
+    // This is a test mock, not a production WebSocket connection
     mockWebSocket = new MockWebSocket('ws://test');
     mockEventSource = new MockEventSource('http://test');
   });
@@ -140,6 +142,8 @@ describe('ResourceManager', () => {
     });
 
     it('should handle multiple WebSocket connections', () => {
+      // nosemgrep: javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket
+      // These are test mocks, not production WebSocket connections
       const ws1 = new MockWebSocket('ws://test1');
       const ws2 = new MockWebSocket('ws://test2');
 
@@ -214,6 +218,8 @@ describe('ResourceManager', () => {
     it('should cleanup all types of resources', () => {
       const timer = window.setTimeout(() => {}, 1000);
       const interval = window.setInterval(() => {}, 1000);
+      // nosemgrep: javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket
+      // This is a test mock, not a production WebSocket connection
       const ws = new MockWebSocket('ws://test');
       const es = new MockEventSource('http://test');
       const customResource = { cleanup: vi.fn() };
@@ -245,6 +251,8 @@ describe('ResourceManager', () => {
     it('should provide resource statistics', () => {
       const timer = window.setTimeout(() => {}, 1000);
       const interval = window.setInterval(() => {}, 1000);
+      // nosemgrep: javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket
+      // This is a test mock, not a production WebSocket connection
       const ws = new MockWebSocket('ws://test');
       const es = new MockEventSource('http://test');
       const customResource = { cleanup: vi.fn() };
