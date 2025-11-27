@@ -6,10 +6,19 @@
  * AI: Extracted from useGameConnection to reduce complexity and improve testability.
  */
 
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { logger } from '../utils/logger';
 import { useResourceCleanup } from '../utils/resourceCleanup';
 
+
+// Helper to generate a secure random string of given length
+function generateSecureRandomString(length: number): string {
+  const array = new Uint8Array(length);
+  window.crypto.getRandomValues(array);
+  // Convert bytes to hex string
+  return Array.from(array, b => b.toString(16).padStart(2, '0')).join('').substr(0, length);
+}
 export interface SSEConnectionOptions {
   authToken: string;
   sessionId: string | null;
@@ -111,7 +120,7 @@ export function useSSEConnection(options: SSEConnectionOptions): SSEConnectionRe
         // when the connection is restored after a page reload or reconnect
         if (readyState === EventSource.OPEN) {
           // SSE is fully connected - use provided sessionId or generate one
-          const sseSessionId = sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+          const sseSessionId = sessionId || `session_${Date.now()}_${generateSecureRandomString(16)}`;
           logger.debug('SSEConnection', 'SSE already connected, calling onConnected with sessionId', {
             sessionId: sseSessionId,
             readyState,
