@@ -244,18 +244,11 @@ export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
           <h4>{displayRoom.name}</h4>
         </div>
 
-        {/* Zone */}
-        <div className="room-zone">
-          <span className="zone-label">Zone:</span>
-          <span className="zone-value" data-testid="zone-value">
-            {formatLocationName(displayRoom.zone || 'Unknown')}
-          </span>
-        </div>
-
-        {/* Subzone */}
-        <div className="room-subzone">
-          <span className="subzone-label">Subzone:</span>
-          <span className="subzone-value" data-testid="subzone-value">
+        {/* Zone and Subzone */}
+        <div className="room-location">
+          <span className="location-label">Location:</span>
+          <span className="location-value" data-testid="location-value">
+            {formatLocationName(displayRoom.zone || 'Unknown')} /{' '}
             {formatLocationName(displayRoom.sub_zone || 'Unknown')}
           </span>
         </div>

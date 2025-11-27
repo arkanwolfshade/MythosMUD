@@ -159,10 +159,25 @@ class Player(Base):
         self.stats = stats  # type: ignore[assignment]
 
     def get_inventory(self) -> list[dict[str, Any]]:
-        """Get player inventory as list."""
+        """Get player inventory as list.
+
+        Handles both JSON string (from database) and list (in-memory) formats.
+        """
         try:
-            return cast(list[dict[str, Any]], json.loads(cast(str, self.inventory)))
-        except (json.JSONDecodeError, TypeError):
+            # At runtime, self.inventory is the actual value (string), not the Column descriptor
+            # SQLAlchemy columns return their values at runtime, not the Column object
+            # We need to access the value directly, which mypy doesn't understand
+            inventory_value = getattr(self, "inventory", "[]")
+            if isinstance(inventory_value, list):
+                # Already a list (in-memory format after persistence fix)
+                return cast(list[dict[str, Any]], inventory_value)
+            elif isinstance(inventory_value, str):
+                # JSON string (from database or legacy format)
+                return cast(list[dict[str, Any]], json.loads(inventory_value))
+            else:
+                # Handle None or other types
+                return []
+        except (json.JSONDecodeError, TypeError, AttributeError):
             return []
 
     def set_inventory(self, inventory: list[dict[str, Any]]) -> None:

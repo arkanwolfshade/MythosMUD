@@ -16,29 +16,156 @@ logger = get_logger(__name__)
 COMMANDS: dict[str, dict[str, Any]] = {
     "look": {
         "category": "Exploration",
-        "description": ("Examine your surroundings or look in a specific direction"),
-        "usage": "look [direction] or /look [direction]",
-        "examples": ["look", "look north", "look east", "/look", "/look north"],
+        "description": ("Examine your surroundings, look at players, items, containers, or peer in a direction"),
+        "usage": "look [target] or /look [target]",
+        "examples": [
+            "look",
+            "look north",
+            "look player Armitage",
+            "look item lantern",
+            "look container backpack",
+            "look in backpack",
+            "look backpack-2",
+        ],
         "detailed_help": """
 <div style="color: #8B4513;">
 <h3>LOOK Command</h3>
 <p>The ancient texts speak of observation as the first step toward understanding.
-Use this command to examine your surroundings or peer into the unknown.</p>
+Use this command to examine your surroundings, inspect items, examine containers,
+or peer into the unknown.</p>
 
 <h4>Usage:</h4>
 <ul>
 <li><strong>look</strong> - Examine your current location</li>
-<li><strong>look [direction]</strong> - Look in a specific direction (north, south, east, west)</li>
+<li><strong>look [direction]</strong> - Look in a specific direction (north, south, east, west, up, down)</li>
+<li><strong>look player [name]</strong> - Look at another player</li>
+<li><strong>look item [name]</strong> - Examine an item (in room, inventory, or equipped)</li>
+<li><strong>look container [name]</strong> - Examine a container</li>
+<li><strong>look in [container]</strong> - Look inside a container to see its contents</li>
+<li><strong>look [name]-[number]</strong> or <strong>look [name] [number]</strong> - Target specific instance when multiple exist</li>
 </ul>
 
 <h4>Examples:</h4>
 <ul>
 <li>look</li>
 <li>look north</li>
-<li>look east</li>
+<li>look player Armitage</li>
+<li>look item lantern</li>
+<li>look container backpack</li>
+<li>look in backpack</li>
+<li>look backpack-2</li>
+<li>look lantern 1</li>
+</ul>
+
+<h4>Target Priority:</h4>
+<p>When using ambiguous targets, the system resolves in this order:</p>
+<ol>
+<li>Players</li>
+<li>NPCs</li>
+<li>Items (room drops, inventory, equipped)</li>
+<li>Containers (room containers, wearable containers)</li>
+<li>Directions</li>
+</ol>
+
+<h4>Instance Targeting:</h4>
+<p>When multiple items or containers match a name, use instance numbers:</p>
+<ul>
+<li><strong>look backpack-2</strong> - Look at the second backpack</li>
+<li><strong>look lantern 1</strong> - Look at the first lantern</li>
+</ul>
+
+<h4>Container Inspection:</h4>
+<p>To see the contents of a container, use the "in" keyword:</p>
+<ul>
+<li><strong>look in backpack</strong> - See what's inside your backpack</li>
+<li><strong>look container chest</strong> - Examine a chest (shows capacity and lock status)</li>
 </ul>
 
 <p>As the Necronomicon suggests: "That which can be seen may yet remain unseen to the untrained eye."</p>
+</div>
+""",
+    },
+    "put": {
+        "category": "Inventory",
+        "description": "Put an item from your inventory into a container",
+        "usage": "put <item> [in] <container> [quantity]",
+        "examples": [
+            "put lantern in backpack",
+            "put lantern backpack",
+            "put 1 in backpack",
+            "put lantern in backpack 2",
+        ],
+        "detailed_help": """
+<div style="color: #8B4513;">
+<h3>PUT Command</h3>
+<p>Transfer items from your inventory into a container. The "in" keyword is optional,
+making the command more natural to use.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>put &lt;item&gt; [in] &lt;container&gt; [quantity]</strong> - Put item into container</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>put lantern in backpack</li>
+<li>put lantern backpack</li>
+<li>put 1 in backpack</li>
+<li>put lantern in backpack 2</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>The "in" keyword is optional - both "put lantern backpack" and "put lantern in backpack" work</li>
+<li>You can use item names or inventory numbers</li>
+<li>You can specify quantity to put only part of a stack</li>
+<li>Container must be accessible (in room or equipped)</li>
+<li>Container must have available capacity</li>
+</ul>
+
+<p>As noted in the restricted archives: "Proper storage of artifacts prevents dimensional contamination."</p>
+</div>
+""",
+    },
+    "get": {
+        "category": "Inventory",
+        "description": "Get an item from a container into your inventory",
+        "usage": "get <item> [from] <container> [quantity]",
+        "examples": [
+            "get lantern from backpack",
+            "get lantern backpack",
+            "get 1 from backpack",
+            "get lantern from backpack 2",
+        ],
+        "detailed_help": """
+<div style="color: #8B4513;">
+<h3>GET Command</h3>
+<p>Transfer items from a container into your inventory. The "from" keyword is optional,
+making the command more natural to use.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>get &lt;item&gt; [from] &lt;container&gt; [quantity]</strong> - Get item from container</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>get lantern from backpack</li>
+<li>get lantern backpack</li>
+<li>get 1 from backpack</li>
+<li>get lantern from backpack 2</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>The "from" keyword is optional - both "get lantern backpack" and "get lantern from backpack" work</li>
+<li>You can use item names or container item numbers</li>
+<li>You can specify quantity to get only part of a stack</li>
+<li>Container must be accessible (in room or equipped)</li>
+<li>Your inventory must have available capacity</li>
+</ul>
+
+<p>As noted in the restricted archives: "Retrieval of stored artifacts requires careful handling."</p>
 </div>
 """,
     },

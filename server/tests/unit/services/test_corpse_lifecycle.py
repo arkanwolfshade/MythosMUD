@@ -361,8 +361,8 @@ class TestCorpseCleanup:
         # Verify container was deleted
         mock_persistence.delete_container.assert_called_once_with(decayed_corpse.container_id)
 
-        # Verify decay event was emitted
-        mock_connection_manager.broadcast_room_event.assert_called_once()
+        # Note: Event emission is deferred to async cleanup task in lifespan.py
+        # The service itself doesn't call broadcast_room_event directly
 
     def test_cleanup_corpse_not_found(self, mock_persistence, mock_connection_manager):
         """Test cleanup when corpse doesn't exist."""
@@ -380,7 +380,12 @@ class TestCorpseCleanup:
         self, mock_persistence, mock_connection_manager, mock_time_service, sample_room_id
     ):
         """Test cleaning up multiple decayed corpses in a room."""
-        # Create multiple decayed corpses
+        # Set up time reference first
+        base_time = datetime.now(UTC)
+        decay_time = base_time - timedelta(hours=1)  # 1 hour ago
+        current_time = base_time  # Now
+
+        # Create multiple decayed corpses with decay_at in the past
         decayed_corpses = [
             ContainerComponent(
                 container_id=uuid.uuid4(),
@@ -388,18 +393,27 @@ class TestCorpseCleanup:
                 owner_id=uuid.uuid4(),
                 room_id=sample_room_id,
                 capacity_slots=20,
-                decay_at=datetime.now(UTC) - timedelta(hours=1),
+                decay_at=decay_time,  # All decayed 1 hour ago
                 items=[],
             )
             for _ in range(3)
         ]
 
-        # Serialize corpses properly - use model_dump with json-compatible mode
-        containers_data = [corpse.model_dump(mode="json") for corpse in decayed_corpses]
+        # Use model_dump() (not mode="json") to preserve Python types including datetime
+        containers_data = [corpse.model_dump() for corpse in decayed_corpses]
         mock_persistence.get_containers_by_room_id.return_value = containers_data
 
-        # Set current time to be after decay_at (1 hour later)
-        current_time = datetime.now(UTC)
+        # Mock get_container to return each corpse when cleanup_decayed_corpse calls it
+        # This is needed because cleanup_decayed_corpse calls get_container(container_id)
+        def get_container_side_effect(container_id):
+            for corpse in decayed_corpses:
+                if corpse.container_id == container_id:
+                    return corpse.model_dump()
+            return None
+
+        mock_persistence.get_container.side_effect = get_container_side_effect
+
+        # Set current time to be after decay_at
         mock_time_service.get_current_mythos_datetime.return_value = current_time
 
         service = CorpseLifecycleService(

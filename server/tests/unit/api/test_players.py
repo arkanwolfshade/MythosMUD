@@ -20,6 +20,7 @@ from server.api.players import (
     FearRequest,
     HealRequest,
     OccultKnowledgeRequest,
+    RollStatsRequest,
     SanityLossRequest,
     apply_corruption,
     apply_fear,
@@ -620,8 +621,9 @@ class TestCharacterCreation:
         mock_stats_generator_class.return_value = mock_generator
 
         # Pass the mock generator directly since we're calling the function directly (not through FastAPI DI)
+        request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=None)
         result = await roll_character_stats(
-            mock_request, "3d6", None, 10, current_user=mock_current_user, stats_generator=mock_generator
+            request_data, mock_request, max_attempts=10, current_user=mock_current_user, stats_generator=mock_generator
         )
 
         assert "stats" in result
@@ -640,9 +642,14 @@ class TestCharacterCreation:
 
         # Create a mock generator for the function call
         mock_generator = Mock()
+        request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=None)
         with pytest.raises(LoggedHTTPException) as exc_info:
             await roll_character_stats(
-                mock_request, "3d6", None, 10, current_user=mock_current_user, stats_generator=mock_generator
+                request_data,
+                mock_request,
+                max_attempts=10,
+                current_user=mock_current_user,
+                stats_generator=mock_generator,
             )
 
         assert exc_info.value.status_code == 429
@@ -653,8 +660,11 @@ class TestCharacterCreation:
         """Test stats rolling with authentication failure."""
         # Create a mock generator for the function call
         mock_generator = Mock()
+        request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=None)
         with pytest.raises(LoggedHTTPException) as exc_info:
-            await roll_character_stats(mock_request, "3d6", None, 10, current_user=None, stats_generator=mock_generator)
+            await roll_character_stats(
+                request_data, mock_request, max_attempts=10, current_user=None, stats_generator=mock_generator
+            )
 
         assert exc_info.value.status_code == 401
         assert "Authentication required" in str(exc_info.value.detail)
@@ -672,9 +682,14 @@ class TestCharacterCreation:
         mock_generator.roll_stats_with_validation.side_effect = Exception("Validation failed")
         mock_stats_generator_class.return_value = mock_generator
 
+        request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=None)
         with pytest.raises(HTTPException) as exc_info:
             await roll_character_stats(
-                mock_request, "3d6", None, 10, current_user=mock_current_user, stats_generator=mock_generator
+                request_data,
+                mock_request,
+                max_attempts=10,
+                current_user=mock_current_user,
+                stats_generator=mock_generator,
             )
 
         assert exc_info.value.status_code == 500
@@ -821,12 +836,11 @@ class TestCharacterCreation:
         mock_generator.get_stat_summary.return_value = {"total": 73, "average": 12.17}
         mock_stats_generator_class.return_value = mock_generator
 
+        request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=0)
         result = await roll_character_stats(
+            request_data,
             mock_request,
-            "3d6",
-            None,
-            10,
-            profession_id=0,
+            max_attempts=10,
             current_user=mock_current_user,
             stats_generator=mock_generator,
         )
@@ -856,12 +870,11 @@ class TestCharacterCreation:
         mock_generator.get_stat_summary.return_value = {"total": 73, "average": 12.17}
         mock_stats_generator_class.return_value = mock_generator
 
+        request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=1)
         result = await roll_character_stats(
+            request_data,
             mock_request,
-            "3d6",
-            None,
-            10,
-            profession_id=1,
+            max_attempts=10,
             current_user=mock_current_user,
             stats_generator=mock_generator,
         )
@@ -886,13 +899,12 @@ class TestCharacterCreation:
         mock_generator.roll_stats_with_profession.side_effect = ValueError("Invalid profession ID")
         mock_stats_generator_class.return_value = mock_generator
 
+        request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=999)
         with pytest.raises(HTTPException) as exc_info:
             await roll_character_stats(
+                request_data,
                 mock_request,
-                "3d6",
-                None,
-                10,
-                profession_id=999,
+                max_attempts=10,
                 current_user=mock_current_user,
                 stats_generator=mock_generator,
             )
@@ -913,13 +925,12 @@ class TestCharacterCreation:
         mock_generator.roll_stats_with_profession.side_effect = Exception("Profession validation failed")
         mock_stats_generator_class.return_value = mock_generator
 
+        request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=0)
         with pytest.raises(HTTPException) as exc_info:
             await roll_character_stats(
+                request_data,
                 mock_request,
-                "3d6",
-                None,
-                10,
-                profession_id=0,
+                max_attempts=10,
                 current_user=mock_current_user,
                 stats_generator=mock_generator,
             )

@@ -634,10 +634,11 @@ class TestRateLimitChecking:
         limiter.check_rate_limit("user1")
         limiter.check_rate_limit("user1")
 
-        # Wait for window to expire
-        time.sleep(1.1)
+        # Wait for window to expire (use 1.2 seconds to account for timing imprecision)
+        time.sleep(1.2)
 
         # New request should succeed (old ones cleaned up)
+        # The cleanup happens inside check_rate_limit, so this should work
         assert limiter.check_rate_limit("user1") is True
 
     def test_check_rate_limit_multiple_users_independent(self):

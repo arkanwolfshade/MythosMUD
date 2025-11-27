@@ -260,7 +260,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
   const [hallucinationFeed, setHallucinationFeed] = useState<HallucinationMessage[]>([]);
   const [rescueState, setRescueState] = useState<RescueState | null>(null);
-  const [, setMythosTime] = useState<MythosTimeState | null>(null);
+  const [mythosTime, setMythosTime] = useState<MythosTimeState | null>(null);
 
   // Memory monitoring for this component
   const { detector } = useMemoryMonitor('GameTerminalWithPanels');
@@ -354,9 +354,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
         if (authToken) {
           headers.Authorization = `Bearer ${authToken}`;
         }
-        const origin =
-          typeof window === 'undefined' || !window.location?.origin ? 'http://localhost' : window.location.origin;
-        const response = await fetch(new URL('/game/time', origin).toString(), { headers });
+        // Use relative path - Vite proxy will handle routing to backend
+        const response = await fetch('/game/time', { headers });
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
         }
@@ -681,17 +680,25 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             setSanityStatus(updatedStatus);
             applySanityToPlayer(updatedStatus.current);
 
-            const messageText = buildSanityChangeMessage(updatedStatus, delta, event.data);
-            appendMessage(
-              sanitizeChatMessageForState({
-                text: `[Sanity] ${messageText}`,
-                timestamp: event.timestamp,
-                messageType: 'system',
-                channel: 'system',
-                isHtml: false,
-                tags: ['sanity'],
-              })
-            );
+            // Only show sanity gain messages if player is not at max sanity
+            // Always show sanity loss messages regardless of current sanity
+            const isAtMaxSanity = updatedStatus.current >= updatedStatus.max;
+            const isGain = delta > 0;
+            const shouldShowMessage = !(isAtMaxSanity && isGain);
+
+            if (shouldShowMessage) {
+              const messageText = buildSanityChangeMessage(updatedStatus, delta, event.data);
+              appendMessage(
+                sanitizeChatMessageForState({
+                  text: `[Sanity] ${messageText}`,
+                  timestamp: event.timestamp,
+                  messageType: 'system',
+                  channel: 'system',
+                  isHtml: false,
+                  tags: ['sanity'],
+                })
+              );
+            }
 
             const tierIsCatatonic = updatedStatus.tier === 'catatonic';
             const hasActiveRescueState = rescueStateRef.current && rescueStateRef.current.status !== 'idle';
@@ -2234,6 +2241,16 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
     onError: handleError,
   });
 
+  // Debug logging for connection state
+  useEffect(() => {
+    logger.debug('GameTerminalWithPanels', 'Connection state updated', {
+      isConnected,
+      isConnecting,
+      error,
+      reconnectAttempts,
+    });
+  }, [isConnected, isConnecting, error, reconnectAttempts]);
+
   // Store sendCommand in ref for use in event handlers
   useEffect(() => {
     sendCommandRef.current = sendCommand;
@@ -2517,6 +2534,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
         onClearHistory={handleClearHistory}
         isMortallyWounded={isMortallyWounded}
         isDead={isDead}
+        mythosTime={mythosTime}
       />
 
       {/* Command Help Drawer */}

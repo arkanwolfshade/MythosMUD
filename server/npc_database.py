@@ -177,31 +177,19 @@ def get_npc_engine() -> AsyncEngine | None:
         current_loop_id = id(current_loop)
         if _npc_creation_loop_id is not None and current_loop_id != _npc_creation_loop_id:
             logger.warning(
-                "Event loop changed, disposing and recreating NPC database engine",
+                "Event loop changed, recreating NPC database engine",
                 old_loop_id=_npc_creation_loop_id,
                 new_loop_id=current_loop_id,
             )
-            # Dispose old engine (best effort, may fail if loop is closed)
-            # CRITICAL: Don't try to dispose if loop is closed - just set to None
-            # asyncpg will handle cleanup when the loop closes
-            try:
-                if _npc_engine is not None:
-                    # Check if loop is still valid before attempting disposal
-                    try:
-                        loop = asyncio.get_running_loop()
-                        if not loop.is_closed():
-                            # Try to dispose synchronously if possible, but don't block
-                            # Note: dispose() is async, but we can't await here
-                            # The engine will be cleaned up when the loop closes
-                            pass  # Let the old engine be garbage collected
-                    except RuntimeError:
-                        # Loop is closed or not running - just set to None
-                        pass
-            except Exception as e:
-                logger.warning("Error disposing NPC engine during loop change", error=str(e))
-            # Reset and recreate in current loop
+            # CRITICAL: asyncpg connections MUST be closed in the same event loop they were created in.
+            # We cannot dispose the old engine here because we're already in a different loop.
+            # The old engine will be properly disposed by the test fixture's event_loop cleanup
+            # (which runs in the original loop) or by garbage collection.
+            # For production, this should never happen as there's only one event loop.
+            # Reset and recreate engine for the new loop
             _npc_engine = None
             _npc_async_session_maker = None
+            _npc_creation_loop_id = None
             _initialize_npc_database()
     except RuntimeError:
         # No running loop - that's okay, engine will be created when needed

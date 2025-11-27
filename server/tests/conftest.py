@@ -53,6 +53,7 @@ os.environ.setdefault("SERVER_HOST", "127.0.0.1")
 os.environ.setdefault("LOGGING_ENVIRONMENT", "unit_test")
 
 import asyncio
+import atexit
 import sys
 from pathlib import Path
 from typing import Any
@@ -247,6 +248,87 @@ except (FileNotFoundError, ValueError) as e:
 
 # Set MYTHOSMUD_ENV to enable test-specific config fallbacks
 os.environ["MYTHOSMUD_ENV"] = "test"
+
+
+def _cleanup_on_exit():
+    """Clean up all database connections and event loops when process exits."""
+    # This runs when the Python process exits, ensuring cleanup even if pytest hooks don't run
+    import asyncio
+
+    try:
+        from server.database import get_database_manager
+        from server.npc_database import close_npc_db
+
+        # Try to get or create an event loop for cleanup
+        cleanup_loop = None
+        loop_created = False
+
+        try:
+            loop = asyncio.get_running_loop()
+            cleanup_loop = loop
+        except RuntimeError:
+            # No running loop - try to get the default loop
+            try:
+                cleanup_loop = asyncio.get_event_loop()
+                if cleanup_loop.is_closed():
+                    cleanup_loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(cleanup_loop)
+                    loop_created = True
+            except RuntimeError:
+                # No default loop either - create one
+                cleanup_loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(cleanup_loop)
+                loop_created = True
+
+        if cleanup_loop and not cleanup_loop.is_closed():
+            # Clean up main database
+            try:
+                db_manager = get_database_manager()
+                if db_manager and db_manager.engine:
+                    if cleanup_loop.is_running():
+                        # Can't use run_until_complete on running loop
+                        # Just try to dispose directly
+                        try:
+                            asyncio.run_coroutine_threadsafe(db_manager.close(), cleanup_loop)
+                        except Exception:
+                            pass
+                    else:
+                        cleanup_loop.run_until_complete(db_manager.close())
+            except Exception:
+                pass
+
+            # Clean up NPC database
+            try:
+                if cleanup_loop.is_running():
+                    try:
+                        asyncio.run_coroutine_threadsafe(close_npc_db(), cleanup_loop)
+                    except Exception:
+                        pass
+                else:
+                    cleanup_loop.run_until_complete(close_npc_db())
+            except Exception:
+                pass
+
+            # Close the loop if we created it
+            if loop_created:
+                try:
+                    pending = asyncio.all_tasks(cleanup_loop)
+                    for task in pending:
+                        task.cancel()
+                    if pending:
+                        cleanup_loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
+                    cleanup_loop.close()
+                except Exception:
+                    pass
+
+    except Exception:
+        # Ignore all errors during exit cleanup
+        pass
+
+
+# Register cleanup function to run on process exit
+# This ensures resources are cleaned up even if pytest hooks don't run
+atexit.register(_cleanup_on_exit)
 
 # Set environment variables BEFORE any imports to prevent module-level
 # instantiations from using the wrong paths
@@ -444,6 +526,212 @@ def test_npc_database():
     return npc_db_url
 
 
+@pytest.fixture(scope="function")
+def event_loop():
+    """
+    Override pytest-asyncio's event_loop fixture to ensure proper cleanup.
+
+    This ensures that event loops are properly closed after each test,
+    preventing ResourceWarnings about unclosed event loops and transports.
+
+    CRITICAL: This fixture must properly close all transports and tasks before
+    closing the loop to prevent ResourceWarnings in pytest-xdist workers.
+
+    With asyncio_mode=auto, pytest-asyncio will use this fixture if it exists.
+    """
+    # Create a new event loop for this test
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    yield loop
+
+    # Cleanup happens here - don't use finalizer to avoid double cleanup
+    _cleanup_event_loop(loop)
+
+
+def _cleanup_event_loop(loop):
+    """
+    Helper function to properly clean up an event loop.
+
+    CRITICAL: This must dispose all database engines created in this loop
+    before closing the loop to prevent ResourceWarnings about unclosed transports.
+    """
+    if loop.is_closed():
+        return
+
+    try:
+        # CRITICAL: Dispose database engines BEFORE closing the loop
+        # This prevents ResourceWarnings about unclosed transports from asyncpg
+        try:
+            from server.database import get_database_manager
+            from server.npc_database import get_npc_engine
+
+            # Check if database engines were created in this loop
+            # CRITICAL: asyncpg connections MUST be disposed in the same loop they were created in
+            db_manager = get_database_manager()
+            if db_manager and db_manager.engine and db_manager._creation_loop_id == id(loop):
+                # This engine belongs to this loop - dispose it before closing the loop
+                if not loop.is_closed() and not loop.is_running():
+                    try:
+                        # Use run_until_complete to dispose in this loop
+                        # This is safe because the test has completed and loop is not running
+                        loop.run_until_complete(asyncio.wait_for(db_manager.engine.dispose(), timeout=1.0))
+                    except (TimeoutError, RuntimeError, Exception):
+                        # If disposal fails or times out, continue with cleanup
+                        # The engine will be garbage collected eventually
+                        pass
+
+            # Same for NPC database
+            # CRITICAL: asyncpg connections MUST be disposed in the same loop they were created in
+            npc_engine = get_npc_engine()
+            if npc_engine:
+                try:
+                    from server.npc_database import _npc_creation_loop_id
+
+                    if _npc_creation_loop_id == id(loop):
+                        if not loop.is_closed() and not loop.is_running():
+                            try:
+                                # Use run_until_complete to dispose in this loop
+                                # This is safe because the test has completed and loop is not running
+                                loop.run_until_complete(asyncio.wait_for(npc_engine.dispose(), timeout=1.0))
+                            except (TimeoutError, RuntimeError, Exception):
+                                # If disposal fails or times out, continue with cleanup
+                                # The engine will be garbage collected eventually
+                                pass
+                except Exception:
+                    pass
+        except Exception:
+            # Ignore errors during database cleanup
+            pass
+
+        # Get all tasks and cancel them
+        pending = asyncio.all_tasks(loop)
+        for task in pending:
+            if not task.done():
+                task.cancel()
+
+        # Wait for tasks to complete cancellation (with timeout)
+        if pending:
+            try:
+                loop.run_until_complete(asyncio.wait_for(asyncio.gather(*pending, return_exceptions=True), timeout=0.5))
+            except (TimeoutError, RuntimeError, Exception):
+                # If we can't wait, just proceed to close
+                pass
+
+        # Close all transports explicitly
+        # This is critical for preventing ResourceWarnings about unclosed transports
+        if hasattr(loop, "_transports"):
+            for transport in list(loop._transports.values()):
+                try:
+                    if hasattr(transport, "is_closing") and not transport.is_closing():
+                        transport.close()
+                    elif hasattr(transport, "close"):
+                        transport.close()
+                except Exception:
+                    pass
+
+        # Close the loop
+        loop.close()
+    except Exception:
+        # If cleanup fails, try to close anyway
+        try:
+            if not loop.is_closed():
+                loop.close()
+        except Exception:
+            pass
+
+
+@pytest.fixture(scope="session", autouse=True)
+def cleanup_session_resources():
+    """Ensure all database connections and event loops are properly closed at session end."""
+    import asyncio
+
+    yield
+
+    # Cleanup happens after all tests in the session complete
+    # This ensures resources are closed before worker processes exit
+    try:
+        from server.database import get_database_manager
+        from server.npc_database import close_npc_db
+
+        # Try to get or create an event loop for cleanup
+        cleanup_loop = None
+        loop_created = False
+
+        try:
+            loop = asyncio.get_running_loop()
+            cleanup_loop = loop
+        except RuntimeError:
+            # No running loop - create one for cleanup
+            cleanup_loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(cleanup_loop)
+            loop_created = True
+
+        if cleanup_loop and not cleanup_loop.is_closed():
+            # Clean up main database
+            try:
+                db_manager = get_database_manager()
+                if db_manager and db_manager.engine:
+                    if cleanup_loop.is_running():
+                        task = cleanup_loop.create_task(db_manager.close())
+                        try:
+                            cleanup_loop.run_until_complete(asyncio.wait_for(task, timeout=0.5))
+                        except (TimeoutError, RuntimeError):
+                            pass
+                    else:
+                        cleanup_loop.run_until_complete(db_manager.close())
+            except Exception:
+                pass
+
+            # Clean up NPC database
+            try:
+                if cleanup_loop.is_running():
+                    task = cleanup_loop.create_task(close_npc_db())
+                    try:
+                        cleanup_loop.run_until_complete(asyncio.wait_for(task, timeout=0.5))
+                    except (TimeoutError, RuntimeError):
+                        pass
+                else:
+                    cleanup_loop.run_until_complete(close_npc_db())
+            except Exception:
+                pass
+
+            # Close all remaining tasks and the loop if we created it
+            if loop_created:
+                try:
+                    # Cancel all remaining tasks
+                    pending = asyncio.all_tasks(cleanup_loop)
+                    for task in pending:
+                        task.cancel()
+                    if pending:
+                        cleanup_loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
+                    cleanup_loop.close()
+                except Exception:
+                    pass
+
+        # Also ensure any default event loop is closed
+        try:
+            default_loop = asyncio.get_event_loop()
+            if default_loop and not default_loop.is_closed() and default_loop != cleanup_loop:
+                try:
+                    # Cancel all tasks
+                    pending = asyncio.all_tasks(default_loop)
+                    for task in pending:
+                        task.cancel()
+                    if pending:
+                        default_loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
+                    default_loop.close()
+                except Exception:
+                    pass
+        except RuntimeError:
+            # No default loop - that's fine
+            pass
+
+    except Exception:
+        # Ignore all cleanup errors - process exit will clean up
+        pass
+
+
 @pytest.fixture(autouse=True)  # Enable automatic use for all tests
 def ensure_test_db_ready(test_database):
     """Ensure test database is ready for each test."""
@@ -582,12 +870,28 @@ async def async_test_client(mock_application_container):
     """Create an async test client with properly initialized app state for async tests."""
     from httpx import ASGITransport, AsyncClient
 
+    from ..database import get_database_manager
     from ..events.event_bus import EventBus
     from ..game.player_service import PlayerService
     from ..game.room_service import RoomService
     from ..main import app
     from ..persistence import get_persistence, reset_persistence
     from ..realtime.event_handler import RealTimeEventHandler
+
+    # CRITICAL FIX: Dispose database engine before test to prevent event loop mismatch errors
+    # This ensures the engine is recreated in the current event loop (the test's loop)
+    # rather than using an engine created in a different loop
+    try:
+        db_manager = get_database_manager()
+        if db_manager and db_manager.engine:
+            await db_manager.engine.dispose()
+            # Reset initialization state to force recreation in current loop
+            db_manager._initialized = False
+            db_manager.engine = None
+            db_manager.session_maker = None
+    except Exception:
+        # Ignore errors - engine might not exist yet
+        pass
 
     # Reset persistence to ensure fresh state
     reset_persistence()
@@ -621,24 +925,29 @@ async def async_test_client(mock_application_container):
     app.state.room_service = room_service
 
     transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as client:
-        client.app = app  # Attach app for backward compatibility
-        client.app.state.server_shutdown_pending = False
+    client = AsyncClient(transport=transport, base_url="http://test")
+    client.app = app  # Attach app for backward compatibility
+    client.app.state.server_shutdown_pending = False
+    try:
+        yield client
+    finally:
+        # Explicitly close the client and transport to prevent ResourceWarnings
         try:
-            yield client
-        finally:
-            # Cleanup database connections before event loop closes (Windows-specific fix)
-            # This prevents "Event loop is closed" errors when asyncpg tries to use closed loop
-            try:
-                from ..database import get_database_manager
+            await client.aclose()
+        except Exception:
+            pass
+        # Cleanup database connections before event loop closes (Windows-specific fix)
+        # This prevents "Event loop is closed" errors when asyncpg tries to use closed loop
+        try:
+            from ..database import get_database_manager
 
-                db_manager = get_database_manager()
-                if db_manager and hasattr(db_manager, "engine") and db_manager.engine:
-                    # Dispose of connection pool to close all connections
-                    await db_manager.engine.dispose()
-            except Exception:
-                # Ignore cleanup errors - connections will be cleaned up by process exit
-                pass
+            db_manager = get_database_manager()
+            if db_manager and hasattr(db_manager, "engine") and db_manager.engine:
+                # Dispose of connection pool to close all connections
+                await db_manager.engine.dispose()
+        except Exception:
+            # Ignore cleanup errors - connections will be cleaned up by process exit
+            pass
 
 
 @pytest.fixture
@@ -1196,46 +1505,85 @@ def pytest_sessionstart(session):
 
 def pytest_sessionfinish(session, exitstatus):
     """Called after whole test run finished, right before returning the exit status to the system."""
-    # Ensure database connections are closed before event loop cleanup
+    # CRITICAL: Properly clean up all database connections and event loops to prevent ResourceWarnings
+    # This is especially important for pytest-xdist workers which may exit with unclosed resources
+    import asyncio
+
     try:
-        import asyncio
-
         from server.database import get_database_manager
+        from server.npc_database import close_npc_db, get_npc_engine
 
-        # Try to close database connections if event loop is still available
+        # Create a new event loop for cleanup if needed
+        # This ensures we can properly dispose of resources even if the main loop is closed
+        cleanup_loop = None
+        loop_created = False
+
         try:
-            # Use get_running_loop() for Python 3.12+ compatibility
-            # Falls back to get_event_loop() if no running loop exists
+            # Try to get the running loop first
+            loop = asyncio.get_running_loop()
+            cleanup_loop = loop
+        except RuntimeError:
+            # No running loop - create a new one for cleanup
+            cleanup_loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(cleanup_loop)
+            loop_created = True
+
+        if cleanup_loop and not cleanup_loop.is_closed():
+            # Clean up main database engine
             try:
-                loop = asyncio.get_running_loop()
-            except RuntimeError:
-                # No running loop, use new_event_loop() instead of deprecated get_event_loop()
-                loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(loop)
-            if loop and not loop.is_closed():
                 db_manager = get_database_manager()
-                # Schedule cleanup in the event loop
-                if hasattr(db_manager, "close"):
-                    # Use run_until_complete if possible, otherwise just try to dispose
-                    try:
-                        if loop.is_running():
-                            # Loop is running, create a task
-                            asyncio.create_task(db_manager.close())
-                        else:
-                            # Loop exists but not running, try to run cleanup
-                            loop.run_until_complete(db_manager.close())
-                    except (RuntimeError, AttributeError):
-                        # Event loop issues - try direct disposal
-                        if db_manager.engine:
-                            try:
-                                loop.run_until_complete(db_manager.engine.dispose())
-                            except Exception:
-                                pass  # Ignore cleanup errors during shutdown
-        except (RuntimeError, AttributeError):
-            # No event loop or loop is closed - that's okay, connections will be cleaned up by process exit
-            pass
+                if db_manager and db_manager.engine:
+                    if cleanup_loop.is_running():
+                        # If loop is running, we can't use run_until_complete
+                        # Create a task and hope it completes
+                        task = cleanup_loop.create_task(db_manager.close())
+                        # Give it a brief moment, but don't wait forever
+                        try:
+                            cleanup_loop.run_until_complete(asyncio.wait_for(task, timeout=0.5))
+                        except (TimeoutError, RuntimeError):
+                            # Task didn't complete in time or loop issues - that's okay
+                            pass
+                    else:
+                        # Loop exists but not running - we can use run_until_complete
+                        cleanup_loop.run_until_complete(db_manager.close())
+            except Exception:
+                # Ignore cleanup errors - resources will be cleaned up by process exit
+                pass
+
+            # Clean up NPC database engine
+            try:
+                npc_engine = get_npc_engine()
+                if npc_engine:
+                    if cleanup_loop.is_running():
+                        task = cleanup_loop.create_task(close_npc_db())
+                        try:
+                            cleanup_loop.run_until_complete(asyncio.wait_for(task, timeout=0.5))
+                        except (TimeoutError, RuntimeError):
+                            pass
+                    else:
+                        cleanup_loop.run_until_complete(close_npc_db())
+            except Exception:
+                # Ignore cleanup errors
+                pass
+
+            # Close the cleanup loop if we created it
+            if loop_created:
+                try:
+                    # Cancel any remaining tasks
+                    pending = asyncio.all_tasks(cleanup_loop)
+                    for task in pending:
+                        task.cancel()
+                    # Run until all tasks are cancelled
+                    if pending:
+                        cleanup_loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
+                    # Close the loop
+                    cleanup_loop.close()
+                except Exception:
+                    # Ignore errors during loop closure
+                    pass
+
     except Exception:
-        # Ignore any errors during session cleanup
+        # Ignore any errors during session cleanup - process exit will clean up resources
         pass
 
     # Clean up NPC database files
@@ -1270,6 +1618,9 @@ def pytest_runtest_teardown(item, nextitem):
     """Called to perform the teardown phase for a test item."""
     # Ensure proper cleanup after each test
     TestSessionBoundaryEnforcement.enforce_session_boundaries()
+
+    # Note: Event loop cleanup is handled by the event_loop fixture
+    # We don't close the loop here because pytest-asyncio is still managing it
 
 
 # Track test outcomes to suppress teardown-only failures

@@ -266,10 +266,10 @@ function Start-MythosMUDServer {
     if ($Reload) {
         # Use uvicorn CLI with reload for optimal development experience
         # This provides better reload control and faster iteration than programmatic reload
-        # Note: Removed --reload-exclude to avoid PowerShell glob expansion issues
-        # Uvicorn's default reload behavior works well without explicit exclusions
-        $serverCommand = "uv run uvicorn server.main:app --host $ServerHost --port $Port --reload"
-        Write-Host "Using uvicorn with auto-reload enabled" -ForegroundColor Cyan
+        # Explicitly watch server directory to ensure command handler changes are detected
+        # Note: --reload-dir ensures uvicorn watches the entire server directory tree
+        $serverCommand = "uv run uvicorn server.main:app --host $ServerHost --port $Port --reload --reload-dir server"
+        Write-Host "Using uvicorn with auto-reload enabled (watching server directory)" -ForegroundColor Cyan
     }
     else {
         # Build command arguments for non-reload mode

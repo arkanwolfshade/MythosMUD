@@ -62,6 +62,8 @@ describe('Secure Token Storage', () => {
     });
 
     it('should validate token format', () => {
+      // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
+      // This is test data for JWT validation, not a real secret
       const validToken =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
       const invalidToken = 'invalid-token';
@@ -87,6 +89,8 @@ describe('Secure Token Storage', () => {
       // Set a refresh token in localStorage
       localStorageMock.getItem.mockReturnValue('test-refresh-token');
 
+      // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
+      // This is test data for JWT validation, not a real secret
       const token =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyNDI2MjJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 
@@ -112,6 +116,8 @@ describe('Secure Token Storage', () => {
       // Set a refresh token in localStorage
       localStorageMock.getItem.mockReturnValue('test-refresh-token');
 
+      // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
+      // This is test data for JWT validation, not a real secret
       const token =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyNDI2MjJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
       const result = await secureTokenStorage.refreshTokenIfNeeded(token);

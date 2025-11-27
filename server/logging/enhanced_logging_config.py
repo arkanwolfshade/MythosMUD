@@ -658,6 +658,12 @@ def _setup_enhanced_file_logging(
         "authentication": ["auth"],
         "inventory": [
             "inventory",
+            "server.services.inventory",
+            "server.services.inventory_mutation_guard",
+            "server.services.container",
+            "server.services.container_service",
+            "server.services.wearable_container_service",
+            "server.services.equipment_service",
             "services.inventory",
             "services.inventory_mutation_guard",
             "services.container",
@@ -674,6 +680,14 @@ def _setup_enhanced_file_logging(
         ],
         "game": [
             "game",
+            "server.game",
+            "server.services.player",
+            "server.services.room_sync",
+            "server.world_loader",
+            "server.game.movement_service",
+            "server.game.room_service",
+            "server.game.player_service",
+            "server.game.mechanics",
             "services.player",
             "services.room_sync",
             "world_loader",
@@ -683,12 +697,18 @@ def _setup_enhanced_file_logging(
             "game.mechanics",
         ],
         "api": ["api", "server.api"],
-        "middleware": ["middleware"],
+        "middleware": [
+            "middleware",
+            "server.middleware",
+        ],
         "monitoring": ["monitoring", "performance", "metrics"],
         "time": ["time", "services.game_tick", "services.schedule"],
         "caching": ["caching"],
         "communications": ["realtime", "communications"],
-        "commands": ["commands"],
+        "commands": [
+            "commands",
+            "server.commands",
+        ],
         "events": ["events", "EventBus"],
         "infrastructure": ["infrastructure", "infrastructure.nats_broker", "infrastructure.message_broker"],
         "validators": ["validators"],
@@ -764,15 +784,23 @@ def _setup_enhanced_file_logging(
         handler.setFormatter(formatter)
 
         # Add handler to loggers that match the prefixes
+        # CRITICAL FIX: Add handlers to parent loggers (e.g., "server.commands") so that
+        # child loggers (e.g., "server.commands.inventory_commands") can propagate to them
         for prefix in prefixes:
-            logger = logging.getLogger(prefix)
-            logger.addHandler(handler)
-            # Set DEBUG level for combat modules in local/debug environments
-            if log_file == "combat" and (environment == "local" or log_level == "DEBUG"):
-                logger.setLevel(logging.DEBUG)
-            else:
-                logger.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
-            logger.propagate = True
+            # Try both the prefix as-is and with "server." prefix for module-based loggers
+            logger_names = [prefix]
+            if not prefix.startswith("server."):
+                logger_names.append(f"server.{prefix}")
+
+            for logger_name in logger_names:
+                logger = logging.getLogger(logger_name)
+                logger.addHandler(handler)
+                # Set DEBUG level for combat modules in local/debug environments
+                if log_file == "combat" and (environment == "local" or log_level == "DEBUG"):
+                    logger.setLevel(logging.DEBUG)
+                else:
+                    logger.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
+                logger.propagate = True
 
     # Create warnings.log aggregator handler
     # This captures ALL WARNING level logs from ALL subsystems
