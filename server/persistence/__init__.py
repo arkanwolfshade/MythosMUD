@@ -29,7 +29,7 @@ from .item_instance_persistence import (
 # This allows both "from server.persistence import get_persistence" (package) and
 # direct module access to work correctly
 try:
-    # Import the module file as a submodule to handle relative imports correctly
+    # Load the module file directly using importlib.util to avoid package/module name conflict
     import importlib.util
     import sys
     from pathlib import Path
@@ -39,19 +39,15 @@ try:
     _module_file = _parent_dir / "persistence.py"
 
     if _module_file.exists():
-        # Load the module with proper package context so relative imports work
-        _spec = importlib.util.spec_from_file_location(
-            "server.persistence_module", _module_file, submodule_search_locations=[str(_parent_dir)]
-        )
+        # Load the module with a unique name to avoid conflicts with this package
+        _module_name = "server._persistence_module"
+        _spec = importlib.util.spec_from_file_location(_module_name, _module_file)
         if _spec and _spec.loader:
-            # Set package context for relative imports
-            if hasattr(_spec.loader, "name"):
-                _spec.loader.name = "server.persistence_module"
             _persistence_module = importlib.util.module_from_spec(_spec)
-            # Set __package__ so relative imports work
+            # Set __package__ so relative imports in persistence.py work correctly
             _persistence_module.__package__ = "server"
-            _persistence_module.__name__ = "server.persistence_module"
-            sys.modules["server.persistence_module"] = _persistence_module
+            _persistence_module.__name__ = _module_name
+            sys.modules[_module_name] = _persistence_module
             _spec.loader.exec_module(_persistence_module)
 
             # Re-export the functions
@@ -61,9 +57,20 @@ try:
                 reset_persistence = _persistence_module.reset_persistence
             if hasattr(_persistence_module, "PersistenceLayer"):
                 PersistenceLayer = _persistence_module.PersistenceLayer
-except (ImportError, AttributeError, FileNotFoundError):
-    # If import fails, functions won't be available - this is OK for some contexts
-    pass
+except Exception as e:
+    # If import fails, log the error for debugging but don't fail the package import
+    # This allows the package to be imported even if the module file has issues
+    import traceback
+    import warnings
+
+    # Log the full traceback for debugging
+    error_msg = f"Could not import get_persistence from server.persistence module: {type(e).__name__}: {e}"
+    warnings.warn(error_msg, ImportWarning, stacklevel=2)
+    # Also print to stderr for immediate visibility during test runs
+    import sys
+
+    print(f"WARNING: {error_msg}", file=sys.stderr)
+    print(f"Traceback: {''.join(traceback.format_exception(type(e), e, e.__traceback__))}", file=sys.stderr)
 
 __all__ = [
     "ContainerData",
