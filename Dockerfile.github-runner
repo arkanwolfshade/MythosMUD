@@ -12,40 +12,40 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Install PostgreSQL 18 from official PostgreSQL APT repository (Ubuntu 24.04 default is PostgreSQL 16).
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        ca-certificates \
-        curl \
-        git \
-        gnupg \
-        build-essential \
-        pkg-config \
-        python3.12 \
-        python3.12-venv \
-        python3.12-dev \
-        python3-pip \
-        wget \
-        lsb-release \
+    ca-certificates \
+    curl \
+    git \
+    gnupg \
+    build-essential \
+    pkg-config \
+    python3.12 \
+    python3.12-venv \
+    python3.12-dev \
+    python3-pip \
+    wget \
+    lsb-release \
     && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg \
     && echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
     && apt-get update && \
     apt-get install -y --no-install-recommends \
-        postgresql-18 \
-        postgresql-contrib-18 \
-        postgresql-client-18 \
-        libpq-dev \
-        libssl-dev \
-        libffi-dev \
-        libnss3 \
-        libgtk-3-0 \
-        libxss1 \
-        libasound2t64 \
-        libatk-bridge2.0-0 \
-        libgbm1 \
-        libdrm2 \
-        libxcb1 \
-        libxkbcommon0 \
-        fonts-liberation \
-        xvfb \
-        unzip \
+    postgresql-18 \
+    postgresql-contrib-18 \
+    postgresql-client-18 \
+    libpq-dev \
+    libssl-dev \
+    libffi-dev \
+    libnss3 \
+    libgtk-3-0 \
+    libxss1 \
+    libasound2t64 \
+    libatk-bridge2.0-0 \
+    libgbm1 \
+    libdrm2 \
+    libxcb1 \
+    libxkbcommon0 \
+    fonts-liberation \
+    xvfb \
+    unzip \
     && rm -rf /var/lib/apt/lists/*
 
 # Configure Python 3.12 as default interpreter.
@@ -70,7 +70,9 @@ WORKDIR /workspace
 COPY pyproject.toml uv.lock ./
 
 # Copy Node manifests before installing client dependencies.
+# Also copy scripts directory needed for postinstall script.
 COPY client/package.json client/package-lock.json ./client/
+COPY client/scripts ./client/scripts/
 WORKDIR /workspace/client
 RUN npm install
 
@@ -104,41 +106,57 @@ WORKDIR /workspace
 # AI reader: PostgreSQL must be self-contained in Docker image for CI workflows (no host dependency).
 # All operations in single RUN to keep service running during execution.
 # Note: Running as root in Docker, use su to execute as postgres user.
+# hadolint ignore=DL3009
+ARG POSTGRES_PASSWORD=Cthulhu1
 RUN service postgresql start && \
     sleep 3 && \
     pg_isready -U postgres && \
-    su postgres -c "psql -c \"ALTER USER postgres PASSWORD 'Cthulhu1';\"" && \
+    su postgres -c "psql -c \"ALTER USER postgres PASSWORD '${POSTGRES_PASSWORD}';\"" && \
     su postgres -c "psql -f /workspace/db/roles/roles.sql" && \
     su postgres -c "psql -f /workspace/db/databases/databases.sql" && \
     su postgres -c "psql -d mythos_unit -f /workspace/db/authoritative_schema.sql" && \
-    su postgres -c "psql -d mythos_e2e -f /workspace/db/authoritative_schema.sql" && \
     su postgres -c "psql -d mythos_unit -f /workspace/db/migrations/010_migrate_player_id_to_uuid.sql" && \
-    su postgres -c "psql -d mythos_e2e -f /workspace/db/migrations/010_migrate_player_id_to_uuid.sql" && \
+    su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -f /workspace/db/migrations/012_create_containers_table.sql" && \
+    su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -f /workspace/db/migrations/011_add_container_item_instance_id.sql" && \
     su postgres -c "psql -d mythos_unit -f /workspace/data/db/00_world_and_emotes.sql" && \
     su postgres -c "psql -d mythos_unit -f /workspace/data/db/01_professions.sql" && \
     su postgres -c "psql -d mythos_unit -f /workspace/data/db/02_item_prototypes.sql" && \
     su postgres -c "psql -d mythos_unit -f /workspace/data/db/03_npc_definitions.sql" && \
-    su postgres -c "psql -d mythos_e2e -f /workspace/data/db/00_world_and_emotes.sql" && \
-    su postgres -c "psql -d mythos_e2e -f /workspace/data/db/01_professions.sql" && \
-    su postgres -c "psql -d mythos_e2e -f /workspace/data/db/02_item_prototypes.sql" && \
-    su postgres -c "psql -d mythos_e2e -f /workspace/data/db/03_npc_definitions.sql" && \
     su postgres -c "psql -c '\\l'" | grep -q "mythos_unit" && \
-    su postgres -c "psql -c '\\l'" | grep -q "mythos_e2e" && \
     su postgres -c "psql -d mythos_unit -c '\\dt'" | grep -q "users" && \
-    su postgres -c "psql -d mythos_unit -c '\\dt'" | grep -q "players" && \
-    su postgres -c "psql -d mythos_e2e -c '\\dt'" | grep -q "users" && \
-    su postgres -c "psql -d mythos_e2e -c '\\dt'" | grep -q "players"
+    su postgres -c "psql -d mythos_unit -c '\\dt'" | grep -q "players"
 
 # Set environment variables for test execution (matches CI workflow expectations).
 # Human reader: supply actual secrets via docker run -e / compose; do NOT bake them into the image.
 # AI reader: runtime env vars should match GitHub Actions workflow exports.
-ENV DATABASE_URL="postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit" \
-    DATABASE_NPC_URL="postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit" \
-    MYTHOSMUD_ADMIN_PASSWORD="test-admin-password" \
-    MYTHOSMUD_SECRET_KEY="test-secret-key-for-ci-workflow" \
-    MYTHOSMUD_JWT_SECRET="test-jwt-secret-for-ci-workflow" \
-    MYTHOSMUD_RESET_TOKEN_SECRET="test-reset-token-secret-for-ci-workflow" \
-    MYTHOSMUD_VERIFICATION_TOKEN_SECRET="test-verification-token-secret-for-ci-workflow"
+#
+# Security note: These are TEST/CI-only default values. For production, pass real secrets
+# at runtime using docker run -e or docker-compose environment variables, or use GitHub Secrets
+# when building in CI workflows.
+#
+# Using ARG with defaults allows overriding at build time while keeping test defaults.
+# To use GitHub Secrets when building in CI:
+#   docker build --build-arg MYTHOSMUD_SECRET_KEY="${{ secrets.MYTHOSMUD_SECRET_KEY }}" ...
+#
+# For local development, test defaults are used automatically.
+# hadolint ignore=DL3009
+ARG MYTHOSMUD_ADMIN_PASSWORD=test-admin-password
+ARG MYTHOSMUD_SECRET_KEY=test-secret-key-for-ci-workflow
+ARG MYTHOSMUD_JWT_SECRET=test-jwt-secret-for-ci-workflow
+ARG MYTHOSMUD_RESET_TOKEN_SECRET=test-reset-token-secret-for-ci-workflow
+ARG MYTHOSMUD_VERIFICATION_TOKEN_SECRET=test-verification-token-secret-for-ci-workflow
+
+# Database URL uses test password for CI container self-contained setup.
+# This is acceptable for test/CI images but should NEVER be used in production.
+# For production, override POSTGRES_PASSWORD via --build-arg or use runtime -e flags.
+# hadolint ignore=DL3009
+ENV DATABASE_URL="postgresql+asyncpg://postgres:${POSTGRES_PASSWORD}@localhost:5432/mythos_unit" \
+    DATABASE_NPC_URL="postgresql+asyncpg://postgres:${POSTGRES_PASSWORD}@localhost:5432/mythos_unit" \
+    MYTHOSMUD_ADMIN_PASSWORD="${MYTHOSMUD_ADMIN_PASSWORD}" \
+    MYTHOSMUD_SECRET_KEY="${MYTHOSMUD_SECRET_KEY}" \
+    MYTHOSMUD_JWT_SECRET="${MYTHOSMUD_JWT_SECRET}" \
+    MYTHOSMUD_RESET_TOKEN_SECRET="${MYTHOSMUD_RESET_TOKEN_SECRET}" \
+    MYTHOSMUD_VERIFICATION_TOKEN_SECRET="${MYTHOSMUD_VERIFICATION_TOKEN_SECRET}"
 
 # Default shell for interactive troubleshooting.
 CMD ["/bin/bash"]

@@ -214,8 +214,12 @@ class DatabaseManager:
                     old_loop_id=self._creation_loop_id,
                     new_loop_id=current_loop_id,
                 )
-                # asyncpg will handle cleanup of old engine when the old loop closes
-                # We just need to recreate for the new loop
+                # CRITICAL: asyncpg connections MUST be closed in the same event loop they were created in.
+                # We cannot dispose the old engine here because we're already in a different loop.
+                # The old engine will be properly disposed by the test fixture's event_loop cleanup
+                # (which runs in the original loop) or by garbage collection.
+                # For production, this should never happen as there's only one event loop.
+                # Reset and recreate engine for the new loop
                 self.engine = None
                 self.session_maker = None
                 self._initialized = False

@@ -4,7 +4,7 @@ Verification tests for security headers applied to all endpoints.
 This module tests that security headers are consistently applied across all
 FastAPI endpoints, ensuring comprehensive security coverage.
 
-ARCHITECTURE FIX: Updated to use container_test_client fixture
+ARCHITECTURE FIX: Updated to use container_test_client_class fixture
 Following the security protocols outlined in the Arkham Security Manual.
 """
 
@@ -15,20 +15,21 @@ from server.logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
+@pytest.mark.slow  # Mark as slow due to 26-30 second setup times (container_test_client_class fixture)
 class TestSecurityHeadersVerification:
     """
     Test security headers are applied to all endpoints.
 
-    AI: Following pytest best practices - using container_test_client
+    AI: Following pytest best practices - using container_test_client_class
     """
 
     @pytest.fixture
-    def mock_security_persistence(self, container_test_client):
+    def mock_security_persistence(self, container_test_client_class):
         """Mock persistence for security header testing."""
         import uuid
         from unittest.mock import AsyncMock, Mock
 
-        app = container_test_client.app
+        app = container_test_client_class.app
         mock_persistence = AsyncMock()
 
         # Create a proper mock player object
@@ -96,7 +97,7 @@ class TestSecurityHeadersVerification:
 
         return mock_persistence
 
-    def test_security_headers_on_api_endpoints(self, container_test_client, mock_security_persistence):
+    def test_security_headers_on_api_endpoints(self, container_test_client_class, mock_security_persistence):
         """Test that security headers are applied to all API endpoints."""
         # Define all API endpoints to test
         api_endpoints = [
@@ -144,11 +145,11 @@ class TestSecurityHeadersVerification:
         for method, endpoint in api_endpoints:
             # Make request to endpoint
             if method == "GET":
-                response = container_test_client.get(endpoint)
+                response = container_test_client_class.get(endpoint)
             elif method == "POST":
-                response = container_test_client.post(endpoint, json={})
+                response = container_test_client_class.post(endpoint, json={})
             elif method == "DELETE":
-                response = container_test_client.delete(endpoint)
+                response = container_test_client_class.delete(endpoint)
             else:
                 continue
 
@@ -162,7 +163,7 @@ class TestSecurityHeadersVerification:
             assert response.headers["x-xss-protection"] == "1; mode=block"
             assert "max-age=" in response.headers["strict-transport-security"]
 
-    def test_security_headers_on_error_responses(self, container_test_client, mock_security_persistence):
+    def test_security_headers_on_error_responses(self, container_test_client_class, mock_security_persistence):
         """Test that security headers are applied even to error responses."""
         error_endpoints = [
             "/nonexistent-endpoint",
@@ -178,7 +179,7 @@ class TestSecurityHeadersVerification:
         ]
 
         for endpoint in error_endpoints:
-            response = container_test_client.get(endpoint)
+            response = container_test_client_class.get(endpoint)
 
             # Should return an error status code
             assert response.status_code >= 400
@@ -189,7 +190,7 @@ class TestSecurityHeadersVerification:
                     f"Missing security header '{header}' on error response for {endpoint}"
                 )
 
-    def test_security_headers_on_cors_preflight(self, container_test_client, mock_security_persistence):
+    def test_security_headers_on_cors_preflight(self, container_test_client_class, mock_security_persistence):
         """
         Test that CORS preflight requests work correctly.
 
@@ -198,7 +199,7 @@ class TestSecurityHeadersVerification:
         Security headers are added to actual requests (GET, POST, etc.), not preflight.
         """
         # Test that CORS preflight works
-        response = container_test_client.options(
+        response = container_test_client_class.options(
             "/api/players/",
             headers={
                 "Origin": "http://localhost:5173",
@@ -220,7 +221,7 @@ class TestSecurityHeadersVerification:
 
         # ARCHITECTURE NOTE: Security headers are added to actual requests, not preflight.
         # Verify security headers are present on actual GET request instead.
-        get_response = container_test_client.get("/api/players/")
+        get_response = container_test_client_class.get("/api/players/")
         get_headers_lower = {k.lower(): v for k, v in get_response.headers.items()}
 
         # Verify security headers on actual request
@@ -240,19 +241,19 @@ class TestSecurityHeadersVerification:
         # because CORS middleware handles it before security middleware runs.
         # This is expected behavior and security headers are verified on GET request above.
 
-    def test_security_headers_consistency(self, container_test_client, mock_security_persistence):
+    def test_security_headers_consistency(self, container_test_client_class, mock_security_persistence):
         """Test that security headers are consistent across different request types."""
         endpoints = ["/players/", "/rooms/test-room", "/docs"]
 
         for endpoint in endpoints:
             # Test GET request
-            get_response = container_test_client.get(endpoint)
+            get_response = container_test_client_class.get(endpoint)
 
             # Test POST request (if applicable)
-            post_response = container_test_client.post(endpoint, json={})
+            post_response = container_test_client_class.post(endpoint, json={})
 
             # Test OPTIONS request
-            options_response = container_test_client.options(endpoint)
+            options_response = container_test_client_class.options(endpoint)
 
             responses = [get_response, post_response, options_response]
 
@@ -276,7 +277,7 @@ class TestSecurityHeadersVerification:
                         f"Inconsistent '{header}' values across requests to {endpoint}"
                     )
 
-    def test_security_headers_on_different_origins(self, container_test_client, mock_security_persistence):
+    def test_security_headers_on_different_origins(self, container_test_client_class, mock_security_persistence):
         """Test that security headers are applied regardless of origin."""
         origins = [
             "http://localhost:5173",
@@ -290,7 +291,7 @@ class TestSecurityHeadersVerification:
             if origin:
                 headers["Origin"] = origin
 
-            response = container_test_client.get("/players/", headers=headers)
+            response = container_test_client_class.get("/players/", headers=headers)
 
             # Should always have security headers regardless of origin
             required_headers = [
@@ -303,9 +304,9 @@ class TestSecurityHeadersVerification:
             for header in required_headers:
                 assert header in response.headers, f"Missing security header '{header}' with origin {origin}"
 
-    def test_security_headers_header_values(self, container_test_client, mock_security_persistence):
+    def test_security_headers_header_values(self, container_test_client_class, mock_security_persistence):
         """Test that security headers have correct values."""
-        response = container_test_client.get("/players/")
+        response = container_test_client_class.get("/players/")
 
         # Verify specific security header values
         assert response.headers["x-content-type-options"] == "nosniff"
@@ -322,13 +323,13 @@ class TestSecurityHeadersVerification:
         assert "microphone=()" in permissions_policy
         assert "camera=()" in permissions_policy
 
-    def test_security_headers_performance_impact(self, container_test_client, mock_security_persistence):
+    def test_security_headers_performance_impact(self, container_test_client_class, mock_security_persistence):
         """Test that security headers don't significantly impact performance."""
         import time
 
         # Measure response time with security headers
         start_time = time.time()
-        response = container_test_client.get("/players/")
+        response = container_test_client_class.get("/players/")
         end_time = time.time()
 
         response_time = end_time - start_time
@@ -347,10 +348,10 @@ class TestSecurityHeadersVerification:
         for header in required_headers:
             assert header in response.headers
 
-    def test_security_headers_on_large_responses(self, container_test_client, mock_security_persistence):
+    def test_security_headers_on_large_responses(self, container_test_client_class, mock_security_persistence):
         """Test that security headers are applied to large responses."""
         # Test with a request that might return a large response
-        response = container_test_client.get("/docs")  # Documentation can be large
+        response = container_test_client_class.get("/docs")  # Documentation can be large
 
         # Should have security headers even on large responses
         required_headers = [
@@ -363,7 +364,7 @@ class TestSecurityHeadersVerification:
         for header in required_headers:
             assert header in response.headers
 
-    def test_security_headers_comprehensive_coverage(self, container_test_client, mock_security_persistence):
+    def test_security_headers_comprehensive_coverage(self, container_test_client_class, mock_security_persistence):
         """Test comprehensive coverage of security headers across all endpoint types."""
         # Test different HTTP methods
         methods_to_test = [
@@ -382,13 +383,13 @@ class TestSecurityHeadersVerification:
                 kwargs = {"json": data}
 
             if method == "GET":
-                response = container_test_client.get(endpoint, **kwargs)
+                response = container_test_client_class.get(endpoint, **kwargs)
             elif method == "POST":
-                response = container_test_client.post(endpoint, **kwargs)
+                response = container_test_client_class.post(endpoint, **kwargs)
             elif method == "DELETE":
-                response = container_test_client.delete(endpoint, **kwargs)
+                response = container_test_client_class.delete(endpoint, **kwargs)
             elif method == "OPTIONS":
-                response = container_test_client.options(endpoint, **kwargs)
+                response = container_test_client_class.options(endpoint, **kwargs)
 
             # Verify security headers are present
             security_headers = [

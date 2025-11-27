@@ -23,7 +23,7 @@ def prototype_directory(tmp_path: Path) -> Path:
         "base_value": 1200,
         "durability": 100,
         "flags": ["MAGICAL", "NO_DROP"],
-        "wear_slots": ["OFF_HAND"],
+        "wear_slots": ["off_hand"],
         "usage_restrictions": {},
         "stacking_rules": {"max_stack": 1},
         "effect_components": ["component.sanity_whisper"],
@@ -69,7 +69,7 @@ def test_factory_respects_default_slot_from_prototype(prototype_directory: Path)
     factory = build_factory(prototype_directory)
     instance = factory.create_instance("artifact.miskatonic.codex")
 
-    assert instance.slot_type == "OFF_HAND"
+    assert instance.slot_type == "off_hand"
 
 
 def test_factory_rejects_invalid_quantity(prototype_directory: Path):

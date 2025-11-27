@@ -129,13 +129,7 @@ export const GameTerminalPresentation: React.FC<GameTerminalPresentationProps> =
       style={{ minHeight: '100vh', width: '100%' }}
     >
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 h-12 bg-mythos-terminal-surface border-b border-gray-700 flex items-center justify-between px-4 z-10">
-        {/* Connection Status */}
-        <div className="connection-status">
-          <span className={`status-text ${isConnected ? 'connected' : 'disconnected'}`}>
-            {isConnected ? 'Connected' : 'Disconnected'}
-          </span>
-        </div>
+      <div className="absolute top-0 left-0 right-0 h-12 bg-mythos-terminal-surface border-b border-gray-700 flex items-center justify-end px-4 z-10">
         <div className="flex items-center gap-4 text-base">
           <span className="text-mythos-terminal-text-secondary">Player: {playerName}</span>
           <span

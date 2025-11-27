@@ -9,17 +9,18 @@ from typing import TYPE_CHECKING, Any, TypedDict, cast
 from uuid import UUID
 
 import psycopg2
+import psycopg2.errors
 
-from .exceptions import DatabaseError, ValidationError
-from .logging.enhanced_logging_config import get_logger
-from .models.player import Player
-from .models.room import Room
-from .postgres_adapter import connect_postgres
-from .schemas.inventory_schema import InventorySchemaValidationError, validate_inventory_payload
-from .utils.error_logging import create_error_context, log_and_raise
+from server.exceptions import DatabaseError, ValidationError
+from server.logging.enhanced_logging_config import get_logger
+from server.models.player import Player
+from server.models.room import Room
+from server.postgres_adapter import connect_postgres
+from server.schemas.inventory_schema import InventorySchemaValidationError, validate_inventory_payload
+from server.utils.error_logging import create_error_context, log_and_raise
 
 if TYPE_CHECKING:
-    from .models.profession import Profession
+    from server.models.profession import Profession
 
 logger = get_logger(__name__)
 
@@ -249,7 +250,7 @@ class PersistenceLayer:
 
     def _setup_logger(self):
         # Use centralized logging configuration
-        from .logging.enhanced_logging_config import get_logger
+        from server.logging.enhanced_logging_config import get_logger
 
         return get_logger("PersistenceLayer")
 
@@ -405,6 +406,22 @@ class PersistenceLayer:
 
         inventory_json = json.dumps(payload["inventory"])
         equipped_json = json.dumps(payload["equipped"])
+        # Log what's being saved to help debug inventory persistence issues
+        logger.debug(
+            "Preparing inventory payload for save",
+            player_id=str(player.player_id),
+            player_name=player.name,
+            inventory_length=len(payload["inventory"]),
+            inventory_items=[
+                {
+                    "item_name": item.get("item_name"),
+                    "item_id": item.get("item_id"),
+                    "slot_type": item.get("slot_type"),
+                    "quantity": item.get("quantity"),
+                }
+                for item in payload["inventory"][:5]
+            ],  # Log first 5 items
+        )
         player.inventory = cast(Any, inventory_json)  # keep ORM column in sync
         player.set_equipped_items(payload["equipped"])
         return inventory_json, equipped_json
@@ -494,8 +511,24 @@ class PersistenceLayer:
             )
 
         validated_payload = cast(InventoryPayload, raw_payload)
-        sanitized_inventory_json = json.dumps(validated_payload["inventory"])
-        player.inventory = cast(Any, sanitized_inventory_json)
+        # Log what's being loaded to help debug inventory persistence issues
+        logger.debug(
+            "Loading inventory from database",
+            player_id=str(player.player_id),
+            player_name=player.name,
+            inventory_length=len(validated_payload["inventory"]),
+            inventory_items=[
+                {
+                    "item_name": item.get("item_name"),
+                    "item_id": item.get("item_id"),
+                    "slot_type": item.get("slot_type"),
+                    "quantity": item.get("quantity"),
+                }
+                for item in validated_payload["inventory"][:5]
+            ],  # Log first 5 items
+        )
+        # Set inventory to the parsed list, not the JSON string
+        player.set_inventory(validated_payload["inventory"])
         player.set_equipped_items(validated_payload["equipped"])
 
     # --- Room Cache (Loaded at Startup) ---
@@ -504,7 +537,7 @@ class PersistenceLayer:
         self._room_cache = {}
         self._room_mappings: dict[str, str] = {}
         try:
-            from .world_loader import generate_room_id
+            from server.world_loader import generate_room_id
 
             with self._get_connection() as conn:
                 # Query rooms with zone/subzone hierarchy
@@ -577,6 +610,21 @@ class PersistenceLayer:
                         # stable_id is just the room identifier (e.g., "room_boundary_st_001"), generate full ID
                         room_id = generate_room_id(plane_name, zone_name, subzone_stable_id, stable_id)
 
+                    # Load containers for this room
+                    containers = []
+                    try:
+                        from server.services.environmental_container_loader import EnvironmentalContainerLoader
+
+                        container_loader = EnvironmentalContainerLoader(persistence=self)
+                        containers_data = container_loader.load_containers_for_room(room_id)
+                        containers = [container.model_dump() for container in containers_data]
+                    except Exception as e:
+                        self._logger.warning(
+                            "Error loading containers for room",
+                            error=str(e),
+                            room_id=room_id,
+                        )
+
                     # Store room data for processing
                     room_data_list.append(
                         {
@@ -588,6 +636,7 @@ class PersistenceLayer:
                             "plane": plane_name,
                             "zone": zone_name,
                             "sub_zone": subzone_stable_id,
+                            "containers": containers,
                         }
                     )
 
@@ -685,6 +734,9 @@ class PersistenceLayer:
                             exits_by_room_keys=list(exits_by_room.keys())[:10],
                         )
 
+                    # Get containers for this room (already loaded above)
+                    containers = room_data_item.get("containers", [])
+
                     # Build room data dictionary matching Room class expectations
                     room_data = {
                         "id": room_id,
@@ -697,6 +749,7 @@ class PersistenceLayer:
                         if isinstance(attributes, dict)
                         else "outdoors",
                         "exits": exits,
+                        "containers": containers,
                     }
 
                     self._room_cache[room_id] = Room(room_data, self._event_bus)
@@ -712,6 +765,17 @@ class PersistenceLayer:
             if self._room_cache:
                 sample_room_ids = list(self._room_cache.keys())[:5]
                 self._logger.debug("Sample room IDs loaded", sample_room_ids=sample_room_ids)
+        except psycopg2.errors.UndefinedTable as e:
+            # Handle case where rooms table doesn't exist yet (e.g., during test collection)
+            # This can happen when database schema hasn't been initialized
+            self._logger.warning(
+                "Rooms table does not exist yet, leaving room cache empty",
+                error=str(e),
+                operation="load_room_cache",
+            )
+            # Leave cache empty - it will be populated when schema is ready
+            self._room_cache = {}
+            self._room_mappings = {}
         except Exception as e:
             context = create_error_context()
             context.metadata["operation"] = "load_room_cache"
@@ -1925,7 +1989,7 @@ class PersistenceLayer:
         # Room doesn't exist, move player to default starting room from config
         old_room = player.current_room_id
         try:
-            from .config import get_config
+            from server.config import get_config
 
             config = get_config()
             default_room = config.game.default_player_room
@@ -1954,35 +2018,35 @@ class PersistenceLayer:
 
     async def async_get_player_by_name(self, name: str) -> Player | None:
         """Get a player by name using async database operations."""
-        from .async_persistence import get_async_persistence
+        from server.async_persistence import get_async_persistence
 
         async_persistence = get_async_persistence()
         return await async_persistence.get_player_by_name(name)
 
     async def async_get_player(self, player_id: UUID) -> Player | None:
         """Get a player by ID using async database operations."""
-        from .async_persistence import get_async_persistence
+        from server.async_persistence import get_async_persistence
 
         async_persistence = get_async_persistence()
         return await async_persistence.get_player_by_id(player_id)
 
     async def async_get_player_by_user_id(self, user_id: str) -> Player | None:
         """Get a player by user ID using async database operations."""
-        from .async_persistence import get_async_persistence
+        from server.async_persistence import get_async_persistence
 
         async_persistence = get_async_persistence()
         return await async_persistence.get_player_by_user_id(user_id)
 
     async def async_save_player(self, player: Player):
         """Save a player using async database operations."""
-        from .async_persistence import get_async_persistence
+        from server.async_persistence import get_async_persistence
 
         async_persistence = get_async_persistence()
         return await async_persistence.save_player(player)
 
     async def async_list_players(self) -> list[Player]:
         """List all players using async database operations."""
-        from .async_persistence import get_async_persistence
+        from server.async_persistence import get_async_persistence
 
         async_persistence = get_async_persistence()
         return await async_persistence.list_players()
@@ -2063,5 +2127,303 @@ class PersistenceLayer:
         except Exception as e:
             logger.debug("get_npc_lifecycle_manager failed", error=str(e))
             return None
+
+    # --- Container Persistence Methods ---
+
+    def create_container(
+        self,
+        source_type: str,
+        owner_id: UUID | None = None,
+        room_id: str | None = None,
+        entity_id: UUID | None = None,
+        lock_state: str = "unlocked",
+        capacity_slots: int = 20,
+        weight_limit: int | None = None,
+        decay_at: datetime | None = None,
+        allowed_roles: list[str] | None = None,
+        items_json: list[dict[str, Any]] | None = None,
+        metadata_json: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """
+        Create a new container in the database.
+
+        Args:
+            source_type: Type of container ('environment', 'equipment', 'corpse')
+            owner_id: UUID of container owner (optional)
+            room_id: Room identifier for environmental/corpse containers (optional)
+            entity_id: Player/NPC UUID for wearable containers (optional)
+            lock_state: Lock state ('unlocked', 'locked', 'sealed')
+            capacity_slots: Maximum number of inventory slots (1-20)
+            weight_limit: Optional maximum weight capacity
+            decay_at: Timestamp when corpse container should decay (optional)
+            allowed_roles: List of role names allowed to access container (optional)
+            items_json: List of InventoryStack items (optional)
+            metadata_json: Optional metadata dictionary (optional)
+
+        Returns:
+            dict: Container data dictionary
+
+        Raises:
+            ValidationError: If validation fails
+            DatabaseError: If database operation fails
+        """
+        from server.persistence.container_persistence import create_container
+
+        with self._lock, self._get_connection() as conn:
+            container = create_container(
+                conn,
+                source_type=source_type,
+                owner_id=owner_id,
+                room_id=room_id,
+                entity_id=entity_id,
+                lock_state=lock_state,
+                capacity_slots=capacity_slots,
+                weight_limit=weight_limit,
+                decay_at=decay_at,
+                allowed_roles=allowed_roles,
+                items_json=items_json,
+                metadata_json=metadata_json,
+            )
+            return container.to_dict()
+
+    def get_container(self, container_id: UUID) -> dict[str, Any] | None:
+        """
+        Get a container by ID.
+
+        Args:
+            container_id: Container UUID
+
+        Returns:
+            dict: Container data dictionary if found, None otherwise
+
+        Raises:
+            DatabaseError: If database operation fails
+        """
+        from server.persistence.container_persistence import get_container
+
+        with self._lock, self._get_connection() as conn:
+            container = get_container(conn, container_id)
+            return container.to_dict() if container else None
+
+    def get_containers_by_room_id(self, room_id: str) -> list[dict[str, Any]]:
+        """
+        Get all containers in a room.
+
+        Args:
+            room_id: Room identifier
+
+        Returns:
+            list[dict]: List of container data dictionaries
+
+        Raises:
+            DatabaseError: If database operation fails
+        """
+        from .container_persistence import get_containers_by_room_id
+
+        with self._lock, self._get_connection() as conn:
+            containers = get_containers_by_room_id(conn, room_id)
+            return [container.to_dict() for container in containers]
+
+    def get_containers_by_entity_id(self, entity_id: UUID) -> list[dict[str, Any]]:
+        """
+        Get all containers owned by an entity (player/NPC).
+
+        Args:
+            entity_id: Player/NPC UUID
+
+        Returns:
+            list[dict]: List of container data dictionaries
+
+        Raises:
+            DatabaseError: If database operation fails
+        """
+        from .container_persistence import get_containers_by_entity_id
+
+        with self._lock, self._get_connection() as conn:
+            containers = get_containers_by_entity_id(conn, entity_id)
+            return [container.to_dict() for container in containers]
+
+    def update_container(
+        self,
+        container_id: UUID,
+        items_json: list[dict[str, Any]] | None = None,
+        lock_state: str | None = None,
+        metadata_json: dict[str, Any] | None = None,
+    ) -> dict[str, Any] | None:
+        """
+        Update a container's items, lock state, or metadata.
+
+        Args:
+            container_id: Container UUID
+            items_json: New items list (optional)
+            lock_state: New lock state (optional)
+            metadata_json: New metadata (optional)
+
+        Returns:
+            dict: Updated container data dictionary if found, None otherwise
+
+        Raises:
+            ValidationError: If validation fails
+            DatabaseError: If database operation fails
+        """
+        from server.persistence.container_persistence import update_container
+
+        with self._lock, self._get_connection() as conn:
+            container = update_container(conn, container_id, items_json, lock_state, metadata_json)
+            return container.to_dict() if container else None
+
+    def get_decayed_containers(self, current_time: datetime | None = None) -> list[dict[str, Any]]:
+        """
+        Get all containers that have decayed (decay_at < current_time).
+
+        Args:
+            current_time: Current time for decay comparison (defaults to now() if not provided)
+
+        Returns:
+            list[dict[str, Any]]: List of decayed container data
+        """
+        from server.persistence.container_persistence import get_decayed_containers as _get_decayed_containers
+
+        with self._lock, self._get_connection() as conn:
+            containers = _get_decayed_containers(conn, current_time)
+            return [container.to_dict() for container in containers]
+
+    def delete_container(self, container_id: UUID) -> bool:
+        """
+        Delete a container.
+
+        Args:
+            container_id: Container UUID
+
+        Returns:
+            bool: True if container was deleted, False if not found
+
+        Raises:
+            DatabaseError: If database operation fails
+        """
+        from server.persistence.container_persistence import delete_container
+
+        with self._lock, self._get_connection() as conn:
+            return delete_container(conn, container_id)
+
+    # --- Item Instance Persistence ---
+
+    def create_item_instance(
+        self,
+        item_instance_id: str,
+        prototype_id: str,
+        owner_type: str = "room",
+        owner_id: str | None = None,
+        location_context: str | None = None,
+        quantity: int = 1,
+        condition: int | None = None,
+        flags_override: list[str] | None = None,
+        binding_state: str | None = None,
+        attunement_state: dict[str, Any] | None = None,
+        custom_name: str | None = None,
+        metadata: dict[str, Any] | None = None,
+        origin_source: str | None = None,
+        origin_metadata: dict[str, Any] | None = None,
+    ) -> None:
+        """
+        Create a new item instance in the database.
+
+        Args:
+            item_instance_id: Unique identifier for the item instance
+            prototype_id: Reference to item_prototypes.prototype_id
+            owner_type: Type of owner (e.g., "room", "player", "container")
+            owner_id: ID of the owner (optional)
+            location_context: Additional location context (optional)
+            quantity: Quantity of items in this instance
+            condition: Item condition (optional)
+            flags_override: Override flags for this instance (optional)
+            binding_state: Binding state (optional)
+            attunement_state: Attunement state dictionary (optional)
+            custom_name: Custom name for this instance (optional)
+            metadata: Additional metadata dictionary (optional)
+            origin_source: Origin source string (optional)
+            origin_metadata: Origin metadata dictionary (optional)
+
+        Raises:
+            DatabaseError: If the insert fails
+            ValidationError: If required parameters are invalid
+        """
+        from server.persistence.item_instance_persistence import create_item_instance
+
+        with self._lock, self._get_connection() as conn:
+            create_item_instance(
+                conn=conn,
+                item_instance_id=item_instance_id,
+                prototype_id=prototype_id,
+                owner_type=owner_type,
+                owner_id=owner_id,
+                location_context=location_context,
+                quantity=quantity,
+                condition=condition,
+                flags_override=flags_override,
+                binding_state=binding_state,
+                attunement_state=attunement_state,
+                custom_name=custom_name,
+                metadata=metadata,
+                origin_source=origin_source,
+                origin_metadata=origin_metadata,
+            )
+
+    def ensure_item_instance(
+        self,
+        item_instance_id: str,
+        prototype_id: str,
+        owner_type: str = "room",
+        owner_id: str | None = None,
+        quantity: int = 1,
+        metadata: dict[str, Any] | None = None,
+        origin_source: str | None = None,
+        origin_metadata: dict[str, Any] | None = None,
+    ) -> None:
+        """
+        Ensure an item instance exists in the database, creating it if necessary.
+
+        This is a convenience function that checks if the item instance exists
+        and creates it if it doesn't. Useful for ensuring referential integrity.
+
+        Args:
+            item_instance_id: Unique identifier for the item instance
+            prototype_id: Reference to item_prototypes.prototype_id
+            owner_type: Type of owner (default: "room")
+            owner_id: ID of the owner (optional)
+            quantity: Quantity of items in this instance (default: 1)
+            metadata: Additional metadata dictionary (optional)
+            origin_source: Origin source string (optional)
+            origin_metadata: Origin metadata dictionary (optional)
+        """
+        from server.persistence.item_instance_persistence import ensure_item_instance
+
+        with self._lock, self._get_connection() as conn:
+            ensure_item_instance(
+                conn=conn,
+                item_instance_id=item_instance_id,
+                prototype_id=prototype_id,
+                owner_type=owner_type,
+                owner_id=owner_id,
+                quantity=quantity,
+                metadata=metadata,
+                origin_source=origin_source,
+                origin_metadata=origin_metadata,
+            )
+
+    def item_instance_exists(self, item_instance_id: str) -> bool:
+        """
+        Check if an item instance exists in the database.
+
+        Args:
+            item_instance_id: Unique identifier for the item instance
+
+        Returns:
+            True if the item instance exists, False otherwise
+        """
+        from server.persistence.item_instance_persistence import item_instance_exists
+
+        with self._lock, self._get_connection() as conn:
+            return item_instance_exists(conn, item_instance_id)
 
     # --- TODO: Add async support, other backends, migrations, etc. ---

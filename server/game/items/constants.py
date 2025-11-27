@@ -26,15 +26,16 @@ ALLOWED_ITEM_TYPES: set[str] = {
 }
 
 ALLOWED_WEAR_SLOTS: set[str] = {
-    "HEAD",
-    "TORSO",
-    "LEGS",
-    "MAIN_HAND",
-    "OFF_HAND",
-    "FEET",
-    "HANDS",
-    "ACCESSORY",
-    "RING",
-    "AMULET",
-    "BELT",
+    "head",
+    "torso",
+    "legs",
+    "main_hand",
+    "off_hand",
+    "feet",
+    "hands",
+    "accessory",
+    "ring",
+    "amulet",
+    "belt",
+    "backpack",
 }

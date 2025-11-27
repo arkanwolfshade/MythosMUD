@@ -1,9 +1,9 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import './App.css';
+import { API_BASE_URL } from './utils/config';
 import { logoutHandler } from './utils/logoutHandler';
 import { memoryMonitor } from './utils/memoryMonitor';
 import { inputSanitizer, secureTokenStorage } from './utils/security';
-import { API_BASE_URL } from './utils/config';
 
 // Lazy load screen components for code splitting
 // AI: Lazy loading reduces initial bundle size by ~30-50% and improves initial page load time
@@ -64,6 +64,26 @@ function App() {
       memoryMonitor.stop();
     };
   }, []);
+
+  // Clear all stored authentication tokens on page load
+  // CRITICAL: After server restart, all client authentications are void
+  // Clients must reauthenticate on each page load to ensure tokens are validated
+  // against the current server state
+  //
+  // NOTE: This clears tokens from storage, but tokens stored AFTER this mount
+  // (i.e., during login in the same session) will remain valid for that session
+  useEffect(() => {
+    // Clear all stored tokens to force fresh authentication
+    // This ensures that after server restart, clients cannot use stale tokens
+    secureTokenStorage.clearAllTokens();
+
+    // Also clear any auth state that might have been restored
+    setAuthToken('');
+    setIsAuthenticated(false);
+    setHasCharacter(false);
+    setCharacterName('');
+    setShowMotd(false);
+  }, []); // Only run on mount
 
   const handleLoginClick = async () => {
     // Sanitize inputs
@@ -234,6 +254,21 @@ function App() {
   };
 
   const handleMotdContinue = () => {
+    // The token should be in state from successful login (which also stored it in localStorage)
+    // Since tokens are cleared on mount and login happens after mount, the token in state
+    // is the source of truth for this session. We don't need to restore from storage
+    // because storage was cleared on mount and then repopulated during login.
+    if (!authToken) {
+      // Token is missing from state - this should not happen if user just logged in successfully
+      // If it does, redirect to login. This indicates a state loss issue that needs investigation.
+      setError('Authentication token is missing. Please log in again.');
+      setIsAuthenticated(false);
+      setHasCharacter(false);
+      setShowMotd(false);
+      return;
+    }
+
+    // Proceed to game terminal - token is already in state and storage from login
     setShowMotd(false);
   };
 
@@ -504,12 +539,32 @@ function App() {
     );
   }
 
+  // Ensure we have a valid token before rendering GameTerminalWithPanels
+  // Restore from secure storage if state was lost (defensive check)
+  const finalAuthToken = authToken || secureTokenStorage.getToken() || '';
+
+  // Defensive validation: If token is missing despite being authenticated, restore it or redirect
+  if (!finalAuthToken) {
+    // Token is missing - redirect to login
+    // This should not happen in normal flow but protects against state loss
+    setIsAuthenticated(false);
+    setHasCharacter(false);
+    setError('Session expired. Please log in again.');
+    // The component will re-render and show login screen due to !isAuthenticated check above
+    return null;
+  }
+
+  // Ensure token is in state if it was only in storage
+  if (!authToken && finalAuthToken) {
+    setAuthToken(finalAuthToken);
+  }
+
   return (
     <div className="App">
       <Suspense fallback={<LoadingFallback />}>
         <GameTerminalWithPanels
-          playerName={characterName}
-          authToken={authToken}
+          playerName={characterName || playerName}
+          authToken={finalAuthToken}
           onLogout={handleLogout}
           isLoggingOut={isLoggingOut}
           onDisconnect={handleDisconnectCallback}

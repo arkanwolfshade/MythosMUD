@@ -21,18 +21,6 @@ from ..logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-def _safe_json_loads(value: Any) -> Any:
-    """Safely decode JSON for environment-sourced values."""
-
-    if value in (None, "", b""):
-        return ""
-
-    try:
-        return json.loads(value)
-    except (json.JSONDecodeError, TypeError):
-        return value
-
-
 def _parse_env_list(candidate: Any) -> list[str]:
     """Parse a string from the environment as JSON list or CSV."""
     if candidate is None:
@@ -568,7 +556,6 @@ class CORSConfig(BaseSettings):
         "env_prefix": "CORS_",
         "case_sensitive": False,
         "extra": "ignore",
-        "json_loads": _safe_json_loads,  # type: ignore[typeddict-unknown-key]
     }
 
     def __init__(self, **kwargs: Any) -> None:

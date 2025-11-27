@@ -53,8 +53,10 @@ from .exploration_commands import handle_go_command, handle_look_command
 from .inventory_commands import (
     handle_drop_command,
     handle_equip_command,
+    handle_get_command,
     handle_inventory_command,
     handle_pickup_command,
+    handle_put_command,
     handle_unequip_command,
 )
 from .npc_admin_commands import handle_npc_command
@@ -140,6 +142,8 @@ class CommandService:
             "inventory": handle_inventory_command,
             "pickup": handle_pickup_command,
             "drop": handle_drop_command,
+            "put": handle_put_command,
+            "get": handle_get_command,
             "equip": handle_equip_command,
             "unequip": handle_unequip_command,
             # Position commands
@@ -290,8 +294,81 @@ class CommandService:
 
                 # Merge parsed command fields (use Pydantic model_dump for completeness)
                 try:
-                    parsed_fields = parsed_command.model_dump(exclude_none=True)
-                except AttributeError:
+                    # DEBUG: Inspect parsed_command object before model_dump()
+                    logger.error(
+                        "DEBUG: parsed_command object inspection",
+                        player=player_name,
+                        command_type=cmd,
+                        parsed_command_type=type(parsed_command).__name__,
+                        parsed_command_module=type(parsed_command).__module__,
+                        has_item=hasattr(parsed_command, "item"),
+                        has_container=hasattr(parsed_command, "container"),
+                    )
+
+                    # Check if item and container exist and get their values
+                    if hasattr(parsed_command, "item"):
+                        item_value = getattr(parsed_command, "item", None)
+                        logger.info(
+                            "DEBUG: parsed_command.item value",
+                            player=player_name,
+                            command_type=cmd,
+                            item_value=item_value,
+                            item_type=type(item_value).__name__,
+                        )
+                    if hasattr(parsed_command, "container"):
+                        container_value = getattr(parsed_command, "container", None)
+                        logger.info(
+                            "DEBUG: parsed_command.container value",
+                            player=player_name,
+                            command_type=cmd,
+                            container_value=container_value,
+                            container_type=type(container_value).__name__,
+                        )
+
+                    # Get all attributes of the parsed_command object
+                    all_attrs = {
+                        key: getattr(parsed_command, key, "<NOT FOUND>")
+                        for key in dir(parsed_command)
+                        if not key.startswith("_") and not callable(getattr(parsed_command, key, None))
+                    }
+                    logger.info(
+                        "DEBUG: parsed_command all attributes",
+                        player=player_name,
+                        command_type=cmd,
+                        all_attrs_keys=list(all_attrs.keys()),
+                        all_attrs=all_attrs,
+                    )
+
+                    # Use model_dump without exclude_none to see all fields
+                    # Then manually filter None values if needed
+                    parsed_fields = parsed_command.model_dump()
+                    logger.error(
+                        "DEBUG: model_dump() result",
+                        player=player_name,
+                        command_type=cmd,
+                        parsed_fields_keys=list(parsed_fields.keys()),
+                        parsed_fields=parsed_fields,
+                        has_item_in_result="item" in parsed_fields,
+                        has_container_in_result="container" in parsed_fields,
+                    )
+
+                    # Filter None values manually
+                    parsed_fields = {k: v for k, v in parsed_fields.items() if v is not None}
+                    logger.info(
+                        "DEBUG: parsed_fields after filtering None",
+                        player=player_name,
+                        command_type=cmd,
+                        parsed_fields_keys=list(parsed_fields.keys()),
+                        parsed_fields=parsed_fields,
+                    )
+                except AttributeError as e:
+                    logger.error(
+                        "ERROR: AttributeError during model_dump",
+                        player=player_name,
+                        command_type=cmd,
+                        error=str(e),
+                        error_type=type(e).__name__,
+                    )
                     parsed_fields = {
                         key: getattr(parsed_command, key)
                         for key in dir(parsed_command)
@@ -299,7 +376,23 @@ class CommandService:
                         and not callable(getattr(parsed_command, key))
                         and key not in command_data
                     }
+                except Exception as e:
+                    logger.error(
+                        "ERROR: Exception during model_dump",
+                        player=player_name,
+                        command_type=cmd,
+                        error=str(e),
+                        error_type=type(e).__name__,
+                    )
+                    raise
                 command_data.update(parsed_fields)
+                logger.error(
+                    "Command data after merge",
+                    player=player_name,
+                    command_type=cmd,
+                    command_data_keys=list(command_data.keys()),
+                    command_data=command_data,
+                )
 
                 assert handler is not None  # Type narrowing for mypy
                 result = await handler(command_data, current_user, request, alias_storage, player_name)

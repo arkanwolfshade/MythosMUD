@@ -1,5 +1,6 @@
 import React from 'react';
 import { ansiToHtmlWithBreaks } from '../../../utils/ansiToHtml';
+import { inputSanitizer } from '../../../utils/security';
 import { EldritchIcon, MythosIcons } from '../../ui/EldritchIcon';
 
 interface ChatMessageProps {
@@ -99,7 +100,9 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, index }) => {
         {message.isHtml ? (
           <span
             dangerouslySetInnerHTML={{
-              __html: message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text),
+              __html: inputSanitizer.sanitizeIncomingHtml(
+                message.isCompleteHtml ? message.text : ansiToHtmlWithBreaks(message.text)
+              ),
             }}
           />
         ) : (

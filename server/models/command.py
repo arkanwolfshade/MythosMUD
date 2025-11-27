@@ -77,6 +77,8 @@ class CommandType(str, Enum):
     INVENTORY = "inventory"
     PICKUP = "pickup"
     DROP = "drop"
+    PUT = "put"
+    GET = "get"
     EQUIP = "equip"
     UNEQUIP = "unequip"
     QUIT = "quit"
@@ -124,6 +126,13 @@ class LookCommand(BaseCommand):
     command_type: Literal[CommandType.LOOK] = CommandType.LOOK
     direction: Direction | None = Field(default=None, description="Direction to look")
     target: str | None = Field(default=None, description="Target to look at (NPC name or direction)")
+    target_type: Literal["player", "npc", "item", "container", "direction"] | None = Field(
+        default=None, description="Explicit target type specification"
+    )
+    look_in: bool = Field(default=False, description="Flag for container inspection mode")
+    instance_number: int | None = Field(
+        default=None, ge=1, description="Instance number for targeting specific items/containers when multiple exist"
+    )
 
     @field_validator("direction")
     @classmethod
@@ -538,6 +547,24 @@ class DropCommand(BaseCommand):
     quantity: int | None = Field(None, ge=1, description="Quantity to drop (defaults to full stack)")
 
 
+class PutCommand(BaseCommand):
+    """Command for putting items from inventory into a container."""
+
+    command_type: Literal[CommandType.PUT] = CommandType.PUT
+    item: str = Field(..., min_length=1, description="Item name or inventory index to put")
+    container: str = Field(..., min_length=1, description="Container name to put item into")
+    quantity: int | None = Field(None, ge=1, description="Quantity to put (defaults to full stack)")
+
+
+class GetCommand(BaseCommand):
+    """Command for getting items from a container into inventory."""
+
+    command_type: Literal[CommandType.GET] = CommandType.GET
+    item: str = Field(..., min_length=1, description="Item name or container index to get")
+    container: str = Field(..., min_length=1, description="Container name to get item from")
+    quantity: int | None = Field(None, ge=1, description="Quantity to get (defaults to full stack)")
+
+
 class EquipCommand(BaseCommand):
     """Command for equipping an item from inventory."""
 
@@ -802,6 +829,8 @@ Command = (
     | InventoryCommand
     | PickupCommand
     | DropCommand
+    | PutCommand
+    | GetCommand
     | EquipCommand
     | UnequipCommand
     | QuitCommand

@@ -83,6 +83,95 @@ class TestCommandModels:
         assert cmd.direction is None
         assert cmd.target == "Dr. Francis Morgan"
 
+    def test_look_command_with_target_type(self):
+        """Test LookCommand with target_type field."""
+        # Look with explicit player target type
+        cmd = LookCommand(target="Armitage", target_type="player")
+        assert cmd.command_type == CommandType.LOOK
+        assert cmd.target == "Armitage"
+        assert cmd.target_type == "player"
+
+        # Look with explicit item target type
+        cmd = LookCommand(target="lantern", target_type="item")
+        assert cmd.target == "lantern"
+        assert cmd.target_type == "item"
+
+        # Look with explicit container target type
+        cmd = LookCommand(target="backpack", target_type="container")
+        assert cmd.target == "backpack"
+        assert cmd.target_type == "container"
+
+        # Look with explicit npc target type
+        cmd = LookCommand(target="guard", target_type="npc")
+        assert cmd.target == "guard"
+        assert cmd.target_type == "npc"
+
+        # Look with explicit direction target type
+        cmd = LookCommand(target="north", target_type="direction")
+        assert cmd.target == "north"
+        assert cmd.target_type == "direction"
+
+        # Look without target_type (should be None)
+        cmd = LookCommand(target="something")
+        assert cmd.target_type is None
+
+    def test_look_command_with_look_in(self):
+        """Test LookCommand with look_in field."""
+        # Look with look_in flag set to True
+        cmd = LookCommand(target="backpack", look_in=True)
+        assert cmd.target == "backpack"
+        assert cmd.look_in is True
+
+        # Look with look_in flag set to False (default)
+        cmd = LookCommand(target="backpack", look_in=False)
+        assert cmd.look_in is False
+
+        # Look without look_in (should default to False)
+        cmd = LookCommand(target="backpack")
+        assert cmd.look_in is False
+
+    def test_look_command_with_instance_number(self):
+        """Test LookCommand with instance_number field."""
+        # Look with instance number
+        cmd = LookCommand(target="backpack", instance_number=2)
+        assert cmd.target == "backpack"
+        assert cmd.instance_number == 2
+
+        # Look with instance number 1
+        cmd = LookCommand(target="lantern", instance_number=1)
+        assert cmd.instance_number == 1
+
+        # Look without instance_number (should be None)
+        cmd = LookCommand(target="backpack")
+        assert cmd.instance_number is None
+
+    def test_look_command_with_all_new_fields(self):
+        """Test LookCommand with all new fields combined."""
+        cmd = LookCommand(
+            target="backpack",
+            target_type="container",
+            look_in=True,
+            instance_number=2,
+        )
+        assert cmd.target == "backpack"
+        assert cmd.target_type == "container"
+        assert cmd.look_in is True
+        assert cmd.instance_number == 2
+
+    def test_look_command_invalid_target_type(self):
+        """Test LookCommand with invalid target_type."""
+        with pytest.raises(PydanticValidationError):
+            LookCommand(target="something", target_type="invalid")
+
+    def test_look_command_instance_number_validation(self):
+        """Test LookCommand instance_number validation."""
+        # Instance number must be positive
+        with pytest.raises(PydanticValidationError):
+            LookCommand(target="backpack", instance_number=0)
+
+        with pytest.raises(PydanticValidationError):
+            LookCommand(target="backpack", instance_number=-1)
+
     def test_go_command_valid(self):
         """Test valid GoCommand creation."""
         cmd = GoCommand(direction=Direction.SOUTH)
@@ -493,11 +582,138 @@ class TestCommandParser:
         assert cmd.direction is None
         assert cmd.target == "town guard"
 
-        # Direction should still work as target
+        # Diagonal directions are now treated as targets (not directions)
         cmd = self.parser.parse_command("look northeast")
         assert isinstance(cmd, LookCommand)
-        assert cmd.direction == Direction.NORTHEAST
+        assert cmd.direction is None
         assert cmd.target == "northeast"
+
+    def test_parse_look_command_explicit_syntax(self):
+        """Test parsing look command with explicit type syntax."""
+        # Explicit player target type
+        cmd = self.parser.parse_command("look player Armitage")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.target == "Armitage"
+        assert cmd.target_type == "player"
+
+        # Explicit item target type
+        cmd = self.parser.parse_command("look item lantern")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.target == "lantern"
+        assert cmd.target_type == "item"
+
+        # Explicit container target type
+        cmd = self.parser.parse_command("look container backpack")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.target == "backpack"
+        assert cmd.target_type == "container"
+
+        # Explicit npc target type
+        cmd = self.parser.parse_command("look npc guard")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.target == "guard"
+        assert cmd.target_type == "npc"
+
+        # Explicit direction target type
+        cmd = self.parser.parse_command("look direction north")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.target == "north"
+        assert cmd.target_type == "direction"
+
+        # Multi-word targets with explicit syntax
+        cmd = self.parser.parse_command("look player Dr. Francis Morgan")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.target == "Dr. Francis Morgan"
+        assert cmd.target_type == "player"
+
+    def test_parse_look_command_container_inspection(self):
+        """Test parsing look command with container inspection syntax."""
+        # Look in container
+        cmd = self.parser.parse_command("look in backpack")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.target == "backpack"
+        assert cmd.look_in is True
+
+        # Look in container with multi-word name
+        cmd = self.parser.parse_command("look in leather backpack")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.target == "leather backpack"
+        assert cmd.look_in is True
+
+        # Look in container with slash prefix
+        cmd = self.parser.parse_command("/look in chest")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.target == "chest"
+        assert cmd.look_in is True
+
+    def test_parse_look_command_instance_targeting(self):
+        """Test parsing look command with instance targeting."""
+        # Instance targeting with hyphen syntax
+        cmd = self.parser.parse_command("look backpack-2")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.target == "backpack"
+        assert cmd.instance_number == 2
+
+        # Instance targeting with space syntax
+        cmd = self.parser.parse_command("look backpack 2")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.target == "backpack"
+        assert cmd.instance_number == 2
+
+        # Instance targeting with explicit type
+        cmd = self.parser.parse_command("look item lantern-3")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.target == "lantern"
+        assert cmd.target_type == "item"
+        assert cmd.instance_number == 3
+
+        # Instance targeting with container inspection
+        cmd = self.parser.parse_command("look in backpack-1")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.target == "backpack"
+        assert cmd.look_in is True
+        assert cmd.instance_number == 1
+
+        # Instance targeting with higher numbers
+        cmd = self.parser.parse_command("look item sword 10")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.target == "sword"
+        assert cmd.instance_number == 10
+
+    def test_parse_look_command_diagonal_direction_removal(self):
+        """Test that diagonal directions are no longer recognized."""
+        # Diagonal directions should be treated as targets, not directions
+        cmd = self.parser.parse_command("look northeast")
+        assert isinstance(cmd, LookCommand)
+        # Should be treated as a target, not a direction
+        assert cmd.direction is None
+        assert cmd.target == "northeast"
+
+        cmd = self.parser.parse_command("look northwest")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.direction is None
+        assert cmd.target == "northwest"
+
+        cmd = self.parser.parse_command("look southeast")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.direction is None
+        assert cmd.target == "southeast"
+
+        cmd = self.parser.parse_command("look southwest")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.direction is None
+        assert cmd.target == "southwest"
+
+        # Cardinal directions should still work
+        cmd = self.parser.parse_command("look north")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.direction == Direction.NORTH
+        assert cmd.target == "north"
+
+        cmd = self.parser.parse_command("look south")
+        assert isinstance(cmd, LookCommand)
+        assert cmd.direction == Direction.SOUTH
+        assert cmd.target == "south"
 
     def test_parse_go_command(self):
         """Test parsing go command."""

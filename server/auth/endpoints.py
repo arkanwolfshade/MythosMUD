@@ -9,7 +9,7 @@ custom invite code validation.
 import uuid
 from typing import Any
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi_users import schemas
 from pydantic import BaseModel, field_validator
 from sqlalchemy.exc import IntegrityError
@@ -237,14 +237,17 @@ async def register_user(
         context.metadata["constraint_error"] = str(e)
         context.metadata["original_error"] = orig_error_str if hasattr(e, "orig") else ""
         raise LoggedHTTPException(status_code=400, detail=detail, context=context) from e
+    except HTTPException:
+        # Re-raise HTTP exceptions to let FastAPI handle them
+        raise
     except Exception as e:
         # Log unexpected exceptions for debugging
+        # Use error=str(e) instead of exc_info=True to avoid Unicode encoding issues on Windows
         logger.error(
             "Unexpected error during registration",
             error=str(e),
             error_type=type(e).__name__,
             username=user_create_clean.username,
-            exc_info=True,
         )
         # Re-raise other exceptions
         raise e
@@ -364,8 +367,12 @@ async def login_user(
             context.metadata["actual_user_id"] = str(authenticated_user.id)
             context.metadata["operation"] = "login_user"
             raise LoggedHTTPException(status_code=401, detail="Invalid credentials", context=context)
+    except (LoggedHTTPException, HTTPException):
+        # Re-raise HTTP exceptions to let FastAPI handle them
+        raise
     except Exception as e:
-        logger.error("Authentication failed", error=str(e))
+        # Use error=str(e) instead of exc_info=True to avoid Unicode encoding issues on Windows
+        logger.error("Authentication failed", error=str(e), error_type=type(e).__name__)
         context = create_context_from_request(http_request)
         context.metadata["username"] = request.username
         context.metadata["operation"] = "login_user"
@@ -393,7 +400,7 @@ async def login_user(
     player = persistence.get_player_by_user_id(str(user.id))
 
     has_character = player is not None
-    character_name = player.name if player else None
+    character_name: str | None = str(player.name) if player else None
 
     # CRITICAL FIX: Handle new game session to disconnect any existing connections
     # This prevents the duplicate login bug where the same player can be logged in multiple times
@@ -425,7 +432,7 @@ async def login_user(
         access_token=access_token,
         user_id=str(user.id),
         has_character=has_character,
-        character_name=character_name,  # type: ignore[arg-type]
+        character_name=character_name,
     )
 
 

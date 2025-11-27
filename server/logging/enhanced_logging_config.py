@@ -489,6 +489,118 @@ class SafeRotatingFileHandler(RotatingFileHandler):
         return super().shouldRollover(record)
 
 
+class WarningOnlyFilter(logging.Filter):
+    """
+    Filter that only allows WARNING level logs to pass through.
+
+    This filter ensures that warnings.log only contains WARNING level logs,
+    not ERROR or CRITICAL logs (which should only go to errors.log).
+    """
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        """Only allow WARNING level logs."""
+        return record.levelno == logging.WARNING
+
+
+def _create_aggregator_handler(
+    log_path: Path,
+    log_level: int,
+    max_bytes: int,
+    backup_count: int,
+    player_service: Any = None,
+) -> RotatingFileHandler:
+    """
+    Create an aggregator handler for warnings.log or errors.log.
+
+    Aggregator handlers capture logs from ALL subsystems at a specific level
+    (WARNING or ERROR) and write them to a centralized log file. This enables
+    quick scanning of all warnings or errors across the entire system.
+
+    Args:
+        log_path: Path to the aggregator log file
+        log_level: Logging level (logging.WARNING or logging.ERROR)
+        max_bytes: Maximum file size before rotation
+        backup_count: Number of backup files to keep
+        player_service: Optional player service for GUID-to-name conversion
+
+    Returns:
+        Configured RotatingFileHandler instance
+    """
+    # Use Windows-safe rotation handlers when available
+    _WinSafeHandler: type[RotatingFileHandler] = RotatingFileHandler
+    try:
+        from server.logging.windows_safe_rotation import WindowsSafeRotatingFileHandler as _ImportedWinSafeHandler
+
+        _WinSafeHandler = _ImportedWinSafeHandler
+    except Exception:  # noqa: BLE001 - optional enhancement
+        _WinSafeHandler = RotatingFileHandler
+
+    # Use SafeRotatingFileHandler as base for all handlers
+    _BaseHandler = SafeRotatingFileHandler
+
+    # Determine handler class with Windows safety
+    handler_class = _BaseHandler
+    try:
+        if sys.platform == "win32":
+            # Windows-safe handler also needs directory safety
+            class SafeWinHandlerAggregator(_WinSafeHandler):  # type: ignore[misc, valid-type]
+                def shouldRollover(self, record):  # noqa: N802
+                    if self.baseFilename:
+                        log_path = Path(self.baseFilename)
+                        log_path.parent.mkdir(parents=True, exist_ok=True)
+                    return super().shouldRollover(record)
+
+            handler_class = SafeWinHandlerAggregator
+    except Exception:
+        # Fallback to safe handler on any detection error
+        handler_class = _BaseHandler
+
+    # Ensure directory exists right before creating handler to prevent race conditions
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        handler = handler_class(
+            log_path,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
+    except (FileNotFoundError, OSError):
+        # If directory doesn't exist or was deleted, recreate it and try again
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        handler = handler_class(
+            log_path,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
+
+    handler.setLevel(log_level)
+
+    # Add filter for warnings handler to exclude ERROR and CRITICAL
+    # Warnings.log should ONLY contain WARNING level logs
+    if log_level == logging.WARNING:
+        handler.addFilter(WarningOnlyFilter())
+
+    # Create formatter - use PlayerGuidFormatter if player_service is available
+    formatter: logging.Formatter
+    if player_service is not None:
+        from server.logging.player_guid_formatter import PlayerGuidFormatter
+
+        formatter = PlayerGuidFormatter(
+            player_service=player_service,
+            fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
+    else:
+        formatter = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
+    handler.setFormatter(formatter)
+
+    return handler
+
+
 def _setup_enhanced_file_logging(
     environment: str,
     log_config: dict[str, Any],
@@ -538,14 +650,68 @@ def _setup_enhanced_file_logging(
     else:
         max_bytes = max_size_str
 
-    # Enhanced log categories with security and performance considerations
+    # Enhanced log categories organized by subsystem
+    # Each subsystem has its own log file for better organization
     log_categories = {
         "server": ["server", "uvicorn"],
-        "persistence": ["persistence", "PersistenceLayer", "asyncpg"],
+        "persistence": ["persistence", "PersistenceLayer", "asyncpg", "database"],
         "authentication": ["auth"],
-        "world": ["world"],
+        "inventory": [
+            "inventory",
+            "server.services.inventory",
+            "server.services.inventory_mutation_guard",
+            "server.services.container",
+            "server.services.container_service",
+            "server.services.wearable_container_service",
+            "server.services.equipment_service",
+            "services.inventory",
+            "services.inventory_mutation_guard",
+            "services.container",
+            "services.container_service",
+            "services.wearable_container_service",
+            "services.equipment_service",
+        ],
+        "npc": [
+            "npc",
+            "services.npc",
+            "services.npc_service",
+            "services.npc_instance_service",
+            "services.npc_startup_service",
+        ],
+        "game": [
+            "game",
+            "server.game",
+            "server.services.player",
+            "server.services.room_sync",
+            "server.world_loader",
+            "server.game.movement_service",
+            "server.game.room_service",
+            "server.game.player_service",
+            "server.game.mechanics",
+            "services.player",
+            "services.room_sync",
+            "world_loader",
+            "game.movement_service",
+            "game.room_service",
+            "game.player_service",
+            "game.mechanics",
+        ],
+        "api": ["api", "server.api"],
+        "middleware": [
+            "middleware",
+            "server.middleware",
+        ],
+        "monitoring": ["monitoring", "performance", "metrics"],
+        "time": ["time", "services.game_tick", "services.schedule"],
+        "caching": ["caching"],
         "communications": ["realtime", "communications"],
-        "commands": ["commands"],
+        "commands": [
+            "commands",
+            "server.commands",
+        ],
+        "events": ["events", "EventBus"],
+        "infrastructure": ["infrastructure", "infrastructure.nats_broker", "infrastructure.message_broker"],
+        "validators": ["validators"],
         "combat": [
             "services.combat_service",
             "services.combat_event_publisher",
@@ -554,10 +720,8 @@ def _setup_enhanced_file_logging(
             "validators.combat_validator",
             "logging.combat_audit",
         ],
-        "errors": ["errors"],
         "access": ["access", "server.app.factory"],
         "security": ["security", "audit"],
-        "performance": ["performance", "metrics"],
     }
 
     # Create handlers for different log categories
@@ -620,15 +784,49 @@ def _setup_enhanced_file_logging(
         handler.setFormatter(formatter)
 
         # Add handler to loggers that match the prefixes
+        # CRITICAL FIX: Add handlers to parent loggers (e.g., "server.commands") so that
+        # child loggers (e.g., "server.commands.inventory_commands") can propagate to them
         for prefix in prefixes:
-            logger = logging.getLogger(prefix)
-            logger.addHandler(handler)
-            # Set DEBUG level for combat modules in local/debug environments
-            if log_file == "combat" and (environment == "local" or log_level == "DEBUG"):
-                logger.setLevel(logging.DEBUG)
-            else:
-                logger.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
-            logger.propagate = True
+            # Try both the prefix as-is and with "server." prefix for module-based loggers
+            logger_names = [prefix]
+            if not prefix.startswith("server."):
+                logger_names.append(f"server.{prefix}")
+
+            for logger_name in logger_names:
+                logger = logging.getLogger(logger_name)
+                logger.addHandler(handler)
+                # Set DEBUG level for combat modules in local/debug environments
+                if log_file == "combat" and (environment == "local" or log_level == "DEBUG"):
+                    logger.setLevel(logging.DEBUG)
+                else:
+                    logger.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
+                logger.propagate = True
+
+    # Create warnings.log aggregator handler
+    # This captures ALL WARNING level logs from ALL subsystems
+    # Warnings appear in both their subsystem log AND warnings.log
+    warnings_log_path = env_log_dir / "warnings.log"
+    warnings_handler = _create_aggregator_handler(
+        warnings_log_path,
+        logging.WARNING,
+        max_bytes,
+        backup_count,
+        player_service,
+    )
+    root_logger.addHandler(warnings_handler)
+
+    # Create errors.log aggregator handler
+    # This captures ALL ERROR and CRITICAL level logs from ALL subsystems
+    # Errors appear in both their subsystem log AND errors.log
+    errors_log_path = env_log_dir / "errors.log"
+    errors_handler = _create_aggregator_handler(
+        errors_log_path,
+        logging.ERROR,
+        max_bytes,
+        backup_count,
+        player_service,
+    )
+    root_logger.addHandler(errors_handler)
 
     # Enhanced console handler with structured output
     console_log_path = env_log_dir / "console.log"
@@ -684,90 +882,6 @@ def _setup_enhanced_file_logging(
         )
     console_handler.setFormatter(console_formatter)
     root_logger.addHandler(console_handler)
-
-    # Enhanced errors handler with security focus
-    errors_log_path = env_log_dir / "errors.log"
-    handler_class = _BaseHandler
-    try:
-        if sys.platform == "win32":
-            # Windows-safe handler also needs directory safety
-            class SafeWinHandlerErrors(_WinSafeHandler):  # type: ignore[misc, valid-type]
-                def shouldRollover(self, record):  # noqa: N802
-                    if self.baseFilename:
-                        log_path = Path(self.baseFilename)
-                        log_path.parent.mkdir(parents=True, exist_ok=True)
-                    return super().shouldRollover(record)
-
-            handler_class = SafeWinHandlerErrors
-    except Exception:
-        handler_class = _BaseHandler
-
-    # Ensure directory exists right before creating handler to prevent race conditions
-    errors_log_path.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        errors_handler = handler_class(
-            errors_log_path,
-            maxBytes=max_bytes,
-            backupCount=backup_count,
-            encoding="utf-8",
-        )
-    except (FileNotFoundError, OSError):
-        # If directory doesn't exist or was deleted, recreate it and try again
-        errors_log_path.parent.mkdir(parents=True, exist_ok=True)
-        errors_handler = handler_class(
-            errors_log_path,
-            maxBytes=max_bytes,
-            backupCount=backup_count,
-            encoding="utf-8",
-        )
-    errors_handler.setLevel(logging.WARNING)
-
-    # Use enhanced formatter for errors handler
-    errors_formatter: logging.Formatter
-    if player_service is not None:
-        from server.logging.player_guid_formatter import PlayerGuidFormatter
-
-        errors_formatter = PlayerGuidFormatter(
-            player_service=player_service,
-            fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
-        )
-    else:
-        errors_formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
-        )
-    errors_handler.setFormatter(errors_formatter)
-    root_logger.addHandler(errors_handler)
-
-    # CRITICAL FIX: Route ALL ERROR and CRITICAL logs to errors.log
-    # The above handler only captures "errors.*" prefix modules
-    # This ensures ALL error-level logs from ANY module are captured
-    # AI Agent: This fixes the observability gap where critical errors in combat,
-    # persistence, and game mechanics were being silently suppressed
-    # Ensure directory exists right before creating handler to prevent race conditions
-    errors_log_path.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        global_errors_handler = handler_class(
-            errors_log_path,  # Same file as errors_handler
-            maxBytes=max_bytes,
-            backupCount=backup_count,
-            encoding="utf-8",
-        )
-    except (FileNotFoundError, OSError):
-        # If directory doesn't exist or was deleted, recreate it and try again
-        errors_log_path.parent.mkdir(parents=True, exist_ok=True)
-        global_errors_handler = handler_class(
-            errors_log_path,  # Same file as errors_handler
-            maxBytes=max_bytes,
-            backupCount=backup_count,
-            encoding="utf-8",
-        )
-    global_errors_handler.setLevel(logging.ERROR)  # ERROR and CRITICAL only
-    global_errors_handler.setFormatter(errors_formatter)
-
-    # Add to root logger to capture ALL errors from all modules
-    root_logger.addHandler(global_errors_handler)
 
     root_logger.setLevel(logging.DEBUG)
 
@@ -1005,11 +1119,22 @@ def update_logging_with_player_service(player_service: Any) -> None:
         "server",
         "persistence",
         "authentication",
-        "world",
+        "inventory",
+        "npc",
+        "game",
+        "api",
+        "middleware",
+        "monitoring",
+        "time",
+        "caching",
         "communications",
         "commands",
-        "errors",
+        "events",
+        "infrastructure",
+        "validators",
+        "combat",
         "access",
+        "security",
     ]
 
     for category in log_categories:

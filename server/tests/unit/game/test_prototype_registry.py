@@ -25,7 +25,7 @@ def valid_payload():
         "base_value": 1200,
         "durability": 100,
         "flags": ["MAGICAL", "NO_DROP"],
-        "wear_slots": ["OFF_HAND"],
+        "wear_slots": ["off_hand"],
         "usage_restrictions": {"faction": ["miskatonic"]},
         "stacking_rules": {"max_stack": 1},
         "effect_components": ["component.sanity_whisper"],
@@ -88,7 +88,7 @@ def test_registry_skips_invalid_prototypes_and_logs_warning(tmp_path: Path, capl
         "base_value": 450,
         "durability": 50,
         "flags": ["MAGICAL"],
-        "wear_slots": ["MAIN_HAND"],
+        "wear_slots": ["main_hand"],
         "usage_restrictions": {},
         "stacking_rules": {"max_stack": 1},
         "effect_components": ["component.void_edge"],
@@ -122,7 +122,7 @@ def test_registry_find_by_tag_returns_matching_prototypes(tmp_path: Path, valid_
         "name": "Eldritch Dagger",
         "item_type": "equipment",
         "tags": ["weapon"],
-        "wear_slots": ["MAIN_HAND"],
+        "wear_slots": ["main_hand"],
     }
     write_prototype(tmp_path, "artifact_codex", lore_payload)
     write_prototype(tmp_path, "weapon_dagger", weapon_payload)

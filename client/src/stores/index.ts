@@ -8,6 +8,7 @@
 // Store exports
 export { useCommandStore } from './commandStore';
 export { useConnectionStore } from './connectionStore';
+export { useContainerStore } from './containerStore';
 export { useGameStore } from './gameStore';
 export { useSessionStore } from './sessionStore';
 
@@ -20,6 +21,16 @@ export type {
   ConnectionState,
   GameEvent,
 } from './connectionStore';
+
+export type {
+  ContainerActions,
+  ContainerComponent,
+  ContainerLockState,
+  ContainerSelectors,
+  ContainerSourceType,
+  ContainerState,
+  InventoryStack,
+} from './containerStore';
 
 export type { ChatMessage, GameActions, GameLogEntry, GameSelectors, GameState, Player, Room } from './gameStore';
 

@@ -15,7 +15,7 @@ def build_valid_payload(**overrides):
         "base_value": 1200,
         "durability": 100,
         "flags": ["MAGICAL", "NO_DROP"],
-        "wear_slots": ["OFF_HAND"],
+        "wear_slots": ["off_hand"],
         "usage_restrictions": {"faction": ["miskatonic"]},
         "stacking_rules": {"max_stack": 1},
         "effect_components": ["component.sanity_whisper"],

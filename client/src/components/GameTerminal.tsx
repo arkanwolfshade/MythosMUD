@@ -282,7 +282,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
       style={{ minHeight: '100vh', width: '100%' }}
     >
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-10 border-b border-gray-800 bg-mythos-terminal-surface/95 px-4 py-2">
+      <div className="fixed top-0 left-0 right-0 z-[9999] border-b border-gray-800 bg-mythos-terminal-surface/95 px-4 py-2">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap items-center gap-3" data-testid="connection-banner">
             <span className={`text-sm font-semibold ${isConnected ? 'text-green-300' : 'text-red-300'}`}>
@@ -317,14 +317,15 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
       {/* Main Content Area with Responsive Panel Layout */}
       <div className="game-terminal-container">
         <div className="game-terminal-panels">
-          {/* Chat Panel */}
+          {/* Chat Panel - Left Column, Top */}
           <DraggablePanel
             panelId="chat"
             title="Chat"
-            className="panel-chat"
+            className="chat-panel"
             variant="eldritch"
-            defaultSize={{ width: 500, height: 400 }}
-            defaultPosition={{ x: 50, y: 50 }}
+            defaultSize={{ width: 450, height: 650 }}
+            defaultPosition={{ x: 50, y: 80 }}
+            zIndex={1001}
             onClose={() => console.log('Chat panel closed')}
             onMinimize={() => console.log('Chat panel minimized')}
             onMaximize={() => console.log('Chat panel maximized')}
@@ -340,14 +341,15 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
             />
           </DraggablePanel>
 
-          {/* Game Log Panel */}
+          {/* Game Log Panel - Middle Column, Full Height */}
           <DraggablePanel
             panelId="gameLog"
             title="Game Log"
-            className="panel-gameLog"
+            className="game-log-panel"
             variant="default"
-            defaultSize={{ width: 500, height: 400 }}
-            defaultPosition={{ x: 600, y: 50 }}
+            defaultSize={{ width: 550, height: 900 }}
+            defaultPosition={{ x: 520, y: 80 }}
+            zIndex={1000}
             autoSize={true}
             onClose={() => console.log('Game Log panel closed')}
             onMinimize={() => console.log('Game Log panel minimized')}
@@ -356,14 +358,15 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
             <GameLogPanel messages={messages} onClearMessages={onClearMessages} onDownloadLogs={onDownloadLogs} />
           </DraggablePanel>
 
-          {/* Command Panel */}
+          {/* Command Panel - Right Column, Bottom */}
           <DraggablePanel
             panelId="command"
             title="Commands"
-            className="panel-command"
+            className="command-panel"
             variant="elevated"
-            defaultSize={{ width: 300, height: 300 }}
-            defaultPosition={{ x: 600, y: 500 }}
+            defaultSize={{ width: 350, height: 200 }}
+            defaultPosition={{ x: 1090, y: 780 }}
+            zIndex={1003}
             onClose={() => console.log('Command panel closed')}
             onMinimize={() => console.log('Command panel minimized')}
             onMaximize={() => console.log('Command panel maximized')}
@@ -391,14 +394,15 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
             />
           </DraggablePanel>
 
-          {/* Room Info Panel */}
+          {/* Room Info Panel - Left Column, Bottom */}
           <DraggablePanel
             panelId="roomInfo"
             title="Room Info"
-            className="panel-roomInfo"
+            className="room-info-panel"
             variant="default"
-            defaultSize={{ width: 500, height: 200 }}
-            defaultPosition={{ x: 50, y: 500 }}
+            defaultSize={{ width: 450, height: 200 }}
+            defaultPosition={{ x: 50, y: 780 }}
+            zIndex={1002}
             onClose={() => console.log('Room panel closed')}
             onMinimize={() => console.log('Room panel minimized')}
             onMaximize={() => console.log('Room panel maximized')}
@@ -414,14 +418,15 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
             />
           </DraggablePanel>
 
-          {/* Player Status Panel */}
+          {/* Player Status Panel - Right Column, Top */}
           <DraggablePanel
             panelId="status"
             title="Status"
-            className="panel-status"
+            className="status-panel"
             variant="default"
-            defaultSize={{ width: 300, height: 150 }}
-            defaultPosition={{ x: 950, y: 250 }}
+            defaultSize={{ width: 350, height: 650 }}
+            defaultPosition={{ x: 1090, y: 80 }}
+            zIndex={1004}
             onClose={() => console.log('Status panel closed')}
             onMinimize={() => console.log('Status panel minimized')}
             onMaximize={() => console.log('Status panel maximized')}
@@ -429,19 +434,11 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-base text-mythos-terminal-text-secondary">Connection:</span>
-                <div className="flex items-center space-x-2">
-                  {/* Temporarily disabled EldritchIcon to test WebSocket connection */}
-                  {/* <EldritchIcon
-                    name={MythosIcons.connection}
-                    size={20}
-                    variant={isConnected ? 'success' : 'error'}
-                  /> */}
-                  <span
-                    className={`text-base ${isConnected ? 'text-mythos-terminal-success' : 'text-mythos-terminal-error'}`}
-                  >
-                    {isConnected ? 'Connected' : isConnecting ? 'Connecting...' : 'Disconnected'}
-                  </span>
-                </div>
+                <span
+                  className={`text-base ${isConnected ? 'text-mythos-terminal-success' : 'text-mythos-terminal-error'}`}
+                >
+                  {isConnected ? 'Connected' : isConnecting ? 'Connecting...' : 'Disconnected'}
+                </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-base text-mythos-terminal-text-secondary">Player:</span>

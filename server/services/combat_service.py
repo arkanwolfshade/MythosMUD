@@ -636,6 +636,52 @@ class CombatService:
                     death_location=combat.room_id,
                 )
                 logger.info("Player death event published", player_id=target.participant_id, player_name=target.name)
+
+                # Create corpse container on death
+                try:
+                    from ..persistence import get_persistence
+                    from ..services.corpse_lifecycle_service import CorpseLifecycleService
+
+                    persistence = get_persistence()
+                    connection_manager = getattr(self, "_connection_manager", None)
+                    if connection_manager is None:
+                        # Try to get from app state if available
+                        try:
+                            from ..container import ApplicationContainer
+
+                            container = ApplicationContainer.get_instance()
+                            connection_manager = getattr(container, "connection_manager", None)
+                        except Exception:
+                            pass
+
+                    corpse_service = CorpseLifecycleService(
+                        persistence=persistence,
+                        connection_manager=connection_manager,
+                    )
+
+                    corpse = corpse_service.create_corpse_on_death(
+                        player_id=target.participant_id,
+                        room_id=combat.room_id,
+                        grace_period_seconds=300,  # 5 minutes grace period
+                        decay_hours=1,  # Decay after 1 hour
+                    )
+
+                    logger.info(
+                        "Corpse container created on death",
+                        container_id=str(corpse.container_id),
+                        player_id=target.participant_id,
+                        room_id=combat.room_id,
+                    )
+                except Exception as corpse_error:
+                    # Log but don't fail - corpse creation is not critical
+                    logger.error(
+                        "Error creating corpse container on death",
+                        error=str(corpse_error),
+                        player_id=target.participant_id,
+                        room_id=combat.room_id,
+                        exc_info=True,
+                    )
+
             except Exception as e:
                 logger.error("Error publishing player death event", error=str(e), exc_info=True)
 

@@ -1,21 +1,23 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useGameConnection } from '../hooks/useGameConnectionRefactored';
+import type { ContainerComponent } from '../stores/containerStore';
+import { useContainerStore } from '../stores/containerStore';
+import type { HealthStatus } from '../types/health';
+import type { MythosTimePayload, MythosTimeState } from '../types/mythosTime';
+import type { HallucinationMessage, RescueState, SanityStatus } from '../types/sanity';
+import { buildHealthChangeMessage, buildHealthStatusFromEvent } from '../utils/healthEventUtils';
 import { logger } from '../utils/logger';
 import { useMemoryMonitor } from '../utils/memoryMonitor';
 import { determineMessageType } from '../utils/messageTypeUtils';
-import { inputSanitizer } from '../utils/security';
-import { convertToPlayerInterface, parseStatusResponse } from '../utils/statusParser';
+import { DAYPART_MESSAGES, buildMythosTimeState } from '../utils/mythosTime';
 import {
-  buildSanityStatus,
   buildSanityChangeMessage,
+  buildSanityStatus,
   createHallucinationEntry,
   createRescueState,
 } from '../utils/sanityEventUtils';
-import { buildHealthStatusFromEvent, buildHealthChangeMessage } from '../utils/healthEventUtils';
-import type { SanityStatus, HallucinationMessage, RescueState } from '../types/sanity';
-import type { HealthStatus } from '../types/health';
-import type { MythosTimePayload, MythosTimeState } from '../types/mythosTime';
-import { DAYPART_MESSAGES, buildMythosTimeState } from '../utils/mythosTime';
+import { inputSanitizer } from '../utils/security';
+import { convertToPlayerInterface, parseStatusResponse } from '../utils/statusParser';
 
 // Import GameEvent interface from useGameConnection
 interface GameEvent {
@@ -42,6 +44,44 @@ interface GameTerminalWithPanelsProps {
   onLogout?: () => void;
   isLoggingOut?: boolean;
   onDisconnect?: (disconnectFn: () => void) => void;
+}
+
+/**
+ * Reconcile container diff with current container state.
+ *
+ * As documented in the restricted archives of Miskatonic University, container
+ * diff reconciliation ensures that real-time updates from other players are
+ * properly merged with the local container state.
+ */
+function reconcileContainerDiff(
+  currentContainer: ContainerComponent,
+  diff: Record<string, unknown>
+): ContainerComponent {
+  let updatedItems = [...currentContainer.items];
+
+  // Handle items added
+  if (diff.items_added && Array.isArray(diff.items_added)) {
+    const itemsAdded = diff.items_added as ContainerComponent['items'];
+    updatedItems = [...updatedItems, ...itemsAdded];
+  }
+
+  // Handle items removed
+  if (diff.items_removed && Array.isArray(diff.items_removed)) {
+    const itemIdsToRemove = diff.items_removed as string[];
+    updatedItems = updatedItems.filter(item => !itemIdsToRemove.includes(item.item_instance_id));
+  }
+
+  // Handle full container replacement (if server sends complete container)
+  if (diff.container && typeof diff.container === 'object') {
+    const replacementContainer = diff.container as ContainerComponent;
+    return replacementContainer;
+  }
+
+  // Return updated container with reconciled items
+  return {
+    ...currentContainer,
+    items: updatedItems,
+  };
 }
 
 interface Player {
@@ -220,10 +260,18 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
   const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
   const [hallucinationFeed, setHallucinationFeed] = useState<HallucinationMessage[]>([]);
   const [rescueState, setRescueState] = useState<RescueState | null>(null);
-  const [, setMythosTime] = useState<MythosTimeState | null>(null);
+  const [mythosTime, setMythosTime] = useState<MythosTimeState | null>(null);
 
   // Memory monitoring for this component
   const { detector } = useMemoryMonitor('GameTerminalWithPanels');
+
+  // Container store hooks
+  const openContainer = useContainerStore(state => state.openContainer);
+  const closeContainer = useContainerStore(state => state.closeContainer);
+  const updateContainer = useContainerStore(state => state.updateContainer);
+  const handleContainerDecayed = useContainerStore(state => state.handleContainerDecayed);
+  const getContainer = useContainerStore(state => state.getContainer);
+  const isContainerOpen = useContainerStore(state => state.isContainerOpen);
 
   // Start memory monitoring for this component
   useEffect(() => {
@@ -306,9 +354,8 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
         if (authToken) {
           headers.Authorization = `Bearer ${authToken}`;
         }
-        const origin =
-          typeof window === 'undefined' || !window.location?.origin ? 'http://localhost' : window.location.origin;
-        const response = await fetch(new URL('/game/time', origin).toString(), { headers });
+        // Use relative path - Vite proxy will handle routing to backend
+        const response = await fetch('/game/time', { headers });
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
         }
@@ -633,17 +680,25 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             setSanityStatus(updatedStatus);
             applySanityToPlayer(updatedStatus.current);
 
-            const messageText = buildSanityChangeMessage(updatedStatus, delta, event.data);
-            appendMessage(
-              sanitizeChatMessageForState({
-                text: `[Sanity] ${messageText}`,
-                timestamp: event.timestamp,
-                messageType: 'system',
-                channel: 'system',
-                isHtml: false,
-                tags: ['sanity'],
-              })
-            );
+            // Only show sanity gain messages if player is not at max sanity
+            // Always show sanity loss messages regardless of current sanity
+            const isAtMaxSanity = updatedStatus.current >= updatedStatus.max;
+            const isGain = delta > 0;
+            const shouldShowMessage = !(isAtMaxSanity && isGain);
+
+            if (shouldShowMessage) {
+              const messageText = buildSanityChangeMessage(updatedStatus, delta, event.data);
+              appendMessage(
+                sanitizeChatMessageForState({
+                  text: `[Sanity] ${messageText}`,
+                  timestamp: event.timestamp,
+                  messageType: 'system',
+                  channel: 'system',
+                  isHtml: false,
+                  tags: ['sanity'],
+                })
+              );
+            }
 
             const tierIsCatatonic = updatedStatus.tier === 'catatonic';
             const hasActiveRescueState = rescueStateRef.current && rescueStateRef.current.status !== 'idle';
@@ -1962,6 +2017,84 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
             lastHolidayIdsRef.current = currentHolidayIds;
             break;
           }
+          case 'container.opened': {
+            const container = event.data.container as ContainerComponent | undefined;
+            const mutationToken = event.data.mutation_token as string | undefined;
+
+            if (container && mutationToken) {
+              logger.info('GameTerminalWithPanels', 'Container opened event', {
+                container_id: container.container_id,
+                source_type: container.source_type,
+              });
+
+              openContainer(container, mutationToken);
+            } else {
+              logger.warn('GameTerminalWithPanels', 'container.opened event missing required data', {
+                hasContainer: !!container,
+                hasMutationToken: !!mutationToken,
+              });
+            }
+            break;
+          }
+          case 'container.updated': {
+            const containerId = event.data.container_id as string | undefined;
+            const diff = event.data.diff as Record<string, unknown> | undefined;
+
+            if (containerId && diff) {
+              // Only update if container is currently open
+              if (isContainerOpen(containerId)) {
+                const currentContainer = getContainer(containerId);
+                if (currentContainer) {
+                  logger.info('GameTerminalWithPanels', 'Container updated event', {
+                    container_id: containerId,
+                    diff_keys: Object.keys(diff),
+                  });
+
+                  // Reconcile diff with current container state
+                  const updatedContainer = reconcileContainerDiff(currentContainer, diff);
+                  updateContainer(updatedContainer);
+                }
+              } else {
+                logger.debug('GameTerminalWithPanels', 'Container updated event for closed container, ignoring', {
+                  container_id: containerId,
+                });
+              }
+            } else {
+              logger.warn('GameTerminalWithPanels', 'container.updated event missing required data', {
+                hasContainerId: !!containerId,
+                hasDiff: !!diff,
+              });
+            }
+            break;
+          }
+          case 'container.closed': {
+            const containerId = event.data.container_id as string | undefined;
+
+            if (containerId) {
+              logger.info('GameTerminalWithPanels', 'Container closed event', {
+                container_id: containerId,
+              });
+
+              closeContainer(containerId);
+            } else {
+              logger.warn('GameTerminalWithPanels', 'container.closed event missing container_id');
+            }
+            break;
+          }
+          case 'container.decayed': {
+            const containerId = event.data.container_id as string | undefined;
+
+            if (containerId) {
+              logger.info('GameTerminalWithPanels', 'Container decayed event', {
+                container_id: containerId,
+              });
+
+              handleContainerDecayed(containerId);
+            } else {
+              logger.warn('GameTerminalWithPanels', 'container.decayed event missing container_id');
+            }
+            break;
+          }
           default: {
             logger.info('GameTerminalWithPanels', 'Unhandled event type', {
               event_type: event.event_type,
@@ -2017,7 +2150,15 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
         processingTimeout.current = window.setTimeout(processEventQueue, 10);
       }
     }
-  }, [validateRoomDataForOccupants]);
+  }, [
+    validateRoomDataForOccupants,
+    closeContainer,
+    getContainer,
+    handleContainerDecayed,
+    isContainerOpen,
+    openContainer,
+    updateContainer,
+  ]);
 
   // Memoize the game event handler to prevent infinite re-renders
   const handleGameEvent = useCallback(
@@ -2099,6 +2240,16 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
     onDisconnect: handleDisconnect,
     onError: handleError,
   });
+
+  // Debug logging for connection state
+  useEffect(() => {
+    logger.debug('GameTerminalWithPanels', 'Connection state updated', {
+      isConnected,
+      isConnecting,
+      error,
+      reconnectAttempts,
+    });
+  }, [isConnected, isConnecting, error, reconnectAttempts]);
 
   // Store sendCommand in ref for use in event handlers
   useEffect(() => {
@@ -2383,6 +2534,7 @@ export const GameTerminalWithPanels: React.FC<GameTerminalWithPanelsProps> = ({
         onClearHistory={handleClearHistory}
         isMortallyWounded={isMortallyWounded}
         isDead={isDead}
+        mythosTime={mythosTime}
       />
 
       {/* Command Help Drawer */}

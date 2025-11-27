@@ -229,6 +229,48 @@
       },
       "additionalProperties": false
     },
+    "container": {
+      "type": "object",
+      "description": "Optional environmental container definition for this room",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether the container is enabled for this room"
+        },
+        "capacity_slots": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20,
+          "default": 20,
+          "description": "Maximum number of inventory slots (1-20)"
+        },
+        "lock_state": {
+          "type": "string",
+          "enum": ["unlocked", "locked", "sealed"],
+          "default": "unlocked",
+          "description": "Current lock state of the container"
+        },
+        "key_item_id": {
+          "type": "string",
+          "description": "Optional item ID required to unlock the container"
+        },
+        "weight_limit": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Optional maximum weight capacity"
+        },
+        "allowed_roles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of role names allowed to access container"
+        }
+      },
+      "required": ["enabled"]
+    },
     "field1": {
       "description": "Optional field for future extensibility (NPCs, items, effects)"
     },

@@ -24,6 +24,7 @@ from ..models.command import (
     DropCommand,
     EmoteCommand,
     EquipCommand,
+    GetCommand,
     GoCommand,
     GotoCommand,
     GroundCommand,
@@ -41,6 +42,7 @@ from ..models.command import (
     PickupCommand,
     PoseCommand,
     PunchCommand,
+    PutCommand,
     QuitCommand,
     ReplyCommand,
     SayCommand,
@@ -110,6 +112,8 @@ class CommandParser:
             CommandType.INVENTORY.value: self._create_inventory_command,
             CommandType.PICKUP.value: self._create_pickup_command,
             CommandType.DROP.value: self._create_drop_command,
+            CommandType.PUT.value: self._create_put_command,
+            CommandType.GET.value: self._create_get_command,
             CommandType.EQUIP.value: self._create_equip_command,
             CommandType.UNEQUIP.value: self._create_unequip_command,
             CommandType.QUIT.value: self._create_quit_command,
@@ -306,13 +310,15 @@ class CommandParser:
         """
         Create LookCommand from arguments.
 
-        Handles three types of look commands:
+        Handles multiple types of look commands:
         1. 'look' - no arguments, general room look
-        2. 'look north' - direction argument, look in specific direction
+        2. 'look north' - direction argument, look in specific direction (cardinal only)
         3. 'look guard' - NPC argument, look at specific NPC
-
-        NPCs take priority over directions when both could match.
-        All matching is case-insensitive.
+        4. 'look player Armitage' - explicit player target type
+        5. 'look item lantern' - explicit item target type
+        6. 'look container backpack' - explicit container target type
+        7. 'look in backpack' - container inspection mode
+        8. 'look backpack-2' or 'look backpack 2' - instance targeting
 
         Args:
             args: List of command arguments
@@ -320,31 +326,92 @@ class CommandParser:
         Returns:
             LookCommand: Configured command object
         """
-        # Join all arguments to handle multi-word targets like "Dr. Francis Morgan"
-        target = " ".join(args) if args else None
-        # Convert to lowercase for case-insensitive matching
-        if target:
-            target_lower = target.lower()
-            # Check if it's a valid direction
-            if target_lower in [
-                "north",
-                "south",
-                "east",
-                "west",
-                "up",
-                "down",
-                "northeast",
-                "northwest",
-                "southeast",
-                "southwest",
-            ]:
-                # Direction target - set both direction and target fields
-                return LookCommand(direction=target_lower, target=target)  # type: ignore[arg-type]
-            else:
-                # NPC target - set only target field (preserve original case for display)
-                return LookCommand(target=target)
-        # No arguments - general room look
-        return LookCommand()
+        if not args:
+            # No arguments - general room look
+            return LookCommand()
+
+        # Check for explicit type syntax: /look player <name>, /look item <name>, etc.
+        valid_target_types = ["player", "npc", "item", "container", "direction"]
+        if args[0].lower() in valid_target_types:
+            target_type_str = args[0].lower()
+            # Cast to Literal type after validation
+            target_type = cast(Literal["player", "npc", "item", "container", "direction"], target_type_str)
+            # Get the rest of the arguments as the target
+            remaining_args = args[1:] if len(args) > 1 else []
+            if not remaining_args:
+                # Explicit type but no target - treat as implicit
+                return LookCommand()
+            target = " ".join(remaining_args)
+            # Parse instance number from target
+            target, instance_number = self._parse_instance_number(target)
+            return LookCommand(
+                target=target,
+                target_type=target_type,
+                instance_number=instance_number,
+            )
+
+        # Check for container inspection syntax: /look in <container>
+        if args[0].lower() == "in":
+            remaining_args = args[1:] if len(args) > 1 else []
+            if not remaining_args:
+                # "in" but no target - treat as implicit
+                return LookCommand()
+            target = " ".join(remaining_args)
+            # Parse instance number from target
+            target, instance_number = self._parse_instance_number(target)
+            return LookCommand(target=target, look_in=True, instance_number=instance_number)
+
+        # Regular target parsing (implicit type)
+        target = " ".join(args)
+        # Parse instance number from target
+        target, instance_number = self._parse_instance_number(target)
+        target_lower = target.lower()
+
+        # Check if it's a valid cardinal direction (diagonal directions removed)
+        valid_directions = ["north", "south", "east", "west", "up", "down"]
+        if target_lower in valid_directions:
+            # Direction target - set both direction and target fields
+            # Convert string to Direction enum after validation
+            direction_enum = Direction(target_lower)
+            return LookCommand(
+                direction=direction_enum,
+                target=target,
+                instance_number=instance_number,
+            )
+        else:
+            # Implicit target (will be resolved by priority in handler)
+            return LookCommand(target=target, instance_number=instance_number)
+
+    def _parse_instance_number(self, target: str) -> tuple[str, int | None]:
+        """
+        Parse instance number from target string.
+
+        Supports two formats:
+        - "backpack-2" (hyphen syntax)
+        - "backpack 2" (space syntax)
+
+        Args:
+            target: Target string that may contain instance number
+
+        Returns:
+            Tuple of (target_name, instance_number) where instance_number is None if not found
+        """
+        # Try hyphen syntax first: "backpack-2"
+        hyphen_match = re.match(r"^(.+)-(\d+)$", target)
+        if hyphen_match:
+            target_name = hyphen_match.group(1)
+            instance_number = int(hyphen_match.group(2))
+            return (target_name, instance_number)
+
+        # Try space syntax: "backpack 2"
+        space_match = re.match(r"^(.+)\s+(\d+)$", target)
+        if space_match:
+            target_name = space_match.group(1).rstrip()
+            instance_number = int(space_match.group(2))
+            return (target_name, instance_number)
+
+        # No instance number found
+        return (target, None)
 
     def _create_go_command(self, args: list[str]) -> GoCommand:
         """Create GoCommand from arguments."""
@@ -904,6 +971,114 @@ class CommandParser:
                 )
 
         return DropCommand(index=index, quantity=quantity)
+
+    def _create_put_command(self, args: list[str]) -> PutCommand:
+        """
+        Create put command.
+
+        Supports: put <item> [in] <container> [quantity]
+        The "in" keyword is optional.
+        """
+        if not args:
+            context = create_error_context()
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: put <item> [in] <container> [quantity]",
+                context=context,
+                logger_name=__name__,
+            )
+
+        # Remove optional "in" keyword
+        args_clean = [arg for arg in args if arg.lower() != "in"]
+
+        if len(args_clean) < 2:
+            context = create_error_context()
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: put <item> [in] <container> [quantity]",
+                context=context,
+                logger_name=__name__,
+            )
+
+        item = args_clean[0]
+        container = args_clean[1]
+        quantity = None
+
+        # Check if last argument is a quantity
+        if len(args_clean) > 2:
+            try:
+                quantity = int(args_clean[-1])
+                if quantity <= 0:
+                    context = create_error_context()
+                    context.metadata = {"quantity": quantity}
+                    log_and_raise_enhanced(
+                        MythosValidationError,
+                        "Quantity must be a positive integer",
+                        context=context,
+                        logger_name=__name__,
+                    )
+                # If quantity was parsed, container might be multi-word
+                if len(args_clean) > 3:
+                    container = " ".join(args_clean[1:-1])
+            except ValueError:
+                # Last arg is not a number, container might be multi-word
+                container = " ".join(args_clean[1:])
+
+        return PutCommand(item=item, container=container, quantity=quantity)
+
+    def _create_get_command(self, args: list[str]) -> GetCommand:
+        """
+        Create get command.
+
+        Supports: get <item> [from] <container> [quantity]
+        The "from" keyword is optional.
+        """
+        if not args:
+            context = create_error_context()
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: get <item> [from] <container> [quantity]",
+                context=context,
+                logger_name=__name__,
+            )
+
+        # Remove optional "from" keyword
+        args_clean = [arg for arg in args if arg.lower() != "from"]
+
+        if len(args_clean) < 2:
+            context = create_error_context()
+            log_and_raise_enhanced(
+                MythosValidationError,
+                "Usage: get <item> [from] <container> [quantity]",
+                context=context,
+                logger_name=__name__,
+            )
+
+        item = args_clean[0]
+        container = args_clean[1]
+        quantity = None
+
+        # Check if last argument is a quantity
+        if len(args_clean) > 2:
+            try:
+                quantity = int(args_clean[-1])
+                if quantity <= 0:
+                    context = create_error_context()
+                    context.metadata = {"quantity": quantity}
+                    log_and_raise_enhanced(
+                        MythosValidationError,
+                        "Quantity must be a positive integer",
+                        context=context,
+                        logger_name=__name__,
+                    )
+                # If quantity was parsed, container might be multi-word
+                if len(args_clean) > 3:
+                    container = " ".join(args_clean[1:-1])
+            except ValueError:
+                # Last arg is not a number, container might be multi-word
+                container = " ".join(args_clean[1:])
+
+        return GetCommand(item=item, container=container, quantity=quantity)
 
     def _create_equip_command(self, args: list[str]) -> EquipCommand:
         """Create equip command."""
