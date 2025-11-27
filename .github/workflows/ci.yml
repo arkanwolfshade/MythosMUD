@@ -74,25 +74,13 @@ jobs:
           echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
           sudo apt-get update
           sudo apt-get install -y postgresql-18 postgresql-contrib-18
-      - name: Initialize PostgreSQL databases
-        if: ${{ !env.ACT }}
+      - name: Start PostgreSQL service and initialize databases
         run: |
-          sudo service postgresql start
-          sleep 3
-          pg_isready -U postgres
-          # Set postgres user password to match DATABASE_URL
-          sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'Cthulhu1';"
-          sudo -u postgres psql -f db/roles/roles.sql
-          sudo -u postgres psql -f db/databases/databases.sql
-          sudo -u postgres psql -d mythos_unit -f db/authoritative_schema.sql
-          # Apply UUID migration for players.player_id
-          sudo -u postgres psql -d mythos_unit -f db/migrations/010_migrate_player_id_to_uuid.sql
-          sudo -u postgres psql -d mythos_unit -f data/db/00_world_and_emotes.sql
-          sudo -u postgres psql -d mythos_unit -f data/db/01_professions.sql
-          sudo -u postgres psql -d mythos_unit -f data/db/02_item_prototypes.sql
-          sudo -u postgres psql -d mythos_unit -f data/db/03_npc_definitions.sql
-      - name: Start PostgreSQL service
-        run: |
+          # Determine workspace path (Docker uses /workspace, GitHub Actions uses $GITHUB_WORKSPACE or pwd)
+          WORKSPACE_PATH="${GITHUB_WORKSPACE:-/workspace}"
+          if [ ! -d "$WORKSPACE_PATH" ]; then
+            WORKSPACE_PATH=$(pwd)
+          fi
           # Start PostgreSQL - try service command first, fall back to direct start
           service postgresql start 2>/dev/null || \
           (command -v sudo >/dev/null 2>&1 && sudo service postgresql start) || \
@@ -100,6 +88,39 @@ jobs:
            [ -n "$PGDATA" ] && su postgres -c "postgres -D $PGDATA" &) || true
           sleep 3
           pg_isready -U postgres || (sleep 3 && pg_isready -U postgres)
+          # Set postgres user password to match DATABASE_URL
+          # Use su postgres instead of sudo -u postgres for Docker container compatibility
+          su postgres -c "psql -c \"ALTER USER postgres PASSWORD 'Cthulhu1';\"" || \
+          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'Cthulhu1';")
+          # Initialize database schema and apply migrations
+          # Use su postgres for Docker compatibility, fall back to sudo for GitHub Actions
+          su postgres -c "psql -f $WORKSPACE_PATH/db/roles/roles.sql" || \
+          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -f db/roles/roles.sql)
+          su postgres -c "psql -f $WORKSPACE_PATH/db/databases/databases.sql" || \
+          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -f db/databases/databases.sql)
+          su postgres -c "psql -d mythos_unit -f $WORKSPACE_PATH/db/authoritative_schema.sql" || \
+          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -d mythos_unit -f db/authoritative_schema.sql)
+          # Apply UUID migration for players.player_id
+          su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -f $WORKSPACE_PATH/db/migrations/010_migrate_player_id_to_uuid.sql" || \
+          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -d mythos_unit -f db/migrations/010_migrate_player_id_to_uuid.sql)
+          # Create containers table (must run before 011 which adds column to it)
+          su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -f $WORKSPACE_PATH/db/migrations/012_create_containers_table.sql" || \
+          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -d mythos_unit -f db/migrations/012_create_containers_table.sql)
+          # Apply container schema normalization migration (adds container_item_instance_id column)
+          su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -f $WORKSPACE_PATH/db/migrations/011_add_container_item_instance_id.sql" || \
+          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -d mythos_unit -f db/migrations/011_add_container_item_instance_id.sql)
+          # Verify migrations were applied correctly
+          su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -c \"SELECT column_name FROM information_schema.columns WHERE table_name = 'containers' AND column_name = 'container_item_instance_id';\"" | grep -q container_item_instance_id || \
+          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -d mythos_unit -c "SELECT column_name FROM information_schema.columns WHERE table_name = 'containers' AND column_name = 'container_item_instance_id';" | grep -q container_item_instance_id) || \
+          (echo "ERROR: container_item_instance_id column not found after migration" && exit 1)
+          su postgres -c "psql -d mythos_unit -f $WORKSPACE_PATH/data/db/00_world_and_emotes.sql" || \
+          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -d mythos_unit -f data/db/00_world_and_emotes.sql)
+          su postgres -c "psql -d mythos_unit -f $WORKSPACE_PATH/data/db/01_professions.sql" || \
+          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -d mythos_unit -f data/db/01_professions.sql)
+          su postgres -c "psql -d mythos_unit -f $WORKSPACE_PATH/data/db/02_item_prototypes.sql" || \
+          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -d mythos_unit -f data/db/02_item_prototypes.sql)
+          su postgres -c "psql -d mythos_unit -f $WORKSPACE_PATH/data/db/03_npc_definitions.sql" || \
+          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -d mythos_unit -f data/db/03_npc_definitions.sql)
       - name: Lint with ruff
         run: |
           source .venv-ci/bin/activate

@@ -104,6 +104,10 @@ export default defineConfig(({ mode }) => ({
         target: 'http://127.0.0.1:54731',
         changeOrigin: true,
       },
+      '/game': {
+        target: 'http://127.0.0.1:54731',
+        changeOrigin: true,
+      },
     },
   },
 }));

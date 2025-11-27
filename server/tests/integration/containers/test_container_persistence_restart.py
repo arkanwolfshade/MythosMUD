@@ -22,8 +22,85 @@ import pytest
 from server.models.container import ContainerComponent, ContainerLockState
 from server.models.player import Player
 from server.persistence import get_persistence, reset_persistence
-from server.services.container_service import ContainerService
+from server.services.container_service import ContainerService, _filter_container_data
 from server.services.inventory_service import InventoryStack
+
+
+@pytest.fixture(scope="module")
+def ensure_test_item_prototypes():
+    """Ensure test item prototypes exist in the database."""
+    import psycopg2
+    from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url or not database_url.startswith("postgresql"):
+        pytest.skip("DATABASE_URL must be set to a PostgreSQL URL")
+
+    url = database_url.replace("postgresql+psycopg2://", "postgresql://").replace(
+        "postgresql+asyncpg://", "postgresql://"
+    )
+
+    conn = psycopg2.connect(url)
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    cursor = conn.cursor()
+
+    try:
+        # Create test item prototypes if they don't exist
+        test_prototypes = [
+            ("item_1", "Test Item 1", "A test item for container testing"),
+            ("item_2", "Test Item 2", "Another test item for container testing"),
+        ]
+
+        for prototype_id, name, description in test_prototypes:
+            cursor.execute(
+                """
+                INSERT INTO item_prototypes (
+                    prototype_id, name, short_description, long_description,
+                    item_type, weight, base_value, durability, flags,
+                    wear_slots, stacking_rules, usage_restrictions,
+                    effect_components, metadata, tags
+                ) VALUES (
+                    %s, %s, %s, %s, 'consumable', 1.0, 10, 100,
+                    '[]'::jsonb, '[]'::jsonb, '{"max_stack": 99}'::jsonb,
+                    '{}'::jsonb, '[]'::jsonb, '{}'::jsonb, '[]'::jsonb
+                )
+                ON CONFLICT (prototype_id) DO NOTHING
+                """,
+                (prototype_id, name, description, description),
+            )
+
+        # Create additional prototypes for tests that use item_{i} pattern
+        for i in range(3, 21):  # item_3 through item_20
+            cursor.execute(
+                """
+                INSERT INTO item_prototypes (
+                    prototype_id, name, short_description, long_description,
+                    item_type, weight, base_value, durability, flags,
+                    wear_slots, stacking_rules, usage_restrictions,
+                    effect_components, metadata, tags
+                ) VALUES (
+                    %s, %s, %s, %s, 'consumable', 1.0, 10, 100,
+                    '[]'::jsonb, '[]'::jsonb, '{"max_stack": 99}'::jsonb,
+                    '{}'::jsonb, '[]'::jsonb, '{}'::jsonb, '[]'::jsonb
+                )
+                ON CONFLICT (prototype_id) DO NOTHING
+                """,
+                (
+                    f"item_{i}",
+                    f"Test Item {i}",
+                    f"A test item {i} for container testing",
+                    f"A test item {i} for container testing",
+                ),
+            )
+
+        conn.commit()
+    finally:
+        cursor.close()
+        conn.close()
+
+    yield
+
+    # Cleanup is not needed - prototypes can remain for other tests
 
 
 @pytest.fixture(scope="module")
@@ -215,7 +292,7 @@ class TestContainerPersistenceRestart:
         assert persisted_container_data is not None, "Container should persist after restart"
 
         # Convert to ContainerComponent for easier assertions
-        persisted_container = ContainerComponent.model_validate(persisted_container_data)
+        persisted_container = ContainerComponent.model_validate(_filter_container_data(persisted_container_data))
         assert persisted_container.container_id == container_id
         assert persisted_container.room_id == room_id
         assert persisted_container.capacity_slots == 10
@@ -273,7 +350,7 @@ class TestContainerPersistenceRestart:
         persisted_container_data = new_persistence.get_container(container_id)
         assert persisted_container_data is not None
 
-        persisted_container = ContainerComponent.model_validate(persisted_container_data)
+        persisted_container = ContainerComponent.model_validate(_filter_container_data(persisted_container_data))
         assert persisted_container.entity_id == entity_id
         assert persisted_container.capacity_slots == 10
         assert persisted_container.metadata["type"] == "backpack"
@@ -292,7 +369,7 @@ class TestContainerPersistenceRestart:
         )
         assert found_container_id_uuid == container_id
 
-    async def test_corpse_container_persistence(self, persistence) -> None:
+    async def test_corpse_container_persistence(self, persistence, ensure_test_item_prototypes) -> None:
         """Test that corpse containers persist across server restarts."""
         # Use a real room ID that exists in the database
         room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
@@ -345,7 +422,7 @@ class TestContainerPersistenceRestart:
         persisted_container_data = new_persistence.get_container(container_id)
         assert persisted_container_data is not None
 
-        persisted_container = ContainerComponent.model_validate(persisted_container_data)
+        persisted_container = ContainerComponent.model_validate(_filter_container_data(persisted_container_data))
         assert persisted_container.room_id == room_id
         assert persisted_container.metadata["type"] == "corpse"
         assert persisted_container.metadata["owner_id"] == str(owner_id)
@@ -384,14 +461,16 @@ class TestContainerPersistenceRestart:
         persisted_container_data = new_persistence.get_container(container_id)
         assert persisted_container_data is not None
 
-        persisted_container = ContainerComponent.model_validate(persisted_container_data)
+        persisted_container = ContainerComponent.model_validate(_filter_container_data(persisted_container_data))
         assert persisted_container.lock_state == ContainerLockState.LOCKED
         assert persisted_container.capacity_slots == 10
         assert persisted_container.weight_limit == 750.0
         assert persisted_container.metadata["key_id"] == "key_123"
         assert persisted_container.metadata["lock_type"] == "key"
 
-    async def test_container_updates_persist(self, persistence, container_service: ContainerService) -> None:
+    async def test_container_updates_persist(
+        self, persistence, container_service: ContainerService, ensure_test_item_prototypes
+    ) -> None:
         """Test that container updates persist across restarts."""
         # Use a real room ID that exists in the database
         room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
@@ -435,7 +514,7 @@ class TestContainerPersistenceRestart:
         # Verify items added before restart
         container_before_data = container_service.persistence.get_container(container_id)
         assert container_before_data is not None
-        container_before = ContainerComponent.model_validate(container_before_data)
+        container_before = ContainerComponent.model_validate(_filter_container_data(container_before_data))
         assert len(container_before.items) == 1
         assert container_before.items[0]["quantity"] == 5
 
@@ -446,7 +525,7 @@ class TestContainerPersistenceRestart:
         # Verify items persisted after restart
         container_after_data = new_persistence.get_container(container_id)
         assert container_after_data is not None
-        container_after = ContainerComponent.model_validate(container_after_data)
+        container_after = ContainerComponent.model_validate(_filter_container_data(container_after_data))
         assert len(container_after.items) == 1
         assert container_after.items[0]["item_id"] == "item_1"
         assert container_after.items[0]["quantity"] == 5
@@ -468,10 +547,12 @@ class TestContainerPersistenceRestart:
                 weight_limit=1000.0,
                 items_json=[
                     {
-                        "item_id": f"item_{i}",
+                        "item_id": f"item_{i + 1}",  # Use item_1 through item_5 (item_0 doesn't exist)
+                        "item_instance_id": f"item_{i + 1}",
+                        "item_name": f"Test Item {i + 1}",
+                        "slot_type": "backpack",
                         "quantity": i + 1,
                         "weight": 1.0,
-                        "name": f"Test Item {i}",
                     }
                 ],
                 metadata_json={"index": i},
@@ -491,9 +572,9 @@ class TestContainerPersistenceRestart:
         for i, container_id in enumerate(containers):
             persisted_container_data = new_persistence.get_container(container_id)
             assert persisted_container_data is not None
-            persisted_container = ContainerComponent.model_validate(persisted_container_data)
+            persisted_container = ContainerComponent.model_validate(_filter_container_data(persisted_container_data))
             assert len(persisted_container.items) == 1
-            assert persisted_container.items[0]["item_id"] == f"item_{i}"
+            assert persisted_container.items[0]["item_id"] == f"item_{i + 1}"
 
     @pytest.mark.slow
     async def test_container_room_relationship_persistence(self, persistence) -> None:

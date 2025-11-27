@@ -11,7 +11,7 @@ from __future__ import annotations
 import uuid
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
-from typing import Any
+from typing import Any, cast
 from uuid import UUID
 
 from ..exceptions import MythosMUDError, ValidationError
@@ -41,6 +41,23 @@ def _get_enum_value(enum_or_str: Any) -> str:
     if hasattr(enum_or_str, "value"):
         return enum_or_str.value
     return str(enum_or_str)
+
+
+def _filter_container_data(container_data: dict[str, Any]) -> dict[str, Any]:
+    """
+    Filter out database-specific fields that are not part of the ContainerComponent model.
+
+    The database returns created_at and updated_at fields, but the ContainerComponent
+    model has extra="forbid", so these fields must be removed before validation.
+
+    Args:
+        container_data: Raw container data from database
+
+    Returns:
+        Filtered container data without database-specific fields
+    """
+    filtered = {k: v for k, v in container_data.items() if k not in ("created_at", "updated_at")}
+    return filtered
 
 
 class ContainerServiceError(MythosMUDError):
@@ -114,7 +131,7 @@ class ContainerService:
             )
 
         # Convert to ContainerComponent
-        container = ContainerComponent.model_validate(container_data)
+        container = ContainerComponent.model_validate(_filter_container_data(container_data))
 
         # Get player for access control checks
         player = self.persistence.get_player(player_id)
@@ -266,7 +283,7 @@ class ContainerService:
             container_data = self.persistence.get_container(container_id)
             player = self.persistence.get_player(player_id)
             if container_data and player:
-                container = ContainerComponent.model_validate(container_data)
+                container = ContainerComponent.model_validate(_filter_container_data(container_data))
                 # Handle source_type - it may be an enum or a string
                 source_type_value = (
                     container.source_type.value
@@ -284,6 +301,21 @@ class ContainerService:
                 )
         except Exception as e:
             logger.warning("Failed to log container close to audit log", error=str(e))
+
+    def get_container_token(self, container_id: UUID, player_id: UUID) -> str | None:
+        """
+        Get existing mutation token if container is already open by this player.
+
+        Args:
+            container_id: Container UUID
+            player_id: Player UUID
+
+        Returns:
+            Mutation token string if container is open, None otherwise
+        """
+        if container_id in self._open_containers:
+            return self._open_containers[container_id].get(player_id)
+        return None
 
     def transfer_to_container(
         self,
@@ -324,8 +356,13 @@ class ContainerService:
             quantity=quantity,
         )
 
-        # Verify container is open
+        # Verify container is open (using the open token)
         self._verify_container_open(container_id, player_id, mutation_token)
+
+        # Use the original mutation token for the mutation guard
+        # This ensures that duplicate operations with the same token are prevented
+        # The mutation guard will detect if the same token is used multiple times
+        transfer_mutation_token = mutation_token
 
         # Get container
         container_data = self.persistence.get_container(container_id)
@@ -338,7 +375,35 @@ class ContainerService:
                 user_friendly="Container not found",
             )
 
-        container = ContainerComponent.model_validate(container_data)
+        # Instrumentation: validate and log container_data structure before Pydantic validation
+        if isinstance(container_data, dict):
+            items_field = container_data.get("items")
+            logger.debug(
+                "Container data before validation",
+                container_id=str(container_id),
+                player_id=str(player_id),
+                container_keys=list(container_data.keys()),
+                items_type=type(items_field).__name__ if items_field is not None else None,
+                items_sample=str(items_field)[:200] if items_field is not None else None,
+            )
+            if items_field is not None and not isinstance(items_field, list):
+                logger.error(
+                    "Container items field is not a list before validation",
+                    container_id=str(container_id),
+                    player_id=str(player_id),
+                    items_type=type(items_field).__name__,
+                    items_value=str(items_field)[:200],
+                )
+        else:
+            logger.debug(
+                "Non-dict container_data returned from persistence",
+                container_id=str(container_id),
+                player_id=str(player_id),
+                container_data_type=type(container_data).__name__,
+                container_data_repr=str(container_data)[:200],
+            )
+
+        container = ContainerComponent.model_validate(_filter_container_data(container_data))
 
         # Check capacity
         if not container.has_capacity():
@@ -372,8 +437,8 @@ class ContainerService:
                 user_friendly="Player not found",
             )
 
-        # Use mutation guard
-        with self.mutation_guard.acquire(str(player_id), mutation_token) as decision:
+        # Use mutation guard with the new transfer-specific token
+        with self.mutation_guard.acquire(str(player_id), transfer_mutation_token) as decision:
             if not decision.should_apply:
                 logger.warning(
                     "Transfer suppressed by mutation guard",
@@ -385,10 +450,13 @@ class ContainerService:
 
             # Prepare item for transfer
             transfer_item = item.copy()
-            if quantity and quantity < transfer_item.get("quantity", 1):
+            if quantity is not None:
+                # Use the provided quantity (may be less than or equal to item quantity)
                 transfer_item["quantity"] = quantity
 
             # Add item to container using InventoryService
+            # Note: slot_type is always present in items from containers and player inventory
+            # If missing, add_stack will raise InventoryValidationError
             try:
                 new_container_items = self.inventory_service.add_stack(container.items, transfer_item)
             except InventoryCapacityError as e:
@@ -472,6 +540,16 @@ class ContainerService:
             ContainerServiceError: If container is not open or token is invalid
             ValidationError: If player not found
         """
+        # Ensure item is a dictionary before using it
+        if not isinstance(item, dict):
+            log_and_raise(
+                ContainerServiceError,
+                f"Item must be a dictionary, got {type(item).__name__}",
+                context=create_error_context(),
+                details={"item_type": type(item).__name__, "item": str(item)},
+                user_friendly="Invalid item data format",
+            )
+
         context = create_error_context()
         context.metadata["operation"] = "transfer_from_container"
         context.metadata["container_id"] = str(container_id)
@@ -486,8 +564,13 @@ class ContainerService:
             quantity=quantity,
         )
 
-        # Verify container is open
+        # Verify container is open (using the open token)
         self._verify_container_open(container_id, player_id, mutation_token)
+
+        # Use the original mutation token for the mutation guard
+        # This ensures that duplicate operations with the same token are prevented
+        # The mutation guard will detect if the same token is used multiple times
+        transfer_mutation_token = mutation_token
 
         # Get container
         container_data = self.persistence.get_container(container_id)
@@ -500,7 +583,7 @@ class ContainerService:
                 user_friendly="Container not found",
             )
 
-        container = ContainerComponent.model_validate(container_data)
+        container = ContainerComponent.model_validate(_filter_container_data(container_data))
 
         # Get player inventory
         player = self.persistence.get_player(player_id)
@@ -513,8 +596,8 @@ class ContainerService:
                 user_friendly="Player not found",
             )
 
-        # Use mutation guard
-        with self.mutation_guard.acquire(str(player_id), mutation_token) as decision:
+        # Use mutation guard with the new transfer-specific token
+        with self.mutation_guard.acquire(str(player_id), transfer_mutation_token) as decision:
             if not decision.should_apply:
                 logger.warning(
                     "Transfer suppressed by mutation guard",
@@ -524,88 +607,163 @@ class ContainerService:
                 )
                 raise ContainerServiceError("Transfer suppressed by mutation guard")
 
-            # Prepare item for transfer
-            transfer_item = item.copy()
-            if quantity and quantity < transfer_item.get("quantity", 1):
-                transfer_item["quantity"] = quantity
-
-            # Remove item from container
-            # Find and remove item from container.items
-            new_container_items = []
-            item_found = False
-            for stack in container.items:
-                if stack.get("item_id") == transfer_item.get("item_id") and stack.get(
-                    "item_instance_id"
-                ) == transfer_item.get("item_instance_id"):
-                    item_found = True
-                    remaining_quantity = stack.get("quantity", 1) - transfer_item.get("quantity", 1)
-                    if remaining_quantity > 0:
-                        new_stack = stack.copy()
-                        new_stack["quantity"] = remaining_quantity
-                        new_container_items.append(new_stack)
-                else:
-                    new_container_items.append(stack)
-
-            if not item_found:
-                log_and_raise(
-                    ContainerServiceError,
-                    f"Item not found in container: {transfer_item.get('item_id')}",
-                    context=context,
-                    details={"item_id": transfer_item.get("item_id"), "container_id": str(container_id)},
-                    user_friendly="Item not found in container",
-                )
-
-            # Add item to player inventory using InventoryService
-            player_inventory = getattr(player, "inventory", [])
             try:
-                new_player_inventory = self.inventory_service.add_stack(player_inventory, transfer_item)
-            except InventoryCapacityError as e:
-                log_and_raise(
-                    ContainerCapacityError,
-                    f"Player inventory capacity exceeded: {e}",
-                    context=context,
-                    details={"player_id": str(player_id), "error": str(e)},
-                    user_friendly="Your inventory is full",
-                )
+                # Prepare item for transfer
+                transfer_item = item.copy()
+                # Ensure transfer_item is still a dictionary after copy
+                if not isinstance(transfer_item, dict):
+                    log_and_raise(
+                        ContainerServiceError,
+                        f"Item copy is not a dictionary, got {type(transfer_item).__name__}",
+                        context=context,
+                        details={
+                            "item_type": type(item).__name__,
+                            "transfer_item_type": type(transfer_item).__name__,
+                            "item": str(item),
+                        },
+                        user_friendly="Invalid item data format",
+                    )
+                # After the check above, transfer_item is guaranteed to be a dict
+                # Mypy needs explicit type narrowing via cast
+                transfer_item_dict = cast(dict[str, Any], transfer_item)
+                if quantity and quantity < transfer_item_dict.get("quantity", 1):
+                    transfer_item_dict["quantity"] = quantity
+                # Preserve original slot_type if present (for equippable items)
+                # If the item was equipped before being put in the container, restore that slot_type
+                # Check both direct slot_type field and metadata for backward compatibility
+                if "slot_type" not in transfer_item_dict:
+                    item_metadata = transfer_item_dict.get("metadata", {})
+                    if isinstance(item_metadata, dict) and "slot_type" in item_metadata:
+                        transfer_item_dict["slot_type"] = item_metadata["slot_type"]
+                    else:
+                        # Default to "backpack" for general inventory if no slot_type found
+                        transfer_item_dict["slot_type"] = "backpack"
 
-            # Update container
-            container.items = new_container_items
+                # Remove item from container
+                # Find and remove item from container.items
+                new_container_items = []
+                item_found = False
 
-            # Persist container
-            self.persistence.update_container(
-                container_id,
-                items_json=new_container_items,
-            )
-
-            logger.info(
-                "Item transferred from container",
-                container_id=str(container_id),
-                player_id=str(player_id),
-                item_id=item.get("item_id"),
-                quantity=transfer_item.get("quantity"),
-            )
-
-            # Audit log container transfer
-            try:
-                audit_logger.log_container_interaction(
-                    player_id=str(player_id),
-                    player_name=player.name,
+                # Instrumentation: log container.items structure before mutation
+                logger.debug(
+                    "Container items before transfer_from_container",
                     container_id=str(container_id),
-                    event_type="container_transfer",
-                    source_type=_get_enum_value(container.source_type),
-                    room_id=container.room_id,
-                    direction="from_container",
-                    item_id=item.get("item_id"),
-                    item_name=item.get("item_name"),
-                    success=True,
+                    player_id=str(player_id),
+                    items_length=len(container.items),
+                    items_types=[type(stack).__name__ for stack in container.items[:5]],
+                    items_sample=[str(stack)[:100] for stack in container.items[:3]],
                 )
-            except Exception as e:
-                logger.warning("Failed to log container transfer to audit log", error=str(e))
 
-            return {
-                "container": container.model_dump(),
-                "player_inventory": new_player_inventory,
-            }
+                for stack in container.items:
+                    # Note: InventoryStack is a TypedDict (dict-like), so stack is always a dict
+                    # No need for isinstance check - mypy knows the type
+
+                    # Note: transfer_item_dict is already guaranteed to be a dict from the check above
+                    # This defensive check is kept for runtime safety but is unreachable according to mypy
+
+                    if stack.get("item_id") == transfer_item_dict.get("item_id") and stack.get(
+                        "item_instance_id"
+                    ) == transfer_item_dict.get("item_instance_id"):
+                        item_found = True
+                        remaining_quantity = stack.get("quantity", 1) - transfer_item_dict.get("quantity", 1)
+                        if remaining_quantity > 0:
+                            new_stack = stack.copy()
+                            new_stack["quantity"] = remaining_quantity
+                            new_container_items.append(new_stack)
+                    else:
+                        new_container_items.append(stack)
+
+                if not item_found:
+                    log_and_raise(
+                        ContainerServiceError,
+                        f"Item not found in container: {transfer_item_dict.get('item_id')}",
+                        context=context,
+                        details={"item_id": transfer_item_dict.get("item_id"), "container_id": str(container_id)},
+                        user_friendly="Item not found in container",
+                    )
+
+                # Add item to player inventory using InventoryService
+                player_inventory = getattr(player, "inventory", [])
+
+                # Instrumentation: log player inventory structure before mutation
+                try:
+                    inventory_length = len(player_inventory)
+                except TypeError:
+                    inventory_length = None
+
+                logger.debug(
+                    "Player inventory before add_stack",
+                    container_id=str(container_id),
+                    player_id=str(player_id),
+                    inventory_length=inventory_length,
+                    inventory_types=[type(stack).__name__ for stack in list(player_inventory)[:5]]
+                    if isinstance(player_inventory, (list, tuple))
+                    else type(player_inventory).__name__,
+                )
+
+                try:
+                    new_player_inventory = self.inventory_service.add_stack(player_inventory, transfer_item_dict)
+                except InventoryCapacityError as e:
+                    log_and_raise(
+                        ContainerCapacityError,
+                        f"Player inventory capacity exceeded: {e}",
+                        context=context,
+                        details={"player_id": str(player_id), "error": str(e)},
+                        user_friendly="Your inventory is full",
+                    )
+
+                # Update container
+                container.items = new_container_items
+
+                # Persist container
+                self.persistence.update_container(
+                    container_id,
+                    items_json=new_container_items,
+                )
+
+                logger.info(
+                    "Item transferred from container",
+                    container_id=str(container_id),
+                    player_id=str(player_id),
+                    item_id=item.get("item_id"),
+                    quantity=transfer_item_dict.get("quantity"),
+                )
+
+                # Audit log container transfer
+                try:
+                    audit_logger.log_container_interaction(
+                        player_id=str(player_id),
+                        player_name=player.name,
+                        container_id=str(container_id),
+                        event_type="container_transfer",
+                        source_type=_get_enum_value(container.source_type),
+                        room_id=container.room_id,
+                        direction="from_container",
+                        item_id=item.get("item_id"),
+                        item_name=item.get("item_name"),
+                        success=True,
+                    )
+                except Exception as e:
+                    logger.warning("Failed to log container transfer to audit log", error=str(e))
+
+                return {
+                    "container": container.model_dump(),
+                    "player_inventory": new_player_inventory,
+                }
+            except Exception as e:
+                # Instrumentation: capture unexpected errors, including type issues like 'str'.get
+                logger.error(
+                    "Unexpected error during transfer_from_container",
+                    container_id=str(container_id),
+                    player_id=str(player_id),
+                    item_type=type(item).__name__,
+                    item_value=str(item),
+                    container_items_length=len(getattr(container, "items", [])),
+                    container_items_types=[type(stack).__name__ for stack in getattr(container, "items", [])[:5]],
+                    error=str(e),
+                    error_type=type(e).__name__,
+                )
+                raise
 
     def loot_all(
         self,
@@ -656,7 +814,7 @@ class ContainerService:
                 user_friendly="Container not found",
             )
 
-        container = ContainerComponent.model_validate(container_data)
+        container = ContainerComponent.model_validate(_filter_container_data(container_data))
 
         # Store initial item count for audit logging
         initial_items_count = len(container.items)
@@ -686,7 +844,7 @@ class ContainerService:
                 )
                 # Update container and player inventory from result
                 container_data = result.get("container", {})
-                container = ContainerComponent.model_validate(container_data)
+                container = ContainerComponent.model_validate(_filter_container_data(container_data))
                 player_inventory = result.get("player_inventory", player_inventory)
             except ContainerCapacityError:
                 # Stop if capacity exceeded
@@ -788,7 +946,11 @@ class ContainerService:
 
         # Check ownership for equipment containers
         if container.source_type == ContainerSourceType.EQUIPMENT:
-            if container.entity_id != player_id:
+            # Normalize both IDs to UUID for comparison
+            # This handles cases where one is a UUID object and the other is a string
+            player_id_uuid = UUID(str(player_id)) if player_id else None
+            container_entity_id_uuid = UUID(str(container.entity_id)) if container.entity_id else None
+            if container_entity_id_uuid != player_id_uuid:
                 log_and_raise(
                     ContainerAccessDeniedError,
                     f"Player does not own equipment container: {container.container_id}",
@@ -933,7 +1095,7 @@ class ContainerService:
                 user_friendly="Container not found",
             )
 
-        container = ContainerComponent.model_validate(container_data)
+        container = ContainerComponent.model_validate(_filter_container_data(container_data))
 
         # Get player for access control
         player = self.persistence.get_player(player_id)
@@ -1019,7 +1181,7 @@ class ContainerService:
                 user_friendly="Container not found",
             )
 
-        container = ContainerComponent.model_validate(container_data)
+        container = ContainerComponent.model_validate(_filter_container_data(container_data))
 
         # Get player for access control
         player = self.persistence.get_player(player_id)

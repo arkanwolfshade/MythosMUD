@@ -129,6 +129,7 @@ class ApplicationContainer:
         self.player_service: PlayerService | None = None
         self.room_service: RoomService | None = None
         self.user_manager: UserManager | None = None
+        self.container_service: Any | None = None  # ContainerService type hint would create circular import
 
         # Caching services
         self.room_cache_service: RoomCacheService | None = None
@@ -382,6 +383,13 @@ class ApplicationContainer:
                 self.user_manager = UserManager(data_dir=user_management_dir)
                 if self.nats_message_handler is not None:
                     self.nats_message_handler.user_manager = self.user_manager
+
+                # Initialize container service
+                from .services.container_service import ContainerService
+
+                self.container_service = ContainerService(persistence=self.persistence)
+                logger.info("Container service initialized")
+
                 logger.info("Game services initialized")
 
                 # Initialize item prototype registry and factory

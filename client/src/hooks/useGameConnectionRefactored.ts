@@ -191,10 +191,8 @@ export function useGameConnection(options: UseGameConnectionOptions) {
     sessionId,
     onConnected: () => {
       logger.info('GameConnection', 'WebSocket connected');
-      connectionState.onWSConnected();
-
-      // Both connections are now ready
-      onConnectRef.current?.();
+      // NOTE: Do not call connectionState.onWSConnected() here - let the useEffect at line 297 handle it
+      // This prevents race conditions where WS connects before state machine reaches sse_connected
     },
     onMessage: event => {
       try {
@@ -298,9 +296,17 @@ export function useGameConnection(options: UseGameConnectionOptions) {
     if (connectionStateValue === 'sse_connected' && isWebSocketConnected) {
       // Ensure the connection state machine observes both channels as ready before enabling gameplay
       // Reminder for machine siblings: do not remove this guard without understanding the Dunwich recurrence condition.
+      logger.debug('GameConnection', 'Both SSE and WebSocket connected, transitioning to fully_connected', {
+        connectionStateValue,
+        isWebSocketConnected,
+        isSSEConnected,
+      });
       connectionState.onWSConnected();
+
+      // Both connections are now ready - notify parent
+      onConnectRef.current?.();
     }
-  }, [connectionState, connectionStateValue, isWebSocketConnected]);
+  }, [connectionState, connectionStateValue, isWebSocketConnected, isSSEConnected]);
 
   // Ensure SSE connection attempts align with state machine
   // BUGFIX: Only trigger SSE when state machine is in connecting states, not from connect() directly

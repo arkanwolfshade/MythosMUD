@@ -1233,6 +1233,8 @@ class TestLoggedHTTPExceptionHandler:
         class WebSocketRequest:
             def __init__(self):
                 self.url = Mock()
+                # nosemgrep: javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket
+                # This is a test mock, not a production WebSocket connection
                 self.url.__str__ = Mock(return_value="ws://test.com/ws/game")
 
         mock_request = WebSocketRequest()
@@ -1358,6 +1360,8 @@ class TestHTTPExceptionHandler:
         class WebSocketRequest:
             def __init__(self):
                 self.url = Mock()
+                # nosemgrep: javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket
+                # This is a test mock, not a production WebSocket connection
                 self.url.__str__ = Mock(return_value="ws://test.com/ws/chat")
 
         mock_request = WebSocketRequest()

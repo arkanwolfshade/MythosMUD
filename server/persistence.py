@@ -406,6 +406,22 @@ class PersistenceLayer:
 
         inventory_json = json.dumps(payload["inventory"])
         equipped_json = json.dumps(payload["equipped"])
+        # Log what's being saved to help debug inventory persistence issues
+        logger.debug(
+            "Preparing inventory payload for save",
+            player_id=str(player.player_id),
+            player_name=player.name,
+            inventory_length=len(payload["inventory"]),
+            inventory_items=[
+                {
+                    "item_name": item.get("item_name"),
+                    "item_id": item.get("item_id"),
+                    "slot_type": item.get("slot_type"),
+                    "quantity": item.get("quantity"),
+                }
+                for item in payload["inventory"][:5]
+            ],  # Log first 5 items
+        )
         player.inventory = cast(Any, inventory_json)  # keep ORM column in sync
         player.set_equipped_items(payload["equipped"])
         return inventory_json, equipped_json
@@ -495,8 +511,24 @@ class PersistenceLayer:
             )
 
         validated_payload = cast(InventoryPayload, raw_payload)
-        sanitized_inventory_json = json.dumps(validated_payload["inventory"])
-        player.inventory = cast(Any, sanitized_inventory_json)
+        # Log what's being loaded to help debug inventory persistence issues
+        logger.debug(
+            "Loading inventory from database",
+            player_id=str(player.player_id),
+            player_name=player.name,
+            inventory_length=len(validated_payload["inventory"]),
+            inventory_items=[
+                {
+                    "item_name": item.get("item_name"),
+                    "item_id": item.get("item_id"),
+                    "slot_type": item.get("slot_type"),
+                    "quantity": item.get("quantity"),
+                }
+                for item in validated_payload["inventory"][:5]
+            ],  # Log first 5 items
+        )
+        # Set inventory to the parsed list, not the JSON string
+        player.set_inventory(validated_payload["inventory"])
         player.set_equipped_items(validated_payload["equipped"])
 
     # --- Room Cache (Loaded at Startup) ---
@@ -2135,7 +2167,7 @@ class PersistenceLayer:
             ValidationError: If validation fails
             DatabaseError: If database operation fails
         """
-        from server.container_persistence import create_container
+        from server.persistence.container_persistence import create_container
 
         with self._lock, self._get_connection() as conn:
             container = create_container(
@@ -2167,7 +2199,7 @@ class PersistenceLayer:
         Raises:
             DatabaseError: If database operation fails
         """
-        from server.container_persistence import get_container
+        from server.persistence.container_persistence import get_container
 
         with self._lock, self._get_connection() as conn:
             container = get_container(conn, container_id)
@@ -2234,7 +2266,7 @@ class PersistenceLayer:
             ValidationError: If validation fails
             DatabaseError: If database operation fails
         """
-        from server.container_persistence import update_container
+        from server.persistence.container_persistence import update_container
 
         with self._lock, self._get_connection() as conn:
             container = update_container(conn, container_id, items_json, lock_state, metadata_json)
@@ -2269,9 +2301,129 @@ class PersistenceLayer:
         Raises:
             DatabaseError: If database operation fails
         """
-        from server.container_persistence import delete_container
+        from server.persistence.container_persistence import delete_container
 
         with self._lock, self._get_connection() as conn:
             return delete_container(conn, container_id)
+
+    # --- Item Instance Persistence ---
+
+    def create_item_instance(
+        self,
+        item_instance_id: str,
+        prototype_id: str,
+        owner_type: str = "room",
+        owner_id: str | None = None,
+        location_context: str | None = None,
+        quantity: int = 1,
+        condition: int | None = None,
+        flags_override: list[str] | None = None,
+        binding_state: str | None = None,
+        attunement_state: dict[str, Any] | None = None,
+        custom_name: str | None = None,
+        metadata: dict[str, Any] | None = None,
+        origin_source: str | None = None,
+        origin_metadata: dict[str, Any] | None = None,
+    ) -> None:
+        """
+        Create a new item instance in the database.
+
+        Args:
+            item_instance_id: Unique identifier for the item instance
+            prototype_id: Reference to item_prototypes.prototype_id
+            owner_type: Type of owner (e.g., "room", "player", "container")
+            owner_id: ID of the owner (optional)
+            location_context: Additional location context (optional)
+            quantity: Quantity of items in this instance
+            condition: Item condition (optional)
+            flags_override: Override flags for this instance (optional)
+            binding_state: Binding state (optional)
+            attunement_state: Attunement state dictionary (optional)
+            custom_name: Custom name for this instance (optional)
+            metadata: Additional metadata dictionary (optional)
+            origin_source: Origin source string (optional)
+            origin_metadata: Origin metadata dictionary (optional)
+
+        Raises:
+            DatabaseError: If the insert fails
+            ValidationError: If required parameters are invalid
+        """
+        from server.persistence.item_instance_persistence import create_item_instance
+
+        with self._lock, self._get_connection() as conn:
+            create_item_instance(
+                conn=conn,
+                item_instance_id=item_instance_id,
+                prototype_id=prototype_id,
+                owner_type=owner_type,
+                owner_id=owner_id,
+                location_context=location_context,
+                quantity=quantity,
+                condition=condition,
+                flags_override=flags_override,
+                binding_state=binding_state,
+                attunement_state=attunement_state,
+                custom_name=custom_name,
+                metadata=metadata,
+                origin_source=origin_source,
+                origin_metadata=origin_metadata,
+            )
+
+    def ensure_item_instance(
+        self,
+        item_instance_id: str,
+        prototype_id: str,
+        owner_type: str = "room",
+        owner_id: str | None = None,
+        quantity: int = 1,
+        metadata: dict[str, Any] | None = None,
+        origin_source: str | None = None,
+        origin_metadata: dict[str, Any] | None = None,
+    ) -> None:
+        """
+        Ensure an item instance exists in the database, creating it if necessary.
+
+        This is a convenience function that checks if the item instance exists
+        and creates it if it doesn't. Useful for ensuring referential integrity.
+
+        Args:
+            item_instance_id: Unique identifier for the item instance
+            prototype_id: Reference to item_prototypes.prototype_id
+            owner_type: Type of owner (default: "room")
+            owner_id: ID of the owner (optional)
+            quantity: Quantity of items in this instance (default: 1)
+            metadata: Additional metadata dictionary (optional)
+            origin_source: Origin source string (optional)
+            origin_metadata: Origin metadata dictionary (optional)
+        """
+        from server.persistence.item_instance_persistence import ensure_item_instance
+
+        with self._lock, self._get_connection() as conn:
+            ensure_item_instance(
+                conn=conn,
+                item_instance_id=item_instance_id,
+                prototype_id=prototype_id,
+                owner_type=owner_type,
+                owner_id=owner_id,
+                quantity=quantity,
+                metadata=metadata,
+                origin_source=origin_source,
+                origin_metadata=origin_metadata,
+            )
+
+    def item_instance_exists(self, item_instance_id: str) -> bool:
+        """
+        Check if an item instance exists in the database.
+
+        Args:
+            item_instance_id: Unique identifier for the item instance
+
+        Returns:
+            True if the item instance exists, False otherwise
+        """
+        from server.persistence.item_instance_persistence import item_instance_exists
+
+        with self._lock, self._get_connection() as conn:
+            return item_instance_exists(conn, item_instance_id)
 
     # --- TODO: Add async support, other backends, migrations, etc. ---

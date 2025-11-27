@@ -105,7 +105,20 @@ export function useSSEConnection(options: SSEConnectionOptions): SSEConnectionRe
     if (eventSourceRef.current) {
       const readyState = eventSourceRef.current.readyState;
       if (readyState === EventSource.CONNECTING || readyState === EventSource.OPEN) {
-        logger.debug('SSEConnection', 'SSE already connected, skipping', { readyState });
+        logger.debug('SSEConnection', 'SSE already connected, notifying state machine', { readyState });
+        // BUGFIX: Still call onConnected even if SSE is already connected
+        // This allows the state machine to transition from connecting_sse to sse_connected
+        // when the connection is restored after a page reload or reconnect
+        if (readyState === EventSource.OPEN) {
+          // SSE is fully connected - use provided sessionId or generate one
+          const sseSessionId = sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+          logger.debug('SSEConnection', 'SSE already connected, calling onConnected with sessionId', {
+            sessionId: sseSessionId,
+            readyState,
+          });
+          setIsConnected(true);
+          onConnectedRef.current?.(sseSessionId);
+        }
         return;
       }
       // EventSource exists but is closed - clean it up before reconnecting

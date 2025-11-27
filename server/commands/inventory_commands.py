@@ -243,7 +243,11 @@ def _format_metadata(metadata: Mapping[str, Any] | None) -> str:
     return ""
 
 
-def _render_inventory(inventory: list[dict[str, Any]], equipped: dict[str, Any]) -> str:
+def _render_inventory(
+    inventory: list[dict[str, Any]],
+    equipped: dict[str, Any],
+    container_contents: dict[str, list[dict[str, Any]]] | None = None,
+) -> str:
     slots_used = len(inventory)
     remaining = max(DEFAULT_SLOT_CAPACITY - slots_used, 0)
 
@@ -259,7 +263,7 @@ def _render_inventory(inventory: list[dict[str, Any]], equipped: dict[str, Any])
             metadata_suffix = _format_metadata(stack.get("metadata"))
             lines.append(f"{index}. {item_name} ({slot_type}) x{quantity}{metadata_suffix}")
     else:
-        lines.append("No items in your pack.")
+        lines.append("No items in your pockets or on your person.")
 
     lines.append("")
     lines.append("Equipped:")
@@ -271,6 +275,20 @@ def _render_inventory(inventory: list[dict[str, Any]], equipped: dict[str, Any])
             quantity = item.get("quantity", 0)
             metadata_suffix = _format_metadata(item.get("metadata"))
             lines.append(f"- {slot_name}: {item_name} x{quantity}{metadata_suffix}")
+
+            # Show container contents if this slot has a container with items
+            if container_contents and slot_name in container_contents:
+                container_items = container_contents[slot_name]
+                if container_items:
+                    for container_item in container_items:
+                        container_item_name = container_item.get("item_name") or container_item.get(
+                            "name", "Unknown Item"
+                        )
+                        container_item_quantity = container_item.get("quantity", 1)
+                        if container_item_quantity > 1:
+                            lines.append(f"    - {container_item_name} x{container_item_quantity}")
+                        else:
+                            lines.append(f"    - {container_item_name}")
     else:
         lines.append("- Nothing equipped.")
 
@@ -318,7 +336,7 @@ async def handle_inventory_command(
     alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, Any]:
-    """Display the player's inventory and equipped items."""
+    """Display the player's inventory and equipped items, including container contents."""
 
     persistence, _connection_manager = _resolve_state(request)
     player, error = _resolve_player(persistence, current_user, player_name)
@@ -327,14 +345,50 @@ async def handle_inventory_command(
 
     inventory_view = player.get_inventory()
     equipped_view = player.get_equipped_items()
+
+    # Get container contents for equipped containers
+    # Key by slot name to match with equipped items
+    container_contents: dict[str, list[dict[str, Any]]] = {}
+    try:
+        player_id_uuid = UUID(str(player.player_id))
+        wearable_containers = _SHARED_WEARABLE_CONTAINER_SERVICE.get_wearable_containers_for_player(player_id_uuid)
+        # Match containers to equipped items by item_name or item_id
+        for container_component in wearable_containers:
+            container_metadata = container_component.metadata if hasattr(container_component, "metadata") else {}
+            container_item_name = container_metadata.get("item_name")
+            container_item_id = container_metadata.get("item_id")
+
+            # Find matching slot in equipped items
+            matching_slot = None
+            for slot_name, equipped_item in equipped_view.items():
+                equipped_item_name = equipped_item.get("item_name")
+                equipped_item_id = equipped_item.get("item_id")
+                if (container_item_name and equipped_item_name and container_item_name == equipped_item_name) or (
+                    container_item_id and equipped_item_id and container_item_id == equipped_item_id
+                ):
+                    matching_slot = slot_name
+                    break
+
+            if matching_slot and container_component.items:
+                # Convert InventoryStack objects to dictionaries for display
+                # InventoryStack is a TypedDict, so it's already dict-like, but we need to cast for mypy
+                container_contents[matching_slot] = [cast(dict[str, Any], item) for item in container_component.items]
+    except Exception as e:
+        logger.debug(
+            "Error getting container contents for inventory display",
+            error=str(e),
+            player=player.name,
+        )
+
     logger.info(
         "Inventory displayed",
         player=player.name,
         slots_used=len(inventory_view),
         equipped_slots=len(equipped_view),
+        containers_with_items=len(container_contents),
     )
     return {
-        "result": _render_inventory(inventory_view, equipped_view),
+        "result": _render_inventory(inventory_view, equipped_view, container_contents),
         "inventory": deepcopy(inventory_view),
         "equipped": deepcopy(equipped_view),
     }
@@ -412,6 +466,66 @@ async def handle_pickup_command(
     if not extracted_stack:
         return {"result": "That item is no longer available."}
 
+    # Items picked up from the ground should go into general inventory (backpack),
+    # not into equipped slots, even if they're equippable items.
+    # The slot_type is only preserved when removing items from containers
+    # (if they were equipped before being put in the container).
+    logger.debug(
+        "Pickup: extracted_stack before slot_type override",
+        player=player.name,
+        player_id=str(player.player_id),
+        extracted_stack_type=type(extracted_stack).__name__,
+        extracted_stack_keys=list(extracted_stack.keys()) if isinstance(extracted_stack, dict) else None,
+        original_slot_type=extracted_stack.get("slot_type") if isinstance(extracted_stack, dict) else None,
+    )
+    if isinstance(extracted_stack, dict):
+        extracted_stack = dict(extracted_stack)  # Create a copy to avoid mutating the original
+        extracted_stack["slot_type"] = "backpack"
+        logger.debug(
+            "Pickup: slot_type set to backpack",
+            player=player.name,
+            player_id=str(player.player_id),
+            item_id=extracted_stack.get("item_id"),
+            item_name=extracted_stack.get("item_name"),
+            slot_type=extracted_stack.get("slot_type"),
+        )
+
+    # Ensure the item instance exists in the database for referential integrity
+    # This is required for container operations and other systems that reference item_instances
+    item_instance_id = extracted_stack.get("item_instance_id") if isinstance(extracted_stack, dict) else None
+    prototype_id = (
+        extracted_stack.get("prototype_id") or extracted_stack.get("item_id")
+        if isinstance(extracted_stack, dict)
+        else None
+    )
+    if item_instance_id and prototype_id:
+        try:
+            persistence.ensure_item_instance(
+                item_instance_id=item_instance_id,
+                prototype_id=prototype_id,
+                owner_type="player",
+                owner_id=str(player.player_id),
+                quantity=extracted_stack.get("quantity", 1) if isinstance(extracted_stack, dict) else 1,
+                metadata=extracted_stack.get("metadata") if isinstance(extracted_stack, dict) else None,
+                origin_source="pickup",
+                origin_metadata={"room_id": room_id} if isinstance(extracted_stack, dict) else None,
+            )
+            logger.debug(
+                "Item instance ensured for picked up item",
+                item_instance_id=item_instance_id,
+                prototype_id=prototype_id,
+                player_id=str(player.player_id),
+            )
+        except Exception as e:
+            logger.warning(
+                "Failed to ensure item instance for picked up item",
+                item_instance_id=item_instance_id,
+                prototype_id=prototype_id,
+                error=str(e),
+            )
+            # Continue anyway - the item will still be added to inventory
+            # but container operations may fail if the item instance doesn't exist
+
     previous_inventory = _clone_inventory(player)
     inventory_service = InventoryService()
 
@@ -430,6 +544,22 @@ async def handle_pickup_command(
         return {"result": f"You cannot pick that up: {str(exc)}"}
 
     player.set_inventory(cast(list[dict[str, Any]], updated_inventory))
+    # Log inventory contents after set_inventory to verify item was added
+    logger.info(
+        "Pickup: inventory after set_inventory",
+        player=player.name,
+        player_id=str(player.player_id),
+        inventory_length=len(updated_inventory),
+        inventory_items=[
+            {
+                "item_name": item.get("item_name"),
+                "item_id": item.get("item_id"),
+                "slot_type": item.get("slot_type"),
+                "quantity": item.get("quantity"),
+            }
+            for item in updated_inventory
+        ],
+    )
     persist_error = _persist_player(persistence, player)
     if persist_error:
         room_manager.add_room_drop(room_id, extracted_stack)
@@ -699,7 +829,8 @@ async def handle_equip_command(
                     stack["slot_type"] = normalized_stack_slot
             normalized_equipped[normalized_slot_name] = stack
 
-        player.set_inventory(cast(list[dict[str, Any]], new_inventory))
+        # Convert InventoryStack to dict[str, Any] for set_inventory
+        player.set_inventory([cast(dict[str, Any], stack) for stack in new_inventory])
         player.set_equipped_items(cast(dict[str, Any], normalized_equipped))
 
         persist_error = _persist_player(persistence, player)
@@ -885,7 +1016,8 @@ async def handle_unequip_command(
                     stack["slot_type"] = normalized_stack_slot
             normalized_equipped[normalized_slot_name] = stack
 
-        player.set_inventory(cast(list[dict[str, Any]], new_inventory))
+        # Convert InventoryStack to dict[str, Any] for set_inventory
+        player.set_inventory([cast(dict[str, Any], stack) for stack in new_inventory])
         player.set_equipped_items(cast(dict[str, Any], normalized_equipped))
 
         persist_error = _persist_player(persistence, player)
@@ -967,10 +1099,798 @@ async def handle_unequip_command(
     }
 
 
+async def handle_put_command(
+    command_data: dict,
+    current_user: dict,
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
+) -> dict[str, Any]:
+    """Put an item from inventory into a container."""
+
+    persistence, connection_manager = _resolve_state(request)
+    player, error = _resolve_player(persistence, current_user, player_name)
+    if error or not player:
+        return error or {"result": "Player information not found."}
+
+    app = getattr(request, "app", None)
+    container_service = getattr(app.state, "container_service", None) if app else None
+    if not container_service:
+        return {"result": "Container service is unavailable."}
+
+    item_name = command_data.get("item", "").strip()
+    container_name = command_data.get("container", "").strip()
+    quantity = command_data.get("quantity")
+
+    logger.debug(
+        "Put command received",
+        player=player.name,
+        command_data_keys=list(command_data.keys()),
+        item_name=item_name,
+        container_name=container_name,
+        quantity=quantity,
+    )
+
+    if not item_name or not container_name:
+        logger.warning(
+            "Put command validation failed",
+            player=player.name,
+            item_name=item_name,
+            container_name=container_name,
+            command_data=command_data,
+        )
+        return {"result": "Usage: put <item> [in] <container> [quantity]"}
+
+    # Find item in inventory
+    inventory = player.get_inventory()
+    item_found = None
+    item_index = None
+
+    # Try to parse as index first
+    try:
+        index = int(item_name)
+        if index >= 1 and index <= len(inventory):
+            item_index = index - 1
+            item_found = inventory[item_index]
+    except ValueError:
+        # Not a number, search by name
+        target_lower = item_name.lower()
+        for idx, item in enumerate(inventory):
+            item_name_check = str(item.get("item_name", item.get("name", ""))).lower()
+            if target_lower in item_name_check:
+                item_found = item
+                item_index = idx
+                break
+
+    if not item_found:
+        logger.debug(
+            "Item not found in inventory for put command",
+            item_name=item_name,
+            player=player.name,
+            inventory_count=len(inventory),
+        )
+        return {"result": f"You don't have '{item_name}' in your inventory."}
+
+    logger.debug(
+        "Item found for put command", item_name=item_name, item_found=item_found.get("item_name"), player=player.name
+    )
+
+    # Find container
+    room_manager = getattr(connection_manager, "room_manager", None)
+    if not room_manager:
+        return {"result": "Room manager is unavailable."}
+
+    room_id = str(player.current_room_id)
+    room_containers = room_manager.get_containers(room_id) if hasattr(room_manager, "get_containers") else []
+
+    container_found = None
+    container_id = None
+
+    # Check room containers
+    target_lower = container_name.lower()
+    for container in room_containers:
+        container_name_check = str(container.get("metadata", {}).get("name", container.get("container_id", ""))).lower()
+        if target_lower in container_name_check:
+            container_found = container
+            container_id = UUID(container.get("container_id"))
+            break
+
+    # Check wearable containers
+    if not container_found:
+        equipped = player.get_equipped_items()
+        logger.debug(
+            "Checking equipped items for container in put command",
+            container_name=container_name,
+            target_lower=target_lower,
+            equipped_slots=list(equipped.keys()),
+            equipped_count=len(equipped),
+            player=player.name,
+        )
+        for slot, item in equipped.items():
+            item_name_check = str(item.get("item_name", item.get("name", ""))).lower()
+            slot_lower = slot.lower()
+            has_inner_container = bool(item.get("inner_container"))
+            name_matches = target_lower in item_name_check
+            slot_matches = target_lower == slot_lower or target_lower in slot_lower
+
+            logger.debug(
+                "Checking equipped item in put command",
+                slot=slot,
+                item_name=item.get("item_name", item.get("name", "")),
+                item_name_check=item_name_check,
+                slot_lower=slot_lower,
+                has_inner_container=has_inner_container,
+                inner_container_id=item.get("inner_container"),
+                target_lower=target_lower,
+                name_matches=name_matches,
+                slot_matches=slot_matches,
+            )
+
+            # Check if this item matches by name or slot
+            if name_matches or slot_matches:
+                # First try to get container from inner_container field
+                inner_container_id = item.get("inner_container")
+                if inner_container_id:
+                    try:
+                        container_id = (
+                            UUID(inner_container_id) if isinstance(inner_container_id, str) else inner_container_id
+                        )
+                        container_data = (
+                            persistence.get_container(container_id) if hasattr(persistence, "get_container") else None
+                        )
+                        if container_data:
+                            container_found = container_data
+                            # Ensure container_id is set from container_data if it wasn't set
+                            if container_data.get("container_id") and not container_id:
+                                container_id = UUID(container_data.get("container_id"))
+                            break
+                    except (ValueError, TypeError) as e:
+                        logger.debug(
+                            "Failed to parse container ID for put command",
+                            inner_container_id=inner_container_id,
+                            error=str(e),
+                        )
+                        continue
+
+                # If inner_container is not set, try to find container using wearable container service
+                # This handles cases where the container exists but inner_container wasn't set on the item
+                if not container_found:
+                    try:
+                        player_id_uuid = UUID(str(player.player_id))
+                        wearable_containers = _SHARED_WEARABLE_CONTAINER_SERVICE.get_wearable_containers_for_player(
+                            player_id_uuid
+                        )
+                        logger.debug(
+                            "Searching wearable containers for put command",
+                            player_id=str(player_id_uuid),
+                            wearable_containers_count=len(wearable_containers),
+                            target_slot=slot,
+                        )
+                        for container_component in wearable_containers:
+                            # Match by slot name or container metadata name
+                            container_metadata = (
+                                container_component.metadata if hasattr(container_component, "metadata") else {}
+                            )
+                            container_metadata_name = str(container_metadata.get("name", "")).lower()
+                            container_slot = str(container_metadata.get("slot", "")).lower()
+
+                            if (
+                                container_slot == slot_lower
+                                or target_lower in container_metadata_name
+                                or (slot_matches and container_slot == slot_lower)
+                            ):
+                                # Found matching container, get full container data
+                                container_id_from_component = container_component.container_id
+                                if container_id_from_component:
+                                    container_data = (
+                                        persistence.get_container(container_id_from_component)
+                                        if hasattr(persistence, "get_container")
+                                        else None
+                                    )
+                                    if container_data:
+                                        container_found = container_data
+                                        container_id = container_id_from_component
+                                        logger.debug(
+                                            "Found container via wearable container service",
+                                            container_id=str(container_id),
+                                            slot=slot,
+                                            player=player.name,
+                                        )
+                                        break
+                    except Exception as e:
+                        logger.debug(
+                            "Error finding container via wearable container service",
+                            error=str(e),
+                            slot=slot,
+                            player=player.name,
+                        )
+                        continue
+
+                    if container_found:
+                        break
+
+                    # If we matched by slot but container doesn't exist, try to create it
+                    # This handles cases where the item was equipped but container wasn't created
+                    if slot_matches and not container_found:
+                        try:
+                            player_id_uuid = UUID(str(player.player_id))
+                            logger.debug(
+                                "Attempting to create container for equipped item in put command",
+                                slot=slot,
+                                item_id=item.get("item_id"),
+                                has_inner_container=bool(item.get("inner_container")),
+                                player=player.name,
+                            )
+                            # Try to create container for this equipped item
+                            container_result = _SHARED_WEARABLE_CONTAINER_SERVICE.handle_equip_wearable_container(
+                                player_id=player_id_uuid,
+                                item_stack=cast(dict[str, Any], item),
+                            )
+                            logger.debug(
+                                "Container creation result",
+                                container_result=container_result,
+                                slot=slot,
+                                player=player.name,
+                            )
+                            if container_result and container_result.get("container_id"):
+                                container_id_created = container_result.get("container_id")
+                                container_data = (
+                                    persistence.get_container(container_id_created)
+                                    if hasattr(persistence, "get_container")
+                                    else None
+                                )
+                                if container_data:
+                                    container_found = container_data
+                                    container_id = container_id_created
+                                    logger.debug(
+                                        "Created container for equipped item in put command",
+                                        container_id=str(container_id),
+                                        slot=slot,
+                                        player=player.name,
+                                    )
+                                    break
+                            else:
+                                logger.debug(
+                                    "Container creation returned None or no container_id, trying direct creation",
+                                    slot=slot,
+                                    item_has_inner_container=bool(item.get("inner_container")),
+                                    player=player.name,
+                                )
+                                # If handle_equip_wearable_container failed (no inner_container),
+                                # try creating container directly with default capacity
+                                try:
+                                    player_id_uuid = UUID(str(player.player_id))
+                                    item_name = item.get("item_name", item.get("name", "Unknown"))
+                                    # Create container directly with default capacity
+                                    container_data_created = persistence.create_container(
+                                        source_type="equipment",
+                                        entity_id=player_id_uuid,
+                                        capacity_slots=20,
+                                        metadata_json={
+                                            "name": item_name,
+                                            "slot": slot,
+                                            "item_id": item.get("item_id"),
+                                        },
+                                    )
+                                    if container_data_created and container_data_created.get("container_id"):
+                                        container_found = container_data_created
+                                        container_id = container_data_created.get("container_id")
+                                        # Update item to include inner_container field for future lookups
+                                        # Note: This requires updating the equipped item in the player's data
+                                        logger.debug(
+                                            "Created container directly for equipped item in put command",
+                                            container_id=str(container_id),
+                                            slot=slot,
+                                            player=player.name,
+                                        )
+                                        break
+                                except Exception as e2:
+                                    logger.debug(
+                                        "Failed to create container directly",
+                                        error=str(e2),
+                                        slot=slot,
+                                        player=player.name,
+                                    )
+                        except Exception as e:
+                            logger.debug(
+                                "Failed to create container for equipped item in put command",
+                                error=str(e),
+                                slot=slot,
+                                player=player.name,
+                            )
+                            # Continue to next equipped item
+                            continue
+
+    if not container_found:
+        logger.debug("Container not found for put command", container_name=container_name, player=player.name)
+        return {"result": f"You don't see any '{container_name}' here."}
+
+    if not container_id:
+        logger.error(
+            "Container found but container_id is None for put command",
+            container_name=container_name,
+            player=player.name,
+        )
+        return {"result": f"Error: Container '{container_name}' has no valid ID."}
+
+    # Get existing token if container is already open, otherwise open it
+    player_id_uuid = UUID(str(player.player_id))
+    mutation_token = container_service.get_container_token(container_id, player_id_uuid)
+
+    if not mutation_token:
+        # Container not open, open it now
+        try:
+            open_result = container_service.open_container(container_id, player_id_uuid)
+            mutation_token = open_result.get("mutation_token")
+        except Exception as e:
+            return {"result": f"Cannot access container: {str(e)}"}
+
+    # Transfer item
+    try:
+        transfer_quantity = quantity if quantity else item_found.get("quantity", 1)
+
+        # Ensure item has required fields for transfer
+        # InventoryStack requires item_instance_id and item_id
+        if not item_found.get("item_instance_id") and not item_found.get("item_id"):
+            logger.error("Item missing required fields for transfer", item=item_found, player=player.name)
+            return {"result": "Error: Item is missing required identification fields."}
+
+        # Ensure the item instance exists in the database for referential integrity
+        item_instance_id = item_found.get("item_instance_id")
+        prototype_id = item_found.get("prototype_id") or item_found.get("item_id")
+        if item_instance_id and prototype_id:
+            try:
+                persistence.ensure_item_instance(
+                    item_instance_id=item_instance_id,
+                    prototype_id=prototype_id,
+                    owner_type="player",
+                    owner_id=str(player.player_id),
+                    quantity=transfer_quantity,
+                    metadata=item_found.get("metadata"),
+                    origin_source="inventory",
+                    origin_metadata={"player_id": str(player.player_id)},
+                )
+                logger.debug(
+                    "Item instance ensured before transfer to container",
+                    item_instance_id=item_instance_id,
+                    prototype_id=prototype_id,
+                    player_id=str(player.player_id),
+                )
+            except Exception as e:
+                logger.warning(
+                    "Failed to ensure item instance before transfer to container",
+                    item_instance_id=item_instance_id,
+                    prototype_id=prototype_id,
+                    error=str(e),
+                )
+                # Continue anyway - the transfer will fail with a foreign key error if the instance doesn't exist
+                # but at least we tried to create it
+
+        logger.debug(
+            "Transferring item to container",
+            player=player.name,
+            item_name=item_found.get("item_name"),
+            item_id=item_found.get("item_id"),
+            item_instance_id=item_found.get("item_instance_id"),
+            container_id=str(container_id),
+            quantity=transfer_quantity,
+        )
+        container_service.transfer_to_container(
+            container_id=container_id,
+            player_id=UUID(str(player.player_id)),
+            mutation_token=mutation_token,
+            item=item_found,
+            quantity=transfer_quantity,
+        )
+
+        # Remove item from player inventory
+        # The transfer method doesn't remove items, so we need to do it manually
+        new_inventory = inventory.copy()
+        if item_index is not None and 0 <= item_index < len(new_inventory):
+            item_to_remove = new_inventory[item_index]
+            current_quantity = item_to_remove.get("quantity", 1)
+            if transfer_quantity >= current_quantity:
+                # Remove entire stack
+                new_inventory.pop(item_index)
+            else:
+                # Reduce quantity
+                new_inventory[item_index] = item_to_remove.copy()
+                new_inventory[item_index]["quantity"] = current_quantity - transfer_quantity
+
+        player.set_inventory(new_inventory)
+        persist_error = _persist_player(persistence, player)
+        if persist_error:
+            return persist_error
+
+        item_display_name = item_found.get("item_name") or item_found.get("item_id", "item")
+        return {
+            "result": f"You put {transfer_quantity}x {item_display_name} into {container_name}.",
+            "room_message": f"{player.name} puts {transfer_quantity}x {item_display_name} into {container_name}.",
+            "game_log_message": f"{player.name} put {transfer_quantity}x {item_display_name} into {container_name}",
+            "game_log_channel": "game-log",
+        }
+    except Exception as e:
+        logger.error("Error putting item in container", player=player.name, error=str(e))
+        return {"result": f"Error: {str(e)}"}
+
+
+async def handle_get_command(
+    command_data: dict,
+    current_user: dict,
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
+) -> dict[str, Any]:
+    """Get an item from a container into inventory."""
+
+    persistence, connection_manager = _resolve_state(request)
+    player, error = _resolve_player(persistence, current_user, player_name)
+    if error or not player:
+        return error or {"result": "Player information not found."}
+
+    app = getattr(request, "app", None)
+    container_service = getattr(app.state, "container_service", None) if app else None
+    if not container_service:
+        return {"result": "Container service is unavailable."}
+
+    item_name = command_data.get("item", "").strip()
+    container_name = command_data.get("container", "").strip()
+    quantity = command_data.get("quantity")
+
+    logger.debug(
+        "Get command received",
+        player=player.name,
+        item_name=item_name,
+        container_name=container_name,
+        quantity=quantity,
+        command_data_keys=list(command_data.keys()),
+        full_command_data=command_data,
+    )
+
+    if not item_name or not container_name:
+        return {"result": "Usage: get <item> [from] <container> [quantity]"}
+
+    # Find container
+    room_manager = getattr(connection_manager, "room_manager", None)
+    if not room_manager:
+        return {"result": "Room manager is unavailable."}
+
+    room_id = str(player.current_room_id)
+    room_containers = room_manager.get_containers(room_id) if hasattr(room_manager, "get_containers") else []
+
+    container_found = None
+    container_id = None
+
+    # Check room containers
+    target_lower = container_name.lower()
+    for container in room_containers:
+        container_name_check = str(container.get("metadata", {}).get("name", container.get("container_id", ""))).lower()
+        if target_lower in container_name_check:
+            container_found = container
+            container_id = UUID(container.get("container_id"))
+            break
+
+    # Check wearable containers - use same logic as "look in" command
+    if not container_found:
+        equipped = player.get_equipped_items()
+
+        # Find matching containers by name (same logic as _find_container_wearable)
+        matching_containers = []
+        for slot, item in equipped.items():
+            equipped_item_name = str(item.get("item_name", item.get("name", ""))).lower()
+            prototype_id = str(item.get("prototype_id", item.get("item_id", ""))).lower()
+            item_id = str(item.get("item_id", "")).lower()
+
+            # Check if this item matches the target name
+            name_matches = target_lower in equipped_item_name or target_lower in prototype_id or target_lower in item_id
+
+            # Include items that:
+            # 1. Have inner_container (explicit container)
+            # 2. Match the target name (might be a container we need to look up)
+            if item.get("inner_container") or name_matches:
+                if name_matches:
+                    matching_containers.append((slot, item))
+
+        # Use first match if found
+        if matching_containers:
+            slot, item = matching_containers[0]
+            item_instance_id = item.get("item_instance_id")
+
+            # Try inner_container first if available
+            inner_container_id = item.get("inner_container")
+            if inner_container_id:
+                try:
+                    container_id = (
+                        UUID(inner_container_id) if isinstance(inner_container_id, str) else inner_container_id
+                    )
+                    container_data = (
+                        persistence.get_container(container_id) if hasattr(persistence, "get_container") else None
+                    )
+                    if container_data:
+                        container_found = container_data
+                        logger.debug(
+                            "Found container via inner_container for get command",
+                            container_id=str(container_id),
+                            slot=slot,
+                            player=player.name,
+                        )
+                except (ValueError, TypeError):
+                    pass
+
+            # If not found via inner_container, use wearable container service
+            if not container_found:
+                try:
+                    player_id_uuid = UUID(str(player.player_id))
+                    wearable_containers = _SHARED_WEARABLE_CONTAINER_SERVICE.get_wearable_containers_for_player(
+                        player_id_uuid
+                    )
+
+                    slot_lower = slot.lower() if slot else ""
+                    for container_component in wearable_containers:
+                        container_metadata = (
+                            container_component.metadata if hasattr(container_component, "metadata") else {}
+                        )
+                        container_item_instance_id = container_metadata.get("item_instance_id")
+                        container_item_name = str(container_metadata.get("item_name", "")).lower()
+                        container_slot = str(container_metadata.get("slot", "")).lower()
+
+                        # Match by item_instance_id first (most reliable)
+                        if (
+                            item_instance_id
+                            and container_item_instance_id
+                            and str(item_instance_id) == str(container_item_instance_id)
+                        ):
+                            container_id_from_component = container_component.container_id
+                            if container_id_from_component:
+                                container_data = (
+                                    persistence.get_container(container_id_from_component)
+                                    if hasattr(persistence, "get_container")
+                                    else None
+                                )
+                                if container_data:
+                                    container_found = container_data
+                                    container_id = container_id_from_component
+                                    logger.debug(
+                                        "Found container via wearable container service (item_instance_id match) for get command",
+                                        container_id=str(container_id_from_component),
+                                        item_instance_id=item_instance_id,
+                                        player=player.name,
+                                    )
+                                    break
+
+                        # Fallback: match by slot name or container metadata item_name
+                        if not container_found and (
+                            container_slot == slot_lower
+                            or target_lower in container_item_name
+                            or target_lower in container_slot
+                        ):
+                            container_id_from_component = container_component.container_id
+                            if container_id_from_component:
+                                container_data = (
+                                    persistence.get_container(container_id_from_component)
+                                    if hasattr(persistence, "get_container")
+                                    else None
+                                )
+                                if container_data:
+                                    container_found = container_data
+                                    container_id = container_id_from_component
+                                    logger.debug(
+                                        "Found container via wearable container service (name/slot match) for get command",
+                                        container_id=str(container_id_from_component),
+                                        container_name=container_item_name,
+                                        slot=slot,
+                                        player=player.name,
+                                    )
+                                    break
+                except Exception as e:
+                    logger.debug(
+                        "Error finding container via wearable container service for get command",
+                        error=str(e),
+                        player=player.name,
+                    )
+
+    if not container_found:
+        return {"result": f"You don't see any '{container_name}' here."}
+
+    # Handle ContainerData objects vs dicts
+    if hasattr(container_found, "items_json"):
+        # ContainerData object
+        container_items = container_found.items_json or []
+        if not container_id:
+            container_id = container_found.container_instance_id
+    elif isinstance(container_found, dict):
+        # Dict from room containers
+        container_items = container_found.get("items", [])
+        if not container_id:
+            container_id = UUID(container_found.get("container_id"))
+    else:
+        # Fallback: try to convert to dict
+        if hasattr(container_found, "to_dict"):
+            container_found = container_found.to_dict()
+            container_items = container_found.get("items", [])
+            if not container_id:
+                container_id = UUID(container_found.get("container_id"))
+        else:
+            container_items = []
+
+    # Parse container_items if it's a JSON string
+    if isinstance(container_items, str):
+        try:
+            import json
+
+            container_items = json.loads(container_items)
+        except (json.JSONDecodeError, ValueError) as e:
+            logger.error(
+                "Failed to parse container_items JSON string",
+                player=player.name,
+                container_id=str(container_id) if container_id else None,
+                error=str(e),
+                container_items=container_items,
+            )
+            return {"result": "Error: Invalid container data format."}
+
+    item_found = None
+    item_index = None
+
+    # Ensure container_items is a list of dictionaries
+    if not isinstance(container_items, list):
+        logger.error(
+            "Container items is not a list",
+            player=player.name,
+            container_id=str(container_id) if container_id else None,
+            container_items_type=type(container_items).__name__,
+            container_items=container_items,
+        )
+        return {"result": "Error: Invalid container data format."}
+
+    # Filter out any non-dictionary items and log them
+    filtered_items = []
+    for idx, item in enumerate(container_items):
+        if not isinstance(item, dict):
+            logger.error(
+                "Non-dictionary item found in container_items",
+                player=player.name,
+                container_id=str(container_id) if container_id else None,
+                item_index=idx,
+                item_type=type(item).__name__,
+                item=item,
+                container_items_length=len(container_items),
+            )
+            continue
+        filtered_items.append(item)
+
+    # If we filtered out items, use the filtered list
+    if len(filtered_items) != len(container_items):
+        logger.warning(
+            "Filtered out non-dictionary items from container_items",
+            player=player.name,
+            container_id=str(container_id) if container_id else None,
+            original_length=len(container_items),
+            filtered_length=len(filtered_items),
+        )
+        container_items = filtered_items
+
+    # Debug: Log the structure of container_items
+    logger.debug(
+        "Container items structure",
+        player=player.name,
+        container_id=str(container_id) if container_id else None,
+        container_items_length=len(container_items),
+        container_items_types=[type(item).__name__ for item in container_items[:5]],  # First 5 items
+        container_items_sample=[str(item)[:100] for item in container_items[:3]],  # First 3 items as strings
+    )
+
+    # Try to parse as index first
+    try:
+        index = int(item_name)
+        if index >= 1 and index <= len(container_items):
+            item_index = index - 1
+            item_found = container_items[item_index]
+            # Ensure item_found is a dictionary
+            if not isinstance(item_found, dict):
+                logger.error(
+                    "Container item is not a dictionary",
+                    player=player.name,
+                    container_id=str(container_id) if container_id else None,
+                    item_index=item_index,
+                    item_type=type(item_found).__name__,
+                    item=item_found,
+                )
+                return {"result": "Error: Invalid item data format."}
+    except ValueError:
+        # Not a number, search by name
+        target_lower = item_name.lower()
+        for idx, item in enumerate(container_items):
+            # Ensure item is a dictionary before calling .get()
+            if not isinstance(item, dict):
+                logger.warning(
+                    "Skipping non-dictionary item in container",
+                    player=player.name,
+                    container_id=str(container_id) if container_id else None,
+                    item_index=idx,
+                    item_type=type(item).__name__,
+                    item=item,
+                )
+                continue
+            item_name_check = str(item.get("item_name", item.get("name", ""))).lower()
+            if target_lower in item_name_check:
+                item_found = item
+                item_index = idx
+                break
+
+    if not item_found:
+        return {"result": f"You don't see '{item_name}' in {container_name}."}
+
+    # Ensure item_found is a dictionary before using it
+    if not isinstance(item_found, dict):
+        logger.error(
+            "Item found is not a dictionary",
+            player=player.name,
+            container_id=str(container_id) if container_id else None,
+            item_name=item_name,
+            item_type=type(item_found).__name__,
+            item=item_found,
+        )
+        return {"result": "Error: Invalid item data format."}
+
+    # Ensure container_id is set
+    if not container_id:
+        if hasattr(container_found, "container_instance_id"):
+            container_id = container_found.container_instance_id
+        elif isinstance(container_found, dict):
+            container_id = UUID(container_found.get("container_id"))
+        else:
+            return {"result": "Error: Could not determine container ID."}
+
+    # Get existing token if container is already open, otherwise open it
+    player_id_uuid = UUID(str(player.player_id))
+    mutation_token = container_service.get_container_token(container_id, player_id_uuid)
+
+    if not mutation_token:
+        # Container not open, open it now
+        try:
+            open_result = container_service.open_container(container_id, player_id_uuid)
+            mutation_token = open_result.get("mutation_token")
+        except Exception as e:
+            return {"result": f"Cannot access container: {str(e)}"}
+
+    # Transfer item
+    # Note: item_found is already validated as a dict at line 1827
+    try:
+        transfer_quantity = quantity if quantity else item_found.get("quantity", 1)
+        result = container_service.transfer_from_container(
+            container_id=container_id,
+            player_id=UUID(str(player.player_id)),
+            mutation_token=mutation_token,
+            item=item_found,
+            quantity=transfer_quantity,
+        )
+
+        # Update player inventory
+        new_inventory = result.get("player_inventory", player.get_inventory())
+        player.set_inventory(new_inventory)
+        persist_error = _persist_player(persistence, player)
+        if persist_error:
+            return persist_error
+
+        item_display_name = item_found.get("item_name") or item_found.get("item_id", "item")
+        return {
+            "result": f"You get {transfer_quantity}x {item_display_name} from {container_name}.",
+            "room_message": f"{player.name} gets {transfer_quantity}x {item_display_name} from {container_name}.",
+            "game_log_message": f"{player.name} got {transfer_quantity}x {item_display_name} from {container_name}",
+            "game_log_channel": "game-log",
+        }
+    except Exception as e:
+        logger.error("Error getting item from container", player=player.name, error=str(e))
+        return {"result": f"Error: {str(e)}"}
+
+
 __all__ = [
     "handle_inventory_command",
     "handle_pickup_command",
     "handle_drop_command",
+    "handle_put_command",
+    "handle_get_command",
     "handle_equip_command",
     "handle_unequip_command",
 ]

@@ -142,6 +142,35 @@ async def handle_summon_command(
     stack.setdefault("origin", {}).update({"source": "admin_summon", "summoned_by": player_name_value})
     stack["quantity"] = quantity
 
+    # Persist the item instance to the database to ensure referential integrity
+    # This is required for container operations and other systems that reference item_instances
+    try:
+        persistence.create_item_instance(
+            item_instance_id=item_instance.item_instance_id,
+            prototype_id=item_instance.prototype_id,
+            owner_type="room",
+            owner_id=room_id,
+            quantity=quantity,
+            metadata=item_instance.metadata,
+            origin_source="admin_summon",
+            origin_metadata={"summoned_by": player_name_value},
+        )
+        logger.debug(
+            "Item instance persisted for summoned item",
+            item_instance_id=item_instance.item_instance_id,
+            prototype_id=item_instance.prototype_id,
+            room_id=room_id,
+        )
+    except Exception as e:
+        logger.error(
+            "Failed to persist item instance for summoned item",
+            item_instance_id=item_instance.item_instance_id,
+            prototype_id=item_instance.prototype_id,
+            error=str(e),
+        )
+        # Continue anyway - the item will still be added to room drops
+        # but container operations may fail if the item instance doesn't exist
+
     room_manager.add_room_drop(room_id, stack)
 
     item_name = stack.get("item_name") or stack.get("item_id", "item")

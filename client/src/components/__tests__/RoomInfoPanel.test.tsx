@@ -59,10 +59,9 @@ describe('RoomInfoPanel', () => {
 
       expect(screen.getByText('Test Room')).toBeInTheDocument();
       expect(screen.getByText('A test room for testing purposes.')).toBeInTheDocument();
-      expect(screen.getByText('Zone:')).toBeInTheDocument();
-      expect(screen.getByText('Arkham')).toBeInTheDocument();
-      expect(screen.getByText('Subzone:')).toBeInTheDocument();
-      expect(screen.getByText('University')).toBeInTheDocument();
+      // Component shows "Location: {zone} / {sub_zone}" format
+      expect(screen.getByText('Location:')).toBeInTheDocument();
+      expect(screen.getByTestId('location-value')).toHaveTextContent('Arkham / University');
     });
 
     it('should display exits correctly', () => {
@@ -107,9 +106,9 @@ describe('RoomInfoPanel', () => {
 
       render(<RoomInfoPanel room={roomWithoutLocation} debugInfo={mockDebugInfo} />);
 
-      expect(screen.getByText('Zone:')).toBeInTheDocument();
-      expect(screen.getAllByText('Unknown')).toHaveLength(2);
-      expect(screen.getByText('Subzone:')).toBeInTheDocument();
+      // Component shows "Location: {zone} / {sub_zone}" format
+      expect(screen.getByText('Location:')).toBeInTheDocument();
+      expect(screen.getByTestId('location-value')).toHaveTextContent('Unknown / Unknown');
     });
 
     it('should handle missing description gracefully', () => {
@@ -240,8 +239,9 @@ describe('RoomInfoPanel', () => {
 
       render(<RoomInfoPanel room={roomWithUnderscoreNames} debugInfo={mockDebugInfo} />);
 
-      expect(screen.getByText('New York City')).toBeInTheDocument();
-      expect(screen.getByText('Manhattan Downtown')).toBeInTheDocument();
+      // Component formats underscores and displays as "Location: {zone} / {sub_zone}"
+      const locationValue = screen.getByTestId('location-value');
+      expect(locationValue).toHaveTextContent('New York City / Manhattan Downtown');
     });
 
     it('should preserve occupant names as provided by server', () => {
@@ -275,8 +275,10 @@ describe('RoomInfoPanel', () => {
 
       // Should show the development mock data
       expect(screen.getByText('Miskatonic University Library')).toBeInTheDocument();
-      expect(screen.getByText('Zone:')).toBeInTheDocument();
-      expect(screen.getByText('Arkham')).toBeInTheDocument();
+      // Component shows "Location: {zone} / {sub_zone}" format
+      expect(screen.getByText('Location:')).toBeInTheDocument();
+      // formatLocationName capitalizes the first letter of simple strings
+      expect(screen.getByTestId('location-value')).toHaveTextContent('Arkham / University');
     });
 
     it('should handle completely invalid room data gracefully', () => {
@@ -289,7 +291,7 @@ describe('RoomInfoPanel', () => {
       render(<RoomInfoPanel room={invalidRoom} debugInfo={mockDebugInfo} />);
 
       // Should not crash and should show some fallback content
-      expect(screen.getByText('Zone:')).toBeInTheDocument();
+      expect(screen.getByText('Location:')).toBeInTheDocument();
     });
 
     it('should handle room with only partial data', () => {
@@ -302,8 +304,9 @@ describe('RoomInfoPanel', () => {
       render(<RoomInfoPanel room={partialRoom} debugInfo={mockDebugInfo} />);
 
       expect(screen.getByText('Partial Room')).toBeInTheDocument();
-      expect(screen.getByText('Zone:')).toBeInTheDocument();
-      expect(screen.getAllByText('Unknown')).toHaveLength(2);
+      // Component shows "Location: {zone} / {sub_zone}" format
+      expect(screen.getByText('Location:')).toBeInTheDocument();
+      expect(screen.getByTestId('location-value')).toHaveTextContent('Unknown / Unknown');
       expect(screen.getByText('No description available')).toBeInTheDocument();
       expect(screen.getByText('Exits:')).toBeInTheDocument();
       expect(screen.getByText('None')).toBeInTheDocument();
@@ -385,13 +388,16 @@ describe('RoomInfoPanel', () => {
         name: 'Room with "quotes" & <html> tags',
         description: 'Description with \n newlines and \t tabs',
         zone: 'zone-with-dashes_and_underscores',
+        sub_zone: undefined, // Remove sub_zone to test Unknown fallback
       };
 
       render(<RoomInfoPanel room={roomWithSpecialChars} debugInfo={mockDebugInfo} />);
 
       expect(screen.getByText('Room with "quotes" & <html> tags')).toBeInTheDocument();
       expect(screen.getByText('Description with newlines and tabs')).toBeInTheDocument();
-      expect(screen.getByText('Zone-with-dashes And Underscores')).toBeInTheDocument();
+      // Component shows "Location: {zone} / {sub_zone}" format
+      const locationValue = screen.getByTestId('location-value');
+      expect(locationValue).toHaveTextContent('Zone-with-dashes And Underscores / Unknown');
     });
   });
 });

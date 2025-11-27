@@ -17,6 +17,7 @@ dependencies = [
     "httpx>=0.28.1",
     "argon2-cffi>=23.1.0,<24",
     "python-jose>=3.5.0",
+    "PyJWT>=2.8.0",  # Required by fastapi-users for JWT token handling
     "faker>=37.12.0",
     "python-dotenv>=1.2.1",
     "sqlalchemy>=2.0.44",

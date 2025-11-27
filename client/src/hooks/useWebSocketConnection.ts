@@ -158,7 +158,15 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
     if (websocketRef.current) {
       const readyState = websocketRef.current.readyState;
       if (readyState === WebSocket.CONNECTING || readyState === WebSocket.OPEN) {
-        logger.debug('WebSocketConnection', 'WebSocket already connected, skipping', { readyState });
+        logger.debug('WebSocketConnection', 'WebSocket already connected, notifying state machine', { readyState });
+        // BUGFIX: Still call onConnected even if WebSocket is already connected
+        // This allows the state machine to transition from sse_connected to fully_connected
+        // when the connection is restored after a page reload or reconnect
+        if (readyState === WebSocket.OPEN) {
+          logger.debug('WebSocketConnection', 'WebSocket already connected, calling onConnected', { readyState });
+          setIsConnected(true);
+          onConnectedRef.current?.();
+        }
         return;
       }
       // WebSocket exists but is closed/closing - clean it up before reconnecting

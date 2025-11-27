@@ -23,6 +23,83 @@ from server.services.inventory_service import InventoryStack
 
 
 @pytest.fixture(scope="module")
+def ensure_test_item_prototypes():
+    """Ensure test item prototypes exist in the database."""
+    import psycopg2
+    from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url or not database_url.startswith("postgresql"):
+        pytest.skip("DATABASE_URL must be set to a PostgreSQL URL")
+
+    url = database_url.replace("postgresql+psycopg2://", "postgresql://").replace(
+        "postgresql+asyncpg://", "postgresql://"
+    )
+
+    conn = psycopg2.connect(url)
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    cursor = conn.cursor()
+
+    try:
+        # Create test item prototypes if they don't exist
+        test_prototypes = [
+            ("item_1", "Test Item 1", "A test item for container testing"),
+            ("item_2", "Test Item 2", "Another test item for container testing"),
+        ]
+
+        for prototype_id, name, description in test_prototypes:
+            cursor.execute(
+                """
+                INSERT INTO item_prototypes (
+                    prototype_id, name, short_description, long_description,
+                    item_type, weight, base_value, durability, flags,
+                    wear_slots, stacking_rules, usage_restrictions,
+                    effect_components, metadata, tags
+                ) VALUES (
+                    %s, %s, %s, %s, 'consumable', 1.0, 10, 100,
+                    '[]'::jsonb, '[]'::jsonb, '{"max_stack": 99}'::jsonb,
+                    '{}'::jsonb, '[]'::jsonb, '{}'::jsonb, '[]'::jsonb
+                )
+                ON CONFLICT (prototype_id) DO NOTHING
+                """,
+                (prototype_id, name, description, description),
+            )
+
+        # Create additional prototypes for tests that use item_{i} pattern
+        for i in range(3, 21):  # item_3 through item_20
+            cursor.execute(
+                """
+                INSERT INTO item_prototypes (
+                    prototype_id, name, short_description, long_description,
+                    item_type, weight, base_value, durability, flags,
+                    wear_slots, stacking_rules, usage_restrictions,
+                    effect_components, metadata, tags
+                ) VALUES (
+                    %s, %s, %s, %s, 'consumable', 1.0, 10, 100,
+                    '[]'::jsonb, '[]'::jsonb, '{"max_stack": 99}'::jsonb,
+                    '{}'::jsonb, '[]'::jsonb, '{}'::jsonb, '[]'::jsonb
+                )
+                ON CONFLICT (prototype_id) DO NOTHING
+                """,
+                (
+                    f"item_{i}",
+                    f"Test Item {i}",
+                    f"A test item {i} for container testing",
+                    f"A test item {i} for container testing",
+                ),
+            )
+
+        conn.commit()
+    finally:
+        cursor.close()
+        conn.close()
+
+    yield
+
+    # Cleanup is not needed - prototypes can remain for other tests
+
+
+@pytest.fixture(scope="module")
 def ensure_containers_table():
     """Ensure the containers table exists in the test database."""
     # Get database URL from environment
@@ -199,7 +276,9 @@ class TestConcurrentContainerMutations:
         token2 = results[1]["mutation_token"]
         assert token1 != token2, "Each player should get a unique mutation token"
 
-    async def test_concurrent_transfer_operations(self, container_service: ContainerService) -> None:
+    async def test_concurrent_transfer_operations(
+        self, container_service: ContainerService, ensure_test_item_prototypes
+    ) -> None:
         """Test that concurrent transfers are handled correctly with mutation tokens."""
         # Create test container
         room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
@@ -284,7 +363,9 @@ class TestConcurrentContainerMutations:
         assert success_count == 1, "One transfer should succeed"
         assert failure_count == 1, "One transfer should fail due to token invalidation"
 
-    async def test_concurrent_transfer_different_tokens(self, container_service: ContainerService) -> None:
+    async def test_concurrent_transfer_different_tokens(
+        self, container_service: ContainerService, ensure_test_item_prototypes
+    ) -> None:
         """Test that transfers with different mutation tokens work correctly."""
         # Create test container
         room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
@@ -318,6 +399,7 @@ class TestConcurrentContainerMutations:
         # Create test stacks
         stack1 = {
             "item_id": "item_1",
+            "item_instance_id": "item_1",
             "item_name": "Test Item 1",
             "quantity": 1,
             "weight": 1.0,
@@ -325,6 +407,7 @@ class TestConcurrentContainerMutations:
         }
         stack2 = {
             "item_id": "item_2",
+            "item_instance_id": "item_2",
             "item_name": "Test Item 2",
             "quantity": 1,
             "weight": 2.0,
@@ -349,7 +432,13 @@ class TestConcurrentContainerMutations:
         )
 
         # Both transfers should succeed (different tokens)
-        assert all(not isinstance(r, Exception) for r in results)
+        # Debug: Print exceptions if any
+        for i, r in enumerate(results):
+            if isinstance(r, Exception):
+                print(f"Result {i} is an exception: {type(r).__name__}: {r}")
+        assert all(not isinstance(r, Exception) for r in results), (
+            f"Some transfers failed: {[type(r).__name__ if isinstance(r, Exception) else 'success' for r in results]}"
+        )
         assert all(isinstance(r, dict) and "container" in r for r in results if not isinstance(r, Exception))
 
     async def test_concurrent_close_operations(self, container_service: ContainerService) -> None:
@@ -466,7 +555,9 @@ class TestConcurrentContainerMutations:
         assert not isinstance(results[1], Exception)
         assert isinstance(results[1], dict) and "mutation_token" in results[1]
 
-    async def test_concurrent_capacity_validation(self, container_service: ContainerService) -> None:
+    async def test_concurrent_capacity_validation(
+        self, container_service: ContainerService, ensure_test_item_prototypes
+    ) -> None:
         """Test that capacity validation works correctly under concurrent load."""
         # Create test container with limited capacity
         room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
@@ -497,8 +588,9 @@ class TestConcurrentContainerMutations:
         # so concurrent transfers with the same token would fail due to token invalidation, not capacity.
         stacks = [
             {
-                "item_id": f"item_{i}",
-                "item_name": f"Test Item {i}",
+                "item_id": f"item_{i + 1}",  # Use item_1, item_2, item_3 (item_0 doesn't exist)
+                "item_instance_id": f"item_{i + 1}",
+                "item_name": f"Test Item {i + 1}",
                 "quantity": 1,
                 "weight": 1.0,
                 "slot_type": "backpack",
