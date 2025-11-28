@@ -14,13 +14,14 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from ..auth.users import get_current_user
 from ..logging.enhanced_logging_config import get_logger
 from ..middleware.metrics_collector import metrics_collector
+from ..models.user import User
 
 logger = get_logger(__name__)
 
 router = APIRouter(prefix="/metrics", tags=["metrics"])
 
 
-def verify_admin_access(current_user: dict = Depends(get_current_user)) -> dict:
+def verify_admin_access(current_user: User | None = Depends(get_current_user)) -> User:
     """
     Verify user has admin access to metrics.
 
@@ -28,25 +29,28 @@ def verify_admin_access(current_user: dict = Depends(get_current_user)) -> dict:
         current_user: Current authenticated user
 
     Returns:
-        Current user dict if admin
+        Current user if admin
 
     Raises:
-        HTTPException: If user is not admin
+        HTTPException: If user is not admin or not authenticated
 
     AI: Metrics may contain sensitive operational data - admin only.
     """
+    if not current_user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required for metrics")
+
     # Check if user is admin
-    is_admin = current_user.get("is_admin", False) or current_user.get("is_superuser", False)
+    is_admin = current_user.is_admin or current_user.is_superuser
 
     if not is_admin:
-        logger.warning("Non-admin user attempted to access metrics", username=current_user.get("username"))
+        logger.warning("Non-admin user attempted to access metrics", username=current_user.username)
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required for metrics")
 
     return current_user
 
 
 @router.get("")
-async def get_metrics(current_user: dict = Depends(verify_admin_access)) -> dict[str, Any]:
+async def get_metrics(current_user: User = Depends(verify_admin_access)) -> dict[str, Any]:
     """
     Get comprehensive system metrics.
 
@@ -83,7 +87,7 @@ async def get_metrics(current_user: dict = Depends(verify_admin_access)) -> dict
         if nats_service:
             base_metrics["nats_connection"] = nats_service.get_connection_stats()
 
-        logger.info("Metrics retrieved", admin_user=current_user.get("username"))
+        logger.info("Metrics retrieved", admin_user=current_user.username)
 
         assert isinstance(base_metrics, dict)
         return base_metrics
@@ -94,7 +98,7 @@ async def get_metrics(current_user: dict = Depends(verify_admin_access)) -> dict
 
 
 @router.get("/summary")
-async def get_metrics_summary(current_user: dict = Depends(verify_admin_access)) -> dict[str, Any]:
+async def get_metrics_summary(current_user: User = Depends(verify_admin_access)) -> dict[str, Any]:
     """
     Get concise metrics summary.
 
@@ -131,7 +135,7 @@ async def get_metrics_summary(current_user: dict = Depends(verify_admin_access))
 
 
 @router.post("/reset")
-async def reset_metrics(current_user: dict = Depends(verify_admin_access)) -> dict[str, str]:
+async def reset_metrics(current_user: User = Depends(verify_admin_access)) -> dict[str, str]:
     """
     Reset metrics counters.
 
@@ -147,7 +151,7 @@ async def reset_metrics(current_user: dict = Depends(verify_admin_access)) -> di
     try:
         metrics_collector.reset_metrics()
 
-        logger.warning("Metrics reset by admin", admin_user=current_user.get("username"))
+        logger.warning("Metrics reset by admin", admin_user=current_user.username)
 
         return {"status": "success", "message": "Metrics counters reset"}
 
@@ -157,7 +161,7 @@ async def reset_metrics(current_user: dict = Depends(verify_admin_access)) -> di
 
 
 @router.get("/dlq")
-async def get_dlq_messages(limit: int = 100, current_user: dict = Depends(verify_admin_access)) -> dict[str, Any]:
+async def get_dlq_messages(limit: int = 100, current_user: User = Depends(verify_admin_access)) -> dict[str, Any]:
     """
     Get messages from dead letter queue.
 
@@ -186,7 +190,7 @@ async def get_dlq_messages(limit: int = 100, current_user: dict = Depends(verify
         total_count = nats_message_handler.dead_letter_queue.get_statistics().get("total_messages", 0)
 
         logger.info(
-            "DLQ messages retrieved", count=len(messages), total=total_count, admin_user=current_user.get("username")
+            "DLQ messages retrieved", count=len(messages), total=total_count, admin_user=current_user.username
         )
 
         return {"messages": messages, "count": len(messages), "total_in_dlq": total_count}
@@ -199,7 +203,7 @@ async def get_dlq_messages(limit: int = 100, current_user: dict = Depends(verify
 
 
 @router.post("/circuit-breaker/reset")
-async def reset_circuit_breaker(current_user: dict = Depends(verify_admin_access)) -> dict[str, str]:
+async def reset_circuit_breaker(current_user: User = Depends(verify_admin_access)) -> dict[str, str]:
     """
     Manually reset circuit breaker to CLOSED state.
 
@@ -223,7 +227,7 @@ async def reset_circuit_breaker(current_user: dict = Depends(verify_admin_access
 
         nats_message_handler.circuit_breaker.reset()
 
-        logger.warning("Circuit breaker manually reset", admin_user=current_user.get("username"))
+        logger.warning("Circuit breaker manually reset", admin_user=current_user.username)
 
         return {"status": "success", "message": "Circuit breaker reset to CLOSED state"}
 
@@ -235,7 +239,7 @@ async def reset_circuit_breaker(current_user: dict = Depends(verify_admin_access
 
 
 @router.post("/dlq/{filepath:path}/replay")
-async def replay_dlq_message(filepath: str, current_user: dict = Depends(verify_admin_access)) -> dict[str, Any]:
+async def replay_dlq_message(filepath: str, current_user: User = Depends(verify_admin_access)) -> dict[str, Any]:
     """
     Replay a message from the Dead Letter Queue.
 
@@ -293,7 +297,7 @@ async def replay_dlq_message(filepath: str, current_user: dict = Depends(verify_
                 "DLQ message replayed successfully",
                 filepath=filepath,
                 message_id=message_data.get("message_id"),
-                admin_user=current_user.get("username"),
+                admin_user=current_user.username,
             )
 
             return {"status": "success", "message": f"Message replayed and removed from DLQ: {filepath}"}
@@ -303,7 +307,7 @@ async def replay_dlq_message(filepath: str, current_user: dict = Depends(verify_
                 "Failed to replay DLQ message",
                 filepath=filepath,
                 error=str(replay_error),
-                admin_user=current_user.get("username"),
+                admin_user=current_user.username,
             )
 
             return {
@@ -322,7 +326,7 @@ async def replay_dlq_message(filepath: str, current_user: dict = Depends(verify_
 
 
 @router.delete("/dlq/{filepath:path}")
-async def delete_dlq_message(filepath: str, current_user: dict = Depends(verify_admin_access)) -> dict[str, str]:
+async def delete_dlq_message(filepath: str, current_user: User = Depends(verify_admin_access)) -> dict[str, str]:
     """
     Delete a message from the Dead Letter Queue without replaying.
 
@@ -353,7 +357,7 @@ async def delete_dlq_message(filepath: str, current_user: dict = Depends(verify_
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"DLQ file not found: {filepath}")
 
         nats_message_handler.dead_letter_queue.delete_message(str(dlq_path))
-        logger.warning("DLQ message deleted by admin", filepath=filepath, admin_user=current_user.get("username"))
+        logger.warning("DLQ message deleted by admin", filepath=filepath, admin_user=current_user.username)
         return {"status": "success", "message": f"DLQ message deleted: {filepath}"}
 
     except HTTPException:

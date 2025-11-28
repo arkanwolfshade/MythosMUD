@@ -23,6 +23,7 @@ from ...database import get_async_session
 from ...exceptions import LoggedHTTPException
 from ...logging.enhanced_logging_config import get_logger
 from ...models.npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
+from ...models.user import User
 from ...npc_database import get_npc_session
 from ...services.admin_auth_service import AdminAction, get_admin_auth_service
 from ...services.npc_instance_service import get_npc_instance_service
@@ -158,7 +159,7 @@ class NPCSpawnRuleResponse(BaseModel):
 
 
 def validate_admin_permission(
-    current_user: dict,
+    current_user: User | None,
     action: AdminAction,
     request: Request,
 ) -> None:
@@ -173,7 +174,7 @@ def validate_admin_permission(
 @npc_router.get("/definitions", response_model=list[NPCDefinitionResponse])
 async def get_npc_definitions(
     request: Request,
-    current_user: dict = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
 ) -> list[NPCDefinitionResponse]:
     """Get all NPC definitions."""
@@ -207,7 +208,7 @@ async def get_npc_definitions(
 async def create_npc_definition(
     npc_data: NPCDefinitionCreate,
     request: Request,
-    current_user: dict = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
 ) -> NPCDefinitionResponse:
     """Create a new NPC definition."""
     try:
@@ -253,7 +254,7 @@ async def create_npc_definition(
 async def get_npc_definition(
     definition_id: int,
     request: Request,
-    current_user: dict = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
 ) -> NPCDefinitionResponse:
     """Get a specific NPC definition by ID."""
@@ -288,7 +289,7 @@ async def update_npc_definition(
     definition_id: int,
     npc_data: NPCDefinitionUpdate,
     request: Request,
-    current_user: dict = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
 ) -> NPCDefinitionResponse:
     """Update an existing NPC definition."""
@@ -337,7 +338,7 @@ async def update_npc_definition(
 async def delete_npc_definition(
     definition_id: int,
     request: Request,
-    current_user: dict = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
 ) -> None:
     """Delete an NPC definition."""
@@ -377,7 +378,7 @@ async def delete_npc_definition(
 @npc_router.get("/instances")
 async def get_npc_instances(
     request: Request,
-    current_user: dict = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
 ) -> list[dict[str, Any]]:
     """Get all active NPC instances."""
     try:
@@ -410,7 +411,7 @@ async def get_npc_instances(
 async def spawn_npc_instance(
     spawn_data: NPCSpawnRequest,
     request: Request,
-    current_user: dict = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
 ) -> dict[str, Any]:
     """Spawn a new NPC instance."""
     try:
@@ -434,9 +435,10 @@ async def spawn_npc_instance(
             reason="admin_spawn",
         )
 
+        auth_service = get_admin_auth_service()
         logger.info(
             "NPC spawned successfully",
-            user=current_user.get("username"),
+            user=auth_service.get_username(current_user),
             npc_id=result["npc_id"],
             definition_id=spawn_data.definition_id,
             room_id=spawn_data.room_id,
@@ -460,7 +462,7 @@ async def spawn_npc_instance(
 async def despawn_npc_instance(
     npc_id: str,
     request: Request,
-    current_user: dict = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
 ) -> dict[str, Any]:
     """Despawn an NPC instance."""
     try:
@@ -478,9 +480,10 @@ async def despawn_npc_instance(
             reason="admin_despawn",
         )
 
+        auth_service = get_admin_auth_service()
         logger.info(
             "NPC despawned successfully",
-            user=current_user.get("username"),
+            user=auth_service.get_username(current_user),
             npc_id=npc_id,
             npc_name=result.get("npc_name"),
         )
@@ -504,7 +507,7 @@ async def move_npc_instance(
     npc_id: str,
     move_data: NPCMoveRequest,
     request: Request,
-    current_user: dict = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
 ) -> dict[str, Any]:
     """Move an NPC instance to a different room."""
     try:
@@ -525,9 +528,10 @@ async def move_npc_instance(
             reason="admin_move",
         )
 
+        auth_service = get_admin_auth_service()
         logger.info(
             "NPC moved successfully",
-            user=current_user.get("username"),
+            user=auth_service.get_username(current_user),
             npc_id=npc_id,
             npc_name=result.get("npc_name"),
             old_room_id=result.get("old_room_id"),
@@ -552,7 +556,7 @@ async def move_npc_instance(
 async def get_npc_stats(
     npc_id: str,
     request: Request,
-    current_user: dict = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
 ) -> dict[str, Any]:
     """Get stats for a specific NPC instance."""
     try:
@@ -567,9 +571,10 @@ async def get_npc_stats(
         # Get NPC stats
         stats = await instance_service.get_npc_stats(npc_id)
 
+        auth_service = get_admin_auth_service()
         logger.info(
             "Retrieved NPC stats",
-            user=current_user.get("username"),
+            user=auth_service.get_username(current_user),
             npc_id=npc_id,
             npc_name=stats.get("name"),
         )
@@ -594,7 +599,7 @@ async def get_npc_stats(
 @npc_router.get("/population")
 async def get_npc_population_stats(
     request: Request,
-    current_user: dict = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
 ) -> dict[str, Any]:
     """Get NPC population statistics."""
     try:
@@ -632,7 +637,7 @@ async def get_npc_population_stats(
 @npc_router.get("/zones")
 async def get_npc_zone_stats(
     request: Request,
-    current_user: dict = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
 ) -> dict[str, Any]:
     """Get NPC zone statistics."""
     try:
@@ -647,9 +652,10 @@ async def get_npc_zone_stats(
         # Get zone statistics
         stats = await instance_service.get_zone_stats()
 
+        auth_service = get_admin_auth_service()
         logger.info(
             "Retrieved NPC zone stats",
-            user=current_user.get("username"),
+            user=auth_service.get_username(current_user),
             total_zones=stats.get("total_zones"),
             total_npcs=stats.get("total_npcs"),
         )
@@ -669,7 +675,7 @@ async def get_npc_zone_stats(
 @npc_router.get("/status")
 async def get_npc_system_status(
     request: Request,
-    current_user: dict = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
 ) -> dict[str, Any]:
     """Get NPC system status."""
     try:
@@ -684,9 +690,10 @@ async def get_npc_system_status(
         # Get system status
         system_status = await instance_service.get_system_stats()
 
+        auth_service = get_admin_auth_service()
         logger.info(
             "Retrieved NPC system status",
-            user=current_user.get("username"),
+            user=auth_service.get_username(current_user),
             system_status=system_status.get("system_status"),
             active_npcs=system_status.get("active_npcs"),
         )
@@ -711,7 +718,7 @@ async def get_npc_system_status(
 @npc_router.get("/spawn-rules", response_model=list[NPCSpawnRuleResponse])
 async def get_npc_spawn_rules(
     request: Request,
-    current_user: dict = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
 ) -> list[NPCSpawnRuleResponse]:
     """Get all NPC spawn rules."""
@@ -745,7 +752,7 @@ async def get_npc_spawn_rules(
 async def create_npc_spawn_rule(
     spawn_rule_data: NPCSpawnRuleCreate,
     request: Request,
-    current_user: dict = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
 ) -> NPCSpawnRuleResponse:
     """Create a new NPC spawn rule."""
@@ -789,7 +796,7 @@ async def create_npc_spawn_rule(
 async def delete_npc_spawn_rule(
     spawn_rule_id: int,
     request: Request,
-    current_user: dict = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
 ) -> None:
     """Delete an NPC spawn rule."""
@@ -829,7 +836,7 @@ async def delete_npc_spawn_rule(
 @npc_router.get("/admin/sessions")
 async def get_admin_sessions(
     request: Request,
-    current_user: dict = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
 ) -> dict[str, Any]:
     """Get active admin sessions."""
     try:
@@ -860,7 +867,7 @@ async def get_admin_sessions(
 async def get_admin_audit_log(
     request: Request,
     limit: int = 100,
-    current_user: dict = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
 ) -> dict[str, Any]:
     """Get admin audit log."""
     try:
@@ -893,7 +900,7 @@ async def get_admin_audit_log(
 @npc_router.post("/admin/cleanup-sessions")
 async def cleanup_admin_sessions(
     request: Request,
-    current_user: dict = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
 ) -> dict[str, Any]:
     """Clean up expired admin sessions."""
     try:

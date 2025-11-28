@@ -43,6 +43,8 @@ export interface Room {
   environment?: string;
   exits: Record<string, string>;
   occupants?: string[];
+  players?: string[];
+  npcs?: string[];
   occupant_count?: number;
   entities?: Array<{
     id: string;

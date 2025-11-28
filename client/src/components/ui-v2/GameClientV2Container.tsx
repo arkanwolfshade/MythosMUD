@@ -302,7 +302,60 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             const roomData = (event.data.room || event.data.room_data) as Room;
             if (roomData) {
               lastRoomUpdateTime.current = new Date(event.timestamp).getTime();
-              updates.room = roomData;
+              // CRITICAL: Merge room data instead of overwriting
+              // NEVER let room_update touch players/npcs/occupants fields - only room_occupants events set those
+              // room_update should only update room metadata (name, description, exits, etc.)
+
+              // Helper function to check if a string looks like a UUID
+              const isUUID = (str: string): boolean => {
+                const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+                return uuidRegex.test(str);
+              };
+
+              // Check if roomData.occupants contains UUIDs (which we should always ignore)
+              const occupantsHasUUIDs =
+                roomData.occupants?.some(occ => typeof occ === 'string' && isUUID(occ)) ?? false;
+
+              // Create room update without occupant fields (always strip them from room_update)
+              /* eslint-disable @typescript-eslint/no-unused-vars */
+              const {
+                players: _players,
+                npcs: _npcs,
+                occupants: _occupants,
+                occupant_count: _occupant_count,
+                ...roomMetadata
+              } = roomData;
+              /* eslint-enable @typescript-eslint/no-unused-vars */
+
+              if (currentRoomRef.current) {
+                // Extract occupant data to preserve (room_update should never overwrite this)
+                const preservedPlayers = currentRoomRef.current.players;
+                const preservedNpcs = currentRoomRef.current.npcs;
+                const preservedOccupants = currentRoomRef.current.occupants;
+                const preservedOccupantCount = currentRoomRef.current.occupant_count;
+
+                updates.room = {
+                  ...currentRoomRef.current,
+                  ...roomMetadata,
+                  // CRITICAL: Always preserve occupant data from room_occupants events
+                  // room_update should NEVER overwrite these fields
+                  players: preservedPlayers,
+                  npcs: preservedNpcs,
+                  occupants: preservedOccupants,
+                  occupant_count: preservedOccupantCount,
+                };
+              } else {
+                // First room_update - don't include occupants if they contain UUIDs
+                // Wait for room_occupants event to set correct occupant data
+                updates.room = {
+                  ...roomMetadata,
+                  // Don't set occupants if they contain UUIDs - wait for room_occupants event
+                  players: occupantsHasUUIDs ? undefined : roomData.players,
+                  npcs: occupantsHasUUIDs ? undefined : roomData.npcs,
+                  occupants: occupantsHasUUIDs ? undefined : roomData.occupants,
+                  occupant_count: occupantsHasUUIDs ? undefined : roomData.occupant_count,
+                };
+              }
             }
             break;
           }
@@ -368,7 +421,20 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               }
             }
 
-            if (!suppressChat && message) {
+            // Filter out room name-only messages (these are sent by the server for room updates
+            // but should not be displayed as they duplicate the Room Info panel)
+            // Room names are typically just the room name without description or other content
+            const isRoomNameOnly =
+              message &&
+              message.trim().length > 0 &&
+              message.trim().length < 100 &&
+              !message.includes('\n') &&
+              !message.includes('Exits:') &&
+              !message.includes('Description:') &&
+              currentRoomRef.current &&
+              message.trim() === currentRoomRef.current.name;
+
+            if (!suppressChat && message && !isRoomNameOnly) {
               const messageTypeResult = determineMessageType(message);
               appendMessage({
                 text: message,
@@ -378,7 +444,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                 channel: messageTypeResult.channel ?? 'game',
                 type: resolveChatTypeFromChannel(messageTypeResult.channel ?? 'game'),
               });
-            } else if (gameLogMessage) {
+            } else if (gameLogMessage && !isRoomNameOnly) {
               appendMessage({
                 text: gameLogMessage,
                 timestamp: event.timestamp,
@@ -424,14 +490,31 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             break;
           }
           case 'room_occupants': {
-            const occupants = event.data.occupants as string[];
-            const occupantCount = event.data.count as number;
-            if (occupants && Array.isArray(occupants) && currentRoomRef.current) {
-              updates.room = {
-                ...currentRoomRef.current,
-                occupants: occupants,
-                occupant_count: occupantCount,
-              };
+            // Support both new structured format (players/npcs) and legacy format (occupants)
+            const players = event.data.players as string[] | undefined;
+            const npcs = event.data.npcs as string[] | undefined;
+            const occupants = event.data.occupants as string[] | undefined; // Legacy format
+            const occupantCount = event.data.count as number | undefined;
+
+            if (currentRoomRef.current) {
+              // Use structured format if available, otherwise fall back to legacy format
+              if (players !== undefined || npcs !== undefined) {
+                updates.room = {
+                  ...currentRoomRef.current,
+                  players: players || [],
+                  npcs: npcs || [],
+                  // Maintain backward compatibility: also populate occupants from structured data
+                  occupants: [...(players || []), ...(npcs || [])],
+                  occupant_count: occupantCount ?? (players?.length ?? 0) + (npcs?.length ?? 0),
+                };
+              } else if (occupants && Array.isArray(occupants)) {
+                // Legacy format: flat list of occupants
+                updates.room = {
+                  ...currentRoomRef.current,
+                  occupants: occupants,
+                  occupant_count: occupantCount ?? occupants.length,
+                };
+              }
             }
             break;
           }
@@ -458,27 +541,25 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             break;
           }
           case 'game_tick': {
-            // Check if tick verbosity is enabled
-            const showTickVerbosity = localStorage.getItem('showTickVerbosity') === 'true';
-            if (!showTickVerbosity) {
-              break;
-            }
-
             // Extract tick data from event
+            // Note: event.data contains the tick_data object directly from broadcast_game_event
             const tickNumber = typeof event.data?.tick_number === 'number' ? event.data.tick_number : 0;
-            const activePlayers = typeof event.data?.active_players === 'number' ? event.data.active_players : 0;
 
-            // Only display every 10th tick (as per UI label "every 10th tick")
-            if (tickNumber % 10 === 0) {
+            // Display every 10th tick (tick 0, 10, 20, 30, etc.)
+            // This provides a 10-second update interval since ticks run every 1 second
+            if (tickNumber % 10 === 0 && tickNumber >= 0) {
               appendMessage(
                 sanitizeChatMessageForState({
-                  text: `[Game Tick #${tickNumber}] Active players: ${activePlayers}`,
+                  text: `[Game Tick #${tickNumber}]`,
                   timestamp: event.timestamp,
                   messageType: 'system',
                   channel: 'system',
                   isHtml: false,
                 })
               );
+              logger.debug('GameClientV2Container', 'Displayed game tick message', {
+                tickNumber,
+              });
             }
             break;
           }

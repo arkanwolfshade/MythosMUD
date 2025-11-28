@@ -136,12 +136,27 @@ async def handle_websocket_connection(
                     room_occupants = connection_manager.get_room_occupants(str(canonical_room_id))
 
                     # Transform to list of player names for client (UI expects string[])
+                    # CRITICAL: Validate that names are not UUIDs before adding
                     occupant_names = []
                     try:
                         for occ in room_occupants or []:
                             name = occ.get("player_name") or occ.get("name")
-                            if name:
-                                occupant_names.append(name)
+                            if name and isinstance(name, str):
+                                # Validate that name is not a UUID string
+                                # UUID format: 36 chars, 4 dashes, hex characters
+                                is_uuid = (
+                                    len(name) == 36
+                                    and name.count("-") == 4
+                                    and all(c in "0123456789abcdefABCDEF-" for c in name)
+                                )
+                                if not is_uuid:
+                                    occupant_names.append(name)
+                                else:
+                                    logger.warning(
+                                        "Skipping UUID as player name in game_state occupants",
+                                        name=name,
+                                        room_id=player.current_room_id,
+                                    )
                     except Exception as e:
                         logger.error(
                             "Error transforming game_state occupants", room_id=player.current_room_id, error=str(e)
@@ -149,6 +164,9 @@ async def handle_websocket_connection(
 
                     # Get room data and ensure UUIDs are converted to strings
                     room_data = room.to_dict() if hasattr(room, "to_dict") else room
+                    # CRITICAL: Convert player UUIDs to names - NEVER send UUIDs to client
+                    if isinstance(room_data, dict):
+                        room_data = connection_manager._convert_room_players_uuids_to_names(room_data)
 
                     # Debug: Log room exits to verify they're being loaded
                     if hasattr(room, "exits"):
@@ -345,10 +363,25 @@ async def handle_websocket_connection(
                             occupant_names = []
                             try:
                                 # Add player names
+                                # CRITICAL: Validate that names are not UUIDs before adding
                                 for occ in room_occupants or []:
                                     name = occ.get("player_name") or occ.get("name")
-                                    if name:
-                                        occupant_names.append(name)
+                                    if name and isinstance(name, str):
+                                        # Validate that name is not a UUID string
+                                        # UUID format: 36 chars, 4 dashes, hex characters
+                                        is_uuid = (
+                                            len(name) == 36
+                                            and name.count("-") == 4
+                                            and all(c in "0123456789abcdefABCDEF-" for c in name)
+                                        )
+                                        if not is_uuid:
+                                            occupant_names.append(name)
+                                        else:
+                                            logger.warning(
+                                                "Skipping UUID as player name in room_update occupants",
+                                                name=name,
+                                                room_id=canonical_room_id,
+                                            )
 
                                 # AI Agent: CRITICAL FIX - Include NPCs in the initial room_update occupants list
                                 #           This ensures NPCs are displayed to the client on connection
@@ -381,9 +414,13 @@ async def handle_websocket_connection(
                                     error=str(e),
                                 )
 
+                            # CRITICAL: Convert player UUIDs to names - NEVER send UUIDs to client
+                            room_data_for_update = room.to_dict() if hasattr(room, "to_dict") else room
+                            if isinstance(room_data_for_update, dict):
+                                room_data_for_update = connection_manager._convert_room_players_uuids_to_names(room_data_for_update)
                             initial_state = build_event(
                                 "room_update",
-                                {"room": room.to_dict(), "entities": [], "occupants": occupant_names},
+                                {"room": room_data_for_update, "entities": [], "occupants": occupant_names},
                                 player_id=player_id_str,
                             )
                             await websocket.send_json(initial_state)
@@ -912,6 +949,9 @@ async def broadcast_room_update(player_id: str, room_id: str, connection_manager
 
         # Create room update event
         room_data = room.to_dict() if hasattr(room, "to_dict") else room
+        # CRITICAL: Convert player UUIDs to names - NEVER send UUIDs to client
+        if isinstance(room_data, dict):
+            room_data = connection_manager._convert_room_players_uuids_to_names(room_data)
 
         # Debug: Log the room's actual occupants
         logger.debug("DEBUG: Room occupants breakdown", room_id=room_id)
