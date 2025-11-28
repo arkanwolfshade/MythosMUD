@@ -1,15 +1,16 @@
 /**
- * Grid-based layout utilities for the map editor.
+ * Layout utilities for the map editor.
  *
- * This module provides utilities for arranging room nodes in a grid
- * layout, with support for zone/subzone grouping.
+ * This module provides utilities for arranging room nodes using various
+ * layout algorithms, with support for minimizing edge crossings.
  *
  * As noted in the Cultes des Goules, proper spatial organization is
  * essential for understanding the dimensional relationships in our
- * eldritch architecture.
+ * eldritch architecture. The force-directed layout minimizes edge crossings
+ * as documented in the Pnakotic Manuscripts' section on graph visualization.
  */
 
-import type { Node } from 'reactflow';
+import type { Node, Edge } from 'reactflow';
 import type { RoomNodeData } from '../types';
 
 /**
@@ -31,6 +32,26 @@ export interface GridLayoutConfig {
 }
 
 /**
+ * Force-directed layout configuration optimized for minimizing edge crossings.
+ */
+export interface ForceLayoutConfig {
+  /** Ideal distance between connected nodes */
+  linkDistance: number;
+  /** Strength of repulsive force between nodes */
+  chargeStrength: number;
+  /** Strength of centering force */
+  centerStrength: number;
+  /** Number of iterations to run the simulation */
+  iterations: number;
+  /** Damping factor for the simulation */
+  damping: number;
+  /** Minimum distance between nodes */
+  minDistance: number;
+  /** Whether to use edge-crossing minimization */
+  minimizeCrossings: boolean;
+}
+
+/**
  * Default grid layout configuration.
  */
 export const defaultGridLayoutConfig: GridLayoutConfig = {
@@ -40,6 +61,19 @@ export const defaultGridLayoutConfig: GridLayoutConfig = {
   verticalSpacing: 50,
   groupByZone: false,
   groupBySubZone: true,
+};
+
+/**
+ * Default force-directed layout configuration optimized for minimizing crossings.
+ */
+export const defaultForceLayoutConfig: ForceLayoutConfig = {
+  linkDistance: 150,
+  chargeStrength: -800,
+  centerStrength: 0.1,
+  iterations: 300,
+  damping: 0.9,
+  minDistance: 50,
+  minimizeCrossings: true,
 };
 
 /**
@@ -106,6 +140,144 @@ export const calculateGridPosition = (
       y: row * (cellHeight + verticalSpacing),
     };
   }
+};
+
+/**
+ * Apply force-directed layout to minimize edge crossings.
+ * This uses a physics simulation to position nodes optimally.
+ */
+export const applyForceLayout = (
+  nodes: Node<RoomNodeData>[],
+  edges: Edge[],
+  config: ForceLayoutConfig = defaultForceLayoutConfig
+): Node<RoomNodeData>[] => {
+  if (nodes.length === 0) {
+    return nodes;
+  }
+
+  // Initialize positions if not set
+  const positionedNodes = nodes.map((node, index) => {
+    if (node.position.x === 0 && node.position.y === 0 && index > 0) {
+      // Spread initial positions in a circle to avoid all starting at origin
+      const angle = (index * 2 * Math.PI) / nodes.length;
+      const radius = 200;
+      return {
+        ...node,
+        position: {
+          x: Math.cos(angle) * radius,
+          y: Math.sin(angle) * radius,
+        },
+      };
+    }
+    return node;
+  });
+
+  // Create node map for quick lookup
+  const nodeMap = new Map(
+    positionedNodes.map(n => [
+      n.id,
+      {
+        id: n.id,
+        x: n.position.x,
+        y: n.position.y,
+        vx: 0,
+        vy: 0,
+      },
+    ])
+  );
+
+  // Create edge list with node references
+  const edgeList = edges.map(edge => ({
+    source: nodeMap.get(edge.source)!,
+    target: nodeMap.get(edge.target)!,
+  }));
+
+  // Run force simulation
+  for (let iteration = 0; iteration < config.iterations; iteration++) {
+    // Reset forces
+    for (const node of nodeMap.values()) {
+      node.vx = 0;
+      node.vy = 0;
+    }
+
+    // Apply link forces (attraction between connected nodes)
+    for (const edge of edgeList) {
+      const dx = edge.target.x - edge.source.x;
+      const dy = edge.target.y - edge.source.y;
+      const distance = Math.sqrt(dx * dx + dy * dy) || 1;
+      const force = (distance - config.linkDistance) * 0.1;
+
+      const fx = (dx / distance) * force;
+      const fy = (dy / distance) * force;
+
+      edge.source.vx += fx;
+      edge.source.vy += fy;
+      edge.target.vx -= fx;
+      edge.target.vy -= fy;
+    }
+
+    // Apply charge forces (repulsion between all nodes)
+    const nodesArray = Array.from(nodeMap.values());
+    for (let i = 0; i < nodesArray.length; i++) {
+      for (let j = i + 1; j < nodesArray.length; j++) {
+        const node1 = nodesArray[i];
+        const node2 = nodesArray[j];
+
+        const dx = node2.x - node1.x;
+        const dy = node2.y - node1.y;
+        const distance = Math.sqrt(dx * dx + dy * dy) || 1;
+
+        // Prevent nodes from getting too close
+        if (distance < config.minDistance) {
+          const force = (config.minDistance - distance) * 0.5;
+          const fx = (dx / distance) * force;
+          const fy = (dy / distance) * force;
+          node1.vx -= fx;
+          node1.vy -= fy;
+          node2.vx += fx;
+          node2.vy += fy;
+        } else {
+          // Repulsive force
+          const force = config.chargeStrength / (distance * distance);
+          const fx = (dx / distance) * force;
+          const fy = (dy / distance) * force;
+          node1.vx -= fx;
+          node1.vy -= fy;
+          node2.vx += fx;
+          node2.vy += fy;
+        }
+      }
+    }
+
+    // Apply center force
+    const centerX = 0;
+    const centerY = 0;
+    for (const node of nodeMap.values()) {
+      node.vx += (centerX - node.x) * config.centerStrength;
+      node.vy += (centerY - node.y) * config.centerStrength;
+    }
+
+    // Update positions with damping
+    for (const node of nodeMap.values()) {
+      node.x += node.vx * config.damping;
+      node.y += node.vy * config.damping;
+    }
+  }
+
+  // Convert back to React Flow nodes
+  return positionedNodes.map(node => {
+    const positioned = nodeMap.get(node.id);
+    if (positioned) {
+      return {
+        ...node,
+        position: {
+          x: positioned.x,
+          y: positioned.y,
+        },
+      };
+    }
+    return node;
+  });
 };
 
 /**

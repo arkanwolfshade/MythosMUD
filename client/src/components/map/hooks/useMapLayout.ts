@@ -8,17 +8,30 @@
  * essential for maintaining the integrity of our dimensional mappings.
  */
 
-import { useCallback, useMemo, useRef, useState } from 'react';
-import type { Node } from 'reactflow';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { Node, Edge } from 'reactflow';
 import type { RoomNodeData } from '../types';
-import { applyGridLayout, type GridLayoutConfig, defaultGridLayoutConfig } from '../utils/layout';
+import {
+  applyGridLayout,
+  applyForceLayout,
+  type GridLayoutConfig,
+  type ForceLayoutConfig,
+  defaultGridLayoutConfig,
+  defaultForceLayoutConfig,
+} from '../utils/layout';
 import { debounce } from '../utils/performance';
 
 export interface UseMapLayoutOptions {
   /** Initial nodes to layout */
   nodes: Node<RoomNodeData>[];
+  /** Edges for force-directed layout (required for crossing minimization) */
+  edges?: Edge[];
   /** Grid layout configuration */
   config?: Partial<GridLayoutConfig>;
+  /** Force layout configuration */
+  forceConfig?: Partial<ForceLayoutConfig>;
+  /** Layout algorithm to use */
+  layoutAlgorithm?: 'grid' | 'force';
   /** Whether to use stored coordinates from database */
   useStoredCoordinates?: boolean;
   /** Callback when positions are saved */
@@ -49,15 +62,32 @@ export interface UseMapLayoutResult {
  * @returns Layout nodes, position management functions, and save/reset functions
  */
 export function useMapLayout(options: UseMapLayoutOptions): UseMapLayoutResult {
-  const { nodes: initialNodes, config = {}, useStoredCoordinates = true, onSave, debounceDelay = 300 } = options;
+  const {
+    nodes: initialNodes,
+    edges = [],
+    config = {},
+    forceConfig = {},
+    layoutAlgorithm = 'force',
+    useStoredCoordinates = true,
+    onSave,
+    debounceDelay = 300,
+  } = options;
 
-  // Memoize layout config to prevent unnecessary re-renders
+  // Memoize layout configs to prevent unnecessary re-renders
   const layoutConfig: GridLayoutConfig = useMemo(
     () => ({
       ...defaultGridLayoutConfig,
       ...config,
     }),
     [config]
+  );
+
+  const forceLayoutConfig: ForceLayoutConfig = useMemo(
+    () => ({
+      ...defaultForceLayoutConfig,
+      ...forceConfig,
+    }),
+    [forceConfig]
   );
 
   // Track nodes with their positions
@@ -78,7 +108,7 @@ export function useMapLayout(options: UseMapLayoutOptions): UseMapLayoutResult {
   );
 
   // Update nodes when initialNodes change
-  useMemo(() => {
+  useEffect(() => {
     if (initialNodes.length !== nodes.length || initialNodes.some((n, i) => n.id !== nodes[i]?.id)) {
       setNodes(initialNodes);
       manualPositionsRef.current.clear();
@@ -86,12 +116,48 @@ export function useMapLayout(options: UseMapLayoutOptions): UseMapLayoutResult {
     }
   }, [initialNodes, nodes]);
 
-  // Calculate layout nodes with stored coordinates or grid layout
+  // Calculate layout nodes with stored coordinates or auto layout
+  // Accessing refs in useMemo is safe; refs don't cause re-renders and this is intentional for performance
+  /* eslint-disable react-hooks/refs */
   const layoutNodes = useMemo(() => {
-    // First, apply grid layout to nodes that don't have stored coordinates
-    const nodesWithLayout = applyGridLayout(nodes, layoutConfig);
+    // Determine which nodes need auto-layout (don't have stored or manual positions)
+    const nodesNeedingLayout = nodes.filter(node => {
+      // Skip if has manual position
+      if (manualPositionsRef.current.has(node.id)) {
+        return false;
+      }
 
-    return nodesWithLayout.map(node => {
+      // Skip if has stored coordinates and we should use them
+      if (useStoredCoordinates && node.data) {
+        const roomData = node.data as RoomNodeData & { map_x?: number | null; map_y?: number | null };
+        if (
+          roomData.map_x !== null &&
+          roomData.map_x !== undefined &&
+          roomData.map_y !== null &&
+          roomData.map_y !== undefined
+        ) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+
+    // Apply appropriate layout algorithm to nodes that need it
+    let nodesWithLayout: Node<RoomNodeData>[];
+    if (layoutAlgorithm === 'force' && edges.length > 0 && nodesNeedingLayout.length > 0) {
+      // Use force-directed layout for crossing minimization
+      nodesWithLayout = applyForceLayout(nodesNeedingLayout, edges, forceLayoutConfig);
+    } else {
+      // Fall back to grid layout
+      nodesWithLayout = applyGridLayout(nodesNeedingLayout, layoutConfig);
+    }
+
+    // Create a map of auto-laid-out positions
+    const autoLayoutMap = new Map(nodesWithLayout.map(n => [n.id, n.position]));
+
+    // Combine all nodes with their appropriate positions
+    return nodes.map(node => {
       // Check if node has stored coordinates and we should use them
       if (useStoredCoordinates && node.data) {
         const roomData = node.data as RoomNodeData & { map_x?: number | null; map_y?: number | null };
@@ -126,21 +192,36 @@ export function useMapLayout(options: UseMapLayoutOptions): UseMapLayoutResult {
         };
       }
 
-      // Use grid layout position
+      // Use auto-layout position
+      const autoPos = autoLayoutMap.get(node.id);
+      if (autoPos) {
+        return {
+          ...node,
+          position: autoPos,
+        };
+      }
+
+      // Fallback: use existing position
       return node;
     });
-  }, [nodes, useStoredCoordinates, layoutConfig]);
+  }, [nodes, edges, useStoredCoordinates, layoutConfig, forceLayoutConfig, layoutAlgorithm]);
+  /* eslint-enable react-hooks/refs */
 
-  // Apply grid layout to all nodes
+  // Apply auto layout to all nodes
   const applyGridLayoutToNodes = useCallback(() => {
     setNodes(currentNodes => {
-      const layoutedNodes = applyGridLayout(currentNodes, layoutConfig);
-      // Clear manual positions when applying grid layout
+      let layoutedNodes: Node<RoomNodeData>[];
+      if (layoutAlgorithm === 'force' && edges.length > 0) {
+        layoutedNodes = applyForceLayout(currentNodes, edges, forceLayoutConfig);
+      } else {
+        layoutedNodes = applyGridLayout(currentNodes, layoutConfig);
+      }
+      // Clear manual positions when applying auto layout
       manualPositionsRef.current.clear();
       setHasUnsavedChanges(false);
       return layoutedNodes;
     });
-  }, [layoutConfig]);
+  }, [layoutConfig, forceLayoutConfig, layoutAlgorithm, edges]);
 
   // Update a single node's position
   const updateNodePosition = useCallback(
@@ -179,7 +260,6 @@ export function useMapLayout(options: UseMapLayoutOptions): UseMapLayoutResult {
       return;
     }
 
-    setIsSaving(true);
     try {
       await onSave(manualPositionsRef.current);
       // Clear unsaved changes flag after successful save
@@ -202,8 +282,6 @@ export function useMapLayout(options: UseMapLayoutOptions): UseMapLayoutResult {
     } catch (error) {
       console.error('Failed to save positions:', error);
       throw error;
-    } finally {
-      setIsSaving(false);
     }
   }, [onSave]);
 

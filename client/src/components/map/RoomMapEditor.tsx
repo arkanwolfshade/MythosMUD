@@ -384,39 +384,41 @@ export const RoomMapEditor: React.FC<RoomMapEditorProps> = ({
       </div>
 
       {/* React Flow map (editable) */}
-      <ReactFlow
-        nodes={editedNodes}
-        edges={[...editedEdges, ...(previewEdge ? [previewEdge] : [])]}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onNodeClick={handleNodeClick}
-        onEdgeClick={handleEdgeClick}
-        nodesDraggable={true}
-        nodesConnectable={false}
-        elementsSelectable={true}
-        edgesFocusable={true}
-        fitView
-        className="bg-mythos-terminal-background"
-        onlyRenderVisibleElements={true}
-        proOptions={{ hideAttribution: true }}
-      >
-        <Controls className="bg-mythos-terminal-background border border-mythos-terminal-border" />
-        <Background />
-        <MiniMap
-          className="bg-mythos-terminal-background border border-mythos-terminal-border"
-          nodeColor={node => {
-            if (node.data?.isCurrentLocation) {
-              return '#10b981'; // Green for current location
-            }
-            if (node.data?.hasUnsavedChanges) {
-              return '#fbbf24'; // Yellow for unsaved changes
-            }
-            return '#6b7280'; // Gray for other rooms
-          }}
-        />
-      </ReactFlow>
+      <div className="relative h-full w-full" style={{ backgroundColor: '#0a0a0a' }}>
+        <ReactFlow
+          nodes={editedNodes}
+          edges={[...editedEdges, ...(previewEdge ? [previewEdge] : [])]}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onNodeClick={handleNodeClick}
+          onEdgeClick={handleEdgeClick}
+          nodesDraggable={true}
+          nodesConnectable={false}
+          elementsSelectable={true}
+          edgesFocusable={true}
+          fitView
+          className="bg-mythos-terminal-background"
+          onlyRenderVisibleElements={true}
+          proOptions={{ hideAttribution: true }}
+        >
+          <Controls className="bg-mythos-terminal-background border border-mythos-terminal-border" />
+          <Background style={{ backgroundColor: '#0a0a0a', opacity: 1 }} />
+          <MiniMap
+            className="bg-mythos-terminal-background border border-mythos-terminal-border"
+            nodeColor={node => {
+              if (node.data?.isCurrentLocation) {
+                return '#10b981'; // Green for current location
+              }
+              if (node.data?.hasUnsavedChanges) {
+                return '#fbbf24'; // Yellow for unsaved changes
+              }
+              return '#6b7280'; // Gray for other rooms
+            }}
+          />
+        </ReactFlow>
+      </div>
 
       {/* Room details panel */}
       {selectedRoom && (

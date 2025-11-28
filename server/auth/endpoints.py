@@ -415,7 +415,9 @@ async def login_user(
         new_session_id = f"login_{uuid.uuid4().hex[:8]}"
 
         # Disconnect any existing connections for this player
-        session_results = await connection_manager.handle_new_game_session(str(player.player_id), new_session_id)
+        # Convert player_id to UUID (player.player_id is already a UUID at runtime)
+        player_id_uuid = uuid.UUID(str(player.player_id))
+        session_results = await connection_manager.handle_new_game_session(player_id_uuid, new_session_id)
 
         if session_results["success"]:
             logger.info(

@@ -48,7 +48,7 @@ function App() {
   const [showMotd, setShowMotd] = useState(false); // Track MOTD display state
 
   // Character creation flow state
-  const [selectedProfession, setSelectedProfession] = useState<Profession | null>(null);
+  const [selectedProfession, setSelectedProfession] = useState<Profession | undefined>(undefined);
   const [showProfessionSelection, setShowProfessionSelection] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
@@ -72,6 +72,7 @@ function App() {
   //
   // NOTE: This clears tokens from storage, but tokens stored AFTER this mount
   // (i.e., during login in the same session) will remain valid for that session
+  // NOTE: This only runs for the main app route, not for /map route
   useEffect(() => {
     // Clear all stored tokens to force fresh authentication
     // This ensures that after server restart, clients cannot use stale tokens
@@ -213,7 +214,7 @@ function App() {
 
   const handleProfessionSelectionBack = () => {
     setShowProfessionSelection(false);
-    setSelectedProfession(null);
+    setSelectedProfession(undefined);
     // Go back to login screen
     setIsAuthenticated(false);
     setHasCharacter(false);
@@ -232,7 +233,7 @@ function App() {
     setHasCharacter(true);
     setCharacterName(playerName);
     // Reset character creation state
-    setSelectedProfession(null);
+    setSelectedProfession(undefined);
     setShowProfessionSelection(false);
     // Show MOTD screen after character creation
     setShowMotd(true);
@@ -245,7 +246,7 @@ function App() {
     // Clear secure tokens
     secureTokenStorage.clearAllTokens();
     // Reset character creation state
-    setSelectedProfession(null);
+    setSelectedProfession(undefined);
     setShowProfessionSelection(false);
   };
 
@@ -521,7 +522,7 @@ function App() {
             baseUrl={API_BASE_URL}
             authToken={authToken}
             professionId={selectedProfession?.id}
-            profession={selectedProfession}
+            profession={selectedProfession as Profession | undefined}
           />
         </Suspense>
       </div>

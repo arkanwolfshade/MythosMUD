@@ -98,9 +98,11 @@ export const RoomMapViewer: React.FC<RoomMapViewerProps> = ({
     return { nodes, edges };
   }, [filteredRooms, currentRoomId]);
 
-  // Apply layout to nodes
+  // Apply layout to nodes (force-directed by default to minimize edge crossings)
   const { layoutNodes } = useMapLayout({
     nodes: rawNodes,
+    edges: rawEdges,
+    layoutAlgorithm: 'force',
     useStoredCoordinates: true,
   });
 

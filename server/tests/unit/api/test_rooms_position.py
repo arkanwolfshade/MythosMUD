@@ -8,7 +8,6 @@ As documented in the Pnakotic Manuscripts, proper coordinate management
 is essential for maintaining the integrity of our dimensional mappings.
 """
 
-
 import pytest
 
 

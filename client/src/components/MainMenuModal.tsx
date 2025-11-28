@@ -17,16 +17,57 @@ export interface MainMenuModalProps {
   isOpen: boolean;
   /** Callback when modal should close */
   onClose: () => void;
-  /** Callback when map button is clicked */
-  onMapClick: () => void;
+  /** Callback when map button is clicked (for in-page modal) */
+  onMapClick?: () => void;
   /** Callback when logout button is clicked */
   onLogoutClick: () => void;
+  /** Current room information (if provided, map opens in new tab) */
+  currentRoom?: {
+    id: string;
+    plane?: string;
+    zone?: string;
+    subZone?: string;
+  } | null;
+  /** Whether to open map in new tab (default: true if currentRoom provided, false otherwise) */
+  openMapInNewTab?: boolean;
 }
 
 /**
  * Main Menu Modal component.
  */
-export const MainMenuModal: React.FC<MainMenuModalProps> = ({ isOpen, onClose, onMapClick, onLogoutClick }) => {
+export const MainMenuModal: React.FC<MainMenuModalProps> = ({
+  isOpen,
+  onClose,
+  onMapClick,
+  onLogoutClick,
+  currentRoom,
+  openMapInNewTab,
+}) => {
+  const handleMapClick = () => {
+    // Determine if we should open in new tab
+    const shouldOpenInNewTab = openMapInNewTab ?? (currentRoom !== undefined && currentRoom !== null);
+
+    if (shouldOpenInNewTab && currentRoom) {
+      // Build URL with room parameters
+      const params = new URLSearchParams();
+      params.set('roomId', currentRoom.id);
+      if (currentRoom.plane) params.set('plane', currentRoom.plane);
+      if (currentRoom.zone) params.set('zone', currentRoom.zone);
+      if (currentRoom.subZone) params.set('subZone', currentRoom.subZone);
+
+      // Open map in new tab
+      window.open(`/map?${params.toString()}`, '_blank');
+      onClose();
+    } else if (onMapClick) {
+      // Use the callback for in-page modal
+      onMapClick();
+      onClose();
+    } else {
+      // Fallback: open in new tab without room info
+      window.open('/map', '_blank');
+      onClose();
+    }
+  };
   // Handle ESC key to close modal
   useEffect(() => {
     if (!isOpen) return;
@@ -101,15 +142,12 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({ isOpen, onClose, o
         <div className="space-y-3">
           {/* Map Button */}
           <button
-            onClick={() => {
-              onMapClick();
-              onClose();
-            }}
+            onClick={handleMapClick}
             className="w-full px-4 py-3 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80 transition-colors text-left font-medium"
             style={{ pointerEvents: 'auto' }}
             type="button"
           >
-            Map
+            Map {currentRoom ? '(New Tab)' : ''}
           </button>
 
           {/* Settings Button (Placeholder - Inactive) */}

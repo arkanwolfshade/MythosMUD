@@ -15,6 +15,7 @@ import { convertToPlayerInterface, parseStatusResponse } from '../../utils/statu
 import { DeathInterstitial } from '../DeathInterstitial';
 import { MainMenuModal } from '../MainMenuModal';
 import { MapView } from '../MapView';
+import { useTabbedInterface } from './TabbedInterface';
 import { GameClientV2 } from './GameClientV2';
 import type { ChatMessage, Player, Room } from './types';
 
@@ -100,6 +101,9 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
 }) => {
   const [isMainMenuOpen, setIsMainMenuOpen] = useState(false);
   const [showMap, setShowMap] = useState(false);
+
+  // Tabbed interface for in-app tabs
+  const { tabs, activeTabId, addTab, closeTab, setActiveTab } = useTabbedInterface([]);
 
   const [gameState, setGameState] = useState<GameState>({
     player: null,
@@ -773,28 +777,31 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
       className={`game-terminal-container ${isMortallyWounded ? 'mortally-wounded' : ''} ${isDead ? 'dead' : ''}`}
       data-game-container
     >
-      <GameClientV2
-        playerName={playerName}
-        authToken={authToken}
-        onLogout={handleLogout}
-        isLoggingOut={isLoggingOut}
-        player={gameState.player}
-        room={gameState.room}
-        messages={gameState.messages}
-        commandHistory={gameState.commandHistory}
-        isConnected={isConnected}
-        isConnecting={isConnecting}
-        error={error}
-        reconnectAttempts={reconnectAttempts}
-        mythosTime={mythosTime}
-        healthStatus={healthStatus}
-        sanityStatus={sanityStatus}
-        onSendCommand={handleCommandSubmit}
-        onSendChatMessage={handleChatMessage}
-        onClearMessages={handleClearMessages}
-        onClearHistory={handleClearHistory}
-        onDownloadLogs={() => logger.downloadLogs()}
-      />
+      {/* Only show game panels when no tabs are open */}
+      {tabs.length === 0 && (
+        <GameClientV2
+          playerName={playerName}
+          authToken={authToken}
+          onLogout={handleLogout}
+          isLoggingOut={isLoggingOut}
+          player={gameState.player}
+          room={gameState.room}
+          messages={gameState.messages}
+          commandHistory={gameState.commandHistory}
+          isConnected={isConnected}
+          isConnecting={isConnecting}
+          error={error}
+          reconnectAttempts={reconnectAttempts}
+          mythosTime={mythosTime}
+          healthStatus={healthStatus}
+          sanityStatus={sanityStatus}
+          onSendCommand={handleCommandSubmit}
+          onSendChatMessage={handleChatMessage}
+          onClearMessages={handleClearMessages}
+          onClearHistory={handleClearHistory}
+          onDownloadLogs={() => logger.downloadLogs()}
+        />
+      )}
 
       <DeathInterstitial
         isVisible={isDead}
@@ -806,11 +813,88 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
       <MainMenuModal
         isOpen={isMainMenuOpen}
         onClose={() => setIsMainMenuOpen(false)}
-        onMapClick={() => setShowMap(true)}
+        onMapClick={() => {
+          // Add map as a tab in the tabbed interface
+          if (gameState.room) {
+            addTab({
+              id: `map-${gameState.room.id}`,
+              label: 'Map',
+              content: (
+                <MapView
+                  isOpen={true}
+                  onClose={() => closeTab(`map-${gameState.room!.id}`)}
+                  currentRoom={gameState.room}
+                  authToken={authToken}
+                  hideHeader={true}
+                />
+              ),
+              closable: true,
+            });
+          }
+        }}
         onLogoutClick={handleLogout}
+        currentRoom={
+          gameState.room
+            ? {
+                id: gameState.room.id,
+                plane: gameState.room.plane,
+                zone: gameState.room.zone,
+                subZone: gameState.room.sub_zone,
+              }
+            : null
+        }
+        openMapInNewTab={false}
       />
 
-      <MapView isOpen={showMap} onClose={() => setShowMap(false)} currentRoom={gameState.room} authToken={authToken} />
+      {/* Tabbed Interface Overlay */}
+      {tabs.length > 0 && (
+        <div className="fixed inset-0 z-[9999] bg-mythos-terminal-background">
+          <div className="flex flex-col h-full">
+            {/* Tab Bar */}
+            <div className="flex items-center border-b border-mythos-terminal-border bg-mythos-terminal-background overflow-x-auto">
+              {tabs.map(tab => (
+                <div
+                  key={tab.id}
+                  className={`
+                    flex items-center gap-2 px-4 py-2 border-r border-mythos-terminal-border
+                    cursor-pointer transition-colors
+                    ${
+                      activeTabId === tab.id
+                        ? 'bg-mythos-terminal-primary text-white'
+                        : 'bg-mythos-terminal-background text-mythos-terminal-text hover:bg-mythos-terminal-border/50'
+                    }
+                  `}
+                  onClick={() => setActiveTab(tab.id)}
+                >
+                  <span className="text-sm font-medium whitespace-nowrap">{tab.label}</span>
+                  {tab.closable !== false && (
+                    <button
+                      onClick={e => {
+                        e.stopPropagation();
+                        closeTab(tab.id);
+                      }}
+                      className="ml-1 hover:bg-black/20 rounded p-0.5 transition-colors"
+                      aria-label={`Close ${tab.label}`}
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+            {/* Tab Content */}
+            <div className="flex-1 overflow-hidden">{tabs.find(tab => tab.id === activeTabId)?.content}</div>
+          </div>
+        </div>
+      )}
+
+      {/* Legacy MapView for backward compatibility (can be removed later) */}
+      <MapView
+        isOpen={showMap && tabs.length === 0}
+        onClose={() => setShowMap(false)}
+        currentRoom={gameState.room}
+        authToken={authToken}
+      />
     </div>
   );
 };

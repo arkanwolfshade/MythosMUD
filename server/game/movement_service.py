@@ -315,7 +315,11 @@ class MovementService:
                     exploration_service = get_exploration_service()
                     # Use sync wrapper - exploration failures should not block movement
                     # Ensure player_id is UUID (mark_room_as_explored_sync expects UUID)
-                    player_uuid = resolved_player_id if isinstance(resolved_player_id, uuid.UUID) else uuid.UUID(resolved_player_id)
+                    player_uuid = (
+                        resolved_player_id
+                        if isinstance(resolved_player_id, uuid.UUID)
+                        else uuid.UUID(resolved_player_id)
+                    )
                     exploration_service.mark_room_as_explored_sync(player_uuid, to_room_id)
                 except Exception as e:
                     # Log but don't raise - exploration tracking is non-critical

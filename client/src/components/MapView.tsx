@@ -40,12 +40,21 @@ export interface MapViewProps {
   baseUrl?: string;
   /** Auth token for authenticated requests */
   authToken?: string;
+  /** Whether to hide the header (useful when embedded in tabs) */
+  hideHeader?: boolean;
 }
 
 /**
  * Map View component.
  */
-export const MapView: React.FC<MapViewProps> = ({ isOpen, onClose, currentRoom, baseUrl, authToken }) => {
+export const MapView: React.FC<MapViewProps> = ({
+  isOpen,
+  onClose,
+  currentRoom,
+  baseUrl,
+  authToken,
+  hideHeader = false,
+}) => {
   // Handle ESC key to close map
   useEffect(() => {
     if (!isOpen) return;
@@ -83,18 +92,22 @@ export const MapView: React.FC<MapViewProps> = ({ isOpen, onClose, currentRoom, 
   const currentRoomId = currentRoom?.id;
 
   return (
-    <div className="fixed inset-0 bg-mythos-terminal-background z-50 flex flex-col">
-      {/* Header with close button */}
-      <div className="flex items-center justify-between p-4 border-b border-mythos-terminal-border bg-mythos-terminal-background">
-        <h2 className="text-xl font-bold text-mythos-terminal-text">Map</h2>
-        <button
-          onClick={onClose}
-          className="px-4 py-2 bg-mythos-terminal-error text-white rounded hover:bg-mythos-terminal-error/80 transition-colors"
-          aria-label="Close map"
-        >
-          Close (ESC)
-        </button>
-      </div>
+    <div
+      className={`${hideHeader ? 'h-full w-full' : 'fixed inset-0'} bg-mythos-terminal-background ${hideHeader ? '' : 'z-50'} flex flex-col`}
+    >
+      {/* Header with close button - only show if not hidden */}
+      {!hideHeader && (
+        <div className="flex items-center justify-between p-4 border-b border-mythos-terminal-border bg-mythos-terminal-background">
+          <h2 className="text-xl font-bold text-mythos-terminal-text">Map</h2>
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-mythos-terminal-error text-white rounded hover:bg-mythos-terminal-error/80 transition-colors"
+            aria-label="Close map"
+          >
+            Close (ESC)
+          </button>
+        </div>
+      )}
 
       {/* Map viewer */}
       <div className="flex-1 overflow-hidden">
