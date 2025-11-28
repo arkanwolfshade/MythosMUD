@@ -100,15 +100,31 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
     return null;
   }, [sanityStatus, player]);
 
-  // Handle window resize to update panel layout
+  // Handle window resize - scale panels proportionally based on viewport
+  // Maintains three-column layout structure from wireframe
+  // As noted in "Proportional Scaling in Non-Euclidean Interfaces" - Dr. Armitage, 1928
   useEffect(() => {
     const handleResize = () => {
-      // Panel positions are managed by react-rnd, but we could update default layout here if needed
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      // Scale panels to new viewport size using default layout function
+      panelManager.scalePanelsToViewport(viewportWidth, viewportHeight, createDefaultPanelLayout);
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    // Use debounce to avoid excessive updates during resize
+    let resizeTimeout: NodeJS.Timeout;
+    const debouncedHandleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(handleResize, 150);
+    };
+
+    window.addEventListener('resize', debouncedHandleResize);
+    return () => {
+      window.removeEventListener('resize', debouncedHandleResize);
+      clearTimeout(resizeTimeout);
+    };
+  }, [panelManager]);
 
   // Handle command selection from history
   const handleSelectCommand = useCallback((_command: string) => {

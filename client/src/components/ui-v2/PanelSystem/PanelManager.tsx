@@ -19,7 +19,15 @@ type PanelAction =
   | { type: 'TOGGLE_MAXIMIZE'; payload: { id: string } }
   | { type: 'SET_VISIBILITY'; payload: { id: string; isVisible: boolean } }
   | { type: 'FOCUS_PANEL'; payload: { id: string } }
-  | { type: 'CLOSE_PANEL'; payload: { id: string } };
+  | { type: 'CLOSE_PANEL'; payload: { id: string } }
+  | {
+      type: 'SCALE_TO_VIEWPORT';
+      payload: {
+        viewportWidth: number;
+        viewportHeight: number;
+        scaleFunction: (width: number, height: number) => Record<string, PanelState>;
+      };
+    };
 
 const STORAGE_KEY = 'mythosmud-ui-v2-panel-layout';
 
@@ -184,6 +192,59 @@ const panelReducer = (state: PanelManagerState, action: PanelAction): PanelManag
       };
     }
 
+    case 'SCALE_TO_VIEWPORT': {
+      const { viewportWidth, viewportHeight, scaleFunction } = action.payload;
+      const newLayout = scaleFunction(viewportWidth, viewportHeight);
+      const updatedPanels = { ...state.panels };
+      const headerHeight = 48;
+      const padding = 20;
+
+      // Update panel positions and sizes based on new layout
+      // Only update if panel exists in new layout and isn't minimized/maximized
+      Object.keys(newLayout).forEach(panelId => {
+        const newPanel = newLayout[panelId];
+        const currentPanel = updatedPanels[panelId];
+
+        if (currentPanel && !currentPanel.isMinimized && !currentPanel.isMaximized) {
+          // Ensure panel fits within viewport bounds
+          // Position must be within viewport
+          const constrainedPosition = {
+            x: Math.max(0, Math.min(newPanel.position.x, viewportWidth - padding)),
+            y: Math.max(headerHeight, Math.min(newPanel.position.y, viewportHeight - padding)),
+          };
+
+          // Calculate maximum size that fits in viewport
+          const maxWidth = viewportWidth - constrainedPosition.x - padding;
+          const maxHeight = viewportHeight - constrainedPosition.y - padding;
+
+          // Use the smaller of: new size, maximum fit size, or minimum size
+          // Allow panels to be smaller than minimum if viewport is too small
+          const constrainedSize = {
+            width: Math.max(
+              Math.min(newPanel.size.width, maxWidth),
+              Math.min(currentPanel.minSize?.width || 200, maxWidth)
+            ),
+            height: Math.max(
+              Math.min(newPanel.size.height, maxHeight),
+              Math.min(currentPanel.minSize?.height || 150, maxHeight)
+            ),
+          };
+
+          updatedPanels[panelId] = {
+            ...currentPanel,
+            position: constrainedPosition,
+            size: constrainedSize,
+          };
+        }
+      });
+
+      savePanelLayout(updatedPanels);
+      return {
+        ...state,
+        panels: updatedPanels,
+      };
+    }
+
     default:
       return state;
   }
@@ -199,6 +260,11 @@ interface PanelManagerContextValue {
   focusPanel: (id: string) => void;
   closePanel: (id: string) => void;
   getPanel: (id: string) => PanelState | undefined;
+  scalePanelsToViewport: (
+    viewportWidth: number,
+    viewportHeight: number,
+    scaleFunction: (width: number, height: number) => Record<string, PanelState>
+  ) => void;
 }
 
 const PanelManagerContext = createContext<PanelManagerContextValue | null>(null);
@@ -257,6 +323,20 @@ export const PanelManagerProvider: React.FC<PanelManagerProviderProps> = ({ chil
     [state.panels]
   );
 
+  const scalePanelsToViewport = useCallback(
+    (
+      viewportWidth: number,
+      viewportHeight: number,
+      scaleFunction: (width: number, height: number) => Record<string, PanelState>
+    ) => {
+      dispatch({
+        type: 'SCALE_TO_VIEWPORT',
+        payload: { viewportWidth, viewportHeight, scaleFunction },
+      });
+    },
+    []
+  );
+
   const value = useMemo(
     () => ({
       panels: state.panels,
@@ -268,6 +348,7 @@ export const PanelManagerProvider: React.FC<PanelManagerProviderProps> = ({ chil
       focusPanel,
       closePanel,
       getPanel,
+      scalePanelsToViewport,
     }),
     [
       state.panels,
@@ -279,6 +360,7 @@ export const PanelManagerProvider: React.FC<PanelManagerProviderProps> = ({ chil
       focusPanel,
       closePanel,
       getPanel,
+      scalePanelsToViewport,
     ]
   );
 

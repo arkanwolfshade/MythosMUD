@@ -51,15 +51,43 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
   }) => {
     const [isDragging, setIsDragging] = useState(false);
 
-    // Calculate maximized size to fill viewport
+    // Track window dimensions for responsive maximized size calculation
+    // As noted in "Viewport-Aware Panel Sizing" - Dr. Armitage, 1928
+    const [windowDimensions, setWindowDimensions] = useState(() => ({
+      width: typeof window !== 'undefined' ? window.innerWidth : 1920,
+      height: typeof window !== 'undefined' ? window.innerHeight : 1080,
+    }));
+
+    // Update window dimensions on resize
+    useEffect(() => {
+      const handleResize = () => {
+        setWindowDimensions({
+          width: window.innerWidth,
+          height: window.innerHeight,
+        });
+      };
+
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    // Calculate maximized size to fill viewport completely
+    // Now recalculates when window dimensions change
     const maximizedSize = useMemo(() => {
       if (!isMaximized) return null;
       const headerHeight = 48; // Header bar height
-      const padding = 20;
+      // No padding for maximized panels - fill entire viewport
       return {
-        width: window.innerWidth - padding * 2,
-        height: window.innerHeight - headerHeight - padding * 2,
+        width: windowDimensions.width,
+        height: windowDimensions.height - headerHeight,
       };
+    }, [isMaximized, windowDimensions.width, windowDimensions.height]);
+
+    // Calculate maximized position to fill viewport from top-left
+    const maximizedPosition = useMemo(() => {
+      if (!isMaximized) return null;
+      const headerHeight = 48;
+      return { x: 0, y: headerHeight };
     }, [isMaximized]);
 
     // Handle drag start
@@ -129,7 +157,7 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
 
     // Calculate current display size (maximized or normal)
     const displaySize = isMaximized && maximizedSize ? maximizedSize : size;
-    const displayPosition = isMaximized && maximizedSize ? { x: 10, y: 58 } : position;
+    const displayPosition = isMaximized && maximizedPosition ? maximizedPosition : position;
 
     if (isMinimized) {
       // Render minimized panel as a small bar
