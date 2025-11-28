@@ -272,6 +272,11 @@ class CommandService:
             cmd = parsed_command.command_type.value
             args = getattr(parsed_command, "args", [])
 
+            # CRITICAL: For commands with subcommands (admin, npc), reconstruct args array
+            # to include subcommand as first element for backward compatibility with handlers
+            if hasattr(parsed_command, "subcommand") and parsed_command.subcommand:
+                args = [parsed_command.subcommand] + args
+
             logger.debug("Command parsed successfully", player=player_name, command=cmd, args=args)
         except MythosValidationError as e:
             logger.info("Command validation failed", error=str(e))

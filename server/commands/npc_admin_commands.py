@@ -94,12 +94,17 @@ async def handle_npc_command(
     if not validate_npc_admin_permission(player_obj, player_name):
         return {"result": "You do not have permission to use NPC admin commands."}
 
-    # Extract subcommand
+    # Extract subcommand - command_service reconstructs args to include subcommand as first element
+    # So we can extract from either args[0] or command_data.subcommand
     args = command_data.get("args", [])
     if not args:
+        # No args - show help
         return _get_npc_help()
 
+    # Subcommand is first arg (command_service ensures this)
     subcommand = args[0].lower()
+    # Keep args as-is for subcommand handlers (they expect args[0] = subcommand, args[1] = first arg, etc.)
+    # This maintains backward compatibility with existing subcommand handlers
 
     # Route to appropriate subcommand handler
     if subcommand == "help":
@@ -132,6 +137,8 @@ async def handle_npc_command(
         return await handle_npc_react_command(command_data, current_user, request, alias_storage, player_name)
     elif subcommand == "stop":
         return await handle_npc_stop_command(command_data, current_user, request, alias_storage, player_name)
+    elif subcommand == "test-occupants":
+        return await handle_npc_test_occupants_command(command_data, current_user, request, alias_storage, player_name)
     else:
         return {"result": f"Unknown NPC command: {subcommand}. Use 'npc help' for available commands."}
 
@@ -167,6 +174,9 @@ Behavior Control:
   behavior <npc_id> <behavior_type>             - Set NPC behavior type
   react <npc_id> <reaction_type>                - Trigger NPC reaction
   stop <npc_id>                                 - Stop NPC current behavior
+
+Testing/Debugging:
+  test-occupants [room_id]                      - Test occupant query for a room (uses current room if not specified)
 
 Help:
   help                                          - Show this help message
@@ -677,3 +687,105 @@ async def handle_npc_stop_command(
     except Exception as e:
         logger.error("Error stopping NPC behavior", npc_id=npc_id, admin_name=player_name, error=str(e))
         return {"result": f"Error stopping NPC behavior: {str(e)}"}
+
+
+async def handle_npc_test_occupants_command(
+    command_data: dict, current_user: dict, request: Any, alias_storage: AliasStorage | None, player_name: str
+) -> dict[str, str]:
+    """
+    Handle NPC test occupants command - manually trigger occupant query for debugging.
+
+    Usage: npc test-occupants [room_id]
+    If room_id is not provided, uses the player's current room.
+    """
+    logger.info("Processing NPC test occupants command", admin_name=player_name)
+
+    try:
+        app = request.app if request else None
+        if not app:
+            return {"result": "Server application not available."}
+
+        # Get player's current room if room_id not provided
+        args = command_data.get("args", [])
+        room_id = args[1] if len(args) > 1 else None
+
+        # Get player object
+        player_service = app.state.player_service if app else None
+        if not player_service:
+            return {"result": "Player service not available."}
+
+        _maybe_coro = player_service.resolve_player_name(player_name)
+        player_obj = await _maybe_coro if inspect.isawaitable(_maybe_coro) else _maybe_coro
+        if not player_obj:
+            return {"result": "Player not found."}
+
+        # Use player's current room if room_id not provided
+        if not room_id:
+            room_id = getattr(player_obj, "current_room_id", None)
+            if not room_id:
+                return {"result": "No room ID provided and player has no current room."}
+
+        # Get event handler from app.state (it's created during startup)
+        event_handler = getattr(app.state, "event_handler", None)
+        if not event_handler:
+            # Try alternative location from container
+            event_handler = getattr(app.state.container, "real_time_event_handler", None)
+
+        if not event_handler:
+            return {"result": "Event handler not available. Cannot test occupants directly."}
+
+        # Trigger occupant query manually
+        logger.info(
+            "Manually triggering occupant query for testing",
+            admin_name=player_name,
+            room_id=room_id,
+        )
+
+        # Get occupants using the same method that the room_occupants event uses
+        occupants_info = event_handler._get_room_occupants(room_id)
+
+        # Separate players and NPCs
+        players: list[str] = []
+        npcs: list[str] = []
+
+        for occ in occupants_info or []:
+            if isinstance(occ, dict):
+                if "player_name" in occ:
+                    players.append(occ.get("player_name", "Unknown"))
+                elif "npc_name" in occ:
+                    npcs.append(occ.get("npc_name", "Unknown"))
+
+        # Format result
+        result_lines = [f"Occupants in room: {room_id}", ""]
+        result_lines.append(f"Players ({len(players)}):")
+        if players:
+            for player in players:
+                result_lines.append(f"  - {player}")
+        else:
+            result_lines.append("  (none)")
+
+        result_lines.append(f"\nNPCs ({len(npcs)}):")
+        if npcs:
+            for npc in npcs:
+                result_lines.append(f"  - {npc}")
+        else:
+            result_lines.append("  (none)")
+
+        # Also trigger the actual occupant update broadcast
+        await event_handler._send_room_occupants_update(room_id)
+
+        result_lines.append("\n✅ Occupant update broadcast triggered. Check logs for detailed NPC query information.")
+
+        logger.info(
+            "NPC test occupants command completed",
+            admin_name=player_name,
+            room_id=room_id,
+            player_count=len(players),
+            npc_count=len(npcs),
+        )
+
+        return {"result": "\n".join(result_lines)}
+
+    except Exception as e:
+        logger.error("Error testing NPC occupants", admin_name=player_name, error=str(e), exc_info=True)
+        return {"result": f"Error testing NPC occupants: {str(e)}"}

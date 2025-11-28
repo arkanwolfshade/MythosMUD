@@ -302,21 +302,12 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             const roomData = (event.data.room || event.data.room_data) as Room;
             if (roomData) {
               lastRoomUpdateTime.current = new Date(event.timestamp).getTime();
-              // CRITICAL: Merge room data instead of overwriting
-              // NEVER let room_update touch players/npcs/occupants fields - only room_occupants events set those
-              // room_update should only update room metadata (name, description, exits, etc.)
 
-              // Helper function to check if a string looks like a UUID
-              const isUUID = (str: string): boolean => {
-                const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-                return uuidRegex.test(str);
-              };
+              // ARCHITECTURE: room_update events contain ONLY room metadata (name, description, exits, etc.)
+              // Occupant data (players, npcs) comes EXCLUSIVELY from room_occupants events
+              // This ensures a single authoritative source: RealTimeEventHandler._get_room_occupants()
 
-              // Check if roomData.occupants contains UUIDs (which we should always ignore)
-              const occupantsHasUUIDs =
-                roomData.occupants?.some(occ => typeof occ === 'string' && isUUID(occ)) ?? false;
-
-              // Create room update without occupant fields (always strip them from room_update)
+              // Strip any occupant fields that might have leaked in (defensive)
               /* eslint-disable @typescript-eslint/no-unused-vars */
               const {
                 players: _players,
@@ -327,33 +318,30 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               } = roomData;
               /* eslint-enable @typescript-eslint/no-unused-vars */
 
-              if (currentRoomRef.current) {
-                // Extract occupant data to preserve (room_update should never overwrite this)
-                const preservedPlayers = currentRoomRef.current.players;
-                const preservedNpcs = currentRoomRef.current.npcs;
-                const preservedOccupants = currentRoomRef.current.occupants;
-                const preservedOccupantCount = currentRoomRef.current.occupant_count;
+              // Get existing room state to preserve occupant data
+              // Priority: updates.room (from room_occupants in same batch) > currentRoomRef
+              // Note: currentRoomRef is kept in sync with gameState.room via useEffect
+              const existingRoom = updates.room || currentRoomRef.current;
 
+              if (existingRoom) {
+                // Preserve occupant data from existing state (set by room_occupants events)
                 updates.room = {
-                  ...currentRoomRef.current,
+                  ...existingRoom,
                   ...roomMetadata,
-                  // CRITICAL: Always preserve occupant data from room_occupants events
-                  // room_update should NEVER overwrite these fields
-                  players: preservedPlayers,
-                  npcs: preservedNpcs,
-                  occupants: preservedOccupants,
-                  occupant_count: preservedOccupantCount,
+                  // CRITICAL: Always preserve occupant data - room_update NEVER sets this
+                  players: existingRoom.players,
+                  npcs: existingRoom.npcs,
+                  occupants: existingRoom.occupants,
+                  occupant_count: existingRoom.occupant_count,
                 };
               } else {
-                // First room_update - don't include occupants if they contain UUIDs
-                // Wait for room_occupants event to set correct occupant data
+                // First room_update - initialize with empty occupants (room_occupants will populate)
                 updates.room = {
                   ...roomMetadata,
-                  // Don't set occupants if they contain UUIDs - wait for room_occupants event
-                  players: occupantsHasUUIDs ? undefined : roomData.players,
-                  npcs: occupantsHasUUIDs ? undefined : roomData.npcs,
-                  occupants: occupantsHasUUIDs ? undefined : roomData.occupants,
-                  occupant_count: occupantsHasUUIDs ? undefined : roomData.occupant_count,
+                  players: [],
+                  npcs: [],
+                  occupants: [],
+                  occupant_count: 0,
                 };
               }
             }
@@ -496,25 +484,86 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             const occupants = event.data.occupants as string[] | undefined; // Legacy format
             const occupantCount = event.data.count as number | undefined;
 
-            if (currentRoomRef.current) {
-              // Use structured format if available, otherwise fall back to legacy format
+            // DEBUG: Console log for immediate visibility + structured logging
+            console.log('🔍 [room_occupants] Received event:', {
+              players,
+              npcs,
+              npcs_count: npcs?.length ?? 0,
+              occupants,
+              occupantCount,
+              hasCurrentRoom: !!currentRoomRef.current,
+              currentRoomId: currentRoomRef.current?.id,
+              currentRoomPlayers: currentRoomRef.current?.players,
+              currentRoomNpcs: currentRoomRef.current?.npcs,
+              hasUpdatesRoom: !!updates.room,
+              updatesRoomNpcs: updates.room?.npcs,
+            });
+
+            // DEBUG: Log received data
+            logger.debug('GameClientV2Container', 'Processing room_occupants event', {
+              players,
+              npcs,
+              npcs_count: npcs?.length ?? 0,
+              occupants,
+              occupantCount,
+              hasCurrentRoom: !!currentRoomRef.current,
+              currentRoomId: currentRoomRef.current?.id,
+              currentRoomPlayers: currentRoomRef.current?.players,
+              currentRoomNpcs: currentRoomRef.current?.npcs,
+              hasUpdatesRoom: !!updates.room,
+            });
+
+            // CRITICAL FIX: Use updates.room if available (from room_update in same batch),
+            // otherwise use currentRoomRef.current (it's kept in sync via useEffect)
+            // This handles the case where room_update and room_occupants arrive in the same batch
+            const currentRoom = updates.room || currentRoomRef.current;
+
+            if (currentRoom) {
+              // ARCHITECTURE: room_occupants events are the SINGLE AUTHORITATIVE SOURCE for occupant data
+              // This event always uses structured format (players/npcs arrays) from
+              // RealTimeEventHandler._get_room_occupants() which queries:
+              // - Players: Room._players (in-memory, reliable)
+              // - NPCs: NPCLifecycleManager.active_npcs (authoritative, survives re-instantiation)
+
+              // Use structured format if available (preferred), otherwise fall back to legacy flat list
               if (players !== undefined || npcs !== undefined) {
+                // Structured format: separate players and NPCs arrays
                 updates.room = {
-                  ...currentRoomRef.current,
-                  players: players || [],
-                  npcs: npcs || [],
-                  // Maintain backward compatibility: also populate occupants from structured data
-                  occupants: [...(players || []), ...(npcs || [])],
+                  ...currentRoom,
+                  players: players ?? [],
+                  npcs: npcs ?? [],
+                  // Backward compatibility: also populate flat occupants list
+                  occupants: [...(players ?? []), ...(npcs ?? [])],
                   occupant_count: occupantCount ?? (players?.length ?? 0) + (npcs?.length ?? 0),
                 };
+                logger.debug('GameClientV2Container', 'Updated room with structured occupants from room_occupants', {
+                  roomId: updates.room.id,
+                  players_count: updates.room.players?.length ?? 0,
+                  npcs_count: updates.room.npcs?.length ?? 0,
+                  total_count: updates.room.occupant_count,
+                });
               } else if (occupants && Array.isArray(occupants)) {
-                // Legacy format: flat list of occupants
+                // Legacy format: flat list (for backward compatibility)
+                // Try to split into players/npcs if possible, otherwise use flat list
                 updates.room = {
-                  ...currentRoomRef.current,
+                  ...currentRoom,
                   occupants: occupants,
                   occupant_count: occupantCount ?? occupants.length,
+                  // Preserve existing structured data if available, otherwise use flat list
+                  players: currentRoom.players ?? [],
+                  npcs: currentRoom.npcs ?? [],
                 };
+                logger.debug('GameClientV2Container', 'Updated room with legacy occupants format', {
+                  roomId: updates.room.id,
+                  occupants_count: updates.room.occupants?.length ?? 0,
+                  occupant_count: updates.room.occupant_count,
+                });
               }
+            } else {
+              logger.warn('GameClientV2Container', 'room_occupants event received but no room state available', {
+                hasCurrentRoomRef: !!currentRoomRef.current,
+                hasUpdatesRoom: !!updates.room,
+              });
             }
             break;
           }
@@ -579,12 +628,43 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
       }
 
       if (Object.keys(updates).length > 0) {
-        setGameState(prev => ({
-          ...prev,
-          ...updates,
-          messages: updates.messages || prev.messages,
-          player: updates.player || prev.player,
-        }));
+        setGameState(prev => {
+          // ARCHITECTURE: Single authoritative source for occupant data
+          // - room_occupants events set players/npcs (authoritative)
+          // - room_update events update metadata only (preserves existing occupants)
+          // - If updates.room has occupant data, use it (from room_occupants)
+          // - If updates.room doesn't have occupant data, preserve from prev.room
+
+          let finalRoom = updates.room || prev.room;
+
+          if (updates.room && prev.room) {
+            // Preserve occupant data if updates.room doesn't have it (from room_occupants)
+            // This handles room_update events that only update metadata
+            const updatesHasOccupantData = updates.room.players !== undefined || updates.room.npcs !== undefined;
+
+            if ((!updatesHasOccupantData && prev.room.players !== undefined) || prev.room.npcs !== undefined) {
+              // updates.room (from room_update) doesn't have occupant data, preserve from prev.room
+              finalRoom = {
+                ...updates.room,
+                players: prev.room.players ?? [],
+                npcs: prev.room.npcs ?? [],
+                occupants: prev.room.occupants ?? [],
+                occupant_count: prev.room.occupant_count ?? 0,
+              };
+            } else {
+              // updates.room has occupant data (from room_occupants) - use it
+              finalRoom = updates.room;
+            }
+          }
+
+          return {
+            ...prev,
+            ...updates,
+            messages: updates.messages || prev.messages,
+            player: updates.player || prev.player,
+            room: finalRoom,
+          };
+        });
       }
     } catch (error) {
       logger.error('GameClientV2Container', 'Error processing events', { error });

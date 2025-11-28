@@ -307,8 +307,17 @@ class Room:
         """
         Convert the room to a dictionary representation.
 
+        NOTE: This method does NOT include occupant data (players, npcs, objects, occupant_count).
+        Occupant data is unreliable in Room instances because:
+        - NPCs are tracked in NPCLifecycleManager.active_npcs, not Room._npcs (lost on re-instantiation)
+        - Players are tracked in Room._players, but this is only for in-memory tracking
+
+        To get accurate occupant data, use RealTimeEventHandler._get_room_occupants() which queries:
+        - Players from Room._players AND batch-loads player names
+        - NPCs from NPCLifecycleManager.active_npcs (the authoritative source)
+
         Returns:
-            Dictionary containing room data and current occupants
+            Dictionary containing room metadata (no occupant data)
         """
         return {
             "id": self.id,
@@ -320,10 +329,10 @@ class Room:
             "environment": self.environment,
             "exits": self.exits,
             "containers": self.get_containers(),
-            "players": self.get_players(),
-            "objects": self.get_objects(),
-            "npcs": self.get_npcs(),
-            "occupant_count": self.get_occupant_count(),
+            # CRITICAL: Do NOT include occupant data here - it's unreliable
+            # Occupants are queried separately via _get_room_occupants() which uses authoritative sources
+            # - Players: Room._players (reliable, in-memory)
+            # - NPCs: NPCLifecycleManager.active_npcs (authoritative, survives re-instantiation)
         }
 
     def __str__(self) -> str:

@@ -18,6 +18,22 @@ export const OccupantsPanel: React.FC<OccupantsPanelProps> = ({ room }) => {
   const npcs = room?.npcs ?? [];
   const legacyOccupants = room?.occupants ?? [];
 
+  // DEBUG: Log what we're receiving - use JSON.stringify to see full array contents
+  console.log('🔍 [OccupantsPanel] Render with room:', {
+    roomId: room?.id,
+    hasRoom: !!room,
+    players: JSON.stringify(players),
+    playersCount: players.length,
+    npcs: JSON.stringify(npcs),
+    npcsCount: npcs.length,
+    legacyOccupants: JSON.stringify(legacyOccupants),
+    legacyCount: legacyOccupants.length,
+    roomKeys: room ? Object.keys(room) : [],
+    hasRoomNpcs: !!room?.npcs,
+    roomNpcsType: typeof room?.npcs,
+    roomNpcsIsArray: Array.isArray(room?.npcs),
+  });
+
   // Use structured data if available, otherwise use legacy format
   const hasStructuredData = players.length > 0 || npcs.length > 0;
   const hasLegacyData = !hasStructuredData && legacyOccupants.length > 0;

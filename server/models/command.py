@@ -99,6 +99,8 @@ class CommandType(str, Enum):
     KICK = "kick"
     STRIKE = "strike"
     SUMMON = "summon"
+    # NPC admin commands
+    NPC = "npc"
 
 
 class BaseCommand(BaseModel):
@@ -401,6 +403,14 @@ class AdminCommand(BaseCommand):
         if normalized not in allowed_subcommands:
             raise ValueError(f"Invalid admin subcommand: {v}. Allowed subcommands: {sorted(allowed_subcommands)}")
         return normalized
+
+
+class NPCCommand(BaseCommand):
+    """Command for NPC administrative utilities with subcommands."""
+
+    command_type: Literal[CommandType.NPC] = CommandType.NPC
+    subcommand: str | None = Field(None, min_length=1, max_length=30, description="NPC subcommand to execute")
+    args: list[str] = Field(default_factory=list, description="Additional arguments for NPC subcommands")
 
 
 class SummonCommand(BaseCommand):

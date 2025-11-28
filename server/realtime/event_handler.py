@@ -247,6 +247,13 @@ class RealTimeEventHandler:
             # CRITICAL: Convert player UUIDs to names - NEVER send UUIDs to client
             if isinstance(room_data, dict):
                 room_data = self.connection_manager._convert_room_players_uuids_to_names(room_data)
+                # CRITICAL FIX: Remove occupant fields from room_data - room_update should NEVER include these
+                # Occupants are ONLY sent via room_occupants events to prevent data conflicts
+                # This prevents room_update from overwriting structured NPC data
+                room_data.pop("players", None)
+                room_data.pop("npcs", None)
+                room_data.pop("occupants", None)
+                room_data.pop("occupant_count", None)
             room_update_event = {
                 "event_type": "room_update",
                 "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
@@ -255,8 +262,8 @@ class RealTimeEventHandler:
                 "data": {
                     "room": room_data,
                     "entities": [],
-                    "occupants": occupant_names,
-                    "occupant_count": len(occupant_names),
+                    # CRITICAL: Do NOT include occupants in room_update - only in room_occupants events
+                    # This prevents room_update from overwriting structured NPC/player data
                 },
             }
             # Send as personal message
@@ -307,14 +314,66 @@ class RealTimeEventHandler:
         player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
         try:
             occupants_snapshot = self._get_room_occupants(room_id)
-            names = self._extract_occupant_names(occupants_snapshot)
+
+            # CRITICAL FIX: Use structured format (players/npcs) instead of legacy flat list
+            # This ensures the client receives separate players and NPCs arrays for proper display
+            players: list[str] = []
+            npcs: list[str] = []
+            all_occupants: list[str] = []  # Flat list for backward compatibility
+
+            for occ in occupants_snapshot or []:
+                if isinstance(occ, dict):
+                    if "player_name" in occ:
+                        player_name = occ.get("player_name")
+                        if player_name and isinstance(player_name, str):
+                            # Skip if it looks like a UUID
+                            if not (
+                                len(player_name) == 36
+                                and player_name.count("-") == 4
+                                and all(c in "0123456789abcdefABCDEF-" for c in player_name)
+                            ):
+                                players.append(player_name)
+                                all_occupants.append(player_name)
+                    elif "npc_name" in occ:
+                        npc_name = occ.get("npc_name")
+                        if npc_name and isinstance(npc_name, str):
+                            # Skip if it looks like a UUID
+                            if not (
+                                len(npc_name) == 36
+                                and npc_name.count("-") == 4
+                                and all(c in "0123456789abcdefABCDEF-" for c in npc_name)
+                            ):
+                                npcs.append(npc_name)
+                                all_occupants.append(npc_name)
+                    else:
+                        name = occ.get("name")
+                        if name and isinstance(name, str):
+                            if not (
+                                len(name) == 36
+                                and name.count("-") == 4
+                                and all(c in "0123456789abcdefABCDEF-" for c in name)
+                            ):
+                                all_occupants.append(name)
+                elif isinstance(occ, str):
+                    # Legacy format: just a name string
+                    if not (
+                        len(occ) == 36 and occ.count("-") == 4 and all(c in "0123456789abcdefABCDEF-" for c in occ)
+                    ):
+                        all_occupants.append(occ)
 
             personal = {
                 "event_type": "room_occupants",
                 "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
                 "sequence_number": self._get_next_sequence(),
                 "room_id": room_id,
-                "data": {"occupants": names, "count": len(names)},
+                "data": {
+                    # Structured data for new UI (separate columns)
+                    "players": players,
+                    "npcs": npcs,
+                    # Backward compatibility: flat list for legacy clients
+                    "occupants": all_occupants,
+                    "count": len(all_occupants),
+                },
             }
             await self.connection_manager.send_personal_message(player_id_uuid, personal)
         except Exception as e:
@@ -870,8 +929,117 @@ class RealTimeEventHandler:
                         batch_loaded_ids=[str(pid) for pid in players.keys()],
                     )
 
-            # Get NPC IDs in the room
-            npc_ids = room.get_npcs()
+            # CRITICAL FIX: Get NPCs from lifecycle manager instead of Room instance
+            # Room instances are recreated from persistence and lose in-memory NPC tracking
+            # NPCs are actually tracked in the lifecycle manager with their current_room_id
+            npc_ids: list[str] = []
+            try:
+                self._logger.info(
+                    "Querying NPCs from lifecycle manager",
+                    room_id=room_id,
+                    step="starting_npc_query",
+                )
+                from ..services.npc_instance_service import get_npc_instance_service
+
+                npc_instance_service = get_npc_instance_service()
+                self._logger.debug(
+                    "Retrieved NPC instance service",
+                    room_id=room_id,
+                    service_available=(npc_instance_service is not None),
+                    has_lifecycle_manager=(
+                        npc_instance_service is not None and hasattr(npc_instance_service, "lifecycle_manager")
+                    ),
+                )
+                if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
+                    lifecycle_manager = npc_instance_service.lifecycle_manager
+                    self._logger.debug(
+                        "Retrieved lifecycle manager",
+                        room_id=room_id,
+                        manager_available=(lifecycle_manager is not None),
+                        has_active_npcs=(lifecycle_manager is not None and hasattr(lifecycle_manager, "active_npcs")),
+                    )
+                    if lifecycle_manager and hasattr(lifecycle_manager, "active_npcs"):
+                        active_npcs_dict = lifecycle_manager.active_npcs
+                        total_active_npcs = len(active_npcs_dict)
+                        self._logger.info(
+                            "Scanning active NPCs for room match",
+                            room_id=room_id,
+                            total_active_npcs=total_active_npcs,
+                        )
+                        # Query all active NPCs to find those in this room
+                        # NPCs use current_room attribute (not current_room_id)
+                        npcs_checked = 0
+                        npcs_matched = 0
+                        for npc_id, npc_instance in active_npcs_dict.items():
+                            npcs_checked += 1
+                            # Check both current_room and current_room_id for compatibility
+                            current_room = getattr(npc_instance, "current_room", None)
+                            current_room_id = getattr(npc_instance, "current_room_id", None)
+                            npc_room_id = current_room or current_room_id
+                            npc_name = getattr(npc_instance, "name", "Unknown")
+
+                            self._logger.debug(
+                                "Checking NPC for room match",
+                                room_id=room_id,
+                                npc_id=npc_id,
+                                npc_name=npc_name,
+                                npc_current_room=current_room,
+                                npc_current_room_id=current_room_id,
+                                npc_room_id_used=npc_room_id,
+                                matches_room=(npc_room_id == room_id),
+                            )
+
+                            if npc_room_id == room_id:
+                                npc_ids.append(npc_id)
+                                npcs_matched += 1
+                                self._logger.info(
+                                    "Found NPC in room",
+                                    room_id=room_id,
+                                    npc_id=npc_id,
+                                    npc_name=npc_name,
+                                )
+
+                        self._logger.info(
+                            "Completed NPC query from lifecycle manager",
+                            room_id=room_id,
+                            npc_count=len(npc_ids),
+                            npcs_checked=npcs_checked,
+                            npcs_matched=npcs_matched,
+                            npc_ids=npc_ids[:5],  # Log first 5 for debugging
+                        )
+                    else:
+                        self._logger.warning(
+                            "Lifecycle manager or active_npcs not available",
+                            room_id=room_id,
+                            lifecycle_manager_available=(lifecycle_manager is not None),
+                            has_active_npcs_attr=(
+                                lifecycle_manager is not None and hasattr(lifecycle_manager, "active_npcs")
+                            ),
+                        )
+                else:
+                    self._logger.warning(
+                        "NPC instance service not available",
+                        room_id=room_id,
+                        service_available=(npc_instance_service is not None),
+                        has_lifecycle_manager_attr=(
+                            npc_instance_service is not None and hasattr(npc_instance_service, "lifecycle_manager")
+                        ),
+                    )
+            except Exception as npc_query_error:
+                self._logger.error(
+                    "Error querying NPCs from lifecycle manager",
+                    room_id=room_id,
+                    error=str(npc_query_error),
+                    error_type=type(npc_query_error).__name__,
+                    exc_info=True,
+                )
+                # Fallback to room.get_npcs() if lifecycle manager query fails
+                npc_ids = room.get_npcs() if hasattr(room, "get_npcs") else []
+                self._logger.warning(
+                    "Fell back to room.get_npcs() after lifecycle manager query failed",
+                    room_id=room_id,
+                    fallback_npc_count=len(npc_ids),
+                )
 
             # OPTIMIZATION: Batch load all NPC names at once to eliminate N+1 queries
             npc_names = self.connection_manager._get_npcs_batch(list(npc_ids))
