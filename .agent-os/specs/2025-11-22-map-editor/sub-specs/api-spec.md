@@ -9,9 +9,9 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-11-
 **Purpose:** Fetch bulk room data optimized for map visualization with optional filtering by zone/subzone.
 
 **Parameters:**
-- `zone` (optional, query string): Filter rooms by zone identifier
+- `plane` (required, query string): Filter rooms by plane identifier
+- `zone` (required, query string): Filter rooms by zone identifier
 - `sub_zone` (optional, query string): Filter rooms by sub-zone identifier
-- `plane` (optional, query string): Filter rooms by plane identifier
 - `include_exits` (optional, boolean, default: true): Include exit relationship data in response
 
 **Response Format:**
@@ -33,7 +33,9 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-11-
         "west": "earth_arkhamcity_campus_intersection_boundary_crane",
         "up": null,
         "down": null
-      }
+      },
+      "map_x": 100.5,
+      "map_y": 200.3
     }
   ],
   "total": 150,
@@ -42,7 +44,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-11-
 ```
 
 **Errors:**
-- `400 Bad Request`: Invalid filter parameters
+- `400 Bad Request`: Invalid filter parameters (missing required plane/zone parameters)
 - `500 Internal Server Error`: Server error during data fetch
 
 **Authentication:** Required (standard user authentication)
@@ -112,6 +114,7 @@ This is the API specification for the spec detailed in @.agent-os/specs/2025-11-
 ## Implementation Notes
 
 - The `/api/rooms/list` endpoint should leverage existing room caching infrastructure for performance
-- Layout persistence is optional - if not implemented, map will use auto-layout only
-- Consider pagination for very large room sets (1000+ rooms) in future iterations
+- Layout persistence stores positions in `rooms` table columns (`map_x`, `map_y`) - positions are included in response if they exist
 - Exit relationships should be included in response to enable edge creation without additional queries
+- Response format matches existing room endpoints for consistency
+- Exit data includes both string room IDs and object format (with target, flags, description) - both should be handled

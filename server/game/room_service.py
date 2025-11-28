@@ -358,6 +358,69 @@ class RoomService:
         logger.debug("Room exits retrieved", room_id=room_id, exit_count=len(exits))
         return exits
 
+    async def list_rooms(
+        self,
+        plane: str,
+        zone: str,
+        sub_zone: str | None = None,
+        include_exits: bool = True,
+    ) -> list[dict[str, Any]]:
+        """
+        List rooms filtered by plane, zone, and optionally sub_zone.
+
+        Args:
+            plane: The plane name (required)
+            zone: The zone name (required)
+            sub_zone: Optional sub-zone name for additional filtering
+            include_exits: Whether to include exit data in response (default: True)
+
+        Returns:
+            List of room dictionaries matching the filter criteria
+        """
+        logger.debug(
+            "Listing rooms",
+            plane=plane,
+            zone=zone,
+            sub_zone=sub_zone,
+            include_exits=include_exits,
+        )
+
+        # Get all rooms from persistence
+        rooms = await self.persistence.async_list_rooms()
+
+        # Filter rooms by plane, zone, and optionally sub_zone
+        filtered_rooms = []
+        for room in rooms:
+            # Convert Room object to dict if needed
+            room_dict = room.to_dict() if hasattr(room, "to_dict") else room
+
+            # Check plane match
+            if room_dict.get("plane") != plane:
+                continue
+
+            # Check zone match
+            if room_dict.get("zone") != zone:
+                continue
+
+            # Check sub_zone match if provided
+            if sub_zone is not None and room_dict.get("sub_zone") != sub_zone:
+                continue
+
+            # Remove exits if not requested
+            if not include_exits and "exits" in room_dict:
+                room_dict = {k: v for k, v in room_dict.items() if k != "exits"}
+
+            filtered_rooms.append(room_dict)
+
+        logger.debug(
+            "Rooms filtered",
+            plane=plane,
+            zone=zone,
+            sub_zone=sub_zone,
+            count=len(filtered_rooms),
+        )
+        return filtered_rooms
+
     async def get_room_info(self, room_id: str) -> dict[str, Any] | None:
         """
         Get comprehensive room information including occupants and exits.

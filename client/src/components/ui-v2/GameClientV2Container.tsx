@@ -14,6 +14,8 @@ import { inputSanitizer } from '../../utils/security';
 import { convertToPlayerInterface, parseStatusResponse } from '../../utils/statusParser';
 import { GameClientV2 } from './GameClientV2';
 import { DeathInterstitial } from '../DeathInterstitial';
+import { MainMenuModal } from '../MainMenuModal';
+import { MapView } from '../MapView';
 import type { ChatMessage, Player, Room } from './types';
 
 // Import GameEvent interface from useGameConnection
@@ -96,6 +98,9 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   isLoggingOut = false,
   onDisconnect: _onDisconnect,
 }) => {
+  const [isMainMenuOpen, setIsMainMenuOpen] = useState(false);
+  const [showMap, setShowMap] = useState(false);
+
   const [gameState, setGameState] = useState<GameState>({
     player: null,
     room: null,
@@ -747,6 +752,22 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
     }
   };
 
+  // Handle ESC key to open/close main menu (only when map is not open)
+  useEffect(() => {
+    if (isDead || showMap) return;
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsMainMenuOpen(prev => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleEscape);
+    return () => {
+      window.removeEventListener('keydown', handleEscape);
+    };
+  }, [isDead, showMap]);
+
   return (
     <div className={`game-terminal-container ${isMortallyWounded ? 'mortally-wounded' : ''} ${isDead ? 'dead' : ''}`}>
       <GameClientV2
@@ -778,6 +799,15 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
         onRespawn={handleRespawn}
         isRespawning={isRespawning}
       />
+
+      <MainMenuModal
+        isOpen={isMainMenuOpen}
+        onClose={() => setIsMainMenuOpen(false)}
+        onMapClick={() => setShowMap(true)}
+        onLogoutClick={handleLogout}
+      />
+
+      <MapView isOpen={showMap} onClose={() => setShowMap(false)} currentRoom={gameState.room} authToken={authToken} />
     </div>
   );
 };

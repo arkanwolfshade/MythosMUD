@@ -37,6 +37,8 @@ class AdminAction(str, Enum):
     # NPC Definition Management
     CREATE_NPC_DEFINITION = "create_npc_definition"
     UPDATE_NPC_DEFINITION = "update_npc_definition"
+    # Room Management
+    UPDATE_ROOM_POSITION = "update_room_position"
     DELETE_NPC_DEFINITION = "delete_npc_definition"
     LIST_NPC_DEFINITIONS = "list_npc_definitions"
 

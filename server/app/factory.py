@@ -174,7 +174,7 @@ def create_app() -> FastAPI:
     app.include_router(monitoring_router)
     app.include_router(metrics_router)  # NEW: NATS metrics endpoint (CRITICAL-4)
     app.include_router(realtime_router)
-    app.include_router(room_router)
+    app.include_router(room_router, prefix="/api")
     app.include_router(container_router)  # Container system endpoints
     app.include_router(admin_npc_router)
     app.include_router(admin_subject_router, prefix="/api/admin")  # NATS subject management endpoints

@@ -19,6 +19,7 @@ from ..exceptions import DatabaseError, ValidationError
 from ..logging.enhanced_logging_config import get_logger
 from ..models.room import Room
 from ..persistence import get_persistence
+from ..services.exploration_service import get_exploration_service
 from ..utils.error_logging import create_error_context, log_and_raise
 from .movement_monitor import get_movement_monitor
 
@@ -306,6 +307,25 @@ class MovementService:
 
                 # record_movement_attempt accepts uuid.UUID | str
                 monitor.record_movement_attempt(player_id, from_room_id, to_room_id, True, duration_ms)
+
+                # Mark the destination room as explored (fire-and-forget, errors don't block movement)
+                # As documented in the Pnakotic Manuscripts, exploration tracking is essential
+                # for maintaining awareness of dimensional territories traversed
+                try:
+                    exploration_service = get_exploration_service()
+                    # Use sync wrapper - exploration failures should not block movement
+                    # Ensure player_id is UUID (mark_room_as_explored_sync expects UUID)
+                    player_uuid = resolved_player_id if isinstance(resolved_player_id, uuid.UUID) else uuid.UUID(resolved_player_id)
+                    exploration_service.mark_room_as_explored_sync(player_uuid, to_room_id)
+                except Exception as e:
+                    # Log but don't raise - exploration tracking is non-critical
+                    self._logger.warning(
+                        "Failed to mark room as explored (non-blocking)",
+                        player_id=resolved_player_id,
+                        room_id=to_room_id,
+                        error=str(e),
+                        error_type=type(e).__name__,
+                    )
 
                 self._logger.info("Successfully moved player", player_id=resolved_player_id, room_id=to_room_id)
                 return True

@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import './styles/motd-preserved.css';
+@import 'reactflow/dist/style.css';
 
 /* Ensure full viewport coverage */
 html,

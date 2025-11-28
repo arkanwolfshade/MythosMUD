@@ -94,8 +94,23 @@ For multiplayer scenarios that require AI Agent coordination:
     - MCP: Cross-player delivery (see `e2e-tests/scenarios/scenario-17-whisper-integration.md`)
     - Runtime: ~1 minute
 
-**Total Automated Tests**: 114 tests in 10 files
-**Total Runtime**: ~5 minutes (excluding 60-second rate limit test)
+11. **Map Viewer** - `integration/map-viewer.spec.ts`
+    - Automated: 9 tests for map viewer functionality
+    - Tests: Opening map, displaying rooms, room details, filtering, navigation
+    - Runtime: ~2 minutes
+
+12. **Map Admin Edit** - `integration/map-admin-edit.spec.ts`
+    - Automated: 8 tests for admin edit mode
+    - Tests: Node repositioning, edge creation/deletion, room editing, undo/redo
+    - Runtime: ~2 minutes
+
+13. **Map Performance** - `performance/map-performance.spec.ts`
+    - Automated: 6 tests for performance benchmarks
+    - Tests: Large room sets (500+), FPS monitoring, viewport optimization, memory usage
+    - Runtime: ~3 minutes
+
+**Total Automated Tests**: 137 tests in 13 files
+**Total Runtime**: ~12 minutes (excluding 60-second rate limit test)
 
 ### Playwright MCP Scenarios (11 Scenarios)
 
@@ -119,7 +134,7 @@ These scenarios require multi-player coordination via Playwright MCP and AI Agen
 
 ## When to Use Automated vs MCP Tests
 
-### Use Automated Playwright CLI Tests When:
+### Use Automated Playwright CLI Tests When
 
 ✅ Testing **single-player functionality**
 ✅ Testing **error conditions** (invalid input, missing data)
@@ -128,7 +143,7 @@ These scenarios require multi-player coordination via Playwright MCP and AI Agen
 ✅ Testing **UI state changes** (button states, visibility)
 ✅ Tests can run **without real-time multi-player coordination**
 
-### Use Playwright MCP Scenarios When:
+### Use Playwright MCP Scenarios When
 
 🎭 Testing **message broadcasting** to multiple players
 🎭 Testing **real-time synchronization** between players
@@ -142,6 +157,7 @@ These scenarios require multi-player coordination via Playwright MCP and AI Agen
 ### Test Database Location
 
 Automated tests use a separate test database:
+
 - **Location**: `data/players/unit_test_players.db`
 - **Structure**: Matches production database schema
 - **Isolation**: Completely separate from development and production databases
@@ -205,6 +221,7 @@ Choose the appropriate directory based on what you're testing:
 - `accessibility/` - WCAG compliance, keyboard navigation, ARIA
 - `admin/` - Admin-only functionality
 - `integration/` - System integration points
+- `performance/` - Performance benchmarks and large dataset testing
 
 ### Step 2: Create Test File
 
@@ -313,11 +330,13 @@ Then wait 10 seconds for it to initialize before running tests.
 #### Issue: "Timeout waiting for message"
 
 **Possible Causes**:
+
 1. Server not running or not responding
 2. Command syntax incorrect
 3. Feature not implemented or broken
 
 **Solution**:
+
 1. Verify server is running: `curl http://localhost:54731/health`
 2. Check server logs in `logs/development/`
 3. Run test in headed mode to see what's happening: `npm run test:e2e:runtime:headed`
@@ -325,11 +344,13 @@ Then wait 10 seconds for it to initialize before running tests.
 #### Issue: "Tests fail in CI but pass locally"
 
 **Possible Causes**:
+
 1. Server not starting properly in CI
 2. Different timing/performance in CI environment
 3. Port conflicts in CI
 
 **Solution**:
+
 1. Check GitHub Actions workflow logs
 2. Increase timeouts for CI environment
 3. Ensure server health check passes before tests run
@@ -360,6 +381,7 @@ npx playwright show-report playwright-report/runtime/
 ### GitHub Actions
 
 Automated E2E tests run automatically on:
+
 - Pull request creation and updates
 - Push to main branch
 - Manual workflow dispatch
@@ -369,6 +391,7 @@ Automated E2E tests run automatically on:
 ### Test Artifacts
 
 On test failure, the following artifacts are uploaded:
+
 - Screenshots of failures
 - Videos of test execution
 - Playwright traces for debugging
@@ -454,6 +477,7 @@ npx playwright test --grep-invert @slow
 ### Q: How do I debug a failing test?
 
 **A**:
+
 1. Run in headed mode: `npm run test:e2e:runtime:headed`
 2. Run in debug mode: `npm run test:e2e:runtime:debug`
 3. Check the HTML report: `npx playwright show-report playwright-report/runtime/`
@@ -471,15 +495,18 @@ npm run test:e2e:runtime
 ### Q: How do I test features that require multiple players?
 
 **A**: Either:
+
 1. Write an MCP scenario in `e2e-tests/scenarios/`
 2. Mock the second player in automated tests if you're only testing integration points
 
 ## Enhanced Logging in E2E Tests
 
 ### **CRITICAL: Enhanced Logging Requirements**
+
 All E2E tests MUST use the enhanced logging system for proper observability and debugging.
 
 #### **Required Import Pattern**
+
 ```typescript
 // ✅ CORRECT - Enhanced logging import (MANDATORY)
 import { getLogger } from 'server/logging/enhanced_logging_config';
@@ -487,6 +514,7 @@ const logger = getLogger(__name__);
 ```
 
 #### **Forbidden Patterns**
+
 ```typescript
 // ❌ FORBIDDEN - Will cause import failures and system crashes
 import { logging } from 'logging';
@@ -500,6 +528,7 @@ logger.info(`Test ${testName} started`);
 ```
 
 #### **Correct Logging Patterns in Tests**
+
 ```typescript
 // ✅ CORRECT - Test setup logging
 logger.info("E2E test started", test_name="local-channel-errors", test_file="error-handling/local-channel-errors.spec.ts");
@@ -515,6 +544,7 @@ logger.info("Test performance metrics", test_duration_ms=1500, steps_completed=8
 ```
 
 #### **Test Logging Best Practices**
+
 - **Structured Logging**: Always use key-value pairs for log data
 - **Test Context**: Include test name, file, and step information
 - **Error Context**: Log sufficient context for debugging test failures
@@ -522,6 +552,7 @@ logger.info("Test performance metrics", test_duration_ms=1500, steps_completed=8
 - **Security**: Never log sensitive test data (passwords, tokens)
 
 #### **Logging Validation in Tests**
+
 ```typescript
 // ✅ CORRECT - Validate logging behavior in tests
 test('should log user actions correctly', async () => {
@@ -549,6 +580,7 @@ test('should log user actions correctly', async () => {
 ```
 
 #### **Documentation References**
+
 - **Complete Guide**: [LOGGING_BEST_PRACTICES.md](LOGGING_BEST_PRACTICES.md)
 - **Quick Reference**: [LOGGING_QUICK_REFERENCE.md](LOGGING_QUICK_REFERENCE.md)
 - **Testing Examples**: [docs/examples/logging/testing_examples.py](examples/logging/testing_examples.py)

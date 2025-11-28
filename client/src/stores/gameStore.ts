@@ -50,6 +50,10 @@ export interface Room {
     type: string;
     [key: string]: unknown;
   }>;
+  /** Map X coordinate (admin-set position) */
+  map_x?: number | null;
+  /** Map Y coordinate (admin-set position) */
+  map_y?: number | null;
 }
 
 export interface ChatMessage {
