@@ -46,12 +46,15 @@ export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = ({
         return false;
       }
 
-      if (isAllChannelSelected) {
-        return true;
-      }
-
+      // Exclude command messages - they belong in Game Info panel only
+      // This must be checked before isAllChannelSelected to prevent command messages
+      // from appearing in Chat panel even when "All Messages" is selected
       if (message.messageType === 'command') {
         return false;
+      }
+
+      if (isAllChannelSelected) {
+        return true;
       }
 
       const messageChannel = message.channel || extractChannelFromMessage(message.text) || 'local';

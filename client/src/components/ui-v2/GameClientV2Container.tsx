@@ -15,8 +15,8 @@ import { convertToPlayerInterface, parseStatusResponse } from '../../utils/statu
 import { DeathInterstitial } from '../DeathInterstitial';
 import { MainMenuModal } from '../MainMenuModal';
 import { MapView } from '../MapView';
-import { useTabbedInterface } from './TabbedInterface';
 import { GameClientV2 } from './GameClientV2';
+import { useTabbedInterface } from './TabbedInterface';
 import type { ChatMessage, Player, Room } from './types';
 
 // Import GameEvent interface from useGameConnection
@@ -454,6 +454,31 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                 );
               }
               lastDaypartRef.current = nextState.daypart;
+            }
+            break;
+          }
+          case 'game_tick': {
+            // Check if tick verbosity is enabled
+            const showTickVerbosity = localStorage.getItem('showTickVerbosity') === 'true';
+            if (!showTickVerbosity) {
+              break;
+            }
+
+            // Extract tick data from event
+            const tickNumber = typeof event.data?.tick_number === 'number' ? event.data.tick_number : 0;
+            const activePlayers = typeof event.data?.active_players === 'number' ? event.data.active_players : 0;
+
+            // Only display every 10th tick (as per UI label "every 10th tick")
+            if (tickNumber % 10 === 0) {
+              appendMessage(
+                sanitizeChatMessageForState({
+                  text: `[Game Tick #${tickNumber}] Active players: ${activePlayers}`,
+                  timestamp: event.timestamp,
+                  messageType: 'system',
+                  channel: 'system',
+                  isHtml: false,
+                })
+              );
             }
             break;
           }
