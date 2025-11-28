@@ -10,6 +10,7 @@
  */
 
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 export interface MainMenuModalProps {
   /** Whether the modal is open */
@@ -42,31 +43,47 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({ isOpen, onClose, o
     };
   }, [isOpen, onClose]);
 
-  // Prevent body scroll when modal is open
+  // Prevent body scroll and disable pointer events on game content when modal is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      // Disable pointer events on the main game container to prevent panel dragging
+      const gameContainer = document.querySelector('[data-game-container]');
+      if (gameContainer) {
+        (gameContainer as HTMLElement).style.pointerEvents = 'none';
+      }
     } else {
       document.body.style.overflow = '';
+      // Re-enable pointer events on the main game container
+      const gameContainer = document.querySelector('[data-game-container]');
+      if (gameContainer) {
+        (gameContainer as HTMLElement).style.pointerEvents = '';
+      }
     }
     return () => {
       document.body.style.overflow = '';
+      const gameContainer = document.querySelector('[data-game-container]');
+      if (gameContainer) {
+        (gameContainer as HTMLElement).style.pointerEvents = '';
+      }
     };
   }, [isOpen]);
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <div
-      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[100]"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="main-menu-title"
+      style={{ pointerEvents: 'auto' }}
     >
       <div
         className="bg-mythos-terminal-background border-2 border-mythos-terminal-border rounded-lg p-6 w-full max-w-md shadow-xl"
         onClick={e => e.stopPropagation()}
+        style={{ pointerEvents: 'auto' }}
       >
         <div className="flex items-center justify-between mb-6">
           <h2 id="main-menu-title" className="text-2xl font-bold text-mythos-terminal-text">
@@ -89,6 +106,8 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({ isOpen, onClose, o
               onClose();
             }}
             className="w-full px-4 py-3 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80 transition-colors text-left font-medium"
+            style={{ pointerEvents: 'auto' }}
+            type="button"
           >
             Map
           </button>
@@ -98,6 +117,7 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({ isOpen, onClose, o
             disabled
             className="w-full px-4 py-3 bg-mythos-terminal-background border border-mythos-terminal-border text-mythos-terminal-text/50 rounded cursor-not-allowed text-left font-medium opacity-50"
             aria-label="Settings (coming soon)"
+            type="button"
           >
             Settings
           </button>
@@ -109,6 +129,8 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({ isOpen, onClose, o
               onClose();
             }}
             className="w-full px-4 py-3 bg-mythos-terminal-error text-white rounded hover:bg-mythos-terminal-error/80 transition-colors text-left font-medium"
+            style={{ pointerEvents: 'auto' }}
+            type="button"
           >
             Logout
           </button>
@@ -118,4 +140,7 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({ isOpen, onClose, o
       </div>
     </div>
   );
+
+  // Render modal in a portal to ensure it's always on top
+  return createPortal(modalContent, document.body);
 };

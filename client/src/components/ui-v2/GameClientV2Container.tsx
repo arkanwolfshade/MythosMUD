@@ -12,10 +12,10 @@ import { DAYPART_MESSAGES, buildMythosTimeState } from '../../utils/mythosTime';
 import { buildSanityStatus } from '../../utils/sanityEventUtils';
 import { inputSanitizer } from '../../utils/security';
 import { convertToPlayerInterface, parseStatusResponse } from '../../utils/statusParser';
-import { GameClientV2 } from './GameClientV2';
 import { DeathInterstitial } from '../DeathInterstitial';
 import { MainMenuModal } from '../MainMenuModal';
 import { MapView } from '../MapView';
+import { GameClientV2 } from './GameClientV2';
 import type { ChatMessage, Player, Room } from './types';
 
 // Import GameEvent interface from useGameConnection
@@ -769,7 +769,10 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   }, [isDead, showMap]);
 
   return (
-    <div className={`game-terminal-container ${isMortallyWounded ? 'mortally-wounded' : ''} ${isDead ? 'dead' : ''}`}>
+    <div
+      className={`game-terminal-container ${isMortallyWounded ? 'mortally-wounded' : ''} ${isDead ? 'dead' : ''}`}
+      data-game-container
+    >
       <GameClientV2
         playerName={playerName}
         authToken={authToken}
