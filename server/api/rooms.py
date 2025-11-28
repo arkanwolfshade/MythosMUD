@@ -36,12 +36,12 @@ logger.info("Rooms API router initialized", prefix="/rooms")
 # FastAPI matches routes in order, and /{room_id} would match /list otherwise
 @room_router.get("/list")
 async def list_rooms(
+    request: Request,
     plane: str = Query(..., description="Plane name (required)"),
     zone: str = Query(..., description="Zone name (required)"),
     sub_zone: str | None = Query(None, description="Optional sub-zone name for filtering"),
     include_exits: bool = Query(True, description="Whether to include exit data in response"),
     filter_explored: bool = Query(False, description="Filter to only show explored rooms (requires authentication)"),
-    request: Request | None = None,
     current_user: dict | None = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
     room_service: RoomService = RoomServiceDep,
@@ -142,7 +142,7 @@ async def list_rooms(
             sub_zone=sub_zone,
             exc_info=True,
         )
-        context = create_context_from_request(request) if request else None
+        context = create_context_from_request(request)
         raise LoggedHTTPException(
             status_code=500,
             detail="Failed to retrieve room list",
