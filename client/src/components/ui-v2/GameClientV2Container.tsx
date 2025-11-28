@@ -8,7 +8,7 @@ import { buildHealthStatusFromEvent } from '../../utils/healthEventUtils';
 import { logger } from '../../utils/logger';
 import { useMemoryMonitor } from '../../utils/memoryMonitor';
 import { determineMessageType } from '../../utils/messageTypeUtils';
-import { DAYPART_MESSAGES, buildMythosTimeState } from '../../utils/mythosTime';
+import { DAYPART_MESSAGES, buildMythosTimeState, formatMythosTime12Hour } from '../../utils/mythosTime';
 import { buildSanityStatus } from '../../utils/sanityEventUtils';
 import { inputSanitizer } from '../../utils/security';
 import { convertToPlayerInterface, parseStatusResponse } from '../../utils/statusParser';
@@ -157,6 +157,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   const healthStatusRef = useRef<HealthStatus | null>(null);
   const rescueStateRef = useRef<RescueState | null>(null);
   const lastDaypartRef = useRef<string | null>(null);
+  const lastHourRef = useRef<number | null>(null);
   const lastHolidayIdsRef = useRef<string[]>([]);
   const rescueTimeoutRef = useRef<number | null>(null);
   const lastRoomUpdateTime = useRef<number>(0);
@@ -572,6 +573,44 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             if (payload && payload.mythos_clock) {
               const nextState = buildMythosTimeState(payload);
               setMythosTime(nextState);
+
+              // Extract current hour from mythos_datetime for clock chime messages
+              let currentHour: number | null = null;
+              if (payload.mythos_datetime) {
+                try {
+                  const mythosDate = new Date(payload.mythos_datetime);
+                  currentHour = mythosDate.getUTCHours();
+                } catch (error) {
+                  logger.error('GameClientV2Container', 'Failed to parse mythos_datetime for clock chime', {
+                    error: error instanceof Error ? error.message : String(error),
+                    mythos_datetime: payload.mythos_datetime,
+                  });
+                }
+              }
+
+              // Create clock chime message on hourly tick
+              if (currentHour !== null) {
+                const previousHour = lastHourRef.current;
+                if (previousHour !== null && previousHour !== currentHour) {
+                  const formattedClock = formatMythosTime12Hour(payload.mythos_clock);
+                  appendMessage(
+                    sanitizeChatMessageForState({
+                      text: `[Time] The clock chimes ${formattedClock} Mythos`,
+                      timestamp: event.timestamp,
+                      messageType: 'system',
+                      channel: 'system',
+                      isHtml: false,
+                    })
+                  );
+                  logger.debug('GameClientV2Container', 'Displayed hourly clock chime message', {
+                    hour: currentHour,
+                    mythos_clock: payload.mythos_clock,
+                  });
+                }
+                lastHourRef.current = currentHour;
+              }
+
+              // Create daypart change message
               const previousDaypart = lastDaypartRef.current;
               if (previousDaypart && previousDaypart !== nextState.daypart) {
                 const description =

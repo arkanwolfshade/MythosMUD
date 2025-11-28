@@ -1,4 +1,5 @@
 import type { MythosHoliday, MythosTimeState } from '../types/mythosTime';
+import { formatMythosTime12Hour } from '../utils/mythosTime';
 
 const TRADITION_COLORS: Record<string, string> = {
   catholic: 'from-amber-400/30 to-amber-600/20 text-amber-100',
@@ -41,7 +42,9 @@ export const MythosTimeHud: React.FC<MythosTimeHudProps> = ({ mythosTime }) => {
     >
       <span className="uppercase tracking-[0.3em] text-[10px] text-mythos-terminal-text-secondary/80">Mythos Time</span>
       <div className="flex flex-wrap items-baseline gap-3">
-        <span className="text-2xl font-semibold text-mythos-terminal-primary">{mythosTime.mythos_clock}</span>
+        <span className="text-2xl font-semibold text-mythos-terminal-primary">
+          {formatMythosTime12Hour(mythosTime.mythos_clock)}
+        </span>
         <span className="text-sm text-mythos-terminal-text-secondary">{mythosTime.formatted_date}</span>
       </div>
       <div className="flex flex-wrap items-center gap-3 text-xs text-mythos-terminal-text-secondary">
