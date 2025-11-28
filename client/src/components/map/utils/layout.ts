@@ -45,8 +45,12 @@ export interface ForceLayoutConfig {
   iterations: number;
   /** Damping factor for the simulation */
   damping: number;
-  /** Minimum distance between nodes */
+  /** Minimum distance between nodes (node radius * 2 + padding) */
   minDistance: number;
+  /** Node radius for collision detection */
+  nodeRadius: number;
+  /** Strength of collision force when nodes overlap */
+  collisionStrength: number;
   /** Whether to use edge-crossing minimization */
   minimizeCrossings: boolean;
 }
@@ -67,12 +71,14 @@ export const defaultGridLayoutConfig: GridLayoutConfig = {
  * Default force-directed layout configuration optimized for minimizing crossings.
  */
 export const defaultForceLayoutConfig: ForceLayoutConfig = {
-  linkDistance: 150,
-  chargeStrength: -800,
-  centerStrength: 0.1,
-  iterations: 300,
-  damping: 0.9,
-  minDistance: 50,
+  linkDistance: 200,
+  chargeStrength: -1200,
+  centerStrength: 0.05,
+  iterations: 400,
+  damping: 0.85,
+  minDistance: 120, // Node width/height (100px) + padding (20px)
+  nodeRadius: 50, // Half of typical node size
+  collisionStrength: 2.0, // Strong collision force to prevent overlap
   minimizeCrossings: true,
 };
 
@@ -155,12 +161,16 @@ export const applyForceLayout = (
     return nodes;
   }
 
-  // Initialize positions if not set
+  // Initialize positions if not set - spread nodes in a wider pattern to avoid initial overlaps
   const positionedNodes = nodes.map((node, index) => {
-    if (node.position.x === 0 && node.position.y === 0 && index > 0) {
-      // Spread initial positions in a circle to avoid all starting at origin
-      const angle = (index * 2 * Math.PI) / nodes.length;
-      const radius = 200;
+    // Check if node has a meaningful position (not just at origin)
+    const hasPosition = !(node.position.x === 0 && node.position.y === 0) || index === 0;
+
+    if (!hasPosition) {
+      // Spread initial positions in a wider circle/spiral pattern
+      // Use a spiral to ensure nodes are well-separated initially
+      const angle = (index * 2.4 * Math.PI) / Math.sqrt(nodes.length); // Golden angle approximation
+      const radius = Math.sqrt(index) * (config.minDistance * 1.5); // Spiral outward
       return {
         ...node,
         position: {
@@ -216,7 +226,7 @@ export const applyForceLayout = (
       edge.target.vy -= fy;
     }
 
-    // Apply charge forces (repulsion between all nodes)
+    // Apply charge forces and collision avoidance (repulsion between all nodes)
     const nodesArray = Array.from(nodeMap.values());
     for (let i = 0; i < nodesArray.length; i++) {
       for (let j = i + 1; j < nodesArray.length; j++) {
@@ -225,11 +235,14 @@ export const applyForceLayout = (
 
         const dx = node2.x - node1.x;
         const dy = node2.y - node1.y;
-        const distance = Math.sqrt(dx * dx + dy * dy) || 1;
+        const distance = Math.sqrt(dx * dx + dy * dy) || 0.1; // Avoid division by zero
 
-        // Prevent nodes from getting too close
+        // Strong collision force when nodes are too close (prevents overlap)
         if (distance < config.minDistance) {
-          const force = (config.minDistance - distance) * 0.5;
+          // Calculate overlap amount
+          const overlap = config.minDistance - distance;
+          // Apply strong repulsive force proportional to overlap
+          const force = overlap * config.collisionStrength;
           const fx = (dx / distance) * force;
           const fy = (dy / distance) * force;
           node1.vx -= fx;
@@ -237,8 +250,9 @@ export const applyForceLayout = (
           node2.vx += fx;
           node2.vy += fy;
         } else {
-          // Repulsive force
-          const force = config.chargeStrength / (distance * distance);
+          // Standard repulsive force (inverse square law)
+          // Use a smoother falloff to prevent sudden jumps
+          const force = config.chargeStrength / (distance * distance + 1);
           const fx = (dx / distance) * force;
           const fy = (dy / distance) * force;
           node1.vx -= fx;
