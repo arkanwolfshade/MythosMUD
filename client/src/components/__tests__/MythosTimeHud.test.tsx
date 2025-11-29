@@ -40,7 +40,7 @@ describe('MythosTimeHud', () => {
 
   it('renders formatted Mythos time details', () => {
     render(<MythosTimeHud mythosTime={mythosState} />);
-    expect(screen.getByText('14:00 Mythos')).toBeVisible();
+    expect(screen.getByText('2:00 PM')).toBeVisible();
     expect(screen.getByText('Tertius, January 5')).toBeVisible();
     expect(screen.getByText(/afternoon/i)).toBeVisible();
     expect(screen.getByText('Feast of Yig')).toBeVisible();
