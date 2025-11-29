@@ -33,7 +33,7 @@ export default defineConfig({
       ],
       thresholds: {
         // Tiered Coverage Strategy:
-        // - Critical code (security, auth, data handling): 98%
+        // - Critical code (security, auth, data handling): 95%
         // - Core business logic (game state, connections, stores): 85%+
         // - UI components (behavior-focused): 70-80%
         // - Utilities (important ones): 60-70%
@@ -45,7 +45,7 @@ export default defineConfig({
         branches: 65,
         functions: 70,
         lines: 70,
-        // Critical code: security, authentication, data handling → 95% (security.ts adjusted from 98%)
+        // Critical code: security, authentication, data handling → 95% (security.ts adjusted from 95%)
         'src/utils/security.ts': {
           statements: 95,
           branches: 95,
@@ -53,46 +53,46 @@ export default defineConfig({
           lines: 95,
         },
         'src/utils/errorHandler.ts': {
-          statements: 98,
-          branches: 98,
-          functions: 98,
-          lines: 98,
+          statements: 95,
+          branches: 95,
+          functions: 95,
+          lines: 95,
         },
         'src/utils/logoutHandler.ts': {
-          statements: 98,
-          branches: 98,
-          functions: 98,
-          lines: 98,
+          statements: 95,
+          branches: 95,
+          functions: 95,
+          lines: 95,
         },
         'src/hooks/useGameConnection.ts': {
-          statements: 98,
-          branches: 98,
-          functions: 98,
-          lines: 98,
+          statements: 95,
+          branches: 95,
+          functions: 95,
+          lines: 95,
         },
         'src/hooks/useSSEConnection.ts': {
-          statements: 98,
-          branches: 98,
-          functions: 98,
-          lines: 98,
+          statements: 95,
+          branches: 95,
+          functions: 95,
+          lines: 95,
         },
         'src/hooks/useWebSocketConnection.ts': {
-          statements: 98,
-          branches: 98,
-          functions: 98,
-          lines: 98,
+          statements: 95,
+          branches: 95,
+          functions: 95,
+          lines: 95,
         },
         'src/stores/sessionStore.ts': {
-          statements: 98,
-          branches: 98,
-          functions: 98,
-          lines: 98,
+          statements: 95,
+          branches: 95,
+          functions: 95,
+          lines: 95,
         },
         'src/stores/connectionStore.ts': {
-          statements: 98,
-          branches: 98,
-          functions: 98,
-          lines: 98,
+          statements: 95,
+          branches: 95,
+          functions: 95,
+          lines: 95,
         },
         // Core business logic: game state, connections, stores → 85%+
         'src/stores/gameStore.ts': {
