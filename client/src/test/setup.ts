@@ -1,5 +1,18 @@
 import '@testing-library/jest-dom/vitest';
 import { afterAll, beforeAll, vi } from 'vitest';
+import { mkdirSync } from 'fs';
+import { join } from 'path';
+
+// Ensure coverage temp directory exists
+try {
+  const coverageTmpDir = join(process.cwd(), 'coverage', '.tmp');
+  mkdirSync(coverageTmpDir, { recursive: true });
+} catch (error) {
+  // Directory might already exist, which is fine
+  if ((error as NodeJS.ErrnoException).code !== 'EEXIST') {
+    console.warn('Failed to create coverage temp directory:', error);
+  }
+}
 
 // Mock window.matchMedia for components that use media queries
 Object.defineProperty(window, 'matchMedia', {

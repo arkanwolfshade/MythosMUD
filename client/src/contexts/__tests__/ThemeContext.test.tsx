@@ -1,7 +1,16 @@
 import { describe, expect, it, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { ThemeProvider } from '../ThemeContext';
-import { useTheme } from '../hooks/useThemeContext';
+import {
+  useTheme,
+  useThemePreference,
+  useColorSchemePreference,
+  useFontSizePreference,
+  useAnimationPreference,
+  useCompactModePreference,
+  useAccessibilityPreference,
+  useDebugInfoPreference,
+} from '../hooks/useThemeContext';
 
 describe('ThemeContext', () => {
   beforeEach(() => {
@@ -193,5 +202,159 @@ describe('ThemeContext', () => {
     // Assert
     expect(document.documentElement.classList.contains('theme-light')).toBe(false);
     expect(document.documentElement.classList.contains('theme-dark')).toBe(true);
+  });
+});
+
+describe('useThemeContext convenience hooks', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    document.documentElement.className = '';
+  });
+
+  const wrapper = ({ children }: { children: React.ReactNode }) => <ThemeProvider>{children}</ThemeProvider>;
+
+  describe('useThemePreference', () => {
+    it('should return current theme and setTheme function', () => {
+      const { result } = renderHook(() => useThemePreference(), { wrapper });
+
+      expect(result.current.theme).toBe('terminal');
+      expect(typeof result.current.setTheme).toBe('function');
+    });
+
+    it('should update theme using setTheme', async () => {
+      const { result } = renderHook(() => useThemePreference(), { wrapper });
+
+      await act(() => {
+        result.current.setTheme('dark');
+      });
+
+      expect(result.current.theme).toBe('dark');
+    });
+  });
+
+  describe('useColorSchemePreference', () => {
+    it('should return current colorScheme and setColorScheme function', () => {
+      const { result } = renderHook(() => useColorSchemePreference(), { wrapper });
+
+      expect(result.current.colorScheme).toBe('default');
+      expect(typeof result.current.setColorScheme).toBe('function');
+    });
+
+    it('should update colorScheme using setColorScheme', async () => {
+      const { result } = renderHook(() => useColorSchemePreference(), { wrapper });
+
+      await act(() => {
+        result.current.setColorScheme('high-contrast');
+      });
+
+      expect(result.current.colorScheme).toBe('high-contrast');
+    });
+  });
+
+  describe('useFontSizePreference', () => {
+    it('should return current fontSize and setFontSize function', () => {
+      const { result } = renderHook(() => useFontSizePreference(), { wrapper });
+
+      expect(result.current.fontSize).toBe('medium');
+      expect(typeof result.current.setFontSize).toBe('function');
+    });
+
+    it('should update fontSize using setFontSize', async () => {
+      const { result } = renderHook(() => useFontSizePreference(), { wrapper });
+
+      await act(() => {
+        result.current.setFontSize('large');
+      });
+
+      expect(result.current.fontSize).toBe('large');
+    });
+  });
+
+  describe('useAnimationPreference', () => {
+    it('should return current animations and setAnimations function', () => {
+      const { result } = renderHook(() => useAnimationPreference(), { wrapper });
+
+      expect(result.current.animations).toBe(true);
+      expect(typeof result.current.setAnimations).toBe('function');
+    });
+
+    it('should update animations using setAnimations', async () => {
+      const { result } = renderHook(() => useAnimationPreference(), { wrapper });
+
+      await act(() => {
+        result.current.setAnimations(false);
+      });
+
+      expect(result.current.animations).toBe(false);
+    });
+  });
+
+  describe('useCompactModePreference', () => {
+    it('should return current compactMode and setCompactMode function', () => {
+      const { result } = renderHook(() => useCompactModePreference(), { wrapper });
+
+      expect(result.current.compactMode).toBe(false);
+      expect(typeof result.current.setCompactMode).toBe('function');
+    });
+
+    it('should update compactMode using setCompactMode', async () => {
+      const { result } = renderHook(() => useCompactModePreference(), { wrapper });
+
+      await act(() => {
+        result.current.setCompactMode(true);
+      });
+
+      expect(result.current.compactMode).toBe(true);
+    });
+  });
+
+  describe('useAccessibilityPreference', () => {
+    it('should return accessibility preferences and setters', () => {
+      const { result } = renderHook(() => useAccessibilityPreference(), { wrapper });
+
+      expect(result.current.highContrast).toBe(false);
+      expect(result.current.reducedMotion).toBe(false);
+      expect(typeof result.current.setHighContrast).toBe('function');
+      expect(typeof result.current.setReducedMotion).toBe('function');
+    });
+
+    it('should update highContrast using setHighContrast', async () => {
+      const { result } = renderHook(() => useAccessibilityPreference(), { wrapper });
+
+      await act(() => {
+        result.current.setHighContrast(true);
+      });
+
+      expect(result.current.highContrast).toBe(true);
+    });
+
+    it('should update reducedMotion using setReducedMotion', async () => {
+      const { result } = renderHook(() => useAccessibilityPreference(), { wrapper });
+
+      await act(() => {
+        result.current.setReducedMotion(true);
+      });
+
+      expect(result.current.reducedMotion).toBe(true);
+    });
+  });
+
+  describe('useDebugInfoPreference', () => {
+    it('should return current showDebugInfo and setShowDebugInfo function', () => {
+      const { result } = renderHook(() => useDebugInfoPreference(), { wrapper });
+
+      expect(result.current.showDebugInfo).toBe(false);
+      expect(typeof result.current.setShowDebugInfo).toBe('function');
+    });
+
+    it('should update showDebugInfo using setShowDebugInfo', async () => {
+      const { result } = renderHook(() => useDebugInfoPreference(), { wrapper });
+
+      await act(() => {
+        result.current.setShowDebugInfo(true);
+      });
+
+      expect(result.current.showDebugInfo).toBe(true);
+    });
   });
 });

@@ -14,6 +14,8 @@ export interface UIPreferences {
   soundEffects: boolean;
   compactMode: boolean;
   showDebugInfo: boolean;
+  highContrast: boolean;
+  reducedMotion: boolean;
 }
 
 // Context type
@@ -32,6 +34,8 @@ const defaultPreferences: UIPreferences = {
   soundEffects: false,
   compactMode: false,
   showDebugInfo: false,
+  highContrast: false,
+  reducedMotion: false,
 };
 
 // Create context
