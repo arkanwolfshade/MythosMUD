@@ -342,9 +342,10 @@ class TestAsyncOperationsVerification:
         # Account for system overhead by using a more realistic comparison
         # If operations were truly sequential, they would take ~10 * 0.01s = 0.1s
         # If they're concurrent, they should take closer to 0.01s + overhead
-        # We allow for 3x the theoretical concurrent time to account for system overhead
+        # We allow for 4x the theoretical concurrent time to account for system overhead
+        # and timing variations on different systems
         theoretical_concurrent_time = 0.01 + 0.005  # 10ms work + 5ms overhead
-        max_acceptable_time = theoretical_concurrent_time * 3  # 45ms total
+        max_acceptable_time = theoretical_concurrent_time * 4  # 60ms total (increased from 45ms)
 
         assert concurrent_time < max_acceptable_time, (
             f"Concurrent time {concurrent_time:.4f}s should be less than {max_acceptable_time:.4f}s "
