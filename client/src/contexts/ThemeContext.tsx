@@ -35,7 +35,10 @@ const defaultPreferences: UIPreferences = {
 };
 
 // Create context
-const ThemeContext = createContext<ThemeContextType | null>(null);
+export const ThemeContext = createContext<ThemeContextType | null>(null);
+
+// Export context type for hooks
+export type { ThemeContextType };
 
 // Context provider
 interface ThemeProviderProps {

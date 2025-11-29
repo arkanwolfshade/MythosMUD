@@ -71,6 +71,10 @@ export function formatMythosDateTime12Hour(datetimeString: string | undefined): 
 
   try {
     const date = new Date(datetimeString);
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return '--:-- --';
+    }
     const hour24 = date.getUTCHours();
     const minute = date.getUTCMinutes();
 
