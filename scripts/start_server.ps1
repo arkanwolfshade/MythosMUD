@@ -18,15 +18,15 @@
     The port number to bind the server to. Default is 54731.
 
 .PARAMETER Reload
-    When specified, enables auto-reload for development. Default is true.
+    When specified, enables auto-reload for development. Default is false (hot reloading disabled due to client compatibility issues).
 
 .EXAMPLE
     .\start_server.ps1
-    Starts the server with default settings (127.0.0.1:54731 with reload).
+    Starts the server with default settings (127.0.0.1:54731 without reload).
 
 .EXAMPLE
-    .\start_server.ps1 -ServerHost "0.0.0.0" -Port 8080 -Reload:$false
-    Starts the server on all interfaces, port 8080, without auto-reload.
+    .\start_server.ps1 -ServerHost "0.0.0.0" -Port 8080 -Reload
+    Starts the server on all interfaces, port 8080, with auto-reload enabled.
 
 .NOTES
     Author: MythosMUD Development Team
@@ -45,7 +45,7 @@ param(
     [int]$Port = 0,
 
     [Parameter(HelpMessage = "Enable auto-reload for development")]
-    [switch]$Reload = $true,
+    [switch]$Reload = $false,
 
     [Parameter(HelpMessage = "Environment to run in (local, unit_test, e2e_test, production)")]
     [ValidateSet("local", "unit_test", "e2e_test", "production")]

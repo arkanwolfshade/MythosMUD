@@ -235,11 +235,17 @@ def _format_metadata(metadata: Mapping[str, Any] | None) -> str:
     if not metadata:
         return ""
     try:
-        components = [f"{key}={value}" for key, value in sorted(metadata.items())]
+        components = []
+        for key, value in sorted(metadata.items()):
+            # Handle nested dicts (like container dict) by using repr() explicitly
+            if isinstance(value, dict):
+                components.append(f"{key}={value!r}")
+            else:
+                components.append(f"{key}={value}")
         if components:
             return f" [{', '.join(components)}]"
     except Exception as exc:  # pragma: no cover - metadata formatting should rarely fail
-        logger.debug("Failed to format metadata", error=str(exc))
+        logger.error("Failed to format metadata", error=str(exc), metadata=metadata, exc_info=True)
     return ""
 
 
@@ -247,8 +253,39 @@ def _render_inventory(
     inventory: list[dict[str, Any]],
     equipped: dict[str, Any],
     container_contents: dict[str, list[dict[str, Any]]] | None = None,
+    container_capacities: dict[str, int] | None = None,
+    container_lock_states: dict[str, str] | None = None,
 ) -> str:
-    slots_used = len(inventory)
+    # Filter out equipped items from inventory slot calculation
+    # Create a set of equipped item identifiers for efficient lookup
+    equipped_item_ids: set[str] = set()
+    equipped_item_instance_ids: set[str] = set()
+    for equipped_item in equipped.values():
+        item_id = equipped_item.get("item_id")
+        item_instance_id = equipped_item.get("item_instance_id")
+        if item_id:
+            equipped_item_ids.add(str(item_id))
+        if item_instance_id:
+            equipped_item_instance_ids.add(str(item_instance_id))
+
+    # Count only non-equipped items and items not in containers for regular inventory slots
+    non_equipped_inventory = []
+    for stack in inventory:
+        stack_item_id = stack.get("item_id")
+        stack_item_instance_id = stack.get("item_instance_id")
+        slot_type = stack.get("slot_type", "unknown")
+        # Check if this item is equipped by comparing item_id or item_instance_id
+        is_equipped = False
+        if stack_item_instance_id and str(stack_item_instance_id) in equipped_item_instance_ids:
+            is_equipped = True
+        elif stack_item_id and str(stack_item_id) in equipped_item_ids:
+            is_equipped = True
+        # Items stored in containers (e.g., slot_type='backpack') should not count toward regular inventory
+        is_in_container = slot_type != "unknown" and slot_type != "inventory"
+        if not is_equipped and not is_in_container:
+            non_equipped_inventory.append(stack)
+
+    slots_used = len(non_equipped_inventory)
     remaining = max(DEFAULT_SLOT_CAPACITY - slots_used, 0)
 
     lines: list[str] = [
@@ -273,12 +310,77 @@ def _render_inventory(
             item = equipped[slot_name]
             item_name = item.get("item_name") or item.get("item_id", "Unknown Item")
             quantity = item.get("quantity", 0)
-            metadata_suffix = _format_metadata(item.get("metadata"))
+
+            # Check if this slot has a container and update metadata with slot usage
+            item_metadata = item.get("metadata") or {}
+            logger.debug(
+                "Processing equipped item",
+                slot_name=slot_name,
+                item_metadata=item_metadata,
+                has_container_in_metadata="container" in item_metadata,
+            )
+            if container_contents is not None and slot_name in container_contents:
+                container_items = container_contents[slot_name]
+                container_capacity = container_capacities.get(slot_name, 20) if container_capacities else 20
+                container_lock_state = (
+                    container_lock_states.get(slot_name, "unlocked") if container_lock_states else "unlocked"
+                )
+                container_slots_used = len(container_items)
+
+                # Create a fresh container dict with slot usage info (don't merge with existing)
+                container_dict = {
+                    "lock_state": container_lock_state,
+                    "capacity_slots": container_capacity,
+                    "slots_in_use": container_slots_used,
+                }
+                # Ensure slots_in_use is actually set (debug check)
+                if "slots_in_use" not in container_dict:
+                    logger.error("CRITICAL: slots_in_use missing from container_dict!", container_dict=container_dict)
+                logger.debug(
+                    "Container dict created",
+                    container_dict=container_dict,
+                    container_slots_used=container_slots_used,
+                    container_items_count=len(container_items),
+                    slots_in_use_in_dict="slots_in_use" in container_dict,
+                )
+                # Create a new metadata dict, ensuring container is our new dict
+                updated_metadata = {}
+                # Copy all non-container metadata
+                for key, value in item_metadata.items():
+                    if key != "container":
+                        updated_metadata[key] = value
+                # Set the container with our new dict that includes slots_in_use
+                updated_metadata["container"] = container_dict
+                logger.debug(
+                    "Updated metadata before formatting",
+                    updated_metadata=updated_metadata,
+                    container_in_metadata=updated_metadata.get("container"),
+                )
+                # Format the updated metadata - this will include slots_in_use in the container dict
+                # Verify container_dict has slots_in_use before formatting
+                if "container" in updated_metadata:
+                    container_check = updated_metadata["container"]
+                    logger.info(
+                        "About to format metadata",
+                        container_dict=container_check,
+                        has_slots_in_use="slots_in_use" in container_check
+                        if isinstance(container_check, dict)
+                        else False,
+                        container_dict_keys=list(container_check.keys()) if isinstance(container_check, dict) else None,
+                    )
+                metadata_suffix = _format_metadata(updated_metadata)
+                logger.info("Formatted metadata suffix", metadata_suffix=metadata_suffix)
+            else:
+                # No container, use original metadata
+                metadata_suffix = _format_metadata(item_metadata)
+
+            # Append the equipped item line with the formatted metadata
             lines.append(f"- {slot_name}: {item_name} x{quantity}{metadata_suffix}")
 
-            # Show container contents if this slot has a container with items
-            if container_contents and slot_name in container_contents:
+            # Show container contents if this slot has a container
+            if container_contents is not None and slot_name in container_contents:
                 container_items = container_contents[slot_name]
+
                 if container_items:
                     for container_item in container_items:
                         container_item_name = container_item.get("item_name") or container_item.get(
@@ -346,17 +448,31 @@ async def handle_inventory_command(
     inventory_view = player.get_inventory()
     equipped_view = player.get_equipped_items()
 
-    # Get container contents for equipped containers
+    # Get container contents, capacity, and lock state for equipped containers
     # Key by slot name to match with equipped items
     container_contents: dict[str, list[dict[str, Any]]] = {}
+    container_capacities: dict[str, int] = {}
+    container_lock_states: dict[str, str] = {}
     try:
         player_id_uuid = UUID(str(player.player_id))
         wearable_containers = _SHARED_WEARABLE_CONTAINER_SERVICE.get_wearable_containers_for_player(player_id_uuid)
+        logger.debug(
+            "Getting container contents",
+            player_id=str(player_id_uuid),
+            wearable_containers_count=len(wearable_containers),
+            equipped_slots=list(equipped_view.keys()),
+        )
         # Match containers to equipped items by item_name or item_id
         for container_component in wearable_containers:
             container_metadata = container_component.metadata if hasattr(container_component, "metadata") else {}
             container_item_name = container_metadata.get("item_name")
             container_item_id = container_metadata.get("item_id")
+            logger.debug(
+                "Processing container component",
+                container_item_name=container_item_name,
+                container_item_id=container_item_id,
+                container_items_count=len(container_component.items) if container_component.items else 0,
+            )
 
             # Find matching slot in equipped items
             matching_slot = None
@@ -367,18 +483,76 @@ async def handle_inventory_command(
                     container_item_id and equipped_item_id and container_item_id == equipped_item_id
                 ):
                     matching_slot = slot_name
+                    logger.debug(
+                        "Found matching slot",
+                        matching_slot=slot_name,
+                        container_item_name=container_item_name,
+                        equipped_item_name=equipped_item_name,
+                    )
                     break
 
-            if matching_slot and container_component.items:
+            if matching_slot:
+                # Store container capacity and lock state
+                container_capacities[matching_slot] = container_component.capacity_slots
+                # Get lock_state enum value as string
+                lock_state = container_component.lock_state
+                if hasattr(lock_state, "value"):
+                    container_lock_states[matching_slot] = lock_state.value
+                else:
+                    container_lock_states[matching_slot] = str(lock_state)
                 # Convert InventoryStack objects to dictionaries for display
                 # InventoryStack is a TypedDict, so it's already dict-like, but we need to cast for mypy
-                container_contents[matching_slot] = [cast(dict[str, Any], item) for item in container_component.items]
+                # ALWAYS set container_contents, even if empty, so we can calculate slots_in_use
+                if container_component.items:
+                    container_contents[matching_slot] = [
+                        cast(dict[str, Any], item) for item in container_component.items
+                    ]
+                else:
+                    container_contents[matching_slot] = []
+                logger.debug(
+                    "Container contents set",
+                    matching_slot=matching_slot,
+                    items_count=len(container_contents[matching_slot]),
+                )
+            else:
+                logger.debug(
+                    "No matching slot found for container",
+                    container_item_name=container_item_name,
+                    container_item_id=container_item_id,
+                    equipped_slots=list(equipped_view.keys()),
+                )
     except Exception as e:
         logger.debug(
             "Error getting container contents for inventory display",
             error=str(e),
             player=player.name,
         )
+
+    # Update equipped items' metadata to include slots_in_use for containers
+    for slot_name, equipped_item in equipped_view.items():
+        if slot_name in container_contents:
+            container_items = container_contents[slot_name]
+            container_slots_used = len(container_items)
+            # Ensure metadata exists
+            if "metadata" not in equipped_item:
+                equipped_item["metadata"] = {}
+            # Ensure container dict exists in metadata
+            if "container" not in equipped_item["metadata"]:
+                equipped_item["metadata"]["container"] = {}
+            # Update container dict with slots_in_use
+            container_dict = equipped_item["metadata"]["container"]
+            if isinstance(container_dict, dict):
+                container_dict = dict(container_dict)  # Make a copy
+            else:
+                container_dict = {}
+            container_dict.update(
+                {
+                    "lock_state": container_lock_states.get(slot_name, "unlocked"),
+                    "capacity_slots": container_capacities.get(slot_name, 20),
+                    "slots_in_use": container_slots_used,
+                }
+            )
+            equipped_item["metadata"]["container"] = container_dict
 
     logger.info(
         "Inventory displayed",
@@ -388,7 +562,9 @@ async def handle_inventory_command(
         containers_with_items=len(container_contents),
     )
     return {
-        "result": _render_inventory(inventory_view, equipped_view, container_contents),
+        "result": _render_inventory(
+            inventory_view, equipped_view, container_contents, container_capacities, container_lock_states
+        ),
         "inventory": deepcopy(inventory_view),
         "equipped": deepcopy(equipped_view),
     }
@@ -466,12 +642,14 @@ async def handle_pickup_command(
     if not extracted_stack:
         return {"result": "That item is no longer available."}
 
-    # Items picked up from the ground should go into general inventory (backpack),
+    # Items picked up from the ground should go into general inventory,
     # not into equipped slots, even if they're equippable items.
+    # Do NOT set slot_type='backpack' - items should only have slot_type='backpack'
+    # when explicitly placed into containers via the 'put' command.
     # The slot_type is only preserved when removing items from containers
     # (if they were equipped before being put in the container).
     logger.debug(
-        "Pickup: extracted_stack before slot_type override",
+        "Pickup: extracted_stack before processing",
         player=player.name,
         player_id=str(player.player_id),
         extracted_stack_type=type(extracted_stack).__name__,
@@ -480,14 +658,14 @@ async def handle_pickup_command(
     )
     if isinstance(extracted_stack, dict):
         extracted_stack = dict(extracted_stack)  # Create a copy to avoid mutating the original
-        extracted_stack["slot_type"] = "backpack"
+        # Do NOT set slot_type - items go to general inventory
+        # slot_type is only set when items are explicitly put into containers via 'put' command
         logger.debug(
-            "Pickup: slot_type set to backpack",
+            "Pickup: item will be added to general inventory",
             player=player.name,
             player_id=str(player.player_id),
             item_id=extracted_stack.get("item_id"),
             item_name=extracted_stack.get("item_name"),
-            slot_type=extracted_stack.get("slot_type"),
         )
 
     # Ensure the item instance exists in the database for referential integrity

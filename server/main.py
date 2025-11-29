@@ -253,8 +253,7 @@ if __name__ == "__main__":
         "server.main:app",  # Use the correct module path from project root
         host=config.server.host,
         port=config.server.port,
-        reload=True,
-        reload_excludes=["server/tests/*"],  # Exclude test directory from hot reloading
+        reload=False,  # Hot reloading disabled due to client compatibility issues
         # Use our StructLog system for all logging
         access_log=True,
         use_colors=False,  # Disable colors for structured logging

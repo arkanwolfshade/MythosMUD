@@ -36,5 +36,6 @@
     ".env.example": "properties",
     "env.example": "properties",
     "env.production.example": "properties"
-  }
+  },
+  "makefile.configureOnOpen": true
 }

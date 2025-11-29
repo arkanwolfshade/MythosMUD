@@ -704,7 +704,7 @@ class RealTimeEventHandler:
             room_id_str = str(room_id) if room_id else ""
 
             # CRITICAL DEBUG: Log what we're about to send
-            self._logger.warning(
+            self._logger.debug(
                 "Sending room_occupants event",
                 room_id=room_id_str,
                 players=players,
