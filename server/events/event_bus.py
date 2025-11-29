@@ -68,10 +68,41 @@ class EventBus:
                     self._active_tasks.add(self._processing_task)
                     # Add callback to clean up task reference on completion
                     self._processing_task.add_done_callback(lambda task: self._active_tasks.discard(task))
-                    self._logger.info("EventBus pure async processing started on-demand")
-            except RuntimeError:
+                    self._logger.info(
+                        "EventBus pure async processing started on-demand",
+                        loop_running=loop.is_running(),
+                        task_created=True,
+                        task_name=self._processing_task.get_name()
+                        if hasattr(self._processing_task, "get_name")
+                        else "unknown",
+                    )
+                else:
+                    self._logger.warning(
+                        "EventBus: Loop exists but not running",
+                        loop_exists=loop is not None,
+                        loop_running=loop.is_running() if loop else False,
+                    )
+            except RuntimeError as e:
                 # No running loop available - processing will start when first event published
-                self._logger.debug("EventBus will start processing on first publish when event loop available")
+                self._logger.warning(
+                    "EventBus will start processing on first publish when event loop available",
+                    error=str(e),
+                    error_type=type(e).__name__,
+                )
+            except Exception as e:
+                # Unexpected error - log it
+                self._logger.error(
+                    "Unexpected error starting EventBus processing",
+                    error=str(e),
+                    error_type=type(e).__name__,
+                    exc_info=True,
+                )
+        elif self._running:
+            self._logger.debug(
+                "EventBus already running",
+                processing_task_exists=self._processing_task is not None,
+                task_done=self._processing_task.done() if self._processing_task else None,
+            )
 
     def set_main_loop(self, loop: asyncio.AbstractEventLoop) -> None:
         """Set the main event loop - now properly managed for async compatibility."""
@@ -201,8 +232,11 @@ class EventBus:
             self._logger.debug("No subscribers for event type", event_type=event_type.__name__)
             return
 
-        self._logger.debug(
-            "Processing event for subscribers", event_type=event_type.__name__, subscriber_count=len(subscribers)
+        self._logger.info(
+            "Processing event for subscribers",
+            event_type=event_type.__name__,
+            subscriber_count=len(subscribers),
+            subscriber_names=[getattr(s, "__name__", "unknown") for s in subscribers],
         )
 
         import inspect
@@ -268,6 +302,13 @@ class EventBus:
                                 subscriber_name=subscriber_name,
                                 error=str(result),
                                 error_type=type(result).__name__,
+                                exc_info=True,
+                            )
+                        else:
+                            self._logger.debug(
+                                "Async subscriber completed successfully",
+                                subscriber_name=subscriber_name,
+                                has_result=result is not None,
                             )
                 except Exception as e:
                     # This should not happen with return_exceptions=True, but handle defensively
@@ -302,7 +343,12 @@ class EventBus:
         # Use put_nowait for non-blocking publish (pure asyncio.Queue) - Task 1.2
         try:
             self._event_queue.put_nowait(event)
-            self._logger.debug("Published event", event_type=type(event).__name__)
+            self._logger.info(
+                "Published event to queue",
+                event_type=type(event).__name__,
+                queue_size=self._event_queue.qsize(),
+                processing_running=self._running,
+            )
         except asyncio.QueueFull as exc:
             # Rare case where queue is at capacity - indicates very high load
             self._logger.warning("Event queue at capacity - dropping event", event_type=type(event).__name__)

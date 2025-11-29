@@ -1178,7 +1178,10 @@ async def handle_goto_command(
         )
 
         logger.info(
-            f"Goto executed successfully - {player_name} teleported to {target_player_name} at {target_room_id}"
+            "Goto executed successfully",
+            player_name=player_name,
+            target_player_name=target_player_name,
+            target_room_id=target_room_id,
         )
         return {"result": f"You teleport to {target_player_name}'s location."}
 
@@ -1328,7 +1331,10 @@ async def handle_confirm_teleport_command(
         )
 
         logger.info(
-            f"Teleport executed successfully - {player_name} teleported {target_player_name} to {target_room_id}"
+            "Teleport executed successfully",
+            player_name=player_name,
+            target_player_name=target_player_name,
+            target_room_id=target_room_id,
         )
         return {"result": f"You have successfully teleported {target_player_name} to your location."}
 
@@ -1470,7 +1476,10 @@ async def handle_confirm_goto_command(
         )
 
         logger.info(
-            f"Goto executed successfully - {player_name} teleported to {target_player_name} at {target_room_id}"
+            "Goto executed successfully",
+            player_name=player_name,
+            target_player_name=target_player_name,
+            target_room_id=target_room_id,
         )
         return {"result": f"You have successfully teleported to {target_player_name}'s location."}
 

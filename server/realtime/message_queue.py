@@ -189,7 +189,9 @@ class MessageQueue:
                     # Keep only the most recent messages
                     self.pending_messages[player_id] = messages[-max_entries:]
                     logger.debug(
-                        f"Cleaned up large message queue structure for player {player_id}: kept {max_entries} entries"
+                        "Cleaned up large message queue structure for player",
+                        player_id=player_id,
+                        kept_entries=max_entries,
                     )
 
         except (ValueError, TypeError, KeyError) as e:

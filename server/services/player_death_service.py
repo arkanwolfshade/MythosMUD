@@ -91,6 +91,47 @@ class PlayerDeathService:
             )
             return []
 
+    async def get_dead_players(self, session: AsyncSession) -> list[Player]:
+        """
+        Get all players who are dead (HP <= -10).
+
+        Args:
+            session: Async database session for querying players
+
+        Returns:
+            List of Player objects that are dead
+        """
+        try:
+            # Query all players from the database using async API
+            result = await session.execute(select(Player))
+            all_players = result.scalars().all()
+
+            # Filter for dead players (HP <= -10)
+            dead_players = []
+            for player in all_players:
+                stats = player.get_stats()
+                current_hp = stats.get("current_health", 0)
+                if current_hp <= -10:
+                    dead_players.append(player)
+
+            logger.debug(
+                "Found dead players",
+                count=len(dead_players),
+                player_ids=[p.player_id for p in dead_players],
+            )
+
+            return dead_players
+
+        except Exception as e:
+            log_exception_once(
+                logger,
+                "error",
+                "Error retrieving dead players",
+                exc=e,
+                exc_info=True,
+            )
+            return []
+
     async def process_mortally_wounded_tick(self, player_id: uuid.UUID, session: AsyncSession) -> bool:
         """
         Process HP decay for a single mortally wounded player.

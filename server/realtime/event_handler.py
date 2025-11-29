@@ -73,6 +73,20 @@ class RealTimeEventHandler:
         self.event_bus.subscribe(PlayerXPAwardEvent, self._handle_player_xp_awarded)
         self.event_bus.subscribe(PlayerHPUpdated, self._handle_player_hp_updated)
 
+        # Log subscription for debugging
+        self._logger.info(
+            "Subscribed to game events",
+            event_types=[
+                "PlayerEnteredRoom",
+                "PlayerLeftRoom",
+                "NPCEnteredRoom",
+                "NPCLeftRoom",
+                "PlayerXPAwardEvent",
+                "PlayerHPUpdated",
+            ],
+            event_bus_id=id(self.event_bus),
+        )
+
         # Subscribe to death/respawn events
         from ..events.event_types import PlayerDiedEvent, PlayerHPDecayEvent, PlayerRespawnedEvent
 
@@ -375,6 +389,17 @@ class RealTimeEventHandler:
                     "count": len(all_occupants),
                 },
             }
+            self._logger.debug(
+                "Sending room_occupants event with data",
+                player_id=player_id_uuid,
+                room_id=room_id,
+                players_count=len(players),
+                npcs_count=len(npcs),
+                total_count=len(all_occupants),
+                players=players,
+                npcs=npcs,
+                occupants=all_occupants,
+            )
             await self.connection_manager.send_personal_message(player_id_uuid, personal)
         except Exception as e:
             # Structlog handles UUID objects automatically, no need to convert to string
@@ -1356,25 +1381,65 @@ class RealTimeEventHandler:
             event: The PlayerHPUpdated event containing HP change information
         """
         try:
+            # CRITICAL DEBUG: Log at the very start to verify handler is being called
+            self._logger.info(
+                "_handle_player_hp_updated called",
+                event_type=type(event).__name__,
+                player_id=event.player_id,
+                old_hp=event.old_hp,
+                new_hp=event.new_hp,
+                max_hp=event.max_hp,
+            )
             player_id_str = event.player_id
+            self._logger.info(
+                "Received PlayerHPUpdated event",
+                player_id=player_id_str,
+                old_hp=event.old_hp,
+                new_hp=event.new_hp,
+                max_hp=event.max_hp,
+                damage_taken=event.damage_taken,
+            )
 
-            # Get the current player data to send updated HP and stats
-            player = self.connection_manager._get_player(player_id_str)
-            if not player:
-                self._logger.warning("Player not found for HP update event", player_id=player_id_str)
+            # Check if connection manager is available
+            if not self.connection_manager:
+                self._logger.error(
+                    "Connection manager is not available for HP update",
+                    player_id=player_id_str,
+                )
                 return
 
+            # Get the current player data to send updated HP and stats
+            # CRITICAL: Try to get player from connection manager, but if not found,
+            # still send the HP update event with the data from the event itself
+            player = self.connection_manager._get_player(player_id_str)
+
             # Get full player stats including posture/position
-            stats = player.get_stats() if hasattr(player, "get_stats") else {}
+            if player:
+                stats = player.get_stats() if hasattr(player, "get_stats") else {}
+                player_name = player.name
+                current_room_id = getattr(player, "current_room_id", None)
+            else:
+                # Player not in connection manager - use event data only
+                self._logger.debug(
+                    "Player not in connection manager for HP update, using event data only",
+                    player_id=player_id_str,
+                )
+                stats = {}  # Will be updated from player_update event if available
+                player_name = "Unknown"  # Will be updated from player_update event if available
+                current_room_id = None
 
             # Create player update event with new HP and full stats
             player_update_data = {
                 "player_id": player_id_str,
-                "name": player.name,
+                "name": player_name,
                 "health": event.new_hp,
                 "max_health": event.max_hp,
-                "current_room_id": getattr(player, "current_room_id", None),
-                "stats": stats,  # Include full stats so client can update posture
+                "current_room_id": current_room_id,
+                "stats": {
+                    **stats,
+                    "current_health": event.new_hp,
+                    "max_health": event.max_hp,
+                },  # Ensure HP is set even if stats are empty
             }
 
             # Send personal message to the player
@@ -1484,6 +1549,72 @@ class RealTimeEventHandler:
             # Convert UUID to string for build_event (which expects str)
             player_id_str = str(event.player_id)
 
+            # BUGFIX: Get updated player data to include in event payload
+            # As documented in "Resurrection and Client State Synchronization" - Dr. Armitage, 1930
+            # Client must receive updated player state including corrected posture after respawn
+            player_data = None
+            updated_position = "standing"
+            if self.connection_manager and hasattr(self.connection_manager, "persistence"):
+                persistence = self.connection_manager.persistence
+                if persistence:
+                    try:
+                        # Get player from persistence to retrieve updated stats including position
+                        player = persistence.get_player(uuid.UUID(player_id_str))
+                        if player:
+                            stats = player.get_stats()
+                            updated_position = stats.get("position", "standing")
+
+                            # BUGFIX: Update connection manager's in-memory position state
+                            # As documented in "Resurrection and In-Memory State Synchronization" - Dr. Armitage, 1930
+                            # Connection manager's online_players tracking must reflect correct posture after respawn
+                            if hasattr(self.connection_manager, "online_players"):
+                                player_uuid = uuid.UUID(player_id_str)
+                                if player_uuid in self.connection_manager.online_players:
+                                    self.connection_manager.online_players[player_uuid]["position"] = updated_position
+                                    self._logger.debug(
+                                        "Updated connection manager position state",
+                                        player_id=player_id_str,
+                                        position=updated_position,
+                                    )
+
+                            # Convert player to client-expected format
+                            player_data = {
+                                "id": str(player.player_id),
+                                "name": player.name,
+                                "level": player.level,
+                                "xp": player.experience_points,
+                                "stats": {
+                                    "current_health": stats.get("current_health", 100),
+                                    "max_health": stats.get("max_health", 100),
+                                    "sanity": stats.get("sanity", 100),
+                                    "max_sanity": stats.get("max_sanity", 100),
+                                    "strength": stats.get("strength"),
+                                    "dexterity": stats.get("dexterity"),
+                                    "constitution": stats.get("constitution"),
+                                    "intelligence": stats.get("intelligence"),
+                                    "wisdom": stats.get("wisdom"),
+                                    "charisma": stats.get("charisma"),
+                                    "occult_knowledge": stats.get("occult_knowledge", 0),
+                                    "fear": stats.get("fear", 0),
+                                    "corruption": stats.get("corruption", 0),
+                                    "cult_affiliation": stats.get("cult_affiliation", 0),
+                                    "position": updated_position,  # CRITICAL: Include updated position
+                                },
+                                "position": updated_position,  # Also include at top level for compatibility
+                                "in_combat": False,  # Combat state cleared during respawn
+                            }
+                            self._logger.debug(
+                                "Retrieved player data for respawn event",
+                                player_id=player_id_str,
+                                position=updated_position,
+                            )
+                    except Exception as e:
+                        self._logger.warning(
+                            "Failed to retrieve player data for respawn event",
+                            player_id=player_id_str,
+                            error=str(e),
+                        )
+
             # Send personal message to the player
             from .envelope import build_event
 
@@ -1496,6 +1627,7 @@ class RealTimeEventHandler:
                     "old_hp": event.old_hp,
                     "new_hp": event.new_hp,
                     "message": "The sanitarium calls you back from the threshold. You have been restored to life.",
+                    "player": player_data,  # BUGFIX: Include updated player data with corrected posture
                 },
                 player_id=player_id_str,
             )
@@ -1506,6 +1638,7 @@ class RealTimeEventHandler:
                 "Sent respawn notification to player",
                 player_id=player_id_str,
                 respawn_room=event.respawn_room_id,
+                player_data_included=player_data is not None,
             )
 
         except Exception as e:

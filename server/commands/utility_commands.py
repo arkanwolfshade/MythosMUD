@@ -642,7 +642,8 @@ async def handle_emote_command(
 
         if result.get("success"):
             logger.info(
-                f"Emote message sent successfully for {player_name}",
+                "Emote message sent successfully",
+                player_name=player_name,
                 room=current_room_id,
                 message_id=result.get("message", {}).get("id"),
             )

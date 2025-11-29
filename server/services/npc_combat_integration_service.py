@@ -388,11 +388,10 @@ class NPCCombatIntegrationService:
 
         except Exception as e:
             logger.error(
-                f"Error handling player attack on NPC: {e}",
+                "Error handling player attack on NPC",
+                error=str(e),
                 player_id=player_id,
                 npc_id=npc_id,
-                error=str(e),
-                exc_info=True,
             )
             return False
 

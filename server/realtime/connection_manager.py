@@ -419,7 +419,10 @@ class ConnectionManager:
                                 raise Exception("WebSocket not connected")
                         except Exception as ping_error:
                             logger.warning(
-                                f"Dead WebSocket connection {connection_id} for player {player_id}, will clean up: {ping_error}"
+                                "Dead WebSocket connection, will clean up",
+                                connection_id=connection_id,
+                                player_id=player_id,
+                                ping_error=str(ping_error),
                             )
                             dead_connection_ids.append(connection_id)
 
@@ -493,7 +496,8 @@ class ConnectionManager:
             total_connections = existing_websocket_count + existing_sse_count + 1  # +1 for the new connection
 
             logger.info(
-                f"WebSocket connected for player {player_id}",
+                "WebSocket connected for player",
+                player_id=player_id,
                 connection_id=connection_id,
                 session_id=session_id,
                 existing_websocket_connections=existing_websocket_count,
@@ -522,7 +526,8 @@ class ConnectionManager:
                     await self._track_player_connected(player_id, player, "websocket")
                 else:
                     logger.info(
-                        f"Player {player_id} already tracked as online, but broadcasting connection message for WebSocket"
+                        "Player already tracked as online, but broadcasting connection message for WebSocket",
+                        player_id=player_id,
                     )
                     # Still broadcast connection message even if player is already tracked
                     await self._broadcast_connection_message(player_id, player)
@@ -774,7 +779,9 @@ class ConnectionManager:
             metadata = self.connection_metadata[connection_id]
             if metadata.player_id != player_id or metadata.connection_type != "websocket":
                 logger.warning(
-                    f"Connection {connection_id} does not belong to player {player_id} or is not a WebSocket"
+                    "Connection does not belong to player or is not a WebSocket",
+                    connection_id=connection_id,
+                    player_id=player_id,
                 )
                 return False
 
@@ -782,7 +789,11 @@ class ConnectionManager:
 
         except Exception as e:
             logger.error(
-                f"Error disconnecting WebSocket connection {connection_id} for player {player_id}: {e}", exc_info=True
+                "Error disconnecting WebSocket connection",
+                connection_id=connection_id,
+                player_id=player_id,
+                error=str(e),
+                exc_info=True,
             )
             return False
 
@@ -806,7 +817,9 @@ class ConnectionManager:
             metadata = self.connection_metadata[connection_id]
             if metadata.player_id != player_id or metadata.connection_type != "sse":
                 logger.warning(
-                    f"Connection {connection_id} does not belong to player {player_id} or is not an SSE connection"
+                    "Connection does not belong to player or is not an SSE connection",
+                    connection_id=connection_id,
+                    player_id=player_id,
                 )
                 return False
 
@@ -839,7 +852,11 @@ class ConnectionManager:
 
         except Exception as e:
             logger.error(
-                f"Error disconnecting SSE connection {connection_id} for player {player_id}: {e}", exc_info=True
+                "Error disconnecting SSE connection",
+                connection_id=connection_id,
+                player_id=player_id,
+                error=str(e),
+                exc_info=True,
             )
             return False
 
@@ -892,7 +909,8 @@ class ConnectionManager:
         total_connections = existing_websocket_count + existing_sse_count + 1  # +1 for the new connection
 
         logger.info(
-            f"SSE connected for player {player_id}",
+            "SSE connected for player",
+            player_id=player_id,
             connection_id=connection_id,
             session_id=session_id,
             existing_websocket_connections=existing_websocket_count,
@@ -975,8 +993,9 @@ class ConnectionManager:
             total_existing_connections = existing_websocket_count + existing_sse_count
 
             logger.info(
-                f"Handling new game session {new_session_id} for player {player_id}",
+                "Handling new game session for player",
                 new_session_id=new_session_id,
+                player_id=player_id,
                 existing_websocket_connections=existing_websocket_count,
                 existing_sse_connections=existing_sse_count,
                 total_existing_connections=total_existing_connections,
@@ -1093,7 +1112,10 @@ class ConnectionManager:
 
             session_results["success"] = True
             logger.info(
-                f"Disconnected {session_results['connections_disconnected']} connections for new game session {new_session_id} of player {player_id}"
+                "Disconnected connections for new game session",
+                connections_disconnected=session_results["connections_disconnected"],
+                new_session_id=new_session_id,
+                player_id=player_id,
             )
 
         except Exception as e:
@@ -1341,7 +1363,10 @@ class ConnectionManager:
                 connection_age = now_ts - timestamp
                 if connection_age > self.memory_monitor.max_connection_age:
                     logger.info(
-                        f"DEBUG: Connection {connection_id} is stale (age: {connection_age:.1f}s, max: {self.memory_monitor.max_connection_age}s)"
+                        "DEBUG: Connection is stale",
+                        connection_id=connection_id,
+                        connection_age=connection_age,
+                        max_connection_age=self.memory_monitor.max_connection_age,
                     )
                     stale_connections.append(connection_id)
 
@@ -1485,7 +1510,10 @@ class ConnectionManager:
                         except Exception as ws_error:
                             # WebSocket is closed or in an invalid state
                             logger.warning(
-                                f"WebSocket send failed for player {player_id} connection {connection_id}: {ws_error}"
+                                "WebSocket send failed",
+                                player_id=player_id,
+                                connection_id=connection_id,
+                                error=str(ws_error),
                             )
                             delivery_status["websocket_failed"] += 1
                             # Clean up the dead WebSocket connection
@@ -2377,7 +2405,9 @@ class ConnectionManager:
                                 try:
                                     user = getattr(player_obj, "user", None)
                                     if user:
-                                        player_name = getattr(user, "username", None) or getattr(user, "display_name", None)
+                                        player_name = getattr(user, "username", None) or getattr(
+                                            user, "display_name", None
+                                        )
                                 except Exception:
                                     pass
 
@@ -2639,7 +2669,9 @@ class ConnectionManager:
                                 try:
                                     user = getattr(player, "user", None)
                                     if user:
-                                        player_name = getattr(user, "username", None) or getattr(user, "display_name", None)
+                                        player_name = getattr(user, "username", None) or getattr(
+                                            user, "display_name", None
+                                        )
                                 except Exception as e:
                                     logger.debug("Error accessing user relationship for player name", error=str(e))
 
@@ -2746,7 +2778,9 @@ class ConnectionManager:
             # If player still has connections, don't fully disconnect them
             if has_any_connections and connection_type:
                 logger.info(
-                    f"Player {player_id} still has connections, not fully disconnecting (disconnected {connection_type})"
+                    "Player still has connections, not fully disconnecting",
+                    player_id=player_id,
+                    disconnected_connection_type=connection_type,
                 )
                 return
 
@@ -3020,7 +3054,9 @@ class ConnectionManager:
             elif connection_id:
                 # Handle connection-specific error (non-fatal)
                 logger.warning(
-                    f"Connection-specific error: Terminating connection {connection_id} for player {player_id}"
+                    "Connection-specific error: Terminating connection",
+                    connection_id=connection_id,
+                    player_id=player_id,
                 )
 
                 # Try to disconnect the specific connection
@@ -3064,7 +3100,11 @@ class ConnectionManager:
             dict: Error handling results
         """
         logger.warning(
-            f"WebSocket error for player {player_id}, connection {connection_id}: {error_type} - {error_details}"
+            "WebSocket error",
+            player_id=player_id,
+            connection_id=connection_id,
+            error_type=error_type,
+            error_details=error_details,
         )
 
         # Check if this is a critical WebSocket error
@@ -3506,7 +3546,10 @@ class ConnectionManager:
                     room_data = self._convert_room_players_uuids_to_names(room_data)
 
                     logger.info(
-                        f"DEBUG: Room data for {room_id}: npcs={room_data.get('npcs', [])}, occupant_count={room_data.get('occupant_count', 0)}"
+                        "DEBUG: Room data",
+                        room_id=room_id,
+                        npcs=room_data.get("npcs", []),
+                        occupant_count=room_data.get("occupant_count", 0),
                     )
 
             # Get room occupants (players and NPCs)
@@ -4104,9 +4147,7 @@ class ConnectionManager:
                 if name and isinstance(name, str):
                     # Skip if it looks like a UUID (36 chars, 4 dashes, hex)
                     is_uuid = (
-                        len(name) == 36
-                        and name.count("-") == 4
-                        and all(c in "0123456789abcdefABCDEF-" for c in name)
+                        len(name) == 36 and name.count("-") == 4 and all(c in "0123456789abcdefABCDEF-" for c in name)
                     )
                     if not is_uuid:
                         names.append(name)
@@ -4165,9 +4206,7 @@ class ConnectionManager:
                 if name and isinstance(name, str):
                     # Skip if it looks like a UUID (36 chars, 4 dashes, hex)
                     is_uuid = (
-                        len(name) == 36
-                        and name.count("-") == 4
-                        and all(c in "0123456789abcdefABCDEF-" for c in name)
+                        len(name) == 36 and name.count("-") == 4 and all(c in "0123456789abcdefABCDEF-" for c in name)
                     )
                     if not is_uuid:
                         names.append(name)

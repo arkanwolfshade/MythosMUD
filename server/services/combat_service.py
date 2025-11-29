@@ -1107,6 +1107,7 @@ class CombatService:
             current_hp: New current HP value
         """
         try:
+            logger.info("_persist_player_hp called", player_id=player_id, current_hp=current_hp)
             if not self._player_combat_service:
                 logger.warning("No player combat service available for HP persistence", player_id=player_id)
                 return
@@ -1184,7 +1185,15 @@ class CombatService:
                 logger.error("Could not verify player save - player not found after save", player_id=player_id)
 
             # Publish HP update event for real-time UI updates
+            logger.info(
+                "About to call _publish_player_hp_update_event",
+                player_id=player_id,
+                old_hp=old_hp,
+                new_hp=current_hp,
+                max_hp=stats.get("max_health", 100),
+            )
             await self._publish_player_hp_update_event(player_id, old_hp, current_hp, stats.get("max_health", 100))
+            logger.info("_publish_player_hp_update_event completed", player_id=player_id)
 
             # Check if player has reached death threshold
             # CRITICAL: Players at 0 HP or below should enter mortally wounded state immediately
@@ -1235,8 +1244,25 @@ class CombatService:
             max_hp: Maximum HP value
         """
         try:
-            if not self._player_combat_service or not self._player_combat_service._event_bus:
-                logger.warning("No event bus available for HP update event", player_id=player_id)
+            logger.info(
+                "_publish_player_hp_update_event called",
+                player_id=player_id,
+                old_hp=old_hp,
+                new_hp=new_hp,
+                max_hp=max_hp,
+                has_player_combat_service=bool(self._player_combat_service),
+            )
+            if not self._player_combat_service:
+                logger.warning("No player combat service available for HP update event", player_id=player_id)
+                return
+            if not self._player_combat_service._event_bus:
+                logger.warning(
+                    "No event bus available for HP update event",
+                    player_id=player_id,
+                    event_bus_type=type(self._player_combat_service._event_bus).__name__
+                    if self._player_combat_service._event_bus
+                    else None,
+                )
                 return
 
             from server.events.event_types import PlayerHPUpdated
@@ -1256,7 +1282,31 @@ class CombatService:
                 room_id=None,  # Could be enhanced to track room context
             )
 
-            # Use the NATS service directly to publish the event
+            # Publish to event bus so RealTimeEventHandler can send it to the client
+            # CRITICAL: RealTimeEventHandler subscribes to the event bus, not NATS directly
+            event_bus = self._player_combat_service._event_bus
+            if event_bus:
+                try:
+                    event_bus.publish(hp_update_event)
+                    logger.info(
+                        "Published PlayerHPUpdated event to event bus",
+                        player_id=player_id,
+                        old_hp=old_hp,
+                        new_hp=new_hp,
+                        event_bus_type=type(event_bus).__name__,
+                    )
+                except Exception as e:
+                    logger.error(
+                        "Failed to publish PlayerHPUpdated event to event bus",
+                        player_id=player_id,
+                        error=str(e),
+                        error_type=type(e).__name__,
+                        exc_info=True,
+                    )
+            else:
+                logger.warning("No event bus available for HP update event", player_id=player_id)
+
+            # Also publish via NATS for other systems that might be listening
             if self._nats_service:
                 # Convert event to NATS message format
                 # Build subject using combat event publisher's subject manager
@@ -1288,8 +1338,9 @@ class CombatService:
                     },
                 }
                 await self._nats_service.publish(subject, message_data)
+                logger.debug("Published PlayerHPUpdated event to NATS", player_id=player_id)
             else:
-                logger.warning("No NATS service available for HP update event", player_id=player_id)
+                logger.debug("No NATS service available for HP update event", player_id=player_id)
 
             logger.info(
                 "Published PlayerHPUpdated event",

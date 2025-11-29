@@ -333,7 +333,7 @@ class StandardizedErrorResponse:
             details["exception_message"] = str(exc)
 
         # Log the error
-        logger.error("Unhandled exception", error=str(exc), exc_info=True, context=self.context.to_dict())
+        logger.error("Unhandled exception", error=str(exc), exc_info=True, **self.context.to_dict())
 
         # Create appropriate response
         response_data = create_standard_error_response(

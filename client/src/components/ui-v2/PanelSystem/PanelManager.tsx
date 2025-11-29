@@ -1,5 +1,6 @@
-import React, { createContext, useCallback, useContext, useMemo, useReducer, useEffect } from 'react';
+import React, { useCallback, useMemo, useReducer, useEffect } from 'react';
 import type { PanelPosition, PanelSize, PanelState } from '../types';
+import { PanelManagerContext } from './PanelManagerContext';
 
 // Panel manager state and actions
 // Implementing centralized panel state management using useReducer pattern
@@ -250,25 +251,6 @@ const panelReducer = (state: PanelManagerState, action: PanelAction): PanelManag
   }
 };
 
-interface PanelManagerContextValue {
-  panels: Record<string, PanelState>;
-  updatePosition: (id: string, position: PanelPosition) => void;
-  updateSize: (id: string, size: PanelSize) => void;
-  toggleMinimize: (id: string) => void;
-  toggleMaximize: (id: string) => void;
-  setVisibility: (id: string, isVisible: boolean) => void;
-  focusPanel: (id: string) => void;
-  closePanel: (id: string) => void;
-  getPanel: (id: string) => PanelState | undefined;
-  scalePanelsToViewport: (
-    viewportWidth: number,
-    viewportHeight: number,
-    scaleFunction: (width: number, height: number) => Record<string, PanelState>
-  ) => void;
-}
-
-const PanelManagerContext = createContext<PanelManagerContextValue | null>(null);
-
 interface PanelManagerProviderProps {
   children: React.ReactNode;
   defaultPanels: Record<string, PanelState>;
@@ -365,12 +347,4 @@ export const PanelManagerProvider: React.FC<PanelManagerProviderProps> = ({ chil
   );
 
   return <PanelManagerContext.Provider value={value}>{children}</PanelManagerContext.Provider>;
-};
-
-export const usePanelManager = (): PanelManagerContextValue => {
-  const context = useContext(PanelManagerContext);
-  if (!context) {
-    throw new Error('usePanelManager must be used within PanelManagerProvider');
-  }
-  return context;
 };

@@ -11,11 +11,11 @@ const TIER_METADATA: TierMetadata = {
   vigorous: {
     label: 'Vigorous',
     tone: 'text-emerald-300',
-    description: 'Pulse steady, no mortal wounds detected.',
+    description: 'A picture of health.',
     barClass: 'bg-emerald-400',
   },
   steady: {
-    label: 'Steady',
+    label: 'Scratched',
     tone: 'text-amber-300',
     description: 'Bruised but battle-ready per M.U. field notes.',
     barClass: 'bg-amber-300',
@@ -29,7 +29,7 @@ const TIER_METADATA: TierMetadata = {
   critical: {
     label: 'Critical',
     tone: 'text-rose-300',
-    description: 'Life thread frays like the tales in Cultes des Goules.',
+    description: 'Darkness threatens to overwhelm your vision.',
     barClass: 'bg-rose-500',
   },
 };

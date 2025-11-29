@@ -109,7 +109,8 @@ class MythosMUDError(LoggedException):
     def _log_error(self) -> None:
         """Log the error with structured context."""
         logger.error(
-            f"MythosMUD error occurred: {self.message}",
+            "MythosMUD error occurred",
+            message=self.message,
             error_type=self.__class__.__name__,
             details=self.details,
             timestamp=self.timestamp.isoformat(),

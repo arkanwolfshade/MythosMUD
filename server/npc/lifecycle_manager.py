@@ -222,7 +222,9 @@ class NPCLifecycleManager:
         current_time = time.monotonic()
         self.death_suppression[npc_id] = current_time
         logger.info(
-            f"Recorded death of NPC {npc_id}, suppressing respawn for {self.death_suppression_duration} seconds"
+            "Recorded death of NPC, suppressing respawn",
+            npc_id=npc_id,
+            death_suppression_duration=self.death_suppression_duration,
         )
 
     def is_npc_death_suppressed(self, npc_id: str) -> bool:

@@ -16,7 +16,7 @@ import { DeathInterstitial } from '../DeathInterstitial';
 import { MainMenuModal } from '../MainMenuModal';
 import { MapView } from '../MapView';
 import { GameClientV2 } from './GameClientV2';
-import { useTabbedInterface } from './TabbedInterface';
+import { useTabbedInterface } from './useTabbedInterface';
 import type { ChatMessage, Player, Room } from './types';
 
 // Import GameEvent interface from useGameConnection
@@ -365,11 +365,25 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
           }
           case 'player_hp_updated':
           case 'playerhpupdated': {
+            logger.info('GameClientV2Container', 'Received player_hp_updated event', {
+              old_hp: event.data.old_hp,
+              new_hp: event.data.new_hp,
+              max_hp: event.data.max_hp,
+              damage_taken: event.data.damage_taken,
+            });
+
             const { status: updatedHealthStatus } = buildHealthStatusFromEvent(
               healthStatusRef.current,
               event.data,
               event.timestamp
             );
+
+            logger.info('GameClientV2Container', 'Updated health status', {
+              current: updatedHealthStatus.current,
+              max: updatedHealthStatus.max,
+              tier: updatedHealthStatus.tier,
+            });
+
             setHealthStatus(updatedHealthStatus);
             if (currentPlayerRef.current) {
               updates.player = {
@@ -380,6 +394,10 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                   max_health: updatedHealthStatus.max,
                 },
               };
+              logger.info('GameClientV2Container', 'Updated player stats', {
+                current_health: updatedHealthStatus.current,
+                max_health: updatedHealthStatus.max,
+              });
             }
             break;
           }
@@ -651,6 +669,132 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             }
             break;
           }
+          case 'npc_attacked': {
+            // NPC attacked event - NPC attacks player
+            // Note: attacker_name is the NPC's name, npc_name is also the NPC's name (redundant field)
+            const attackerName = (event.data.attacker_name || event.data.npc_name) as string | undefined;
+            const damage = event.data.damage as number | undefined;
+            const actionType = event.data.action_type as string | undefined;
+
+            if (attackerName && damage !== undefined) {
+              // Format: "Dr. Francis Morgan attacks you for 10 damage."
+              const message = `${attackerName} ${actionType || 'attacks'} you for ${damage} damage.`;
+              appendMessage(
+                sanitizeChatMessageForState({
+                  text: message,
+                  timestamp: event.timestamp,
+                  messageType: 'system',
+                  channel: GAME_LOG_CHANNEL,
+                  isHtml: false,
+                })
+              );
+            }
+            break;
+          }
+          case 'player_attacked': {
+            // Player attacked event - player attacks NPC
+            const attackerName = event.data.attacker_name as string | undefined;
+            const targetName = event.data.target_name as string | undefined;
+            const damage = event.data.damage as number | undefined;
+            const actionType = event.data.action_type as string | undefined;
+            const targetCurrentHp = event.data.target_current_hp as number | undefined;
+            const targetMaxHp = event.data.target_max_hp as number | undefined;
+
+            if (attackerName && targetName && damage !== undefined) {
+              // Format: "You attack Dr. Francis Morgan for 10 damage. (50/100 HP)"
+              let message = `You ${actionType || 'attack'} ${targetName} for ${damage} damage.`;
+              if (targetCurrentHp !== undefined && targetMaxHp !== undefined) {
+                message += ` (${targetCurrentHp}/${targetMaxHp} HP)`;
+              }
+              appendMessage(
+                sanitizeChatMessageForState({
+                  text: message,
+                  timestamp: event.timestamp,
+                  messageType: 'system',
+                  channel: GAME_LOG_CHANNEL,
+                  isHtml: false,
+                })
+              );
+            }
+            break;
+          }
+          case 'combat_started': {
+            // Combat started - update player in_combat status
+            if (currentPlayerRef.current) {
+              updates.player = {
+                ...currentPlayerRef.current,
+                in_combat: true,
+              };
+            }
+            break;
+          }
+          case 'combat_ended': {
+            // Combat ended - update player in_combat status
+            if (currentPlayerRef.current) {
+              updates.player = {
+                ...currentPlayerRef.current,
+                in_combat: false,
+              };
+            }
+            break;
+          }
+          case 'player_update': {
+            // Player update event - update player data including in_combat status
+            const playerData = event.data as { in_combat?: boolean; [key: string]: unknown };
+            if (currentPlayerRef.current && playerData.in_combat !== undefined) {
+              updates.player = {
+                ...currentPlayerRef.current,
+                in_combat: playerData.in_combat,
+              };
+            }
+            break;
+          }
+          case 'player_died':
+          case 'playerdied': {
+            // Player died event - show death interstitial
+            const deathData = event.data as { death_location?: string; room_id?: string; [key: string]: unknown };
+            const deathLocation = deathData.death_location || deathData.room_id || 'Unknown Location';
+            setIsDead(true);
+            logger.info('GameClientV2Container', 'Player died event received', { deathLocation });
+            break;
+          }
+          case 'player_respawned':
+          case 'playerrespawned': {
+            // Player respawned event - hide death interstitial and update player state
+            const respawnData = event.data as {
+              player?: Player;
+              respawn_room_id?: string;
+              old_hp?: number;
+              new_hp?: number;
+              message?: string;
+              [key: string]: unknown;
+            };
+
+            setIsDead(false);
+            setIsMortallyWounded(false);
+            setIsRespawning(false);
+
+            if (respawnData.player) {
+              updates.player = respawnData.player as Player;
+            }
+
+            if (respawnData.message) {
+              appendMessage(
+                sanitizeChatMessageForState({
+                  text: respawnData.message,
+                  timestamp: event.timestamp,
+                  messageType: 'system',
+                  channel: 'system',
+                })
+              );
+            }
+
+            logger.info('GameClientV2Container', 'Player respawned event received', {
+              respawn_room: respawnData.respawn_room_id,
+              new_hp: respawnData.new_hp,
+            });
+            break;
+          }
           // Add more event types as needed - this is a simplified version
           default: {
             logger.info('GameClientV2Container', 'Unhandled event type', {
@@ -799,6 +943,35 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Check if player is dead based on HP or room location
+  useEffect(() => {
+    const player = gameState.player;
+    if (!player) return;
+
+    const currentHp = player.stats?.current_health ?? 0;
+    const roomId = gameState.room?.id;
+    const isInLimbo = roomId === 'limbo_death_void_limbo_death_void';
+
+    // Player is dead if HP <= -10 or in limbo
+    if (currentHp <= -10 || isInLimbo) {
+      if (!isDead) {
+        setIsDead(true);
+        logger.info('GameClientV2Container', 'Player detected as dead', {
+          currentHp,
+          roomId,
+          isInLimbo,
+        });
+      }
+    } else if (isDead && currentHp > -10 && !isInLimbo) {
+      // Player is no longer dead
+      setIsDead(false);
+      logger.info('GameClientV2Container', 'Player detected as alive', {
+        currentHp,
+        roomId,
+      });
+    }
+  }, [gameState.player, gameState.room, isDead]);
 
   const handleCommandSubmit = async (command: string) => {
     if (!command.trim() || !isConnected) return;

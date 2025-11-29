@@ -119,13 +119,18 @@ async def handle_websocket_connection(
                         logger.info("Adding player to room", player_id=player_id, room_id=str(player.current_room_id))
                         room.player_entered(player_id_str)
                         logger.info(
-                            f"DEBUG: After player_entered, room {player.current_room_id} has players: {room.get_players()}"
+                            "DEBUG: After player_entered, room has players",
+                            room_id=player.current_room_id,
+                            players=room.get_players(),
                         )
                         logger.info("DEBUG: Room object ID after player_entered", room_id=id(room))
                     else:
                         logger.info(
-                            f"DEBUG: Player {player_id_str} already in room {player.current_room_id}, players: {room.get_players()}",
-                            player_id=player_id,
+                            "DEBUG: Player already in room",
+                            player_id=player_id_str,
+                            room_id=player.current_room_id,
+                            players=room.get_players(),
+                            player_id_uuid=player_id,
                         )
                         logger.info("DEBUG: Room object ID (already in room)", room_id=id(room))
 
@@ -417,7 +422,9 @@ async def handle_websocket_connection(
                             # CRITICAL: Convert player UUIDs to names - NEVER send UUIDs to client
                             room_data_for_update = room.to_dict() if hasattr(room, "to_dict") else room
                             if isinstance(room_data_for_update, dict):
-                                room_data_for_update = connection_manager._convert_room_players_uuids_to_names(room_data_for_update)
+                                room_data_for_update = connection_manager._convert_room_players_uuids_to_names(
+                                    room_data_for_update
+                                )
                             initial_state = build_event(
                                 "room_update",
                                 {"room": room_data_for_update, "entities": [], "occupants": occupant_names},
@@ -429,6 +436,57 @@ async def handle_websocket_connection(
                                 player_id=player_id_str,
                                 occupants_sent=occupant_names,
                             )
+
+                            # CRITICAL FIX: Send room_occupants event (authoritative source) after room_update
+                            # This ensures the client receives structured occupant data (players/npcs) that
+                            # the Room Occupants panel expects. The room_occupants event is the single
+                            # authoritative source for occupant data per architecture.
+                            # IMPORTANT: Send this AFTER room_update so client has room state to merge with
+                            try:
+                                # Access RealTimeEventHandler from app state
+                                event_handler = None
+                                if hasattr(connection_manager, "app") and connection_manager.app:
+                                    event_handler = getattr(connection_manager.app.state, "event_handler", None)
+                                elif hasattr(websocket, "app") and websocket.app:
+                                    event_handler = getattr(websocket.app.state, "event_handler", None)
+
+                                if event_handler and hasattr(event_handler, "_send_occupants_snapshot_to_player"):
+                                    # Verify room still exists and has the player before sending
+                                    # This ensures we're sending accurate occupant data
+                                    if room and room.has_player(player_id_str):
+                                        await event_handler._send_occupants_snapshot_to_player(
+                                            player_id, str(canonical_room_id)
+                                        )
+                                        logger.debug(
+                                            "Sent room_occupants event to connecting player",
+                                            player_id=player_id_str,
+                                            room_id=str(canonical_room_id),
+                                            room_has_player=room.has_player(player_id_str),
+                                            room_players=room.get_players(),
+                                        )
+                                    else:
+                                        logger.warning(
+                                            "Room not found or player not in room when sending room_occupants",
+                                            player_id=player_id_str,
+                                            room_id=str(canonical_room_id),
+                                            room_exists=room is not None,
+                                            room_has_player=room.has_player(player_id_str) if room else False,
+                                        )
+                                else:
+                                    logger.warning(
+                                        "RealTimeEventHandler not available for sending room_occupants event",
+                                        player_id=player_id_str,
+                                        has_connection_manager_app=hasattr(connection_manager, "app"),
+                                        has_websocket_app=hasattr(websocket, "app"),
+                                    )
+                            except Exception as e:
+                                logger.error(
+                                    "Error sending room_occupants event during initial connection",
+                                    player_id=player_id,
+                                    room_id=str(canonical_room_id),
+                                    error=str(e),
+                                    exc_info=True,
+                                )
                     except Exception as e:
                         logger.error("Error sending initial room state", player_id=player_id, error=str(e))
 
@@ -686,8 +744,10 @@ async def handle_game_command(
 
         # Send the result back to the player
         logger.info(
-            f"🚨 SERVER DEBUG: Sending command_response event for player {player_id}",
-            {"command": cmd, "result": result, "player_id": player_id},
+            "SERVER DEBUG: Sending command_response event for player",
+            player_id=player_id,
+            command=cmd,
+            result=result,
         )
         await websocket.send_json(build_event("command_response", result, player_id=player_id))
         logger.info("SERVER DEBUG: command_response event sent successfully", player_id=player_id)

@@ -180,7 +180,9 @@ class PeriodicOrphanAuditor:
         }
 
         logger.debug(
-            f"Manual forced audit loop yielded {detected_orphans} threats; processed {cleanup_bandwidth} vector reclamations"
+            "Manual forced audit loop completed",
+            detected_orphans=detected_orphans,
+            cleanup_bandwidth=cleanup_bandwidth,
         )
 
         return audit_report

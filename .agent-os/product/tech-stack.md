@@ -1,29 +1,28 @@
 # Technical Stack
 
 ## Application Framework
-- **Backend Framework:** Python FastAPI 0.104.1
-- **Frontend Framework:** React 18.2.0 with TypeScript 5.0.0
-- **Build Tool:** Vite 4.4.0
+- **Backend Framework:** Python FastAPI 0.121.1+
+- **Frontend Framework:** React 19.1+ with TypeScript 5.9+
+- **Build Tool:** Vite 7.1+
 
 ## Database System
-- **Primary Database:** SQLite 3.42.0 (MVP)
-- **Production Database:** PostgreSQL 15.0 (planned migration)
-- **ORM:** SQLAlchemy 2.0.0
+- **Primary Database:** PostgreSQL (development, tests, and production)
+- **ORM:** SQLAlchemy 2.0+
 
 ## JavaScript Framework
-- **Frontend Framework:** React 18.2.0
-- **Type Safety:** TypeScript 5.0.0
-- **State Management:** React Hooks (useState, useEffect, useContext)
+- **Frontend Framework:** React 19.1+
+- **Type Safety:** TypeScript 5.9+
+- **State Management:** Zustand with React Hooks
 
 ## Import Strategy
 - **Module System:** Node.js ES modules
-- **Package Manager:** npm 9.5.0
+- **Package Manager:** npm
 - **Dependency Management:** uv for Python, npm for Node.js
 
 ## CSS Framework
-- **Styling Framework:** TailwindCSS 3.3.0
+- **Styling Framework:** TailwindCSS 4.1+
 - **Component Library:** Custom components with MythosMUD theme
-- **Terminal Styling:** xterm.js 5.2.0 for terminal interface
+- **Terminal Styling:** xterm.js for terminal interface
 
 ## UI Component Library
 - **Primary:** Custom React components
@@ -46,7 +45,7 @@
 - **Container Platform:** Docker
 
 ## Database Hosting
-- **Development:** Local SQLite file
+- **Development:** Local PostgreSQL instance
 - **Production Target:** AWS RDS PostgreSQL
 - **Backup Strategy:** Automated database backup with timestamp rotation
 
@@ -80,8 +79,8 @@
 - **Input Validation:** Pydantic models with comprehensive validation
 
 ### Testing & Quality
-- **Testing Framework:** pytest 8.4.1
-- **Code Coverage:** 88% (target: 80% minimum)
+- **Testing Framework:** pytest 8.4+
+- **Code Coverage:** 80%+ (target: 80% minimum, 82%+ preferred)
 - **Linting:** ruff (replaces black/flake8)
 - **Pre-commit Hooks:** Automated code quality checks
 

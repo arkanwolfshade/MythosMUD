@@ -189,9 +189,7 @@ async def get_dlq_messages(limit: int = 100, current_user: User = Depends(verify
         messages = nats_message_handler.dead_letter_queue.list_messages(limit=limit)
         total_count = nats_message_handler.dead_letter_queue.get_statistics().get("total_messages", 0)
 
-        logger.info(
-            "DLQ messages retrieved", count=len(messages), total=total_count, admin_user=current_user.username
-        )
+        logger.info("DLQ messages retrieved", count=len(messages), total=total_count, admin_user=current_user.username)
 
         return {"messages": messages, "count": len(messages), "total_in_dlq": total_count}
 

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { PanelManagerProvider, usePanelManager } from './PanelSystem/PanelManager';
+import { PanelManagerProvider } from './PanelSystem/PanelManager';
+import { usePanelManager } from './PanelSystem/usePanelManager';
 import { PanelContainer } from './PanelSystem/PanelContainer';
 import { HeaderBar } from './HeaderBar';
 import { ChatHistoryPanel } from './panels/ChatHistoryPanel';

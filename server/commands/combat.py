@@ -38,6 +38,7 @@ class CombatCommandHandler:
         event_bus=None,
         player_combat_service=None,
         connection_manager=None,
+        async_persistence=None,
     ):
         """
         Initialize the combat command handler.
@@ -72,7 +73,12 @@ class CombatCommandHandler:
         # Initialize target resolution service
         from server.game.player_service import PlayerService
 
-        self.target_resolution_service = TargetResolutionService(self.persistence, PlayerService(self.persistence))
+        # Use async persistence if available (better performance, no lock blocking)
+        # Fallback to sync persistence if async not available
+        persistence_for_target_resolution = async_persistence if async_persistence else self.persistence
+        self.target_resolution_service = TargetResolutionService(
+            persistence_for_target_resolution, PlayerService(self.persistence)
+        )
 
     async def handle_attack_command(
         self,
@@ -322,14 +328,17 @@ def get_combat_command_handler() -> CombatCommandHandler:
         player_combat_service = getattr(app.state, "player_combat_service", None)
         # CRITICAL FIX: Get connection_manager from container to pass to CombatMessagingIntegration
         connection_manager = None
+        async_persistence = None
         container = getattr(app.state, "container", None)
         if container:
             connection_manager = getattr(container, "connection_manager", None)
+            async_persistence = getattr(container, "async_persistence", None)
         _combat_command_handler = CombatCommandHandler(
             combat_service=combat_service,
             event_bus=event_bus,
             player_combat_service=player_combat_service,
             connection_manager=connection_manager,
+            async_persistence=async_persistence,
         )
     return _combat_command_handler
 

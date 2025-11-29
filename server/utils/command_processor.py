@@ -14,6 +14,7 @@ from pydantic import ValidationError as PydanticValidationError
 
 from ..exceptions import ValidationError as MythosValidationError
 from ..logging.enhanced_logging_config import get_logger
+from ..models.command import CommandType
 from .command_parser import CommandParser, parse_command
 from .error_logging import create_error_context
 
@@ -146,7 +147,13 @@ class CommandProcessor:
         if hasattr(validated_command, "target"):
             command_data["target"] = validated_command.target
             # For combat commands, also set target_player for compatibility
-            if command_data["command_type"] in ["attack", "punch", "kick", "strike"]:
+            # Compare against enum values, not strings
+            if command_data["command_type"] in [
+                CommandType.ATTACK,
+                CommandType.PUNCH,
+                CommandType.KICK,
+                CommandType.STRIKE,
+            ]:
                 command_data["target_player"] = validated_command.target
 
         if hasattr(validated_command, "target_player"):

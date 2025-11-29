@@ -5,11 +5,13 @@ This service provides unified target resolution for both players and NPCs,
 supporting partial name matching, disambiguation, and room-based filtering.
 """
 
+import asyncio
 import re
 import uuid
 from typing import Any, Protocol
 
 from ..logging.enhanced_logging_config import get_logger
+from ..npc.behaviors import NPCBase
 from ..schemas.target_resolution import TargetMatch, TargetResolutionResult, TargetType
 
 logger = get_logger(__name__)
@@ -64,8 +66,38 @@ class TargetResolutionService:
         # Structlog handles UUID objects automatically, no need to convert to string
         logger.debug("Resolving target", player_id=player_id_uuid, target_name=target_name)
 
-        # Get player's current room
-        player = self.persistence.get_player(player_id_uuid)
+        # Get player's current room - handle both sync and async persistence layers
+        import inspect
+
+        # Check if persistence layer has async method (AsyncPersistenceLayer uses get_player_by_id)
+        if hasattr(self.persistence, "get_player_by_id"):
+            method = self.persistence.get_player_by_id
+            if inspect.iscoroutinefunction(method):
+                logger.debug("Using async get_player_by_id", player_id=player_id_uuid)
+                player = await method(player_id_uuid)
+            else:
+                logger.debug("Using sync get_player_by_id", player_id=player_id_uuid)
+                player = method(player_id_uuid)
+        elif hasattr(self.persistence, "get_player"):
+            method = self.persistence.get_player
+            if inspect.iscoroutinefunction(method):
+                logger.debug("Using async get_player", player_id=player_id_uuid)
+                player = await method(player_id_uuid)
+            else:
+                logger.debug("Using sync get_player", player_id=player_id_uuid)
+                player = method(player_id_uuid)
+        else:
+            logger.error(
+                "Persistence layer has neither get_player nor get_player_by_id",
+                persistence_type=type(self.persistence).__name__,
+            )
+            return TargetResolutionResult(
+                success=False,
+                error_message="Internal error: persistence layer not configured correctly",
+                search_term=target_name,
+                room_id="",
+            )
+
         if not player:
             # Structlog handles UUID objects automatically, no need to convert to string
             logger.warning("Player not found for target resolution", player_id=player_id_uuid)
@@ -102,11 +134,15 @@ class TargetResolutionService:
         matches = []
 
         # Search for players in the room
+        logger.debug("About to search players in room", room_id=room_id, target_name=clean_target)
         player_matches = await self._search_players_in_room(room_id, clean_target, disambiguation_suffix)
+        logger.debug("Player search completed", room_id=room_id, matches_count=len(player_matches))
         matches.extend(player_matches)
 
         # Search for NPCs in the room
+        logger.debug("About to search NPCs in room", room_id=room_id, target_name=clean_target)
         npc_matches = await self._search_npcs_in_room(room_id, clean_target, disambiguation_suffix)
+        logger.debug("NPC search completed", room_id=room_id, matches_count=len(npc_matches))
         matches.extend(npc_matches)
 
         # Structlog handles UUID objects automatically, no need to convert to string
@@ -163,7 +199,38 @@ class TargetResolutionService:
     ) -> list[TargetMatch]:
         """Search for players in the specified room."""
         try:
-            players_in_room = self.persistence.get_players_in_room(room_id)
+            logger.debug("_search_players_in_room: Starting", room_id=room_id, target_name=target_name)
+            logger.debug("_search_players_in_room: Getting players in room", room_id=room_id)
+            # Check if persistence layer has async method (AsyncPersistenceLayer)
+            import inspect
+
+            method = self.persistence.get_players_in_room
+            logger.debug(
+                "_search_players_in_room: Checking method type",
+                room_id=room_id,
+                method="get_players_in_room",
+                persistence_type=type(self.persistence).__name__,
+            )
+            is_async = inspect.iscoroutinefunction(method)
+            logger.debug(
+                "_search_players_in_room: Method check result",
+                room_id=room_id,
+                is_async=is_async,
+                method_type=type(method).__name__,
+            )
+            if is_async:
+                # Use async method directly (no thread pool needed, no lock blocking)
+                logger.debug("_search_players_in_room: Using async method", room_id=room_id)
+                # Protocol defines method as sync, but runtime check confirms it's async
+                players_in_room = await method(room_id)  # type: ignore[misc]
+                logger.debug("_search_players_in_room: Async method completed", room_id=room_id)
+            else:
+                # Use sync method in thread pool to avoid blocking event loop
+                # Note: This may still block if the lock is held by another thread
+                logger.debug("_search_players_in_room: Using sync method in thread pool", room_id=room_id)
+                players_in_room = await asyncio.to_thread(method, room_id)
+                logger.debug("_search_players_in_room: Thread pool method completed", room_id=room_id)
+            logger.debug("_search_players_in_room: Got players", room_id=room_id, player_count=len(players_in_room))
             matches = []
 
             for player in players_in_room:
@@ -200,6 +267,7 @@ class TargetResolutionService:
                             name_suffixes[match.target_name] += 1
                         match.disambiguation_suffix = f"-{name_suffixes[match.target_name]}"
 
+            logger.debug("_search_players_in_room: Returning matches", room_id=room_id, matches_count=len(matches))
             return matches
 
         except Exception as e:
@@ -211,13 +279,75 @@ class TargetResolutionService:
     ) -> list[TargetMatch]:
         """Search for NPCs in the specified room."""
         try:
-            # Get room data
-            room = self.persistence.get_room(room_id)
-            if not room:
+            # Validate room exists - handle both sync and async persistence layers
+            # Note: We don't actually need the room object since we get NPCs from lifecycle manager
+            import inspect
+
+            room_exists = False
+            # Check if persistence layer has async method (AsyncPersistenceLayer)
+            if hasattr(self.persistence, "get_room_by_id"):
+                method = self.persistence.get_room_by_id
+                if inspect.iscoroutinefunction(method):
+                    logger.debug("Using async get_room_by_id", room_id=room_id)
+                    room = await method(room_id)
+                    room_exists = room is not None
+                else:
+                    logger.debug("Using sync get_room_by_id", room_id=room_id)
+                    room = method(room_id)
+                    room_exists = room is not None
+            elif hasattr(self.persistence, "get_room"):
+                method = self.persistence.get_room
+                if inspect.iscoroutinefunction(method):
+                    logger.debug("Using async get_room", room_id=room_id)
+                    room = await method(room_id)
+                    room_exists = room is not None
+                else:
+                    logger.debug("Using sync get_room", room_id=room_id)
+                    room = method(room_id)
+                    room_exists = room is not None
+            else:
+                # If persistence layer doesn't have get_room, skip validation
+                # (NPCs come from lifecycle manager anyway)
+                logger.debug(
+                    "Persistence layer has no get_room method, skipping room validation",
+                    persistence_type=type(self.persistence).__name__,
+                    room_id=room_id,
+                )
+                room_exists = True  # Assume room exists if we can't validate
+
+            if not room_exists:
+                logger.debug("Room not found", room_id=room_id)
                 return []
 
             matches = []
-            npc_ids = room.get_npcs() if hasattr(room, "get_npcs") else []
+            # CRITICAL FIX: Query NPCs from lifecycle manager instead of Room instance
+            # Room instances are recreated from persistence and lose in-memory NPC tracking
+            # NPCs are actually tracked in the lifecycle manager with their current_room_id
+            npc_ids: list[str] = []
+            try:
+                from ..services.npc_instance_service import get_npc_instance_service
+
+                npc_instance_service = get_npc_instance_service()
+                if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
+                    lifecycle_manager = npc_instance_service.lifecycle_manager
+                    if lifecycle_manager and hasattr(lifecycle_manager, "active_npcs"):
+                        active_npcs_dict = lifecycle_manager.active_npcs
+                        # Query all active NPCs to find those in this room
+                        for npc_id, npc in active_npcs_dict.items():
+                            # Check both current_room and current_room_id for compatibility
+                            current_room = getattr(npc, "current_room", None)
+                            current_room_id = getattr(npc, "current_room_id", None)
+                            npc_room_id = current_room or current_room_id
+                            if npc_room_id == room_id:
+                                npc_ids.append(npc_id)
+            except Exception as npc_query_error:
+                logger.warning(
+                    "Error querying NPCs from lifecycle manager, falling back to room.get_npcs()",
+                    room_id=room_id,
+                    error=str(npc_query_error),
+                )
+                # Fallback to room.get_npcs() if lifecycle manager query fails
+                npc_ids = room.get_npcs() if hasattr(room, "get_npcs") else []
 
             logger.debug(
                 "Searching NPCs in room",
@@ -280,7 +410,7 @@ class TargetResolutionService:
             logger.error("Error searching NPCs in room", room_id=room_id, error=str(e))
             return []
 
-    def _get_npc_instance(self, npc_id: str) -> Any | None:
+    def _get_npc_instance(self, npc_id: str) -> NPCBase | None:
         """Get NPC instance from the spawning service."""
         try:
             from ..services.npc_instance_service import get_npc_instance_service

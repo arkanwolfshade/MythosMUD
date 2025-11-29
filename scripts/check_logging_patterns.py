@@ -9,14 +9,50 @@ As noted in the Pnakotic Manuscripts, proper documentation of our
 eldritch systems requires structured data for effective analysis.
 """
 
-import re
+import ast
 import sys
 from pathlib import Path
 
 
+class FStringLoggingDetector(ast.NodeVisitor):
+    """AST visitor to detect f-string logging violations."""
+
+    def __init__(self, file_path: Path, source_lines: list[str]):
+        self.file_path = file_path
+        self.source_lines = source_lines
+        self.violations: list[tuple[int, str, str]] = []
+
+    def visit_Call(self, node: ast.Call) -> None:
+        """Check for f-string logging patterns."""
+        # Check if this is a logger method call
+        if isinstance(node.func, ast.Attribute):
+            # Check if it's logger.info, logger.error, etc.
+            if isinstance(node.func.value, ast.Name) and node.func.value.id == "logger":
+                if node.func.attr in ["info", "debug", "warning", "error", "critical", "exception"]:
+                    # Check for f-string in first argument
+                    if node.args and isinstance(node.args[0], ast.JoinedStr):
+                        # This is an f-string - violation!
+                        line_num = node.lineno
+                        line_content = self.source_lines[line_num - 1].strip() if line_num <= len(self.source_lines) else ""
+
+                        # Get method name for suggestion
+                        method = node.func.attr
+                        suggested_fix = (
+                            f'logger.{method}("message", key=value)  '
+                            f"# Replace f-string with structured logging"
+                        )
+
+                        self.violations.append((line_num, line_content, suggested_fix))
+
+        self.generic_visit(node)
+
+
 def find_fstring_logging_violations(file_path: Path) -> list[tuple[int, str, str]]:
     """
-    Find f-string logging violations in a Python file.
+    Find f-string logging violations in a Python file using AST parsing.
+
+    This method uses AST to detect f-strings in logger calls, which allows
+    it to catch multi-line f-strings that regex patterns would miss.
 
     Args:
         file_path: Path to the Python file to scan
@@ -28,28 +64,31 @@ def find_fstring_logging_violations(file_path: Path) -> list[tuple[int, str, str
 
     try:
         with open(file_path, encoding="utf-8") as f:
-            lines = f.readlines()
+            content = f.read()
+            source_lines = content.split("\n")
     except (UnicodeDecodeError, FileNotFoundError):
         return violations
 
-    # Pattern to match logger calls with f-strings
-    # Matches: logger.info with f-string, logger.error with f-string, etc.
-    fstring_pattern = re.compile(r'logger\.(info|debug|warning|error|critical|exception)\s*\(\s*f["\']')
+    # Skip empty files
+    if not content.strip():
+        return violations
 
-    for line_num, line in enumerate(lines, 1):
-        if fstring_pattern.search(line):
-            # Extract the logger method and create a suggested fix
-            match = re.search(r'logger\.(\w+)\s*\(\s*f["\']([^"\']*)["\']', line)
-            if match:
-                method = match.group(1)
+    # Skip test files and documentation examples
+    file_path_str = str(file_path)
+    if "test" in file_path_str or "docs/examples/logging" in file_path_str:
+        return violations
 
-                # Create a basic suggested fix
-                # This is a simplified suggestion - real fixes need manual review
-                suggested_fix = f'logger.{method}("message", key=value)  # Replace f-string with structured logging'
+    try:
+        tree = ast.parse(content, filename=str(file_path))
+    except SyntaxError:
+        # Skip files with syntax errors (they'll be caught by other tools)
+        return violations
 
-                violations.append((line_num, line.strip(), suggested_fix))
+    # Use AST visitor to detect violations
+    detector = FStringLoggingDetector(file_path, source_lines)
+    detector.visit(tree)
 
-    return violations
+    return detector.violations
 
 
 def format_violation_report(violations: list[tuple[str, list[tuple[int, str, str]]]]) -> str:
