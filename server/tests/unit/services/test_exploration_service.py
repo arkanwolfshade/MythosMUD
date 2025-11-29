@@ -32,19 +32,23 @@ class TestExplorationService:
     @pytest.mark.asyncio
     async def test_mark_room_as_explored_success(self, exploration_service, mock_session):
         """Test successfully marking a room as explored."""
-        # Mock room UUID lookup
-        mock_result = AsyncMock()
-        mock_result.scalar_one_or_none.return_value = str(TEST_ROOM_UUID)
-        mock_session.execute.return_value = mock_result
+        # Mock room UUID lookup - return UUID object, not string
+        mock_room_result = Mock()
+        mock_room_result.scalar_one_or_none = Mock(return_value=TEST_ROOM_UUID)  # Return UUID object
+        mock_session.execute = AsyncMock(return_value=mock_room_result)
 
         # First call: room UUID lookup (returns UUID)
         # Second call: check if already explored (returns None - not explored)
         # Third call: insert exploration record
-        mock_session.execute.side_effect = [
-            mock_result,  # Room UUID lookup
-            AsyncMock(scalar_one_or_none=Mock(return_value=None)),  # Check if explored
-            AsyncMock(),  # Insert exploration
-        ]
+        mock_check_result = Mock()
+        mock_check_result.scalar_one_or_none = Mock(return_value=None)  # Not explored yet
+        mock_session.execute = AsyncMock(
+            side_effect=[
+                mock_room_result,  # Room UUID lookup
+                mock_check_result,  # Check if explored
+                Mock(),  # Insert exploration
+            ]
+        )
 
         result = await exploration_service.mark_room_as_explored(TEST_PLAYER_ID, TEST_ROOM_STABLE_ID, mock_session)
 
@@ -54,17 +58,20 @@ class TestExplorationService:
     @pytest.mark.asyncio
     async def test_mark_room_as_explored_already_explored(self, exploration_service, mock_session):
         """Test marking a room that's already explored (idempotent)."""
-        # Mock room UUID lookup
-        mock_result = AsyncMock()
-        mock_result.scalar_one_or_none.return_value = str(TEST_ROOM_UUID)
-        mock_session.execute.return_value = mock_result
+        # Mock room UUID lookup - return UUID object, not string
+        mock_room_result = Mock()
+        mock_room_result.scalar_one_or_none = Mock(return_value=TEST_ROOM_UUID)  # Return UUID object
 
         # First call: room UUID lookup (returns UUID)
         # Second call: check if already explored (returns existing record)
-        mock_session.execute.side_effect = [
-            mock_result,  # Room UUID lookup
-            AsyncMock(scalar_one_or_none=Mock(return_value=uuid4())),  # Already explored
-        ]
+        mock_check_result = Mock()
+        mock_check_result.scalar_one_or_none = Mock(return_value=uuid4())  # Already explored
+        mock_session.execute = AsyncMock(
+            side_effect=[
+                mock_room_result,  # Room UUID lookup
+                mock_check_result,  # Already explored
+            ]
+        )
 
         result = await exploration_service.mark_room_as_explored(TEST_PLAYER_ID, TEST_ROOM_STABLE_ID, mock_session)
 
@@ -76,9 +83,9 @@ class TestExplorationService:
     async def test_mark_room_as_explored_room_not_found(self, exploration_service, mock_session):
         """Test marking exploration for a room that doesn't exist."""
         # Mock room UUID lookup returning None
-        mock_result = AsyncMock()
-        mock_result.scalar_one_or_none.return_value = None
-        mock_session.execute.return_value = mock_result
+        mock_result = Mock()
+        mock_result.scalar_one_or_none = Mock(return_value=None)
+        mock_session.execute = AsyncMock(return_value=mock_result)
 
         result = await exploration_service.mark_room_as_explored(TEST_PLAYER_ID, TEST_ROOM_STABLE_ID, mock_session)
 
@@ -90,20 +97,23 @@ class TestExplorationService:
         # Mock database error
         mock_session.execute.side_effect = SQLAlchemyError("Database connection failed")
 
-        with pytest.raises(SQLAlchemyError):  # Should raise DatabaseError
+        # ExplorationService wraps SQLAlchemyError in DatabaseError
+        from server.exceptions import DatabaseError
+
+        with pytest.raises(DatabaseError):
             await exploration_service.mark_room_as_explored(TEST_PLAYER_ID, TEST_ROOM_STABLE_ID, mock_session)
 
     @pytest.mark.asyncio
     async def test_get_explored_rooms(self, exploration_service, mock_session):
         """Test retrieving list of explored rooms for a player."""
-        # Mock database result
+        # Mock database result - fetchall() returns rows synchronously
         mock_rows = [
             (str(TEST_ROOM_UUID),),
             (str(uuid4()),),
         ]
-        mock_result = AsyncMock()
+        mock_result = Mock()  # Use regular Mock, not AsyncMock, since fetchall() is sync
         mock_result.fetchall.return_value = mock_rows
-        mock_session.execute.return_value = mock_result
+        mock_session.execute = AsyncMock(return_value=mock_result)
 
         result = await exploration_service.get_explored_rooms(TEST_PLAYER_ID, mock_session)
 
@@ -114,10 +124,10 @@ class TestExplorationService:
     @pytest.mark.asyncio
     async def test_get_explored_rooms_empty(self, exploration_service, mock_session):
         """Test retrieving explored rooms when player has explored none."""
-        # Mock empty result
-        mock_result = AsyncMock()
+        # Mock empty result - fetchall() returns rows synchronously
+        mock_result = Mock()  # Use regular Mock, not AsyncMock, since fetchall() is sync
         mock_result.fetchall.return_value = []
-        mock_session.execute.return_value = mock_result
+        mock_session.execute = AsyncMock(return_value=mock_result)
 
         result = await exploration_service.get_explored_rooms(TEST_PLAYER_ID, mock_session)
 
@@ -126,18 +136,20 @@ class TestExplorationService:
     @pytest.mark.asyncio
     async def test_is_room_explored_true(self, exploration_service, mock_session):
         """Test checking if a room is explored (returns True)."""
-        # Mock room UUID lookup
-        mock_room_result = AsyncMock()
-        mock_room_result.scalar_one_or_none.return_value = str(TEST_ROOM_UUID)
+        # Mock room UUID lookup - return UUID object, not string
+        mock_room_result = Mock()
+        mock_room_result.scalar_one_or_none = Mock(return_value=TEST_ROOM_UUID)  # Return UUID object
 
         # Mock exploration check
-        mock_exploration_result = AsyncMock()
-        mock_exploration_result.scalar_one.return_value = True
+        mock_exploration_result = Mock()
+        mock_exploration_result.scalar_one = Mock(return_value=True)
 
-        mock_session.execute.side_effect = [
-            mock_room_result,  # Room UUID lookup
-            mock_exploration_result,  # Exploration check
-        ]
+        mock_session.execute = AsyncMock(
+            side_effect=[
+                mock_room_result,  # Room UUID lookup
+                mock_exploration_result,  # Exploration check
+            ]
+        )
 
         result = await exploration_service.is_room_explored(TEST_PLAYER_ID, TEST_ROOM_STABLE_ID, mock_session)
 
@@ -146,18 +158,20 @@ class TestExplorationService:
     @pytest.mark.asyncio
     async def test_is_room_explored_false(self, exploration_service, mock_session):
         """Test checking if a room is explored (returns False)."""
-        # Mock room UUID lookup
-        mock_room_result = AsyncMock()
-        mock_room_result.scalar_one_or_none.return_value = str(TEST_ROOM_UUID)
+        # Mock room UUID lookup - return UUID object, not string
+        mock_room_result = Mock()
+        mock_room_result.scalar_one_or_none = Mock(return_value=TEST_ROOM_UUID)  # Return UUID object
 
         # Mock exploration check
-        mock_exploration_result = AsyncMock()
-        mock_exploration_result.scalar_one.return_value = False
+        mock_exploration_result = Mock()
+        mock_exploration_result.scalar_one = Mock(return_value=False)
 
-        mock_session.execute.side_effect = [
-            mock_room_result,  # Room UUID lookup
-            mock_exploration_result,  # Exploration check
-        ]
+        mock_session.execute = AsyncMock(
+            side_effect=[
+                mock_room_result,  # Room UUID lookup
+                mock_exploration_result,  # Exploration check
+            ]
+        )
 
         result = await exploration_service.is_room_explored(TEST_PLAYER_ID, TEST_ROOM_STABLE_ID, mock_session)
 
@@ -167,9 +181,9 @@ class TestExplorationService:
     async def test_is_room_explored_room_not_found(self, exploration_service, mock_session):
         """Test checking exploration for a room that doesn't exist."""
         # Mock room UUID lookup returning None
-        mock_room_result = AsyncMock()
-        mock_room_result.scalar_one_or_none.return_value = None
-        mock_session.execute.return_value = mock_room_result
+        mock_room_result = Mock()
+        mock_room_result.scalar_one_or_none = Mock(return_value=None)
+        mock_session.execute = AsyncMock(return_value=mock_room_result)
 
         result = await exploration_service.is_room_explored(TEST_PLAYER_ID, TEST_ROOM_STABLE_ID, mock_session)
 
@@ -180,25 +194,31 @@ class TestExplorationService:
         """Test marking room as explored without providing a session."""
         with patch("server.services.exploration_service.get_database_manager") as mock_db_manager:
             # Mock database manager and session maker
-            mock_session_maker = AsyncMock()
+            # Create a proper async context manager mock
             mock_new_session = AsyncMock()
-            mock_session_maker.return_value.__aenter__.return_value = mock_new_session
-            mock_session_maker.return_value.__aexit__.return_value = None
+            mock_context_manager = AsyncMock()
+            mock_context_manager.__aenter__ = AsyncMock(return_value=mock_new_session)
+            mock_context_manager.__aexit__ = AsyncMock(return_value=None)
+            mock_session_maker = Mock(return_value=mock_context_manager)
 
             mock_db_instance = Mock()
             mock_db_instance.get_session_maker.return_value = mock_session_maker
             mock_db_manager.return_value = mock_db_instance
 
-            # Mock room UUID lookup
-            mock_room_result = AsyncMock()
-            mock_room_result.scalar_one_or_none.return_value = str(TEST_ROOM_UUID)
+            # Mock room UUID lookup - return UUID object, not string
+            mock_room_result = Mock()
+            mock_room_result.scalar_one_or_none = Mock(return_value=TEST_ROOM_UUID)  # Return UUID object
 
             # Mock exploration check and insert
-            mock_new_session.execute.side_effect = [
-                mock_room_result,  # Room UUID lookup
-                AsyncMock(scalar_one_or_none=Mock(return_value=None)),  # Check if explored
-                AsyncMock(),  # Insert exploration
-            ]
+            mock_check_result = Mock()
+            mock_check_result.scalar_one_or_none = Mock(return_value=None)  # Not explored yet
+            mock_new_session.execute = AsyncMock(
+                side_effect=[
+                    mock_room_result,  # Room UUID lookup
+                    mock_check_result,  # Check if explored
+                    Mock(),  # Insert exploration
+                ]
+            )
 
             result = await exploration_service.mark_room_as_explored(TEST_PLAYER_ID, TEST_ROOM_STABLE_ID)
 

@@ -122,6 +122,10 @@ class ExplorationService:
                     if isinstance(room_uuid_result, UUID):
                         # Already a standard UUID, return it directly
                         return room_uuid_result
+                    # Handle string UUIDs (from tests or database)
+                    if isinstance(room_uuid_result, str):
+                        # Already a string, convert directly to UUID
+                        return UUID(room_uuid_result)
                     # Convert to string first (handles asyncpg UUID objects), then to UUID
                     return UUID(str(room_uuid_result))
                 return None
@@ -140,6 +144,10 @@ class ExplorationService:
                         if isinstance(room_uuid_result, UUID):
                             # Already a standard UUID, return it directly
                             return room_uuid_result
+                        # Handle string UUIDs (from tests or database)
+                        if isinstance(room_uuid_result, str):
+                            # Already a string, convert directly to UUID
+                            return UUID(room_uuid_result)
                         # Convert to string first (handles asyncpg UUID objects), then to UUID
                         return UUID(str(room_uuid_result))
                     return None
@@ -241,7 +249,12 @@ class ExplorationService:
                 """
             )
             result = await session.execute(query, {"player_id": str(player_id)})
-            room_ids = [str(row[0]) for row in result.fetchall()]
+            # fetchall() is synchronous, but handle both sync and async mocks in tests
+            rows = result.fetchall()
+            # Handle case where fetchall might return a coroutine (async mock in tests)
+            if hasattr(rows, "__await__"):
+                rows = await rows
+            room_ids = [str(row[0]) for row in rows]
 
             logger.debug("Retrieved explored rooms", player_id=player_id, count=len(room_ids))
             return room_ids

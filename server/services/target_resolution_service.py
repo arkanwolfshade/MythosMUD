@@ -106,6 +106,9 @@ class TargetResolutionService:
             )
 
         room_id = player.current_room_id
+        # Convert to string if it's not already (handles Mock objects in tests and UUID objects)
+        if room_id is not None:
+            room_id = str(room_id)
         if not room_id:
             # Structlog handles UUID objects automatically, no need to convert to string
             logger.warning("Player not in a room", player_id=player_id_uuid)
@@ -348,6 +351,10 @@ class TargetResolutionService:
                 )
                 # Fallback to room.get_npcs() if lifecycle manager query fails
                 npc_ids = room.get_npcs() if hasattr(room, "get_npcs") else []
+
+            # If no NPCs were found via lifecycle manager, fall back to room.get_npcs()
+            if not npc_ids and "room" in locals() and hasattr(room, "get_npcs"):
+                npc_ids = room.get_npcs()
 
             logger.debug(
                 "Searching NPCs in room",

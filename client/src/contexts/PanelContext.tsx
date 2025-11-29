@@ -27,7 +27,7 @@ export interface PanelLayout {
 }
 
 // Panel management context type
-interface PanelContextType {
+export interface PanelContextType {
   panels: PanelLayout;
   addPanel: (id: string, title: string, initialPosition?: PanelPosition, initialSize?: PanelSize) => void;
   removePanel: (id: string) => void;
@@ -97,7 +97,7 @@ const defaultPanels: PanelLayout = {
 };
 
 // Create context
-const PanelContext = createContext<PanelContextType | null>(null);
+export const PanelContext = createContext<PanelContextType | null>(null);
 
 // Context provider
 interface PanelProviderProps {

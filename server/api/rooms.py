@@ -163,7 +163,7 @@ async def update_room_position(
     room_id: str,
     position_data: RoomPositionUpdate,
     request: Request,
-    current_user: User = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
     room_service: RoomService = RoomServiceDep,
 ) -> dict[str, Any]:
@@ -174,6 +174,12 @@ async def update_room_position(
     Requires admin privileges.
     """
     try:
+        # Check authentication first
+        if not current_user:
+            context = create_context_from_request(request)
+            context.metadata["requested_room_id"] = room_id
+            raise LoggedHTTPException(status_code=401, detail="Authentication required", context=context)
+
         # Validate admin permission
         auth_service = get_admin_auth_service()
         auth_service.validate_permission(current_user, AdminAction.UPDATE_ROOM_POSITION, request)
