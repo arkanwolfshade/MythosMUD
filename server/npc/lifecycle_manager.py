@@ -415,11 +415,32 @@ class NPCLifecycleManager:
             # CRITICAL FIX: Set current_room on NPC instance for occupant queries
             # The lifecycle manager query in event_handler.py needs this to find NPCs in rooms
             # Note: _create_npc_instance may already set this, but ensure it's set here as well
-            if not hasattr(npc_instance, "current_room") or not npc_instance.current_room:
-                npc_instance.current_room = room_id
+            # CRITICAL: Always set both attributes to ensure room tracking works correctly
+            npc_instance.current_room = room_id
             # Also set current_room_id for compatibility with code that checks both attributes
-            if not hasattr(npc_instance, "current_room_id") or not npc_instance.current_room_id:
+            if hasattr(npc_instance, "current_room_id"):
                 npc_instance.current_room_id = room_id
+            else:
+                # If attribute doesn't exist, create it
+                npc_instance.current_room_id = room_id
+
+            # CRITICAL: Validate room tracking was set correctly
+            if not npc_instance.current_room or npc_instance.current_room != room_id:
+                logger.error(
+                    "Failed to set NPC room tracking correctly",
+                    npc_id=npc_id,
+                    room_id=room_id,
+                    current_room=getattr(npc_instance, "current_room", None),
+                    current_room_id=getattr(npc_instance, "current_room_id", None),
+                )
+            else:
+                logger.debug(
+                    "NPC room tracking set successfully",
+                    npc_id=npc_id,
+                    room_id=room_id,
+                    current_room=npc_instance.current_room,
+                    current_room_id=getattr(npc_instance, "current_room_id", None),
+                )
 
             # Mutate room state via Room API (single source of truth) which will publish the event
             persistence = get_persistence()

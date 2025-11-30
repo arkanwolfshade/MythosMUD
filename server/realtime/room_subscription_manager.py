@@ -321,7 +321,9 @@ class RoomSubscriptionManager:
                         # As documented in investigation: 2025-11-30_session-001_npc-combat-start-failure.md
                         for npc_id, npc_instance in active_npcs_dict.items():
                             # Skip dead NPCs
-                            if not getattr(npc_instance, "is_alive", True):
+                            is_alive_value = getattr(npc_instance, "is_alive", True)
+
+                            if not is_alive_value:
                                 logger.debug(
                                     "Skipping dead NPC from occupants",
                                     npc_id=npc_id,

@@ -325,15 +325,26 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               const existingRoom = updates.room || currentRoomRef.current;
 
               if (existingRoom) {
+                // CRITICAL FIX: If room ID changed, clear NPCs to prevent stale data
+                // BUT preserve players - the current player is always in the room they're in
+                // room_update should only preserve occupants if room ID hasn't changed
+                const roomIdChanged = roomData.id !== existingRoom.id;
+                const preservedNpcs = roomIdChanged ? [] : (existingRoom.npcs ?? []);
+                // CRITICAL: Always preserve players - they're always in the current room
+                const preservedPlayers = existingRoom.players ?? [];
+                // Clear flat occupants list if room changed (will be repopulated by room_occupants)
+                const preservedOccupants = roomIdChanged ? [] : (existingRoom.occupants ?? []);
+
                 // Preserve occupant data from existing state (set by room_occupants events)
+                // BUT clear if room ID changed to prevent stale NPCs from old room
                 updates.room = {
                   ...existingRoom,
                   ...roomMetadata,
-                  // CRITICAL: Always preserve occupant data - room_update NEVER sets this
-                  players: existingRoom.players,
-                  npcs: existingRoom.npcs,
-                  occupants: existingRoom.occupants,
-                  occupant_count: existingRoom.occupant_count,
+                  // CRITICAL: Clear occupants if room changed, otherwise preserve
+                  players: preservedPlayers,
+                  npcs: preservedNpcs,
+                  occupants: preservedOccupants,
+                  occupant_count: roomIdChanged ? 0 : (existingRoom.occupant_count ?? 0),
                 };
               } else {
                 // First room_update - initialize with empty occupants (room_occupants will populate)
@@ -502,6 +513,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             const npcs = event.data.npcs as string[] | undefined;
             const occupants = event.data.occupants as string[] | undefined; // Legacy format
             const occupantCount = event.data.count as number | undefined;
+            const eventRoomId = event.room_id as string | undefined;
 
             // DEBUG: Console log for immediate visibility + structured logging
             console.log('🔍 [room_occupants] Received event:', {
@@ -510,11 +522,13 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               npcs_count: npcs?.length ?? 0,
               occupants,
               occupantCount,
+              eventRoomId,
               hasCurrentRoom: !!currentRoomRef.current,
               currentRoomId: currentRoomRef.current?.id,
               currentRoomPlayers: currentRoomRef.current?.players,
               currentRoomNpcs: currentRoomRef.current?.npcs,
               hasUpdatesRoom: !!updates.room,
+              updatesRoomId: updates.room?.id,
               updatesRoomNpcs: updates.room?.npcs,
             });
 
@@ -525,11 +539,13 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               npcs_count: npcs?.length ?? 0,
               occupants,
               occupantCount,
+              eventRoomId,
               hasCurrentRoom: !!currentRoomRef.current,
               currentRoomId: currentRoomRef.current?.id,
               currentRoomPlayers: currentRoomRef.current?.players,
               currentRoomNpcs: currentRoomRef.current?.npcs,
               hasUpdatesRoom: !!updates.room,
+              updatesRoomId: updates.room?.id,
             });
 
             // CRITICAL FIX: Use updates.room if available (from room_update in same batch),
@@ -538,6 +554,17 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             const currentRoom = updates.room || currentRoomRef.current;
 
             if (currentRoom) {
+              // CRITICAL FIX: Only update if room IDs match, or if event doesn't have room_id (backward compatibility)
+              // This prevents NPCs from wrong room being merged into current room
+              if (eventRoomId && eventRoomId !== currentRoom.id) {
+                logger.warn('GameClientV2Container', 'room_occupants event room_id mismatch - ignoring', {
+                  eventRoomId,
+                  currentRoomId: currentRoom.id,
+                  npcsCount: npcs?.length ?? 0,
+                });
+                break;
+              }
+
               // ARCHITECTURE: room_occupants events are the SINGLE AUTHORITATIVE SOURCE for occupant data
               // This event always uses structured format (players/npcs arrays) from
               // RealTimeEventHandler._get_room_occupants() which queries:
@@ -555,6 +582,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                   occupants: [...(players ?? []), ...(npcs ?? [])],
                   occupant_count: occupantCount ?? (players?.length ?? 0) + (npcs?.length ?? 0),
                 };
+
                 logger.debug('GameClientV2Container', 'Updated room with structured occupants from room_occupants', {
                   roomId: updates.room.id,
                   players_count: updates.room.players?.length ?? 0,

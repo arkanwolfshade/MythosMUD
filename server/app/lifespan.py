@@ -488,6 +488,19 @@ async def lifespan(app: FastAPI):
     logger.info("Shutting down MythosMUD server...")
 
     try:
+        # Phase 0: Persist mythos time state before shutdown
+        logger.info("Freezing mythos chronicle state")
+        try:
+            chronicle = get_mythos_chronicle()
+            frozen_state = chronicle.freeze()
+            logger.info(
+                "Mythos chronicle state persisted",
+                real_timestamp=frozen_state.real_timestamp.isoformat(),
+                mythos_timestamp=frozen_state.mythos_timestamp.isoformat(),
+            )
+        except Exception as e:
+            logger.error("Failed to persist mythos chronicle state during shutdown", error=str(e))
+
         # Phase 1: Stop NATS message handler if running
         if hasattr(app.state, "nats_message_handler") and app.state.nats_message_handler:
             logger.info("Stopping NATS message handler")
@@ -537,6 +550,13 @@ async def lifespan(app: FastAPI):
 
     except (asyncio.CancelledError, KeyboardInterrupt) as e:
         logger.warning("Shutdown interrupted", error=str(e), error_type=type(e).__name__)
+        # Try to persist mythos state before cleanup
+        try:
+            chronicle = get_mythos_chronicle()
+            chronicle.freeze()
+            logger.info("Mythos chronicle state persisted during interrupted shutdown")
+        except Exception:
+            logger.warning("Failed to persist mythos chronicle state during interrupted shutdown")
         # Still try to cleanup container
         try:
             await container.shutdown()
@@ -545,6 +565,13 @@ async def lifespan(app: FastAPI):
         raise
     except Exception as e:
         logger.error("Critical shutdown failure", error=str(e), error_type=type(e).__name__, exc_info=True)
+        # Try to persist mythos state before cleanup
+        try:
+            chronicle = get_mythos_chronicle()
+            chronicle.freeze()
+            logger.info("Mythos chronicle state persisted during error shutdown")
+        except Exception:
+            logger.warning("Failed to persist mythos chronicle state during error shutdown")
         # Still try to cleanup container
         try:
             await container.shutdown()

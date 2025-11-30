@@ -105,6 +105,7 @@ class NPCMovementIntegration:
 
             # CRITICAL FIX: Update NPC instance room tracking for occupant queries
             # Get NPC instance from lifecycle manager and update current_room/current_room_id
+            # This ensures NPCs appear in the correct room's occupants list after movement
             try:
                 from ..services.npc_instance_service import get_npc_instance_service
 
@@ -113,11 +114,22 @@ class NPCMovementIntegration:
                     lifecycle_manager = npc_instance_service.lifecycle_manager
                     if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
                         npc_instance = lifecycle_manager.active_npcs[npc_id]
+                        # CRITICAL: Always update both attributes to ensure room tracking works
                         npc_instance.current_room = to_room_id
-                        # Also set current_room_id for compatibility
-                        if hasattr(npc_instance, "current_room_id"):
-                            npc_instance.current_room_id = to_room_id
-                        logger.debug(
+                        # Also set current_room_id for compatibility (dynamic attribute)
+                        npc_instance.current_room_id = to_room_id  # type: ignore[attr-defined]
+
+                        # CRITICAL: Validate room tracking was updated correctly
+                        if not npc_instance.current_room or npc_instance.current_room != to_room_id:
+                            logger.error(
+                                "Failed to update NPC room tracking correctly",
+                                npc_id=npc_id,
+                                to_room_id=to_room_id,
+                                current_room=getattr(npc_instance, "current_room", None),
+                                current_room_id=getattr(npc_instance, "current_room_id", None),
+                            )
+                        else:
+                            logger.debug(
                             "Updated NPC instance room tracking",
                             npc_id=npc_id,
                             new_room_id=to_room_id,

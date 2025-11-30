@@ -199,7 +199,9 @@ class BehaviorEngine:
         applicable_rules = []
 
         for rule in self.rules:
-            if self.evaluate_condition(rule["condition"], context):
+            condition_result = self.evaluate_condition(rule["condition"], context)
+
+            if condition_result:
                 applicable_rules.append(rule)
 
         # Sort by priority (highest first)
@@ -329,6 +331,11 @@ class NPCBase(ABC):
         self._stats = self._parse_stats(getattr(definition, "base_stats", "{}"))
         self._behavior_config = self._parse_behavior_config(getattr(definition, "behavior_config", "{}"))
         self._ai_config = self._parse_ai_config(getattr(definition, "ai_integration_stub", "{}"))
+
+        # CRITICAL FIX: NPC stats use "health" but behavior system expects "hp"
+        # Map "health" to "hp" if "hp" doesn't exist to prevent immediate death
+        if "hp" not in self._stats and "health" in self._stats:
+            self._stats["hp"] = self._stats["health"]
 
         # Initialize inventory
         self._inventory: list[dict[str, Any]] = []
@@ -495,9 +502,13 @@ class NPCBase(ABC):
             if not self.is_alive:
                 return False
 
-            current_hp = self._stats.get("hp", 0)
+            # CRITICAL FIX: Support both "hp" and "health" stats keys
+            current_hp = self._stats.get("hp", self._stats.get("health", 0))
             new_hp = max(0, current_hp - damage)
             self._stats["hp"] = new_hp
+            # Also update "health" if it exists for consistency
+            if "health" in self._stats:
+                self._stats["health"] = new_hp
 
             # Publish damage event
             if self.event_bus:
@@ -549,10 +560,14 @@ class NPCBase(ABC):
             if not self.is_alive:
                 return False
 
-            current_hp = self._stats.get("hp", 0)
-            max_hp = self._stats.get("max_hp", 100)
+            # CRITICAL FIX: Support both "hp" and "health" stats keys
+            current_hp = self._stats.get("hp", self._stats.get("health", 0))
+            max_hp = self._stats.get("max_hp", self._stats.get("max_health", 100))
             new_hp = min(max_hp, current_hp + amount)
             self._stats["hp"] = new_hp
+            # Also update "health" if it exists for consistency
+            if "health" in self._stats:
+                self._stats["health"] = new_hp
 
             logger.debug("NPC healed", npc_id=self.npc_id, amount=amount, new_hp=new_hp)
             return True
@@ -767,7 +782,10 @@ class NPCBase(ABC):
             context["current_time"] = current_time
 
             # Add NPC-specific context
-            context["hp"] = self._stats.get("hp", 0)
+            # CRITICAL FIX: NPC stats use "health" but behavior system expects "hp"
+            # Map "health" to "hp" for behavior rule evaluation
+            hp_value = self._stats.get("hp", self._stats.get("health", 0))
+            context["hp"] = hp_value
             context["current_room"] = self.current_room
             context["is_alive"] = self.is_alive
             context["is_active"] = self.is_active

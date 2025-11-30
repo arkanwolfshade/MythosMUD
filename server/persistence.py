@@ -1396,6 +1396,10 @@ class PersistenceLayer:
             room = self._room_cache.get(new_room_id)
 
         if room:
+            # CRITICAL FIX: Ensure room has event_bus set (rooms may have been created before event_bus was available)
+            # This ensures PlayerEnteredRoom events are published when players move between rooms
+            if room._event_bus is None and self._event_bus is not None:
+                room._event_bus = self._event_bus
             # Sync the room's player state with the database
             self._sync_room_players(room)
             return room
