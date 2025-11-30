@@ -293,17 +293,6 @@ export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
             </span>
           </div>
           <div className="occupants-content">
-            {/* DEBUG: Log displayRoom state right before rendering */}
-            {console.log('🎨 RoomInfoPanel: Rendering occupants with displayRoom:', {
-              hasPlayers: !!displayRoom.players,
-              playersCount: displayRoom.players?.length ?? 0,
-              hasNpcs: !!displayRoom.npcs,
-              npcsCount: displayRoom.npcs?.length ?? 0,
-              npcsArray: displayRoom.npcs,
-              playersArray: displayRoom.players,
-              hasOccupants: !!displayRoom.occupants,
-              occupantsCount: displayRoom.occupants?.length ?? 0,
-            })}
             {/* Use structured data (players/npcs) if available, otherwise fall back to flat occupants array */}
             {displayRoom.players !== undefined || displayRoom.npcs !== undefined ? (
               <>
