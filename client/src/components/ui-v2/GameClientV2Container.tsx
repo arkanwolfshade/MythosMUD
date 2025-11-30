@@ -16,8 +16,8 @@ import { DeathInterstitial } from '../DeathInterstitial';
 import { MainMenuModal } from '../MainMenuModal';
 import { MapView } from '../MapView';
 import { GameClientV2 } from './GameClientV2';
-import { useTabbedInterface } from './useTabbedInterface';
 import type { ChatMessage, Player, Room } from './types';
+import { useTabbedInterface } from './useTabbedInterface';
 
 // Import GameEvent interface from useGameConnection
 interface GameEvent {
@@ -656,7 +656,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             if (tickNumber % 10 === 0 && tickNumber >= 0) {
               appendMessage(
                 sanitizeChatMessageForState({
-                  text: `[Game Tick #${tickNumber}]`,
+                  text: `[Tick ${tickNumber}]`,
                   timestamp: event.timestamp,
                   messageType: 'system',
                   channel: 'system',
@@ -825,7 +825,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             // This handles room_update events that only update metadata
             const updatesHasOccupantData = updates.room.players !== undefined || updates.room.npcs !== undefined;
 
-            if ((!updatesHasOccupantData && prev.room.players !== undefined) || prev.room.npcs !== undefined) {
+            if (!updatesHasOccupantData) {
               // updates.room (from room_update) doesn't have occupant data, preserve from prev.room
               finalRoom = {
                 ...updates.room,
@@ -835,7 +835,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                 occupant_count: prev.room.occupant_count ?? 0,
               };
             } else {
-              // updates.room has occupant data (from room_occupants) - use it
+              // updates.room has occupant data (from room_occupants) - use it (this is authoritative)
               finalRoom = updates.room;
             }
           }

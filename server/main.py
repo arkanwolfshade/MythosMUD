@@ -34,8 +34,14 @@ from .monitoring.performance_monitor import get_performance_monitor
 # Note: We keep passlib for fastapi-users compatibility but use our own Argon2 implementation
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="passlib")
 
-# Get logger
+# Early logging setup - must happen before any logger creation
+# This ensures all startup information is captured in logfiles
+config = get_config()
+setup_enhanced_logging(config.to_legacy_dict())
+
+# Get logger - now created AFTER logging is set up
 logger = get_logger(__name__)
+logger.info("Logging setup completed", environment=config.logging.environment)
 
 
 # ErrorLoggingMiddleware has been replaced by ComprehensiveLoggingMiddleware
@@ -180,12 +186,6 @@ def main() -> FastAPI:
     logger.info("MythosMUD server started successfully")
     return app
 
-
-# Set up logging when module is imported
-config = get_config()
-logger.info("Setting up logging with config", config=config.to_legacy_dict())
-setup_enhanced_logging(config.to_legacy_dict())
-logger.info("Logging setup completed")
 
 # Create the FastAPI application
 app = create_app()

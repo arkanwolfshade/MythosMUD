@@ -388,6 +388,15 @@ class NPCLifecycleManager:
             npc_instance.npc_id = npc_id
             npc_instance.spawned_at = time.time()
 
+            # CRITICAL FIX: Set current_room on NPC instance for occupant queries
+            # The lifecycle manager query in event_handler.py needs this to find NPCs in rooms
+            # Note: _create_npc_instance may already set this, but ensure it's set here as well
+            if not hasattr(npc_instance, "current_room") or not npc_instance.current_room:
+                npc_instance.current_room = room_id
+            # Also set current_room_id for compatibility with code that checks both attributes
+            if not hasattr(npc_instance, "current_room_id") or not npc_instance.current_room_id:
+                npc_instance.current_room_id = room_id
+
             # Mutate room state via Room API (single source of truth) which will publish the event
             persistence = get_persistence()
             room = persistence.get_room(room_id)

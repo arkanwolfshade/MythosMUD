@@ -230,27 +230,39 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
           </PanelContainer>
         )}
 
-        {occupantsPanel && occupantsPanel.isVisible && (
-          <PanelContainer
-            id={occupantsPanel.id}
-            title={occupantsPanel.title}
-            position={occupantsPanel.position}
-            size={occupantsPanel.size}
-            zIndex={occupantsPanel.zIndex}
-            isMinimized={occupantsPanel.isMinimized}
-            isMaximized={occupantsPanel.isMaximized}
-            isVisible={occupantsPanel.isVisible}
-            minSize={occupantsPanel.minSize}
-            variant="default"
-            onPositionChange={panelManager.updatePosition}
-            onSizeChange={panelManager.updateSize}
-            onMinimize={panelManager.toggleMinimize}
-            onMaximize={panelManager.toggleMaximize}
-            onFocus={panelManager.focusPanel}
-          >
-            <OccupantsPanel room={room} />
-          </PanelContainer>
-        )}
+        {occupantsPanel &&
+          occupantsPanel.isVisible &&
+          (() => {
+            // Calculate total occupant count for title
+            const players = room?.players ?? [];
+            const npcs = room?.npcs ?? [];
+            const legacyOccupants = room?.occupants ?? [];
+            const totalCount = room?.occupant_count ?? (players.length + npcs.length || legacyOccupants.length);
+            const occupantsTitle =
+              typeof totalCount === 'number' && totalCount > 0 ? `Occupants (${totalCount})` : 'Occupants';
+
+            return (
+              <PanelContainer
+                id={occupantsPanel.id}
+                title={occupantsTitle}
+                position={occupantsPanel.position}
+                size={occupantsPanel.size}
+                zIndex={occupantsPanel.zIndex}
+                isMinimized={occupantsPanel.isMinimized}
+                isMaximized={occupantsPanel.isMaximized}
+                isVisible={occupantsPanel.isVisible}
+                minSize={occupantsPanel.minSize}
+                variant="default"
+                onPositionChange={panelManager.updatePosition}
+                onSizeChange={panelManager.updateSize}
+                onMinimize={panelManager.toggleMinimize}
+                onMaximize={panelManager.toggleMaximize}
+                onFocus={panelManager.focusPanel}
+              >
+                <OccupantsPanel room={room} />
+              </PanelContainer>
+            );
+          })()}
 
         {gameInfoPanel && gameInfoPanel.isVisible && (
           <PanelContainer

@@ -3562,26 +3562,54 @@ class ConnectionManager:
                     if isinstance(occ_player_info, dict) and occ_player_info.get("player_id") != player_id:
                         occupants.append(occ_player_info.get("player_name", "Unknown"))
 
-                # Get NPC occupants
-                if self.persistence:
-                    room = self.persistence.get_room(room_id)
-                    if room:
-                        npc_ids = room.get_npcs()
-                        logger.info("DEBUG: Room has NPCs", room_id=room_id, npc_ids=npc_ids)
-                        logger.info(
-                            "DEBUG: Room occupant_count", room_id=room_id, occupant_count=room.get_occupant_count()
-                        )
-                        for npc_id in npc_ids:
-                            # Get NPC name from the actual NPC instance, preserving original case from database
-                            npc_name = _get_npc_name_from_instance(npc_id)
-                            if npc_name:
-                                logger.info("DEBUG: Got NPC name from database", npc_name=npc_name, npc_id=npc_id)
-                                occupants.append(npc_name)
-                            else:
-                                # Log warning if NPC instance not found - this should not happen in normal operation
-                                logger.warning(
-                                    "NPC instance not found for ID - skipping from room display", npc_id=npc_id
-                                )
+                # CRITICAL FIX: Query NPCs from lifecycle manager instead of Room instance
+                # Room instances are recreated from persistence and lose in-memory NPC tracking
+                npc_ids: list[str] = []
+                try:
+                    from ..services.npc_instance_service import get_npc_instance_service
+
+                    npc_instance_service = get_npc_instance_service()
+                    if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
+                        lifecycle_manager = npc_instance_service.lifecycle_manager
+                        if lifecycle_manager and hasattr(lifecycle_manager, "active_npcs"):
+                            active_npcs_dict = lifecycle_manager.active_npcs
+                            # Query all active NPCs to find those in this room
+                            for npc_id, npc_instance in active_npcs_dict.items():
+                                # Check both current_room and current_room_id for compatibility
+                                current_room = getattr(npc_instance, "current_room", None)
+                                current_room_id = getattr(npc_instance, "current_room_id", None)
+                                npc_room_id = current_room or current_room_id
+                                if npc_room_id == room_id:
+                                    npc_ids.append(npc_id)
+
+                    logger.info("DEBUG: Room has NPCs from lifecycle manager", room_id=room_id, npc_ids=npc_ids)
+                    for npc_id in npc_ids:
+                        # Get NPC name from the actual NPC instance, preserving original case from database
+                        npc_name = _get_npc_name_from_instance(npc_id)
+                        if npc_name:
+                            logger.info("DEBUG: Got NPC name from database", npc_name=npc_name, npc_id=npc_id)
+                            occupants.append(npc_name)
+                        else:
+                            # Log warning if NPC instance not found - this should not happen in normal operation
+                            logger.warning(
+                                "NPC instance not found for ID - skipping from room display", npc_id=npc_id
+                            )
+                except Exception as npc_query_error:
+                    logger.warning(
+                        "Error querying NPCs from lifecycle manager, falling back to room.get_npcs()",
+                        room_id=room_id,
+                        error=str(npc_query_error),
+                    )
+                    # Fallback to room.get_npcs() if lifecycle manager query fails
+                    if self.persistence:
+                        room = self.persistence.get_room(room_id)
+                        if room:
+                            npc_ids = room.get_npcs()
+                            logger.info("DEBUG: Room has NPCs from fallback", room_id=room_id, npc_ids=npc_ids)
+                            for npc_id in npc_ids:
+                                npc_name = _get_npc_name_from_instance(npc_id)
+                                if npc_name:
+                                    occupants.append(npc_name)
 
             # CRITICAL: Extract player name - NEVER use UUID as fallback
             player_name = getattr(player, "name", None)

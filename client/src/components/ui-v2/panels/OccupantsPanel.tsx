@@ -37,7 +37,6 @@ export const OccupantsPanel: React.FC<OccupantsPanelProps> = ({ room }) => {
   // Use structured data if available, otherwise use legacy format
   const hasStructuredData = players.length > 0 || npcs.length > 0;
   const hasLegacyData = !hasStructuredData && legacyOccupants.length > 0;
-  const totalCount = room?.occupant_count ?? (players.length + npcs.length || legacyOccupants.length);
 
   if (!room || (!hasStructuredData && !hasLegacyData)) {
     return (
@@ -49,13 +48,6 @@ export const OccupantsPanel: React.FC<OccupantsPanelProps> = ({ room }) => {
 
   return (
     <div className="p-4 space-y-3">
-      <div className="text-sm font-bold text-mythos-terminal-primary">
-        Occupants{' '}
-        {typeof totalCount === 'number' && totalCount > 0 && (
-          <span className="text-mythos-terminal-text-secondary">({totalCount})</span>
-        )}
-      </div>
-
       {hasStructuredData ? (
         // New structured format: separate columns for players and NPCs
         <div className="grid grid-cols-2 gap-4">

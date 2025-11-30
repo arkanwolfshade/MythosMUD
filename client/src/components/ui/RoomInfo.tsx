@@ -189,9 +189,6 @@ export const RoomOccupants: React.FC = () => {
 
   return (
     <div className="bg-mythos-terminal-surface border border-gray-700 rounded p-3">
-      <h4 className="text-sm font-bold text-mythos-terminal-primary mb-2">
-        Occupants ({room.occupant_count || room.occupants.length})
-      </h4>
       <div className="space-y-1">
         {room.occupants.map((occupant, index) => (
           <div key={index} className="text-xs text-mythos-terminal-text">

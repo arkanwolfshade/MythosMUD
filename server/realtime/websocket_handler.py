@@ -993,10 +993,27 @@ async def broadcast_room_update(player_id: str, room_id: str, connection_manager
         except Exception as e:
             logger.error("Error transforming room occupants", room_id=room_id, error=str(e))
 
-        # Get NPC occupants
-        if persistence:
-            npc_ids = room.get_npcs()
-            logger.debug("DEBUG: Room has NPCs", room_id=room_id, npc_ids=npc_ids)
+        # CRITICAL FIX: Query NPCs from lifecycle manager instead of Room instance
+        # Room instances are recreated from persistence and lose in-memory NPC tracking
+        npc_ids: list[str] = []
+        try:
+            from ..services.npc_instance_service import get_npc_instance_service
+
+            npc_instance_service = get_npc_instance_service()
+            if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
+                lifecycle_manager = npc_instance_service.lifecycle_manager
+                if lifecycle_manager and hasattr(lifecycle_manager, "active_npcs"):
+                    active_npcs_dict = lifecycle_manager.active_npcs
+                    # Query all active NPCs to find those in this room
+                    for npc_id, npc_instance in active_npcs_dict.items():
+                        # Check both current_room and current_room_id for compatibility
+                        current_room = getattr(npc_instance, "current_room", None)
+                        current_room_id = getattr(npc_instance, "current_room_id", None)
+                        npc_room_id = current_room or current_room_id
+                        if npc_room_id == room_id:
+                            npc_ids.append(npc_id)
+
+            logger.debug("DEBUG: Room has NPCs from lifecycle manager", room_id=room_id, npc_ids=npc_ids)
             for npc_id in npc_ids:
                 # Get NPC name from the actual NPC instance, preserving original case from database
                 npc_name = _get_npc_name_from_instance(npc_id)
@@ -1006,6 +1023,20 @@ async def broadcast_room_update(player_id: str, room_id: str, connection_manager
                 else:
                     # Log warning if NPC instance not found - this should not happen in normal operation
                     logger.warning("NPC instance not found for ID - skipping from room display", npc_id=npc_id)
+        except Exception as npc_query_error:
+            logger.warning(
+                "Error querying NPCs from lifecycle manager, falling back to room.get_npcs()",
+                room_id=room_id,
+                error=str(npc_query_error),
+            )
+            # Fallback to room.get_npcs() if lifecycle manager query fails
+            if persistence:
+                npc_ids = room.get_npcs()
+                logger.debug("DEBUG: Room has NPCs from fallback", room_id=room_id, npc_ids=npc_ids)
+                for npc_id in npc_ids:
+                    npc_name = _get_npc_name_from_instance(npc_id)
+                    if npc_name:
+                        occupant_names.append(npc_name)
 
         # Create room update event
         room_data = room.to_dict() if hasattr(room, "to_dict") else room
