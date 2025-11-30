@@ -416,5 +416,99 @@ describe('Session Store', () => {
       expect(timeoutInfo.timeRemaining).toBeGreaterThan(0);
       expect(timeoutInfo.timeRemaining).toBeLessThanOrEqual(20 * 60 * 1000); // Should be around 20 minutes
     });
+
+    it('should provide session timeout info when lastActivity is null', () => {
+      const { result } = renderHook(() => useSessionStore());
+
+      act(() => {
+        result.current.setSessionTimeout(30 * 60 * 1000); // 30 minutes
+      });
+
+      const timeoutInfo = result.current.getSessionTimeoutInfo();
+
+      expect(timeoutInfo.isExpired).toBe(false);
+      expect(timeoutInfo.timeRemaining).toBe(30 * 60 * 1000); // Should be full timeout duration
+      expect(timeoutInfo.timeoutDuration).toBe(30 * 60 * 1000);
+    });
+
+    it('should provide session timeout info when session is expired', () => {
+      const { result } = renderHook(() => useSessionStore());
+
+      act(() => {
+        result.current.updateLastActivity(Date.now() - 31 * 60 * 1000); // 31 minutes ago
+        result.current.setSessionTimeout(30 * 60 * 1000); // 30 minutes
+      });
+
+      const timeoutInfo = result.current.getSessionTimeoutInfo();
+
+      expect(timeoutInfo.isExpired).toBe(true);
+      expect(timeoutInfo.timeRemaining).toBe(0);
+      expect(timeoutInfo.timeoutDuration).toBe(30 * 60 * 1000);
+    });
+
+    it('should provide user info with empty token', () => {
+      const { result } = renderHook(() => useSessionStore());
+
+      act(() => {
+        result.current.setPlayerName('TestPlayer');
+        result.current.setCharacterName('TestCharacter');
+        // Leave token empty
+      });
+
+      const userInfo = result.current.getUserInfo();
+
+      expect(userInfo).toEqual({
+        playerName: 'TestPlayer',
+        characterName: 'TestCharacter',
+        hasValidToken: false,
+      });
+    });
+
+    it('should validate invite code with lowercase letters', () => {
+      const { result } = renderHook(() => useSessionStore());
+
+      act(() => {
+        result.current.setInviteCode('abc123');
+      });
+
+      expect(result.current.isValidInviteCode()).toBe(false); // Should fail - lowercase not allowed
+    });
+
+    it('should validate invite code with special characters', () => {
+      const { result } = renderHook(() => useSessionStore());
+
+      act(() => {
+        result.current.setInviteCode('ABC-123');
+      });
+
+      expect(result.current.isValidInviteCode()).toBe(false); // Should fail - hyphens not allowed
+    });
+
+    it('should validate invite code that is too short', () => {
+      const { result } = renderHook(() => useSessionStore());
+
+      act(() => {
+        result.current.setInviteCode('ABC12'); // Only 5 characters
+      });
+
+      expect(result.current.isValidInviteCode()).toBe(false); // Should fail - needs at least 6
+    });
+
+    it('should validate invite code with correct format', () => {
+      const { result } = renderHook(() => useSessionStore());
+
+      act(() => {
+        result.current.setInviteCode('ABCDEF123456');
+      });
+
+      expect(result.current.isValidInviteCode()).toBe(true);
+    });
+
+    it('should check session expired when lastActivity is null', () => {
+      const { result } = renderHook(() => useSessionStore());
+
+      // lastActivity should be null initially
+      expect(result.current.isSessionExpired()).toBe(false);
+    });
   });
 });

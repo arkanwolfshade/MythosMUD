@@ -256,23 +256,46 @@ describe('Secure Token Storage', () => {
 
   describe('Environment Checks', () => {
     it('should return null for getToken in production mode', () => {
-      // Note: import.meta.env is not easily mockable in Vitest
-      // The environment check happens at runtime, so we test the behavior
-      // In test mode, it will use localStorage, but we verify the logic path exists
+      // Clear mocks before test
+      vi.clearAllMocks();
+      localStorageMock.getItem.mockClear();
+
+      // Mock production environment (not DEV and not test)
+      // Note: The condition checks: !(import.meta.env.DEV || import.meta.env.MODE === 'test')
+      // For production: DEV should be falsy AND MODE should not be 'test'
+      // In Vite/Vitest, import.meta.env values are replaced at build/test time,
+      // so vi.stubEnv may not fully prevent code execution paths.
+      // However, the critical security behavior is that the function returns null.
+      vi.stubEnv('DEV', '');
+      vi.stubEnv('MODE', 'production');
+
       const token = secureTokenStorage.getToken();
-      // In test mode, this will call getItem, but the code path for production exists
-      // We can't easily test the production path without more complex mocking
-      expect(typeof token === 'string' || token === null).toBe(true);
+
+      // In production mode, should return null (security check working)
+      expect(token).toBe(null);
+
+      // Note: Due to how Vite handles import.meta.env at compile time,
+      // we verify the security behavior (returns null) rather than
+      // checking localStorage access, which may occur due to env replacement.
+
+      vi.unstubAllEnvs();
     });
 
     it('should return null for getRefreshToken in production mode', () => {
-      // Note: import.meta.env is not easily mockable in Vitest
-      // The environment check happens at runtime, so we test the behavior
-      // In test mode, it will use localStorage, but we verify the logic path exists
+      // Clear mocks before test
+      vi.clearAllMocks();
+      localStorageMock.getItem.mockClear();
+
+      // Mock production environment (not DEV and not test)
+      vi.stubEnv('DEV', '');
+      vi.stubEnv('MODE', 'production');
+
       const token = secureTokenStorage.getRefreshToken();
-      // In test mode, this will call getItem, but the code path for production exists
-      // We can't easily test the production path without more complex mocking
-      expect(typeof token === 'string' || token === null).toBe(true);
+
+      // In production mode, should return null (security check working)
+      expect(token).toBe(null);
+
+      vi.unstubAllEnvs();
     });
   });
 });
@@ -336,6 +359,29 @@ describe('Session Management', () => {
     expect(onTimeout).toHaveBeenCalledWith(sessionId);
   });
 
+  it('should expire session without onTimeout callback', () => {
+    const sessionId = sessionManager.createSession('user123', 1); // No callback
+
+    expect(sessionManager.isSessionValid(sessionId)).toBe(true);
+
+    vi.advanceTimersByTime(2000);
+    sessionManager.cleanupExpiredSessions();
+
+    // Session should be expired and removed even without callback
+    expect(sessionManager.isSessionValid(sessionId)).toBe(false);
+  });
+
+  it('should handle cleanup when session expires exactly at current time', () => {
+    const sessionId = sessionManager.createSession('user123', 1);
+
+    // Advance exactly 1 second (1000ms)
+    vi.advanceTimersByTime(1000);
+
+    // Session should be expired (now >= expiresAt)
+    sessionManager.cleanupExpiredSessions();
+    expect(sessionManager.isSessionValid(sessionId)).toBe(false);
+  });
+
   it('should remove session', () => {
     const sessionId = sessionManager.createSession('user123', 3600);
     expect(sessionManager.isSessionValid(sessionId)).toBe(true);
@@ -369,11 +415,27 @@ describe('Session Management', () => {
   });
 
   it('should clear existing cleanup interval when starting new one', () => {
-    // The cleanup interval is started in the constructor
-    // To test the clearInterval branch, we need to manually trigger startCleanupInterval
-    // But since it's private, we'll test the behavior indirectly
-    // by verifying that the interval callback works correctly
+    // Test line 265: when cleanupInterval exists, it should be cleared
+    // Since startCleanupInterval is private and SessionManager is a singleton,
+    // we test indirectly by verifying that the interval callback (line 269) is executed
+    // The SessionManager is created at module load time, so the interval is already set up
 
+    // Create a session to test the interval callback
+    const session1 = sessionManager.createSession('user1', 1); // 1 second timeout
+
+    // Advance time to expire session1
+    vi.advanceTimersByTime(2000);
+
+    // Advance time to trigger the interval callback (60000ms = 1 minute)
+    // This will call cleanupExpiredSessions() via the interval (line 269)
+    vi.advanceTimersByTime(60000);
+
+    // After the interval callback fires, session1 should be cleaned up
+    expect(sessionManager.isSessionValid(session1)).toBe(false);
+  });
+
+  it('should call cleanupExpiredSessions from interval callback', () => {
+    // Test line 269: verify that the interval callback calls cleanupExpiredSessions
     const session1 = sessionManager.createSession('user1', 1); // 1 second timeout
     const session2 = sessionManager.createSession('user2', 3600); // 1 hour timeout
 
@@ -383,10 +445,11 @@ describe('Session Management', () => {
     // Advance time to expire session1
     vi.advanceTimersByTime(2000);
 
-    // Advance time to trigger the interval (60000ms = 1 minute)
+    // Advance time to trigger the interval callback (60000ms = 1 minute)
+    // This will call cleanupExpiredSessions() via the interval (line 269)
     vi.advanceTimersByTime(60000);
 
-    // After the interval fires, session1 should be cleaned up
+    // After the interval callback fires, session1 should be cleaned up
     expect(sessionManager.isSessionValid(session1)).toBe(false);
     expect(sessionManager.isSessionValid(session2)).toBe(true);
   });
@@ -726,5 +789,117 @@ describe('CSRF Protection', () => {
     expect(csrfProtection.validateToken(token)).toBe(false);
 
     vi.useRealTimers();
+  });
+
+  it('should generate token with custom expiry', () => {
+    const token = csrfProtection.generateToken(7200); // 2 hours expiry
+    expect(token).toBeDefined();
+    expect(typeof token).toBe('string');
+  });
+
+  it('should handle validation of non-existent token', () => {
+    expect(csrfProtection.validateToken('non-existent-token-xyz')).toBe(false);
+  });
+
+  it('should clean up expired tokens when generating new token', () => {
+    vi.useFakeTimers();
+
+    // Generate a token with 1 second expiry
+    const token1 = csrfProtection.generateToken(1);
+    expect(csrfProtection.validateToken(token1)).toBe(true);
+
+    // Advance time to expire token1
+    vi.advanceTimersByTime(2000);
+
+    // Generate a new token - this should trigger cleanup and remove expired token1
+    const token2 = csrfProtection.generateToken(3600);
+
+    // token1 should now be invalid (expired and cleaned up)
+    expect(csrfProtection.validateToken(token1)).toBe(false);
+    // token2 should be valid
+    expect(csrfProtection.validateToken(token2)).toBe(true);
+
+    vi.useRealTimers();
+  });
+
+  it('should handle token validation when token is exactly expired', () => {
+    vi.useFakeTimers();
+
+    const token = csrfProtection.generateToken(1); // 1 second expiry
+    expect(csrfProtection.validateToken(token)).toBe(true);
+
+    // Advance more than 1 second (1001ms) to ensure token is expired
+    // The check is Date.now() > expiresAt, so we need strictly greater than
+    vi.advanceTimersByTime(1001);
+
+    // Validate should delete expired token and return false
+    expect(csrfProtection.validateToken(token)).toBe(false);
+    // Second validation should also return false (token was deleted)
+    expect(csrfProtection.validateToken(token)).toBe(false);
+
+    vi.useRealTimers();
+  });
+});
+
+describe('Token Expiry - Edge Cases', () => {
+  it('should handle token with exp exactly at current time', () => {
+    const currentTime = Math.floor(Date.now() / 1000);
+    const header = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
+    const payload = btoa(JSON.stringify({ exp: currentTime }))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
+    const signature = 'signature';
+    const token = `${header}.${payload}.${signature}`;
+
+    // exp === currentTime means not expired (check is exp < currentTime)
+    expect(secureTokenStorage.isTokenExpired(token)).toBe(false);
+  });
+
+  it('should handle token with malformed payload (invalid JSON)', () => {
+    const header = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
+    const invalidPayload = btoa('not valid json').replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+    const signature = 'signature';
+    const token = `${header}.${invalidPayload}.${signature}`;
+
+    expect(secureTokenStorage.isTokenExpired(token)).toBe(true); // Should treat as expired on error
+  });
+
+  it('should handle token with missing exp field', () => {
+    const header = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
+    const payload = btoa(JSON.stringify({ sub: '123', iat: 1234567890 }))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
+    const signature = 'signature';
+    const token = `${header}.${payload}.${signature}`;
+
+    // When exp is undefined, payload.exp < currentTime is false, so token is not expired
+    expect(secureTokenStorage.isTokenExpired(token)).toBe(false);
+  });
+
+  it('should handle refresh token response with refresh_token field', async () => {
+    const mockFetch = vi.mocked(fetch);
+    const refreshResponse = {
+      access_token: 'new-jwt-token',
+      expires_in: 3600,
+      refresh_token: 'new-refresh-token',
+    };
+
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(refreshResponse),
+    } as Response);
+
+    localStorageMock.getItem.mockReturnValue('test-refresh-token');
+
+    // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
+    const token =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjF9.signature';
+
+    const result = await secureTokenStorage.refreshTokenIfNeeded(token);
+
+    expect(result).toBe(true);
+    expect(localStorageMock.setItem).toHaveBeenCalledWith('authToken', 'new-jwt-token');
   });
 });

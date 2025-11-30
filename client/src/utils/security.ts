@@ -76,7 +76,11 @@ export const secureTokenStorage = {
         .padEnd(Math.ceil(base64Url.length / 4) * 4, '=');
       const payload = JSON.parse(atob(base64));
       const currentTime = Math.floor(Date.now() / 1000);
-      return payload.exp && payload.exp < currentTime;
+      // If exp is missing, token is not expired (no expiration = never expires)
+      if (!payload.exp) {
+        return false;
+      }
+      return payload.exp < currentTime;
     } catch {
       return true; // If we can't parse, consider it expired
     }

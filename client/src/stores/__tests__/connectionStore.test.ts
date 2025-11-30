@@ -350,5 +350,118 @@ describe('Connection Store', () => {
 
       expect(result.current.hasAnyConnection()).toBe(true);
     });
+
+    it('should set isConnected to false when setting connecting to false', () => {
+      const { result } = renderHook(() => useConnectionStore());
+
+      act(() => {
+        result.current.setSseConnected(true);
+        result.current.setWebsocketConnected(true);
+      });
+
+      // Verify both connections are set and isConnected should be true
+      expect(result.current.sseConnected).toBe(true);
+      expect(result.current.websocketConnected).toBe(true);
+      expect(result.current.isFullyConnected()).toBe(true);
+      // Note: isConnected might be stored separately, so check both
+      expect(result.current.isConnected || result.current.isFullyConnected()).toBe(true);
+
+      act(() => {
+        result.current.setConnecting(false);
+      });
+
+      // setConnecting(false) should set isConnected to false regardless of connection state
+      expect(result.current.isConnected).toBe(false);
+    });
+
+    it('should clear error when SSE connects', () => {
+      const { result } = renderHook(() => useConnectionStore());
+
+      act(() => {
+        result.current.setError('Connection failed');
+      });
+
+      expect(result.current.error).toBe('Connection failed');
+
+      act(() => {
+        result.current.setSseConnected(true);
+      });
+
+      expect(result.current.error).toBe(null);
+    });
+
+    it('should clear error when WebSocket connects', () => {
+      const { result } = renderHook(() => useConnectionStore());
+
+      act(() => {
+        result.current.setError('Connection failed');
+      });
+
+      expect(result.current.error).toBe('Connection failed');
+
+      act(() => {
+        result.current.setWebsocketConnected(true);
+      });
+
+      expect(result.current.error).toBe(null);
+    });
+
+    it('should set isConnected to true only when both connections are true', () => {
+      const { result } = renderHook(() => useConnectionStore());
+
+      act(() => {
+        result.current.setSseConnected(true);
+      });
+
+      // WebSocket not connected yet, so isConnected should be false
+      expect(result.current.isConnected).toBe(false);
+      expect(result.current.isFullyConnected()).toBe(false);
+
+      act(() => {
+        result.current.setWebsocketConnected(true);
+      });
+
+      // Both connected, so isConnected should be true
+      expect(result.current.isConnected).toBe(true);
+      expect(result.current.isFullyConnected()).toBe(true);
+    });
+
+    it('should set isConnected to false when SSE disconnects', () => {
+      const { result } = renderHook(() => useConnectionStore());
+
+      act(() => {
+        result.current.setSseConnected(true);
+        result.current.setWebsocketConnected(true);
+      });
+
+      expect(result.current.isConnected).toBe(true);
+      expect(result.current.isFullyConnected()).toBe(true);
+
+      act(() => {
+        result.current.setSseConnected(false);
+      });
+
+      expect(result.current.isConnected).toBe(false);
+      expect(result.current.isFullyConnected()).toBe(false);
+    });
+
+    it('should set isConnected to false when WebSocket disconnects', () => {
+      const { result } = renderHook(() => useConnectionStore());
+
+      act(() => {
+        result.current.setSseConnected(true);
+        result.current.setWebsocketConnected(true);
+      });
+
+      expect(result.current.isConnected).toBe(true);
+      expect(result.current.isFullyConnected()).toBe(true);
+
+      act(() => {
+        result.current.setWebsocketConnected(false);
+      });
+
+      expect(result.current.isConnected).toBe(false);
+      expect(result.current.isFullyConnected()).toBe(false);
+    });
   });
 });

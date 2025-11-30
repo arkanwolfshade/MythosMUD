@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { logoutHandler } from '../logoutHandler';
+import { createLogoutHandler, logoutHandler } from '../logoutHandler';
 
 // Mock dependencies
 vi.mock('../security', () => ({
@@ -122,6 +122,21 @@ describe('logoutHandler', () => {
       expect(mockClearState).toHaveBeenCalled();
       expect(mockNavigateToLogin).toHaveBeenCalled();
     });
+
+    it('should handle Error instance with AbortError name', async () => {
+      // Create an Error instance with name set to 'AbortError'
+      const abortError = new Error('Operation aborted');
+      abortError.name = 'AbortError';
+
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockImplementation(() => Promise.reject(abortError));
+
+      await logoutHandler(defaultOptions);
+
+      // Should still proceed with client-side logout
+      expect(mockDisconnect).toHaveBeenCalled();
+      expect(mockClearState).toHaveBeenCalled();
+      expect(mockNavigateToLogin).toHaveBeenCalled();
+    });
   });
 
   describe('Network Error Handling', () => {
@@ -217,6 +232,20 @@ describe('logoutHandler', () => {
       expect(mockClearState).toHaveBeenCalled();
       expect(mockNavigateToLogin).toHaveBeenCalled();
     });
+
+    it('should handle non-Error rejection in sendLogoutCommandToServer', async () => {
+      // Reject with a non-Error value (string) - tests the String(error) branch
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockImplementation(() =>
+        Promise.reject('String rejection value')
+      );
+
+      await logoutHandler(defaultOptions);
+
+      // Should still proceed with client-side logout
+      expect(mockDisconnect).toHaveBeenCalled();
+      expect(mockClearState).toHaveBeenCalled();
+      expect(mockNavigateToLogin).toHaveBeenCalled();
+    });
   });
 
   describe('Custom Timeout Configuration', () => {
@@ -250,6 +279,426 @@ describe('logoutHandler', () => {
 
       // Should not call server but should still clean up client state
       expect(global.fetch).not.toHaveBeenCalled();
+      expect(mockDisconnect).toHaveBeenCalled();
+      expect(mockClearState).toHaveBeenCalled();
+      expect(mockNavigateToLogin).toHaveBeenCalled();
+    });
+  });
+
+  describe('Server Response Error Handling', () => {
+    it('should handle error response with error.detail field', async () => {
+      const mockResponse = {
+        ok: false,
+        status: 500,
+        json: vi.fn().mockResolvedValue({
+          detail: 'Detailed error message',
+        }),
+      };
+
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+
+      await logoutHandler(defaultOptions);
+
+      // Should still proceed with client-side logout
+      expect(mockDisconnect).toHaveBeenCalled();
+      expect(mockClearState).toHaveBeenCalled();
+      expect(mockNavigateToLogin).toHaveBeenCalled();
+    });
+
+    it('should handle error response with error.error.message field', async () => {
+      const mockResponse = {
+        ok: false,
+        status: 400,
+        json: vi.fn().mockResolvedValue({
+          error: {
+            message: 'Error message from error.error.message',
+          },
+        }),
+      };
+
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+
+      await logoutHandler(defaultOptions);
+
+      expect(mockDisconnect).toHaveBeenCalled();
+      expect(mockClearState).toHaveBeenCalled();
+      expect(mockNavigateToLogin).toHaveBeenCalled();
+    });
+
+    it('should handle JSON parsing error in error response', async () => {
+      const mockResponse = {
+        ok: false,
+        status: 500,
+        json: vi.fn().mockRejectedValue(new Error('Invalid JSON')),
+      };
+
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+
+      await logoutHandler(defaultOptions);
+
+      // Should still proceed with client-side logout even if JSON parsing fails
+      expect(mockDisconnect).toHaveBeenCalled();
+      expect(mockClearState).toHaveBeenCalled();
+      expect(mockNavigateToLogin).toHaveBeenCalled();
+    });
+  });
+
+  describe('Client-Side Cleanup Error Handling', () => {
+    it('should handle error in secureTokenStorage.clearToken', async () => {
+      const { secureTokenStorage } = await import('../security');
+      vi.mocked(secureTokenStorage.clearToken).mockImplementation(() => {
+        throw new Error('Failed to clear token');
+      });
+
+      const mockResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({ success: true }),
+      };
+
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+
+      await logoutHandler(defaultOptions);
+
+      // Should continue with other cleanup steps
+      expect(mockDisconnect).toHaveBeenCalled();
+      expect(mockClearState).toHaveBeenCalled();
+      expect(mockNavigateToLogin).toHaveBeenCalled();
+    });
+
+    it('should handle error in disconnect function', async () => {
+      const mockDisconnectWithError = vi.fn().mockImplementation(() => {
+        throw new Error('Disconnect failed');
+      });
+
+      const optionsWithError = {
+        ...defaultOptions,
+        disconnect: mockDisconnectWithError,
+      };
+
+      const mockResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({ success: true }),
+      };
+
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+
+      await logoutHandler(optionsWithError);
+
+      // Should continue with other cleanup steps
+      expect(mockClearState).toHaveBeenCalled();
+      expect(mockNavigateToLogin).toHaveBeenCalled();
+    });
+
+    it('should handle error in clearState function', async () => {
+      const mockClearStateWithError = vi.fn().mockImplementation(() => {
+        throw new Error('Clear state failed');
+      });
+
+      const optionsWithError = {
+        ...defaultOptions,
+        clearState: mockClearStateWithError,
+      };
+
+      const mockResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({ success: true }),
+      };
+
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+
+      await logoutHandler(optionsWithError);
+
+      // Should continue with navigation
+      expect(mockNavigateToLogin).toHaveBeenCalled();
+    });
+
+    it('should handle error in navigateToLogin function', async () => {
+      const mockNavigateToLoginWithError = vi.fn().mockImplementation(() => {
+        throw new Error('Navigation failed');
+      });
+
+      const optionsWithError = {
+        ...defaultOptions,
+        navigateToLogin: mockNavigateToLoginWithError,
+      };
+
+      const mockResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({ success: true }),
+      };
+
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+
+      // Navigation errors are caught and logged, not thrown
+      // The function should complete even if navigation fails
+      await logoutHandler(optionsWithError);
+
+      // Navigation should have been attempted
+      expect(mockNavigateToLoginWithError).toHaveBeenCalled();
+    });
+
+    it('should attempt navigation even if cleanup fails', async () => {
+      const mockClearStateWithError = vi.fn().mockImplementation(() => {
+        throw new Error('Clear state failed');
+      });
+
+      const optionsWithError = {
+        ...defaultOptions,
+        clearState: mockClearStateWithError,
+      };
+
+      const mockResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({ success: true }),
+      };
+
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+
+      await logoutHandler(optionsWithError);
+
+      // Should still attempt navigation
+      expect(mockNavigateToLogin).toHaveBeenCalled();
+    });
+
+    it('should handle navigation error in cleanup error handler', async () => {
+      const mockNavigateToLoginWithError = vi.fn().mockImplementation(() => {
+        throw new Error('Navigation failed');
+      });
+
+      const mockClearStateWithError = vi.fn().mockImplementation(() => {
+        throw new Error('Clear state failed');
+      });
+
+      const optionsWithError = {
+        ...defaultOptions,
+        clearState: mockClearStateWithError,
+        navigateToLogin: mockNavigateToLoginWithError,
+      };
+
+      const mockResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({ success: true }),
+      };
+
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+
+      // Should not throw - error is caught and logged
+      await logoutHandler(optionsWithError);
+    });
+
+    it('should handle non-Error navigation failure in cleanup error handler', async () => {
+      // Test lines 58-65: when cleanup fails AND navigation fails with non-Error
+      const mockNavigateToLoginWithStringError = vi.fn().mockImplementation(() => {
+        throw 'String error'; // Non-Error type
+      });
+
+      const mockClearStateWithError = vi.fn().mockImplementation(() => {
+        throw new Error('Clear state failed');
+      });
+
+      const optionsWithError = {
+        ...defaultOptions,
+        clearState: mockClearStateWithError,
+        navigateToLogin: mockNavigateToLoginWithStringError,
+      };
+
+      const mockResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({ success: true }),
+      };
+
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+
+      // Should not throw - error is caught and logged
+      await logoutHandler(optionsWithError);
+      expect(mockNavigateToLoginWithStringError).toHaveBeenCalled();
+    });
+
+    it('should handle non-Error clearToken error', async () => {
+      const { secureTokenStorage } = await import('../security');
+      vi.mocked(secureTokenStorage.clearToken).mockImplementation(() => {
+        throw 'String error'; // Non-Error type - tests line 145 branch
+      });
+
+      const mockResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({ success: true }),
+      };
+
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+
+      await logoutHandler(defaultOptions);
+
+      // Should continue with other cleanup steps
+      expect(mockDisconnect).toHaveBeenCalled();
+      expect(mockClearState).toHaveBeenCalled();
+      expect(mockNavigateToLogin).toHaveBeenCalled();
+    });
+
+    it('should handle non-Error disconnect error', async () => {
+      const mockDisconnectWithStringError = vi.fn().mockImplementation(() => {
+        throw 'String error'; // Non-Error type - tests line 155 branch
+      });
+
+      const optionsWithError = {
+        ...defaultOptions,
+        disconnect: mockDisconnectWithStringError,
+      };
+
+      const mockResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({ success: true }),
+      };
+
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+
+      await logoutHandler(optionsWithError);
+
+      // Should continue with other cleanup steps
+      expect(mockClearState).toHaveBeenCalled();
+      expect(mockNavigateToLogin).toHaveBeenCalled();
+    });
+
+    it('should handle non-Error clearState error', async () => {
+      const mockClearStateWithStringError = vi.fn().mockImplementation(() => {
+        throw 'String error'; // Non-Error type - tests line 165 branch
+      });
+
+      const optionsWithError = {
+        ...defaultOptions,
+        clearState: mockClearStateWithStringError,
+      };
+
+      const mockResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({ success: true }),
+      };
+
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+
+      await logoutHandler(optionsWithError);
+
+      // Should continue with navigation
+      expect(mockNavigateToLogin).toHaveBeenCalled();
+    });
+
+    it('should handle non-Error navigateToLogin error in performClientSideCleanup', async () => {
+      // Test line 175: non-Error navigation error in performClientSideCleanup
+      const mockNavigateToLoginWithStringError = vi.fn().mockImplementation(() => {
+        throw 'String navigation error'; // Non-Error type
+      });
+
+      const optionsWithError = {
+        ...defaultOptions,
+        navigateToLogin: mockNavigateToLoginWithStringError,
+      };
+
+      const mockResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({ success: true }),
+      };
+
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+
+      // Navigation errors are re-thrown from performClientSideCleanup
+      // This should trigger the outer catch block which then tries navigation again
+      await logoutHandler(optionsWithError);
+
+      // Navigation should have been attempted (will throw, caught, then tried again)
+      expect(mockNavigateToLoginWithStringError).toHaveBeenCalled();
+    });
+  });
+
+  describe('Timeout Mechanism', () => {
+    it('should abort request after timeout duration', async () => {
+      let abortSignal: AbortSignal | null = null;
+
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockImplementation((url, options) => {
+        if (options?.signal) {
+          abortSignal = options.signal as AbortSignal;
+
+          // Listen for abort and reject the promise when aborted
+          return new Promise((resolve, reject) => {
+            const onAbort = () => {
+              abortSignal?.removeEventListener('abort', onAbort);
+              reject(new DOMException('The operation was aborted.', 'AbortError'));
+            };
+
+            if (abortSignal.aborted) {
+              // Already aborted, reject immediately
+              reject(new DOMException('The operation was aborted.', 'AbortError'));
+            } else {
+              abortSignal.addEventListener('abort', onAbort);
+            }
+          });
+        }
+
+        // No signal, return a promise that never resolves (shouldn't happen in this test)
+        return new Promise(() => {});
+      });
+
+      const timeoutPromise = logoutHandler({
+        ...defaultOptions,
+        timeout: 1000,
+      });
+
+      // Advance timer to trigger timeout (which will abort the signal)
+      vi.advanceTimersByTime(1000);
+
+      // Complete the logout (should complete even though fetch was aborted)
+      await timeoutPromise;
+
+      // Verify abort happened
+      expect(abortSignal?.aborted).toBe(true);
+
+      expect(mockDisconnect).toHaveBeenCalled();
+      expect(mockClearState).toHaveBeenCalled();
+      expect(mockNavigateToLogin).toHaveBeenCalled();
+    });
+  });
+
+  describe('createLogoutHandler', () => {
+    it('should create a logout handler function', () => {
+      const handler = createLogoutHandler('test-token', mockDisconnect, mockClearState, mockNavigateToLogin);
+
+      expect(typeof handler).toBe('function');
+    });
+
+    it('should create handler that calls logoutHandler with correct options', async () => {
+      const mockResponse = {
+        ok: true,
+        json: vi.fn().mockResolvedValue({ success: true }),
+      };
+
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(mockResponse);
+
+      const handler = createLogoutHandler('test-token', mockDisconnect, mockClearState, mockNavigateToLogin);
+
+      await handler();
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        '/commands/logout',
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            Authorization: 'Bearer test-token',
+          }),
+        })
+      );
+
+      expect(mockDisconnect).toHaveBeenCalled();
+      expect(mockClearState).toHaveBeenCalled();
+      expect(mockNavigateToLogin).toHaveBeenCalled();
+    });
+
+    it('should allow custom timeout when calling created handler', async () => {
+      (global.fetch as jest.MockedFunction<typeof fetch>).mockImplementation(() =>
+        Promise.reject(new DOMException('The operation was aborted.', 'AbortError'))
+      );
+
+      const handler = createLogoutHandler('test-token', mockDisconnect, mockClearState, mockNavigateToLogin);
+
+      await handler(2000);
+
       expect(mockDisconnect).toHaveBeenCalled();
       expect(mockClearState).toHaveBeenCalled();
       expect(mockNavigateToLogin).toHaveBeenCalled();

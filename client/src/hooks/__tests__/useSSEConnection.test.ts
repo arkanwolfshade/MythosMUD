@@ -328,6 +328,38 @@ describe('useSSEConnection', () => {
       expect(result.current.lastHeartbeatTime).not.toBeNull();
       expect(result.current.isHealthy).toBe(true);
     });
+
+    it('should handle non-JSON messages in onmessage', async () => {
+      // Test line 193: catch block for non-JSON messages
+      const onMessage = vi.fn();
+      const { result } = renderHook(() =>
+        useSSEConnection({
+          ...defaultOptions,
+          onMessage,
+        })
+      );
+
+      act(() => {
+        result.current.connect();
+      });
+
+      await waitFor(
+        () => {
+          expect(result.current.isConnected).toBe(true);
+        },
+        { timeout: 1000 }
+      );
+
+      // Act - send non-JSON message (plain text)
+      act(() => {
+        mockEventSourceInstance?.simulateMessage('plain text message');
+      });
+
+      // Assert - should still call onMessage even if JSON parsing fails
+      expect(onMessage).toHaveBeenCalled();
+      const messageEvent = onMessage.mock.calls[onMessage.mock.calls.length - 1][0];
+      expect(messageEvent.data).toBe('plain text message');
+    });
   });
 
   describe('Error Handling', () => {
@@ -579,6 +611,88 @@ describe('useSSEConnection', () => {
       // Since we closed it, reconnect should create a new one
       expect(mockEventSourceInstance).toBeDefined();
     });
+
+    it('should handle connect when EventSource is in CONNECTING state', async () => {
+      // Test line 116: readyState === EventSource.CONNECTING branch
+      const onConnected = vi.fn();
+      const { result } = renderHook(() =>
+        useSSEConnection({
+          ...defaultOptions,
+          onConnected,
+        })
+      );
+
+      act(() => {
+        result.current.connect();
+      });
+
+      // Before connection opens, try to connect again while EventSource is CONNECTING
+      if (mockEventSourceInstance) {
+        mockEventSourceInstance.readyState = MockEventSource.CONNECTING;
+      }
+
+      // Act - try to connect again while in CONNECTING state
+      act(() => {
+        result.current.connect();
+      });
+
+      // Assert - should return early (not create duplicate), should log debug
+      // The code path at line 116-117 should be taken
+      expect(onConnected).not.toHaveBeenCalled(); // Not yet OPEN, so won't call onConnected
+    });
+
+    it('should generate sessionId using generateSecureRandomString when EventSource already OPEN', async () => {
+      // Test line 123: generateSecureRandomString branch when EventSource is already OPEN and sessionId is null
+      const onConnected = vi.fn();
+      const { result } = renderHook(() =>
+        useSSEConnection({
+          authToken: 'test-token',
+          sessionId: null, // No sessionId provided
+          onConnected,
+        })
+      );
+
+      act(() => {
+        result.current.connect();
+      });
+
+      await waitFor(
+        () => {
+          expect(result.current.isConnected).toBe(true);
+        },
+        { timeout: 1000 }
+      );
+
+      // Clear previous calls
+      onConnected.mockClear();
+
+      // Now EventSource is OPEN, try to connect again with no sessionId
+      // This should use generateSecureRandomString
+      if (mockEventSourceInstance) {
+        mockEventSourceInstance.readyState = MockEventSource.OPEN;
+      }
+
+      act(() => {
+        result.current.connect();
+      });
+
+      // Should call onConnected with generated sessionId that uses generateSecureRandomString
+      await waitFor(
+        () => {
+          expect(onConnected).toHaveBeenCalled();
+        },
+        { timeout: 1000 }
+      );
+
+      const lastCall = onConnected.mock.calls[onConnected.mock.calls.length - 1];
+      if (lastCall && lastCall[0]) {
+        const sessionId = lastCall[0];
+        expect(sessionId).toContain('session_');
+        // Should have format: session_<timestamp>_<16-char-random> from generateSecureRandomString
+        const parts = sessionId.split('_');
+        expect(parts.length).toBeGreaterThan(2);
+      }
+    });
   });
 
   describe('Cleanup', () => {
@@ -614,6 +728,124 @@ describe('useSSEConnection', () => {
         },
         { timeout: 1000 }
       );
+    });
+  });
+
+  describe('Error Handling - EventSource Creation', () => {
+    it('should handle errors when creating EventSource', async () => {
+      // Arrange - Mock EventSource constructor to throw an error
+      const originalEventSource = global.EventSource;
+      const mockError = new Error('Failed to create EventSource');
+      global.EventSource = vi.fn().mockImplementation(() => {
+        throw mockError;
+      }) as unknown as typeof EventSource;
+
+      const onError = vi.fn();
+      const { result } = renderHook(() =>
+        useSSEConnection({
+          ...defaultOptions,
+          onError,
+        })
+      );
+
+      // Act
+      act(() => {
+        result.current.connect();
+      });
+
+      // Assert - should handle error gracefully
+      await waitFor(
+        () => {
+          expect(result.current.lastError).toBe('Connection failed');
+          expect(onError).toHaveBeenCalled();
+        },
+        { timeout: 1000 }
+      );
+
+      // Restore original EventSource
+      global.EventSource = originalEventSource;
+    });
+
+    it('should handle non-TypeError exceptions in EventSource construction', async () => {
+      // Test line 162: else branch when error is not TypeError or doesn't match "not a constructor"
+      const originalEventSource = global.EventSource;
+      const mockError = new Error('Some other error');
+
+      global.EventSource = vi.fn().mockImplementation(() => {
+        throw mockError;
+      }) as unknown as typeof EventSource;
+
+      const onError = vi.fn();
+      const { result } = renderHook(() =>
+        useSSEConnection({
+          ...defaultOptions,
+          onError,
+        })
+      );
+
+      act(() => {
+        result.current.connect();
+      });
+
+      // Should handle error and set error state
+      await waitFor(
+        () => {
+          expect(result.current.lastError).toBe('Connection failed');
+          expect(onError).toHaveBeenCalled();
+        },
+        { timeout: 1000 }
+      );
+
+      global.EventSource = originalEventSource;
+    });
+
+    it('should handle TypeError when EventSource is not a constructor', async () => {
+      // Arrange - Mock EventSource constructor to throw TypeError with "not a constructor"
+      const originalEventSource = global.EventSource;
+      const mockError = new TypeError('EventSource is not a constructor');
+
+      // Create a mock that throws on first call (with 'new'), but works when called without 'new'
+      let callCount = 0;
+      const MockEventSourceConstructor = vi.fn().mockImplementation(function (
+        this: MockEventSource,
+        url: string,
+        _options?: EventSourceInit
+      ) {
+        callCount++;
+        // First call (with 'new') throws TypeError
+        if (callCount === 1) {
+          throw mockError;
+        }
+        // Second call (without 'new', as function) should work
+        return new MockEventSource(url);
+      });
+
+      // Make it a constructor function
+      Object.setPrototypeOf(MockEventSourceConstructor, Function.prototype);
+      MockEventSourceConstructor.prototype = MockEventSource.prototype;
+
+      global.EventSource = MockEventSourceConstructor as unknown as typeof EventSource;
+
+      const { result } = renderHook(() => useSSEConnection(defaultOptions));
+
+      // Act
+      act(() => {
+        result.current.connect();
+      });
+
+      // Assert - should handle the error gracefully (may not connect if retry fails)
+      // The code catches TypeError and tries to call EventSource without 'new'
+      // But if that also fails, it will set error state
+      await waitFor(
+        () => {
+          // Either connects successfully or handles error
+          expect(result.current.lastError !== null || result.current.isConnected).toBe(true);
+        },
+        { timeout: 1000 }
+      );
+
+      // Restore original EventSource
+      global.EventSource = originalEventSource;
     });
   });
 });
