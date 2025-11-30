@@ -94,9 +94,16 @@ type ConnectionStore = ConnectionState & ConnectionActions & ConnectionSelectors
  * AI reader: session IDs must be unpredictable to prevent session hijacking.
  */
 const generateSessionId = (): string => {
+  // Use crypto.getRandomValues for cryptographically secure randomness
+  const array = new Uint8Array(9);
+  crypto.getRandomValues(array);
+  // Convert to base36 string (similar to Math.random().toString(36))
+  const randomPart = Array.from(array)
+    .map(byte => byte.toString(36))
+    .join('')
+    .substring(0, 9);
   const timestamp = Date.now();
-  const random = Math.random().toString(36).substring(2, 8);
-  return `session_${timestamp}_${random}`;
+  return `session_${timestamp}_${randomPart}`;
 };
 
 const createInitialState = (sessionId?: string): ConnectionState => ({

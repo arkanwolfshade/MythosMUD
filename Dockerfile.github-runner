@@ -82,9 +82,9 @@ COPY pyproject.toml uv.lock ./
 COPY client/package.json client/package-lock.json ./client/
 COPY client/scripts ./client/scripts/
 WORKDIR /workspace/client
-# Human reader: use npm ci for reproducible builds in CI contexts.
-# AI reader: npm ci installs from package-lock.json exactly, ensuring consistency.
-RUN npm ci
+# Human reader: use npm ci for reproducible builds, fallback to npm install if lock file is out of sync.
+# AI reader: npm ci requires lock file to be in sync with package.json. If it fails, use npm install.
+RUN npm ci || npm install
 
 # Copy full source after dependency layers are cached.
 WORKDIR /workspace

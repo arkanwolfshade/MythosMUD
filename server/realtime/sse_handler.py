@@ -122,10 +122,16 @@ async def game_event_stream(
                 break
 
             except Exception as e:
-                logger.error("Error in SSE stream", player_id=player_id, error=str(e))
+                logger.error("Error in SSE stream", player_id=player_id, error=str(e), exc_info=True)
+                # Human reader: sanitize error message to prevent stack trace exposure.
+                # AI reader: never expose stack traces in SSE error responses, only in logs.
+                error_msg = str(e).split('\n')[0].strip()  # Get first line only
+                # Remove file paths and line numbers
+                if any(pattern in error_msg.lower() for pattern in ['file "', 'line ', 'traceback']):
+                    error_msg = "A stream error occurred"
                 error_response = create_sse_error_response(
                     ErrorType.SSE_ERROR,
-                    f"Stream error occurred: {str(e)}",
+                    f"Stream error occurred: {error_msg}",
                     ErrorMessages.SSE_ERROR,
                     {"player_id": player_id_str},
                 )
