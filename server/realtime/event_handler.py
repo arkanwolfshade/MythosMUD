@@ -1149,7 +1149,8 @@ class RealTimeEventHandler:
         """
         Handle NPC leaving a room.
 
-        This method triggers occupant updates. Room state is mutated by domain sources only.
+        This method broadcasts NPC departure and triggers occupant updates.
+        Room state is mutated by domain sources only.
 
         Args:
             event: NPCLeftRoom event containing NPC and room information
@@ -1167,6 +1168,12 @@ class RealTimeEventHandler:
             if not room:
                 self._logger.warning("Room not found for NPC exit", room_id=event.room_id)
                 return
+
+            # Get the NPC's departure message from behavior_config (if available)
+            departure_message = self._get_npc_departure_message(event.npc_id)
+            if departure_message:
+                # Send the departure message to all players in the room
+                self._send_room_message(event.room_id, departure_message)
 
             # Schedule room update broadcast (async operation)
             import asyncio
@@ -1284,7 +1291,13 @@ class RealTimeEventHandler:
             npc_name = getattr(npc_instance, "name", "An NPC")
 
             # Get the behavior_config from the NPC instance
-            behavior_config = getattr(npc_instance, "behavior_config", None)
+            # Try both private attribute and public method
+            behavior_config = getattr(npc_instance, "_behavior_config", None)
+            if not behavior_config and hasattr(npc_instance, "get_behavior_config"):
+                behavior_config = npc_instance.get_behavior_config()
+            if not behavior_config:
+                behavior_config = getattr(npc_instance, "behavior_config", None)
+
             if behavior_config:
                 # Parse the behavior_config if it's a JSON string
                 import json
@@ -1306,6 +1319,64 @@ class RealTimeEventHandler:
 
         except Exception as e:
             self._logger.debug("Error getting NPC spawn message", npc_id=npc_id, error=str(e))
+            return None
+
+    def _get_npc_departure_message(self, npc_id: str) -> str | None:
+        """
+        Get the departure message for an NPC from its behavior_config.
+
+        If no custom departure message is defined, returns a default message: "<npc-name> leaves."
+
+        Args:
+            npc_id: The NPC ID
+
+        Returns:
+            Departure message (custom or default), or None if NPC not found
+        """
+        try:
+            # Get the NPC instance from the lifecycle manager
+            from ..services.npc_instance_service import get_npc_instance_service
+
+            npc_instance_service = get_npc_instance_service()
+            if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
+                return None
+
+            lifecycle_manager = npc_instance_service.lifecycle_manager
+            if not lifecycle_manager or npc_id not in lifecycle_manager.active_npcs:
+                return None
+
+            npc_instance = lifecycle_manager.active_npcs[npc_id]
+
+            # Get the NPC name for the default message
+            npc_name = getattr(npc_instance, "name", "An NPC")
+
+            # Get the behavior_config from the NPC instance
+            behavior_config = getattr(npc_instance, "_behavior_config", None)
+            if not behavior_config:
+                # Try alternative attribute name
+                behavior_config = getattr(npc_instance, "behavior_config", None)
+
+            if behavior_config:
+                # Parse the behavior_config if it's a JSON string
+                import json
+
+                if isinstance(behavior_config, str):
+                    try:
+                        behavior_config = json.loads(behavior_config)
+                    except (json.JSONDecodeError, ValueError):
+                        # If parsing fails, use default message
+                        return f"{npc_name} leaves."
+
+                # Get the departure_message from the behavior_config
+                departure_message = behavior_config.get("departure_message")
+                if departure_message:
+                    return cast(str, departure_message)
+
+            # Return default message if no custom message is defined
+            return f"{npc_name} leaves."
+
+        except Exception as e:
+            self._logger.debug("Error getting NPC departure message", npc_id=npc_id, error=str(e))
             return None
 
     def _send_room_message(self, room_id: str, message: str) -> None:

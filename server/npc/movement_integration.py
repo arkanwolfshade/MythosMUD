@@ -12,6 +12,7 @@ from ..events import EventBus, NPCEnteredRoom, NPCLeftRoom
 from ..game.movement_service import MovementService
 from ..logging.enhanced_logging_config import get_logger
 from ..persistence import get_persistence
+from ..utils.room_utils import extract_subzone_from_room_id
 
 logger = get_logger(__name__)
 
@@ -273,3 +274,71 @@ class NPCMovementIntegration:
         except Exception as e:
             logger.error("Error finding path between rooms", from_room=from_room_id, to_room=to_room_id, error=str(e))
             return None
+
+    def validate_subzone_boundary(self, npc_sub_zone_id: str, destination_room_id: str) -> bool:
+        """
+        Validate that a destination room is within the NPC's allowed subzone.
+
+        This method ensures NPCs cannot move outside their designated subzone,
+        maintaining proper territorial boundaries as documented in the Pnakotic Manuscripts.
+
+        Args:
+            npc_sub_zone_id: The subzone ID from the NPC definition (stable_id format)
+            destination_room_id: The room ID of the destination room
+
+        Returns:
+            bool: True if the destination room is within the NPC's subzone, False otherwise
+        """
+        try:
+            if not npc_sub_zone_id or not destination_room_id:
+                logger.warning(
+                    "Invalid subzone or room ID for boundary validation",
+                    npc_sub_zone_id=npc_sub_zone_id,
+                    destination_room_id=destination_room_id,
+                )
+                return False
+
+            # Get the destination room to check its subzone
+            destination_room = self.persistence.get_room(destination_room_id)
+            if not destination_room:
+                logger.warning(
+                    "Destination room not found for subzone validation", destination_room_id=destination_room_id
+                )
+                return False
+
+            # Extract subzone from destination room
+            # Try using Room's sub_zone attribute first (more reliable)
+            destination_subzone = destination_room.sub_zone if hasattr(destination_room, "sub_zone") else None
+
+            # Fallback to extracting from room_id if sub_zone attribute not available
+            if not destination_subzone:
+                destination_subzone = extract_subzone_from_room_id(destination_room_id)
+
+            if not destination_subzone:
+                logger.warning(
+                    "Could not determine subzone for destination room",
+                    destination_room_id=destination_room_id,
+                )
+                return False
+
+            # Compare subzones (both should be stable_id format strings)
+            is_valid = destination_subzone == npc_sub_zone_id
+
+            if not is_valid:
+                logger.debug(
+                    "Subzone boundary validation failed",
+                    npc_sub_zone_id=npc_sub_zone_id,
+                    destination_subzone=destination_subzone,
+                    destination_room_id=destination_room_id,
+                )
+
+            return is_valid
+
+        except Exception as e:
+            logger.error(
+                "Error validating subzone boundary",
+                npc_sub_zone_id=npc_sub_zone_id,
+                destination_room_id=destination_room_id,
+                error=str(e),
+            )
+            return False

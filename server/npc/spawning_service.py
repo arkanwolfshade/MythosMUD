@@ -511,6 +511,8 @@ class NPCSpawningService:
 
             # Set the current room for the NPC instance
             npc_instance.current_room = room_id
+            # Track spawn room for idle movement (the room where NPC was initially spawned)
+            npc_instance.spawn_room_id = room_id
 
             return npc_instance
 

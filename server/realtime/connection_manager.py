@@ -3591,9 +3591,7 @@ class ConnectionManager:
                             occupants.append(npc_name)
                         else:
                             # Log warning if NPC instance not found - this should not happen in normal operation
-                            logger.warning(
-                                "NPC instance not found for ID - skipping from room display", npc_id=npc_id
-                            )
+                            logger.warning("NPC instance not found for ID - skipping from room display", npc_id=npc_id)
                 except Exception as npc_query_error:
                     logger.warning(
                         "Error querying NPCs from lifecycle manager, falling back to room.get_npcs()",

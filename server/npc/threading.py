@@ -397,13 +397,66 @@ class NPCThreadManager:
         """Process a message for an NPC."""
         try:
             message_type = message.get("type")
-            logger.debug("Processing NPC message", npc_id=npc_id, message_type=message_type)
+            action_type = message.get("action_type")
+            logger.debug("Processing NPC message", npc_id=npc_id, message_type=message_type, action_type=action_type)
 
-            # Placeholder for message processing logic
-            # This will be expanded when we implement specific NPC behaviors
+            # Process WANDER actions for idle movement
+            if action_type == NPCActionType.WANDER.value or message_type == "wander":
+                await self._process_wander_action(npc_id, message)
+            # Add other action type handlers here as needed
 
         except Exception as e:
             logger.error("Error processing NPC message", npc_id=npc_id, error=str(e))
+
+    async def _process_wander_action(self, npc_id: str, message: dict[str, Any]):
+        """
+        Process a WANDER action for idle movement.
+
+        Args:
+            npc_id: ID of the NPC to move
+            message: Message containing action data
+        """
+        try:
+            # Get NPC instance from lifecycle manager
+            from ..services.npc_instance_service import get_npc_instance_service
+
+            npc_instance_service = get_npc_instance_service()
+            if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
+                logger.warning("NPC instance service not available for WANDER action", npc_id=npc_id)
+                return
+
+            lifecycle_manager = npc_instance_service.lifecycle_manager
+            if not lifecycle_manager or npc_id not in lifecycle_manager.active_npcs:
+                logger.warning("NPC instance not found for WANDER action", npc_id=npc_id)
+                return
+
+            npc_instance = lifecycle_manager.active_npcs[npc_id]
+            npc_definition = self.npc_definitions.get(npc_id)
+
+            if not npc_definition:
+                logger.warning("NPC definition not found for WANDER action", npc_id=npc_id)
+                return
+
+            # Get behavior config
+            behavior_config = getattr(npc_instance, "_behavior_config", {})
+
+            # Execute idle movement
+            from .idle_movement import IdleMovementHandler
+
+            movement_handler = IdleMovementHandler(
+                event_bus=getattr(npc_instance, "event_bus", None),
+                persistence=None,  # Will use default persistence
+            )
+
+            success = movement_handler.execute_idle_movement(npc_instance, npc_definition, behavior_config)
+
+            if success:
+                logger.debug("WANDER action executed successfully", npc_id=npc_id)
+            else:
+                logger.debug("WANDER action did not result in movement", npc_id=npc_id)
+
+        except Exception as e:
+            logger.error("Error processing WANDER action", npc_id=npc_id, error=str(e))
 
     async def _execute_npc_behavior(self, npc_id: str, npc_definition: NPCDefinition):
         """Execute NPC behavior based on its type and configuration."""
