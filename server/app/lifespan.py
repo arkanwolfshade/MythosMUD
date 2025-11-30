@@ -220,6 +220,24 @@ async def lifespan(app: FastAPI):
 
     logger.info("NPC services initialized and added to app.state")
 
+    # Start NPC thread manager for behavior execution
+    if hasattr(app.state.npc_lifecycle_manager, "thread_manager"):
+        try:
+            await app.state.npc_lifecycle_manager.thread_manager.start()
+            logger.info("NPC thread manager started")
+
+            # Process any pending thread start requests
+            if hasattr(app.state.npc_lifecycle_manager, "_pending_thread_starts"):
+                for npc_id, definition in app.state.npc_lifecycle_manager._pending_thread_starts:
+                    try:
+                        await app.state.npc_lifecycle_manager.thread_manager.start_npc_thread(npc_id, definition)
+                        logger.debug("Started queued NPC thread", npc_id=npc_id)
+                    except Exception as e:
+                        logger.warning("Failed to start queued NPC thread", npc_id=npc_id, error=str(e))
+                app.state.npc_lifecycle_manager._pending_thread_starts.clear()
+        except Exception as e:
+            logger.error("Failed to start NPC thread manager", error=str(e))
+
     # Initialize combat services (not yet in container - Phase 2 migration)
     # TODO: Move these to container in Phase 2
     from ..services.passive_sanity_flux_service import PassiveSanityFluxService

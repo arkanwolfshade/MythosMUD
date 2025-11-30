@@ -290,6 +290,12 @@ class TestNPCPopulationController:
             # Add the NPC to active_npcs
             mock_npc_instance = Mock()
             mock_npc_instance.name = def_.name
+            mock_npc_instance.current_room_id = room_id
+            mock_npc_instance.current_room = room_id
+            mock_npc_instance.room_id = room_id
+            mock_npc_instance.npc_type = def_.npc_type.value if hasattr(def_.npc_type, "value") else str(def_.npc_type)
+            mock_npc_instance.is_required = def_.is_required() if hasattr(def_, "is_required") else False
+            mock_npc_instance.definition_id = def_.id if hasattr(def_, "id") else None
             mock_lifecycle_manager.active_npcs[npc_id] = mock_npc_instance
             return npc_id
 
@@ -402,7 +408,8 @@ class TestNPCPopulationController:
         assert len(population_controller.zone_configurations) > 0
         assert "arkhamcity" in population_controller.zone_configurations
         assert "arkhamcity/downtown" in population_controller.zone_configurations
-        assert len(population_controller.active_npcs) == 0
+        # REMOVED: active_npcs is no longer tracked in population_controller
+        # Use lifecycle_manager.active_npcs as the single source of truth
         assert len(population_controller.population_stats) == 0
 
     def test_zone_configuration_loading(self, population_controller):

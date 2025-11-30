@@ -8,11 +8,17 @@ As noted in the Pnakotic Manuscripts, proper movement integration is essential
 for maintaining the integrity of our eldritch dimensional architecture.
 """
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from ..events import EventBus, NPCEnteredRoom, NPCLeftRoom
-from ..game.movement_service import MovementService
 from ..logging.enhanced_logging_config import get_logger
 from ..persistence import get_persistence
 from ..utils.room_utils import extract_subzone_from_room_id
+
+if TYPE_CHECKING:
+    from ..game.movement_service import MovementService
 
 logger = get_logger(__name__)
 
@@ -35,7 +41,14 @@ class NPCMovementIntegration:
         """
         self.event_bus = event_bus
         self.persistence = persistence or get_persistence(event_bus)
-        self.movement_service = MovementService(event_bus) if event_bus else None
+        # Lazy import to avoid circular dependency
+        # MovementService imports from services/ which imports npc_instance_service
+        # which imports from npc/__init__ which imports this module
+        self.movement_service: MovementService | None = None
+        if event_bus:
+            from ..game.movement_service import MovementService
+
+            self.movement_service = MovementService(event_bus)
 
         logger.debug("NPC movement integration initialized")
 

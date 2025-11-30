@@ -317,7 +317,19 @@ class RoomSubscriptionManager:
                     if lifecycle_manager and hasattr(lifecycle_manager, "active_npcs"):
                         active_npcs_dict = lifecycle_manager.active_npcs
                         # Query all active NPCs to find those in this room
+                        # BUGFIX: Filter out dead NPCs (is_alive=False) to prevent showing dead NPCs in occupants
+                        # As documented in investigation: 2025-11-30_session-001_npc-combat-start-failure.md
                         for npc_id, npc_instance in active_npcs_dict.items():
+                            # Skip dead NPCs
+                            if not getattr(npc_instance, "is_alive", True):
+                                logger.debug(
+                                    "Skipping dead NPC from occupants",
+                                    npc_id=npc_id,
+                                    npc_name=getattr(npc_instance, "name", "unknown"),
+                                    room_id=canonical_id,
+                                )
+                                continue
+
                             # Check both current_room and current_room_id for compatibility
                             current_room = getattr(npc_instance, "current_room", None)
                             current_room_id = getattr(npc_instance, "current_room_id", None)
@@ -347,16 +359,48 @@ class RoomSubscriptionManager:
                     error=str(npc_query_error),
                 )
                 # Fallback to room.get_npcs() if lifecycle manager query fails
+                # BUGFIX: Filter fallback NPCs to only include alive NPCs from active_npcs
+                # As documented in investigation: 2025-11-30_session-001_npc-combat-start-failure.md
                 if self.persistence:
                     room = self.persistence.get_room(canonical_id)
                     if room and hasattr(room, "get_npcs"):
-                        npc_ids = room.get_npcs()
+                        room_npc_ids = room.get_npcs()
                         logger.debug(
                             "Adding NPCs to room occupants from room.get_npcs() fallback",
                             room_id=canonical_id,
-                            npc_count=len(npc_ids),
+                            npc_count=len(room_npc_ids),
                         )
-                        for npc_id in npc_ids:
+
+                        # Filter fallback NPCs: only include those in active_npcs and alive
+                        filtered_npc_ids = []
+                        try:
+                            from ..services.npc_instance_service import get_npc_instance_service
+
+                            npc_instance_service = get_npc_instance_service()
+                            if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
+                                lifecycle_manager = npc_instance_service.lifecycle_manager
+                                if lifecycle_manager and hasattr(lifecycle_manager, "active_npcs"):
+                                    for npc_id in room_npc_ids:
+                                        if npc_id in lifecycle_manager.active_npcs:
+                                            npc_instance = lifecycle_manager.active_npcs[npc_id]
+                                            # Only include alive NPCs
+                                            if getattr(npc_instance, "is_alive", True):
+                                                filtered_npc_ids.append(npc_id)
+                                            else:
+                                                logger.debug(
+                                                    "Filtered dead NPC from fallback occupants",
+                                                    npc_id=npc_id,
+                                                    room_id=canonical_id,
+                                                )
+                        except Exception as filter_error:
+                            logger.warning(
+                                "Error filtering fallback NPCs, using all room NPCs",
+                                room_id=canonical_id,
+                                error=str(filter_error),
+                            )
+                            filtered_npc_ids = room_npc_ids
+
+                        for npc_id in filtered_npc_ids:
                             occupants.append(
                                 {
                                     "player_id": npc_id,

@@ -131,33 +131,42 @@ class BehaviorEngine:
                     expected_value = parts[1].strip().strip("\"'")
                     return str(context.get(var_name, "")) != expected_value
 
-            elif ">" in condition:
-                parts = condition.split(">")
-                if len(parts) == 2:
-                    var_name = parts[0].strip()
-                    threshold = float(parts[1].strip())
-                    return float(context.get(var_name, 0)) > threshold
-
-            elif "<" in condition:
-                parts = condition.split("<")
-                if len(parts) == 2:
-                    var_name = parts[0].strip()
-                    threshold = float(parts[1].strip())
-                    return float(context.get(var_name, 0)) < threshold
-
+            # Check >= and <= BEFORE > and < to avoid incorrect parsing
             elif ">=" in condition:
                 parts = condition.split(">=")
                 if len(parts) == 2:
                     var_name = parts[0].strip()
-                    threshold = float(parts[1].strip())
+                    threshold_str = parts[1].strip()
+                    # Check if threshold is a variable name or a literal value
+                    threshold = float(context.get(threshold_str, threshold_str))
                     return float(context.get(var_name, 0)) >= threshold
 
             elif "<=" in condition:
                 parts = condition.split("<=")
                 if len(parts) == 2:
                     var_name = parts[0].strip()
-                    threshold = float(parts[1].strip())
+                    threshold_str = parts[1].strip()
+                    # Check if threshold is a variable name or a literal value
+                    threshold = float(context.get(threshold_str, threshold_str))
                     return float(context.get(var_name, 0)) <= threshold
+
+            elif ">" in condition:
+                parts = condition.split(">")
+                if len(parts) == 2:
+                    var_name = parts[0].strip()
+                    threshold_str = parts[1].strip()
+                    # Check if threshold is a variable name or a literal value
+                    threshold = float(context.get(threshold_str, threshold_str))
+                    return float(context.get(var_name, 0)) > threshold
+
+            elif "<" in condition:
+                parts = condition.split("<")
+                if len(parts) == 2:
+                    var_name = parts[0].strip()
+                    threshold_str = parts[1].strip()
+                    # Check if threshold is a variable name or a literal value
+                    threshold = float(context.get(threshold_str, threshold_str))
+                    return float(context.get(var_name, 0)) < threshold
 
             # Boolean conditions
             elif condition == "true":
@@ -763,6 +772,13 @@ class NPCBase(ABC):
             context["is_alive"] = self.is_alive
             context["is_active"] = self.is_active
 
+            # Add behavior config values to context for behavior rule evaluation
+            context["idle_movement_enabled"] = self._behavior_config.get("idle_movement_enabled", False)
+            context["idle_movement_interval"] = self._behavior_config.get("idle_movement_interval", 10)
+            context["idle_movement_probability"] = self._behavior_config.get("idle_movement_probability", 0.25)
+            context["in_combat"] = False  # Will be checked by schedule_idle_movement if needed
+            context["flee_threshold"] = self._behavior_config.get("flee_threshold", 20)  # For aggressive mobs
+
             # Check and schedule idle movement for mob types
             if self.npc_type in ["passive_mob", "aggressive_mob"]:
                 self.schedule_idle_movement()
@@ -979,13 +995,9 @@ class PassiveMobNPC(NPCBase):
 
     def _setup_passive_mob_behavior_rules(self):
         """Setup passive mob-specific behavior rules."""
+        # Note: Idle movement is handled by schedule_idle_movement() in execute_behavior(),
+        # not through behavior rules, so we don't need a wander_periodically rule here.
         passive_mob_rules = [
-            {
-                "name": "wander_periodically",
-                "condition": "time_since_last_action > wander_interval",
-                "action": "wander",
-                "priority": 2,
-            },
             {
                 "name": "respond_to_greeting",
                 "condition": "player_greeted == true",
@@ -1004,6 +1016,7 @@ class PassiveMobNPC(NPCBase):
             self._behavior_engine.add_rule(rule)
 
         # Register passive mob action handlers
+        # Note: wander handler kept for backward compatibility, but idle movement uses schedule_idle_movement()
         self._behavior_engine.register_action_handler("wander", self._handle_wander)
         self._behavior_engine.register_action_handler("respond_to_greeting", self._handle_respond_to_greeting)
         self._behavior_engine.register_action_handler("flee", self._handle_flee)
@@ -1060,9 +1073,17 @@ class PassiveMobNPC(NPCBase):
             current_time = time.time()
             movement_interval = self._behavior_config.get("idle_movement_interval", 10)
 
+            # If this is the first time checking, allow scheduling (last_idle_movement_time is None)
+            # Otherwise, check if enough time has passed
             if self._last_idle_movement_time is not None:
                 time_since_last = current_time - self._last_idle_movement_time
                 if time_since_last < movement_interval:
+                    logger.debug(
+                        "Idle movement interval not elapsed",
+                        npc_id=self.npc_id,
+                        time_since_last=time_since_last,
+                        interval=movement_interval,
+                    )
                     return False  # Not enough time has passed
 
             # Queue WANDER action
@@ -1085,6 +1106,8 @@ class PassiveMobNPC(NPCBase):
                         thread_manager = lifecycle_manager.thread_manager
                         if thread_manager:
                             thread_manager.message_queue.add_message(self.npc_id, wander_action.to_dict())
+                            # Update last idle movement time to prevent immediate re-scheduling
+                            self._last_idle_movement_time = current_time
                             logger.debug("Scheduled WANDER action for NPC", npc_id=self.npc_id)
                             return True
             except (ImportError, AttributeError, RuntimeError) as e:

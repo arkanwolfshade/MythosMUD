@@ -997,6 +997,18 @@ class RealTimeEventHandler:
                         npcs_matched = 0
                         for npc_id, npc_instance in active_npcs_dict.items():
                             npcs_checked += 1
+
+                            # BUGFIX: Filter out dead NPCs (is_alive=False) to prevent showing dead NPCs in occupants
+                            # As documented in investigation: 2025-11-30_session-001_npc-combat-start-failure.md
+                            if not getattr(npc_instance, "is_alive", True):
+                                self._logger.debug(
+                                    "Skipping dead NPC from occupants",
+                                    npc_id=npc_id,
+                                    npc_name=getattr(npc_instance, "name", "unknown"),
+                                    room_id=room_id,
+                                )
+                                continue
+
                             # Check both current_room and current_room_id for compatibility
                             current_room = getattr(npc_instance, "current_room", None)
                             current_room_id = getattr(npc_instance, "current_room_id", None)
@@ -1059,12 +1071,43 @@ class RealTimeEventHandler:
                     exc_info=True,
                 )
                 # Fallback to room.get_npcs() if lifecycle manager query fails
-                npc_ids = room.get_npcs() if hasattr(room, "get_npcs") else []
+                # BUGFIX: Filter fallback NPCs to only include alive NPCs from active_npcs
+                # As documented in investigation: 2025-11-30_session-001_npc-combat-start-failure.md
+                room_npc_ids = room.get_npcs() if hasattr(room, "get_npcs") else []
                 self._logger.warning(
                     "Fell back to room.get_npcs() after lifecycle manager query failed",
                     room_id=room_id,
-                    fallback_npc_count=len(npc_ids),
+                    fallback_npc_count=len(room_npc_ids),
                 )
+
+                # Filter fallback NPCs: only include those in active_npcs and alive
+                npc_ids = []
+                try:
+                    from ..services.npc_instance_service import get_npc_instance_service
+
+                    npc_instance_service = get_npc_instance_service()
+                    if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
+                        lifecycle_manager = npc_instance_service.lifecycle_manager
+                        if lifecycle_manager and hasattr(lifecycle_manager, "active_npcs"):
+                            for npc_id in room_npc_ids:
+                                if npc_id in lifecycle_manager.active_npcs:
+                                    npc_instance = lifecycle_manager.active_npcs[npc_id]
+                                    # Only include alive NPCs
+                                    if getattr(npc_instance, "is_alive", True):
+                                        npc_ids.append(npc_id)
+                                    else:
+                                        self._logger.debug(
+                                            "Filtered dead NPC from fallback occupants",
+                                            npc_id=npc_id,
+                                            room_id=room_id,
+                                        )
+                except Exception as filter_error:
+                    self._logger.warning(
+                        "Error filtering fallback NPCs, using all room NPCs",
+                        room_id=room_id,
+                        error=str(filter_error),
+                    )
+                    npc_ids = room_npc_ids
 
             # OPTIMIZATION: Batch load all NPC names at once to eliminate N+1 queries
             npc_names = self.connection_manager._get_npcs_batch(list(npc_ids))
