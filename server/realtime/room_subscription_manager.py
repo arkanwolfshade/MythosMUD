@@ -304,23 +304,66 @@ class RoomSubscriptionManager:
                     if player_id in online_players:
                         occupants.append(online_players[player_id])
 
-            # AI Agent: Add NPCs to the occupants list
-            #           This fixes the bug where NPCs were spawned but not displayed in room occupants
-            if self.persistence:
-                room = self.persistence.get_room(canonical_id)
-                if room and hasattr(room, "get_npcs"):
-                    npc_ids = room.get_npcs()
-                    logger.debug("Adding NPCs to room occupants", room_id=canonical_id, npc_count=len(npc_ids))
-                    for npc_id in npc_ids:
-                        # Create a minimal dict for NPC occupant (matching player format)
-                        # The NPC name will be resolved in broadcast_room_update via _get_npc_name_from_instance
-                        occupants.append(
-                            {
-                                "player_id": npc_id,  # Use npc_id as player_id for compatibility
-                                "player_name": npc_id,  # Will be resolved to actual name in broadcast_room_update
-                                "is_npc": True,
-                            }
+            # CRITICAL FIX: Query NPCs from lifecycle manager instead of Room instance
+            # Room instances are recreated from persistence and lose in-memory NPC tracking
+            # NPCs are actually tracked in the lifecycle manager with their current_room/current_room_id
+            npc_ids: list[str] = []
+            try:
+                from ..services.npc_instance_service import get_npc_instance_service
+
+                npc_instance_service = get_npc_instance_service()
+                if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
+                    lifecycle_manager = npc_instance_service.lifecycle_manager
+                    if lifecycle_manager and hasattr(lifecycle_manager, "active_npcs"):
+                        active_npcs_dict = lifecycle_manager.active_npcs
+                        # Query all active NPCs to find those in this room
+                        for npc_id, npc_instance in active_npcs_dict.items():
+                            # Check both current_room and current_room_id for compatibility
+                            current_room = getattr(npc_instance, "current_room", None)
+                            current_room_id = getattr(npc_instance, "current_room_id", None)
+                            npc_room_id = current_room or current_room_id
+                            if npc_room_id == canonical_id:
+                                npc_ids.append(npc_id)
+
+                logger.debug(
+                    "Adding NPCs to room occupants from lifecycle manager",
+                    room_id=canonical_id,
+                    npc_count=len(npc_ids),
+                )
+                for npc_id in npc_ids:
+                    # Create a minimal dict for NPC occupant (matching player format)
+                    # The NPC name will be resolved in broadcast_room_update via _get_npc_name_from_instance
+                    occupants.append(
+                        {
+                            "player_id": npc_id,  # Use npc_id as player_id for compatibility
+                            "player_name": npc_id,  # Will be resolved to actual name in broadcast_room_update
+                            "is_npc": True,
+                        }
+                    )
+            except Exception as npc_query_error:
+                logger.warning(
+                    "Error querying NPCs from lifecycle manager, falling back to room.get_npcs()",
+                    room_id=canonical_id,
+                    error=str(npc_query_error),
+                )
+                # Fallback to room.get_npcs() if lifecycle manager query fails
+                if self.persistence:
+                    room = self.persistence.get_room(canonical_id)
+                    if room and hasattr(room, "get_npcs"):
+                        npc_ids = room.get_npcs()
+                        logger.debug(
+                            "Adding NPCs to room occupants from room.get_npcs() fallback",
+                            room_id=canonical_id,
+                            npc_count=len(npc_ids),
                         )
+                        for npc_id in npc_ids:
+                            occupants.append(
+                                {
+                                    "player_id": npc_id,
+                                    "player_name": npc_id,
+                                    "is_npc": True,
+                                }
+                            )
 
             return occupants
 

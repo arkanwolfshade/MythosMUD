@@ -27,17 +27,6 @@ export const RoomDescriptionPanel: React.FC<RoomDescriptionPanelProps> = ({ room
       <div className="text-sm text-mythos-terminal-text leading-relaxed whitespace-pre-wrap">
         {formatDescription(room.description)}
       </div>
-      {room.exits && Object.keys(room.exits).length > 0 && (
-        <div className="mt-4 pt-4 border-t border-gray-700">
-          <div className="text-sm font-bold text-mythos-terminal-primary mb-2">Exits</div>
-          <div className="text-sm text-mythos-terminal-text">
-            {Object.entries(room.exits)
-              .filter(([_, destination]) => destination !== null)
-              .map(([direction, _]) => direction.charAt(0).toUpperCase() + direction.slice(1))
-              .join(', ') || 'None'}
-          </div>
-        </div>
-      )}
     </div>
   );
 };

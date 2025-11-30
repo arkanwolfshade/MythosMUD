@@ -35,7 +35,16 @@ export function useSessionManagement(options: SessionManagementOptions = {}): Se
   const { initialSessionId, onSessionChange } = options;
 
   const generateSessionId = useCallback(() => {
-    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    // Human reader: use Web Crypto API for cryptographically secure randomness.
+    // AI reader: Math.random() is not secure and should not be used for session IDs.
+    const array = new Uint8Array(9);
+    crypto.getRandomValues(array);
+    // Convert to base36 string (similar to Math.random().toString(36))
+    const randomPart = Array.from(array)
+      .map(byte => byte.toString(36))
+      .join('')
+      .substring(0, 9);
+    return `session_${Date.now()}_${randomPart}`;
   }, []);
 
   // Initialize session ID to avoid setState in effect

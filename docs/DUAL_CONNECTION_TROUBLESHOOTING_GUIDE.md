@@ -548,11 +548,11 @@ const createNewGame = async () => {
 
 1. **Check Database State:**
 ```bash
-# Check session data in database
-sqlite3 data/players/mythos.db "SELECT * FROM sessions WHERE player_id = 'test_player';"
+# Check session data in database (PostgreSQL)
+psql $DATABASE_URL -c "SELECT * FROM sessions WHERE player_id = 'test_player';"
 
 # Check connection data
-sqlite3 data/players/mythos.db "SELECT * FROM connections WHERE player_id = 'test_player';"
+psql $DATABASE_URL -c "SELECT * FROM connections WHERE player_id = 'test_player';"
 ```
 
 2. **Check Persistence Logs:**
@@ -568,8 +568,8 @@ grep "database" logs/mythos.log | tail -20
 
 1. **Database Configuration:**
 ```python
-# Ensure proper database connection
-DATABASE_URL = "sqlite:///./data/players/mythos.db"
+# Ensure proper database connection (PostgreSQL)
+DATABASE_URL = "postgresql://user:password@localhost:5432/mythosmud"
 
 # Implement session persistence
 async def save_session_data(player_id, session_id, connection_data):
@@ -1044,7 +1044,7 @@ python server/scripts/validate_config.py
 1. **Check Database Connectivity:**
 ```bash
 # Test database connection
-python -c "import sqlite3; print(sqlite3.connect('data/players/mythos.db').execute('SELECT 1').fetchone())"
+python -c "import psycopg2; print(psycopg2.connect(os.environ['DATABASE_URL']).cursor().execute('SELECT 1').fetchone())"
 
 # For PostgreSQL
 psql -h localhost -U mythos_user -d mythos_prod -c "SELECT 1;"
@@ -1056,7 +1056,7 @@ psql -h localhost -U mythos_user -d mythos_prod -c "SELECT 1;"
 grep "database" logs/mythos.log | tail -20
 
 # Check for database errors
-grep "sqlite3\|postgresql" logs/mythos.log | tail -20
+grep "postgresql\|database" logs/mythos.log | tail -20
 ```
 
 **Resolution:**
@@ -1064,7 +1064,7 @@ grep "sqlite3\|postgresql" logs/mythos.log | tail -20
 1. **Database Configuration:**
 ```python
 # Ensure proper database URL
-DATABASE_URL = "sqlite:///./data/players/mythos.db"
+DATABASE_URL = "postgresql://user:password@localhost:5432/mythosmud"
 
 # For PostgreSQL
 DATABASE_URL = "postgresql://user:password@localhost:5432/mythos_prod"

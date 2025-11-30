@@ -420,7 +420,9 @@ class NPCPopulationController:
     def _handle_player_entered_room(self, event: PlayerEnteredRoom) -> None:
         """Handle player entering a room."""
         logger.info(
-            f"NPC Population Controller received PlayerEnteredRoom event: player={event.player_id}, room={event.room_id}"
+            "NPC Population Controller received PlayerEnteredRoom event",
+            player_id=event.player_id,
+            room_id=event.room_id,
         )
 
         # Update player count for the zone
@@ -598,7 +600,10 @@ class NPCPopulationController:
             )
             if str(definition.sub_zone_id) not in zone_key:
                 logger.info(
-                    f"NPC {definition.id} sub_zone '{definition.sub_zone_id}' not in zone_key '{zone_key}', skipping"
+                    "NPC sub_zone not in zone_key, skipping",
+                    npc_id=definition.id,
+                    sub_zone_id=definition.sub_zone_id,
+                    zone_key=zone_key,
                 )
                 continue
 
@@ -638,7 +643,10 @@ class NPCPopulationController:
             )
             if not definition.can_spawn(current_count):
                 logger.info(
-                    f"NPC {definition.id} cannot spawn due to population limits (current: {current_count}, max: {definition.max_population})"
+                    "NPC cannot spawn due to population limits",
+                    npc_id=definition.id,
+                    current_count=current_count,
+                    max_population=definition.max_population,
                 )
                 return False
         else:
@@ -658,7 +666,10 @@ class NPCPopulationController:
                 # Check if current NPC population is below the rule's max_population limit
                 if not rule.can_spawn_with_population(current_npc_count):
                     logger.info(
-                        f"Spawn rule {i + 1} failed population check (current NPCs: {current_npc_count}, max: {rule.max_population})"
+                        "Spawn rule failed population check",
+                        rule_index=i + 1,
+                        current_npc_count=current_npc_count,
+                        max_population=rule.max_population,
                     )
                     continue
 
@@ -672,7 +683,10 @@ class NPCPopulationController:
                 effective_probability = zone_config.get_effective_spawn_probability(float(definition.spawn_probability))
                 random_roll = random.random()
                 logger.info(
-                    f"Spawn rule {i + 1} probability check: roll={random_roll:.3f}, threshold={effective_probability:.3f}"
+                    "Spawn rule probability check",
+                    rule_index=i + 1,
+                    roll=random_roll,
+                    threshold=effective_probability,
                 )
                 if random_roll <= effective_probability:
                     logger.info("NPC should spawn based on spawn rule", npc_id=definition.id, rule_number=i + 1)
@@ -755,7 +769,12 @@ class NPCPopulationController:
                 # Use getattr to avoid potential lazy loading issues
                 definition_name = getattr(definition, "name", "Unknown NPC")
                 logger.info(
-                    f"Spawned NPC: {npc_id} ({definition_name}, {definition.npc_type}) in {room_id} ({zone_key})"
+                    "Spawned NPC",
+                    npc_id=npc_id,
+                    npc_name=definition_name,
+                    npc_type=definition.npc_type,
+                    room_id=room_id,
+                    zone_key=zone_key,
                 )
                 return npc_id
             else:

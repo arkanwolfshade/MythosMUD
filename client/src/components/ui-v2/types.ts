@@ -40,7 +40,11 @@ export interface Room {
   sub_zone?: string;
   environment?: string;
   exits: Record<string, string>;
+  // Legacy: flat list of occupant names (for backward compatibility)
   occupants?: string[];
+  // New: structured occupant data with separate players and NPCs
+  players?: string[];
+  npcs?: string[];
   occupant_count?: number;
   entities?: Array<{
     name: string;

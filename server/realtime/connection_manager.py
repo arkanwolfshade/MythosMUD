@@ -419,7 +419,10 @@ class ConnectionManager:
                                 raise Exception("WebSocket not connected")
                         except Exception as ping_error:
                             logger.warning(
-                                f"Dead WebSocket connection {connection_id} for player {player_id}, will clean up: {ping_error}"
+                                "Dead WebSocket connection, will clean up",
+                                connection_id=connection_id,
+                                player_id=player_id,
+                                ping_error=str(ping_error),
                             )
                             dead_connection_ids.append(connection_id)
 
@@ -493,7 +496,8 @@ class ConnectionManager:
             total_connections = existing_websocket_count + existing_sse_count + 1  # +1 for the new connection
 
             logger.info(
-                f"WebSocket connected for player {player_id}",
+                "WebSocket connected for player",
+                player_id=player_id,
                 connection_id=connection_id,
                 session_id=session_id,
                 existing_websocket_connections=existing_websocket_count,
@@ -522,7 +526,8 @@ class ConnectionManager:
                     await self._track_player_connected(player_id, player, "websocket")
                 else:
                     logger.info(
-                        f"Player {player_id} already tracked as online, but broadcasting connection message for WebSocket"
+                        "Player already tracked as online, but broadcasting connection message for WebSocket",
+                        player_id=player_id,
                     )
                     # Still broadcast connection message even if player is already tracked
                     await self._broadcast_connection_message(player_id, player)
@@ -774,7 +779,9 @@ class ConnectionManager:
             metadata = self.connection_metadata[connection_id]
             if metadata.player_id != player_id or metadata.connection_type != "websocket":
                 logger.warning(
-                    f"Connection {connection_id} does not belong to player {player_id} or is not a WebSocket"
+                    "Connection does not belong to player or is not a WebSocket",
+                    connection_id=connection_id,
+                    player_id=player_id,
                 )
                 return False
 
@@ -782,7 +789,11 @@ class ConnectionManager:
 
         except Exception as e:
             logger.error(
-                f"Error disconnecting WebSocket connection {connection_id} for player {player_id}: {e}", exc_info=True
+                "Error disconnecting WebSocket connection",
+                connection_id=connection_id,
+                player_id=player_id,
+                error=str(e),
+                exc_info=True,
             )
             return False
 
@@ -806,7 +817,9 @@ class ConnectionManager:
             metadata = self.connection_metadata[connection_id]
             if metadata.player_id != player_id or metadata.connection_type != "sse":
                 logger.warning(
-                    f"Connection {connection_id} does not belong to player {player_id} or is not an SSE connection"
+                    "Connection does not belong to player or is not an SSE connection",
+                    connection_id=connection_id,
+                    player_id=player_id,
                 )
                 return False
 
@@ -839,7 +852,11 @@ class ConnectionManager:
 
         except Exception as e:
             logger.error(
-                f"Error disconnecting SSE connection {connection_id} for player {player_id}: {e}", exc_info=True
+                "Error disconnecting SSE connection",
+                connection_id=connection_id,
+                player_id=player_id,
+                error=str(e),
+                exc_info=True,
             )
             return False
 
@@ -892,7 +909,8 @@ class ConnectionManager:
         total_connections = existing_websocket_count + existing_sse_count + 1  # +1 for the new connection
 
         logger.info(
-            f"SSE connected for player {player_id}",
+            "SSE connected for player",
+            player_id=player_id,
             connection_id=connection_id,
             session_id=session_id,
             existing_websocket_connections=existing_websocket_count,
@@ -975,8 +993,9 @@ class ConnectionManager:
             total_existing_connections = existing_websocket_count + existing_sse_count
 
             logger.info(
-                f"Handling new game session {new_session_id} for player {player_id}",
+                "Handling new game session for player",
                 new_session_id=new_session_id,
+                player_id=player_id,
                 existing_websocket_connections=existing_websocket_count,
                 existing_sse_connections=existing_sse_count,
                 total_existing_connections=total_existing_connections,
@@ -1093,7 +1112,10 @@ class ConnectionManager:
 
             session_results["success"] = True
             logger.info(
-                f"Disconnected {session_results['connections_disconnected']} connections for new game session {new_session_id} of player {player_id}"
+                "Disconnected connections for new game session",
+                connections_disconnected=session_results["connections_disconnected"],
+                new_session_id=new_session_id,
+                player_id=player_id,
             )
 
         except Exception as e:
@@ -1341,7 +1363,10 @@ class ConnectionManager:
                 connection_age = now_ts - timestamp
                 if connection_age > self.memory_monitor.max_connection_age:
                     logger.info(
-                        f"DEBUG: Connection {connection_id} is stale (age: {connection_age:.1f}s, max: {self.memory_monitor.max_connection_age}s)"
+                        "DEBUG: Connection is stale",
+                        connection_id=connection_id,
+                        connection_age=connection_age,
+                        max_connection_age=self.memory_monitor.max_connection_age,
                     )
                     stale_connections.append(connection_id)
 
@@ -1485,7 +1510,10 @@ class ConnectionManager:
                         except Exception as ws_error:
                             # WebSocket is closed or in an invalid state
                             logger.warning(
-                                f"WebSocket send failed for player {player_id} connection {connection_id}: {ws_error}"
+                                "WebSocket send failed",
+                                player_id=player_id,
+                                connection_id=connection_id,
+                                error=str(ws_error),
                             )
                             delivery_status["websocket_failed"] += 1
                             # Clean up the dead WebSocket connection
@@ -2347,6 +2375,59 @@ class ConnectionManager:
         )
         return players
 
+    def _convert_room_players_uuids_to_names(self, room_data: dict[str, Any]) -> dict[str, Any]:
+        """
+        Convert player UUIDs in room_data to player names.
+
+        CRITICAL: NEVER send UUIDs to the client - this is a security issue.
+        room.to_dict() returns UUIDs in "players" field, we must convert to names.
+
+        Args:
+            room_data: Room data dictionary from room.to_dict()
+
+        Returns:
+            Modified room_data with players as names instead of UUIDs
+        """
+        if "players" in room_data and isinstance(room_data["players"], list):
+            player_uuids = room_data["players"]
+            player_names: list[str] = []
+            for player_id_str in player_uuids:
+                try:
+                    player_id_uuid = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
+                    # Get player from batch or individual lookup
+                    player_obj = self._get_player(player_id_uuid)
+                    if player_obj:
+                        # Extract player name - NEVER use UUID as fallback
+                        player_name = getattr(player_obj, "name", None)
+                        if not player_name or not isinstance(player_name, str) or not player_name.strip():
+                            # Try to get name from related User object
+                            if hasattr(player_obj, "user"):
+                                try:
+                                    user = getattr(player_obj, "user", None)
+                                    if user:
+                                        player_name = getattr(user, "username", None) or getattr(
+                                            user, "display_name", None
+                                        )
+                                except Exception:
+                                    pass
+
+                        # Validate name is not UUID
+                        if player_name and isinstance(player_name, str) and player_name.strip():
+                            is_uuid_string = (
+                                len(player_name) == 36
+                                and player_name.count("-") == 4
+                                and all(c in "0123456789abcdefABCDEF-" for c in player_name)
+                            )
+                            if not is_uuid_string:
+                                player_names.append(player_name)
+                except (ValueError, AttributeError):
+                    # Skip invalid UUIDs
+                    pass
+            # Replace UUIDs with names
+            room_data["players"] = player_names
+
+        return room_data
+
     def _get_npcs_batch(self, npc_ids: list[str]) -> dict[str, str]:
         """
         Get NPC names for multiple NPCs in a batch operation.
@@ -2454,9 +2535,51 @@ class ConnectionManager:
 
             # Type annotation for player_info to help mypy
             connection_types_set: set[str] = set()
+
+            # CRITICAL: Extract player name - NEVER use player_id as fallback
+            # Player model has a 'name' column that should always exist (nullable=False)
+            player_name = getattr(player, "name", None)
+            if not player_name or not isinstance(player_name, str) or not player_name.strip():
+                # Try to get name from related User object if player.name is not available
+                if hasattr(player, "user"):
+                    try:
+                        user = getattr(player, "user", None)
+                        if user:
+                            player_name = getattr(user, "username", None) or getattr(user, "display_name", None)
+                    except Exception as e:
+                        logger.debug("Error accessing user relationship for player name", error=str(e))
+
+                # If still no name, log warning and use placeholder (NEVER use UUID)
+                if not player_name or not isinstance(player_name, str) or not player_name.strip():
+                    logger.warning(
+                        "Player name not found, using placeholder",
+                        player_id=player_id,
+                        has_name_attr=hasattr(player, "name"),
+                        name_value=getattr(player, "name", "NOT_FOUND"),
+                    )
+                    player_name = "Unknown Player"
+
+            # CRITICAL: Final validation - ensure player_name is NEVER a UUID
+            # This is a defensive check in case player.name somehow contains a UUID
+            if isinstance(player_name, str):
+                is_uuid_string = (
+                    len(player_name) == 36
+                    and player_name.count("-") == 4
+                    and all(c in "0123456789abcdefABCDEF-" for c in player_name)
+                )
+                if is_uuid_string:
+                    logger.error(
+                        "CRITICAL: Player name is a UUID string, this should never happen",
+                        player_id=player_id,
+                        player_name=player_name,
+                        player_name_from_db=getattr(player, "name", "NOT_FOUND"),
+                    )
+                    # Use placeholder instead of UUID
+                    player_name = "Unknown Player"
+
             player_info: dict[str, Any] = {
                 "player_id": player_id,
-                "player_name": getattr(player, "name", player_id),
+                "player_name": player_name,
                 "level": getattr(player, "level", 1),
                 "current_room_id": getattr(player, "current_room_id", None),
                 "connected_at": time.time(),
@@ -2538,11 +2661,51 @@ class ConnectionManager:
                     try:
                         from .envelope import build_event
 
+                        # CRITICAL: Extract player name - NEVER use UUID as fallback
+                        player_name = getattr(player, "name", None)
+                        if not player_name or not isinstance(player_name, str) or not player_name.strip():
+                            # Try to get name from related User object if player.name is not available
+                            if hasattr(player, "user"):
+                                try:
+                                    user = getattr(player, "user", None)
+                                    if user:
+                                        player_name = getattr(user, "username", None) or getattr(
+                                            user, "display_name", None
+                                        )
+                                except Exception as e:
+                                    logger.debug("Error accessing user relationship for player name", error=str(e))
+
+                            # If still no name, use placeholder (NEVER use UUID)
+                            if not player_name or not isinstance(player_name, str) or not player_name.strip():
+                                logger.warning(
+                                    "Player name not found, using placeholder",
+                                    player_id=player_id,
+                                    has_name_attr=hasattr(player, "name"),
+                                    name_value=getattr(player, "name", "NOT_FOUND"),
+                                )
+                                player_name = "Unknown Player"
+
+                        # CRITICAL: Final validation - ensure player_name is NEVER a UUID
+                        if isinstance(player_name, str):
+                            is_uuid_string = (
+                                len(player_name) == 36
+                                and player_name.count("-") == 4
+                                and all(c in "0123456789abcdefABCDEF-" for c in player_name)
+                            )
+                            if is_uuid_string:
+                                logger.error(
+                                    "CRITICAL: Player name is a UUID string, this should never happen",
+                                    player_id=player_id,
+                                    player_name=player_name,
+                                    player_name_from_db=getattr(player, "name", "NOT_FOUND"),
+                                )
+                                player_name = "Unknown Player"
+
                         entered_event = build_event(
                             "player_entered_game",
                             {
                                 "player_id": player_id,
-                                "player_name": getattr(player, "name", player_id),
+                                "player_name": player_name,
                             },
                             room_id=room_id,
                         )
@@ -2615,7 +2778,9 @@ class ConnectionManager:
             # If player still has connections, don't fully disconnect them
             if has_any_connections and connection_type:
                 logger.info(
-                    f"Player {player_id} still has connections, not fully disconnecting (disconnected {connection_type})"
+                    "Player still has connections, not fully disconnecting",
+                    player_id=player_id,
+                    disconnected_connection_type=connection_type,
                 )
                 return
 
@@ -2634,7 +2799,39 @@ class ConnectionManager:
             # Resolve player using flexible lookup (ID or name)
             pl = self._get_player(player_id)
             room_id: str | None = getattr(pl, "current_room_id", None) if pl else None
-            player_name: str | None = getattr(pl, "name", None) if pl else None
+            # CRITICAL: Extract player name - NEVER use UUID as fallback
+            player_name: str | None = None
+            if pl:
+                player_name = getattr(pl, "name", None)
+                if not player_name or not isinstance(player_name, str) or not player_name.strip():
+                    # Try to get name from related User object if player.name is not available
+                    if hasattr(pl, "user"):
+                        try:
+                            user = getattr(pl, "user", None)
+                            if user:
+                                player_name = getattr(user, "username", None) or getattr(user, "display_name", None)
+                        except Exception as e:
+                            logger.debug("Error accessing user relationship for player name", error=str(e))
+
+                    # If still no name, use placeholder (NEVER use UUID)
+                    if not player_name or not isinstance(player_name, str) or not player_name.strip():
+                        player_name = "Unknown Player"
+
+                # CRITICAL: Final validation - ensure player_name is NEVER a UUID
+                if isinstance(player_name, str):
+                    is_uuid_string = (
+                        len(player_name) == 36
+                        and player_name.count("-") == 4
+                        and all(c in "0123456789abcdefABCDEF-" for c in player_name)
+                    )
+                    if is_uuid_string:
+                        logger.error(
+                            "CRITICAL: Player name is a UUID string, this should never happen",
+                            player_id=player_id,
+                            player_name=player_name,
+                            player_name_from_db=getattr(pl, "name", "NOT_FOUND"),
+                        )
+                        player_name = "Unknown Player"
 
             # Remove from online and room presence
             # Remove possible variants (provided id, canonical id, and name)
@@ -2684,9 +2881,11 @@ class ConnectionManager:
                 # 1) left-game notification
                 from .envelope import build_event
 
+                # CRITICAL: NEVER use UUID as fallback - use placeholder if name not found
+                safe_player_name = player_name if player_name else "Unknown Player"
                 left_event = build_event(
                     "player_left_game",
-                    {"player_id": player_id, "player_name": player_name or player_id},
+                    {"player_id": player_id, "player_name": safe_player_name},
                     room_id=room_id,
                 )
                 # Exclude the disconnecting player from their own "left game" message
@@ -2855,7 +3054,9 @@ class ConnectionManager:
             elif connection_id:
                 # Handle connection-specific error (non-fatal)
                 logger.warning(
-                    f"Connection-specific error: Terminating connection {connection_id} for player {player_id}"
+                    "Connection-specific error: Terminating connection",
+                    connection_id=connection_id,
+                    player_id=player_id,
                 )
 
                 # Try to disconnect the specific connection
@@ -2899,7 +3100,11 @@ class ConnectionManager:
             dict: Error handling results
         """
         logger.warning(
-            f"WebSocket error for player {player_id}, connection {connection_id}: {error_type} - {error_details}"
+            "WebSocket error",
+            player_id=player_id,
+            connection_id=connection_id,
+            error_type=error_type,
+            error_details=error_details,
         )
 
         # Check if this is a critical WebSocket error
@@ -3337,8 +3542,14 @@ class ConnectionManager:
                 room = self.persistence.get_room(room_id)
                 if room:
                     room_data = room.to_dict()
+                    # CRITICAL: Convert player UUIDs to names - NEVER send UUIDs to client
+                    room_data = self._convert_room_players_uuids_to_names(room_data)
+
                     logger.info(
-                        f"DEBUG: Room data for {room_id}: npcs={room_data.get('npcs', [])}, occupant_count={room_data.get('occupant_count', 0)}"
+                        "DEBUG: Room data",
+                        room_id=room_id,
+                        npcs=room_data.get("npcs", []),
+                        occupant_count=room_data.get("occupant_count", 0),
                     )
 
             # Get room occupants (players and NPCs)
@@ -3351,32 +3562,92 @@ class ConnectionManager:
                     if isinstance(occ_player_info, dict) and occ_player_info.get("player_id") != player_id:
                         occupants.append(occ_player_info.get("player_name", "Unknown"))
 
-                # Get NPC occupants
-                if self.persistence:
-                    room = self.persistence.get_room(room_id)
-                    if room:
-                        npc_ids = room.get_npcs()
-                        logger.info("DEBUG: Room has NPCs", room_id=room_id, npc_ids=npc_ids)
-                        logger.info(
-                            "DEBUG: Room occupant_count", room_id=room_id, occupant_count=room.get_occupant_count()
-                        )
-                        for npc_id in npc_ids:
-                            # Get NPC name from the actual NPC instance, preserving original case from database
-                            npc_name = _get_npc_name_from_instance(npc_id)
-                            if npc_name:
-                                logger.info("DEBUG: Got NPC name from database", npc_name=npc_name, npc_id=npc_id)
-                                occupants.append(npc_name)
-                            else:
-                                # Log warning if NPC instance not found - this should not happen in normal operation
-                                logger.warning(
-                                    "NPC instance not found for ID - skipping from room display", npc_id=npc_id
-                                )
+                # CRITICAL FIX: Query NPCs from lifecycle manager instead of Room instance
+                # Room instances are recreated from persistence and lose in-memory NPC tracking
+                npc_ids: list[str] = []
+                try:
+                    from ..services.npc_instance_service import get_npc_instance_service
+
+                    npc_instance_service = get_npc_instance_service()
+                    if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
+                        lifecycle_manager = npc_instance_service.lifecycle_manager
+                        if lifecycle_manager and hasattr(lifecycle_manager, "active_npcs"):
+                            active_npcs_dict = lifecycle_manager.active_npcs
+                            # Query all active NPCs to find those in this room
+                            for npc_id, npc_instance in active_npcs_dict.items():
+                                # Check both current_room and current_room_id for compatibility
+                                current_room = getattr(npc_instance, "current_room", None)
+                                current_room_id = getattr(npc_instance, "current_room_id", None)
+                                npc_room_id = current_room or current_room_id
+                                if npc_room_id == room_id:
+                                    npc_ids.append(npc_id)
+
+                    logger.info("DEBUG: Room has NPCs from lifecycle manager", room_id=room_id, npc_ids=npc_ids)
+                    for npc_id in npc_ids:
+                        # Get NPC name from the actual NPC instance, preserving original case from database
+                        npc_name = _get_npc_name_from_instance(npc_id)
+                        if npc_name:
+                            logger.info("DEBUG: Got NPC name from database", npc_name=npc_name, npc_id=npc_id)
+                            occupants.append(npc_name)
+                        else:
+                            # Log warning if NPC instance not found - this should not happen in normal operation
+                            logger.warning(
+                                "NPC instance not found for ID - skipping from room display", npc_id=npc_id
+                            )
+                except Exception as npc_query_error:
+                    logger.warning(
+                        "Error querying NPCs from lifecycle manager, falling back to room.get_npcs()",
+                        room_id=room_id,
+                        error=str(npc_query_error),
+                    )
+                    # Fallback to room.get_npcs() if lifecycle manager query fails
+                    if self.persistence:
+                        room = self.persistence.get_room(room_id)
+                        if room:
+                            npc_ids = room.get_npcs()
+                            logger.info("DEBUG: Room has NPCs from fallback", room_id=room_id, npc_ids=npc_ids)
+                            for npc_id in npc_ids:
+                                npc_name = _get_npc_name_from_instance(npc_id)
+                                if npc_name:
+                                    occupants.append(npc_name)
+
+            # CRITICAL: Extract player name - NEVER use UUID as fallback
+            player_name = getattr(player, "name", None)
+            if not player_name or not isinstance(player_name, str) or not player_name.strip():
+                # Try to get name from related User object if player.name is not available
+                if hasattr(player, "user"):
+                    try:
+                        user = getattr(player, "user", None)
+                        if user:
+                            player_name = getattr(user, "username", None) or getattr(user, "display_name", None)
+                    except Exception as e:
+                        logger.debug("Error accessing user relationship for player name", error=str(e))
+
+                # If still no name, use placeholder (NEVER use UUID)
+                if not player_name or not isinstance(player_name, str) or not player_name.strip():
+                    player_name = "Unknown Player"
+
+            # CRITICAL: Final validation - ensure player_name is NEVER a UUID
+            if isinstance(player_name, str):
+                is_uuid_string = (
+                    len(player_name) == 36
+                    and player_name.count("-") == 4
+                    and all(c in "0123456789abcdefABCDEF-" for c in player_name)
+                )
+                if is_uuid_string:
+                    logger.error(
+                        "CRITICAL: Player name is a UUID string, this should never happen",
+                        player_id=player_id,
+                        player_name=player_name,
+                        player_name_from_db=getattr(player, "name", "NOT_FOUND"),
+                    )
+                    player_name = "Unknown Player"
 
             # Create game_state event
             game_state_data = {
                 "player": {
                     "player_id": str(getattr(player, "player_id", player_id)),
-                    "name": getattr(player, "name", player_id),
+                    "name": player_name,
                     "level": getattr(player, "level", 1),
                     "xp": getattr(player, "experience_points", 0),
                     "current_room_id": room_id,
@@ -3894,12 +4165,26 @@ class ConnectionManager:
                     logger.error("Failed to publish player_entered NATS event", error=str(e))
 
             # Get current room occupants
-            occ_infos = self.room_manager.get_room_occupants(room_id, self.online_players)
+            # CRITICAL: Convert UUID keys to strings for room_manager compatibility
+            online_players_str = {str(k): v for k, v in self.online_players.items()}
+            occ_infos = self.room_manager.get_room_occupants(room_id, online_players_str)
             names: list[str] = []
             for occ in occ_infos:
                 name = occ.get("player_name") if isinstance(occ, dict) else None
-                if name:
-                    names.append(name)
+                # CRITICAL: Validate name is not a UUID before adding
+                if name and isinstance(name, str):
+                    # Skip if it looks like a UUID (36 chars, 4 dashes, hex)
+                    is_uuid = (
+                        len(name) == 36 and name.count("-") == 4 and all(c in "0123456789abcdefABCDEF-" for c in name)
+                    )
+                    if not is_uuid:
+                        names.append(name)
+                    else:
+                        logger.warning(
+                            "Skipping UUID as player name in room_occupants event",
+                            name=name,
+                            room_id=room_id,
+                        )
 
             # Build and broadcast room_occupants event
             from .envelope import build_event
@@ -3939,12 +4224,26 @@ class ConnectionManager:
                     logger.error("Failed to publish player_left NATS event", error=str(e))
 
             # Get current room occupants
-            occ_infos = self.room_manager.get_room_occupants(room_id, self.online_players)
+            # CRITICAL: Convert UUID keys to strings for room_manager compatibility
+            online_players_str = {str(k): v for k, v in self.online_players.items()}
+            occ_infos = self.room_manager.get_room_occupants(room_id, online_players_str)
             names: list[str] = []
             for occ in occ_infos:
                 name = occ.get("player_name") if isinstance(occ, dict) else None
-                if name:
-                    names.append(name)
+                # CRITICAL: Validate name is not a UUID before adding
+                if name and isinstance(name, str):
+                    # Skip if it looks like a UUID (36 chars, 4 dashes, hex)
+                    is_uuid = (
+                        len(name) == 36 and name.count("-") == 4 and all(c in "0123456789abcdefABCDEF-" for c in name)
+                    )
+                    if not is_uuid:
+                        names.append(name)
+                    else:
+                        logger.warning(
+                            "Skipping UUID as player name in room_occupants event",
+                            name=name,
+                            room_id=room_id,
+                        )
 
             # Build and broadcast room_occupants event
             from .envelope import build_event

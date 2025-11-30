@@ -9,7 +9,11 @@ interface Room {
   sub_zone?: string;
   environment?: string;
   exits?: Record<string, string | null>;
+  // Legacy: flat list of occupant names (for backward compatibility)
   occupants?: string[];
+  // New: structured occupant data with separate players and NPCs
+  players?: string[];
+  npcs?: string[];
   occupant_count?: number;
 }
 
@@ -41,6 +45,10 @@ function validateAndFixRoomData(room: Room | null): Room | null {
     hasSubZone: !!room.sub_zone,
     hasExits: !!room.exits,
     hasOccupants: !!room.occupants,
+    hasPlayers: !!room.players,
+    hasNpcs: !!room.npcs,
+    playerCount: room.players?.length ?? 0,
+    npcCount: room.npcs?.length ?? 0,
     occupantCount: room.occupant_count,
   });
 
@@ -272,7 +280,7 @@ export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
           </p>
         </div>
 
-        {/* Enhanced Room Occupants */}
+        {/* Enhanced Room Occupants with separate Players and NPCs sections */}
         <div className="room-occupants">
           <div className="occupants-header">
             <span className="occupants-label">
@@ -285,7 +293,51 @@ export function RoomInfoPanel({ room, debugInfo }: RoomInfoPanelProps) {
             </span>
           </div>
           <div className="occupants-content">
-            {displayRoom.occupants && displayRoom.occupants.length > 0 ? (
+            {/* Use structured data (players/npcs) if available, otherwise fall back to flat occupants array */}
+            {displayRoom.players !== undefined || displayRoom.npcs !== undefined ? (
+              <>
+                {/* Players Section */}
+                {displayRoom.players && displayRoom.players.length > 0 && (
+                  <div className="occupants-section">
+                    <div className="occupants-section-header">Players</div>
+                    <div className="occupants-list">
+                      {displayRoom.players.map((player, index) => (
+                        <div key={`player-${index}`} className="occupant-item">
+                          <span className="occupant-indicator">●</span>
+                          <span className="occupant-name" data-testid="occupant-name-player">
+                            {formatOccupantName(player)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {/* NPCs Section */}
+                {displayRoom.npcs && displayRoom.npcs.length > 0 && (
+                  <div className="occupants-section">
+                    <div className="occupants-section-header">NPCs</div>
+                    <div className="occupants-list">
+                      {displayRoom.npcs.map((npc, index) => (
+                        <div key={`npc-${index}`} className="occupant-item">
+                          <span className="occupant-indicator">●</span>
+                          <span className="occupant-name" data-testid="occupant-name-npc">
+                            {formatOccupantName(npc)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {/* Show message if no players or NPCs */}
+                {(!displayRoom.players || displayRoom.players.length === 0) &&
+                  (!displayRoom.npcs || displayRoom.npcs.length === 0) && (
+                    <div className="no-occupants">
+                      <span className="no-occupants-text">No other players present</span>
+                    </div>
+                  )}
+              </>
+            ) : displayRoom.occupants && displayRoom.occupants.length > 0 ? (
+              /* Legacy format: flat list of occupants */
               <div className="occupants-list">
                 {displayRoom.occupants.map((occupant, index) => (
                   <div key={index} className="occupant-item">

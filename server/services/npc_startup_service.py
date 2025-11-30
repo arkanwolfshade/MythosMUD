@@ -232,7 +232,9 @@ class NPCStartupService:
                     logger.info("Spawned optional NPC", npc_name=npc_def.name, spawn_room=spawn_room)
                 else:
                     logger.warning(
-                        f"Failed to spawn optional NPC {npc_def.name}: {spawn_result.get('message', 'Unknown error')}"
+                        "Failed to spawn optional NPC",
+                        npc_name=npc_def.name,
+                        error_message=spawn_result.get("message", "Unknown error"),
                     )
                     results["failed"] += 1
 

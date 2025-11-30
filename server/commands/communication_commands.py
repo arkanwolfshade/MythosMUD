@@ -75,7 +75,8 @@ async def handle_say_command(
 
         if result.get("success"):
             logger.info(
-                f"Say message sent successfully for {player_name}",
+                "Say message sent successfully",
+                player_name=player_name,
                 room=current_room_id,
                 message_id=result.get("message", {}).get("id"),
             )
@@ -243,7 +244,8 @@ async def handle_local_command(
 
         if result.get("success"):
             logger.info(
-                f"Local message sent successfully for {player_name}",
+                "Local message sent successfully",
+                player_name=player_name,
                 room=current_room_id,
                 message_id=result.get("message", {}).get("id"),
             )
@@ -328,7 +330,8 @@ async def handle_global_command(
 
         if result.get("success"):
             logger.info(
-                f"Global message sent successfully for {player_name}",
+                "Global message sent successfully",
+                player_name=player_name,
                 player_level=player_level,
                 message_id=result.get("message", {}).get("id"),
             )
@@ -410,7 +413,8 @@ async def handle_system_command(
 
         if result.get("success"):
             logger.info(
-                f"System message sent successfully for {player_name}",
+                "System message sent successfully",
+                player_name=player_name,
                 message_id=result.get("message", {}).get("id"),
             )
             return {"result": f"You system: {message}"}
@@ -448,7 +452,9 @@ async def handle_whisper_command(
 
     if not target or not message:
         logger.warning(
-            f"Whisper command with missing target or message for {player_name}, command_data: {command_data}"
+            "Whisper command with missing target or message",
+            player_name=player_name,
+            command_data=command_data,
         )
         return {"result": "Say what? Usage: whisper <player> <message>"}
 
@@ -493,7 +499,9 @@ async def handle_whisper_command(
 
         if result.get("success"):
             logger.info(
-                f"Whisper message sent successfully for {player_name} to {target}",
+                "Whisper message sent successfully",
+                player_name=player_name,
+                target=target,
                 message_id=result.get("message", {}).get("id"),
             )
             return {"result": f"You whisper to {target}: {message}"}
@@ -578,7 +586,9 @@ async def handle_reply_command(
 
         if result.get("success"):
             logger.info(
-                f"Reply message sent successfully for {player_name} to {last_whisper_sender}",
+                "Reply message sent successfully",
+                player_name=player_name,
+                last_whisper_sender=last_whisper_sender,
                 message_id=result.get("message", {}).get("id"),
             )
             return {"result": f"You whisper to {last_whisper_sender}: {message}"}

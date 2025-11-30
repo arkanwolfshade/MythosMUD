@@ -14,7 +14,6 @@ from collections.abc import Iterable
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from sqlalchemy import select
 
 from ..container import ApplicationContainer
 from ..logging.enhanced_logging_config import get_logger, update_logging_with_player_service
@@ -565,7 +564,6 @@ async def game_tick_loop(app: FastAPI):
             if hasattr(app.state, "player_death_service"):
                 try:
                     from ..database import get_async_session
-                    from ..models.player import Player
 
                     # Get database session for HP decay processing
                     async for session in get_async_session():
@@ -641,36 +639,52 @@ async def game_tick_loop(app: FastAPI):
 
                             # Also check for players already at death threshold who need limbo transition
                             # This handles players who died but haven't been moved to limbo yet
-                            result = await session.execute(select(Player))
-                            all_players = result.scalars().all()
-                            for player in all_players:
-                                stats = player.get_stats()
-                                current_hp = stats.get("current_health", 0)
+                            # CRITICAL: Use dedicated method to find dead players for better performance and clarity
+                            dead_players = await app.state.player_death_service.get_dead_players(session)
 
-                                # If player is dead and not in limbo, move them there
-                                if current_hp <= -10 and player.current_room_id != LIMBO_ROOM_ID:
-                                    logger.info(
-                                        "Found dead player not in limbo - moving to limbo",
-                                        player_id=player.player_id,
-                                        player_name=player.name,
-                                        current_hp=current_hp,
-                                        current_room=player.current_room_id,
-                                    )
+                            if dead_players:
+                                logger.debug(
+                                    "Found dead players",
+                                    count=len(dead_players),
+                                    player_ids=[p.player_id for p in dead_players],
+                                )
 
-                                    # Handle death and move to limbo
-                                    await app.state.player_death_service.handle_player_death(
-                                        player.player_id,
-                                        player.current_room_id,
-                                        None,  # No killer info
-                                        session,
-                                    )
+                                for player in dead_players:
+                                    stats = player.get_stats()
+                                    current_hp = stats.get("current_health", 0)
 
-                                    # Move player to limbo
-                                    await app.state.player_respawn_service.move_player_to_limbo(
-                                        player.player_id,
-                                        player.current_room_id,
-                                        session,
-                                    )
+                                    # If player is dead and not in limbo, move them there first
+                                    if player.current_room_id != LIMBO_ROOM_ID:
+                                        logger.info(
+                                            "Found dead player not in limbo - moving to limbo",
+                                            player_id=player.player_id,
+                                            player_name=player.name,
+                                            current_hp=current_hp,
+                                            current_room=player.current_room_id,
+                                        )
+
+                                        # Handle death and move to limbo
+                                        await app.state.player_death_service.handle_player_death(
+                                            player.player_id,
+                                            player.current_room_id,
+                                            None,  # No killer info
+                                            session,
+                                        )
+
+                                        # Move player to limbo
+                                        await app.state.player_respawn_service.move_player_to_limbo(
+                                            player.player_id,
+                                            player.current_room_id,
+                                            session,
+                                        )
+
+                                        # Refresh player to get updated room_id
+                                        await session.refresh(player)
+
+                                    # NOTE: Respawn is handled manually via /api/players/respawn endpoint
+                                    # The client will show the death interstitial and the player can click
+                                    # "Rejoin the earthly plane" to trigger respawn via the API
+                                    # We only move players to limbo here, not respawn them automatically
 
                         except Exception as e:
                             logger.error("Error in HP decay processing iteration", error=str(e))

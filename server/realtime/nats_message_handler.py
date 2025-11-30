@@ -1763,6 +1763,32 @@ class NATSMessageHandler:
             await self.connection_manager.broadcast_room_event("combat_started", room_id, data)
             logger.debug("Combat started event broadcasted", room_id=room_id)
 
+            # Send player updates with in_combat status to all players in combat
+            participants = data.get("participants", {})
+            if participants:
+                from .envelope import build_event
+
+                for participant_id_str, _participant_data in participants.items():
+                    try:
+                        # Get player by ID to send update
+                        player = self.connection_manager._get_player(participant_id_str)
+                        if player:
+                            # Send player update with in_combat status
+                            player_update_event = build_event(
+                                "player_update",
+                                {
+                                    "player_id": participant_id_str,
+                                    "in_combat": True,
+                                },
+                                player_id=participant_id_str,
+                            )
+                            await self.connection_manager.send_personal_message(participant_id_str, player_update_event)
+                            logger.debug("Sent player update with in_combat=True", player_id=participant_id_str)
+                    except Exception as e:
+                        logger.warning(
+                            "Error sending player update for combat start", player_id=participant_id_str, error=str(e)
+                        )
+
         except Exception as e:
             logger.error("Error handling combat started event", error=str(e), data=data)
 
@@ -1777,6 +1803,32 @@ class NATSMessageHandler:
             # Broadcast to room using injected connection_manager
             await self.connection_manager.broadcast_room_event("combat_ended", room_id, data)
             logger.debug("Combat ended event broadcasted", room_id=room_id)
+
+            # Send player updates with in_combat status to all players who were in combat
+            participants = data.get("participants", {})
+            if participants:
+                from .envelope import build_event
+
+                for participant_id_str in participants:
+                    try:
+                        # Get player by ID to send update
+                        player = self.connection_manager._get_player(participant_id_str)
+                        if player:
+                            # Send player update with in_combat status
+                            player_update_event = build_event(
+                                "player_update",
+                                {
+                                    "player_id": participant_id_str,
+                                    "in_combat": False,
+                                },
+                                player_id=participant_id_str,
+                            )
+                            await self.connection_manager.send_personal_message(participant_id_str, player_update_event)
+                            logger.debug("Sent player update with in_combat=False", player_id=participant_id_str)
+                    except Exception as e:
+                        logger.warning(
+                            "Error sending player update for combat end", player_id=participant_id_str, error=str(e)
+                        )
 
         except Exception as e:
             logger.error("Error handling combat ended event", error=str(e), data=data)

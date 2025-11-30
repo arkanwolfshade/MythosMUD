@@ -12,9 +12,7 @@ import React, { useEffect, useState } from 'react';
 import { RoomMapViewer } from '../components/map';
 import { secureTokenStorage } from '../utils/security';
 import { API_BASE_URL } from '../utils/config';
-import { getLogger } from '../utils/logger';
-
-const logger = getLogger('MapPage');
+import { logger } from '../utils/logger';
 
 interface RoomData {
   id: string;
@@ -40,11 +38,11 @@ export const MapPage: React.FC = () => {
       // Try to get current room from game state API or player info
       // For now, we'll use a default or let the user select
       // The map viewer can work without a current room (it just won't highlight it)
-      logger.info('No current room specified, map will show all rooms');
+      logger.info('MapPage', 'No current room specified, map will show all rooms');
       setCurrentRoom(null);
       setIsLoading(false);
     } catch (err) {
-      logger.error('Failed to fetch current room', { error: err });
+      logger.error('MapPage', 'Failed to fetch current room', { error: err });
       setError('Failed to load room information');
       setIsLoading(false);
     }
@@ -55,14 +53,14 @@ export const MapPage: React.FC = () => {
     const initialize = () => {
       const token = secureTokenStorage.getToken();
       if (!token) {
-        logger.warn('No auth token found in localStorage');
+        logger.warn('MapPage', 'No auth token found in localStorage');
         setError('Not authenticated. Please log in first.');
         setIsLoading(false);
         return;
       }
 
       setAuthToken(token);
-      logger.info('Auth token loaded from localStorage');
+      logger.info('MapPage', 'Auth token loaded from localStorage');
 
       // Try to get current room from URL parameters or localStorage
       const urlParams = new URLSearchParams(window.location.search);

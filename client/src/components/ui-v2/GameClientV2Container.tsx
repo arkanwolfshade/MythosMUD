@@ -8,16 +8,16 @@ import { buildHealthStatusFromEvent } from '../../utils/healthEventUtils';
 import { logger } from '../../utils/logger';
 import { useMemoryMonitor } from '../../utils/memoryMonitor';
 import { determineMessageType } from '../../utils/messageTypeUtils';
-import { DAYPART_MESSAGES, buildMythosTimeState } from '../../utils/mythosTime';
+import { DAYPART_MESSAGES, buildMythosTimeState, formatMythosTime12Hour } from '../../utils/mythosTime';
 import { buildSanityStatus } from '../../utils/sanityEventUtils';
 import { inputSanitizer } from '../../utils/security';
 import { convertToPlayerInterface, parseStatusResponse } from '../../utils/statusParser';
 import { DeathInterstitial } from '../DeathInterstitial';
 import { MainMenuModal } from '../MainMenuModal';
 import { MapView } from '../MapView';
-import { useTabbedInterface } from './TabbedInterface';
 import { GameClientV2 } from './GameClientV2';
 import type { ChatMessage, Player, Room } from './types';
+import { useTabbedInterface } from './useTabbedInterface';
 
 // Import GameEvent interface from useGameConnection
 interface GameEvent {
@@ -157,6 +157,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   const healthStatusRef = useRef<HealthStatus | null>(null);
   const rescueStateRef = useRef<RescueState | null>(null);
   const lastDaypartRef = useRef<string | null>(null);
+  const lastHourRef = useRef<number | null>(null);
   const lastHolidayIdsRef = useRef<string[]>([]);
   const rescueTimeoutRef = useRef<number | null>(null);
   const lastRoomUpdateTime = useRef<number>(0);
@@ -302,7 +303,48 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             const roomData = (event.data.room || event.data.room_data) as Room;
             if (roomData) {
               lastRoomUpdateTime.current = new Date(event.timestamp).getTime();
-              updates.room = roomData;
+
+              // ARCHITECTURE: room_update events contain ONLY room metadata (name, description, exits, etc.)
+              // Occupant data (players, npcs) comes EXCLUSIVELY from room_occupants events
+              // This ensures a single authoritative source: RealTimeEventHandler._get_room_occupants()
+
+              // Strip any occupant fields that might have leaked in (defensive)
+              /* eslint-disable @typescript-eslint/no-unused-vars */
+              const {
+                players: _players,
+                npcs: _npcs,
+                occupants: _occupants,
+                occupant_count: _occupant_count,
+                ...roomMetadata
+              } = roomData;
+              /* eslint-enable @typescript-eslint/no-unused-vars */
+
+              // Get existing room state to preserve occupant data
+              // Priority: updates.room (from room_occupants in same batch) > currentRoomRef
+              // Note: currentRoomRef is kept in sync with gameState.room via useEffect
+              const existingRoom = updates.room || currentRoomRef.current;
+
+              if (existingRoom) {
+                // Preserve occupant data from existing state (set by room_occupants events)
+                updates.room = {
+                  ...existingRoom,
+                  ...roomMetadata,
+                  // CRITICAL: Always preserve occupant data - room_update NEVER sets this
+                  players: existingRoom.players,
+                  npcs: existingRoom.npcs,
+                  occupants: existingRoom.occupants,
+                  occupant_count: existingRoom.occupant_count,
+                };
+              } else {
+                // First room_update - initialize with empty occupants (room_occupants will populate)
+                updates.room = {
+                  ...roomMetadata,
+                  players: [],
+                  npcs: [],
+                  occupants: [],
+                  occupant_count: 0,
+                };
+              }
             }
             break;
           }
@@ -323,11 +365,25 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
           }
           case 'player_hp_updated':
           case 'playerhpupdated': {
+            logger.info('GameClientV2Container', 'Received player_hp_updated event', {
+              old_hp: event.data.old_hp,
+              new_hp: event.data.new_hp,
+              max_hp: event.data.max_hp,
+              damage_taken: event.data.damage_taken,
+            });
+
             const { status: updatedHealthStatus } = buildHealthStatusFromEvent(
               healthStatusRef.current,
               event.data,
               event.timestamp
             );
+
+            logger.info('GameClientV2Container', 'Updated health status', {
+              current: updatedHealthStatus.current,
+              max: updatedHealthStatus.max,
+              tier: updatedHealthStatus.tier,
+            });
+
             setHealthStatus(updatedHealthStatus);
             if (currentPlayerRef.current) {
               updates.player = {
@@ -338,6 +394,10 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                   max_health: updatedHealthStatus.max,
                 },
               };
+              logger.info('GameClientV2Container', 'Updated player stats', {
+                current_health: updatedHealthStatus.current,
+                max_health: updatedHealthStatus.max,
+              });
             }
             break;
           }
@@ -368,7 +428,20 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               }
             }
 
-            if (!suppressChat && message) {
+            // Filter out room name-only messages (these are sent by the server for room updates
+            // but should not be displayed as they duplicate the Room Info panel)
+            // Room names are typically just the room name without description or other content
+            const isRoomNameOnly =
+              message &&
+              message.trim().length > 0 &&
+              message.trim().length < 100 &&
+              !message.includes('\n') &&
+              !message.includes('Exits:') &&
+              !message.includes('Description:') &&
+              currentRoomRef.current &&
+              message.trim() === currentRoomRef.current.name;
+
+            if (!suppressChat && message && !isRoomNameOnly) {
               const messageTypeResult = determineMessageType(message);
               appendMessage({
                 text: message,
@@ -378,7 +451,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                 channel: messageTypeResult.channel ?? 'game',
                 type: resolveChatTypeFromChannel(messageTypeResult.channel ?? 'game'),
               });
-            } else if (gameLogMessage) {
+            } else if (gameLogMessage && !isRoomNameOnly) {
               appendMessage({
                 text: gameLogMessage,
                 timestamp: event.timestamp,
@@ -424,14 +497,92 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             break;
           }
           case 'room_occupants': {
-            const occupants = event.data.occupants as string[];
-            const occupantCount = event.data.count as number;
-            if (occupants && Array.isArray(occupants) && currentRoomRef.current) {
-              updates.room = {
-                ...currentRoomRef.current,
-                occupants: occupants,
-                occupant_count: occupantCount,
-              };
+            // Support both new structured format (players/npcs) and legacy format (occupants)
+            const players = event.data.players as string[] | undefined;
+            const npcs = event.data.npcs as string[] | undefined;
+            const occupants = event.data.occupants as string[] | undefined; // Legacy format
+            const occupantCount = event.data.count as number | undefined;
+
+            // DEBUG: Console log for immediate visibility + structured logging
+            console.log('🔍 [room_occupants] Received event:', {
+              players,
+              npcs,
+              npcs_count: npcs?.length ?? 0,
+              occupants,
+              occupantCount,
+              hasCurrentRoom: !!currentRoomRef.current,
+              currentRoomId: currentRoomRef.current?.id,
+              currentRoomPlayers: currentRoomRef.current?.players,
+              currentRoomNpcs: currentRoomRef.current?.npcs,
+              hasUpdatesRoom: !!updates.room,
+              updatesRoomNpcs: updates.room?.npcs,
+            });
+
+            // DEBUG: Log received data
+            logger.debug('GameClientV2Container', 'Processing room_occupants event', {
+              players,
+              npcs,
+              npcs_count: npcs?.length ?? 0,
+              occupants,
+              occupantCount,
+              hasCurrentRoom: !!currentRoomRef.current,
+              currentRoomId: currentRoomRef.current?.id,
+              currentRoomPlayers: currentRoomRef.current?.players,
+              currentRoomNpcs: currentRoomRef.current?.npcs,
+              hasUpdatesRoom: !!updates.room,
+            });
+
+            // CRITICAL FIX: Use updates.room if available (from room_update in same batch),
+            // otherwise use currentRoomRef.current (it's kept in sync via useEffect)
+            // This handles the case where room_update and room_occupants arrive in the same batch
+            const currentRoom = updates.room || currentRoomRef.current;
+
+            if (currentRoom) {
+              // ARCHITECTURE: room_occupants events are the SINGLE AUTHORITATIVE SOURCE for occupant data
+              // This event always uses structured format (players/npcs arrays) from
+              // RealTimeEventHandler._get_room_occupants() which queries:
+              // - Players: Room._players (in-memory, reliable)
+              // - NPCs: NPCLifecycleManager.active_npcs (authoritative, survives re-instantiation)
+
+              // Use structured format if available (preferred), otherwise fall back to legacy flat list
+              if (players !== undefined || npcs !== undefined) {
+                // Structured format: separate players and NPCs arrays
+                updates.room = {
+                  ...currentRoom,
+                  players: players ?? [],
+                  npcs: npcs ?? [],
+                  // Backward compatibility: also populate flat occupants list
+                  occupants: [...(players ?? []), ...(npcs ?? [])],
+                  occupant_count: occupantCount ?? (players?.length ?? 0) + (npcs?.length ?? 0),
+                };
+                logger.debug('GameClientV2Container', 'Updated room with structured occupants from room_occupants', {
+                  roomId: updates.room.id,
+                  players_count: updates.room.players?.length ?? 0,
+                  npcs_count: updates.room.npcs?.length ?? 0,
+                  total_count: updates.room.occupant_count,
+                });
+              } else if (occupants && Array.isArray(occupants)) {
+                // Legacy format: flat list (for backward compatibility)
+                // Try to split into players/npcs if possible, otherwise use flat list
+                updates.room = {
+                  ...currentRoom,
+                  occupants: occupants,
+                  occupant_count: occupantCount ?? occupants.length,
+                  // Preserve existing structured data if available, otherwise use flat list
+                  players: currentRoom.players ?? [],
+                  npcs: currentRoom.npcs ?? [],
+                };
+                logger.debug('GameClientV2Container', 'Updated room with legacy occupants format', {
+                  roomId: updates.room.id,
+                  occupants_count: updates.room.occupants?.length ?? 0,
+                  occupant_count: updates.room.occupant_count,
+                });
+              }
+            } else {
+              logger.warn('GameClientV2Container', 'room_occupants event received but no room state available', {
+                hasCurrentRoomRef: !!currentRoomRef.current,
+                hasUpdatesRoom: !!updates.room,
+              });
             }
             break;
           }
@@ -440,6 +591,44 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             if (payload && payload.mythos_clock) {
               const nextState = buildMythosTimeState(payload);
               setMythosTime(nextState);
+
+              // Extract current hour from mythos_datetime for clock chime messages
+              let currentHour: number | null = null;
+              if (payload.mythos_datetime) {
+                try {
+                  const mythosDate = new Date(payload.mythos_datetime);
+                  currentHour = mythosDate.getUTCHours();
+                } catch (error) {
+                  logger.error('GameClientV2Container', 'Failed to parse mythos_datetime for clock chime', {
+                    error: error instanceof Error ? error.message : String(error),
+                    mythos_datetime: payload.mythos_datetime,
+                  });
+                }
+              }
+
+              // Create clock chime message on hourly tick
+              if (currentHour !== null) {
+                const previousHour = lastHourRef.current;
+                if (previousHour !== null && previousHour !== currentHour) {
+                  const formattedClock = formatMythosTime12Hour(payload.mythos_clock);
+                  appendMessage(
+                    sanitizeChatMessageForState({
+                      text: `[Time] The clock chimes ${formattedClock} Mythos`,
+                      timestamp: event.timestamp,
+                      messageType: 'system',
+                      channel: 'system',
+                      isHtml: false,
+                    })
+                  );
+                  logger.debug('GameClientV2Container', 'Displayed hourly clock chime message', {
+                    hour: currentHour,
+                    mythos_clock: payload.mythos_clock,
+                  });
+                }
+                lastHourRef.current = currentHour;
+              }
+
+              // Create daypart change message
               const previousDaypart = lastDaypartRef.current;
               if (previousDaypart && previousDaypart !== nextState.daypart) {
                 const description =
@@ -455,6 +644,155 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               }
               lastDaypartRef.current = nextState.daypart;
             }
+            break;
+          }
+          case 'game_tick': {
+            // Extract tick data from event
+            // Note: event.data contains the tick_data object directly from broadcast_game_event
+            const tickNumber = typeof event.data?.tick_number === 'number' ? event.data.tick_number : 0;
+
+            // Display every 10th tick (tick 0, 10, 20, 30, etc.)
+            // This provides a 10-second update interval since ticks run every 1 second
+            if (tickNumber % 10 === 0 && tickNumber >= 0) {
+              appendMessage(
+                sanitizeChatMessageForState({
+                  text: `[Tick ${tickNumber}]`,
+                  timestamp: event.timestamp,
+                  messageType: 'system',
+                  channel: 'system',
+                  isHtml: false,
+                })
+              );
+              logger.debug('GameClientV2Container', 'Displayed game tick message', {
+                tickNumber,
+              });
+            }
+            break;
+          }
+          case 'npc_attacked': {
+            // NPC attacked event - NPC attacks player
+            // Note: attacker_name is the NPC's name, npc_name is also the NPC's name (redundant field)
+            const attackerName = (event.data.attacker_name || event.data.npc_name) as string | undefined;
+            const damage = event.data.damage as number | undefined;
+            const actionType = event.data.action_type as string | undefined;
+
+            if (attackerName && damage !== undefined) {
+              // Format: "Dr. Francis Morgan attacks you for 10 damage."
+              const message = `${attackerName} ${actionType || 'attacks'} you for ${damage} damage.`;
+              appendMessage(
+                sanitizeChatMessageForState({
+                  text: message,
+                  timestamp: event.timestamp,
+                  messageType: 'system',
+                  channel: GAME_LOG_CHANNEL,
+                  isHtml: false,
+                })
+              );
+            }
+            break;
+          }
+          case 'player_attacked': {
+            // Player attacked event - player attacks NPC
+            const attackerName = event.data.attacker_name as string | undefined;
+            const targetName = event.data.target_name as string | undefined;
+            const damage = event.data.damage as number | undefined;
+            const actionType = event.data.action_type as string | undefined;
+            const targetCurrentHp = event.data.target_current_hp as number | undefined;
+            const targetMaxHp = event.data.target_max_hp as number | undefined;
+
+            if (attackerName && targetName && damage !== undefined) {
+              // Format: "You attack Dr. Francis Morgan for 10 damage. (50/100 HP)"
+              let message = `You ${actionType || 'attack'} ${targetName} for ${damage} damage.`;
+              if (targetCurrentHp !== undefined && targetMaxHp !== undefined) {
+                message += ` (${targetCurrentHp}/${targetMaxHp} HP)`;
+              }
+              appendMessage(
+                sanitizeChatMessageForState({
+                  text: message,
+                  timestamp: event.timestamp,
+                  messageType: 'system',
+                  channel: GAME_LOG_CHANNEL,
+                  isHtml: false,
+                })
+              );
+            }
+            break;
+          }
+          case 'combat_started': {
+            // Combat started - update player in_combat status
+            if (currentPlayerRef.current) {
+              updates.player = {
+                ...currentPlayerRef.current,
+                in_combat: true,
+              };
+            }
+            break;
+          }
+          case 'combat_ended': {
+            // Combat ended - update player in_combat status
+            if (currentPlayerRef.current) {
+              updates.player = {
+                ...currentPlayerRef.current,
+                in_combat: false,
+              };
+            }
+            break;
+          }
+          case 'player_update': {
+            // Player update event - update player data including in_combat status
+            const playerData = event.data as { in_combat?: boolean; [key: string]: unknown };
+            if (currentPlayerRef.current && playerData.in_combat !== undefined) {
+              updates.player = {
+                ...currentPlayerRef.current,
+                in_combat: playerData.in_combat,
+              };
+            }
+            break;
+          }
+          case 'player_died':
+          case 'playerdied': {
+            // Player died event - show death interstitial
+            const deathData = event.data as { death_location?: string; room_id?: string; [key: string]: unknown };
+            const deathLocation = deathData.death_location || deathData.room_id || 'Unknown Location';
+            setIsDead(true);
+            logger.info('GameClientV2Container', 'Player died event received', { deathLocation });
+            break;
+          }
+          case 'player_respawned':
+          case 'playerrespawned': {
+            // Player respawned event - hide death interstitial and update player state
+            const respawnData = event.data as {
+              player?: Player;
+              respawn_room_id?: string;
+              old_hp?: number;
+              new_hp?: number;
+              message?: string;
+              [key: string]: unknown;
+            };
+
+            setIsDead(false);
+            setIsMortallyWounded(false);
+            setIsRespawning(false);
+
+            if (respawnData.player) {
+              updates.player = respawnData.player as Player;
+            }
+
+            if (respawnData.message) {
+              appendMessage(
+                sanitizeChatMessageForState({
+                  text: respawnData.message,
+                  timestamp: event.timestamp,
+                  messageType: 'system',
+                  channel: 'system',
+                })
+              );
+            }
+
+            logger.info('GameClientV2Container', 'Player respawned event received', {
+              respawn_room: respawnData.respawn_room_id,
+              new_hp: respawnData.new_hp,
+            });
             break;
           }
           // Add more event types as needed - this is a simplified version
@@ -473,12 +811,43 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
       }
 
       if (Object.keys(updates).length > 0) {
-        setGameState(prev => ({
-          ...prev,
-          ...updates,
-          messages: updates.messages || prev.messages,
-          player: updates.player || prev.player,
-        }));
+        setGameState(prev => {
+          // ARCHITECTURE: Single authoritative source for occupant data
+          // - room_occupants events set players/npcs (authoritative)
+          // - room_update events update metadata only (preserves existing occupants)
+          // - If updates.room has occupant data, use it (from room_occupants)
+          // - If updates.room doesn't have occupant data, preserve from prev.room
+
+          let finalRoom = updates.room || prev.room;
+
+          if (updates.room && prev.room) {
+            // Preserve occupant data if updates.room doesn't have it (from room_occupants)
+            // This handles room_update events that only update metadata
+            const updatesHasOccupantData = updates.room.players !== undefined || updates.room.npcs !== undefined;
+
+            if (!updatesHasOccupantData) {
+              // updates.room (from room_update) doesn't have occupant data, preserve from prev.room
+              finalRoom = {
+                ...updates.room,
+                players: prev.room.players ?? [],
+                npcs: prev.room.npcs ?? [],
+                occupants: prev.room.occupants ?? [],
+                occupant_count: prev.room.occupant_count ?? 0,
+              };
+            } else {
+              // updates.room has occupant data (from room_occupants) - use it (this is authoritative)
+              finalRoom = updates.room;
+            }
+          }
+
+          return {
+            ...prev,
+            ...updates,
+            messages: updates.messages || prev.messages,
+            player: updates.player || prev.player,
+            room: finalRoom,
+          };
+        });
       }
     } catch (error) {
       logger.error('GameClientV2Container', 'Error processing events', { error });
@@ -574,6 +943,35 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Check if player is dead based on HP or room location
+  useEffect(() => {
+    const player = gameState.player;
+    if (!player) return;
+
+    const currentHp = player.stats?.current_health ?? 0;
+    const roomId = gameState.room?.id;
+    const isInLimbo = roomId === 'limbo_death_void_limbo_death_void';
+
+    // Player is dead if HP <= -10 or in limbo
+    if (currentHp <= -10 || isInLimbo) {
+      if (!isDead) {
+        setIsDead(true);
+        logger.info('GameClientV2Container', 'Player detected as dead', {
+          currentHp,
+          roomId,
+          isInLimbo,
+        });
+      }
+    } else if (isDead && currentHp > -10 && !isInLimbo) {
+      // Player is no longer dead
+      setIsDead(false);
+      logger.info('GameClientV2Container', 'Player detected as alive', {
+        currentHp,
+        roomId,
+      });
+    }
+  }, [gameState.player, gameState.room, isDead]);
 
   const handleCommandSubmit = async (command: string) => {
     if (!command.trim() || !isConnected) return;

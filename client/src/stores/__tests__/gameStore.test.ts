@@ -457,5 +457,74 @@ describe('Game Store', () => {
       expect(recentMessages[0].text).toBe('Message 2'); // Most recent
       expect(recentMessages[2].text).toBe('Message 4'); // Oldest of the 3
     });
+
+    it('should provide recent game log entries selector', () => {
+      const { result } = renderHook(() => useGameStore());
+
+      act(() => {
+        for (let i = 0; i < 5; i++) {
+          result.current.addGameLogEntry({
+            text: `Log entry ${i}`,
+            timestamp: `2024-01-01T12:${i.toString().padStart(2, '0')}:00Z`,
+            isHtml: false,
+            type: 'system',
+          });
+        }
+      });
+
+      const recentEntries = result.current.getRecentGameLogEntries(3);
+      expect(recentEntries).toHaveLength(3);
+      expect(recentEntries[0].text).toBe('Log entry 2'); // Most recent
+      expect(recentEntries[2].text).toBe('Log entry 4'); // Oldest of the 3
+    });
+
+    it('should update player stats when player is null', () => {
+      const { result } = renderHook(() => useGameStore());
+
+      act(() => {
+        // Don't set player first
+        result.current.updatePlayerStats({
+          current_health: 80,
+          sanity: 70,
+        });
+      });
+
+      // Should not crash, player should remain null
+      expect(result.current.player).toBe(null);
+    });
+
+    it('should update room occupants when room is null', () => {
+      const { result } = renderHook(() => useGameStore());
+
+      act(() => {
+        // Don't set room first
+        result.current.updateRoomOccupants(['player-1', 'player-2']);
+      });
+
+      // Should not crash, room should remain null
+      expect(result.current.room).toBe(null);
+    });
+
+    it('should get room occupants count when room is null', () => {
+      const { result } = renderHook(() => useGameStore());
+
+      expect(result.current.getRoomOccupantsCount()).toBe(0);
+    });
+
+    it('should get room occupants count when occupant_count is undefined', () => {
+      const { result } = renderHook(() => useGameStore());
+
+      act(() => {
+        result.current.setRoom({
+          id: 'room-123',
+          name: 'Test Room',
+          description: 'A test room',
+          exits: {},
+          // No occupant_count
+        });
+      });
+
+      expect(result.current.getRoomOccupantsCount()).toBe(0);
+    });
   });
 });

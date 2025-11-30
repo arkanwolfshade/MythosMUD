@@ -263,7 +263,7 @@ MythosMUD/
 │   └── [core files]           # Main app, persistence, config, etc.
 │
 ├── data/                      # World data (git submodule)
-│   ├── players/               # Player database files (legacy SQLite, now PostgreSQL)
+│   ├── players/               # Player database files (PostgreSQL)
 │   ├── npcs/                  # NPC database files
 │   ├── rooms/                 # Hierarchical room structure (earth/yeng planes)
 │   ├── user_management/       # User management data

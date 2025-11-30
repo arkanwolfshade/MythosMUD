@@ -98,6 +98,14 @@ async def test_inventory_command_renders_inventory_and_equipped(command_context)
                 "slot_type": "left_hand",
                 "quantity": 1,
             },
+            {
+                "item_instance_id": "instance-scrap_paper",
+                "prototype_id": "scrap_paper",
+                "item_id": "scrap_paper",
+                "item_name": "Scrap Paper",
+                "quantity": 2,
+                # No slot_type - this is in general inventory
+            },
         ]
     )
     player.set_equipped_items(
@@ -118,10 +126,13 @@ async def test_inventory_command_renders_inventory_and_equipped(command_context)
     result = await handle_inventory_command({}, {"username": player_name}, request, alias_storage, player_name)
 
     output = result["result"]
-    assert "You are carrying 2 / 20 slots" in output
-    assert "1. Laudanum Tonic" in output
+    # Items with slot_type='backpack' (in container) and slot_type='left_hand' (equipped) don't count
+    # Only items in general inventory (no slot_type) count toward regular inventory
+    assert "You are carrying 1 / 20 slots" in output
+    assert "Laudanum Tonic" in output  # In container (slot_type='backpack')
     assert "dose_ml=10" in output
-    assert "2. Battered Lantern" in output
+    assert "Battered Lantern" in output  # Equipped (slot_type='left_hand')
+    assert "Scrap Paper" in output  # In general inventory (no slot_type)
     assert "Equipped:" in output
     assert "head: Obsidian Helm" in output
 

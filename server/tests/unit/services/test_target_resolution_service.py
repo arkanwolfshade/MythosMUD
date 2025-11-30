@@ -36,15 +36,16 @@ class TestTargetResolutionService:
         player_id = str(uuid4())
         target_name = "test_target"
 
-        # Mock player not found
-        mock_persistence.get_player.return_value = None
+        # Mock player not found - service checks get_player_by_id first, then get_player
+        mock_persistence.get_player_by_id = Mock(return_value=None)
+        mock_persistence.get_player = Mock(return_value=None)
 
         result = await target_resolution_service.resolve_target(player_id, target_name)
 
         assert result.success is False
         assert "Player not found" in result.error_message
-        # Service converts string to UUID before calling get_player
-        mock_persistence.get_player.assert_called_once_with(uuid.UUID(player_id))
+        # Service converts string to UUID before calling get_player_by_id
+        mock_persistence.get_player_by_id.assert_called_once_with(uuid.UUID(player_id))
 
     @pytest.mark.asyncio
     async def test_resolve_target_no_current_room(self, target_resolution_service, mock_persistence):
@@ -52,10 +53,11 @@ class TestTargetResolutionService:
         player_id = str(uuid4())
         target_name = "test_target"
 
-        # Mock player without current room
+        # Mock player without current room - service checks get_player_by_id first
         mock_player = Mock()
         mock_player.current_room_id = None
-        mock_persistence.get_player.return_value = mock_player
+        mock_persistence.get_player_by_id = Mock(return_value=mock_player)
+        mock_persistence.get_player = Mock(return_value=mock_player)
 
         result = await target_resolution_service.resolve_target(player_id, target_name)
 
@@ -68,10 +70,13 @@ class TestTargetResolutionService:
         player_id = str(uuid4())
         target_name = ""
 
-        # Mock player and room
+        # Mock player and room - service checks get_player_by_id first
         mock_player = Mock()
         mock_player.current_room_id = "room_001"
-        mock_persistence.get_player.return_value = mock_player
+        mock_persistence.get_player_by_id = Mock(return_value=mock_player)
+        mock_persistence.get_player = Mock(return_value=mock_player)
+        # No player matches by name in this test
+        mock_persistence.get_players_in_room.return_value = []
 
         mock_room = Mock()
         mock_room.room_id = "room_001"
@@ -88,10 +93,11 @@ class TestTargetResolutionService:
         player_id = str(uuid4())
         target_name = "TestPlayer"
 
-        # Mock player and room
+        # Mock player and room - service checks get_player_by_id first
         mock_player = Mock()
         mock_player.current_room_id = "room_001"
-        mock_persistence.get_player.return_value = mock_player
+        mock_persistence.get_player_by_id = Mock(return_value=mock_player)
+        mock_persistence.get_player = Mock(return_value=mock_player)
 
         # Mock player service to return matching player
         mock_target_player = Mock()
@@ -115,22 +121,29 @@ class TestTargetResolutionService:
         player_id = str(uuid4())
         target_name = "rat"
 
-        # Mock player and room
+        # Mock player and room - service checks get_player_by_id first
         mock_player = Mock()
         mock_player.current_room_id = "room_001"
-        mock_persistence.get_player.return_value = mock_player
+        mock_persistence.get_player_by_id = Mock(return_value=mock_player)
+        mock_persistence.get_player = Mock(return_value=mock_player)
+        # No player matches by name in this test
+        mock_persistence.get_players_in_room.return_value = []
 
         mock_room = Mock()
         mock_room.room_id = "room_001"
         mock_room.get_npcs.return_value = ["npc_1"]
-        mock_persistence.get_room.return_value = mock_room
+        # TargetResolutionService prefers get_room_by_id when available
+        mock_persistence.get_room_by_id = Mock(return_value=mock_room)
+        mock_persistence.get_room = Mock(return_value=mock_room)
 
         # Mock NPC instance
         mock_npc = Mock()
         mock_npc.name = "rat"
         mock_npc.is_alive = True
+        # NPC should be in the same room as the player
+        mock_npc.current_room_id = "room_001"
 
-        # Mock the _get_npc_instance method
+        # Simplify by mocking _get_npc_instance to return our NPC for any ID
         target_resolution_service._get_npc_instance = Mock(return_value=mock_npc)
 
         result = await target_resolution_service.resolve_target(player_id, target_name)
@@ -146,10 +159,11 @@ class TestTargetResolutionService:
         player_id = str(uuid4())
         target_name = "nonexistent"
 
-        # Mock player and room
+        # Mock player and room - service checks get_player_by_id first
         mock_player = Mock()
         mock_player.current_room_id = "room_001"
-        mock_persistence.get_player.return_value = mock_player
+        mock_persistence.get_player_by_id = Mock(return_value=mock_player)
+        mock_persistence.get_player = Mock(return_value=mock_player)
 
         # Mock no players in room
         mock_persistence.get_players_in_room.return_value = []
@@ -172,10 +186,11 @@ class TestTargetResolutionService:
         player_id = str(uuid4())
         target_name = "test"
 
-        # Mock player and room
+        # Mock player and room - service checks get_player_by_id first
         mock_player = Mock()
         mock_player.current_room_id = "room_001"
-        mock_persistence.get_player.return_value = mock_player
+        mock_persistence.get_player_by_id = Mock(return_value=mock_player)
+        mock_persistence.get_player = Mock(return_value=mock_player)
 
         # Mock multiple matching players
         mock_player1 = Mock()

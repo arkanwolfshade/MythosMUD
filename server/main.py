@@ -34,8 +34,14 @@ from .monitoring.performance_monitor import get_performance_monitor
 # Note: We keep passlib for fastapi-users compatibility but use our own Argon2 implementation
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="passlib")
 
-# Get logger
+# Early logging setup - must happen before any logger creation
+# This ensures all startup information is captured in logfiles
+config = get_config()
+setup_enhanced_logging(config.to_legacy_dict())
+
+# Get logger - now created AFTER logging is set up
 logger = get_logger(__name__)
+logger.info("Logging setup completed", environment=config.logging.environment)
 
 
 # ErrorLoggingMiddleware has been replaced by ComprehensiveLoggingMiddleware
@@ -181,12 +187,6 @@ def main() -> FastAPI:
     return app
 
 
-# Set up logging when module is imported
-config = get_config()
-logger.info("Setting up logging with config", config=config.to_legacy_dict())
-setup_enhanced_logging(config.to_legacy_dict())
-logger.info("Logging setup completed")
-
 # Create the FastAPI application
 app = create_app()
 
@@ -253,8 +253,7 @@ if __name__ == "__main__":
         "server.main:app",  # Use the correct module path from project root
         host=config.server.host,
         port=config.server.port,
-        reload=True,
-        reload_excludes=["server/tests/*"],  # Exclude test directory from hot reloading
+        reload=False,  # Hot reloading disabled due to client compatibility issues
         # Use our StructLog system for all logging
         access_log=True,
         use_colors=False,  # Disable colors for structured logging

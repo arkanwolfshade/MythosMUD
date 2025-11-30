@@ -119,7 +119,8 @@ class ErrorHandlingMiddleware:
         except Exception as handler_error:
             # Fallback error handling if the handler itself fails
             logger.error(
-                f"Error in error handler: {handler_error}",
+                "Error in error handler",
+                error=str(handler_error),
                 exc_info=True,
                 request_id=scope["state"].get("request_id"),
             )
@@ -221,20 +222,26 @@ class ErrorHandlingMiddleware:
         elif status_code >= 500:
             # Server errors are critical
             logger.error(
-                f"Server error: {type(exc).__name__}: {str(exc)}",
+                "Server error",
+                error_type=type(exc).__name__,
+                error=str(exc),
                 exc_info=True,
                 **context_data,
             )
         elif status_code >= 400:
             # Client errors are warnings
             logger.warning(
-                f"Client error: {type(exc).__name__}: {str(exc)}",
+                "Client error",
+                error_type=type(exc).__name__,
+                error=str(exc),
                 **context_data,
             )
         else:
             # Other errors are informational
             logger.info(
-                f"Request error: {type(exc).__name__}: {str(exc)}",
+                "Request error",
+                error_type=type(exc).__name__,
+                error=str(exc),
                 **context_data,
             )
 

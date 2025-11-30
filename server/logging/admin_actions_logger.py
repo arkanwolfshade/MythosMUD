@@ -106,12 +106,20 @@ class AdminActionsLogger:
         # Also log to the main logger for immediate visibility
         if success:
             logger.info(
-                f"Admin teleport action logged - {admin_name} {action_type} {target_player} "
-                f"from {from_room} to {to_room}"
+                "Admin teleport action logged",
+                admin_name=admin_name,
+                action_type=action_type,
+                target_player=target_player,
+                from_room=from_room,
+                to_room=to_room,
             )
         else:
             logger.warning(
-                f"Admin teleport action failed - {admin_name} {action_type} {target_player}: {error_message}"
+                "Admin teleport action failed",
+                admin_name=admin_name,
+                action_type=action_type,
+                target_player=target_player,
+                error_message=error_message,
             )
 
     def log_admin_command(

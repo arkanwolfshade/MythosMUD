@@ -73,6 +73,20 @@ class RealTimeEventHandler:
         self.event_bus.subscribe(PlayerXPAwardEvent, self._handle_player_xp_awarded)
         self.event_bus.subscribe(PlayerHPUpdated, self._handle_player_hp_updated)
 
+        # Log subscription for debugging
+        self._logger.info(
+            "Subscribed to game events",
+            event_types=[
+                "PlayerEnteredRoom",
+                "PlayerLeftRoom",
+                "NPCEnteredRoom",
+                "NPCLeftRoom",
+                "PlayerXPAwardEvent",
+                "PlayerHPUpdated",
+            ],
+            event_bus_id=id(self.event_bus),
+        )
+
         # Subscribe to death/respawn events
         from ..events.event_types import PlayerDiedEvent, PlayerHPDecayEvent, PlayerRespawnedEvent
 
@@ -109,8 +123,44 @@ class RealTimeEventHandler:
             # Structlog handles UUID objects automatically, no need to convert to string
             self._logger.warning("Player not found", player_id=player_id_uuid)
             return None
-        # Use string representation for player name fallback
-        player_name = getattr(player, "name", str(player_id_uuid))
+        # CRITICAL: NEVER use UUID as fallback for player name - security issue
+        player_name = getattr(player, "name", None)
+        if not player_name or not isinstance(player_name, str) or not player_name.strip():
+            # Try to get name from related User object if player.name is not available
+            if hasattr(player, "user"):
+                try:
+                    user = getattr(player, "user", None)
+                    if user:
+                        player_name = getattr(user, "username", None) or getattr(user, "display_name", None)
+                except Exception as e:
+                    self._logger.debug("Error accessing user relationship for player name", error=str(e))
+
+            # If still no name, use placeholder (NEVER use UUID)
+            if not player_name or not isinstance(player_name, str) or not player_name.strip():
+                self._logger.warning(
+                    "Player name not found, using placeholder",
+                    player_id=player_id_uuid,
+                    has_name_attr=hasattr(player, "name"),
+                    name_value=getattr(player, "name", "NOT_FOUND"),
+                )
+                player_name = "Unknown Player"
+
+        # CRITICAL: Final validation - ensure player_name is NEVER a UUID
+        if isinstance(player_name, str):
+            is_uuid_string = (
+                len(player_name) == 36
+                and player_name.count("-") == 4
+                and all(c in "0123456789abcdefABCDEF-" for c in player_name)
+            )
+            if is_uuid_string:
+                self._logger.error(
+                    "CRITICAL: Player name is a UUID string, this should never happen",
+                    player_id=player_id_uuid,
+                    player_name=player_name,
+                    player_name_from_db=getattr(player, "name", "NOT_FOUND"),
+                )
+                player_name = "Unknown Player"
+
         return (player, player_name)
 
     def _log_player_movement(
@@ -156,16 +206,33 @@ class RealTimeEventHandler:
             occupants_info: List of occupant information dictionaries or strings
 
         Returns:
-            list: List of occupant names
+            list: List of occupant names (validated to exclude UUIDs)
         """
         names: list[str] = []
         for occ in occupants_info or []:
             if isinstance(occ, dict):
                 n = occ.get("player_name") or occ.get("npc_name") or occ.get("name")
-                if n:
-                    names.append(n)
+                if n and isinstance(n, str):
+                    # Validate that name is not a UUID string
+                    # UUID format: 36 chars, 4 dashes, hex characters
+                    if not (len(n) == 36 and n.count("-") == 4 and all(c in "0123456789abcdefABCDEF-" for c in n)):
+                        names.append(n)
+                    else:
+                        self._logger.warning(
+                            "Skipping UUID string in _extract_occupant_names",
+                            name=n,
+                            occupant_type="player"
+                            if "player_name" in occ
+                            else "npc"
+                            if "npc_name" in occ
+                            else "unknown",
+                        )
             elif isinstance(occ, str):
-                names.append(occ)
+                # Validate that string is not a UUID
+                if not (len(occ) == 36 and occ.count("-") == 4 and all(c in "0123456789abcdefABCDEF-" for c in occ)):
+                    names.append(occ)
+                else:
+                    self._logger.warning("Skipping UUID string in legacy occupant format", occupant=occ)
         return names
 
     async def _send_room_update_to_player(self, player_id: uuid.UUID | str, room_id: str) -> None:
@@ -191,6 +258,16 @@ class RealTimeEventHandler:
 
             # Create room_update event with full room data
             room_data = room.to_dict() if hasattr(room, "to_dict") else room
+            # CRITICAL: Convert player UUIDs to names - NEVER send UUIDs to client
+            if isinstance(room_data, dict):
+                room_data = self.connection_manager._convert_room_players_uuids_to_names(room_data)
+                # CRITICAL FIX: Remove occupant fields from room_data - room_update should NEVER include these
+                # Occupants are ONLY sent via room_occupants events to prevent data conflicts
+                # This prevents room_update from overwriting structured NPC data
+                room_data.pop("players", None)
+                room_data.pop("npcs", None)
+                room_data.pop("occupants", None)
+                room_data.pop("occupant_count", None)
             room_update_event = {
                 "event_type": "room_update",
                 "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
@@ -199,8 +276,8 @@ class RealTimeEventHandler:
                 "data": {
                     "room": room_data,
                     "entities": [],
-                    "occupants": occupant_names,
-                    "occupant_count": len(occupant_names),
+                    # CRITICAL: Do NOT include occupants in room_update - only in room_occupants events
+                    # This prevents room_update from overwriting structured NPC/player data
                 },
             }
             # Send as personal message
@@ -213,27 +290,27 @@ class RealTimeEventHandler:
                 occupants=occupant_names,
             )
 
-            # Send room description as a message to the Game Info panel
-            # AI Agent: Room descriptions should be displayed when entering a room
-            if room.description:
+            # Send room name as a message to the Game Info panel
+            # AI Agent: Only room name is needed in Game Info panel since full description is in Room Info panel
+            if room.name:
                 from .envelope import build_event
 
-                room_description_event = build_event(
+                room_name_event = build_event(
                     "command_response",
                     {
-                        "result": room.description,
+                        "result": room.name,
                         "suppress_chat": False,
                         "is_html": False,
                     },
                     player_id=player_id_uuid,
                     connection_manager=self.connection_manager,
                 )
-                await self.connection_manager.send_personal_message(player_id_uuid, room_description_event)
+                await self.connection_manager.send_personal_message(player_id_uuid, room_name_event)
                 self._logger.debug(
-                    "Sent room description message to player",
+                    "Sent room name message to player",
                     player_id=player_id_uuid,
                     room_id=room_id,
-                    description_length=len(room.description),
+                    room_name=room.name,
                 )
         except Exception as e:
             # Structlog handles UUID objects automatically, no need to convert to string
@@ -251,15 +328,78 @@ class RealTimeEventHandler:
         player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
         try:
             occupants_snapshot = self._get_room_occupants(room_id)
-            names = self._extract_occupant_names(occupants_snapshot)
+
+            # CRITICAL FIX: Use structured format (players/npcs) instead of legacy flat list
+            # This ensures the client receives separate players and NPCs arrays for proper display
+            players: list[str] = []
+            npcs: list[str] = []
+            all_occupants: list[str] = []  # Flat list for backward compatibility
+
+            for occ in occupants_snapshot or []:
+                if isinstance(occ, dict):
+                    if "player_name" in occ:
+                        player_name = occ.get("player_name")
+                        if player_name and isinstance(player_name, str):
+                            # Skip if it looks like a UUID
+                            if not (
+                                len(player_name) == 36
+                                and player_name.count("-") == 4
+                                and all(c in "0123456789abcdefABCDEF-" for c in player_name)
+                            ):
+                                players.append(player_name)
+                                all_occupants.append(player_name)
+                    elif "npc_name" in occ:
+                        npc_name = occ.get("npc_name")
+                        if npc_name and isinstance(npc_name, str):
+                            # Skip if it looks like a UUID
+                            if not (
+                                len(npc_name) == 36
+                                and npc_name.count("-") == 4
+                                and all(c in "0123456789abcdefABCDEF-" for c in npc_name)
+                            ):
+                                npcs.append(npc_name)
+                                all_occupants.append(npc_name)
+                    else:
+                        name = occ.get("name")
+                        if name and isinstance(name, str):
+                            if not (
+                                len(name) == 36
+                                and name.count("-") == 4
+                                and all(c in "0123456789abcdefABCDEF-" for c in name)
+                            ):
+                                all_occupants.append(name)
+                elif isinstance(occ, str):
+                    # Legacy format: just a name string
+                    if not (
+                        len(occ) == 36 and occ.count("-") == 4 and all(c in "0123456789abcdefABCDEF-" for c in occ)
+                    ):
+                        all_occupants.append(occ)
 
             personal = {
                 "event_type": "room_occupants",
                 "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
                 "sequence_number": self._get_next_sequence(),
                 "room_id": room_id,
-                "data": {"occupants": names, "count": len(names)},
+                "data": {
+                    # Structured data for new UI (separate columns)
+                    "players": players,
+                    "npcs": npcs,
+                    # Backward compatibility: flat list for legacy clients
+                    "occupants": all_occupants,
+                    "count": len(all_occupants),
+                },
             }
+            self._logger.debug(
+                "Sending room_occupants event with data",
+                player_id=player_id_uuid,
+                room_id=room_id,
+                players_count=len(players),
+                npcs_count=len(npcs),
+                total_count=len(all_occupants),
+                players=players,
+                npcs=npcs,
+                occupants=all_occupants,
+            )
             await self.connection_manager.send_personal_message(player_id_uuid, personal)
         except Exception as e:
             # Structlog handles UUID objects automatically, no need to convert to string
@@ -478,34 +618,115 @@ class RealTimeEventHandler:
         """
         Send room occupants update to players in the room.
 
+        Preserves player/NPC distinction by sending structured data with separate
+        players and npcs arrays, enabling the client UI to display them in separate columns.
+
         Args:
             room_id: The room ID
             exclude_player: Optional player ID to exclude from the update
         """
         try:
-            # Get room occupants
+            # Get room occupants with structured data (includes player_name, npc_name, type)
             occupants_info: list[dict[str, Any] | str] = self._get_room_occupants(room_id)
 
-            # Transform to list of names for client UI consistency
-            occupant_names: list[str] = []
+            # Separate players and NPCs while maintaining backward compatibility
+            players: list[str] = []
+            npcs: list[str] = []
+            all_occupants: list[str] = []  # Flat list for backward compatibility
+
             for occ in occupants_info or []:
                 if isinstance(occ, dict):
-                    name = occ.get("player_name") or occ.get("npc_name") or occ.get("name")
-                    if name:
-                        occupant_names.append(name)
+                    # Check if it's a player
+                    if "player_name" in occ:
+                        player_name = occ.get("player_name")
+                        # Validate that player_name is not a UUID string
+                        if player_name and isinstance(player_name, str):
+                            # Skip if it looks like a UUID (36 chars, 4 dashes, hex)
+                            if not (
+                                len(player_name) == 36
+                                and player_name.count("-") == 4
+                                and all(c in "0123456789abcdefABCDEF-" for c in player_name)
+                            ):
+                                players.append(player_name)
+                                all_occupants.append(player_name)
+                            else:
+                                self._logger.warning(
+                                    "Skipping player with UUID as name in room_occupants update",
+                                    player_name=player_name,
+                                    room_id=room_id,
+                                )
+                    # Check if it's an NPC
+                    elif "npc_name" in occ:
+                        npc_name = occ.get("npc_name")
+                        # Validate that npc_name is not a UUID string
+                        if npc_name and isinstance(npc_name, str):
+                            # Skip if it looks like a UUID
+                            if not (
+                                len(npc_name) == 36
+                                and npc_name.count("-") == 4
+                                and all(c in "0123456789abcdefABCDEF-" for c in npc_name)
+                            ):
+                                npcs.append(npc_name)
+                                all_occupants.append(npc_name)
+                            else:
+                                self._logger.warning(
+                                    "Skipping NPC with UUID as name in room_occupants update",
+                                    npc_name=npc_name,
+                                    room_id=room_id,
+                                )
+                    # Fallback for other formats
+                    else:
+                        name = occ.get("name")
+                        if name and isinstance(name, str):
+                            # Skip if it looks like a UUID
+                            if not (
+                                len(name) == 36
+                                and name.count("-") == 4
+                                and all(c in "0123456789abcdefABCDEF-" for c in name)
+                            ):
+                                all_occupants.append(name)
                 elif isinstance(occ, str):
-                    occupant_names.append(occ)
+                    # Legacy format: just a name string
+                    # Validate it's not a UUID
+                    if not (
+                        len(occ) == 36 and occ.count("-") == 4 and all(c in "0123456789abcdefABCDEF-" for c in occ)
+                    ):
+                        all_occupants.append(occ)
+                    else:
+                        self._logger.warning(
+                            "Skipping UUID string in legacy occupant format",
+                            occupant=occ,
+                            room_id=room_id,
+                        )
 
-            # Create occupants update message
+            # Create occupants update message with structured data
             # Convert room_id to string for JSON serialization
             room_id_str = str(room_id) if room_id else ""
+
+            # CRITICAL DEBUG: Log what we're about to send
+            self._logger.debug(
+                "Sending room_occupants event",
+                room_id=room_id_str,
+                players=players,
+                npcs=npcs,
+                all_occupants=all_occupants,
+                players_count=len(players),
+                npcs_count=len(npcs),
+            )
 
             message = {
                 "event_type": "room_occupants",
                 "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
                 "sequence_number": self._get_next_sequence(),
                 "room_id": room_id_str,
-                "data": {"occupants": occupant_names, "count": len(occupant_names)},
+                "data": {
+                    # Structured data for new UI (separate columns)
+                    "players": players,
+                    "npcs": npcs,
+                    # Backward compatibility: flat list for legacy clients
+                    "occupants": all_occupants,
+                    "count": len(all_occupants),
+                },
             }
 
             # Send to room occupants
@@ -536,26 +757,314 @@ class RealTimeEventHandler:
             if not room:
                 return occupants
 
-            # Get player IDs in the room
-            player_ids = room.get_players()
+            # Get player IDs in the room (returns list[str])
+            player_id_strings = room.get_players()
+
+            # Convert string IDs to UUIDs for batch loading
+            player_id_uuids: list[uuid.UUID] = []
+            player_id_mapping: dict[uuid.UUID, str] = {}  # Map UUID back to original string ID
+            for player_id_str in player_id_strings:
+                try:
+                    player_id_uuid = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
+                    player_id_uuids.append(player_id_uuid)
+                    player_id_mapping[player_id_uuid] = player_id_str
+                except (ValueError, AttributeError):
+                    # Skip invalid player IDs
+                    self._logger.debug("Invalid player ID format", player_id=player_id_str)
+                    continue
 
             # OPTIMIZATION: Batch load all players at once to eliminate N+1 queries
-            players = self.connection_manager._get_players_batch(list(player_ids))
+            players = self.connection_manager._get_players_batch(player_id_uuids)
+
+            self._logger.debug(
+                "Batch loaded players for room occupants",
+                room_id=room_id,
+                requested_count=len(player_id_uuids),
+                loaded_count=len(players),
+                player_ids=[str(pid) for pid in player_id_uuids],
+            )
 
             # Convert to occupant information using batch-loaded players
-            for player_id in player_ids:
-                player = players.get(player_id)
+            for player_id_uuid in player_id_uuids:
+                player = players.get(player_id_uuid)
+                player_id_str = player_id_mapping[player_id_uuid]
+
                 if player:
+                    # Extract player name - Player model has a 'name' column that should always exist
+                    # Use direct attribute access first, then getattr as fallback
+                    # CRITICAL: Extract player name - ensure we never use UUID as fallback
+                    # Player model has a 'name' column that should always exist (nullable=False)
+                    if hasattr(player, "name"):
+                        player_name = player.name
+                    else:
+                        player_name = getattr(player, "name", None)
+
+                    # CRITICAL: If player_name is None, empty, or UUID, we must skip this player
+                    # NEVER use player_id_str as a fallback name
+                    if not player_name:
+                        self._logger.warning(
+                            "Player name is None or empty, skipping from occupants",
+                            player_id=player_id_str,
+                            player_id_uuid=str(player_id_uuid),
+                            has_name_attr=hasattr(player, "name"),
+                            player_type=type(player).__name__,
+                        )
+                        continue
+
+                    # CRITICAL: Ensure player_name is a string, not UUID
+                    if not isinstance(player_name, str):
+                        self._logger.warning(
+                            "Player name is not a string, skipping from occupants",
+                            player_id=player_id_str,
+                            player_id_uuid=str(player_id_uuid),
+                            player_name=player_name,
+                            player_name_type=type(player_name).__name__,
+                        )
+                        continue
+
+                    # CRITICAL: Strip whitespace and check if empty after stripping
+                    player_name = player_name.strip()
+                    if not player_name:
+                        self._logger.warning(
+                            "Player name is empty after stripping, skipping from occupants",
+                            player_id=player_id_str,
+                            player_id_uuid=str(player_id_uuid),
+                        )
+                        continue
+
+                    # Debug logging to diagnose name extraction issues
+                    self._logger.debug(
+                        "Extracting player name",
+                        player_id=player_id_str,
+                        player_id_uuid=str(player_id_uuid),
+                        has_name_attr=hasattr(player, "name"),
+                        name_value=getattr(player, "name", "NOT_FOUND"),
+                        name_type=type(getattr(player, "name", None)).__name__ if hasattr(player, "name") else "N/A",
+                        player_type=type(player).__name__,
+                    )
+
+                    # Ensure player_name is a valid string (not None, not empty, not UUID)
+                    if not player_name or not isinstance(player_name, str) or not player_name.strip():
+                        # Try fallback: username attribute (from User model)
+                        if hasattr(player, "username"):
+                            player_name = player.username
+                        else:
+                            player_name = getattr(player, "username", None)
+
+                    # Try to get name from related User object if still not found
+                    if (not player_name or not isinstance(player_name, str) or not player_name.strip()) and hasattr(
+                        player, "user"
+                    ):
+                        try:
+                            user = getattr(player, "user", None)
+                            if user:
+                                if hasattr(user, "username") and user.username:
+                                    player_name = user.username
+                                elif hasattr(user, "display_name") and user.display_name:
+                                    player_name = user.display_name
+                                else:
+                                    player_name = getattr(user, "username", None) or getattr(user, "display_name", None)
+                        except Exception as e:
+                            self._logger.debug("Error accessing user relationship", error=str(e))
+
+                    # CRITICAL: Final validation - ensure player_name is valid and not a UUID
+                    # NEVER use player_id_str as a fallback name - always skip if name is invalid
+                    if not player_name or not isinstance(player_name, str) or not player_name.strip():
+                        # Last resort: log warning and skip this player (don't use UUID as name)
+                        self._logger.warning(
+                            "Player name not found or invalid, skipping from occupants",
+                            player_id=player_id_str,
+                            player_id_uuid=str(player_id_uuid),
+                            player_type=type(player).__name__,
+                            has_name_attr=hasattr(player, "name"),
+                            name_value=getattr(player, "name", "NOT_FOUND"),
+                            has_username_attr=hasattr(player, "username"),
+                            username_value=getattr(player, "username", "NOT_FOUND"),
+                            has_user_attr=hasattr(player, "user"),
+                        )
+                        continue
+
+                    # CRITICAL: Safety check - ensure player_name is not the UUID string
+                    # UUID format: 8-4-4-4-12 hex digits with dashes (36 chars total)
+                    # Check both exact match and UUID pattern match
+                    is_uuid_pattern = (
+                        len(player_name) == 36
+                        and player_name.count("-") == 4
+                        and all(c in "0123456789abcdefABCDEF-" for c in player_name)
+                    )
+                    if player_name == player_id_str or is_uuid_pattern:
+                        # player_name looks like a UUID - this shouldn't happen
+                        # NEVER use UUID as name - skip this player
+                        self._logger.warning(
+                            "Player name appears to be UUID, skipping from occupants",
+                            player_id=player_id_str,
+                            player_id_uuid=str(player_id_uuid),
+                            player_name=player_name,
+                            player_type=type(player).__name__,
+                            has_name_attr=hasattr(player, "name"),
+                            name_value=getattr(player, "name", "NOT_FOUND"),
+                            is_exact_match=(player_name == player_id_str),
+                            is_uuid_pattern=is_uuid_pattern,
+                        )
+                        continue
+
+                    # CRITICAL: Additional safety check - ensure player_name is not equal to UUID string representation
+                    if str(player_id_uuid) == player_name or str(player_id_uuid).lower() == player_name.lower():
+                        self._logger.warning(
+                            "Player name matches UUID string representation, skipping from occupants",
+                            player_id=player_id_str,
+                            player_id_uuid=str(player_id_uuid),
+                            player_name=player_name,
+                        )
+                        continue
+
+                    # Check if player is online (player_websockets uses UUID keys)
+                    is_online = player_id_uuid in self.connection_manager.player_websockets
+
+                    # CRITICAL: Final check before adding - ensure player_name is not a UUID
+                    # This is a defensive check in case any validation was missed
+                    if player_name == player_id_str or str(player_id_uuid) == player_name:
+                        self._logger.error(
+                            "CRITICAL: Attempted to add player with UUID as name - this should never happen",
+                            player_id=player_id_str,
+                            player_id_uuid=str(player_id_uuid),
+                            player_name=player_name,
+                        )
+                        continue
+
                     occupant_info = {
-                        "player_id": player_id,
-                        "player_name": getattr(player, "name", player_id),
+                        "player_id": player_id_str,
+                        "player_name": player_name,
                         "level": getattr(player, "level", 1),
-                        "online": player_id in self.connection_manager.player_websockets,
+                        "online": is_online,
                     }
                     occupants.append(occupant_info)
+                    self._logger.debug(
+                        "Added player to occupants",
+                        player_id=player_id_str,
+                        player_name=player_name,
+                    )
+                else:
+                    # Player not found in batch load - log and skip (don't add UUID)
+                    self._logger.warning(
+                        "Player not found in batch load, skipping from occupants",
+                        player_id=player_id_str,
+                        player_id_uuid=str(player_id_uuid),
+                        batch_loaded_count=len(players),
+                        batch_loaded_ids=[str(pid) for pid in players.keys()],
+                    )
 
-            # Get NPC IDs in the room
-            npc_ids = room.get_npcs()
+            # CRITICAL FIX: Get NPCs from lifecycle manager instead of Room instance
+            # Room instances are recreated from persistence and lose in-memory NPC tracking
+            # NPCs are actually tracked in the lifecycle manager with their current_room_id
+            npc_ids: list[str] = []
+            try:
+                self._logger.info(
+                    "Querying NPCs from lifecycle manager",
+                    room_id=room_id,
+                    step="starting_npc_query",
+                )
+                from ..services.npc_instance_service import get_npc_instance_service
+
+                npc_instance_service = get_npc_instance_service()
+                self._logger.debug(
+                    "Retrieved NPC instance service",
+                    room_id=room_id,
+                    service_available=(npc_instance_service is not None),
+                    has_lifecycle_manager=(
+                        npc_instance_service is not None and hasattr(npc_instance_service, "lifecycle_manager")
+                    ),
+                )
+                if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
+                    lifecycle_manager = npc_instance_service.lifecycle_manager
+                    self._logger.debug(
+                        "Retrieved lifecycle manager",
+                        room_id=room_id,
+                        manager_available=(lifecycle_manager is not None),
+                        has_active_npcs=(lifecycle_manager is not None and hasattr(lifecycle_manager, "active_npcs")),
+                    )
+                    if lifecycle_manager and hasattr(lifecycle_manager, "active_npcs"):
+                        active_npcs_dict = lifecycle_manager.active_npcs
+                        total_active_npcs = len(active_npcs_dict)
+                        self._logger.info(
+                            "Scanning active NPCs for room match",
+                            room_id=room_id,
+                            total_active_npcs=total_active_npcs,
+                        )
+                        # Query all active NPCs to find those in this room
+                        # NPCs use current_room attribute (not current_room_id)
+                        npcs_checked = 0
+                        npcs_matched = 0
+                        for npc_id, npc_instance in active_npcs_dict.items():
+                            npcs_checked += 1
+                            # Check both current_room and current_room_id for compatibility
+                            current_room = getattr(npc_instance, "current_room", None)
+                            current_room_id = getattr(npc_instance, "current_room_id", None)
+                            npc_room_id = current_room or current_room_id
+                            npc_name = getattr(npc_instance, "name", "Unknown")
+
+                            self._logger.debug(
+                                "Checking NPC for room match",
+                                room_id=room_id,
+                                npc_id=npc_id,
+                                npc_name=npc_name,
+                                npc_current_room=current_room,
+                                npc_current_room_id=current_room_id,
+                                npc_room_id_used=npc_room_id,
+                                matches_room=(npc_room_id == room_id),
+                            )
+
+                            if npc_room_id == room_id:
+                                npc_ids.append(npc_id)
+                                npcs_matched += 1
+                                self._logger.info(
+                                    "Found NPC in room",
+                                    room_id=room_id,
+                                    npc_id=npc_id,
+                                    npc_name=npc_name,
+                                )
+
+                        self._logger.info(
+                            "Completed NPC query from lifecycle manager",
+                            room_id=room_id,
+                            npc_count=len(npc_ids),
+                            npcs_checked=npcs_checked,
+                            npcs_matched=npcs_matched,
+                            npc_ids=npc_ids[:5],  # Log first 5 for debugging
+                        )
+                    else:
+                        self._logger.warning(
+                            "Lifecycle manager or active_npcs not available",
+                            room_id=room_id,
+                            lifecycle_manager_available=(lifecycle_manager is not None),
+                            has_active_npcs_attr=(
+                                lifecycle_manager is not None and hasattr(lifecycle_manager, "active_npcs")
+                            ),
+                        )
+                else:
+                    self._logger.warning(
+                        "NPC instance service not available",
+                        room_id=room_id,
+                        service_available=(npc_instance_service is not None),
+                        has_lifecycle_manager_attr=(
+                            npc_instance_service is not None and hasattr(npc_instance_service, "lifecycle_manager")
+                        ),
+                    )
+            except Exception as npc_query_error:
+                self._logger.error(
+                    "Error querying NPCs from lifecycle manager",
+                    room_id=room_id,
+                    error=str(npc_query_error),
+                    error_type=type(npc_query_error).__name__,
+                    exc_info=True,
+                )
+                # Fallback to room.get_npcs() if lifecycle manager query fails
+                npc_ids = room.get_npcs() if hasattr(room, "get_npcs") else []
+                self._logger.warning(
+                    "Fell back to room.get_npcs() after lifecycle manager query failed",
+                    room_id=room_id,
+                    fallback_npc_count=len(npc_ids),
+                )
 
             # OPTIMIZATION: Batch load all NPC names at once to eliminate N+1 queries
             npc_names = self.connection_manager._get_npcs_batch(list(npc_ids))
@@ -872,25 +1381,65 @@ class RealTimeEventHandler:
             event: The PlayerHPUpdated event containing HP change information
         """
         try:
+            # CRITICAL DEBUG: Log at the very start to verify handler is being called
+            self._logger.info(
+                "_handle_player_hp_updated called",
+                event_type=type(event).__name__,
+                player_id=event.player_id,
+                old_hp=event.old_hp,
+                new_hp=event.new_hp,
+                max_hp=event.max_hp,
+            )
             player_id_str = event.player_id
+            self._logger.info(
+                "Received PlayerHPUpdated event",
+                player_id=player_id_str,
+                old_hp=event.old_hp,
+                new_hp=event.new_hp,
+                max_hp=event.max_hp,
+                damage_taken=event.damage_taken,
+            )
 
-            # Get the current player data to send updated HP and stats
-            player = self.connection_manager._get_player(player_id_str)
-            if not player:
-                self._logger.warning("Player not found for HP update event", player_id=player_id_str)
+            # Check if connection manager is available
+            if not self.connection_manager:
+                self._logger.error(
+                    "Connection manager is not available for HP update",
+                    player_id=player_id_str,
+                )
                 return
 
+            # Get the current player data to send updated HP and stats
+            # CRITICAL: Try to get player from connection manager, but if not found,
+            # still send the HP update event with the data from the event itself
+            player = self.connection_manager._get_player(player_id_str)
+
             # Get full player stats including posture/position
-            stats = player.get_stats() if hasattr(player, "get_stats") else {}
+            if player:
+                stats = player.get_stats() if hasattr(player, "get_stats") else {}
+                player_name = player.name
+                current_room_id = getattr(player, "current_room_id", None)
+            else:
+                # Player not in connection manager - use event data only
+                self._logger.debug(
+                    "Player not in connection manager for HP update, using event data only",
+                    player_id=player_id_str,
+                )
+                stats = {}  # Will be updated from player_update event if available
+                player_name = "Unknown"  # Will be updated from player_update event if available
+                current_room_id = None
 
             # Create player update event with new HP and full stats
             player_update_data = {
                 "player_id": player_id_str,
-                "name": player.name,
+                "name": player_name,
                 "health": event.new_hp,
                 "max_health": event.max_hp,
-                "current_room_id": getattr(player, "current_room_id", None),
-                "stats": stats,  # Include full stats so client can update posture
+                "current_room_id": current_room_id,
+                "stats": {
+                    **stats,
+                    "current_health": event.new_hp,
+                    "max_health": event.max_hp,
+                },  # Ensure HP is set even if stats are empty
             }
 
             # Send personal message to the player
@@ -1000,6 +1549,72 @@ class RealTimeEventHandler:
             # Convert UUID to string for build_event (which expects str)
             player_id_str = str(event.player_id)
 
+            # BUGFIX: Get updated player data to include in event payload
+            # As documented in "Resurrection and Client State Synchronization" - Dr. Armitage, 1930
+            # Client must receive updated player state including corrected posture after respawn
+            player_data = None
+            updated_position = "standing"
+            if self.connection_manager and hasattr(self.connection_manager, "persistence"):
+                persistence = self.connection_manager.persistence
+                if persistence:
+                    try:
+                        # Get player from persistence to retrieve updated stats including position
+                        player = persistence.get_player(uuid.UUID(player_id_str))
+                        if player:
+                            stats = player.get_stats()
+                            updated_position = stats.get("position", "standing")
+
+                            # BUGFIX: Update connection manager's in-memory position state
+                            # As documented in "Resurrection and In-Memory State Synchronization" - Dr. Armitage, 1930
+                            # Connection manager's online_players tracking must reflect correct posture after respawn
+                            if hasattr(self.connection_manager, "online_players"):
+                                player_uuid = uuid.UUID(player_id_str)
+                                if player_uuid in self.connection_manager.online_players:
+                                    self.connection_manager.online_players[player_uuid]["position"] = updated_position
+                                    self._logger.debug(
+                                        "Updated connection manager position state",
+                                        player_id=player_id_str,
+                                        position=updated_position,
+                                    )
+
+                            # Convert player to client-expected format
+                            player_data = {
+                                "id": str(player.player_id),
+                                "name": player.name,
+                                "level": player.level,
+                                "xp": player.experience_points,
+                                "stats": {
+                                    "current_health": stats.get("current_health", 100),
+                                    "max_health": stats.get("max_health", 100),
+                                    "sanity": stats.get("sanity", 100),
+                                    "max_sanity": stats.get("max_sanity", 100),
+                                    "strength": stats.get("strength"),
+                                    "dexterity": stats.get("dexterity"),
+                                    "constitution": stats.get("constitution"),
+                                    "intelligence": stats.get("intelligence"),
+                                    "wisdom": stats.get("wisdom"),
+                                    "charisma": stats.get("charisma"),
+                                    "occult_knowledge": stats.get("occult_knowledge", 0),
+                                    "fear": stats.get("fear", 0),
+                                    "corruption": stats.get("corruption", 0),
+                                    "cult_affiliation": stats.get("cult_affiliation", 0),
+                                    "position": updated_position,  # CRITICAL: Include updated position
+                                },
+                                "position": updated_position,  # Also include at top level for compatibility
+                                "in_combat": False,  # Combat state cleared during respawn
+                            }
+                            self._logger.debug(
+                                "Retrieved player data for respawn event",
+                                player_id=player_id_str,
+                                position=updated_position,
+                            )
+                    except Exception as e:
+                        self._logger.warning(
+                            "Failed to retrieve player data for respawn event",
+                            player_id=player_id_str,
+                            error=str(e),
+                        )
+
             # Send personal message to the player
             from .envelope import build_event
 
@@ -1012,6 +1627,7 @@ class RealTimeEventHandler:
                     "old_hp": event.old_hp,
                     "new_hp": event.new_hp,
                     "message": "The sanitarium calls you back from the threshold. You have been restored to life.",
+                    "player": player_data,  # BUGFIX: Include updated player data with corrected posture
                 },
                 player_id=player_id_str,
             )
@@ -1022,6 +1638,7 @@ class RealTimeEventHandler:
                 "Sent respawn notification to player",
                 player_id=player_id_str,
                 respawn_room=event.respawn_room_id,
+                player_data_included=player_data is not None,
             )
 
         except Exception as e:

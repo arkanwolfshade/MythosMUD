@@ -61,7 +61,7 @@ setup-postgresql-test-db:
 
 verify-schema:
 	@echo "Verifying authoritative_schema.sql matches mythos_dev..."
-	cd $(PROJECT_ROOT) && bash scripts/verify_schema_match.sh
+	cd $(PROJECT_ROOT) && powershell -ExecutionPolicy Bypass -File scripts/verify_schema_match.ps1
 
 lint:
 	cd $(PROJECT_ROOT) && python scripts/lint.py

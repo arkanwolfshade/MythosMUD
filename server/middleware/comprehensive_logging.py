@@ -163,8 +163,10 @@ class ComprehensiveLoggingMiddleware:
         )
 
         logger.debug(
-            f"Response: {status_code} for {request.method} {request.url.path}",
+            "Response completed",
             status_code=status_code,
+            method=request.method,
+            path=request.url.path,
             process_time=process_time,
         )
 

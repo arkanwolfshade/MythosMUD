@@ -76,7 +76,11 @@ export const secureTokenStorage = {
         .padEnd(Math.ceil(base64Url.length / 4) * 4, '=');
       const payload = JSON.parse(atob(base64));
       const currentTime = Math.floor(Date.now() / 1000);
-      return payload.exp && payload.exp < currentTime;
+      // If exp is missing, token is not expired (no expiration = never expires)
+      if (!payload.exp) {
+        return false;
+      }
+      return payload.exp < currentTime;
     } catch {
       return true; // If we can't parse, consider it expired
     }
@@ -247,10 +251,20 @@ class SessionManager {
   }
 
   /**
-   * Generate unique session ID
+   * Generate unique session ID using cryptographically secure randomness.
+   * Human reader: uses Web Crypto API for secure random generation.
+   * AI reader: Math.random() is not cryptographically secure and should not be used for session IDs.
    */
   private generateSessionId(): string {
-    return 'session_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+    // Use crypto.getRandomValues for cryptographically secure randomness
+    const array = new Uint8Array(9);
+    crypto.getRandomValues(array);
+    // Convert to base36 string (similar to Math.random().toString(36))
+    const randomPart = Array.from(array)
+      .map(byte => byte.toString(36))
+      .join('')
+      .substring(0, 9);
+    return `session_${Date.now()}_${randomPart}`;
   }
 
   /**
@@ -293,19 +307,35 @@ export const inputSanitizer = {
     }
 
     // Configure DOMPurify for MUD content - allow basic formatting but block dangerous elements
+    // Human reader: ensure <script tags are completely blocked, even partial ones.
+    // AI reader: DOMPurify should handle this, but we add extra protection for edge cases.
     const config = {
       ALLOWED_TAGS: ['b', 'i', 'u', 'em', 'strong', 'br', 'p', 'span', 'div'],
       ALLOWED_ATTR: ['class'],
       ALLOW_DATA_ATTR: false,
       ALLOW_UNKNOWN_PROTOCOLS: false,
       SAFE_FOR_TEMPLATES: true,
+      FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'link', 'style'],
+      FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover'],
     } as DOMPurify.Config;
 
-    return DOMPurify.sanitize(input, config);
+    // Human reader: additional check to remove any remaining <script patterns.
+    // AI reader: some edge cases like <script or <SCRIPT might slip through, so we double-check.
+    let sanitized = DOMPurify.sanitize(input, config);
+    // Remove any remaining script tag patterns (case-insensitive, partial matches)
+    // Apply replacement repeatedly to ensure all <script and </script> (partial/overlapping) are gone
+    let previous: string;
+    do {
+      previous = sanitized;
+      sanitized = sanitized.replace(/<script/gi, '').replace(/<\/script>/gi, '');
+    } while (sanitized !== previous);
+    return sanitized;
   },
 
   /**
    * Sanitize user commands
+   * Human reader: removes dangerous URL schemes including data: protocol.
+   * AI reader: data: URLs can execute JavaScript and must be blocked.
    */
   sanitizeCommand(command: string): string {
     if (!command || typeof command !== 'string') {
@@ -313,11 +343,14 @@ export const inputSanitizer = {
     }
 
     // Remove HTML tags and dangerous characters from commands
+    // Human reader: block all dangerous URL schemes including data: protocol.
+    // AI reader: data: URLs can contain executable content and must be sanitized.
     return command
       .replace(/<[^>]*>/g, '')
       .replace(/[<>]/g, '')
       .replace(/javascript:/gi, '')
       .replace(/vbscript:/gi, '')
+      .replace(/data:/gi, '') // Block data: URLs which can execute JavaScript
       .trim();
   },
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # MythosMUD PostgreSQL Connection Diagnostic Script (Linux/CI)
 # Checks PostgreSQL connectivity and configuration for tests
 
@@ -126,5 +126,5 @@ fi
 unset PGPASSWORD
 
 echo ""
-echo "All diagnostic tests passed! ✓"
+echo "All diagnostic tests passed! âœ“"
 echo "PostgreSQL is properly configured for tests."

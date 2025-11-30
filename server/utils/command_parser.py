@@ -39,6 +39,7 @@ from ..models.command import (
     MuteCommand,
     MuteGlobalCommand,
     MutesCommand,
+    NPCCommand,
     PickupCommand,
     PoseCommand,
     PunchCommand,
@@ -100,6 +101,7 @@ class CommandParser:
             CommandType.UNMUTE_GLOBAL.value: self._create_unmute_global_command,
             CommandType.ADD_ADMIN.value: self._create_add_admin_command,
             CommandType.ADMIN.value: self._create_admin_command,
+            CommandType.NPC.value: self._create_npc_command,
             CommandType.SUMMON.value: self._create_summon_command,
             CommandType.MUTES.value: self._create_mutes_command,
             CommandType.TELEPORT.value: self._create_teleport_command,
@@ -678,6 +680,19 @@ class CommandParser:
             )
 
         return AdminCommand(subcommand=subcommand, args=remaining_args)
+
+    def _create_npc_command(self, args: list[str]) -> NPCCommand:
+        """Create NPCCommand from arguments."""
+        # NPC command can be called with or without subcommand
+        # If no args, subcommand is None (will show help)
+        # If args, first arg is subcommand, rest are args
+        if not args:
+            return NPCCommand(subcommand=None, args=[])
+
+        subcommand = args[0].lower()
+        remaining_args = args[1:]
+
+        return NPCCommand(subcommand=subcommand, args=remaining_args)
 
     def _create_summon_command(self, args: list[str]) -> SummonCommand:
         """Create SummonCommand from arguments."""

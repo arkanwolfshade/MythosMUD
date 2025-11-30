@@ -275,22 +275,25 @@ class StandardizedErrorResponse:
 
         # Create error details
         details: dict[str, Any] = {"status_code": exc.status_code}
+        # Human reader: sanitize detail to prevent stack trace exposure.
+        # AI reader: ensure no stack traces leak into user-facing responses.
+        sanitized_detail = self._sanitize_exception_message(str(exc.detail))
         if include_details:
-            details["original_detail"] = str(exc.detail)
+            details["original_detail"] = sanitized_detail
 
         # Create appropriate response
         if response_type == "websocket":
             response_data = create_websocket_error_response(
-                error_type=error_type, message=str(exc.detail), user_friendly=user_friendly, details=details
+                error_type=error_type, message=sanitized_detail, user_friendly=user_friendly, details=details
             )
         elif response_type == "sse":
             response_data = create_sse_error_response(
-                error_type=error_type, message=str(exc.detail), user_friendly=user_friendly, details=details
+                error_type=error_type, message=sanitized_detail, user_friendly=user_friendly, details=details
             )
         else:  # HTTP
             response_data = create_standard_error_response(
                 error_type=error_type,
-                message=str(exc.detail),
+                message=sanitized_detail,
                 user_friendly=user_friendly,
                 details=details,
                 severity=ErrorSeverity.MEDIUM,
@@ -307,7 +310,9 @@ class StandardizedErrorResponse:
         # Create error details
         details: dict[str, Any] = {"status_code": exc.status_code}
         if include_details:
-            details["original_detail"] = str(exc.detail)
+            # Human reader: sanitize detail to prevent stack trace exposure.
+            # AI reader: ensure no stack traces leak into user-facing responses.
+            details["original_detail"] = self._sanitize_exception_message(str(exc.detail))
 
         # Create appropriate response
         response_data = create_standard_error_response(
@@ -323,17 +328,21 @@ class StandardizedErrorResponse:
     def _handle_generic_exception(self, exc: Exception, include_details: bool, response_type: str) -> JSONResponse:
         """Handle generic exceptions."""
         error_type = ErrorType.INTERNAL_ERROR
-        message = str(exc) if str(exc) else "An unexpected error occurred"
+        # Human reader: sanitize exception message to prevent stack trace exposure.
+        # AI reader: never expose stack traces or file paths in user-facing error messages.
+        message = self._sanitize_exception_message(str(exc)) if str(exc) else "An unexpected error occurred"
         user_friendly = ErrorMessages.INTERNAL_ERROR
 
         # Create error details
         details = {}
         if include_details:
             details["exception_type"] = type(exc).__name__
-            details["exception_message"] = str(exc)
+            # Human reader: sanitize exception message even in detailed mode to prevent stack trace leaks.
+            # AI reader: stack traces should only be in logs, never in API responses.
+            details["exception_message"] = self._sanitize_exception_message(str(exc))
 
         # Log the error
-        logger.error("Unhandled exception", error=str(exc), exc_info=True, context=self.context.to_dict())
+        logger.error("Unhandled exception", error=str(exc), exc_info=True, **self.context.to_dict())
 
         # Create appropriate response
         response_data = create_standard_error_response(
@@ -408,6 +417,42 @@ class StandardizedErrorResponse:
             }
 
         return details
+
+    def _sanitize_exception_message(self, message: str) -> str:
+        """
+        Sanitize exception message to prevent stack trace exposure.
+
+        Removes sensitive information like file paths, line numbers, and stack traces
+        from error messages before exposing them to users.
+
+        Args:
+            message: The exception message to sanitize
+
+        Returns:
+            Sanitized message safe for user exposure
+        """
+        if not message:
+            return "An unexpected error occurred"
+
+        # Check for sensitive patterns that indicate stack traces or file paths
+        message_lower = message.lower()
+        sensitive_patterns = ["traceback", "stack", "file:", "line:", "traceback (most recent call last)"]
+
+        # Check for file path patterns (both Windows and Unix)
+        if any(pattern in message_lower for pattern in sensitive_patterns):
+            return "[REDACTED]"
+
+        # Check for file path patterns (contains slashes or backslashes with common path indicators)
+        if ("/" in message or "\\" in message) and any(
+            indicator in message_lower for indicator in [".py", ".js", "c:\\", "/home/", "/usr/", "e:\\"]
+        ):
+            return "[REDACTED]"
+
+        # Limit length to prevent information disclosure
+        if len(message) > 200:
+            return message[:200] + "..."
+
+        return message
 
     def _create_fallback_response(self, exc: Exception, response_type: str) -> JSONResponse:
         """Create fallback error response when normal handling fails."""

@@ -308,7 +308,7 @@ npm run test:e2e:runtime
 
 The global setup will run and create the database.
 
-#### Issue: "Cannot find module 'better-sqlite3'"
+#### Issue: "Cannot find module" or dependency errors
 
 **Solution**: Install dependencies:
 

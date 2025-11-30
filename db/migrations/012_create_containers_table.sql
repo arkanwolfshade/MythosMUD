@@ -5,7 +5,7 @@
 SET client_min_messages = WARNING;
 SET search_path = public;
 BEGIN;
--- Create containers table
+-- Create containers table (if it doesn't exist)
 CREATE TABLE IF NOT EXISTS containers (
     container_instance_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     source_type TEXT NOT NULL CHECK (
@@ -30,6 +30,20 @@ CREATE TABLE IF NOT EXISTS containers (
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Add items_json column if it doesn't exist (for tables created from authoritative_schema.sql)
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+            AND table_name = 'containers'
+            AND column_name = 'items_json'
+    ) THEN
+        ALTER TABLE containers
+        ADD COLUMN items_json JSONB NOT NULL DEFAULT '[]'::jsonb;
+    END IF;
+END $$;
 -- Create indexes for common lookup patterns
 CREATE INDEX IF NOT EXISTS idx_containers_room_id ON containers(room_id)
 WHERE room_id IS NOT NULL;
@@ -90,6 +104,17 @@ COMMENT ON COLUMN containers.capacity_slots IS 'Maximum number of inventory slot
 COMMENT ON COLUMN containers.weight_limit IS 'Optional maximum weight capacity';
 COMMENT ON COLUMN containers.decay_at IS 'Timestamp when corpse container should decay and be cleaned up';
 COMMENT ON COLUMN containers.allowed_roles IS 'JSONB array of role names allowed to access container';
-COMMENT ON COLUMN containers.items_json IS 'JSONB array of InventoryStack items stored in container';
+-- Add comment only if column exists
+DO $$ BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+            AND table_name = 'containers'
+            AND column_name = 'items_json'
+    ) THEN
+        COMMENT ON COLUMN containers.items_json IS 'JSONB array of InventoryStack items stored in container';
+    END IF;
+END $$;
 COMMENT ON COLUMN containers.metadata_json IS 'Optional JSONB metadata for container-specific configuration';
 COMMIT;

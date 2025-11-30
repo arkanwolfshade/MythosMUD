@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import type { MythosTimeState } from '../../types/mythosTime';
+import { formatMythosTime12Hour } from '../../utils/mythosTime';
 import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
 import { LogoutButton } from '../ui/LogoutButton';
 
@@ -39,9 +40,9 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
     });
   }, []);
 
-  // Format time display
+  // Format time display in 12-hour AM/PM format
   const timeDisplay = mythosTime
-    ? `${mythosTime.mythos_clock} - ${mythosTime.formatted_date}`
+    ? `${formatMythosTime12Hour(mythosTime.mythos_clock)} - ${mythosTime.formatted_date}`
     : 'Calibrating chronicle...';
 
   const connectionStatus = isConnected ? 'Connected' : isConnecting ? 'Connecting...' : 'Disconnected';

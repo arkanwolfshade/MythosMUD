@@ -138,7 +138,7 @@ class PlayerRespawnService:
         Respawn a dead player at their respawn location with full HP.
 
         This method:
-        1. Restores player HP to 100
+        1. Restores player HP to their max_health (not hardcoded 100)
         2. Moves player from limbo to respawn room
         3. Publishes respawn event for UI updates
 
@@ -159,10 +159,11 @@ class PlayerRespawnService:
             # Get respawn room using async API
             respawn_room = await self.get_respawn_room(player_id, session)
 
-            # Get current stats and restore HP
+            # Get current stats and restore HP to max health
             stats = player.get_stats()
             old_hp = stats.get("current_health", -10)
-            stats["current_health"] = 100
+            max_hp = stats.get("max_health", 100)  # Default to 100 if max_health not found
+            stats["current_health"] = max_hp  # Restore to max health, not hardcoded 100
 
             # BUGFIX: Restore posture to standing when player respawns
             # As documented in "Resurrection and Corporeal Restoration" - Dr. Armitage, 1930
@@ -198,7 +199,8 @@ class PlayerRespawnService:
                 player_name=player.name,
                 respawn_room=respawn_room,
                 old_hp=old_hp,
-                new_hp=100,
+                new_hp=max_hp,
+                max_hp=max_hp,
                 from_limbo=old_room == LIMBO_ROOM_ID,
             )
 
@@ -209,7 +211,7 @@ class PlayerRespawnService:
                     player_name=str(player.name),
                     respawn_room_id=respawn_room,
                     old_hp=old_hp,
-                    new_hp=100,
+                    new_hp=max_hp,  # Use max_hp instead of hardcoded 100
                     death_room_id=old_room if old_room != LIMBO_ROOM_ID else None,  # type: ignore[arg-type]
                 )
                 self._event_bus.publish(event)

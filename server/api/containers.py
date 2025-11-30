@@ -326,7 +326,7 @@ async def open_container(
         context = _create_error_context(
             request, current_user, container_id=str(request_data.container_id), operation="open_container"
         )
-        logger.error("Unexpected error opening container", error=str(e), exc_info=True, context=context.to_dict())
+        logger.error("Unexpected error opening container", error=str(e), exc_info=True, **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error",
@@ -519,7 +519,7 @@ async def transfer_items(
         context = _create_error_context(
             request, current_user, container_id=str(request_data.container_id), operation="transfer_items"
         )
-        logger.error("Unexpected error transferring items", error=str(e), exc_info=True, context=context.to_dict())
+        logger.error("Unexpected error transferring items", error=str(e), exc_info=True, **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error",
@@ -653,7 +653,7 @@ async def close_container(
         context = _create_error_context(
             request, current_user, container_id=str(request_data.container_id), operation="close_container"
         )
-        logger.error("Unexpected error closing container", error=str(e), exc_info=True, context=context.to_dict())
+        logger.error("Unexpected error closing container", error=str(e), exc_info=True, **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error",
@@ -889,7 +889,7 @@ async def loot_all_items(
             request, current_user, container_id=str(request_data.container_id), operation="loot_all"
         )
         # Use error=str(e) instead of exc_info=True to avoid Unicode encoding issues on Windows
-        logger.error("Unexpected error in loot-all", error=str(e), context=context.to_dict())
+        logger.error("Unexpected error in loot-all", error=str(e), **context.to_dict())
         raise LoggedHTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error",

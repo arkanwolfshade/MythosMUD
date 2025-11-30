@@ -1061,15 +1061,7 @@ async def handle_go_command(
     )
     target_room_id = exits.get(direction)
     if not target_room_id:
-        logger.warning(
-            "No exit in direction - movement blocked",
-            player=player_name,
-            direction=direction,
-            room_id=room_id,
-            room_object_id=room.id,
-            exits_dict=exits,
-            exits_dict_keys=list(exits.keys()) if exits else [],
-        )
+        # No exit in this direction - normal gameplay, just return error message to player
         return {"result": "You can't go that way"}
 
     target_room = persistence.get_room(target_room_id)

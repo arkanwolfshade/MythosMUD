@@ -213,7 +213,8 @@ The game features a comprehensive stats system with Lovecraftian horror elements
 2. Start the server:
 
    ```bash
-   uv run uvicorn main:app --reload
+   # Note: Hot reloading is disabled due to client compatibility issues
+   uv run uvicorn main:app
    ```
 
 3. The server will be available at `http://localhost:54731`

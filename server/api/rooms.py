@@ -19,6 +19,7 @@ from ..dependencies import RoomServiceDep
 from ..exceptions import LoggedHTTPException
 from ..game.room_service import RoomService
 from ..logging.enhanced_logging_config import get_logger
+from ..models.user import User
 from ..persistence import get_persistence
 from ..services.admin_auth_service import AdminAction, get_admin_auth_service
 from ..services.exploration_service import get_exploration_service
@@ -42,7 +43,7 @@ async def list_rooms(
     sub_zone: str | None = Query(None, description="Optional sub-zone name for filtering"),
     include_exits: bool = Query(True, description="Whether to include exit data in response"),
     filter_explored: bool = Query(False, description="Filter to only show explored rooms (requires authentication)"),
-    current_user: dict | None = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
     room_service: RoomService = RoomServiceDep,
 ) -> dict[str, Any]:
@@ -78,7 +79,7 @@ async def list_rooms(
             try:
                 # Get player from user
                 persistence = get_persistence()
-                user_id = str(current_user.get("id", ""))
+                user_id = str(current_user.id)
                 player = persistence.get_player_by_user_id(user_id)
 
                 if player:
@@ -162,7 +163,7 @@ async def update_room_position(
     room_id: str,
     position_data: RoomPositionUpdate,
     request: Request,
-    current_user: dict = Depends(get_current_user),
+    current_user: User | None = Depends(get_current_user),
     session: AsyncSession = Depends(get_async_session),
     room_service: RoomService = RoomServiceDep,
 ) -> dict[str, Any]:
@@ -173,6 +174,12 @@ async def update_room_position(
     Requires admin privileges.
     """
     try:
+        # Check authentication first
+        if not current_user:
+            context = create_context_from_request(request)
+            context.metadata["requested_room_id"] = room_id
+            raise LoggedHTTPException(status_code=401, detail="Authentication required", context=context)
+
         # Validate admin permission
         auth_service = get_admin_auth_service()
         auth_service.validate_permission(current_user, AdminAction.UPDATE_ROOM_POSITION, request)

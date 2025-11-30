@@ -89,6 +89,32 @@ class NPCMovementIntegration:
                 to_room.npc_entered(npc_id)
                 logger.debug("Added NPC to destination room", npc_id=npc_id, to_room=to_room_id)
 
+            # CRITICAL FIX: Update NPC instance room tracking for occupant queries
+            # Get NPC instance from lifecycle manager and update current_room/current_room_id
+            try:
+                from ..services.npc_instance_service import get_npc_instance_service
+
+                npc_instance_service = get_npc_instance_service()
+                if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
+                    lifecycle_manager = npc_instance_service.lifecycle_manager
+                    if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
+                        npc_instance = lifecycle_manager.active_npcs[npc_id]
+                        npc_instance.current_room = to_room_id
+                        # Also set current_room_id for compatibility
+                        if hasattr(npc_instance, "current_room_id"):
+                            npc_instance.current_room_id = to_room_id
+                        logger.debug(
+                            "Updated NPC instance room tracking",
+                            npc_id=npc_id,
+                            new_room_id=to_room_id,
+                        )
+            except Exception as update_error:
+                logger.warning(
+                    "Error updating NPC instance room tracking",
+                    npc_id=npc_id,
+                    error=str(update_error),
+                )
+
             # Event publication is handled by Room methods; avoid duplicate publishes
 
             logger.info("NPC moved successfully", npc_id=npc_id, from_room=from_room_id, to_room=to_room_id)

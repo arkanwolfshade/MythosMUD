@@ -18,7 +18,7 @@ Starts the MythosMUD FastAPI server with optional process cleanup.
 
 - `-ServerHost`: Host address to bind server to (default: "127.0.0.1")
 - `-Port`: Port number to bind server to (default: 54731)
-- `-Reload`: Enable auto-reload for development (default: true)
+- `-Reload`: Enable auto-reload for development (default: false - hot reloading disabled due to client compatibility issues)
 
 **Examples:**
 
@@ -26,8 +26,8 @@ Starts the MythosMUD FastAPI server with optional process cleanup.
 # Start with default settings
 .\start_server.ps1
 
-# Start on all interfaces, port 8080, without auto-reload
-.\start_server.ps1 -ServerHost "0.0.0.0" -Port 8080 -Reload:$false
+# Start on all interfaces, port 8080, with auto-reload enabled
+.\start_server.ps1 -ServerHost "0.0.0.0" -Port 8080 -Reload
 ```
 
 ### `stop_server.ps1`

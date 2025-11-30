@@ -92,6 +92,23 @@ const SYSTEM_PATTERNS: MessagePattern[] = [
   { pattern: /has entered the game\.?$/i, type: 'system' },
   { pattern: /has left the game\.?$/i, type: 'system' },
   { pattern: /^You are now in /i, type: 'system' },
+  // Movement messages - should appear in Game Info panel only
+  { pattern: /^You move (north|south|east|west|up|down|northeast|northwest|southeast|southwest)\.?$/i, type: 'system' },
+  { pattern: /^You go (north|south|east|west|up|down|northeast|northwest|southeast|southwest)\.?$/i, type: 'system' },
+  { pattern: /^You walk (north|south|east|west|up|down|northeast|northwest|southeast|southwest)\.?$/i, type: 'system' },
+  { pattern: /^You head (north|south|east|west|up|down|northeast|northwest|southeast|southwest)\.?$/i, type: 'system' },
+  {
+    pattern: /^You travel (north|south|east|west|up|down|northeast|northwest|southeast|southwest)\.?$/i,
+    type: 'system',
+  },
+  {
+    pattern: /^You cannot move (north|south|east|west|up|down|northeast|northwest|southeast|southwest)\.?$/i,
+    type: 'system',
+  },
+  {
+    pattern: /^You cannot go (north|south|east|west|up|down|northeast|northwest|southeast|southwest)\.?$/i,
+    type: 'system',
+  },
   // Teleportation and room transition messaging
   { pattern: TELEPORT_DEPARTURE_PATTERN, type: 'system' },
   { pattern: PLAYER_LEAVES_PATTERN, type: 'system' },

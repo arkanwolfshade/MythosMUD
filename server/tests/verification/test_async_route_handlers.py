@@ -265,7 +265,12 @@ class TestAsyncRouteHandlers:
                 await asyncio.sleep(0.001)
                 raise ValueError("Test async error")
             except ValueError as e:
-                return {"error": str(e), "handled": True}
+                # Human reader: sanitize error message to prevent stack trace exposure in test responses.
+                # AI reader: even test endpoints should not expose stack traces to clients.
+                error_msg = str(e).split("\n")[0].strip()  # Get first line only
+                if any(pattern in error_msg.lower() for pattern in ['file "', "line ", "traceback"]):
+                    error_msg = "Test error occurred"
+                return {"error": error_msg, "handled": True}
 
         @app.get("/test-async-http-error")
         async def async_handler_with_http_error():

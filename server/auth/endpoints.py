@@ -421,11 +421,15 @@ async def login_user(
 
         if session_results["success"]:
             logger.info(
-                f"Login session management: Disconnected {session_results['connections_disconnected']} existing connections for player {player.player_id}"
+                "Login session management: Disconnected existing connections",
+                player_id=player.player_id,
+                connections_disconnected=session_results["connections_disconnected"],
             )
         else:
             logger.warning(
-                f"Login session management failed for player {player.player_id}: {session_results['errors']}"
+                "Login session management failed",
+                player_id=player.player_id,
+                errors=session_results["errors"],
             )
 
     logger.info("Login successful for user", username=user.username, has_character=has_character)

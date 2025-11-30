@@ -246,8 +246,10 @@ class NPCSpawningService:
                 # Check if current NPC population allows spawning more instances
                 if not rule.can_spawn_with_population(current_npc_count):
                     logger.debug(
-                        f"Spawn rule population limit reached for {definition.name} "
-                        f"(current: {current_npc_count}, max: {rule.max_population})"
+                        "Spawn rule population limit reached",
+                        npc_name=definition.name,
+                        current_npc_count=current_npc_count,
+                        max_population=rule.max_population,
                     )
                     continue
 

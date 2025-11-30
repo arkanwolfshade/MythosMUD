@@ -63,7 +63,9 @@ class WebSocketRequestContext:
             user_manager: User manager instance
         """
         logger.debug(
-            f"App state services already available - player_service: {self.app.state.player_service}, user_manager: {self.app.state.user_manager}"
+            "App state services already available",
+            player_service_available=self.app.state.player_service is not None,
+            user_manager_available=self.app.state.user_manager is not None,
         )
         # Services should already be available in the real app state
         # Only override if explicitly provided and different

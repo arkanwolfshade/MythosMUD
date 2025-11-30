@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { PanelManagerProvider, usePanelManager } from './PanelSystem/PanelManager';
+import { PanelManagerProvider } from './PanelSystem/PanelManager';
+import { usePanelManager } from './PanelSystem/usePanelManager';
 import { PanelContainer } from './PanelSystem/PanelContainer';
 import { HeaderBar } from './HeaderBar';
 import { ChatHistoryPanel } from './panels/ChatHistoryPanel';
@@ -100,15 +101,31 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
     return null;
   }, [sanityStatus, player]);
 
-  // Handle window resize to update panel layout
+  // Handle window resize - scale panels proportionally based on viewport
+  // Maintains three-column layout structure from wireframe
+  // As noted in "Proportional Scaling in Non-Euclidean Interfaces" - Dr. Armitage, 1928
   useEffect(() => {
     const handleResize = () => {
-      // Panel positions are managed by react-rnd, but we could update default layout here if needed
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      // Scale panels to new viewport size using default layout function
+      panelManager.scalePanelsToViewport(viewportWidth, viewportHeight, createDefaultPanelLayout);
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    // Use debounce to avoid excessive updates during resize
+    let resizeTimeout: NodeJS.Timeout;
+    const debouncedHandleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(handleResize, 150);
+    };
+
+    window.addEventListener('resize', debouncedHandleResize);
+    return () => {
+      window.removeEventListener('resize', debouncedHandleResize);
+      clearTimeout(resizeTimeout);
+    };
+  }, [panelManager]);
 
   // Handle command selection from history
   const handleSelectCommand = useCallback((_command: string) => {
@@ -213,27 +230,39 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
           </PanelContainer>
         )}
 
-        {occupantsPanel && occupantsPanel.isVisible && (
-          <PanelContainer
-            id={occupantsPanel.id}
-            title={occupantsPanel.title}
-            position={occupantsPanel.position}
-            size={occupantsPanel.size}
-            zIndex={occupantsPanel.zIndex}
-            isMinimized={occupantsPanel.isMinimized}
-            isMaximized={occupantsPanel.isMaximized}
-            isVisible={occupantsPanel.isVisible}
-            minSize={occupantsPanel.minSize}
-            variant="default"
-            onPositionChange={panelManager.updatePosition}
-            onSizeChange={panelManager.updateSize}
-            onMinimize={panelManager.toggleMinimize}
-            onMaximize={panelManager.toggleMaximize}
-            onFocus={panelManager.focusPanel}
-          >
-            <OccupantsPanel room={room} />
-          </PanelContainer>
-        )}
+        {occupantsPanel &&
+          occupantsPanel.isVisible &&
+          (() => {
+            // Calculate total occupant count for title
+            const players = room?.players ?? [];
+            const npcs = room?.npcs ?? [];
+            const legacyOccupants = room?.occupants ?? [];
+            const totalCount = room?.occupant_count ?? (players.length + npcs.length || legacyOccupants.length);
+            const occupantsTitle =
+              typeof totalCount === 'number' && totalCount > 0 ? `Occupants (${totalCount})` : 'Occupants';
+
+            return (
+              <PanelContainer
+                id={occupantsPanel.id}
+                title={occupantsTitle}
+                position={occupantsPanel.position}
+                size={occupantsPanel.size}
+                zIndex={occupantsPanel.zIndex}
+                isMinimized={occupantsPanel.isMinimized}
+                isMaximized={occupantsPanel.isMaximized}
+                isVisible={occupantsPanel.isVisible}
+                minSize={occupantsPanel.minSize}
+                variant="default"
+                onPositionChange={panelManager.updatePosition}
+                onSizeChange={panelManager.updateSize}
+                onMinimize={panelManager.toggleMinimize}
+                onMaximize={panelManager.toggleMaximize}
+                onFocus={panelManager.focusPanel}
+              >
+                <OccupantsPanel room={room} />
+              </PanelContainer>
+            );
+          })()}
 
         {gameInfoPanel && gameInfoPanel.isVisible && (
           <PanelContainer

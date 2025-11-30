@@ -308,7 +308,11 @@ class Room:
         Convert the room to a dictionary representation.
 
         Returns:
-            Dictionary containing room data and current occupants
+            Dictionary containing room metadata and current occupant data.
+            Note: For production use, occupant data may be more accurately
+            obtained via RealTimeEventHandler._get_room_occupants() which
+            queries authoritative sources, but for unit testing and in-memory
+            Room instances, this method provides the current state.
         """
         return {
             "id": self.id,

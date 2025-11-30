@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Generate authoritative database schema from mythos_dev PostgreSQL database
 # This script extracts DDL from the mythos_dev database and writes it to db/authoritative_schema.sql
 

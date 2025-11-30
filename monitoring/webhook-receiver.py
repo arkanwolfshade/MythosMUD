@@ -57,7 +57,13 @@ def webhook():
 
     except Exception as e:
         logger.error("Error processing webhook", error=str(e), exc_info=True)
-        return jsonify({"error": str(e)}), 500
+        # Human reader: sanitize error message to prevent stack trace exposure.
+        # AI reader: never expose stack traces in API responses, only in logs.
+        error_msg = str(e).split('\n')[0].strip()  # Get first line only
+        # Remove file paths and line numbers
+        if any(pattern in error_msg.lower() for pattern in ['file "', 'line ', 'traceback']):
+            error_msg = "An error occurred processing the webhook"
+        return jsonify({"error": error_msg}), 500
 
 
 @app.route("/health", methods=["GET"])

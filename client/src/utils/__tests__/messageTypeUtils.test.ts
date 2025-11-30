@@ -26,6 +26,14 @@ describe('messageTypeUtils', () => {
         'Exits: north, south, east, west',
         'You feel a sense of dread...',
         'The room is dark and foreboding.',
+        // Movement messages - should be system type
+        'You move north.',
+        'You go south.',
+        'You walk east.',
+        'You head west.',
+        'You travel up.',
+        'You cannot move down.',
+        'You cannot go northeast.',
         // Room descriptions from movement commands
         'A section of High Lane where the street widens slightly as it approaches the intersection with W. Derby Street.',
         'A narrow alley between two ancient buildings.',
@@ -48,7 +56,8 @@ describe('messageTypeUtils', () => {
         'You examine the ancient tome.',
         'You search the area.',
         'You cast a spell.',
-        'You move north.',
+        // Note: Movement messages like "You move north." are now categorized as 'system'
+        // and are tested in the system messages test above
       ];
 
       commandMessages.forEach(message => {

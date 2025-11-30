@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+// Disabled: Context files intentionally export both context and provider
 import React, { createContext, ReactNode, useEffect, useState } from 'react';
 
 // Theme types
@@ -14,6 +16,8 @@ export interface UIPreferences {
   soundEffects: boolean;
   compactMode: boolean;
   showDebugInfo: boolean;
+  highContrast: boolean;
+  reducedMotion: boolean;
 }
 
 // Context type
@@ -32,10 +36,15 @@ const defaultPreferences: UIPreferences = {
   soundEffects: false,
   compactMode: false,
   showDebugInfo: false,
+  highContrast: false,
+  reducedMotion: false,
 };
 
 // Create context
-const ThemeContext = createContext<ThemeContextType | null>(null);
+export const ThemeContext = createContext<ThemeContextType | null>(null);
+
+// Export context type for hooks
+export type { ThemeContextType };
 
 // Context provider
 interface ThemeProviderProps {

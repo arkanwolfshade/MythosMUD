@@ -9,6 +9,11 @@ on:
   schedule:
     # random HH:MM to avoid a load spike on GitHub Actions at 00:00
     - cron: '12 15 * * *'
+# Human reader: restrict GITHUB_TOKEN permissions to minimum required.
+# AI reader: top-level permissions apply to all jobs unless overridden.
+permissions:
+  contents: read
+  security-events: write
 jobs:
   semgrep:
     name: semgrep/ci

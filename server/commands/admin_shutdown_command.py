@@ -467,7 +467,8 @@ async def countdown_loop(app: Any, countdown_seconds: int, admin_username: str) 
     """
     try:
         logger.info(
-            f"Shutdown countdown loop started by {admin_username}",
+            "Shutdown countdown loop started",
+            admin_username=admin_username,
             countdown_seconds=countdown_seconds,
         )
 
@@ -574,7 +575,8 @@ async def initiate_shutdown_countdown(app: Any, countdown_seconds: int, admin_us
         )
 
         logger.info(
-            f"Shutdown countdown initiated by {admin_username}",
+            "Shutdown countdown initiated",
+            admin_username=admin_username,
             countdown_seconds=countdown_seconds,
         )
 
