@@ -234,7 +234,7 @@ jobs:
         with:
           node-version: '22'
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Lint with ESLint
         run: |
           npx eslint .

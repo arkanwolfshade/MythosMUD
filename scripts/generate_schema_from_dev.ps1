@@ -1,15 +1,66 @@
+#!/usr/bin/env pwsh
 # Generate authoritative database schema from mythos_dev PostgreSQL database
 # This script extracts DDL from the mythos_dev database and writes it to db/authoritative_schema.sql
 
 param(
-    [string]$DB_HOST = "localhost",
-    [string]$DB_USER = "postgres",
-    [string]$DB_NAME = "mythos_dev",
+    [string]$DB_HOST = "",
+    [string]$DB_USER = "",
+    [string]$DB_NAME = "",
     [string]$DB_PASSWORD = "",
     [string]$OUTPUT_FILE = "db/authoritative_schema.sql"
 )
 
 $ErrorActionPreference = "Stop"
+
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ProjectRoot = Split-Path -Parent $ScriptDir
+
+# Load .env.local if it exists
+$EnvFile = Join-Path $ProjectRoot ".env.local"
+if (-not (Test-Path $EnvFile)) {
+    $EnvFile = Join-Path $ProjectRoot ".env"
+}
+
+$DatabaseUrl = $null
+
+if (Test-Path $EnvFile) {
+    Write-Host "Loading environment from $EnvFile" -ForegroundColor Cyan
+    Get-Content $EnvFile | Where-Object {
+        $_ -match '^\s*[^#]' -and $_ -match '='
+    } | ForEach-Object {
+        $key, $value = $_ -split '=', 2
+        $key = $key.Trim()
+        $value = $value.Trim()
+        # Remove quotes if present
+        if ($value.StartsWith('"') -and $value.EndsWith('"')) {
+            $value = $value.Substring(1, $value.Length - 2)
+        }
+        if ($value.StartsWith("'") -and $value.EndsWith("'")) {
+            $value = $value.Substring(1, $value.Length - 2)
+        }
+
+        if ($key -eq "DATABASE_URL") {
+            $DatabaseUrl = $value
+        }
+    }
+}
+
+# Parse DATABASE_URL if set, otherwise use parameters or defaults
+if ($DatabaseUrl) {
+    # Handle both postgresql:// and postgresql+asyncpg:// formats
+    $dbUrl = $DatabaseUrl -replace '^postgresql\+asyncpg://', '' -replace '^postgresql://', ''
+    if ($dbUrl -match '^([^:]+):([^@]+)@([^:/]+)(:([0-9]+))?/(.+)$') {
+        if (-not $DB_USER) { $DB_USER = $matches[1] }
+        if (-not $DB_PASSWORD) { $DB_PASSWORD = $matches[2] }
+        if (-not $DB_HOST) { $DB_HOST = $matches[3] }
+        if (-not $DB_NAME) { $DB_NAME = $matches[6] }
+    }
+}
+
+# Set defaults if not provided
+if (-not $DB_HOST) { $DB_HOST = "localhost" }
+if (-not $DB_USER) { $DB_USER = "postgres" }
+if (-not $DB_NAME) { $DB_NAME = "mythos_dev" }
 
 function Write-ColorOutput {
     param(
@@ -21,18 +72,45 @@ function Write-ColorOutput {
 
 Write-ColorOutput "Generating authoritative schema from $DB_NAME..." "Green"
 
-# Check if pg_dump is available
-$pgDumpPath = Get-Command pg_dump -ErrorAction SilentlyContinue
-if (-not $pgDumpPath) {
+# Find pg_dump
+$PgDump = $null
+if (Get-Command pg_dump -ErrorAction SilentlyContinue) {
+    $PgDump = "pg_dump"
+} else {
+    # Check common PostgreSQL installation paths
+    $drives = @("C", "D", "E", "F")
+    $versions = @("18", "17", "16", "15", "14", "13", "12")
+
+    foreach ($drive in $drives) {
+        foreach ($version in $versions) {
+            $pgDumpPath = "${drive}:\Program Files\PostgreSQL\${version}\bin\pg_dump.exe"
+            if (Test-Path $pgDumpPath) {
+                $PgDump = $pgDumpPath
+                break
+            }
+        }
+        if ($PgDump) { break }
+    }
+}
+
+if (-not $PgDump) {
     Write-ColorOutput "Error: pg_dump is not installed or not in PATH" "Red"
+    Write-ColorOutput "Please install PostgreSQL or add it to your PATH" "Yellow"
     exit 1
 }
 
 # Check if database is accessible (optional check)
-$pgIsReadyPath = Get-Command pg_isready -ErrorAction SilentlyContinue
-if ($pgIsReadyPath) {
+$pgIsready = if (Get-Command pg_isready -ErrorAction SilentlyContinue) {
+    "pg_isready"
+} else {
+    # Find pg_isready in same location as pg_dump
+    $pgDumpDir = Split-Path -Parent $PgDump
+    Join-Path $pgDumpDir "pg_isready.exe"
+}
+
+if (Test-Path $pgIsready) {
     $env:PGPASSWORD = $DB_PASSWORD
-    $isReady = & pg_isready -h $DB_HOST -U $DB_USER -d $DB_NAME 2>&1
+    $isReady = & $pgIsready -h $DB_HOST -U $DB_USER -d $DB_NAME 2>&1
     if ($LASTEXITCODE -ne 0) {
         Write-ColorOutput "Warning: Cannot verify database connectivity. Proceeding anyway..." "Yellow"
     }
@@ -49,13 +127,19 @@ Write-ColorOutput "Running pg_dump..." "Green"
 
 $env:PGPASSWORD = $DB_PASSWORD
 
-& pg_dump -h $DB_HOST -U $DB_USER -d $DB_NAME `
-    --schema-only `
-    --no-owner `
-    --no-privileges `
-    --clean `
-    --if-exists `
-    --file=$OUTPUT_FILE
+$pgDumpArgs = @(
+    "-h", $DB_HOST
+    "-U", $DB_USER
+    "-d", $DB_NAME
+    "--schema-only"
+    "--no-owner"
+    "--no-privileges"
+    "--clean"
+    "--if-exists"
+    "--file=$OUTPUT_FILE"
+)
+
+& $PgDump $pgDumpArgs
 
 if ($LASTEXITCODE -ne 0) {
     Write-ColorOutput "Error: pg_dump failed" "Red"

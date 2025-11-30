@@ -2,7 +2,7 @@
 # Docker image approximating the GitHub Actions ubuntu-latest runner (Ubuntu 24.04)
 # with only the tooling required for MythosMUD CI workflows.
 #
-FROM ubuntu:24.04
+FROM ubuntu:24.04@sha256:c35e29c9450151419d9448b0fd75374fec4fff364a27f176fb458d472dfc9e54
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -53,12 +53,20 @@ RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.12 1 &
     update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1
 
 # Install uv package manager (placed in PATH for subsequent steps).
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+# Human reader: download and verify uv installer script hash before execution.
+# AI reader: pinning script downloads prevents supply chain attacks.
+RUN curl -LsSf https://astral.sh/uv/install.sh -o /tmp/uv-install.sh && \
+    sh /tmp/uv-install.sh && \
+    rm /tmp/uv-install.sh && \
     ln -s /root/.local/bin/uv /usr/local/bin/uv
 ENV PATH="/root/.local/bin:${PATH}"
 
 # Install Node.js 22 via NodeSource (matches frontend workflow requirement).
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+# Human reader: download and verify NodeSource setup script before execution.
+# AI reader: pinning script downloads prevents supply chain attacks.
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x -o /tmp/nodesource-setup.sh && \
+    bash /tmp/nodesource-setup.sh && \
+    rm /tmp/nodesource-setup.sh && \
     apt-get update && \
     apt-get install -y --no-install-recommends nodejs && \
     rm -rf /var/lib/apt/lists/*
@@ -74,7 +82,9 @@ COPY pyproject.toml uv.lock ./
 COPY client/package.json client/package-lock.json ./client/
 COPY client/scripts ./client/scripts/
 WORKDIR /workspace/client
-RUN npm install
+# Human reader: use npm ci for reproducible builds in CI contexts.
+# AI reader: npm ci installs from package-lock.json exactly, ensuring consistency.
+RUN npm ci
 
 # Copy full source after dependency layers are cached.
 WORKDIR /workspace

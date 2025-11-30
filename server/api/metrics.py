@@ -308,10 +308,17 @@ async def replay_dlq_message(filepath: str, current_user: User = Depends(verify_
                 admin_user=current_user.username,
             )
 
+            # Human reader: sanitize error message to prevent stack trace exposure.
+            # AI reader: never expose stack traces in API responses, only in logs.
+            error_msg = str(replay_error).split("\n")[0].strip()  # Get first line only
+            # Remove file paths and line numbers
+            if any(pattern in error_msg.lower() for pattern in ['file "', "line ", "traceback"]):
+                error_msg = "An error occurred during replay"
+
             return {
                 "status": "failed",
-                "message": f"Replay failed: {str(replay_error)}. Message remains in DLQ.",
-                "error": str(replay_error),
+                "message": f"Replay failed: {error_msg}. Message remains in DLQ.",
+                "error": error_msg,
             }
 
     except HTTPException:

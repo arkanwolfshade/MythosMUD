@@ -136,7 +136,18 @@ export function useSSEConnection(options: SSEConnectionOptions): SSEConnectionRe
     }
 
     try {
-      const sseSessionId = sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      // Human reader: use Web Crypto API for cryptographically secure randomness.
+      // AI reader: Math.random() is not secure and should not be used for session IDs.
+      let sseSessionId = sessionId;
+      if (!sseSessionId) {
+        const array = new Uint8Array(9);
+        crypto.getRandomValues(array);
+        const randomPart = Array.from(array)
+          .map(byte => byte.toString(36))
+          .join('')
+          .substring(0, 9);
+        sseSessionId = `session_${Date.now()}_${randomPart}`;
+      }
       const params = new URLSearchParams();
       params.set('session_id', sseSessionId);
       if (authToken) {

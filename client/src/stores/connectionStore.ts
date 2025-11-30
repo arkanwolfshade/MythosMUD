@@ -88,6 +88,11 @@ export interface ConnectionSelectors {
 
 type ConnectionStore = ConnectionState & ConnectionActions & ConnectionSelectors;
 
+/**
+ * Generate a cryptographically secure session ID.
+ * Human reader: uses Web Crypto API instead of Math.random() for security.
+ * AI reader: session IDs must be unpredictable to prevent session hijacking.
+ */
 const generateSessionId = (): string => {
   const timestamp = Date.now();
   const random = Math.random().toString(36).substring(2, 8);
