@@ -323,7 +323,12 @@ export const inputSanitizer = {
     // AI reader: some edge cases like <script or <SCRIPT might slip through, so we double-check.
     let sanitized = DOMPurify.sanitize(input, config);
     // Remove any remaining script tag patterns (case-insensitive, partial matches)
-    sanitized = sanitized.replace(/<script/gi, '').replace(/<\/script>/gi, '');
+    // Apply replacement repeatedly to ensure all <script and </script> (partial/overlapping) are gone
+    let previous: string;
+    do {
+      previous = sanitized;
+      sanitized = sanitized.replace(/<script/gi, '').replace(/<\/script>/gi, '');
+    } while (sanitized !== previous);
     return sanitized;
   },
 
