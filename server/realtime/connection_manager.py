@@ -1172,6 +1172,9 @@ class ConnectionManager:
             websocket_count = len(self.player_websockets.get(player_id, []))
             delivery_status["total_connections"] = websocket_count
 
+            # Track if we had any connection attempts (for failure detection)
+            had_connection_attempts = False
+
             # Try WebSocket connections
             # #region agent log
             with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
@@ -1199,6 +1202,7 @@ class ConnectionManager:
                 connection_ids = self.player_websockets[player_id].copy()  # Copy to avoid modification during iteration
                 for connection_id in connection_ids:
                     if connection_id in self.active_websockets:
+                        had_connection_attempts = True
                         websocket = self.active_websockets[connection_id]
                         try:
                             # #region agent log
@@ -1313,7 +1317,11 @@ class ConnectionManager:
                     event_type=event.get("event_type"),
                 )
                 # Mark as successful if message was queued (will be delivered on reconnect)
-                delivery_status["success"] = True
+                # BUT: if we had connection attempts that failed, this is still a failure
+                if had_connection_attempts and delivery_status["websocket_failed"] > 0:
+                    delivery_status["success"] = False
+                else:
+                    delivery_status["success"] = True
             else:
                 # Mark as successful if any delivery succeeded
                 delivery_status["success"] = delivery_status["websocket_delivered"] > 0

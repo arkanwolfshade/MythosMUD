@@ -156,9 +156,17 @@ describe('Profession System Error Handling and Edge Cases', () => {
       fireEvent.click(registerButton);
 
       // Should show error message when profession API fails
-      await waitFor(() => {
-        expect(screen.getByText('Network error')).toBeInTheDocument();
-      });
+      // Wait for loading to complete and error to appear
+      // The component shows "Error Loading Professions" heading and the error message
+      await waitFor(
+        () => {
+          // Check for the error heading first to ensure we're past loading state
+          expect(screen.getByText('Error Loading Professions')).toBeInTheDocument();
+          // Then check for the error message
+          expect(screen.getByText('Network error')).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should handle empty profession list gracefully', async () => {

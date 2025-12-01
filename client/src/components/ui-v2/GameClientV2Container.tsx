@@ -179,23 +179,6 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
 
   useEffect(() => {
     healthStatusRef.current = healthStatus;
-    // #region agent log
-    if (healthStatus) {
-      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          location: 'GameClientV2Container.tsx:179',
-          message: 'healthStatus state changed',
-          data: { current: healthStatus.current, max: healthStatus.max },
-          timestamp: Date.now(),
-          sessionId: 'debug-session',
-          runId: 'run1',
-          hypothesisId: 'D',
-        }),
-      }).catch(() => {});
-    }
-    // #endregion
   }, [healthStatus]);
 
   useEffect(() => {
@@ -275,54 +258,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   // Event processing - simplified version (full version would process all event types)
   // For greenfield, we'll process the essential events and can extend later
   const processEventQueue = useCallback(() => {
-    // #region agent log
-    const hpEventsInQueue = eventQueue.current.filter(
-      e => e.event_type === 'player_hp_updated' || e.event_type === 'playerhpupdated'
-    );
-    if (hpEventsInQueue.length > 0) {
-      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          location: 'GameClientV2Container.tsx:255',
-          message: 'processEventQueue called',
-          data: {
-            queue_size: eventQueue.current.length,
-            hp_events_count: hpEventsInQueue.length,
-            is_processing: isProcessingEvent.current,
-            hp_events: hpEventsInQueue.map(e => ({
-              type: e.event_type,
-              seq: e.sequence_number,
-              old_hp: e.data?.old_hp,
-              new_hp: e.data?.new_hp,
-            })),
-          },
-          timestamp: Date.now(),
-          sessionId: 'debug-session',
-          runId: 'run1',
-          hypothesisId: 'C',
-        }),
-      }).catch(() => {});
-    }
-    // #endregion
     if (isProcessingEvent.current || eventQueue.current.length === 0) {
-      // #region agent log
-      if (hpEventsInQueue.length > 0) {
-        fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            location: 'GameClientV2Container.tsx:256',
-            message: 'processEventQueue early return',
-            data: { is_processing: isProcessingEvent.current, queue_empty: eventQueue.current.length === 0 },
-            timestamp: Date.now(),
-            sessionId: 'debug-session',
-            runId: 'run1',
-            hypothesisId: 'C',
-          }),
-        }).catch(() => {});
-      }
-      // #endregion
       return;
     }
 
@@ -331,101 +267,16 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
     try {
       const events = [...eventQueue.current];
       eventQueue.current = [];
-      // #region agent log
-      const hpEventsInBatch = events.filter(
-        e => e.event_type === 'player_hp_updated' || e.event_type === 'playerhpupdated'
-      );
-      if (hpEventsInBatch.length > 0) {
-        fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            location: 'GameClientV2Container.tsx:263',
-            message: 'Events batch extracted from queue',
-            data: {
-              total_events: events.length,
-              hp_events_count: hpEventsInBatch.length,
-              hp_events: hpEventsInBatch.map(e => ({ type: e.event_type, seq: e.sequence_number })),
-            },
-            timestamp: Date.now(),
-            sessionId: 'debug-session',
-            runId: 'run1',
-            hypothesisId: 'C',
-          }),
-        }).catch(() => {});
-      }
-      // #endregion
-
       const updates: Partial<GameState> = {};
 
       events.forEach(event => {
         const eventKey = `${event.event_type}_${event.sequence_number}`;
-        // #region agent log
-        if (event.event_type === 'player_hp_updated' || event.event_type === 'playerhpupdated') {
-          fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              location: 'GameClientV2Container.tsx:269',
-              message: 'Checking duplicate detection',
-              data: {
-                event_key: eventKey,
-                last_processed: lastProcessedEvent.current,
-                is_duplicate: eventKey === lastProcessedEvent.current,
-              },
-              timestamp: Date.now(),
-              sessionId: 'debug-session',
-              runId: 'run1',
-              hypothesisId: 'C',
-            }),
-          }).catch(() => {});
-        }
-        // #endregion
         if (eventKey === lastProcessedEvent.current) {
-          // #region agent log
-          if (event.event_type === 'player_hp_updated' || event.event_type === 'playerhpupdated') {
-            fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                location: 'GameClientV2Container.tsx:271',
-                message: 'Event skipped as duplicate',
-                data: { event_key: eventKey },
-                timestamp: Date.now(),
-                sessionId: 'debug-session',
-                runId: 'run1',
-                hypothesisId: 'C',
-              }),
-            }).catch(() => {});
-          }
-          // #endregion
           return;
         }
         lastProcessedEvent.current = eventKey;
 
         const eventType = (event.event_type || '').toString().trim().toLowerCase();
-        // #region agent log
-        if (event.event_type === 'player_hp_updated' || event.event_type === 'playerhpupdated') {
-          fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              location: 'GameClientV2Container.tsx:275',
-              message: 'Event type normalized',
-              data: {
-                original: event.event_type,
-                normalized: eventType,
-                matches_case: eventType === 'player_hp_updated' || eventType === 'playerhpupdated',
-              },
-              timestamp: Date.now(),
-              sessionId: 'debug-session',
-              runId: 'run1',
-              hypothesisId: 'B',
-            }),
-          }).catch(() => {});
-        }
-        // #endregion
-
         logger.info('GameClientV2Container', 'Processing event', { event_type: eventType });
 
         const appendMessage = (message: ChatMessage) => {
@@ -453,37 +304,6 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
           case 'room_update':
           case 'room_state': {
             const roomData = (event.data.room || event.data.room_data) as Room;
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                location: 'GameClientV2Container.tsx:453',
-                message: 'room_update event received',
-                data: {
-                  roomId: roomData?.id,
-                  hasRoomData: !!roomData,
-                  roomDataHasNpcs: roomData?.npcs !== undefined,
-                  roomDataNpcs: roomData?.npcs,
-                  roomDataNpcsLength: roomData?.npcs?.length ?? 0,
-                  roomDataHasPlayers: roomData?.players !== undefined,
-                  roomDataPlayersLength: roomData?.players?.length ?? 0,
-                  hasExistingRoom: !!currentRoomRef.current,
-                  existingRoomId: currentRoomRef.current?.id,
-                  existingRoomNpcs: currentRoomRef.current?.npcs,
-                  existingRoomNpcsLength: currentRoomRef.current?.npcs?.length ?? 0,
-                  hasUpdatesRoom: !!updates.room,
-                  updatesRoomId: updates.room?.id,
-                  updatesRoomNpcs: updates.room?.npcs,
-                  updatesRoomNpcsLength: updates.room?.npcs?.length ?? 0,
-                },
-                timestamp: Date.now(),
-                sessionId: 'debug-session',
-                runId: 'run1',
-                hypothesisId: 'A',
-              }),
-            }).catch(() => {});
-            // #endregion
             if (roomData) {
               lastRoomUpdateTime.current = new Date(event.timestamp).getTime();
 
@@ -568,21 +388,6 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
           }
           case 'player_hp_updated':
           case 'playerhpupdated': {
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                location: 'GameClientV2Container.tsx:377',
-                message: 'Processing player_hp_updated event',
-                data: { old_hp: event.data.old_hp, new_hp: event.data.new_hp, max_hp: event.data.max_hp },
-                timestamp: Date.now(),
-                sessionId: 'debug-session',
-                runId: 'run1',
-                hypothesisId: 'B',
-              }),
-            }).catch(() => {});
-            // #endregion
             logger.info('GameClientV2Container', 'Received player_hp_updated event', {
               old_hp: event.data.old_hp,
               new_hp: event.data.new_hp,
@@ -602,57 +407,8 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               tier: updatedHealthStatus.tier,
             });
 
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                location: 'GameClientV2Container.tsx:398',
-                message: 'About to call setHealthStatus',
-                data: { current: updatedHealthStatus.current, max: updatedHealthStatus.max },
-                timestamp: Date.now(),
-                sessionId: 'debug-session',
-                runId: 'run1',
-                hypothesisId: 'C',
-              }),
-            }).catch(() => {});
-            // #endregion
             setHealthStatus(updatedHealthStatus);
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                location: 'GameClientV2Container.tsx:404',
-                message: 'setHealthStatus called',
-                data: {
-                  current: updatedHealthStatus.current,
-                  max: updatedHealthStatus.max,
-                  previous_health: healthStatusRef.current?.current,
-                },
-                timestamp: Date.now(),
-                sessionId: 'debug-session',
-                runId: 'run1',
-                hypothesisId: 'D',
-              }),
-            }).catch(() => {});
-            // #endregion
             setHealthStatus(updatedHealthStatus);
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                location: 'GameClientV2Container.tsx:406',
-                message: 'setHealthStatus completed',
-                data: { current: updatedHealthStatus.current, max: updatedHealthStatus.max },
-                timestamp: Date.now(),
-                sessionId: 'debug-session',
-                runId: 'run1',
-                hypothesisId: 'D',
-              }),
-            }).catch(() => {});
-            // #endregion
             if (currentPlayerRef.current) {
               updates.player = {
                 ...currentPlayerRef.current,
@@ -772,35 +528,6 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             const occupantCount = event.data.count as number | undefined;
             const eventRoomId = event.room_id as string | undefined;
 
-            // #region agent log - Log immediately when event is received
-            try {
-              fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  location: 'GameClientV2Container.tsx:727',
-                  message: 'room_occupants event received',
-                  data: {
-                    npcs: npcs,
-                    npcs_count: npcs?.length ?? 0,
-                    players_count: players?.length ?? 0,
-                    eventRoomId: eventRoomId,
-                    hasCurrentRoom: !!currentRoomRef.current,
-                    currentRoomId: currentRoomRef.current?.id,
-                    hasUpdatesRoom: !!updates.room,
-                    updatesRoomId: updates.room?.id,
-                  },
-                  timestamp: Date.now(),
-                  sessionId: 'debug-session',
-                  runId: 'run1',
-                  hypothesisId: 'C',
-                }),
-              }).catch(() => {});
-            } catch {
-              // Silently fail
-            }
-            // #endregion
-
             // DEBUG: Console log for immediate visibility + structured logging
             console.log('🔍 [room_occupants] Received event:', {
               players,
@@ -848,30 +575,6 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                   currentRoomId: currentRoom.id,
                   npcsCount: npcs?.length ?? 0,
                 });
-                // #region agent log
-                try {
-                  fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      location: 'GameClientV2Container.tsx:776',
-                      message: 'room_occupants event ignored - room ID mismatch',
-                      data: {
-                        eventRoomId: eventRoomId,
-                        currentRoomId: currentRoom.id,
-                        npcs_count: npcs?.length ?? 0,
-                        npcs: npcs,
-                      },
-                      timestamp: Date.now(),
-                      sessionId: 'debug-session',
-                      runId: 'run1',
-                      hypothesisId: 'C',
-                    }),
-                  }).catch(() => {});
-                } catch {
-                  // Silently fail
-                }
-                // #endregion
                 break;
               }
 
@@ -883,61 +586,11 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
 
               // Use structured format if available (preferred), otherwise fall back to legacy flat list
               if (players !== undefined || npcs !== undefined) {
-                // #region agent log
-                fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    location: 'GameClientV2Container.tsx:630',
-                    message: 'Received room_occupants event with structured data',
-                    data: {
-                      npcs: npcs,
-                      npcs_count: npcs?.length,
-                      players_count: players?.length,
-                      npcs_undefined: npcs === undefined,
-                      players_undefined: players === undefined,
-                      eventRoomId,
-                    },
-                    timestamp: Date.now(),
-                    sessionId: 'debug-session',
-                    runId: 'run1',
-                    hypothesisId: 'C',
-                  }),
-                }).catch(() => {});
-                // #endregion
                 // Structured format: separate players and NPCs arrays
                 // CRITICAL: Only use npcs/players from event if they're actually provided (not undefined)
                 // If undefined, preserve from currentRoom to avoid overwriting with empty arrays
                 const finalNpcs = npcs !== undefined ? npcs : (currentRoom.npcs ?? []);
                 const finalPlayers = players !== undefined ? players : (currentRoom.players ?? []);
-
-                // #region agent log
-                fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    location: 'GameClientV2Container.tsx:869',
-                    message: 'Setting final npcs/players from room_occupants event',
-                    data: {
-                      event_npcs: npcs,
-                      event_npcs_undefined: npcs === undefined,
-                      event_npcs_length: npcs?.length ?? 0,
-                      currentRoom_npcs: currentRoom.npcs,
-                      currentRoom_npcs_length: currentRoom.npcs?.length ?? 0,
-                      finalNpcs: finalNpcs,
-                      finalNpcs_length: finalNpcs.length,
-                      event_players: players,
-                      event_players_undefined: players === undefined,
-                      finalPlayers: finalPlayers,
-                      finalPlayers_length: finalPlayers.length,
-                    },
-                    timestamp: Date.now(),
-                    sessionId: 'debug-session',
-                    runId: 'run1',
-                    hypothesisId: 'F',
-                  }),
-                }).catch(() => {});
-                // #endregion
 
                 updates.room = {
                   ...currentRoom,
@@ -947,51 +600,6 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                   occupants: [...finalPlayers, ...finalNpcs],
                   occupant_count: occupantCount ?? finalPlayers.length + finalNpcs.length,
                 };
-                // #region agent log
-                fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    location: 'GameClientV2Container.tsx:642',
-                    message: 'Updated room state with structured occupants',
-                    data: {
-                      room_id: updates.room.id,
-                      npcs: updates.room.npcs,
-                      npcs_count: updates.room.npcs?.length,
-                      players_count: updates.room.players?.length,
-                      occupant_count: updates.room.occupant_count,
-                    },
-                    timestamp: Date.now(),
-                    sessionId: 'debug-session',
-                    runId: 'run1',
-                    hypothesisId: 'C',
-                  }),
-                }).catch(() => {});
-                // #endregion
-
-                // #region agent log
-                fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    location: 'GameClientV2Container.tsx:901',
-                    message: 'Updated room with structured occupants from room_occupants',
-                    data: {
-                      roomId: updates.room.id,
-                      players_count: updates.room.players?.length ?? 0,
-                      npcs_count: updates.room.npcs?.length ?? 0,
-                      npcs: updates.room.npcs,
-                      total_count: updates.room.occupant_count,
-                      players: updates.room.players,
-                    },
-                    timestamp: Date.now(),
-                    sessionId: 'debug-session',
-                    runId: 'run1',
-                    hypothesisId: 'D',
-                  }),
-                }).catch(() => {});
-                // #endregion
-
                 logger.debug('GameClientV2Container', 'Updated room with structured occupants from room_occupants', {
                   roomId: updates.room.id,
                   players_count: updates.room.players?.length ?? 0,
@@ -1107,26 +715,6 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             break;
           }
           case 'npc_attacked': {
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                location: 'GameClientV2Container.tsx:754',
-                message: 'Processing npc_attacked event',
-                data: {
-                  attacker_name: event.data?.attacker_name,
-                  npc_name: event.data?.npc_name,
-                  damage: event.data?.damage,
-                  action_type: event.data?.action_type,
-                },
-                timestamp: Date.now(),
-                sessionId: 'debug-session',
-                runId: 'run1',
-                hypothesisId: 'E',
-              }),
-            }).catch(() => {});
-            // #endregion
             // NPC attacked event - NPC attacks player
             // Note: attacker_name is the NPC's name, npc_name is also the NPC's name (redundant field)
             const attackerName = (event.data.attacker_name || event.data.npc_name) as string | undefined;
@@ -1136,21 +724,6 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             if (attackerName && damage !== undefined) {
               // Format: "Dr. Francis Morgan attacks you for 10 damage."
               const message = `${attackerName} ${actionType || 'attacks'} you for ${damage} damage.`;
-              // #region agent log
-              fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  location: 'GameClientV2Container.tsx:763',
-                  message: 'About to append npc_attacked message',
-                  data: { message: message, attacker_name: attackerName, damage: damage },
-                  timestamp: Date.now(),
-                  sessionId: 'debug-session',
-                  runId: 'run1',
-                  hypothesisId: 'E',
-                }),
-              }).catch(() => {});
-              // #endregion
               appendMessage(
                 sanitizeChatMessageForState({
                   text: message,
@@ -1160,22 +733,6 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                   isHtml: false,
                 })
               );
-            } else {
-              // #region agent log
-              fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  location: 'GameClientV2Container.tsx:775',
-                  message: 'npc_attacked event missing required fields',
-                  data: { has_attacker_name: !!attackerName, has_damage: damage !== undefined },
-                  timestamp: Date.now(),
-                  sessionId: 'debug-session',
-                  runId: 'run1',
-                  hypothesisId: 'E',
-                }),
-              }).catch(() => {});
-              // #endregion
             }
             break;
           }
@@ -1258,53 +815,12 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               [key: string]: unknown;
             };
 
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                location: 'GameClientV2Container.tsx:853',
-                message: 'Processing player_respawned event',
-                data: {
-                  old_hp: respawnData.old_hp,
-                  new_hp: respawnData.new_hp,
-                  has_player: !!respawnData.player,
-                  player_current_health: respawnData.player?.stats?.current_health,
-                  player_max_health: respawnData.player?.stats?.max_health,
-                },
-                timestamp: Date.now(),
-                sessionId: 'debug-session',
-                runId: 'run1',
-                hypothesisId: 'D',
-              }),
-            }).catch(() => {});
-            // #endregion
-
             setIsDead(false);
             setIsMortallyWounded(false);
             setIsRespawning(false);
 
             if (respawnData.player) {
               updates.player = respawnData.player as Player;
-              // #region agent log
-              fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  location: 'GameClientV2Container.tsx:870',
-                  message: 'Updated player from respawn event',
-                  data: {
-                    current_health: updates.player.stats?.current_health,
-                    max_health: updates.player.stats?.max_health,
-                  },
-                  timestamp: Date.now(),
-                  sessionId: 'debug-session',
-                  runId: 'run1',
-                  hypothesisId: 'D',
-                }),
-              }).catch(() => {});
-              // #endregion
-
               // CRITICAL FIX: Update health status from player data in respawn event
               // The respawn event includes player_data with correct current_health, but healthStatus
               // was not being updated, causing health to remain at -10 from death state
@@ -1326,21 +842,6 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                   },
                 };
                 setHealthStatus(healthStatusUpdate);
-                // #region agent log
-                fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    location: 'GameClientV2Container.tsx:895',
-                    message: 'Updated healthStatus from respawn player data',
-                    data: { current: currentHealth, max: maxHealth },
-                    timestamp: Date.now(),
-                    sessionId: 'debug-session',
-                    runId: 'run1',
-                    hypothesisId: 'D',
-                  }),
-                }).catch(() => {});
-                // #endregion
               }
             }
 
@@ -1386,34 +887,6 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
 
           let finalRoom = updates.room || prev.room;
 
-          // #region agent log
-          fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              location: 'GameClientV2Container.tsx:1316',
-              message: 'Merging room state',
-              data: {
-                hasUpdatesRoom: !!updates.room,
-                hasPrevRoom: !!prev.room,
-                updatesRoomId: updates.room?.id,
-                prevRoomId: prev.room?.id,
-                updatesHasPlayers: updates.room?.players !== undefined,
-                updatesHasNpcs: updates.room?.npcs !== undefined,
-                updatesPlayersCount: updates.room?.players?.length ?? 0,
-                updatesNpcsCount: updates.room?.npcs?.length ?? 0,
-                prevPlayersCount: prev.room?.players?.length ?? 0,
-                prevNpcsCount: prev.room?.npcs?.length ?? 0,
-                prevNpcs: prev.room?.npcs,
-              },
-              timestamp: Date.now(),
-              sessionId: 'debug-session',
-              runId: 'run1',
-              hypothesisId: 'E',
-            }),
-          }).catch(() => {});
-          // #endregion
-
           if (updates.room && prev.room) {
             // Preserve occupant data if updates.room doesn't have populated occupant arrays
             // This handles room_update events that only update metadata
@@ -1430,32 +903,6 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               prev.room.players !== undefined && Array.isArray(prev.room.players) && prev.room.players.length > 0;
             const prevHasPopulatedNpcs =
               prev.room.npcs !== undefined && Array.isArray(prev.room.npcs) && prev.room.npcs.length > 0;
-
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                location: 'GameClientV2Container.tsx:1321',
-                message: 'Detailed merge state check',
-                data: {
-                  updatesHasPopulatedPlayers,
-                  updatesHasPopulatedNpcs,
-                  prevHasPopulatedPlayers,
-                  prevHasPopulatedNpcs,
-                  updatesPlayersLength: updates.room.players?.length ?? 0,
-                  updatesNpcsLength: updates.room.npcs?.length ?? 0,
-                  prevPlayersLength: prev.room.players?.length ?? 0,
-                  prevNpcsLength: prev.room.npcs?.length ?? 0,
-                  prevNpcs: prev.room.npcs,
-                },
-                timestamp: Date.now(),
-                sessionId: 'debug-session',
-                runId: 'run1',
-                hypothesisId: 'F',
-              }),
-            }).catch(() => {});
-            // #endregion
 
             // Merge strategy:
             // 1. If updates has populated data, use it (from room_occupants - authoritative)
@@ -1507,31 +954,6 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                   ? (updates.room.players?.length ?? 0) + (updates.room.npcs?.length ?? 0)
                   : (prev.room.occupant_count ?? 0)),
             };
-
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                location: 'GameClientV2Container.tsx:1340',
-                message: 'Final room state after merge',
-                data: {
-                  finalRoomId: finalRoom?.id,
-                  finalPlayersCount: finalRoom?.players?.length ?? 0,
-                  finalNpcsCount: finalRoom?.npcs?.length ?? 0,
-                  finalNpcs: finalRoom?.npcs,
-                  updatesHasPopulatedPlayers,
-                  updatesHasPopulatedNpcs,
-                  prevHasPopulatedPlayers,
-                  prevHasPopulatedNpcs,
-                },
-                timestamp: Date.now(),
-                sessionId: 'debug-session',
-                runId: 'run1',
-                hypothesisId: 'E',
-              }),
-            }).catch(() => {});
-            // #endregion
           }
 
           return {
@@ -1557,68 +979,12 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   const handleGameEvent = useCallback(
     (event: GameEvent) => {
       logger.info('GameClientV2Container', 'Received game event', { event_type: event.event_type });
-      // #region agent log
-      if (event.event_type === 'player_hp_updated' || event.event_type === 'playerhpupdated') {
-        fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            location: 'GameClientV2Container.tsx:894',
-            message: 'Event received from WebSocket',
-            data: { event_type: event.event_type, old_hp: event.data?.old_hp, new_hp: event.data?.new_hp },
-            timestamp: Date.now(),
-            sessionId: 'debug-session',
-            runId: 'run1',
-            hypothesisId: 'B',
-          }),
-        }).catch(() => {});
-      }
-      // #endregion
       eventQueue.current.push(event);
-      // #region agent log
-      if (event.event_type === 'player_hp_updated' || event.event_type === 'playerhpupdated') {
-        fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            location: 'GameClientV2Container.tsx:896',
-            message: 'Event queued',
-            data: {
-              queue_size: eventQueue.current.length,
-              has_timeout: !!processingTimeout.current,
-              is_processing: isProcessingEvent.current,
-            },
-            timestamp: Date.now(),
-            sessionId: 'debug-session',
-            runId: 'run1',
-            hypothesisId: 'B',
-          }),
-        }).catch(() => {});
-      }
-      // #endregion
-
       if (!isProcessingEvent.current && !processingTimeout.current) {
         processingTimeout.current = window.setTimeout(() => {
           processingTimeout.current = null;
           processEventQueue();
         }, 10);
-        // #region agent log
-        if (event.event_type === 'player_hp_updated' || event.event_type === 'playerhpupdated') {
-          fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              location: 'GameClientV2Container.tsx:900',
-              message: 'Queue processing scheduled with 10ms timeout',
-              data: {},
-              timestamp: Date.now(),
-              sessionId: 'debug-session',
-              runId: 'run1',
-              hypothesisId: 'B',
-            }),
-          }).catch(() => {});
-        }
-        // #endregion
       }
     },
     [processEventQueue]

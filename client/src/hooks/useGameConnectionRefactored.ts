@@ -107,10 +107,14 @@ export function useGameConnection(options: UseGameConnectionOptions) {
     updateSessionId,
   } = session;
 
-  // Connection state machine
-  const connectionState = useConnectionState({
-    maxReconnectAttempts: 5,
-    onStateChange: state => {
+  // Track if we've received the first state change callback
+  // This prevents resetting autoConnectPending on the initial 'disconnected' state notification
+  const hasReceivedFirstStateChangeRef = useRef(false);
+
+  // Memoize the onStateChange callback to prevent the useEffect in useConnectionState from running multiple times
+  // The options object is recreated on each render, which would cause the useEffect to run repeatedly
+  const handleStateChange = useCallback(
+    (state: string) => {
       logger.debug('GameConnection', 'State changed', { state });
 
       // Update ref for use in error handlers
@@ -118,10 +122,20 @@ export function useGameConnection(options: UseGameConnectionOptions) {
 
       // Reset autoConnectPending when connection attempt completes (success or failure)
       // This includes: disconnected (failed), failed, fully_connected (success)
-      // Also reset when in 'reconnecting' state - the initial connection attempt has failed
-      // But not: connecting_ws (still in initial connection attempt)
-      const connectingStates = ['connecting_ws'];
-      if (!connectingStates.includes(state)) {
+      // But NOT: connecting_ws or reconnecting (still attempting to connect)
+      // IMPORTANT: Don't reset on the very first state change callback (initial 'disconnected' state)
+      // This allows the auto-connect effect to run and start the connection before autoConnectPending is reset
+      const connectingStates = ['connecting_ws', 'reconnecting'];
+      const isFirstCallback = !hasReceivedFirstStateChangeRef.current && state === 'disconnected';
+
+      if (isFirstCallback) {
+        hasReceivedFirstStateChangeRef.current = true;
+      }
+
+      // Only reset if:
+      // 1. State is not in connecting states (not 'connecting_ws' or 'reconnecting')
+      // 2. This is not the first callback (initial state notification)
+      if (!connectingStates.includes(state) && !isFirstCallback) {
         setAutoConnectPending(false);
       }
 
@@ -131,6 +145,13 @@ export function useGameConnection(options: UseGameConnectionOptions) {
         onConnectionHealthUpdate?.({ websocket: 'unhealthy' });
       }
     },
+    [onConnectionHealthUpdate]
+  );
+
+  // Connection state machine
+  const connectionState = useConnectionState({
+    maxReconnectAttempts: 5,
+    onStateChange: handleStateChange,
   });
 
   // WebSocket connection
@@ -150,46 +171,7 @@ export function useGameConnection(options: UseGameConnectionOptions) {
     onMessage: event => {
       try {
         const data = JSON.parse(event.data);
-        // #region agent log
-        if (data.event_type === 'player_hp_updated' || data.event_type === 'playerhpupdated') {
-          fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              location: 'useGameConnectionRefactored.ts:197',
-              message: 'WebSocket message received',
-              data: {
-                event_type: data.event_type,
-                old_hp: data.data?.old_hp,
-                new_hp: data.data?.new_hp,
-                raw_event: JSON.stringify(data).substring(0, 200),
-              },
-              timestamp: Date.now(),
-              sessionId: 'debug-session',
-              runId: 'run1',
-              hypothesisId: 'A',
-            }),
-          }).catch(() => {});
-        }
-        // #endregion
         setLastEvent(data);
-        // #region agent log
-        if (data.event_type === 'player_hp_updated' || data.event_type === 'playerhpupdated') {
-          fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              location: 'useGameConnectionRefactored.ts:201',
-              message: 'Calling onEventRef with WebSocket event',
-              data: { event_type: data.event_type, has_callback: !!onEventRef.current },
-              timestamp: Date.now(),
-              sessionId: 'debug-session',
-              runId: 'run1',
-              hypothesisId: 'A',
-            }),
-          }).catch(() => {});
-        }
-        // #endregion
         onEventRef.current?.(data);
       } catch (error) {
         logger.error('GameConnection', 'Error parsing WebSocket message', { error });
@@ -258,6 +240,15 @@ export function useGameConnection(options: UseGameConnectionOptions) {
       startWebSocket();
     }
   }, [connectionStateValue, sessionId, startWebSocket, updateSessionId]);
+
+  // Auto-connect effect: trigger connection when autoConnectPending is true
+  // Note: sessionId is generated synchronously by useSessionManagement, so it should be available immediately
+  useEffect(() => {
+    if (autoConnectPending && sessionId && !isConnectionEstablished && !isConnectionInProgress) {
+      logger.debug('GameConnection', 'Auto-connecting', { sessionId });
+      startConnection();
+    }
+  }, [autoConnectPending, sessionId, isConnectionEstablished, isConnectionInProgress, startConnection]);
 
   // Main connect function
   // BUGFIX: Don't directly call startWebSocket - let the state machine and useEffect hooks handle it

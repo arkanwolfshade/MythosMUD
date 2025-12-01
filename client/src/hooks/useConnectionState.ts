@@ -114,7 +114,8 @@ export function useConnectionState(options?: {
   // Compute state flags
   const currentState = state.value as string;
   const isDisconnected = currentState === 'disconnected';
-  const isConnecting = ['connecting_ws'].includes(currentState);
+  // Include 'reconnecting' in connecting states - user is still attempting to connect
+  const isConnecting = ['connecting_ws', 'reconnecting'].includes(currentState);
   const isConnected = currentState === 'fully_connected';
   const isReconnecting = currentState === 'reconnecting';
   const isFailed = currentState === 'failed';

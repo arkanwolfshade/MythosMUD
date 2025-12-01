@@ -203,6 +203,10 @@ export const connectionMachine = setup({
           target: 'reconnecting',
           actions: ['storeError', 'incrementReconnectAttempts'],
         },
+        ERROR: {
+          target: 'reconnecting',
+          actions: ['storeError', 'incrementReconnectAttempts'],
+        },
         CONNECTION_TIMEOUT: {
           target: 'reconnecting',
           actions: ['storeError', 'incrementReconnectAttempts'],
@@ -267,6 +271,10 @@ export const connectionMachine = setup({
         RESET: {
           target: 'disconnected',
           actions: 'clearAllState',
+        },
+        RECONNECT: {
+          target: 'connecting_ws',
+          actions: ['resetConnection', 'storeConnectionStartTime'],
         },
       },
     },
