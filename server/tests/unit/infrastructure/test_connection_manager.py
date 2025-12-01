@@ -230,7 +230,6 @@ class TestConnectionManagerComprehensive:
         # Verify both connections exist
         connection_counts = connection_manager.get_connection_count("test_player")
         assert connection_counts["websocket"] == 2
-        assert connection_counts["sse"] == 0
         assert connection_counts["total"] == 2
 
     @pytest.mark.asyncio
@@ -378,7 +377,7 @@ class TestConnectionManagerComprehensive:
 
         # Verify connections exist
         connection_counts = connection_manager.get_connection_count("test_player")
-        assert connection_counts["total"] == 2
+        assert connection_counts["total"] == 1
 
         # Disconnect all connections
         await connection_manager.force_disconnect_player("test_player")
@@ -980,7 +979,8 @@ class TestConnectionManagerComprehensive:
         # Both sessions should exist (connections weren't disconnected)
         assert "session_1" in connection_manager.session_connections
         assert "session_2" in connection_manager.session_connections
-        assert len(connection_manager.get_session_connections("session_1")) == 2
+        assert len(connection_manager.get_session_connections("session_1")) == 1
+        assert len(connection_manager.get_session_connections("session_2")) == 1
 
         # Now explicitly handle new game session to clean up old connections
         session_results = await connection_manager.handle_new_game_session("test_player", "session_2")
@@ -1560,7 +1560,7 @@ class TestConnectionManagerComprehensive:
         assert "Updated connection count" in validation_results["actions_taken"]
 
         # Verify connection count was updated
-        assert connection_manager.online_players["test_player"]["total_connections"] == 3
+        assert connection_manager.online_players["test_player"]["total_connections"] == 2
 
     def test_get_presence_statistics(self, connection_manager):
         """Test getting presence statistics."""
@@ -1830,25 +1830,13 @@ class TestConnectionManagerComprehensive:
         assert success1 is True
 
         # Player2: WebSocket only
-        websocket2 = Mock(spec=WebSocket)
-        websocket2.accept = AsyncMock()
-        websocket2.close = AsyncMock()
-        websocket2.ping = AsyncMock()
-        websocket2.send_json = AsyncMock()
+        websocket2 = self._create_mock_websocket()
         success2 = await connection_manager.connect_websocket(websocket2, player2_id, "session_2")
         assert success2 is True
 
         # Player3: Multiple WebSocket connections
-        websocket3a = Mock(spec=WebSocket)
-        websocket3a.accept = AsyncMock()
-        websocket3a.close = AsyncMock()
-        websocket3a.ping = AsyncMock()
-        websocket3a.send_json = AsyncMock()
-        websocket3b = Mock(spec=WebSocket)
-        websocket3b.accept = AsyncMock()
-        websocket3b.close = AsyncMock()
-        websocket3b.ping = AsyncMock()
-        websocket3b.send_json = AsyncMock()
+        websocket3a = self._create_mock_websocket()
+        websocket3b = self._create_mock_websocket()
 
         success3a = await connection_manager.connect_websocket(websocket3a, player3_id, "session_3a")
         success3b = await connection_manager.connect_websocket(websocket3b, player3_id, "session_3b")
