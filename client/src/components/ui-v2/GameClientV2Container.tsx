@@ -1008,49 +1008,44 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             // 3. If updates has no data (undefined), preserve from prev
             // CRITICAL FIX: Empty arrays [] are NOT undefined, so ?? operator won't work
             // We must explicitly check for populated arrays, not just existence
+
+            // Calculate merged players array
+            const mergedPlayers = updatesHasPopulatedPlayers
+              ? updates.room.players
+              : prevHasPopulatedPlayers
+                ? prev.room.players
+                : (updates.room.players ?? prev.room.players ?? []);
+
+            // Calculate merged NPCs array
+            const mergedNpcs = updatesHasPopulatedNpcs
+              ? updates.room.npcs // Updates has populated NPCs (from room_occupants) - use it
+              : prevHasPopulatedNpcs
+                ? prev.room.npcs // Updates has no NPCs but prev does - preserve prev
+                : // Neither has populated NPCs
+                  // CRITICAL: If updates explicitly set npcs: [] (empty array from room_update)
+                  // but prev has NPCs (from previous room_occupants), preserve prev
+                  // Only use empty array if both are empty
+                  updates.room.npcs !== undefined &&
+                    updates.room.npcs.length === 0 &&
+                    prev.room.npcs &&
+                    prev.room.npcs.length > 0
+                  ? prev.room.npcs // room_update tried to clear NPCs, but prev has them - preserve prev
+                  : (updates.room.npcs ?? prev.room.npcs ?? []); // Default fallback
+
+            // Calculate merged occupants array
+            const mergedOccupants = [...mergedPlayers, ...mergedNpcs];
+
+            // Calculate occupant count from merged values (not from updates.room)
+            // CRITICAL FIX: occupant_count must be calculated from merged arrays, not from updates.room
+            // because the merge logic may preserve players or NPCs from prev.room
+            const mergedOccupantCount = updates.room.occupant_count ?? mergedOccupants.length;
+
             finalRoom = {
               ...updates.room,
-              // Players: use updates if populated, otherwise preserve from prev
-              players: updatesHasPopulatedPlayers
-                ? updates.room.players
-                : prevHasPopulatedPlayers
-                  ? prev.room.players
-                  : (updates.room.players ?? prev.room.players ?? []),
-              // NPCs: use updates if populated, otherwise preserve from prev
-              // CRITICAL: Empty arrays [] are truthy, so we must check length > 0, not just existence
-              // This prevents room_update events with npcs: [] from overwriting NPCs from room_occupants
-              // CRITICAL FIX: If updates has empty array but prev has populated NPCs, ALWAYS preserve prev
-              // This handles the case where room_update arrives after room_occupants and tries to clear NPCs
-              // room_occupants is the authoritative source - if it set NPCs, they should never be cleared
-              npcs: updatesHasPopulatedNpcs
-                ? updates.room.npcs // Updates has populated NPCs (from room_occupants) - use it
-                : prevHasPopulatedNpcs
-                  ? prev.room.npcs // Updates has no NPCs but prev does - preserve prev
-                  : // Neither has populated NPCs
-                    // CRITICAL: If updates explicitly set npcs: [] (empty array from room_update)
-                    // but prev has NPCs (from previous room_occupants), preserve prev
-                    // Only use empty array if both are empty
-                    updates.room.npcs !== undefined &&
-                      updates.room.npcs.length === 0 &&
-                      prev.room.npcs &&
-                      prev.room.npcs.length > 0
-                    ? prev.room.npcs // room_update tried to clear NPCs, but prev has them - preserve prev
-                    : (updates.room.npcs ?? prev.room.npcs ?? []), // Default fallback
-              // Occupants: merge from both
-              occupants: [
-                ...(updatesHasPopulatedPlayers
-                  ? updates.room.players
-                  : prevHasPopulatedPlayers
-                    ? prev.room.players
-                    : []),
-                ...(updatesHasPopulatedNpcs ? updates.room.npcs : prevHasPopulatedNpcs ? prev.room.npcs : []),
-              ],
-              // Occupant count: use updates if provided, otherwise calculate
-              occupant_count:
-                updates.room.occupant_count ??
-                (updatesHasPopulatedPlayers || updatesHasPopulatedNpcs
-                  ? (updates.room.players?.length ?? 0) + (updates.room.npcs?.length ?? 0)
-                  : (prev.room.occupant_count ?? 0)),
+              players: mergedPlayers,
+              npcs: mergedNpcs,
+              occupants: mergedOccupants,
+              occupant_count: mergedOccupantCount,
             };
           }
 

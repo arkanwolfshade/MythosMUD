@@ -559,7 +559,6 @@ class TestConnectionManagerComprehensive:
         assert delivery_status["success"] is True
         assert delivery_status["websocket_delivered"] == 1
         assert delivery_status["websocket_failed"] == 0
-        assert delivery_status["sse_delivered"] is False
         assert delivery_status["total_connections"] == 1
         assert delivery_status["active_connections"] == 1
 
@@ -807,7 +806,6 @@ class TestConnectionManagerComprehensive:
         assert session_results["previous_session_id"] == "session_1"
         assert session_results["connections_disconnected"] == 1
         assert session_results["websocket_connections"] == 1
-        assert session_results["sse_connections"] == 1
         assert session_results["success"] is True
         assert len(session_results["errors"]) == 0
 
@@ -832,7 +830,6 @@ class TestConnectionManagerComprehensive:
         assert session_results["previous_session_id"] is None
         assert session_results["connections_disconnected"] == 0
         assert session_results["websocket_connections"] == 0
-        assert session_results["sse_connections"] == 0
         assert session_results["success"] is True
         assert len(session_results["errors"]) == 0
 
@@ -1342,13 +1339,13 @@ class TestConnectionManagerComprehensive:
         # Add actual connections to simulate real connection
         connection_manager.player_websockets["test_player"] = ["conn1"]
 
-        # Second connection
-        await connection_manager._track_player_connected("test_player", mock_player, "sse")
+        # Second connection (also websocket)
+        await connection_manager._track_player_connected("test_player", mock_player, "websocket")
 
         # Verify player info is updated
         player_info = connection_manager.online_players["test_player"]
-        assert player_info["connection_types"] == {"websocket", "sse"}
-        assert player_info["total_connections"] == 2
+        assert player_info["connection_types"] == {"websocket"}
+        assert player_info["total_connections"] == 1  # Only one actual websocket connection
         assert player_info["position"] == "standing"
 
     @pytest.mark.asyncio
@@ -1376,7 +1373,7 @@ class TestConnectionManagerComprehensive:
         connection_manager.broadcast_to_room = AsyncMock()
 
         # Track the initial (new) connection
-        await connection_manager._track_player_connected(mock_player.player_id, mock_player, "sse")
+        await connection_manager._track_player_connected(mock_player.player_id, mock_player, "websocket")
 
         # The room should receive a player_entered_game event excluding the connecting player
         connection_manager.broadcast_to_room.assert_awaited_once()
@@ -1412,8 +1409,8 @@ class TestConnectionManagerComprehensive:
         connection_manager.online_players["test_player"] = {
             "player_id": "test_player",
             "player_name": "Test Player",
-            "connection_types": {"websocket", "sse"},
-            "total_connections": 3,
+            "connection_types": {"websocket"},
+            "total_connections": 2,
             "position": "standing",
         }
 
@@ -1462,8 +1459,8 @@ class TestConnectionManagerComprehensive:
         connection_manager.online_players["test_player"] = {
             "player_id": "test_player",
             "player_name": "Test Player",
-            "connection_types": {"websocket", "sse"},
-            "total_connections": 3,
+            "connection_types": {"websocket"},
+            "total_connections": 2,
             "connected_at": 1234567890,
             "current_room_id": "room_001",
             "level": 5,
@@ -1477,10 +1474,9 @@ class TestConnectionManagerComprehensive:
         # Verify presence info
         assert presence_info["player_id"] == "test_player"
         assert presence_info["is_online"] is True
-        assert set(presence_info["connection_types"]) == {"websocket", "sse"}
-        assert presence_info["total_connections"] == 3
+        assert set(presence_info["connection_types"]) == {"websocket"}
+        assert presence_info["total_connections"] == 2
         assert presence_info["websocket_connections"] == 2
-        assert presence_info["sse_connections"] == 1
         assert presence_info["connected_at"] == 1234567890
         assert presence_info["last_seen"] == 1234567891
         assert presence_info["player_name"] == "Test Player"
@@ -1498,7 +1494,6 @@ class TestConnectionManagerComprehensive:
         assert presence_info["connection_types"] == []
         assert presence_info["total_connections"] == 0
         assert presence_info["websocket_connections"] == 0
-        assert presence_info["sse_connections"] == 0
         assert presence_info["connected_at"] is None
         assert presence_info["last_seen"] is None
 
@@ -1508,8 +1503,8 @@ class TestConnectionManagerComprehensive:
         connection_manager.player_websockets["test_player"] = ["conn1"]
         connection_manager.online_players["test_player"] = {
             "player_id": "test_player",
-            "connection_types": {"websocket", "sse"},
-            "total_connections": 2,
+            "connection_types": {"websocket"},
+            "total_connections": 1,
             "position": "standing",
         }
 
@@ -1550,7 +1545,7 @@ class TestConnectionManagerComprehensive:
         connection_manager.player_websockets["test_player"] = ["conn1", "conn2"]
         connection_manager.online_players["test_player"] = {
             "player_id": "test_player",
-            "connection_types": {"websocket", "sse"},
+            "connection_types": {"websocket"},
             "total_connections": 1,  # Wrong count
             "position": "standing",
         }
@@ -1561,7 +1556,7 @@ class TestConnectionManagerComprehensive:
         # Verify validation results
         assert validation_results["player_id"] == "test_player"
         assert validation_results["is_consistent"] is False
-        assert "Connection count mismatch: recorded=1, actual=3" in validation_results["issues_found"]
+        assert "Connection count mismatch: recorded=1, actual=2" in validation_results["issues_found"]
         assert "Updated connection count" in validation_results["actions_taken"]
 
         # Verify connection count was updated
@@ -1574,13 +1569,10 @@ class TestConnectionManagerComprehensive:
         assert stats["total_online_players"] == 0
         assert stats["total_connections"] == 0
         assert stats["websocket_connections"] == 0
-        assert stats["sse_connections"] == 0
         assert stats["connection_distribution"]["websocket_only"] == 0
-        assert stats["connection_distribution"]["sse_only"] == 0
-        assert stats["connection_distribution"]["dual_connection"] == 0
         assert stats["average_connections_per_player"] == 0
 
-        # Add some players with different connection types
+        # Add some players with WebSocket connections
         # Player 1: WebSocket only
         connection_manager.player_websockets["player1"] = ["conn1"]
         connection_manager.online_players["player1"] = {
@@ -1589,17 +1581,18 @@ class TestConnectionManagerComprehensive:
             "position": "standing",
         }
 
-        # Player 2: SSE only
+        # Player 2: WebSocket only
+        connection_manager.player_websockets["player2"] = ["conn2"]
         connection_manager.online_players["player2"] = {
-            "connection_types": {"sse"},
+            "connection_types": {"websocket"},
             "total_connections": 1,
             "position": "standing",
         }
 
-        # Player 3: Dual connection
-        connection_manager.player_websockets["player3"] = ["conn3"]
+        # Player 3: Multiple WebSocket connections
+        connection_manager.player_websockets["player3"] = ["conn3", "conn4"]
         connection_manager.online_players["player3"] = {
-            "connection_types": {"websocket", "sse"},
+            "connection_types": {"websocket"},
             "total_connections": 2,
             "position": "standing",
         }
@@ -1608,11 +1601,8 @@ class TestConnectionManagerComprehensive:
         stats = connection_manager.get_presence_statistics()
         assert stats["total_online_players"] == 3
         assert stats["total_connections"] == 4
-        assert stats["websocket_connections"] == 2
-        assert stats["sse_connections"] == 2
-        assert stats["connection_distribution"]["websocket_only"] == 1
-        assert stats["connection_distribution"]["sse_only"] == 1
-        assert stats["connection_distribution"]["dual_connection"] == 1
+        assert stats["websocket_connections"] == 4
+        assert stats["connection_distribution"]["websocket_only"] == 3
         assert stats["average_connections_per_player"] == 4 / 3
 
     @pytest.mark.asyncio
@@ -1637,8 +1627,6 @@ class TestConnectionManagerComprehensive:
         success1b = await connection_manager.connect_websocket(websocket1b, player1_id, "session_1b")
         assert success1a is True
         assert success1b is True
-
-        # Connect SSE for player1
 
         # Connect single WebSocket for player2
         websocket2 = self._create_mock_websocket()
@@ -1667,13 +1655,11 @@ class TestConnectionManagerComprehensive:
         # Verify player1 received message on all connections
         player1_delivery = broadcast_stats["delivery_details"][str(player1_id)]
         assert player1_delivery["websocket_delivered"] == 2  # Two WebSocket connections
-        assert player1_delivery["sse_delivered"] is True
-        assert player1_delivery["total_connections"] == 3
+        assert player1_delivery["total_connections"] == 2
 
         # Verify player2 received message
         player2_delivery = broadcast_stats["delivery_details"][str(player2_id)]
         assert player2_delivery["websocket_delivered"] == 1  # One WebSocket connection
-        assert player2_delivery["sse_delivered"] is False
         assert player2_delivery["total_connections"] == 1
 
     @pytest.mark.asyncio
@@ -1748,13 +1734,13 @@ class TestConnectionManagerComprehensive:
         assert success1a is True
         assert success1b is True
 
-        # Connect SSE for player1
+        # Connect WebSocket for player2
+        websocket2 = self._create_mock_websocket()
+        success2 = await connection_manager.connect_websocket(websocket2, player2_id, "session_2")
+        assert success2 is True
 
-        # Connect only SSE for player2 (no WebSocket)
-
-        # Connect only WebSocket for player3 (no SSE)
+        # Connect WebSocket for player3
         websocket3 = self._create_mock_websocket()
-
         success3 = await connection_manager.connect_websocket(websocket3, player3_id, "session_3")
         assert success3 is True
 
@@ -1774,19 +1760,16 @@ class TestConnectionManagerComprehensive:
         # Verify player1 received message on all connections
         player1_delivery = global_stats["delivery_details"][player1_id]
         assert player1_delivery["websocket_delivered"] == 2  # Two WebSocket connections
-        assert player1_delivery["sse_delivered"] is True
-        assert player1_delivery["total_connections"] == 3
+        assert player1_delivery["total_connections"] == 2
 
-        # Verify player2 received message via SSE only
+        # Verify player2 received message via WebSocket
         player2_delivery = global_stats["delivery_details"][player2_id]
-        assert player2_delivery["websocket_delivered"] == 0
-        assert player2_delivery["sse_delivered"] is True
+        assert player2_delivery["websocket_delivered"] == 1
         assert player2_delivery["total_connections"] == 1
 
-        # Verify player3 received message via WebSocket only
+        # Verify player3 received message via WebSocket
         player3_delivery = global_stats["delivery_details"][player3_id]
         assert player3_delivery["websocket_delivered"] == 1
-        assert player3_delivery["sse_delivered"] is False
         assert player3_delivery["total_connections"] == 1
 
     @pytest.mark.asyncio
@@ -1846,17 +1829,31 @@ class TestConnectionManagerComprehensive:
         success1 = await connection_manager.connect_websocket(mock_websocket, player1_id, "session_1")
         assert success1 is True
 
-        # Player2: SSE only
+        # Player2: WebSocket only
+        websocket2 = Mock(spec=WebSocket)
+        websocket2.accept = AsyncMock()
+        websocket2.close = AsyncMock()
+        websocket2.ping = AsyncMock()
+        websocket2.send_json = AsyncMock()
+        success2 = await connection_manager.connect_websocket(websocket2, player2_id, "session_2")
+        assert success2 is True
 
-        # Player3: Both WebSocket and SSE
-        websocket3 = Mock(spec=WebSocket)
-        websocket3.accept = AsyncMock()
-        websocket3.close = AsyncMock()
-        websocket3.ping = AsyncMock()
-        websocket3.send_json = AsyncMock()
+        # Player3: Multiple WebSocket connections
+        websocket3a = Mock(spec=WebSocket)
+        websocket3a.accept = AsyncMock()
+        websocket3a.close = AsyncMock()
+        websocket3a.ping = AsyncMock()
+        websocket3a.send_json = AsyncMock()
+        websocket3b = Mock(spec=WebSocket)
+        websocket3b.accept = AsyncMock()
+        websocket3b.close = AsyncMock()
+        websocket3b.ping = AsyncMock()
+        websocket3b.send_json = AsyncMock()
 
-        success3 = await connection_manager.connect_websocket(websocket3, player3_id, "session_3a")
-        assert success3 is True
+        success3a = await connection_manager.connect_websocket(websocket3a, player3_id, "session_3a")
+        success3b = await connection_manager.connect_websocket(websocket3b, player3_id, "session_3b")
+        assert success3a is True
+        assert success3b is True
 
         # Mock room manager to return subscribers (use UUID strings)
         connection_manager.room_manager = Mock()
@@ -1879,17 +1876,14 @@ class TestConnectionManagerComprehensive:
         # Verify delivery details for each player
         player1_delivery = broadcast_stats["delivery_details"][str(player1_id)]
         assert player1_delivery["websocket_delivered"] == 1
-        assert player1_delivery["sse_delivered"] is False
         assert player1_delivery["total_connections"] == 1
 
         player2_delivery = broadcast_stats["delivery_details"][str(player2_id)]
-        assert player2_delivery["websocket_delivered"] == 0
-        assert player2_delivery["sse_delivered"] is True
+        assert player2_delivery["websocket_delivered"] == 1
         assert player2_delivery["total_connections"] == 1
 
         player3_delivery = broadcast_stats["delivery_details"][str(player3_id)]
-        assert player3_delivery["websocket_delivered"] == 1
-        assert player3_delivery["sse_delivered"] is True
+        assert player3_delivery["websocket_delivered"] == 2
         assert player3_delivery["total_connections"] == 2
 
     @pytest.mark.asyncio
@@ -2261,7 +2255,6 @@ class TestConnectionManagerComprehensive:
 
         assert result["success"] is True  # Message was queued for later delivery
         assert result["websocket_delivered"] == 0
-        assert result["sse_delivered"] is True  # Message was queued
         # Note: messages are queued for later delivery when no connections exist
 
     @pytest.mark.asyncio
