@@ -90,7 +90,7 @@ class TestMovementService:
 
             player_id_uuid = uuid_module.UUID(test_player_id)
             mock_from_room.player_left.assert_called_once_with(player_id_uuid)
-            mock_to_room.player_entered.assert_called_once_with(player_id_uuid)
+            mock_to_room.player_entered.assert_called_once_with(player_id_uuid, force_event=True)
 
             # Verify player was saved with updated room
             mock_persistence.save_player.assert_called_once_with(player)
@@ -361,7 +361,7 @@ class TestMovementService:
 
             player_id_uuid = uuid_module.UUID(test_player_uuid)
             mock_from_room.player_left.assert_called_once_with(player_id_uuid)
-            mock_to_room.player_entered.assert_called_once_with(player_id_uuid)
+            mock_to_room.player_entered.assert_called_once_with(player_id_uuid, force_event=True)
             mock_persistence.save_player.assert_called_once_with(player)
             assert player.current_room_id == "room2"
 
@@ -407,7 +407,7 @@ class TestMovementService:
 
             player_id_uuid = uuid_module.UUID(test_player_id)
             mock_from_room.player_left.assert_called_once_with(player_id_uuid)
-            mock_to_room.player_entered.assert_called_once_with(player_id_uuid)
+            mock_to_room.player_entered.assert_called_once_with(player_id_uuid, force_event=True)
             mock_persistence.save_player.assert_called_once_with(player)
 
     def test_add_player_to_room_success(self):

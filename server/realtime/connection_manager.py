@@ -1312,9 +1312,11 @@ class ConnectionManager:
                     player_id=player_id,
                     event_type=event.get("event_type"),
                 )
-
-            # Mark as successful if any delivery succeeded
-            delivery_status["success"] = delivery_status["websocket_delivered"] > 0
+                # Mark as successful if message was queued (will be delivered on reconnect)
+                delivery_status["success"] = True
+            else:
+                # Mark as successful if any delivery succeeded
+                delivery_status["success"] = delivery_status["websocket_delivered"] > 0
 
             logger.debug("Message delivery status", player_id=player_id, delivery_status=delivery_status)
             return delivery_status
