@@ -862,6 +862,75 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             });
             break;
           }
+          case 'npc_died': {
+            // NPC died event - display death message in Game Info panel
+            // Server broadcasts npc_died events with npc_name, xp_reward, and other data
+            const npcName = event.data.npc_name as string | undefined;
+            const xpReward = event.data.xp_reward as number | undefined;
+
+            if (npcName) {
+              // Format: "Dr. Francis Morgan dies."
+              const deathMessage = `${npcName} dies.`;
+              appendMessage(
+                sanitizeChatMessageForState({
+                  text: deathMessage,
+                  timestamp: event.timestamp,
+                  messageType: 'combat',
+                  channel: GAME_LOG_CHANNEL,
+                  isHtml: false,
+                })
+              );
+
+              // Display XP reward message if available
+              if (xpReward !== undefined && xpReward > 0) {
+                const xpMessage = `You gain ${xpReward} experience points.`;
+                appendMessage(
+                  sanitizeChatMessageForState({
+                    text: xpMessage,
+                    timestamp: event.timestamp,
+                    messageType: 'system',
+                    channel: GAME_LOG_CHANNEL,
+                    isHtml: false,
+                  })
+                );
+              }
+            }
+            break;
+          }
+          case 'combat_death': {
+            // Combat death event - display formatted death messages
+            // This event contains pre-formatted messages in event.data.messages
+            const messages = event.data.messages as { death_message?: string; xp_reward?: string } | undefined;
+
+            if (messages) {
+              // Display death message
+              if (messages.death_message) {
+                appendMessage(
+                  sanitizeChatMessageForState({
+                    text: messages.death_message,
+                    timestamp: event.timestamp,
+                    messageType: 'combat',
+                    channel: GAME_LOG_CHANNEL,
+                    isHtml: false,
+                  })
+                );
+              }
+
+              // Display XP reward message if available
+              if (messages.xp_reward) {
+                appendMessage(
+                  sanitizeChatMessageForState({
+                    text: messages.xp_reward,
+                    timestamp: event.timestamp,
+                    messageType: 'system',
+                    channel: GAME_LOG_CHANNEL,
+                    isHtml: false,
+                  })
+                );
+              }
+            }
+            break;
+          }
           // Add more event types as needed - this is a simplified version
           default: {
             logger.info('GameClientV2Container', 'Unhandled event type', {
