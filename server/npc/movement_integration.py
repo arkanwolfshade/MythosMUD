@@ -93,15 +93,15 @@ class NPCMovementIntegration:
                 logger.warning("Destination room not found", npc_id=npc_id, to_room=to_room_id)
                 return False
 
-            # Remove NPC from source room
+            # Remove NPC from source room (pass to_room_id for movement tracking)
             if from_room.has_npc(npc_id):
-                from_room.npc_left(npc_id)
-                logger.debug("Removed NPC from source room", npc_id=npc_id, from_room=from_room_id)
+                from_room.npc_left(npc_id, to_room_id=to_room_id)
+                logger.debug("Removed NPC from source room", npc_id=npc_id, from_room=from_room_id, to_room=to_room_id)
 
-            # Add NPC to destination room
+            # Add NPC to destination room (pass from_room_id for movement tracking)
             if not to_room.has_npc(npc_id):
-                to_room.npc_entered(npc_id)
-                logger.debug("Added NPC to destination room", npc_id=npc_id, to_room=to_room_id)
+                to_room.npc_entered(npc_id, from_room_id=from_room_id)
+                logger.debug("Added NPC to destination room", npc_id=npc_id, from_room=from_room_id, to_room=to_room_id)
 
             # CRITICAL FIX: Update NPC instance room tracking for occupant queries
             # Get NPC instance from lifecycle manager and update current_room/current_room_id

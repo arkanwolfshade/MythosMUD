@@ -487,6 +487,40 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             }
             break;
           }
+          case 'room_message': {
+            // Handle room messages (NPC movement, spawns, etc.)
+            const message = typeof event.data?.message === 'string' ? (event.data.message as string) : '';
+            const messageTypeFromEvent =
+              typeof event.data?.message_type === 'string' ? (event.data.message_type as string) : undefined;
+            const isHtml = Boolean(event.data?.is_html);
+
+            if (message) {
+              // Use message_type from event if provided, otherwise determine from content
+              let messageType: string;
+              let channel: string;
+
+              if (messageTypeFromEvent === 'system') {
+                // Server explicitly marked this as system message (NPC movement, etc.)
+                messageType = 'system';
+                channel = GAME_LOG_CHANNEL;
+              } else {
+                // Fall back to pattern matching
+                const messageTypeResult = determineMessageType(message);
+                messageType = messageTypeResult.type;
+                channel = messageTypeResult.channel ?? 'game';
+              }
+
+              appendMessage({
+                text: message,
+                timestamp: event.timestamp,
+                isHtml,
+                messageType: messageType,
+                channel: channel,
+                type: resolveChatTypeFromChannel(channel),
+              });
+            }
+            break;
+          }
           case 'chat_message': {
             const message = event.data.message as string;
             const channel = event.data.channel as string;

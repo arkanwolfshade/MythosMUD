@@ -8,7 +8,6 @@ and testability.
 
 import asyncio
 import inspect
-import json
 import time
 import uuid
 from dataclasses import dataclass
@@ -1176,28 +1175,6 @@ class ConnectionManager:
             had_connection_attempts = False
 
             # Try WebSocket connections
-            # #region agent log
-            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
-                f.write(
-                    json.dumps(
-                        {
-                            "sessionId": "debug-session",
-                            "runId": "run1",
-                            "hypothesisId": "A",
-                            "location": "connection_manager.py:1500",
-                            "message": "Checking WebSocket connections for player",
-                            "data": {
-                                "player_id": str(player_id),
-                                "has_websocket": player_id in self.player_websockets,
-                                "connection_ids": self.player_websockets.get(player_id, []),
-                                "active_websockets_count": len(self.active_websockets),
-                            },
-                            "timestamp": int(time.time() * 1000),
-                        }
-                    )
-                    + "\n"
-                )
-            # #endregion
             if player_id in self.player_websockets:
                 connection_ids = self.player_websockets[player_id].copy()  # Copy to avoid modification during iteration
                 for connection_id in connection_ids:
@@ -1205,74 +1182,11 @@ class ConnectionManager:
                         had_connection_attempts = True
                         websocket = self.active_websockets[connection_id]
                         try:
-                            # #region agent log
-                            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
-                                f.write(
-                                    json.dumps(
-                                        {
-                                            "sessionId": "debug-session",
-                                            "runId": "run1",
-                                            "hypothesisId": "A",
-                                            "location": "connection_manager.py:1507",
-                                            "message": "Attempting WebSocket send_json",
-                                            "data": {
-                                                "player_id": str(player_id),
-                                                "connection_id": connection_id,
-                                                "event_type": serializable_event.get("event_type"),
-                                            },
-                                            "timestamp": int(time.time() * 1000),
-                                        }
-                                    )
-                                    + "\n"
-                                )
-                            # #endregion
                             # Check if WebSocket is still open by attempting to send
                             await websocket.send_json(serializable_event)
-                            # #region agent log
-                            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
-                                f.write(
-                                    json.dumps(
-                                        {
-                                            "sessionId": "debug-session",
-                                            "runId": "run1",
-                                            "hypothesisId": "A",
-                                            "location": "connection_manager.py:1510",
-                                            "message": "WebSocket send_json succeeded",
-                                            "data": {
-                                                "player_id": str(player_id),
-                                                "connection_id": connection_id,
-                                                "event_type": serializable_event.get("event_type"),
-                                            },
-                                            "timestamp": int(time.time() * 1000),
-                                        }
-                                    )
-                                    + "\n"
-                                )
-                            # #endregion
                             delivery_status["websocket_delivered"] += 1
                             delivery_status["active_connections"] += 1
                         except Exception as ws_error:
-                            # #region agent log
-                            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
-                                f.write(
-                                    json.dumps(
-                                        {
-                                            "sessionId": "debug-session",
-                                            "runId": "run1",
-                                            "hypothesisId": "A",
-                                            "location": "connection_manager.py:1512",
-                                            "message": "WebSocket send_json failed",
-                                            "data": {
-                                                "player_id": str(player_id),
-                                                "connection_id": connection_id,
-                                                "error": str(ws_error),
-                                            },
-                                            "timestamp": int(time.time() * 1000),
-                                        }
-                                    )
-                                    + "\n"
-                                )
-                            # #endregion
                             # WebSocket is closed or in an invalid state
                             logger.warning(
                                 "WebSocket send failed",
@@ -1284,27 +1198,6 @@ class ConnectionManager:
                             # Clean up the dead WebSocket connection
                             await self._cleanup_dead_websocket(player_id, connection_id)
                             # Continue to other connections
-            else:
-                # #region agent log
-                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
-                    f.write(
-                        json.dumps(
-                            {
-                                "sessionId": "debug-session",
-                                "runId": "run1",
-                                "hypothesisId": "A",
-                                "location": "connection_manager.py:1522",
-                                "message": "No WebSocket connections found for player",
-                                "data": {
-                                    "player_id": str(player_id),
-                                },
-                                "timestamp": int(time.time() * 1000),
-                            }
-                        )
-                        + "\n"
-                    )
-                # #endregion
-
             # If no active connections, queue the message for later delivery
             if delivery_status["active_connections"] == 0:
                 player_id_str = str(player_id)
@@ -2016,27 +1909,6 @@ class ConnectionManager:
         Returns:
             dict: Broadcast delivery statistics
         """
-        # #region agent log
-        import json
-        import time
-
-        if event_type == "npc_attacked":
-            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
-                f.write(
-                    json.dumps(
-                        {
-                            "sessionId": "debug-session",
-                            "runId": "run1",
-                            "hypothesisId": "D",
-                            "location": "connection_manager.py:2260",
-                            "message": "broadcast_room_event called for npc_attacked",
-                            "data": {"room_id": room_id, "event_type": event_type},
-                            "timestamp": int(time.time() * 1000),
-                        }
-                    )
-                    + "\n"
-                )
-        # #endregion
         try:
             # Import here to avoid circular imports
             from .envelope import build_event
@@ -2045,47 +1917,7 @@ class ConnectionManager:
             event = build_event(event_type, data)
 
             # Broadcast to room
-            # #region agent log
-            if event_type == "npc_attacked":
-                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
-                    f.write(
-                        json.dumps(
-                            {
-                                "sessionId": "debug-session",
-                                "runId": "run1",
-                                "hypothesisId": "D",
-                                "location": "connection_manager.py:2277",
-                                "message": "About to call broadcast_to_room for npc_attacked",
-                                "data": {"room_id": room_id, "event_type": event_type},
-                                "timestamp": int(time.time() * 1000),
-                            }
-                        )
-                        + "\n"
-                    )
-            # #endregion
             result = await self.broadcast_to_room(room_id, event)
-            # #region agent log
-            if event_type == "npc_attacked":
-                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
-                    f.write(
-                        json.dumps(
-                            {
-                                "sessionId": "debug-session",
-                                "runId": "run1",
-                                "hypothesisId": "D",
-                                "location": "connection_manager.py:2280",
-                                "message": "broadcast_to_room completed for npc_attacked",
-                                "data": {
-                                    "room_id": room_id,
-                                    "successful_deliveries": result.get("successful_deliveries", 0),
-                                    "total_targets": result.get("total_targets", 0),
-                                },
-                                "timestamp": int(time.time() * 1000),
-                            }
-                        )
-                        + "\n"
-                    )
-            # #endregion
             return result
 
         except Exception as e:
@@ -2324,54 +2156,9 @@ class ConnectionManager:
                             else:
                                 # Fallback: Extract NPC name from the NPC ID
                                 npc_names[npc_id] = npc_id.split("_")[0].replace("_", " ").title()
-                            # #region agent log
-                            try:
-                                with open(
-                                    r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8"
-                                ) as f:
-                                    log_entry = {
-                                        "location": "connection_manager.py:2500",
-                                        "message": "NPC name resolution in _get_npcs_batch",
-                                        "data": {
-                                            "npc_id": npc_id,
-                                            "found_in_active_npcs": True,
-                                            "resolved_name": npc_names.get(npc_id),
-                                            "instance_has_name": name is not None,
-                                        },
-                                        "timestamp": int(__import__("time").time() * 1000),
-                                        "sessionId": "debug-session",
-                                        "runId": "run1",
-                                        "hypothesisId": "A",
-                                    }
-                                    f.write(json.dumps(log_entry) + "\n")
-                            except Exception:
-                                pass
-                            # #endregion
                         else:
                             # Fallback: Extract NPC name from the NPC ID
                             npc_names[npc_id] = npc_id.split("_")[0].replace("_", " ").title()
-                            # #region agent log
-                            try:
-                                with open(
-                                    r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8"
-                                ) as f:
-                                    log_entry = {
-                                        "location": "connection_manager.py:2510",
-                                        "message": "NPC not found in active_npcs - using fallback",
-                                        "data": {
-                                            "npc_id": npc_id,
-                                            "found_in_active_npcs": False,
-                                            "fallback_name": npc_names.get(npc_id),
-                                        },
-                                        "timestamp": int(__import__("time").time() * 1000),
-                                        "sessionId": "debug-session",
-                                        "runId": "run1",
-                                        "hypothesisId": "B",
-                                    }
-                                    f.write(json.dumps(log_entry) + "\n")
-                            except Exception:
-                                pass
-                            # #endregion
         except Exception as e:
             logger.debug("Error batch loading NPC names", npc_count=len(npc_ids), error=str(e))
             # Fallback: Generate names from IDs

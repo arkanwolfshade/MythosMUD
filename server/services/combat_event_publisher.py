@@ -427,33 +427,6 @@ class CombatEventPublisher:
         Returns:
             True if published successfully, False otherwise
         """
-        # #region agent log
-        import json
-        import time
-
-        with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
-            f.write(
-                json.dumps(
-                    {
-                        "sessionId": "debug-session",
-                        "runId": "run1",
-                        "hypothesisId": "A",
-                        "location": "combat_event_publisher.py:407",
-                        "message": "publish_npc_attacked called",
-                        "data": {
-                            "attacker_id": str(event.attacker_id),
-                            "attacker_name": event.attacker_name,
-                            "npc_id": str(event.npc_id),
-                            "npc_name": event.npc_name,
-                            "damage": event.damage,
-                            "room_id": event.room_id,
-                        },
-                        "timestamp": int(time.time() * 1000),
-                    }
-                )
-                + "\n"
-            )
-        # #endregion
         try:
             if not self.nats_service:
                 logger.error(
@@ -522,53 +495,7 @@ class CombatEventPublisher:
                 )
 
             try:
-                # #region agent log
-                import json
-                import time
-
-                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
-                    f.write(
-                        json.dumps(
-                            {
-                                "sessionId": "debug-session",
-                                "runId": "run1",
-                                "hypothesisId": "B",
-                                "location": "combat_event_publisher.py:503",
-                                "message": "About to publish NPC attacked to NATS",
-                                "data": {
-                                    "subject": subject,
-                                    "attacker_name": event.attacker_name,
-                                    "damage": event.damage,
-                                    "room_id": event.room_id,
-                                },
-                                "timestamp": int(time.time() * 1000),
-                            }
-                        )
-                        + "\n"
-                    )
-                # #endregion
                 await self.nats_service.publish(subject, message_data)
-                # #region agent log
-                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
-                    f.write(
-                        json.dumps(
-                            {
-                                "sessionId": "debug-session",
-                                "runId": "run1",
-                                "hypothesisId": "B",
-                                "location": "combat_event_publisher.py:506",
-                                "message": "NPC attacked event published to NATS successfully",
-                                "data": {
-                                    "subject": subject,
-                                    "attacker_name": event.attacker_name,
-                                    "damage": event.damage,
-                                },
-                                "timestamp": int(time.time() * 1000),
-                            }
-                        )
-                        + "\n"
-                    )
-                # #endregion
                 logger.info(
                     "NPC attacked event published to NATS",
                     combat_id=str(event.combat_id),

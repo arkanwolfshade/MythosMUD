@@ -176,12 +176,13 @@ class Room:
             event = ObjectRemovedFromRoom(object_id=object_id, room_id=self.id, player_id=player_id)
             self._event_bus.publish(event)
 
-    def npc_entered(self, npc_id: str) -> None:
+    def npc_entered(self, npc_id: str, from_room_id: str | None = None) -> None:
         """
         Add an NPC to the room and trigger event.
 
         Args:
             npc_id: The ID of the NPC entering the room
+            from_room_id: Optional source room ID for movement tracking
         """
         if not npc_id:
             raise ValueError("NPC ID cannot be empty")
@@ -191,19 +192,23 @@ class Room:
             return
 
         self._npcs.add(npc_id)
-        self._logger.debug("NPC entered room", npc_id=npc_id, room_id=self.id)
+        self._logger.debug("NPC entered room", npc_id=npc_id, room_id=self.id, from_room_id=from_room_id)
 
         # Publish event if event bus is available
         if self._event_bus:
-            event = NPCEnteredRoom(npc_id=npc_id, room_id=self.id)
+            event = NPCEnteredRoom(npc_id=npc_id, room_id=self.id, from_room_id=from_room_id)
+            self._logger.debug(
+                "Publishing NPCEnteredRoom event", npc_id=npc_id, room_id=self.id, from_room_id=from_room_id
+            )
             self._event_bus.publish(event)
 
-    def npc_left(self, npc_id: str) -> None:
+    def npc_left(self, npc_id: str, to_room_id: str | None = None) -> None:
         """
         Remove an NPC from the room and trigger event.
 
         Args:
             npc_id: The ID of the NPC leaving the room
+            to_room_id: Optional destination room ID for movement tracking
         """
         if not npc_id:
             raise ValueError("NPC ID cannot be empty")
@@ -213,11 +218,12 @@ class Room:
             return
 
         self._npcs.remove(npc_id)
-        self._logger.debug("NPC left room", npc_id=npc_id, room_id=self.id)
+        self._logger.debug("NPC left room", npc_id=npc_id, room_id=self.id, to_room_id=to_room_id)
 
         # Publish event if event bus is available
         if self._event_bus:
-            event = NPCLeftRoom(npc_id=npc_id, room_id=self.id)
+            event = NPCLeftRoom(npc_id=npc_id, room_id=self.id, to_room_id=to_room_id)
+            self._logger.debug("Publishing NPCLeftRoom event", npc_id=npc_id, room_id=self.id, to_room_id=to_room_id)
             self._event_bus.publish(event)
 
     def get_players(self) -> list[str]:
