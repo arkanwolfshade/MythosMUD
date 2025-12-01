@@ -1,7 +1,7 @@
 """
-Tests for dual connection monitoring and logging functionality.
+Tests for WebSocket-only connection monitoring and logging functionality.
 
-This module tests the enhanced monitoring capabilities added for the dual connection system,
+This module tests the enhanced monitoring capabilities for the WebSocket-only connection system,
 including performance tracking, health monitoring, and comprehensive statistics.
 """
 
@@ -13,8 +13,8 @@ import pytest
 from server.realtime.connection_manager import ConnectionManager, ConnectionMetadata
 
 
-class TestDualConnectionMonitoring:
-    """Test dual connection monitoring functionality."""
+class TestConnectionMonitoring:
+    """Test WebSocket-only connection monitoring functionality."""
 
     @pytest.fixture
     def connection_manager(self):
@@ -31,7 +31,7 @@ class TestDualConnectionMonitoring:
         return websocket
 
     def test_get_dual_connection_stats_empty(self, connection_manager):
-        """Test dual connection stats with no connections."""
+        """Test connection stats with no connections."""
         stats = connection_manager.get_dual_connection_stats()
 
         assert "connection_distribution" in stats
@@ -43,23 +43,19 @@ class TestDualConnectionMonitoring:
 
         # Check empty state
         assert stats["connection_distribution"]["total_players"] == 0
-        assert stats["connection_distribution"]["dual_connection_players"] == 0
         assert stats["connection_health"]["total_connections"] == 0
         assert stats["session_metrics"]["total_sessions"] == 0
 
     @pytest.mark.asyncio
     async def test_get_dual_connection_stats_with_connections(self, connection_manager, mock_websocket):
-        """Test dual connection stats with various connection types."""
+        """Test connection stats with WebSocket connections."""
         # Add some test connections
         player_id = "test_player_1"
 
         # Add WebSocket connection
         await connection_manager.connect_websocket(mock_websocket, player_id, "session_1")
 
-        # Add SSE connection
-        await connection_manager.connect_sse(player_id, "session_1")
-
-        # Add another player with only WebSocket
+        # Add another player with WebSocket
         player_id_2 = "test_player_2"
         await connection_manager.connect_websocket(mock_websocket, player_id_2, "session_2")
 
@@ -67,21 +63,18 @@ class TestDualConnectionMonitoring:
 
         # Check connection distribution
         assert stats["connection_distribution"]["total_players"] == 2
-        assert stats["connection_distribution"]["dual_connection_players"] == 1
-        assert stats["connection_distribution"]["websocket_only_players"] == 1
-        assert stats["connection_distribution"]["sse_only_players"] == 0
-        assert stats["connection_distribution"]["dual_connection_percentage"] == 50.0
+        assert stats["connection_distribution"]["websocket_only_players"] == 2
 
         # Check connection health
-        assert stats["connection_health"]["total_connections"] == 3
-        assert stats["connection_health"]["healthy_connections"] == 3
+        assert stats["connection_health"]["total_connections"] == 2
+        assert stats["connection_health"]["healthy_connections"] == 2
         assert stats["connection_health"]["unhealthy_connections"] == 0
         assert stats["connection_health"]["health_percentage"] == 100.0
 
         # Check session metrics
         assert stats["session_metrics"]["total_sessions"] == 2
-        assert stats["session_metrics"]["total_session_connections"] == 3
-        assert stats["session_metrics"]["avg_connections_per_session"] == 1.5
+        assert stats["session_metrics"]["total_session_connections"] == 2
+        assert stats["session_metrics"]["avg_connections_per_session"] == 1.0
 
     def test_get_performance_stats_empty(self, connection_manager):
         """Test performance stats with no activity."""
@@ -97,27 +90,23 @@ class TestDualConnectionMonitoring:
         # Check empty state
         assert stats["connection_establishment"]["total_connections"] == 0
         assert stats["connection_establishment"]["websocket_connections"] == 0
-        assert stats["connection_establishment"]["sse_connections"] == 0
 
     @pytest.mark.asyncio
     async def test_get_performance_stats_with_activity(self, connection_manager, mock_websocket):
         """Test performance stats with connection activity."""
         player_id = "test_player"
 
-        # Add connections to generate performance data
+        # Add connection to generate performance data
         await connection_manager.connect_websocket(mock_websocket, player_id, "session_1")
-        await connection_manager.connect_sse(player_id, "session_1")
 
         stats = connection_manager.get_performance_stats()
 
         # Check connection establishment stats
-        assert stats["connection_establishment"]["total_connections"] == 2
+        assert stats["connection_establishment"]["total_connections"] == 1
         assert stats["connection_establishment"]["websocket_connections"] == 1
-        assert stats["connection_establishment"]["sse_connections"] == 1
 
         # Check that timing data is recorded
         assert stats["connection_establishment"]["avg_websocket_establishment_ms"] >= 0
-        assert stats["connection_establishment"]["avg_sse_establishment_ms"] >= 0
 
     def test_get_connection_health_stats_empty(self, connection_manager):
         """Test connection health stats with no connections."""
@@ -140,11 +129,10 @@ class TestDualConnectionMonitoring:
         """Test connection health stats with various connection states."""
         player_id = "test_player"
 
-        # Add connections
+        # Add connection
         await connection_manager.connect_websocket(mock_websocket, player_id, "session_1")
-        await connection_manager.connect_sse(player_id, "session_1")
 
-        # Manually set one connection as unhealthy for testing
+        # Manually set connection as unhealthy for testing
         connection_ids = list(connection_manager.connection_metadata.keys())
         if connection_ids:
             connection_manager.connection_metadata[connection_ids[0]].is_healthy = False
@@ -152,18 +140,17 @@ class TestDualConnectionMonitoring:
         stats = connection_manager.get_connection_health_stats()
 
         # Check overall health
-        assert stats["overall_health"]["total_connections"] == 2
-        assert stats["overall_health"]["healthy_connections"] == 1
+        assert stats["overall_health"]["total_connections"] == 1
+        assert stats["overall_health"]["healthy_connections"] == 0
         assert stats["overall_health"]["unhealthy_connections"] == 1
-        assert stats["overall_health"]["health_percentage"] == 50.0
+        assert stats["overall_health"]["health_percentage"] == 0.0
 
         # Check connection type health
         assert stats["connection_type_health"]["websocket_connections"] == 1
-        assert stats["connection_type_health"]["sse_connections"] == 1
 
         # Check session health
         assert stats["session_health"]["total_sessions"] == 1
-        assert stats["session_health"]["avg_connections_per_session"] == 2.0
+        assert stats["session_health"]["avg_connections_per_session"] == 1.0
 
     def test_performance_stats_memory_management(self, connection_manager):
         """Test that performance stats don't grow indefinitely."""
@@ -196,29 +183,6 @@ class TestDualConnectionMonitoring:
         assert metadata is not None
         assert metadata.player_id == player_id
         assert metadata.connection_type == "websocket"
-        assert metadata.session_id == "session_1"
-        assert metadata.is_healthy is True
-
-    @pytest.mark.asyncio
-    async def test_enhanced_logging_sse_connection(self, connection_manager, caplog):
-        """Test enhanced logging for SSE connections."""
-        player_id = "test_player"
-
-        # Connect SSE and verify connection was established
-        await connection_manager.connect_sse(player_id, "session_1")
-
-        # Verify the connection was established successfully
-        assert connection_manager.has_sse_connection(player_id)
-
-        # Verify that connection metadata was created with enhanced information
-        connection_ids = connection_manager.active_sse_connections.get(player_id, [])
-        assert len(connection_ids) == 1
-
-        connection_id = connection_ids[0]
-        metadata = connection_manager.connection_metadata.get(connection_id)
-        assert metadata is not None
-        assert metadata.player_id == player_id
-        assert metadata.connection_type == "sse"
         assert metadata.session_id == "session_1"
         assert metadata.is_healthy is True
 
@@ -301,13 +265,12 @@ class TestDualConnectionMonitoring:
         initial_connections = connection_manager.performance_stats["total_connections_established"]
         initial_times = len(connection_manager.performance_stats["connection_establishment_times"])
 
-        # Add connections
+        # Add connection
         await connection_manager.connect_websocket(mock_websocket, player_id, "session_1")
-        await connection_manager.connect_sse(player_id, "session_1")
 
         # Check that performance stats were updated
-        assert connection_manager.performance_stats["total_connections_established"] == initial_connections + 2
-        assert len(connection_manager.performance_stats["connection_establishment_times"]) == initial_times + 2
+        assert connection_manager.performance_stats["total_connections_established"] == initial_connections + 1
+        assert len(connection_manager.performance_stats["connection_establishment_times"]) == initial_times + 1
 
         # Check that timing data was recorded
         websocket_times = [
@@ -315,13 +278,6 @@ class TestDualConnectionMonitoring:
             for conn_type, duration in connection_manager.performance_stats["connection_establishment_times"]
             if conn_type == "websocket"
         ]
-        sse_times = [
-            duration
-            for conn_type, duration in connection_manager.performance_stats["connection_establishment_times"]
-            if conn_type == "sse"
-        ]
 
         assert len(websocket_times) >= 1
-        assert len(sse_times) >= 1
         assert all(duration >= 0 for duration in websocket_times)
-        assert all(duration >= 0 for duration in sse_times)

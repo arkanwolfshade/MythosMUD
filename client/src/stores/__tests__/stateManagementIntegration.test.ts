@@ -42,7 +42,6 @@ describe('State Management Integration', () => {
 
       // 2. Connection is established
       act(() => {
-        connectionResult.current.setSseConnected(true);
         connectionResult.current.setWebsocketConnected(true);
       });
 
@@ -116,7 +115,6 @@ describe('State Management Integration', () => {
 
       // Connection is lost
       act(() => {
-        connectionResult.current.setSseConnected(false);
         connectionResult.current.setWebsocketConnected(false);
         connectionResult.current.setError('Connection lost');
       });
@@ -129,7 +127,6 @@ describe('State Management Integration', () => {
 
       // Connection is restored
       act(() => {
-        connectionResult.current.setSseConnected(true);
         connectionResult.current.setWebsocketConnected(true);
         connectionResult.current.setError(null);
       });
@@ -150,7 +147,6 @@ describe('State Management Integration', () => {
         sessionResult.current.setHasCharacter(true);
         sessionResult.current.setCharacterName('TestCharacter');
         sessionResult.current.setAuthToken('auth-token-123');
-        connectionResult.current.setSseConnected(true);
         connectionResult.current.setWebsocketConnected(true);
         gameResult.current.setPlayer({
           id: 'player-123',
@@ -390,7 +386,6 @@ describe('State Management Integration', () => {
       // Simulate connection error
       act(() => {
         connectionResult.current.setError('Connection failed');
-        connectionResult.current.setSseConnected(false);
         connectionResult.current.setWebsocketConnected(false);
       });
 
@@ -400,7 +395,6 @@ describe('State Management Integration', () => {
       // Recover from error
       act(() => {
         connectionResult.current.setError(null);
-        connectionResult.current.setSseConnected(true);
         connectionResult.current.setWebsocketConnected(true);
       });
 
@@ -448,7 +442,6 @@ describe('State Management Integration', () => {
       act(() => {
         sessionResult.current.setAuthenticated(true);
         sessionResult.current.setCharacterName('TestCharacter');
-        connectionResult.current.setSseConnected(true);
         connectionResult.current.setWebsocketConnected(true);
         gameResult.current.setPlayer({
           id: 'player-123',

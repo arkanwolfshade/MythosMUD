@@ -36,7 +36,7 @@ These are domain events published through the EventBus system defined in `server
 
 ### Layer 2: Real-Time Messages (Client-Facing)
 
-These are SSE/WebSocket messages sent to clients:
+These are WebSocket messages sent to clients:
 
 | Message Type | Publisher | Purpose | Recipients |
 |-------------|-----------|---------|------------|
@@ -67,7 +67,7 @@ NATS subject-based messages for inter-service communication:
 
 **Issue:** Players entering/leaving rooms trigger TWO separate message paths:
 
-**Path 1: EventBus → RealTimeEventHandler → SSE/WebSocket (CORRECT)**
+**Path 1: EventBus → RealTimeEventHandler → WebSocket (CORRECT)**
 ```
 Source: server/models/room.py
 1. Room.player_entered() publishes PlayerEnteredRoom event to EventBus
@@ -116,7 +116,7 @@ This appears intentional (event sourcing + message delivery) but creates complex
 **Issue:** System messages sent through multiple paths
 
 **Sources:**
-- Direct SSE/WebSocket sends
+- Direct WebSocket sends
 - EventBus system events
 - NATS system channel (planned)
 
@@ -143,11 +143,12 @@ Establish single authoritative source for each domain event:
 2. **EventBus → RealTimeEventHandler → Client Messages**
    - RealTimeEventHandler subscribes to EventBus events
    - Transforms events into client-facing messages
-   - Handles all SSE/WebSocket message delivery
+   - Handles all WebSocket message delivery
 
 3. **Chat → NATS → Client Messages**
    - Chat messages use NATS pub/sub
    - NATSMessageHandler transforms NATS messages to client format
+   - Delivered via WebSocket to clients
    - Clear separation from domain events
 
 ## Event Flow Diagram
@@ -159,7 +160,7 @@ EventBus (Single Source of Truth)
     ↓ notifies
 RealTimeEventHandler (Event → Message Transformer)
     ↓ sends
-SSE/WebSocket (Client Delivery)
+WebSocket (Client Delivery)
     ↓ receives
 React Client
 ```
@@ -172,7 +173,7 @@ NATS (chat.* subjects)
     ↓ subscribes
 NATSMessageHandler
     ↓ sends
-SSE/WebSocket
+WebSocket
     ↓ receives
 React Client
 ```
@@ -221,6 +222,6 @@ This document represents the audit results.
 - `server/events/event_types.py` - EventBus event definitions
 - `server/models/room.py` - Room event publishers
 - `server/realtime/event_handler.py` - Event → Message transformation
-- `server/realtime/sse_handler.py` - SSE message delivery
+- `server/realtime/connection_manager.py` - WebSocket message delivery
 - `server/realtime/nats_message_handler.py` - NATS → Client messages
 - `docs/COMPREHENSIVE_SYSTEM_AUDIT.md` - Original issue documentation

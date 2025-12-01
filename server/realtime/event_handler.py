@@ -317,8 +317,11 @@ class RealTimeEventHandler:
                     # This prevents room_update from overwriting structured NPC/player data
                 },
             }
-            # Send as personal message via SSE (server-initiated event)
-            await self.connection_manager.send_personal_message(player_id_uuid, room_update_event, prefer_sse=True)
+            # Send as personal message (server-initiated event)
+            await self.connection_manager.send_personal_message(
+                player_id_uuid,
+                room_update_event,
+            )
             self._logger.debug(
                 "Sent room_update to player",
                 # Structlog handles UUID objects automatically, no need to convert to string
@@ -342,8 +345,11 @@ class RealTimeEventHandler:
                     player_id=player_id_uuid,
                     connection_manager=self.connection_manager,
                 )
-                # Send via SSE (server-initiated event)
-                await self.connection_manager.send_personal_message(player_id_uuid, room_name_event, prefer_sse=True)
+                # Send via WebSocket (server-initiated event)
+                await self.connection_manager.send_personal_message(
+                    player_id_uuid,
+                    room_name_event,
+                )
                 self._logger.debug(
                     "Sent room name message to player",
                     player_id=player_id_uuid,
@@ -478,8 +484,11 @@ class RealTimeEventHandler:
                     npcs_count=len(npcs),
                 )
 
-            # ARCHITECTURE: Server-initiated events (room occupants) should use SSE
-            await self.connection_manager.send_personal_message(player_id_uuid, personal, prefer_sse=True)
+            # ARCHITECTURE: Server-initiated events (room occupants) sent via WebSocket
+            await self.connection_manager.send_personal_message(
+                player_id_uuid,
+                personal,
+            )
             self._logger.debug(
                 "Occupants snapshot sent successfully to player",
                 player_id=player_id_uuid,
@@ -954,7 +963,7 @@ class RealTimeEventHandler:
                 npcs_count=len(npcs),
             )
 
-            message = {
+            message: dict[str, Any] = {
                 "event_type": "room_occupants",
                 "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
                 "sequence_number": self._get_next_sequence(),
@@ -1352,10 +1361,26 @@ class RealTimeEventHandler:
                             # Match against both original and canonical room IDs for robustness
                             # Also try normalized versions to handle format differences
                             room_matches = (
-                                (normalized_npc_room_id and normalized_room_id and normalized_npc_room_id == normalized_room_id)
-                                or (normalized_npc_room_id and normalized_canonical_room_id and normalized_npc_room_id == normalized_canonical_room_id)
-                                or (normalized_npc_canonical_room_id and normalized_room_id and normalized_npc_canonical_room_id == normalized_room_id)
-                                or (normalized_npc_canonical_room_id and normalized_canonical_room_id and normalized_npc_canonical_room_id == normalized_canonical_room_id)
+                                (
+                                    normalized_npc_room_id
+                                    and normalized_room_id
+                                    and normalized_npc_room_id == normalized_room_id
+                                )
+                                or (
+                                    normalized_npc_room_id
+                                    and normalized_canonical_room_id
+                                    and normalized_npc_room_id == normalized_canonical_room_id
+                                )
+                                or (
+                                    normalized_npc_canonical_room_id
+                                    and normalized_room_id
+                                    and normalized_npc_canonical_room_id == normalized_room_id
+                                )
+                                or (
+                                    normalized_npc_canonical_room_id
+                                    and normalized_canonical_room_id
+                                    and normalized_npc_canonical_room_id == normalized_canonical_room_id
+                                )
                                 # Fallback to original comparison for backward compatibility
                                 or (npc_room_id == room_id)
                                 or (npc_room_id == canonical_room_id)
@@ -1365,7 +1390,9 @@ class RealTimeEventHandler:
 
                             # #region agent log
                             try:
-                                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
+                                with open(
+                                    r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8"
+                                ) as f:
                                     log_entry = {
                                         "location": "event_handler.py:1311",
                                         "message": "NPC room ID matching check",
@@ -1377,7 +1404,9 @@ class RealTimeEventHandler:
                                             "npc_current_room": str(current_room) if current_room else None,
                                             "npc_current_room_id": str(current_room_id) if current_room_id else None,
                                             "npc_room_id_used": str(npc_room_id) if npc_room_id else None,
-                                            "npc_canonical_room_id": str(npc_canonical_room_id) if npc_canonical_room_id else None,
+                                            "npc_canonical_room_id": str(npc_canonical_room_id)
+                                            if npc_canonical_room_id
+                                            else None,
                                             "match_1": npc_room_id == room_id,
                                             "match_2": npc_room_id == canonical_room_id,
                                             "match_3": npc_canonical_room_id == room_id,
@@ -1459,12 +1488,12 @@ class RealTimeEventHandler:
                             sample_npc_room_ids = []
                             npcs_in_same_zone = 0
                             sample_count = 0
-                            
+
                             # Extract zone/sub-zone from queried room ID (format: earth_zone_subzone_room_roomname_###)
                             queried_zone_parts = room_id.split("_")[:3] if "_" in room_id else []
                             queried_zone_key = "_".join(queried_zone_parts) if len(queried_zone_parts) >= 3 else ""
-                            
-                            for sample_npc_id, sample_npc_instance in active_npcs_dict.items():
+
+                            for _sample_npc_id, sample_npc_instance in active_npcs_dict.items():
                                 sample_current_room = getattr(sample_npc_instance, "current_room", None)
                                 sample_current_room_id = getattr(sample_npc_instance, "current_room_id", None)
                                 sample_npc_room_id = sample_current_room or sample_current_room_id
@@ -1474,12 +1503,18 @@ class RealTimeEventHandler:
                                         sample_npc_room_ids.append(sample_npc_room_id_str)
                                     # Check if NPC is in same zone/sub-zone (potential format mismatch indicator)
                                     if queried_zone_key:
-                                        sample_zone_parts = sample_npc_room_id_str.split("_")[:3] if "_" in sample_npc_room_id_str else []
-                                        sample_zone_key = "_".join(sample_zone_parts) if len(sample_zone_parts) >= 3 else ""
+                                        sample_zone_parts = (
+                                            sample_npc_room_id_str.split("_")[:3]
+                                            if "_" in sample_npc_room_id_str
+                                            else []
+                                        )
+                                        sample_zone_key = (
+                                            "_".join(sample_zone_parts) if len(sample_zone_parts) >= 3 else ""
+                                        )
                                         if sample_zone_key == queried_zone_key:
                                             npcs_in_same_zone += 1
                                     sample_count += 1
-                            
+
                             # Only warn if NPCs exist in the same zone/sub-zone but didn't match
                             # This suggests a format mismatch rather than just "no NPCs in this room"
                             if npcs_in_same_zone > 0:
@@ -1652,7 +1687,9 @@ class RealTimeEventHandler:
                                 "npc_id": npc_id,
                                 "npc_name": npc_name,
                                 "occupants_count": len(occupants),
-                                "npc_occupants_count": sum(1 for occ in occupants if isinstance(occ, dict) and occ.get("type") == "npc"),
+                                "npc_occupants_count": sum(
+                                    1 for occ in occupants if isinstance(occ, dict) and occ.get("type") == "npc"
+                                ),
                             },
                             "timestamp": int(datetime.now(UTC).timestamp() * 1000),
                             "sessionId": "debug-session",
@@ -1834,8 +1871,11 @@ class RealTimeEventHandler:
                 player_id=player_id_str,
             )
 
-            # ARCHITECTURE: Server-initiated events (XP updates) should use SSE
-            await self.connection_manager.send_personal_message(player_id_str, xp_update_event, prefer_sse=True)
+            # ARCHITECTURE: Server-initiated events (XP updates) sent via WebSocket
+            await self.connection_manager.send_personal_message(
+                player_id_str,
+                xp_update_event,
+            )
 
             self._logger.info(
                 "Sent XP award update to player",
@@ -2010,7 +2050,10 @@ class RealTimeEventHandler:
                     # Create a task to send the message
                     if self.task_registry:
                         self.task_registry.register_task(
-                            self.connection_manager.send_personal_message(player_id, message_event, prefer_sse=True),
+                            self.connection_manager.send_personal_message(
+                                player_id,
+                                message_event,
+                            ),
                             f"event_handler/room_message_{room_id}_{player_id}",
                             "event_handler",
                         )
@@ -2019,7 +2062,10 @@ class RealTimeEventHandler:
 
                         tracked_manager = get_global_tracked_manager()
                         tracked_manager.create_tracked_task(
-                            self.connection_manager.send_personal_message(player_id, message_event, prefer_sse=True),
+                            self.connection_manager.send_personal_message(
+                                player_id,
+                                message_event,
+                            ),
                             task_name=f"event_handler/room_message_{room_id}_{player_id}",
                             task_type="event_handler",
                         )
@@ -2137,8 +2183,11 @@ class RealTimeEventHandler:
                 )
             # #endregion
             # player_id is now UUID (changed from str to match codebase), so we can use it directly
-            # ARCHITECTURE: Server-initiated events (HP updates) should use SSE, not WebSocket
-            await self.connection_manager.send_personal_message(player_id, hp_update_event, prefer_sse=True)
+            # ARCHITECTURE: Server-initiated events (HP updates) sent via WebSocket
+            await self.connection_manager.send_personal_message(
+                player_id,
+                hp_update_event,
+            )
             # #region agent log
             with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
                 f.write(
@@ -2196,8 +2245,11 @@ class RealTimeEventHandler:
                 player_id=player_id_str,
             )
 
-            # ARCHITECTURE: Server-initiated events (death) should use SSE
-            await self.connection_manager.send_personal_message(player_id_str, death_event, prefer_sse=True)
+            # ARCHITECTURE: Server-initiated events (death) sent via WebSocket
+            await self.connection_manager.send_personal_message(
+                player_id_str,
+                death_event,
+            )
 
             self._logger.info("Sent death notification to player", player_id=player_id_str, room_id=event.room_id)
 
@@ -2230,8 +2282,11 @@ class RealTimeEventHandler:
                 player_id=player_id_str,
             )
 
-            # ARCHITECTURE: Server-initiated events (HP decay) should use SSE
-            await self.connection_manager.send_personal_message(player_id_str, decay_event, prefer_sse=True)
+            # ARCHITECTURE: Server-initiated events (HP decay) sent via WebSocket
+            await self.connection_manager.send_personal_message(
+                player_id_str,
+                decay_event,
+            )
 
             self._logger.debug("Sent HP decay notification to player", player_id=player_id_str, new_hp=event.new_hp)
 
@@ -2374,9 +2429,8 @@ class RealTimeEventHandler:
             for poll_count in range(max_polls):
                 # Check if WebSocket connection is available
                 has_websocket = player_id_uuid in self.connection_manager.player_websockets
-                has_sse = self.connection_manager.has_sse_connection(player_id_uuid)
 
-                if has_websocket or has_sse:
+                if has_websocket:
                     # Connection available - try sending immediately
                     # #region agent log
                     try:
@@ -2388,7 +2442,6 @@ class RealTimeEventHandler:
                                     "player_id": player_id_str,
                                     "poll_count": poll_count + 1,
                                     "has_websocket": has_websocket,
-                                    "has_sse": has_sse,
                                 },
                                 "timestamp": int(datetime.now(UTC).timestamp() * 1000),
                                 "sessionId": "debug-session",
@@ -2399,9 +2452,10 @@ class RealTimeEventHandler:
                     except Exception:
                         pass
                     # #endregion
-                    # ARCHITECTURE: Server-initiated events (respawn) should use SSE, not WebSocket
+                    # ARCHITECTURE: Server-initiated events (respawn) sent via WebSocket
                     delivery_status = await self.connection_manager.send_personal_message(
-                        player_id_uuid, respawn_event, prefer_sse=True
+                        player_id_uuid,
+                        respawn_event,
                     )
                     # #region agent log
                     try:
@@ -2413,7 +2467,6 @@ class RealTimeEventHandler:
                                     "player_id": player_id_str,
                                     "poll_count": poll_count + 1,
                                     "websocket_delivered": delivery_status.get("websocket_delivered", 0),
-                                    "sse_delivered": delivery_status.get("sse_delivered"),
                                     "active_connections": delivery_status.get("active_connections", 0),
                                 },
                                 "timestamp": int(datetime.now(UTC).timestamp() * 1000),
@@ -2427,9 +2480,8 @@ class RealTimeEventHandler:
                     # #endregion
                     # Check if message was actually delivered
                     websocket_delivered = delivery_status.get("websocket_delivered", 0) > 0
-                    sse_delivered = delivery_status.get("sse_delivered", False)
                     active_connections = delivery_status.get("active_connections", 0)
-                    if websocket_delivered or (sse_delivered and active_connections > 0):
+                    if websocket_delivered and active_connections > 0:
                         # Message actually delivered to active connection
                         break
 

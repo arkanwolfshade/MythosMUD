@@ -7,7 +7,7 @@ from typing import Any
 from server.events.event_bus import EventBus
 from server.events.event_types import MythosHourTickEvent
 from server.logging.enhanced_logging_config import get_logger
-from server.realtime.sse_handler import broadcast_game_event
+from server.realtime.connection_manager import broadcast_game_event
 from server.services.holiday_service import HolidayService
 from server.services.schedule_service import ScheduleService
 from server.time.time_service import ChronicleLike

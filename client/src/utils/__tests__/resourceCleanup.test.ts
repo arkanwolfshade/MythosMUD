@@ -29,33 +29,9 @@ class MockWebSocket {
   }
 }
 
-// Mock EventSource
-class MockEventSource {
-  public readyState = EventSource.CONNECTING;
-  public onopen: ((event: Event) => void) | null = null;
-  public onerror: ((event: Event) => void) | null = null;
-  public onmessage: ((event: MessageEvent) => void) | null = null;
-
-  constructor(public url: string) {
-    setTimeout(() => {
-      this.readyState = EventSource.OPEN;
-      this.onopen?.(new Event('open'));
-    }, 100);
-  }
-
-  close() {
-    this.readyState = EventSource.CLOSED;
-  }
-}
-
 // Mock global objects
 Object.defineProperty(global, 'WebSocket', {
   value: MockWebSocket,
-  writable: true,
-});
-
-Object.defineProperty(global, 'EventSource', {
-  value: MockEventSource,
   writable: true,
 });
 
@@ -65,7 +41,6 @@ import { ResourceManager, useResourceCleanup } from '../resourceCleanup';
 describe('ResourceManager', () => {
   let resourceManager: ResourceManager;
   let mockWebSocket: MockWebSocket;
-  let mockEventSource: MockEventSource;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -73,7 +48,6 @@ describe('ResourceManager', () => {
     // nosemgrep: javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket
     // This is a test mock, not a production WebSocket connection
     mockWebSocket = new MockWebSocket('ws://test');
-    mockEventSource = new MockEventSource('http://test');
   });
 
   afterEach(() => {
@@ -159,33 +133,6 @@ describe('ResourceManager', () => {
     });
   });
 
-  describe('EventSource Management', () => {
-    it('should register and cleanup EventSource connections', () => {
-      resourceManager.registerEventSource(mockEventSource);
-
-      expect(resourceManager.getActiveEventSources()).toHaveLength(1);
-
-      resourceManager.cleanup();
-      expect(resourceManager.getActiveEventSources()).toHaveLength(0);
-      expect(mockEventSource.readyState).toBe(EventSource.CLOSED);
-    });
-
-    it('should handle multiple EventSource connections', () => {
-      const es1 = new MockEventSource('http://test1');
-      const es2 = new MockEventSource('http://test2');
-
-      resourceManager.registerEventSource(es1);
-      resourceManager.registerEventSource(es2);
-
-      expect(resourceManager.getActiveEventSources()).toHaveLength(2);
-
-      resourceManager.cleanup();
-      expect(resourceManager.getActiveEventSources()).toHaveLength(0);
-      expect(es1.readyState).toBe(EventSource.CLOSED);
-      expect(es2.readyState).toBe(EventSource.CLOSED);
-    });
-  });
-
   describe('Custom Resource Management', () => {
     it('should register and cleanup custom resources', () => {
       const customResource = {
@@ -221,19 +168,16 @@ describe('ResourceManager', () => {
       // nosemgrep: javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket
       // This is a test mock, not a production WebSocket connection
       const ws = new MockWebSocket('ws://test');
-      const es = new MockEventSource('http://test');
       const customResource = { cleanup: vi.fn() };
 
       resourceManager.registerTimer(timer);
       resourceManager.registerInterval(interval);
       resourceManager.registerWebSocket(ws);
-      resourceManager.registerEventSource(es);
       resourceManager.registerCustomResource(customResource);
 
       expect(resourceManager.getActiveTimers()).toHaveLength(1);
       expect(resourceManager.getActiveIntervals()).toHaveLength(1);
       expect(resourceManager.getActiveWebSockets()).toHaveLength(1);
-      expect(resourceManager.getActiveEventSources()).toHaveLength(1);
       expect(resourceManager.getActiveCustomResources()).toHaveLength(1);
 
       resourceManager.cleanup();
@@ -241,7 +185,6 @@ describe('ResourceManager', () => {
       expect(resourceManager.getActiveTimers()).toHaveLength(0);
       expect(resourceManager.getActiveIntervals()).toHaveLength(0);
       expect(resourceManager.getActiveWebSockets()).toHaveLength(0);
-      expect(resourceManager.getActiveEventSources()).toHaveLength(0);
       expect(resourceManager.getActiveCustomResources()).toHaveLength(0);
       expect(customResource.cleanup).toHaveBeenCalled();
     });
@@ -254,13 +197,11 @@ describe('ResourceManager', () => {
       // nosemgrep: javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket
       // This is a test mock, not a production WebSocket connection
       const ws = new MockWebSocket('ws://test');
-      const es = new MockEventSource('http://test');
       const customResource = { cleanup: vi.fn() };
 
       resourceManager.registerTimer(timer);
       resourceManager.registerInterval(interval);
       resourceManager.registerWebSocket(ws);
-      resourceManager.registerEventSource(es);
       resourceManager.registerCustomResource(customResource);
 
       const stats = resourceManager.getResourceStats();
@@ -268,9 +209,8 @@ describe('ResourceManager', () => {
         timers: 1,
         intervals: 1,
         webSockets: 1,
-        eventSources: 1,
         customResources: 1,
-        total: 5,
+        total: 4,
       });
     });
 
@@ -280,7 +220,6 @@ describe('ResourceManager', () => {
         timers: 0,
         intervals: 0,
         webSockets: 0,
-        eventSources: 0,
         customResources: 0,
         total: 0,
       });

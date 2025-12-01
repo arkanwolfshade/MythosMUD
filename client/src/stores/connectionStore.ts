@@ -16,13 +16,11 @@ export interface GameEvent {
 
 export interface ConnectionHealth {
   websocket: 'healthy' | 'unhealthy' | 'unknown';
-  sse: 'healthy' | 'unhealthy' | 'unknown';
   lastHealthCheck: number | null;
 }
 
 export interface ConnectionMetadata {
   websocketConnectionId: string | null;
-  sseConnectionId: string | null;
   totalConnections: number;
   connectionTypes: string[];
 }
@@ -31,7 +29,6 @@ export interface ConnectionState {
   // Connection status
   isConnected: boolean;
   isConnecting: boolean;
-  sseConnected: boolean;
   websocketConnected: boolean;
   error: string | null;
   reconnectAttempts: number;
@@ -48,7 +45,6 @@ export interface ConnectionState {
 export interface ConnectionActions {
   // Connection management
   setConnecting: (connecting: boolean) => void;
-  setSseConnected: (connected: boolean) => void;
   setWebsocketConnected: (connected: boolean) => void;
   setError: (error: string | null) => void;
   setLastEvent: (event: GameEvent | null) => void;
@@ -80,7 +76,6 @@ export interface ConnectionSelectors {
   getConnectionInfo: () => {
     sessionId: string | null;
     websocketConnected: boolean;
-    sseConnected: boolean;
     connectionHealth: ConnectionHealth;
     connectionMetadata: ConnectionMetadata;
   };
@@ -109,7 +104,6 @@ const generateSessionId = (): string => {
 const createInitialState = (sessionId?: string): ConnectionState => ({
   isConnected: false,
   isConnecting: false,
-  sseConnected: false,
   websocketConnected: false,
   error: null,
   reconnectAttempts: 0,
@@ -117,12 +111,10 @@ const createInitialState = (sessionId?: string): ConnectionState => ({
   sessionId: sessionId || generateSessionId(),
   connectionHealth: {
     websocket: 'unknown',
-    sse: 'unknown',
     lastHealthCheck: null,
   },
   connectionMetadata: {
     websocketConnectionId: null,
-    sseConnectionId: null,
     totalConnections: 0,
     connectionTypes: [],
   },
@@ -144,22 +136,11 @@ export const useConnectionStore = create<ConnectionStore>()(
           'setConnecting'
         ),
 
-      setSseConnected: (connected: boolean) =>
-        set(
-          state => ({
-            sseConnected: connected,
-            isConnected: connected && state.websocketConnected,
-            error: connected ? null : state.error,
-          }),
-          false,
-          'setSseConnected'
-        ),
-
       setWebsocketConnected: (connected: boolean) =>
         set(
           state => ({
             websocketConnected: connected,
-            isConnected: connected && state.sseConnected,
+            isConnected: connected,
             error: connected ? null : state.error,
           }),
           false,
@@ -232,12 +213,12 @@ export const useConnectionStore = create<ConnectionStore>()(
       // Selectors
       isFullyConnected: () => {
         const state = get();
-        return state.sseConnected && state.websocketConnected;
+        return state.websocketConnected;
       },
 
       hasAnyConnection: () => {
         const state = get();
-        return state.sseConnected || state.websocketConnected;
+        return state.websocketConnected;
       },
 
       getConnectionInfo: () => {
@@ -245,7 +226,6 @@ export const useConnectionStore = create<ConnectionStore>()(
         return {
           sessionId: state.sessionId,
           websocketConnected: state.websocketConnected,
-          sseConnected: state.sseConnected,
           connectionHealth: state.connectionHealth,
           connectionMetadata: state.connectionMetadata,
         };

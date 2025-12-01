@@ -14,7 +14,6 @@ interface MemoryReport {
     timers: number;
     intervals: number;
     webSockets: number;
-    eventSources: number;
     customResources: number;
     total: number;
   };
@@ -227,7 +226,6 @@ export class MemoryMonitor {
     timers: number;
     intervals: number;
     webSockets: number;
-    eventSources: number;
     customResources: number;
     total: number;
   } {
@@ -237,7 +235,6 @@ export class MemoryMonitor {
       timers: 0,
       intervals: 0,
       webSockets: 0,
-      eventSources: 0,
       customResources: 0,
       total: 0,
     };

@@ -23,28 +23,13 @@ describe('Connection State Machine', () => {
     expect(actor.getSnapshot().value).toBe('disconnected');
   });
 
-  it('transitions to connecting_sse on CONNECT event', () => {
+  it('transitions to connecting_ws on CONNECT event', () => {
     actor.send({ type: 'CONNECT' });
-    expect(actor.getSnapshot().value).toBe('connecting_sse');
-  });
-
-  it('transitions to sse_connected on SSE_CONNECTED event', () => {
-    actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
-    expect(actor.getSnapshot().value).toBe('sse_connected');
-  });
-
-  it('transitions to connecting_ws after SSE connection', () => {
-    actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
-    actor.send({ type: 'WS_CONNECTING' });
     expect(actor.getSnapshot().value).toBe('connecting_ws');
   });
 
-  it('transitions to fully_connected when both connections established', () => {
+  it('transitions to fully_connected when WebSocket connection established', () => {
     actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
-    actor.send({ type: 'WS_CONNECTING' });
     actor.send({ type: 'WS_CONNECTED' });
     expect(actor.getSnapshot().value).toBe('fully_connected');
   });
@@ -71,8 +56,6 @@ describe('Connection State Machine', () => {
 
     actor.send({ type: 'DISCONNECT' });
     actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
-    actor.send({ type: 'WS_CONNECTING' });
     actor.send({ type: 'WS_CONNECTED' });
 
     const snapshot = actor.getSnapshot();
@@ -81,8 +64,6 @@ describe('Connection State Machine', () => {
 
   it('transitions to reconnecting on connection loss from fully_connected', () => {
     actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
-    actor.send({ type: 'WS_CONNECTING' });
     actor.send({ type: 'WS_CONNECTED' });
     actor.send({ type: 'RETRY' });
 
@@ -101,8 +82,6 @@ describe('Connection State Machine', () => {
 
   it('stores last connected time on successful connection', () => {
     actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
-    actor.send({ type: 'WS_CONNECTING' });
     actor.send({ type: 'WS_CONNECTED' });
 
     const lastConnected = actor.getSnapshot().context.lastConnectedTime;
@@ -125,86 +104,27 @@ describe('Connection State Machine', () => {
     actor = createActor(connectionMachine);
     actor.start();
     actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
-    actor.send({ type: 'DISCONNECT' });
-    expect(actor.getSnapshot().value).toBe('disconnected');
-
-    actor = createActor(connectionMachine);
-    actor.start();
-    actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
-    actor.send({ type: 'WS_CONNECTING' });
     actor.send({ type: 'WS_CONNECTED' });
     actor.send({ type: 'DISCONNECT' });
     expect(actor.getSnapshot().value).toBe('disconnected');
-  });
-
-  it('should transition to reconnecting on SSE_FAILED from connecting_sse', () => {
-    actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_FAILED', error: 'SSE connection failed' });
-
-    expect(actor.getSnapshot().value).toBe('reconnecting');
-    expect(actor.getSnapshot().context.lastError).toBe('SSE connection failed');
-    expect(actor.getSnapshot().context.reconnectAttempts).toBe(1);
-  });
-
-  it('should transition to reconnecting on SSE_FAILED from sse_connected', () => {
-    actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
-    actor.send({ type: 'SSE_FAILED', error: 'SSE lost connection' });
-
-    expect(actor.getSnapshot().value).toBe('reconnecting');
-    expect(actor.getSnapshot().context.lastError).toBe('SSE lost connection');
-  });
-
-  it('should transition to reconnecting on SSE_FAILED from fully_connected', () => {
-    actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
-    actor.send({ type: 'WS_CONNECTING' });
-    actor.send({ type: 'WS_CONNECTED' });
-    actor.send({ type: 'SSE_FAILED', error: 'SSE connection lost' });
-
-    expect(actor.getSnapshot().value).toBe('reconnecting');
-    expect(actor.getSnapshot().context.lastError).toBe('SSE connection lost');
   });
 
   it('should transition to reconnecting on WS_FAILED from connecting_ws', () => {
     actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
-    actor.send({ type: 'WS_CONNECTING' });
     actor.send({ type: 'WS_FAILED', error: 'WebSocket connection failed' });
 
     expect(actor.getSnapshot().value).toBe('reconnecting');
     expect(actor.getSnapshot().context.lastError).toBe('WebSocket connection failed');
+    expect(actor.getSnapshot().context.reconnectAttempts).toBe(1);
   });
 
   it('should transition to reconnecting on WS_FAILED from fully_connected', () => {
     actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
-    actor.send({ type: 'WS_CONNECTING' });
     actor.send({ type: 'WS_CONNECTED' });
     actor.send({ type: 'WS_FAILED', error: 'WebSocket connection lost' });
 
     expect(actor.getSnapshot().value).toBe('reconnecting');
     expect(actor.getSnapshot().context.lastError).toBe('WebSocket connection lost');
-  });
-
-  it('should transition directly to connecting_ws on CONNECT from sse_connected', () => {
-    actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
-    actor.send({ type: 'CONNECT' });
-
-    expect(actor.getSnapshot().value).toBe('connecting_ws');
-  });
-
-  it('should transition directly to fully_connected on WS_CONNECTED from sse_connected', () => {
-    actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
-    actor.send({ type: 'WS_CONNECTED' });
-
-    expect(actor.getSnapshot().value).toBe('fully_connected');
-    expect(actor.getSnapshot().context.lastConnectedTime).toBeGreaterThan(0);
-    expect(actor.getSnapshot().context.reconnectAttempts).toBe(0);
   });
 
   it('should transition to failed when max reconnect attempts reached', () => {
@@ -219,7 +139,6 @@ describe('Connection State Machine', () => {
           lastError: null,
           connectionStartTime: null,
           lastConnectedTime: null,
-          sseUrl: null,
           wsUrl: null,
         },
       })
@@ -227,7 +146,7 @@ describe('Connection State Machine', () => {
     actor.start();
 
     actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_FAILED', error: 'SSE failed' });
+    actor.send({ type: 'WS_FAILED', error: 'WebSocket failed' });
 
     // Should transition to reconnecting first
     expect(actor.getSnapshot().value).toBe('reconnecting');
@@ -236,38 +155,14 @@ describe('Connection State Machine', () => {
     // Note: In actual implementation, this would happen after RECONNECT_DELAY
   });
 
-  it('should store session ID from SSE_CONNECTED event', () => {
-    actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED', sessionId: 'test-session-123' });
-
-    expect(actor.getSnapshot().context.sessionId).toBe('test-session-123');
-  });
-
-  it('should handle SSE_CONNECTED without sessionId', () => {
-    actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
-
-    expect(actor.getSnapshot().context.sessionId).toBeNull();
-  });
-
-  it('should verify storeSSESession action handles event without sessionId', () => {
-    // Test line 106-109: storeSSESession else branch (no sessionId)
-    actor.send({ type: 'CONNECT' });
-    // Send SSE_CONNECTED without sessionId
-    actor.send({ type: 'SSE_CONNECTED' });
-
-    expect(actor.getSnapshot().context.sessionId).toBeNull();
-  });
-
   it('should verify resetConnection action resets all connection metadata', () => {
     // Test line 93-98: resetConnection action
     // Set up some state first
     actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED', sessionId: 'test-session' });
+    actor.send({ type: 'WS_CONNECTED' });
     actor.send({ type: 'ERROR', error: 'Test error' });
 
     let snapshot = actor.getSnapshot();
-    expect(snapshot.context.sessionId).toBe('test-session');
     expect(snapshot.context.lastError).toBe('Test error');
 
     // CONNECT triggers resetConnection (via entry action and transition action)
@@ -283,7 +178,7 @@ describe('Connection State Machine', () => {
 
   it('should handle RESET from reconnecting state', () => {
     actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_FAILED', error: 'Test error' });
+    actor.send({ type: 'WS_FAILED', error: 'Test error' });
     actor.send({ type: 'RESET' });
 
     expect(actor.getSnapshot().value).toBe('disconnected');
@@ -307,7 +202,7 @@ describe('Connection State Machine', () => {
     actor.send({ type: 'ERROR', error: 'Test error' });
     actor.send({ type: 'RECONNECT' });
 
-    expect(actor.getSnapshot().value).toBe('connecting_sse');
+    expect(actor.getSnapshot().value).toBe('connecting_ws');
     expect(actor.getSnapshot().context.reconnectAttempts).toBe(0);
   });
 
@@ -319,35 +214,16 @@ describe('Connection State Machine', () => {
     expect(actor.getSnapshot().value).toBe('reconnecting');
   });
 
-  it('should handle CONNECTION_TIMEOUT from connecting_sse', () => {
-    actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'CONNECTION_TIMEOUT' });
-
-    expect(actor.getSnapshot().value).toBe('reconnecting');
-    expect(actor.getSnapshot().context.reconnectAttempts).toBe(1);
-  });
-
   it('should handle CONNECTION_TIMEOUT from connecting_ws', () => {
     actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
-    actor.send({ type: 'WS_CONNECTING' });
     actor.send({ type: 'CONNECTION_TIMEOUT' });
 
     expect(actor.getSnapshot().value).toBe('reconnecting');
     expect(actor.getSnapshot().context.reconnectAttempts).toBe(1);
   });
 
-  it('should handle ERROR from connecting_sse', () => {
+  it('should handle ERROR from connecting_ws', () => {
     actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'ERROR', error: 'Connection error' });
-
-    expect(actor.getSnapshot().value).toBe('failed');
-    expect(actor.getSnapshot().context.lastError).toBe('Connection error');
-  });
-
-  it('should handle ERROR from sse_connected', () => {
-    actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
     actor.send({ type: 'ERROR', error: 'Connection error' });
 
     expect(actor.getSnapshot().value).toBe('failed');
@@ -356,8 +232,6 @@ describe('Connection State Machine', () => {
 
   it('should handle ERROR from fully_connected', () => {
     actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
-    actor.send({ type: 'WS_CONNECTING' });
     actor.send({ type: 'WS_CONNECTED' });
     actor.send({ type: 'ERROR', error: 'Connection error' });
 
@@ -370,11 +244,11 @@ describe('Connection State Machine', () => {
     // This tests the else branch in storeError action (line 141)
     actor.send({ type: 'CONNECT' });
     // The storeError action checks 'error' in event, so if it's missing, should return 'Unknown error'
-    // However, SSE_FAILED requires error as a required field, so we can't test it that way
+    // However, WS_FAILED requires error as a required field, so we can't test it that way
     // Instead, we test the action through an event that might not have error in its type
     // Actually, looking at the types, all events that use storeError have error as required
     // So this branch might not be reachable through normal events, but we test the logic
-    actor.send({ type: 'SSE_FAILED', error: 'test' });
+    actor.send({ type: 'WS_FAILED', error: 'test' });
 
     // Verify error was stored
     expect(actor.getSnapshot().context.lastError).toBe('test');
@@ -399,7 +273,7 @@ describe('Connection State Machine', () => {
     // but we can verify that the function is being called and used correctly
     // by ensuring reconnection attempts increment and state transitions work
     actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_FAILED', error: 'Error 1' });
+    actor.send({ type: 'WS_FAILED', error: 'Error 1' });
     expect(actor.getSnapshot().context.reconnectAttempts).toBe(1);
 
     // The delay calculation: min(1000 * 2^attempts, 30000)
@@ -411,20 +285,11 @@ describe('Connection State Machine', () => {
   });
 
   it('should verify after.CONNECTION_TIMEOUT inline assign functions', () => {
-    // Test lines 250-253: inline assign in connecting_sse after.CONNECTION_TIMEOUT
     // Test lines 305-308: inline assign in connecting_ws after.CONNECTION_TIMEOUT
     // These inline assign functions should be covered by timeout transitions
 
-    // Test SSE connection timeout
-    actor.send({ type: 'CONNECT' });
-    // Wait for timeout (30000ms) - use fake timers if needed
-    // Actually, we can't easily test the 'after' timeout without waiting
-    // But we can verify the timeout is defined and the state transitions correctly
-
     // Test WebSocket connection timeout
     actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
-    actor.send({ type: 'WS_CONNECTING' });
     // Wait for timeout - same issue as above
 
     // For now, we verify the states exist and transitions are defined
@@ -435,10 +300,10 @@ describe('Connection State Machine', () => {
   it('should verify canReconnect guard allows reconnection when attempts < max', () => {
     // Test line 172-174: canReconnect guard true branch
     // This is tested indirectly through the reconnecting state's after.RECONNECT_DELAY transition
-    // When attempts < max, canReconnect returns true, allowing transition to connecting_sse
+    // When attempts < max, canReconnect returns true, allowing transition to connecting_ws
     // We verify this by ensuring reconnection works when under the max
     actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_FAILED', error: 'Error 1' });
+    actor.send({ type: 'WS_FAILED', error: 'Error 1' });
     // After first failure, attempts = 1, max = 5, so canReconnect = true
     expect(actor.getSnapshot().value).toBe('reconnecting');
     expect(actor.getSnapshot().context.reconnectAttempts).toBe(1);
@@ -454,12 +319,11 @@ describe('Connection State Machine', () => {
   it('should verify clearAllState action clears all context fields', () => {
     // Test line 157: clearAllState action
     actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED', sessionId: 'test-session' });
+    actor.send({ type: 'WS_CONNECTED' });
     actor.send({ type: 'ERROR', error: 'Test error' });
 
     // Verify state before RESET
     let snapshot = actor.getSnapshot();
-    expect(snapshot.context.sessionId).toBe('test-session');
     expect(snapshot.context.lastError).toBe('Test error');
     expect(snapshot.context.reconnectAttempts).toBeGreaterThan(0);
 
@@ -471,24 +335,19 @@ describe('Connection State Machine', () => {
     expect(snapshot.context.reconnectAttempts).toBe(0);
     expect(snapshot.context.lastError).toBeNull();
     expect(snapshot.context.connectionStartTime).toBeNull();
-    expect(snapshot.context.sseUrl).toBeNull();
     expect(snapshot.context.wsUrl).toBeNull();
   });
 
   it('should verify markFullyConnected action updates context correctly', () => {
     // Test line 126: markFullyConnected action
     actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
-    actor.send({ type: 'WS_CONNECTING' });
 
     // Set up some error state before connecting
-    actor.send({ type: 'SSE_FAILED', error: 'Previous error' });
+    actor.send({ type: 'WS_FAILED', error: 'Previous error' });
     actor.send({ type: 'RETRY' }); // Go to reconnecting
 
     // Now successfully connect
     actor.send({ type: 'CONNECT' });
-    actor.send({ type: 'SSE_CONNECTED' });
-    actor.send({ type: 'WS_CONNECTING' });
     actor.send({ type: 'WS_CONNECTED' }); // This triggers markFullyConnected
 
     const snapshot = actor.getSnapshot();

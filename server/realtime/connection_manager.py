@@ -78,7 +78,7 @@ class PerformanceStats(TypedDict):
 @dataclass
 class ConnectionMetadata:
     """
-    Metadata for tracking connection details in the dual connection system.
+    Metadata for tracking connection details in the WebSocket-only system.
 
     This dataclass stores information about each connection to enable
     proper management of multiple connections per player.
@@ -86,7 +86,7 @@ class ConnectionMetadata:
 
     connection_id: str
     player_id: uuid.UUID
-    connection_type: str  # "websocket" or "sse"
+    connection_type: str  # "websocket"
     established_at: float
     last_seen: float
     is_healthy: bool
@@ -112,8 +112,6 @@ class ConnectionManager:
         self.active_websockets: dict[str, WebSocket] = {}
         # Player ID to WebSocket connection IDs mapping (supports multiple connections)
         self.player_websockets: dict[uuid.UUID, list[str]] = {}
-        # Active SSE connections (player_id -> list of connection_ids)
-        self.active_sse_connections: dict[uuid.UUID, list[str]] = {}
         # Connection metadata tracking
         self.connection_metadata: dict[str, ConnectionMetadata] = {}
         # Global event sequence counter
@@ -277,7 +275,7 @@ class ConnectionManager:
     def connection_window(self):
         return self.rate_limiter.connection_window
 
-    # Compatibility methods for dual connection system
+    # Compatibility methods for WebSocket connection system
     def get_player_websocket_connection_id(self, player_id: uuid.UUID) -> str | None:
         """
         Get the first WebSocket connection ID for a player (backward compatibility).
@@ -292,20 +290,6 @@ class ConnectionManager:
             return self.player_websockets[player_id][0]
         return None
 
-    def get_player_sse_connection_id(self, player_id: uuid.UUID) -> str | None:
-        """
-        Get the first SSE connection ID for a player (backward compatibility).
-
-        Args:
-            player_id: The player's ID (UUID)
-
-        Returns:
-            str: The first connection ID if any exist, None otherwise
-        """
-        if player_id in self.active_sse_connections and self.active_sse_connections[player_id]:
-            return self.active_sse_connections[player_id][0]
-        return None
-
     def has_websocket_connection(self, player_id: uuid.UUID) -> bool:
         """
         Check if a player has any WebSocket connections.
@@ -318,18 +302,6 @@ class ConnectionManager:
         """
         return player_id in self.player_websockets and len(self.player_websockets[player_id]) > 0
 
-    def has_sse_connection(self, player_id: uuid.UUID) -> bool:
-        """
-        Check if a player has any SSE connections.
-
-        Args:
-            player_id: The player's ID (UUID)
-
-        Returns:
-            bool: True if player has SSE connections, False otherwise
-        """
-        return player_id in self.active_sse_connections and len(self.active_sse_connections[player_id]) > 0
-
     def get_connection_count(self, player_id: uuid.UUID) -> dict[str, int]:
         """
         Get the number of connections for a player by type.
@@ -341,8 +313,7 @@ class ConnectionManager:
             dict: Connection counts by type
         """
         websocket_count = len(self.player_websockets.get(player_id, []))
-        sse_count = len(self.active_sse_connections.get(player_id, []))
-        return {"websocket": websocket_count, "sse": sse_count, "total": websocket_count + sse_count}
+        return {"websocket": websocket_count, "total": websocket_count}
 
     # Add compatibility methods
     async def subscribe_to_room(self, player_id: uuid.UUID, room_id: str):
@@ -439,7 +410,7 @@ class ConnectionManager:
                                 del self.connection_metadata[connection_id]
 
                 # Check if player already has active WebSocket connections
-                # For dual connection system, we allow multiple connections
+                # We allow multiple WebSocket connections per player
                 if player_id in self.player_websockets:
                     # Update the player's connection list with only active connections
                     active_connection_ids = [
@@ -491,10 +462,9 @@ class ConnectionManager:
                 if player_id not in self.player_sessions or self.player_sessions[player_id] == session_id:
                     self.player_sessions[player_id] = session_id
 
-            # Enhanced dual connection logging
+            # Enhanced connection logging
             existing_websocket_count = len(self.player_websockets[player_id]) - 1  # -1 because we just added one
-            existing_sse_count = len(self.active_sse_connections.get(player_id, []))
-            total_connections = existing_websocket_count + existing_sse_count + 1  # +1 for the new connection
+            total_connections = existing_websocket_count + 1  # +1 for the new connection
 
             logger.info(
                 "WebSocket connected for player",
@@ -502,9 +472,7 @@ class ConnectionManager:
                 connection_id=connection_id,
                 session_id=session_id,
                 existing_websocket_connections=existing_websocket_count,
-                existing_sse_connections=existing_sse_count,
                 total_connections=total_connections,
-                is_dual_connection=existing_sse_count > 0,
                 connection_type="websocket",
             )
 
@@ -623,7 +591,7 @@ class ConnectionManager:
 
                 # Check if we need to track disconnection (outside of disconnect_lock to avoid deadlock)
                 should_track_disconnect = False
-                if not is_force_disconnect and not self.has_sse_connection(player_id):
+                if not is_force_disconnect and not self.has_websocket_connection(player_id):
                     # Check if disconnect needs to be processed without holding the disconnect_lock
                     async with self.processed_disconnect_lock:
                         if player_id not in self.processed_disconnects:
@@ -638,7 +606,7 @@ class ConnectionManager:
 
                 # Unsubscribe from all rooms only if it's not a force disconnect and no other connections
                 # During reconnections, we want to preserve room membership
-                if not is_force_disconnect and not self.has_sse_connection(player_id):
+                if not is_force_disconnect and not self.has_websocket_connection(player_id):
                     self.room_manager.remove_player_from_all_rooms(str(player_id))
                 else:
                     logger.debug(
@@ -647,7 +615,7 @@ class ConnectionManager:
                     )
 
                 # Clean up rate limiting data only if no other connections
-                if not self.has_sse_connection(player_id):
+                if not self.has_websocket_connection(player_id):
                     self.rate_limiter.remove_player_data(str(player_id))
                     # Clean up pending messages
                     self.message_queue.remove_player_messages(str(player_id))
@@ -663,7 +631,7 @@ class ConnectionManager:
 
     async def force_disconnect_player(self, player_id: uuid.UUID):
         """
-        Force disconnect a player from all connections (WebSocket and SSE).
+        Force disconnect a player from all connections (WebSocket only).
 
         Args:
             player_id: The player's ID (UUID)
@@ -674,10 +642,6 @@ class ConnectionManager:
             # Disconnect WebSocket if active (without broadcasting player_left_game)
             if player_id in self.player_websockets:
                 await self.disconnect_websocket(player_id, is_force_disconnect=True)
-
-            # Disconnect SSE if active
-            if player_id in self.active_sse_connections:
-                self.disconnect_sse(player_id, is_force_disconnect=True)
 
             logger.info("Player force disconnected from all connections", player_id=player_id)
         except Exception as e:
@@ -725,23 +689,14 @@ class ConnectionManager:
                     if not self.player_websockets[player_id]:
                         del self.player_websockets[player_id]
 
-            elif connection_type == "sse":
-                # Disconnect SSE connection
-                if player_id in self.active_sse_connections and connection_id in self.active_sse_connections[player_id]:
-                    self.active_sse_connections[player_id].remove(connection_id)
-                    # If no more connections, remove the player entry
-                    if not self.active_sse_connections[player_id]:
-                        del self.active_sse_connections[player_id]
-
             # Clean up connection metadata
             del self.connection_metadata[connection_id]
 
             # Check if player has any remaining connections
             has_websocket = self.has_websocket_connection(player_id)
-            has_sse = self.has_sse_connection(player_id)
 
             # If no connections remain, clean up player data
-            if not has_websocket and not has_sse:
+            if not has_websocket:
                 self.rate_limiter.remove_player_data(str(player_id))
                 self.message_queue.remove_player_messages(str(player_id))
                 if player_id in self.last_seen:
@@ -798,169 +753,6 @@ class ConnectionManager:
             )
             return False
 
-    def disconnect_sse_connection(self, player_id: uuid.UUID, connection_id: str) -> bool:
-        """
-        Disconnect a specific SSE connection for a player.
-
-        Args:
-            player_id: The player's ID (UUID)
-            connection_id: The SSE connection ID to disconnect
-
-        Returns:
-            bool: True if connection was found and disconnected, False otherwise
-        """
-        try:
-            # Verify the connection belongs to this player
-            if connection_id not in self.connection_metadata:
-                logger.warning("Connection not found in metadata", connection_id=connection_id)
-                return False
-
-            metadata = self.connection_metadata[connection_id]
-            if metadata.player_id != player_id or metadata.connection_type != "sse":
-                logger.warning(
-                    "Connection does not belong to player or is not an SSE connection",
-                    connection_id=connection_id,
-                    player_id=player_id,
-                )
-                return False
-
-            # Disconnect SSE connection
-            if player_id in self.active_sse_connections and connection_id in self.active_sse_connections[player_id]:
-                self.active_sse_connections[player_id].remove(connection_id)
-                # If no more connections, remove the player entry
-                if not self.active_sse_connections[player_id]:
-                    del self.active_sse_connections[player_id]
-
-            # Clean up connection metadata
-            del self.connection_metadata[connection_id]
-
-            # Check if player has any remaining connections
-            has_websocket = self.has_websocket_connection(player_id)
-            has_sse = self.has_sse_connection(player_id)
-
-            # If no connections remain, clean up player data
-            if not has_websocket and not has_sse:
-                self.rate_limiter.remove_player_data(str(player_id))
-                self.message_queue.remove_player_messages(str(player_id))
-                if player_id in self.last_seen:
-                    del self.last_seen[player_id]
-                # Remove from room subscriptions
-                self.room_manager.remove_player_from_all_rooms(str(player_id))
-                logger.info("Player has no remaining connections, cleaned up player data", player_id=player_id)
-
-            logger.info("Successfully disconnected SSE connection", connection_id=connection_id)
-            return True
-
-        except Exception as e:
-            logger.error(
-                "Error disconnecting SSE connection",
-                connection_id=connection_id,
-                player_id=player_id,
-                error=str(e),
-                exc_info=True,
-            )
-            return False
-
-    async def connect_sse(self, player_id: uuid.UUID, session_id: str | None = None) -> str:
-        """
-        Connect an SSE connection for a player.
-
-        Args:
-            player_id: The player's ID (UUID)
-            session_id: Optional session ID for tracking new game client sessions
-
-        Returns:
-            str: The connection ID
-        """
-        start_time = time.time()
-        # For dual connection system, we allow multiple SSE connections
-        # No need to terminate existing connections
-
-        connection_id = str(uuid.uuid4())
-
-        # Add the new connection to the player's SSE connection list
-        if player_id not in self.active_sse_connections:
-            self.active_sse_connections[player_id] = []
-        self.active_sse_connections[player_id].append(connection_id)
-
-        # Create connection metadata
-        current_time = time.time()
-        self.connection_metadata[connection_id] = ConnectionMetadata(
-            connection_id=connection_id,
-            player_id=player_id,
-            connection_type="sse",
-            established_at=current_time,
-            last_seen=current_time,
-            is_healthy=True,
-            session_id=session_id,
-        )
-
-        # Track connection in session
-        if session_id:
-            if session_id not in self.session_connections:
-                self.session_connections[session_id] = []
-            self.session_connections[session_id].append(connection_id)
-            # Only update player session if they don't have one or if this is the same session
-            if player_id not in self.player_sessions or self.player_sessions[player_id] == session_id:
-                self.player_sessions[player_id] = session_id
-
-        # Enhanced dual connection logging
-        existing_sse_count = len(self.active_sse_connections[player_id]) - 1  # -1 because we just added one
-        existing_websocket_count = len(self.player_websockets.get(player_id, []))
-        total_connections = existing_websocket_count + existing_sse_count + 1  # +1 for the new connection
-
-        logger.info(
-            "SSE connected for player",
-            player_id=player_id,
-            connection_id=connection_id,
-            session_id=session_id,
-            existing_websocket_connections=existing_websocket_count,
-            existing_sse_connections=existing_sse_count,
-            total_connections=total_connections,
-            is_dual_connection=existing_websocket_count > 0,
-            connection_type="sse",
-        )
-
-        # Clear pending messages to prevent stale messages from previous connections
-        self.message_queue.remove_player_messages(str(player_id))
-
-        # Track presence on SSE as well so occupants reflect players who have only SSE connected
-        try:
-            player = self._get_player(player_id)
-            if player:
-                canonical_room_id = None
-                if self.persistence:
-                    room = self.persistence.get_room(player.current_room_id)
-                    if room:
-                        canonical_room_id = getattr(room, "id", None) or player.current_room_id
-                await self.subscribe_to_room(player_id, str(canonical_room_id or player.current_room_id))
-
-                # Track player presence - only call _track_player_connected if this is the first connection
-                if player_id not in self.online_players:
-                    await self._track_player_connected(player_id, player, "sse")
-                else:
-                    logger.info(
-                        "Player already tracked as online, skipping _track_player_connected", player_id=player_id
-                    )
-            elif self.persistence is None:
-                logger.warning("Persistence not available, SSE connecting without player tracking", player_id=player_id)
-
-        except Exception as e:
-            logger.error("Error tracking SSE presence", player_id=player_id, error=str(e), exc_info=True)
-
-        # Track performance metrics
-        duration_ms = (time.time() - start_time) * 1000
-        self.performance_stats["connection_establishment_times"].append(("sse", duration_ms))
-        self.performance_stats["total_connections_established"] += 1
-
-        # Keep only last 1000 entries to prevent memory growth
-        if len(self.performance_stats["connection_establishment_times"]) > 1000:
-            self.performance_stats["connection_establishment_times"] = self.performance_stats[
-                "connection_establishment_times"
-            ][-1000:]
-
-        return connection_id
-
     async def handle_new_game_session(self, player_id: uuid.UUID, new_session_id: str) -> dict[str, Any]:
         """
         Handle a new game session by disconnecting existing connections.
@@ -982,7 +774,6 @@ class ConnectionManager:
             "previous_session_id": None,
             "connections_disconnected": 0,
             "websocket_connections": 0,
-            "sse_connections": 0,
             "success": False,
             "errors": [],
         }
@@ -990,15 +781,13 @@ class ConnectionManager:
         try:
             # Enhanced session logging
             existing_websocket_count = len(self.player_websockets.get(player_id, []))
-            existing_sse_count = len(self.active_sse_connections.get(player_id, []))
-            total_existing_connections = existing_websocket_count + existing_sse_count
+            total_existing_connections = existing_websocket_count
 
             logger.info(
                 "Handling new game session for player",
                 new_session_id=new_session_id,
                 player_id=player_id,
                 existing_websocket_connections=existing_websocket_count,
-                existing_sse_connections=existing_sse_count,
                 total_existing_connections=total_existing_connections,
                 will_disconnect_all=True,
             )
@@ -1068,23 +857,6 @@ class ConnectionManager:
                 # Remove player from websocket tracking
                 try:
                     del self.player_websockets[player_id]
-                except KeyError:
-                    pass  # Already removed
-
-            # Disconnect all existing SSE connections
-            if player_id in self.active_sse_connections:
-                connection_ids = self.active_sse_connections[player_id].copy()
-                session_results["sse_connections"] = len(connection_ids)
-
-                for connection_id in connection_ids:
-                    # Clean up connection metadata
-                    if connection_id in self.connection_metadata:
-                        del self.connection_metadata[connection_id]
-                    session_results["connections_disconnected"] += 1
-
-                # Remove player from SSE tracking
-                try:
-                    del self.active_sse_connections[player_id]
                 except KeyError:
                     pass  # Already removed
 
@@ -1183,98 +955,6 @@ class ConnectionManager:
             ),
         }
 
-    def disconnect_sse(self, player_id: uuid.UUID, is_force_disconnect: bool = False):
-        """
-        Disconnect all SSE connections for a player.
-
-        Args:
-            player_id: The player's ID (UUID)
-            is_force_disconnect: If True, don't broadcast player_left_game
-        """
-        try:
-            if player_id in self.active_sse_connections:
-                connection_ids = self.active_sse_connections[
-                    player_id
-                ].copy()  # Copy to avoid modification during iteration
-
-                # Clean up connection metadata for all SSE connections
-                for connection_id in connection_ids:
-                    if connection_id in self.connection_metadata:
-                        del self.connection_metadata[connection_id]
-
-                # Remove player from SSE tracking
-                del self.active_sse_connections[player_id]
-
-            # Only clean up player data if no other connections exist
-            if not self.has_websocket_connection(player_id):
-                # Clean up rate limiting data
-                self.rate_limiter.remove_player_data(str(player_id))
-
-                # Clean up pending messages
-                self.message_queue.remove_player_messages(str(player_id))
-
-                # Clean up last seen data
-                if player_id in self.last_seen:
-                    del self.last_seen[player_id]
-                self.last_active_update_times.pop(player_id, None)
-
-                # Only track disconnection if it's not a force disconnect
-                if not is_force_disconnect:
-                    try:
-                        # Try to get running event loop and schedule disconnect processing
-                        _ = asyncio.get_running_loop()  # Verify loop exists
-                        # Schedule disconnect processing as tracked task to prevent memory leaks
-                        from ..app.tracked_task_manager import get_global_tracked_manager
-
-                        tracked_manager = get_global_tracked_manager()
-                        tracked_manager.create_tracked_task(
-                            self._check_and_process_disconnect(player_id),
-                            task_name=f"connection_manager/disconnect_{player_id}",
-                            task_type="connection_manager",
-                        )
-                        logger.debug(
-                            "Scheduled disconnect processing as tracked task",
-                            player_id=player_id,
-                        )
-                    except RuntimeError:
-                        # No running loop - use background thread executor to run async code
-                        # This ensures disconnect processing always occurs, preventing memory leaks
-                        import concurrent.futures
-
-                        # Create executor if it doesn't exist
-                        if not hasattr(self, "_disconnect_executor") or self._disconnect_executor is None:
-                            self._disconnect_executor = concurrent.futures.ThreadPoolExecutor(
-                                max_workers=1, thread_name_prefix="disconnect_processor"
-                            )
-
-                        # Submit disconnect processing to executor with its own event loop
-                        def run_disconnect_in_thread():
-                            try:
-                                # Create new event loop for this thread
-                                new_loop = asyncio.new_event_loop()
-                                asyncio.set_event_loop(new_loop)
-                                try:
-                                    new_loop.run_until_complete(self._check_and_process_disconnect(player_id))
-                                finally:
-                                    new_loop.close()
-                            except Exception as e:
-                                logger.error(
-                                    "Error in background disconnect processing",
-                                    player_id=player_id,
-                                    error=str(e),
-                                    exc_info=True,
-                                )
-
-                        self._disconnect_executor.submit(run_disconnect_in_thread)
-                        logger.info(
-                            "Scheduled disconnect processing via background thread executor",
-                            player_id=player_id,
-                        )
-
-            logger.info("SSE disconnected", player_id=player_id)
-        except Exception as e:
-            logger.error("Error during SSE disconnect", player_id=player_id, error=str(e), exc_info=True)
-
     def mark_player_seen(self, player_id: uuid.UUID):
         """Update last-seen timestamp for a player."""
         try:
@@ -1331,8 +1011,6 @@ class ConnectionManager:
                 # Clean up other references
                 self.rate_limiter.remove_player_data(str(pid))
                 self.message_queue.remove_player_messages(str(pid))
-                if pid in self.active_sse_connections:
-                    del self.active_sse_connections[pid]
             if stale_ids:
                 logger.info("Pruned stale players", stale_ids=[str(pid) for pid in stale_ids])
         except Exception as e:
@@ -1401,7 +1079,7 @@ class ConnectionManager:
         Returns:
             int: Number of active connections
         """
-        return len(self.active_websockets) + len(self.active_sse_connections)
+        return len(self.active_websockets)
 
     def check_rate_limit(self, player_id: uuid.UUID) -> bool:
         """
@@ -1427,17 +1105,13 @@ class ConnectionManager:
         """
         return self.rate_limiter.get_rate_limit_info(str(player_id))
 
-    async def send_personal_message(
-        self, player_id: uuid.UUID, event: dict[str, Any], prefer_sse: bool = False
-    ) -> dict[str, Any]:
+    async def send_personal_message(self, player_id: uuid.UUID, event: dict[str, Any]) -> dict[str, Any]:
         """
-        Send a personal message to a player across all active connections.
+        Send a personal message to a player via WebSocket.
 
         Args:
             player_id: The player's ID (UUID)
             event: The event data to send
-            prefer_sse: If True, prefer SSE for server-initiated events (combat, room updates, game state).
-                       If False, try WebSocket first (for client-initiated responses like commands).
 
         Returns:
             dict: Delivery status with detailed information:
@@ -1445,7 +1119,6 @@ class ConnectionManager:
                     "success": bool,
                     "websocket_delivered": int,
                     "websocket_failed": int,
-                    "sse_delivered": bool,
                     "total_connections": int,
                     "active_connections": int
                 }
@@ -1454,7 +1127,6 @@ class ConnectionManager:
             "success": False,
             "websocket_delivered": 0,
             "websocket_failed": 0,
-            "sse_delivered": False,
             "total_connections": 0,
             "active_connections": 0,
         }
@@ -1498,226 +1170,151 @@ class ConnectionManager:
 
             # Count total connections
             websocket_count = len(self.player_websockets.get(player_id, []))
-            sse_count = len(self.active_sse_connections.get(player_id, []))
-            delivery_status["total_connections"] = websocket_count + sse_count
+            delivery_status["total_connections"] = websocket_count
 
-            # ARCHITECTURE: Server-initiated events (combat, room updates, game state) should use SSE
-            # Client-initiated responses (commands, chat) should use WebSocket
-            # If prefer_sse is True, skip WebSocket and go directly to SSE
-            if not prefer_sse:
-                # Try WebSocket connections first (for client-initiated responses)
-                # #region agent log
-                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
-                    f.write(
-                        json.dumps(
-                            {
-                                "sessionId": "debug-session",
-                                "runId": "run1",
-                                "hypothesisId": "A",
-                                "location": "connection_manager.py:1500",
-                                "message": "Checking WebSocket connections for player",
-                                "data": {
-                                    "player_id": str(player_id),
-                                    "has_websocket": player_id in self.player_websockets,
-                                    "connection_ids": self.player_websockets.get(player_id, []),
-                                    "active_websockets_count": len(self.active_websockets),
-                                },
-                                "timestamp": int(time.time() * 1000),
-                            }
-                        )
-                        + "\n"
+            # Try WebSocket connections
+            # #region agent log
+            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+                f.write(
+                    json.dumps(
+                        {
+                            "sessionId": "debug-session",
+                            "runId": "run1",
+                            "hypothesisId": "A",
+                            "location": "connection_manager.py:1500",
+                            "message": "Checking WebSocket connections for player",
+                            "data": {
+                                "player_id": str(player_id),
+                                "has_websocket": player_id in self.player_websockets,
+                                "connection_ids": self.player_websockets.get(player_id, []),
+                                "active_websockets_count": len(self.active_websockets),
+                            },
+                            "timestamp": int(time.time() * 1000),
+                        }
                     )
-                # #endregion
-                if player_id in self.player_websockets:
-                    connection_ids = self.player_websockets[
-                        player_id
-                    ].copy()  # Copy to avoid modification during iteration
-                    for connection_id in connection_ids:
-                        if connection_id in self.active_websockets:
-                            websocket = self.active_websockets[connection_id]
-                            try:
-                                # #region agent log
-                                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
-                                    f.write(
-                                        json.dumps(
-                                            {
-                                                "sessionId": "debug-session",
-                                                "runId": "run1",
-                                                "hypothesisId": "A",
-                                                "location": "connection_manager.py:1507",
-                                                "message": "Attempting WebSocket send_json",
-                                                "data": {
-                                                    "player_id": str(player_id),
-                                                    "connection_id": connection_id,
-                                                    "event_type": serializable_event.get("event_type"),
-                                                },
-                                                "timestamp": int(time.time() * 1000),
-                                            }
-                                        )
-                                        + "\n"
-                                    )
-                                # #endregion
-                                # Check if WebSocket is still open by attempting to send
-                                await websocket.send_json(serializable_event)
-                                # #region agent log
-                                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
-                                    f.write(
-                                        json.dumps(
-                                            {
-                                                "sessionId": "debug-session",
-                                                "runId": "run1",
-                                                "hypothesisId": "A",
-                                                "location": "connection_manager.py:1510",
-                                                "message": "WebSocket send_json succeeded",
-                                                "data": {
-                                                    "player_id": str(player_id),
-                                                    "connection_id": connection_id,
-                                                    "event_type": serializable_event.get("event_type"),
-                                                },
-                                                "timestamp": int(time.time() * 1000),
-                                            }
-                                        )
-                                        + "\n"
-                                    )
-                                # #endregion
-                                delivery_status["websocket_delivered"] += 1
-                                delivery_status["active_connections"] += 1
-                            except Exception as ws_error:
-                                # #region agent log
-                                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
-                                    f.write(
-                                        json.dumps(
-                                            {
-                                                "sessionId": "debug-session",
-                                                "runId": "run1",
-                                                "hypothesisId": "A",
-                                                "location": "connection_manager.py:1512",
-                                                "message": "WebSocket send_json failed",
-                                                "data": {
-                                                    "player_id": str(player_id),
-                                                    "connection_id": connection_id,
-                                                    "error": str(ws_error),
-                                                },
-                                                "timestamp": int(time.time() * 1000),
-                                            }
-                                        )
-                                        + "\n"
-                                    )
-                                # #endregion
-                                # WebSocket is closed or in an invalid state
-                                logger.warning(
-                                    "WebSocket send failed",
-                                    player_id=player_id,
-                                    connection_id=connection_id,
-                                    error=str(ws_error),
-                                )
-                                delivery_status["websocket_failed"] += 1
-                                # Clean up the dead WebSocket connection
-                                await self._cleanup_dead_websocket(player_id, connection_id)
-                                # Continue to other connections
-                else:
-                    # #region agent log
-                    with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
-                        f.write(
-                            json.dumps(
-                                {
-                                    "sessionId": "debug-session",
-                                    "runId": "run1",
-                                    "hypothesisId": "A",
-                                    "location": "connection_manager.py:1522",
-                                    "message": "No WebSocket connections found for player",
-                                    "data": {
-                                        "player_id": str(player_id),
-                                        "has_sse": self.has_sse_connection(player_id),
-                                    },
-                                    "timestamp": int(time.time() * 1000),
-                                }
-                            )
-                            + "\n"
-                        )
-                    # #endregion
-
-            # Add to pending messages for SSE connections
-            # ARCHITECTURE: Server-initiated events (prefer_sse=True) should always use SSE
-            # Even if WebSocket is available, server pushes should go through SSE for guaranteed delivery
-            if self.has_sse_connection(player_id):
-                # #region agent log
-                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
-                    f.write(
-                        json.dumps(
-                            {
-                                "sessionId": "debug-session",
-                                "runId": "run1",
-                                "hypothesisId": "A",
-                                "location": "connection_manager.py:1524",
-                                "message": "Adding message to SSE queue",
-                                "data": {
-                                    "player_id": str(player_id),
-                                    "event_type": serializable_event.get("event_type"),
-                                    "sse_connections": len(self.active_sse_connections.get(player_id, [])),
-                                },
-                                "timestamp": int(time.time() * 1000),
-                            }
-                        )
-                        + "\n"
-                    )
-                # #endregion
-                player_id_str = str(player_id)
-                if player_id_str not in self.message_queue.pending_messages:
-                    self.message_queue.pending_messages[player_id_str] = []
-                self.message_queue.pending_messages[player_id_str].append(serializable_event)
-                delivery_status["sse_delivered"] = True
-                delivery_status["active_connections"] += len(self.active_sse_connections.get(player_id, []))
-            elif prefer_sse:
-                # CRITICAL FIX: When prefer_sse=True but SSE isn't ready yet, queue the message
-                # This ensures room_occupants events are delivered when SSE connection is established
-                player_id_str = str(player_id)
-                if player_id_str not in self.message_queue.pending_messages:
-                    self.message_queue.pending_messages[player_id_str] = []
-                self.message_queue.pending_messages[player_id_str].append(serializable_event)
-                delivery_status["sse_delivered"] = True  # Mark as queued for later delivery
-                # #region agent log
-                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
-                    f.write(
-                        json.dumps(
-                            {
-                                "sessionId": "debug-session",
-                                "runId": "run1",
-                                "hypothesisId": "A",
-                                "location": "connection_manager.py:1668",
-                                "message": "Queuing message for SSE (connection not ready)",
-                                "data": {
-                                    "player_id": str(player_id),
-                                    "event_type": serializable_event.get("event_type"),
-                                    "prefer_sse": True,
-                                    "has_sse": False,
-                                },
-                                "timestamp": int(time.time() * 1000),
-                            }
-                        )
-                        + "\n"
-                    )
-                # #endregion
-
-            # If no active connections and not already queued, queue the message for later delivery
-            if delivery_status["active_connections"] == 0 and not delivery_status["sse_delivered"]:
-                player_id_str = str(player_id)
-                if player_id_str not in self.message_queue.pending_messages:
-                    self.message_queue.pending_messages[player_id_str] = []
-                self.message_queue.pending_messages[player_id_str].append(serializable_event)
-                delivery_status["sse_delivered"] = True  # Mark as queued for later delivery
-
-            # Determine overall success - true if message was delivered to active connections
-            # OR if message was queued for later delivery (but not if WebSocket failed)
-            delivery_status["success"] = (
-                delivery_status["websocket_delivered"] > 0
-                or (delivery_status["sse_delivered"] and delivery_status["active_connections"] > 0)
-                or (
-                    delivery_status["active_connections"] == 0
-                    and delivery_status["sse_delivered"]
-                    and delivery_status["websocket_failed"] == 0
+                    + "\n"
                 )
-            )
+            # #endregion
+            if player_id in self.player_websockets:
+                connection_ids = self.player_websockets[player_id].copy()  # Copy to avoid modification during iteration
+                for connection_id in connection_ids:
+                    if connection_id in self.active_websockets:
+                        websocket = self.active_websockets[connection_id]
+                        try:
+                            # #region agent log
+                            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+                                f.write(
+                                    json.dumps(
+                                        {
+                                            "sessionId": "debug-session",
+                                            "runId": "run1",
+                                            "hypothesisId": "A",
+                                            "location": "connection_manager.py:1507",
+                                            "message": "Attempting WebSocket send_json",
+                                            "data": {
+                                                "player_id": str(player_id),
+                                                "connection_id": connection_id,
+                                                "event_type": serializable_event.get("event_type"),
+                                            },
+                                            "timestamp": int(time.time() * 1000),
+                                        }
+                                    )
+                                    + "\n"
+                                )
+                            # #endregion
+                            # Check if WebSocket is still open by attempting to send
+                            await websocket.send_json(serializable_event)
+                            # #region agent log
+                            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+                                f.write(
+                                    json.dumps(
+                                        {
+                                            "sessionId": "debug-session",
+                                            "runId": "run1",
+                                            "hypothesisId": "A",
+                                            "location": "connection_manager.py:1510",
+                                            "message": "WebSocket send_json succeeded",
+                                            "data": {
+                                                "player_id": str(player_id),
+                                                "connection_id": connection_id,
+                                                "event_type": serializable_event.get("event_type"),
+                                            },
+                                            "timestamp": int(time.time() * 1000),
+                                        }
+                                    )
+                                    + "\n"
+                                )
+                            # #endregion
+                            delivery_status["websocket_delivered"] += 1
+                            delivery_status["active_connections"] += 1
+                        except Exception as ws_error:
+                            # #region agent log
+                            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+                                f.write(
+                                    json.dumps(
+                                        {
+                                            "sessionId": "debug-session",
+                                            "runId": "run1",
+                                            "hypothesisId": "A",
+                                            "location": "connection_manager.py:1512",
+                                            "message": "WebSocket send_json failed",
+                                            "data": {
+                                                "player_id": str(player_id),
+                                                "connection_id": connection_id,
+                                                "error": str(ws_error),
+                                            },
+                                            "timestamp": int(time.time() * 1000),
+                                        }
+                                    )
+                                    + "\n"
+                                )
+                            # #endregion
+                            # WebSocket is closed or in an invalid state
+                            logger.warning(
+                                "WebSocket send failed",
+                                player_id=player_id,
+                                connection_id=connection_id,
+                                error=str(ws_error),
+                            )
+                            delivery_status["websocket_failed"] += 1
+                            # Clean up the dead WebSocket connection
+                            await self._cleanup_dead_websocket(player_id, connection_id)
+                            # Continue to other connections
+            else:
+                # #region agent log
+                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+                    f.write(
+                        json.dumps(
+                            {
+                                "sessionId": "debug-session",
+                                "runId": "run1",
+                                "hypothesisId": "A",
+                                "location": "connection_manager.py:1522",
+                                "message": "No WebSocket connections found for player",
+                                "data": {
+                                    "player_id": str(player_id),
+                                },
+                                "timestamp": int(time.time() * 1000),
+                            }
+                        )
+                        + "\n"
+                    )
+                # #endregion
+
+            # If no active connections, queue the message for later delivery
+            if delivery_status["active_connections"] == 0:
+                player_id_str = str(player_id)
+                if player_id_str not in self.message_queue.pending_messages:
+                    self.message_queue.pending_messages[player_id_str] = []
+                self.message_queue.pending_messages[player_id_str].append(serializable_event)
+                logger.debug(
+                    "No active connections, queued message for later delivery",
+                    player_id=player_id,
+                    event_type=event.get("event_type"),
+                )
+
+            # Mark as successful if any delivery succeeded
+            delivery_status["success"] = delivery_status["websocket_delivered"] > 0
 
             logger.debug("Message delivery status", player_id=player_id, delivery_status=delivery_status)
             return delivery_status
@@ -1742,13 +1339,12 @@ class ConnectionManager:
         stats: dict[str, Any] = {
             "player_id": player_id,
             "websocket_connections": len(self.player_websockets.get(player_id, [])),
-            "sse_connections": len(self.active_sse_connections.get(player_id, [])),
             "total_connections": 0,
             "pending_messages": len(self.message_queue.pending_messages.get(player_id_str, [])),
             "has_active_connections": False,
         }
 
-        stats["total_connections"] = stats["websocket_connections"] + stats["sse_connections"]
+        stats["total_connections"] = stats["websocket_connections"]
         stats["has_active_connections"] = stats["total_connections"] > 0
 
         return stats
@@ -1767,7 +1363,6 @@ class ConnectionManager:
             "player_id": player_id,
             "websocket_healthy": 0,
             "websocket_unhealthy": 0,
-            "sse_healthy": 0,
             "overall_health": "unknown",
         }
 
@@ -1796,11 +1391,8 @@ class ConnectionManager:
                             # Clean up unhealthy connection
                             await self._cleanup_dead_websocket(player_id, connection_id)
 
-            # Check SSE connections (assume healthy if they exist)
-            health_status["sse_healthy"] = len(self.active_sse_connections.get(player_id, []))
-
             # Determine overall health
-            total_healthy = health_status["websocket_healthy"] + health_status["sse_healthy"]
+            total_healthy = health_status["websocket_healthy"]
             total_connections = total_healthy + health_status["websocket_unhealthy"]
 
             if total_connections == 0:
@@ -1837,9 +1429,7 @@ class ConnectionManager:
                 players_to_check = [player_id]
             else:
                 # Clean up all players
-                players_to_check = list(
-                    set(list(self.player_websockets.keys()) + list(self.active_sse_connections.keys()))
-                )
+                players_to_check = list(self.player_websockets.keys())
 
             cleanup_results["players_checked"] = len(players_to_check)
 
@@ -2207,7 +1797,6 @@ class ConnectionManager:
         room_id: str,
         event: dict[str, Any],
         exclude_player: uuid.UUID | str | None = None,
-        prefer_sse: bool = True,
     ) -> dict[str, Any]:
         """
         Broadcast a message to all players in a room.
@@ -2216,7 +1805,6 @@ class ConnectionManager:
             room_id: The room's ID
             event: The event data to send
             exclude_player: Player ID to exclude from broadcast (UUID or string)
-            prefer_sse: If True, prefer SSE for server-initiated events (default: True for room broadcasts)
 
         Returns:
             dict: Broadcast delivery statistics
@@ -2266,13 +1854,10 @@ class ConnectionManager:
                     continue
 
             # Send to all targets concurrently using asyncio.gather
-            # ARCHITECTURE: Room broadcasts are server-initiated events, so prefer SSE
+            # ARCHITECTURE: Room broadcasts are server-initiated events
             try:
                 delivery_results = await asyncio.gather(
-                    *[
-                        self.send_personal_message(pid_uuid, event, prefer_sse=prefer_sse)
-                        for _pid_str, pid_uuid in target_mapping
-                    ],
+                    *[self.send_personal_message(pid_uuid, event) for _pid_str, pid_uuid in target_mapping],
                     return_exceptions=True,
                 )
 
@@ -2337,8 +1922,8 @@ class ConnectionManager:
         Returns:
             dict: Global broadcast delivery statistics
         """
-        # Get all players with any type of connection (WebSocket or SSE)
-        all_players = set(list(self.player_websockets.keys()) + list(self.active_sse_connections.keys()))
+        # Get all players with WebSocket connections
+        all_players = set(self.player_websockets.keys())
 
         global_stats: dict[str, Any] = {
             "total_players": len(all_players),
@@ -2826,7 +2411,7 @@ class ConnectionManager:
         Args:
             player_id: The player's ID
             player: The player object
-            connection_type: Type of connection ("websocket", "sse", "unknown")
+            connection_type: Type of connection ("websocket", "unknown")
         """
         try:
             # Check if player is already tracked as online
@@ -2913,9 +2498,7 @@ class ConnectionManager:
             connection_types_for_player = player_info["connection_types"]
             if isinstance(connection_types_for_player, set):
                 connection_types_for_player.add(connection_type)
-            player_info["total_connections"] = len(self.player_websockets.get(player_id, [])) + len(
-                self.active_sse_connections.get(player_id, [])
-            )
+            player_info["total_connections"] = len(self.player_websockets.get(player_id, []))
 
             self.online_players[player_id] = player_info
             self.mark_player_seen(player_id)
@@ -3080,13 +2663,12 @@ class ConnectionManager:
 
         Args:
             player_id: The player's ID
-            connection_type: Type of connection being disconnected ("websocket", "sse", None for all)
+            connection_type: Type of connection being disconnected ("websocket", None for all)
         """
         try:
             # Check if player has any remaining connections
             has_websocket = self.has_websocket_connection(player_id)
-            has_sse = self.has_sse_connection(player_id)
-            has_any_connections = has_websocket or has_sse
+            has_any_connections = has_websocket
 
             # If player still has connections, don't fully disconnect them
             if has_any_connections and connection_type:
@@ -3305,8 +2887,7 @@ class ConnectionManager:
 
             # Get detailed connection information
             websocket_connections = len(self.player_websockets.get(player_id, []))
-            sse_connections = len(self.active_sse_connections.get(player_id, []))
-            total_connections = websocket_connections + sse_connections
+            total_connections = websocket_connections
 
             # Get session information
             current_session = self.get_player_session(player_id)
@@ -3321,7 +2902,6 @@ class ConnectionManager:
                 "connection_id": connection_id,
                 "connections": {
                     "websocket_count": websocket_connections,
-                    "sse_count": sse_connections,
                     "total_connections": total_connections,
                     "online": player_id in self.online_players,
                     "current_session": current_session,
@@ -3347,7 +2927,6 @@ class ConnectionManager:
             # Determine if this is a fatal error
             fatal_errors = [
                 "CRITICAL_WEBSOCKET_ERROR",
-                "CRITICAL_SSE_ERROR",
                 "AUTHENTICATION_FAILURE",
                 "SECURITY_VIOLATION",
                 "MALFORMED_DATA",
@@ -3436,42 +3015,6 @@ class ConnectionManager:
             # Non-critical WebSocket error, just disconnect the specific connection
             return await self.detect_and_handle_error_state(
                 player_id, "WEBSOCKET_ERROR", f"{error_type}: {error_details}", connection_id
-            )
-
-    async def handle_sse_error(
-        self, player_id: uuid.UUID, connection_id: str, error_type: str, error_details: str
-    ) -> dict[str, Any]:
-        """
-        Handle SSE-specific errors.
-
-        Args:
-            player_id: The player's ID
-            connection_id: The SSE connection ID
-            error_type: Type of SSE error
-            error_details: Detailed error information
-
-        Returns:
-            dict: Error handling results
-        """
-        logger.warning(
-            "SSE error for player",
-            player_id=player_id,
-            connection_id=connection_id,
-            error_type=error_type,
-            error_details=error_details,
-        )
-
-        # Check if this is a critical SSE error
-        critical_sse_errors = ["STREAM_INTERRUPTED", "INVALID_EVENT_FORMAT", "CONNECTION_TIMEOUT", "BUFFER_OVERFLOW"]
-
-        if error_type in critical_sse_errors:
-            return await self.detect_and_handle_error_state(
-                player_id, "CRITICAL_SSE_ERROR", f"{error_type}: {error_details}", connection_id
-            )
-        else:
-            # Non-critical SSE error, just disconnect the specific connection
-            return await self.detect_and_handle_error_state(
-                player_id, "SSE_ERROR", f"{error_type}: {error_details}", connection_id
             )
 
     async def handle_authentication_error(
@@ -3586,14 +3129,12 @@ class ConnectionManager:
                 "connection_types": [],
                 "total_connections": 0,
                 "websocket_connections": 0,
-                "sse_connections": 0,
                 "connected_at": None,
                 "last_seen": None,
             }
 
         player_info = self.online_players[player_id]
         websocket_count = len(self.player_websockets.get(player_id, []))
-        sse_count = len(self.active_sse_connections.get(player_id, []))
 
         return {
             "player_id": player_id,
@@ -3601,7 +3142,6 @@ class ConnectionManager:
             "connection_types": list(player_info.get("connection_types", set())),
             "total_connections": player_info.get("total_connections", 0),
             "websocket_connections": websocket_count,
-            "sse_connections": sse_count,
             "connected_at": player_info.get("connected_at"),
             "last_seen": self.last_seen.get(player_id),
             "player_name": player_info.get("player_name"),
@@ -3630,8 +3170,7 @@ class ConnectionManager:
             # Check if player is in online_players but has no actual connections
             is_in_online = player_id in self.online_players
             has_websocket = self.has_websocket_connection(player_id)
-            has_sse = self.has_sse_connection(player_id)
-            has_any_connections = has_websocket or has_sse
+            has_any_connections = has_websocket
 
             if is_in_online and not has_any_connections:
                 validation_results["is_consistent"] = False
@@ -3652,9 +3191,7 @@ class ConnectionManager:
             if is_in_online:
                 player_info = self.online_players[player_id]
                 recorded_count = player_info.get("total_connections", 0)
-                actual_count = len(self.player_websockets.get(player_id, [])) + len(
-                    self.active_sse_connections.get(player_id, [])
-                )
+                actual_count = len(self.player_websockets.get(player_id, []))
 
                 if recorded_count != actual_count:
                     validation_results["is_consistent"] = False
@@ -3680,34 +3217,23 @@ class ConnectionManager:
         """
         total_online = len(self.online_players)
         total_websockets = sum(len(conns) for conns in self.player_websockets.values())
-        total_sse = sum(len(conns) for conns in self.active_sse_connections.values())
-        total_connections = total_websockets + total_sse
+        total_connections = total_websockets
 
         # Count players by connection type
         websocket_only = 0
-        sse_only = 0
-        dual_connection = 0
 
         for player_id in self.online_players:
             has_ws = self.has_websocket_connection(player_id)
-            has_sse = self.has_sse_connection(player_id)
 
-            if has_ws and has_sse:
-                dual_connection += 1
-            elif has_ws:
+            if has_ws:
                 websocket_only += 1
-            elif has_sse:
-                sse_only += 1
 
         return {
             "total_online_players": total_online,
             "total_connections": total_connections,
             "websocket_connections": total_websockets,
-            "sse_connections": total_sse,
             "connection_distribution": {
                 "websocket_only": websocket_only,
-                "sse_only": sse_only,
-                "dual_connection": dual_connection,
             },
             "average_connections_per_player": total_connections / total_online if total_online > 0 else 0,
         }
@@ -3732,10 +3258,7 @@ class ConnectionManager:
 
         return {
             "total_players": len(self.online_players),
-            "total_connections": (
-                sum(len(conns) for conns in self.player_websockets.values())
-                + sum(len(conns) for conns in self.active_sse_connections.values())
-            ),
+            "total_connections": (sum(len(conns) for conns in self.player_websockets.values())),
             "active_sessions": len(self.session_connections),
             "players_with_sessions": len(self.player_sessions),
             "error_log_path": str(error_log_path),
@@ -3763,7 +3286,6 @@ class ConnectionManager:
                 "event_type": "NEW_LOGIN",
                 "connections_before": {
                     "websocket": player_id in self.player_websockets,
-                    "sse": player_id in self.active_sse_connections,
                     "online": player_id in self.online_players,
                 },
             }
@@ -4041,18 +3563,10 @@ class ConnectionManager:
             message_queue_stats = self.message_queue.get_stats()
             room_stats = self.room_manager.get_stats()
 
-            # Calculate dual connection metrics
+            # Calculate connection metrics
             total_websocket_connections = sum(len(conn_ids) for conn_ids in self.player_websockets.values())
-            total_sse_connections = sum(len(conn_ids) for conn_ids in self.active_sse_connections.values())
             players_with_multiple_connections = sum(
                 1 for conn_ids in self.player_websockets.values() if len(conn_ids) > 1
-            )
-            players_with_dual_connections = sum(
-                1
-                for player_id in self.player_websockets.keys()
-                if player_id in self.active_sse_connections
-                and len(self.player_websockets[player_id]) > 0
-                and len(self.active_sse_connections[player_id]) > 0
             )
 
             # Session metrics
@@ -4063,20 +3577,13 @@ class ConnectionManager:
                 "memory": memory_stats,
                 "connections": {
                     "active_websockets": len(self.active_websockets),
-                    "active_sse": len(self.active_sse_connections),
-                    "total_connections": len(self.active_websockets) + len(self.active_sse_connections),
+                    "total_connections": len(self.active_websockets),
                     "player_websockets": len(self.player_websockets),
                     "connection_timestamps": len(self.connection_timestamps),
-                    # Dual connection metrics
+                    # Connection metrics
                     "total_websocket_connections": total_websocket_connections,
-                    "total_sse_connections": total_sse_connections,
                     "players_with_multiple_connections": players_with_multiple_connections,
-                    "players_with_dual_connections": players_with_dual_connections,
-                    "dual_connection_rate": (players_with_dual_connections / len(self.player_websockets) * 100)
-                    if self.player_websockets
-                    else 0,
-                    "avg_connections_per_player": (total_websocket_connections + total_sse_connections)
-                    / len(self.player_websockets)
+                    "avg_connections_per_player": total_websocket_connections / len(self.player_websockets)
                     if self.player_websockets
                     else 0,
                 },
@@ -4086,9 +3593,8 @@ class ConnectionManager:
                     "avg_connections_per_session": total_session_connections / total_sessions
                     if total_sessions > 0
                     else 0,
-                    "session_connection_ratio": total_session_connections
-                    / (total_websocket_connections + total_sse_connections)
-                    if (total_websocket_connections + total_sse_connections) > 0
+                    "session_connection_ratio": total_session_connections / total_websocket_connections
+                    if total_websocket_connections > 0
                     else 0,
                 },
                 "data_structures": {
@@ -4117,30 +3623,23 @@ class ConnectionManager:
 
     def get_dual_connection_stats(self) -> dict[str, Any]:
         """
-        Get comprehensive dual connection statistics.
+        Get comprehensive connection statistics.
 
         Returns:
-            dict: Dual connection statistics including metrics, health, and performance data
+            dict: Connection statistics including metrics, health, and performance data
         """
         try:
             now = time.time()
 
             # Calculate connection type distribution
             websocket_only_players = 0
-            sse_only_players = 0
-            dual_connection_players = 0
             total_players = len(self.player_websockets)
 
             for player_id in self.player_websockets.keys():
                 has_websocket = len(self.player_websockets[player_id]) > 0
-                has_sse = player_id in self.active_sse_connections and len(self.active_sse_connections[player_id]) > 0
 
-                if has_websocket and has_sse:
-                    dual_connection_players += 1
-                elif has_websocket:
+                if has_websocket:
                     websocket_only_players += 1
-                elif has_sse:
-                    sse_only_players += 1
 
             # Calculate connection health metrics
             healthy_connections = 0
@@ -4173,11 +3672,6 @@ class ConnectionManager:
                 "connection_distribution": {
                     "total_players": total_players,
                     "websocket_only_players": websocket_only_players,
-                    "sse_only_players": sse_only_players,
-                    "dual_connection_players": dual_connection_players,
-                    "dual_connection_percentage": (dual_connection_players / total_players * 100)
-                    if total_players > 0
-                    else 0,
                 },
                 "connection_health": {
                     "total_connections": total_connection_metadata,
@@ -4205,11 +3699,7 @@ class ConnectionManager:
                 },
                 "performance_metrics": {
                     "total_websocket_connections": sum(len(conn_ids) for conn_ids in self.player_websockets.values()),
-                    "total_sse_connections": sum(len(conn_ids) for conn_ids in self.active_sse_connections.values()),
-                    "avg_connections_per_player": (
-                        sum(len(conn_ids) for conn_ids in self.player_websockets.values())
-                        + sum(len(conn_ids) for conn_ids in self.active_sse_connections.values())
-                    )
+                    "avg_connections_per_player": (sum(len(conn_ids) for conn_ids in self.player_websockets.values()))
                     / total_players
                     if total_players > 0
                     else 0,
@@ -4217,8 +3707,8 @@ class ConnectionManager:
                 "timestamp": now,
             }
         except Exception as e:
-            logger.error("Error getting dual connection stats", error=str(e), exc_info=True)
-            return {"error": f"Failed to get dual connection stats: {e}", "timestamp": time.time()}
+            logger.error("Error getting connection stats", error=str(e), exc_info=True)
+            return {"error": f"Failed to get connection stats: {e}", "timestamp": time.time()}
 
     def get_performance_stats(self) -> dict[str, Any]:
         """
@@ -4233,11 +3723,6 @@ class ConnectionManager:
                 duration
                 for conn_type, duration in self.performance_stats["connection_establishment_times"]
                 if conn_type == "websocket"
-            ]
-            sse_times = [
-                duration
-                for conn_type, duration in self.performance_stats["connection_establishment_times"]
-                if conn_type == "sse"
             ]
 
             # Calculate averages for message delivery times
@@ -4256,15 +3741,11 @@ class ConnectionManager:
                 "connection_establishment": {
                     "total_connections": self.performance_stats["total_connections_established"],
                     "websocket_connections": len(websocket_times),
-                    "sse_connections": len(sse_times),
                     "avg_websocket_establishment_ms": sum(websocket_times) / len(websocket_times)
                     if websocket_times
                     else 0,
-                    "avg_sse_establishment_ms": sum(sse_times) / len(sse_times) if sse_times else 0,
                     "max_websocket_establishment_ms": max(websocket_times) if websocket_times else 0,
-                    "max_sse_establishment_ms": max(sse_times) if sse_times else 0,
                     "min_websocket_establishment_ms": min(websocket_times) if websocket_times else 0,
-                    "min_sse_establishment_ms": min(sse_times) if sse_times else 0,
                 },
                 "message_delivery": {
                     "total_messages": self.performance_stats["total_messages_delivered"],
@@ -4318,7 +3799,6 @@ class ConnectionManager:
 
             # Analyze connection types
             websocket_connections = 0
-            sse_connections = 0
 
             # Analyze connection ages
             connection_ages = []
@@ -4337,8 +3817,6 @@ class ConnectionManager:
                 # Type analysis
                 if metadata.connection_type == "websocket":
                     websocket_connections += 1
-                elif metadata.connection_type == "sse":
-                    sse_connections += 1
 
                 # Age analysis
                 age = now - metadata.established_at
@@ -4381,9 +3859,7 @@ class ConnectionManager:
                 },
                 "connection_type_health": {
                     "websocket_connections": websocket_connections,
-                    "sse_connections": sse_connections,
                     "websocket_health_percentage": 0,  # Would need separate tracking
-                    "sse_health_percentage": 0,  # Would need separate tracking
                 },
                 "connection_lifecycle": {
                     "avg_connection_age_seconds": sum(connection_ages) / len(connection_ages) if connection_ages else 0,
@@ -4643,7 +4119,6 @@ _ASYNC_METHODS_REQUIRING_COMPAT: set[str] = {
     "handle_new_game_session",
     "force_cleanup",
     "check_connection_health",
-    "connect_sse",
     "cleanup_orphaned_data",
     "broadcast_room_event",
     "broadcast_global_event",
@@ -4730,3 +4205,135 @@ def resolve_connection_manager(candidate: "ConnectionManager | None" = None) -> 
     """
     manager = candidate or connection_manager
     return _ensure_async_compat(manager)
+
+
+# Utility functions for sending game events
+async def send_game_event(player_id: uuid.UUID | str, event_type: str, data: dict) -> None:
+    """
+    Send a game event to a specific player via WebSocket.
+
+    Args:
+        player_id: The player's ID (UUID or string)
+        event_type: The type of event
+        data: The event data
+    """
+    try:
+        from .envelope import build_event
+
+        connection_manager = resolve_connection_manager()
+        if connection_manager is None:
+            raise RuntimeError("Connection manager not available")
+        # Convert player_id to UUID if it's a string
+        if isinstance(player_id, str):
+            try:
+                player_id_uuid = uuid.UUID(player_id)
+            except (ValueError, AttributeError):
+                logger.error("Invalid player_id format", player_id=player_id)
+                return
+        else:
+            player_id_uuid = player_id
+        # Pass UUID object directly to build_event (it accepts UUID | str)
+        await connection_manager.send_personal_message(
+            player_id_uuid, build_event(event_type, data, player_id=player_id_uuid)
+        )
+
+    except Exception as e:
+        logger.error("Error sending game event", player_id=player_id, error=str(e))
+
+
+async def broadcast_game_event(event_type: str, data: dict, exclude_player: str | None = None) -> None:
+    """
+    Broadcast a game event to all connected players.
+
+    Args:
+        event_type: The type of event
+        data: The event data
+        exclude_player: Player ID to exclude from broadcast
+    """
+    try:
+        from .envelope import build_event
+
+        connection_manager = resolve_connection_manager()
+        if connection_manager is None:
+            raise RuntimeError("Connection manager not available")
+        await connection_manager.broadcast_global(build_event(event_type, data), exclude_player)
+
+    except Exception as e:
+        logger.error("Error broadcasting game event", error=str(e))
+
+
+async def send_room_event(room_id: str, event_type: str, data: dict, exclude_player: str | None = None) -> None:
+    """
+    Send a room event to all players in a specific room.
+
+    Args:
+        room_id: The room's ID
+        event_type: The type of event
+        data: The event data
+        exclude_player: Player ID to exclude from broadcast
+    """
+    try:
+        from .envelope import build_event
+
+        connection_manager = resolve_connection_manager()
+        if connection_manager is None:
+            raise RuntimeError("Connection manager not available")
+        await connection_manager.broadcast_to_room(
+            room_id,
+            build_event(event_type, data, room_id=room_id),
+            exclude_player,
+        )
+
+    except Exception as e:
+        logger.error("Error sending room event", room_id=room_id, error=str(e))
+
+
+async def send_system_notification(player_id: uuid.UUID | str, message: str, notification_type: str = "info") -> None:
+    """
+    Send a system notification to a player.
+
+    Args:
+        player_id: The player's ID
+        message: The notification message
+        notification_type: The type of notification (info, warning, error)
+    """
+    try:
+        notification_data = {
+            "message": message,
+            "notification_type": notification_type,
+        }
+
+        await send_game_event(player_id, "system_notification", notification_data)
+
+    except Exception as e:
+        logger.error("Error sending system notification", player_id=player_id, error=str(e))
+
+
+async def send_player_status_update(player_id: uuid.UUID | str, status_data: dict) -> None:
+    """
+    Send a player status update to a player.
+
+    Args:
+        player_id: The player's ID
+        status_data: The status data to send
+    """
+    try:
+        await send_game_event(player_id, "player_status", status_data)
+
+    except Exception as e:
+        logger.error("Error sending status update", player_id=player_id, error=str(e))
+
+
+async def send_room_description(player_id: uuid.UUID | str, room_data: dict) -> None:
+    """
+    Send room description to a player.
+
+    Args:
+        player_id: The player's ID
+        room_data: The room data to send
+    """
+    try:
+        await send_game_event(player_id, "room_description", room_data)
+
+    except Exception as e:
+        logger.error("Error sending room description", player_id=player_id, error=str(e))

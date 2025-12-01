@@ -13,13 +13,11 @@ vi.mock('../stores', () => ({
     reconnectAttempts: 0,
     sessionId: 'test-session',
     websocketConnected: true,
-    sseConnected: true,
     connectionHealth: 'connected' as const,
     hasAnyConnection: vi.fn().mockReturnValue(true),
     getConnectionInfo: vi.fn().mockReturnValue({
       sessionId: 'test-session',
       websocketConnected: true,
-      sseConnected: true,
       connectionHealth: 'connected' as const,
     }),
   })),
@@ -171,13 +169,11 @@ describe('useGameTerminal', () => {
         reconnectAttempts: 3,
         sessionId: null,
         websocketConnected: false,
-        sseConnected: false,
         connectionHealth: 'disconnected' as const,
         hasAnyConnection: vi.fn().mockReturnValue(false),
         getConnectionInfo: vi.fn().mockReturnValue({
           sessionId: null,
           websocketConnected: false,
-          sseConnected: false,
           connectionHealth: 'disconnected' as const,
         }),
       });
@@ -320,13 +316,11 @@ describe('useGameTerminal', () => {
         reconnectAttempts: 0,
         sessionId: 'test-session',
         websocketConnected: true,
-        sseConnected: true,
         connectionHealth: 'connected' as const,
         hasAnyConnection: vi.fn().mockReturnValue(true),
         getConnectionInfo: vi.fn().mockReturnValue({
           sessionId: 'test-session',
           websocketConnected: true,
-          sseConnected: true,
           connectionHealth: 'connected' as const,
         }),
       }));
@@ -382,13 +376,11 @@ describe('useGameTerminal', () => {
         reconnectAttempts: 0,
         sessionId: 'test-session',
         websocketConnected: true,
-        sseConnected: true,
         connectionHealth: 'connected' as const,
         hasAnyConnection: vi.fn().mockReturnValue(true),
         getConnectionInfo: vi.fn().mockReturnValue({
           sessionId: 'test-session',
           websocketConnected: true,
-          sseConnected: true,
           connectionHealth: 'connected' as const,
         }),
       } as any);
@@ -428,13 +420,11 @@ describe('useGameTerminal', () => {
         reconnectAttempts: 0,
         sessionId: 'test-session',
         websocketConnected: true,
-        sseConnected: true,
         connectionHealth: 'connected' as const,
         hasAnyConnection: vi.fn().mockReturnValue(true),
         getConnectionInfo: vi.fn().mockReturnValue({
           sessionId: 'test-session',
           websocketConnected: true,
-          sseConnected: true,
           connectionHealth: 'connected' as const,
         }),
       } as any);
@@ -476,13 +466,11 @@ describe('useGameTerminal', () => {
         reconnectAttempts: 0,
         sessionId: 'test-session',
         websocketConnected: true,
-        sseConnected: true,
         connectionHealth: 'connected' as const,
         hasAnyConnection: vi.fn().mockReturnValue(true),
         getConnectionInfo: vi.fn().mockReturnValue({
           sessionId: 'test-session',
           websocketConnected: true,
-          sseConnected: true,
           connectionHealth: 'connected' as const,
         }),
       } as any);
@@ -522,13 +510,11 @@ describe('useGameTerminal', () => {
         reconnectAttempts: 0,
         sessionId: 'test-session',
         websocketConnected: true,
-        sseConnected: true,
         connectionHealth: 'connected' as const,
         hasAnyConnection: vi.fn().mockReturnValue(true),
         getConnectionInfo: vi.fn().mockReturnValue({
           sessionId: 'test-session',
           websocketConnected: true,
-          sseConnected: true,
           connectionHealth: 'connected' as const,
         }),
       } as any);
@@ -570,13 +556,11 @@ describe('useGameTerminal', () => {
         reconnectAttempts: 0,
         sessionId: 'test-session',
         websocketConnected: true,
-        sseConnected: true,
         connectionHealth: 'connected' as const,
         hasAnyConnection: vi.fn().mockReturnValue(true),
         getConnectionInfo: vi.fn().mockReturnValue({
           sessionId: 'test-session',
           websocketConnected: true,
-          sseConnected: true,
           connectionHealth: 'connected' as const,
         }),
       } as any);
@@ -619,13 +603,11 @@ describe('useGameTerminal', () => {
         reconnectAttempts: 0,
         sessionId: 'test-session',
         websocketConnected: true,
-        sseConnected: true,
         connectionHealth: 'connected' as const,
         hasAnyConnection: vi.fn().mockReturnValue(true),
         getConnectionInfo: vi.fn().mockReturnValue({
           sessionId: 'test-session',
           websocketConnected: true,
-          sseConnected: true,
           connectionHealth: 'connected' as const,
         }),
       } as any);
@@ -678,13 +660,11 @@ describe('useGameTerminal', () => {
         reconnectAttempts: 0,
         sessionId: 'test-session',
         websocketConnected: true,
-        sseConnected: true,
         connectionHealth: 'connected' as const,
         hasAnyConnection: vi.fn().mockReturnValue(true),
         getConnectionInfo: vi.fn().mockReturnValue({
           sessionId: 'test-session',
           websocketConnected: true,
-          sseConnected: true,
           connectionHealth: 'connected' as const,
         }),
       } as any);
@@ -731,13 +711,11 @@ describe('useGameTerminal', () => {
         reconnectAttempts: 0,
         sessionId: 'test-session',
         websocketConnected: true,
-        sseConnected: true,
         connectionHealth: 'connected' as const,
         hasAnyConnection: vi.fn().mockReturnValue(true),
         getConnectionInfo: vi.fn().mockReturnValue({
           sessionId: 'test-session',
           websocketConnected: true,
-          sseConnected: true,
           connectionHealth: 'connected' as const,
         }),
       } as any);
@@ -783,13 +761,11 @@ describe('useGameTerminal', () => {
         reconnectAttempts: 0,
         sessionId: 'test-session',
         websocketConnected: true,
-        sseConnected: true,
         connectionHealth: 'connected' as const,
         hasAnyConnection: vi.fn().mockReturnValue(true),
         getConnectionInfo: vi.fn().mockReturnValue({
           sessionId: 'test-session',
           websocketConnected: true,
-          sseConnected: true,
           connectionHealth: 'connected' as const,
         }),
       } as any);
@@ -840,13 +816,11 @@ describe('useGameTerminal', () => {
         reconnectAttempts: 0,
         sessionId: 'test-session',
         websocketConnected: true,
-        sseConnected: true,
         connectionHealth: 'connected' as const,
         hasAnyConnection: vi.fn().mockReturnValue(true),
         getConnectionInfo: vi.fn().mockReturnValue({
           sessionId: 'test-session',
           websocketConnected: true,
-          sseConnected: true,
           connectionHealth: 'connected' as const,
         }),
       } as any);
@@ -892,13 +866,11 @@ describe('useGameTerminal', () => {
         reconnectAttempts: 0,
         sessionId: 'test-session',
         websocketConnected: true,
-        sseConnected: true,
         connectionHealth: 'connected' as const,
         hasAnyConnection: vi.fn().mockReturnValue(true),
         getConnectionInfo: vi.fn().mockReturnValue({
           sessionId: 'test-session',
           websocketConnected: true,
-          sseConnected: true,
           connectionHealth: 'connected' as const,
         }),
       } as any);
@@ -930,13 +902,11 @@ describe('useGameTerminal', () => {
         reconnectAttempts: 0,
         sessionId: 'test-session',
         websocketConnected: true,
-        sseConnected: true,
         connectionHealth: 'connected' as const,
         hasAnyConnection: vi.fn().mockReturnValue(true),
         getConnectionInfo: vi.fn().mockReturnValue({
           sessionId: 'test-session',
           websocketConnected: true,
-          sseConnected: true,
           connectionHealth: 'connected' as const,
         }),
       } as any);
@@ -974,13 +944,11 @@ describe('useGameTerminal', () => {
         reconnectAttempts: 0,
         sessionId: 'test-session',
         websocketConnected: true,
-        sseConnected: true,
         connectionHealth: 'connected' as const,
         hasAnyConnection: vi.fn().mockReturnValue(true),
         getConnectionInfo: vi.fn().mockReturnValue({
           sessionId: 'test-session',
           websocketConnected: true,
-          sseConnected: true,
           connectionHealth: 'connected' as const,
         }),
       } as any);

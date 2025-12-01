@@ -35,7 +35,6 @@ class TestConnectionManager:
         """Test ConnectionManager initialization."""
         assert self.manager.active_websockets == {}
         assert self.manager.player_websockets == {}
-        assert self.manager.active_sse_connections == {}
         assert self.manager.room_subscriptions == {}
         assert self.manager.sequence_counter == 0
         assert self.manager.pending_messages == {}
@@ -77,36 +76,15 @@ class TestConnectionManager:
         assert self.player_id not in self.manager.player_websockets
         assert self.room_id not in self.manager.room_subscriptions
 
-    @pytest.mark.asyncio
-    async def test_connect_sse(self):
-        """Test SSE connection."""
-        connection_id = await self.manager.connect_sse(self.player_id)
-
-        assert connection_id is not None
-        assert self.player_id in self.manager.active_sse_connections
-        assert connection_id in self.manager.active_sse_connections[self.player_id]
-
-    @pytest.mark.asyncio
-    async def test_disconnect_sse(self):
-        """Test SSE disconnection."""
-        # First connect
-        await self.manager.connect_sse(self.player_id)
-
-        # Then disconnect
-        self.manager.disconnect_sse(self.player_id)
-
-        assert self.player_id not in self.manager.active_sse_connections
-
     def test_get_active_connection_count(self):
         """Test getting active connection count."""
         # Add some connections
         self.manager.active_websockets["ws1"] = self.mock_websocket
-        self.manager.active_sse_connections["player1"] = "sse1"
-        self.manager.active_sse_connections["player2"] = "sse2"
+        self.manager.active_websockets["ws2"] = self.mock_websocket
 
         count = self.manager.get_active_connection_count()
 
-        assert count == 3  # 1 WebSocket + 2 SSE
+        assert count == 2  # 2 WebSockets
 
     def test_check_rate_limit_new_player(self):
         """Test rate limiting for new player."""

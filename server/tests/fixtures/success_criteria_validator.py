@@ -1,7 +1,7 @@
 """
-Success criteria validation utilities for dual connection system.
+Success criteria validation utilities for WebSocket-only connection system.
 
-This module provides utilities for validating that the dual connection system
+This module provides utilities for validating that the WebSocket-only connection system
 meets all defined success criteria for functional, performance, and quality requirements.
 """
 
@@ -53,7 +53,7 @@ class ValidationSummary:
 
 
 class SuccessCriteriaValidator:
-    """Validator for dual connection system success criteria"""
+    """Validator for WebSocket-only connection system success criteria"""
 
     def __init__(self, connection_manager: ConnectionManager):
         self.connection_manager = connection_manager
@@ -92,10 +92,7 @@ class SuccessCriteriaValidator:
         """Validate functional success criteria"""
         self.logger.info("Validating functional success criteria")
 
-        # Criterion 1: Players can maintain both WebSocket and SSE connections simultaneously
-        await self._validate_dual_connection_support()
-
-        # Criterion 2: Messages are delivered to all active connections
+        # Criterion 1: Messages are delivered to all active connections
         await self._validate_message_delivery_to_all_connections()
 
         # Criterion 3: Connections persist as specified in the requirements
@@ -103,85 +100,6 @@ class SuccessCriteriaValidator:
 
         # Criterion 4: Disconnection rules are properly implemented
         await self._validate_disconnection_rules()
-
-    async def _validate_dual_connection_support(self):
-        """Validate dual connection support"""
-        self.logger.info("Validating dual connection support")
-
-        start_time = time.time()
-        details = {}
-        recommendations = []
-
-        try:
-            # Test dual connection establishment
-            player_id = "dual_support_test_player"
-
-            # Establish WebSocket connection
-            ws_result = await self.connection_manager.connect_websocket(
-                self._mock_websocket(), player_id, "dual_support_session"
-            )
-            details["websocket_connection_established"] = ws_result is not None
-
-            # Establish SSE connection
-            sse_result = await self.connection_manager.connect_sse(player_id, "dual_support_session")
-            details["sse_connection_established"] = sse_result is not None
-
-            # Verify both connections are active
-            player_connections = self.connection_manager.get_connections_by_player(player_id)
-            websocket_connections = [c for c in player_connections if c.connection_type == "websocket"]
-            sse_connections = [c for c in player_connections if c.connection_type == "sse"]
-
-            details["total_connections"] = len(player_connections)
-            details["websocket_connections"] = len(websocket_connections)
-            details["sse_connections"] = len(sse_connections)
-            details["both_connection_types_active"] = len(websocket_connections) > 0 and len(sse_connections) > 0
-
-            # Test message delivery to both connections
-            test_message = {"type": "test", "content": "Dual connection test"}
-            delivery_result = await self.connection_manager.send_personal_message(player_id, test_message)
-
-            details["message_delivery_result"] = delivery_result
-            details["websocket_delivered"] = delivery_result.get("websocket_delivered", False)
-            details["sse_delivered"] = delivery_result.get("sse_delivered", False)
-            details["both_connections_received_message"] = delivery_result.get(
-                "websocket_delivered", False
-            ) and delivery_result.get("sse_delivered", False)
-
-            # Determine success level
-            if details["both_connection_types_active"] and details["both_connections_received_message"]:
-                level = SuccessLevel.PASSED
-                score = 1.0
-            elif details["both_connection_types_active"]:
-                level = SuccessLevel.PARTIAL
-                score = 0.7
-                recommendations.append("Message delivery to both connections needs improvement")
-            else:
-                level = SuccessLevel.FAILED
-                score = 0.0
-                recommendations.append("Dual connection support is not working properly")
-
-            # Cleanup
-            await self.connection_manager.force_disconnect_player(player_id)
-
-        except Exception as e:
-            level = SuccessLevel.FAILED
-            score = 0.0
-            details["exception"] = str(e)
-            recommendations.append(f"Exception during dual connection test: {str(e)}")
-            self.logger.error("Dual connection support validation failed", error=str(e))
-
-        details["validation_time"] = time.time() - start_time
-
-        result = SuccessCriteriaResult(
-            criteria_name="dual_connection_support",
-            category="functional",
-            level=level,
-            score=score,
-            details=details,
-            recommendations=recommendations,
-        )
-
-        self.validation_results.append(result)
 
     async def _validate_message_delivery_to_all_connections(self):
         """Validate message delivery to all active connections"""
@@ -210,8 +128,7 @@ class SuccessCriteriaValidator:
                 for conn_type in scenario["connections"]:
                     if conn_type == "websocket":
                         await self.connection_manager.connect_websocket(self._mock_websocket(), player_id, session_id)
-                    elif conn_type == "sse":
-                        await self.connection_manager.connect_sse(player_id, session_id)
+                    # SSE connections are no longer supported
 
                 established_players.append(player_id)
 
@@ -298,9 +215,8 @@ class SuccessCriteriaValidator:
             player_id = "persistence_test_player"
             session_id = "persistence_test_session"
 
-            # Establish dual connections
+            # Establish WebSocket connection
             await self.connection_manager.connect_websocket(self._mock_websocket(), player_id, session_id)
-            await self.connection_manager.connect_sse(player_id, session_id)
 
             # Wait for a short period to test persistence
             await asyncio.sleep(2)
@@ -367,11 +283,10 @@ class SuccessCriteriaValidator:
             player_id = "disconnection_test_player"
             session_id = "disconnection_test_session"
 
-            # Establish dual connections
+            # Establish WebSocket connection
             ws_conn_id = await self.connection_manager.connect_websocket(self._mock_websocket(), player_id, session_id)
-            await self.connection_manager.connect_sse(player_id, session_id)
 
-            details["initial_connections"] = 2
+            details["initial_connections"] = 1
 
             # Test individual connection disconnection
             await self.connection_manager.disconnect_websocket_connection(ws_conn_id)
@@ -767,7 +682,6 @@ class SuccessCriteriaValidator:
                 await self.connection_manager.connect_websocket(
                     self._mock_websocket(), player_id, f"resource_session_{i}"
                 )
-                await self.connection_manager.connect_sse(player_id, f"resource_session_{i}")
                 test_players.append(player_id)
 
             # Measure resource usage

@@ -20,16 +20,15 @@ engine = create_engine(database_url)
 
 with engine.connect() as conn:
     result = conn.execute(text("""
-        SELECT name, room_id, sub_zone_id, npc_type 
-        FROM npc_definitions 
-        WHERE room_id IS NOT NULL 
+        SELECT name, room_id, sub_zone_id, npc_type
+        FROM npc_definitions
+        WHERE room_id IS NOT NULL
         ORDER BY room_id, name
     """))
     rows = result.fetchall()
-    
+
     print(f"{'NPC Name':<30} | {'Room ID':<50} | {'Sub Zone':<30} | {'Type'}")
     print("-" * 120)
     for row in rows:
         name, room_id, sub_zone_id, npc_type = row
         print(f"{name:<30} | {room_id:<50} | {sub_zone_id:<30} | {npc_type}")
-

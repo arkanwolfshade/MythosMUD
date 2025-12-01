@@ -3,7 +3,7 @@
  * Provides secure token storage, session management, input sanitization, and CSRF protection
  */
 
-import DOMPurify from 'dompurify';
+import DOMPurify, { type Config as DOMPurifyConfig } from 'dompurify';
 
 interface Session {
   id: string;
@@ -317,7 +317,7 @@ export const inputSanitizer = {
       SAFE_FOR_TEMPLATES: true,
       FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'link', 'style'],
       FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover'],
-    } as DOMPurify.Config;
+    } as DOMPurifyConfig;
 
     // Human reader: additional check to remove any remaining <script patterns.
     // AI reader: some edge cases like <script or <SCRIPT might slip through, so we double-check.
@@ -381,7 +381,7 @@ export const inputSanitizer = {
       ALLOW_DATA_ATTR: false,
       ALLOW_UNKNOWN_PROTOCOLS: false,
       SAFE_FOR_TEMPLATES: true,
-    } as DOMPurify.Config;
+    } as DOMPurifyConfig;
 
     return DOMPurify.sanitize(message, config).substring(0, 500); // Limit message length
   },
@@ -411,7 +411,7 @@ export const inputSanitizer = {
       ALLOW_DATA_ATTR: false,
       ALLOW_UNKNOWN_PROTOCOLS: false,
       SAFE_FOR_TEMPLATES: true,
-    } as DOMPurify.Config;
+    } as DOMPurifyConfig;
 
     return DOMPurify.sanitize(html, config);
   },

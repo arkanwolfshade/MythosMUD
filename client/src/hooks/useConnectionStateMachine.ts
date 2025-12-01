@@ -1,8 +1,8 @@
 /**
  * XState connection state machine for robust connection management.
  *
- * Implements explicit finite state machine for managing dual-connection
- * (WebSocket + SSE) lifecycle with automatic recovery and health tracking.
+ * Implements explicit finite state machine for managing WebSocket
+ * connection lifecycle with automatic recovery and health tracking.
  *
  * AI: State machines eliminate implicit state bugs common in connection handling.
  */
@@ -14,14 +14,7 @@ import { assign, setup } from 'xstate';
  *
  * AI: Explicit states prevent impossible states like "connected but also connecting"
  */
-export type ConnectionState =
-  | 'disconnected'
-  | 'connecting_sse'
-  | 'sse_connected'
-  | 'connecting_ws'
-  | 'fully_connected'
-  | 'reconnecting'
-  | 'failed';
+export type ConnectionState = 'disconnected' | 'connecting_ws' | 'fully_connected' | 'reconnecting' | 'failed';
 
 /**
  * Events that trigger state transitions.
@@ -30,9 +23,6 @@ export type ConnectionState =
  */
 export type ConnectionEvent =
   | { type: 'CONNECT' }
-  | { type: 'SSE_CONNECTED'; sessionId?: string }
-  | { type: 'SSE_FAILED'; error: string }
-  | { type: 'WS_CONNECTING' }
   | { type: 'WS_CONNECTED' }
   | { type: 'WS_FAILED'; error: string }
   | { type: 'ERROR'; error: string }
@@ -56,7 +46,6 @@ export interface ConnectionContext {
   lastError: string | null;
   connectionStartTime: number | null;
   lastConnectedTime: number | null;
-  sseUrl: string | null;
   wsUrl: string | null;
 }
 
@@ -64,18 +53,16 @@ export interface ConnectionContext {
  * Connection state machine definition using XState v5.
  *
  * Implements robust connection lifecycle with:
- * - Sequential connection (SSE first, then WebSocket)
+ * - WebSocket connection establishment
  * - Automatic reconnection with backoff
  * - Timeout guards (30s connection, 5s reconnect)
  * - Error tracking and recovery
  *
  * States:
  * - disconnected: Initial state, no connections
- * - connecting_sse: Establishing SSE connection
- * - sse_connected: SSE connected, preparing WebSocket
  * - connecting_ws: Establishing WebSocket connection
- * - fully_connected: Both connections established
- * - reconnecting: Attempting to restore connections
+ * - fully_connected: WebSocket connection established
+ * - reconnecting: Attempting to restore connection
  * - failed: All connection attempts exhausted
  *
  * AI: FSM ensures deterministic behavior and testable transitions.
@@ -98,20 +85,6 @@ export const connectionMachine = setup({
     }),
 
     /**
-     * Store SSE session ID and URL.
-     * AI: Session ID required for WebSocket auth.
-     */
-    storeSSESession: assign({
-      sessionId: ({ event }) => {
-        if (event.type === 'SSE_CONNECTED' && event.sessionId) {
-          return event.sessionId;
-        }
-        return null;
-      },
-      sseUrl: ({ context }) => context.sseUrl,
-    }),
-
-    /**
      * Store connection start time when connection begins.
      * AI: Used to track connection duration and timeout.
      */
@@ -121,7 +94,7 @@ export const connectionMachine = setup({
 
     /**
      * Mark connection as fully established.
-     * AI: Both SSE and WS connected - system is operational.
+     * AI: WebSocket connected - system is operational.
      */
     markFullyConnected: assign({
       lastConnectedTime: () => Date.now(),
@@ -159,7 +132,6 @@ export const connectionMachine = setup({
       reconnectAttempts: 0,
       lastError: null,
       connectionStartTime: null,
-      sseUrl: null,
       wsUrl: null,
     }),
   },
@@ -208,7 +180,6 @@ export const connectionMachine = setup({
     lastError: null,
     connectionStartTime: null,
     lastConnectedTime: null,
-    sseUrl: null,
     wsUrl: null,
   },
   states: {
@@ -216,67 +187,8 @@ export const connectionMachine = setup({
       entry: 'resetConnection',
       on: {
         CONNECT: {
-          target: 'connecting_sse',
+          target: 'connecting_ws',
           actions: ['resetConnection', 'storeConnectionStartTime'],
-        },
-      },
-    },
-
-    connecting_sse: {
-      on: {
-        SSE_CONNECTED: {
-          target: 'sse_connected',
-          actions: 'storeSSESession',
-        },
-        SSE_FAILED: {
-          target: 'reconnecting',
-          actions: ['storeError', 'incrementReconnectAttempts'],
-        },
-        ERROR: {
-          target: 'failed',
-          actions: ['storeError', 'incrementReconnectAttempts'],
-        },
-        CONNECTION_TIMEOUT: {
-          target: 'reconnecting',
-          actions: ['storeError', 'incrementReconnectAttempts'],
-        },
-        DISCONNECT: {
-          target: 'disconnected',
-        },
-      },
-      after: {
-        CONNECTION_TIMEOUT: {
-          target: 'reconnecting',
-          actions: assign({
-            lastError: 'SSE connection timeout',
-            reconnectAttempts: ({ context }) => context.reconnectAttempts + 1,
-          }),
-        },
-      },
-    },
-
-    sse_connected: {
-      on: {
-        WS_CONNECTING: {
-          target: 'connecting_ws',
-        },
-        WS_CONNECTED: {
-          target: 'fully_connected',
-          actions: 'markFullyConnected',
-        },
-        CONNECT: {
-          target: 'connecting_ws',
-        },
-        SSE_FAILED: {
-          target: 'reconnecting',
-          actions: ['storeError', 'incrementReconnectAttempts'],
-        },
-        ERROR: {
-          target: 'failed',
-          actions: ['storeError', 'incrementReconnectAttempts'],
-        },
-        DISCONNECT: {
-          target: 'disconnected',
         },
       },
     },
@@ -315,10 +227,6 @@ export const connectionMachine = setup({
         DISCONNECT: {
           target: 'disconnected',
         },
-        SSE_FAILED: {
-          target: 'reconnecting',
-          actions: ['storeError', 'incrementReconnectAttempts'],
-        },
         WS_FAILED: {
           target: 'reconnecting',
           actions: ['storeError', 'incrementReconnectAttempts'],
@@ -345,7 +253,7 @@ export const connectionMachine = setup({
         RECONNECT_DELAY: [
           {
             guard: 'canReconnect',
-            target: 'connecting_sse',
+            target: 'connecting_ws',
           },
           {
             target: 'failed',
@@ -370,7 +278,7 @@ export const connectionMachine = setup({
           actions: 'clearAllState',
         },
         RECONNECT: {
-          target: 'connecting_sse',
+          target: 'connecting_ws',
           actions: ['resetConnection', 'storeConnectionStartTime'],
         },
         RETRY: {

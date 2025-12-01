@@ -8,7 +8,6 @@ interface MonitoringData {
     connection_distribution: {
       total_players: number;
       websocket_only_players: number;
-      sse_only_players: number;
       dual_connection_players: number;
       dual_connection_percentage: number;
     };
@@ -25,7 +24,6 @@ interface MonitoringData {
     };
     performance_metrics: {
       total_websocket_connections: number;
-      total_sse_connections: number;
       avg_connections_per_player: number;
     };
   };
@@ -33,9 +31,7 @@ interface MonitoringData {
     connection_establishment: {
       total_connections: number;
       websocket_connections: number;
-      sse_connections: number;
       avg_websocket_establishment_ms: number;
-      avg_sse_establishment_ms: number;
     };
     message_delivery: {
       total_messages: number;
@@ -191,12 +187,6 @@ export const MonitoringPanel: React.FC<MonitoringPanelProps> = ({
                   {monitoringData.dualConnections.connection_distribution.websocket_only_players}
                 </div>
               </div>
-              <div className="stat-item">
-                <div className="stat-label">SSE Only</div>
-                <div className="stat-value">
-                  {monitoringData.dualConnections.connection_distribution.sse_only_players}
-                </div>
-              </div>
             </div>
           </div>
         )}
@@ -259,12 +249,6 @@ export const MonitoringPanel: React.FC<MonitoringPanelProps> = ({
                 <div className="stat-label">WebSocket Avg</div>
                 <div className="stat-value">
                   {formatNumber(monitoringData.performance.connection_establishment.avg_websocket_establishment_ms)}ms
-                </div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-label">SSE Avg</div>
-                <div className="stat-value">
-                  {formatNumber(monitoringData.performance.connection_establishment.avg_sse_establishment_ms)}ms
                 </div>
               </div>
               <div className="stat-item">

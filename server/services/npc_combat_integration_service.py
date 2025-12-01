@@ -374,7 +374,7 @@ class NPCCombatIntegrationService:
                         player_uuid = UUID(player_id) if self._is_valid_uuid(player_id) else None
                         if player_uuid and connection_manager is not None:
                             has_websocket = player_uuid in connection_manager.player_websockets
-                            has_sse = player_uuid in connection_manager.active_sse_connections
+                            has_sse = False  # SSE connections not supported in WebSocket-only system
                             logger.debug(
                                 "Player connection state before NPC death handling",
                                 player_id=player_id,
@@ -495,7 +495,7 @@ class NPCCombatIntegrationService:
                     player_uuid = UUID(killer_id) if self._is_valid_uuid(killer_id) else None
                     if player_uuid and connection_manager is not None:
                         has_websocket = player_uuid in connection_manager.player_websockets
-                        has_sse = player_uuid in connection_manager.active_sse_connections
+                        has_sse = False  # SSE connections not supported in WebSocket-only system
                         logger.debug(
                             "Player connection state before XP award",
                             player_id=killer_id,

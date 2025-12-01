@@ -17,7 +17,7 @@ from fastapi import FastAPI
 
 from ..container import ApplicationContainer
 from ..logging.enhanced_logging_config import get_logger, update_logging_with_player_service
-from ..realtime.sse_handler import broadcast_game_event
+from ..realtime.connection_manager import broadcast_game_event
 from ..services.catatonia_registry import CatatoniaRegistry
 from ..services.player_respawn_service import LIMBO_ROOM_ID
 from ..time.time_event_consumer import MythosTimeEventConsumer

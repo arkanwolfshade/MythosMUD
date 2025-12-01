@@ -512,7 +512,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                 // NPCs and players are ONLY provided by room_occupants events (authoritative source)
                 // room_update should NEVER touch NPCs or players - only update room metadata
                 const roomIdChanged = roomData.id !== existingRoom.id;
-                
+
                 // CRITICAL: Preserve ALL occupant data from existingRoom (set by room_occupants events)
                 // room_update should NEVER modify NPCs, players, occupants, or occupant_count
                 // These are ONLY managed by room_occupants events
@@ -527,7 +527,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                   occupants: existingRoom.occupants ?? [],
                   occupant_count: existingRoom.occupant_count ?? 0,
                 };
-                
+
                 // If room ID changed, clear occupants (will be repopulated by room_occupants for new room)
                 if (roomIdChanged) {
                   roomUpdate.players = [];
@@ -535,7 +535,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                   roomUpdate.occupants = [];
                   roomUpdate.occupant_count = 0;
                 }
-                
+
                 updates.room = roomUpdate as Room;
               } else {
                 // First room_update - initialize WITHOUT occupants (room_occupants will populate)
@@ -796,7 +796,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                   hypothesisId: 'C',
                 }),
               }).catch(() => {});
-            } catch (e) {
+            } catch {
               // Silently fail
             }
             // #endregion
@@ -868,7 +868,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                       hypothesisId: 'C',
                     }),
                   }).catch(() => {});
-                } catch (e) {
+                } catch {
                   // Silently fail
                 }
                 // #endregion
@@ -1476,19 +1476,21 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               // This prevents room_update events with npcs: [] from overwriting NPCs from room_occupants
               // CRITICAL FIX: If updates has empty array but prev has populated NPCs, ALWAYS preserve prev
               // This handles the case where room_update arrives after room_occupants and tries to clear NPCs
-              // room_occupants is the authoritative source - if it set NPCs, they should never be cleared by room_update
-              npcs:
-                updatesHasPopulatedNpcs
-                  ? updates.room.npcs // Updates has populated NPCs (from room_occupants) - use it
-                  : prevHasPopulatedNpcs
-                    ? prev.room.npcs // Updates has no NPCs but prev does - preserve prev
-                    : // Neither has populated NPCs
-                      // CRITICAL: If updates explicitly set npcs: [] (empty array from room_update)
-                      // but prev has NPCs (from previous room_occupants), preserve prev
-                      // Only use empty array if both are empty
-                      updates.room.npcs !== undefined && updates.room.npcs.length === 0 && prev.room.npcs && prev.room.npcs.length > 0
-                        ? prev.room.npcs // room_update tried to clear NPCs, but prev has them - preserve prev
-                        : (updates.room.npcs ?? prev.room.npcs ?? []), // Default fallback
+              // room_occupants is the authoritative source - if it set NPCs, they should never be cleared
+              npcs: updatesHasPopulatedNpcs
+                ? updates.room.npcs // Updates has populated NPCs (from room_occupants) - use it
+                : prevHasPopulatedNpcs
+                  ? prev.room.npcs // Updates has no NPCs but prev does - preserve prev
+                  : // Neither has populated NPCs
+                    // CRITICAL: If updates explicitly set npcs: [] (empty array from room_update)
+                    // but prev has NPCs (from previous room_occupants), preserve prev
+                    // Only use empty array if both are empty
+                    updates.room.npcs !== undefined &&
+                      updates.room.npcs.length === 0 &&
+                      prev.room.npcs &&
+                      prev.room.npcs.length > 0
+                    ? prev.room.npcs // room_update tried to clear NPCs, but prev has them - preserve prev
+                    : (updates.room.npcs ?? prev.room.npcs ?? []), // Default fallback
               // Occupants: merge from both
               occupants: [
                 ...(updatesHasPopulatedPlayers
