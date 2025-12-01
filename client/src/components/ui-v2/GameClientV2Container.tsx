@@ -186,10 +186,6 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   }, [sanityStatus]);
 
   useEffect(() => {
-    healthStatusRef.current = healthStatus;
-  }, [healthStatus]);
-
-  useEffect(() => {
     rescueStateRef.current = rescueState;
 
     if (rescueState && ['success', 'failed', 'sanitarium'].includes(rescueState.status)) {
@@ -407,7 +403,6 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               tier: updatedHealthStatus.tier,
             });
 
-            setHealthStatus(updatedHealthStatus);
             setHealthStatus(updatedHealthStatus);
             if (currentPlayerRef.current) {
               updates.player = {
