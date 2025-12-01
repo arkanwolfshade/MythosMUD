@@ -148,7 +148,58 @@ export function useGameConnection(options: UseGameConnectionOptions) {
     onMessage: event => {
       try {
         const data = JSON.parse(event.data);
+        // #region agent log
+        if (data.event_type === 'player_hp_updated' || data.event_type === 'playerhpupdated') {
+          fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              location: 'useGameConnectionRefactored.ts:148',
+              message: 'SSE message received',
+              data: {
+                event_type: data.event_type,
+                old_hp: data.data?.old_hp,
+                new_hp: data.data?.new_hp,
+                raw_event: JSON.stringify(data).substring(0, 200),
+              },
+              timestamp: Date.now(),
+              sessionId: 'debug-session',
+              runId: 'run1',
+              hypothesisId: 'A',
+            }),
+          }).catch(() => {});
+        }
+        // Log room_occupants events to debug NPC display issue
+        if (data.event_type === 'room_occupants') {
+          logger.info('GameConnection', 'SSE room_occupants event received', {
+            event_type: data.event_type,
+            room_id: data.room_id,
+            has_players: !!data.data?.players,
+            has_npcs: !!data.data?.npcs,
+            players_count: data.data?.players?.length ?? 0,
+            npcs_count: data.data?.npcs?.length ?? 0,
+            npcs: data.data?.npcs ?? [],
+          });
+        }
+        // #endregion
         setLastEvent(data);
+        // #region agent log
+        if (data.event_type === 'player_hp_updated' || data.event_type === 'playerhpupdated') {
+          fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              location: 'useGameConnectionRefactored.ts:152',
+              message: 'Calling onEventRef with SSE event',
+              data: { event_type: data.event_type, has_callback: !!onEventRef.current },
+              timestamp: Date.now(),
+              sessionId: 'debug-session',
+              runId: 'run1',
+              hypothesisId: 'A',
+            }),
+          }).catch(() => {});
+        }
+        // #endregion
         onEventRef.current?.(data);
       } catch (error) {
         logger.error('GameConnection', 'Error parsing SSE message', { error });
@@ -197,7 +248,46 @@ export function useGameConnection(options: UseGameConnectionOptions) {
     onMessage: event => {
       try {
         const data = JSON.parse(event.data);
+        // #region agent log
+        if (data.event_type === 'player_hp_updated' || data.event_type === 'playerhpupdated') {
+          fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              location: 'useGameConnectionRefactored.ts:197',
+              message: 'WebSocket message received',
+              data: {
+                event_type: data.event_type,
+                old_hp: data.data?.old_hp,
+                new_hp: data.data?.new_hp,
+                raw_event: JSON.stringify(data).substring(0, 200),
+              },
+              timestamp: Date.now(),
+              sessionId: 'debug-session',
+              runId: 'run1',
+              hypothesisId: 'A',
+            }),
+          }).catch(() => {});
+        }
+        // #endregion
         setLastEvent(data);
+        // #region agent log
+        if (data.event_type === 'player_hp_updated' || data.event_type === 'playerhpupdated') {
+          fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              location: 'useGameConnectionRefactored.ts:201',
+              message: 'Calling onEventRef with WebSocket event',
+              data: { event_type: data.event_type, has_callback: !!onEventRef.current },
+              timestamp: Date.now(),
+              sessionId: 'debug-session',
+              runId: 'run1',
+              hypothesisId: 'A',
+            }),
+          }).catch(() => {});
+        }
+        // #endregion
         onEventRef.current?.(data);
       } catch (error) {
         logger.error('GameConnection', 'Error parsing WebSocket message', { error });

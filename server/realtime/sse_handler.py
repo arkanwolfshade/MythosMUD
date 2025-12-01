@@ -80,14 +80,43 @@ async def game_event_stream(
         logger.debug("DEBUG: SSE session established", player_id=player_id)
         yield sse_line(build_event("heartbeat", {"message": "Connection established"}, player_id=player_id_str))
 
-        # Clear any pending messages to ensure fresh game state
+        # CRITICAL FIX: Get pending messages BEFORE clearing them, so we can send them
+        # This ensures room_occupants events queued before SSE connection is ready are delivered
+        pending_messages = connection_manager.get_pending_messages(player_id)
+
+        # Clear pending messages after retrieving them to prevent duplicates
         if player_id_str in connection_manager.pending_messages:
             del connection_manager.pending_messages[player_id_str]
 
-        # Send pending messages (should be empty now)
-        pending_messages = connection_manager.get_pending_messages(player_id)
+        # Send pending messages (room_occupants events queued before connection was ready)
+        # CRITICAL: These messages are already in the correct format (dict with event_type, data, etc.)
+        # Send them directly so the client can process room_occupants events correctly
         for message in pending_messages:
-            yield sse_line(build_event("pending_message", message, player_id=player_id_str))
+            # Messages are already dictionaries with event_type, data, etc.
+            # sse_line expects a dict and handles JSON encoding internally
+            yield sse_line(message)
+
+        # CRITICAL FIX: Trigger PlayerEnteredRoom event to ensure room_occupants snapshot is sent
+        # This ensures NPCs are displayed on initial login, even if player was already in the room
+        # The WebSocket handler should handle this, but we ensure it happens for SSE-only connections
+        try:
+            player = connection_manager._get_player(player_id)
+            if player and hasattr(player, "current_room_id"):
+                persistence = connection_manager.persistence
+                if persistence:
+                    room = persistence.get_room(str(player.current_room_id))
+                    if room:
+                        # Ensure player is in room and trigger PlayerEnteredRoom event with force_event=True
+                        # This will cause _send_occupants_snapshot_to_player to be called via event handler
+                        player_id_str = str(player_id)
+                        # Always use force_event=True to ensure snapshot is sent even if player already in room
+                        room.player_entered(player_id_str, force_event=True)
+        except Exception as e:
+            logger.error(
+                "Error triggering PlayerEnteredRoom for initial room_occupants snapshot",
+                player_id=player_id,
+                error=str(e),
+            )
 
         # Main event loop with comprehensive cancellation boundaries
         while True:
@@ -182,8 +211,9 @@ async def send_game_event(player_id: uuid.UUID | str, event_type: str, data: dic
         else:
             player_id_uuid = player_id
         # Pass UUID object directly to build_event (it accepts UUID | str)
+        # ARCHITECTURE: send_game_event is for server-initiated events, so prefer SSE
         await connection_manager.send_personal_message(
-            player_id_uuid, build_event(event_type, data, player_id=player_id_uuid)
+            player_id_uuid, build_event(event_type, data, player_id=player_id_uuid), prefer_sse=True
         )
 
     except Exception as e:

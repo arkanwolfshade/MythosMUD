@@ -235,7 +235,45 @@ class EventBus:
         event_type = type(event)
         subscribers = self._subscribers.get(event_type, [])
 
+        # #region agent log
+        import json
+        import time
+
+        with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "sessionId": "debug-session",
+                        "runId": "run1",
+                        "hypothesisId": "A",
+                        "location": "event_bus.py:236",
+                        "message": "EventBus _handle_event_async called",
+                        "data": {"event_type": event_type.__name__, "subscriber_count": len(subscribers)},
+                        "timestamp": int(time.time() * 1000),
+                    }
+                )
+                + "\n"
+            )
+        # #endregion
+
         if not subscribers:
+            # #region agent log
+            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+                f.write(
+                    json.dumps(
+                        {
+                            "sessionId": "debug-session",
+                            "runId": "run1",
+                            "hypothesisId": "A",
+                            "location": "event_bus.py:240",
+                            "message": "No subscribers for event type",
+                            "data": {"event_type": event_type.__name__},
+                            "timestamp": int(time.time() * 1000),
+                        }
+                    )
+                    + "\n"
+                )
+            # #endregion
             self._logger.debug("No subscribers for event type", event_type=event_type.__name__)
             return
 

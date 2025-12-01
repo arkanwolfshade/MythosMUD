@@ -278,7 +278,7 @@ class PlayerHPUpdated(BaseEvent):
     or otherwise has their HP modified.
     """
 
-    player_id: str
+    player_id: UUID
     old_hp: int
     new_hp: int
     max_hp: int

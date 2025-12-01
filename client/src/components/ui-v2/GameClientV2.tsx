@@ -68,6 +68,40 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
 }) => {
   const panelManager = usePanelManager();
 
+  // #region agent log
+  useEffect(() => {
+    if (healthStatus) {
+      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: 'GameClientV2.tsx:72',
+          message: 'derivedHealthStatus computed from healthStatus',
+          data: { current: healthStatus.current, max: healthStatus.max },
+          timestamp: Date.now(),
+          sessionId: 'debug-session',
+          runId: 'run1',
+          hypothesisId: 'E',
+        }),
+      }).catch(() => {});
+    } else if (player?.stats?.current_health !== undefined) {
+      fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: 'GameClientV2.tsx:81',
+          message: 'derivedHealthStatus computed from player.stats',
+          data: { current: player.stats.current_health, max: player.stats.max_health },
+          timestamp: Date.now(),
+          sessionId: 'debug-session',
+          runId: 'run1',
+          hypothesisId: 'E',
+        }),
+      }).catch(() => {});
+    }
+  }, [healthStatus, player?.stats?.current_health, player?.stats?.max_health]);
+  // #endregion
+
   // Derive health and sanity status (similar to GameTerminal)
   const derivedHealthStatus = useMemo<HealthStatus | null>(() => {
     if (healthStatus) {

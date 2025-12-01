@@ -9,6 +9,7 @@ for maintaining awareness of the dimensional shifts that occur throughout our
 eldritch architecture.
 """
 
+import json
 import uuid
 from datetime import UTC, datetime
 from typing import Any, cast
@@ -66,12 +67,48 @@ class RealTimeEventHandler:
 
     def _subscribe_to_events(self) -> None:
         """Subscribe to relevant game events."""
+        # #region agent log
+        import time
+
+        with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "sessionId": "debug-session",
+                        "runId": "run1",
+                        "hypothesisId": "A",
+                        "location": "event_handler.py:67",
+                        "message": "Subscribing to PlayerHPUpdated",
+                        "data": {"event_bus_id": id(self.event_bus)},
+                        "timestamp": int(time.time() * 1000),
+                    }
+                )
+                + "\n"
+            )
+        # #endregion
         self.event_bus.subscribe(PlayerEnteredRoom, self._handle_player_entered)
         self.event_bus.subscribe(PlayerLeftRoom, self._handle_player_left)
         self.event_bus.subscribe(NPCEnteredRoom, self._handle_npc_entered)
         self.event_bus.subscribe(NPCLeftRoom, self._handle_npc_left)
         self.event_bus.subscribe(PlayerXPAwardEvent, self._handle_player_xp_awarded)
         self.event_bus.subscribe(PlayerHPUpdated, self._handle_player_hp_updated)
+        # #region agent log
+        with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "sessionId": "debug-session",
+                        "runId": "run1",
+                        "hypothesisId": "A",
+                        "location": "event_handler.py:74",
+                        "message": "Subscribed to PlayerHPUpdated",
+                        "data": {"event_bus_id": id(self.event_bus)},
+                        "timestamp": int(time.time() * 1000),
+                    }
+                )
+                + "\n"
+            )
+        # #endregion
 
         # Log subscription for debugging
         self._logger.info(
@@ -280,8 +317,8 @@ class RealTimeEventHandler:
                     # This prevents room_update from overwriting structured NPC/player data
                 },
             }
-            # Send as personal message
-            await self.connection_manager.send_personal_message(player_id_uuid, room_update_event)
+            # Send as personal message via SSE (server-initiated event)
+            await self.connection_manager.send_personal_message(player_id_uuid, room_update_event, prefer_sse=True)
             self._logger.debug(
                 "Sent room_update to player",
                 # Structlog handles UUID objects automatically, no need to convert to string
@@ -305,7 +342,8 @@ class RealTimeEventHandler:
                     player_id=player_id_uuid,
                     connection_manager=self.connection_manager,
                 )
-                await self.connection_manager.send_personal_message(player_id_uuid, room_name_event)
+                # Send via SSE (server-initiated event)
+                await self.connection_manager.send_personal_message(player_id_uuid, room_name_event, prefer_sse=True)
                 self._logger.debug(
                     "Sent room name message to player",
                     player_id=player_id_uuid,
@@ -440,7 +478,8 @@ class RealTimeEventHandler:
                     npcs_count=len(npcs),
                 )
 
-            await self.connection_manager.send_personal_message(player_id_uuid, personal)
+            # ARCHITECTURE: Server-initiated events (room occupants) should use SSE
+            await self.connection_manager.send_personal_message(player_id_uuid, personal, prefer_sse=True)
             self._logger.debug(
                 "Occupants snapshot sent successfully to player",
                 player_id=player_id_uuid,
@@ -741,22 +780,116 @@ class RealTimeEventHandler:
                     # Check if it's an NPC
                     elif "npc_name" in occ:
                         npc_name = occ.get("npc_name")
+                        npc_id = occ.get("npc_id")
+                        # #region agent log
+                        try:
+                            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
+                                log_entry = {
+                                    "location": "event_handler.py:754",
+                                    "message": "Processing NPC in room_occupants update",
+                                    "data": {
+                                        "npc_name": npc_name,
+                                        "npc_id": npc_id,
+                                        "is_string": isinstance(npc_name, str),
+                                        "looks_like_uuid": (
+                                            isinstance(npc_name, str)
+                                            and len(npc_name) == 36
+                                            and npc_name.count("-") == 4
+                                            and all(c in "0123456789abcdefABCDEF-" for c in npc_name)
+                                        ),
+                                    },
+                                    "timestamp": int(datetime.now(UTC).timestamp() * 1000),
+                                    "sessionId": "debug-session",
+                                    "runId": "run1",
+                                    "hypothesisId": "A",
+                                }
+                                f.write(json.dumps(log_entry) + "\n")
+                        except Exception:
+                            pass
+                        # #endregion
                         # Validate that npc_name is not a UUID string
                         if npc_name and isinstance(npc_name, str):
                             # Skip if it looks like a UUID
-                            if not (
+                            is_uuid = (
                                 len(npc_name) == 36
                                 and npc_name.count("-") == 4
                                 and all(c in "0123456789abcdefABCDEF-" for c in npc_name)
-                            ):
+                            )
+                            # #region agent log
+                            try:
+                                with open(
+                                    r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8"
+                                ) as f:
+                                    log_entry = {
+                                        "location": "event_handler.py:790",
+                                        "message": "NPC UUID validation result",
+                                        "data": {
+                                            "npc_name": npc_name,
+                                            "npc_id": npc_id,
+                                            "is_uuid": is_uuid,
+                                            "will_add": not is_uuid,
+                                        },
+                                        "timestamp": int(datetime.now(UTC).timestamp() * 1000),
+                                        "sessionId": "debug-session",
+                                        "runId": "run1",
+                                        "hypothesisId": "A",
+                                    }
+                                    f.write(json.dumps(log_entry) + "\n")
+                            except Exception:
+                                pass
+                            # #endregion
+                            if not is_uuid:
                                 npcs.append(npc_name)
                                 all_occupants.append(npc_name)
+                                # #region agent log
+                                try:
+                                    with open(
+                                        r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8"
+                                    ) as f:
+                                        log_entry = {
+                                            "location": "event_handler.py:800",
+                                            "message": "NPC added to npcs array",
+                                            "data": {
+                                                "npc_name": npc_name,
+                                                "npc_id": npc_id,
+                                                "npcs_count": len(npcs),
+                                            },
+                                            "timestamp": int(datetime.now(UTC).timestamp() * 1000),
+                                            "sessionId": "debug-session",
+                                            "runId": "run1",
+                                            "hypothesisId": "A",
+                                        }
+                                        f.write(json.dumps(log_entry) + "\n")
+                                except Exception:
+                                    pass
+                                # #endregion
                             else:
                                 self._logger.warning(
                                     "Skipping NPC with UUID as name in room_occupants update",
                                     npc_name=npc_name,
                                     room_id=room_id,
                                 )
+                                # #region agent log
+                                try:
+                                    with open(
+                                        r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8"
+                                    ) as f:
+                                        log_entry = {
+                                            "location": "event_handler.py:820",
+                                            "message": "NPC skipped - UUID detected",
+                                            "data": {
+                                                "npc_name": npc_name,
+                                                "npc_id": npc_id,
+                                            },
+                                            "timestamp": int(datetime.now(UTC).timestamp() * 1000),
+                                            "sessionId": "debug-session",
+                                            "runId": "run1",
+                                            "hypothesisId": "A",
+                                        }
+                                        f.write(json.dumps(log_entry) + "\n")
+                                except Exception:
+                                    pass
+                                # #endregion
                     # Fallback for other formats
                     else:
                         name = occ.get("name")
@@ -786,6 +919,30 @@ class RealTimeEventHandler:
             # Convert room_id to string for JSON serialization
             room_id_str = str(room_id) if room_id else ""
 
+            # #region agent log
+            try:
+                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
+                    log_entry = {
+                        "location": "event_handler.py:828",
+                        "message": "About to send room_occupants event",
+                        "data": {
+                            "room_id": room_id_str,
+                            "players_count": len(players),
+                            "npcs_count": len(npcs),
+                            "npcs": npcs,
+                            "all_occupants_count": len(all_occupants),
+                            "occupants_info_count": len(occupants_info),
+                        },
+                        "timestamp": int(datetime.now(UTC).timestamp() * 1000),
+                        "sessionId": "debug-session",
+                        "runId": "run1",
+                        "hypothesisId": "A",
+                    }
+                    f.write(json.dumps(log_entry) + "\n")
+            except Exception:
+                pass
+            # #endregion
+
             # CRITICAL DEBUG: Log what we're about to send
             self._logger.debug(
                 "Sending room_occupants event",
@@ -812,13 +969,40 @@ class RealTimeEventHandler:
                 },
             }
 
+            # #region agent log
+            try:
+                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
+                    log_entry = {
+                        "location": "event_handler.py:973",
+                        "message": "Sending room_occupants event via broadcast_to_room",
+                        "data": {
+                            "room_id": room_id_str,
+                            "message_event_type": message.get("event_type"),
+                            "message_npcs": message.get("data", {}).get("npcs", []),
+                            "message_npcs_count": len(message.get("data", {}).get("npcs", [])),
+                            "message_players": message.get("data", {}).get("players", []),
+                            "message_players_count": len(message.get("data", {}).get("players", [])),
+                            "exclude_player": exclude_player,
+                        },
+                        "timestamp": int(datetime.now(UTC).timestamp() * 1000),
+                        "sessionId": "debug-session",
+                        "runId": "run1",
+                        "hypothesisId": "C",
+                    }
+                    f.write(json.dumps(log_entry) + "\n")
+            except Exception:
+                pass
+            # #endregion
+
             # Send to room occupants
             await self.connection_manager.broadcast_to_room(room_id, message, exclude_player=exclude_player)
 
         except Exception as e:
             self._logger.error("Error sending room occupants update", error=str(e), exc_info=True)
 
-    def _get_room_occupants(self, room_id: str, ensure_player_included: uuid.UUID | str | None = None) -> list[dict[str, Any] | str]:
+    def _get_room_occupants(
+        self, room_id: str, ensure_player_included: uuid.UUID | str | None = None
+    ) -> list[dict[str, Any] | str]:
         """
         Get the list of occupants in a room.
 
@@ -1143,17 +1327,72 @@ class RealTimeEventHandler:
                             # Normalize NPC room ID to canonical format for comparison
                             npc_canonical_room_id = None
                             if hasattr(self.connection_manager, "_canonical_room_id"):
-                                npc_canonical_room_id = self.connection_manager._canonical_room_id(npc_room_id) or npc_room_id
+                                npc_canonical_room_id = (
+                                    self.connection_manager._canonical_room_id(npc_room_id) or npc_room_id
+                                )
                             else:
                                 npc_canonical_room_id = npc_room_id
 
+                            # CRITICAL FIX: Normalize all room IDs to strings and strip whitespace for robust matching
+                            # This handles cases where room IDs might have slight format differences
+                            def normalize_room_id(rid: str | None) -> str | None:
+                                """Normalize room ID for comparison."""
+                                if rid is None:
+                                    return None
+                                # Convert to string and strip whitespace
+                                rid_str = str(rid).strip()
+                                # Return empty string as None for consistency
+                                return rid_str if rid_str else None
+
+                            normalized_room_id = normalize_room_id(room_id)
+                            normalized_canonical_room_id = normalize_room_id(canonical_room_id)
+                            normalized_npc_room_id = normalize_room_id(npc_room_id)
+                            normalized_npc_canonical_room_id = normalize_room_id(npc_canonical_room_id)
+
                             # Match against both original and canonical room IDs for robustness
+                            # Also try normalized versions to handle format differences
                             room_matches = (
-                                npc_room_id == room_id
-                                or npc_room_id == canonical_room_id
-                                or npc_canonical_room_id == room_id
-                                or npc_canonical_room_id == canonical_room_id
+                                (normalized_npc_room_id and normalized_room_id and normalized_npc_room_id == normalized_room_id)
+                                or (normalized_npc_room_id and normalized_canonical_room_id and normalized_npc_room_id == normalized_canonical_room_id)
+                                or (normalized_npc_canonical_room_id and normalized_room_id and normalized_npc_canonical_room_id == normalized_room_id)
+                                or (normalized_npc_canonical_room_id and normalized_canonical_room_id and normalized_npc_canonical_room_id == normalized_canonical_room_id)
+                                # Fallback to original comparison for backward compatibility
+                                or (npc_room_id == room_id)
+                                or (npc_room_id == canonical_room_id)
+                                or (npc_canonical_room_id == room_id)
+                                or (npc_canonical_room_id == canonical_room_id)
                             )
+
+                            # #region agent log
+                            try:
+                                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
+                                    log_entry = {
+                                        "location": "event_handler.py:1311",
+                                        "message": "NPC room ID matching check",
+                                        "data": {
+                                            "room_id": room_id,
+                                            "canonical_room_id": canonical_room_id,
+                                            "npc_id": npc_id,
+                                            "npc_name": npc_name,
+                                            "npc_current_room": str(current_room) if current_room else None,
+                                            "npc_current_room_id": str(current_room_id) if current_room_id else None,
+                                            "npc_room_id_used": str(npc_room_id) if npc_room_id else None,
+                                            "npc_canonical_room_id": str(npc_canonical_room_id) if npc_canonical_room_id else None,
+                                            "match_1": npc_room_id == room_id,
+                                            "match_2": npc_room_id == canonical_room_id,
+                                            "match_3": npc_canonical_room_id == room_id,
+                                            "match_4": npc_canonical_room_id == canonical_room_id,
+                                            "room_matches": room_matches,
+                                        },
+                                        "timestamp": int(datetime.now(UTC).timestamp() * 1000),
+                                        "sessionId": "debug-session",
+                                        "runId": "run1",
+                                        "hypothesisId": "A",
+                                    }
+                                    f.write(json.dumps(log_entry) + "\n")
+                            except Exception:
+                                pass
+                            # #endregion
 
                             self._logger.debug(
                                 "Checking NPC for room match",
@@ -1192,8 +1431,7 @@ class RealTimeEventHandler:
 
                         # #region agent log
                         try:
-                            import json
-                            with open(r'e:\projects\GitHub\MythosMUD\.cursor\debug.log', 'a', encoding='utf-8') as f:
+                            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
                                 log_entry = {
                                     "location": "event_handler.py:1040",
                                     "message": "NPC query completed",
@@ -1214,15 +1452,47 @@ class RealTimeEventHandler:
                             pass
                         # #endregion
 
-                        # CRITICAL: Warn if NPCs were found but none matched the room
+                        # CRITICAL: Warn only if there's evidence of a format mismatch
+                        # Don't warn if NPCs are simply in different rooms (normal case)
                         if total_active_npcs > 0 and npcs_matched == 0 and npcs_without_room == 0:
-                            self._logger.warning(
-                                "No NPCs matched room ID - possible room ID format mismatch",
-                                room_id=room_id,
-                                canonical_room_id=canonical_room_id,
-                                total_active_npcs=total_active_npcs,
-                                npcs_checked=npcs_checked,
-                            )
+                            # Collect sample NPC room IDs and check for potential format mismatches
+                            sample_npc_room_ids = []
+                            npcs_in_same_zone = 0
+                            sample_count = 0
+                            
+                            # Extract zone/sub-zone from queried room ID (format: earth_zone_subzone_room_roomname_###)
+                            queried_zone_parts = room_id.split("_")[:3] if "_" in room_id else []
+                            queried_zone_key = "_".join(queried_zone_parts) if len(queried_zone_parts) >= 3 else ""
+                            
+                            for sample_npc_id, sample_npc_instance in active_npcs_dict.items():
+                                sample_current_room = getattr(sample_npc_instance, "current_room", None)
+                                sample_current_room_id = getattr(sample_npc_instance, "current_room_id", None)
+                                sample_npc_room_id = sample_current_room or sample_current_room_id
+                                if sample_npc_room_id:
+                                    sample_npc_room_id_str = str(sample_npc_room_id)
+                                    if sample_count < 3:  # Log first 3 NPCs as samples
+                                        sample_npc_room_ids.append(sample_npc_room_id_str)
+                                    # Check if NPC is in same zone/sub-zone (potential format mismatch indicator)
+                                    if queried_zone_key:
+                                        sample_zone_parts = sample_npc_room_id_str.split("_")[:3] if "_" in sample_npc_room_id_str else []
+                                        sample_zone_key = "_".join(sample_zone_parts) if len(sample_zone_parts) >= 3 else ""
+                                        if sample_zone_key == queried_zone_key:
+                                            npcs_in_same_zone += 1
+                                    sample_count += 1
+                            
+                            # Only warn if NPCs exist in the same zone/sub-zone but didn't match
+                            # This suggests a format mismatch rather than just "no NPCs in this room"
+                            if npcs_in_same_zone > 0:
+                                self._logger.warning(
+                                    "No NPCs matched room ID - possible room ID format mismatch",
+                                    room_id=room_id,
+                                    canonical_room_id=canonical_room_id,
+                                    total_active_npcs=total_active_npcs,
+                                    npcs_checked=npcs_checked,
+                                    npcs_in_same_zone=npcs_in_same_zone,
+                                    sample_npc_room_ids=sample_npc_room_ids,
+                                    npcs_without_room=npcs_without_room,
+                                )
                     else:
                         self._logger.warning(
                             "Lifecycle manager or active_npcs not available",
@@ -1288,18 +1558,111 @@ class RealTimeEventHandler:
                     )
                     npc_ids = room_npc_ids
 
+            # #region agent log
+            try:
+                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
+                    log_entry = {
+                        "location": "event_handler.py:1330",
+                        "message": "About to batch load NPC names",
+                        "data": {
+                            "room_id": room_id,
+                            "npc_ids_count": len(npc_ids),
+                            "npc_ids": npc_ids[:10],  # First 10 for debugging
+                        },
+                        "timestamp": int(datetime.now(UTC).timestamp() * 1000),
+                        "sessionId": "debug-session",
+                        "runId": "run1",
+                        "hypothesisId": "B",
+                    }
+                    f.write(json.dumps(log_entry) + "\n")
+            except Exception:
+                pass
+            # #endregion
+
             # OPTIMIZATION: Batch load all NPC names at once to eliminate N+1 queries
             npc_names = self.connection_manager._get_npcs_batch(list(npc_ids))
+
+            # #region agent log
+            try:
+                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
+                    log_entry = {
+                        "location": "event_handler.py:1333",
+                        "message": "NPC names batch loaded",
+                        "data": {
+                            "room_id": room_id,
+                            "npc_ids_count": len(npc_ids),
+                            "npc_names_count": len(npc_names),
+                            "npc_names": dict(list(npc_names.items())[:5]),  # First 5 for debugging
+                        },
+                        "timestamp": int(datetime.now(UTC).timestamp() * 1000),
+                        "sessionId": "debug-session",
+                        "runId": "run1",
+                        "hypothesisId": "B",
+                    }
+                    f.write(json.dumps(log_entry) + "\n")
+            except Exception:
+                pass
+            # #endregion
 
             # Convert NPCs to occupant information using batch-loaded names
             for npc_id in npc_ids:
                 npc_name = npc_names.get(npc_id, npc_id.split("_")[0].replace("_", " ").title())
+                # #region agent log
+                try:
+                    with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
+                        log_entry = {
+                            "location": "event_handler.py:1498",
+                            "message": "Creating NPC occupant_info",
+                            "data": {
+                                "room_id": room_id,
+                                "npc_id": npc_id,
+                                "npc_name": npc_name,
+                                "name_from_batch": npc_id in npc_names,
+                                "is_id": npc_name == npc_id,
+                                "is_uuid_pattern": (
+                                    isinstance(npc_name, str)
+                                    and len(npc_name) == 36
+                                    and npc_name.count("-") == 4
+                                    and all(c in "0123456789abcdefABCDEF-" for c in npc_name)
+                                ),
+                            },
+                            "timestamp": int(datetime.now(UTC).timestamp() * 1000),
+                            "sessionId": "debug-session",
+                            "runId": "run1",
+                            "hypothesisId": "A",
+                        }
+                        f.write(json.dumps(log_entry) + "\n")
+                except Exception:
+                    pass
+                # #endregion
                 occupant_info = {
                     "npc_id": npc_id,
                     "npc_name": npc_name,
                     "type": "npc",
                 }
                 occupants.append(occupant_info)
+                # #region agent log
+                try:
+                    with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
+                        log_entry = {
+                            "location": "event_handler.py:1564",
+                            "message": "NPC added to occupants list",
+                            "data": {
+                                "room_id": room_id,
+                                "npc_id": npc_id,
+                                "npc_name": npc_name,
+                                "occupants_count": len(occupants),
+                                "npc_occupants_count": sum(1 for occ in occupants if isinstance(occ, dict) and occ.get("type") == "npc"),
+                            },
+                            "timestamp": int(datetime.now(UTC).timestamp() * 1000),
+                            "sessionId": "debug-session",
+                            "runId": "run1",
+                            "hypothesisId": "C",
+                        }
+                        f.write(json.dumps(log_entry) + "\n")
+                except Exception:
+                    pass
+                # #endregion
 
         except Exception as e:
             self._logger.error("Error getting room occupants", error=str(e), exc_info=True)
@@ -1471,7 +1834,8 @@ class RealTimeEventHandler:
                 player_id=player_id_str,
             )
 
-            await self.connection_manager.send_personal_message(player_id_str, xp_update_event)
+            # ARCHITECTURE: Server-initiated events (XP updates) should use SSE
+            await self.connection_manager.send_personal_message(player_id_str, xp_update_event, prefer_sse=True)
 
             self._logger.info(
                 "Sent XP award update to player",
@@ -1646,7 +2010,7 @@ class RealTimeEventHandler:
                     # Create a task to send the message
                     if self.task_registry:
                         self.task_registry.register_task(
-                            self.connection_manager.send_personal_message(player_id, message_event),
+                            self.connection_manager.send_personal_message(player_id, message_event, prefer_sse=True),
                             f"event_handler/room_message_{room_id}_{player_id}",
                             "event_handler",
                         )
@@ -1655,7 +2019,7 @@ class RealTimeEventHandler:
 
                         tracked_manager = get_global_tracked_manager()
                         tracked_manager.create_tracked_task(
-                            self.connection_manager.send_personal_message(player_id, message_event),
+                            self.connection_manager.send_personal_message(player_id, message_event, prefer_sse=True),
                             task_name=f"event_handler/room_message_{room_id}_{player_id}",
                             task_type="event_handler",
                         )
@@ -1683,7 +2047,9 @@ class RealTimeEventHandler:
                 new_hp=event.new_hp,
                 max_hp=event.max_hp,
             )
-            player_id_str = event.player_id
+            # event.player_id is now UUID (changed from str to match codebase)
+            player_id = event.player_id
+            player_id_str = str(player_id)  # For logging and string operations
             self._logger.info(
                 "Received PlayerHPUpdated event",
                 player_id=player_id_str,
@@ -1704,7 +2070,8 @@ class RealTimeEventHandler:
             # Get the current player data to send updated HP and stats
             # CRITICAL: Try to get player from connection manager, but if not found,
             # still send the HP update event with the data from the event itself
-            player = self.connection_manager._get_player(player_id_str)
+            # _get_player expects UUID, and event.player_id is now UUID
+            player = self.connection_manager._get_player(player_id)
 
             # Get full player stats including posture/position
             if player:
@@ -1750,7 +2117,45 @@ class RealTimeEventHandler:
                 player_id=player_id_str,
             )
 
-            await self.connection_manager.send_personal_message(player_id_str, hp_update_event)
+            # #region agent log
+            import time
+
+            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+                f.write(
+                    json.dumps(
+                        {
+                            "sessionId": "debug-session",
+                            "runId": "run1",
+                            "hypothesisId": "A",
+                            "location": "event_handler.py:1753",
+                            "message": "About to send personal message via WebSocket",
+                            "data": {"player_id": player_id_str, "old_hp": event.old_hp, "new_hp": event.new_hp},
+                            "timestamp": int(time.time() * 1000),
+                        }
+                    )
+                    + "\n"
+                )
+            # #endregion
+            # player_id is now UUID (changed from str to match codebase), so we can use it directly
+            # ARCHITECTURE: Server-initiated events (HP updates) should use SSE, not WebSocket
+            await self.connection_manager.send_personal_message(player_id, hp_update_event, prefer_sse=True)
+            # #region agent log
+            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+                f.write(
+                    json.dumps(
+                        {
+                            "sessionId": "debug-session",
+                            "runId": "run1",
+                            "hypothesisId": "A",
+                            "location": "event_handler.py:1755",
+                            "message": "Personal message sent via WebSocket",
+                            "data": {"player_id": player_id_str, "old_hp": event.old_hp, "new_hp": event.new_hp},
+                            "timestamp": int(time.time() * 1000),
+                        }
+                    )
+                    + "\n"
+                )
+            # #endregion
 
             self._logger.info(
                 "Sent HP update to player",
@@ -1791,7 +2196,8 @@ class RealTimeEventHandler:
                 player_id=player_id_str,
             )
 
-            await self.connection_manager.send_personal_message(player_id_str, death_event)
+            # ARCHITECTURE: Server-initiated events (death) should use SSE
+            await self.connection_manager.send_personal_message(player_id_str, death_event, prefer_sse=True)
 
             self._logger.info("Sent death notification to player", player_id=player_id_str, room_id=event.room_id)
 
@@ -1824,7 +2230,8 @@ class RealTimeEventHandler:
                 player_id=player_id_str,
             )
 
-            await self.connection_manager.send_personal_message(player_id_str, decay_event)
+            # ARCHITECTURE: Server-initiated events (HP decay) should use SSE
+            await self.connection_manager.send_personal_message(player_id_str, decay_event, prefer_sse=True)
 
             self._logger.debug("Sent HP decay notification to player", player_id=player_id_str, new_hp=event.new_hp)
 
@@ -1911,6 +2318,33 @@ class RealTimeEventHandler:
             # Send personal message to the player
             from .envelope import build_event
 
+            # #region agent log
+            try:
+                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
+                    log_entry = {
+                        "location": "event_handler.py:1938",
+                        "message": "Building respawn event",
+                        "data": {
+                            "player_id": player_id_str,
+                            "old_hp": event.old_hp,
+                            "new_hp": event.new_hp,
+                            "player_data_included": player_data is not None,
+                            "player_data_current_health": player_data.get("stats", {}).get("current_health")
+                            if player_data
+                            else None,
+                            "player_data_max_health": player_data.get("stats", {}).get("max_health")
+                            if player_data
+                            else None,
+                        },
+                        "timestamp": int(datetime.now(UTC).timestamp() * 1000),
+                        "sessionId": "debug-session",
+                        "runId": "run1",
+                        "hypothesisId": "C",
+                    }
+                    f.write(json.dumps(log_entry) + "\n")
+            except Exception:
+                pass
+            # #endregion
             respawn_event = build_event(
                 "player_respawned",
                 {
@@ -1925,7 +2359,82 @@ class RealTimeEventHandler:
                 player_id=player_id_str,
             )
 
-            await self.connection_manager.send_personal_message(player_id_str, respawn_event)
+            # CRITICAL FIX: Retry sending respawn event to handle temporary connection unavailability
+            # As documented in "Resurrection and Connection Synchronization" - Dr. Armitage, 1930
+            # The respawn event is critical and must be delivered even if connection is temporarily unavailable
+            # Strategy: Poll for connection availability and send immediately when available
+            import asyncio
+            import uuid as uuid_lib
+
+            max_wait_time = 2.0  # Maximum time to wait for connection (2 seconds)
+            poll_interval = 0.05  # Check connection every 50ms
+            max_polls = int(max_wait_time / poll_interval)  # 40 polls over 2 seconds
+            player_id_uuid = uuid_lib.UUID(player_id_str)
+
+            for poll_count in range(max_polls):
+                # Check if WebSocket connection is available
+                has_websocket = player_id_uuid in self.connection_manager.player_websockets
+                has_sse = self.connection_manager.has_sse_connection(player_id_uuid)
+
+                if has_websocket or has_sse:
+                    # Connection available - try sending immediately
+                    # #region agent log
+                    try:
+                        with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
+                            log_entry = {
+                                "location": "event_handler.py:2034",
+                                "message": "Connection available, sending respawn event",
+                                "data": {
+                                    "player_id": player_id_str,
+                                    "poll_count": poll_count + 1,
+                                    "has_websocket": has_websocket,
+                                    "has_sse": has_sse,
+                                },
+                                "timestamp": int(datetime.now(UTC).timestamp() * 1000),
+                                "sessionId": "debug-session",
+                                "runId": "run1",
+                                "hypothesisId": "F",
+                            }
+                            f.write(json.dumps(log_entry) + "\n")
+                    except Exception:
+                        pass
+                    # #endregion
+                    # ARCHITECTURE: Server-initiated events (respawn) should use SSE, not WebSocket
+                    delivery_status = await self.connection_manager.send_personal_message(
+                        player_id_uuid, respawn_event, prefer_sse=True
+                    )
+                    # #region agent log
+                    try:
+                        with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
+                            log_entry = {
+                                "location": "event_handler.py:2075",
+                                "message": "Respawn event delivery status",
+                                "data": {
+                                    "player_id": player_id_str,
+                                    "poll_count": poll_count + 1,
+                                    "websocket_delivered": delivery_status.get("websocket_delivered", 0),
+                                    "sse_delivered": delivery_status.get("sse_delivered"),
+                                    "active_connections": delivery_status.get("active_connections", 0),
+                                },
+                                "timestamp": int(datetime.now(UTC).timestamp() * 1000),
+                                "sessionId": "debug-session",
+                                "runId": "run1",
+                                "hypothesisId": "F",
+                            }
+                            f.write(json.dumps(log_entry) + "\n")
+                    except Exception:
+                        pass
+                    # #endregion
+                    # Check if message was actually delivered
+                    websocket_delivered = delivery_status.get("websocket_delivered", 0) > 0
+                    sse_delivered = delivery_status.get("sse_delivered", False)
+                    active_connections = delivery_status.get("active_connections", 0)
+                    if websocket_delivered or (sse_delivered and active_connections > 0):
+                        # Message actually delivered to active connection
+                        break
+
+                # Wait before next poll
+                await asyncio.sleep(poll_interval)
 
             self._logger.info(
                 "Sent respawn notification to player",

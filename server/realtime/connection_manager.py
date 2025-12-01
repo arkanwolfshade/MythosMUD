@@ -8,6 +8,7 @@ and testability.
 
 import asyncio
 import inspect
+import json
 import time
 import uuid
 from dataclasses import dataclass
@@ -1426,13 +1427,17 @@ class ConnectionManager:
         """
         return self.rate_limiter.get_rate_limit_info(str(player_id))
 
-    async def send_personal_message(self, player_id: uuid.UUID, event: dict[str, Any]) -> dict[str, Any]:
+    async def send_personal_message(
+        self, player_id: uuid.UUID, event: dict[str, Any], prefer_sse: bool = False
+    ) -> dict[str, Any]:
         """
         Send a personal message to a player across all active connections.
 
         Args:
             player_id: The player's ID (UUID)
             event: The event data to send
+            prefer_sse: If True, prefer SSE for server-initiated events (combat, room updates, game state).
+                       If False, try WebSocket first (for client-initiated responses like commands).
 
         Returns:
             dict: Delivery status with detailed information:
@@ -1496,41 +1501,206 @@ class ConnectionManager:
             sse_count = len(self.active_sse_connections.get(player_id, []))
             delivery_status["total_connections"] = websocket_count + sse_count
 
-            # Try WebSocket connections first
-            if player_id in self.player_websockets:
-                connection_ids = self.player_websockets[player_id].copy()  # Copy to avoid modification during iteration
-                for connection_id in connection_ids:
-                    if connection_id in self.active_websockets:
-                        websocket = self.active_websockets[connection_id]
-                        try:
-                            # Check if WebSocket is still open by attempting to send
-                            await websocket.send_json(serializable_event)
-                            delivery_status["websocket_delivered"] += 1
-                            delivery_status["active_connections"] += 1
-                        except Exception as ws_error:
-                            # WebSocket is closed or in an invalid state
-                            logger.warning(
-                                "WebSocket send failed",
-                                player_id=player_id,
-                                connection_id=connection_id,
-                                error=str(ws_error),
+            # ARCHITECTURE: Server-initiated events (combat, room updates, game state) should use SSE
+            # Client-initiated responses (commands, chat) should use WebSocket
+            # If prefer_sse is True, skip WebSocket and go directly to SSE
+            if not prefer_sse:
+                # Try WebSocket connections first (for client-initiated responses)
+                # #region agent log
+                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+                    f.write(
+                        json.dumps(
+                            {
+                                "sessionId": "debug-session",
+                                "runId": "run1",
+                                "hypothesisId": "A",
+                                "location": "connection_manager.py:1500",
+                                "message": "Checking WebSocket connections for player",
+                                "data": {
+                                    "player_id": str(player_id),
+                                    "has_websocket": player_id in self.player_websockets,
+                                    "connection_ids": self.player_websockets.get(player_id, []),
+                                    "active_websockets_count": len(self.active_websockets),
+                                },
+                                "timestamp": int(time.time() * 1000),
+                            }
+                        )
+                        + "\n"
+                    )
+                # #endregion
+                if player_id in self.player_websockets:
+                    connection_ids = self.player_websockets[
+                        player_id
+                    ].copy()  # Copy to avoid modification during iteration
+                    for connection_id in connection_ids:
+                        if connection_id in self.active_websockets:
+                            websocket = self.active_websockets[connection_id]
+                            try:
+                                # #region agent log
+                                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+                                    f.write(
+                                        json.dumps(
+                                            {
+                                                "sessionId": "debug-session",
+                                                "runId": "run1",
+                                                "hypothesisId": "A",
+                                                "location": "connection_manager.py:1507",
+                                                "message": "Attempting WebSocket send_json",
+                                                "data": {
+                                                    "player_id": str(player_id),
+                                                    "connection_id": connection_id,
+                                                    "event_type": serializable_event.get("event_type"),
+                                                },
+                                                "timestamp": int(time.time() * 1000),
+                                            }
+                                        )
+                                        + "\n"
+                                    )
+                                # #endregion
+                                # Check if WebSocket is still open by attempting to send
+                                await websocket.send_json(serializable_event)
+                                # #region agent log
+                                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+                                    f.write(
+                                        json.dumps(
+                                            {
+                                                "sessionId": "debug-session",
+                                                "runId": "run1",
+                                                "hypothesisId": "A",
+                                                "location": "connection_manager.py:1510",
+                                                "message": "WebSocket send_json succeeded",
+                                                "data": {
+                                                    "player_id": str(player_id),
+                                                    "connection_id": connection_id,
+                                                    "event_type": serializable_event.get("event_type"),
+                                                },
+                                                "timestamp": int(time.time() * 1000),
+                                            }
+                                        )
+                                        + "\n"
+                                    )
+                                # #endregion
+                                delivery_status["websocket_delivered"] += 1
+                                delivery_status["active_connections"] += 1
+                            except Exception as ws_error:
+                                # #region agent log
+                                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+                                    f.write(
+                                        json.dumps(
+                                            {
+                                                "sessionId": "debug-session",
+                                                "runId": "run1",
+                                                "hypothesisId": "A",
+                                                "location": "connection_manager.py:1512",
+                                                "message": "WebSocket send_json failed",
+                                                "data": {
+                                                    "player_id": str(player_id),
+                                                    "connection_id": connection_id,
+                                                    "error": str(ws_error),
+                                                },
+                                                "timestamp": int(time.time() * 1000),
+                                            }
+                                        )
+                                        + "\n"
+                                    )
+                                # #endregion
+                                # WebSocket is closed or in an invalid state
+                                logger.warning(
+                                    "WebSocket send failed",
+                                    player_id=player_id,
+                                    connection_id=connection_id,
+                                    error=str(ws_error),
+                                )
+                                delivery_status["websocket_failed"] += 1
+                                # Clean up the dead WebSocket connection
+                                await self._cleanup_dead_websocket(player_id, connection_id)
+                                # Continue to other connections
+                else:
+                    # #region agent log
+                    with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+                        f.write(
+                            json.dumps(
+                                {
+                                    "sessionId": "debug-session",
+                                    "runId": "run1",
+                                    "hypothesisId": "A",
+                                    "location": "connection_manager.py:1522",
+                                    "message": "No WebSocket connections found for player",
+                                    "data": {
+                                        "player_id": str(player_id),
+                                        "has_sse": self.has_sse_connection(player_id),
+                                    },
+                                    "timestamp": int(time.time() * 1000),
+                                }
                             )
-                            delivery_status["websocket_failed"] += 1
-                            # Clean up the dead WebSocket connection
-                            await self._cleanup_dead_websocket(player_id, connection_id)
-                            # Continue to other connections
+                            + "\n"
+                        )
+                    # #endregion
 
             # Add to pending messages for SSE connections
+            # ARCHITECTURE: Server-initiated events (prefer_sse=True) should always use SSE
+            # Even if WebSocket is available, server pushes should go through SSE for guaranteed delivery
             if self.has_sse_connection(player_id):
+                # #region agent log
+                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+                    f.write(
+                        json.dumps(
+                            {
+                                "sessionId": "debug-session",
+                                "runId": "run1",
+                                "hypothesisId": "A",
+                                "location": "connection_manager.py:1524",
+                                "message": "Adding message to SSE queue",
+                                "data": {
+                                    "player_id": str(player_id),
+                                    "event_type": serializable_event.get("event_type"),
+                                    "sse_connections": len(self.active_sse_connections.get(player_id, [])),
+                                },
+                                "timestamp": int(time.time() * 1000),
+                            }
+                        )
+                        + "\n"
+                    )
+                # #endregion
                 player_id_str = str(player_id)
                 if player_id_str not in self.message_queue.pending_messages:
                     self.message_queue.pending_messages[player_id_str] = []
                 self.message_queue.pending_messages[player_id_str].append(serializable_event)
                 delivery_status["sse_delivered"] = True
                 delivery_status["active_connections"] += len(self.active_sse_connections.get(player_id, []))
+            elif prefer_sse:
+                # CRITICAL FIX: When prefer_sse=True but SSE isn't ready yet, queue the message
+                # This ensures room_occupants events are delivered when SSE connection is established
+                player_id_str = str(player_id)
+                if player_id_str not in self.message_queue.pending_messages:
+                    self.message_queue.pending_messages[player_id_str] = []
+                self.message_queue.pending_messages[player_id_str].append(serializable_event)
+                delivery_status["sse_delivered"] = True  # Mark as queued for later delivery
+                # #region agent log
+                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+                    f.write(
+                        json.dumps(
+                            {
+                                "sessionId": "debug-session",
+                                "runId": "run1",
+                                "hypothesisId": "A",
+                                "location": "connection_manager.py:1668",
+                                "message": "Queuing message for SSE (connection not ready)",
+                                "data": {
+                                    "player_id": str(player_id),
+                                    "event_type": serializable_event.get("event_type"),
+                                    "prefer_sse": True,
+                                    "has_sse": False,
+                                },
+                                "timestamp": int(time.time() * 1000),
+                            }
+                        )
+                        + "\n"
+                    )
+                # #endregion
 
-            # If no active connections, queue the message for later delivery
-            if delivery_status["active_connections"] == 0:
+            # If no active connections and not already queued, queue the message for later delivery
+            if delivery_status["active_connections"] == 0 and not delivery_status["sse_delivered"]:
                 player_id_str = str(player_id)
                 if player_id_str not in self.message_queue.pending_messages:
                     self.message_queue.pending_messages[player_id_str] = []
@@ -2033,7 +2203,11 @@ class ConnectionManager:
         return None
 
     async def broadcast_to_room(
-        self, room_id: str, event: dict[str, Any], exclude_player: uuid.UUID | str | None = None
+        self,
+        room_id: str,
+        event: dict[str, Any],
+        exclude_player: uuid.UUID | str | None = None,
+        prefer_sse: bool = True,
     ) -> dict[str, Any]:
         """
         Broadcast a message to all players in a room.
@@ -2042,6 +2216,7 @@ class ConnectionManager:
             room_id: The room's ID
             event: The event data to send
             exclude_player: Player ID to exclude from broadcast (UUID or string)
+            prefer_sse: If True, prefer SSE for server-initiated events (default: True for room broadcasts)
 
         Returns:
             dict: Broadcast delivery statistics
@@ -2091,9 +2266,13 @@ class ConnectionManager:
                     continue
 
             # Send to all targets concurrently using asyncio.gather
+            # ARCHITECTURE: Room broadcasts are server-initiated events, so prefer SSE
             try:
                 delivery_results = await asyncio.gather(
-                    *[self.send_personal_message(pid_uuid, event) for _pid_str, pid_uuid in target_mapping],
+                    *[
+                        self.send_personal_message(pid_uuid, event, prefer_sse=prefer_sse)
+                        for _pid_str, pid_uuid in target_mapping
+                    ],
                     return_exceptions=True,
                 )
 
@@ -2242,6 +2421,27 @@ class ConnectionManager:
         Returns:
             dict: Broadcast delivery statistics
         """
+        # #region agent log
+        import json
+        import time
+
+        if event_type == "npc_attacked":
+            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+                f.write(
+                    json.dumps(
+                        {
+                            "sessionId": "debug-session",
+                            "runId": "run1",
+                            "hypothesisId": "D",
+                            "location": "connection_manager.py:2260",
+                            "message": "broadcast_room_event called for npc_attacked",
+                            "data": {"room_id": room_id, "event_type": event_type},
+                            "timestamp": int(time.time() * 1000),
+                        }
+                    )
+                    + "\n"
+                )
+        # #endregion
         try:
             # Import here to avoid circular imports
             from .envelope import build_event
@@ -2250,7 +2450,48 @@ class ConnectionManager:
             event = build_event(event_type, data)
 
             # Broadcast to room
-            return await self.broadcast_to_room(room_id, event)
+            # #region agent log
+            if event_type == "npc_attacked":
+                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+                    f.write(
+                        json.dumps(
+                            {
+                                "sessionId": "debug-session",
+                                "runId": "run1",
+                                "hypothesisId": "D",
+                                "location": "connection_manager.py:2277",
+                                "message": "About to call broadcast_to_room for npc_attacked",
+                                "data": {"room_id": room_id, "event_type": event_type},
+                                "timestamp": int(time.time() * 1000),
+                            }
+                        )
+                        + "\n"
+                    )
+            # #endregion
+            result = await self.broadcast_to_room(room_id, event)
+            # #region agent log
+            if event_type == "npc_attacked":
+                with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+                    f.write(
+                        json.dumps(
+                            {
+                                "sessionId": "debug-session",
+                                "runId": "run1",
+                                "hypothesisId": "D",
+                                "location": "connection_manager.py:2280",
+                                "message": "broadcast_to_room completed for npc_attacked",
+                                "data": {
+                                    "room_id": room_id,
+                                    "successful_deliveries": result.get("successful_deliveries", 0),
+                                    "total_targets": result.get("total_targets", 0),
+                                },
+                                "timestamp": int(time.time() * 1000),
+                            }
+                        )
+                        + "\n"
+                    )
+            # #endregion
+            return result
 
         except Exception as e:
             logger.error("Error broadcasting room event", error=str(e), event_type=event_type, room_id=room_id)
@@ -2377,16 +2618,17 @@ class ConnectionManager:
 
     def _convert_room_players_uuids_to_names(self, room_data: dict[str, Any]) -> dict[str, Any]:
         """
-        Convert player UUIDs in room_data to player names.
+        Convert player UUIDs and NPC IDs in room_data to names.
 
-        CRITICAL: NEVER send UUIDs to the client - this is a security issue.
-        room.to_dict() returns UUIDs in "players" field, we must convert to names.
+        CRITICAL: NEVER send UUIDs or NPC IDs to the client - this is a security issue.
+        room.to_dict() returns UUIDs in "players" field and NPC IDs in "npcs" field,
+        we must convert both to names.
 
         Args:
             room_data: Room data dictionary from room.to_dict()
 
         Returns:
-            Modified room_data with players as names instead of UUIDs
+            Modified room_data with players and NPCs as names instead of UUIDs/IDs
         """
         if "players" in room_data and isinstance(room_data["players"], list):
             player_uuids = room_data["players"]
@@ -2426,6 +2668,32 @@ class ConnectionManager:
             # Replace UUIDs with names
             room_data["players"] = player_names
 
+        # CRITICAL FIX: Convert NPC IDs to names in room_data
+        # room.to_dict() returns NPC IDs in "npcs" field, we must convert to names
+        # As documented in "Resurrection and NPC Display Synchronization" - Dr. Armitage, 1930
+        # NPC IDs must be resolved to display names before sending to client
+        if "npcs" in room_data and isinstance(room_data["npcs"], list):
+            npc_ids = room_data["npcs"]
+            # Batch load NPC names for efficiency
+            npc_names_dict = self._get_npcs_batch(npc_ids)
+            npc_names: list[str] = []
+            for npc_id in npc_ids:
+                npc_name = npc_names_dict.get(npc_id)
+                if npc_name and isinstance(npc_name, str) and npc_name.strip():
+                    # Validate name is not an ID (check if it looks like an ID with underscores)
+                    # NPC IDs typically have format like "npc_type_location_timestamp_instance"
+                    # If the "name" is the same as the ID, skip it
+                    if npc_name != npc_id:
+                        npc_names.append(npc_name)
+                    else:
+                        # Fallback: Generate name from ID if name resolution failed
+                        # This should rarely happen, but provides a safety net
+                        fallback_name = npc_id.split("_")[0].replace("_", " ").title()
+                        if fallback_name and fallback_name != npc_id:
+                            npc_names.append(fallback_name)
+            # Replace NPC IDs with names
+            room_data["npcs"] = npc_names
+
         return room_data
 
     def _get_npcs_batch(self, npc_ids: list[str]) -> dict[str, str]:
@@ -2461,9 +2729,54 @@ class ConnectionManager:
                             else:
                                 # Fallback: Extract NPC name from the NPC ID
                                 npc_names[npc_id] = npc_id.split("_")[0].replace("_", " ").title()
+                            # #region agent log
+                            try:
+                                with open(
+                                    r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8"
+                                ) as f:
+                                    log_entry = {
+                                        "location": "connection_manager.py:2500",
+                                        "message": "NPC name resolution in _get_npcs_batch",
+                                        "data": {
+                                            "npc_id": npc_id,
+                                            "found_in_active_npcs": True,
+                                            "resolved_name": npc_names.get(npc_id),
+                                            "instance_has_name": name is not None,
+                                        },
+                                        "timestamp": int(__import__("time").time() * 1000),
+                                        "sessionId": "debug-session",
+                                        "runId": "run1",
+                                        "hypothesisId": "A",
+                                    }
+                                    f.write(json.dumps(log_entry) + "\n")
+                            except Exception:
+                                pass
+                            # #endregion
                         else:
                             # Fallback: Extract NPC name from the NPC ID
                             npc_names[npc_id] = npc_id.split("_")[0].replace("_", " ").title()
+                            # #region agent log
+                            try:
+                                with open(
+                                    r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8"
+                                ) as f:
+                                    log_entry = {
+                                        "location": "connection_manager.py:2510",
+                                        "message": "NPC not found in active_npcs - using fallback",
+                                        "data": {
+                                            "npc_id": npc_id,
+                                            "found_in_active_npcs": False,
+                                            "fallback_name": npc_names.get(npc_id),
+                                        },
+                                        "timestamp": int(__import__("time").time() * 1000),
+                                        "sessionId": "debug-session",
+                                        "runId": "run1",
+                                        "hypothesisId": "B",
+                                    }
+                                    f.write(json.dumps(log_entry) + "\n")
+                            except Exception:
+                                pass
+                            # #endregion
         except Exception as e:
             logger.debug("Error batch loading NPC names", npc_count=len(npc_ids), error=str(e))
             # Fallback: Generate names from IDs

@@ -1850,6 +1850,30 @@ class NATSMessageHandler:
 
     async def _handle_npc_attacked_event(self, data: dict[str, Any]):
         """Handle npc_attacked event."""
+        # #region agent log
+        import json
+        import time
+
+        with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "sessionId": "debug-session",
+                        "runId": "run1",
+                        "hypothesisId": "C",
+                        "location": "nats_message_handler.py:1851",
+                        "message": "NATS handler received npc_attacked event",
+                        "data": {
+                            "room_id": data.get("room_id"),
+                            "attacker_name": data.get("attacker_name"),
+                            "damage": data.get("damage"),
+                        },
+                        "timestamp": int(time.time() * 1000),
+                    }
+                )
+                + "\n"
+            )
+        # #endregion
         try:
             room_id = data.get("room_id")
             if not room_id:
@@ -1857,7 +1881,41 @@ class NATSMessageHandler:
                 return
 
             # Broadcast to room using injected connection_manager
+            # #region agent log
+            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+                f.write(
+                    json.dumps(
+                        {
+                            "sessionId": "debug-session",
+                            "runId": "run1",
+                            "hypothesisId": "C",
+                            "location": "nats_message_handler.py:1860",
+                            "message": "About to broadcast npc_attacked to room",
+                            "data": {"room_id": room_id},
+                            "timestamp": int(time.time() * 1000),
+                        }
+                    )
+                    + "\n"
+                )
+            # #endregion
             await self.connection_manager.broadcast_room_event("npc_attacked", room_id, data)
+            # #region agent log
+            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a") as f:
+                f.write(
+                    json.dumps(
+                        {
+                            "sessionId": "debug-session",
+                            "runId": "run1",
+                            "hypothesisId": "C",
+                            "location": "nats_message_handler.py:1862",
+                            "message": "NPC attacked event broadcasted to room",
+                            "data": {"room_id": room_id},
+                            "timestamp": int(time.time() * 1000),
+                        }
+                    )
+                    + "\n"
+                )
+            # #endregion
             logger.debug("NPC attacked event broadcasted", room_id=room_id)
 
         except Exception as e:

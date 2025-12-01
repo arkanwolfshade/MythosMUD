@@ -130,10 +130,10 @@ class NPCMovementIntegration:
                             )
                         else:
                             logger.debug(
-                            "Updated NPC instance room tracking",
-                            npc_id=npc_id,
-                            new_room_id=to_room_id,
-                        )
+                                "Updated NPC instance room tracking",
+                                npc_id=npc_id,
+                                new_room_id=to_room_id,
+                            )
             except Exception as update_error:
                 logger.warning(
                     "Error updating NPC instance room tracking",

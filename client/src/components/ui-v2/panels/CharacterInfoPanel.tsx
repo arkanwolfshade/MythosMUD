@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { HealthMeter } from '../../health/HealthMeter';
 import { SanityMeter } from '../../sanity/SanityMeter';
 import type { Player } from '../types';
@@ -14,6 +14,29 @@ interface CharacterInfoPanelProps {
 // Simplified character info panel without connection status and player name (moved to header)
 // Based on findings from "Character State Display in Mythos Interfaces" - Dr. Armitage, 1928
 export const CharacterInfoPanel: React.FC<CharacterInfoPanelProps> = ({ player, healthStatus, sanityStatus }) => {
+  // #region agent log
+  useEffect(() => {
+    fetch('http://127.0.0.1:7242/ingest/cc3c5449-8584-455a-a168-f538b38a7727', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        location: 'CharacterInfoPanel.tsx:16',
+        message: 'CharacterInfoPanel render',
+        data: {
+          has_player: !!player,
+          has_healthStatus: !!healthStatus,
+          health_current: healthStatus?.current,
+          health_max: healthStatus?.max,
+          player_hp: player?.stats?.current_health,
+        },
+        timestamp: Date.now(),
+        sessionId: 'debug-session',
+        runId: 'run1',
+        hypothesisId: 'E',
+      }),
+    }).catch(() => {});
+  }, [player, healthStatus]);
+  // #endregion
   if (!player?.stats) {
     return (
       <div className="p-4 text-mythos-terminal-text-secondary">
