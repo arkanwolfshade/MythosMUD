@@ -198,6 +198,97 @@ describe('useGridLayout', () => {
     localStorage.clear();
   });
 
+  it('should handle localStorage errors when loading breakpoint', () => {
+    // Arrange - Test line 77: breakpoint load error branch
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(key => {
+      if (key === 'mythosMUD-panel-breakpoint') {
+        throw new Error('Storage error');
+      }
+      return null;
+    });
+
+    // Act
+    const { result } = renderHook(() => useGridLayout());
+
+    // Assert - should handle error gracefully and use default
+    expect(result.current.currentBreakpoint).toBe('lg');
+    expect(consoleWarnSpy).toHaveBeenCalled();
+    expect(consoleWarnSpy.mock.calls.some(call => call[0]?.includes('Failed to load breakpoint'))).toBe(true);
+
+    getItemSpy.mockRestore();
+    consoleWarnSpy.mockRestore();
+  });
+
+  it('should handle localStorage errors when loading panel states', () => {
+    // Arrange - Test line 89: panel states load error branch
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(key => {
+      if (key === 'mythosMUD-panel-states') {
+        throw new Error('Storage error');
+      }
+      return null;
+    });
+
+    // Act
+    const { result } = renderHook(() => useGridLayout());
+
+    // Assert - should handle error gracefully and use default
+    expect(result.current.panelStates).toBeDefined();
+    expect(result.current.panelStates.chat).toBeDefined();
+    expect(consoleWarnSpy).toHaveBeenCalled();
+    expect(consoleWarnSpy.mock.calls.some(call => call[0]?.includes('Failed to load panel states'))).toBe(true);
+
+    getItemSpy.mockRestore();
+    consoleWarnSpy.mockRestore();
+  });
+
+  it('should handle localStorage errors when saving layout', () => {
+    // Arrange - Test line 107: save layout error branch
+    const { result } = renderHook(() => useGridLayout());
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('Storage quota exceeded');
+    });
+
+    const newLayout: Layout[] = [{ i: 'chat', x: 0, y: 0, w: 8, h: 6 }];
+
+    // Act
+    act(() => {
+      result.current.onLayoutChange(newLayout);
+      result.current.saveLayout();
+    });
+
+    // Assert - should handle error gracefully
+    expect(consoleWarnSpy).toHaveBeenCalled();
+    expect(consoleWarnSpy.mock.calls.some(call => call[0]?.includes('Failed to save panel layout'))).toBe(true);
+
+    setItemSpy.mockRestore();
+    consoleWarnSpy.mockRestore();
+  });
+
+  it('should handle localStorage errors when loading layout', () => {
+    // Arrange - Test line 130: load layout error branch
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new Error('Storage error');
+    });
+
+    const { result } = renderHook(() => useGridLayout());
+
+    // Act
+    act(() => {
+      result.current.loadLayout();
+    });
+
+    // Assert - should handle error gracefully
+    expect(consoleWarnSpy).toHaveBeenCalled();
+    expect(consoleWarnSpy.mock.calls.some(call => call[0]?.includes('Failed to load panel layout'))).toBe(true);
+
+    getItemSpy.mockRestore();
+    consoleWarnSpy.mockRestore();
+  });
+
   it('should auto-save layout when it changes', () => {
     // Arrange
     const { result } = renderHook(() => useGridLayout());
@@ -280,6 +371,86 @@ describe('useGridLayout', () => {
     }
 
     // Verify layout state is reset to default
+    expect(result.current.currentLayout.length).toBeGreaterThan(0);
+  });
+
+  it('should load breakpoint from localStorage in loadLayout when breakpoint exists', () => {
+    // Arrange - Test lines 122-124: savedBreakpoint branch
+    // Start completely fresh - no localStorage
+    localStorage.clear();
+    const { result } = renderHook(() => useGridLayout());
+
+    // Verify default
+    expect(result.current.currentBreakpoint).toBe('lg');
+
+    // Now set localStorage with a value
+    localStorage.setItem('mythosMUD-panel-breakpoint', 'md');
+
+    // Act - call loadLayout to trigger the branch
+    act(() => {
+      result.current.loadLayout();
+    });
+
+    // Assert - should load breakpoint from localStorage
+    expect(result.current.currentBreakpoint).toBe('md');
+  });
+
+  it('should load panel states from localStorage in loadLayout when panel states exist', () => {
+    // Arrange - Test lines 126-128: savedPanelStates branch
+    // Start completely fresh - no localStorage
+    localStorage.clear();
+    const { result } = renderHook(() => useGridLayout());
+
+    // Verify default state
+    expect(result.current.panelStates.chat.isMinimized).toBe(false);
+
+    // Now set localStorage with panel states
+    const savedPanelStates = {
+      chat: { isMinimized: true, isMaximized: false, isVisible: true },
+      gameLog: { isMinimized: false, isMaximized: false, isVisible: true },
+    };
+    localStorage.setItem('mythosMUD-panel-states', JSON.stringify(savedPanelStates));
+
+    // Act - call loadLayout to trigger the branch
+    act(() => {
+      result.current.loadLayout();
+    });
+
+    // Assert - should load panel states from localStorage
+    expect(result.current.panelStates.chat.isMinimized).toBe(true);
+  });
+
+  it('should use fallback layout when breakpoint is not in layoutConfig', () => {
+    // Arrange - Test lines 142-143: layoutConfig fallback branch
+    const { result } = renderHook(() => useGridLayout());
+
+    // Act - use invalid breakpoint
+    act(() => {
+      result.current.onBreakpointChange('invalid-breakpoint');
+    });
+
+    // Assert - should use 'lg' as fallback
+    expect(result.current.currentBreakpoint).toBe('invalid-breakpoint');
+    expect(result.current.currentLayout).toBeDefined();
+    expect(result.current.currentLayout.length).toBeGreaterThan(0);
+  });
+
+  it('should use fallback layout in resetLayout when breakpoint is not in layoutConfig', () => {
+    // Arrange - Test line 148: resetLayout layoutConfig fallback branch
+    const { result } = renderHook(() => useGridLayout());
+
+    // Set an invalid breakpoint first
+    act(() => {
+      result.current.onBreakpointChange('invalid-breakpoint');
+    });
+
+    // Act - reset layout
+    act(() => {
+      result.current.resetLayout();
+    });
+
+    // Assert - should use 'lg' as fallback
+    expect(result.current.currentLayout).toBeDefined();
     expect(result.current.currentLayout.length).toBeGreaterThan(0);
   });
 });

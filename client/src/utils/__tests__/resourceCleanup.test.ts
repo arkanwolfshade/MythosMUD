@@ -36,7 +36,13 @@ Object.defineProperty(global, 'WebSocket', {
 });
 
 // Import after mocking
-import { ResourceManager, useResourceCleanup } from '../resourceCleanup';
+import {
+  ResourceManager,
+  useResourceCleanup,
+  createTimerCleanup,
+  createWebSocketCleanup,
+  createCustomResourceCleanup,
+} from '../resourceCleanup';
 
 describe('ResourceManager', () => {
   let resourceManager: ResourceManager;
@@ -264,5 +270,164 @@ describe('useResourceCleanup Hook', () => {
     const manager2 = result.current;
 
     expect(manager1).toBe(manager2);
+  });
+});
+
+describe('ResourceManager - Remove Methods', () => {
+  let resourceManager: ResourceManager;
+
+  beforeEach(() => {
+    resourceManager = new ResourceManager();
+  });
+
+  afterEach(() => {
+    resourceManager.cleanup();
+  });
+
+  it('should remove timer by id', () => {
+    // Arrange - Test line 134: removeTimer branch
+    const timerId = window.setTimeout(() => {}, 1000);
+    resourceManager.registerTimer(timerId);
+    expect(resourceManager.getActiveTimers()).toHaveLength(1);
+
+    // Act
+    resourceManager.removeTimer(timerId);
+
+    // Assert
+    expect(resourceManager.getActiveTimers()).toHaveLength(0);
+  });
+
+  it('should remove interval by id', () => {
+    // Arrange - Test line 139: removeInterval branch
+    const intervalId = window.setInterval(() => {}, 1000);
+    resourceManager.registerInterval(intervalId);
+    expect(resourceManager.getActiveIntervals()).toHaveLength(1);
+
+    // Act
+    resourceManager.removeInterval(intervalId);
+
+    // Assert
+    expect(resourceManager.getActiveIntervals()).toHaveLength(0);
+  });
+
+  it('should remove WebSocket', () => {
+    // Arrange - Test line 144: removeWebSocket branch
+    // nosemgrep: javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket
+    const ws = new MockWebSocket('ws://test');
+    resourceManager.registerWebSocket(ws);
+    expect(resourceManager.getActiveWebSockets()).toHaveLength(1);
+
+    // Act
+    resourceManager.removeWebSocket(ws);
+
+    // Assert
+    expect(resourceManager.getActiveWebSockets()).toHaveLength(0);
+  });
+
+  it('should remove custom resource', () => {
+    // Arrange - Test line 149: removeCustomResource branch
+    const customResource = { cleanup: vi.fn(), name: 'test' };
+    resourceManager.registerCustomResource(customResource);
+    expect(resourceManager.getActiveCustomResources()).toHaveLength(1);
+
+    // Act
+    resourceManager.removeCustomResource(customResource);
+
+    // Assert
+    expect(resourceManager.getActiveCustomResources()).toHaveLength(0);
+  });
+
+  it('should handle error when cleaning up custom resource', () => {
+    // Arrange - Test line 124: error handling in cleanupCustomResources
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const customResource = {
+      cleanup: vi.fn(() => {
+        throw new Error('Cleanup failed');
+      }),
+      name: 'test',
+    };
+    resourceManager.registerCustomResource(customResource);
+
+    // Act
+    resourceManager.cleanup();
+
+    // Assert - should handle error gracefully
+    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(consoleErrorSpy.mock.calls.some(call => call[0]?.includes('Error cleaning up custom resource'))).toBe(true);
+    consoleErrorSpy.mockRestore();
+  });
+});
+
+describe('createTimerCleanup', () => {
+  it('should create setTimeout wrapper that registers timer', () => {
+    // Arrange - Test lines 181-190: createTimerCleanup branches
+    const resourceManager = new ResourceManager();
+    const { setTimeout: customSetTimeout } = createTimerCleanup(resourceManager);
+
+    // Act
+    const timerId = customSetTimeout(() => {}, 1000);
+
+    // Assert
+    expect(resourceManager.getActiveTimers()).toContain(timerId);
+    resourceManager.cleanup();
+  });
+
+  it('should create setInterval wrapper that registers interval', () => {
+    // Arrange - Test lines 181-190: createTimerCleanup branches
+    const resourceManager = new ResourceManager();
+    const { setInterval: customSetInterval } = createTimerCleanup(resourceManager);
+
+    // Act
+    const intervalId = customSetInterval(() => {}, 1000);
+
+    // Assert
+    expect(resourceManager.getActiveIntervals()).toContain(intervalId);
+    resourceManager.cleanup();
+  });
+});
+
+describe('createWebSocketCleanup', () => {
+  it('should create WebSocket wrapper that registers connection', () => {
+    // Arrange - Test lines 199-202: createWebSocketCleanup branches
+    const resourceManager = new ResourceManager();
+    const createWebSocket = createWebSocketCleanup(resourceManager);
+
+    // Act
+    // nosemgrep: javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket
+    const ws = createWebSocket('ws://test');
+
+    // Assert
+    expect(resourceManager.getActiveWebSockets()).toContain(ws);
+    resourceManager.cleanup();
+  });
+
+  it('should create WebSocket with protocols', () => {
+    // Arrange - Test lines 199-202: createWebSocketCleanup with protocols
+    const resourceManager = new ResourceManager();
+    const createWebSocket = createWebSocketCleanup(resourceManager);
+
+    // Act
+    // nosemgrep: javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket
+    const ws = createWebSocket('ws://test', 'protocol1');
+
+    // Assert
+    expect(resourceManager.getActiveWebSockets()).toContain(ws);
+    resourceManager.cleanup();
+  });
+});
+
+describe('createCustomResourceCleanup', () => {
+  it('should create custom resource cleanup function', () => {
+    // Arrange - Test lines 209-212: createCustomResourceCleanup branch
+    const resourceManager = new ResourceManager();
+    const registerCustom = createCustomResourceCleanup(resourceManager);
+    const customResource = { cleanup: vi.fn(), name: 'test' };
+
+    // Act
+    registerCustom(customResource);
+
+    // Assert
+    expect(resourceManager.getActiveCustomResources()).toContain(customResource);
+    resourceManager.cleanup();
   });
 });

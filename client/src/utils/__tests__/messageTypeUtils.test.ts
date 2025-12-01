@@ -184,4 +184,74 @@ describe('messageTypeUtils', () => {
       });
     });
   });
+
+  describe('special message patterns', () => {
+    it('should detect "You say locally:" as local channel', () => {
+      // Arrange - Test line 181: "You say locally:" branch
+      const message = 'You say locally: Hello everyone!';
+
+      // Act
+      const result = determineMessageType(message);
+
+      // Assert
+      expect(result.type).toBe('chat');
+      expect(result.channel).toBe('local');
+    });
+
+    it('should detect "You say:" without locally as say channel', () => {
+      // Arrange - Test line 183: "You say:" without locally branch
+      const message = 'You say: Hello world!';
+
+      // Act
+      const result = determineMessageType(message);
+
+      // Assert
+      expect(result.type).toBe('chat');
+      expect(result.channel).toBe('say');
+    });
+
+    it('should detect whisper messages', () => {
+      // Arrange - Test line 185: whisper pattern branch
+      const message = 'You whisper to Player1: Secret message';
+
+      // Act
+      const result = determineMessageType(message);
+
+      // Assert
+      expect(result.type).toBe('chat');
+      expect(result.channel).toBe('whisper');
+    });
+
+    it('should detect whisper messages from other player', () => {
+      // Arrange - Test line 185: whisper pattern branch (other direction)
+      const message = 'Player1 whispers to you: Hello there';
+
+      // Act
+      const result = determineMessageType(message);
+
+      // Assert
+      expect(result.type).toBe('chat');
+      expect(result.channel).toBe('whisper');
+    });
+
+    it('should detect error/command messages', () => {
+      // Arrange - Test line 197: error pattern branch (returns 'command' type)
+      const errorMessages = [
+        { message: 'Error: Something went wrong', expected: 'command' },
+        { message: 'Usage: command syntax', expected: 'command' },
+        { message: 'You must be standing to do that', expected: 'command' },
+        { message: 'Invalid command', expected: 'command' },
+        { message: 'Cannot perform that action', expected: 'command' },
+        { message: 'Failed to execute', expected: 'command' },
+      ];
+
+      errorMessages.forEach(({ message, expected }) => {
+        // Act
+        const result = determineMessageType(message);
+
+        // Assert
+        expect(result.type).toBe(expected);
+      });
+    });
+  });
 });

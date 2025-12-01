@@ -358,3 +358,13 @@ describe('useThemeContext convenience hooks', () => {
     });
   });
 });
+
+describe('useTheme error handling', () => {
+  it('should throw error when used outside ThemeProvider', () => {
+    // Arrange - Test line 8: useTheme error branch
+    // Act & Assert - should throw error
+    expect(() => {
+      renderHook(() => useTheme());
+    }).toThrow('useTheme must be used within a ThemeProvider');
+  });
+});
