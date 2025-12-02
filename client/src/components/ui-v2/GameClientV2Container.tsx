@@ -376,6 +376,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                 ...currentPlayerRef.current,
                 stats: {
                   ...currentPlayerRef.current.stats,
+                  current_health: currentPlayerRef.current.stats?.current_health ?? 0,
                   sanity: updatedStatus.current,
                 },
               };
@@ -411,6 +412,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                   ...currentPlayerRef.current.stats,
                   current_health: updatedHealthStatus.current,
                   max_health: updatedHealthStatus.max,
+                  sanity: currentPlayerRef.current.stats?.sanity ?? 0,
                 },
               };
               logger.info('GameClientV2Container', 'Updated player stats', {
@@ -661,7 +663,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             break;
           }
           case 'mythos_time_update': {
-            const payload = event.data as MythosTimePayload;
+            const payload = event.data as unknown as MythosTimePayload;
             if (payload && payload.mythos_clock) {
               const nextState = buildMythosTimeState(payload);
               setMythosTime(nextState);
@@ -713,6 +715,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                     timestamp: event.timestamp,
                     messageType: 'system',
                     channel: 'system',
+                    isHtml: false,
                   })
                 );
               }
@@ -881,6 +884,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                   timestamp: event.timestamp,
                   messageType: 'system',
                   channel: 'system',
+                  isHtml: false,
                 })
               );
             }
@@ -1010,27 +1014,34 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             // We must explicitly check for populated arrays, not just existence
 
             // Calculate merged players array
-            const mergedPlayers = updatesHasPopulatedPlayers
-              ? updates.room.players
+            const mergedPlayers: string[] = updatesHasPopulatedPlayers
+              ? (updates.room.players ?? [])
               : prevHasPopulatedPlayers
-                ? prev.room.players
+                ? (prev.room.players ?? [])
                 : (updates.room.players ?? prev.room.players ?? []);
 
             // Calculate merged NPCs array
-            const mergedNpcs = updatesHasPopulatedNpcs
-              ? updates.room.npcs // Updates has populated NPCs (from room_occupants) - use it
-              : prevHasPopulatedNpcs
-                ? prev.room.npcs // Updates has no NPCs but prev does - preserve prev
-                : // Neither has populated NPCs
-                  // CRITICAL: If updates explicitly set npcs: [] (empty array from room_update)
-                  // but prev has NPCs (from previous room_occupants), preserve prev
-                  // Only use empty array if both are empty
-                  updates.room.npcs !== undefined &&
-                    updates.room.npcs.length === 0 &&
-                    prev.room.npcs &&
-                    prev.room.npcs.length > 0
-                  ? prev.room.npcs // room_update tried to clear NPCs, but prev has them - preserve prev
-                  : (updates.room.npcs ?? prev.room.npcs ?? []); // Default fallback
+            let mergedNpcs: string[];
+            if (updatesHasPopulatedNpcs) {
+              mergedNpcs = updates.room.npcs ?? []; // Updates has populated NPCs (from room_occupants) - use it
+            } else if (prevHasPopulatedNpcs) {
+              mergedNpcs = prev.room.npcs ?? []; // Updates has no NPCs but prev does - preserve prev
+            } else {
+              // Neither has populated NPCs
+              // CRITICAL: If updates explicitly set npcs: [] (empty array from room_update)
+              // but prev has NPCs (from previous room_occupants), preserve prev
+              // Only use empty array if both are empty
+              if (
+                updates.room.npcs !== undefined &&
+                updates.room.npcs.length === 0 &&
+                prev.room.npcs &&
+                prev.room.npcs.length > 0
+              ) {
+                mergedNpcs = prev.room.npcs; // room_update tried to clear NPCs, but prev has them - preserve prev
+              } else {
+                mergedNpcs = updates.room.npcs ?? prev.room.npcs ?? []; // Default fallback
+              }
+            }
 
             // Calculate merged occupants array
             const mergedOccupants = [...mergedPlayers, ...mergedNpcs];
@@ -1454,7 +1465,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
 
       {/* Tabbed Interface Overlay */}
       {tabs.length > 0 && (
-        <div className="fixed inset-0 z-[9999] bg-mythos-terminal-background">
+        <div className="fixed inset-0 z-9999 bg-mythos-terminal-background">
           <div className="flex flex-col h-full">
             {/* Tab Bar */}
             <div className="flex items-center border-b border-mythos-terminal-border bg-mythos-terminal-background overflow-x-auto">
