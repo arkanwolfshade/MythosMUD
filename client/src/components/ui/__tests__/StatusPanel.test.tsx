@@ -166,7 +166,7 @@ describe('StatusPanel Compound Component', () => {
         </StatusPanel>
       );
 
-      expect(screen.getByText('lucidity:')).toBeInTheDocument();
+      expect(screen.getByText('Lucidity:')).toBeInTheDocument();
       expect(screen.getByText('80')).toBeInTheDocument();
     });
 
@@ -177,7 +177,7 @@ describe('StatusPanel Compound Component', () => {
         </StatusPanel>
       );
 
-      expect(screen.queryByText('lucidity:')).not.toBeInTheDocument();
+      expect(screen.queryByText('Lucidity:')).not.toBeInTheDocument();
     });
   });
 
@@ -326,7 +326,7 @@ describe('StatusPanel Compound Component', () => {
       );
 
       expect(screen.getByText('Health:')).toBeInTheDocument();
-      expect(screen.getByText('lucidity:')).toBeInTheDocument();
+      expect(screen.getByText('Lucidity:')).toBeInTheDocument();
       expect(screen.getByText('Core Attributes:')).toBeInTheDocument();
       expect(screen.getByText('Horror Stats:')).toBeInTheDocument();
     });
@@ -339,7 +339,7 @@ describe('StatusPanel Compound Component', () => {
       );
 
       expect(screen.queryByText('Health:')).not.toBeInTheDocument();
-      expect(screen.queryByText('lucidity:')).not.toBeInTheDocument();
+      expect(screen.queryByText('Lucidity:')).not.toBeInTheDocument();
     });
   });
 
@@ -354,7 +354,7 @@ describe('StatusPanel Compound Component', () => {
       expect(screen.getByText('Connection:')).toBeInTheDocument();
       expect(screen.getByText('Player:')).toBeInTheDocument();
       expect(screen.getByText('Health:')).toBeInTheDocument();
-      expect(screen.getByText('lucidity:')).toBeInTheDocument();
+      expect(screen.getByText('Lucidity:')).toBeInTheDocument();
       expect(screen.getByText('Core Attributes:')).toBeInTheDocument();
       expect(screen.getByText('Horror Stats:')).toBeInTheDocument();
       expect(screen.getByText('Messages:')).toBeInTheDocument();
@@ -378,7 +378,7 @@ describe('StatusPanel Compound Component', () => {
       expect(screen.getByText('Health:')).toBeInTheDocument();
       expect(screen.getByText('Messages:')).toBeInTheDocument();
       // Should not display components not included
-      expect(screen.queryByText('lucidity:')).not.toBeInTheDocument();
+      expect(screen.queryByText('Lucidity:')).not.toBeInTheDocument();
       expect(screen.queryByText('Commands:')).not.toBeInTheDocument();
     });
   });
