@@ -9,7 +9,7 @@ Validates the end-to-end rescue flow when an investigator becomes catatonic: the
 Before running this scenario you MUST complete the checklist in `@MULTIPLAYER_TEST_RULES.md`. Pay special attention to:
 
 1. **Server State** – Development server running on `54731`, client served on `5173`.
-2. **Database Prep** – The players `ArkanWolfshade` (target) and `Ithaqua` (rescuer) exist in `data/local/players/local_players.db`.
+2. **Database Prep** – The players `ArkanWolfshade` (target) and `Ithaqua` (rescuer) exist in PostgreSQL database `mythos_e2e`.
 3. **Clean Browser** – No active sessions for either account.
 
 ### Sanity Ledger Seeding
@@ -17,16 +17,7 @@ Before running this scenario you MUST complete the checklist in `@MULTIPLAYER_TE
 Set `ArkanWolfshade` to an induced catatonic state so the rescue flow can begin immediately.
 
 ```powershell
-cd E:\projects\GitHub\MythosMUD
-sqlite3 data\local\players\local_players.db "
-UPDATE player_sanity
-   SET current_san = -60,
-       current_tier = 'catatonic',
-       catatonia_entered_at = datetime('now')
- WHERE player_id = (
-   SELECT player_id FROM players WHERE name = 'ArkanWolfshade'
- );
-.quit"
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "UPDATE player_sanity SET current_san = -60, current_tier = 'catatonic', catatonia_entered_at = NOW() WHERE player_id = (SELECT player_id FROM players WHERE name = 'ArkanWolfshade');"
 ```
 
 Verify the update returned `changes = 1`. If not, halt and inspect the ledger.
@@ -35,7 +26,7 @@ Verify the update returned `changes = 1`. If not, halt and inspect the ledger.
 
 - **Players**: `ArkanWolfshade` (target) and `Ithaqua` (rescuer)
 - **Starting Room**: `earth_arkhamcity_sanitarium_room_foyer_001`
-- **Tools**: Playwright MCP (two tabs), SQLite CLI
+- **Tools**: Playwright MCP (two tabs), PostgreSQL CLI (psql)
 - **Timeouts**: Apply master rule defaults (`wait_for` 10 – 30 s depending on step)
 
 ## Execution Steps
@@ -130,15 +121,7 @@ await mcp_playwright_browser_wait_for({ text: "Location:", time: 10 });
 Restore the target’s sanity to the default lucidity to avoid cross-scenario drift.
 
 ```powershell
-sqlite3 data\local\players\local_players.db "
-UPDATE player_sanity
-   SET current_san = 100,
-       current_tier = 'lucid',
-       catatonia_entered_at = NULL
- WHERE player_id = (
-   SELECT player_id FROM players WHERE name = 'ArkanWolfshade'
- );
-.quit"
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "UPDATE player_sanity SET current_san = 100, current_tier = 'lucid', catatonia_entered_at = NULL WHERE player_id = (SELECT player_id FROM players WHERE name = 'ArkanWolfshade');"
 ```
 
 Double-check that `RescueStatusBanner` is absent on both tabs before closing the browser. Log out both users via the UI or simply close the tabs once verification is complete.

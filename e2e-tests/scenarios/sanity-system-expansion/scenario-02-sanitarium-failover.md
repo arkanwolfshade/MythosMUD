@@ -9,7 +9,7 @@ Exercises the automatic sanitarium transfer that fires when a catatonic investig
 Complete the global prerequisites in `@MULTIPLAYER_TEST_RULES.md` first. Additional setup for this scenario:
 
 1. **Server & Client** – Server listening on `54731`, client reachable on `5173`.
-2. **Players** – `ArkanWolfshade` (victim) and `Ithaqua` (observer) exist in `data/local/players/local_players.db`.
+2. **Players** – `ArkanWolfshade` (victim) and `Ithaqua` (observer) exist in PostgreSQL database `mythos_e2e`.
 3. **Clean Sessions** – No lingering browser tabs for either account.
 
 ### Sanity Ledger Seeding
@@ -17,16 +17,7 @@ Complete the global prerequisites in `@MULTIPLAYER_TEST_RULES.md` first. Additio
 Prime the victim with dangerously low SAN so passive flux can finish the collapse.
 
 ```powershell
-cd E:\projects\GitHub\MythosMUD
-sqlite3 data\local\players\local_players.db "
-UPDATE player_sanity
-   SET current_san = -95,
-       current_tier = 'catatonic',
-       catatonia_entered_at = datetime('now','-10 minutes')
- WHERE player_id = (
-   SELECT player_id FROM players WHERE name = 'ArkanWolfshade'
- );
-.quit"
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "UPDATE player_sanity SET current_san = -95, current_tier = 'catatonic', catatonia_entered_at = NOW() - INTERVAL '10 minutes' WHERE player_id = (SELECT player_id FROM players WHERE name = 'ArkanWolfshade');"
 ```
 
 **Why -95?** Passive flux in the sanitarium foyer drains roughly 1–2 SAN per server tick for catatonic bodies. This ensures the failover observer fires within ~2 real-time minutes.
@@ -35,7 +26,7 @@ UPDATE player_sanity
 
 - **Players**: Tab 0 – `ArkanWolfshade` (catatonic target), Tab 1 – `Ithaqua` (party observer)
 - **Room**: `earth_arkhamcity_sanitarium_room_foyer_001`
-- **Tools**: Playwright MCP with two tabs, SQLite CLI
+- **Tools**: Playwright MCP with two tabs, PostgreSQL CLI (psql)
 - **Timeout Guidance**: Allow up to 180 s for the failover transition after both tabs are connected.
 
 ## Execution Steps
@@ -120,20 +111,7 @@ Attempt a simple command (`look`) to ensure normal interaction is restored.
 Reset the victim’s sanity and room placement to pre-test defaults.
 
 ```powershell
-sqlite3 data\local\players\local_players.db "
-WITH victim AS (
-  SELECT player_id FROM players WHERE name = 'ArkanWolfshade'
-)
-UPDATE player_sanity
-   SET current_san = 100,
-       current_tier = 'lucid',
-       catatonia_entered_at = NULL
- WHERE player_id = (SELECT player_id FROM victim);
-
-UPDATE players
-   SET current_room_id = 'earth_arkhamcity_sanitarium_room_foyer_001'
- WHERE player_id = (SELECT player_id FROM victim);
-.quit"
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "WITH victim AS (SELECT player_id FROM players WHERE name = 'ArkanWolfshade') UPDATE player_sanity SET current_san = 100, current_tier = 'lucid', catatonia_entered_at = NULL WHERE player_id = (SELECT player_id FROM victim); UPDATE players SET current_room_id = 'earth_arkhamcity_sanitarium_room_foyer_001' WHERE player_id = (SELECT player_id FROM players WHERE name = 'ArkanWolfshade');"
 ```
 
 Log out both players or close the tabs once verification is complete. Document the SAN tick timing in `TESTING_APPROACH.md` if the failover took longer than 3 minutes so future runs can adjust the wait window.

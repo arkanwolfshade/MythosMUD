@@ -21,9 +21,9 @@ This document provides comprehensive troubleshooting procedures for common issue
    netstat -an | findstr :5173
    ```
 
-2. **Verify database file exists and is accessible**:
+2. **Verify PostgreSQL database is accessible**:
    ```powershell
-   Test-Path "data/e2e_test/players/e2e_players.db"
+   $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT 1;"
    ```
 
 3. **Check server logs for detailed error information**:
@@ -69,7 +69,7 @@ This document provides comprehensive troubleshooting procedures for common issue
 
 3. **Verify database contains test players**:
    ```powershell
-   sqlite3 data/e2e_test/players/e2e_players.db "SELECT name FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+   $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT name FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
    ```
 
 4. **Check network connectivity**:
@@ -137,34 +137,32 @@ This document provides comprehensive troubleshooting procedures for common issue
 
 **Solutions**:
 
-1. **Use SQLite CLI to verify player state**:
+1. **Use PostgreSQL CLI to verify player state**:
    ```powershell
-   sqlite3 data/e2e_test/players/e2e_players.db
+   # Check current player state
+   $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+
+   # Fix player locations
+   $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "UPDATE players SET current_room_id = 'earth_arkhamcity_sanitarium_room_foyer_001' WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+
+   # Fix admin privileges
+   $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "UPDATE players SET is_admin = 1 WHERE name = 'ArkanWolfshade';"
+
+   # Verify fixes
+   $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
    ```
 
-   ```sql
-   -- Check current player state
-   SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');
-
-   -- Fix player locations
-   UPDATE players SET current_room_id = 'earth_arkhamcity_sanitarium_room_foyer_001' WHERE name IN ('ArkanWolfshade', 'Ithaqua');
-
-   -- Fix admin privileges
-   UPDATE players SET is_admin = 1 WHERE name = 'ArkanWolfshade';
-
-   -- Verify fixes
-   SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');
-   ```
-
-2. **Check database file permissions**:
+2. **Check PostgreSQL connection and permissions**:
    ```powershell
-   Get-Acl "data/e2e_test/players/e2e_players.db" | Format-List
+   # Test database connection
+   $env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT current_database(), current_user;"
    ```
 
 3. **Restore from backup if needed**:
    ```powershell
-   # If database is corrupted
-   Copy-Item "data/e2e_test/players/e2e_players.db.backup" "data/e2e_test/players/e2e_players.db"
+   # If database is corrupted, restore from pg_dump backup
+   # Note: Backup/restore procedures should be documented separately
+   # Example: pg_restore -h localhost -U postgres -d mythos_e2e backup_file.dump
    ```
 
 ### Issue 5: Browser Automation Failures
@@ -286,10 +284,10 @@ Invoke-WebRequest -Uri "http://localhost:54731/monitoring/health" -UseBasicParsi
 
 ```powershell
 # Check player state
-sqlite3 data/e2e_test/players/e2e_players.db "SELECT name, current_room_id, is_admin, last_active FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT name, current_room_id, is_admin, last_active FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
 
-# Check database integrity
-sqlite3 data/e2e_test/players/e2e_players.db "PRAGMA integrity_check;"
+# Check database integrity (PostgreSQL equivalent)
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT pg_check_consistency();"
 ```
 
 ### Check Browser State

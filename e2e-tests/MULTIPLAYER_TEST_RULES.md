@@ -108,7 +108,7 @@ if (messages.length === 0) {
 - **Server Port**: 54731 (from `server/server_config.yaml`)
 - **Client Port**: 5173 (from `client/vite.config.ts`)
 - **Starting Room**: `earth_arkhamcity_sanitarium_room_foyer_001` (Main Foyer)
-- **Database**: `data/e2e_test/players/e2e_players.db`
+- **Database**: PostgreSQL `mythos_e2e` database (connection: `postgresql://postgres:Cthulhu1@localhost:5432/mythos_e2e`)
 - **Log Directory**: `logs/e2e_test/`
 
 ### Command Syntax
@@ -223,16 +223,16 @@ netstat -an | findstr :5173
 
 ```powershell
 # MANDATORY: Check if players exist and their current state
-sqlite3 "data/e2e_test/players/e2e_players.db" "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
 
 # MANDATORY: Update players to starting room (ALWAYS run this)
-sqlite3 "data/e2e_test/players/e2e_players.db" "UPDATE players SET current_room_id = 'earth_arkhamcity_sanitarium_room_foyer_001' WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "UPDATE players SET current_room_id = 'earth_arkhamcity_sanitarium_room_foyer_001' WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
 
 # MANDATORY: Verify ArkanWolfshade has admin privileges (ALWAYS run this)
-sqlite3 "data/e2e_test/players/e2e_players.db" "UPDATE players SET is_admin = 1 WHERE name = 'ArkanWolfshade';"
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "UPDATE players SET is_admin = 1 WHERE name = 'ArkanWolfshade';"
 
 # MANDATORY: Verify the updates worked
-sqlite3 "data/e2e_test/players/e2e_players.db" "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
 ```
 
 **MANDATORY VERIFICATION**: Both players must exist, be in Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`), and AW must have admin privileges (is_admin = 1)
@@ -336,7 +336,7 @@ After each step, document:
 ## Security and Environment
 
 - **Security-First Mindset**: Before starting the server, ensure all security configurations are properly set, especially COPPA compliance settings for minor users
-- **Database Placement**: Verify database files are in correct locations (/data/players/ for production, /data/unit_test/players/ for tests)
+- **Database Configuration**: Verify PostgreSQL database connection is properly configured via DATABASE_URL environment variable
 - **Environment Variables**: Ensure all secrets are properly configured via environment variables, never hardcoded
 
 ## VIOLATION CONSEQUENCES
