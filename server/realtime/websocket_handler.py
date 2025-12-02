@@ -300,7 +300,21 @@ async def handle_websocket_connection(
                         player_id=player_id_str,
                         room_id=str(canonical_room_id),
                     )
-                    await websocket.send_json(game_state_event)
+                    # Check websocket state before attempting to send
+                    from starlette.websockets import WebSocketState
+                    ws_state = getattr(websocket, "application_state", None)
+                    if ws_state == WebSocketState.DISCONNECTED:
+                        logger.warning("WebSocket already disconnected, skipping game_state send", player_id=player_id_str)
+                        # Exit the connection handler early since websocket is closed
+                        return
+                    try:
+                        await websocket.send_json(game_state_event)
+                    except RuntimeError as send_err:
+                        if "close message has been sent" in str(send_err) or "Cannot call" in str(send_err):
+                            logger.warning("WebSocket closed during send, exiting connection handler", player_id=player_id_str, error=str(send_err))
+                            # Exit the connection handler early instead of raising
+                            return
+                        raise
 
                     # Check if player is dead (HP <= -10) and send death event to trigger UI
                     # This handles players who connect with HP already at death threshold
@@ -569,7 +583,8 @@ async def handle_websocket_connection(
                     continue
 
                 # Mark presence on any inbound message
-                connection_manager.mark_player_seen(player_id_str)
+                # Convert player_id_str to UUID for mark_player_seen
+                connection_manager.mark_player_seen(player_id)
 
                 # Process the message
                 await handle_websocket_message(websocket, player_id_str, message)

@@ -185,7 +185,8 @@ class ConnectionManager:
         # Connection health check configuration
         self._health_check_interval: float = 30.0  # Check every 30 seconds
         self._health_check_task: Any | None = None
-        self._connection_timeout: float = 90.0  # 90 seconds idle = stale connection
+        # 5 minutes idle = stale connection (aligned with MemoryMonitor.max_connection_age)
+        self._connection_timeout: float = 300.0
         self._token_revalidation_interval: float = 300.0  # Revalidate tokens every 5 minutes
 
     def _is_websocket_open(self, websocket: WebSocket) -> bool:
@@ -548,85 +549,89 @@ class ConnectionManager:
             player_id: The player's ID (UUID)
             is_force_disconnect: If True, don't broadcast player_left_game
         """
-        try:
-            logger.info(
-                "Starting WebSocket disconnect",
-                player_id=player_id,
-                force_disconnect=bool(is_force_disconnect),
-            )
-
-            if player_id in self.player_websockets:
-                connection_ids = self.player_websockets[player_id].copy()  # Copy to avoid modification during iteration
+        # Use disconnect_lock to prevent concurrent disconnects for the same player
+        async with self.disconnect_lock:
+            try:
                 logger.info(
-                    "Found WebSocket connections",
+                    "Starting WebSocket disconnect",
                     player_id=player_id,
-                    connection_count=len(connection_ids),
-                    connection_ids=connection_ids,
+                    force_disconnect=bool(is_force_disconnect),
                 )
 
-                # Disconnect all WebSocket connections for this player
-                for connection_id in connection_ids:
-                    if connection_id in self.active_websockets:
-                        websocket = self.active_websockets[connection_id]
-                        logger.info("DEBUG: Closing WebSocket", connection_id=connection_id, player_id=player_id)
-                        # Properly close the WebSocket connection
-                        await self._safe_close_websocket(websocket, code=1000, reason="Connection closed")
-                        logger.info(
-                            "Successfully closed WebSocket",
-                            connection_id=connection_id,
-                            player_id=player_id,
-                        )
-                        del self.active_websockets[connection_id]
-
-                    # Clean up connection metadata
-                    if connection_id in self.connection_metadata:
-                        del self.connection_metadata[connection_id]
-
-                    # Clean up message rate limit data for this connection
-                    self.rate_limiter.remove_connection_message_data(connection_id)
-
-                # Remove player from websocket tracking
-                del self.player_websockets[player_id]
-
-                # Check if we need to track disconnection (outside of disconnect_lock to avoid deadlock)
-                should_track_disconnect = False
-                if not is_force_disconnect and not self.has_websocket_connection(player_id):
-                    # Check if disconnect needs to be processed without holding the disconnect_lock
-                    async with self.processed_disconnect_lock:
-                        if player_id not in self.processed_disconnects:
-                            self.processed_disconnects.add(player_id)
-                            should_track_disconnect = True
-                        else:
-                            logger.debug("Disconnect already processed, skipping", player_id=player_id)
-
-                    # Track disconnect outside of disconnect_lock to avoid deadlock
-                    if should_track_disconnect:
-                        await self._track_player_disconnected(player_id)
-
-                # Unsubscribe from all rooms only if it's not a force disconnect and no other connections
-                # During reconnections, we want to preserve room membership
-                if not is_force_disconnect and not self.has_websocket_connection(player_id):
-                    self.room_manager.remove_player_from_all_rooms(str(player_id))
-                else:
-                    logger.debug(
-                        "Preserving room membership during force disconnect (reconnection)",
+                if player_id in self.player_websockets:
+                    connection_ids = self.player_websockets[
+                        player_id
+                    ].copy()  # Copy to avoid modification during iteration
+                    logger.info(
+                        "Found WebSocket connections",
                         player_id=player_id,
+                        connection_count=len(connection_ids),
+                        connection_ids=connection_ids,
                     )
 
-                # Clean up rate limiting data only if no other connections
-                if not self.has_websocket_connection(player_id):
-                    self.rate_limiter.remove_player_data(str(player_id))
-                    # Clean up pending messages
-                    self.message_queue.remove_player_messages(str(player_id))
-                    # Clean up last seen data
-                    if player_id in self.last_seen:
-                        del self.last_seen[player_id]
-                    self.last_active_update_times.pop(player_id, None)
+                    # Disconnect all WebSocket connections for this player
+                    for connection_id in connection_ids:
+                        if connection_id in self.active_websockets:
+                            websocket = self.active_websockets[connection_id]
+                            logger.info("DEBUG: Closing WebSocket", connection_id=connection_id, player_id=player_id)
+                            # Properly close the WebSocket connection
+                            await self._safe_close_websocket(websocket, code=1000, reason="Connection closed")
+                            logger.info(
+                                "Successfully closed WebSocket",
+                                connection_id=connection_id,
+                                player_id=player_id,
+                            )
+                            del self.active_websockets[connection_id]
 
-                logger.info("WebSocket disconnected", player_id=player_id)
+                        # Clean up connection metadata
+                        if connection_id in self.connection_metadata:
+                            del self.connection_metadata[connection_id]
 
-        except Exception as e:
-            logger.error("Error during WebSocket disconnect", player_id=player_id, error=str(e), exc_info=True)
+                        # Clean up message rate limit data for this connection
+                        self.rate_limiter.remove_connection_message_data(connection_id)
+
+                    # Remove player from websocket tracking
+                    del self.player_websockets[player_id]
+
+                    # Check if we need to track disconnection (outside of disconnect_lock to avoid deadlock)
+                    should_track_disconnect = False
+                    if not is_force_disconnect and not self.has_websocket_connection(player_id):
+                        # Check if disconnect needs to be processed without holding the disconnect_lock
+                        async with self.processed_disconnect_lock:
+                            if player_id not in self.processed_disconnects:
+                                self.processed_disconnects.add(player_id)
+                                should_track_disconnect = True
+                            else:
+                                logger.debug("Disconnect already processed, skipping", player_id=player_id)
+
+                        # Track disconnect outside of disconnect_lock to avoid deadlock
+                        if should_track_disconnect:
+                            await self._track_player_disconnected(player_id)
+
+                    # Unsubscribe from all rooms only if it's not a force disconnect and no other connections
+                    # During reconnections, we want to preserve room membership
+                    if not is_force_disconnect and not self.has_websocket_connection(player_id):
+                        self.room_manager.remove_player_from_all_rooms(str(player_id))
+                    else:
+                        logger.debug(
+                            "Preserving room membership during force disconnect (reconnection)",
+                            player_id=player_id,
+                        )
+
+                    # Clean up rate limiting data only if no other connections
+                    if not self.has_websocket_connection(player_id):
+                        self.rate_limiter.remove_player_data(str(player_id))
+                        # Clean up pending messages
+                        self.message_queue.remove_player_messages(str(player_id))
+                        # Clean up last seen data
+                        if player_id in self.last_seen:
+                            del self.last_seen[player_id]
+                        self.last_active_update_times.pop(player_id, None)
+
+                    logger.info("WebSocket disconnected", player_id=player_id)
+
+            except Exception as e:
+                logger.error("Error during WebSocket disconnect", player_id=player_id, error=str(e), exc_info=True)
 
     async def force_disconnect_player(self, player_id: uuid.UUID):
         """
@@ -955,10 +960,17 @@ class ConnectionManager:
         }
 
     def mark_player_seen(self, player_id: uuid.UUID):
-        """Update last-seen timestamp for a player."""
+        """Update last-seen timestamp for a player and all their connections."""
         try:
             now_ts = time.time()
             self.last_seen[player_id] = now_ts
+
+            # CRITICAL FIX: Update last_seen for all connection metadata for this player
+            # This ensures health checks see ping messages as activity
+            if player_id in self.player_websockets:
+                for connection_id in self.player_websockets[player_id]:
+                    if connection_id in self.connection_metadata:
+                        self.connection_metadata[connection_id].last_seen = now_ts
 
             if self.persistence:
                 last_update = self.last_active_update_times.get(player_id, 0.0)
@@ -1659,7 +1671,8 @@ class ConnectionManager:
                 return False
 
             player = self.persistence.get_player_by_user_id(user_id)
-            if not player or str(player.player_id) != player_id:
+            # CRITICAL FIX: Compare both as strings - player_id is UUID, player.player_id is also UUID
+            if not player or str(player.player_id) != str(player_id):
                 logger.warning(
                     "Token validation failed: player mismatch",
                     player_id=player_id,
