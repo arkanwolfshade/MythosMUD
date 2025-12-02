@@ -330,8 +330,10 @@ export const inputSanitizer = {
     let previous: string;
     do {
       previous = sanitized;
-      // Improved regex: matches script tags with word boundary, allows attributes in close/open tags, handles newlines/whitespace, attributes in </script>, and nested content
-      // This regex matches <script ...>...</script ...>, including messy/malformed close tags (as browsers allow)
+      // Improved regex: matches script tags with word boundary, allows attributes in close/open tags,
+      // handles newlines/whitespace, attributes in </script>, and nested content.
+      // This regex matches <script ...>...</script ...>, including messy/malformed close tags
+      // (as browsers allow)
       sanitized = sanitized.replace(/<script\b[^>]*>[\s\S]*?<\/script[^>]*>/gi, '');
     } while (sanitized !== previous);
     return sanitized;
