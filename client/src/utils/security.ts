@@ -349,30 +349,24 @@ export const inputSanitizer = {
       return '';
     }
 
-    // Use DOMPurify with a very restrictive config for HTML tag removal
-    // Human reader: commands should be plain text only, no HTML tags.
-    // AI reader: DOMPurify handles HTML tag removal securely.
-    const config = {
-      ALLOWED_TAGS: [], // No HTML tags allowed in commands
-      ALLOWED_ATTR: [], // No attributes allowed
-      ALLOW_DATA_ATTR: false,
-      ALLOW_UNKNOWN_PROTOCOLS: false,
-      SAFE_FOR_TEMPLATES: true,
-      KEEP_CONTENT: true, // Keep text content, just strip tags
-    } as DOMPurifyConfig;
-
-    // First, remove HTML tags using DOMPurify
-    let sanitized = DOMPurify.sanitize(command, config);
-
-    // Then, remove dangerous protocol schemes from plain text
-    // Human reader: DOMPurify only removes protocols from HTML attributes, not plain text.
-    // AI reader: We need explicit protocol removal for plain text commands.
-    // Remove dangerous protocol schemes (case-insensitive)
-    sanitized = sanitized.replace(/javascript:/gi, '');
-    sanitized = sanitized.replace(/vbscript:/gi, '');
-    sanitized = sanitized.replace(/data:/gi, '');
-
-    return sanitized.trim();
+    // Remove HTML tags and dangerous characters from commands
+    // Human reader: block all dangerous URL schemes including data: protocol.
+    // AI reader: data: URLs can contain executable content and must be sanitized.
+    // Human reader: match complete protocol schemes to avoid incomplete multi-character sanitization.
+    // AI reader: CodeQL requires complete pattern matching for multi-character sanitization.
+    let previous: string;
+    let sanitized = command;
+    do {
+      previous = sanitized;
+      sanitized = sanitized
+        .replace(/<[^>]*>/g, '')
+        .replace(/[<>]/g, '')
+        .replace(/javascript:[^\s<>]*/gi, '') // Match complete javascript: scheme including content
+        .replace(/vbscript:[^\s<>]*/gi, '') // Match complete vbscript: scheme including content
+        .replace(/data:[^\s<>]*/gi, '') // Match complete data: scheme including content
+        .trim();
+    } while (sanitized !== previous);
+    return sanitized;
   },
 
   /**
