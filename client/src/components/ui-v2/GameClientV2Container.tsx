@@ -990,6 +990,9 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
           let finalRoom = updates.room || prev.room;
 
           if (updates.room && prev.room) {
+            // CRITICAL FIX: Check if room ID changed - if so, don't preserve NPCs from old room
+            const roomIdChanged = updates.room.id !== prev.room.id;
+
             // Preserve occupant data if updates.room doesn't have populated occupant arrays
             // This handles room_update events that only update metadata
             // CRITICAL FIX: Check if arrays are populated, not just if they're defined
@@ -1008,36 +1011,43 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
 
             // Merge strategy:
             // 1. If updates has populated data, use it (from room_occupants - authoritative)
-            // 2. If updates has empty arrays but prev has populated data, preserve from prev
-            // 3. If updates has no data (undefined), preserve from prev
+            // 2. If room ID changed, use new room's data (even if empty) - don't preserve old room's NPCs
+            // 3. If updates has empty arrays but prev has populated data AND room ID didn't change, preserve from prev
+            // 4. If updates has no data (undefined), preserve from prev (only if same room)
             // CRITICAL FIX: Empty arrays [] are NOT undefined, so ?? operator won't work
             // We must explicitly check for populated arrays, not just existence
 
             // Calculate merged players array
             const mergedPlayers: string[] = updatesHasPopulatedPlayers
               ? (updates.room.players ?? [])
-              : prevHasPopulatedPlayers
-                ? (prev.room.players ?? [])
-                : (updates.room.players ?? prev.room.players ?? []);
+              : roomIdChanged
+                ? (updates.room.players ?? []) // Room changed - use new room's players (even if empty)
+                : prevHasPopulatedPlayers
+                  ? (prev.room.players ?? [])
+                  : (updates.room.players ?? prev.room.players ?? []);
 
             // Calculate merged NPCs array
             let mergedNpcs: string[];
             if (updatesHasPopulatedNpcs) {
               mergedNpcs = updates.room.npcs ?? []; // Updates has populated NPCs (from room_occupants) - use it
+            } else if (roomIdChanged) {
+              // CRITICAL FIX: Room ID changed - use new room's NPCs (even if empty), don't preserve old room's NPCs
+              mergedNpcs = updates.room.npcs ?? []; // New room's NPCs (empty array if not set yet)
             } else if (prevHasPopulatedNpcs) {
-              mergedNpcs = prev.room.npcs ?? []; // Updates has no NPCs but prev does - preserve prev
+              mergedNpcs = prev.room.npcs ?? []; // Updates has no NPCs but prev does - preserve prev (same room)
             } else {
-              // Neither has populated NPCs
+              // Neither has populated NPCs, and room ID didn't change
               // CRITICAL: If updates explicitly set npcs: [] (empty array from room_update)
-              // but prev has NPCs (from previous room_occupants), preserve prev
-              // Only use empty array if both are empty
+              // but prev has NPCs (from previous room_occupants), preserve prev ONLY if same room
+              // (roomIdChanged check above already handles room changes)
               if (
                 updates.room.npcs !== undefined &&
                 updates.room.npcs.length === 0 &&
                 prev.room.npcs &&
                 prev.room.npcs.length > 0
               ) {
-                mergedNpcs = prev.room.npcs; // room_update tried to clear NPCs, but prev has them - preserve prev
+                // room_update tried to clear NPCs, but prev has them - preserve prev (same room)
+                mergedNpcs = prev.room.npcs;
               } else {
                 mergedNpcs = updates.room.npcs ?? prev.room.npcs ?? []; // Default fallback
               }
