@@ -613,7 +613,41 @@ class RealTimeEventHandler:
             # Create real-time message with processed event
             message = self._create_player_left_message(processed_event, player_name)
 
-            # Unsubscribe player from the room
+            # CRITICAL FIX: Ensure player_id is always a string for proper comparison
+            exclude_player_id = str(processed_event.player_id) if processed_event.player_id else None
+            room_id_str = str(processed_event.room_id) if processed_event.room_id else None
+
+            # Check if this is a disconnect (not a movement)
+            # If the player is disconnecting, skip the "leaves the room" message since we already send "left the game"
+            try:
+                player_id_uuid = (
+                    uuid.UUID(processed_event.player_id)
+                    if isinstance(processed_event.player_id, str)
+                    else processed_event.player_id
+                )
+                is_disconnecting = player_id_uuid in self.connection_manager.disconnecting_players
+            except (ValueError, AttributeError):
+                is_disconnecting = False
+
+            self._logger.debug(
+                "Broadcasting player_left",
+                exclude_player=exclude_player_id,
+                room_id=room_id_str,
+                is_disconnecting=is_disconnecting,
+            )
+
+            # Broadcast to remaining room occupants (excluding the leaving player)
+            # SKIP the "leaves the room" message if player is disconnecting (they get "left the game" instead)
+            if room_id_str is not None and not is_disconnecting:
+                await self.connection_manager.broadcast_to_room(room_id_str, message, exclude_player=exclude_player_id)
+
+            # CRITICAL FIX: Send room occupants update BEFORE unsubscribing player
+            # This ensures the update can still query the leaving player from room tracking
+            # if needed, and correctly shows remaining players
+            if room_id_str is not None and exclude_player_id is not None:
+                await self._send_room_occupants_update(room_id_str, exclude_player=exclude_player_id)
+
+            # Unsubscribe player from the room AFTER sending occupants update
             # Convert string player_id to UUID for unsubscribe_from_room (which expects UUID)
             try:
                 player_id_uuid = (
@@ -626,24 +660,6 @@ class RealTimeEventHandler:
                 self._logger.warning(
                     "Failed to convert player_id to UUID for room unsubscription", player_id=processed_event.player_id
                 )
-
-            # CRITICAL FIX: Ensure player_id is always a string for proper comparison
-            exclude_player_id = str(processed_event.player_id) if processed_event.player_id else None
-            room_id_str = str(processed_event.room_id) if processed_event.room_id else None
-
-            self._logger.debug(
-                "Broadcasting player_left",
-                exclude_player=exclude_player_id,
-                room_id=room_id_str,
-            )
-
-            # Broadcast to remaining room occupants (excluding the leaving player)
-            if room_id_str is not None:
-                await self.connection_manager.broadcast_to_room(room_id_str, message, exclude_player=exclude_player_id)
-
-            # Send room occupants update to remaining players
-            if room_id_str is not None and exclude_player_id is not None:
-                await self._send_room_occupants_update(room_id_str, exclude_player=exclude_player_id)
 
             self._logger.info(
                 "Player left room with enhanced synchronization",

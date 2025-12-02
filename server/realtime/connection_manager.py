@@ -604,10 +604,6 @@ class ConnectionManager:
                             else:
                                 logger.debug("Disconnect already processed, skipping", player_id=player_id)
 
-                        # Track disconnect outside of disconnect_lock to avoid deadlock
-                        if should_track_disconnect:
-                            await self._track_player_disconnected(player_id)
-
                     # Unsubscribe from all rooms only if it's not a force disconnect and no other connections
                     # During reconnections, we want to preserve room membership
                     if not is_force_disconnect and not self.has_websocket_connection(player_id):
@@ -632,6 +628,11 @@ class ConnectionManager:
 
             except Exception as e:
                 logger.error("Error during WebSocket disconnect", player_id=player_id, error=str(e), exc_info=True)
+
+        # CRITICAL FIX: Track disconnect OUTSIDE of disconnect_lock to avoid deadlock
+        # This must be after the disconnect_lock context manager exits
+        if should_track_disconnect:
+            await self._track_player_disconnected(player_id)
 
     async def force_disconnect_player(self, player_id: uuid.UUID):
         """
@@ -2346,15 +2347,21 @@ class ConnectionManager:
                     online_players_str = {str(k): v for k, v in self.online_players.items()}
                     self.room_manager.reconcile_room_presence(room_id, online_players_str)
 
-                    # Add player to the Room object and trigger player_entered event
+                    # Add player to the Room object WITHOUT triggering player_entered event
+                    # On initial connection, we only send player_entered_game, not player_entered
+                    # player_entered events will be triggered when players move between rooms
                     if self.persistence:
                         room = self.persistence.get_room(room_id)
                         if room:
-                            # Call room.player_entered() to ensure proper event publishing
-                            room.player_entered(str(player_id))
-                            logger.info(
-                                "Player entered room via player_entered()", player_id=player_id, room_id=room_id
-                            )
+                            # Add player to room's internal set without triggering event (initial connection)
+                            player_id_str = str(player_id)
+                            if player_id_str not in room._players:
+                                room._players.add(player_id_str)
+                                logger.info(
+                                    "Player added to room on initial connection (no player_entered event)",
+                                    player_id=player_id,
+                                    room_id=room_id,
+                                )
                         else:
                             logger.warning(
                                 "Room not found when trying to add player", room_id=room_id, player_id=player_id
@@ -2429,6 +2436,35 @@ class ConnectionManager:
                             error=str(broadcast_error),
                         )
 
+                    # Send room_occupants update so other players see the new occupant in their list
+                    # Use the event handler's method to ensure consistent structured format
+                    try:
+                        event_handler = None
+                        if self.app and hasattr(self.app, "state"):
+                            event_handler = getattr(self.app.state, "event_handler", None)
+
+                        if event_handler and hasattr(event_handler, "_send_room_occupants_update"):
+                            logger.debug(
+                                "Sending room_occupants update after player_entered_game",
+                                player_id=player_id,
+                                room_id=room_id,
+                            )
+                            await event_handler._send_room_occupants_update(room_id, exclude_player=str(player_id))
+                        else:
+                            logger.warning(
+                                "Event handler not available to send room_occupants update",
+                                player_id=player_id,
+                                room_id=room_id,
+                                has_app=bool(self.app),
+                            )
+                    except Exception as occupants_error:
+                        logger.error(
+                            "Failed to send room_occupants update after player connection",
+                            player_id=player_id,
+                            room_id=room_id,
+                            error=str(occupants_error),
+                        )
+
                 logger.info("Player presence tracked as connected (new connection)", player_id=player_id)
             else:
                 logger.info(
@@ -2489,11 +2525,25 @@ class ConnectionManager:
                 )
                 return
 
-            # Prevent duplicate disconnect events for the same player using async lock
+            # Prevent duplicate disconnect events for the same player
+            # CRITICAL FIX: Check BEFORE acquiring lock to prevent race condition
+            # BUGFIX: If player is in disconnecting_players but has no connections, force clear the flag
+            # This handles the case where a previous disconnect attempt failed and left the player stuck
+            if player_id in self.disconnecting_players:
+                # Force clear the disconnecting flag since player has no active connections
+                logger.warning(
+                    "Player was stuck in disconnecting_players, force clearing to allow disconnect",
+                    player_id=player_id,
+                )
+                async with self.disconnect_lock:
+                    self.disconnecting_players.discard(player_id)
+
+            # Acquire lock and double-check (to handle race condition between check and lock acquisition)
             async with self.disconnect_lock:
                 if player_id in self.disconnecting_players:
                     logger.debug(
-                        "DEBUG: Player already being disconnected, skipping duplicate event", player_id=player_id
+                        "DEBUG: Player already being disconnected (post-lock check), skipping duplicate event",
+                        player_id=player_id,
                     )
                     return
 
@@ -2552,38 +2602,41 @@ class ConnectionManager:
                 if player_name:
                     keys_to_remove_str.add(player_name)
 
-            # Remove UUID keys from online_players
-            for key in list(keys_to_remove):
-                if key in self.online_players:
-                    del self.online_players[key]
-                self.room_manager.remove_player_from_all_rooms(str(key))
+            # CRITICAL: Call room.player_left() BEFORE removing from online_players
+            # This ensures the PlayerLeftRoom event is published, which triggers
+            # _handle_player_left() in event_handler, which sends structured room_occupants update
+            if room_id and self.persistence:
+                room = self.persistence.get_room(room_id)
+                if room:
+                    for key in list(keys_to_remove):
+                        player_id_str = str(key)
+                        has_player = room.has_player(player_id_str)
+                        if has_player:
+                            logger.debug(
+                                "Calling room.player_left() before disconnect cleanup", player=key, room_id=room_id
+                            )
+                            room.player_left(player_id_str)
+                            # CRITICAL FIX: Wait for PlayerLeftRoom event to be processed
+                            # The event is published synchronously but handled asynchronously
+                            # We need to yield control to allow the event handler to run
+                            import asyncio
 
-            # Remove string keys (for backward compatibility with room_manager)
-            for str_key in keys_to_remove_str:
-                self.room_manager.remove_player_from_all_rooms(str_key)
+                            await asyncio.sleep(0)  # Yield to event loop
+                        else:
+                            logger.warning(
+                                "Player not found in room when trying to call player_left()",
+                                player_id=key,
+                                room_id=room_id,
+                                player_id_str=player_id_str,
+                            )
 
-                # CRITICAL FIX: Also remove player from room's internal _players set
-                if room_id and self.persistence:
-                    room = self.persistence.get_room(room_id)
-                    if room and room.has_player(key):
-                        logger.debug("DEBUG: Removing ghost player from room", ghost_player=key, room_id=room_id)
-                        room.player_left(key)
-
-                # CRITICAL FIX: Clean up all ghost players from all rooms
-                self._cleanup_ghost_players()
-
-            # Clean up any remaining references
-            if player_id in self.online_players:
-                del self.online_players[player_id]
-            if player_id in self.last_seen:
-                del self.last_seen[player_id]
-            self.last_active_update_times.pop(player_id, None)
-            self.rate_limiter.remove_player_data(str(player_id))
-            self.message_queue.remove_player_messages(str(player_id))
-
-            # Notify current room that player left the game and refresh occupants
+            # Notify current room that player left the game
+            # NOTE: Do this BEFORE removing from online_players so the room_occupants
+            # update can still query the remaining online players correctly
+            # NOTE: room_occupants update will be sent by _handle_player_left() in event_handler
+            # when it receives the PlayerLeftRoom event from room.player_left()
             if room_id:
-                # 1) left-game notification
+                # Send left-game notification
                 from .envelope import build_event
 
                 # CRITICAL: NEVER use UUID as fallback - use placeholder if name not found
@@ -2594,23 +2647,32 @@ class ConnectionManager:
                     room_id=room_id,
                 )
                 # Exclude the disconnecting player from their own "left game" message
-                logger.info("DEBUG: Broadcasting player_left_game", player_id=player_id, room_id=room_id)
+                logger.info("Broadcasting player_left_game", player_id=player_id, room_id=room_id)
                 await self.broadcast_to_room(room_id, left_event, exclude_player=player_id)
 
-                # 2) occupants update (names only)
-                online_players_str = {str(k): v for k, v in self.online_players.items()}
-                occ_infos = self.room_manager.get_room_occupants(room_id, online_players_str)
-                names: list[str] = []
-                for occ in occ_infos:
-                    name = occ.get("player_name") if isinstance(occ, dict) else None
-                    if name:
-                        names.append(name)
-                occ_event = build_event(
-                    "room_occupants",
-                    {"occupants": names, "count": len(names)},
-                    room_id=room_id,
-                )
-                await self.broadcast_to_room(room_id, occ_event)
+            # CRITICAL: Remove player from online_players AFTER broadcasting disconnect events
+            # This ensures room_occupants updates can still query remaining players correctly
+            # Remove UUID keys from online_players
+            for key in list(keys_to_remove):
+                if key in self.online_players:
+                    del self.online_players[key]
+                self.room_manager.remove_player_from_all_rooms(str(key))
+
+            # Remove string keys (for backward compatibility with room_manager)
+            for str_key in keys_to_remove_str:
+                self.room_manager.remove_player_from_all_rooms(str_key)
+
+            # CRITICAL FIX: Clean up all ghost players from all rooms
+            self._cleanup_ghost_players()
+
+            # Clean up any remaining references
+            if player_id in self.online_players:
+                del self.online_players[player_id]
+            if player_id in self.last_seen:
+                del self.last_seen[player_id]
+            self.last_active_update_times.pop(player_id, None)
+            self.rate_limiter.remove_player_data(str(player_id))
+            self.message_queue.remove_player_messages(str(player_id))
 
             logger.info("Player presence tracked as disconnected", player_id=player_id)
 
@@ -2632,18 +2694,21 @@ class ConnectionManager:
             if not self.persistence or not hasattr(self.persistence, "_room_cache"):
                 return
 
-            # Get all online player IDs
-            online_player_ids = set(self.online_players.keys())
+            # Get all online player IDs (convert to strings for comparison with room._players)
+            # CRITICAL FIX: room._players uses string UUIDs, online_players.keys() uses UUID objects
+            # We must convert to the same type for set comparison to work correctly
+            online_player_ids = {str(pid) for pid in self.online_players.keys()}
 
             # Get all rooms from the room cache
             for _room_id, room in self.persistence._room_cache.items():
                 if not hasattr(room, "_players"):
                     continue
 
-                # Get players in this room
+                # Get players in this room (already strings)
                 room_player_ids = set(room._players)
 
                 # Find ghost players (players in room but not online)
+                # Both sets are now strings, so comparison will work correctly
                 ghost_players = room_player_ids - online_player_ids
 
                 if ghost_players:

@@ -283,6 +283,37 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
         };
 
         switch (eventType) {
+          case 'player_entered_game': {
+            // Handle player_entered_game events - initial connection messages
+            const playerName = event.data?.player_name as string | undefined;
+            if (playerName && typeof playerName === 'string' && playerName.trim()) {
+              appendMessage({
+                text: `${playerName} has entered the game.`,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: 'system',
+                channel: 'game',
+                type: 'system',
+              });
+            }
+            break;
+          }
+          case 'player_entered': {
+            // Handle player_entered events - movement messages
+            const playerName = event.data?.player_name as string;
+            const messageText = event.data?.message as string;
+            if (messageText && playerName) {
+              appendMessage({
+                text: messageText,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: 'system',
+                channel: 'game',
+                type: 'system',
+              });
+            }
+            break;
+          }
           case 'game_state': {
             const playerData = event.data.player as Player;
             const roomData = event.data.room as Room;
@@ -479,6 +510,36 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                 isHtml,
                 messageType: 'system',
                 channel: gameLogChannel,
+                type: 'system',
+              });
+            }
+            break;
+          }
+          case 'player_left_game': {
+            // Handle player_left_game events - disconnection messages
+            const playerName = event.data?.player_name as string;
+            if (playerName) {
+              appendMessage({
+                text: `${playerName} has left the game.`,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: 'system',
+                channel: 'game',
+                type: 'system',
+              });
+            }
+            break;
+          }
+          case 'player_left': {
+            // Handle player_left events - movement messages
+            const messageText = event.data?.message as string;
+            if (messageText) {
+              appendMessage({
+                text: messageText,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: 'system',
+                channel: 'game',
                 type: 'system',
               });
             }
