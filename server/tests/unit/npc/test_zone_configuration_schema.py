@@ -344,7 +344,7 @@ class TestZoneConfigurationDataLoading:
 
             # Verify special_rules fields are accessible
             assert "npc_spawn_modifier" in zone_config.special_rules or zone_config.npc_spawn_modifier is not None
-            assert "lucidity_drain_rate" in zone_config.special_rules or zone_config.lucidity_drain_rate is not None
+            assert "Lucidity_drain_rate" in zone_config.special_rules or zone_config.Lucidity_drain_rate is not None
 
         finally:
             await conn.close()
@@ -416,7 +416,7 @@ class TestZoneConfigurationDataLoading:
             # Verify special_rules fields are accessible
             assert "npc_spawn_modifier" in subzone_config.special_rules or subzone_config.npc_spawn_modifier is not None
             assert (
-                "lucidity_drain_rate" in subzone_config.special_rules or subzone_config.lucidity_drain_rate is not None
+                "Lucidity_drain_rate" in subzone_config.special_rules or subzone_config.Lucidity_drain_rate is not None
             )
 
         finally:

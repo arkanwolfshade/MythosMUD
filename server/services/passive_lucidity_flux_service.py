@@ -13,10 +13,10 @@ from typing import Any, cast
 from sqlalchemy import Select, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..async_persistence import AsyncPersistenceLayer
 from ..logging.enhanced_logging_config import get_logger
 from ..models.lucidity import PlayerLucidity
 from ..models.player import Player
+from ..persistence import PersistenceLayer
 from ..services.lucidity_service import CatatoniaObserverProtocol, LucidityService, LucidityUpdateResult
 
 try:
@@ -25,14 +25,6 @@ except ImportError:  # pragma: no cover - monitoring is optional in some test ha
     PerformanceMonitor = None  # type: ignore[assignment, misc]
 
 logger = get_logger(__name__)
-
-
-@dataclass
-class CachedRoom:
-    """Cached room entry with timestamp for TTL management."""
-
-    room: Any
-    timestamp: float
 
 
 @dataclass(frozen=True)
@@ -85,7 +77,7 @@ class PassiveLucidityFluxService:
 
     def __init__(
         self,
-        persistence: AsyncPersistenceLayer | None = None,
+        persistence: PersistenceLayer | None = None,
         performance_monitor: PerformanceMonitor | None = None,
         *,
         environment_config: dict[str, Any] | None = None,
@@ -112,16 +104,10 @@ class PassiveLucidityFluxService:
         self._residuals: dict[str, float] = {}
         self._player_room_tracker: dict[str, dict[str, Any]] = {}
 
-        # Room cache with TTL to prevent repeated database lookups
-        # AI Agent: Prevents event loop blocking by caching rooms across ticks
-        self._room_cache: dict[str, CachedRoom] = {}
-        self._room_cache_ttl: float = 60.0  # 60 second TTL (rooms rarely change)
-
         logger.info(
             "PassiveLucidityFluxService initialized",
             ticks_per_minute=self._ticks_per_minute,
             adaptive_window_minutes=self._adaptive_window,
-            room_cache_ttl=self._room_cache_ttl,
         )
 
     async def process_tick(
@@ -151,19 +137,21 @@ class PassiveLucidityFluxService:
             lucidity_records = await self._load_lucidity_records(session)
 
             # Cache rooms for all players to avoid repeated lookups
-            # CRITICAL FIX: Use _get_room_cached() which implements TTL caching
-            # and async_get_room() to prevent event loop blocking.
-            # Previously used sync get_room() which blocked the entire event loop,
-            # causing 17-second delays (1,639% overhead).
+            # This eliminates synchronous blocking operations in the player loop
             room_cache: dict[str, Any] = {}
             if self._persistence is not None:
                 unique_room_ids = {cast(str, player.current_room_id) for player in players}
                 for room_id in unique_room_ids:
-                    # Use cached method which checks TTL cache first,
-                    # then fetches asynchronously if needed
-                    room = await self._get_room_cached(room_id)
-                    if room is not None:
-                        room_cache[room_id] = room
+                    try:
+                        room = self._persistence.get_room(room_id)
+                        if room is not None:
+                            room_cache[room_id] = room
+                    except Exception as exc:  # pragma: no cover - defensive logging
+                        logger.warning(
+                            "Failed to cache room for passive flux",
+                            room_id=room_id,
+                            error=str(exc),
+                        )
 
             for player in players:
                 # Convert player.player_id to UUID for apply_lucidity_adjustment
@@ -252,60 +240,7 @@ class PassiveLucidityFluxService:
     def _should_process_tick(self, tick_count: int) -> bool:
         return self._ticks_per_minute <= 1 or tick_count % self._ticks_per_minute == 0
 
-    async def _get_room_cached(self, room_id: str) -> Any | None:
-        """
-        Get room from cache or fetch from database with TTL management.
-
-        CRITICAL FIX: Prevents event loop blocking by caching room lookups
-        across multiple ticks. Uses async_get_room() to prevent blocking.
-
-        Args:
-            room_id: The room ID to retrieve
-
-        Returns:
-            Room object or None if not found
-
-        AI Agent: This method implements caching with TTL to prevent repeated
-                  database lookups that were causing 17-second delays.
-        """
-        current_time = time.time()
-
-        # Check if room is in cache and not expired
-        if room_id in self._room_cache:
-            cached_entry = self._room_cache[room_id]
-            if current_time - cached_entry.timestamp < self._room_cache_ttl:
-                # Cache hit - return cached room
-                return cached_entry.room
-
-        # Cache miss or expired - fetch from database
-        if self._persistence is not None:
-            try:
-                room = self._persistence.get_room_by_id(room_id)
-                if room is not None:
-                    # Update cache
-                    self._room_cache[room_id] = CachedRoom(room=room, timestamp=current_time)
-                return room
-            except Exception as exc:  # pragma: no cover - defensive logging
-                logger.warning(
-                    "Failed to fetch room for caching",
-                    room_id=room_id,
-                    error=str(exc),
-                )
-                return None
-        return None
-
     async def _load_players(self, session: AsyncSession) -> Sequence[Player]:
-        """
-        Load players from database.
-
-        PERFORMANCE FIX: Should filter to active players to reduce unnecessary processing.
-        For now, loads all players and filtering is done by _filter_active_players().
-
-        Returns:
-            Sequence of all Player objects (filtered downstream)
-
-        AI Agent: Consider adding WHERE clause to filter at database level for better performance.
-        """
         stmt: Select[tuple[Player]] = select(Player)
         result = await session.execute(stmt)
         return result.scalars().all()
@@ -435,7 +370,7 @@ class PassiveLucidityFluxService:
         room = None
         if self._persistence is not None:
             try:
-                room = self._persistence.get_room_by_id(str(player.current_room_id))
+                room = self._persistence.get_room(str(player.current_room_id))
             except Exception as exc:  # pragma: no cover - defensive logging
                 logger.warning(
                     "Failed to resolve room for passive flux",

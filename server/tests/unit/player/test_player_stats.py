@@ -25,7 +25,7 @@ class Player:
         }
         self.status_effects = []
 
-    def apply_lucidity_loss(self, amount, source=None):
+    def apply_Lucidity_loss(self, amount, source=None):
         self.stats["lucidity"] = max(0, self.stats["lucidity"] - amount)
         self.status_effects.append({"effect_type": "Lucidity_loss", "intensity": amount, "source": source})
 
@@ -39,7 +39,7 @@ class Player:
 
     def gain_occult_knowledge(self, amount, source=None):
         self.stats["occult_knowledge"] += amount
-        self.apply_lucidity_loss(amount, source)
+        self.apply_Lucidity_loss(amount, source)
 
     def take_damage(self, amount, damage_type=None):
         self.stats["current_health"] = max(0, self.stats["current_health"] - amount)
@@ -61,8 +61,8 @@ def test_player_creation(player):
     assert player.stats["current_health"] == player.stats["max_health"]
 
 
-def test_lucidity_loss(player):
-    player.apply_lucidity_loss(25, source="test")
+def test_Lucidity_loss(player):
+    player.apply_Lucidity_loss(25, source="test")
     assert player.stats["lucidity"] == 75
     assert any(e["effect_type"] == "Lucidity_loss" for e in player.status_effects)
 
@@ -106,6 +106,6 @@ def test_server_connection():
 def test_player_stats_mocking():
     # Example of using patch to mock a method
     player = Player(name="MockedPlayer")
-    with patch.object(player, "apply_lucidity_loss", return_value=None) as mock_method:
-        player.apply_lucidity_loss(10)
+    with patch.object(player, "apply_Lucidity_loss", return_value=None) as mock_method:
+        player.apply_Lucidity_loss(10)
         mock_method.assert_called_once_with(10)

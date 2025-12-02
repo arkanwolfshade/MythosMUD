@@ -56,7 +56,7 @@ async def create_player(session: AsyncSession, *, room_id: str, lucidity: int = 
     session.add(
         PlayerLucidity(
             player_id=player_id,
-            current_lcd=lucidity,
+            current_LCD=lucidity,
             current_tier=tier,
         )
     )
@@ -91,7 +91,7 @@ async def test_encounter_loss_first_and_repeat(session_factory):
 
         refreshed = await session.get(PlayerLucidity, player.player_id)
         assert refreshed is not None
-        assert refreshed.current_lcd == 92
+        assert refreshed.current_LCD == 92
 
 
 @pytest.mark.asyncio
@@ -118,7 +118,7 @@ async def test_encounter_acclimation_reduces_loss(session_factory):
 
         refreshed = await session.get(PlayerLucidity, player.player_id)
         assert refreshed is not None
-        assert refreshed.current_lcd == 100 + sum(deltas)
+        assert refreshed.current_LCD == 100 + sum(deltas)
 
 
 @pytest.mark.asyncio
@@ -150,7 +150,7 @@ async def test_recovery_action_pray_sets_cooldown(session_factory):
 
         refreshed = await session.get(PlayerLucidity, player.player_id)
         assert refreshed is not None
-        assert refreshed.current_lcd == 48
+        assert refreshed.current_LCD == 48
 
 
 @pytest.mark.asyncio

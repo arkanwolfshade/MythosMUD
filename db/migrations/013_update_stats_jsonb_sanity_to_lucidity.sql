@@ -2,10 +2,6 @@
 -- Date: 2025-12-02
 -- Description: Update the DEFAULT value and existing player records to use "lucidity" instead of "sanity"
 -- Companion to migration 012 which renamed tables/columns/constraints
--- nosemgrep
--- NOPMD
--- Note: This migration targets standard game tables (players), not RAC_* tables.
--- The Codacy RAC_* rule does not apply to this project's database schema.
 
 BEGIN;
 
@@ -22,15 +18,11 @@ ALTER TABLE players ALTER COLUMN stats SET DEFAULT
 -- ============================================================================
 
 -- Update all player records to rename "sanity" → "lucidity" in stats JSONB
--- nosemgrep
--- NOPMD
 UPDATE players
 SET stats = stats - 'sanity' || jsonb_build_object('lucidity', COALESCE((stats->>'sanity')::integer, 100))
 WHERE stats ? 'sanity';
 
 -- Update all player records to rename "max_sanity" → "max_lucidity" in stats JSONB
--- nosemgrep
--- NOPMD
 UPDATE players
 SET stats = stats - 'max_sanity' || jsonb_build_object('max_lucidity', COALESCE((stats->>'max_sanity')::integer, 100))
 WHERE stats ? 'max_sanity';

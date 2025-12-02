@@ -1,4 +1,4 @@
-# =ï¿½ï¿½ï¿½ MythosMUD Gï¿½ï¿½ AI Agent Development Guide
+# =ƒñû MythosMUD GÇô AI Agent Development Guide
 
 *"In the vast archives of Miskatonic University, even the most advanced artificial intelligences must learn to navigate the forbidden knowledge with care and precision."*
 
@@ -6,7 +6,7 @@ This guide is specifically crafted for AI agents (Claude Code, Cursor, GitHub Co
 
 ---
 
-## =ï¿½Ä» AI Agent Context & Personality
+## =ƒÄ» AI Agent Context & Personality
 
 ### **Project Character**
 
@@ -18,27 +18,7 @@ This guide is specifically crafted for AI agents (Claude Code, Cursor, GitHub Co
 
 ---
 
-## ðŸ—ï¸ CRITICAL ARCHITECTURE UPDATES (December 2025)
-
-### **ConnectionManager Modular Refactoring**
-
-The real-time ConnectionManager has been refactored from a 3,653-line monolithic module into a modular architecture:
-
-- **Current Structure**: 7 specialized component groups (monitoring, errors, maintenance, messaging, integration)
-- **Benefits**: Improved testability, maintainability, and code organization
-- **Facade Pattern**: ConnectionManager coordinates components while maintaining core WebSocket responsibilities
-- **Documentation**: See `docs/CONNECTION_MANAGER_ARCHITECTURE.md` for complete details
-- **Refactoring Summary**: See `REFACTORING_SUMMARY.md` for metrics and lessons learned
-
-**When working on real-time features**:
-- Understand the modular component structure before making changes
-- Each component has a focused responsibility (single responsibility principle)
-- Use dependency injection for all component interactions
-- Maintain test coverage when modifying components
-
----
-
-## =ï¿½ï¿½ï¿½ CRITICAL SECURITY & PRIVACY REQUIREMENTS
+## =ƒöÆ CRITICAL SECURITY & PRIVACY REQUIREMENTS
 
 ### **Security-First Mindset**
 
@@ -138,7 +118,7 @@ When generating code, AI agents MUST ensure:
 
 ---
 
-## =ï¿½ï¿½ï¿½ Essential Reading for AI Agents
+## =ƒôï Essential Reading for AI Agents
 
 ### **Start Every Session With:**
 
@@ -158,299 +138,299 @@ When generating code, AI agents MUST ensure:
 
 ---
 
-## =ï¿½ï¿½ï¿½n+ï¿½ Project Architecture for AI Understanding
+## =ƒÅùn+Å Project Architecture for AI Understanding
 
 ### **Backend (Python/FastAPI)**
 
 ```
 server/
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ main.py                    # FastAPI app entry point
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ models.py                  # Pydantic data models
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ persistence.py             # Database abstraction (PersistenceLayer)
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ database.py                # Database connection management
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ config_loader.py           # Configuration management
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ logging_config.py          # Structured logging setup
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ security_utils.py          # Path validation & security
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ auth_utils.py              # JWT & password utilities
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ world_loader.py            # Room/world data loading
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ server_config.yaml         # Server configuration
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ env.example                # Environment variables template
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ pytest.ini                # Test configuration
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ pyproject.toml            # Python dependencies
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ uv.lock                   # Dependency lock file
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ auth/                      # Authentication system
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ __init__.py
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ endpoints.py           # Auth API endpoints
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ users.py               # User management
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ invites.py             # Invite system
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ argon2_utils.py        # Argon2 password hashing
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ email_utils.py         # Email utilities
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ dependencies.py        # Auth dependencies
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ api/                       # API endpoints
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ __init__.py
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ base.py                # Base API configuration
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ game.py                # Game API endpoints
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ players.py             # Player management API
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ rooms.py               # Room API endpoints
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ real_time.py           # Real-time API
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ monitoring.py          # System monitoring API
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ game/                      # Game logic services
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ __init__.py
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ chat_service.py        # Chat system (NATS-based)
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ movement_service.py    # Player movement logic
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ movement_monitor.py    # Movement monitoring
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ room_service.py        # Room management
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ player_service.py      # Player state management
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ stats_generator.py     # Character stats generation
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ emote_service.py       # Emote system
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ mechanics.py           # Game mechanics
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ realtime/                  # Real-time communication
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ __init__.py
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ connection_manager.py  # WebSocket connection management
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ websocket_handler.py   # WebSocket message handling
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ sse_handler.py         # Server-Sent Events
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ event_handler.py       # Event processing
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ nats_message_handler.py # NATS message handling
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ request_context.py     # Request context for WebSocket
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ envelope.py            # Message envelope utilities
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ commands/                  # Command processing
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ __init__.py
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ admin_commands.py      # Admin commands
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ alias_commands.py      # Alias system commands
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ chat_commands.py       # Chat commands
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ help_commands.py       # Help system
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ movement_commands.py   # Movement commands
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ stats_commands.py      # Stats commands
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ models/                    # Data models
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ __init__.py
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ player.py              # Player model
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ room.py                # Room model
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ command.py             # Command model
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ chat.py                # Chat model
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ alias.py               # Alias model
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ invite.py              # Invite model
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ user.py                # User model
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ services/                  # Business logic services
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ __init__.py
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ nats_service.py        # NATS messaging service
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ chat_logger.py         # Chat logging service
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ monitoring_service.py  # System monitoring
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ utils/                     # Utility modules
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ __init__.py
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ command_parser.py      # Command parsing utilities
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ command_processor.py   # Command processing utilities
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ validators/                # Input validation
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ __init__.py
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ command_validator.py   # Command validation
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ security_validator.py  # Security validation
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ middleware/                # Request middleware
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ __init__.py
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ request_logging.py     # Request logging middleware
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ schemas/                   # JSON schemas
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ __init__.py
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ player.py              # Player schemas
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ invite.py              # Invite schemas
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ sql/                       # Database schema
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ schema.sql             # SQLite schema definition
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ help/                      # Help system
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ __init__.py
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ help_content.py        # Help content and documentation
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ events/                    # Event system
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ __init__.py
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ event_bus.py           # Event bus implementation
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ event_types.py         # Event type definitions
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ app/                       # Application factory
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ __init__.py
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ factory.py             # FastAPI app factory
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ lifespan.py            # Application lifecycle
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ logs/                      # Log files directory
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ data/                      # Data files
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ tests/                     # Test suite
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ __init__.py
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ conftest.py            # Test configuration
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ data/                  # Test data
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ players/           # Test player database
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ [test_*.py]            # Test modules
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ command_handler.py         # Legacy command handler (maintained)
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ command_handler_v2.py      # Enhanced command handler
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ command_handler_new.py     # New command handler
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ command_handler_unified.py # Unified command handler
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ alias_storage.py           # Alias storage system
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ error_handlers.py          # Error handling
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ error_types.py             # Error type definitions
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ exceptions.py              # Custom exceptions
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ real_time.py               # Real-time utilities
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ check_invites.py           # Invite validation
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ check_routes.py            # Route validation
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ test_integration.py        # Integration testing
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ metadata.py                # Package metadata
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ player_manager.py          # Player manager (legacy)
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ TEST_PROD_SEPARATION.md    # Test/prod separation guide
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ README.md                  # Server documentation
+Gö£GöÇGöÇ main.py                    # FastAPI app entry point
+Gö£GöÇGöÇ models.py                  # Pydantic data models
+Gö£GöÇGöÇ persistence.py             # Database abstraction (PersistenceLayer)
+Gö£GöÇGöÇ database.py                # Database connection management
+Gö£GöÇGöÇ config_loader.py           # Configuration management
+Gö£GöÇGöÇ logging_config.py          # Structured logging setup
+Gö£GöÇGöÇ security_utils.py          # Path validation & security
+Gö£GöÇGöÇ auth_utils.py              # JWT & password utilities
+Gö£GöÇGöÇ world_loader.py            # Room/world data loading
+Gö£GöÇGöÇ server_config.yaml         # Server configuration
+Gö£GöÇGöÇ env.example                # Environment variables template
+Gö£GöÇGöÇ pytest.ini                # Test configuration
+Gö£GöÇGöÇ pyproject.toml            # Python dependencies
+Gö£GöÇGöÇ uv.lock                   # Dependency lock file
+Göé
+Gö£GöÇGöÇ auth/                      # Authentication system
+Göé   Gö£GöÇGöÇ __init__.py
+Göé   Gö£GöÇGöÇ endpoints.py           # Auth API endpoints
+Göé   Gö£GöÇGöÇ users.py               # User management
+Göé   Gö£GöÇGöÇ invites.py             # Invite system
+Göé   Gö£GöÇGöÇ argon2_utils.py        # Argon2 password hashing
+Göé   Gö£GöÇGöÇ email_utils.py         # Email utilities
+Göé   GööGöÇGöÇ dependencies.py        # Auth dependencies
+Göé
+Gö£GöÇGöÇ api/                       # API endpoints
+Göé   Gö£GöÇGöÇ __init__.py
+Göé   Gö£GöÇGöÇ base.py                # Base API configuration
+Göé   Gö£GöÇGöÇ game.py                # Game API endpoints
+Göé   Gö£GöÇGöÇ players.py             # Player management API
+Göé   Gö£GöÇGöÇ rooms.py               # Room API endpoints
+Göé   Gö£GöÇGöÇ real_time.py           # Real-time API
+Göé   GööGöÇGöÇ monitoring.py          # System monitoring API
+Göé
+Gö£GöÇGöÇ game/                      # Game logic services
+Göé   Gö£GöÇGöÇ __init__.py
+Göé   Gö£GöÇGöÇ chat_service.py        # Chat system (NATS-based)
+Göé   Gö£GöÇGöÇ movement_service.py    # Player movement logic
+Göé   Gö£GöÇGöÇ movement_monitor.py    # Movement monitoring
+Göé   Gö£GöÇGöÇ room_service.py        # Room management
+Göé   Gö£GöÇGöÇ player_service.py      # Player state management
+Göé   Gö£GöÇGöÇ stats_generator.py     # Character stats generation
+Göé   Gö£GöÇGöÇ emote_service.py       # Emote system
+Göé   GööGöÇGöÇ mechanics.py           # Game mechanics
+Göé
+Gö£GöÇGöÇ realtime/                  # Real-time communication
+Göé   Gö£GöÇGöÇ __init__.py
+Göé   Gö£GöÇGöÇ connection_manager.py  # WebSocket connection management
+Göé   Gö£GöÇGöÇ websocket_handler.py   # WebSocket message handling
+Göé   Gö£GöÇGöÇ sse_handler.py         # Server-Sent Events
+Göé   Gö£GöÇGöÇ event_handler.py       # Event processing
+Göé   Gö£GöÇGöÇ nats_message_handler.py # NATS message handling
+Göé   Gö£GöÇGöÇ request_context.py     # Request context for WebSocket
+Göé   GööGöÇGöÇ envelope.py            # Message envelope utilities
+Göé
+Gö£GöÇGöÇ commands/                  # Command processing
+Göé   Gö£GöÇGöÇ __init__.py
+Göé   Gö£GöÇGöÇ admin_commands.py      # Admin commands
+Göé   Gö£GöÇGöÇ alias_commands.py      # Alias system commands
+Göé   Gö£GöÇGöÇ chat_commands.py       # Chat commands
+Göé   Gö£GöÇGöÇ help_commands.py       # Help system
+Göé   Gö£GöÇGöÇ movement_commands.py   # Movement commands
+Göé   GööGöÇGöÇ stats_commands.py      # Stats commands
+Göé
+Gö£GöÇGöÇ models/                    # Data models
+Göé   Gö£GöÇGöÇ __init__.py
+Göé   Gö£GöÇGöÇ player.py              # Player model
+Göé   Gö£GöÇGöÇ room.py                # Room model
+Göé   Gö£GöÇGöÇ command.py             # Command model
+Göé   Gö£GöÇGöÇ chat.py                # Chat model
+Göé   Gö£GöÇGöÇ alias.py               # Alias model
+Göé   Gö£GöÇGöÇ invite.py              # Invite model
+Göé   GööGöÇGöÇ user.py                # User model
+Göé
+Gö£GöÇGöÇ services/                  # Business logic services
+Göé   Gö£GöÇGöÇ __init__.py
+Göé   Gö£GöÇGöÇ nats_service.py        # NATS messaging service
+Göé   Gö£GöÇGöÇ chat_logger.py         # Chat logging service
+Göé   GööGöÇGöÇ monitoring_service.py  # System monitoring
+Göé
+Gö£GöÇGöÇ utils/                     # Utility modules
+Göé   Gö£GöÇGöÇ __init__.py
+Göé   Gö£GöÇGöÇ command_parser.py      # Command parsing utilities
+Göé   GööGöÇGöÇ command_processor.py   # Command processing utilities
+Göé
+Gö£GöÇGöÇ validators/                # Input validation
+Göé   Gö£GöÇGöÇ __init__.py
+Göé   Gö£GöÇGöÇ command_validator.py   # Command validation
+Göé   GööGöÇGöÇ security_validator.py  # Security validation
+Göé
+Gö£GöÇGöÇ middleware/                # Request middleware
+Göé   Gö£GöÇGöÇ __init__.py
+Göé   GööGöÇGöÇ request_logging.py     # Request logging middleware
+Göé
+Gö£GöÇGöÇ schemas/                   # JSON schemas
+Göé   Gö£GöÇGöÇ __init__.py
+Göé   Gö£GöÇGöÇ player.py              # Player schemas
+Göé   GööGöÇGöÇ invite.py              # Invite schemas
+Göé
+Gö£GöÇGöÇ sql/                       # Database schema
+Göé   GööGöÇGöÇ schema.sql             # SQLite schema definition
+Göé
+Gö£GöÇGöÇ help/                      # Help system
+Göé   Gö£GöÇGöÇ __init__.py
+Göé   GööGöÇGöÇ help_content.py        # Help content and documentation
+Göé
+Gö£GöÇGöÇ events/                    # Event system
+Göé   Gö£GöÇGöÇ __init__.py
+Göé   Gö£GöÇGöÇ event_bus.py           # Event bus implementation
+Göé   GööGöÇGöÇ event_types.py         # Event type definitions
+Göé
+Gö£GöÇGöÇ app/                       # Application factory
+Göé   Gö£GöÇGöÇ __init__.py
+Göé   Gö£GöÇGöÇ factory.py             # FastAPI app factory
+Göé   GööGöÇGöÇ lifespan.py            # Application lifecycle
+Göé
+Gö£GöÇGöÇ logs/                      # Log files directory
+Gö£GöÇGöÇ data/                      # Data files
+Göé
+Gö£GöÇGöÇ tests/                     # Test suite
+Göé   Gö£GöÇGöÇ __init__.py
+Göé   Gö£GöÇGöÇ conftest.py            # Test configuration
+Göé   Gö£GöÇGöÇ data/                  # Test data
+Göé   Göé   GööGöÇGöÇ players/           # Test player database
+Göé   GööGöÇGöÇ [test_*.py]            # Test modules
+Göé
+Gö£GöÇGöÇ command_handler.py         # Legacy command handler (maintained)
+Gö£GöÇGöÇ command_handler_v2.py      # Enhanced command handler
+Gö£GöÇGöÇ command_handler_new.py     # New command handler
+Gö£GöÇGöÇ command_handler_unified.py # Unified command handler
+Gö£GöÇGöÇ alias_storage.py           # Alias storage system
+Gö£GöÇGöÇ error_handlers.py          # Error handling
+Gö£GöÇGöÇ error_types.py             # Error type definitions
+Gö£GöÇGöÇ exceptions.py              # Custom exceptions
+Gö£GöÇGöÇ real_time.py               # Real-time utilities
+Gö£GöÇGöÇ check_invites.py           # Invite validation
+Gö£GöÇGöÇ check_routes.py            # Route validation
+Gö£GöÇGöÇ test_integration.py        # Integration testing
+Gö£GöÇGöÇ metadata.py                # Package metadata
+Gö£GöÇGöÇ player_manager.py          # Player manager (legacy)
+Gö£GöÇGöÇ TEST_PROD_SEPARATION.md    # Test/prod separation guide
+GööGöÇGöÇ README.md                  # Server documentation
 ```
 
 ### **Frontend (React/TypeScript)**
 
 ```
 client/
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ src/
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ App.tsx                # Main React component
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ main.tsx               # React entry point
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ index.css              # Global styles
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ App.css                # App-specific styles
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ vite-env.d.ts          # Vite type definitions
-Gï¿½ï¿½   Gï¿½ï¿½
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ components/            # React components
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ GameTerminal.tsx   # Main game terminal
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ GameTerminal.css   # Terminal styles
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ GameTerminalWithPanels.tsx # Terminal with panels
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ GameTerminalWithPanels.css # Panel styles
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ DraggablePanel.tsx # Draggable panel component
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ PanelManager.tsx   # Panel management
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ StatsRollingScreen.tsx # Character creation screen
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ StatsRollingScreen.css # Stats screen styles
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ RoomInfoPanel.tsx  # Room information display
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ RoomInfoPanel.css  # Room panel styles
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ MotdContent.tsx    # Message of the day
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ CommandHelpDrawer.tsx # Help system
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ TailwindTest.tsx   # TailwindCSS test component
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ EldritchEffectsDemo.tsx # Visual effects demo
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ panels/            # Panel components
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ ChatPanel.tsx  # Chat interface
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ CommandPanel.tsx # Command input
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ ConnectionPanel.tsx # Connection status
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ PlayerPanel.tsx # Player information
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ RoomPanel.tsx  # Room information
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ ui/                # UI components
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ MythosPanel.tsx # Mythos-themed panel
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ MythosPanel.test.tsx # Panel tests
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ EldritchIcon.tsx # Mythos icons
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ [other UI components]
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ [test components]  # Test components
-Gï¿½ï¿½   Gï¿½ï¿½
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ hooks/                 # React hooks
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ useGameConnection.ts # Game connection hook
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ useGameConnection.test.ts # Connection hook tests
-Gï¿½ï¿½   Gï¿½ï¿½
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ utils/                 # Utility functions
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ ansiToHtml.ts      # ANSI to HTML conversion
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ ansiToHtml.test.ts # Conversion tests
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ errorHandler.ts    # Error handling utilities
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ errorHandler.test.ts # Error handler tests
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ logger.ts          # Client-side logging
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ [other utilities]
-Gï¿½ï¿½   Gï¿½ï¿½
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ theme/                 # Theming system
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ mythosTheme.ts     # Mythos theme configuration
-Gï¿½ï¿½   Gï¿½ï¿½
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ styles/                # Style files
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ motd-preserved.css # MOTD preservation styles
-Gï¿½ï¿½   Gï¿½ï¿½
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ test/                  # Test utilities
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ setup.ts           # Test setup configuration
-Gï¿½ï¿½   Gï¿½ï¿½
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ assets/                # Static assets
-Gï¿½ï¿½       Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ react.svg          # React logo
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ public/                    # Public assets
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ vite.svg               # Vite logo
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ tests/                     # End-to-end tests
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ help-command.spec.ts   # Help command tests
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ occupants-initial.spec.ts # Initial occupant tests
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ occupants-two-client.spec.ts # Multi-client tests
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ package.json               # Dependencies and scripts
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ package-lock.json          # Dependency lock file
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ tsconfig.json              # TypeScript configuration
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ tsconfig.app.json          # App-specific TS config
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ tsconfig.node.json         # Node-specific TS config
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ vite.config.ts             # Vite build configuration
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ vite.config.d.ts           # Vite type definitions
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ vitest.config.ts           # Vitest test configuration
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ tailwind.config.js         # TailwindCSS configuration
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ postcss.config.js          # PostCSS configuration
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ eslint.config.js           # ESLint configuration
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ playwright.config.ts       # Playwright test configuration
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ test-results/              # Test results directory
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ playwright-report/         # Playwright reports
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ tsconfig.tsbuildinfo       # TypeScript build info
+Gö£GöÇGöÇ src/
+Göé   Gö£GöÇGöÇ App.tsx                # Main React component
+Göé   Gö£GöÇGöÇ main.tsx               # React entry point
+Göé   Gö£GöÇGöÇ index.css              # Global styles
+Göé   Gö£GöÇGöÇ App.css                # App-specific styles
+Göé   Gö£GöÇGöÇ vite-env.d.ts          # Vite type definitions
+Göé   Göé
+Göé   Gö£GöÇGöÇ components/            # React components
+Göé   Göé   Gö£GöÇGöÇ GameTerminal.tsx   # Main game terminal
+Göé   Göé   Gö£GöÇGöÇ GameTerminal.css   # Terminal styles
+Göé   Göé   Gö£GöÇGöÇ GameTerminalWithPanels.tsx # Terminal with panels
+Göé   Göé   Gö£GöÇGöÇ GameTerminalWithPanels.css # Panel styles
+Göé   Göé   Gö£GöÇGöÇ DraggablePanel.tsx # Draggable panel component
+Göé   Göé   Gö£GöÇGöÇ PanelManager.tsx   # Panel management
+Göé   Göé   Gö£GöÇGöÇ StatsRollingScreen.tsx # Character creation screen
+Göé   Göé   Gö£GöÇGöÇ StatsRollingScreen.css # Stats screen styles
+Göé   Göé   Gö£GöÇGöÇ RoomInfoPanel.tsx  # Room information display
+Göé   Göé   Gö£GöÇGöÇ RoomInfoPanel.css  # Room panel styles
+Göé   Göé   Gö£GöÇGöÇ MotdContent.tsx    # Message of the day
+Göé   Göé   Gö£GöÇGöÇ CommandHelpDrawer.tsx # Help system
+Göé   Göé   Gö£GöÇGöÇ TailwindTest.tsx   # TailwindCSS test component
+Göé   Göé   Gö£GöÇGöÇ EldritchEffectsDemo.tsx # Visual effects demo
+Göé   Göé   Göé
+Göé   Göé   Gö£GöÇGöÇ panels/            # Panel components
+Göé   Göé   Göé   Gö£GöÇGöÇ ChatPanel.tsx  # Chat interface
+Göé   Göé   Göé   Gö£GöÇGöÇ CommandPanel.tsx # Command input
+Göé   Göé   Göé   Gö£GöÇGöÇ ConnectionPanel.tsx # Connection status
+Göé   Göé   Göé   Gö£GöÇGöÇ PlayerPanel.tsx # Player information
+Göé   Göé   Göé   GööGöÇGöÇ RoomPanel.tsx  # Room information
+Göé   Göé   Göé
+Göé   Göé   Gö£GöÇGöÇ ui/                # UI components
+Göé   Göé   Göé   Gö£GöÇGöÇ MythosPanel.tsx # Mythos-themed panel
+Göé   Göé   Göé   Gö£GöÇGöÇ MythosPanel.test.tsx # Panel tests
+Göé   Göé   Göé   Gö£GöÇGöÇ EldritchIcon.tsx # Mythos icons
+Göé   Göé   Göé   GööGöÇGöÇ [other UI components]
+Göé   Göé   Göé
+Göé   Göé   GööGöÇGöÇ [test components]  # Test components
+Göé   Göé
+Göé   Gö£GöÇGöÇ hooks/                 # React hooks
+Göé   Göé   Gö£GöÇGöÇ useGameConnection.ts # Game connection hook
+Göé   Göé   GööGöÇGöÇ useGameConnection.test.ts # Connection hook tests
+Göé   Göé
+Göé   Gö£GöÇGöÇ utils/                 # Utility functions
+Göé   Göé   Gö£GöÇGöÇ ansiToHtml.ts      # ANSI to HTML conversion
+Göé   Göé   Gö£GöÇGöÇ ansiToHtml.test.ts # Conversion tests
+Göé   Göé   Gö£GöÇGöÇ errorHandler.ts    # Error handling utilities
+Göé   Göé   Gö£GöÇGöÇ errorHandler.test.ts # Error handler tests
+Göé   Göé   Gö£GöÇGöÇ logger.ts          # Client-side logging
+Göé   Göé   GööGöÇGöÇ [other utilities]
+Göé   Göé
+Göé   Gö£GöÇGöÇ theme/                 # Theming system
+Göé   Göé   GööGöÇGöÇ mythosTheme.ts     # Mythos theme configuration
+Göé   Göé
+Göé   Gö£GöÇGöÇ styles/                # Style files
+Göé   Göé   GööGöÇGöÇ motd-preserved.css # MOTD preservation styles
+Göé   Göé
+Göé   Gö£GöÇGöÇ test/                  # Test utilities
+Göé   Göé   GööGöÇGöÇ setup.ts           # Test setup configuration
+Göé   Göé
+Göé   GööGöÇGöÇ assets/                # Static assets
+Göé       GööGöÇGöÇ react.svg          # React logo
+Göé
+Gö£GöÇGöÇ public/                    # Public assets
+Göé   GööGöÇGöÇ vite.svg               # Vite logo
+Göé
+Gö£GöÇGöÇ tests/                     # End-to-end tests
+Göé   Gö£GöÇGöÇ help-command.spec.ts   # Help command tests
+Göé   Gö£GöÇGöÇ occupants-initial.spec.ts # Initial occupant tests
+Göé   GööGöÇGöÇ occupants-two-client.spec.ts # Multi-client tests
+Göé
+Gö£GöÇGöÇ package.json               # Dependencies and scripts
+Gö£GöÇGöÇ package-lock.json          # Dependency lock file
+Gö£GöÇGöÇ tsconfig.json              # TypeScript configuration
+Gö£GöÇGöÇ tsconfig.app.json          # App-specific TS config
+Gö£GöÇGöÇ tsconfig.node.json         # Node-specific TS config
+Gö£GöÇGöÇ vite.config.ts             # Vite build configuration
+Gö£GöÇGöÇ vite.config.d.ts           # Vite type definitions
+Gö£GöÇGöÇ vitest.config.ts           # Vitest test configuration
+Gö£GöÇGöÇ tailwind.config.js         # TailwindCSS configuration
+Gö£GöÇGöÇ postcss.config.js          # PostCSS configuration
+Gö£GöÇGöÇ eslint.config.js           # ESLint configuration
+Gö£GöÇGöÇ playwright.config.ts       # Playwright test configuration
+Gö£GöÇGöÇ test-results/              # Test results directory
+Gö£GöÇGöÇ playwright-report/         # Playwright reports
+GööGöÇGöÇ tsconfig.tsbuildinfo       # TypeScript build info
 ```
 
 ### **Data Structure**
 
 ```
 data/
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ players/                   # Player database and data
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ local_players.db            # SQLite player database
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ aliases/              # Player alias files
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ [player]_aliases.json # Individual player aliases
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ [backup files]        # Database backups with timestamps
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ rooms/                     # World data (git submodule)
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ earth/                # Earth plane
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ arkhamcity/      # Arkham City zone
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ zone_config.json # Zone configuration
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ campus/       # Campus sub-zone
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ subzone_config.json # Sub-zone config
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ intersection_*.json # Intersection definitions
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ room_*.json # Room definitions
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ downtown/     # Downtown sub-zone
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ subzone_config.json
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ intersection_*.json
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ room_*.json
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ east_town/    # East Town sub-zone
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ french_hill/  # French Hill sub-zone
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ lower_southside/ # Lower Southside sub-zone
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ merchant/     # Merchant sub-zone
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ northside/    # Northside sub-zone
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ river_town/   # River Town sub-zone
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ sanitarium/   # Sanitarium sub-zone
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ uptown/       # Uptown sub-zone
-Gï¿½ï¿½   Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ innsmouth/        # Innsmouth zone
-Gï¿½ï¿½   Gï¿½ï¿½       Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ zone_config.json
-Gï¿½ï¿½   Gï¿½ï¿½       Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ waterfront/   # Waterfront sub-zone
-Gï¿½ï¿½   Gï¿½ï¿½           Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ subzone_config.json
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ yeng/                 # Yeng plane
-Gï¿½ï¿½       Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ katmandu/         # Katmandu zone
-Gï¿½ï¿½           Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ zone_config.json
-Gï¿½ï¿½           Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ palance/      # Palance sub-zone
-Gï¿½ï¿½               Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ subzone_config.json
-Gï¿½ï¿½               Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ palance_*.json # Room definitions
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ user_management/           # User management data
-Gï¿½ï¿½   Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ [user data files]     # User-specific data
-Gï¿½ï¿½
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ emotes.json               # Emote definitions
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ motd.html                 # Message of the day
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ README.md                 # Data documentation
-Gï¿½ï¿½Gï¿½ï¿½Gï¿½ï¿½ [visualization files]     # Room visualization outputs
+Gö£GöÇGöÇ players/                   # Player database and data
+Göé   Gö£GöÇGöÇ local_players.db            # SQLite player database
+Göé   Gö£GöÇGöÇ aliases/              # Player alias files
+Göé   Göé   GööGöÇGöÇ [player]_aliases.json # Individual player aliases
+Göé   GööGöÇGöÇ [backup files]        # Database backups with timestamps
+Göé
+Gö£GöÇGöÇ rooms/                     # World data (git submodule)
+Göé   Gö£GöÇGöÇ earth/                # Earth plane
+Göé   Göé   Gö£GöÇGöÇ arkhamcity/      # Arkham City zone
+Göé   Göé   Göé   Gö£GöÇGöÇ zone_config.json # Zone configuration
+Göé   Göé   Göé   Gö£GöÇGöÇ campus/       # Campus sub-zone
+Göé   Göé   Göé   Göé   Gö£GöÇGöÇ subzone_config.json # Sub-zone config
+Göé   Göé   Göé   Göé   Gö£GöÇGöÇ intersection_*.json # Intersection definitions
+Göé   Göé   Göé   Göé   GööGöÇGöÇ room_*.json # Room definitions
+Göé   Göé   Göé   Gö£GöÇGöÇ downtown/     # Downtown sub-zone
+Göé   Göé   Göé   Göé   Gö£GöÇGöÇ subzone_config.json
+Göé   Göé   Göé   Göé   Gö£GöÇGöÇ intersection_*.json
+Göé   Göé   Göé   Göé   GööGöÇGöÇ room_*.json
+Göé   Göé   Göé   Gö£GöÇGöÇ east_town/    # East Town sub-zone
+Göé   Göé   Göé   Gö£GöÇGöÇ french_hill/  # French Hill sub-zone
+Göé   Göé   Göé   Gö£GöÇGöÇ lower_southside/ # Lower Southside sub-zone
+Göé   Göé   Göé   Gö£GöÇGöÇ merchant/     # Merchant sub-zone
+Göé   Göé   Göé   Gö£GöÇGöÇ northside/    # Northside sub-zone
+Göé   Göé   Göé   Gö£GöÇGöÇ river_town/   # River Town sub-zone
+Göé   Göé   Göé   Gö£GöÇGöÇ sanitarium/   # Sanitarium sub-zone
+Göé   Göé   Göé   GööGöÇGöÇ uptown/       # Uptown sub-zone
+Göé   Göé   GööGöÇGöÇ innsmouth/        # Innsmouth zone
+Göé   Göé       Gö£GöÇGöÇ zone_config.json
+Göé   Göé       GööGöÇGöÇ waterfront/   # Waterfront sub-zone
+Göé   Göé           GööGöÇGöÇ subzone_config.json
+Göé   GööGöÇGöÇ yeng/                 # Yeng plane
+Göé       GööGöÇGöÇ katmandu/         # Katmandu zone
+Göé           Gö£GöÇGöÇ zone_config.json
+Göé           GööGöÇGöÇ palance/      # Palance sub-zone
+Göé               Gö£GöÇGöÇ subzone_config.json
+Göé               GööGöÇGöÇ palance_*.json # Room definitions
+Göé
+Gö£GöÇGöÇ user_management/           # User management data
+Göé   GööGöÇGöÇ [user data files]     # User-specific data
+Göé
+Gö£GöÇGöÇ emotes.json               # Emote definitions
+Gö£GöÇGöÇ motd.html                 # Message of the day
+Gö£GöÇGöÇ README.md                 # Data documentation
+GööGöÇGöÇ [visualization files]     # Room visualization outputs
 ```
 
 ---
 
-## =ï¿½ï¿½ï¿½n+ï¿½ Development Environment for AI Agents
+## =ƒ¢án+Å Development Environment for AI Agents
 
 ### **Required Tools**
 
@@ -485,7 +465,7 @@ cd server && uv run ruff format .
 ---
 
 
-## =ï¿½ï¿½ï¿½ AI Agent DevelopmentRules
+## =ƒñû AI Agent DevelopmentRules
 
 ### **Development Environment Rules**
 
@@ -515,25 +495,25 @@ cd server && uv run ruff format .
 
 When multiple tasks are pending, prioritize in this order:
 
-1. **=ï¿½ï¿½ï¿½ Critical Security Issues** (Fix immediately)
+1. **=ƒö¦ Critical Security Issues** (Fix immediately)
    - Security vulnerabilities
    - Privacy compliance issues
    - Data protection problems
 
-2. **=ï¿½ï¿½ï¿½ High Priority** (Complete within current session)
+2. **=ƒƒí High Priority** (Complete within current session)
    - Core functionality bugs
    - Authentication/authorization issues
    - Critical user experience problems
 
 
-3. **=ï¿½ï¿½ï¿½ Medium Priority** (Plan for next session)
+3. **=ƒƒó Medium Priority** (Plan for next session)
    - Feature enhancements
    - Performance improvements
    - Code quality improvements
 
 
 
-4. **=ï¿½ï¿½ï¿½ Low Priority** (Nice to have)
+4. **=ƒö¦ Low Priority** (Nice to have)
    - UI/UX polish
    - Documentation improvements
    - Advanced features
@@ -556,7 +536,7 @@ When multiple tasks are pending, prioritize in this order:
 
 ---
 
-## =ï¿½ï¿½ï¿½ AI Agent Coding Guidelines
+## =ƒô¥ AI Agent Coding Guidelines
 
 ### **Code Style & Patterns**
 
@@ -627,7 +607,7 @@ def apply_non_euclidean_effect(player_id: str) -> None:
 
 ---
 
-## =ï¿½ï¿½ï¿½ Testing Patterns for AI Agents
+## =ƒº¬ Testing Patterns for AI Agents
 
 ### **Test Structure**
 
@@ -684,7 +664,7 @@ MOCK_ROOM = {
 
 ---
 
-## =ï¿½ï¿½ï¿½ Security Considerations for AI Agents
+## =ƒöÆ Security Considerations for AI Agents
 
 ### **Input Validation**
 
@@ -728,7 +708,7 @@ def test_data_minimization_compliance():
 
 ---
 
-## =ï¿½Ä« Game Mechanics for AI Understanding
+## =ƒÄ« Game Mechanics for AI Understanding
 
 ### **Core Systems**
 
@@ -755,7 +735,7 @@ def test_data_minimization_compliance():
 
 ---
 
-## =ï¿½ï¿½ï¿½ Common AI Agent Tasks
+## =ƒöä Common AI Agent Tasks
 
 ### **Adding New Features**
 
@@ -785,7 +765,7 @@ def test_data_minimization_compliance():
 
 ---
 
-## =ï¿½ï¿½ï¿½ AI Agent Best Practices
+## =ƒôÜ AI Agent Best Practices
 
 ### **Code Generation**
 
@@ -831,60 +811,60 @@ COPPA_ENFORCED = os.getenv("COPPA_ENFORCED", "true").lower() == "true"
 
 ---
 
-## =ï¿½Ü¿ Common Pitfalls for AI Agents
+## =ƒÜ¿ Common Pitfalls for AI Agents
 
 ### **Avoid These Patterns**
 
-- Gï¿½ï¿½ **Hardcoded paths** - Use `validate_secure_path()`
-- Gï¿½ï¿½ **Hardcoded secrets** - Use environment variables
-- Gï¿½ï¿½ **Missing type hints** - Always include types
-- Gï¿½ï¿½ **Incomplete error handling** - Handle all error cases
-- Gï¿½ï¿½ **Breaking existing patterns** - Follow established conventions
-- Gï¿½ï¿½ **Forgetting to update GitHub Issues** - Keep issue tracking current
-- Gï¿½ï¿½ **Ignoring security concerns** - Address all security issues immediately
-- Gï¿½ï¿½ **Collecting personal data from minors** - Never collect personal information
+- G¥î **Hardcoded paths** - Use `validate_secure_path()`
+- G¥î **Hardcoded secrets** - Use environment variables
+- G¥î **Missing type hints** - Always include types
+- G¥î **Incomplete error handling** - Handle all error cases
+- G¥î **Breaking existing patterns** - Follow established conventions
+- G¥î **Forgetting to update GitHub Issues** - Keep issue tracking current
+- G¥î **Ignoring security concerns** - Address all security issues immediately
+- G¥î **Collecting personal data from minors** - Never collect personal information
 
 ### **Security Red Flags**
 
-- Gï¿½ï¿½ **Direct file path concatenation** without validation
-- Gï¿½ï¿½ **SQL queries with string formatting** (use parameterized queries)
-- Gï¿½ï¿½ **Exposing internal errors** to users
-- Gï¿½ï¿½ **Missing input validation** on user data
-- Gï¿½ï¿½ **Hardcoded secrets** in source code
-- Gï¿½ï¿½ **Personal data collection** without proper consent
+- G¥î **Direct file path concatenation** without validation
+- G¥î **SQL queries with string formatting** (use parameterized queries)
+- G¥î **Exposing internal errors** to users
+- G¥î **Missing input validation** on user data
+- G¥î **Hardcoded secrets** in source code
+- G¥î **Personal data collection** without proper consent
 
 ---
 
-## =ï¿½Ä» AI Agent Success Metrics
+## =ƒÄ» AI Agent Success Metrics
 
 ### **Code Quality**
 
-- Gï¿½ï¿½ All tests pass (minimum 80% coverage)
-- Gï¿½ï¿½ No linting errors (`ruff check .`)
-- Gï¿½ï¿½ Proper type hints throughout
-- Gï¿½ï¿½ Comprehensive error handling
-- Gï¿½ï¿½ Security best practices followed
-- Gï¿½ï¿½ COPPA compliance verified
+- G£à All tests pass (minimum 80% coverage)
+- G£à No linting errors (`ruff check .`)
+- G£à Proper type hints throughout
+- G£à Comprehensive error handling
+- G£à Security best practices followed
+- G£à COPPA compliance verified
 
 ### **Documentation**
 
-- Gï¿½ï¿½ GitHub Issues updated with completed work (closed, commented)
-- Gï¿½ï¿½ Code comments explain complex logic
-- Gï¿½ï¿½ Mythos theming appropriate and consistent
-- Gï¿½ï¿½ README files updated if needed
-- Gï¿½ï¿½ Security considerations documented
+- G£à GitHub Issues updated with completed work (closed, commented)
+- G£à Code comments explain complex logic
+- G£à Mythos theming appropriate and consistent
+- G£à README files updated if needed
+- G£à Security considerations documented
 
 ### **Functionality**
 
-- Gï¿½ï¿½ Features work as specified in PLANNING.md
-- Gï¿½ï¿½ Edge cases handled properly
-- Gï¿½ï¿½ Performance acceptable
-- Gï¿½ï¿½ Security vulnerabilities addressed
-- Gï¿½ï¿½ Privacy requirements met
+- G£à Features work as specified in PLANNING.md
+- G£à Edge cases handled properly
+- G£à Performance acceptable
+- G£à Security vulnerabilities addressed
+- G£à Privacy requirements met
 
 ---
 
-## =ï¿½ï¿½ï¿½ Future Considerations for AI Agents
+## =ƒö« Future Considerations for AI Agents
 
 ### **Scalability**
 
@@ -907,7 +887,7 @@ COPPA_ENFORCED = os.getenv("COPPA_ENFORCED", "true").lower() == "true"
 
 ---
 
-## =ï¿½ï¿½ï¿½ Task Tracking with GitHub Issues
+## =ƒôï Task Tracking with GitHub Issues
 
 ### **GitHub Issues Workflow**
 
@@ -944,7 +924,7 @@ All task tracking is now done through [GitHub Issues](https://github.com/arkanwo
 
 ---
 
-## =ï¿½ï¿½P AI Agent Communication
+## =ƒôP AI Agent Communication
 
 ### **When to Ask Questions**
 
@@ -964,7 +944,7 @@ All task tracking is now done through [GitHub Issues](https://github.com/arkanwo
 
 ---
 
-## =ï¿½ï¿½ï¿½ Security Checklist for AI Agents
+## =ƒöÆ Security Checklist for AI Agents
 
 Before completing any feature, ensure:
 

@@ -252,8 +252,8 @@ describe('GameTerminal', () => {
       expect(screen.getByText('Health')).toBeInTheDocument();
       const healthMeter = screen.getByTestId('health-meter');
       expect(healthMeter).toHaveTextContent(/100/);
-      // LucidityMeter renders "Lucidity" (capitalized, without colon) and value as "80 / 100"
-      expect(screen.getByText('Lucidity')).toBeInTheDocument();
+      // LucidityMeter renders "lucidity" (without colon) and value as "80 / 100"
+      expect(screen.getByText('lucidity')).toBeInTheDocument();
       // lucidity value should be 80, not 100
       expect(screen.getByText(/^80/)).toBeInTheDocument();
       // Core attributes still use colon format
@@ -370,7 +370,7 @@ describe('GameTerminal', () => {
 
       // Should not display player stats
       expect(screen.queryByText('Health:')).not.toBeInTheDocument();
-      expect(screen.queryByText('Lucidity:')).not.toBeInTheDocument();
+      expect(screen.queryByText('lucidity:')).not.toBeInTheDocument();
     });
 
     it('should handle empty messages array', () => {
@@ -392,7 +392,7 @@ describe('GameTerminal', () => {
 
       // Should not display stats section
       expect(screen.queryByText('Health:')).not.toBeInTheDocument();
-      expect(screen.queryByText('Lucidity:')).not.toBeInTheDocument();
+      expect(screen.queryByText('lucidity:')).not.toBeInTheDocument();
     });
   });
 

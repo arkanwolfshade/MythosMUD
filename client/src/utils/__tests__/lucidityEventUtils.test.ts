@@ -143,7 +143,39 @@ describe('lucidityEventUtils', () => {
     expect(status.max).toBe(100); // DEFAULT_max_lcd
   });
 
-  it('should calculate current from previous + delta when current_lcd not provided', () => {
+  it('should use currentSan when current_lcd is not provided', () => {
+    // Arrange - Test line 35: currentSan fallback branch
+    const { status } = buildLucidityStatus(null, { currentSan: 75, max_lcd: 100 }, '2025-11-13T12:00:00Z');
+
+    // Assert - should use currentSan
+    expect(status.current).toBe(75);
+  });
+
+  it('should use currentSan when current_lcd is null', () => {
+    // Arrange - Test line 35: currentSan fallback when current_lcd is null
+    const { status } = buildLucidityStatus(
+      null,
+      { current_lcd: null, currentSan: 80, max_lcd: 100 },
+      '2025-11-13T12:00:00Z'
+    );
+
+    // Assert - should use currentSan when current_lcd is null
+    expect(status.current).toBe(80);
+  });
+
+  it('should use currentSan when current_lcd is undefined', () => {
+    // Arrange - Test line 35: currentSan fallback when current_lcd is undefined
+    const { status } = buildLucidityStatus(
+      null,
+      { current_lcd: undefined, currentSan: 85, max_lcd: 100 },
+      '2025-11-13T12:00:00Z'
+    );
+
+    // Assert - should use currentSan when current_lcd is undefined
+    expect(status.current).toBe(85);
+  });
+
+  it('should calculate current from previous + delta when neither current_lcd nor currentSan provided', () => {
     // Arrange - Test line 35: previous + delta calculation
     const { status } = buildLucidityStatus(
       { current: 80, max: 100, tier: 'lucid', liabilities: [] },
@@ -155,11 +187,11 @@ describe('lucidityEventUtils', () => {
     expect(status.current).toBe(70);
   });
 
-  it('should use previous.current when previous exists and current_lcd is null', () => {
+  it('should use previous.current when previous exists and both current_lcd and currentSan are null', () => {
     // Arrange - Test line 35: previous?.current branch when previous exists
     const { status } = buildLucidityStatus(
       { current: 90, max: 100, tier: 'lucid', liabilities: [] },
-      { current_lcd: null, delta: 5 },
+      { current_lcd: null, currentSan: null, delta: 5 },
       '2025-11-13T12:00:00Z'
     );
 
@@ -167,25 +199,37 @@ describe('lucidityEventUtils', () => {
     expect(status.current).toBe(95);
   });
 
-  it('should use 0 when previous is null and current_lcd is null', () => {
+  it('should use 0 when previous is null and both current_lcd and currentSan are null', () => {
     // Arrange - Test line 35: (previous?.current ?? 0) branch when previous is null
-    const { status } = buildLucidityStatus(null, { current_lcd: null, delta: 10 }, '2025-11-13T12:00:00Z');
+    const { status } = buildLucidityStatus(
+      null,
+      { current_lcd: null, currentSan: null, delta: 10 },
+      '2025-11-13T12:00:00Z'
+    );
 
     // Assert - should calculate (0) + 10 = 10
     expect(status.current).toBe(10);
   });
 
-  it('should use 0 + delta when current_lcd is null and no previous', () => {
+  it('should use 0 + delta when both current_lcd and currentSan are null and no previous', () => {
     // Arrange - Test line 35: fall through to (previous?.current ?? 0) + delta when previous is null
-    const { status } = buildLucidityStatus(null, { current_lcd: null, delta: 5 }, '2025-11-13T12:00:00Z');
+    const { status } = buildLucidityStatus(
+      null,
+      { current_lcd: null, currentSan: null, delta: 5 },
+      '2025-11-13T12:00:00Z'
+    );
 
     // Assert - should calculate (0) + 5 = 5
     expect(status.current).toBe(5);
   });
 
-  it('should use 0 + delta when current_lcd is undefined and no previous', () => {
+  it('should use 0 + delta when both current_lcd and currentSan are undefined and no previous', () => {
     // Arrange - Test line 35: fall through to (previous?.current ?? 0) + delta when previous is null
-    const { status } = buildLucidityStatus(null, { current_lcd: undefined, delta: -3 }, '2025-11-13T12:00:00Z');
+    const { status } = buildLucidityStatus(
+      null,
+      { current_lcd: undefined, currentSan: undefined, delta: -3 },
+      '2025-11-13T12:00:00Z'
+    );
 
     // Assert - should calculate (0) + (-3) = -3, but parseNumber will handle it
     expect(status.current).toBe(-3);
@@ -197,6 +241,14 @@ describe('lucidityEventUtils', () => {
 
     // Assert - ?? operator only triggers for null/undefined, so 0 should be used
     expect(status.current).toBe(0);
+  });
+
+  it('should use maxSan when max_lcd is not provided', () => {
+    // Arrange - Test line 38: maxSan fallback branch
+    const { status } = buildLucidityStatus(null, { current_lcd: 50, maxSan: 120 }, '2025-11-13T12:00:00Z');
+
+    // Assert - should use maxSan
+    expect(status.max).toBe(120);
   });
 
   it('should use DEFAULT_max_lcd when max is 0 or negative', () => {

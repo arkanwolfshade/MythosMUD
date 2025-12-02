@@ -35,7 +35,7 @@ class TestZoneConfiguration:
             "weather_patterns": ["clear", "overcast"],
             "special_rules": {
                 "npc_spawn_modifier": 1.5,
-                "lucidity_drain_rate": 0.1,
+                "Lucidity_drain_rate": 0.1,
                 "combat_modifier": 1.2,
                 "exploration_bonus": 0.5,
                 "access_requirements": ["stealth", "local_knowledge"],
@@ -48,7 +48,7 @@ class TestZoneConfiguration:
         assert config.description == "A test zone"
         assert config.weather_patterns == ["clear", "overcast"]
         assert config.npc_spawn_modifier == 1.5
-        assert config.lucidity_drain_rate == 0.1
+        assert config.Lucidity_drain_rate == 0.1
         assert config.combat_modifier == 1.2
         assert config.exploration_bonus == 0.5
         assert config.access_requirements == ["stealth", "local_knowledge"]
@@ -62,7 +62,7 @@ class TestZoneConfiguration:
         assert config.description == ""
         assert config.weather_patterns == []
         assert config.npc_spawn_modifier == 1.0
-        assert config.lucidity_drain_rate == 0.0
+        assert config.Lucidity_drain_rate == 0.0
         assert config.combat_modifier == 1.0
         assert config.exploration_bonus == 0.0
         assert config.access_requirements == []
@@ -235,7 +235,7 @@ class TestNPCPopulationController:
                 "weather_patterns": ["fog", "rain", "overcast"],
                 "special_rules": {
                     "npc_spawn_modifier": 1.2,
-                    "lucidity_drain_rate": 0.1,
+                    "Lucidity_drain_rate": 0.1,
                     "combat_modifier": 1.0,
                     "exploration_bonus": 0.5,
                 },
@@ -250,7 +250,7 @@ class TestNPCPopulationController:
                 "description": "The bustling commercial heart",
                 "special_rules": {
                     "npc_spawn_modifier": 1.5,
-                    "lucidity_drain_rate": 0.08,
+                    "Lucidity_drain_rate": 0.08,
                     "combat_modifier": 1.1,
                     "exploration_bonus": 0.7,
                 },
@@ -322,7 +322,7 @@ class TestNPCPopulationController:
                 "weather_patterns": ["fog", "rain", "overcast"],
                 "special_rules": {
                     "npc_spawn_modifier": 1.2,
-                    "lucidity_drain_rate": 0.1,
+                    "Lucidity_drain_rate": 0.1,
                     "combat_modifier": 1.0,
                     "exploration_bonus": 0.5,
                 },
@@ -335,7 +335,7 @@ class TestNPCPopulationController:
                 "description": "The bustling commercial heart",
                 "special_rules": {
                     "npc_spawn_modifier": 1.5,
-                    "lucidity_drain_rate": 0.08,
+                    "Lucidity_drain_rate": 0.08,
                     "combat_modifier": 1.1,
                     "exploration_bonus": 0.7,
                 },
@@ -418,13 +418,13 @@ class TestNPCPopulationController:
         zone_config = population_controller.get_zone_configuration("arkhamcity")
         assert zone_config is not None
         assert zone_config.npc_spawn_modifier == 1.2
-        assert zone_config.lucidity_drain_rate == 0.1
+        assert zone_config.Lucidity_drain_rate == 0.1
 
         # Test sub-zone configuration
         subzone_config = population_controller.get_zone_configuration("arkhamcity/downtown")
         assert subzone_config is not None
         assert subzone_config.npc_spawn_modifier == 1.5
-        assert subzone_config.lucidity_drain_rate == 0.08
+        assert subzone_config.Lucidity_drain_rate == 0.08
 
     def test_zone_key_extraction(self, population_controller):
         """Test extracting zone keys from room IDs."""

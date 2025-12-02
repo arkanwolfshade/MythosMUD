@@ -14,7 +14,7 @@ from ..alias_storage import AliasStorage
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
 
-    # Removed: from ..persistence import PersistenceLayer - now using async_persistence parameter
+    from ..persistence import PersistenceLayer
     from ..services.player_respawn_service import PlayerRespawnService
 from ..config import get_config
 from ..exceptions import DatabaseError, ValidationError
@@ -69,7 +69,7 @@ class PlayerService:
         )
 
         # Check if player already exists
-        existing_player = await self.persistence.get_player_by_name(name)
+        existing_player = await self.persistence.async_get_player_by_name(name)
         if existing_player:
             logger.warning("Player creation failed - name already exists")
             context = create_error_context()
@@ -106,7 +106,7 @@ class PlayerService:
         )
 
         # Save player to persistence
-        await self.persistence.save_player(player)
+        await self.persistence.async_save_player(player)
         logger.info("Player created successfully", player_id=player.player_id)
 
         # Convert to schema format
@@ -145,7 +145,7 @@ class PlayerService:
         )
 
         # Check if player already exists
-        existing_player = await self.persistence.get_player_by_name(name)
+        existing_player = await self.persistence.async_get_player_by_name(name)
         if existing_player:
             logger.warning("Player creation failed - name already exists")
             context = create_error_context()
@@ -196,7 +196,7 @@ class PlayerService:
             player.set_status_effects([])
 
         # Save player to persistence
-        await self.persistence.save_player(player)
+        await self.persistence.async_save_player(player)
         logger.info("Player created successfully with stats", player_id=player.player_id)
 
         # Convert to schema format
@@ -215,7 +215,7 @@ class PlayerService:
         # Structlog handles UUID objects automatically, no need to convert to string
         logger.debug("Getting player by ID", player_id=player_id)
 
-        player = await self.persistence.get_player_by_id(player_id)
+        player = await self.persistence.async_get_player(player_id)
         if not player:
             logger.debug("Player not found by ID")
             return None
@@ -235,7 +235,7 @@ class PlayerService:
         """
         logger.debug("Getting player by name")
 
-        player = await self.persistence.get_player_by_name(player_name)
+        player = await self.persistence.async_get_player_by_name(player_name)
         if not player:
             logger.debug("Player not found by name")
             return None
@@ -251,7 +251,7 @@ class PlayerService:
             List[PlayerRead]: List of all players
         """
         logger.debug("Listing all players")
-        players = await self.persistence.list_players()
+        players = await self.persistence.async_list_players()
         result = []
         for player in players:
             result.append(await self._convert_player_to_schema(player))
@@ -443,7 +443,7 @@ class PlayerService:
             tuple[bool, str]: (success, message)
         """
         logger.debug("Attempting to delete player")
-        player = await self.persistence.get_player_by_id(player_id)
+        player = await self.persistence.async_get_player(player_id)
         if not player:
             logger.warning("Player not found for deletion")
             context = create_error_context()
@@ -458,7 +458,7 @@ class PlayerService:
             )
 
         # Delete the player from the database
-        success = await self.persistence.delete_player(player_id)
+        success = await self.persistence.async_delete_player(player_id)
         if not success:
             logger.error("Failed to delete player from persistence", player_id=player_id)
             context = create_error_context()
@@ -518,7 +518,7 @@ class PlayerService:
             player.current_room_id = new_room_id
 
             # Save to database
-            await self.persistence.save_player(player)
+            await self.persistence.async_save_player(player)
 
             logger.info("Player location updated", player_name=player_name, from_room=old_room, to_room=new_room_id)
             return True
@@ -554,7 +554,7 @@ class PlayerService:
         """
         logger.info("Applying lucidity loss", player_id=player_id, amount=amount, source=source)
 
-        player = await self.persistence.get_player_by_id(player_id)
+        player = await self.persistence.async_get_player(player_id)
         if not player:
             logger.warning("Player not found for lucidity loss", player_id=player_id)
             context = create_error_context()
@@ -568,7 +568,7 @@ class PlayerService:
                 user_friendly="Player not found",
             )
 
-        await self.persistence.apply_lucidity_loss(player, amount, source)
+        await self.persistence.async_apply_lucidity_loss(player, amount, source)
         logger.info("Lucidity loss applied successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Applied {amount} lucidity loss to {player.name}"}
 
@@ -589,7 +589,7 @@ class PlayerService:
         """
         logger.info("Applying fear", player_id=player_id, amount=amount, source=source)
 
-        player = await self.persistence.get_player_by_id(player_id)
+        player = await self.persistence.async_get_player(player_id)
         if not player:
             logger.warning("Player not found for fear application", player_id=player_id)
             context = create_error_context()
@@ -603,7 +603,7 @@ class PlayerService:
                 user_friendly="Player not found",
             )
 
-        await self.persistence.apply_fear(player, amount, source)
+        await self.persistence.async_apply_fear(player, amount, source)
         logger.info("Fear applied successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Applied {amount} fear to {player.name}"}
 
@@ -624,7 +624,7 @@ class PlayerService:
         """
         logger.info("Applying corruption", player_id=player_id, amount=amount, source=source)
 
-        player = await self.persistence.get_player_by_id(player_id)
+        player = await self.persistence.async_get_player(player_id)
         if not player:
             logger.warning("Player not found for corruption application", player_id=player_id)
             context = create_error_context()
@@ -638,7 +638,7 @@ class PlayerService:
                 user_friendly="Player not found",
             )
 
-        await self.persistence.apply_corruption(player, amount, source)
+        await self.persistence.async_apply_corruption(player, amount, source)
         logger.info("Corruption applied successfully", player_id=player_id, amount=amount, source=source)
         return {"message": f"Applied {amount} corruption to {player.name}"}
 
@@ -659,7 +659,7 @@ class PlayerService:
         """
         logger.info("Gaining occult knowledge", player_id=player_id, amount=amount, source=source)
 
-        player = await self.persistence.get_player_by_id(player_id)
+        player = await self.persistence.async_get_player(player_id)
         if not player:
             logger.warning("Player not found for occult knowledge gain", player_id=player_id)
             context = create_error_context()
@@ -693,7 +693,7 @@ class PlayerService:
         """
         logger.info("Healing player", player_id=player_id, amount=amount)
 
-        player = await self.persistence.get_player_by_id(player_id)
+        player = await self.persistence.async_get_player(player_id)
         if not player:
             logger.warning("Player not found for healing", player_id=player_id)
             context = create_error_context()
@@ -728,7 +728,7 @@ class PlayerService:
         """
         logger.info("Damaging player", player_id=player_id, amount=amount, damage_type=damage_type)
 
-        player = await self.persistence.get_player_by_id(player_id)
+        player = await self.persistence.async_get_player(player_id)
         if not player:
             logger.warning("Player not found for damage", player_id=player_id)
             context = create_error_context()
@@ -751,7 +751,7 @@ class PlayerService:
         user_id: str,
         session: "AsyncSession",
         respawn_service: "PlayerRespawnService",
-        persistence: Any,  # AsyncPersistenceLayer
+        persistence: "PersistenceLayer",
     ) -> dict[str, Any]:
         """
         Respawn a dead player by user ID.
@@ -767,7 +767,7 @@ class PlayerService:
             user_id: The user ID to respawn
             session: Database session for player data access
             respawn_service: PlayerRespawnService instance
-            persistence: AsyncPersistenceLayer for room data access
+            persistence: PersistenceLayer for room data access
 
         Returns:
             dict: Respawn response with player and room data
@@ -834,7 +834,7 @@ class PlayerService:
 
         # Get respawn room data
         respawn_room_id = player.current_room_id  # Updated by respawn_player
-        room = persistence.get_room_by_id(str(respawn_room_id))
+        room = persistence.get_room(str(respawn_room_id))
 
         if not room:
             logger.warning("Respawn room not found", respawn_room_id=respawn_room_id)
@@ -853,135 +853,11 @@ class PlayerService:
                 "id": player.player_id,
                 "name": player.name,
                 "hp": updated_stats.get("current_health", 100),
-                "max_hp": updated_stats.get("max_health", 100),
+                "max_hp": 100,
                 "current_room_id": respawn_room_id,
             },
             "room": room_data,
             "message": "You have been resurrected and returned to the waking world",
-        }
-
-    async def respawn_player_from_delirium_by_user_id(
-        self,
-        user_id: str,
-        session: "AsyncSession",
-        respawn_service: "PlayerRespawnService",
-        persistence: Any,  # AsyncPersistenceLayer
-    ) -> dict[str, Any]:
-        """
-        Respawn a delirious player by user ID.
-
-        This method handles the complete delirium respawn flow:
-        1. Gets player by user_id
-        2. Verifies player is delirious (lucidity <= -10)
-        3. Calls respawn service to respawn player from delirium
-        4. Gets respawn room data
-        5. Returns structured response
-
-        Args:
-            user_id: The user ID to respawn
-            session: Database session for player data access
-            respawn_service: PlayerRespawnService instance
-            persistence: AsyncPersistenceLayer for room data access
-
-        Returns:
-            dict: Respawn response with player and room data
-
-        Raises:
-            ValidationError: If player not found or not delirious
-        """
-        from sqlalchemy import select
-        from sqlalchemy.orm import selectinload
-
-        from ..models.lucidity import PlayerLucidity
-
-        # Look up player by user_id (not primary key player_id)
-        # Eagerly load user relationship to prevent N+1 queries
-        stmt = select(Player).options(selectinload(Player.user)).where(Player.user_id == user_id)
-        result = await session.execute(stmt)
-        player = result.scalar_one_or_none()
-        if not player:
-            context = create_error_context()
-            context.metadata["operation"] = "respawn_player_from_delirium_by_user_id"
-            context.metadata["user_id"] = user_id
-            log_and_raise_enhanced(
-                ValidationError,
-                "Player not found for delirium respawn",
-                context=context,
-                details={"user_id": user_id},
-                user_friendly="Player not found",
-            )
-
-        # Verify player is delirious (lucidity <= -10)
-        lucidity_record = await session.get(PlayerLucidity, player.player_id)
-        if not lucidity_record or lucidity_record.current_lcd > -10:
-            context = create_error_context()
-            context.metadata["operation"] = "respawn_player_from_delirium_by_user_id"
-            context.metadata["user_id"] = user_id
-            current_lucidity = lucidity_record.current_lcd if lucidity_record else None
-            context.metadata["player_lucidity"] = current_lucidity
-            log_and_raise_enhanced(
-                ValidationError,
-                "Player must be delirious to respawn (lucidity must be -10 or below)",
-                context=context,
-                details={"user_id": user_id, "player_lucidity": current_lucidity},
-                user_friendly="Player must be delirious to respawn",
-            )
-
-        # Respawn the player from delirium
-        # Convert player.player_id to UUID (handles SQLAlchemy Column[str])
-        player_id_value = player.player_id
-        player_id_uuid = uuid.UUID(str(player_id_value))
-        success = await respawn_service.respawn_player_from_delirium(player_id_uuid, session)
-        if not success:
-            logger.error("Delirium respawn failed", player_id=player.player_id)
-            context = create_error_context()
-            context.metadata["operation"] = "respawn_player_from_delirium_by_user_id"
-            context.metadata["user_id"] = user_id
-            context.metadata["player_id"] = player.player_id
-            log_and_raise_enhanced(
-                ValidationError,
-                "Failed to respawn player from delirium",
-                context=context,
-                details={"user_id": user_id, "player_id": player.player_id},
-                user_friendly="Delirium respawn failed",
-            )
-
-        # Get respawn room data
-        respawn_room_id = player.current_room_id  # Updated by respawn_player_from_delirium
-        room = persistence.get_room_by_id(str(respawn_room_id))
-
-        if not room:
-            logger.warning("Respawn room not found", respawn_room_id=respawn_room_id)
-            room_data = {"id": respawn_room_id, "name": "Unknown Room"}
-        else:
-            room_data = room.to_dict()
-
-        # Get updated player state
-        updated_stats = player.get_stats()
-
-        # Get updated lucidity
-        await session.refresh(lucidity_record)
-        updated_lucidity = lucidity_record.current_lcd
-
-        logger.info(
-            "Player respawned from delirium successfully",
-            player_id=player.player_id,
-            respawn_room=respawn_room_id,
-            new_lucidity=updated_lucidity,
-        )
-
-        return {
-            "success": True,
-            "player": {
-                "id": player.player_id,
-                "name": player.name,
-                "hp": updated_stats.get("current_health", 100),
-                "max_hp": updated_stats.get("max_health", 100),
-                "lucidity": updated_lucidity,
-                "current_room_id": respawn_room_id,
-            },
-            "room": room_data,
-            "message": "You have been restored to lucidity and returned to the Sanitarium",
         }
 
     async def _convert_player_to_schema(self, player) -> PlayerRead:
@@ -1028,7 +904,7 @@ class PlayerService:
         # Fetch profession details from persistence
         if player_profession_id is not None:
             try:
-                profession = await self.persistence.get_profession_by_id(player_profession_id)
+                profession = await self.persistence.async_get_profession_by_id(player_profession_id)
                 if profession:
                     profession_name = profession.name
                     profession_description = profession.description
