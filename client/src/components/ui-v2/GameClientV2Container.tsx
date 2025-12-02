@@ -1025,6 +1025,25 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             }
             break;
           }
+          case 'system': {
+            // Handle system event type - admin notifications, teleportation messages, etc.
+            const systemMessage = event.data?.message;
+            if (systemMessage && typeof systemMessage === 'string') {
+              appendMessage({
+                text: systemMessage,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: 'system',
+                channel: 'game',
+                type: 'system',
+              });
+              logger.info('GameClientV2Container', 'Processing event', {
+                event_type: 'system',
+                message: systemMessage,
+              });
+            }
+            break;
+          }
           // Add more event types as needed - this is a simplified version
           default: {
             logger.info('GameClientV2Container', 'Unhandled event type', {

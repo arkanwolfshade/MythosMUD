@@ -5,6 +5,7 @@
 MythosMUD uses a **hybrid E2E testing approach**:
 
 ### Automated Playwright CLI Tests (10 Scenarios)
+
 - **114 automated tests** covering error handling, accessibility, and integration
 - **Location**: `client/tests/e2e/runtime/`
 - **Execution**: `make test-client-runtime` or `npm run test:e2e:runtime`
@@ -13,6 +14,7 @@ MythosMUD uses a **hybrid E2E testing approach**:
 - **See**: [E2E Testing Guide](../docs/E2E_TESTING_GUIDE.md)
 
 ### Playwright MCP Scenarios (11 Scenarios)
+
 - **11 multi-player scenarios** requiring AI Agent coordination
 - **Location**: `e2e-tests/scenarios/`
 - **Execution**: Via AI Agent with Playwright MCP (this document)
@@ -70,10 +72,10 @@ if (messages.length === 0) {
 
 **MANDATORY LLM REQUIREMENT:**
 
-- **MUST USE GPT-4**: This playbook requires GPT-4 level reasoning and instruction adherence
+- **MUST USE GPT-4**: This playbook requires GPT-4 or higher level reasoning and instruction adherence
 - **DO NOT USE**: GPT-3.5, Claude, or other LLMs for playbook execution
 - **REASON**: Complex multi-step scenarios with strict execution requirements need advanced reasoning capabilities
-- **VERIFICATION**: Confirm you are using GPT-4 before proceeding with any scenario
+- **VERIFICATION**: Confirm you are using GPT-4 or greater before proceeding with any scenario
 
 ## 🚨 CRITICAL INSTRUCTION FOR AI EXECUTORS 🚨
 
@@ -132,7 +134,7 @@ if (messages.length === 0) {
 - **Tab switching**: 2 seconds
 - **Page load**: 5 seconds
 
-### Low-Performance Machine Timeouts
+<!-- ### Low-Performance Machine Timeouts
 
 - **Login form wait**: 30 seconds
 - **MOTD screen wait**: 30 seconds
@@ -148,7 +150,7 @@ if (messages.length === 0) {
 - **Game interface load**: 5 seconds
 - **Message delivery wait**: 3 seconds
 - **Tab switching**: 1 second
-- **Page load**: 2 seconds
+- **Page load**: 2 seconds -->
 
 ## CRITICAL SERVER MANAGEMENT RULES
 
