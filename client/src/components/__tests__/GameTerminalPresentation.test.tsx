@@ -257,7 +257,7 @@ describe('GameTerminalPresentation', () => {
 
       expect(screen.getByText('Health:')).toBeInTheDocument();
       expect(screen.getByText('100')).toBeInTheDocument();
-      expect(screen.getByText('lucidity:')).toBeInTheDocument();
+      expect(screen.getByText('Lucidity:')).toBeInTheDocument();
       expect(screen.getByText('80')).toBeInTheDocument();
       expect(screen.getByText('STR:')).toBeInTheDocument();
       expect(screen.getByText('10')).toBeInTheDocument();
@@ -411,7 +411,7 @@ describe('GameTerminalPresentation', () => {
 
       // Should not display player stats
       expect(screen.queryByText('Health:')).not.toBeInTheDocument();
-      expect(screen.queryByText('lucidity:')).not.toBeInTheDocument();
+      expect(screen.queryByText('Lucidity:')).not.toBeInTheDocument();
     });
 
     it('should handle empty messages array', () => {
@@ -433,7 +433,7 @@ describe('GameTerminalPresentation', () => {
 
       // Should not display stats section
       expect(screen.queryByText('Health:')).not.toBeInTheDocument();
-      expect(screen.queryByText('lucidity:')).not.toBeInTheDocument();
+      expect(screen.queryByText('Lucidity:')).not.toBeInTheDocument();
     });
   });
 

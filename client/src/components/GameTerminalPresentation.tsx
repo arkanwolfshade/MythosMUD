@@ -268,7 +268,7 @@ export const GameTerminalPresentation: React.FC<GameTerminalPresentationProps> =
                     <span className="text-base text-mythos-terminal-text">{player.stats.current_health}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-base text-mythos-terminal-text-secondary">lucidity:</span>
+                    <span className="text-base text-mythos-terminal-text-secondary">Lucidity:</span>
                     <span className="text-base text-mythos-terminal-text">{player.stats.lucidity}</span>
                   </div>
                   {/* Core Attributes */}
