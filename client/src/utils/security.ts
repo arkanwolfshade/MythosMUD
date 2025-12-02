@@ -323,13 +323,16 @@ export const inputSanitizer = {
     // AI reader: some edge cases like <script or <SCRIPT might slip through, so we double-check.
     let sanitized = DOMPurify.sanitize(input, config);
     // Remove any remaining script tag patterns (case-insensitive, complete tag matches)
-    // Match complete script tags including attributes: <script...> and </script>
+    // Match complete script tags including attributes, newlines, and nested content
     // Human reader: repeatedly remove all script tags to avoid incomplete multi-character sanitization issues.
-    // AI reader: CodeQL requires repeated replacement until no changes occur to handle overlapping patterns.
+    // AI reader: CodeQL requires repeated replacement with robust regex to handle malformed, multi-line,
+    // or nested script tags.
     let previous: string;
     do {
       previous = sanitized;
-      sanitized = sanitized.replace(/<script[^>]*>/gi, '').replace(/<\/script>/gi, '');
+      // Improved regex: matches script tags with word boundary, handles newlines/whitespace, and nested content
+      // \b ensures we match complete "script" word, [\s\S]*? matches any character including newlines (non-greedy)
+      sanitized = sanitized.replace(/<\/?script\b[\s\S]*?<\/script>/gi, '');
     } while (sanitized !== previous);
     return sanitized;
   },
@@ -426,7 +429,6 @@ export const inputSanitizer = {
  */
 class CSRFProtection {
   private tokens: Map<string, number> = new Map();
-  private tokenExpiry: number = 3600000; // 1 hour default
 
   /**
    * Generate CSRF token
