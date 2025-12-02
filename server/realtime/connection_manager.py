@@ -2709,15 +2709,51 @@ class ConnectionManager:
 
                 # Find ghost players (players in room but not online)
                 # Both sets are now strings, so comparison will work correctly
-                ghost_players = room_player_ids - online_player_ids
+                potential_ghost_players = room_player_ids - online_player_ids
 
-                if ghost_players:
-                    logger.debug("DEBUG: Found ghost players in room", room_id=room.id, ghost_players=ghost_players)
-                    for ghost_player_id in ghost_players:
-                        room._players.discard(ghost_player_id)
+                if potential_ghost_players:
+                    # CRITICAL FIX: Before removing players, verify they actually have NO connections
+                    # A player might be in room._players but not in online_players during a race condition
+                    # (e.g., during movement, or between connection setup steps)
+                    # Only remove players who have ZERO WebSocket connections
+                    actual_ghost_players = set()
+                    for ghost_player_id_str in potential_ghost_players:
+                        try:
+                            ghost_player_uuid = uuid.UUID(ghost_player_id_str)
+                            # Check if player has ANY WebSocket connections
+                            has_connections = self.has_websocket_connection(ghost_player_uuid)
+                            if not has_connections:
+                                actual_ghost_players.add(ghost_player_id_str)
+                            else:
+                                logger.debug(
+                                    "Player in room but not in online_players - keeping due to active connection",
+                                    player_id=ghost_player_id_str,
+                                    room_id=room.id,
+                                    has_websocket=has_connections,
+                                )
+                        except (ValueError, AttributeError) as e:
+                            # If we can't parse the UUID, it's definitely a ghost
+                            logger.warning(
+                                "Invalid player ID format in room - removing",
+                                player_id=ghost_player_id_str,
+                                room_id=room.id,
+                                error=str(e),
+                            )
+                            actual_ghost_players.add(ghost_player_id_str)
+
+                    if actual_ghost_players:
                         logger.debug(
-                            "DEBUG: Removed ghost player from room", ghost_player_id=ghost_player_id, room_id=room.id
+                            "DEBUG: Found actual ghost players in room",
+                            room_id=room.id,
+                            ghost_players=actual_ghost_players,
                         )
+                        for ghost_player_id in actual_ghost_players:
+                            room._players.discard(ghost_player_id)
+                            logger.debug(
+                                "DEBUG: Removed actual ghost player from room",
+                                ghost_player_id=ghost_player_id,
+                                room_id=room.id,
+                            )
 
         except Exception as e:
             logger.error("Error cleaning up ghost players", error=str(e), exc_info=True)
