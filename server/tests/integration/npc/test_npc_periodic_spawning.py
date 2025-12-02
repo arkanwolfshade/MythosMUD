@@ -91,7 +91,7 @@ def optional_npc_definition():
         max_population=3,
         spawn_probability=0.3,  # 30% chance
         room_id="earth_arkhamcity_downtown_001",
-        base_stats='{"strength": 5, "sanity": 30, "current_health": 50}',
+        base_stats='{"strength": 5, "lucidity": 30, "current_health": 50}',
         behavior_config='{"wander_probability": 0.2}',
         ai_integration_stub="{}",
     )
@@ -111,7 +111,7 @@ def required_npc_definition():
         max_population=1,
         spawn_probability=1.0,
         room_id="earth_arkhamcity_sanitarium_office",
-        base_stats='{"strength": 10, "sanity": 80, "current_health": 100}',
+        base_stats='{"strength": 10, "lucidity": 80, "current_health": 100}',
         behavior_config="{}",
         ai_integration_stub="{}",
     )

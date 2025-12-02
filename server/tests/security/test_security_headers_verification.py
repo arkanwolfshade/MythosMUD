@@ -107,7 +107,7 @@ class TestSecurityHeadersVerification:
             ("GET", "/players/test-player-id"),
             ("GET", "/players/name/test-player"),
             ("DELETE", "/players/test-player-id"),
-            ("POST", "/players/test-player-id/sanity"),
+            ("POST", "/players/test-player-id/lucidity"),
             ("POST", "/players/test-player-id/fear"),
             ("POST", "/players/test-player-id/corruption"),
             ("POST", "/players/test-player-id/occult-knowledge"),

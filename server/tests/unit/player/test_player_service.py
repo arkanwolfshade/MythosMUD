@@ -48,7 +48,7 @@ class TestPlayerService:
             "current_room_id": "test_room_001",
             "experience_points": 100,
             "level": 5,
-            "stats": {"health": 100, "sanity": 100, "strength": 10},
+            "stats": {"health": 100, "lucidity": 100, "strength": 10},
             "inventory": [],
             "status_effects": [],
             "created_at": datetime.now(),
@@ -79,7 +79,7 @@ class TestPlayerService:
             "current_room_id": "test_room_001",
             "experience_points": 100,
             "level": 5,
-            "stats": {"health": 100, "sanity": 100, "strength": 10},
+            "stats": {"health": 100, "lucidity": 100, "strength": 10},
             "inventory": [],
             "status_effects": [],
             "created_at": datetime.now(),
@@ -107,7 +107,7 @@ class TestPlayerService:
             "current_room_id": "test_room_001",
             "experience_points": 100,
             "level": 5,
-            "stats": {"health": 100, "sanity": 100, "strength": 10},
+            "stats": {"health": 100, "lucidity": 100, "strength": 10},
             "inventory": [],
             "status_effects": [],
             "created_at": datetime.now(),
@@ -162,7 +162,7 @@ class TestPlayerService:
                 "current_room_id": "test_room_001",
                 "experience_points": 100,
                 "level": 5,
-                "stats": {"health": 100, "sanity": 100, "strength": 10},
+                "stats": {"health": 100, "lucidity": 100, "strength": 10},
                 "inventory": [],
                 "status_effects": [],
                 "created_at": datetime.now(),
@@ -175,7 +175,7 @@ class TestPlayerService:
                 "current_room_id": "test_room_002",
                 "experience_points": 200,
                 "level": 10,
-                "stats": {"health": 100, "sanity": 100, "strength": 10},
+                "stats": {"health": 100, "lucidity": 100, "strength": 10},
                 "inventory": [],
                 "status_effects": [],
                 "created_at": datetime.now(),
@@ -204,7 +204,7 @@ class TestPlayerService:
             "current_room_id": "test_room_001",
             "experience_points": 100,
             "level": 5,
-            "stats": {"health": 100, "sanity": 100, "strength": 10},
+            "stats": {"health": 100, "lucidity": 100, "strength": 10},
             "inventory": [],
             "status_effects": [],
             "created_at": datetime.now(),
@@ -722,39 +722,39 @@ class TestPlayerServiceLayer:
         self.mock_persistence.async_list_players.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_apply_sanity_loss_success(self):
-        """Test successful sanity loss application."""
+    async def test_apply_Lucidity_loss_success(self):
+        """Test successful lucidity loss application."""
         # Mock player data
         mock_player = Mock()
         mock_player.player_id = uuid.uuid4()
         mock_player.name = "TestPlayer"
 
         self.mock_persistence.async_get_player.return_value = mock_player
-        self.mock_persistence.async_apply_sanity_loss.return_value = None
+        self.mock_persistence.async_apply_Lucidity_loss.return_value = None
 
-        # Apply sanity loss
-        result = await self.player_service.apply_sanity_loss("test-player-id", 10, "test-source")
+        # Apply lucidity loss
+        result = await self.player_service.apply_Lucidity_loss("test-player-id", 10, "test-source")
 
         # Verify result
         assert isinstance(result, dict)
-        assert "Applied 10 sanity loss to TestPlayer" in result["message"]
+        assert "Applied 10 lucidity loss to TestPlayer" in result["message"]
 
         # Verify persistence calls
         self.mock_persistence.async_get_player.assert_called_once_with("test-player-id")
-        self.mock_persistence.async_apply_sanity_loss.assert_called_once_with(mock_player, 10, "test-source")
+        self.mock_persistence.async_apply_Lucidity_loss.assert_called_once_with(mock_player, 10, "test-source")
 
     @pytest.mark.asyncio
-    async def test_apply_sanity_loss_player_not_found(self):
-        """Test sanity loss application when player doesn't exist."""
+    async def test_apply_Lucidity_loss_player_not_found(self):
+        """Test lucidity loss application when player doesn't exist."""
         self.mock_persistence.async_get_player.return_value = None
 
-        # Attempt to apply sanity loss to non-existent player
+        # Attempt to apply lucidity loss to non-existent player
         with pytest.raises(CustomValidationError) as exc_info:
-            await self.player_service.apply_sanity_loss("nonexistent-id", 10, "test-source")
+            await self.player_service.apply_Lucidity_loss("nonexistent-id", 10, "test-source")
 
         assert "Player not found: nonexistent-id" in str(exc_info.value)
         self.mock_persistence.async_get_player.assert_called_once_with("nonexistent-id")
-        self.mock_persistence.async_apply_sanity_loss.assert_not_called()
+        self.mock_persistence.async_apply_Lucidity_loss.assert_not_called()
 
     @pytest.mark.asyncio
     async def test_apply_fear_success(self):

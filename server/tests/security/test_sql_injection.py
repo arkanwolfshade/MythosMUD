@@ -257,7 +257,7 @@ class TestSQLInjectionPrevention:
         # Note: experience_points is NOT in stats JSONB - it's a separate INTEGER column
         valid_fields = [
             "current_health",
-            "sanity",
+            "lucidity",
             "occult_knowledge",
             "fear",
             "corruption",

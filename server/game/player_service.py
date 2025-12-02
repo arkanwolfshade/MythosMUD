@@ -537,14 +537,14 @@ class PlayerService:
                 user_friendly="Failed to update player location",
             )
 
-    async def apply_sanity_loss(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
+    async def apply_lucidity_loss(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
         """
-        Apply sanity loss to a player.
+        Apply lucidity loss to a player.
 
         Args:
             player_id: The player's ID (UUID)
-            amount: Amount of sanity to lose
-            source: Source of the sanity loss
+            amount: Amount of lucidity to lose
+            source: Source of the lucidity loss
 
         Returns:
             dict: Success message
@@ -552,14 +552,14 @@ class PlayerService:
         Raises:
             ValidationError: If player not found
         """
-        logger.info("Applying sanity loss", player_id=player_id, amount=amount, source=source)
+        logger.info("Applying lucidity loss", player_id=player_id, amount=amount, source=source)
 
         player = await self.persistence.async_get_player(player_id)
         if not player:
-            logger.warning("Player not found for sanity loss", player_id=player_id)
+            logger.warning("Player not found for lucidity loss", player_id=player_id)
             context = create_error_context()
             context.metadata["player_id"] = player_id
-            context.metadata["operation"] = "apply_sanity_loss"
+            context.metadata["operation"] = "apply_lucidity_loss"
             log_and_raise_enhanced(
                 ValidationError,
                 f"Player not found: {player_id}",
@@ -568,9 +568,9 @@ class PlayerService:
                 user_friendly="Player not found",
             )
 
-        await self.persistence.async_apply_sanity_loss(player, amount, source)
-        logger.info("Sanity loss applied successfully", player_id=player_id, amount=amount, source=source)
-        return {"message": f"Applied {amount} sanity loss to {player.name}"}
+        await self.persistence.async_apply_lucidity_loss(player, amount, source)
+        logger.info("Lucidity loss applied successfully", player_id=player_id, amount=amount, source=source)
+        return {"message": f"Applied {amount} lucidity loss to {player.name}"}
 
     async def apply_fear(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
         """
@@ -644,7 +644,7 @@ class PlayerService:
 
     async def gain_occult_knowledge(self, player_id: uuid.UUID, amount: int, source: str = "unknown") -> dict:
         """
-        Gain occult knowledge (with sanity loss).
+        Gain occult knowledge (with lucidity loss).
 
         Args:
             player_id: The player's ID (UUID)

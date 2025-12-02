@@ -54,13 +54,13 @@ class RollStatsRequest(BaseModel):
     profession_id: int | None = None
 
 
-class SanityLossRequest(BaseModel):
-    """Request model for applying sanity loss."""
+class LucidityLossRequest(BaseModel):
+    """Request model for applying lucidity loss."""
 
     __slots__ = ()  # Performance optimization
 
-    amount: int = Field(..., ge=0, le=100, description="Amount of sanity to lose (0-100)")
-    source: str = Field(default="unknown", description="Source of sanity loss")
+    amount: int = Field(..., ge=0, le=100, description="Amount of lucidity to lose (0-100)")
+    source: str = Field(default="unknown", description="Source of lucidity loss")
 
 
 class FearRequest(BaseModel):
@@ -238,19 +238,19 @@ async def delete_player(
 
 
 # Player stats and effects endpoints
-@player_router.post("/{player_id}/sanity-loss")
-async def apply_sanity_loss(
+@player_router.post("/{player_id}/lucidity-loss")
+async def apply_lucidity_loss(
     player_id: uuid.UUID,
-    request_data: SanityLossRequest,
+    request_data: LucidityLossRequest,
     request: Request,
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
 ) -> dict[str, str]:
-    """Apply sanity loss to a player."""
+    """Apply lucidity loss to a player."""
     try:
-        result = await player_service.apply_sanity_loss(player_id, request_data.amount, request_data.source)
+        result = await player_service.apply_lucidity_loss(player_id, request_data.amount, request_data.source)
         if not isinstance(result, dict):
-            raise RuntimeError(f"Expected dict from player_service.apply_sanity_loss(), got {type(result).__name__}")
+            raise RuntimeError(f"Expected dict from player_service.apply_lucidity_loss(), got {type(result).__name__}")
         return result
     except ValidationError as e:
         context = _create_error_context(request, current_user, requested_player_id=player_id)
@@ -303,7 +303,7 @@ async def gain_occult_knowledge(
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
 ) -> dict[str, str]:
-    """Gain occult knowledge (with sanity loss)."""
+    """Gain occult knowledge (with lucidity loss)."""
     try:
         result = await player_service.gain_occult_knowledge(player_id, request_data.amount, request_data.source)
         if not isinstance(result, dict):
@@ -694,7 +694,7 @@ def get_class_description(class_name: str) -> str:
     """Get a description for a character class."""
     descriptions = {
         "investigator": "A skilled researcher and detective, specializing in uncovering mysteries and gathering information.",
-        "occultist": "A scholar of forbidden knowledge, capable of wielding dangerous magic at the cost of sanity.",
+        "occultist": "A scholar of forbidden knowledge, capable of wielding dangerous magic at the cost of lucidity.",
         "survivor": "A resilient individual who has learned to endure the horrors of the Mythos through sheer determination.",
         "cultist": "A charismatic leader who can manipulate others and has ties to dark organizations.",
         "academic": "A brilliant researcher and scholar, specializing in historical and scientific knowledge.",

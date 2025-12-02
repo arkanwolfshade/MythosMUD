@@ -7,7 +7,7 @@ asynchronous and non-blocking, with support for multiple subscribers
 per event type.
 
 Implemented using pure asyncio patterns to banish the hybrid threading
-patterns that threatened the computational sanity of our eldritch
+patterns that threatened the computational lucidity of our eldritch
 architecture. Based on warnings from the Pnakotic Manuscripts about
 proper event propagation across dimensional boundaries.
 

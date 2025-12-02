@@ -46,7 +46,7 @@ class TestAsyncOperationsVerification:
         mock_persistence.async_save_room.return_value = None
         mock_persistence.async_list_rooms.return_value = []
         mock_persistence.async_save_rooms.return_value = None
-        mock_persistence.async_apply_sanity_loss.return_value = None
+        mock_persistence.async_apply_Lucidity_loss.return_value = None
         mock_persistence.async_apply_fear.return_value = None
         mock_persistence.async_apply_corruption.return_value = None
         mock_persistence.async_gain_occult_knowledge.return_value = None
@@ -73,7 +73,7 @@ class TestAsyncOperationsVerification:
             "get_player_by_name",
             "list_players",
             "delete_player",
-            "apply_sanity_loss",
+            "apply_Lucidity_loss",
             "apply_fear",
             "apply_corruption",
             "gain_occult_knowledge",

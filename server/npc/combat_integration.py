@@ -29,7 +29,7 @@ class NPCCombatIntegration:
 
     This class provides methods for NPCs to interact with the combat system,
     including damage calculation, combat events, and integration with the
-    game mechanics service for sanity, fear, and corruption effects.
+    game mechanics service for lucidity, fear, and corruption effects.
     """
 
     def __init__(self, event_bus: EventBus | None = None):
@@ -111,10 +111,10 @@ class NPCCombatIntegration:
                 # Apply damage to player using game mechanics service
                 success, message = self._game_mechanics.damage_player(target_id, damage, damage_type)
 
-                # Apply sanity loss for certain damage types
+                # Apply lucidity loss for certain damage types
                 if damage_type in ["mental", "occult"]:
-                    sanity_loss = min(damage // 2, 10)  # Cap sanity loss
-                    self._game_mechanics.apply_sanity_loss(target_id, sanity_loss, f"combat_{damage_type}")
+                    lucidity_loss = min(damage // 2, 10)  # Cap lucidity loss
+                    self._game_mechanics.apply_lucidity_loss(target_id, lucidity_loss, f"combat_{damage_type}")
 
                 # Apply fear for certain damage types
                 if damage_type in ["occult", "eldritch"]:
@@ -270,9 +270,9 @@ class NPCCombatIntegration:
                     occult_gain = 5  # Small amount of occult knowledge
                     self._game_mechanics.gain_occult_knowledge(killer_id, occult_gain, f"killed_{npc_id}")
 
-                    # Apply sanity loss for killing (even aggressive NPCs)
-                    sanity_loss = 2  # Small sanity loss for taking a life
-                    self._game_mechanics.apply_sanity_loss(killer_id, sanity_loss, f"killed_{npc_id}")
+                    # Apply lucidity loss for killing (even aggressive NPCs)
+                    lucidity_loss = 2  # Small lucidity loss for taking a life
+                    self._game_mechanics.apply_lucidity_loss(killer_id, lucidity_loss, f"killed_{npc_id}")
 
             # Note: NPCDied event is now published by CombatService via NATS
             # This prevents duplicate event publishing and ensures consistent event handling
@@ -313,7 +313,7 @@ class NPCCombatIntegration:
                     "max_hp": stats.get("max_health", 100),
                     "strength": stats.get("strength", 50),
                     "constitution": stats.get("constitution", 50),
-                    "sanity": stats.get("sanity", 100),
+                    "lucidity": stats.get("lucidity", 100),
                     "fear": stats.get("fear", 0),
                     "corruption": stats.get("corruption", 0),
                 }

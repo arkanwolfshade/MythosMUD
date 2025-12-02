@@ -54,7 +54,7 @@ Log entries from `logs/local/server.log` (timestamp: 2025-11-30 11:18:39-46) sho
 
 2025-11-30 11:18:39 - server.realtime.room_subscription_manager - DEBUG -
   npc_id='sanitarium_patient_earth_arkhamcity_sanitarium_room_foyer_001_1764526499_7071'
-  npc_name='Sanitarium Patient'
+  npc_name='Sanitarium patient'
   room_id='earth_arkhamcity_sanitarium_room_foyer_001'
   event='Skipping dead NPC from occupants'
 
@@ -68,7 +68,7 @@ Log entries from `logs/local/server.log` (timestamp: 2025-11-30 11:18:39-46) sho
 - Multiple NPCs are present in the room (`earth_arkhamcity_sanitarium_room_foyer_001`)
 - ALL NPCs are being skipped with "Skipping dead NPC from occupants"
 - Final NPC count is 0 (`npc_count=0`)
-- NPCs being skipped include: Dr. Francis Morgan, Sanitarium Patient, and others
+- NPCs being skipped include: Dr. Francis Morgan, Sanitarium patient, and others
 
 **Configuration Review**: No configuration issues identified
 
@@ -185,7 +185,7 @@ const npcs = room?.npcs ?? [];
 
 **Log Evidence Collected**:
 - Multiple log entries showing "Skipping dead NPC from occupants" for NPCs in room `earth_arkhamcity_sanitarium_room_foyer_001`
-- All NPCs checked are being skipped (Dr. Francis Morgan, Sanitarium Patient, etc.)
+- All NPCs checked are being skipped (Dr. Francis Morgan, Sanitarium patient, etc.)
 - Final NPC count is consistently 0
 
 **Data Flow Analysis**:
@@ -276,7 +276,7 @@ const npcs = room?.npcs ?? [];
 
 2025-11-30 11:18:39 - server.realtime.room_subscription_manager - DEBUG -
   npc_id='sanitarium_patient_earth_arkhamcity_sanitarium_room_foyer_001_1764526499_7071'
-  npc_name='Sanitarium Patient'
+  npc_name='Sanitarium patient'
   room_id='earth_arkhamcity_sanitarium_room_foyer_001'
   event='Skipping dead NPC from occupants'
 

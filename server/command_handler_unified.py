@@ -26,7 +26,7 @@ from .database import get_async_session
 from .exceptions import ValidationError
 from .logging.enhanced_logging_config import get_logger
 from .middleware.command_rate_limiter import command_rate_limiter
-from .models.sanity import PlayerSanity
+from .models.lucidity import PlayerLucidity
 from .utils.alias_graph import AliasGraph
 from .utils.audit_logger import audit_logger
 from .utils.command_parser import get_username_from_user
@@ -705,28 +705,30 @@ async def _check_catatonia_block(player_name: str, command: str, request: Reques
                 logger.debug(
                     "Database session obtained for catatonia check", player=player_name, player_id=player_id_uuid
                 )
-                # PlayerSanity.player_id is UUID type, but stored as string (UUID(as_uuid=False))
+                # PlayerLucidity.player_id is UUID type, but stored as string (UUID(as_uuid=False))
                 # SQLAlchemy accepts UUID directly and converts internally
-                sanity_record = await session.get(PlayerSanity, player_id_uuid)
+                lucidity_record = await session.get(PlayerLucidity, player_id_uuid)
                 logger.debug(
-                    "Sanity record retrieved",
+                    "Lucidity record retrieved",
                     player=player_name,
                     # Structlog handles UUID objects automatically, no need to convert to string
                     player_id=player_id_uuid,
-                    sanity_record_exists=bool(sanity_record),
-                    current_san=sanity_record.current_san if sanity_record else None,
-                    current_tier=sanity_record.current_tier if sanity_record else None,
+                    lucidity_record_exists=bool(lucidity_record),
+                    current_lcd=lucidity_record.current_lcd if lucidity_record else None,
+                    current_tier=lucidity_record.current_tier if lucidity_record else None,
                 )
-                # Block if tier is catatonic OR sanity is <= 0
+                # Block if tier is catatonic OR lucidity is <= 0
                 # This prevents movement even if tier hasn't been updated yet
-                # As noted in the Pnakotic Manuscripts, sanity <= 0 should always result in catatonic state
-                if sanity_record and (sanity_record.current_tier == "catatonic" or sanity_record.current_san <= 0):
+                # As noted in the Pnakotic Manuscripts, lucidity <= 0 should always result in catatonic state
+                if lucidity_record and (
+                    lucidity_record.current_tier == "catatonic" or lucidity_record.current_lcd <= 0
+                ):
                     logger.info(
                         "Catatonic player command blocked",
                         player=player_name,
                         command=command,
-                        sanity=sanity_record.current_san,
-                        tier=sanity_record.current_tier,
+                        lucidity=lucidity_record.current_lcd,
+                        tier=lucidity_record.current_tier,
                     )
                     return (
                         True,
@@ -737,8 +739,8 @@ async def _check_catatonia_block(player_name: str, command: str, request: Reques
                         "Player not catatonic, allowing command",
                         player=player_name,
                         command=command,
-                        sanity=sanity_record.current_san if sanity_record else None,
-                        tier=sanity_record.current_tier if sanity_record else None,
+                        lucidity=lucidity_record.current_lcd if lucidity_record else None,
+                        tier=lucidity_record.current_tier if lucidity_record else None,
                     )
             except Exception as e:
                 # If database query fails, log but don't block command

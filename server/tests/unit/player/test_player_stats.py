@@ -16,7 +16,7 @@ class Player:
             "strength": 10,
             "dexterity": 10,
             "constitution": 10,
-            "sanity": 100,
+            "lucidity": 100,
             "fear": 0,
             "corruption": 0,
             "occult_knowledge": 0,
@@ -25,9 +25,9 @@ class Player:
         }
         self.status_effects = []
 
-    def apply_sanity_loss(self, amount, source=None):
-        self.stats["sanity"] = max(0, self.stats["sanity"] - amount)
-        self.status_effects.append({"effect_type": "sanity_loss", "intensity": amount, "source": source})
+    def apply_Lucidity_loss(self, amount, source=None):
+        self.stats["lucidity"] = max(0, self.stats["lucidity"] - amount)
+        self.status_effects.append({"effect_type": "Lucidity_loss", "intensity": amount, "source": source})
 
     def apply_fear(self, amount, source=None):
         self.stats["fear"] = min(100, self.stats["fear"] + amount)
@@ -39,7 +39,7 @@ class Player:
 
     def gain_occult_knowledge(self, amount, source=None):
         self.stats["occult_knowledge"] += amount
-        self.apply_sanity_loss(amount, source)
+        self.apply_Lucidity_loss(amount, source)
 
     def take_damage(self, amount, damage_type=None):
         self.stats["current_health"] = max(0, self.stats["current_health"] - amount)
@@ -57,14 +57,14 @@ def player():
 
 def test_player_creation(player):
     assert player.name == "TestPlayer"
-    assert player.stats["sanity"] == 100
+    assert player.stats["lucidity"] == 100
     assert player.stats["current_health"] == player.stats["max_health"]
 
 
-def test_sanity_loss(player):
-    player.apply_sanity_loss(25, source="test")
-    assert player.stats["sanity"] == 75
-    assert any(e["effect_type"] == "sanity_loss" for e in player.status_effects)
+def test_Lucidity_loss(player):
+    player.apply_Lucidity_loss(25, source="test")
+    assert player.stats["lucidity"] == 75
+    assert any(e["effect_type"] == "Lucidity_loss" for e in player.status_effects)
 
 
 def test_fear_and_corruption(player):
@@ -75,11 +75,11 @@ def test_fear_and_corruption(player):
 
 
 def test_occult_knowledge(player):
-    initial_sanity = player.stats["sanity"]
+    initial_Lucidity = player.stats["lucidity"]
     initial_knowledge = player.stats["occult_knowledge"]
     player.gain_occult_knowledge(10, source="forbidden tome")
     assert player.stats["occult_knowledge"] == initial_knowledge + 10
-    assert player.stats["sanity"] == initial_sanity - 10
+    assert player.stats["lucidity"] == initial_Lucidity - 10
 
 
 def test_health_operations(player):
@@ -106,6 +106,6 @@ def test_server_connection():
 def test_player_stats_mocking():
     # Example of using patch to mock a method
     player = Player(name="MockedPlayer")
-    with patch.object(player, "apply_sanity_loss", return_value=None) as mock_method:
-        player.apply_sanity_loss(10)
+    with patch.object(player, "apply_Lucidity_loss", return_value=None) as mock_method:
+        player.apply_Lucidity_loss(10)
         mock_method.assert_called_once_with(10)

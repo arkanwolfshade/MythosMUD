@@ -78,28 +78,28 @@ def _get_health_label(stats: dict) -> str:
         return "mortally wounded"
 
 
-def _get_sanity_label(stats: dict) -> str:
+def _get_Lucidity_label(stats: dict) -> str:
     """
-    Get descriptive sanity label based on sanity percentage.
+    Get descriptive lucidity label based on lucidity percentage.
 
     Args:
-        stats: Dictionary containing 'sanity' and 'max_sanity' keys
+        stats: Dictionary containing 'lucidity' and 'max_lucidity' keys
 
     Returns:
-        Descriptive sanity label: "sane", "disturbed", "unstable", or "mad"
+        Descriptive lucidity label: "lucid", "disturbed", "unstable", or "mad"
     """
-    sanity = stats.get("sanity", 0)
-    max_sanity = stats.get("max_sanity", 100)
-    if max_sanity == 0:
+    lucidity = stats.get("lucidity", 0)
+    max_lucidity = stats.get("max_lucidity", 100)
+    if max_lucidity == 0:
         return "mad"
 
-    sanity_percent = (sanity / max_sanity) * 100
+    Lucidity_percent = (lucidity / max_lucidity) * 100
 
-    if sanity_percent > 75:
-        return "sane"
-    elif sanity_percent >= 25:
+    if Lucidity_percent > 75:
+        return "lucid"
+    elif Lucidity_percent >= 25:
         return "disturbed"
-    elif sanity_percent > 0:
+    elif Lucidity_percent > 0:
         return "unstable"
     else:
         return "mad"
@@ -456,7 +456,7 @@ async def handle_look_command(
         position = stats.get("position", "standing") if stats else "standing"
 
         health_label = _get_health_label(stats)
-        sanity_label = _get_sanity_label(stats)
+        Lucidity_label = _get_Lucidity_label(stats)
         visible_equipment = _get_visible_equipment(target_player)
 
         # Build display
@@ -473,7 +473,7 @@ async def handle_look_command(
 
         lines.append(f"Position: {position}")
         lines.append(f"Health: {health_label}")
-        lines.append(f"Sanity: {sanity_label}")
+        lines.append(f"lucidity: {Lucidity_label}")
 
         result_text = "\n".join(lines)
         logger.debug("Player look completed", player=player_name, target=target, target_player=player_name_display)
@@ -763,7 +763,7 @@ async def handle_look_command(
                 position = stats.get("position", "standing") if stats else "standing"
 
                 health_label = _get_health_label(stats)
-                sanity_label = _get_sanity_label(stats)
+                Lucidity_label = _get_Lucidity_label(stats)
                 visible_equipment = _get_visible_equipment(target_player)
 
                 lines = [player_name_display]
@@ -776,7 +776,7 @@ async def handle_look_command(
                         lines.append(f"Visible Equipment: {', '.join(equipment_parts)}")
                 lines.append(f"Position: {position}")
                 lines.append(f"Health: {health_label}")
-                lines.append(f"Sanity: {sanity_label}")
+                lines.append(f"lucidity: {Lucidity_label}")
 
                 result_text = "\n".join(lines)
                 logger.debug(

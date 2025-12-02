@@ -35,7 +35,7 @@ class TestZoneConfiguration:
             "weather_patterns": ["clear", "overcast"],
             "special_rules": {
                 "npc_spawn_modifier": 1.5,
-                "sanity_drain_rate": 0.1,
+                "Lucidity_drain_rate": 0.1,
                 "combat_modifier": 1.2,
                 "exploration_bonus": 0.5,
                 "access_requirements": ["stealth", "local_knowledge"],
@@ -48,7 +48,7 @@ class TestZoneConfiguration:
         assert config.description == "A test zone"
         assert config.weather_patterns == ["clear", "overcast"]
         assert config.npc_spawn_modifier == 1.5
-        assert config.sanity_drain_rate == 0.1
+        assert config.Lucidity_drain_rate == 0.1
         assert config.combat_modifier == 1.2
         assert config.exploration_bonus == 0.5
         assert config.access_requirements == ["stealth", "local_knowledge"]
@@ -62,7 +62,7 @@ class TestZoneConfiguration:
         assert config.description == ""
         assert config.weather_patterns == []
         assert config.npc_spawn_modifier == 1.0
-        assert config.sanity_drain_rate == 0.0
+        assert config.Lucidity_drain_rate == 0.0
         assert config.combat_modifier == 1.0
         assert config.exploration_bonus == 0.0
         assert config.access_requirements == []
@@ -235,7 +235,7 @@ class TestNPCPopulationController:
                 "weather_patterns": ["fog", "rain", "overcast"],
                 "special_rules": {
                     "npc_spawn_modifier": 1.2,
-                    "sanity_drain_rate": 0.1,
+                    "Lucidity_drain_rate": 0.1,
                     "combat_modifier": 1.0,
                     "exploration_bonus": 0.5,
                 },
@@ -250,7 +250,7 @@ class TestNPCPopulationController:
                 "description": "The bustling commercial heart",
                 "special_rules": {
                     "npc_spawn_modifier": 1.5,
-                    "sanity_drain_rate": 0.08,
+                    "Lucidity_drain_rate": 0.08,
                     "combat_modifier": 1.1,
                     "exploration_bonus": 0.7,
                 },
@@ -322,7 +322,7 @@ class TestNPCPopulationController:
                 "weather_patterns": ["fog", "rain", "overcast"],
                 "special_rules": {
                     "npc_spawn_modifier": 1.2,
-                    "sanity_drain_rate": 0.1,
+                    "Lucidity_drain_rate": 0.1,
                     "combat_modifier": 1.0,
                     "exploration_bonus": 0.5,
                 },
@@ -335,7 +335,7 @@ class TestNPCPopulationController:
                 "description": "The bustling commercial heart",
                 "special_rules": {
                     "npc_spawn_modifier": 1.5,
-                    "sanity_drain_rate": 0.08,
+                    "Lucidity_drain_rate": 0.08,
                     "combat_modifier": 1.1,
                     "exploration_bonus": 0.7,
                 },
@@ -355,7 +355,7 @@ class TestNPCPopulationController:
             required_npc=True,
             max_population=1,
             spawn_probability=1.0,
-            base_stats='{"strength": 10, "sanity": 80, "current_health": 100}',
+            base_stats='{"strength": 10, "lucidity": 80, "current_health": 100}',
             behavior_config='{"greeting_message": "Welcome!"}',
             ai_integration_stub='{"ai_enabled": false}',
         )
@@ -373,7 +373,7 @@ class TestNPCPopulationController:
             required_npc=False,
             max_population=3,
             spawn_probability=0.7,
-            base_stats='{"strength": 8, "sanity": 60, "current_health": 80}',
+            base_stats='{"strength": 8, "lucidity": 60, "current_health": 80}',
             behavior_config='{"wandering_behavior": true}',
             ai_integration_stub='{"ai_enabled": false}',
         )
@@ -418,13 +418,13 @@ class TestNPCPopulationController:
         zone_config = population_controller.get_zone_configuration("arkhamcity")
         assert zone_config is not None
         assert zone_config.npc_spawn_modifier == 1.2
-        assert zone_config.sanity_drain_rate == 0.1
+        assert zone_config.Lucidity_drain_rate == 0.1
 
         # Test sub-zone configuration
         subzone_config = population_controller.get_zone_configuration("arkhamcity/downtown")
         assert subzone_config is not None
         assert subzone_config.npc_spawn_modifier == 1.5
-        assert subzone_config.sanity_drain_rate == 0.08
+        assert subzone_config.Lucidity_drain_rate == 0.08
 
     def test_zone_key_extraction(self, population_controller):
         """Test extracting zone keys from room IDs."""
@@ -787,7 +787,7 @@ class TestNPCPopulationManagement:
             required_npc=True,
             max_population=1,
             spawn_probability=1.0,
-            base_stats='{"strength": 10, "dexterity": 10, "constitution": 12, "intelligence": 14, "wisdom": 12, "charisma": 16, "sanity": 80, "current_health": 100}',
+            base_stats='{"strength": 10, "dexterity": 10, "constitution": 12, "intelligence": 14, "wisdom": 12, "charisma": 16, "lucidity": 80, "current_health": 100}',
             behavior_config='{"greeting_message": "Welcome to my shop!", "farewell_message": "Come back soon!", "shop_items": ["potion", "scroll"]}',
             ai_integration_stub='{"ai_enabled": false, "response_delay": 1.0}',
         )
@@ -805,7 +805,7 @@ class TestNPCPopulationManagement:
             required_npc=False,
             max_population=3,
             spawn_probability=0.7,
-            base_stats='{"strength": 8, "dexterity": 12, "constitution": 10, "intelligence": 8, "wisdom": 10, "charisma": 6, "sanity": 60, "current_health": 80}',
+            base_stats='{"strength": 8, "dexterity": 12, "constitution": 10, "intelligence": 8, "wisdom": 10, "charisma": 6, "lucidity": 60, "current_health": 80}',
             behavior_config='{"wandering_behavior": true, "response_message": "Hello there!", "flee_on_attack": true}',
             ai_integration_stub='{"ai_enabled": false, "wander_interval": 30.0}',
         )
@@ -823,7 +823,7 @@ class TestNPCPopulationManagement:
             required_npc=False,
             max_population=2,
             spawn_probability=0.5,
-            base_stats='{"strength": 14, "dexterity": 10, "constitution": 12, "intelligence": 6, "wisdom": 8, "charisma": 4, "sanity": 40, "current_health": 120}',
+            base_stats='{"strength": 14, "dexterity": 10, "constitution": 12, "intelligence": 6, "wisdom": 8, "charisma": 4, "lucidity": 40, "current_health": 120}',
             behavior_config='{"aggression_level": 0.8, "hunting_behavior": true, "territorial": true, "attack_message": "You dare enter my domain!"}',
             ai_integration_stub='{"ai_enabled": false, "hunt_radius": 2}',
         )
@@ -970,29 +970,29 @@ class TestNPCPopulationManagement:
             sub_zone_id="test_zone",
             min_population=0,
             max_population=999,
-            spawn_conditions='{"player_level": {"min": 5, "max": 15}, "sanity": {"min": 50, "max": 100}}',
+            spawn_conditions='{"player_level": {"min": 5, "max": 15}, "lucidity": {"min": 50, "max": 100}}',
         )
 
         # Test valid ranges
-        game_state_valid = {"player_level": 10, "sanity": 75}
+        game_state_valid = {"player_level": 10, "lucidity": 75}
         assert rule.check_spawn_conditions(game_state_valid) is True
 
         # Test edge cases
-        game_state_min_edge = {"player_level": 5, "sanity": 50}
+        game_state_min_edge = {"player_level": 5, "lucidity": 50}
         assert rule.check_spawn_conditions(game_state_min_edge) is True
 
-        game_state_max_edge = {"player_level": 15, "sanity": 100}
+        game_state_max_edge = {"player_level": 15, "lucidity": 100}
         assert rule.check_spawn_conditions(game_state_max_edge) is True
 
         # Test invalid ranges
-        game_state_too_low = {"player_level": 4, "sanity": 75}
+        game_state_too_low = {"player_level": 4, "lucidity": 75}
         assert rule.check_spawn_conditions(game_state_too_low) is False
 
-        game_state_too_high = {"player_level": 16, "sanity": 75}
+        game_state_too_high = {"player_level": 16, "lucidity": 75}
         assert rule.check_spawn_conditions(game_state_too_high) is False
 
-        game_state_sanity_too_low = {"player_level": 10, "sanity": 49}
-        assert rule.check_spawn_conditions(game_state_sanity_too_low) is False
+        game_state_Lucidity_too_low = {"player_level": 10, "lucidity": 49}
+        assert rule.check_spawn_conditions(game_state_Lucidity_too_low) is False
 
     def test_npc_spawn_rule_list_conditions(self):
         """Test spawn rules with list-based conditions."""
@@ -1094,9 +1094,9 @@ class TestNPCPopulationManagement:
         stats = shopkeeper_definition.get_base_stats()
         assert isinstance(stats, dict)
         assert "strength" in stats
-        assert "sanity" in stats
+        assert "lucidity" in stats
         assert stats["strength"] == 10
-        assert stats["sanity"] == 80
+        assert stats["lucidity"] == 80
 
         # Test behavior config
         behavior = shopkeeper_definition.get_behavior_config()
@@ -1115,12 +1115,12 @@ class TestNPCPopulationManagement:
     def test_npc_definition_json_modification(self, shopkeeper_definition):
         """Test that NPC definitions properly handle JSON data modification."""
         # Modify base stats
-        new_stats = {"strength": 15, "dexterity": 12, "sanity": 90, "current_health": 120}
+        new_stats = {"strength": 15, "dexterity": 12, "lucidity": 90, "current_health": 120}
         shopkeeper_definition.set_base_stats(new_stats)
 
         retrieved_stats = shopkeeper_definition.get_base_stats()
         assert retrieved_stats["strength"] == 15
-        assert retrieved_stats["sanity"] == 90
+        assert retrieved_stats["lucidity"] == 90
 
         # Modify behavior config
         new_behavior = {"greeting_message": "New greeting!", "farewell_message": "New farewell!"}

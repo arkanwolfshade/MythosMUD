@@ -2104,8 +2104,8 @@ class RealTimeEventHandler:
                                 "stats": {
                                     "current_health": stats.get("current_health", 100),
                                     "max_health": stats.get("max_health", 100),
-                                    "sanity": stats.get("sanity", 100),
-                                    "max_sanity": stats.get("max_sanity", 100),
+                                    "lucidity": stats.get("lucidity", 100),
+                                    "max_lucidity": stats.get("max_lucidity", 100),
                                     "strength": stats.get("strength"),
                                     "dexterity": stats.get("dexterity"),
                                     "constitution": stats.get("constitution"),

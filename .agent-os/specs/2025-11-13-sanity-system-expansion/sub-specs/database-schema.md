@@ -1,10 +1,10 @@
 # Database Schema
 
-This is the database schema implementation for the spec detailed in @.agent-os/specs/2025-11-13-sanity-system-expansion/spec.md
+This is the database schema implementation for the spec detailed in @.agent-os/specs/2025-11-13-lucidity-system-expansion/spec.md
 
 ## Schema Changes
 
-### Table: `player_sanity`
+### Table: `player_lucidity`
 
 - `player_id` INTEGER PRIMARY KEY REFERENCES `players(id)` ON DELETE CASCADE
 - `current_san` INTEGER NOT NULL DEFAULT 100 CHECK (current_san BETWEEN -100 AND 100)
@@ -12,9 +12,9 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
 - `liabilities` JSON NOT NULL DEFAULT '[]'
 - `last_updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 - `catatonia_entered_at` DATETIME NULL
-- Index: `idx_player_sanity_tier` on (`current_tier`)
+- Index: `idx_player_lucidity_tier` on (`current_tier`)
 
-### Table: `sanity_adjustment_log`
+### Table: `lucidity_adjustment_log`
 
 - `id` INTEGER PRIMARY KEY AUTOINCREMENT
 - `player_id` INTEGER NOT NULL REFERENCES `players(id)` ON DELETE CASCADE
@@ -23,9 +23,9 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
 - `metadata` JSON NOT NULL DEFAULT '{}'
 - `location_id` TEXT NULL
 - `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-- Index: `idx_sanity_adjustment_player_created` on (`player_id`,`created_at`)
+- Index: `idx_lucidity_adjustment_player_created` on (`player_id`,`created_at`)
 
-### Table: `sanity_exposure_state`
+### Table: `lucidity_exposure_state`
 
 - `id` INTEGER PRIMARY KEY AUTOINCREMENT
 - `player_id` INTEGER NOT NULL REFERENCES `players(id)` ON DELETE CASCADE
@@ -34,7 +34,7 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
 - `last_encounter_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 - Unique constraint on (`player_id`,`entity_archetype`)
 
-### Table: `sanity_cooldowns`
+### Table: `lucidity_cooldowns`
 
 - `id` INTEGER PRIMARY KEY AUTOINCREMENT
 - `player_id` INTEGER NOT NULL REFERENCES `players(id)` ON DELETE CASCADE
@@ -44,8 +44,8 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
 
 ## Migration Notes
 
-- Populate `player_sanity` with existing players (`current_san = 100`, `current_tier = 'lucid'`).
-- Backfill `sanity_exposure_state` only when encounters occur; no initial data required.
+- Populate `player_lucidity` with existing players (`current_san = 100`, `current_tier = 'lucid'`).
+- Backfill `lucidity_exposure_state` only when encounters occur; no initial data required.
 - Ensure migrations run under a transaction; create indexes after data backfill to minimize lock duration.
 
 ## Rationale

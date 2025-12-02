@@ -240,7 +240,7 @@ async def lifespan(app: FastAPI):
 
     # Initialize combat services (not yet in container - Phase 2 migration)
     # TODO: Move these to container in Phase 2
-    from ..services.passive_sanity_flux_service import PassiveSanityFluxService
+    from ..services.passive_lucidity_flux_service import PassiveLucidityFluxService
     from ..services.player_combat_service import PlayerCombatService
     from ..services.player_death_service import PlayerDeathService
     from ..services.player_respawn_service import PlayerRespawnService
@@ -261,24 +261,24 @@ async def lifespan(app: FastAPI):
     )
     logger.info("Player respawn service initialized")
 
-    async def _sanitarium_failover(player_id: str, current_san: int) -> None:
+    async def _sanitarium_failover(player_id: str, current_lcd: int) -> None:
         """
         Failover callback that relocates catatonic players to the sanitarium.
 
         This callback runs in a background task (fire-and-forget) to avoid blocking
-        the sanity service transaction. It uses a completely independent database session
+        the lucidity service transaction. It uses a completely independent database session
         to prevent transaction conflicts.
 
-        CRITICAL: We add a small delay to ensure the sanity service's transaction has
+        CRITICAL: We add a small delay to ensure the lucidity service's transaction has
         completed before attempting the respawn. This prevents asyncpg connection conflicts.
         """
-        # Small delay to ensure the sanity service transaction has completed
+        # Small delay to ensure the lucidity service transaction has completed
         # This prevents "another operation is in progress" errors from asyncpg
         await asyncio.sleep(0.1)
 
         # Use container's database manager to get a session maker
         # This ensures we get a fresh, independent session that won't conflict
-        # with any active transactions from the sanity service
+        # with any active transactions from the lucidity service
         if container.database_manager is None:
             logger.error(
                 "Database manager not available for catatonia failover",
@@ -305,7 +305,7 @@ async def lifespan(app: FastAPI):
                 logger.info(
                     "Catatonia failover completed",
                     player_id=player_id,
-                    san=current_san,
+                    lcd=current_lcd,
                 )
             except Exception as exc:  # pragma: no cover - defensive
                 logger.error(
@@ -320,12 +320,12 @@ async def lifespan(app: FastAPI):
     app.state.catatonia_registry = CatatoniaRegistry(failover_callback=_sanitarium_failover)
     logger.info("Catatonia registry initialized")
 
-    app.state.passive_sanity_flux_service = PassiveSanityFluxService(
+    app.state.passive_lucidity_flux_service = PassiveLucidityFluxService(
         persistence=container.persistence,
         performance_monitor=container.performance_monitor,
         catatonia_observer=app.state.catatonia_registry,
     )
-    logger.info("Passive sanity flux service initialized")
+    logger.info("Passive lucidity flux service initialized")
 
     if (
         container.event_bus
@@ -668,18 +668,18 @@ async def game_tick_loop(app: FastAPI):
                                             session,
                                         )
 
-                            if hasattr(app.state, "passive_sanity_flux_service"):
+                            if hasattr(app.state, "passive_lucidity_flux_service"):
                                 try:
-                                    await app.state.passive_sanity_flux_service.process_tick(
+                                    await app.state.passive_lucidity_flux_service.process_tick(
                                         session=session,
                                         tick_count=tick_count,
                                         now=datetime.datetime.now(datetime.UTC),
                                     )
-                                except Exception as san_flux_error:
+                                except Exception as lcd_flux_error:
                                     logger.error(
-                                        "Error processing passive SAN flux",
+                                        "Error processing passive LCD flux",
                                         tick_count=tick_count,
-                                        error=str(san_flux_error),
+                                        error=str(lcd_flux_error),
                                     )
 
                             # Also check for players already at death threshold who need limbo transition

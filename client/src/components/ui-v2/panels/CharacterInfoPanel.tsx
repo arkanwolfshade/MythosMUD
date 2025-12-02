@@ -1,19 +1,19 @@
 import React from 'react';
 import { HealthMeter } from '../../health/HealthMeter';
-import { SanityMeter } from '../../sanity/SanityMeter';
+import { LucidityMeter } from '../../lucidity/LucidityMeter';
 import type { Player } from '../types';
 import type { HealthStatus } from '../../../types/health';
-import type { SanityStatus } from '../../../types/sanity';
+import type { LucidityStatus } from '../../../types/lucidity';
 
 interface CharacterInfoPanelProps {
   player: Player | null;
   healthStatus: HealthStatus | null;
-  sanityStatus: SanityStatus | null;
+  lucidityStatus: LucidityStatus | null;
 }
 
 // Simplified character info panel without connection status and player name (moved to header)
 // Based on findings from "Character State Display in Mythos Interfaces" - Dr. Armitage, 1928
-export const CharacterInfoPanel: React.FC<CharacterInfoPanelProps> = ({ player, healthStatus, sanityStatus }) => {
+export const CharacterInfoPanel: React.FC<CharacterInfoPanelProps> = ({ player, healthStatus, lucidityStatus }) => {
   if (!player?.stats) {
     return (
       <div className="p-4 text-mythos-terminal-text-secondary">
@@ -24,10 +24,10 @@ export const CharacterInfoPanel: React.FC<CharacterInfoPanelProps> = ({ player, 
 
   return (
     <div className="p-4 space-y-4">
-      {/* Health and Sanity Bars */}
+      {/* Health and Lucidity Bars */}
       <div className="space-y-2">
         <HealthMeter status={healthStatus} />
-        <SanityMeter status={sanityStatus} className="mt-2" />
+        <LucidityMeter status={lucidityStatus} className="mt-2" />
         {player.level !== undefined && (
           <div className="flex items-center justify-between">
             <span className="text-base text-mythos-terminal-text-secondary">Level:</span>

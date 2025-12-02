@@ -81,7 +81,7 @@ class TestWebSocketConnection:
         mock_player.name = "TestPlayer"
         mock_player.level = 1
         mock_player.current_room_id = "room_1"
-        mock_player.get_stats = Mock(return_value={"health": 100, "sanity": 80})
+        mock_player.get_stats = Mock(return_value={"health": 100, "lucidity": 80})
 
         mock_room = Mock()
         mock_room.id = "room_1"

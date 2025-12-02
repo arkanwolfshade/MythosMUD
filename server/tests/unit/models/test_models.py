@@ -29,7 +29,7 @@ class TestStats:
         assert 15 <= stats.intelligence <= 90
         assert 15 <= stats.wisdom <= 90
         assert 15 <= stats.charisma <= 90
-        assert stats.sanity == 100
+        assert stats.lucidity == 100
         assert stats.occult_knowledge == 0
         assert stats.fear == 0
         assert stats.corruption == 0
@@ -45,7 +45,7 @@ class TestStats:
             intelligence=80,
             wisdom=65,
             charisma=55,
-            sanity=85,
+            lucidity=85,
             occult_knowledge=25,
             fear=15,
             corruption=5,
@@ -59,7 +59,7 @@ class TestStats:
         assert stats.intelligence == 80
         assert stats.wisdom == 65
         assert stats.charisma == 55
-        assert stats.sanity == 85
+        assert stats.lucidity == 85
         assert stats.occult_knowledge == 25
         assert stats.fear == 15
         assert stats.corruption == 5
@@ -71,10 +71,10 @@ class TestStats:
         stats = Stats(constitution=75)
         assert stats.max_health == 75  # Direct constitution value
 
-    def test_stats_max_sanity_property(self):
-        """Test the max_sanity computed property."""
+    def test_stats_max_Lucidity_property(self):
+        """Test the max_Lucidity computed property."""
         stats = Stats(wisdom=90)
-        assert stats.max_sanity == 90  # Direct wisdom value
+        assert stats.max_Lucidity == 90  # Direct wisdom value
 
     def test_stats_get_attribute_modifier(self):
         """Test the get_attribute_modifier method."""
@@ -84,16 +84,16 @@ class TestStats:
         assert stats.get_attribute_modifier(AttributeType.DEX) == -5  # (40-50)/2
         assert stats.get_attribute_modifier(AttributeType.INT) == 5  # (60-50)/2
 
-    def test_stats_is_sane(self):
-        """Test the is_sane method."""
-        stats = Stats(sanity=100)
-        assert stats.is_sane() is True
+    def test_stats_is_lucid(self):
+        """Test the is_lucid method."""
+        stats = Stats(lucidity=100)
+        assert stats.is_lucid() is True
 
-        stats = Stats(sanity=50)
-        assert stats.is_sane() is True
+        stats = Stats(lucidity=50)
+        assert stats.is_lucid() is True
 
-        stats = Stats(sanity=0)
-        assert stats.is_sane() is False
+        stats = Stats(lucidity=0)
+        assert stats.is_lucid() is False
 
     def test_stats_is_corrupted(self):
         """Test the is_corrupted method."""
@@ -103,13 +103,13 @@ class TestStats:
         stats = Stats(corruption=50)
         assert stats.is_corrupted() is True
 
-    def test_stats_is_insane(self):
-        """Test the is_insane method."""
-        stats = Stats(sanity=100)
-        assert stats.is_insane() is False
+    def test_stats_is_delirious(self):
+        """Test the is_delirious method."""
+        stats = Stats(lucidity=100)
+        assert stats.is_delirious() is False
 
-        stats = Stats(sanity=0)
-        assert stats.is_insane() is True
+        stats = Stats(lucidity=0)
+        assert stats.is_delirious() is True
 
     def test_stats_ignores_extra_fields(self):
         """Test that Stats model ignores extra fields (security: extra='ignore')."""
@@ -438,7 +438,7 @@ class TestAttributeType:
         assert AttributeType.INT == "intelligence"
         assert AttributeType.WIS == "wisdom"
         assert AttributeType.CHA == "charisma"
-        assert AttributeType.SAN == "sanity"
+        assert AttributeType.LCD == "lucidity"
         assert AttributeType.OCC == "occult_knowledge"
         assert AttributeType.FEAR == "fear"
         assert AttributeType.CORR == "corruption"
@@ -456,4 +456,4 @@ class TestStatusEffectType:
         assert StatusEffectType.PARANOID == "paranoid"
         assert StatusEffectType.TREMBLING == "trembling"
         assert StatusEffectType.CORRUPTED == "corrupted"
-        assert StatusEffectType.INSANE == "insane"
+        assert StatusEffectType.delirious == "delirious"

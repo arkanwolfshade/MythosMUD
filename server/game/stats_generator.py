@@ -427,7 +427,7 @@ class StatsGenerator:
             },
             "derived_stats": {
                 "max_health": stats.max_health,
-                "max_sanity": stats.max_sanity,
+                "max_lucidity": stats.max_lucidity,
             },
             "total_points": sum(
                 [

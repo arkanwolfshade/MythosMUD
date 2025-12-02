@@ -60,8 +60,8 @@ All models achieve sub-millisecond instantiation times, which is excellent for r
 **Implementation**: Created `server/models/optimized_game.py` with caching
 
 **Results**:
-- Implemented caching for `max_health`, `max_sanity`, `get_attribute_modifier`
-- Added caching for `is_sane`, `is_corrupted`, `is_insane` methods
+- Implemented caching for `max_health`, `max_lucidity`, `get_attribute_modifier`
+- Added caching for `is_lucid`, `is_corrupted`, `is_inlucid` methods
 - Implemented caching for `StatusEffect.is_active()` method
 - **Note**: For simple computations, caching overhead can be higher than computation cost
 

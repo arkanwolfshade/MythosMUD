@@ -2,7 +2,7 @@
 Tests for the game/mechanics module.
 
 This module tests the GameMechanicsService class which handles all game mechanics
-including sanity, fear, corruption, healing, and damage mechanics.
+including lucidity, fear, corruption, healing, and damage mechanics.
 """
 
 import uuid
@@ -25,7 +25,7 @@ class TestGameMechanicsService:
         # Create a mock persistence object with the required methods
         self.mock_persistence = Mock()
         self.mock_persistence.get_player = Mock()
-        self.mock_persistence.apply_sanity_loss = Mock()
+        self.mock_persistence.apply_Lucidity_loss = Mock()
         self.mock_persistence.apply_fear = Mock()
         self.mock_persistence.apply_corruption = Mock()
         self.mock_persistence.gain_occult_knowledge = Mock()
@@ -40,8 +40,8 @@ class TestGameMechanicsService:
         self.mock_player.name = "TestPlayer"
         self.mock_player.player_id = str(uuid.uuid4())
 
-    def test_apply_sanity_loss_success(self):
-        """Test successful sanity loss application."""
+    def test_apply_Lucidity_loss_success(self):
+        """Test successful lucidity loss application."""
         # Setup
         player_id = str(uuid.uuid4())
         amount = 10
@@ -50,16 +50,16 @@ class TestGameMechanicsService:
         self.mock_persistence.get_player.return_value = self.mock_player
 
         # Execute
-        success, message = self.mechanics_service.apply_sanity_loss(player_id, amount, source)
+        success, message = self.mechanics_service.apply_Lucidity_loss(player_id, amount, source)
 
         # Verify
         assert success is True
-        assert f"Applied {amount} sanity loss to {self.mock_player.name}" in message
+        assert f"Applied {amount} lucidity loss to {self.mock_player.name}" in message
         self.mock_persistence.get_player.assert_called_once_with(player_id)
-        self.mock_persistence.apply_sanity_loss.assert_called_once_with(self.mock_player, amount, source)
+        self.mock_persistence.apply_Lucidity_loss.assert_called_once_with(self.mock_player, amount, source)
 
-    def test_apply_sanity_loss_player_not_found(self):
-        """Test sanity loss application when player is not found."""
+    def test_apply_Lucidity_loss_player_not_found(self):
+        """Test lucidity loss application when player is not found."""
         # Setup
         player_id = str(uuid.uuid4())
         amount = 10
@@ -68,13 +68,13 @@ class TestGameMechanicsService:
         self.mock_persistence.get_player.return_value = None
 
         # Execute & Verify
-        with pytest.raises(ValidationError, match="Player not found for sanity loss"):
-            self.mechanics_service.apply_sanity_loss(player_id, amount, source)
+        with pytest.raises(ValidationError, match="Player not found for lucidity loss"):
+            self.mechanics_service.apply_Lucidity_loss(player_id, amount, source)
         self.mock_persistence.get_player.assert_called_once_with(player_id)
-        self.mock_persistence.apply_sanity_loss.assert_not_called()
+        self.mock_persistence.apply_Lucidity_loss.assert_not_called()
 
-    def test_apply_sanity_loss_default_source(self):
-        """Test sanity loss application with default source."""
+    def test_apply_Lucidity_loss_default_source(self):
+        """Test lucidity loss application with default source."""
         # Setup
         player_id = str(uuid.uuid4())
         amount = 10
@@ -82,11 +82,11 @@ class TestGameMechanicsService:
         self.mock_persistence.get_player.return_value = self.mock_player
 
         # Execute
-        success, message = self.mechanics_service.apply_sanity_loss(player_id, amount)
+        success, message = self.mechanics_service.apply_Lucidity_loss(player_id, amount)
 
         # Verify
         assert success is True
-        self.mock_persistence.apply_sanity_loss.assert_called_once_with(self.mock_player, amount, "unknown")
+        self.mock_persistence.apply_Lucidity_loss.assert_called_once_with(self.mock_player, amount, "unknown")
 
     def test_apply_fear_success(self):
         """Test successful fear application."""
@@ -276,7 +276,7 @@ class TestGameMechanicsService:
 
         # Test all operations with zero amounts
         operations = [
-            ("apply_sanity_loss", 0, "test"),
+            ("apply_Lucidity_loss", 0, "test"),
             ("apply_fear", 0, "test"),
             ("apply_corruption", 0, "test"),
             ("gain_occult_knowledge", 0, "test"),
@@ -303,7 +303,7 @@ class TestGameMechanicsService:
 
         # Test all operations with negative amounts
         operations = [
-            ("apply_sanity_loss", -10, "test"),
+            ("apply_Lucidity_loss", -10, "test"),
             ("apply_fear", -15, "test"),
             ("apply_corruption", -5, "test"),
             ("gain_occult_knowledge", -20, "test"),
@@ -330,7 +330,7 @@ class TestGameMechanicsService:
 
         # Test all operations with large amounts
         operations = [
-            ("apply_sanity_loss", 1000, "test"),
+            ("apply_Lucidity_loss", 1000, "test"),
             ("apply_fear", 1500, "test"),
             ("apply_corruption", 500, "test"),
             ("gain_occult_knowledge", 2000, "test"),
@@ -352,7 +352,7 @@ class TestGameMechanicsService:
         """Test GameMechanicsService initialization."""
         # Test that the service is properly initialized
         assert self.mechanics_service.persistence == self.mock_persistence
-        assert hasattr(self.mechanics_service, "apply_sanity_loss")
+        assert hasattr(self.mechanics_service, "apply_Lucidity_loss")
         assert hasattr(self.mechanics_service, "apply_fear")
         assert hasattr(self.mechanics_service, "apply_corruption")
         assert hasattr(self.mechanics_service, "gain_occult_knowledge")
@@ -368,7 +368,7 @@ class TestGameMechanicsService:
 
         # Test all methods to ensure persistence calls are made
         test_cases = [
-            ("apply_sanity_loss", [10, "test"], "apply_sanity_loss"),
+            ("apply_Lucidity_loss", [10, "test"], "apply_Lucidity_loss"),
             ("apply_fear", [15, "test"], "apply_fear"),
             ("apply_corruption", [5, "test"], "apply_corruption"),
             ("gain_occult_knowledge", [20, "test"], "gain_occult_knowledge"),

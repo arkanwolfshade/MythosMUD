@@ -27,7 +27,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 
 - **System integrations**
   - **NPC behavior**: Extend relevant services (`server/game/npc_*`) to subscribe to `mythos.hour.tick` for shift changes (shop open/close, patrols).
-  - **Environment**: Update `room_service` to request current Mythos daypart and apply lighting descriptions; integrate with passive sanity flux to adjust the witching hour logic.
+  - **Environment**: Update `room_service` to request current Mythos daypart and apply lighting descriptions; integrate with passive lucidity flux to adjust the witching hour logic.
   - **Holiday engine**: Add middleware or dedicated manager (`server/game/holiday_service.py`) to track active holidays, trigger celebratory events, and ensure bonuses automatically sunset after 48 Mythos hours.
   - **Admin tooling**: Provide `/admin/time` command returning current Mythos timestamp, active holidays, next three triggers, and freeze status.
 

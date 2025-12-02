@@ -77,13 +77,13 @@ A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulh
 ### 🔄 In Progress
 
 - **Advanced Chat Channels** - Tab-based channel management and filtering
-- **Combat System** - Expanded combat mechanics with sanity effects
+- **Combat System** - Expanded combat mechanics with lucidity effects
 - **Performance Optimization** - Database connection pooling and query optimization
 - **Advanced NPC Behaviors** - Improved AI patterns and dialogue systems
 
 ### 📋 Planned Features
 
-- **Magic/Spellcasting** - Spell system with sanity costs and eldritch effects
+- **Magic/Spellcasting** - Spell system with lucidity costs and eldritch effects
 - **Quest System** - Dynamic quest generation and tracking
 - **Crafting System** - Item crafting and modification
 - **Advanced World Systems** - Dynamic events, weather, and time progression

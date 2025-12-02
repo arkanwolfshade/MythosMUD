@@ -69,7 +69,7 @@ As an NPC in combat, I want to continue fighting remaining players when one dies
 ## Out of Scope
 
 - Player revival/healing mechanics (future feature)
-- Death penalties (XP loss, item loss, respawn sickness, sanity impact)
+- Death penalties (XP loss, item loss, respawn sickness, lucidity impact)
 - Death counter statistics (future feature as part of broader player metrics)
 - Environmental death sources (falling, traps, starvation) - combat only for now
 - PVP death mechanics

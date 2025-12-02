@@ -27,7 +27,7 @@
   - Maintain a real-world scheduler mapping actual dates to “spotlight” holiday runs so we can optionally mark one cycle per real year as the “prime” celebration with extra spectacle.
 - **Day-night cadence**
   - Dawn at 06:00 Mythos (36 real minutes into each cycle); dusk at 18:00 Mythos (108 real minutes).
-  - Environmental descriptions: adjust room lighting text, ambient audio cues, and sanity mechanics around thresholds (pre-dawn haze, witching hour 23:00–01:00 Mythos).
+  - Environmental descriptions: adjust room lighting text, ambient audio cues, and lucidity mechanics around thresholds (pre-dawn haze, witching hour 23:00–01:00 Mythos).
   - NPC behaviors: shops staffed 08:00–20:00 Mythos, night watch patrols 20:00–04:00, eldritch phenomena peaking during the witching hour.
 - **Seasonal beats**
   - Each 30-day month inherits real-world season of its anchor (e.g., March = vernal rites). Rotating faster means players encounter seasonal content roughly every 12 real hours.

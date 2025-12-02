@@ -90,7 +90,7 @@ class TestModelConfigurationConsistency:
             Alias(name="test", command="say hello", extra_field="not_allowed")
 
         # Stats model ignores extra fields for backward compatibility with serialized stats
-        # that may include computed fields like max_health and max_sanity
+        # that may include computed fields like max_health and max_Lucidity
         # Using "ignore" is safer than "allow" - extra fields are silently ignored
         stats = Stats(extra_field="ignored_for_compatibility")
         # With extra="ignore", the field is not stored, so accessing it raises AttributeError
@@ -160,7 +160,7 @@ class TestModelConfigurationConsistency:
         """Test that default values are handled consistently."""
         # Test Stats model defaults
         stats = Stats()
-        assert stats.sanity == 100
+        assert stats.lucidity == 100
         assert stats.occult_knowledge == 0
         assert stats.fear == 0
         assert stats.corruption == 0
@@ -179,7 +179,7 @@ class TestModelConfigurationConsistency:
 
         # Test computed fields
         assert stats.max_health == 75  # Direct constitution value
-        assert stats.max_sanity == 60  # Direct wisdom value
+        assert stats.max_Lucidity == 60  # Direct wisdom value
 
     def test_model_repr_consistency(self):
         """Test that model string representations are consistent."""
@@ -212,7 +212,7 @@ class TestModelConfigurationConsistency:
         serialized = stats.model_dump()
         assert isinstance(serialized, dict)
         assert "strength" in serialized
-        assert "sanity" in serialized
+        assert "lucidity" in serialized
 
     def test_model_initialization_consistency(self):
         """Test that model initialization is consistent."""

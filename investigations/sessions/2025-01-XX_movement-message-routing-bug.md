@@ -175,7 +175,7 @@ The most likely scenario is that the message is being created correctly as `mess
          : undefined) || message;
 
      if (message) {
-       if (message.includes('Name:') && message.includes('Health:') && message.includes('Sanity:')) {
+       if (message.includes('Name:') && message.includes('Health:') && message.includes('lucidity:')) {
          try {
            const parsedPlayerData = parseStatusResponse(message);
            const playerData = convertToPlayerInterface(parsedPlayerData);

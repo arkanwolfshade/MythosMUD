@@ -243,7 +243,7 @@ from sqlalchemy.orm import selectinload
 # Good: Eagerly load relationships
 stmt = select(Player).options(
     selectinload(Player.user),
-    selectinload(Player.sanity),  # if relationship exists
+    selectinload(Player.lucidity),  # if relationship exists
 ).where(Player.player_id == player_id)
 
 # Bad: Lazy loading (causes N+1 queries)
@@ -281,14 +281,14 @@ players = result.scalars().all()
 ```python
 from sqlalchemy import select
 from server.models.player import Player
-from server.models.sanity import PlayerSanity
+from server.models.lucidity import PlayerLucidity
 
-stmt = select(Player, PlayerSanity).join(
-    PlayerSanity, Player.player_id == PlayerSanity.player_id
+stmt = select(Player, PlayerLucidity).join(
+    PlayerLucidity, Player.player_id == PlayerLucidity.player_id
 ).where(Player.level > 5)
 
 result = await session.execute(stmt)
-for player, sanity in result:
+for player, lucidity in result:
     # Both objects loaded in single query
     pass
 ```

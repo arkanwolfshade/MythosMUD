@@ -245,7 +245,7 @@ class CharacterCreationService:
         """Get a description for a character class."""
         descriptions = {
             "investigator": "A skilled researcher and detective, specializing in uncovering mysteries and gathering information.",
-            "occultist": "A scholar of forbidden knowledge, capable of wielding dangerous magic at the cost of sanity.",
+            "occultist": "A scholar of forbidden knowledge, capable of wielding dangerous magic at the cost of lucidity.",
             "survivor": "A resilient individual who has learned to endure the horrors of the Mythos through sheer determination.",
             "cultist": "A charismatic leader who can manipulate others and has ties to dark organizations.",
             "academic": "A brilliant researcher and scholar, specializing in historical and scientific knowledge.",

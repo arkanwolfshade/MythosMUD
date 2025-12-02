@@ -153,7 +153,7 @@ class TestNPCLifecycleManager:
             required_npc=True,
             max_population=1,
             spawn_probability=1.0,
-            base_stats='{"strength": 10, "sanity": 80, "current_health": 100}',
+            base_stats='{"strength": 10, "lucidity": 80, "current_health": 100}',
             behavior_config='{"greeting_message": "Welcome!"}',
             ai_integration_stub='{"ai_enabled": false}',
         )
@@ -452,7 +452,7 @@ class TestNPCLifecycleManager:
             max_population=2,
             spawn_probability=0.5,
             room_id="earth_arkhamcity_downtown_001",
-            base_stats='{"strength": 5, "sanity": 50, "current_health": 50}',
+            base_stats='{"strength": 5, "lucidity": 50, "current_health": 50}',
             behavior_config="{}",
             ai_integration_stub="{}",
         )
@@ -509,7 +509,7 @@ class TestNPCLifecycleManager:
             max_population=2,
             spawn_probability=1.0,  # 100% for testing
             room_id="earth_arkhamcity_downtown_001",
-            base_stats='{"strength": 5, "sanity": 50, "current_health": 50}',
+            base_stats='{"strength": 5, "lucidity": 50, "current_health": 50}',
             behavior_config="{}",
             ai_integration_stub="{}",
         )

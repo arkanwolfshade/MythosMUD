@@ -5,8 +5,8 @@ import pytest
 
 from server.commands.exploration_commands import (
     _get_health_label,
+    _get_Lucidity_label,
     _get_players_in_room,
-    _get_sanity_label,
     _get_visible_equipment,
     _parse_instance_number,
     handle_look_command,
@@ -198,49 +198,49 @@ class TestGetHealthLabel:
         assert _get_health_label(stats) == "mortally wounded"
 
 
-class TestGetSanityLabel:
-    """Test _get_sanity_label helper function."""
+class TestGetLucidityLabel:
+    """Test _get_Lucidity_label helper function."""
 
-    def test_get_sanity_label_sane(self):
-        """Test sanity label for sane player (>75%)."""
-        stats = {"sanity": 100, "max_sanity": 100}
-        assert _get_sanity_label(stats) == "sane"
+    def test_get_Lucidity_label_lucid(self):
+        """Test lucidity label for lucid player (>75%)."""
+        stats = {"lucidity": 100, "max_lucidity": 100}
+        assert _get_Lucidity_label(stats) == "lucid"
 
-        stats = {"sanity": 80, "max_sanity": 100}
-        assert _get_sanity_label(stats) == "sane"
+        stats = {"lucidity": 80, "max_lucidity": 100}
+        assert _get_Lucidity_label(stats) == "lucid"
 
-        stats = {"sanity": 76, "max_sanity": 100}
-        assert _get_sanity_label(stats) == "sane"
+        stats = {"lucidity": 76, "max_lucidity": 100}
+        assert _get_Lucidity_label(stats) == "lucid"
 
-    def test_get_sanity_label_disturbed(self):
-        """Test sanity label for disturbed player (25-75%)."""
-        stats = {"sanity": 75, "max_sanity": 100}
-        assert _get_sanity_label(stats) == "disturbed"
+    def test_get_Lucidity_label_disturbed(self):
+        """Test lucidity label for disturbed player (25-75%)."""
+        stats = {"lucidity": 75, "max_lucidity": 100}
+        assert _get_Lucidity_label(stats) == "disturbed"
 
-        stats = {"sanity": 50, "max_sanity": 100}
-        assert _get_sanity_label(stats) == "disturbed"
+        stats = {"lucidity": 50, "max_lucidity": 100}
+        assert _get_Lucidity_label(stats) == "disturbed"
 
-        stats = {"sanity": 25, "max_sanity": 100}
-        assert _get_sanity_label(stats) == "disturbed"
+        stats = {"lucidity": 25, "max_lucidity": 100}
+        assert _get_Lucidity_label(stats) == "disturbed"
 
-    def test_get_sanity_label_unstable(self):
-        """Test sanity label for unstable player (1-24%)."""
-        stats = {"sanity": 24, "max_sanity": 100}
-        assert _get_sanity_label(stats) == "unstable"
+    def test_get_Lucidity_label_unstable(self):
+        """Test lucidity label for unstable player (1-24%)."""
+        stats = {"lucidity": 24, "max_lucidity": 100}
+        assert _get_Lucidity_label(stats) == "unstable"
 
-        stats = {"sanity": 10, "max_sanity": 100}
-        assert _get_sanity_label(stats) == "unstable"
+        stats = {"lucidity": 10, "max_lucidity": 100}
+        assert _get_Lucidity_label(stats) == "unstable"
 
-        stats = {"sanity": 1, "max_sanity": 100}
-        assert _get_sanity_label(stats) == "unstable"
+        stats = {"lucidity": 1, "max_lucidity": 100}
+        assert _get_Lucidity_label(stats) == "unstable"
 
-    def test_get_sanity_label_mad(self):
-        """Test sanity label for mad player (<=0%)."""
-        stats = {"sanity": 0, "max_sanity": 100}
-        assert _get_sanity_label(stats) == "mad"
+    def test_get_Lucidity_label_mad(self):
+        """Test lucidity label for mad player (<=0%)."""
+        stats = {"lucidity": 0, "max_lucidity": 100}
+        assert _get_Lucidity_label(stats) == "mad"
 
-        stats = {"sanity": -10, "max_sanity": 100}
-        assert _get_sanity_label(stats) == "mad"
+        stats = {"lucidity": -10, "max_lucidity": 100}
+        assert _get_Lucidity_label(stats) == "mad"
 
 
 class TestGetVisibleEquipment:
@@ -414,7 +414,7 @@ class TestPlayerLookFunctionality:
         # Target player
         target_player = MagicMock()
         target_player.name = "Armitage"
-        target_player.get_stats.return_value = {"health": 100, "max_health": 100, "sanity": 100, "max_sanity": 100}
+        target_player.get_stats.return_value = {"health": 100, "max_health": 100, "lucidity": 100, "max_lucidity": 100}
         target_player.get_equipped_items.return_value = {"head": {"item_name": "Hat"}}
         target_player_id = uuid.uuid4()
         room.get_players.return_value = [str(target_player_id)]
@@ -427,7 +427,7 @@ class TestPlayerLookFunctionality:
         result = await handle_look_command(command_data, current_user, request, None, "CurrentPlayer")
 
         assert "Armitage" in result["result"]
-        assert "healthy" in result["result"] or "sane" in result["result"]
+        assert "healthy" in result["result"] or "lucid" in result["result"]
 
     @pytest.mark.asyncio
     async def test_look_player_health_states(self):
@@ -450,7 +450,7 @@ class TestPlayerLookFunctionality:
         # Test healthy player
         target_player = MagicMock()
         target_player.name = "Armitage"
-        target_player.get_stats.return_value = {"health": 100, "max_health": 100, "sanity": 100, "max_sanity": 100}
+        target_player.get_stats.return_value = {"health": 100, "max_health": 100, "lucidity": 100, "max_lucidity": 100}
         target_player.get_equipped_items.return_value = {}
         target_player_id = uuid.uuid4()
         room.get_players.return_value = [str(target_player_id)]
@@ -465,18 +465,18 @@ class TestPlayerLookFunctionality:
         assert "healthy" in result["result"]
 
         # Test wounded player
-        target_player.get_stats.return_value = {"health": 50, "max_health": 100, "sanity": 100, "max_sanity": 100}
+        target_player.get_stats.return_value = {"health": 50, "max_health": 100, "lucidity": 100, "max_lucidity": 100}
         result = await handle_look_command(command_data, current_user, request, None, "CurrentPlayer")
         assert "wounded" in result["result"]
 
         # Test critical player
-        target_player.get_stats.return_value = {"health": 10, "max_health": 100, "sanity": 100, "max_sanity": 100}
+        target_player.get_stats.return_value = {"health": 10, "max_health": 100, "lucidity": 100, "max_lucidity": 100}
         result = await handle_look_command(command_data, current_user, request, None, "CurrentPlayer")
         assert "critical" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_look_player_sanity_states(self):
-        """Test player look with various sanity states."""
+    async def test_look_player_Lucidity_states(self):
+        """Test player look with various lucidity states."""
         persistence = MagicMock()
         connection_manager = MagicMock()
         room_manager = MagicMock()
@@ -494,7 +494,7 @@ class TestPlayerLookFunctionality:
 
         target_player = MagicMock()
         target_player.name = "Armitage"
-        target_player.get_stats.return_value = {"health": 100, "max_health": 100, "sanity": 50, "max_sanity": 100}
+        target_player.get_stats.return_value = {"health": 100, "max_health": 100, "lucidity": 50, "max_lucidity": 100}
         target_player.get_equipped_items.return_value = {}
         target_player_id = uuid.uuid4()
         room.get_players.return_value = [str(target_player_id)]
@@ -528,7 +528,7 @@ class TestPlayerLookFunctionality:
 
         target_player = MagicMock()
         target_player.name = "Armitage"
-        target_player.get_stats.return_value = {"health": 100, "max_health": 100, "sanity": 100, "max_sanity": 100}
+        target_player.get_stats.return_value = {"health": 100, "max_health": 100, "lucidity": 100, "max_lucidity": 100}
         target_player.get_equipped_items.return_value = {
             "head": {"item_name": "Hat"},
             "torso": {"item_name": "Coat"},
@@ -640,11 +640,11 @@ class TestPlayerLookFunctionality:
 
         player1 = MagicMock()
         player1.name = "Armitage"
-        player1.get_stats.return_value = {"health": 100, "max_health": 100, "sanity": 100, "max_sanity": 100}
+        player1.get_stats.return_value = {"health": 100, "max_health": 100, "lucidity": 100, "max_lucidity": 100}
         player1.get_equipped_items.return_value = {}
         player2 = MagicMock()
         player2.name = "Armitage"
-        player2.get_stats.return_value = {"health": 50, "max_health": 100, "sanity": 100, "max_sanity": 100}
+        player2.get_stats.return_value = {"health": 50, "max_health": 100, "lucidity": 100, "max_lucidity": 100}
         player2.get_equipped_items.return_value = {}
 
         def get_player_side_effect(player_id):

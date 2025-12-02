@@ -470,8 +470,8 @@ class TestStatusCommand:
         stats_dict = {
             "current_health": 85,
             "max_health": 100,
-            "sanity": 75,
-            "max_sanity": 100,
+            "lucidity": 75,
+            "max_lucidity": 100,
             "fear": 15,
             "corruption": 5,
             "occult_knowledge": 25,
@@ -525,7 +525,7 @@ class TestStatusCommand:
         assert "Name: testuser" in result["result"]
         assert "Location: Miskatonic University Library" in result["result"]
         assert "Health: 85/100" in result["result"]
-        assert "Sanity: 75/100" in result["result"]
+        assert "lucidity: 75/100" in result["result"]
         assert "Position: Sitting" in result["result"]
         assert "Fear: 15" in result["result"]
         assert "Corruption: 5" in result["result"]
@@ -620,8 +620,8 @@ class TestStatusCommand:
         stats_dict = {
             "current_health": 100,
             "max_health": 100,
-            "sanity": 100,
-            "max_sanity": 100,
+            "lucidity": 100,
+            "max_lucidity": 100,
             "fear": 0,
             "corruption": 0,
             "occult_knowledge": 0,
@@ -652,7 +652,7 @@ class TestStatusCommand:
         assert "Location: Miskatonic University Library" in result["result"]
         assert "Position: Standing" in result["result"]
         assert "Health: 100/100" in result["result"]
-        assert "Sanity: 100/100" in result["result"]
+        assert "lucidity: 100/100" in result["result"]
         # Should not include fear, corruption, or occult knowledge when they are 0
         assert "Fear:" not in result["result"]
         assert "Corruption:" not in result["result"]

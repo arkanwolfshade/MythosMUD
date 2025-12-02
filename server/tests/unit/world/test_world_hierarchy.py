@@ -70,7 +70,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
             "environment": "outdoors",
             "description": "A bustling urban area",
             "weather_patterns": ["fog", "rain", "overcast"],
-            "special_rules": {"sanity_drain_rate": 0.1, "npc_spawn_modifier": 1.2},
+            "special_rules": {"Lucidity_drain_rate": 0.1, "npc_spawn_modifier": 1.2},
         }
 
         with open(os.path.join(arkham_path, "zone_config.json"), "w") as f:
@@ -80,7 +80,7 @@ class TestWorldLoaderHierarchy(unittest.TestCase):
         subzone_config = {
             "environment": "outdoors",
             "description": "A residential district",
-            "special_rules": {"sanity_drain_rate": 0.05, "npc_spawn_modifier": 0.8},
+            "special_rules": {"Lucidity_drain_rate": 0.05, "npc_spawn_modifier": 0.8},
         }
 
         with open(os.path.join(french_hill_path, "subzone_config.json"), "w") as f:

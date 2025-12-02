@@ -13,8 +13,8 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 from server.commands.rescue_commands import handle_ground_command
 from server.models.base import Base
+from server.models.lucidity import PlayerLucidity
 from server.models.player import Player
-from server.models.sanity import PlayerSanity
 from server.models.user import User
 
 
@@ -43,7 +43,7 @@ async def create_player(
     session: AsyncSession,
     *,
     name: str,
-    sanity: int = 100,
+    lucidity: int = 100,
     tier: str = "lucid",
 ) -> Player:
     """Create a player for testing ground command behaviour."""
@@ -67,14 +67,14 @@ async def create_player(
         player_id=player_id,
         user_id=user.id,
         name=unique_player_name,
-        current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
+        current_room_id="earth_arkhamcity_LCDitarium_room_foyer_001",
     )
-    sanity_record = PlayerSanity(
+    lucidity_record = PlayerLucidity(
         player_id=player_id,
-        current_san=sanity,
+        current_lcd=lucidity,
         current_tier=tier,
     )
-    session.add_all([user, player, sanity_record])
+    session.add_all([user, player, lucidity_record])
     await session.flush()
     return player
 
@@ -93,16 +93,16 @@ def build_request(persistence: MagicMock) -> SimpleNamespace:
 
 @pytest.mark.asyncio
 async def test_ground_command_revives_catatonic_player(session_factory):
-    """Rescuing a catatonic ally should restore them to 1 SAN."""
+    """Rescuing a catatonic ally should restore them to 1 LCD."""
 
     session_maker = session_factory
     async with session_maker() as session:
-        rescuer = await create_player(session, name="rescuer", sanity=40, tier="uneasy")
-        victim = await create_player(session, name="victim", sanity=-20, tier="catatonic")
+        rescuer = await create_player(session, name="rescuer", lucidity=40, tier="uneasy")
+        victim = await create_player(session, name="victim", lucidity=-20, tier="catatonic")
 
-        record = await session.get(PlayerSanity, victim.player_id)
+        record = await session.get(PlayerLucidity, victim.player_id)
         assert record is not None
-        record.current_san = -20
+        record.current_lcd = -20
         record.current_tier = "catatonic"
         # Use timezone-naive datetime for TIMESTAMP WITHOUT TIME ZONE column
         record.catatonia_entered_at = datetime(2025, 1, 1)
@@ -113,12 +113,12 @@ async def test_ground_command_revives_catatonic_player(session_factory):
             "rescuer": SimpleNamespace(
                 player_id=rescuer.player_id,
                 name="rescuer",
-                current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
+                current_room_id="earth_arkhamcity_LCDitarium_room_foyer_001",
             ),
             "victim": SimpleNamespace(
                 player_id=victim.player_id,
                 name="victim",
-                current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
+                current_room_id="earth_arkhamcity_LCDitarium_room_foyer_001",
             ),
         }[name]
         request = build_request(persistence)
@@ -136,9 +136,9 @@ async def test_ground_command_revives_catatonic_player(session_factory):
         assert "victim" in result["result"].lower()
         assert "steadies" in result["result"].lower()
 
-        refreshed = await session.get(PlayerSanity, victim.player_id)
+        refreshed = await session.get(PlayerLucidity, victim.player_id)
         assert refreshed is not None
-        assert refreshed.current_san == 1
+        assert refreshed.current_lcd == 1
         assert refreshed.current_tier == "deranged"
         assert refreshed.catatonia_entered_at is None
 
@@ -149,12 +149,12 @@ async def test_ground_command_emits_rescue_updates(session_factory):
 
     session_maker = session_factory
     async with session_maker() as session:
-        rescuer = await create_player(session, name="rescuer", sanity=40, tier="uneasy")
-        victim = await create_player(session, name="victim", sanity=-20, tier="catatonic")
+        rescuer = await create_player(session, name="rescuer", lucidity=40, tier="uneasy")
+        victim = await create_player(session, name="victim", lucidity=-20, tier="catatonic")
 
-        record = await session.get(PlayerSanity, victim.player_id)
+        record = await session.get(PlayerLucidity, victim.player_id)
         assert record is not None
-        record.current_san = -20
+        record.current_lcd = -20
         record.current_tier = "catatonic"
         # Use timezone-naive datetime for TIMESTAMP WITHOUT TIME ZONE column
         record.catatonia_entered_at = datetime(2025, 1, 1)
@@ -165,12 +165,12 @@ async def test_ground_command_emits_rescue_updates(session_factory):
             "rescuer": SimpleNamespace(
                 player_id=rescuer.player_id,
                 name="rescuer",
-                current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
+                current_room_id="earth_arkhamcity_LCDitarium_room_foyer_001",
             ),
             "victim": SimpleNamespace(
                 player_id=victim.player_id,
                 name="victim",
-                current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
+                current_room_id="earth_arkhamcity_LCDitarium_room_foyer_001",
             ),
         }[name]
         request = build_request(persistence)
@@ -183,16 +183,16 @@ async def test_ground_command_emits_rescue_updates(session_factory):
 
         with patch("server.commands.rescue_commands.get_async_session", fake_get_async_session):
             with patch(
-                "server.services.sanity_event_dispatcher.send_rescue_update_event",
+                "server.services.lucidity_event_dispatcher.send_rescue_update_event",
                 new_callable=AsyncMock,
             ) as mock_rescue_event:
                 with patch("server.commands.rescue_commands.send_rescue_update_event", mock_rescue_event):
-                    with patch("server.services.sanity_service.send_rescue_update_event", mock_rescue_event):
+                    with patch("server.services.lucidity_service.send_rescue_update_event", mock_rescue_event):
                         await handle_ground_command(command_data, current_user, request, None, rescuer.name)
 
         statuses = [call.kwargs.get("status") for call in mock_rescue_event.await_args_list]
         assert statuses.count("channeling") == 2
-        assert statuses.count("success") == 3  # Two explicit messages + sanity service resolution
+        assert statuses.count("success") == 3  # Two explicit messages + lucidity service resolution
 
         def _call_target(call: Any) -> uuid.UUID | str | None:
             """Extract player_id from call, returning as-is (could be UUID or string)."""
@@ -232,8 +232,8 @@ async def test_ground_command_requires_catatonic_target(session_factory):
 
     session_maker = session_factory
     async with session_maker() as session:
-        rescuer = await create_player(session, name="rescuer", sanity=50, tier="lucid")
-        victim = await create_player(session, name="victim", sanity=30, tier="uneasy")
+        rescuer = await create_player(session, name="rescuer", lucidity=50, tier="lucid")
+        victim = await create_player(session, name="victim", lucidity=30, tier="uneasy")
         await session.commit()
 
         persistence = MagicMock()
@@ -242,12 +242,12 @@ async def test_ground_command_requires_catatonic_target(session_factory):
             rescuer.name: SimpleNamespace(
                 player_id=rescuer.player_id,
                 name=rescuer.name,
-                current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
+                current_room_id="earth_arkhamcity_LCDitarium_room_foyer_001",
             ),
             victim.name: SimpleNamespace(
                 player_id=victim.player_id,
                 name=victim.name,
-                current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
+                current_room_id="earth_arkhamcity_LCDitarium_room_foyer_001",
             ),
         }[name]
         request = build_request(persistence)
@@ -263,7 +263,7 @@ async def test_ground_command_requires_catatonic_target(session_factory):
 
         assert "isn't catatonic" in result["result"]
 
-        refreshed = await session.get(PlayerSanity, victim.player_id)
+        refreshed = await session.get(PlayerLucidity, victim.player_id)
         assert refreshed is not None
-        assert refreshed.current_san == 30
+        assert refreshed.current_lcd == 30
         assert refreshed.current_tier == "uneasy"

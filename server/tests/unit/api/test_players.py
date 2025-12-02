@@ -19,12 +19,12 @@ from server.api.players import (
     DamageRequest,
     FearRequest,
     HealRequest,
+    LucidityLossRequest,
     OccultKnowledgeRequest,
     RollStatsRequest,
-    SanityLossRequest,
     apply_corruption,
     apply_fear,
-    apply_sanity_loss,
+    apply_lucidity_loss,
     create_character_with_stats,
     create_player,
     damage_player,
@@ -65,7 +65,7 @@ def sample_player_data():
     player.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
     player.experience_points = 100
     player.level = 5
-    player.stats = {"health": 100, "sanity": 100, "strength": 10}
+    player.stats = {"health": 100, "lucidity": 100, "strength": 10}
     player.inventory = []
     player.status_effects = []
     player.created_at = datetime.now()
@@ -142,7 +142,7 @@ def mock_persistence():
     """Mock persistence layer for testing."""
     persistence = Mock()
     persistence.get_player = Mock()
-    persistence.apply_sanity_loss = Mock()
+    persistence.apply_lucidity_loss = Mock()
     persistence.apply_fear = Mock()
     persistence.apply_corruption = Mock()
     persistence.gain_occult_knowledge = Mock()
@@ -341,43 +341,45 @@ class TestPlayerEffects:
 
     @patch("server.api.players.PlayerServiceDep")
     @pytest.mark.asyncio
-    async def test_apply_sanity_loss_success(
+    async def test_apply_lucidity_loss_success(
         self, mock_player_service_dep, mock_current_user, sample_player_data, mock_persistence, mock_request
     ):
-        """Test successful sanity loss application."""
+        """Test successful lucidity loss application."""
         # Setup mocks
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_player.return_value = sample_player_data
 
         # Mock the PlayerService dependency
         mock_service = AsyncMock()
-        mock_service.apply_sanity_loss.return_value = {"message": "Applied 10 sanity loss to TestPlayer"}
+        mock_service.apply_lucidity_loss.return_value = {"message": "Applied 10 lucidity loss to TestPlayer"}
         mock_player_service_dep.return_value = mock_service
 
-        request_data = SanityLossRequest(amount=10, source="test")
-        result = await apply_sanity_loss("test-player-id", request_data, mock_request, mock_current_user, mock_service)
+        request_data = LucidityLossRequest(amount=10, source="test")
+        result = await apply_lucidity_loss(
+            "test-player-id", request_data, mock_request, mock_current_user, mock_service
+        )
 
-        assert "Applied 10 sanity loss to TestPlayer" in result["message"]
-        mock_service.apply_sanity_loss.assert_called_once_with("test-player-id", 10, "test")
+        assert "Applied 10 lucidity loss to TestPlayer" in result["message"]
+        mock_service.apply_lucidity_loss.assert_called_once_with("test-player-id", 10, "test")
 
     @patch("server.api.players.PlayerServiceDep")
     @pytest.mark.asyncio
-    async def test_apply_sanity_loss_player_not_found(
+    async def test_apply_lucidity_loss_player_not_found(
         self, mock_player_service_dep, mock_current_user, mock_persistence, mock_request
     ):
-        """Test sanity loss application when player not found."""
+        """Test lucidity loss application when player not found."""
         # Setup mocks
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_player.return_value = None
 
         # Mock the PlayerService dependency
         mock_service = AsyncMock()
-        mock_service.apply_sanity_loss.side_effect = ValidationError("Player not found")
+        mock_service.apply_lucidity_loss.side_effect = ValidationError("Player not found")
         mock_player_service_dep.return_value = mock_service
 
         with pytest.raises(LoggedHTTPException) as exc_info:
-            request_data = SanityLossRequest(amount=10, source="test")
-            await apply_sanity_loss("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
+            request_data = LucidityLossRequest(amount=10, source="test")
+            await apply_lucidity_loss("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -1047,4 +1049,4 @@ class TestClassDescriptions:
         description = get_class_description("occultist")
         assert "forbidden knowledge" in description.lower()
         assert "magic" in description.lower()
-        assert "sanity" in description.lower()
+        assert "lucidity" in description.lower()

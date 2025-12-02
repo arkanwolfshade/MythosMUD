@@ -147,8 +147,8 @@ The `processEventQueue` function processes various event types but **does not in
             // ... handler ...
             break;
           }
-          case 'sanity_change':
-          case 'sanitychange': {
+          case 'lucidity_change':
+          case 'luciditychange': {
             // ... handler ...
             break;
           }
@@ -186,7 +186,7 @@ The `processEventQueue` function processes various event types but **does not in
 ```
 
 **Evidence**:
-- Switch statement handles: `game_state`, `room_update`, `room_state`, `sanity_change`, `player_hp_updated`, `command_response`, `chat_message`, `room_occupants`, `mythos_time_update`
+- Switch statement handles: `game_state`, `room_update`, `room_state`, `lucidity_change`, `player_hp_updated`, `command_response`, `chat_message`, `room_occupants`, `mythos_time_update`
 - **NO case for `'game_tick'`**
 - `game_tick` events fall through to `default` case
 - Default case only logs "Unhandled event type" - does not create any UI messages

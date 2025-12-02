@@ -472,7 +472,7 @@ async def handle_status_command(
             f"Location: {room_name}",
             f"Position: {position_label}",
             f"Health: {stats.get('current_health', 100)}/{stats.get('max_health', 100)}",
-            f"Sanity: {stats.get('sanity', 100)}/{stats.get('max_sanity', 100)}",
+            f"lucidity: {stats.get('lucidity', 100)}/{stats.get('max_lucidity', 100)}",
             f"XP: {player.experience_points}",
             f"In Combat: {'Yes' if in_combat else 'No'}",
         ]

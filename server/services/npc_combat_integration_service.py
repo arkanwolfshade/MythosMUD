@@ -18,7 +18,7 @@ from ..game.mechanics import GameMechanicsService
 from ..logging.enhanced_logging_config import get_logger
 from ..models.combat import CombatParticipantType
 from ..persistence import get_persistence
-from .active_sanity_service import ActiveSanityService, UnknownEncounterCategoryError
+from .active_lucidity_service import ActiveLucidityService, UnknownEncounterCategoryError
 from .combat_event_publisher import CombatEventPublisher
 from .combat_messaging_integration import CombatMessagingIntegration
 from .combat_service import CombatService
@@ -234,7 +234,7 @@ class NPCCombatIntegrationService:
                         has_definition=bool(npc_definition),
                     )
                     if npc_definition and first_engagement:
-                        await self._apply_encounter_sanity_effect(player_id, npc_id, npc_definition, room_id)
+                        await self._apply_encounter_lucidity_effect(player_id, npc_id, npc_definition, room_id)
                     if npc_definition:
                         base_stats = npc_definition.get_base_stats()
                         logger.debug(
@@ -738,14 +738,14 @@ class NPCCombatIntegrationService:
         )
         return result
 
-    async def _apply_encounter_sanity_effect(
+    async def _apply_encounter_lucidity_effect(
         self,
         player_id: str,
         npc_id: str,
         npc_definition: Any | None,
         room_id: str,
     ) -> None:
-        """Apply sanity loss when a player engages an eldritch entity."""
+        """Apply lucidity loss when a player engages an eldritch entity."""
 
         definition_name: str | None = None
         if npc_definition is not None:
@@ -754,12 +754,12 @@ class NPCCombatIntegrationService:
                 definition_name = potential_name
 
         archetype = definition_name or npc_id
-        category = self._resolve_sanity_category(npc_definition)
+        category = self._resolve_lucidity_category(npc_definition)
 
         async for session in get_async_session():
-            service = ActiveSanityService(session)
+            service = ActiveLucidityService(session)
             try:
-                await service.apply_encounter_sanity_loss(
+                await service.apply_encounter_lucidity_loss(
                     player_id=str(player_id),
                     entity_archetype=str(archetype),
                     category=category,
@@ -774,7 +774,7 @@ class NPCCombatIntegrationService:
                     provided_category=category,
                 )
                 try:
-                    await service.apply_encounter_sanity_loss(
+                    await service.apply_encounter_lucidity_loss(
                         player_id=str(player_id),
                         entity_archetype=str(archetype),
                         category="disturbing",
@@ -784,7 +784,7 @@ class NPCCombatIntegrationService:
                 except Exception as nested_exc:  # pragma: no cover - defensive logging
                     await session.rollback()
                     logger.error(
-                        "Failed to apply fallback encounter sanity loss",
+                        "Failed to apply fallback encounter lucidity loss",
                         npc_id=npc_id,
                         player_id=player_id,
                         error=str(nested_exc),
@@ -792,7 +792,7 @@ class NPCCombatIntegrationService:
             except Exception as exc:  # pragma: no cover - defensive logging
                 await session.rollback()
                 logger.error(
-                    "Active encounter sanity adjustment failed",
+                    "Active encounter lucidity adjustment failed",
                     npc_id=npc_id,
                     player_id=player_id,
                     room_id=room_id,
@@ -800,7 +800,7 @@ class NPCCombatIntegrationService:
                 )
             else:
                 logger.info(
-                    "Applied encounter sanity loss",
+                    "Applied encounter lucidity loss",
                     npc_id=npc_id,
                     player_id=player_id,
                     archetype=archetype,
@@ -808,7 +808,7 @@ class NPCCombatIntegrationService:
                 )
             break
 
-    def _resolve_sanity_category(self, npc_definition: Any | None) -> str:
+    def _resolve_lucidity_category(self, npc_definition: Any | None) -> str:
         """Determine encounter category based on NPC definition metadata."""
 
         if npc_definition is None:
@@ -826,7 +826,7 @@ class NPCCombatIntegrationService:
 
         for source in (base_stats, behavior_config):
             if isinstance(source, dict):
-                category = source.get("sanity_category") or source.get("mythos_tier")
+                category = source.get("lucidity_category") or source.get("mythos_tier")
                 if isinstance(category, str):
                     return category.lower()
 

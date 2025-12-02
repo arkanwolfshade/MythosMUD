@@ -21,7 +21,7 @@ class AttributeType(str, Enum):
     INT = "intelligence"
     WIS = "wisdom"
     CHA = "charisma"
-    SAN = "sanity"
+    LCD = "lucidity"
     OCC = "occult_knowledge"
     FEAR = "fear"
     CORR = "corruption"
@@ -37,7 +37,7 @@ class StatusEffectType(str, Enum):
     PARANOID = "paranoid"
     TREMBLING = "trembling"
     CORRUPTED = "corrupted"
-    INSANE = "insane"
+    DELIRIOUS = "delirious"
 
 
 class PositionState(str, Enum):
@@ -102,7 +102,7 @@ class Stats(BaseModel):
     charisma: int | None = Field(ge=1, le=100, default=None, description="Social skills and influence")
 
     # Horror-Specific Attributes
-    sanity: int = Field(ge=0, le=100, default=100, description="Mental stability (0 = complete madness)")
+    lucidity: int = Field(ge=0, le=100, default=100, description="Mental clarity (0 = complete delirium)")
     occult_knowledge: int = Field(ge=0, le=100, default=0, description="Knowledge of forbidden lore")
     fear: int = Field(ge=0, le=100, default=0, description="Susceptibility to terror and panic")
 
@@ -160,8 +160,8 @@ class Stats(BaseModel):
         return self.constitution or 50
 
     @computed_field
-    def max_sanity(self) -> int:
-        """Calculate max sanity based on wisdom."""
+    def max_lucidity(self) -> int:
+        """Calculate max lucidity based on wisdom."""
         return self.wisdom or 50
 
     def get_attribute_modifier(self, attribute: AttributeType) -> int:
@@ -169,17 +169,17 @@ class Stats(BaseModel):
         attr_value = getattr(self, attribute.value, 50)
         return (attr_value - 50) // 2
 
-    def is_sane(self) -> bool:
-        """Check if the character is still mentally stable."""
-        return self.sanity > 0
+    def is_lucid(self) -> bool:
+        """Check if the character is still mentally clear."""
+        return self.lucidity > 0
 
     def is_corrupted(self) -> bool:
         """Check if the character has significant corruption."""
         return self.corruption >= 50
 
-    def is_insane(self) -> bool:
-        """Check if the character has lost their sanity completely."""
-        return self.sanity <= 0
+    def is_delirious(self) -> bool:
+        """Check if the character has lost their lucidity completely."""
+        return self.lucidity <= 0
 
 
 class InventoryItem(BaseModel):

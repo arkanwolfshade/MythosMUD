@@ -74,7 +74,7 @@ export const ChatPanelTest: React.FC = () => {
         messageType: 'system',
       },
       {
-        text: 'ERROR: Your sanity has decreased by 5 points due to exposure to forbidden knowledge.',
+        text: 'ERROR: Your lucidity has decreased by 5 points due to exposure to forbidden knowledge.',
         timestamp: new Date(now - 15000).toISOString(),
         isHtml: false,
         messageType: 'error',
@@ -258,7 +258,7 @@ export const ChatPanelTest: React.FC = () => {
                 <TerminalButton
                   variant="secondary"
                   size="sm"
-                  onClick={() => addSampleMessage('error', 'WARNING: Your sanity is dangerously low!')}
+                  onClick={() => addSampleMessage('error', 'WARNING: Your lucidity is dangerously low!')}
                   className="w-full"
                 >
                   Add Error

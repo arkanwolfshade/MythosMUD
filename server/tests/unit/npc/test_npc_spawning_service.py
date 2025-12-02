@@ -153,7 +153,7 @@ class TestNPCSpawningService:
             required_npc=True,
             max_population=1,
             spawn_probability=1.0,
-            base_stats='{"strength": 10, "sanity": 80, "current_health": 100}',
+            base_stats='{"strength": 10, "lucidity": 80, "current_health": 100}',
             behavior_config='{"greeting_message": "Welcome!"}',
             ai_integration_stub='{"ai_enabled": false}',
         )
@@ -171,7 +171,7 @@ class TestNPCSpawningService:
             required_npc=False,
             max_population=3,
             spawn_probability=0.7,
-            base_stats='{"strength": 8, "sanity": 60, "current_health": 80}',
+            base_stats='{"strength": 8, "lucidity": 60, "current_health": 80}',
             behavior_config='{"wandering_behavior": true}',
             ai_integration_stub='{"ai_enabled": false}',
         )
@@ -593,7 +593,7 @@ class TestNPCSpawningService:
             required_npc=False,
             max_population=1,
             spawn_probability=1.0,
-            base_stats='{"strength": 12, "sanity": 90, "current_health": 100}',
+            base_stats='{"strength": 12, "lucidity": 90, "current_health": 100}',
             behavior_config='{"quest_data": {}}',
             ai_integration_stub='{"ai_enabled": false}',
         )
@@ -616,7 +616,7 @@ class TestNPCSpawningService:
             required_npc=False,
             max_population=1,
             spawn_probability=1.0,
-            base_stats='{"strength": 10, "sanity": 50, "current_health": 50}',
+            base_stats='{"strength": 10, "lucidity": 50, "current_health": 50}',
             behavior_config="{}",
             ai_integration_stub="{}",
         )
@@ -727,7 +727,7 @@ class TestNPCSpawningService:
             required_npc=False,
             max_population=5,
             spawn_probability=0.8,
-            base_stats='{"strength": 15, "sanity": 30, "current_health": 120}',
+            base_stats='{"strength": 15, "lucidity": 30, "current_health": 120}',
             behavior_config='{"aggression_level": "high"}',
             ai_integration_stub='{"ai_enabled": false}',
         )

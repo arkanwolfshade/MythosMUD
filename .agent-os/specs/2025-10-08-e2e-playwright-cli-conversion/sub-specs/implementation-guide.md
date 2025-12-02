@@ -188,7 +188,7 @@ export async function seedTestDatabase(): Promise<void> {
     // Insert player
     const stats = JSON.stringify({
       health: 100,
-      sanity: 100,
+      lucidity: 100,
       strength: 10,
       dexterity: 10,
       constitution: 10,
@@ -201,7 +201,7 @@ export async function seedTestDatabase(): Promise<void> {
       cult_affiliation: 0,
       current_health: 100,
       max_health: 100,
-      max_sanity: 100
+      max_lucidity: 100
     });
 
     db.prepare(`
@@ -272,7 +272,7 @@ function createSchema(db: Database): void {
       player_id TEXT PRIMARY KEY NOT NULL,
       user_id TEXT NOT NULL UNIQUE,
       name TEXT UNIQUE NOT NULL,
-      stats TEXT NOT NULL DEFAULT '{"health": 100, "sanity": 100, "strength": 10}',
+      stats TEXT NOT NULL DEFAULT '{"health": 100, "lucidity": 100, "strength": 10}',
       inventory TEXT NOT NULL DEFAULT '[]',
       status_effects TEXT NOT NULL DEFAULT '[]',
       current_room_id TEXT NOT NULL DEFAULT 'earth_arkham_city_intersection_derby_high',

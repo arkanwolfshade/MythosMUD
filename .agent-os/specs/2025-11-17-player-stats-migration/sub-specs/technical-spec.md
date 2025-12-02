@@ -10,7 +10,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 
 - Update `Stats` model Field constraints:
   - Change `ge=1, le=20` to `ge=1, le=100` for: strength, dexterity, constitution, intelligence, wisdom, charisma
-  - Keep existing constraints for sanity, occult_knowledge, fear, corruption, cult_affiliation (0-100)
+  - Keep existing constraints for lucidity, occult_knowledge, fear, corruption, cult_affiliation (0-100)
 
 - Update `get_attribute_modifier()` method:
   - Current: `(attr_value - 10) // 2`
@@ -22,7 +22,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
   - New: `(self.constitution or 50)`
   - Remove multiplication, use direct value
 
-- Update `max_sanity` computed field:
+- Update `max_lucidity` computed field:
   - Current: `(self.wisdom or 10) * 5`
   - New: `(self.wisdom or 50)`
   - Remove multiplication, use direct value
@@ -99,7 +99,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 - Create SQL migration script to:
   - Reset all existing player stats to new defaults
   - Update all core attributes (strength, dexterity, constitution, intelligence, wisdom, charisma) to 50
-  - Preserve other stats (sanity, occult_knowledge, fear, corruption, cult_affiliation, current_health)
+  - Preserve other stats (lucidity, occult_knowledge, fear, corruption, cult_affiliation, current_health)
   - Update default stats in migration 006 if it sets defaults
 
 ### Test Updates
@@ -113,7 +113,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 - Update `test_stats_max_health_property`:
   - Change test values and expected results for new formula
 
-- Update `test_stats_max_sanity_property`:
+- Update `test_stats_max_lucidity_property`:
   - Change test values and expected results for new formula
 
 - Update `test_stats_get_attribute_modifier`:

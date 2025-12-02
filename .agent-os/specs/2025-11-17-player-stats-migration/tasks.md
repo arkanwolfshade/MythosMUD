@@ -6,8 +6,8 @@
   - [x] 1.1 Update Stats model Field constraints from `ge=1, le=20` to `ge=1, le=100` for all six core attributes in `server/models/game.py`
   - [x] 1.2 Update `get_attribute_modifier()` method formula from `(attr_value - 10) // 2` to `(attr_value - 50) // 2` and update default fallback from 10 to 50
   - [x] 1.3 Update `max_health` computed field from `(self.constitution or 10) * 10` to `(self.constitution or 50)`
-  - [x] 1.4 Update `max_sanity` computed field from `(self.wisdom or 10) * 5` to `(self.wisdom or 50)`
-  - [x] 1.5 Update tests in `server/tests/unit/models/test_models.py`: update range assertions, max_health test, max_sanity test, and attribute modifier test
+  - [x] 1.4 Update `max_lucidity` computed field from `(self.wisdom or 10) * 5` to `(self.wisdom or 50)`
+  - [x] 1.5 Update tests in `server/tests/unit/models/test_models.py`: update range assertions, max_health test, max_lucidity test, and attribute modifier test
   - [x] 1.6 Verify all model tests pass (Note: 2 tests will pass after Task 2 updates stats generator)
 
 - [x] 2. Update Stats Generator System
@@ -40,7 +40,7 @@
 
 - [x] 6. Create Database Migration Script
   - [x] 6.1 Create new SQL migration file in `db/migrations/` to reset all existing player stats to new defaults (50 for core attributes)
-  - [x] 6.2 Ensure migration preserves other stats (sanity, occult_knowledge, fear, corruption, cult_affiliation, current_health, position)
+  - [x] 6.2 Ensure migration preserves other stats (lucidity, occult_knowledge, fear, corruption, cult_affiliation, current_health, position)
   - [x] 6.3 Verify migration script syntax and logic
   - [x] 6.4 Update migration 006 if it sets default stats
 
@@ -60,7 +60,7 @@
   - [x] 9.1 Run full test suite and verify all tests pass
   - [x] 9.2 Verify stat generation produces values in correct ranges (15-90 for random, 1-100 for validation)
   - [x] 9.3 Verify attribute modifiers calculate correctly with new formula
-  - [x] 9.4 Verify max health and max sanity calculations work correctly
+  - [x] 9.4 Verify max health and max lucidity calculations work correctly
   - [x] 9.5 Verify combat damage calculations work correctly
   - [x] 9.6 Verify class prerequisites validation works with scaled values
   - [x] 9.7 Verify database migration resets stats correctly (if applicable in test environment)

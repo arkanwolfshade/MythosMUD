@@ -776,9 +776,9 @@ class PlayerStatsConfig(BaseSettings):
     wisdom: int = Field(default=50, description="Default wisdom")
     charisma: int = Field(default=50, description="Default charisma")
     max_health: int = Field(default=100, description="Default max health")
-    max_sanity: int = Field(default=100, description="Default max sanity")
+    max_lucidity: int = Field(default=100, description="Default max lucidity")
     health: int = Field(default=100, description="Default starting health")
-    sanity: int = Field(default=100, description="Default starting sanity")
+    lucidity: int = Field(default=100, description="Default starting lucidity")
     fear: int = Field(default=0, description="Default fear level")
     corruption: int = Field(default=0, description="Default corruption level")
     occult_knowledge: int = Field(default=0, description="Default occult knowledge")
@@ -791,12 +791,12 @@ class PlayerStatsConfig(BaseSettings):
             raise ValueError("Stats must be between 1 and 100")
         return v
 
-    @field_validator("max_health", "max_sanity", "health", "sanity")
+    @field_validator("max_health", "max_lucidity", "health", "lucidity")
     @classmethod
-    def validate_health_sanity(cls, v: int) -> int:
-        """Validate health/sanity values."""
+    def validate_health_Lucidity(cls, v: int) -> int:
+        """Validate health/lucidity values."""
         if v < 1 or v > 1000:
-            raise ValueError("Health/sanity must be between 1 and 1000")
+            raise ValueError("Health/lucidity must be between 1 and 1000")
         return v
 
     model_config = {"env_prefix": "DEFAULT_STATS_", "case_sensitive": False, "extra": "ignore"}
@@ -811,9 +811,9 @@ class PlayerStatsConfig(BaseSettings):
             "wisdom": self.wisdom,
             "charisma": self.charisma,
             "max_health": self.max_health,
-            "max_sanity": self.max_sanity,
+            "max_lucidity": self.max_lucidity,
             "health": self.health,
-            "sanity": self.sanity,
+            "lucidity": self.lucidity,
             "fear": self.fear,
             "corruption": self.corruption,
             "occult_knowledge": self.occult_knowledge,

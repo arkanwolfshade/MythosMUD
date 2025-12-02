@@ -2,7 +2,7 @@
 Game mechanics service for MythosMUD server.
 
 This module handles all game mechanics-related business logic including
-sanity, fear, corruption, healing, and damage mechanics.
+lucidity, fear, corruption, healing, and damage mechanics.
 """
 
 from pathlib import Path  # noqa: F401
@@ -22,27 +22,27 @@ class GameMechanicsService:
         self.persistence = persistence
         logger.info("GameMechanicsService initialized")
 
-    def apply_sanity_loss(self, player_id: str, amount: int, source: str = "unknown") -> tuple[bool, str]:
-        """Apply sanity loss to a player."""
+    def apply_lucidity_loss(self, player_id: str, amount: int, source: str = "unknown") -> tuple[bool, str]:
+        """Apply lucidity loss to a player."""
         player = self.persistence.get_player(player_id)
         if not player:
-            logger.warning("Sanity loss failed - player not found", player_id=player_id)
+            logger.warning("Lucidity loss failed - player not found", player_id=player_id)
             context = create_error_context()
             context.metadata["player_id"] = player_id
             context.metadata["amount"] = amount
             context.metadata["source"] = source
-            context.metadata["operation"] = "apply_sanity_loss"
+            context.metadata["operation"] = "apply_lucidity_loss"
             log_and_raise(
                 ValidationError,
-                "Player not found for sanity loss",
+                "Player not found for lucidity loss",
                 context=context,
                 details={"player_id": player_id, "amount": amount, "source": source},
                 user_friendly="Player not found",
             )
 
-        self.persistence.apply_sanity_loss(player, amount, source)
-        logger.info("Sanity loss applied", player_id=player_id, amount=amount, source=source)
-        return True, f"Applied {amount} sanity loss to {player.name}"
+        self.persistence.apply_lucidity_loss(player, amount, source)
+        logger.info("Lucidity loss applied", player_id=player_id, amount=amount, source=source)
+        return True, f"Applied {amount} lucidity loss to {player.name}"
 
     def apply_fear(self, player_id: str, amount: int, source: str = "unknown") -> tuple[bool, str]:
         """Apply fear to a player."""
@@ -89,7 +89,7 @@ class GameMechanicsService:
         return True, f"Applied {amount} corruption to {player.name}"
 
     def gain_occult_knowledge(self, player_id: str, amount: int, source: str = "unknown") -> tuple[bool, str]:
-        """Gain occult knowledge (with sanity loss)."""
+        """Gain occult knowledge (with lucidity loss)."""
         player = self.persistence.get_player(player_id)
         if not player:
             logger.warning("Occult knowledge gain failed - player not found", player_id=player_id)

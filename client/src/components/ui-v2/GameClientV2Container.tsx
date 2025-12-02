@@ -4,13 +4,13 @@ import { useContainerStore } from '../../stores/containerStore';
 import type { HealthStatus } from '../../types/health';
 import { determineHealthTier } from '../../types/health';
 import type { MythosTimePayload, MythosTimeState } from '../../types/mythosTime';
-import type { HallucinationMessage, RescueState, SanityStatus } from '../../types/sanity';
+import type { HallucinationMessage, LucidityStatus, RescueState } from '../../types/lucidity';
 import { buildHealthStatusFromEvent } from '../../utils/healthEventUtils';
 import { logger } from '../../utils/logger';
 import { useMemoryMonitor } from '../../utils/memoryMonitor';
 import { determineMessageType } from '../../utils/messageTypeUtils';
 import { DAYPART_MESSAGES, buildMythosTimeState, formatMythosTime12Hour } from '../../utils/mythosTime';
-import { buildSanityStatus } from '../../utils/sanityEventUtils';
+import { buildLucidityStatus } from '../../utils/lucidityEventUtils';
 import { inputSanitizer } from '../../utils/security';
 import { convertToPlayerInterface, parseStatusResponse } from '../../utils/statusParser';
 import { DeathInterstitial } from '../DeathInterstitial';
@@ -117,7 +117,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   const [isDead, setIsDead] = useState(false);
   const [deathLocation] = useState<string>('Unknown Location');
   const [isRespawning, setIsRespawning] = useState(false);
-  const [sanityStatus, setSanityStatus] = useState<SanityStatus | null>(null);
+  const [lucidityStatus, setLucidityStatus] = useState<LucidityStatus | null>(null);
   const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
   const [, setHallucinationFeed] = useState<HallucinationMessage[]>([]);
   const [rescueState, setRescueState] = useState<RescueState | null>(null);
@@ -154,7 +154,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   const currentMessagesRef = useRef<ChatMessage[]>([]);
   const currentRoomRef = useRef<Room | null>(null);
   const currentPlayerRef = useRef<Player | null>(null);
-  const sanityStatusRef = useRef<SanityStatus | null>(null);
+  const lucidityStatusRef = useRef<LucidityStatus | null>(null);
   const healthStatusRef = useRef<HealthStatus | null>(null);
   const rescueStateRef = useRef<RescueState | null>(null);
   const lastDaypartRef = useRef<string | null>(null);
@@ -182,8 +182,8 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   }, [healthStatus]);
 
   useEffect(() => {
-    sanityStatusRef.current = sanityStatus;
-  }, [sanityStatus]);
+    lucidityStatusRef.current = lucidityStatus;
+  }, [lucidityStatus]);
 
   useEffect(() => {
     rescueStateRef.current = rescueState;
@@ -398,17 +398,21 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             }
             break;
           }
-          case 'sanity_change':
-          case 'sanitychange': {
-            const { status: updatedStatus } = buildSanityStatus(sanityStatusRef.current, event.data, event.timestamp);
-            setSanityStatus(updatedStatus);
+          case 'lucidity_change':
+          case 'luciditychange': {
+            const { status: updatedStatus } = buildLucidityStatus(
+              lucidityStatusRef.current,
+              event.data,
+              event.timestamp
+            );
+            setLucidityStatus(updatedStatus);
             if (currentPlayerRef.current) {
               updates.player = {
                 ...currentPlayerRef.current,
                 stats: {
                   ...currentPlayerRef.current.stats,
                   current_health: currentPlayerRef.current.stats?.current_health ?? 0,
-                  sanity: updatedStatus.current,
+                  lucidity: updatedStatus.current,
                 },
               };
             }
@@ -443,7 +447,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                   ...currentPlayerRef.current.stats,
                   current_health: updatedHealthStatus.current,
                   max_health: updatedHealthStatus.max,
-                  sanity: currentPlayerRef.current.stats?.sanity ?? 0,
+                  lucidity: currentPlayerRef.current.stats?.lucidity ?? 0,
                 },
               };
               logger.info('GameClientV2Container', 'Updated player stats', {
@@ -467,7 +471,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                 : undefined) || message;
 
             if (message) {
-              if (message.includes('Name:') && message.includes('Health:') && message.includes('Sanity:')) {
+              if (message.includes('Name:') && message.includes('Health:') && message.includes('Lucidity:')) {
                 try {
                   const parsedPlayerData = parseStatusResponse(message);
                   const playerData = convertToPlayerInterface(parsedPlayerData);
@@ -1501,7 +1505,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
           reconnectAttempts={reconnectAttempts}
           mythosTime={mythosTime}
           healthStatus={healthStatus}
-          sanityStatus={sanityStatus}
+          lucidityStatus={lucidityStatus}
           onSendCommand={handleCommandSubmit}
           onSendChatMessage={handleChatMessage}
           onClearMessages={handleClearMessages}

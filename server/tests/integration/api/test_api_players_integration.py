@@ -77,7 +77,7 @@ class TestPlayerAPIIntegration:
         mock_persistence.get_room = Mock(return_value=None)
 
         # Mock player combat service methods (used by some endpoints)
-        mock_persistence.apply_sanity_loss = AsyncMock(return_value=None)
+        mock_persistence.apply_Lucidity_loss = AsyncMock(return_value=None)
         mock_persistence.apply_fear = AsyncMock(return_value=None)
         mock_persistence.apply_corruption = AsyncMock(return_value=None)
         mock_persistence.gain_occult_knowledge = AsyncMock(return_value=None)
@@ -113,7 +113,7 @@ class TestPlayerAPIIntegration:
         user_uuid = uuid.uuid4()
         # Parse JSON string to dict - MutableDict.as_mutable(JSONB) requires dict, not string
         stats_dict = json.loads(
-            '{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100, "position": "standing"}'
+            '{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "lucidity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100, "position": "standing"}'
         )
         return Player(
             player_id=str(player_uuid),
@@ -229,16 +229,18 @@ class TestPlayerAPIIntegration:
         # Assert
         assert response.status_code in [200, 401]
 
-    def test_apply_sanity_loss_success(self, container_test_client_class, mock_persistence_for_api, sample_player_data):
-        """Test successful sanity loss application via API."""
+    def test_apply_Lucidity_loss_success(
+        self, container_test_client_class, mock_persistence_for_api, sample_player_data
+    ):
+        """Test successful lucidity loss application via API."""
         # Arrange
         player_id = str(uuid.uuid4())
         mock_persistence_for_api.async_get_player.return_value = sample_player_data
-        mock_persistence_for_api.apply_sanity_loss.return_value = None
+        mock_persistence_for_api.apply_Lucidity_loss.return_value = None
 
         # Act
         response = container_test_client_class.post(
-            f"/api/players/{player_id}/sanity-loss", json={"amount": 10, "source": "test"}
+            f"/api/players/{player_id}/lucidity-loss", json={"amount": 10, "source": "test"}
         )
 
         # Assert

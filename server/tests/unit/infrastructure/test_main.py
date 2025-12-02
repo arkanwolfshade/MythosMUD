@@ -135,7 +135,7 @@ class TestEndpoints:
         mock_player.user_id = "550e8400-e29b-41d4-a716-446655440001"
         mock_player.experience_points = 0
         mock_player.level = 1
-        mock_player.stats = {"health": 100, "sanity": 90, "position": "standing"}
+        mock_player.stats = {"health": 100, "lucidity": 90, "position": "standing"}
         mock_player.inventory = []
         mock_player.status_effects = []
         mock_player.created_at = "2024-01-01T00:00:00Z"
@@ -217,7 +217,7 @@ class TestEndpoints:
                 "player_id": test_uuid1,
                 "name": "player1",
                 "user_id": test_user_uuid1,
-                "stats": {"health": 100, "sanity": 90},
+                "stats": {"health": 100, "lucidity": 90},
                 "inventory": [],
                 "status_effects": [],
                 "created_at": "2024-01-01T00:00:00Z",
@@ -238,7 +238,7 @@ class TestEndpoints:
                 "player_id": test_uuid2,
                 "name": "player2",
                 "user_id": test_user_uuid2,
-                "stats": {"health": 100, "sanity": 90},
+                "stats": {"health": 100, "lucidity": 90},
                 "inventory": [],
                 "status_effects": [],
                 "created_at": "2024-01-01T00:00:00Z",
@@ -281,7 +281,7 @@ class TestEndpoints:
             "player_id": test_uuid,
             "name": "testplayer",
             "user_id": test_user_uuid,
-            "stats": {"health": 100, "sanity": 90},
+            "stats": {"health": 100, "lucidity": 90},
             "inventory": [],
             "status_effects": [],
             "created_at": "2024-01-01T00:00:00Z",
@@ -329,7 +329,7 @@ class TestEndpoints:
             "player_id": test_uuid,
             "name": "testplayer",
             "user_id": test_user_uuid,
-            "stats": {"health": 100, "sanity": 90},
+            "stats": {"health": 100, "lucidity": 90},
             "inventory": [],
             "status_effects": [],
             "created_at": "2024-01-01T00:00:00Z",

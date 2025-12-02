@@ -174,7 +174,7 @@ data/rooms/
   "description": "A bustling urban area with eldritch undertones",
   "weather_patterns": ["fog", "rain", "overcast"],
   "special_rules": {
-    "sanity_drain_rate": 0.1,
+    "lucidity_drain_rate": 0.1,
     "npc_spawn_modifier": 1.2
   }
 }
@@ -187,7 +187,7 @@ data/rooms/
   "environment": "outdoors",
   "description": "A residential district with Victorian architecture",
   "special_rules": {
-    "sanity_drain_rate": 0.05,
+    "lucidity_drain_rate": 0.05,
     "npc_spawn_modifier": 0.8
   }
 }

@@ -79,7 +79,7 @@ class TestNPCRoomIntegration:
             spawn_probability=1.0,
             max_population=1,
             required_npc=True,
-            base_stats='{"health": 100, "sanity": 80}',
+            base_stats='{"health": 100, "lucidity": 80}',
             behavior_config='{"greeting": "Hello, test subject!"}',
             ai_integration_stub='{"ai_enabled": false}',
         )

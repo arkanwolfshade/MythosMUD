@@ -2,9 +2,9 @@
 
 ## Tasks
 
-- [x] 1. Implement sanity data model and persistence
-  - [x] 1.1 Write database migration tests for new sanity tables and constraints
-  - [x] 1.2 Add SQLAlchemy models for `player_sanity`, `sanity_adjustment_log`, `sanity_exposure_state`, and `sanity_cooldowns`
+- [x] 1. Implement lucidity data model and persistence
+  - [x] 1.1 Write database migration tests for new lucidity tables and constraints
+  - [x] 1.2 Add SQLAlchemy models for `player_lucidity`, `lucidity_adjustment_log`, `lucidity_exposure_state`, and `lucidity_cooldowns`
   - [x] 1.3 Implement repository/service layer for SAN adjustments and liability tracking
   - [x] 1.4 Verify all tests pass
 
@@ -34,5 +34,5 @@
 
 - [x] 6. Implement client-side UI for SAN indicators, hallucination prompts, and rescue messaging
   - [x] 6.1 Implement client-side UI for SAN indicators, hallucination prompts, and rescue messaging
-  - [x] 6.2 Write scenario tests (e2e-tests\scenarios\sanity-system-expansion) for catatonia rescue and sanitarium workflows
+  - [x] 6.2 Write scenario tests (e2e-tests\scenarios\lucidity-system-expansion) for catatonia rescue and sanitarium workflows
   - [x] 6.3 Verify all tests pass

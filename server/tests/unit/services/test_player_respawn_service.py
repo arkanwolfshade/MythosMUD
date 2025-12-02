@@ -147,7 +147,7 @@ class TestPlayerRespawnService:
         """Test that respawn always restores to 100 HP."""
         # Test with different negative HP values
         for hp in [-10, -5, -1, 0]:
-            stats = {"current_health": hp, "sanity": 50}
+            stats = {"current_health": hp, "lucidity": 50}
             mock_player.get_stats.return_value = stats.copy()
             mock_player.current_room_id = LIMBO_ROOM_ID
 
@@ -160,7 +160,7 @@ class TestPlayerRespawnService:
             updated_stats = mock_player.set_stats.call_args[0][0]
             assert updated_stats["current_health"] == 100
             # Verify other stats were preserved
-            assert updated_stats["sanity"] == 50
+            assert updated_stats["lucidity"] == 50
 
             mock_player.reset_mock()
 

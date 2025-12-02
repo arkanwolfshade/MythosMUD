@@ -169,7 +169,7 @@ async def test_missing_position_defaults_to_standing_on_load(async_session_facto
         # Insert legacy stats without a position field using PostgreSQL syntax
         legacy_stats_json = (
             '{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, '
-            '"wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, '
+            '"wisdom": 10, "charisma": 10, "lucidity": 100, "occult_knowledge": 0, '
             '"fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100}'
         )
         # Parse JSON string to dict - MutableDict.as_mutable(JSONB) requires dict, not string

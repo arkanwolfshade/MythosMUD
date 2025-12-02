@@ -77,19 +77,19 @@ class TestNPlusOneQueries:
         assert hasattr(PlayerService, "respawn_player_by_user_id")
 
     @pytest.mark.asyncio
-    async def test_sanity_service_eager_loading(self):
-        """Test that SanityRepository uses eager loading."""
-        from server.services.sanity_service import SanityRepository
+    async def test_Lucidity_service_eager_loading(self):
+        """Test that LucidityRepository uses eager loading."""
+        from server.services.lucidity_service import LucidityRepository
 
         async for session in get_async_session():
-            repo = SanityRepository(session)
+            repo = LucidityRepository(session)
 
-            # get_player_sanity should use eager loading
+            # get_player_Lucidity should use eager loading
             # Verify by checking the code uses selectinload
             # (actual query count testing would require SQLAlchemy event listeners)
 
             # For now, just verify the method exists
-            assert hasattr(repo, "get_player_sanity")
+            assert hasattr(repo, "get_player_Lucidity")
 
     def test_eager_loading_pattern_verification(self):
         """Test that code patterns use eager loading correctly."""

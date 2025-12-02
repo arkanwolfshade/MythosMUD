@@ -14,7 +14,7 @@ This is the database schema implementation for the spec detailed in @.agent-os/s
 
 - SQLite migration outline:
   - `CREATE TABLE player_inventories (player_id INTEGER PRIMARY KEY REFERENCES player_state(id) ON DELETE CASCADE, inventory_json TEXT NOT NULL DEFAULT '[]', equipped_json TEXT NOT NULL DEFAULT '{}');`
-  - Add verification step ensuring every existing player receives exactly one row (INSERT OR IGNORE followed by sanity check).
+  - Add verification step ensuring every existing player receives exactly one row (INSERT OR IGNORE followed by lucidity check).
 - Migration script loads any legacy JSON blobs, storing them verbatim in `inventory_json`/`equipped_json`, and removes deprecated columns after verification.
 - For PostgreSQL parity: mirror table with `jsonb` columns and identical primary key relationship.
 - Validation scripts confirm table existence, one-to-one row count with players, and JSON validity prior to server startup.

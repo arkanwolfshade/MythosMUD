@@ -178,7 +178,7 @@ class TestStatsGenerator:
         assert summary["attributes"]["strength"]["value"] == 70
         assert summary["attributes"]["strength"]["modifier"] == 10  # (70-50)/2
         assert summary["derived_stats"]["max_health"] == 80  # Direct constitution value
-        assert summary["derived_stats"]["max_sanity"] == 50  # Direct wisdom value
+        assert summary["derived_stats"]["max_lucidity"] == 50  # Direct wisdom value
         assert summary["total_points"] == 390  # 70+60+80+90+50+40
         assert summary["average_stat"] == 65.0  # 390/6
 
@@ -466,7 +466,7 @@ class TestStatsRandomGeneration:
         stats = Stats()
 
         # Default values should be preserved
-        assert stats.sanity == 100
+        assert stats.lucidity == 100
         assert stats.occult_knowledge == 0
         assert stats.fear == 0
         assert stats.corruption == 0
@@ -479,11 +479,11 @@ class TestStatsRandomGeneration:
 
         # Computed fields should work (direct values now, not multiplied)
         assert stats.max_health == stats.constitution
-        assert stats.max_sanity == stats.wisdom
+        assert stats.max_lucidity == stats.wisdom
 
         # Values should be positive
         assert stats.max_health > 0
-        assert stats.max_sanity > 0
+        assert stats.max_lucidity > 0
 
     def test_stats_validation_with_random_values(self):
         """Test that validation works correctly with random values."""
@@ -524,7 +524,7 @@ class TestStatsRandomGeneration:
         """Test that deserialization works correctly with random values."""
         stats = Stats()
         # Only serialize the actual fields, not computed fields
-        stats_dict = stats.model_dump(exclude={"max_health", "max_sanity"})
+        stats_dict = stats.model_dump(exclude={"max_health", "max_lucidity"})
 
         # Should be able to deserialize from dict
         stats_from_dict = Stats.model_validate(stats_dict)

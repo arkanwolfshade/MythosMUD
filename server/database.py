@@ -483,13 +483,13 @@ async def init_db() -> None:
         # This allows SQLAlchemy to resolve string references in relationships
         # Do NOT import NPC models here - they use npc_metadata, not metadata
         from server.models.invite import Invite  # noqa: F401
-        from server.models.player import Player  # noqa: F401
-        from server.models.sanity import (  # noqa: F401
-            PlayerSanity,
-            SanityAdjustmentLog,
-            SanityCooldown,
-            SanityExposureState,
+        from server.models.lucidity import (  # noqa: F401
+            LucidityAdjustmentLog,
+            LucidityCooldown,
+            LucidityExposureState,
+            PlayerLucidity,
         )
+        from server.models.player import Player  # noqa: F401
         from server.models.user import User  # noqa: F401
 
         logger.debug("Configuring SQLAlchemy mappers")

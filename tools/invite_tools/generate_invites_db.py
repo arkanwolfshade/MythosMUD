@@ -76,7 +76,7 @@ MYTHOS_WORDS = [
     "Dream",
     "Nightmare",
     "Madness",
-    "Sanity",
+    "Lucidity",
     "Truth",
     "Lies",
     "Knowledge",
