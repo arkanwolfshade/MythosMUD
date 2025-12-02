@@ -29,7 +29,7 @@ export interface SessionManagementResult {
  * @param options - Session management configuration
  * @returns Session management methods and current session ID
  *
- * AI: Session IDs link SSE and WebSocket connections for the same user.
+ * AI: Session IDs track WebSocket connections for the same user session.
  */
 export function useSessionManagement(options: SessionManagementOptions = {}): SessionManagementResult {
   const { initialSessionId, onSessionChange } = options;

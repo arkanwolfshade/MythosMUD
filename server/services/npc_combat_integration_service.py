@@ -127,6 +127,7 @@ class NPCCombatIntegrationService:
         room_id: str,
         action_type: str = "punch",
         damage: int = 10,
+        npc_instance: Any | None = None,
     ) -> bool:
         """
         Handle a player attacking an NPC using auto-progression combat system.
@@ -137,18 +138,51 @@ class NPCCombatIntegrationService:
             room_id: ID of the room where combat occurs
             action_type: Type of attack action
             damage: Damage amount
+            npc_instance: Optional pre-validated NPC instance. If provided, avoids redundant lookup
+                         and race conditions. If None, will perform lookup.
 
         Returns:
             bool: True if attack was handled successfully
         """
         try:
-            # Check if NPC is alive
-            npc_instance = self._get_npc_instance(npc_id)
-            if not npc_instance or not npc_instance.is_alive:
-                logger.warning(
-                    "Player attacked dead or non-existent NPC",
+            # BUGFIX: Use provided NPC instance if available to avoid redundant lookup
+            # This prevents race conditions where NPC state changes between lookups
+            # As documented in investigation: 2025-11-30_session-001_npc-combat-start-failure.md
+            npc_instance_provided = npc_instance is not None
+            if npc_instance is None:
+                logger.debug(
+                    "Performing NPC instance lookup",
                     player_id=player_id,
                     npc_id=npc_id,
+                )
+                npc_instance = self._get_npc_instance(npc_id)
+            else:
+                logger.debug(
+                    "Using provided NPC instance - avoiding redundant lookup",
+                    player_id=player_id,
+                    npc_id=npc_id,
+                    npc_name=getattr(npc_instance, "name", "unknown"),
+                )
+
+            # Enhanced validation and logging for debugging
+            if not npc_instance:
+                logger.warning(
+                    "Player attacked non-existent NPC - NPC not found in lifecycle manager",
+                    player_id=player_id,
+                    npc_id=npc_id,
+                    npc_instance_provided=npc_instance_provided,
+                )
+                return False
+
+            npc_is_alive = getattr(npc_instance, "is_alive", True)
+            if not npc_is_alive:
+                logger.warning(
+                    "Player attacked dead NPC - NPC exists but is_alive is False",
+                    player_id=player_id,
+                    npc_id=npc_id,
+                    npc_name=getattr(npc_instance, "name", "unknown"),
+                    is_alive=npc_is_alive,
+                    npc_instance_provided=npc_instance_provided,
                 )
                 return False
 
@@ -340,7 +374,7 @@ class NPCCombatIntegrationService:
                         player_uuid = UUID(player_id) if self._is_valid_uuid(player_id) else None
                         if player_uuid and connection_manager is not None:
                             has_websocket = player_uuid in connection_manager.player_websockets
-                            has_sse = player_uuid in connection_manager.active_sse_connections
+                            has_sse = False  # SSE connections not supported in WebSocket-only system
                             logger.debug(
                                 "Player connection state before NPC death handling",
                                 player_id=player_id,
@@ -461,7 +495,7 @@ class NPCCombatIntegrationService:
                     player_uuid = UUID(killer_id) if self._is_valid_uuid(killer_id) else None
                     if player_uuid and connection_manager is not None:
                         has_websocket = player_uuid in connection_manager.player_websockets
-                        has_sse = player_uuid in connection_manager.active_sse_connections
+                        has_sse = False  # SSE connections not supported in WebSocket-only system
                         logger.debug(
                             "Player connection state before XP award",
                             player_id=killer_id,

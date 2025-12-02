@@ -176,10 +176,7 @@ class RiskMitigationTester:
                         self._mock_websocket(), player_id_uuid, f"session_{i}"
                     )
 
-                    # Establish SSE connection
-                    sse_result = await self.connection_manager.connect_sse(player_id_uuid, f"session_{i}")
-
-                    players.append({"player_id": player_id, "ws_connection": ws_result, "sse_connection": sse_result})
+                    players.append({"player_id": player_id, "ws_connection": ws_result})
 
                 except Exception as e:
                     error_count += 1
@@ -247,7 +244,6 @@ class RiskMitigationTester:
             player_id = "delivery_test_player"
             player_id_uuid = _str_to_uuid(player_id)
             await self.connection_manager.connect_websocket(self._mock_websocket(), player_id_uuid, "delivery_session")
-            await self.connection_manager.connect_sse(player_id_uuid, "delivery_session")
 
             # Test message delivery reliability
             messages_sent = 0

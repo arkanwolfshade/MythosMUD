@@ -156,11 +156,22 @@ class NPCLifecycleRecord:
 
 class NPCLifecycleManager:
     """
-    Main manager for NPC lifecycle operations.
+    Core manager for NPC lifecycle operations (single source of truth for active NPCs).
 
     This class coordinates spawning, despawning, respawning, and state management
-    for all NPCs in the game world, ensuring proper lifecycle tracking and
-    resource management.
+    for all NPCs in the game world. It maintains the authoritative active_npcs
+    dictionary that all other services query for NPC instance data.
+
+    SERVICE HIERARCHY:
+    - Level 1 (lowest/core): Core instance lifecycle management
+    - Maintains: active_npcs dict (dict[str, NPCBase]) - SINGLE SOURCE OF TRUTH
+    - Used by: NPCPopulationController, NPCInstanceService, and all real-time services
+
+    ARCHITECTURE NOTES:
+    - active_npcs is the ONLY authoritative source for active NPC instances
+    - All NPC queries should go through this manager's active_npcs dictionary
+    - Population validation should happen at NPCPopulationController level before calling spawn_npc()
+    - This manager handles actual instance creation, room state mutation, and lifecycle tracking
     """
 
     def __init__(
@@ -169,6 +180,7 @@ class NPCLifecycleManager:
         population_controller: NPCPopulationController | None,
         spawning_service: NPCSpawningService,
         persistence=None,
+        thread_manager=None,
     ):
         """
         Initialize the NPC lifecycle manager.
@@ -178,11 +190,20 @@ class NPCLifecycleManager:
             population_controller: Population controller for managing NPC populations
             spawning_service: Spawning service for creating NPC instances
             persistence: Persistence layer for room access (optional, for proper room state mutation)
+            thread_manager: Optional NPC thread manager for behavior execution
         """
         self.event_bus = event_bus
         self.population_controller = population_controller
         self.spawning_service = spawning_service
         self.persistence = persistence
+
+        # Initialize thread manager for NPC behavior execution
+        if thread_manager is None:
+            from ..npc.threading import NPCThreadManager
+
+            self.thread_manager = NPCThreadManager()
+        else:
+            self.thread_manager = thread_manager
 
         # Lifecycle tracking
         self.lifecycle_records: dict[str, NPCLifecycleRecord] = {}
@@ -202,6 +223,9 @@ class NPCLifecycleManager:
         self.max_respawn_attempts = NPCMaintenanceConfig.MAX_RESPAWN_ATTEMPTS
         self.cleanup_interval = NPCMaintenanceConfig.CLEANUP_INTERVAL
         self.last_cleanup = time.time()
+
+        # Pending thread starts (for async processing)
+        self._pending_thread_starts: list[tuple[str, NPCDefinition]] = []
 
         # Periodic spawn checking
         # AI Agent: Track last spawn check time per NPC definition to prevent spam spawning
@@ -391,11 +415,32 @@ class NPCLifecycleManager:
             # CRITICAL FIX: Set current_room on NPC instance for occupant queries
             # The lifecycle manager query in event_handler.py needs this to find NPCs in rooms
             # Note: _create_npc_instance may already set this, but ensure it's set here as well
-            if not hasattr(npc_instance, "current_room") or not npc_instance.current_room:
-                npc_instance.current_room = room_id
+            # CRITICAL: Always set both attributes to ensure room tracking works correctly
+            npc_instance.current_room = room_id
             # Also set current_room_id for compatibility with code that checks both attributes
-            if not hasattr(npc_instance, "current_room_id") or not npc_instance.current_room_id:
+            if hasattr(npc_instance, "current_room_id"):
                 npc_instance.current_room_id = room_id
+            else:
+                # If attribute doesn't exist, create it
+                npc_instance.current_room_id = room_id
+
+            # CRITICAL: Validate room tracking was set correctly
+            if not npc_instance.current_room or npc_instance.current_room != room_id:
+                logger.error(
+                    "Failed to set NPC room tracking correctly",
+                    npc_id=npc_id,
+                    room_id=room_id,
+                    current_room=getattr(npc_instance, "current_room", None),
+                    current_room_id=getattr(npc_instance, "current_room_id", None),
+                )
+            else:
+                logger.debug(
+                    "NPC room tracking set successfully",
+                    npc_id=npc_id,
+                    room_id=room_id,
+                    current_room=npc_instance.current_room,
+                    current_room_id=getattr(npc_instance, "current_room_id", None),
+                )
 
             # Mutate room state via Room API (single source of truth) which will publish the event
             persistence = get_persistence()
@@ -420,6 +465,27 @@ class NPCLifecycleManager:
 
             # Single source of truth: mutate via Room API; Room will publish the event
             room.npc_entered(npc_id)
+
+            # Start NPC thread for behavior execution (async operation)
+            if self.thread_manager:
+                if self.thread_manager.is_running:
+                    # Thread manager is running, try to start thread immediately
+                    try:
+                        import asyncio
+
+                        loop = asyncio.get_event_loop()
+                        if loop.is_running():
+                            asyncio.create_task(self._start_npc_thread_async(npc_id, definition))
+                        else:
+                            # No running loop, queue for later
+                            self._pending_thread_starts.append((npc_id, definition))
+                    except RuntimeError:
+                        # No event loop, queue for later
+                        self._pending_thread_starts.append((npc_id, definition))
+                else:
+                    # Thread manager not started yet, queue for later
+                    self._pending_thread_starts.append((npc_id, definition))
+                    logger.debug("Queued NPC thread start request (thread manager not started)", npc_id=npc_id)
 
             logger.info("Successfully spawned NPC", npc_id=npc_id, npc_name=definition.name, room_id=room_id)
 
@@ -957,6 +1023,25 @@ class NPCLifecycleManager:
                 return self.population_controller._get_zone_key_from_room_id(str(definition.room_id))
 
         return None
+
+    async def _start_npc_thread_async(self, npc_id: str, definition: NPCDefinition) -> None:
+        """
+        Start NPC thread asynchronously for behavior execution.
+
+        Args:
+            npc_id: ID of the NPC
+            definition: NPC definition
+        """
+        try:
+            # Ensure thread manager is started
+            if not self.thread_manager.is_running:
+                await self.thread_manager.start()
+
+            # Start NPC thread
+            await self.thread_manager.start_npc_thread(npc_id, definition)
+            logger.debug("Started NPC thread for behavior execution", npc_id=npc_id)
+        except Exception as e:
+            logger.warning("Failed to start NPC thread", npc_id=npc_id, error=str(e))
 
     def _get_spawn_room_for_definition(self, definition: NPCDefinition) -> str | None:
         """

@@ -131,33 +131,42 @@ class BehaviorEngine:
                     expected_value = parts[1].strip().strip("\"'")
                     return str(context.get(var_name, "")) != expected_value
 
-            elif ">" in condition:
-                parts = condition.split(">")
-                if len(parts) == 2:
-                    var_name = parts[0].strip()
-                    threshold = float(parts[1].strip())
-                    return float(context.get(var_name, 0)) > threshold
-
-            elif "<" in condition:
-                parts = condition.split("<")
-                if len(parts) == 2:
-                    var_name = parts[0].strip()
-                    threshold = float(parts[1].strip())
-                    return float(context.get(var_name, 0)) < threshold
-
+            # Check >= and <= BEFORE > and < to avoid incorrect parsing
             elif ">=" in condition:
                 parts = condition.split(">=")
                 if len(parts) == 2:
                     var_name = parts[0].strip()
-                    threshold = float(parts[1].strip())
+                    threshold_str = parts[1].strip()
+                    # Check if threshold is a variable name or a literal value
+                    threshold = float(context.get(threshold_str, threshold_str))
                     return float(context.get(var_name, 0)) >= threshold
 
             elif "<=" in condition:
                 parts = condition.split("<=")
                 if len(parts) == 2:
                     var_name = parts[0].strip()
-                    threshold = float(parts[1].strip())
+                    threshold_str = parts[1].strip()
+                    # Check if threshold is a variable name or a literal value
+                    threshold = float(context.get(threshold_str, threshold_str))
                     return float(context.get(var_name, 0)) <= threshold
+
+            elif ">" in condition:
+                parts = condition.split(">")
+                if len(parts) == 2:
+                    var_name = parts[0].strip()
+                    threshold_str = parts[1].strip()
+                    # Check if threshold is a variable name or a literal value
+                    threshold = float(context.get(threshold_str, threshold_str))
+                    return float(context.get(var_name, 0)) > threshold
+
+            elif "<" in condition:
+                parts = condition.split("<")
+                if len(parts) == 2:
+                    var_name = parts[0].strip()
+                    threshold_str = parts[1].strip()
+                    # Check if threshold is a variable name or a literal value
+                    threshold = float(context.get(threshold_str, threshold_str))
+                    return float(context.get(var_name, 0)) < threshold
 
             # Boolean conditions
             elif condition == "true":
@@ -190,7 +199,9 @@ class BehaviorEngine:
         applicable_rules = []
 
         for rule in self.rules:
-            if self.evaluate_condition(rule["condition"], context):
+            condition_result = self.evaluate_condition(rule["condition"], context)
+
+            if condition_result:
                 applicable_rules.append(rule)
 
         # Sort by priority (highest first)
@@ -311,6 +322,8 @@ class NPCBase(ABC):
         self.name = getattr(definition, "name", "Unknown NPC")
         # Avoid direct access to prevent potential lazy loading issues
         self.current_room = getattr(definition, "room_id", None)
+        # Track spawn room for idle movement (defaults to definition room_id or current_room)
+        self.spawn_room_id = getattr(definition, "room_id", None) or self.current_room
         self.is_alive = True
         self.is_active = True
 
@@ -318,6 +331,11 @@ class NPCBase(ABC):
         self._stats = self._parse_stats(getattr(definition, "base_stats", "{}"))
         self._behavior_config = self._parse_behavior_config(getattr(definition, "behavior_config", "{}"))
         self._ai_config = self._parse_ai_config(getattr(definition, "ai_integration_stub", "{}"))
+
+        # CRITICAL FIX: NPC stats use "health" but behavior system expects "hp"
+        # Map "health" to "hp" if "hp" doesn't exist to prevent immediate death
+        if "hp" not in self._stats and "health" in self._stats:
+            self._stats["hp"] = self._stats["health"]
 
         # Initialize inventory
         self._inventory: list[dict[str, Any]] = []
@@ -328,6 +346,8 @@ class NPCBase(ABC):
 
         # Track last action time for behavior timing
         self._last_action_time = time.time()
+        # Track last idle movement time for interval checking
+        self._last_idle_movement_time: float | None = None
 
         # Initialize event system integration
         self.event_bus = event_bus
@@ -358,10 +378,42 @@ class NPCBase(ABC):
     def _parse_behavior_config(self, config_json: str) -> dict[str, Any]:
         """Parse behavior configuration from JSON string."""
         try:
-            return json.loads(config_json) if config_json else {}
+            config = json.loads(config_json) if config_json else {}
+            # Apply defaults for idle movement based on NPC type
+            self._apply_idle_movement_defaults(config)
+            return config
         except json.JSONDecodeError:
             logger.warning("Invalid behavior config JSON, using defaults", npc_id=self.npc_id)
-            return {}
+            config = {}
+            self._apply_idle_movement_defaults(config)
+            return config
+
+    def _apply_idle_movement_defaults(self, config: dict[str, Any]) -> None:
+        """
+        Apply default idle movement configuration based on NPC type.
+
+        As documented in the Pnakotic Manuscripts, mob entities require
+        different movement patterns than stationary entities like shopkeepers.
+
+        Args:
+            config: Behavior configuration dictionary to modify in-place
+        """
+        # Default idle movement enabled based on NPC type
+        if "idle_movement_enabled" not in config:
+            # Enable for mob types, disable for shopkeepers and quest givers
+            config["idle_movement_enabled"] = self.npc_type in ["passive_mob", "aggressive_mob"]
+
+        # Default movement interval (10 seconds)
+        if "idle_movement_interval" not in config:
+            config["idle_movement_interval"] = 10
+
+        # Default movement probability (25%)
+        if "idle_movement_probability" not in config:
+            config["idle_movement_probability"] = 0.25
+
+        # Default weighted home selection (true)
+        if "idle_movement_weighted_home" not in config:
+            config["idle_movement_weighted_home"] = True
 
     def _parse_ai_config(self, ai_json: str) -> dict[str, Any]:
         """Parse AI integration configuration from JSON string."""
@@ -450,9 +502,13 @@ class NPCBase(ABC):
             if not self.is_alive:
                 return False
 
-            current_hp = self._stats.get("hp", 0)
+            # CRITICAL FIX: Support both "hp" and "health" stats keys
+            current_hp = self._stats.get("hp", self._stats.get("health", 0))
             new_hp = max(0, current_hp - damage)
             self._stats["hp"] = new_hp
+            # Also update "health" if it exists for consistency
+            if "health" in self._stats:
+                self._stats["health"] = new_hp
 
             # Publish damage event
             if self.event_bus:
@@ -504,10 +560,14 @@ class NPCBase(ABC):
             if not self.is_alive:
                 return False
 
-            current_hp = self._stats.get("hp", 0)
-            max_hp = self._stats.get("max_hp", 100)
+            # CRITICAL FIX: Support both "hp" and "health" stats keys
+            current_hp = self._stats.get("hp", self._stats.get("health", 0))
+            max_hp = self._stats.get("max_hp", self._stats.get("max_health", 100))
             new_hp = min(max_hp, current_hp + amount)
             self._stats["hp"] = new_hp
+            # Also update "health" if it exists for consistency
+            if "health" in self._stats:
+                self._stats["health"] = new_hp
 
             logger.debug("NPC healed", npc_id=self.npc_id, amount=amount, new_hp=new_hp)
             return True
@@ -697,6 +757,19 @@ class NPCBase(ABC):
         """Get NPC-specific behavior rules. Must be implemented by subclasses."""
         pass
 
+    def schedule_idle_movement(self) -> bool:
+        """
+        Schedule idle movement for NPCs that support it.
+
+        Default implementation returns False for NPCs that don't support
+        idle movement (e.g., shopkeepers). Subclasses like PassiveMobNPC
+        should override this method to implement movement scheduling.
+
+        Returns:
+            bool: True if movement was scheduled, False otherwise
+        """
+        return False
+
     async def execute_behavior(self, context: dict[str, Any]) -> bool:
         """Execute NPC behavior based on context."""
         try:
@@ -709,10 +782,24 @@ class NPCBase(ABC):
             context["current_time"] = current_time
 
             # Add NPC-specific context
-            context["hp"] = self._stats.get("hp", 0)
+            # CRITICAL FIX: NPC stats use "health" but behavior system expects "hp"
+            # Map "health" to "hp" for behavior rule evaluation
+            hp_value = self._stats.get("hp", self._stats.get("health", 0))
+            context["hp"] = hp_value
             context["current_room"] = self.current_room
             context["is_alive"] = self.is_alive
             context["is_active"] = self.is_active
+
+            # Add behavior config values to context for behavior rule evaluation
+            context["idle_movement_enabled"] = self._behavior_config.get("idle_movement_enabled", False)
+            context["idle_movement_interval"] = self._behavior_config.get("idle_movement_interval", 10)
+            context["idle_movement_probability"] = self._behavior_config.get("idle_movement_probability", 0.25)
+            context["in_combat"] = False  # Will be checked by schedule_idle_movement if needed
+            context["flee_threshold"] = self._behavior_config.get("flee_threshold", 20)  # For aggressive mobs
+
+            # Check and schedule idle movement for mob types
+            if self.npc_type in ["passive_mob", "aggressive_mob"]:
+                self.schedule_idle_movement()
 
             # Execute behavior rules
             result = self._behavior_engine.execute_applicable_rules(context)
@@ -926,13 +1013,9 @@ class PassiveMobNPC(NPCBase):
 
     def _setup_passive_mob_behavior_rules(self):
         """Setup passive mob-specific behavior rules."""
+        # Note: Idle movement is handled by schedule_idle_movement() in execute_behavior(),
+        # not through behavior rules, so we don't need a wander_periodically rule here.
         passive_mob_rules = [
-            {
-                "name": "wander_periodically",
-                "condition": "time_since_last_action > wander_interval",
-                "action": "wander",
-                "priority": 2,
-            },
             {
                 "name": "respond_to_greeting",
                 "condition": "player_greeted == true",
@@ -951,6 +1034,7 @@ class PassiveMobNPC(NPCBase):
             self._behavior_engine.add_rule(rule)
 
         # Register passive mob action handlers
+        # Note: wander handler kept for backward compatibility, but idle movement uses schedule_idle_movement()
         self._behavior_engine.register_action_handler("wander", self._handle_wander)
         self._behavior_engine.register_action_handler("respond_to_greeting", self._handle_respond_to_greeting)
         self._behavior_engine.register_action_handler("flee", self._handle_flee)
@@ -960,13 +1044,99 @@ class PassiveMobNPC(NPCBase):
         return self._behavior_engine.get_rules()
 
     def wander(self) -> bool:
-        """Perform wandering behavior."""
+        """Perform wandering behavior using idle movement system."""
         try:
-            # Placeholder for wandering logic
-            logger.debug("NPC is wandering", npc_id=self.npc_id)
-            return True
+            # Use idle movement handler for wandering
+            from .idle_movement import IdleMovementHandler
+
+            movement_handler = IdleMovementHandler(
+                event_bus=self.event_bus,
+                persistence=None,  # Will use default persistence
+            )
+
+            # Get NPC definition
+            definition = self.definition
+
+            # Execute idle movement
+            success = movement_handler.execute_idle_movement(self, definition, self._behavior_config)
+
+            if success:
+                self._last_idle_movement_time = time.time()
+                logger.debug("NPC wandered successfully", npc_id=self.npc_id)
+            else:
+                logger.debug("NPC wander check did not result in movement", npc_id=self.npc_id)
+
+            return success
+
         except Exception as e:
             logger.error("Error wandering", npc_id=self.npc_id, error=str(e))
+            return False
+
+    def schedule_idle_movement(self) -> bool:
+        """
+        Schedule a WANDER action for idle movement if interval has elapsed.
+
+        This method checks if enough time has passed since the last movement
+        and queues a WANDER action if conditions are met.
+
+        Returns:
+            bool: True if action was scheduled, False otherwise
+        """
+        try:
+            # Check if idle movement is enabled
+            if not self._behavior_config.get("idle_movement_enabled", False):
+                return False
+
+            # Check interval
+            current_time = time.time()
+            movement_interval = self._behavior_config.get("idle_movement_interval", 10)
+
+            # If this is the first time checking, allow scheduling (last_idle_movement_time is None)
+            # Otherwise, check if enough time has passed
+            if self._last_idle_movement_time is not None:
+                time_since_last = current_time - self._last_idle_movement_time
+                if time_since_last < movement_interval:
+                    logger.debug(
+                        "Idle movement interval not elapsed",
+                        npc_id=self.npc_id,
+                        time_since_last=time_since_last,
+                        interval=movement_interval,
+                    )
+                    return False  # Not enough time has passed
+
+            # Queue WANDER action
+            from .threading import NPCActionMessage, NPCActionType
+
+            wander_action = NPCActionMessage(
+                action_type=NPCActionType.WANDER,
+                npc_id=self.npc_id,
+                timestamp=current_time,
+            )
+
+            # Get thread manager and queue the action
+            try:
+                from ..services.npc_instance_service import get_npc_instance_service
+
+                npc_instance_service = get_npc_instance_service()
+                if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
+                    lifecycle_manager = npc_instance_service.lifecycle_manager
+                    if lifecycle_manager and hasattr(lifecycle_manager, "thread_manager"):
+                        thread_manager = lifecycle_manager.thread_manager
+                        if thread_manager:
+                            thread_manager.message_queue.add_message(self.npc_id, wander_action.to_dict())
+                            # Update last idle movement time to prevent immediate re-scheduling
+                            self._last_idle_movement_time = current_time
+                            logger.debug("Scheduled WANDER action for NPC", npc_id=self.npc_id)
+                            return True
+            except (ImportError, AttributeError, RuntimeError) as e:
+                logger.debug("Could not schedule WANDER action via thread manager", npc_id=self.npc_id, error=str(e))
+                # Fallback: execute directly
+                return self.wander()
+
+            return False
+
+        except Exception as e:
+            logger.error("Error scheduling idle movement", npc_id=self.npc_id, error=str(e))
             return False
 
     def respond_to_player(self, player_id: str, interaction_type: str) -> bool:

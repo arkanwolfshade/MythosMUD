@@ -1,7 +1,7 @@
 """
 Event envelope utilities for MythosMUD real-time messages.
 
-Provides a single, consistent schema for events emitted over both SSE and WebSocket:
+Provides a single, consistent schema for events emitted over WebSocket:
 - event_type: str
 - timestamp: ISO 8601 UTC with 'Z'
 - sequence_number: int (monotonic per-process)
@@ -95,8 +95,3 @@ def build_event(
         # Keep UUID as UUID object - JSON serialization will handle it
         event["player_id"] = player_id
     return event
-
-
-def sse_line(event: dict[str, Any]) -> str:
-    """Encode an event dict as an SSE data line."""
-    return f"data: {json.dumps(event, cls=UUIDEncoder)}\n\n"

@@ -280,8 +280,11 @@ class RealTimeEventHandler:
                     # This prevents room_update from overwriting structured NPC/player data
                 },
             }
-            # Send as personal message
-            await self.connection_manager.send_personal_message(player_id_uuid, room_update_event)
+            # Send as personal message (server-initiated event)
+            await self.connection_manager.send_personal_message(
+                player_id_uuid,
+                room_update_event,
+            )
             self._logger.debug(
                 "Sent room_update to player",
                 # Structlog handles UUID objects automatically, no need to convert to string
@@ -305,7 +308,11 @@ class RealTimeEventHandler:
                     player_id=player_id_uuid,
                     connection_manager=self.connection_manager,
                 )
-                await self.connection_manager.send_personal_message(player_id_uuid, room_name_event)
+                # Send via WebSocket (server-initiated event)
+                await self.connection_manager.send_personal_message(
+                    player_id_uuid,
+                    room_name_event,
+                )
                 self._logger.debug(
                     "Sent room name message to player",
                     player_id=player_id_uuid,
@@ -320,6 +327,9 @@ class RealTimeEventHandler:
         """
         Send occupants snapshot to a player.
 
+        CRITICAL: This method MUST include NPCs when querying room occupants.
+        This is the primary mechanism for updating the entering player's Occupants panel.
+
         Args:
             player_id: The player's ID (UUID or string for backward compatibility)
             room_id: The room ID
@@ -327,7 +337,25 @@ class RealTimeEventHandler:
         # Convert to UUID if string (send_personal_message accepts UUID)
         player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
         try:
-            occupants_snapshot = self._get_room_occupants(room_id)
+            # CRITICAL: Log NPC query execution for debugging
+            self._logger.debug(
+                "Querying room occupants for personal snapshot",
+                player_id=player_id_uuid,
+                room_id=room_id,
+            )
+            occupants_snapshot = self._get_room_occupants(room_id, ensure_player_included=player_id_uuid)
+
+            # CRITICAL: Verify NPCs are included in snapshot
+            npc_count = sum(1 for occ in occupants_snapshot if isinstance(occ, dict) and "npc_name" in occ)
+            player_count = sum(1 for occ in occupants_snapshot if isinstance(occ, dict) and "player_name" in occ)
+            self._logger.info(
+                "Room occupants snapshot prepared",
+                player_id=player_id_uuid,
+                room_id=room_id,
+                total_occupants=len(occupants_snapshot),
+                npc_count=npc_count,
+                player_count=player_count,
+            )
 
             # CRITICAL FIX: Use structured format (players/npcs) instead of legacy flat list
             # This ensures the client receives separate players and NPCs arrays for proper display
@@ -389,8 +417,8 @@ class RealTimeEventHandler:
                     "count": len(all_occupants),
                 },
             }
-            self._logger.debug(
-                "Sending room_occupants event with data",
+            self._logger.info(
+                "Sending room_occupants event with data to player",
                 player_id=player_id_uuid,
                 room_id=room_id,
                 players_count=len(players),
@@ -400,10 +428,45 @@ class RealTimeEventHandler:
                 npcs=npcs,
                 occupants=all_occupants,
             )
-            await self.connection_manager.send_personal_message(player_id_uuid, personal)
+
+            # CRITICAL: Verify NPCs are included before sending
+            if len(npcs) == 0:
+                self._logger.warning(
+                    "No NPCs included in occupants snapshot - player may not see NPCs",
+                    player_id=player_id_uuid,
+                    room_id=room_id,
+                    total_occupants=len(all_occupants),
+                    players_count=len(players),
+                )
+            else:
+                self._logger.debug(
+                    "NPCs included in occupants snapshot",
+                    player_id=player_id_uuid,
+                    room_id=room_id,
+                    npcs=npcs,
+                    npcs_count=len(npcs),
+                )
+
+            # ARCHITECTURE: Server-initiated events (room occupants) sent via WebSocket
+            await self.connection_manager.send_personal_message(
+                player_id_uuid,
+                personal,
+            )
+            self._logger.debug(
+                "Occupants snapshot sent successfully to player",
+                player_id=player_id_uuid,
+                room_id=room_id,
+                npcs_count=len(npcs),
+            )
         except Exception as e:
             # Structlog handles UUID objects automatically, no need to convert to string
-            self._logger.error("Error sending occupants snapshot to player", player_id=player_id_uuid, error=str(e))
+            self._logger.error(
+                "Error sending occupants snapshot to player",
+                player_id=player_id_uuid,
+                room_id=room_id,
+                error=str(e),
+                exc_info=True,
+            )
 
     async def _handle_player_entered(self, event: PlayerEnteredRoom) -> None:
         """
@@ -463,10 +526,13 @@ class RealTimeEventHandler:
                         "Failed to convert player_id to UUID for room subscription", player_id=processed_event.player_id
                     )
 
-            # Send room occupants update to the entering player as a personal message
-            # so they immediately see who is present on joining
+            # CRITICAL FIX: Send room occupants update to the entering player as a personal message
+            # so they immediately see who is present on joining. Also broadcast to other players
+            # in the room. The entering player receives a personal message to ensure NPCs are visible.
             if room_id_str is not None and processed_event.player_id:
+                # Broadcast to other players in room (excluding entering player to avoid duplicates)
                 await self._send_room_occupants_update(room_id_str, exclude_player=exclude_player_id)
+
                 # Functions accept UUID | str, so convert string to UUID if needed
                 try:
                     player_id_for_personal = (
@@ -475,10 +541,38 @@ class RealTimeEventHandler:
                         else processed_event.player_id
                     )
                     await self._send_room_update_to_player(player_id_for_personal, room_id_str)
-                    await self._send_occupants_snapshot_to_player(player_id_for_personal, room_id_str)
+
+                    # CRITICAL: Send personal occupants snapshot with enhanced logging
+                    self._logger.info(
+                        "Sending occupants snapshot to entering player",
+                        player_id=processed_event.player_id,
+                        player_name=player_name,
+                        room_id=room_id_str,
+                    )
+                    try:
+                        await self._send_occupants_snapshot_to_player(player_id_for_personal, room_id_str)
+                        self._logger.debug(
+                            "Occupants snapshot sent to entering player",
+                            player_id=processed_event.player_id,
+                            room_id=room_id_str,
+                        )
+                    except Exception as snapshot_error:
+                        self._logger.error(
+                            "Failed to send occupants snapshot to entering player",
+                            player_id=processed_event.player_id,
+                            room_id=room_id_str,
+                            error=str(snapshot_error),
+                            exc_info=True,
+                        )
                 except (ValueError, AttributeError):
                     # Fallback to string if conversion fails
                     await self._send_room_update_to_player(processed_event.player_id, room_id_str)
+                    self._logger.info(
+                        "Sending occupants snapshot to entering player (string fallback)",
+                        player_id=processed_event.player_id,
+                        player_name=player_name,
+                        room_id=room_id_str,
+                    )
                     await self._send_occupants_snapshot_to_player(processed_event.player_id, room_id_str)
 
             self._logger.info(
@@ -661,11 +755,12 @@ class RealTimeEventHandler:
                         # Validate that npc_name is not a UUID string
                         if npc_name and isinstance(npc_name, str):
                             # Skip if it looks like a UUID
-                            if not (
+                            is_uuid = (
                                 len(npc_name) == 36
                                 and npc_name.count("-") == 4
                                 and all(c in "0123456789abcdefABCDEF-" for c in npc_name)
-                            ):
+                            )
+                            if not is_uuid:
                                 npcs.append(npc_name)
                                 all_occupants.append(npc_name)
                             else:
@@ -714,7 +809,7 @@ class RealTimeEventHandler:
                 npcs_count=len(npcs),
             )
 
-            message = {
+            message: dict[str, Any] = {
                 "event_type": "room_occupants",
                 "timestamp": datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z"),
                 "sequence_number": self._get_next_sequence(),
@@ -735,12 +830,16 @@ class RealTimeEventHandler:
         except Exception as e:
             self._logger.error("Error sending room occupants update", error=str(e), exc_info=True)
 
-    def _get_room_occupants(self, room_id: str) -> list[dict[str, Any] | str]:
+    def _get_room_occupants(
+        self, room_id: str, ensure_player_included: uuid.UUID | str | None = None
+    ) -> list[dict[str, Any] | str]:
         """
         Get the list of occupants in a room.
 
         Args:
             room_id: The room ID
+            ensure_player_included: Optional player ID to ensure is included even if not in room._players yet
+                                   (used to handle race conditions during movement)
 
         Returns:
             list[dict]: List of occupant information
@@ -759,6 +858,19 @@ class RealTimeEventHandler:
 
             # Get player IDs in the room (returns list[str])
             player_id_strings = room.get_players()
+
+            # CRITICAL FIX: If ensure_player_included is provided and not in the room's _players set,
+            # add it to ensure the player is included even during race conditions
+            if ensure_player_included:
+                ensure_player_id_str = str(ensure_player_included)
+                if ensure_player_id_str not in player_id_strings:
+                    player_id_strings.append(ensure_player_id_str)
+                    self._logger.debug(
+                        "Added ensure_player_included to player list",
+                        room_id=room_id,
+                        player_id=ensure_player_id_str,
+                        reason="Player not in room._players yet (race condition during movement)",
+                    )
 
             # Convert string IDs to UUIDs for batch loading
             player_id_uuids: list[uuid.UUID] = []
@@ -957,11 +1069,20 @@ class RealTimeEventHandler:
             # CRITICAL FIX: Get NPCs from lifecycle manager instead of Room instance
             # Room instances are recreated from persistence and lose in-memory NPC tracking
             # NPCs are actually tracked in the lifecycle manager with their current_room_id
+            # CRITICAL: Use canonical room ID for comparison to ensure format consistency
             npc_ids: list[str] = []
             try:
+                # Get canonical room ID for consistent comparison
+                canonical_room_id = None
+                if hasattr(self.connection_manager, "_canonical_room_id"):
+                    canonical_room_id = self.connection_manager._canonical_room_id(room_id) or room_id
+                else:
+                    canonical_room_id = room_id
+
                 self._logger.info(
                     "Querying NPCs from lifecycle manager",
                     room_id=room_id,
+                    canonical_room_id=canonical_room_id,
                     step="starting_npc_query",
                 )
                 from ..services.npc_instance_service import get_npc_instance_service
@@ -970,6 +1091,7 @@ class RealTimeEventHandler:
                 self._logger.debug(
                     "Retrieved NPC instance service",
                     room_id=room_id,
+                    canonical_room_id=canonical_room_id,
                     service_available=(npc_instance_service is not None),
                     has_lifecycle_manager=(
                         npc_instance_service is not None and hasattr(npc_instance_service, "lifecycle_manager")
@@ -980,6 +1102,7 @@ class RealTimeEventHandler:
                     self._logger.debug(
                         "Retrieved lifecycle manager",
                         room_id=room_id,
+                        canonical_room_id=canonical_room_id,
                         manager_available=(lifecycle_manager is not None),
                         has_active_npcs=(lifecycle_manager is not None and hasattr(lifecycle_manager, "active_npcs")),
                     )
@@ -989,37 +1112,123 @@ class RealTimeEventHandler:
                         self._logger.info(
                             "Scanning active NPCs for room match",
                             room_id=room_id,
+                            canonical_room_id=canonical_room_id,
                             total_active_npcs=total_active_npcs,
                         )
                         # Query all active NPCs to find those in this room
                         # NPCs use current_room attribute (not current_room_id)
                         npcs_checked = 0
                         npcs_matched = 0
+                        npcs_without_room = 0
                         for npc_id, npc_instance in active_npcs_dict.items():
                             npcs_checked += 1
+
+                            # BUGFIX: Filter out dead NPCs (is_alive=False) to prevent showing dead NPCs in occupants
+                            # As documented in investigation: 2025-11-30_session-001_npc-combat-start-failure.md
+                            if not getattr(npc_instance, "is_alive", True):
+                                self._logger.debug(
+                                    "Skipping dead NPC from occupants",
+                                    npc_id=npc_id,
+                                    npc_name=getattr(npc_instance, "name", "unknown"),
+                                    room_id=room_id,
+                                )
+                                continue
+
                             # Check both current_room and current_room_id for compatibility
                             current_room = getattr(npc_instance, "current_room", None)
                             current_room_id = getattr(npc_instance, "current_room_id", None)
                             npc_room_id = current_room or current_room_id
                             npc_name = getattr(npc_instance, "name", "Unknown")
 
+                            # CRITICAL: Validate NPC has room tracking attribute set
+                            if not npc_room_id:
+                                npcs_without_room += 1
+                                self._logger.warning(
+                                    "NPC instance missing room tracking",
+                                    npc_id=npc_id,
+                                    npc_name=npc_name,
+                                    room_id=room_id,
+                                    has_current_room=current_room is not None,
+                                    has_current_room_id=current_room_id is not None,
+                                )
+                                continue
+
+                            # CRITICAL: Use canonical room ID for comparison to ensure format consistency
+                            # Normalize NPC room ID to canonical format for comparison
+                            npc_canonical_room_id = None
+                            if hasattr(self.connection_manager, "_canonical_room_id"):
+                                npc_canonical_room_id = (
+                                    self.connection_manager._canonical_room_id(npc_room_id) or npc_room_id
+                                )
+                            else:
+                                npc_canonical_room_id = npc_room_id
+
+                            # CRITICAL FIX: Normalize all room IDs to strings and strip whitespace for robust matching
+                            # This handles cases where room IDs might have slight format differences
+                            def normalize_room_id(rid: str | None) -> str | None:
+                                """Normalize room ID for comparison."""
+                                if rid is None:
+                                    return None
+                                # Convert to string and strip whitespace
+                                rid_str = str(rid).strip()
+                                # Return empty string as None for consistency
+                                return rid_str if rid_str else None
+
+                            normalized_room_id = normalize_room_id(room_id)
+                            normalized_canonical_room_id = normalize_room_id(canonical_room_id)
+                            normalized_npc_room_id = normalize_room_id(npc_room_id)
+                            normalized_npc_canonical_room_id = normalize_room_id(npc_canonical_room_id)
+
+                            # Match against both original and canonical room IDs for robustness
+                            # Also try normalized versions to handle format differences
+                            room_matches = (
+                                (
+                                    normalized_npc_room_id
+                                    and normalized_room_id
+                                    and normalized_npc_room_id == normalized_room_id
+                                )
+                                or (
+                                    normalized_npc_room_id
+                                    and normalized_canonical_room_id
+                                    and normalized_npc_room_id == normalized_canonical_room_id
+                                )
+                                or (
+                                    normalized_npc_canonical_room_id
+                                    and normalized_room_id
+                                    and normalized_npc_canonical_room_id == normalized_room_id
+                                )
+                                or (
+                                    normalized_npc_canonical_room_id
+                                    and normalized_canonical_room_id
+                                    and normalized_npc_canonical_room_id == normalized_canonical_room_id
+                                )
+                                # Fallback to original comparison for backward compatibility
+                                or (npc_room_id == room_id)
+                                or (npc_room_id == canonical_room_id)
+                                or (npc_canonical_room_id == room_id)
+                                or (npc_canonical_room_id == canonical_room_id)
+                            )
+
                             self._logger.debug(
                                 "Checking NPC for room match",
                                 room_id=room_id,
+                                canonical_room_id=canonical_room_id,
                                 npc_id=npc_id,
                                 npc_name=npc_name,
                                 npc_current_room=current_room,
                                 npc_current_room_id=current_room_id,
                                 npc_room_id_used=npc_room_id,
-                                matches_room=(npc_room_id == room_id),
+                                npc_canonical_room_id=npc_canonical_room_id,
+                                matches_room=room_matches,
                             )
 
-                            if npc_room_id == room_id:
+                            if room_matches:
                                 npc_ids.append(npc_id)
                                 npcs_matched += 1
                                 self._logger.info(
                                     "Found NPC in room",
                                     room_id=room_id,
+                                    canonical_room_id=canonical_room_id,
                                     npc_id=npc_id,
                                     npc_name=npc_name,
                                 )
@@ -1027,11 +1236,61 @@ class RealTimeEventHandler:
                         self._logger.info(
                             "Completed NPC query from lifecycle manager",
                             room_id=room_id,
+                            canonical_room_id=canonical_room_id,
                             npc_count=len(npc_ids),
                             npcs_checked=npcs_checked,
                             npcs_matched=npcs_matched,
+                            npcs_without_room=npcs_without_room,
                             npc_ids=npc_ids[:5],  # Log first 5 for debugging
                         )
+
+                        # CRITICAL: Warn only if there's evidence of a format mismatch
+                        # Don't warn if NPCs are simply in different rooms (normal case)
+                        if total_active_npcs > 0 and npcs_matched == 0 and npcs_without_room == 0:
+                            # Collect sample NPC room IDs and check for potential format mismatches
+                            sample_npc_room_ids = []
+                            npcs_in_same_zone = 0
+                            sample_count = 0
+
+                            # Extract zone/sub-zone from queried room ID (format: earth_zone_subzone_room_roomname_###)
+                            queried_zone_parts = room_id.split("_")[:3] if "_" in room_id else []
+                            queried_zone_key = "_".join(queried_zone_parts) if len(queried_zone_parts) >= 3 else ""
+
+                            for _sample_npc_id, sample_npc_instance in active_npcs_dict.items():
+                                sample_current_room = getattr(sample_npc_instance, "current_room", None)
+                                sample_current_room_id = getattr(sample_npc_instance, "current_room_id", None)
+                                sample_npc_room_id = sample_current_room or sample_current_room_id
+                                if sample_npc_room_id:
+                                    sample_npc_room_id_str = str(sample_npc_room_id)
+                                    if sample_count < 3:  # Log first 3 NPCs as samples
+                                        sample_npc_room_ids.append(sample_npc_room_id_str)
+                                    # Check if NPC is in same zone/sub-zone (potential format mismatch indicator)
+                                    if queried_zone_key:
+                                        sample_zone_parts = (
+                                            sample_npc_room_id_str.split("_")[:3]
+                                            if "_" in sample_npc_room_id_str
+                                            else []
+                                        )
+                                        sample_zone_key = (
+                                            "_".join(sample_zone_parts) if len(sample_zone_parts) >= 3 else ""
+                                        )
+                                        if sample_zone_key == queried_zone_key:
+                                            npcs_in_same_zone += 1
+                                    sample_count += 1
+
+                            # Only warn if NPCs exist in the same zone/sub-zone but didn't match
+                            # This suggests a format mismatch rather than just "no NPCs in this room"
+                            if npcs_in_same_zone > 0:
+                                self._logger.warning(
+                                    "No NPCs matched room ID - possible room ID format mismatch",
+                                    room_id=room_id,
+                                    canonical_room_id=canonical_room_id,
+                                    total_active_npcs=total_active_npcs,
+                                    npcs_checked=npcs_checked,
+                                    npcs_in_same_zone=npcs_in_same_zone,
+                                    sample_npc_room_ids=sample_npc_room_ids,
+                                    npcs_without_room=npcs_without_room,
+                                )
                     else:
                         self._logger.warning(
                             "Lifecycle manager or active_npcs not available",
@@ -1059,12 +1318,43 @@ class RealTimeEventHandler:
                     exc_info=True,
                 )
                 # Fallback to room.get_npcs() if lifecycle manager query fails
-                npc_ids = room.get_npcs() if hasattr(room, "get_npcs") else []
+                # BUGFIX: Filter fallback NPCs to only include alive NPCs from active_npcs
+                # As documented in investigation: 2025-11-30_session-001_npc-combat-start-failure.md
+                room_npc_ids = room.get_npcs() if hasattr(room, "get_npcs") else []
                 self._logger.warning(
                     "Fell back to room.get_npcs() after lifecycle manager query failed",
                     room_id=room_id,
-                    fallback_npc_count=len(npc_ids),
+                    fallback_npc_count=len(room_npc_ids),
                 )
+
+                # Filter fallback NPCs: only include those in active_npcs and alive
+                npc_ids = []
+                try:
+                    from ..services.npc_instance_service import get_npc_instance_service
+
+                    npc_instance_service = get_npc_instance_service()
+                    if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
+                        lifecycle_manager = npc_instance_service.lifecycle_manager
+                        if lifecycle_manager and hasattr(lifecycle_manager, "active_npcs"):
+                            for npc_id in room_npc_ids:
+                                if npc_id in lifecycle_manager.active_npcs:
+                                    npc_instance = lifecycle_manager.active_npcs[npc_id]
+                                    # Only include alive NPCs
+                                    if getattr(npc_instance, "is_alive", True):
+                                        npc_ids.append(npc_id)
+                                    else:
+                                        self._logger.debug(
+                                            "Filtered dead NPC from fallback occupants",
+                                            npc_id=npc_id,
+                                            room_id=room_id,
+                                        )
+                except Exception as filter_error:
+                    self._logger.warning(
+                        "Error filtering fallback NPCs, using all room NPCs",
+                        room_id=room_id,
+                        error=str(filter_error),
+                    )
+                    npc_ids = room_npc_ids
 
             # OPTIMIZATION: Batch load all NPC names at once to eliminate N+1 queries
             npc_names = self.connection_manager._get_npcs_batch(list(npc_ids))
@@ -1108,11 +1398,24 @@ class RealTimeEventHandler:
                 self._logger.warning("Room not found for NPC entry", room_id=event.room_id)
                 return
 
-            # Get the NPC's spawn message from behavior_config (if available)
-            spawn_message = self._get_npc_spawn_message(event.npc_id)
-            if spawn_message:
-                # Send the spawn message to all players in the room
-                self._send_room_message(event.room_id, spawn_message)
+            # Get NPC name for movement messages
+            npc_name = self._get_npc_name(event.npc_id)
+            if not npc_name:
+                npc_name = "An NPC"
+
+            # Check if this is a movement (has from_room_id) or a spawn (no from_room_id)
+            if event.from_room_id:
+                # This is a movement - create directional message
+                direction = self._determine_direction_from_rooms(event.from_room_id, event.room_id)
+                movement_message = self._create_npc_movement_message(npc_name, direction, "entered")
+                # Send movement message to all players in the room as system message
+                self._send_room_message(event.room_id, movement_message, message_type="system")
+            else:
+                # This is a spawn - use spawn message from behavior_config
+                spawn_message = self._get_npc_spawn_message(event.npc_id)
+                if spawn_message:
+                    # Send the spawn message to all players in the room
+                    self._send_room_message(event.room_id, spawn_message)
 
             # Schedule room update broadcast (async operation)
             import asyncio
@@ -1149,7 +1452,8 @@ class RealTimeEventHandler:
         """
         Handle NPC leaving a room.
 
-        This method triggers occupant updates. Room state is mutated by domain sources only.
+        This method broadcasts NPC departure and triggers occupant updates.
+        Room state is mutated by domain sources only.
 
         Args:
             event: NPCLeftRoom event containing NPC and room information
@@ -1167,6 +1471,25 @@ class RealTimeEventHandler:
             if not room:
                 self._logger.warning("Room not found for NPC exit", room_id=event.room_id)
                 return
+
+            # Get NPC name for movement messages
+            npc_name = self._get_npc_name(event.npc_id)
+            if not npc_name:
+                npc_name = "An NPC"
+
+            # Check if this is a movement (has to_room_id) or a departure (no to_room_id)
+            if event.to_room_id:
+                # This is a movement - create directional message
+                direction = self._determine_direction_from_rooms(event.room_id, event.to_room_id)
+                movement_message = self._create_npc_movement_message(npc_name, direction, "left")
+                # Send movement message to all players in the room as system message
+                self._send_room_message(event.room_id, movement_message, message_type="system")
+            else:
+                # This is a departure (not movement) - use departure message from behavior_config
+                departure_message = self._get_npc_departure_message(event.npc_id)
+                if departure_message:
+                    # Send the departure message to all players in the room
+                    self._send_room_message(event.room_id, departure_message)
 
             # Schedule room update broadcast (async operation)
             import asyncio
@@ -1242,7 +1565,11 @@ class RealTimeEventHandler:
                 player_id=player_id_str,
             )
 
-            await self.connection_manager.send_personal_message(player_id_str, xp_update_event)
+            # ARCHITECTURE: Server-initiated events (XP updates) sent via WebSocket
+            await self.connection_manager.send_personal_message(
+                player_id_str,
+                xp_update_event,
+            )
 
             self._logger.info(
                 "Sent XP award update to player",
@@ -1284,7 +1611,13 @@ class RealTimeEventHandler:
             npc_name = getattr(npc_instance, "name", "An NPC")
 
             # Get the behavior_config from the NPC instance
-            behavior_config = getattr(npc_instance, "behavior_config", None)
+            # Try both private attribute and public method
+            behavior_config = getattr(npc_instance, "_behavior_config", None)
+            if not behavior_config and hasattr(npc_instance, "get_behavior_config"):
+                behavior_config = npc_instance.get_behavior_config()
+            if not behavior_config:
+                behavior_config = getattr(npc_instance, "behavior_config", None)
+
             if behavior_config:
                 # Parse the behavior_config if it's a JSON string
                 import json
@@ -1308,27 +1641,174 @@ class RealTimeEventHandler:
             self._logger.debug("Error getting NPC spawn message", npc_id=npc_id, error=str(e))
             return None
 
-    def _send_room_message(self, room_id: str, message: str) -> None:
+    def _get_npc_name(self, npc_id: str) -> str | None:
+        """
+        Get the name of an NPC by ID.
+
+        Args:
+            npc_id: The NPC ID
+
+        Returns:
+            NPC name or None if not found
+        """
+        try:
+            from ..services.npc_instance_service import get_npc_instance_service
+
+            npc_instance_service = get_npc_instance_service()
+            if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
+                return None
+
+            lifecycle_manager = npc_instance_service.lifecycle_manager
+            if not lifecycle_manager or npc_id not in lifecycle_manager.active_npcs:
+                return None
+
+            npc_instance = lifecycle_manager.active_npcs[npc_id]
+            npc_name = getattr(npc_instance, "name", None)
+            return npc_name if npc_name else None
+        except Exception as e:
+            self._logger.debug("Error getting NPC name", npc_id=npc_id, error=str(e))
+            return None
+
+    def _determine_direction_from_rooms(self, from_room_id: str, to_room_id: str) -> str | None:
+        """
+        Determine the direction from one room to another by checking room exits.
+
+        Args:
+            from_room_id: Source room ID
+            to_room_id: Destination room ID
+
+        Returns:
+            Direction string (e.g., "north", "south") or None if not found
+        """
+        try:
+            persistence = self.connection_manager.persistence
+            if not persistence:
+                return None
+
+            from_room = persistence.get_room(from_room_id)
+            if not from_room:
+                return None
+
+            # Check each exit to find the one that leads to to_room_id
+            for direction, target_room_id in from_room.exits.items():
+                if target_room_id == to_room_id:
+                    return direction
+
+            return None
+        except Exception as e:
+            self._logger.debug(
+                "Error determining direction from rooms", error=str(e), from_room=from_room_id, to_room=to_room_id
+            )
+            return None
+
+    def _create_npc_movement_message(self, npc_name: str, direction: str | None, movement_type: str) -> str:
+        """
+        Create an NPC movement message with direction.
+
+        Args:
+            npc_name: Name of the NPC
+            direction: Direction of movement (e.g., "north", "south") or None
+            movement_type: "left" or "entered"
+
+        Returns:
+            Formatted movement message
+        """
+        if movement_type == "left":
+            if direction:
+                return f"{npc_name} left {direction}."
+            return f"{npc_name} left the room."
+        elif movement_type == "entered":
+            if direction:
+                return f"{npc_name} entered from {direction}."
+            return f"{npc_name} entered the room."
+        else:
+            return f"{npc_name} moved."
+
+    def _get_npc_departure_message(self, npc_id: str) -> str | None:
+        """
+        Get the departure message for an NPC from its behavior_config.
+
+        If no custom departure message is defined, returns a default message: "<npc-name> leaves."
+
+        Args:
+            npc_id: The NPC ID
+
+        Returns:
+            Departure message (custom or default), or None if NPC not found
+        """
+        try:
+            # Get the NPC instance from the lifecycle manager
+            from ..services.npc_instance_service import get_npc_instance_service
+
+            npc_instance_service = get_npc_instance_service()
+            if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
+                return None
+
+            lifecycle_manager = npc_instance_service.lifecycle_manager
+            if not lifecycle_manager or npc_id not in lifecycle_manager.active_npcs:
+                return None
+
+            npc_instance = lifecycle_manager.active_npcs[npc_id]
+
+            # Get the NPC name for the default message
+            npc_name = getattr(npc_instance, "name", "An NPC")
+
+            # Get the behavior_config from the NPC instance
+            behavior_config = getattr(npc_instance, "_behavior_config", None)
+            if not behavior_config:
+                # Try alternative attribute name
+                behavior_config = getattr(npc_instance, "behavior_config", None)
+
+            if behavior_config:
+                # Parse the behavior_config if it's a JSON string
+                import json
+
+                if isinstance(behavior_config, str):
+                    try:
+                        behavior_config = json.loads(behavior_config)
+                    except (json.JSONDecodeError, ValueError):
+                        # If parsing fails, use default message
+                        return f"{npc_name} leaves."
+
+                # Get the departure_message from the behavior_config
+                departure_message = behavior_config.get("departure_message")
+                if departure_message:
+                    return cast(str, departure_message)
+
+            # Return default message if no custom message is defined
+            return f"{npc_name} leaves."
+
+        except Exception as e:
+            self._logger.debug("Error getting NPC departure message", npc_id=npc_id, error=str(e))
+            return None
+
+    def _send_room_message(self, room_id: str, message: str, message_type: str = "npc_spawn") -> None:
         """
         Send a message to all players in a room.
 
         Args:
             room_id: The room ID
             message: The message to send
+            message_type: Type of message (default: "npc_spawn", use "system" for movement messages)
         """
         try:
-            # Get all players in the room
-            from ..persistence import get_persistence
+            # Get all players in the room using room_manager (same as broadcast_to_room)
             from .envelope import build_event
 
-            persistence = get_persistence()
-            room = persistence.get_room(room_id)
-            if not room:
-                self._logger.warning("Room not found for sending room message", room_id=room_id)
+            # Use room_manager.get_room_subscribers() instead of room._players
+            # room._players may not be accurate as Room instances are recreated from persistence
+            # room_manager tracks actual online players in rooms
+            if not self.connection_manager or not hasattr(self.connection_manager, "room_manager"):
+                self._logger.warning(
+                    "Connection manager or room manager not available for sending room message", room_id=room_id
+                )
                 return
 
-            # Get all player IDs in the room
-            player_ids = list(room._players)  # Get the player IDs from the room
+            # Get all player IDs subscribed to this room (as strings, same as broadcast_to_room)
+            player_ids_str = self.connection_manager.room_manager.get_room_subscribers(room_id)
+            player_ids = [
+                uuid.UUID(pid_str) for pid_str in player_ids_str
+            ]  # Convert to UUIDs for send_personal_message
 
             # Send the message to each player in the room
             import asyncio
@@ -1340,7 +1820,7 @@ class RealTimeEventHandler:
                     {
                         "message": message,
                         "room_id": room_id,
-                        "message_type": "npc_spawn",
+                        "message_type": message_type,
                     },
                     player_id=player_id,
                 )
@@ -1353,7 +1833,10 @@ class RealTimeEventHandler:
                     # Create a task to send the message
                     if self.task_registry:
                         self.task_registry.register_task(
-                            self.connection_manager.send_personal_message(player_id, message_event),
+                            self.connection_manager.send_personal_message(
+                                player_id,
+                                message_event,
+                            ),
                             f"event_handler/room_message_{room_id}_{player_id}",
                             "event_handler",
                         )
@@ -1362,7 +1845,10 @@ class RealTimeEventHandler:
 
                         tracked_manager = get_global_tracked_manager()
                         tracked_manager.create_tracked_task(
-                            self.connection_manager.send_personal_message(player_id, message_event),
+                            self.connection_manager.send_personal_message(
+                                player_id,
+                                message_event,
+                            ),
                             task_name=f"event_handler/room_message_{room_id}_{player_id}",
                             task_type="event_handler",
                         )
@@ -1390,7 +1876,9 @@ class RealTimeEventHandler:
                 new_hp=event.new_hp,
                 max_hp=event.max_hp,
             )
-            player_id_str = event.player_id
+            # event.player_id is now UUID (changed from str to match codebase)
+            player_id = event.player_id
+            player_id_str = str(player_id)  # For logging and string operations
             self._logger.info(
                 "Received PlayerHPUpdated event",
                 player_id=player_id_str,
@@ -1411,7 +1899,8 @@ class RealTimeEventHandler:
             # Get the current player data to send updated HP and stats
             # CRITICAL: Try to get player from connection manager, but if not found,
             # still send the HP update event with the data from the event itself
-            player = self.connection_manager._get_player(player_id_str)
+            # _get_player expects UUID, and event.player_id is now UUID
+            player = self.connection_manager._get_player(player_id)
 
             # Get full player stats including posture/position
             if player:
@@ -1457,7 +1946,12 @@ class RealTimeEventHandler:
                 player_id=player_id_str,
             )
 
-            await self.connection_manager.send_personal_message(player_id_str, hp_update_event)
+            # player_id is now UUID (changed from str to match codebase), so we can use it directly
+            # ARCHITECTURE: Server-initiated events (HP updates) sent via WebSocket
+            await self.connection_manager.send_personal_message(
+                player_id,
+                hp_update_event,
+            )
 
             self._logger.info(
                 "Sent HP update to player",
@@ -1498,7 +1992,11 @@ class RealTimeEventHandler:
                 player_id=player_id_str,
             )
 
-            await self.connection_manager.send_personal_message(player_id_str, death_event)
+            # ARCHITECTURE: Server-initiated events (death) sent via WebSocket
+            await self.connection_manager.send_personal_message(
+                player_id_str,
+                death_event,
+            )
 
             self._logger.info("Sent death notification to player", player_id=player_id_str, room_id=event.room_id)
 
@@ -1531,7 +2029,11 @@ class RealTimeEventHandler:
                 player_id=player_id_str,
             )
 
-            await self.connection_manager.send_personal_message(player_id_str, decay_event)
+            # ARCHITECTURE: Server-initiated events (HP decay) sent via WebSocket
+            await self.connection_manager.send_personal_message(
+                player_id_str,
+                decay_event,
+            )
 
             self._logger.debug("Sent HP decay notification to player", player_id=player_id_str, new_hp=event.new_hp)
 
@@ -1632,7 +2134,38 @@ class RealTimeEventHandler:
                 player_id=player_id_str,
             )
 
-            await self.connection_manager.send_personal_message(player_id_str, respawn_event)
+            # CRITICAL FIX: Retry sending respawn event to handle temporary connection unavailability
+            # As documented in "Resurrection and Connection Synchronization" - Dr. Armitage, 1930
+            # The respawn event is critical and must be delivered even if connection is temporarily unavailable
+            # Strategy: Poll for connection availability and send immediately when available
+            import asyncio
+            import uuid as uuid_lib
+
+            max_wait_time = 2.0  # Maximum time to wait for connection (2 seconds)
+            poll_interval = 0.05  # Check connection every 50ms
+            max_polls = int(max_wait_time / poll_interval)  # 40 polls over 2 seconds
+            player_id_uuid = uuid_lib.UUID(player_id_str)
+
+            for _poll_count in range(max_polls):
+                # Check if WebSocket connection is available
+                has_websocket = player_id_uuid in self.connection_manager.player_websockets
+
+                if has_websocket:
+                    # Connection available - try sending immediately
+                    # ARCHITECTURE: Server-initiated events (respawn) sent via WebSocket
+                    delivery_status = await self.connection_manager.send_personal_message(
+                        player_id_uuid,
+                        respawn_event,
+                    )
+                    # Check if message was actually delivered
+                    websocket_delivered = delivery_status.get("websocket_delivered", 0) > 0
+                    active_connections = delivery_status.get("active_connections", 0)
+                    if websocket_delivered and active_connections > 0:
+                        # Message actually delivered to active connection
+                        break
+
+                # Wait before next poll
+                await asyncio.sleep(poll_interval)
 
             self._logger.info(
                 "Sent respawn notification to player",

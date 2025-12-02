@@ -11,7 +11,6 @@ import {
   isErrorType,
   isNetworkError,
   isValidationError,
-  type SSEErrorResponse,
   type StandardErrorResponse,
   type WebSocketErrorResponse,
 } from './errorHandler';
@@ -38,16 +37,6 @@ describe('errorHandler', () => {
         user_friendly: 'Unable to connect to server',
       };
       expect(isErrorResponse(wsError)).toBe(true);
-    });
-
-    it('should identify SSE error responses', () => {
-      const sseError: SSEErrorResponse = {
-        type: 'error',
-        error_type: 'sse_error',
-        message: 'SSE connection failed',
-        user_friendly: 'Real-time connection lost',
-      };
-      expect(isErrorResponse(sseError)).toBe(true);
     });
 
     it('should reject non-error responses', () => {
@@ -101,19 +90,9 @@ describe('errorHandler', () => {
       expect(getErrorMessage(wsError)).toBe('Connection failed message');
     });
 
-    it('should handle SSE error with message but no user_friendly', () => {
-      // Test line 73 for SSE format
-      const sseError = {
-        type: 'error',
-        error_type: 'sse_error',
-        message: 'SSE connection lost',
-      } as SSEErrorResponse;
-      expect(getErrorMessage(sseError)).toBe('SSE connection lost');
-    });
-
     it('should handle WebSocket error when isErrorResponse is true but error field check fails', () => {
       // Test line 72: When isErrorResponse returns true but 'error' in response is false
-      // This should hit the WebSocket/SSE format branch
+      // This should hit the WebSocket format branch
       const wsError = {
         type: 'error',
         error_type: 'connection_error',
@@ -168,7 +147,7 @@ describe('errorHandler', () => {
 
     it('should handle WebSocket error type when isErrorResponse is true but error field check fails', () => {
       // Test line 106: When isErrorResponse returns true but 'error' in response is false
-      // This should hit the WebSocket/SSE format branch
+      // This should hit the WebSocket format branch
       const wsError = {
         type: 'error',
         error_type: 'connection_error',
@@ -205,7 +184,7 @@ describe('errorHandler', () => {
     });
 
     it('should return empty object when WebSocket error has no details', () => {
-      // Test line 126: when details is missing in WebSocket/SSE format
+      // Test line 126: when details is missing in WebSocket format
       const wsError: WebSocketErrorResponse = {
         type: 'error',
         error_type: 'connection_error',
@@ -214,19 +193,9 @@ describe('errorHandler', () => {
       expect(getErrorDetails(wsError)).toEqual({});
     });
 
-    it('should return empty object when SSE error has no details', () => {
-      // Test line 126 for SSE format
-      const sseError: SSEErrorResponse = {
-        type: 'error',
-        error_type: 'sse_error',
-        message: 'SSE connection lost',
-      };
-      expect(getErrorDetails(sseError)).toEqual({});
-    });
-
     it('should handle WebSocket error details when isErrorResponse is true but error field check fails', () => {
       // Test line 125: When isErrorResponse returns true but 'error' in response is false
-      // This should hit the WebSocket/SSE format branch
+      // This should hit the WebSocket format branch
       const wsError = {
         type: 'error',
         error_type: 'connection_error',
@@ -280,7 +249,7 @@ describe('errorHandler', () => {
 
     it('should return medium for non-API errors', () => {
       // Test line 137: when isErrorResponse returns true but 'error' in response is false
-      // This tests the branch where the response is a WebSocket/SSE error (no error field)
+      // This tests the branch where the response is a WebSocket error (no error field)
       const wsError: WebSocketErrorResponse = {
         type: 'error',
         error_type: 'connection_error',

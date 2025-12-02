@@ -24,7 +24,22 @@ logger = get_logger(__name__)
 
 
 class NPCInstanceService:
-    """Service for managing NPC instances."""
+    """
+    High-level API wrapper for NPC instance management.
+
+    This service provides a unified interface for NPC operations, coordinating
+    between NPCLifecycleManager, NPCPopulationController, and database access.
+
+    SERVICE HIERARCHY:
+    - Level 1: NPCLifecycleManager (core instance lifecycle - spawn, despawn, respawn, active_npcs tracking)
+    - Level 2: NPCPopulationController (population limits, zone rules - uses LifecycleManager)
+    - Level 3: NPCInstanceService (high-level API wrapper - uses LifecycleManager + PopulationController)
+    - Level 4: NPCStartupService (startup coordination - uses NPCInstanceService)
+
+    ARCHITECTURE NOTE:
+    All spawning should go through: NPCInstanceService → NPCPopulationController → NPCLifecycleManager
+    This ensures proper population validation and lifecycle tracking.
+    """
 
     def __init__(
         self,
@@ -37,9 +52,9 @@ class NPCInstanceService:
         Initialize the NPC instance service.
 
         Args:
-            lifecycle_manager: NPC lifecycle manager
-            spawning_service: NPC spawning service
-            population_controller: NPC population controller
+            lifecycle_manager: NPC lifecycle manager (authoritative source for active_npcs)
+            spawning_service: NPC spawning service (creates NPC instances)
+            population_controller: NPC population controller (validates population limits)
             event_bus: Event bus for publishing events
         """
         self.lifecycle_manager = lifecycle_manager

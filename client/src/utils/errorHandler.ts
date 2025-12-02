@@ -24,6 +24,11 @@ export interface WebSocketErrorResponse {
   details?: Record<string, unknown>;
 }
 
+/**
+ * SSE error response format (deprecated - kept for backward compatibility).
+ * SSE connections have been removed in favor of WebSocket-only architecture.
+ * This type is maintained to handle legacy error responses.
+ */
 export interface SSEErrorResponse {
   type: 'error';
   error_type: string;
@@ -195,7 +200,7 @@ export const ErrorTypes = {
 
   // Real-time
   WEBSOCKET_ERROR: 'websocket_error',
-  SSE_ERROR: 'sse_error',
+  SSE_ERROR: 'sse_error', // Deprecated - kept for backward compatibility
   MESSAGE_PROCESSING_ERROR: 'message_processing_error',
 
   // System

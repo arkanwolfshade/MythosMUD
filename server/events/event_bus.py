@@ -175,8 +175,11 @@ class EventBus:
         try:
             while self._running:
                 try:
-                    # Pure asyncio await replaces threading/get(timeout) - Task 1.2
-                    event = await asyncio.wait_for(self._event_queue.get(), timeout=1.0)
+                    # CRITICAL FIX: Reduce timeout from 1.0s to 0.1s for faster event processing
+                    # The timeout allows periodic checks of self._running for graceful shutdown,
+                    # but 1.0s was causing noticeable delays. 0.1s provides responsive shutdown
+                    # while processing events nearly immediately (max 100ms delay vs 1000ms).
+                    event = await asyncio.wait_for(self._event_queue.get(), timeout=0.1)
 
                     # Check for sentinel shutdown signal
                     if event is None:
@@ -186,8 +189,12 @@ class EventBus:
                     await self._handle_event_async(event)
 
                 except TimeoutError:
-                    # Timeout is expected when no events are available
+                    # Timeout is expected when no events are available - allows periodic shutdown check
+                    # Continue loop to check self._running and process next event
                     continue
+                except asyncio.CancelledError:
+                    # Task was cancelled - break out of loop
+                    break
                 except Exception as e:
                     # Use basic print to avoid Unicode encoding issues during cleanup
                     try:

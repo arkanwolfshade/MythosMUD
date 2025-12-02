@@ -2,7 +2,7 @@
 Comprehensive tests for ConnectionManager to achieve 80%+ coverage.
 
 This module tests all critical codepaths in the connection manager,
-including WebSocket connections, SSE connections, room subscriptions,
+including WebSocket connections, room subscriptions,
 player tracking, rate limiting, and error handling.
 """
 
@@ -88,12 +88,10 @@ class TestConnectionManagerComprehensive:
         """Test ConnectionManager initialization with new data structures."""
         # Test that new data structures are properly initialized
         assert isinstance(connection_manager.player_websockets, dict)
-        assert isinstance(connection_manager.active_sse_connections, dict)
         assert isinstance(connection_manager.connection_metadata, dict)
 
         # Test that they are empty initially
         assert len(connection_manager.player_websockets) == 0
-        assert len(connection_manager.active_sse_connections) == 0
         assert len(connection_manager.connection_metadata) == 0
 
     def test_connection_metadata_dataclass(self):
@@ -129,7 +127,7 @@ class TestConnectionManagerComprehensive:
         metadata = ConnectionMetadata(
             connection_id="test_connection_123",
             player_id="test_player_456",
-            connection_type="sse",
+            connection_type="websocket",
             established_at=time.time(),
             last_seen=time.time(),
             is_healthy=True,
@@ -143,13 +141,10 @@ class TestConnectionManagerComprehensive:
 
         # Test with no connections
         assert connection_manager.get_player_websocket_connection_id(player_id) is None
-        assert connection_manager.get_player_sse_connection_id(player_id) is None
         assert connection_manager.has_websocket_connection(player_id) is False
-        assert connection_manager.has_sse_connection(player_id) is False
 
         connection_counts = connection_manager.get_connection_count(player_id)
         assert connection_counts["websocket"] == 0
-        assert connection_counts["sse"] == 0
         assert connection_counts["total"] == 0
 
         # Test with WebSocket connections
@@ -162,21 +157,7 @@ class TestConnectionManagerComprehensive:
 
         connection_counts = connection_manager.get_connection_count(player_id)
         assert connection_counts["websocket"] == 2
-        assert connection_counts["sse"] == 0
         assert connection_counts["total"] == 2
-
-        # Test with SSE connections
-        sse_connection_id_1 = "sse_conn_1"
-        sse_connection_id_2 = "sse_conn_2"
-        connection_manager.active_sse_connections[player_id] = [sse_connection_id_1, sse_connection_id_2]
-
-        assert connection_manager.get_player_sse_connection_id(player_id) == sse_connection_id_1
-        assert connection_manager.has_sse_connection(player_id) is True
-
-        connection_counts = connection_manager.get_connection_count(player_id)
-        assert connection_counts["websocket"] == 2
-        assert connection_counts["sse"] == 2
-        assert connection_counts["total"] == 4
 
     def test_data_structure_backward_compatibility(self, connection_manager):
         """Test that new data structures maintain backward compatibility."""
@@ -226,52 +207,6 @@ class TestConnectionManagerComprehensive:
         assert metadata.player_id == "test_player"
 
     @pytest.mark.asyncio
-    async def test_connect_sse_with_session_tracking(self, connection_manager):
-        """Test SSE connection with session tracking."""
-        session_id = "test_session_456"
-        connection_id = await connection_manager.connect_sse("test_player", session_id)
-
-        assert connection_id is not None
-        assert "test_player" in connection_manager.active_sse_connections
-
-        # Check that connection metadata includes session_id
-        assert connection_id in connection_manager.connection_metadata
-        metadata = connection_manager.connection_metadata[connection_id]
-        assert metadata.session_id == session_id
-        assert metadata.connection_type == "sse"
-        assert metadata.player_id == "test_player"
-
-    @pytest.mark.asyncio
-    async def test_simultaneous_websocket_and_sse_connections(
-        self, connection_manager, mock_websocket, mock_player, mock_persistence
-    ):
-        """Test that a player can have both WebSocket and SSE connections simultaneously."""
-        connection_manager.persistence = mock_persistence
-        mock_persistence.get_player.return_value = mock_player
-
-        # Mock room
-        mock_room = Mock()
-        mock_room.id = "test_room_001"
-        mock_persistence.get_room.return_value = mock_room
-
-        # Connect WebSocket
-        websocket_success = await connection_manager.connect_websocket(mock_websocket, "test_player", "session_1")
-        assert websocket_success is True
-
-        # Connect SSE
-        sse_connection_id = await connection_manager.connect_sse("test_player", "session_2")
-        assert sse_connection_id is not None
-
-        # Verify both connections exist
-        assert connection_manager.has_websocket_connection("test_player") is True
-        assert connection_manager.has_sse_connection("test_player") is True
-
-        connection_counts = connection_manager.get_connection_count("test_player")
-        assert connection_counts["websocket"] == 1
-        assert connection_counts["sse"] == 1
-        assert connection_counts["total"] == 2
-
-    @pytest.mark.asyncio
     async def test_multiple_websocket_connections(self, connection_manager, mock_player, mock_persistence):
         """Test that a player can have multiple WebSocket connections."""
         connection_manager.persistence = mock_persistence
@@ -295,25 +230,6 @@ class TestConnectionManagerComprehensive:
         # Verify both connections exist
         connection_counts = connection_manager.get_connection_count("test_player")
         assert connection_counts["websocket"] == 2
-        assert connection_counts["sse"] == 0
-        assert connection_counts["total"] == 2
-
-    @pytest.mark.asyncio
-    async def test_multiple_sse_connections(self, connection_manager):
-        """Test that a player can have multiple SSE connections."""
-        # Connect first SSE
-        connection_id1 = await connection_manager.connect_sse("test_player", "session_1")
-        assert connection_id1 is not None
-
-        # Connect second SSE
-        connection_id2 = await connection_manager.connect_sse("test_player", "session_2")
-        assert connection_id2 is not None
-        assert connection_id1 != connection_id2
-
-        # Verify both connections exist
-        connection_counts = connection_manager.get_connection_count("test_player")
-        assert connection_counts["websocket"] == 0
-        assert connection_counts["sse"] == 2
         assert connection_counts["total"] == 2
 
     @pytest.mark.asyncio
@@ -336,19 +252,14 @@ class TestConnectionManagerComprehensive:
         # Connect WebSocket
         await connection_manager.connect_websocket(websocket1, "test_player", "old_session")
 
-        # Connect SSE
-        await connection_manager.connect_sse("test_player", "old_session")
-
-        # Verify connections exist
+        # Verify connection exists
         assert connection_manager.has_websocket_connection("test_player") is True
-        assert connection_manager.has_sse_connection("test_player") is True
 
         # Handle new game session
         await connection_manager.handle_new_game_session("test_player", "new_session")
 
         # Verify all connections are disconnected
         assert connection_manager.has_websocket_connection("test_player") is False
-        assert connection_manager.has_sse_connection("test_player") is False
 
         connection_counts = connection_manager.get_connection_count("test_player")
         assert connection_counts["total"] == 0
@@ -383,21 +294,6 @@ class TestConnectionManagerComprehensive:
         assert connection_id not in connection_manager.connection_metadata
 
     @pytest.mark.asyncio
-    async def test_disconnect_connection_by_id_sse(self, connection_manager):
-        """Test disconnecting a specific SSE connection by ID."""
-        # Connect SSE
-        connection_id = await connection_manager.connect_sse("test_player", "session_1")
-        assert connection_id is not None
-
-        # Disconnect the specific connection
-        result = await connection_manager.disconnect_connection_by_id(connection_id)
-        assert result is True
-
-        # Verify connection is disconnected
-        assert connection_manager.has_sse_connection("test_player") is False
-        assert connection_id not in connection_manager.connection_metadata
-
-    @pytest.mark.asyncio
     async def test_disconnect_websocket_connection(
         self, connection_manager, mock_websocket, mock_player, mock_persistence
     ):
@@ -424,21 +320,6 @@ class TestConnectionManagerComprehensive:
 
         # Verify connection is disconnected
         assert connection_manager.has_websocket_connection("test_player") is False
-        assert connection_id not in connection_manager.connection_metadata
-
-    @pytest.mark.asyncio
-    async def test_disconnect_sse_connection(self, connection_manager):
-        """Test disconnecting a specific SSE connection for a player."""
-        # Connect SSE
-        connection_id = await connection_manager.connect_sse("test_player", "session_1")
-        assert connection_id is not None
-
-        # Disconnect the specific SSE connection
-        result = connection_manager.disconnect_sse_connection("test_player", connection_id)
-        assert result is True
-
-        # Verify connection is disconnected
-        assert connection_manager.has_sse_connection("test_player") is False
         assert connection_id not in connection_manager.connection_metadata
 
     @pytest.mark.asyncio
@@ -494,13 +375,9 @@ class TestConnectionManagerComprehensive:
         websocket_success = await connection_manager.connect_websocket(mock_websocket, "test_player", "session_1")
         assert websocket_success is True
 
-        # Connect SSE
-        sse_connection_id = await connection_manager.connect_sse("test_player", "session_2")
-        assert sse_connection_id is not None
-
-        # Verify both connections exist
+        # Verify connections exist
         connection_counts = connection_manager.get_connection_count("test_player")
-        assert connection_counts["total"] == 2
+        assert connection_counts["total"] == 1
 
         # Disconnect all connections
         await connection_manager.force_disconnect_player("test_player")
@@ -509,7 +386,6 @@ class TestConnectionManagerComprehensive:
         connection_counts = connection_manager.get_connection_count("test_player")
         assert connection_counts["total"] == 0
         assert connection_manager.has_websocket_connection("test_player") is False
-        assert connection_manager.has_sse_connection("test_player") is False
 
     @pytest.mark.asyncio
     async def test_connection_cleanup_after_disconnection(
@@ -563,13 +439,9 @@ class TestConnectionManagerComprehensive:
         assert success1 is True
         assert success2 is True
 
-        # Connect SSE
-        sse_connection_id = await connection_manager.connect_sse("test_player", "session_3")
-        assert sse_connection_id is not None
-
         # Verify all connections exist
         connection_counts = connection_manager.get_connection_count("test_player")
-        assert connection_counts["total"] == 3
+        assert connection_counts["total"] == 2
 
         # Force disconnect all connections
         await connection_manager.force_disconnect_player("test_player")
@@ -578,7 +450,6 @@ class TestConnectionManagerComprehensive:
         connection_counts = connection_manager.get_connection_count("test_player")
         assert connection_counts["total"] == 0
         assert connection_manager.has_websocket_connection("test_player") is False
-        assert connection_manager.has_sse_connection("test_player") is False
 
     @pytest.mark.asyncio
     async def test_disconnect_nonexistent_connection(self, connection_manager):
@@ -636,10 +507,6 @@ class TestConnectionManagerComprehensive:
         assert success1 is True
         assert success2 is True
 
-        # Connect SSE
-        sse_connection_id = await connection_manager.connect_sse("test_player", "session_3")
-        assert sse_connection_id is not None
-
         # Send message
         test_event = {"type": "test_message", "content": "Hello World"}
         delivery_status = await connection_manager.send_personal_message("test_player", test_event)
@@ -648,9 +515,8 @@ class TestConnectionManagerComprehensive:
         assert delivery_status["success"] is True
         assert delivery_status["websocket_delivered"] == 2
         assert delivery_status["websocket_failed"] == 0
-        assert delivery_status["sse_delivered"] is True
-        assert delivery_status["total_connections"] == 3
-        assert delivery_status["active_connections"] == 3
+        assert delivery_status["total_connections"] == 2
+        assert delivery_status["active_connections"] == 2
 
         # Verify WebSocket messages were sent (at least once for our test message)
         assert websocket1.send_json.call_count >= 1
@@ -692,61 +558,8 @@ class TestConnectionManagerComprehensive:
         assert delivery_status["success"] is True
         assert delivery_status["websocket_delivered"] == 1
         assert delivery_status["websocket_failed"] == 0
-        assert delivery_status["sse_delivered"] is False
         assert delivery_status["total_connections"] == 1
         assert delivery_status["active_connections"] == 1
-
-    @pytest.mark.asyncio
-    async def test_send_personal_message_sse_only(self, connection_manager):
-        """Test sending personal message to SSE connections only."""
-        # Connect SSE
-        sse_connection_id = await connection_manager.connect_sse("test_player", "session_1")
-        assert sse_connection_id is not None
-
-        # Send message
-        test_event = {"type": "test_message", "content": "Hello World"}
-        delivery_status = await connection_manager.send_personal_message("test_player", test_event)
-
-        # Verify delivery status
-        assert delivery_status["success"] is True
-        assert delivery_status["websocket_delivered"] == 0
-        assert delivery_status["websocket_failed"] == 0
-        assert delivery_status["sse_delivered"] is True
-        assert delivery_status["total_connections"] == 1
-        assert delivery_status["active_connections"] == 1
-
-    @pytest.mark.asyncio
-    async def test_send_personal_message_mixed_connections(
-        self, connection_manager, mock_websocket, mock_player, mock_persistence
-    ):
-        """Test sending personal message to mixed WebSocket and SSE connections."""
-        connection_manager.persistence = mock_persistence
-        mock_persistence.get_player.return_value = mock_player
-
-        # Mock room
-        mock_room = Mock()
-        mock_room.id = "test_room_001"
-        mock_persistence.get_room.return_value = mock_room
-
-        # Connect WebSocket
-        websocket_success = await connection_manager.connect_websocket(mock_websocket, "test_player", "session_1")
-        assert websocket_success is True
-
-        # Connect SSE
-        sse_connection_id = await connection_manager.connect_sse("test_player", "session_2")
-        assert sse_connection_id is not None
-
-        # Send message
-        test_event = {"type": "test_message", "content": "Hello World"}
-        delivery_status = await connection_manager.send_personal_message("test_player", test_event)
-
-        # Verify delivery status
-        assert delivery_status["success"] is True
-        assert delivery_status["websocket_delivered"] == 1
-        assert delivery_status["websocket_failed"] == 0
-        assert delivery_status["sse_delivered"] is True
-        assert delivery_status["total_connections"] == 2
-        assert delivery_status["active_connections"] == 2
 
     @pytest.mark.asyncio
     async def test_send_personal_message_failure_handling(self, connection_manager, mock_player, mock_persistence):
@@ -773,7 +586,6 @@ class TestConnectionManagerComprehensive:
         assert delivery_status["success"] is True  # Message was queued for later delivery
         assert delivery_status["websocket_delivered"] == 0
         assert delivery_status["websocket_failed"] == 0  # Connection already cleaned up
-        assert delivery_status["sse_delivered"] is True  # Message was queued
         assert delivery_status["total_connections"] == 0  # No connections left
         assert delivery_status["active_connections"] == 0
 
@@ -814,20 +626,17 @@ class TestConnectionManagerComprehensive:
         stats = connection_manager.get_message_delivery_stats("test_player")
         assert stats["player_id"] == "test_player"
         assert stats["websocket_connections"] == 0
-        assert stats["sse_connections"] == 0
         assert stats["total_connections"] == 0
         assert stats["pending_messages"] == 0
         assert stats["has_active_connections"] is False
 
         # Add some connections
         connection_manager.player_websockets["test_player"] = ["ws1", "ws2"]
-        connection_manager.active_sse_connections["test_player"] = ["sse1"]
         connection_manager.message_queue.pending_messages["test_player"] = ["msg1", "msg2"]
 
         stats = connection_manager.get_message_delivery_stats("test_player")
         assert stats["websocket_connections"] == 2
-        assert stats["sse_connections"] == 1
-        assert stats["total_connections"] == 3
+        assert stats["total_connections"] == 2
         assert stats["pending_messages"] == 2
         assert stats["has_active_connections"] is True
 
@@ -849,10 +658,6 @@ class TestConnectionManagerComprehensive:
         success = await connection_manager.connect_websocket(mock_websocket, "test_player", "session_1")
         assert success is True
 
-        # Connect SSE
-        sse_connection_id = await connection_manager.connect_sse("test_player", "session_2")
-        assert sse_connection_id is not None
-
         # Check health
         health_status = await connection_manager.check_connection_health("test_player")
 
@@ -860,7 +665,6 @@ class TestConnectionManagerComprehensive:
         assert health_status["player_id"] == "test_player"
         assert health_status["websocket_healthy"] == 1
         assert health_status["websocket_unhealthy"] == 0
-        assert health_status["sse_healthy"] == 1
         assert health_status["overall_health"] == "healthy"
 
     @pytest.mark.asyncio
@@ -891,7 +695,6 @@ class TestConnectionManagerComprehensive:
         assert health_status["player_id"] == "test_player"
         assert health_status["websocket_healthy"] == 0
         assert health_status["websocket_unhealthy"] == 1
-        assert health_status["sse_healthy"] == 0
         assert health_status["overall_health"] == "unhealthy"
 
         # Verify connection was cleaned up
@@ -989,13 +792,9 @@ class TestConnectionManagerComprehensive:
         success = await connection_manager.connect_websocket(mock_websocket, test_player_id, "session_1")
         assert success is True
 
-        # Connect SSE
-        sse_connection_id = await connection_manager.connect_sse(test_player_id, "session_1")
-        assert sse_connection_id is not None
-
         # Verify initial session tracking
         assert connection_manager.get_player_session(test_player_id) == "session_1"
-        assert len(connection_manager.get_session_connections("session_1")) == 2
+        assert len(connection_manager.get_session_connections("session_1")) == 1
 
         # Handle new game session
         session_results = await connection_manager.handle_new_game_session(test_player_id, "session_2")
@@ -1004,9 +803,8 @@ class TestConnectionManagerComprehensive:
         assert session_results["player_id"] == test_player_id
         assert session_results["new_session_id"] == "session_2"
         assert session_results["previous_session_id"] == "session_1"
-        assert session_results["connections_disconnected"] == 2
+        assert session_results["connections_disconnected"] == 1
         assert session_results["websocket_connections"] == 1
-        assert session_results["sse_connections"] == 1
         assert session_results["success"] is True
         assert len(session_results["errors"]) == 0
 
@@ -1017,7 +815,6 @@ class TestConnectionManagerComprehensive:
 
         # Verify connections were disconnected
         assert connection_manager.has_websocket_connection(test_player_id) is False
-        assert connection_manager.has_sse_connection(test_player_id) is False
 
     @pytest.mark.asyncio
     async def test_handle_new_game_session_no_existing_connections(self, connection_manager):
@@ -1032,7 +829,6 @@ class TestConnectionManagerComprehensive:
         assert session_results["previous_session_id"] is None
         assert session_results["connections_disconnected"] == 0
         assert session_results["websocket_connections"] == 0
-        assert session_results["sse_connections"] == 0
         assert session_results["success"] is True
         assert len(session_results["errors"]) == 0
 
@@ -1160,14 +956,10 @@ class TestConnectionManagerComprehensive:
         session_connections = connection_manager.get_session_connections("session_1")
         assert len(session_connections) == 1
 
-        # Connect SSE with same session
-        sse_connection_id = await connection_manager.connect_sse("test_player", "session_1")
-        assert sse_connection_id is not None
-
-        # Verify session tracking updated
+        # Verify session tracking
         assert connection_manager.get_player_session("test_player") == "session_1"
         session_connections = connection_manager.get_session_connections("session_1")
-        assert len(session_connections) == 2
+        assert len(session_connections) == 1
 
         # Connect another WebSocket with different session (should update session tracking)
         websocket2 = Mock(spec=WebSocket)
@@ -1187,7 +979,8 @@ class TestConnectionManagerComprehensive:
         # Both sessions should exist (connections weren't disconnected)
         assert "session_1" in connection_manager.session_connections
         assert "session_2" in connection_manager.session_connections
-        assert len(connection_manager.get_session_connections("session_1")) == 2
+        assert len(connection_manager.get_session_connections("session_1")) == 1
+        assert len(connection_manager.get_session_connections("session_2")) == 1
 
         # Now explicitly handle new game session to clean up old connections
         session_results = await connection_manager.handle_new_game_session("test_player", "session_2")
@@ -1210,15 +1003,12 @@ class TestConnectionManagerComprehensive:
         mock_room.id = "test_room_001"
         mock_persistence.get_room.return_value = mock_room
 
-        # Connect WebSocket and SSE
+        # Connect WebSocket
         success = await connection_manager.connect_websocket(mock_websocket, "test_player", "session_1")
-        sse_connection_id = await connection_manager.connect_sse("test_player", "session_1")
         assert success is True
-        assert sse_connection_id is not None
 
         # Verify initial connections
         assert connection_manager.has_websocket_connection("test_player") is True
-        assert connection_manager.has_sse_connection("test_player") is True
 
         # Handle fatal error
         error_results = await connection_manager.detect_and_handle_error_state(
@@ -1230,13 +1020,12 @@ class TestConnectionManagerComprehensive:
         assert error_results["error_type"] == "CRITICAL_WEBSOCKET_ERROR"
         assert error_results["fatal_error"] is True
         assert error_results["success"] is True
-        assert error_results["connections_terminated"] == 2
+        assert error_results["connections_terminated"] == 1
         assert error_results["connections_kept"] == 0
         assert len(error_results["errors"]) == 0
 
         # Verify connections were terminated
         assert connection_manager.has_websocket_connection("test_player") is False
-        assert connection_manager.has_sse_connection("test_player") is False
 
     @pytest.mark.asyncio
     async def test_detect_and_handle_error_state_connection_specific(
@@ -1251,11 +1040,9 @@ class TestConnectionManagerComprehensive:
         mock_room.id = "test_room_001"
         mock_persistence.get_room.return_value = mock_room
 
-        # Connect WebSocket and SSE
+        # Connect WebSocket
         success = await connection_manager.connect_websocket(mock_websocket, "test_player", "session_1")
-        sse_connection_id = await connection_manager.connect_sse("test_player", "session_1")
         assert success is True
-        assert sse_connection_id is not None
 
         # Get the WebSocket connection ID
         websocket_connection_id = connection_manager.get_player_websocket_connection_id("test_player")
@@ -1272,12 +1059,11 @@ class TestConnectionManagerComprehensive:
         assert error_results["fatal_error"] is False
         assert error_results["success"] is True
         assert error_results["connections_terminated"] == 1
-        assert error_results["connections_kept"] == 1
+        assert error_results["connections_kept"] == 0
         assert len(error_results["errors"]) == 0
 
         # Verify only WebSocket was terminated, SSE remains
         assert connection_manager.has_websocket_connection("test_player") is False
-        assert connection_manager.has_sse_connection("test_player") is True
 
     @pytest.mark.asyncio
     async def test_detect_and_handle_error_state_non_critical(
@@ -1292,11 +1078,9 @@ class TestConnectionManagerComprehensive:
         mock_room.id = "test_room_001"
         mock_persistence.get_room.return_value = mock_room
 
-        # Connect WebSocket and SSE
+        # Connect WebSocket
         success = await connection_manager.connect_websocket(mock_websocket, "test_player", "session_1")
-        sse_connection_id = await connection_manager.connect_sse("test_player", "session_1")
         assert success is True
-        assert sse_connection_id is not None
 
         # Handle non-critical error
         error_results = await connection_manager.detect_and_handle_error_state(
@@ -1309,12 +1093,11 @@ class TestConnectionManagerComprehensive:
         assert error_results["fatal_error"] is False
         assert error_results["success"] is True
         assert error_results["connections_terminated"] == 0
-        assert error_results["connections_kept"] == 2
+        assert error_results["connections_kept"] == 1
         assert len(error_results["errors"]) == 0
 
         # Verify connections remain active
         assert connection_manager.has_websocket_connection("test_player") is True
-        assert connection_manager.has_sse_connection("test_player") is True
 
     @pytest.mark.asyncio
     async def test_handle_websocket_error_critical(
@@ -1329,11 +1112,9 @@ class TestConnectionManagerComprehensive:
         mock_room.id = "test_room_001"
         mock_persistence.get_room.return_value = mock_room
 
-        # Connect WebSocket and SSE
+        # Connect WebSocket
         success = await connection_manager.connect_websocket(mock_websocket, "test_player", "session_1")
-        sse_connection_id = await connection_manager.connect_sse("test_player", "session_1")
         assert success is True
-        assert sse_connection_id is not None
 
         # Get the WebSocket connection ID
         websocket_connection_id = connection_manager.get_player_websocket_connection_id("test_player")
@@ -1348,46 +1129,11 @@ class TestConnectionManagerComprehensive:
         assert error_results["error_type"] == "CRITICAL_WEBSOCKET_ERROR"
         assert error_results["fatal_error"] is True
         assert error_results["success"] is True
-        assert error_results["connections_terminated"] == 2  # All connections terminated for critical error
+        assert error_results["connections_terminated"] == 1  # WebSocket connection terminated for critical error
         assert error_results["connections_kept"] == 0
 
         # Verify all connections were terminated
         assert connection_manager.has_websocket_connection("test_player") is False
-        assert connection_manager.has_sse_connection("test_player") is False
-
-    @pytest.mark.asyncio
-    async def test_handle_sse_error_critical(self, connection_manager, mock_websocket, mock_player, mock_persistence):
-        """Test critical SSE error handling."""
-        connection_manager.persistence = mock_persistence
-        mock_persistence.get_player.return_value = mock_player
-
-        # Mock room
-        mock_room = Mock()
-        mock_room.id = "test_room_001"
-        mock_persistence.get_room.return_value = mock_room
-
-        # Connect WebSocket and SSE
-        success = await connection_manager.connect_websocket(mock_websocket, "test_player", "session_1")
-        sse_connection_id = await connection_manager.connect_sse("test_player", "session_1")
-        assert success is True
-        assert sse_connection_id is not None
-
-        # Handle critical SSE error
-        error_results = await connection_manager.handle_sse_error(
-            "test_player", sse_connection_id, "STREAM_INTERRUPTED", "SSE stream interrupted"
-        )
-
-        # Verify error handling results
-        assert error_results["player_id"] == "test_player"
-        assert error_results["error_type"] == "CRITICAL_SSE_ERROR"
-        assert error_results["fatal_error"] is True
-        assert error_results["success"] is True
-        assert error_results["connections_terminated"] == 2  # All connections terminated for critical error
-        assert error_results["connections_kept"] == 0
-
-        # Verify all connections were terminated
-        assert connection_manager.has_websocket_connection("test_player") is False
-        assert connection_manager.has_sse_connection("test_player") is False
 
     @pytest.mark.asyncio
     async def test_handle_authentication_error(self, connection_manager, mock_websocket, mock_player, mock_persistence):
@@ -1400,11 +1146,9 @@ class TestConnectionManagerComprehensive:
         mock_room.id = "test_room_001"
         mock_persistence.get_room.return_value = mock_room
 
-        # Connect WebSocket and SSE
+        # Connect WebSocket
         success = await connection_manager.connect_websocket(mock_websocket, "test_player", "session_1")
-        sse_connection_id = await connection_manager.connect_sse("test_player", "session_1")
         assert success is True
-        assert sse_connection_id is not None
 
         # Handle authentication error
         error_results = await connection_manager.handle_authentication_error(
@@ -1416,12 +1160,11 @@ class TestConnectionManagerComprehensive:
         assert error_results["error_type"] == "AUTHENTICATION_FAILURE"
         assert error_results["fatal_error"] is True
         assert error_results["success"] is True
-        assert error_results["connections_terminated"] == 2
+        assert error_results["connections_terminated"] == 1
         assert error_results["connections_kept"] == 0
 
         # Verify all connections were terminated
         assert connection_manager.has_websocket_connection("test_player") is False
-        assert connection_manager.has_sse_connection("test_player") is False
 
     @pytest.mark.asyncio
     async def test_handle_security_violation(self, connection_manager, mock_websocket, mock_player, mock_persistence):
@@ -1434,11 +1177,9 @@ class TestConnectionManagerComprehensive:
         mock_room.id = "test_room_001"
         mock_persistence.get_room.return_value = mock_room
 
-        # Connect WebSocket and SSE
+        # Connect WebSocket
         success = await connection_manager.connect_websocket(mock_websocket, "test_player", "session_1")
-        sse_connection_id = await connection_manager.connect_sse("test_player", "session_1")
         assert success is True
-        assert sse_connection_id is not None
 
         # Handle security violation
         error_results = await connection_manager.handle_security_violation(
@@ -1450,12 +1191,11 @@ class TestConnectionManagerComprehensive:
         assert error_results["error_type"] == "SECURITY_VIOLATION"
         assert error_results["fatal_error"] is True
         assert error_results["success"] is True
-        assert error_results["connections_terminated"] == 2
+        assert error_results["connections_terminated"] == 1
         assert error_results["connections_kept"] == 0
 
         # Verify all connections were terminated
         assert connection_manager.has_websocket_connection("test_player") is False
-        assert connection_manager.has_sse_connection("test_player") is False
 
     @pytest.mark.asyncio
     async def test_recover_from_error_full(self, connection_manager, mock_websocket, mock_player, mock_persistence):
@@ -1468,11 +1208,9 @@ class TestConnectionManagerComprehensive:
         mock_room.id = "test_room_001"
         mock_persistence.get_room.return_value = mock_room
 
-        # Connect WebSocket and SSE
+        # Connect WebSocket
         success = await connection_manager.connect_websocket(mock_websocket, "test_player", "session_1")
-        sse_connection_id = await connection_manager.connect_sse("test_player", "session_1")
         assert success is True
-        assert sse_connection_id is not None
 
         # Attempt full recovery
         recovery_results = await connection_manager.recover_from_error("test_player", "FULL")
@@ -1500,11 +1238,9 @@ class TestConnectionManagerComprehensive:
         mock_room.id = "test_room_001"
         mock_persistence.get_room.return_value = mock_room
 
-        # Connect WebSocket and SSE
+        # Connect WebSocket
         success = await connection_manager.connect_websocket(mock_websocket, "test_player", "session_1")
-        sse_connection_id = await connection_manager.connect_sse("test_player", "session_1")
         assert success is True
-        assert sse_connection_id is not None
 
         # Attempt connections-only recovery
         recovery_results = await connection_manager.recover_from_error("test_player", "CONNECTIONS_ONLY")
@@ -1552,13 +1288,12 @@ class TestConnectionManagerComprehensive:
             connection_manager.session_connections["session_1"] = ["conn1", "conn2"]
             connection_manager.session_connections["session_2"] = ["conn3"]
             connection_manager.player_websockets["player1"] = ["conn1", "conn2"]
-            connection_manager.active_sse_connections["player2"] = ["conn3"]
             connection_manager.online_players["player1"] = True
             connection_manager.online_players["player2"] = True
 
             stats = connection_manager.get_error_statistics()
             assert stats["total_players"] == 2
-            assert stats["total_connections"] == 3
+            assert stats["total_connections"] == 2
             assert stats["active_sessions"] == 2
             assert stats["players_with_sessions"] == 2
 
@@ -1603,15 +1338,14 @@ class TestConnectionManagerComprehensive:
 
         # Add actual connections to simulate real connection
         connection_manager.player_websockets["test_player"] = ["conn1"]
-        connection_manager.active_sse_connections["test_player"] = ["conn2"]
 
-        # Second connection
-        await connection_manager._track_player_connected("test_player", mock_player, "sse")
+        # Second connection (also websocket)
+        await connection_manager._track_player_connected("test_player", mock_player, "websocket")
 
         # Verify player info is updated
         player_info = connection_manager.online_players["test_player"]
-        assert player_info["connection_types"] == {"websocket", "sse"}
-        assert player_info["total_connections"] == 2
+        assert player_info["connection_types"] == {"websocket"}
+        assert player_info["total_connections"] == 1  # Only one actual websocket connection
         assert player_info["position"] == "standing"
 
     @pytest.mark.asyncio
@@ -1639,7 +1373,7 @@ class TestConnectionManagerComprehensive:
         connection_manager.broadcast_to_room = AsyncMock()
 
         # Track the initial (new) connection
-        await connection_manager._track_player_connected(mock_player.player_id, mock_player, "sse")
+        await connection_manager._track_player_connected(mock_player.player_id, mock_player, "websocket")
 
         # The room should receive a player_entered_game event excluding the connecting player
         connection_manager.broadcast_to_room.assert_awaited_once()
@@ -1672,12 +1406,11 @@ class TestConnectionManagerComprehensive:
 
         # Set up player with multiple connections
         connection_manager.player_websockets["test_player"] = ["conn1", "conn2"]
-        connection_manager.active_sse_connections["test_player"] = ["conn3"]
         connection_manager.online_players["test_player"] = {
             "player_id": "test_player",
             "player_name": "Test Player",
-            "connection_types": {"websocket", "sse"},
-            "total_connections": 3,
+            "connection_types": {"websocket"},
+            "total_connections": 2,
             "position": "standing",
         }
 
@@ -1723,12 +1456,11 @@ class TestConnectionManagerComprehensive:
         """Test getting presence info for an online player."""
         # Set up player with connections
         connection_manager.player_websockets["test_player"] = ["conn1", "conn2"]
-        connection_manager.active_sse_connections["test_player"] = ["conn3"]
         connection_manager.online_players["test_player"] = {
             "player_id": "test_player",
             "player_name": "Test Player",
-            "connection_types": {"websocket", "sse"},
-            "total_connections": 3,
+            "connection_types": {"websocket"},
+            "total_connections": 2,
             "connected_at": 1234567890,
             "current_room_id": "room_001",
             "level": 5,
@@ -1742,10 +1474,9 @@ class TestConnectionManagerComprehensive:
         # Verify presence info
         assert presence_info["player_id"] == "test_player"
         assert presence_info["is_online"] is True
-        assert set(presence_info["connection_types"]) == {"websocket", "sse"}
-        assert presence_info["total_connections"] == 3
+        assert set(presence_info["connection_types"]) == {"websocket"}
+        assert presence_info["total_connections"] == 2
         assert presence_info["websocket_connections"] == 2
-        assert presence_info["sse_connections"] == 1
         assert presence_info["connected_at"] == 1234567890
         assert presence_info["last_seen"] == 1234567891
         assert presence_info["player_name"] == "Test Player"
@@ -1763,7 +1494,6 @@ class TestConnectionManagerComprehensive:
         assert presence_info["connection_types"] == []
         assert presence_info["total_connections"] == 0
         assert presence_info["websocket_connections"] == 0
-        assert presence_info["sse_connections"] == 0
         assert presence_info["connected_at"] is None
         assert presence_info["last_seen"] is None
 
@@ -1771,11 +1501,10 @@ class TestConnectionManagerComprehensive:
         """Test presence validation for a consistent player."""
         # Set up consistent player
         connection_manager.player_websockets["test_player"] = ["conn1"]
-        connection_manager.active_sse_connections["test_player"] = ["conn2"]
         connection_manager.online_players["test_player"] = {
             "player_id": "test_player",
-            "connection_types": {"websocket", "sse"},
-            "total_connections": 2,
+            "connection_types": {"websocket"},
+            "total_connections": 1,
             "position": "standing",
         }
 
@@ -1814,10 +1543,9 @@ class TestConnectionManagerComprehensive:
         """Test presence validation for connection count mismatch."""
         # Set up player with mismatched connection count
         connection_manager.player_websockets["test_player"] = ["conn1", "conn2"]
-        connection_manager.active_sse_connections["test_player"] = ["conn3"]
         connection_manager.online_players["test_player"] = {
             "player_id": "test_player",
-            "connection_types": {"websocket", "sse"},
+            "connection_types": {"websocket"},
             "total_connections": 1,  # Wrong count
             "position": "standing",
         }
@@ -1828,11 +1556,11 @@ class TestConnectionManagerComprehensive:
         # Verify validation results
         assert validation_results["player_id"] == "test_player"
         assert validation_results["is_consistent"] is False
-        assert "Connection count mismatch: recorded=1, actual=3" in validation_results["issues_found"]
+        assert "Connection count mismatch: recorded=1, actual=2" in validation_results["issues_found"]
         assert "Updated connection count" in validation_results["actions_taken"]
 
         # Verify connection count was updated
-        assert connection_manager.online_players["test_player"]["total_connections"] == 3
+        assert connection_manager.online_players["test_player"]["total_connections"] == 2
 
     def test_get_presence_statistics(self, connection_manager):
         """Test getting presence statistics."""
@@ -1841,13 +1569,10 @@ class TestConnectionManagerComprehensive:
         assert stats["total_online_players"] == 0
         assert stats["total_connections"] == 0
         assert stats["websocket_connections"] == 0
-        assert stats["sse_connections"] == 0
         assert stats["connection_distribution"]["websocket_only"] == 0
-        assert stats["connection_distribution"]["sse_only"] == 0
-        assert stats["connection_distribution"]["dual_connection"] == 0
         assert stats["average_connections_per_player"] == 0
 
-        # Add some players with different connection types
+        # Add some players with WebSocket connections
         # Player 1: WebSocket only
         connection_manager.player_websockets["player1"] = ["conn1"]
         connection_manager.online_players["player1"] = {
@@ -1856,19 +1581,18 @@ class TestConnectionManagerComprehensive:
             "position": "standing",
         }
 
-        # Player 2: SSE only
-        connection_manager.active_sse_connections["player2"] = ["conn2"]
+        # Player 2: WebSocket only
+        connection_manager.player_websockets["player2"] = ["conn2"]
         connection_manager.online_players["player2"] = {
-            "connection_types": {"sse"},
+            "connection_types": {"websocket"},
             "total_connections": 1,
             "position": "standing",
         }
 
-        # Player 3: Dual connection
-        connection_manager.player_websockets["player3"] = ["conn3"]
-        connection_manager.active_sse_connections["player3"] = ["conn4"]
+        # Player 3: Multiple WebSocket connections
+        connection_manager.player_websockets["player3"] = ["conn3", "conn4"]
         connection_manager.online_players["player3"] = {
-            "connection_types": {"websocket", "sse"},
+            "connection_types": {"websocket"},
             "total_connections": 2,
             "position": "standing",
         }
@@ -1877,11 +1601,8 @@ class TestConnectionManagerComprehensive:
         stats = connection_manager.get_presence_statistics()
         assert stats["total_online_players"] == 3
         assert stats["total_connections"] == 4
-        assert stats["websocket_connections"] == 2
-        assert stats["sse_connections"] == 2
-        assert stats["connection_distribution"]["websocket_only"] == 1
-        assert stats["connection_distribution"]["sse_only"] == 1
-        assert stats["connection_distribution"]["dual_connection"] == 1
+        assert stats["websocket_connections"] == 4
+        assert stats["connection_distribution"]["websocket_only"] == 3
         assert stats["average_connections_per_player"] == 4 / 3
 
     @pytest.mark.asyncio
@@ -1906,10 +1627,6 @@ class TestConnectionManagerComprehensive:
         success1b = await connection_manager.connect_websocket(websocket1b, player1_id, "session_1b")
         assert success1a is True
         assert success1b is True
-
-        # Connect SSE for player1
-        sse_connection_id = await connection_manager.connect_sse(player1_id, "session_1c")
-        assert sse_connection_id is not None
 
         # Connect single WebSocket for player2
         websocket2 = self._create_mock_websocket()
@@ -1938,13 +1655,11 @@ class TestConnectionManagerComprehensive:
         # Verify player1 received message on all connections
         player1_delivery = broadcast_stats["delivery_details"][str(player1_id)]
         assert player1_delivery["websocket_delivered"] == 2  # Two WebSocket connections
-        assert player1_delivery["sse_delivered"] is True
-        assert player1_delivery["total_connections"] == 3
+        assert player1_delivery["total_connections"] == 2
 
         # Verify player2 received message
         player2_delivery = broadcast_stats["delivery_details"][str(player2_id)]
         assert player2_delivery["websocket_delivered"] == 1  # One WebSocket connection
-        assert player2_delivery["sse_delivered"] is False
         assert player2_delivery["total_connections"] == 1
 
     @pytest.mark.asyncio
@@ -2019,17 +1734,13 @@ class TestConnectionManagerComprehensive:
         assert success1a is True
         assert success1b is True
 
-        # Connect SSE for player1
-        sse_connection_id = await connection_manager.connect_sse(player1_id, "session_1c")
-        assert sse_connection_id is not None
+        # Connect WebSocket for player2
+        websocket2 = self._create_mock_websocket()
+        success2 = await connection_manager.connect_websocket(websocket2, player2_id, "session_2")
+        assert success2 is True
 
-        # Connect only SSE for player2 (no WebSocket)
-        sse_connection_id2 = await connection_manager.connect_sse(player2_id, "session_2")
-        assert sse_connection_id2 is not None
-
-        # Connect only WebSocket for player3 (no SSE)
+        # Connect WebSocket for player3
         websocket3 = self._create_mock_websocket()
-
         success3 = await connection_manager.connect_websocket(websocket3, player3_id, "session_3")
         assert success3 is True
 
@@ -2049,19 +1760,16 @@ class TestConnectionManagerComprehensive:
         # Verify player1 received message on all connections
         player1_delivery = global_stats["delivery_details"][player1_id]
         assert player1_delivery["websocket_delivered"] == 2  # Two WebSocket connections
-        assert player1_delivery["sse_delivered"] is True
-        assert player1_delivery["total_connections"] == 3
+        assert player1_delivery["total_connections"] == 2
 
-        # Verify player2 received message via SSE only
+        # Verify player2 received message via WebSocket
         player2_delivery = global_stats["delivery_details"][player2_id]
-        assert player2_delivery["websocket_delivered"] == 0
-        assert player2_delivery["sse_delivered"] is True
+        assert player2_delivery["websocket_delivered"] == 1
         assert player2_delivery["total_connections"] == 1
 
-        # Verify player3 received message via WebSocket only
+        # Verify player3 received message via WebSocket
         player3_delivery = global_stats["delivery_details"][player3_id]
         assert player3_delivery["websocket_delivered"] == 1
-        assert player3_delivery["sse_delivered"] is False
         assert player3_delivery["total_connections"] == 1
 
     @pytest.mark.asyncio
@@ -2121,21 +1829,19 @@ class TestConnectionManagerComprehensive:
         success1 = await connection_manager.connect_websocket(mock_websocket, player1_id, "session_1")
         assert success1 is True
 
-        # Player2: SSE only
-        sse_connection_id2 = await connection_manager.connect_sse(player2_id, "session_2")
-        assert sse_connection_id2 is not None
+        # Player2: WebSocket only
+        websocket2 = self._create_mock_websocket()
+        success2 = await connection_manager.connect_websocket(websocket2, player2_id, "session_2")
+        assert success2 is True
 
-        # Player3: Both WebSocket and SSE
-        websocket3 = Mock(spec=WebSocket)
-        websocket3.accept = AsyncMock()
-        websocket3.close = AsyncMock()
-        websocket3.ping = AsyncMock()
-        websocket3.send_json = AsyncMock()
+        # Player3: Multiple WebSocket connections
+        websocket3a = self._create_mock_websocket()
+        websocket3b = self._create_mock_websocket()
 
-        success3 = await connection_manager.connect_websocket(websocket3, player3_id, "session_3a")
-        sse_connection_id3 = await connection_manager.connect_sse(player3_id, "session_3b")
-        assert success3 is True
-        assert sse_connection_id3 is not None
+        success3a = await connection_manager.connect_websocket(websocket3a, player3_id, "session_3a")
+        success3b = await connection_manager.connect_websocket(websocket3b, player3_id, "session_3b")
+        assert success3a is True
+        assert success3b is True
 
         # Mock room manager to return subscribers (use UUID strings)
         connection_manager.room_manager = Mock()
@@ -2158,17 +1864,14 @@ class TestConnectionManagerComprehensive:
         # Verify delivery details for each player
         player1_delivery = broadcast_stats["delivery_details"][str(player1_id)]
         assert player1_delivery["websocket_delivered"] == 1
-        assert player1_delivery["sse_delivered"] is False
         assert player1_delivery["total_connections"] == 1
 
         player2_delivery = broadcast_stats["delivery_details"][str(player2_id)]
-        assert player2_delivery["websocket_delivered"] == 0
-        assert player2_delivery["sse_delivered"] is True
+        assert player2_delivery["websocket_delivered"] == 1
         assert player2_delivery["total_connections"] == 1
 
         player3_delivery = broadcast_stats["delivery_details"][str(player3_id)]
-        assert player3_delivery["websocket_delivered"] == 1
-        assert player3_delivery["sse_delivered"] is True
+        assert player3_delivery["websocket_delivered"] == 2
         assert player3_delivery["total_connections"] == 2
 
     @pytest.mark.asyncio
@@ -2276,60 +1979,9 @@ class TestConnectionManagerComprehensive:
         connection_manager.active_websockets[connection_id] = mock_websocket
         connection_manager.player_websockets["test_player"] = [connection_id]
 
-        # Setup SSE connection
-        connection_manager.active_sse_connections["test_player"] = ["sse_conn_id"]
-
         await connection_manager.force_disconnect_player("test_player")
 
         assert "test_player" not in connection_manager.player_websockets
-        assert "test_player" not in connection_manager.active_sse_connections
-
-    @pytest.mark.asyncio
-    async def test_connect_sse_success(self, connection_manager):
-        """Test successful SSE connection."""
-        connection_id = await connection_manager.connect_sse("test_player")
-
-        assert connection_id is not None
-        assert "test_player" in connection_manager.active_sse_connections
-        assert connection_id in connection_manager.active_sse_connections["test_player"]
-
-    @pytest.mark.asyncio
-    async def test_connect_sse_with_existing_websocket(self, connection_manager, mock_websocket):
-        """Test SSE connection when player has existing WebSocket."""
-        # Setup existing WebSocket
-        connection_id = str(uuid.uuid4())
-        connection_manager.active_websockets[connection_id] = mock_websocket
-        connection_manager.player_websockets["test_player"] = [connection_id]
-
-        with patch.object(
-            connection_manager, "disconnect_websocket", new_callable=AsyncMock
-        ) as mock_disconnect_websocket:
-            sse_connection_id = await connection_manager.connect_sse("test_player")
-
-            assert sse_connection_id is not None
-            # The SSE connection should not trigger WebSocket disconnection
-            # since SSE and WebSocket can coexist
-            mock_disconnect_websocket.assert_not_called()
-
-    def test_disconnect_sse_success(self, connection_manager):
-        """Test successful SSE disconnection."""
-        # Setup SSE connection
-        connection_manager.active_sse_connections["test_player"] = ["sse_conn_id"]
-        connection_manager.connection_attempts["test_player"] = [time.time()]
-        connection_manager.pending_messages["test_player"] = [{"test": "message"}]
-        connection_manager.last_seen["test_player"] = time.time()
-
-        connection_manager.disconnect_sse("test_player")
-
-        assert "test_player" not in connection_manager.active_sse_connections
-        assert "test_player" not in connection_manager.connection_attempts
-        assert "test_player" not in connection_manager.pending_messages
-        assert "test_player" not in connection_manager.last_seen
-
-    def test_disconnect_sse_not_found(self, connection_manager):
-        """Test SSE disconnection for non-existent player."""
-        connection_manager.disconnect_sse("nonexistent_player")
-        # Should not raise any exceptions
 
     def test_mark_player_seen(self, connection_manager):
         """Test marking player as seen."""
@@ -2400,11 +2052,8 @@ class TestConnectionManagerComprehensive:
         # Add WebSocket connection
         connection_manager.active_websockets["ws_conn"] = mock_websocket
 
-        # Add SSE connection
-        connection_manager.active_sse_connections["sse_player"] = ["sse_conn"]
-
         count = connection_manager.get_active_connection_count()
-        assert count == 2
+        assert count == 1
 
     def test_check_rate_limit_first_attempt(self, connection_manager):
         """Test rate limit check for first attempt."""
@@ -2594,7 +2243,6 @@ class TestConnectionManagerComprehensive:
 
         assert result["success"] is True  # Message was queued for later delivery
         assert result["websocket_delivered"] == 0
-        assert result["sse_delivered"] is True  # Message was queued
         # Note: messages are queued for later delivery when no connections exist
 
     @pytest.mark.asyncio
@@ -3019,105 +2667,6 @@ class TestConnectionManagerComprehensive:
         # Should still remove the connection despite close failure
         assert "stale_conn" not in connection_manager.active_websockets
         assert "stale_conn" not in connection_manager.connection_timestamps
-
-    @pytest.mark.asyncio
-    async def test_connect_sse_with_existing_sse_connection(self, connection_manager):
-        """Test SSE connection when player has existing SSE connection."""
-        # Setup existing SSE connection
-        connection_manager.active_sse_connections["test_player"] = ["existing_sse_id"]
-
-        sse_connection_id = await connection_manager.connect_sse("test_player")
-
-        assert sse_connection_id is not None
-        # In dual connection system, multiple SSE connections are allowed
-        # Should have 2 SSE connections now
-        assert len(connection_manager.active_sse_connections["test_player"]) == 2
-
-    @pytest.mark.asyncio
-    async def test_connect_sse_with_player_tracking(self, connection_manager, mock_player, mock_persistence):
-        """Test SSE connection with player tracking."""
-        connection_manager.persistence = mock_persistence
-        mock_persistence.get_player.return_value = mock_player
-
-        # Mock room
-        mock_room = Mock()
-        mock_room.id = "test_room_001"
-        mock_persistence.get_room.return_value = mock_room
-
-        with patch.object(connection_manager, "subscribe_to_room", new_callable=AsyncMock) as mock_subscribe:
-            with patch.object(connection_manager, "_track_player_connected", new_callable=AsyncMock) as mock_track:
-                sse_connection_id = await connection_manager.connect_sse("test_player")
-
-                assert sse_connection_id is not None
-                mock_subscribe.assert_called_once_with("test_player", "test_room_001")
-                mock_track.assert_called_once_with("test_player", mock_player, "sse")
-
-    @pytest.mark.asyncio
-    async def test_connect_sse_with_room_resolution_exception(self, connection_manager, mock_player, mock_persistence):
-        """Test SSE connection with room resolution exception."""
-        connection_manager.persistence = mock_persistence
-        mock_persistence.get_player.return_value = mock_player
-        mock_persistence.get_room.side_effect = Exception("Room resolution failed")
-
-        sse_connection_id = await connection_manager.connect_sse("test_player")
-
-        assert sse_connection_id is not None
-        # Should not raise exception
-
-    def test_disconnect_sse_with_async_tracking(self, connection_manager):
-        """Test SSE disconnection with async tracking."""
-        # Setup SSE connection
-        connection_manager.active_sse_connections["test_player"] = ["sse_conn_id"]
-
-        # Create a mock that returns a completed coroutine
-        async def mock_track_async(player_id):
-            return None
-
-        with patch.object(connection_manager, "_track_player_disconnected", side_effect=mock_track_async) as mock_track:
-            connection_manager.disconnect_sse("test_player")
-
-            mock_track.assert_called_once_with("test_player")
-
-    def test_disconnect_sse_with_sync_tracking(self, connection_manager):
-        """Test SSE disconnection with sync tracking (no running loop)."""
-        # Setup SSE connection
-        connection_manager.active_sse_connections["test_player"] = ["sse_conn_id"]
-        # Ensure no websocket connection exists (required for tracking to run)
-        assert not connection_manager.has_websocket_connection("test_player")
-
-        with patch("asyncio.get_running_loop", side_effect=RuntimeError("No running loop")):
-            with patch("concurrent.futures.ThreadPoolExecutor") as mock_executor_class:
-                mock_executor = Mock()
-                mock_executor_class.return_value = mock_executor
-                mock_future = Mock()
-                mock_executor.submit.return_value = mock_future
-
-                connection_manager.disconnect_sse("test_player")
-
-                # Verify that executor was created and submit was called
-                mock_executor_class.assert_called_once()
-                mock_executor.submit.assert_called_once()
-                # Verify the submitted function would create a new event loop
-                submitted_func = mock_executor.submit.call_args[0][0]
-                assert callable(submitted_func)
-
-    @pytest.mark.filterwarnings("ignore:coroutine.*was never awaited:RuntimeWarning")
-    def test_disconnect_sse_with_tracking_exception(self, connection_manager):
-        """Test SSE disconnection with tracking exception."""
-        # Setup SSE connection
-        connection_manager.active_sse_connections["test_player"] = ["sse_conn_id"]
-
-        # Mock the entire async context to avoid unawaited coroutine warnings
-        with patch("asyncio.get_running_loop", side_effect=RuntimeError("No running loop")):
-            # Mock asyncio.run to prevent the actual coroutine execution
-            with patch("asyncio.run") as mock_run:
-                mock_run.side_effect = Exception("Tracking failed")
-                # Mock the method to prevent any coroutine creation
-                with patch.object(connection_manager, "_check_and_process_disconnect") as mock_check:
-                    # Set the mock to do nothing when called
-                    mock_check.return_value = None
-                    connection_manager.disconnect_sse("test_player")
-                    # Should not raise exception
 
 
 class TestMemoryMonitorComprehensive:

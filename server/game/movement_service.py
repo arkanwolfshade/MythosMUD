@@ -271,8 +271,10 @@ class MovementService:
                 from_room.player_left(resolved_player_id)
 
                 # Add to new room
+                # CRITICAL: Always force event to ensure room_update is sent even when returning to previously visited rooms
+                # This ensures the client always receives room descriptions, location name, and exits when moving
                 self._logger.debug("Adding player to room", player_id=resolved_player_id, room_id=to_room_id)
-                to_room.player_entered(resolved_player_id)
+                to_room.player_entered(resolved_player_id, force_event=True)
                 room_update_end = time.time()
                 timing_breakdown["room_update_ms"] = (room_update_end - room_update_start) * 1000
 

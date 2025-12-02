@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useGameConnection } from '../../hooks/useGameConnectionRefactored';
 import { useContainerStore } from '../../stores/containerStore';
 import type { HealthStatus } from '../../types/health';
+import { determineHealthTier } from '../../types/health';
 import type { MythosTimePayload, MythosTimeState } from '../../types/mythosTime';
 import type { HallucinationMessage, RescueState, SanityStatus } from '../../types/sanity';
 import { buildHealthStatusFromEvent } from '../../utils/healthEventUtils';
@@ -177,12 +178,12 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   }, [gameState.player]);
 
   useEffect(() => {
-    sanityStatusRef.current = sanityStatus;
-  }, [sanityStatus]);
-
-  useEffect(() => {
     healthStatusRef.current = healthStatus;
   }, [healthStatus]);
+
+  useEffect(() => {
+    sanityStatusRef.current = sanityStatus;
+  }, [sanityStatus]);
 
   useEffect(() => {
     rescueStateRef.current = rescueState;
@@ -262,7 +263,6 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
     try {
       const events = [...eventQueue.current];
       eventQueue.current = [];
-
       const updates: Partial<GameState> = {};
 
       events.forEach(event => {
@@ -273,7 +273,6 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
         lastProcessedEvent.current = eventKey;
 
         const eventType = (event.event_type || '').toString().trim().toLowerCase();
-
         logger.info('GameClientV2Container', 'Processing event', { event_type: eventType });
 
         const appendMessage = (message: ChatMessage) => {
@@ -325,22 +324,42 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               const existingRoom = updates.room || currentRoomRef.current;
 
               if (existingRoom) {
-                // Preserve occupant data from existing state (set by room_occupants events)
-                updates.room = {
+                // ARCHITECTURE: room_update is ONLY for room metadata (description, exits, name, etc.)
+                // NPCs and players are ONLY provided by room_occupants events (authoritative source)
+                // room_update should NEVER touch NPCs or players - only update room metadata
+                const roomIdChanged = roomData.id !== existingRoom.id;
+
+                // CRITICAL: Preserve ALL occupant data from existingRoom (set by room_occupants events)
+                // room_update should NEVER modify NPCs, players, occupants, or occupant_count
+                // These are ONLY managed by room_occupants events
+                const roomUpdate: Partial<Room> = {
                   ...existingRoom,
                   ...roomMetadata,
-                  // CRITICAL: Always preserve occupant data - room_update NEVER sets this
-                  players: existingRoom.players,
-                  npcs: existingRoom.npcs,
-                  occupants: existingRoom.occupants,
-                  occupant_count: existingRoom.occupant_count,
+                  // CRITICAL: Preserve ALL occupant data from existingRoom
+                  // room_update does NOT include NPC/player data (server removes it)
+                  // We preserve it from existingRoom to prevent loss during metadata updates
+                  players: existingRoom.players ?? [],
+                  npcs: existingRoom.npcs, // Preserve from existingRoom (set by room_occupants)
+                  occupants: existingRoom.occupants ?? [],
+                  occupant_count: existingRoom.occupant_count ?? 0,
                 };
+
+                // If room ID changed, clear occupants (will be repopulated by room_occupants for new room)
+                if (roomIdChanged) {
+                  roomUpdate.players = [];
+                  roomUpdate.npcs = undefined; // Clear NPCs for new room
+                  roomUpdate.occupants = [];
+                  roomUpdate.occupant_count = 0;
+                }
+
+                updates.room = roomUpdate as Room;
               } else {
-                // First room_update - initialize with empty occupants (room_occupants will populate)
+                // First room_update - initialize WITHOUT occupants (room_occupants will populate)
+                // CRITICAL: Don't set npcs: [] - leave it undefined so merge logic knows there's no data yet
                 updates.room = {
                   ...roomMetadata,
                   players: [],
-                  npcs: [],
+                  // npcs: undefined (not set) - room_occupants will populate this
                   occupants: [],
                   occupant_count: 0,
                 };
@@ -357,6 +376,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                 ...currentPlayerRef.current,
                 stats: {
                   ...currentPlayerRef.current.stats,
+                  current_health: currentPlayerRef.current.stats?.current_health ?? 0,
                   sanity: updatedStatus.current,
                 },
               };
@@ -392,6 +412,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                   ...currentPlayerRef.current.stats,
                   current_health: updatedHealthStatus.current,
                   max_health: updatedHealthStatus.max,
+                  sanity: currentPlayerRef.current.stats?.sanity ?? 0,
                 },
               };
               logger.info('GameClientV2Container', 'Updated player stats', {
@@ -463,6 +484,40 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             }
             break;
           }
+          case 'room_message': {
+            // Handle room messages (NPC movement, spawns, etc.)
+            const message = typeof event.data?.message === 'string' ? (event.data.message as string) : '';
+            const messageTypeFromEvent =
+              typeof event.data?.message_type === 'string' ? (event.data.message_type as string) : undefined;
+            const isHtml = Boolean(event.data?.is_html);
+
+            if (message) {
+              // Use message_type from event if provided, otherwise determine from content
+              let messageType: string;
+              let channel: string;
+
+              if (messageTypeFromEvent === 'system') {
+                // Server explicitly marked this as system message (NPC movement, etc.)
+                messageType = 'system';
+                channel = GAME_LOG_CHANNEL;
+              } else {
+                // Fall back to pattern matching
+                const messageTypeResult = determineMessageType(message);
+                messageType = messageTypeResult.type;
+                channel = messageTypeResult.channel ?? 'game';
+              }
+
+              appendMessage({
+                text: message,
+                timestamp: event.timestamp,
+                isHtml,
+                messageType: messageType,
+                channel: channel,
+                type: resolveChatTypeFromChannel(channel),
+              });
+            }
+            break;
+          }
           case 'chat_message': {
             const message = event.data.message as string;
             const channel = event.data.channel as string;
@@ -502,6 +557,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             const npcs = event.data.npcs as string[] | undefined;
             const occupants = event.data.occupants as string[] | undefined; // Legacy format
             const occupantCount = event.data.count as number | undefined;
+            const eventRoomId = event.room_id as string | undefined;
 
             // DEBUG: Console log for immediate visibility + structured logging
             console.log('🔍 [room_occupants] Received event:', {
@@ -510,11 +566,13 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               npcs_count: npcs?.length ?? 0,
               occupants,
               occupantCount,
+              eventRoomId,
               hasCurrentRoom: !!currentRoomRef.current,
               currentRoomId: currentRoomRef.current?.id,
               currentRoomPlayers: currentRoomRef.current?.players,
               currentRoomNpcs: currentRoomRef.current?.npcs,
               hasUpdatesRoom: !!updates.room,
+              updatesRoomId: updates.room?.id,
               updatesRoomNpcs: updates.room?.npcs,
             });
 
@@ -525,11 +583,13 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               npcs_count: npcs?.length ?? 0,
               occupants,
               occupantCount,
+              eventRoomId,
               hasCurrentRoom: !!currentRoomRef.current,
               currentRoomId: currentRoomRef.current?.id,
               currentRoomPlayers: currentRoomRef.current?.players,
               currentRoomNpcs: currentRoomRef.current?.npcs,
               hasUpdatesRoom: !!updates.room,
+              updatesRoomId: updates.room?.id,
             });
 
             // CRITICAL FIX: Use updates.room if available (from room_update in same batch),
@@ -538,6 +598,17 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             const currentRoom = updates.room || currentRoomRef.current;
 
             if (currentRoom) {
+              // CRITICAL FIX: Only update if room IDs match, or if event doesn't have room_id (backward compatibility)
+              // This prevents NPCs from wrong room being merged into current room
+              if (eventRoomId && eventRoomId !== currentRoom.id) {
+                logger.warn('GameClientV2Container', 'room_occupants event room_id mismatch - ignoring', {
+                  eventRoomId,
+                  currentRoomId: currentRoom.id,
+                  npcsCount: npcs?.length ?? 0,
+                });
+                break;
+              }
+
               // ARCHITECTURE: room_occupants events are the SINGLE AUTHORITATIVE SOURCE for occupant data
               // This event always uses structured format (players/npcs arrays) from
               // RealTimeEventHandler._get_room_occupants() which queries:
@@ -547,13 +618,18 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               // Use structured format if available (preferred), otherwise fall back to legacy flat list
               if (players !== undefined || npcs !== undefined) {
                 // Structured format: separate players and NPCs arrays
+                // CRITICAL: Only use npcs/players from event if they're actually provided (not undefined)
+                // If undefined, preserve from currentRoom to avoid overwriting with empty arrays
+                const finalNpcs = npcs !== undefined ? npcs : (currentRoom.npcs ?? []);
+                const finalPlayers = players !== undefined ? players : (currentRoom.players ?? []);
+
                 updates.room = {
                   ...currentRoom,
-                  players: players ?? [],
-                  npcs: npcs ?? [],
+                  players: finalPlayers,
+                  npcs: finalNpcs,
                   // Backward compatibility: also populate flat occupants list
-                  occupants: [...(players ?? []), ...(npcs ?? [])],
-                  occupant_count: occupantCount ?? (players?.length ?? 0) + (npcs?.length ?? 0),
+                  occupants: [...finalPlayers, ...finalNpcs],
+                  occupant_count: occupantCount ?? finalPlayers.length + finalNpcs.length,
                 };
                 logger.debug('GameClientV2Container', 'Updated room with structured occupants from room_occupants', {
                   roomId: updates.room.id,
@@ -587,7 +663,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             break;
           }
           case 'mythos_time_update': {
-            const payload = event.data as MythosTimePayload;
+            const payload = event.data as unknown as MythosTimePayload;
             if (payload && payload.mythos_clock) {
               const nextState = buildMythosTimeState(payload);
               setMythosTime(nextState);
@@ -639,6 +715,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                     timestamp: event.timestamp,
                     messageType: 'system',
                     channel: 'system',
+                    isHtml: false,
                   })
                 );
               }
@@ -776,6 +853,28 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
 
             if (respawnData.player) {
               updates.player = respawnData.player as Player;
+              // CRITICAL FIX: Update health status from player data in respawn event
+              // The respawn event includes player_data with correct current_health, but healthStatus
+              // was not being updated, causing health to remain at -10 from death state
+              // As documented in "Resurrection and Health State Synchronization" - Dr. Armitage, 1930
+              if (respawnData.player.stats?.current_health !== undefined) {
+                const playerStats = respawnData.player.stats;
+                const currentHealth = playerStats.current_health;
+                const maxHealth = playerStats.max_health ?? 100;
+                const healthStatusUpdate: HealthStatus = {
+                  current: currentHealth,
+                  max: maxHealth,
+                  tier: determineHealthTier(currentHealth, maxHealth),
+                  posture: playerStats.position,
+                  inCombat: respawnData.player.in_combat ?? false,
+                  lastChange: {
+                    delta: currentHealth - (healthStatusRef.current?.current ?? 0),
+                    reason: 'respawn',
+                    timestamp: event.timestamp,
+                  },
+                };
+                setHealthStatus(healthStatusUpdate);
+              }
             }
 
             if (respawnData.message) {
@@ -785,6 +884,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                   timestamp: event.timestamp,
                   messageType: 'system',
                   channel: 'system',
+                  isHtml: false,
                 })
               );
             }
@@ -793,6 +893,75 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               respawn_room: respawnData.respawn_room_id,
               new_hp: respawnData.new_hp,
             });
+            break;
+          }
+          case 'npc_died': {
+            // NPC died event - display death message in Game Info panel
+            // Server broadcasts npc_died events with npc_name, xp_reward, and other data
+            const npcName = event.data.npc_name as string | undefined;
+            const xpReward = event.data.xp_reward as number | undefined;
+
+            if (npcName) {
+              // Format: "Dr. Francis Morgan dies."
+              const deathMessage = `${npcName} dies.`;
+              appendMessage(
+                sanitizeChatMessageForState({
+                  text: deathMessage,
+                  timestamp: event.timestamp,
+                  messageType: 'combat',
+                  channel: GAME_LOG_CHANNEL,
+                  isHtml: false,
+                })
+              );
+
+              // Display XP reward message if available
+              if (xpReward !== undefined && xpReward > 0) {
+                const xpMessage = `You gain ${xpReward} experience points.`;
+                appendMessage(
+                  sanitizeChatMessageForState({
+                    text: xpMessage,
+                    timestamp: event.timestamp,
+                    messageType: 'system',
+                    channel: GAME_LOG_CHANNEL,
+                    isHtml: false,
+                  })
+                );
+              }
+            }
+            break;
+          }
+          case 'combat_death': {
+            // Combat death event - display formatted death messages
+            // This event contains pre-formatted messages in event.data.messages
+            const messages = event.data.messages as { death_message?: string; xp_reward?: string } | undefined;
+
+            if (messages) {
+              // Display death message
+              if (messages.death_message) {
+                appendMessage(
+                  sanitizeChatMessageForState({
+                    text: messages.death_message,
+                    timestamp: event.timestamp,
+                    messageType: 'combat',
+                    channel: GAME_LOG_CHANNEL,
+                    isHtml: false,
+                  })
+                );
+              }
+
+              // Display XP reward message if available
+              if (messages.xp_reward) {
+                appendMessage(
+                  sanitizeChatMessageForState({
+                    text: messages.xp_reward,
+                    timestamp: event.timestamp,
+                    messageType: 'system',
+                    channel: GAME_LOG_CHANNEL,
+                    isHtml: false,
+                  })
+                );
+              }
+            }
             break;
           }
           // Add more event types as needed - this is a simplified version
@@ -821,23 +990,74 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
           let finalRoom = updates.room || prev.room;
 
           if (updates.room && prev.room) {
-            // Preserve occupant data if updates.room doesn't have it (from room_occupants)
+            // Preserve occupant data if updates.room doesn't have populated occupant arrays
             // This handles room_update events that only update metadata
-            const updatesHasOccupantData = updates.room.players !== undefined || updates.room.npcs !== undefined;
+            // CRITICAL FIX: Check if arrays are populated, not just if they're defined
+            // Empty arrays [] are still "defined" but should be treated as "no occupant data"
+            // Also check if prev.room has populated arrays to preserve them
+            const updatesHasPopulatedPlayers =
+              updates.room.players !== undefined &&
+              Array.isArray(updates.room.players) &&
+              updates.room.players.length > 0;
+            const updatesHasPopulatedNpcs =
+              updates.room.npcs !== undefined && Array.isArray(updates.room.npcs) && updates.room.npcs.length > 0;
+            const prevHasPopulatedPlayers =
+              prev.room.players !== undefined && Array.isArray(prev.room.players) && prev.room.players.length > 0;
+            const prevHasPopulatedNpcs =
+              prev.room.npcs !== undefined && Array.isArray(prev.room.npcs) && prev.room.npcs.length > 0;
 
-            if (!updatesHasOccupantData) {
-              // updates.room (from room_update) doesn't have occupant data, preserve from prev.room
-              finalRoom = {
-                ...updates.room,
-                players: prev.room.players ?? [],
-                npcs: prev.room.npcs ?? [],
-                occupants: prev.room.occupants ?? [],
-                occupant_count: prev.room.occupant_count ?? 0,
-              };
+            // Merge strategy:
+            // 1. If updates has populated data, use it (from room_occupants - authoritative)
+            // 2. If updates has empty arrays but prev has populated data, preserve from prev
+            // 3. If updates has no data (undefined), preserve from prev
+            // CRITICAL FIX: Empty arrays [] are NOT undefined, so ?? operator won't work
+            // We must explicitly check for populated arrays, not just existence
+
+            // Calculate merged players array
+            const mergedPlayers: string[] = updatesHasPopulatedPlayers
+              ? (updates.room.players ?? [])
+              : prevHasPopulatedPlayers
+                ? (prev.room.players ?? [])
+                : (updates.room.players ?? prev.room.players ?? []);
+
+            // Calculate merged NPCs array
+            let mergedNpcs: string[];
+            if (updatesHasPopulatedNpcs) {
+              mergedNpcs = updates.room.npcs ?? []; // Updates has populated NPCs (from room_occupants) - use it
+            } else if (prevHasPopulatedNpcs) {
+              mergedNpcs = prev.room.npcs ?? []; // Updates has no NPCs but prev does - preserve prev
             } else {
-              // updates.room has occupant data (from room_occupants) - use it (this is authoritative)
-              finalRoom = updates.room;
+              // Neither has populated NPCs
+              // CRITICAL: If updates explicitly set npcs: [] (empty array from room_update)
+              // but prev has NPCs (from previous room_occupants), preserve prev
+              // Only use empty array if both are empty
+              if (
+                updates.room.npcs !== undefined &&
+                updates.room.npcs.length === 0 &&
+                prev.room.npcs &&
+                prev.room.npcs.length > 0
+              ) {
+                mergedNpcs = prev.room.npcs; // room_update tried to clear NPCs, but prev has them - preserve prev
+              } else {
+                mergedNpcs = updates.room.npcs ?? prev.room.npcs ?? []; // Default fallback
+              }
             }
+
+            // Calculate merged occupants array
+            const mergedOccupants = [...mergedPlayers, ...mergedNpcs];
+
+            // Calculate occupant count from merged values (not from updates.room)
+            // CRITICAL FIX: occupant_count must be calculated from merged arrays, not from updates.room
+            // because the merge logic may preserve players or NPCs from prev.room
+            const mergedOccupantCount = updates.room.occupant_count ?? mergedOccupants.length;
+
+            finalRoom = {
+              ...updates.room,
+              players: mergedPlayers,
+              npcs: mergedNpcs,
+              occupants: mergedOccupants,
+              occupant_count: mergedOccupantCount,
+            };
           }
 
           return {
@@ -864,7 +1084,6 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
     (event: GameEvent) => {
       logger.info('GameClientV2Container', 'Received game event', { event_type: event.event_type });
       eventQueue.current.push(event);
-
       if (!isProcessingEvent.current && !processingTimeout.current) {
         processingTimeout.current = window.setTimeout(() => {
           processingTimeout.current = null;
@@ -1246,7 +1465,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
 
       {/* Tabbed Interface Overlay */}
       {tabs.length > 0 && (
-        <div className="fixed inset-0 z-[9999] bg-mythos-terminal-background">
+        <div className="fixed inset-0 z-9999 bg-mythos-terminal-background">
           <div className="flex flex-col h-full">
             {/* Tab Bar */}
             <div className="flex items-center border-b border-mythos-terminal-border bg-mythos-terminal-background overflow-x-auto">

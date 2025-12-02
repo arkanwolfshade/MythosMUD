@@ -1,176 +1,21 @@
 """
 Tests for api/real_time.py module.
 
-Tests the real-time API endpoints including WebSocket connections,
-Server-Sent Events, and authentication flows.
+Tests the real-time API endpoints including WebSocket connections
+and authentication flows.
 """
 
 from unittest.mock import AsyncMock, Mock, patch
 from uuid import uuid4
 
 import pytest
-from fastapi import HTTPException, Request, WebSocket
-from fastapi.responses import StreamingResponse
+from fastapi import HTTPException, WebSocket
 
 from server.api.real_time import (
     realtime_router,
-    sse_events,
-    sse_events_token,
     websocket_endpoint,
     websocket_endpoint_route,
 )
-
-
-class TestSSEEvents:
-    """Test SSE events endpoint."""
-
-    @pytest.mark.asyncio
-    async def test_sse_events_success(self):
-        """Test successful SSE events endpoint."""
-        # Mock the request
-        mock_request = Mock(spec=Request)
-        mock_request.query_params = Mock()
-        mock_request.query_params.get.return_value = None  # No session_id
-
-        # Mock the connection_manager readiness gate check
-        mock_connection_manager = Mock()
-        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
-
-        # Mock the game_event_stream function
-        with (
-            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
-            patch("server.api.real_time.game_event_stream") as mock_stream,
-        ):
-            mock_stream.return_value = ["event1", "event2"]
-
-            # Use valid UUID format for player_id parameter
-            test_player_id = uuid4()
-
-            # Call the endpoint
-            response = await sse_events(test_player_id, mock_request)
-
-            # Verify response
-            assert isinstance(response, StreamingResponse)
-            assert response.media_type == "text/event-stream"
-            assert response.headers["Cache-Control"] == "no-cache"
-            assert response.headers["Connection"] == "keep-alive"
-            assert response.headers["Access-Control-Allow-Origin"] == "*"
-            assert response.headers["Access-Control-Allow-Headers"] == "Cache-Control"
-
-            # Verify the stream was called with correct player_id and session_id
-            mock_stream.assert_called_once_with(test_player_id, None)
-
-
-class TestSSEEventsToken:
-    """Test token-authenticated SSE events endpoint."""
-
-    @pytest.mark.asyncio
-    async def test_sse_events_token_success(self):
-        """Test successful token-authenticated SSE events."""
-        # Mock the request with valid token
-        mock_request = Mock(spec=Request)
-        mock_request.query_params = {"token": "valid_token"}
-
-        # Mock the connection_manager readiness gate check
-        mock_connection_manager = Mock()
-        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
-
-        # Mock dependencies
-        with (
-            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
-            patch("server.api.real_time.decode_access_token") as mock_decode,
-            patch("server.api.real_time.get_persistence") as mock_get_persistence,
-            patch("server.api.real_time.game_event_stream") as mock_stream,
-        ):
-            # Setup mocks
-            mock_decode.return_value = {"sub": "test_user_id"}
-            mock_persistence = Mock()
-            mock_get_persistence.return_value = mock_persistence
-            mock_player = Mock()
-            # Use valid UUID format for player_id
-            test_player_id = str(uuid4())
-            mock_player.player_id = test_player_id
-            mock_persistence.get_player_by_user_id.return_value = mock_player
-            mock_stream.return_value = ["event1", "event2"]
-
-            # Call the endpoint
-            response = await sse_events_token(mock_request)
-
-            # Verify response
-            assert isinstance(response, StreamingResponse)
-            assert response.media_type == "text/event-stream"
-            assert response.headers["Cache-Control"] == "no-cache"
-            assert response.headers["Connection"] == "keep-alive"
-            assert response.headers["Access-Control-Allow-Origin"] == "*"
-            assert response.headers["Access-Control-Allow-Headers"] == "Cache-Control"
-
-            # Verify the stream was called with correct player_id and session_id
-            # player_id is converted to UUID in sse_events_token
-            import uuid
-
-            expected_player_id = uuid.UUID(test_player_id)
-            mock_stream.assert_called_once_with(expected_player_id, None)
-
-    @pytest.mark.asyncio
-    async def test_sse_events_token_missing_token(self):
-        """Test SSE events with missing token."""
-        # Mock the request without token
-        mock_request = Mock(spec=Request)
-        mock_request.query_params = {}
-
-        # Mock decode_access_token to return None
-        with patch("server.api.real_time.decode_access_token") as mock_decode:
-            mock_decode.return_value = None
-
-            # Call the endpoint and expect HTTPException
-            with pytest.raises(HTTPException) as exc_info:
-                await sse_events_token(mock_request)
-
-            assert exc_info.value.status_code == 401
-            assert exc_info.value.detail == "Invalid or missing token"
-
-    @pytest.mark.asyncio
-    async def test_sse_events_token_invalid_token_no_sub(self):
-        """Test SSE events with invalid token (no 'sub' field)."""
-        # Mock the request with token
-        mock_request = Mock(spec=Request)
-        mock_request.query_params = {"token": "invalid_token"}
-
-        # Mock decode_access_token to return payload without 'sub'
-        with patch("server.api.real_time.decode_access_token") as mock_decode:
-            mock_decode.return_value = {"other_field": "value"}
-
-            # Call the endpoint and expect HTTPException
-            with pytest.raises(HTTPException) as exc_info:
-                await sse_events_token(mock_request)
-
-            assert exc_info.value.status_code == 401
-            assert exc_info.value.detail == "Invalid or missing token"
-
-    @pytest.mark.asyncio
-    async def test_sse_events_token_no_player_record(self):
-        """Test SSE events when user has no player record."""
-        # Mock the request with valid token
-        mock_request = Mock(spec=Request)
-        mock_request.query_params = {"token": "valid_token"}
-
-        # Mock dependencies
-        with (
-            patch("server.api.real_time.decode_access_token") as mock_decode,
-            patch("server.api.real_time.get_persistence") as mock_get_persistence,
-        ):
-            # Setup mocks
-            mock_decode.return_value = {"sub": "test_user_id"}
-            mock_persistence = Mock()
-            mock_get_persistence.return_value = mock_persistence
-            mock_persistence.get_player_by_user_id.return_value = None
-
-            # Call the endpoint and expect HTTPException
-            with pytest.raises(HTTPException) as exc_info:
-                await sse_events_token(mock_request)
-
-            assert exc_info.value.status_code == 401
-            assert exc_info.value.detail == "User has no player record"
 
 
 class TestWebSocketEndpoint:
@@ -654,7 +499,7 @@ class TestRealtimeRouter:
 
         # Check that all expected routes are registered
         routes = [route.path for route in realtime_router.routes]
-        expected_routes = ["/api/events/{player_id}", "/api/events", "/api/ws", "/api/ws/{player_id}"]
+        expected_routes = ["/api/ws", "/api/ws/{player_id}"]
 
         for expected_route in expected_routes:
             assert expected_route in routes

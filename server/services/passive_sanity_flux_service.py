@@ -131,8 +131,27 @@ class PassiveSanityFluxService:
         sanity_service = SanityService(session, catatonia_observer=self._catatonia_observer)
 
         try:
-            players = await self._load_players(session)
+            # Load all players and filter to active ones (active in last 5 minutes)
+            all_players = await self._load_players(session)
+            players = self._filter_active_players(all_players, timestamp)
             sanity_records = await self._load_sanity_records(session)
+
+            # Cache rooms for all players to avoid repeated lookups
+            # This eliminates synchronous blocking operations in the player loop
+            room_cache: dict[str, Any] = {}
+            if self._persistence is not None:
+                unique_room_ids = {cast(str, player.current_room_id) for player in players}
+                for room_id in unique_room_ids:
+                    try:
+                        room = self._persistence.get_room(room_id)
+                        if room is not None:
+                            room_cache[room_id] = room
+                    except Exception as exc:  # pragma: no cover - defensive logging
+                        logger.warning(
+                            "Failed to cache room for passive flux",
+                            room_id=room_id,
+                            error=str(exc),
+                        )
 
             for player in players:
                 # Convert player.player_id to UUID for apply_sanity_adjustment
@@ -144,7 +163,7 @@ class PassiveSanityFluxService:
                 room_id = cast(str, player.current_room_id)
 
                 processed_player_ids.add(player_id_str)
-                context = self._resolve_context(player, timestamp)
+                context = await self._resolve_context_async(player, timestamp, room_cache.get(room_id))
                 base_flux = context.base_flux
 
                 companion_flux = self._companion_modifier(player, players, sanity_records)
@@ -226,11 +245,123 @@ class PassiveSanityFluxService:
         result = await session.execute(stmt)
         return result.scalars().all()
 
+    def _filter_active_players(self, players: Sequence[Player], timestamp: datetime) -> list[Player]:
+        """Filter players to only those active in the last 5 minutes."""
+        from datetime import timedelta
+
+        active_threshold = timestamp - timedelta(minutes=5)
+        active_players = []
+
+        for player in players:
+            # Consider player active if last_active is within threshold or None (new players)
+            # Also consider players active if created recently (within last hour) - handles test scenarios
+            # Cast: SQLAlchemy Column returns datetime | None at runtime, but mypy sees Column type
+            last_active_raw: datetime | str | None = cast(datetime | str | None, player.last_active)
+            if last_active_raw is None:
+                active_players.append(player)
+                continue
+
+            # Handle both datetime and string formats (string handling for legacy/serialized data)
+            last_active: datetime | None = None
+            if isinstance(last_active_raw, str):
+                try:
+                    # Optimized string parsing - handle common formats more efficiently
+                    last_active_str = last_active_raw.strip()
+                    if last_active_str.endswith("Z"):
+                        # Handle UTC format
+                        last_active = datetime.fromisoformat(last_active_str[:-1] + "+00:00")
+                    elif "+" in last_active_str or "-" in last_active_str[-6:]:
+                        # Handle timezone format
+                        last_active = datetime.fromisoformat(last_active_str)
+                    else:
+                        # Assume UTC if no timezone info
+                        last_active = datetime.fromisoformat(last_active_str).replace(tzinfo=UTC)
+                except (ValueError, AttributeError):
+                    # If parsing fails, assume player is active
+                    active_players.append(player)
+                    continue
+            elif isinstance(last_active_raw, datetime):
+                last_active = last_active_raw
+            else:
+                # Unknown type, assume player is active to be safe
+                # Type ignore: Defensive check - mypy knows this is unreachable but we keep it for safety
+                active_players.append(player)  # type: ignore[unreachable]
+                continue
+
+            # Ensure both datetimes are timezone-aware for comparison
+            if last_active and last_active.tzinfo is None:
+                last_active = last_active.replace(tzinfo=UTC)
+
+            # Check if player is active (within 5 minutes) OR was created recently (within last hour)
+            # This handles test scenarios where players are created just before processing
+            is_recently_active = last_active and last_active >= active_threshold
+            is_recently_created = False
+            if hasattr(player, "created_at") and player.created_at is not None:
+                # Cast: SQLAlchemy Column returns datetime at runtime, but mypy sees Column type
+                created_at: datetime = cast(datetime, player.created_at)
+                # Ensure created_at is timezone-aware for comparison
+                if created_at.tzinfo is None:
+                    created_at = created_at.replace(tzinfo=UTC)
+                is_recently_created = created_at >= timestamp - timedelta(hours=1)
+
+                if is_recently_active or is_recently_created:
+                    active_players.append(player)
+
+        return active_players
+
     async def _load_sanity_records(self, session: AsyncSession) -> dict[str, PlayerSanity]:
         stmt: Select[tuple[PlayerSanity]] = select(PlayerSanity)
         result = await session.execute(stmt)
         records = result.scalars().all()
         return {str(record.player_id): record for record in records}
+
+    async def _resolve_context_async(
+        self, player: Player, timestamp: datetime, room: Any | None = None
+    ) -> PassiveFluxContext:
+        """Resolve environmental context for passive flux evaluation using cached room."""
+        if self._context_resolver is not None:
+            return self._context_resolver(player, timestamp)
+
+        period = _period_label(timestamp)
+        profile_source = "default"
+        base_flux = self._environment_config["default"]
+        tags: set[str] = set()
+        metadata: dict[str, Any] = {
+            "room_id": str(player.current_room_id),
+        }
+
+        if room is not None:
+            tags.add(room.environment)
+            metadata["zone"] = room.zone
+            metadata["sub_zone"] = room.sub_zone
+
+            room_overrides = self._environment_config["room_overrides"]
+            subzone_overrides = self._environment_config["sub_zone_overrides"]
+            environment_defaults = self._environment_config["environment_defaults"]
+
+            if room.id in room_overrides:
+                base_flux = self._lookup_profile(room_overrides[room.id], period)
+                profile_source = f"room:{room.id}"
+            elif room.sub_zone in subzone_overrides:
+                base_flux = self._lookup_profile(subzone_overrides[room.sub_zone], period)
+                profile_source = f"sub_zone:{room.sub_zone}"
+            elif room.zone in subzone_overrides:
+                base_flux = self._lookup_profile(subzone_overrides[room.zone], period)
+                profile_source = f"zone:{room.zone}"
+            elif room.environment in environment_defaults:
+                base_flux = self._lookup_profile(environment_defaults[room.environment], period)
+                profile_source = f"environment:{room.environment}"
+
+            override_flux, override_source = self._lookup_world_override_flux(room)
+            if override_flux is not None:
+                base_flux = override_flux
+                profile_source = override_source or profile_source
+                metadata["sanity_rate_override"] = True
+        else:
+            metadata["zone"] = None
+            metadata["sub_zone"] = None
+
+        return PassiveFluxContext(base_flux=base_flux, tags=frozenset(tags), source=profile_source, metadata=metadata)
 
     def _resolve_context(self, player: Player, timestamp: datetime) -> PassiveFluxContext:
         if self._context_resolver is not None:

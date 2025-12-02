@@ -23,8 +23,16 @@ class NPCStartupService:
     """
     Service for automatic NPC spawning during server startup.
 
-    This service extends the existing NPC subsystem by providing automatic
-    population of the world with NPCs when the server starts.
+    This service coordinates initial NPC population when the server starts,
+    using NPCInstanceService to spawn required and optional NPCs.
+
+    SERVICE HIERARCHY:
+    - Level 4 (highest): Coordinates startup spawning
+    - Uses: NPCInstanceService → NPCPopulationController → NPCLifecycleManager
+
+    ARCHITECTURE NOTE:
+    All spawning goes through NPCInstanceService.spawn_npc_instance() to ensure
+    proper population validation and lifecycle tracking.
     """
 
     def __init__(self):

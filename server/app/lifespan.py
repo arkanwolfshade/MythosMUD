@@ -17,7 +17,7 @@ from fastapi import FastAPI
 
 from ..container import ApplicationContainer
 from ..logging.enhanced_logging_config import get_logger, update_logging_with_player_service
-from ..realtime.sse_handler import broadcast_game_event
+from ..realtime.connection_manager import broadcast_game_event
 from ..services.catatonia_registry import CatatoniaRegistry
 from ..services.player_respawn_service import LIMBO_ROOM_ID
 from ..time.time_event_consumer import MythosTimeEventConsumer
@@ -219,6 +219,24 @@ async def lifespan(app: FastAPI):
         break
 
     logger.info("NPC services initialized and added to app.state")
+
+    # Start NPC thread manager for behavior execution
+    if hasattr(app.state.npc_lifecycle_manager, "thread_manager"):
+        try:
+            await app.state.npc_lifecycle_manager.thread_manager.start()
+            logger.info("NPC thread manager started")
+
+            # Process any pending thread start requests
+            if hasattr(app.state.npc_lifecycle_manager, "_pending_thread_starts"):
+                for npc_id, definition in app.state.npc_lifecycle_manager._pending_thread_starts:
+                    try:
+                        await app.state.npc_lifecycle_manager.thread_manager.start_npc_thread(npc_id, definition)
+                        logger.debug("Started queued NPC thread", npc_id=npc_id)
+                    except Exception as e:
+                        logger.warning("Failed to start queued NPC thread", npc_id=npc_id, error=str(e))
+                app.state.npc_lifecycle_manager._pending_thread_starts.clear()
+        except Exception as e:
+            logger.error("Failed to start NPC thread manager", error=str(e))
 
     # Initialize combat services (not yet in container - Phase 2 migration)
     # TODO: Move these to container in Phase 2
@@ -470,6 +488,19 @@ async def lifespan(app: FastAPI):
     logger.info("Shutting down MythosMUD server...")
 
     try:
+        # Phase 0: Persist mythos time state before shutdown
+        logger.info("Freezing mythos chronicle state")
+        try:
+            chronicle = get_mythos_chronicle()
+            frozen_state = chronicle.freeze()
+            logger.info(
+                "Mythos chronicle state persisted",
+                real_timestamp=frozen_state.real_timestamp.isoformat(),
+                mythos_timestamp=frozen_state.mythos_timestamp.isoformat(),
+            )
+        except Exception as e:
+            logger.error("Failed to persist mythos chronicle state during shutdown", error=str(e))
+
         # Phase 1: Stop NATS message handler if running
         if hasattr(app.state, "nats_message_handler") and app.state.nats_message_handler:
             logger.info("Stopping NATS message handler")
@@ -519,6 +550,13 @@ async def lifespan(app: FastAPI):
 
     except (asyncio.CancelledError, KeyboardInterrupt) as e:
         logger.warning("Shutdown interrupted", error=str(e), error_type=type(e).__name__)
+        # Try to persist mythos state before cleanup
+        try:
+            chronicle = get_mythos_chronicle()
+            chronicle.freeze()
+            logger.info("Mythos chronicle state persisted during interrupted shutdown")
+        except Exception:
+            logger.warning("Failed to persist mythos chronicle state during interrupted shutdown")
         # Still try to cleanup container
         try:
             await container.shutdown()
@@ -527,6 +565,13 @@ async def lifespan(app: FastAPI):
         raise
     except Exception as e:
         logger.error("Critical shutdown failure", error=str(e), error_type=type(e).__name__, exc_info=True)
+        # Try to persist mythos state before cleanup
+        try:
+            chronicle = get_mythos_chronicle()
+            chronicle.freeze()
+            logger.info("Mythos chronicle state persisted during error shutdown")
+        except Exception:
+            logger.warning("Failed to persist mythos chronicle state during error shutdown")
         # Still try to cleanup container
         try:
             await container.shutdown()

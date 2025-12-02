@@ -31,9 +31,9 @@ from .threading import (
     NPCMessageQueue,
     NPCThreadManager,
 )
-from .threading import (
-    NPCLifecycleManager as NPCThreadLifecycleManager,
-)
+
+# REMOVED: Import of duplicate NPCLifecycleManager from threading.py
+# The authoritative NPCLifecycleManager is imported from lifecycle_manager above
 
 __all__ = [
     "NPCActionMessage",
@@ -41,7 +41,6 @@ __all__ = [
     "NPCMessageQueue",
     "NPCThreadManager",
     "NPCCommunicationBridge",
-    "NPCThreadLifecycleManager",
     "NPCBase",
     "BehaviorEngine",
     "ShopkeeperNPC",

@@ -111,11 +111,19 @@ class NPCSpawnResult:
 
 class NPCSpawningService:
     """
-    Main service for NPC spawning logic.
+    Service for NPC instance creation and spawn request evaluation.
 
-    This service handles the spawning of NPCs based on population rules,
-    game state conditions, and spawn requests. It integrates with the
-    population control system to ensure proper population management.
+    This service provides low-level NPC instance creation via _create_npc_instance().
+    Spawn request evaluation and queuing functionality may be deprecated/unused.
+
+    SERVICE HIERARCHY:
+    - Used by NPCLifecycleManager for actual NPC instance creation
+    - Spawn decision logic is handled by NPCPopulationController
+
+    ARCHITECTURE NOTE:
+    - _create_npc_instance() is the authoritative method for creating NPC instances
+    - Spawn request evaluation (queue, history) may be legacy code
+    - Population validation should happen at NPCPopulationController level before calling this
     """
 
     def __init__(self, event_bus: EventBus, population_controller: "NPCPopulationController | None"):
@@ -511,6 +519,8 @@ class NPCSpawningService:
 
             # Set the current room for the NPC instance
             npc_instance.current_room = room_id
+            # Track spawn room for idle movement (the room where NPC was initially spawned)
+            npc_instance.spawn_room_id = room_id
 
             return npc_instance
 

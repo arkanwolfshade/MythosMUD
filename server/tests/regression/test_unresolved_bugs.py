@@ -406,7 +406,7 @@ class TestWebSocketMessageDeliveryBugs:
         connection_manager = ConnectionManager()
         connection_manager.memory_monitor.max_connection_age = 300
 
-        player_id = str(uuid4())
+        player_id = uuid4()
 
         # Send message to player without active connection
         test_event = {"type": "test", "data": "test"}
@@ -416,9 +416,11 @@ class TestWebSocketMessageDeliveryBugs:
         assert result["success"] is True
 
         # Message should be queued for disconnected player
-        assert player_id in connection_manager.pending_messages
-        assert len(connection_manager.pending_messages[player_id]) == 1
-        assert connection_manager.pending_messages[player_id][0] == test_event
+        # pending_messages uses string keys
+        player_id_str = str(player_id)
+        assert player_id_str in connection_manager.pending_messages
+        assert len(connection_manager.pending_messages[player_id_str]) == 1
+        assert connection_manager.pending_messages[player_id_str][0] == test_event
 
 
 class TestMovementServiceIntegrationBugs:

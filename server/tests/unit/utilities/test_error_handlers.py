@@ -17,7 +17,6 @@ from server.error_types import (
     ErrorMessages,
     ErrorSeverity,
     ErrorType,
-    create_sse_error_response,
     create_standard_error_response,
     create_websocket_error_response,
 )
@@ -442,7 +441,6 @@ class TestStandardizedErrorHandling:
 
         # Real-time Communication
         assert ErrorType.WEBSOCKET_ERROR
-        assert ErrorType.SSE_ERROR
         assert ErrorType.MESSAGE_PROCESSING_ERROR
 
     def test_error_severity_enum_completeness(self):
@@ -490,21 +488,6 @@ class TestStandardizedErrorHandling:
         assert error_response["message"] == "Connection lost"
         assert error_response["user_friendly"] == "Your connection was lost. Please reconnect."
         assert error_response["details"] == {"reconnect_url": "/ws"}
-
-    def test_sse_error_response_creation(self):
-        """Test creation of SSE error responses."""
-        error_response = create_sse_error_response(
-            error_type=ErrorType.SSE_ERROR,
-            message="SSE connection failed",
-            user_friendly="Real-time updates unavailable",
-            details={"retry_after": 30},
-        )
-
-        assert error_response["type"] == "error"
-        assert error_response["error_type"] == "sse_error"
-        assert error_response["message"] == "SSE connection failed"
-        assert error_response["user_friendly"] == "Real-time updates unavailable"
-        assert error_response["details"] == {"retry_after": 30}
 
     def test_error_messages_consistency(self):
         """Test that ErrorMessages class provides consistent user-friendly messages."""
@@ -663,18 +646,12 @@ class TestStandardizedErrorHandling:
         # WebSocket error response
         ws_response = create_websocket_error_response(ErrorType.WEBSOCKET_ERROR, "Test message", "Test user friendly")
 
-        # SSE error response
-        sse_response = create_sse_error_response(ErrorType.SSE_ERROR, "Test message", "Test user friendly")
-
         # All should have consistent fields
         assert "message" in http_response["error"]
         assert "user_friendly" in http_response["error"]
 
         assert "message" in ws_response
         assert "user_friendly" in ws_response
-
-        assert "message" in sse_response
-        assert "user_friendly" in sse_response
 
     def test_error_severity_mapping(self):
         """Test that error severities are properly mapped to appropriate types."""

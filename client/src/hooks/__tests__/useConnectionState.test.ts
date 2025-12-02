@@ -20,7 +20,6 @@ describe('useConnectionState', () => {
       lastError: null,
       connectionStartTime: null,
       lastConnectedTime: null,
-      sseUrl: null,
       wsUrl: null,
     },
   };
@@ -93,32 +92,6 @@ describe('useConnectionState', () => {
     expect(mockSend).toHaveBeenCalledWith({ type: 'RESET' });
   });
 
-  it('should provide onSSEConnected handler', () => {
-    // Arrange
-    const { result } = renderHook(() => useConnectionState());
-
-    // Act
-    act(() => {
-      result.current.onSSEConnected('session-123');
-    });
-
-    // Assert
-    expect(mockSend).toHaveBeenCalledWith({ type: 'SSE_CONNECTED', sessionId: 'session-123' });
-  });
-
-  it('should provide onSSEFailed handler', () => {
-    // Arrange
-    const { result } = renderHook(() => useConnectionState());
-
-    // Act
-    act(() => {
-      result.current.onSSEFailed('Connection failed');
-    });
-
-    // Assert
-    expect(mockSend).toHaveBeenCalledWith({ type: 'SSE_FAILED', error: 'Connection failed' });
-  });
-
   it('should provide onWSConnected handler', () => {
     // Arrange
     const { result } = renderHook(() => useConnectionState());
@@ -149,7 +122,7 @@ describe('useConnectionState', () => {
     // Arrange
     const connectingState = {
       ...mockState,
-      value: 'connecting_sse',
+      value: 'connecting_ws',
     };
     (useMachine as ReturnType<typeof vi.fn>).mockReturnValue([connectingState, mockSend]);
 
@@ -243,7 +216,7 @@ describe('useConnectionState', () => {
     // Arrange
     const onStateChange = vi.fn();
     const state1 = { ...mockState, value: 'disconnected' };
-    const state2 = { ...mockState, value: 'connecting_sse' };
+    const state2 = { ...mockState, value: 'connecting_ws' };
     (useMachine as ReturnType<typeof vi.fn>)
       .mockReturnValueOnce([state1, mockSend])
       .mockReturnValueOnce([state2, mockSend]);

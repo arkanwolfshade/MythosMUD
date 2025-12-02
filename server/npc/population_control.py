@@ -168,10 +168,23 @@ class PopulationStats:
 
 class NPCPopulationController:
     """
-    Main controller for NPC population management across zones and sub-zones.
+    Controller for NPC population management across zones and sub-zones.
 
-    This class manages NPC spawning, despawning, and population monitoring
-    based on zone configurations, player counts, and game state conditions.
+    This class manages population limits, zone rules, and spawn validation.
+    It queries NPCLifecycleManager for active NPC instances and maintains
+    population_stats for zone-level aggregates.
+
+    SERVICE HIERARCHY:
+    - Level 2: Population limits and zone rules
+    - Uses: NPCLifecycleManager (queries active_npcs, calls spawn_npc)
+    - Used by: NPCInstanceService
+
+    ARCHITECTURE NOTES:
+    - NO longer maintains duplicate active_npcs tracking (removed in unification)
+    - Queries lifecycle_manager.active_npcs via helper methods when needed
+    - Maintains population_stats for zone-level population aggregates only
+    - Validates population limits BEFORE calling lifecycle_manager.spawn_npc()
+    - NPCLifecycleManager.active_npcs is the single source of truth for active NPC instances
     """
 
     def __init__(
@@ -200,7 +213,8 @@ class NPCPopulationController:
 
         # Population tracking
         self.population_stats: dict[str, PopulationStats] = {}
-        self.active_npcs: dict[str, dict[str, Any]] = {}  # npc_id -> npc_data
+        # REMOVED: self.active_npcs - NPCLifecycleManager.active_npcs is now the single source of truth
+        # Use _get_active_npcs_from_lifecycle_manager() helper method to query NPC instances
         self.zone_configurations: dict[str, ZoneConfiguration] = {}
 
         # Clear population stats on initialization to ensure clean state
@@ -472,6 +486,17 @@ class NPCPopulationController:
             return f"{zone}/{sub_zone}"
 
         return "unknown/unknown"
+
+    def _get_active_npcs_from_lifecycle_manager(self) -> dict[str, Any]:
+        """
+        Get active NPCs from the lifecycle manager (single source of truth).
+
+        Returns:
+            Dictionary mapping npc_id to NPC instance data, or empty dict if lifecycle_manager unavailable
+        """
+        if not self.lifecycle_manager or not hasattr(self.lifecycle_manager, "active_npcs"):
+            return {}
+        return self.lifecycle_manager.active_npcs
 
     def _update_player_count(self) -> None:
         """Update the current player count in game state."""
@@ -756,15 +781,9 @@ class NPCPopulationController:
                     max_population=definition.max_population,
                 )
 
-                # Store NPC data for tracking
-                self.active_npcs[npc_id] = {
-                    "npc_type": definition.npc_type,
-                    "room_id": room_id,
-                    "is_required": definition.is_required(),
-                    "spawned_at": time.time(),
-                    "name": getattr(definition, "name", "Unknown NPC"),
-                    "definition_id": definition.id,
-                }
+                # REMOVED: No longer storing duplicate NPC data here
+                # NPCLifecycleManager.active_npcs is the single source of truth for NPC instances
+                # Population statistics are maintained in population_stats for zone-level aggregates
 
                 # Use getattr to avoid potential lazy loading issues
                 definition_name = getattr(definition, "name", "Unknown NPC")
@@ -793,30 +812,63 @@ class NPCPopulationController:
         """
         Despawn an NPC instance.
 
+        This method updates population statistics when an NPC is despawned.
+        Actual despawning is handled by NPCLifecycleManager.
+
         Args:
             npc_id: ID of the NPC to despawn
 
         Returns:
             True if NPC was despawned, False if not found
         """
-        if npc_id not in self.active_npcs:
+        # Query active NPCs from lifecycle manager (single source of truth)
+        active_npcs = self._get_active_npcs_from_lifecycle_manager()
+        if npc_id not in active_npcs:
             logger.warning("Attempted to despawn non-existent NPC", npc_id=npc_id)
             return False
 
-        npc_data = self.active_npcs[npc_id]
-        room_id = npc_data["room_id"]
+        npc_instance = active_npcs[npc_id]
+        # Get room_id from NPC instance
+        # Handle Mock objects by ensuring we get a string value, not a Mock
+        room_id_value = getattr(npc_instance, "current_room", None)
+        if room_id_value is None:
+            room_id_value = getattr(npc_instance, "current_room_id", None)
+        if room_id_value is None:
+            room_id_value = getattr(npc_instance, "room_id", None)
+
+        # Ensure room_id is a string (handle Mock objects)
+        if isinstance(room_id_value, str):
+            room_id = room_id_value
+        else:
+            room_id = "unknown"
+
+        # Get NPC metadata for population stats update
+        npc_type_value = getattr(npc_instance, "npc_type", None)
+        npc_type = npc_type_value if isinstance(npc_type_value, str) else "unknown"
+
+        is_required_value = getattr(npc_instance, "is_required", None)
+        is_required = bool(is_required_value) if is_required_value is not None else False
+
+        # Try to get definition_id from NPC instance or lifecycle record
+        definition_id: int | None = None
+        if hasattr(npc_instance, "definition_id"):
+            definition_id_value = npc_instance.definition_id
+            if isinstance(definition_id_value, int):
+                definition_id = definition_id_value
+        elif self.lifecycle_manager and npc_id in getattr(self.lifecycle_manager, "lifecycle_records", {}):
+            record = self.lifecycle_manager.lifecycle_records[npc_id]
+            if hasattr(record, "definition") and hasattr(record.definition, "id"):
+                definition_id = int(record.definition.id)
 
         # Update population statistics
-        zone_key = self._get_zone_key_from_room_id(room_id)
-        if zone_key in self.population_stats:
-            stats = self.population_stats[zone_key]
-            definition_id: int | None = npc_data.get("definition_id")
-            stats.remove_npc(npc_data["npc_type"], room_id, npc_data["is_required"], definition_id)
+        if room_id and room_id != "unknown":
+            zone_key = self._get_zone_key_from_room_id(room_id)
+            if zone_key in self.population_stats:
+                stats = self.population_stats[zone_key]
+                stats.remove_npc(npc_type, room_id, is_required, definition_id)
 
-        # Remove from active NPCs
-        del self.active_npcs[npc_id]
-
-        logger.info("Despawned NPC", npc_id=npc_id, npc_name=npc_data["name"])
+        npc_name = getattr(npc_instance, "name", "Unknown")
+        logger.info("Despawned NPC", npc_id=npc_id, npc_name=npc_name)
         return True
 
     def get_zone_population_summary(self) -> dict[str, Any]:
@@ -826,9 +878,12 @@ class NPCPopulationController:
         Returns:
             Dictionary containing population summaries
         """
+        # Query active NPCs from lifecycle manager (single source of truth)
+        active_npcs = self._get_active_npcs_from_lifecycle_manager()
+
         summary: dict[str, Any] = {
             "total_zones": len(self.population_stats),
-            "total_active_npcs": len(self.active_npcs),
+            "total_active_npcs": len(active_npcs),
             "zones": {},
         }
 
@@ -839,14 +894,14 @@ class NPCPopulationController:
 
     def clear_population_stats(self) -> None:
         """
-        Clear all population statistics and active NPCs.
+        Clear all population statistics.
 
         This ensures a clean state when the server starts, as NPCs are ephemeral
         and should not persist across server restarts.
+        Note: Active NPC instances are managed by NPCLifecycleManager, not this controller.
         """
         self.population_stats.clear()
-        self.active_npcs.clear()
-        logger.info("Population stats and active NPCs cleared")
+        logger.info("Population stats cleared")
 
     def cleanup_inactive_npcs(self, max_age_seconds: int = 3600) -> int:
         """
@@ -858,12 +913,25 @@ class NPCPopulationController:
         Returns:
             Number of NPCs cleaned up
         """
+        # Query active NPCs from lifecycle manager (single source of truth)
+        active_npcs = self._get_active_npcs_from_lifecycle_manager()
+        if not active_npcs:
+            return 0
+
         current_time = time.time()
         npcs_to_remove = []
 
-        for npc_id, npc_data in self.active_npcs.items():
-            age = current_time - npc_data["spawned_at"]
-            if age > max_age_seconds and not npc_data["is_required"]:
+        for npc_id, npc_instance in active_npcs.items():
+            # Get spawn time from NPC instance
+            spawned_at_value = getattr(npc_instance, "spawned_at", None)
+            # Ensure spawned_at is a number (handle Mock objects)
+            if not spawned_at_value or not isinstance(spawned_at_value, (int, float)):
+                continue
+
+            age = current_time - spawned_at_value
+            is_required_value = getattr(npc_instance, "is_required", None)
+            is_required = bool(is_required_value) if is_required_value is not None else False
+            if age > max_age_seconds and not is_required:
                 npcs_to_remove.append(npc_id)
 
         for npc_id in npcs_to_remove:

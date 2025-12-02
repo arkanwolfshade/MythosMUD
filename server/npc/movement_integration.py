@@ -8,10 +8,17 @@ As noted in the Pnakotic Manuscripts, proper movement integration is essential
 for maintaining the integrity of our eldritch dimensional architecture.
 """
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from ..events import EventBus, NPCEnteredRoom, NPCLeftRoom
-from ..game.movement_service import MovementService
 from ..logging.enhanced_logging_config import get_logger
 from ..persistence import get_persistence
+from ..utils.room_utils import extract_subzone_from_room_id
+
+if TYPE_CHECKING:
+    from ..game.movement_service import MovementService
 
 logger = get_logger(__name__)
 
@@ -34,7 +41,14 @@ class NPCMovementIntegration:
         """
         self.event_bus = event_bus
         self.persistence = persistence or get_persistence(event_bus)
-        self.movement_service = MovementService(event_bus) if event_bus else None
+        # Lazy import to avoid circular dependency
+        # MovementService imports from services/ which imports npc_instance_service
+        # which imports from npc/__init__ which imports this module
+        self.movement_service: MovementService | None = None
+        if event_bus:
+            from ..game.movement_service import MovementService
+
+            self.movement_service = MovementService(event_bus)
 
         logger.debug("NPC movement integration initialized")
 
@@ -79,18 +93,19 @@ class NPCMovementIntegration:
                 logger.warning("Destination room not found", npc_id=npc_id, to_room=to_room_id)
                 return False
 
-            # Remove NPC from source room
+            # Remove NPC from source room (pass to_room_id for movement tracking)
             if from_room.has_npc(npc_id):
-                from_room.npc_left(npc_id)
-                logger.debug("Removed NPC from source room", npc_id=npc_id, from_room=from_room_id)
+                from_room.npc_left(npc_id, to_room_id=to_room_id)
+                logger.debug("Removed NPC from source room", npc_id=npc_id, from_room=from_room_id, to_room=to_room_id)
 
-            # Add NPC to destination room
+            # Add NPC to destination room (pass from_room_id for movement tracking)
             if not to_room.has_npc(npc_id):
-                to_room.npc_entered(npc_id)
-                logger.debug("Added NPC to destination room", npc_id=npc_id, to_room=to_room_id)
+                to_room.npc_entered(npc_id, from_room_id=from_room_id)
+                logger.debug("Added NPC to destination room", npc_id=npc_id, from_room=from_room_id, to_room=to_room_id)
 
             # CRITICAL FIX: Update NPC instance room tracking for occupant queries
             # Get NPC instance from lifecycle manager and update current_room/current_room_id
+            # This ensures NPCs appear in the correct room's occupants list after movement
             try:
                 from ..services.npc_instance_service import get_npc_instance_service
 
@@ -99,15 +114,26 @@ class NPCMovementIntegration:
                     lifecycle_manager = npc_instance_service.lifecycle_manager
                     if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
                         npc_instance = lifecycle_manager.active_npcs[npc_id]
+                        # CRITICAL: Always update both attributes to ensure room tracking works
                         npc_instance.current_room = to_room_id
-                        # Also set current_room_id for compatibility
-                        if hasattr(npc_instance, "current_room_id"):
-                            npc_instance.current_room_id = to_room_id
-                        logger.debug(
-                            "Updated NPC instance room tracking",
-                            npc_id=npc_id,
-                            new_room_id=to_room_id,
-                        )
+                        # Also set current_room_id for compatibility (dynamic attribute)
+                        npc_instance.current_room_id = to_room_id  # type: ignore[attr-defined]
+
+                        # CRITICAL: Validate room tracking was updated correctly
+                        if not npc_instance.current_room or npc_instance.current_room != to_room_id:
+                            logger.error(
+                                "Failed to update NPC room tracking correctly",
+                                npc_id=npc_id,
+                                to_room_id=to_room_id,
+                                current_room=getattr(npc_instance, "current_room", None),
+                                current_room_id=getattr(npc_instance, "current_room_id", None),
+                            )
+                        else:
+                            logger.debug(
+                                "Updated NPC instance room tracking",
+                                npc_id=npc_id,
+                                new_room_id=to_room_id,
+                            )
             except Exception as update_error:
                 logger.warning(
                     "Error updating NPC instance room tracking",
@@ -273,3 +299,71 @@ class NPCMovementIntegration:
         except Exception as e:
             logger.error("Error finding path between rooms", from_room=from_room_id, to_room=to_room_id, error=str(e))
             return None
+
+    def validate_subzone_boundary(self, npc_sub_zone_id: str, destination_room_id: str) -> bool:
+        """
+        Validate that a destination room is within the NPC's allowed subzone.
+
+        This method ensures NPCs cannot move outside their designated subzone,
+        maintaining proper territorial boundaries as documented in the Pnakotic Manuscripts.
+
+        Args:
+            npc_sub_zone_id: The subzone ID from the NPC definition (stable_id format)
+            destination_room_id: The room ID of the destination room
+
+        Returns:
+            bool: True if the destination room is within the NPC's subzone, False otherwise
+        """
+        try:
+            if not npc_sub_zone_id or not destination_room_id:
+                logger.warning(
+                    "Invalid subzone or room ID for boundary validation",
+                    npc_sub_zone_id=npc_sub_zone_id,
+                    destination_room_id=destination_room_id,
+                )
+                return False
+
+            # Get the destination room to check its subzone
+            destination_room = self.persistence.get_room(destination_room_id)
+            if not destination_room:
+                logger.warning(
+                    "Destination room not found for subzone validation", destination_room_id=destination_room_id
+                )
+                return False
+
+            # Extract subzone from destination room
+            # Try using Room's sub_zone attribute first (more reliable)
+            destination_subzone = destination_room.sub_zone if hasattr(destination_room, "sub_zone") else None
+
+            # Fallback to extracting from room_id if sub_zone attribute not available
+            if not destination_subzone:
+                destination_subzone = extract_subzone_from_room_id(destination_room_id)
+
+            if not destination_subzone:
+                logger.warning(
+                    "Could not determine subzone for destination room",
+                    destination_room_id=destination_room_id,
+                )
+                return False
+
+            # Compare subzones (both should be stable_id format strings)
+            is_valid = destination_subzone == npc_sub_zone_id
+
+            if not is_valid:
+                logger.debug(
+                    "Subzone boundary validation failed",
+                    npc_sub_zone_id=npc_sub_zone_id,
+                    destination_subzone=destination_subzone,
+                    destination_room_id=destination_room_id,
+                )
+
+            return is_valid
+
+        except Exception as e:
+            logger.error(
+                "Error validating subzone boundary",
+                npc_sub_zone_id=npc_sub_zone_id,
+                destination_room_id=destination_room_id,
+                error=str(e),
+            )
+            return False

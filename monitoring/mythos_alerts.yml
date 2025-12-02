@@ -1,4 +1,4 @@
-# MythosMUD Dual Connection System Alert Rules
+# MythosMUD WebSocket-Only Connection System Alert Rules
 
 groups:
 - name: mythos_connection_alerts
@@ -271,36 +271,3 @@ groups:
     annotations:
       summary: "WebSocket message delivery failures detected"
       description: "WebSocket message failure rate is {{ $value }} failures per second"
-
-- name: mythos_sse_alerts
-  rules:
-  # SSE Specific Alerts
-  - alert: SSEConnectionFailure
-    expr: rate(mythos_sse_connection_failures_total[5m]) > 0.1
-    for: 2m
-    labels:
-      severity: warning
-      service: mythos-sse
-    annotations:
-      summary: "SSE connection failures detected"
-      description: "SSE connection failure rate is {{ $value }} failures per second"
-
-  - alert: SSEMessageFailure
-    expr: rate(mythos_sse_message_failures_total[5m]) > 0.05
-    for: 2m
-    labels:
-      severity: warning
-      service: mythos-sse
-    annotations:
-      summary: "SSE message delivery failures detected"
-      description: "SSE message failure rate is {{ $value }} failures per second"
-
-  - alert: SSEConnectionTimeout
-    expr: rate(mythos_sse_connection_timeouts_total[5m]) > 0.02
-    for: 2m
-    labels:
-      severity: warning
-      service: mythos-sse
-    annotations:
-      summary: "SSE connection timeouts detected"
-      description: "SSE connection timeout rate is {{ $value }} timeouts per second"

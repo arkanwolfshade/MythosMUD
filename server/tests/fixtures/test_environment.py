@@ -417,13 +417,9 @@ class TestDataSetup:
         # Create WebSocket connection
         ws_success = await env.connection_manager.connect_websocket(mock_websocket(), player_id_uuid, "test_session")
 
-        # Create SSE connection
-        sse_connection_id = await env.connection_manager.connect_sse(player_id_uuid, "test_session")
-
         return {
             "player_id": player_id,
             "websocket_connection_id": "ws_conn" if ws_success else None,
-            "sse_connection_id": sse_connection_id,
             "session_id": "test_session",
         }
 

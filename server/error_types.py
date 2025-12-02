@@ -58,7 +58,7 @@ class ErrorType(Enum):
 
     # Real-time Communication
     WEBSOCKET_ERROR = "websocket_error"
-    SSE_ERROR = "sse_error"
+    SSE_ERROR = "sse_error"  # Deprecated - kept for backward compatibility
     MESSAGE_PROCESSING_ERROR = "message_processing_error"
 
 
@@ -139,7 +139,8 @@ def create_sse_error_response(
     details: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """
-    Create a standardized SSE error response.
+    DEPRECATED: SSE connections are no longer supported.
+    This function is kept for backward compatibility but returns the same format as WebSocket errors.
 
     Args:
         error_type: The type of error
@@ -148,7 +149,7 @@ def create_sse_error_response(
         details: Additional error details (optional)
 
     Returns:
-        SSE error response dictionary
+        Error response dictionary (same format as WebSocket errors)
     """
     return {
         "type": "error",
@@ -196,6 +197,6 @@ class ErrorMessages:
 
     # Real-time
     WEBSOCKET_ERROR = "WebSocket connection error"
-    SSE_ERROR = "Server-Sent Events connection error"
+    SSE_ERROR = "Server-Sent Events connection error"  # Deprecated - kept for backward compatibility
     MESSAGE_PROCESSING_ERROR = "Error processing message"
     RATE_LIMIT_EXCEEDED = "Rate limit exceeded. Please slow down your requests."

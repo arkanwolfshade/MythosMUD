@@ -13,7 +13,6 @@ export class ResourceManager {
   private timers: Set<number> = new Set();
   private intervals: Set<number> = new Set();
   private webSockets: Set<WebSocket> = new Set();
-  private eventSources: Set<EventSource> = new Set();
   private customResources: Set<CustomResource> = new Set();
 
   /**
@@ -35,13 +34,6 @@ export class ResourceManager {
    */
   registerWebSocket(websocket: WebSocket): void {
     this.webSockets.add(websocket);
-  }
-
-  /**
-   * Register an EventSource connection for cleanup
-   */
-  registerEventSource(eventSource: EventSource): void {
-    this.eventSources.add(eventSource);
   }
 
   /**
@@ -73,13 +65,6 @@ export class ResourceManager {
   }
 
   /**
-   * Get all active EventSource connections
-   */
-  getActiveEventSources(): EventSource[] {
-    return Array.from(this.eventSources);
-  }
-
-  /**
    * Get all active custom resources
    */
   getActiveCustomResources(): CustomResource[] {
@@ -93,7 +78,6 @@ export class ResourceManager {
     timers: number;
     intervals: number;
     webSockets: number;
-    eventSources: number;
     customResources: number;
     total: number;
   } {
@@ -101,14 +85,8 @@ export class ResourceManager {
       timers: this.timers.size,
       intervals: this.intervals.size,
       webSockets: this.webSockets.size,
-      eventSources: this.eventSources.size,
       customResources: this.customResources.size,
-      total:
-        this.timers.size +
-        this.intervals.size +
-        this.webSockets.size +
-        this.eventSources.size +
-        this.customResources.size,
+      total: this.timers.size + this.intervals.size + this.webSockets.size + this.customResources.size,
     };
   }
 
@@ -135,16 +113,6 @@ export class ResourceManager {
       }
     });
     this.webSockets.clear();
-
-    // Close all EventSource connections
-    this.eventSources.forEach(eventSource => {
-      const readyState = typeof eventSource.readyState === 'number' ? eventSource.readyState : undefined;
-      // In some test environments the static EventSource constants are undefined.
-      if (readyState === undefined || readyState === 0 || readyState === 1) {
-        eventSource.close?.();
-      }
-    });
-    this.eventSources.clear();
 
     // Clean up custom resources
     this.customResources.forEach(resource => {
@@ -178,13 +146,6 @@ export class ResourceManager {
    */
   removeWebSocket(websocket: WebSocket): void {
     this.webSockets.delete(websocket);
-  }
-
-  /**
-   * Remove a specific EventSource from tracking
-   */
-  removeEventSource(eventSource: EventSource): void {
-    this.eventSources.delete(eventSource);
   }
 
   /**
@@ -239,17 +200,6 @@ export const createWebSocketCleanup = (resourceManager: ResourceManager) => {
     const websocket = new WebSocket(url, protocols);
     resourceManager.registerWebSocket(websocket);
     return websocket;
-  };
-};
-
-/**
- * Utility function to create a cleanup function for EventSource connections
- */
-export const createEventSourceCleanup = (resourceManager: ResourceManager) => {
-  return (url: string, eventSourceInitDict?: EventSourceInit): EventSource => {
-    const eventSource = new EventSource(url, eventSourceInitDict);
-    resourceManager.registerEventSource(eventSource);
-    return eventSource;
   };
 };
 

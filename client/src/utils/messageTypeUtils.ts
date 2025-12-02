@@ -115,6 +115,13 @@ const SYSTEM_PATTERNS: MessagePattern[] = [
   { pattern: PLAYER_ENTERS_PATTERN, type: 'system' },
   { pattern: PLAYER_TELEPORTED_PATTERN, type: 'system' },
   { pattern: TELEPORT_EFFECT_PATTERN, type: 'system' },
+  // NPC movement messages - should appear in Game Info panel
+  {
+    pattern: /^.+ (left|entered from) (north|south|east|west|up|down|northeast|northwest|southeast|southwest)\.?$/i,
+    type: 'system',
+  },
+  { pattern: /^.+ appears\.?$/i, type: 'system' }, // NPC spawn messages
+  { pattern: /^.+ leaves\.?$/i, type: 'system' }, // NPC departure messages
   // Combat messages - should appear in Game Log only
   { pattern: /^You (attack|punch|kick|strike|hit|smack|thump) /i, type: 'system' },
   // Room descriptions - MOST RELIABLE PATTERN: Contains "Exits:" anywhere in the message

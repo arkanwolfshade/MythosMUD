@@ -208,6 +208,19 @@ class CombatCommandHandler:
                 logger.debug("DEBUG: Could not get NPC instance", target_id=target_match.target_id)
                 return {"result": "Target not found."}
 
+            # BUGFIX: Validate NPC is alive before proceeding
+            # This prevents passing dead NPCs to the combat service
+            # As documented in investigation: 2025-11-30_session-001_npc-combat-start-failure.md
+            if not getattr(npc_instance, "is_alive", True):
+                npc_name = getattr(npc_instance, "name", "target")
+                logger.warning(
+                    "Player attempted to attack dead NPC",
+                    player_name=player_name,
+                    npc_id=target_match.target_id,
+                    npc_name=npc_name,
+                )
+                return {"result": f"{npc_name} is already dead."}
+
             logger.debug("DEBUG: Found target NPC", npc_name=npc_instance.name, target_id=target_match.target_id)
 
             # Validate combat action
@@ -220,9 +233,11 @@ class CombatCommandHandler:
 
             logger.debug("DEBUG: Combat validation passed", player_name=player_name)
 
-            # Execute combat action
+            # Execute combat action - pass validated NPC instance to avoid redundant lookup
             logger.debug("DEBUG: Executing combat action", player_name=player_name)
-            combat_result = await self._execute_combat_action(player_name, npc_id, command, room_id)
+            combat_result = await self._execute_combat_action(
+                player_name, npc_id, command, room_id, npc_instance=npc_instance
+            )
             logger.debug("DEBUG: Combat action executed", combat_result=combat_result)
 
             return combat_result
@@ -264,8 +279,19 @@ class CombatCommandHandler:
             return {"valid": False, "message": "Invalid combat parameters"}
         return {"valid": True}
 
-    async def _execute_combat_action(self, player_name: str, npc_id: str, command: str, room_id: str) -> dict[str, str]:
-        """Execute combat action using the proper combat service."""
+    async def _execute_combat_action(
+        self, player_name: str, npc_id: str, command: str, room_id: str, npc_instance: Any | None = None
+    ) -> dict[str, str]:
+        """
+        Execute combat action using the proper combat service.
+
+        Args:
+            player_name: Name of the attacking player
+            npc_id: ID of the target NPC
+            command: Attack command type
+            room_id: ID of the room where combat occurs
+            npc_instance: Optional pre-validated NPC instance to pass to combat service
+        """
         try:
             # Get player ID from the persistence layer
             # We need to get the player object to get the player ID
@@ -276,8 +302,9 @@ class CombatCommandHandler:
 
             player_id = str(player.player_id)
 
-            # Get NPC instance to get the NPC name for the message
-            npc_instance = self._get_npc_instance(npc_id)
+            # Get NPC instance if not provided, or get NPC name
+            if npc_instance is None:
+                npc_instance = self._get_npc_instance(npc_id)
             npc_name = npc_instance.name if npc_instance else "unknown target"
 
             # Calculate basic damage using configured value
@@ -292,18 +319,38 @@ class CombatCommandHandler:
                 command=command,
                 npc_id=npc_id,
                 damage=damage,
+                npc_instance_provided=npc_instance is not None,
             )
 
-            # Use the proper combat service to handle the attack with auto-progression
-            await self.npc_combat_service.handle_player_attack_on_npc(
-                player_id=player_id, npc_id=npc_id, room_id=room_id, action_type=command, damage=damage
+            # BUGFIX: Use the proper combat service and check return value
+            # Pass validated NPC instance to avoid redundant lookup and race conditions
+            # As documented in investigation: 2025-11-30_session-001_npc-combat-start-failure.md
+            combat_success = await self.npc_combat_service.handle_player_attack_on_npc(
+                player_id=player_id,
+                npc_id=npc_id,
+                room_id=room_id,
+                action_type=command,
+                damage=damage,
+                npc_instance=npc_instance,
             )
+
+            # BUGFIX: Return proper error message if combat initiation failed
+            # Previously returned success message even when combat didn't start (silent failure)
+            if not combat_success:
+                logger.warning(
+                    "Combat initiation failed",
+                    player_name=player_name,
+                    player_id=player_id,
+                    npc_id=npc_id,
+                    npc_name=npc_name,
+                )
+                return {"result": f"You cannot attack {npc_name} right now."}
 
             # Return simple acknowledgment since detailed message is sent via broadcast system
             return {"result": f"You {command} {npc_name}!"}
 
         except Exception as e:
-            logger.error("Error executing combat action", error=str(e))
+            logger.error("Error executing combat action", error=str(e), exc_info=True)
             return {"result": f"Error executing {command} command"}
 
 

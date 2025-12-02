@@ -34,8 +34,6 @@ export interface UseConnectionStateResult {
   reset: () => void;
 
   // Event handlers for connection callbacks
-  onSSEConnected: (sessionId: string) => void;
-  onSSEFailed: (error: string) => void;
   onWSConnected: () => void;
   onWSFailed: (error: string) => void;
 
@@ -102,20 +100,6 @@ export function useConnectionState(options?: {
   }, [send]);
 
   // Event handlers for connection lifecycle
-  const onSSEConnected = useCallback(
-    (sessionId: string) => {
-      send({ type: 'SSE_CONNECTED', sessionId });
-    },
-    [send]
-  );
-
-  const onSSEFailed = useCallback(
-    (error: string) => {
-      send({ type: 'SSE_FAILED', error });
-    },
-    [send]
-  );
-
   const onWSConnected = useCallback(() => {
     send({ type: 'WS_CONNECTED' });
   }, [send]);
@@ -130,7 +114,8 @@ export function useConnectionState(options?: {
   // Compute state flags
   const currentState = state.value as string;
   const isDisconnected = currentState === 'disconnected';
-  const isConnecting = ['connecting_sse', 'connecting_ws', 'sse_connected'].includes(currentState);
+  // Include 'reconnecting' in connecting states - user is still attempting to connect
+  const isConnecting = ['connecting_ws', 'reconnecting'].includes(currentState);
   const isConnected = currentState === 'fully_connected';
   const isReconnecting = currentState === 'reconnecting';
   const isFailed = currentState === 'failed';
@@ -154,8 +139,6 @@ export function useConnectionState(options?: {
     reset,
 
     // Event handlers
-    onSSEConnected,
-    onSSEFailed,
     onWSConnected,
     onWSFailed,
 

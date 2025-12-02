@@ -397,20 +397,105 @@ class NPCThreadManager:
         """Process a message for an NPC."""
         try:
             message_type = message.get("type")
-            logger.debug("Processing NPC message", npc_id=npc_id, message_type=message_type)
+            action_type = message.get("action_type")
+            logger.debug("Processing NPC message", npc_id=npc_id, message_type=message_type, action_type=action_type)
 
-            # Placeholder for message processing logic
-            # This will be expanded when we implement specific NPC behaviors
+            # Process WANDER actions for idle movement
+            if action_type == NPCActionType.WANDER.value or message_type == "wander":
+                await self._process_wander_action(npc_id, message)
+            # Add other action type handlers here as needed
 
         except Exception as e:
             logger.error("Error processing NPC message", npc_id=npc_id, error=str(e))
 
+    async def _process_wander_action(self, npc_id: str, message: dict[str, Any]):
+        """
+        Process a WANDER action for idle movement.
+
+        Args:
+            npc_id: ID of the NPC to move
+            message: Message containing action data
+        """
+        try:
+            # Get NPC instance from lifecycle manager
+            from ..services.npc_instance_service import get_npc_instance_service
+
+            npc_instance_service = get_npc_instance_service()
+            if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
+                logger.warning("NPC instance service not available for WANDER action", npc_id=npc_id)
+                return
+
+            lifecycle_manager = npc_instance_service.lifecycle_manager
+            if not lifecycle_manager or npc_id not in lifecycle_manager.active_npcs:
+                logger.warning("NPC instance not found for WANDER action", npc_id=npc_id)
+                return
+
+            npc_instance = lifecycle_manager.active_npcs[npc_id]
+            npc_definition = self.npc_definitions.get(npc_id)
+
+            if not npc_definition:
+                logger.warning("NPC definition not found for WANDER action", npc_id=npc_id)
+                return
+
+            # Get behavior config
+            behavior_config = getattr(npc_instance, "_behavior_config", {})
+            if isinstance(behavior_config, str):
+                import json
+
+                try:
+                    behavior_config = json.loads(behavior_config)
+                except json.JSONDecodeError:
+                    behavior_config = {}
+
+            # Execute idle movement using the handler
+            from .idle_movement import IdleMovementHandler
+
+            movement_handler = IdleMovementHandler(
+                event_bus=getattr(npc_instance, "event_bus", None),
+                persistence=None,  # Will use default persistence
+            )
+
+            # execute_idle_movement takes npc_instance, npc_definition, and behavior_config
+            success = movement_handler.execute_idle_movement(npc_instance, npc_definition, behavior_config)
+
+            if success:
+                # Update last idle movement time on NPC instance to prevent immediate re-scheduling
+                if hasattr(npc_instance, "_last_idle_movement_time"):
+                    npc_instance._last_idle_movement_time = time.time()
+                logger.debug("WANDER action executed successfully", npc_id=npc_id)
+            else:
+                logger.debug("WANDER action did not result in movement", npc_id=npc_id)
+
+        except Exception as e:
+            logger.error("Error processing WANDER action", npc_id=npc_id, error=str(e))
+
     async def _execute_npc_behavior(self, npc_id: str, npc_definition: NPCDefinition):
         """Execute NPC behavior based on its type and configuration."""
         try:
-            # Placeholder for behavior execution
-            # This will be expanded when we implement specific NPC behaviors
-            pass
+            # Get NPC instance from lifecycle manager
+            from ..services.npc_instance_service import get_npc_instance_service
+
+            npc_instance_service = get_npc_instance_service()
+            if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
+                logger.debug("NPC instance service not available for behavior execution", npc_id=npc_id)
+                return
+
+            lifecycle_manager = npc_instance_service.lifecycle_manager
+            if not lifecycle_manager or npc_id not in lifecycle_manager.active_npcs:
+                logger.debug("NPC instance not found for behavior execution", npc_id=npc_id)
+                return
+
+            npc_instance = lifecycle_manager.active_npcs[npc_id]
+
+            # Execute NPC behavior with empty context (NPC will add its own context)
+            context: dict[str, Any] = {}
+            try:
+                await npc_instance.execute_behavior(context)
+                logger.debug(
+                    "Executed NPC behavior", npc_id=npc_id, npc_type=getattr(npc_instance, "npc_type", "unknown")
+                )
+            except Exception as e:
+                logger.error("Error executing NPC behavior", npc_id=npc_id, error=str(e), exc_info=True)
 
         except Exception as e:
             logger.error("Error executing NPC behavior", npc_id=npc_id, error=str(e))
@@ -523,169 +608,6 @@ class NPCCommunicationBridge:
             return messages
 
 
-class NPCLifecycleManager:
-    """
-    Manages the lifecycle of NPC instances.
-
-    This class handles spawning, despawning, and respawning of NPCs,
-    coordinating with the thread manager and database.
-    """
-
-    def __init__(self, thread_manager: NPCThreadManager | None = None):
-        """
-        Initialize the NPC lifecycle manager.
-
-        Args:
-            thread_manager: Optional NPC thread manager instance
-        """
-        self.thread_manager = thread_manager or NPCThreadManager()
-        self.active_npcs: dict[int, dict[str, Any]] = {}
-        self._lock = asyncio.Lock()
-
-        logger.info("NPC lifecycle manager initialized")
-
-    async def spawn_npc(self, npc_definition: NPCDefinition) -> bool:
-        """
-        Spawn an NPC instance.
-
-        Args:
-            npc_definition: The NPC definition to spawn
-
-        Returns:
-            bool: True if NPC was spawned successfully
-        """
-        try:
-            async with self._lock:
-                npc_id = f"npc_{npc_definition.id}_{int(time.time())}"
-
-                # Start the NPC thread
-                success = await self.thread_manager.start_npc_thread(npc_id, npc_definition)
-                if not success:
-                    return False
-
-                # Track the active NPC
-                self.active_npcs[int(npc_definition.id)] = {
-                    "npc_id": npc_id,
-                    "definition": npc_definition,
-                    "spawned_at": time.time(),
-                    "status": "active",
-                }
-
-                logger.info("Spawned NPC", npc_id=npc_id, npc_name=npc_definition.name)
-                return True
-
-        except Exception as e:
-            logger.error("Failed to spawn NPC", npc_definition_id=npc_definition.id, error=str(e))
-            return False
-
-    async def despawn_npc(self, npc_definition_id: int) -> bool:
-        """
-        Despawn an NPC instance.
-
-        Args:
-            npc_definition_id: The NPC definition ID to despawn
-
-        Returns:
-            bool: True if NPC was despawned successfully
-        """
-        try:
-            async with self._lock:
-                if npc_definition_id not in self.active_npcs:
-                    logger.warning("NPC not found for despawning", npc_definition_id=npc_definition_id)
-                    return True
-
-                npc_info = self.active_npcs[npc_definition_id]
-                npc_id = npc_info["npc_id"]
-
-                # Stop the NPC thread
-                success = await self.thread_manager.stop_npc_thread(npc_id)
-                if not success:
-                    return False
-
-                # Remove from active NPCs
-                del self.active_npcs[npc_definition_id]
-
-                logger.info("Despawned NPC", npc_id=npc_id, npc_definition_id=npc_definition_id)
-                return True
-
-        except Exception as e:
-            logger.error("Failed to despawn NPC", npc_definition_id=npc_definition_id, error=str(e))
-            return False
-
-    async def respawn_npc(self, npc_definition_id: int, npc_definition: NPCDefinition) -> bool:
-        """
-        Respawn an NPC instance.
-
-        Args:
-            npc_definition_id: The NPC definition ID to respawn
-            npc_definition: The updated NPC definition
-
-        Returns:
-            bool: True if NPC was respawned successfully
-        """
-        try:
-            # Despawn first
-            await self.despawn_npc(npc_definition_id)
-
-            # Spawn with new definition
-            return await self.spawn_npc(npc_definition)
-
-        except Exception as e:
-            logger.error("Failed to respawn NPC", npc_definition_id=npc_definition_id, error=str(e))
-            return False
-
-    async def get_npc_status(self, npc_definition_id: int) -> dict[str, Any] | None:
-        """
-        Get the status of an NPC instance.
-
-        Args:
-            npc_definition_id: The NPC definition ID
-
-        Returns:
-            Dict containing NPC status information, or None if not found
-        """
-        if npc_definition_id not in self.active_npcs:
-            return None
-
-        npc_info = self.active_npcs[npc_definition_id]
-        return {
-            "npc_id": npc_info["npc_id"],
-            "npc_definition_id": npc_definition_id,
-            "status": npc_info["status"],
-            "spawned_at": npc_info["spawned_at"],
-            "uptime": time.time() - npc_info["spawned_at"],
-        }
-
-    async def cleanup_all_npcs(self) -> bool:
-        """
-        Clean up all active NPCs.
-
-        Returns:
-            bool: True if all NPCs were cleaned up successfully
-        """
-        try:
-            async with self._lock:
-                cleanup_tasks = []
-                for npc_definition_id in list(self.active_npcs.keys()):
-                    cleanup_tasks.append(self.despawn_npc(npc_definition_id))
-
-                if cleanup_tasks:
-                    results = await asyncio.gather(*cleanup_tasks, return_exceptions=True)
-                    success = all(result is True for result in results)
-                else:
-                    success = True
-
-                logger.info("Cleaned up all NPCs", npc_count=len(cleanup_tasks))
-                return success
-
-        except Exception as e:
-            logger.error("Failed to cleanup all NPCs", error=str(e))
-            return False
-
-    def get_active_npc_count(self) -> int:
-        """Get the number of active NPCs."""
-        return len(self.active_npcs)
-
-    def get_active_npc_ids(self) -> list[int]:
-        """Get list of active NPC definition IDs."""
-        return list(self.active_npcs.keys())
+# REMOVED: Duplicate NPCLifecycleManager class (lines 608-773)
+# The authoritative NPCLifecycleManager is in server/npc/lifecycle_manager.py
+# This duplicate class was only used in tests and has been removed to prevent confusion

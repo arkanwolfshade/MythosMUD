@@ -3,6 +3,14 @@ import { PerformanceTester, usePerformanceTester } from '../performanceTester';
 import { renderHook, act } from '@testing-library/react';
 import React from 'react';
 
+interface ExtendedPerformance extends Performance {
+  memory?: {
+    usedJSHeapSize: number;
+    totalJSHeapSize: number;
+    jsHeapSizeLimit: number;
+  };
+}
+
 describe('PerformanceTester', () => {
   let tester: PerformanceTester;
 
@@ -101,6 +109,26 @@ describe('PerformanceTester', () => {
       consoleWarnSpy.mockRestore();
     });
 
+    it('should handle errors in warmup phase gracefully', async () => {
+      // Arrange - Test line 54: warmup error handling branch
+      const testFunction = vi.fn(() => {
+        throw new Error('Warmup error');
+      });
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      // Act
+      const result = await tester.runTest('Warmup Error Test', testFunction, {
+        iterations: 2,
+        warmupIterations: 3,
+      });
+
+      // Assert
+      expect(consoleWarnSpy).toHaveBeenCalled();
+      expect(consoleWarnSpy.mock.calls.some(call => call[0]?.includes('Warmup iteration'))).toBe(true);
+      expect(result.iterations).toBeGreaterThanOrEqual(0);
+      consoleWarnSpy.mockRestore();
+    });
+
     it('should include memory usage when available', async () => {
       // Arrange
       const testFunction = vi.fn();
@@ -114,6 +142,43 @@ describe('PerformanceTester', () => {
       // Assert
       expect(result).toHaveProperty('memoryUsage');
       // memoryUsage may be undefined if not available in test environment
+    });
+
+    it('should set memoryUsage when performance.memory is available', async () => {
+      // Arrange - Test line 85: memory branch when available
+      const testFunction = vi.fn();
+      const mockMemory = {
+        usedJSHeapSize: 1000000,
+        totalJSHeapSize: 2000000,
+        jsHeapSizeLimit: 3000000,
+      };
+
+      // Mock performance.memory if it doesn't exist
+      const originalPerformance = global.performance;
+      if (!('memory' in global.performance)) {
+        Object.defineProperty(global.performance, 'memory', {
+          value: mockMemory,
+          writable: true,
+          configurable: true,
+        });
+      }
+
+      // Act
+      const result = await tester.runTest('Memory Available Test', testFunction, {
+        iterations: 1,
+        warmupIterations: 0,
+      });
+
+      // Assert - memoryUsage should be set when memory is available
+      if ('memory' in global.performance) {
+        expect(result.memoryUsage).toBeDefined();
+        expect(typeof result.memoryUsage).toBe('number');
+      }
+
+      // Restore original performance if we modified it
+      if (!('memory' in originalPerformance)) {
+        delete (global.performance as ExtendedPerformance).memory;
+      }
     });
   });
 
@@ -224,6 +289,47 @@ describe('PerformanceTester', () => {
       expect(report).toContain('Average:');
       expect(report).toContain('Min:');
       expect(report).toContain('Max:');
+    });
+
+    it('should include memory usage in report when available', async () => {
+      // Arrange - Test line 186-187: memory usage display branch
+      const testFunction = vi.fn();
+      const mockMemory = {
+        usedJSHeapSize: 2000000, // 2MB
+        totalJSHeapSize: 4000000,
+        jsHeapSizeLimit: 6000000,
+      };
+
+      // Mock performance.memory if it doesn't exist
+      const originalPerformance = global.performance;
+      if (!('memory' in global.performance)) {
+        Object.defineProperty(global.performance, 'memory', {
+          value: mockMemory,
+          writable: true,
+          configurable: true,
+        });
+      }
+
+      // Create a new tester and run a test with memory
+      const memoryTester = new PerformanceTester();
+      await memoryTester.runTest('Memory Report Test', testFunction, {
+        iterations: 1,
+        warmupIterations: 0,
+      });
+
+      // Act
+      const report = memoryTester.generateReport();
+
+      // Assert - report should include memory if available
+      if ('memory' in global.performance) {
+        expect(report).toContain('Memory:');
+        expect(report).toContain('MB');
+      }
+
+      // Restore original performance if we modified it
+      if (!('memory' in originalPerformance)) {
+        delete (global.performance as ExtendedPerformance).memory;
+      }
     });
 
     it('should include timestamp in report', () => {
@@ -353,5 +459,45 @@ describe('usePerformanceTester Hook', () => {
 
     // Assert - should still have the same results
     expect(result.current.getResults().length).toBe(initialResults.length);
+  });
+
+  it('should call runComponentTest through hook', async () => {
+    // Arrange - Test line 222: runComponentTest callback branch
+    const { result } = renderHook(() => usePerformanceTester());
+    const renderFunction = () => React.createElement('div', null, 'Test Component');
+
+    // Act
+    let testResult;
+    await act(async () => {
+      testResult = await result.current.runComponentTest('Hook Component Test', renderFunction, {
+        iterations: 1,
+        warmupIterations: 0,
+      });
+    });
+
+    // Assert
+    expect(testResult).toBeDefined();
+    expect(testResult?.name).toContain('Hook Component Test');
+    expect(testResult?.name).toContain('Render Test');
+  });
+
+  it('should call runMemoryTest through hook', async () => {
+    // Arrange - Test line 229: runMemoryTest callback branch
+    const { result } = renderHook(() => usePerformanceTester());
+    const testFunction = vi.fn();
+
+    // Act
+    let testResult;
+    await act(async () => {
+      testResult = await result.current.runMemoryTest('Hook Memory Test', testFunction, {
+        iterations: 1,
+        warmupIterations: 0,
+      });
+    });
+
+    // Assert
+    expect(testResult).toBeDefined();
+    expect(testResult?.name).toContain('Hook Memory Test');
+    expect(testResult?.name).toContain('Memory Test');
   });
 });

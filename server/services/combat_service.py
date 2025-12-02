@@ -399,7 +399,6 @@ class CombatService:
                 if participant.participant_id != npc.participant_id:
                     target = participant
                     break
-
             if not target:
                 logger.warning("No target found for NPC", npc_name=npc.name, combat_id=combat.combat_id)
                 return
@@ -410,12 +409,10 @@ class CombatService:
             # Use configured damage for automatic attacks
             config = get_config()
             damage = config.game.basic_unarmed_damage
-
             # Process the attack
             combat_result = await self.process_attack(
                 attacker_id=npc.participant_id, target_id=target.participant_id, damage=damage
             )
-
             if combat_result.success:
                 logger.info("NPC automatically attacked", npc_name=npc.name, target_name=target.name, damage=damage)
             else:
@@ -582,9 +579,22 @@ class CombatService:
             target_died = target.current_hp <= 0
             target_mortally_wounded = False
 
-        # Persist player HP to database if target is a player
+        # Publish HP update event IMMEDIATELY for real-time UI updates (before database persistence)
+        # This provides instant feedback while database save happens in background
         if target.participant_type == CombatParticipantType.PLAYER:
-            await self._persist_player_hp(target.participant_id, target.current_hp)
+            await self._publish_player_hp_update_event(
+                target.participant_id,
+                old_hp,
+                target.current_hp,
+                target.max_hp,
+                combat_id=str(combat.combat_id),
+                room_id=combat.room_id,
+            )
+            # Persist player HP to database in background (fire-and-forget with error handling)
+            # If persistence fails, we'll send a correction event
+            self._persist_player_hp_background(
+                target.participant_id, target.current_hp, old_hp, target.max_hp, combat.room_id, str(combat.combat_id)
+            )
 
         # Update combat activity
         combat.update_activity(0)  # Will be updated with actual tick in game loop
@@ -1098,9 +1108,83 @@ class CombatService:
             # End combat on error to prevent infinite loops
             await self.end_combat(combat.combat_id, f"Combat ended due to error: {str(e)}")
 
-    async def _persist_player_hp(self, player_id: UUID, current_hp: int) -> None:
+    def _persist_player_hp_background(
+        self,
+        player_id: UUID,
+        current_hp: int,
+        old_hp: int,
+        max_hp: int,
+        room_id: str | None = None,
+        combat_id: str | None = None,
+    ) -> None:
         """
-        Persist player HP to database after taking damage.
+        Persist player HP to database in background (fire-and-forget).
+
+        This method runs database persistence asynchronously without blocking the combat flow.
+        If persistence fails, a correction event is sent to update the client with the correct HP.
+
+        Args:
+            player_id: ID of the player whose HP changed
+            current_hp: New current HP value
+            old_hp: Previous HP value (for correction events if save fails)
+            max_hp: Maximum HP value
+            room_id: Room ID where the change occurred (for error context)
+        """
+        import asyncio
+
+        async def _persist_and_handle_errors() -> None:
+            """Background task to persist HP and handle errors."""
+            try:
+                await self._persist_player_hp_sync(player_id, current_hp)
+                logger.debug(
+                    "Background HP persistence completed successfully",
+                    player_id=player_id,
+                    current_hp=current_hp,
+                )
+            except Exception as e:
+                logger.error(
+                    "Background HP persistence failed - sending correction event",
+                    player_id=player_id,
+                    current_hp=current_hp,
+                    error=str(e),
+                    exc_info=True,
+                )
+                # Send correction event with old_hp to revert the optimistic update
+                # This ensures the client shows the correct HP if database save failed
+                try:
+                    await self._publish_player_hp_correction_event(
+                        player_id, old_hp, max_hp, room_id, combat_id, str(e)
+                    )
+                except Exception as correction_error:
+                    logger.error(
+                        "Failed to send HP correction event after persistence failure",
+                        player_id=player_id,
+                        error=str(correction_error),
+                        exc_info=True,
+                    )
+
+        # Create background task (fire-and-forget)
+        try:
+            asyncio.create_task(_persist_and_handle_errors())
+            logger.debug(
+                "Created background task for HP persistence",
+                player_id=player_id,
+                current_hp=current_hp,
+            )
+        except RuntimeError as e:
+            # No event loop available - log error but don't crash
+            logger.error(
+                "Cannot create background task - no event loop available",
+                player_id=player_id,
+                error=str(e),
+            )
+
+    async def _persist_player_hp_sync(self, player_id: UUID, current_hp: int) -> None:
+        """
+        Synchronously persist player HP to database.
+
+        This is the actual persistence logic, called from the background task.
+        Separated from the old _persist_player_hp to allow background execution.
 
         Args:
             player_id: ID of the player whose HP changed
@@ -1184,16 +1268,9 @@ class CombatService:
             else:
                 logger.error("Could not verify player save - player not found after save", player_id=player_id)
 
-            # Publish HP update event for real-time UI updates
-            logger.info(
-                "About to call _publish_player_hp_update_event",
-                player_id=player_id,
-                old_hp=old_hp,
-                new_hp=current_hp,
-                max_hp=stats.get("max_health", 100),
-            )
-            await self._publish_player_hp_update_event(player_id, old_hp, current_hp, stats.get("max_health", 100))
-            logger.info("_publish_player_hp_update_event completed", player_id=player_id)
+            # NOTE: HP update event is now published IMMEDIATELY in process_attack()
+            # before this persistence method is called. This method only handles database persistence.
+            # The event was already sent for real-time UI updates.
 
             # Check if player has reached death threshold
             # CRITICAL: Players at 0 HP or below should enter mortally wounded state immediately
@@ -1233,7 +1310,15 @@ class CombatService:
                 exc_info=True,
             )
 
-    async def _publish_player_hp_update_event(self, player_id: UUID, old_hp: int, new_hp: int, max_hp: int) -> None:
+    async def _publish_player_hp_update_event(
+        self,
+        player_id: UUID,
+        old_hp: int,
+        new_hp: int,
+        max_hp: int,
+        combat_id: str | None = None,
+        room_id: str | None = None,
+    ) -> None:
         """
         Publish a PlayerHPUpdated event for real-time UI updates.
 
@@ -1272,14 +1357,14 @@ class CombatService:
 
             # Create and publish the event
             hp_update_event = PlayerHPUpdated(
-                player_id=str(player_id),
+                player_id=player_id,  # player_id is already UUID
                 old_hp=old_hp,
                 new_hp=new_hp,
                 max_hp=max_hp,
                 damage_taken=damage_taken,
                 source_id=None,  # Could be enhanced to track damage source
-                combat_id=None,  # Could be enhanced to track combat context
-                room_id=None,  # Could be enhanced to track room context
+                combat_id=combat_id,  # Combat context for tracking
+                room_id=room_id,  # Room context for tracking
             )
 
             # Publish to event bus so RealTimeEventHandler can send it to the client
@@ -1289,7 +1374,7 @@ class CombatService:
                 try:
                     event_bus.publish(hp_update_event)
                     logger.info(
-                        "Published PlayerHPUpdated event to event bus",
+                        "Published PlayerHPUpdated event to event bus (immediate UI update)",
                         player_id=player_id,
                         old_hp=old_hp,
                         new_hp=new_hp,
@@ -1356,6 +1441,85 @@ class CombatService:
                 player_id=player_id,
                 old_hp=old_hp,
                 new_hp=new_hp,
+                error=str(e),
+                exc_info=True,
+            )
+
+    async def _publish_player_hp_correction_event(
+        self,
+        player_id: UUID,
+        correct_hp: int,
+        max_hp: int,
+        room_id: str | None = None,
+        combat_id: str | None = None,
+        error_message: str | None = None,
+    ) -> None:
+        """
+        Publish a correction event when database persistence fails.
+
+        This sends a PlayerHPUpdated event with the correct (previous) HP value
+        to revert an optimistic update that failed to persist.
+
+        Args:
+            player_id: ID of the player whose HP needs correction
+            correct_hp: The correct HP value (from before the failed update)
+            max_hp: Maximum HP value
+            room_id: Room ID where the change occurred
+            combat_id: Combat ID for context
+            error_message: Error message explaining why correction is needed
+        """
+        try:
+            logger.warning(
+                "Publishing HP correction event due to persistence failure",
+                player_id=player_id,
+                correct_hp=correct_hp,
+                error_message=error_message,
+            )
+            if not self._player_combat_service:
+                logger.warning("No player combat service available for HP correction event", player_id=player_id)
+                return
+            if not self._player_combat_service._event_bus:
+                logger.warning("No event bus available for HP correction event", player_id=player_id)
+                return
+
+            from server.events.event_types import PlayerHPUpdated
+
+            # Create correction event - damage_taken is 0 since we're reverting
+            correction_event = PlayerHPUpdated(
+                player_id=player_id,  # player_id is already UUID
+                old_hp=correct_hp,  # This will be the "new" HP shown to client
+                new_hp=correct_hp,  # Revert to correct HP
+                max_hp=max_hp,
+                damage_taken=0,  # No damage change, just correction
+                source_id=None,
+                combat_id=combat_id,
+                room_id=room_id,
+            )
+
+            # Publish to event bus
+            event_bus = self._player_combat_service._event_bus
+            if event_bus:
+                try:
+                    event_bus.publish(correction_event)
+                    logger.info(
+                        "Published HP correction event to event bus",
+                        player_id=player_id,
+                        correct_hp=correct_hp,
+                    )
+                except Exception as e:
+                    logger.error(
+                        "Failed to publish HP correction event to event bus",
+                        player_id=player_id,
+                        error=str(e),
+                        exc_info=True,
+                    )
+            else:
+                logger.warning("No event bus available for HP correction event", player_id=player_id)
+
+        except Exception as e:
+            logger.error(
+                "Error publishing HP correction event",
+                player_id=player_id,
                 error=str(e),
                 exc_info=True,
             )

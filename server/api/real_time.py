@@ -1,8 +1,7 @@
 """
 Real-time communication API endpoints for MythosMUD server.
 
-This module handles WebSocket connections and Server-Sent Events
-for real-time game communication.
+This module handles WebSocket connections for real-time game communication.
 """
 
 import time
@@ -11,13 +10,11 @@ from typing import Any, cast
 from unittest.mock import Mock
 
 from fastapi import APIRouter, HTTPException, Request, WebSocket
-from fastapi.responses import StreamingResponse
 
 from ..auth_utils import decode_access_token
 from ..exceptions import LoggedHTTPException
 from ..persistence import get_persistence
 from ..realtime.connection_manager import resolve_connection_manager, set_global_connection_manager
-from ..realtime.sse_handler import game_event_stream
 from ..realtime.websocket_handler import handle_websocket_connection
 from ..utils.error_logging import create_context_from_request, create_context_from_websocket
 
@@ -49,84 +46,6 @@ def _ensure_connection_manager(state) -> Any:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
     set_global_connection_manager(connection_manager)
     return connection_manager
-
-
-@realtime_router.get("/events/{player_id}")
-async def sse_events(player_id: uuid.UUID, request: Request) -> StreamingResponse:
-    """
-    Server-Sent Events stream for real-time game updates.
-    Supports session tracking for dual connection management.
-    """
-    # Get session parameter
-    session_id = request.query_params.get("session_id")
-
-    # TODO: Add authentication and player validation as needed
-    # Note: CORS is handled by global middleware; avoid environment-specific logic here
-    headers = {
-        "Cache-Control": "no-cache",
-        "Connection": "keep-alive",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Cache-Control",
-    }
-
-    connection_manager = _ensure_connection_manager(request.app.state)
-    if getattr(connection_manager, "persistence", None) is None:
-        raise HTTPException(status_code=503, detail="Service temporarily unavailable")
-
-    return StreamingResponse(
-        game_event_stream(player_id, session_id),
-        media_type="text/event-stream",
-        headers=headers,
-    )
-
-
-@realtime_router.get("/events")
-async def sse_events_token(request: Request) -> StreamingResponse:
-    """
-    Token-authenticated SSE stream. Resolves player_id from JWT token (query param 'token').
-    Supports session tracking for dual connection management.
-    """
-    from ..logging.enhanced_logging_config import get_logger
-
-    logger = get_logger(__name__)
-    token = request.query_params.get("token")
-    session_id = request.query_params.get("session_id")  # New session parameter
-
-    payload = decode_access_token(token)
-    if not payload or "sub" not in payload:
-        context = create_context_from_request(request)
-        raise LoggedHTTPException(status_code=401, detail="Invalid or missing token", context=context)
-    user_id = str(payload["sub"]).strip()
-    persistence = get_persistence()
-    player = persistence.get_player_by_user_id(user_id)
-    if not player:
-        context = create_context_from_request(request)
-        context.user_id = user_id
-        raise LoggedHTTPException(status_code=401, detail="User has no player record", context=context)
-    # player.player_id is a SQLAlchemy Column[str] but returns UUID at runtime
-    # Convert to UUID for type safety - always convert to string first
-    player_id_value = player.player_id
-    player_id = uuid.UUID(str(player_id_value))
-    # Structlog handles UUID objects automatically, no need to convert to string
-    logger.info("SSE connection attempt", player_id=player_id, session_id=session_id)
-
-    # Note: CORS is handled by global middleware; avoid environment-specific logic here
-    headers = {
-        "Cache-Control": "no-cache",
-        "Connection": "keep-alive",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Cache-Control",
-    }
-
-    connection_manager = _ensure_connection_manager(request.app.state)
-    if getattr(connection_manager, "persistence", None) is None:
-        raise HTTPException(status_code=503, detail="Service temporarily unavailable")
-
-    return StreamingResponse(
-        game_event_stream(player_id, session_id),
-        media_type="text/event-stream",
-        headers=headers,
-    )
 
 
 @realtime_router.websocket("/ws")

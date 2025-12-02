@@ -36,7 +36,7 @@ export interface WebSocketConnectionResult {
  * @param options - WebSocket connection configuration
  * @returns WebSocket connection state and control methods
  *
- * AI: WebSocket requires session ID from SSE for authentication.
+ * AI: WebSocket requires session ID for authentication and connection tracking.
  */
 export function useWebSocketConnection(options: WebSocketConnectionOptions): WebSocketConnectionResult {
   const { authToken, sessionId, onConnected, onMessage, onError, onDisconnect } = options;
@@ -160,7 +160,7 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
       if (readyState === WebSocket.CONNECTING || readyState === WebSocket.OPEN) {
         logger.debug('WebSocketConnection', 'WebSocket already connected, notifying state machine', { readyState });
         // BUGFIX: Still call onConnected even if WebSocket is already connected
-        // This allows the state machine to transition from sse_connected to fully_connected
+        // This allows the state machine to transition to fully_connected
         // when the connection is restored after a page reload or reconnect
         if (readyState === WebSocket.OPEN) {
           logger.debug('WebSocketConnection', 'WebSocket already connected, calling onConnected', { readyState });

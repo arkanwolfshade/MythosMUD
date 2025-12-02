@@ -307,7 +307,7 @@ function Start-MythosMUDServer {
         Start-Sleep -Seconds 5
 
         # Test if server is responding
-        $maxAttempts = 10
+        $maxAttempts = 20
         $attempt = 0
 
         while ($attempt -lt $maxAttempts) {
@@ -322,6 +322,9 @@ function Start-MythosMUDServer {
             }
             catch {
                 $attempt++
+                $errorMessage = $_.Exception.Message
+                $errorType = $_.Exception.GetType().FullName
+
                 Write-Host "Attempt $attempt of $maxAttempts - Server not ready yet..." -ForegroundColor Yellow
                 Start-Sleep -Seconds 2
             }
