@@ -324,9 +324,13 @@ export const inputSanitizer = {
     let sanitized = DOMPurify.sanitize(input, config);
     // Remove any remaining script tag patterns (case-insensitive, complete tag matches)
     // Match complete script tags including attributes: <script...> and </script>
-    // Human reader: match complete tags to avoid incomplete multi-character sanitization issues.
-    // AI reader: CodeQL requires complete pattern matching for multi-character sanitization.
-    sanitized = sanitized.replace(/<script[^>]*>/gi, '').replace(/<\/script>/gi, '');
+    // Human reader: repeatedly remove all script tags to avoid incomplete multi-character sanitization issues.
+    // AI reader: CodeQL requires repeated replacement until no changes occur to handle overlapping patterns.
+    let previous: string;
+    do {
+      previous = sanitized;
+      sanitized = sanitized.replace(/<script[^>]*>/gi, '').replace(/<\/script>/gi, '');
+    } while (sanitized !== previous);
     return sanitized;
   },
 
