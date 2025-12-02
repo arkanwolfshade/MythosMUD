@@ -354,13 +354,19 @@ export const inputSanitizer = {
     // AI reader: data: URLs can contain executable content and must be sanitized.
     // Human reader: match complete protocol schemes to avoid incomplete multi-character sanitization.
     // AI reader: CodeQL requires complete pattern matching for multi-character sanitization.
-    return command
-      .replace(/<[^>]*>/g, '')
-      .replace(/[<>]/g, '')
-      .replace(/javascript:[^\s<>]*/gi, '') // Match complete javascript: scheme including content
-      .replace(/vbscript:[^\s<>]*/gi, '') // Match complete vbscript: scheme including content
-      .replace(/data:[^\s<>]*/gi, '') // Match complete data: scheme including content
-      .trim();
+    let previous: string;
+    let sanitized = command;
+    do {
+      previous = sanitized;
+      sanitized = sanitized
+        .replace(/<[^>]*>/g, '')
+        .replace(/[<>]/g, '')
+        .replace(/javascript:[^\s<>]*/gi, '') // Match complete javascript: scheme including content
+        .replace(/vbscript:[^\s<>]*/gi, '') // Match complete vbscript: scheme including content
+        .replace(/data:[^\s<>]*/gi, '') // Match complete data: scheme including content
+        .trim();
+    } while (sanitized !== previous);
+    return sanitized;
   },
 
   /**
