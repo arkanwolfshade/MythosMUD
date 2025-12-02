@@ -50,6 +50,24 @@ export interface UseGameConnectionOptions {
  *
  * AI: Uses composition of specialized hooks orchestrated by XState FSM.
  */
+/**
+ * Generate a cryptographically secure session ID.
+ * Human reader: uses Web Crypto API instead of Math.random() for security.
+ * AI reader: session IDs must be unpredictable to prevent session hijacking.
+ */
+const generateSecureSessionId = (): string => {
+  // Use crypto.getRandomValues for cryptographically secure randomness
+  const array = new Uint8Array(9);
+  crypto.getRandomValues(array);
+  // Convert to base36 string (similar to Math.random().toString(36))
+  const randomPart = Array.from(array)
+    .map(byte => byte.toString(36))
+    .join('')
+    .substring(0, 9);
+  const timestamp = Date.now();
+  return `session_${timestamp}_${randomPart}`;
+};
+
 export function useGameConnection(options: UseGameConnectionOptions) {
   const {
     authToken,
@@ -162,7 +180,7 @@ export function useGameConnection(options: UseGameConnectionOptions) {
       logger.info('GameConnection', 'WebSocket connected');
       // Generate session ID if not already set (WebSocket now handles session ID generation)
       if (!sessionId) {
-        const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+        const newSessionId = generateSecureSessionId();
         updateSessionId(newSessionId);
       }
       connectionState.onWSConnected();
@@ -230,7 +248,7 @@ export function useGameConnection(options: UseGameConnectionOptions) {
   useEffect(() => {
     if (!sessionId) {
       // Generate session ID if not set
-      const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+      const newSessionId = generateSecureSessionId();
       updateSessionId(newSessionId);
       return;
     }
