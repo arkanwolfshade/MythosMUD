@@ -32,7 +32,7 @@ PLAYER_COLUMNS = (
 )
 
 # Profession table columns for explicit SELECT queries
-PROFESSION_COLUMNS = "id, name, description, flavor_text, is_available"
+PROFESSION_COLUMNS = "id, name, description, flavor_text, stat_requirements, mechanical_effects, is_available"
 
 
 # --- Custom Exceptions ---
