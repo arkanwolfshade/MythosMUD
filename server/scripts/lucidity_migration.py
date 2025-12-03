@@ -14,7 +14,7 @@ logger = get_logger(__name__)
 PLAYER_lucidity_TABLE_SQL = """
 CREATE TABLE IF NOT EXISTS player_lucidity (
     player_id TEXT PRIMARY KEY REFERENCES players(player_id) ON DELETE CASCADE,
-    current_san INTEGER NOT NULL DEFAULT 100 CHECK (current_san BETWEEN -100 AND 100),
+    current_lcd INTEGER NOT NULL DEFAULT 100 CHECK (current_lcd BETWEEN -100 AND 100),
     current_tier TEXT NOT NULL DEFAULT 'lucid' CHECK (
         current_tier IN ('lucid','uneasy','fractured','deranged','catatonic')
     ),

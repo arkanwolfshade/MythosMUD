@@ -136,7 +136,7 @@ class TestNPCCombatIntegrationComprehensive:
         assert result is True
         self.game_mechanics.damage_player.assert_called_once_with(target_id, damage, damage_type)
         # Should apply lucidity loss for mental damage
-        self.game_mechanics.apply_Lucidity_loss.assert_called_once()
+        self.game_mechanics.apply_lucidity_loss.assert_called_once()
 
     def test_apply_combat_effects_player_with_fear_gain(self):
         """Test applying combat effects with fear gain for occult damage."""
@@ -310,7 +310,7 @@ class TestNPCCombatIntegrationComprehensive:
 
         assert result is True
         self.game_mechanics.gain_occult_knowledge.assert_called_once()
-        self.game_mechanics.apply_Lucidity_loss.assert_called_once()
+        self.game_mechanics.apply_lucidity_loss.assert_called_once()
         # Note: NPCDied event is now published by CombatService via NATS, not by this integration service
 
     def test_handle_npc_death_without_killer(self):
@@ -323,7 +323,7 @@ class TestNPCCombatIntegrationComprehensive:
 
         assert result is True
         self.game_mechanics.gain_occult_knowledge.assert_not_called()
-        self.game_mechanics.apply_Lucidity_loss.assert_not_called()
+        self.game_mechanics.apply_lucidity_loss.assert_not_called()
         # Note: NPCDied event is now published by CombatService via NATS, not by this integration service
 
     def test_handle_npc_death_with_non_player_killer(self):
@@ -340,7 +340,7 @@ class TestNPCCombatIntegrationComprehensive:
 
         assert result is True
         self.game_mechanics.gain_occult_knowledge.assert_not_called()
-        self.game_mechanics.apply_Lucidity_loss.assert_not_called()
+        self.game_mechanics.apply_lucidity_loss.assert_not_called()
         # Note: NPCDied event is now published by CombatService via NATS, not by this integration service
 
     def test_handle_npc_death_exception_handling(self):
@@ -501,8 +501,8 @@ class TestNPCCombatIntegrationEdgeCases:
         self.integration.apply_combat_effects(target_id, damage, damage_type)
 
         # Should apply capped lucidity loss (max 10)
-        self.game_mechanics.apply_Lucidity_loss.assert_called_once()
-        call_args = self.game_mechanics.apply_Lucidity_loss.call_args
+        self.game_mechanics.apply_lucidity_loss.assert_called_once()
+        call_args = self.game_mechanics.apply_lucidity_loss.call_args
         assert call_args[0][1] <= 10  # lucidity loss should be capped
 
     def test_apply_combat_effects_capped_fear_gain(self):

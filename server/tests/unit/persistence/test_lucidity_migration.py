@@ -80,7 +80,7 @@ def test_migration_creates_tables_and_backfills_defaults(legacy_database: Path) 
 
         player_rows = conn.execute(
             """
-            SELECT player_id, current_LCD, current_tier, liabilities, catatonia_entered_at
+            SELECT player_id, current_lcd, current_tier, liabilities, catatonia_entered_at
             FROM player_lucidity
             ORDER BY player_id
             """
@@ -107,7 +107,7 @@ def test_migration_enforces_constraints_and_foreign_keys(legacy_database: Path) 
 
         with pytest.raises(sqlite3.IntegrityError):
             conn.execute(
-                "INSERT INTO player_lucidity (player_id, current_LCD, current_tier, liabilities) VALUES (?, ?, ?, ?)",
+                "INSERT INTO player_lucidity (player_id, current_lcd, current_tier, liabilities) VALUES (?, ?, ?, ?)",
                 ("phantom-player", 100, "lucid", "[]"),
             )
             conn.commit()
@@ -115,7 +115,7 @@ def test_migration_enforces_constraints_and_foreign_keys(legacy_database: Path) 
 
         with pytest.raises(sqlite3.IntegrityError):
             conn.execute(
-                "UPDATE player_lucidity SET current_LCD = ? WHERE player_id = ?",
+                "UPDATE player_lucidity SET current_lcd = ? WHERE player_id = ?",
                 (101, "legacy-player-1"),
             )
             conn.commit()
@@ -161,13 +161,13 @@ def test_migration_is_idempotent_and_preserves_updates(legacy_database: Path) ->
     migrate_lucidity_system(legacy_database)
 
     with sqlite3.connect(legacy_database) as conn:
-        conn.execute("UPDATE player_lucidity SET current_LCD = ? WHERE player_id = ?", (42, "legacy-player-1"))
+        conn.execute("UPDATE player_lucidity SET current_lcd = ? WHERE player_id = ?", (42, "legacy-player-1"))
         conn.commit()
 
     migrate_lucidity_system(legacy_database)
 
     with sqlite3.connect(legacy_database) as conn:
-        player_rows = conn.execute("SELECT player_id, current_LCD FROM player_lucidity ORDER BY player_id").fetchall()
+        player_rows = conn.execute("SELECT player_id, current_lcd FROM player_lucidity ORDER BY player_id").fetchall()
         assert player_rows == [
             ("legacy-player-1", 42),
             ("legacy-player-2", 100),

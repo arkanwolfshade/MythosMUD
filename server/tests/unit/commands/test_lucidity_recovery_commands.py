@@ -62,7 +62,7 @@ async def _create_player(session: AsyncSession, *, player_name: str, room_id: st
     session.add(
         PlayerLucidity(
             player_id=player.player_id,
-            current_LCD=LCD,
+            current_lcd=LCD,
             current_tier="lucid" if LCD >= 70 else "uneasy",
         )
     )
@@ -112,7 +112,7 @@ async def test_pray_command_success(session_factory, monkeypatch):
     async with session_factory() as session:
         lucidity = await session.get(PlayerLucidity, player.player_id)
         assert lucidity is not None
-        assert lucidity.current_LCD == 50
+        assert lucidity.current_lcd == 50
         cooldown = (
             await session.execute(
                 select(LucidityCooldown).where(
