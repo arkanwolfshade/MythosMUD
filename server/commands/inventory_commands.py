@@ -455,7 +455,9 @@ async def handle_inventory_command(
     container_lock_states: dict[str, str] = {}
     try:
         player_id_uuid = UUID(str(player.player_id))
-        wearable_containers = _SHARED_WEARABLE_CONTAINER_SERVICE.get_wearable_containers_for_player(player_id_uuid)
+        wearable_containers = await _SHARED_WEARABLE_CONTAINER_SERVICE.get_wearable_containers_for_player(
+            player_id_uuid
+        )
         logger.debug(
             "Getting container contents",
             player_id=str(player_id_uuid),
@@ -1039,7 +1041,7 @@ async def handle_equip_command(
     # Handle wearable container creation if this is a container item
     if equipped_item and equipped_item.get("inner_container"):
         try:
-            container_result = _SHARED_WEARABLE_CONTAINER_SERVICE.handle_equip_wearable_container(
+            container_result = await _SHARED_WEARABLE_CONTAINER_SERVICE.handle_equip_wearable_container(
                 player_id=UUID(str(player.player_id)),
                 item_stack=cast(dict[str, Any], equipped_item),
             )
@@ -1209,7 +1211,7 @@ async def handle_unequip_command(
     # Handle wearable container preservation if this is a container item
     if unequipped_item.get("inner_container"):
         try:
-            container_result = _SHARED_WEARABLE_CONTAINER_SERVICE.handle_unequip_wearable_container(
+            container_result = await _SHARED_WEARABLE_CONTAINER_SERVICE.handle_unequip_wearable_container(
                 player_id=UUID(str(player.player_id)),
                 item_stack=cast(dict[str, Any], unequipped_item),
             )
@@ -1435,7 +1437,7 @@ async def handle_put_command(
                 if not container_found:
                     try:
                         player_id_uuid = UUID(str(player.player_id))
-                        wearable_containers = _SHARED_WEARABLE_CONTAINER_SERVICE.get_wearable_containers_for_player(
+                        wearable_containers = await _SHARED_WEARABLE_CONTAINER_SERVICE.get_wearable_containers_for_player(
                             player_id_uuid
                         )
                         logger.debug(
@@ -1500,7 +1502,7 @@ async def handle_put_command(
                                 player=player.name,
                             )
                             # Try to create container for this equipped item
-                            container_result = _SHARED_WEARABLE_CONTAINER_SERVICE.handle_equip_wearable_container(
+                            container_result = await _SHARED_WEARABLE_CONTAINER_SERVICE.handle_equip_wearable_container(
                                 player_id=player_id_uuid,
                                 item_stack=cast(dict[str, Any], item),
                             )
@@ -1598,7 +1600,7 @@ async def handle_put_command(
     if not mutation_token:
         # Container not open, open it now
         try:
-            open_result = container_service.open_container(container_id, player_id_uuid)
+            open_result = await container_service.open_container(container_id, player_id_uuid)
             mutation_token = open_result.get("mutation_token")
         except Exception as e:
             return {"result": f"Cannot access container: {str(e)}"}
@@ -1653,7 +1655,7 @@ async def handle_put_command(
             container_id=str(container_id),
             quantity=transfer_quantity,
         )
-        container_service.transfer_to_container(
+        await container_service.transfer_to_container(
             container_id=container_id,
             player_id=UUID(str(player.player_id)),
             mutation_token=mutation_token,
@@ -1799,7 +1801,7 @@ async def handle_get_command(
             if not container_found:
                 try:
                     player_id_uuid = UUID(str(player.player_id))
-                    wearable_containers = _SHARED_WEARABLE_CONTAINER_SERVICE.get_wearable_containers_for_player(
+                    wearable_containers = await _SHARED_WEARABLE_CONTAINER_SERVICE.get_wearable_containers_for_player(
                         player_id_uuid
                     )
 
@@ -2027,7 +2029,7 @@ async def handle_get_command(
     if not mutation_token:
         # Container not open, open it now
         try:
-            open_result = container_service.open_container(container_id, player_id_uuid)
+            open_result = await container_service.open_container(container_id, player_id_uuid)
             mutation_token = open_result.get("mutation_token")
         except Exception as e:
             return {"result": f"Cannot access container: {str(e)}"}
@@ -2036,7 +2038,7 @@ async def handle_get_command(
     # Note: item_found is already validated as a dict at line 1827
     try:
         transfer_quantity = quantity if quantity else item_found.get("quantity", 1)
-        result = container_service.transfer_from_container(
+        result = await container_service.transfer_from_container(
             container_id=container_id,
             player_id=UUID(str(player.player_id)),
             mutation_token=mutation_token,

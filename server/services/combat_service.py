@@ -669,7 +669,7 @@ class CombatService:
                         connection_manager=connection_manager,
                     )
 
-                    corpse = corpse_service.create_corpse_on_death(
+                    corpse = await corpse_service.create_corpse_on_death(
                         player_id=target.participant_id,
                         room_id=combat.room_id,
                         grace_period_seconds=300,  # 5 minutes grace period

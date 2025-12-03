@@ -55,7 +55,7 @@ async def _handle_position_change(
     target_player_name = player_name or get_username_from_user(current_user)
 
     position_service = PlayerPositionService(persistence, connection_manager, alias_storage)
-    result = position_service.change_position(target_player_name, desired_position)
+    result = await position_service.change_position(target_player_name, desired_position)
 
     room_message: str | None = None
     player_update: dict[str, str | None] | None = None

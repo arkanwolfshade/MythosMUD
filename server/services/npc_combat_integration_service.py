@@ -7,8 +7,12 @@ including combat memory management and basic combat interactions.
 As documented in the Cultes des Goules, proper combat integration is essential
 for maintaining the balance between mortal investigators and the eldritch
 entities they encounter in our world.
+
+ASYNC MIGRATION (Phase 2):
+All persistence calls wrapped in asyncio.to_thread() to prevent event loop blocking.
 """
 
+import asyncio
 from typing import Any
 from uuid import UUID, uuid4
 
@@ -227,7 +231,7 @@ class NPCCombatIntegrationService:
                     # Also store the XP value directly for this UUID
                     # This avoids the need to look it up from the lifecycle manager
                     # during XP calculation, since NPCs may be removed by then
-                    npc_definition = self._get_npc_definition(npc_id)
+                    npc_definition = await self._get_npc_definition(npc_id)
                     logger.debug(
                         "Retrieved NPC definition",
                         npc_id=npc_id,
@@ -295,7 +299,7 @@ class NPCCombatIntegrationService:
                 # BUGFIX: Was hardcoded to 100, causing HP to reset between combats
                 # Convert player_id to UUID if it's a string
                 player_id_uuid = UUID(player_id) if isinstance(player_id, str) else player_id
-                player = self._persistence.get_player(player_id_uuid)
+                player = await asyncio.to_thread(self._persistence.get_player, player_id_uuid)
                 if not player:
                     logger.error("Player not found when starting combat", player_id=player_id)
                     return False
@@ -382,7 +386,7 @@ class NPCCombatIntegrationService:
                                 has_sse=has_sse,
                             )
 
-                        self.handle_npc_death(npc_id, room_id, player_id, str(combat_result.combat_id))
+                        await self.handle_npc_death(npc_id, room_id, player_id, str(combat_result.combat_id))
                         logger.info(
                             "NPC death handled successfully",
                             player_id=player_id,
@@ -429,7 +433,7 @@ class NPCCombatIntegrationService:
             )
             return False
 
-    def handle_npc_death(
+    async def handle_npc_death(
         self,
         npc_id: str,
         room_id: str,
@@ -469,7 +473,7 @@ class NPCCombatIntegrationService:
                 return False
 
             # Get NPC definition for XP reward
-            npc_definition = self._get_npc_definition(npc_id)
+            npc_definition = await self._get_npc_definition(npc_id)
             xp_reward = 0
             if npc_definition:
                 # Use the get_base_stats() method to parse the JSON string
@@ -549,7 +553,7 @@ class NPCCombatIntegrationService:
             # Despawn NPC with defensive error handling
             logger.debug("Despawning NPC", npc_id=npc_id, room_id=room_id)
             try:
-                self._despawn_npc(str(npc_id), room_id)
+                await self._despawn_npc(str(npc_id), room_id)
                 logger.debug("NPC despawned successfully", npc_id=npc_id, room_id=room_id)
             except Exception as despawn_error:
                 # CRITICAL: Don't let despawn errors disconnect player
@@ -632,12 +636,12 @@ class NPCCombatIntegrationService:
             logger.error("Error getting NPC instance", npc_id=npc_id, error=str(e))
             return None
 
-    def _get_npc_definition(self, npc_id: str) -> Any | None:
+    async def _get_npc_definition(self, npc_id: str) -> Any | None:
         """Get NPC definition for an NPC instance."""
         try:
             # Try to get from lifecycle manager if available
             if hasattr(self._persistence, "get_npc_lifecycle_manager"):
-                lifecycle_manager = self._persistence.get_npc_lifecycle_manager()
+                lifecycle_manager = await asyncio.to_thread(self._persistence.get_npc_lifecycle_manager)
                 if lifecycle_manager:
                     keys = list(lifecycle_manager.lifecycle_records.keys())
                 else:
@@ -669,12 +673,12 @@ class NPCCombatIntegrationService:
             logger.error("Error getting player name", player_id=player_id, error=str(e), error_type=type(e).__name__)
             return "Unknown Player"
 
-    def _despawn_npc(self, npc_id: str, _room_id: str) -> None:
+    async def _despawn_npc(self, npc_id: str, _room_id: str) -> None:
         """Despawn an NPC."""
         try:
             # Try lifecycle manager if available
             if hasattr(self._persistence, "get_npc_lifecycle_manager"):
-                lifecycle_manager = self._persistence.get_npc_lifecycle_manager()
+                lifecycle_manager = await asyncio.to_thread(self._persistence.get_npc_lifecycle_manager)
                 if lifecycle_manager:
                     # Record the death for 30-second respawn suppression
                     lifecycle_manager.record_npc_death(npc_id)
@@ -683,7 +687,7 @@ class NPCCombatIntegrationService:
 
             # Fallback: try lifecycle manager if available
             if hasattr(self._persistence, "get_npc_lifecycle_manager"):
-                lifecycle_manager = self._persistence.get_npc_lifecycle_manager()
+                lifecycle_manager = await asyncio.to_thread(self._persistence.get_npc_lifecycle_manager)
                 if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
                     del lifecycle_manager.active_npcs[npc_id]
 

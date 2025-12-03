@@ -4,10 +4,15 @@ Container service for unified container system operations.
 As documented in the restricted archives of Miskatonic University, container
 service operations require careful orchestration to ensure proper handling
 of investigator artifacts, secure storage, and auditable interactions.
+
+ASYNC MIGRATION (Phase 2):
+All service methods made async to prevent event loop blocking.
+Uses asyncio.to_thread() for synchronous persistence calls.
 """
 
 from __future__ import annotations
 
+import asyncio
 import uuid
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
@@ -96,7 +101,7 @@ class ContainerService:
     # Track open containers: {container_id: {player_id: mutation_token}}
     _open_containers: dict[UUID, dict[UUID, str]] = field(default_factory=dict, init=False)
 
-    def open_container(self, container_id: UUID, player_id: UUID) -> dict[str, Any]:
+    async def open_container(self, container_id: UUID, player_id: UUID) -> dict[str, Any]:
         """
         Open a container for interaction.
 
@@ -120,7 +125,8 @@ class ContainerService:
         logger.info("Opening container", container_id=str(container_id), player_id=str(player_id))
 
         # Check if container exists
-        container_data = self.persistence.get_container(container_id)
+        # ASYNC MIGRATION: Use asyncio.to_thread() to prevent event loop blocking
+        container_data = await asyncio.to_thread(self.persistence.get_container, container_id)
         if not container_data:
             log_and_raise(
                 ContainerNotFoundError,
@@ -134,7 +140,8 @@ class ContainerService:
         container = ContainerComponent.model_validate(_filter_container_data(container_data))
 
         # Get player for access control checks
-        player = self.persistence.get_player(player_id)
+        # ASYNC MIGRATION: Use asyncio.to_thread() to prevent event loop blocking
+        player = await asyncio.to_thread(self.persistence.get_player, player_id)
         if not player:
             log_and_raise(
                 ValidationError,
@@ -221,7 +228,7 @@ class ContainerService:
             "mutation_token": mutation_token,
         }
 
-    def close_container(self, container_id: UUID, player_id: UUID, mutation_token: str) -> None:
+    async def close_container(self, container_id: UUID, player_id: UUID, mutation_token: str) -> None:
         """
         Close a container and release mutation guard.
 
@@ -280,8 +287,9 @@ class ContainerService:
         # Audit log container close
         try:
             # Get container and player for audit log
-            container_data = self.persistence.get_container(container_id)
-            player = self.persistence.get_player(player_id)
+            # ASYNC MIGRATION: Use asyncio.to_thread() to prevent event loop blocking
+            container_data = await asyncio.to_thread(self.persistence.get_container, container_id)
+            player = await asyncio.to_thread(self.persistence.get_player, player_id)
             if container_data and player:
                 container = ContainerComponent.model_validate(_filter_container_data(container_data))
                 # Handle source_type - it may be an enum or a string
@@ -317,7 +325,7 @@ class ContainerService:
             return self._open_containers[container_id].get(player_id)
         return None
 
-    def transfer_to_container(
+    async def transfer_to_container(
         self,
         container_id: UUID,
         player_id: UUID,
@@ -365,7 +373,7 @@ class ContainerService:
         transfer_mutation_token = mutation_token
 
         # Get container
-        container_data = self.persistence.get_container(container_id)
+        container_data = await asyncio.to_thread(self.persistence.get_container, container_id)
         if not container_data:
             log_and_raise(
                 ContainerNotFoundError,
@@ -427,7 +435,7 @@ class ContainerService:
             pass
 
         # Get player inventory
-        player = self.persistence.get_player(player_id)
+        player = await asyncio.to_thread(self.persistence.get_player, player_id)
         if not player:
             log_and_raise(
                 ValidationError,
@@ -515,7 +523,7 @@ class ContainerService:
                 "player_inventory": player.inventory if hasattr(player, "inventory") else [],
             }
 
-    def transfer_from_container(
+    async def transfer_from_container(
         self,
         container_id: UUID,
         player_id: UUID,
@@ -573,7 +581,7 @@ class ContainerService:
         transfer_mutation_token = mutation_token
 
         # Get container
-        container_data = self.persistence.get_container(container_id)
+        container_data = await asyncio.to_thread(self.persistence.get_container, container_id)
         if not container_data:
             log_and_raise(
                 ContainerNotFoundError,
@@ -586,7 +594,7 @@ class ContainerService:
         container = ContainerComponent.model_validate(_filter_container_data(container_data))
 
         # Get player inventory
-        player = self.persistence.get_player(player_id)
+        player = await asyncio.to_thread(self.persistence.get_player, player_id)
         if not player:
             log_and_raise(
                 ValidationError,
@@ -765,7 +773,7 @@ class ContainerService:
                 )
                 raise
 
-    def loot_all(
+    async def loot_all(
         self,
         container_id: UUID,
         player_id: UUID,
@@ -804,7 +812,7 @@ class ContainerService:
         self._verify_container_open(container_id, player_id, mutation_token)
 
         # Get container
-        container_data = self.persistence.get_container(container_id)
+        container_data = await asyncio.to_thread(self.persistence.get_container, container_id)
         if not container_data:
             log_and_raise(
                 ContainerNotFoundError,
@@ -820,7 +828,7 @@ class ContainerService:
         initial_items_count = len(container.items)
 
         # Get player
-        player = self.persistence.get_player(player_id)
+        player = await asyncio.to_thread(self.persistence.get_player, player_id)
         if not player:
             log_and_raise(
                 ContainerServiceError,
@@ -835,7 +843,7 @@ class ContainerService:
         # Try to transfer each item
         for item in container.items:
             try:
-                result = self.transfer_from_container(
+                result = await self.transfer_from_container(
                     container_id,
                     player_id,
                     mutation_token,
@@ -865,7 +873,7 @@ class ContainerService:
                 continue
 
         # Get final container state
-        final_container_data = self.persistence.get_container(container_id)
+        final_container_data = await asyncio.to_thread(self.persistence.get_container, container_id)
         if final_container_data:
             final_container = ContainerComponent.model_validate(final_container_data)
         else:
@@ -1059,7 +1067,9 @@ class ContainerService:
         # Unlocked containers can be opened
         return container.lock_state == ContainerLockState.UNLOCKED
 
-    def lock_container(self, container_id: UUID, player_id: UUID, lock_state: ContainerLockState) -> dict[str, Any]:
+    async def lock_container(
+        self, container_id: UUID, player_id: UUID, lock_state: ContainerLockState
+    ) -> dict[str, Any]:
         """
         Lock a container.
 
@@ -1085,7 +1095,7 @@ class ContainerService:
         )
 
         # Get container
-        container_data = self.persistence.get_container(container_id)
+        container_data = await asyncio.to_thread(self.persistence.get_container, container_id)
         if not container_data:
             log_and_raise(
                 ContainerNotFoundError,
@@ -1098,7 +1108,7 @@ class ContainerService:
         container = ContainerComponent.model_validate(_filter_container_data(container_data))
 
         # Get player for access control
-        player = self.persistence.get_player(player_id)
+        player = await asyncio.to_thread(self.persistence.get_player, player_id)
         if not player:
             log_and_raise(
                 ValidationError,
@@ -1148,7 +1158,7 @@ class ContainerService:
 
         return updated
 
-    def unlock_container(self, container_id: UUID, player_id: UUID) -> dict[str, Any]:
+    async def unlock_container(self, container_id: UUID, player_id: UUID) -> dict[str, Any]:
         """
         Unlock a container.
 
@@ -1171,7 +1181,7 @@ class ContainerService:
         logger.info("Unlocking container", container_id=str(container_id), player_id=str(player_id))
 
         # Get container
-        container_data = self.persistence.get_container(container_id)
+        container_data = await asyncio.to_thread(self.persistence.get_container, container_id)
         if not container_data:
             log_and_raise(
                 ContainerNotFoundError,
@@ -1184,7 +1194,7 @@ class ContainerService:
         container = ContainerComponent.model_validate(_filter_container_data(container_data))
 
         # Get player for access control
-        player = self.persistence.get_player(player_id)
+        player = await asyncio.to_thread(self.persistence.get_player, player_id)
         if not player:
             log_and_raise(
                 ValidationError,

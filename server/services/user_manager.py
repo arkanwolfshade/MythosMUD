@@ -84,7 +84,7 @@ class UserManager:
         except (ValueError, AttributeError, TypeError) as e:
             raise ValueError(f"Invalid player_id format: {player_id}") from e
 
-    def add_admin(self, player_id: uuid.UUID | str, player_name: str | None = None):
+    async def add_admin(self, player_id: uuid.UUID | str, player_name: str | None = None):
         """
         Add a player as an admin.
 
@@ -101,10 +101,10 @@ class UserManager:
 
             persistence = get_persistence()
 
-            player = persistence.get_player(player_id_uuid)
+            player = await asyncio.to_thread(persistence.get_player, player_id_uuid)
             if player:
                 player.set_admin_status(True)
-                persistence.save_player(player)
+                await asyncio.to_thread(persistence.save_player, player)
                 logger.info(
                     "Player added as admin in database",
                     # Structlog handles UUID objects automatically, no need to convert to string
@@ -129,7 +129,7 @@ class UserManager:
             logger.error("Unexpected error adding admin status", error=str(e), error_type=type(e).__name__)
             return False
 
-    def remove_admin(self, player_id: uuid.UUID | str, player_name: str | None = None):
+    async def remove_admin(self, player_id: uuid.UUID | str, player_name: str | None = None):
         """
         Remove a player's admin status.
 
@@ -146,10 +146,10 @@ class UserManager:
 
             persistence = get_persistence()
 
-            player = persistence.get_player(player_id_uuid)
+            player = await asyncio.to_thread(persistence.get_player, player_id_uuid)
             if player:
                 player.set_admin_status(False)
-                persistence.save_player(player)
+                await asyncio.to_thread(persistence.save_player, player)
                 logger.info(
                     "Player admin status removed from database",
                     player_id=player_id_uuid,
@@ -174,7 +174,7 @@ class UserManager:
             logger.error("Unexpected error removing admin status", error=str(e), error_type=type(e).__name__)
             return False
 
-    def is_admin(self, player_id: uuid.UUID | str) -> bool:
+    async def is_admin(self, player_id: uuid.UUID | str) -> bool:
         """
         Check if a player is an admin.
 
@@ -197,7 +197,7 @@ class UserManager:
 
             persistence = get_persistence()
 
-            player = persistence.get_player(player_id_uuid)
+            player = await asyncio.to_thread(persistence.get_player, player_id_uuid)
             if player and player.is_admin_user():
                 # Add to cache (using UUID object as key)
                 self._admin_players.add(player_id_uuid)

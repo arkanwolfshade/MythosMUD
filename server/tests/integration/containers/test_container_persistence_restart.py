@@ -493,7 +493,7 @@ class TestContainerPersistenceRestart:
         )
 
         # Open container and add items
-        open_result = container_service.open_container(container_id, player_id)
+        open_result = await container_service.open_container(container_id, player_id)
         mutation_token = open_result["mutation_token"]
 
         stack = {
@@ -503,7 +503,7 @@ class TestContainerPersistenceRestart:
             "weight": 1.0,
             "slot_type": "backpack",
         }
-        container_service.transfer_to_container(
+        await container_service.transfer_to_container(
             container_id=container_id,
             player_id=player_id,
             mutation_token=mutation_token,

@@ -777,7 +777,7 @@ async def game_tick_loop(app: FastAPI):
                     )
 
                     # Get all decayed corpses and clean them up
-                    decayed = corpse_service.get_all_decayed_corpses()
+                    decayed = await corpse_service.get_all_decayed_corpses()
                     cleaned_count = 0
 
                     for corpse in decayed:
@@ -793,7 +793,7 @@ async def game_tick_loop(app: FastAPI):
                                 )
 
                             # Cleanup corpse (this will delete it)
-                            corpse_service.cleanup_decayed_corpse(corpse.container_id)
+                            await corpse_service.cleanup_decayed_corpse(corpse.container_id)
                             cleaned_count += 1
                         except Exception as cleanup_error:
                             logger.error(

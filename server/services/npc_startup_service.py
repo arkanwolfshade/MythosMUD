@@ -6,8 +6,13 @@ the world with static NPCs based on existing NPC definitions.
 
 As documented in the Cultes des Goules, proper initialization of the dimensional
 entities is essential for maintaining the integrity of the world's fabric.
+
+
+ASYNC MIGRATION (Phase 2):
+All persistence calls wrapped in asyncio.to_thread() to prevent event loop blocking.
 """
 
+import asyncio
 import random
 from typing import Any
 
@@ -146,7 +151,7 @@ class NPCStartupService:
 
             try:
                 # Determine spawn room
-                spawn_room = self._determine_spawn_room(npc_def)
+                spawn_room = await self._determine_spawn_room(npc_def)
                 if not spawn_room:
                     error_msg = f"No valid spawn room found for required NPC {npc_def.name}"
                     logger.error(error_msg)
@@ -214,7 +219,7 @@ class NPCStartupService:
 
             try:
                 # Determine spawn room
-                spawn_room = self._determine_spawn_room(npc_def)
+                spawn_room = await self._determine_spawn_room(npc_def)
                 if not spawn_room:
                     logger.debug("No valid spawn room found for optional NPC", npc_name=npc_def.name)
                     continue
@@ -255,7 +260,7 @@ class NPCStartupService:
         logger.info("Optional NPC spawning completed", spawned=results["spawned"], attempted=results["attempted"])
         return results
 
-    def _determine_spawn_room(self, npc_def) -> str | None:
+    async def _determine_spawn_room(self, npc_def) -> str | None:
         """
         Determine the appropriate room for spawning an NPC.
 
@@ -276,7 +281,7 @@ class NPCStartupService:
             # If NPC has a specific room_id, verify it exists
             if hasattr(npc_def, "room_id") and npc_def.room_id:
                 room_id = npc_def.room_id
-                room = persistence.get_room(room_id)
+                room = await asyncio.to_thread(persistence.get_room, room_id)
                 if room:
                     logger.debug("Using specific room for NPC", npc_name=npc_def.name, room_id=room_id)
                     return room_id
@@ -293,7 +298,7 @@ class NPCStartupService:
             if hasattr(npc_def, "sub_zone_id") and npc_def.sub_zone_id:
                 default_room = self._get_default_room_for_sub_zone(npc_def.sub_zone_id)
                 if default_room:
-                    room = persistence.get_room(default_room)
+                    room = await asyncio.to_thread(persistence.get_room, default_room)
                     if room:
                         logger.debug(
                             "Using default room for NPC in sub-zone",
@@ -312,7 +317,7 @@ class NPCStartupService:
 
             # Fallback to a default starting room
             fallback_room_id = "earth_arkhamcity_northside_intersection_derby_high"
-            room = persistence.get_room(fallback_room_id)
+            room = await asyncio.to_thread(persistence.get_room, fallback_room_id)
             if room:
                 logger.debug("Using fallback room for NPC", npc_name=npc_def.name, room_id=fallback_room_id)
                 return fallback_room_id

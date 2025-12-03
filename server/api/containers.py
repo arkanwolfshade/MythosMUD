@@ -226,7 +226,7 @@ async def open_container(
         container_service = _get_container_service(persistence)
 
         # Open container
-        result = container_service.open_container(request_data.container_id, player_id)
+        result = await container_service.open_container(request_data.container_id, player_id)
 
         # Emit WebSocket event
         try:
@@ -395,7 +395,7 @@ async def transfer_items(
 
         # Transfer items
         if request_data.direction == "to_container":
-            result = container_service.transfer_to_container(
+            result = await container_service.transfer_to_container(
                 request_data.container_id,
                 player_id,
                 request_data.mutation_token,
@@ -403,7 +403,7 @@ async def transfer_items(
                 request_data.quantity,
             )
         else:  # to_player
-            result = container_service.transfer_from_container(
+            result = await container_service.transfer_from_container(
                 request_data.container_id,
                 player_id,
                 request_data.mutation_token,
@@ -585,7 +585,7 @@ async def close_container(
         container_service = _get_container_service(persistence)
 
         # Close container
-        container_service.close_container(request_data.container_id, player_id, request_data.mutation_token)
+        await container_service.close_container(request_data.container_id, player_id, request_data.mutation_token)
 
         # Emit WebSocket event
         try:
@@ -752,7 +752,7 @@ async def loot_all_items(
         # Try to transfer each item
         for item in container.items:
             try:
-                result = container_service.transfer_from_container(
+                result = await container_service.transfer_from_container(
                     request_data.container_id,
                     player_id,
                     request_data.mutation_token,

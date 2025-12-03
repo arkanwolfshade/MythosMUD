@@ -2091,19 +2091,62 @@ class PersistenceLayer:
         return await async_persistence.get_profession_by_id(profession_id)
 
     async def async_get_room(self, room_id: str) -> Room | None:
-        """Get a room by ID using async database operations."""
-        # Rooms are still handled by the sync layer for now
-        return self.get_room(room_id)
+        """
+        Get a room by ID using async database operations.
+
+        CRITICAL FIX: Use asyncio.to_thread() to run blocking synchronous operations
+        in a thread pool, preventing event loop blocking.
+
+        Args:
+            room_id: The room ID to retrieve
+
+        Returns:
+            Room object or None if not found
+
+        Note:
+            Uses asyncio.to_thread() to run blocking operations in thread pool.
+            For true async operations, migrate to AsyncPersistenceLayer when
+            room async methods are implemented.
+        """
+        # Use asyncio.to_thread() to run blocking operations in thread pool
+        # This prevents blocking the event loop during database operations
+        return await asyncio.to_thread(self.get_room, room_id)
 
     async def async_save_room(self, room: Room):
-        """Save a room using async database operations."""
-        # Rooms are still handled by the sync layer for now
-        return self.save_room(room)
+        """
+        Save a room using async database operations.
+
+        CRITICAL FIX: Use asyncio.to_thread() to run blocking synchronous operations
+        in a thread pool, preventing event loop blocking.
+
+        Args:
+            room: The room object to save
+
+        Note:
+            Uses asyncio.to_thread() to run blocking operations in thread pool.
+            For true async operations, migrate to AsyncPersistenceLayer when
+            room async methods are implemented.
+        """
+        # Use asyncio.to_thread() to run blocking operations in thread pool
+        return await asyncio.to_thread(self.save_room, room)
 
     async def async_list_rooms(self) -> list[Room]:
-        """List all rooms using async database operations."""
-        # Rooms are still handled by the sync layer for now
-        return self.list_rooms()
+        """
+        List all rooms using async database operations.
+
+        CRITICAL FIX: Use asyncio.to_thread() to run blocking synchronous operations
+        in a thread pool, preventing event loop blocking.
+
+        Returns:
+            List of all rooms
+
+        Note:
+            Uses asyncio.to_thread() to run blocking operations in thread pool.
+            For true async operations, migrate to AsyncPersistenceLayer when
+            room async methods are implemented.
+        """
+        # Use asyncio.to_thread() to run blocking operations in thread pool
+        return await asyncio.to_thread(self.list_rooms)
 
     async def async_save_rooms(self, rooms: list[Room]):
         """Save multiple rooms using async database operations."""

@@ -259,7 +259,7 @@ class TestConcurrentContainerMutations:
         # Open container concurrently from two players
         async def open_container(player_id: UUID) -> dict[str, Any]:
             """Open container for a player."""
-            return container_service.open_container(container_id, player_id)
+            return await container_service.open_container(container_id, player_id)
 
         results = await asyncio.gather(
             open_container(player1_id),
@@ -317,7 +317,7 @@ class TestConcurrentContainerMutations:
         )
 
         # Open container
-        open_result = container_service.open_container(container_id, player_id)
+        open_result = await container_service.open_container(container_id, player_id)
         mutation_token = open_result["mutation_token"]
 
         # Attempt concurrent transfers with same mutation token
@@ -340,7 +340,7 @@ class TestConcurrentContainerMutations:
         async def transfer_item(stack: dict[str, Any]) -> dict[str, Any] | Exception:
             """Transfer item to container."""
             try:
-                return container_service.transfer_to_container(
+                return await container_service.transfer_to_container(
                     container_id=container_id,
                     player_id=player_id,
                     mutation_token=mutation_token,
@@ -390,8 +390,8 @@ class TestConcurrentContainerMutations:
         )
 
         # Open container for both players
-        open_result1 = container_service.open_container(container_id, player1_id)
-        open_result2 = container_service.open_container(container_id, player2_id)
+        open_result1 = await container_service.open_container(container_id, player1_id)
+        open_result2 = await container_service.open_container(container_id, player2_id)
 
         token1 = open_result1["mutation_token"]
         token2 = open_result2["mutation_token"]
@@ -417,7 +417,7 @@ class TestConcurrentContainerMutations:
         # Transfer concurrently with different tokens
         async def transfer_with_token(token: str, stack: dict[str, Any], player_id: UUID) -> dict[str, Any]:
             """Transfer item with specific mutation token."""
-            return container_service.transfer_to_container(
+            return await container_service.transfer_to_container(
                 container_id=container_id,
                 player_id=player_id,
                 mutation_token=token,
@@ -464,14 +464,14 @@ class TestConcurrentContainerMutations:
         )
 
         # Open container
-        open_result = container_service.open_container(container_id, player_id)
+        open_result = await container_service.open_container(container_id, player_id)
         mutation_token = open_result["mutation_token"]
 
         # Attempt concurrent close operations
         async def close_container(token: str) -> None | Exception:
             """Close container."""
             try:
-                container_service.close_container(
+                await container_service.close_container(
                     container_id=container_id,
                     player_id=player_id,
                     mutation_token=token,
@@ -516,14 +516,14 @@ class TestConcurrentContainerMutations:
         )
 
         # Open container
-        open_result = container_service.open_container(container_id, player_id)
+        open_result = await container_service.open_container(container_id, player_id)
         mutation_token = open_result["mutation_token"]
 
         # Concurrently close and try to open again
         async def close_container() -> None | Exception:
             """Close container."""
             try:
-                container_service.close_container(
+                await container_service.close_container(
                     container_id=container_id,
                     player_id=player_id,
                     mutation_token=mutation_token,
@@ -537,7 +537,7 @@ class TestConcurrentContainerMutations:
             try:
                 # Small delay to allow close to potentially complete first
                 await asyncio.sleep(0.01)
-                return container_service.open_container(container_id, player_id)
+                return await container_service.open_container(container_id, player_id)
             except Exception as e:
                 return e
 
@@ -580,7 +580,7 @@ class TestConcurrentContainerMutations:
         )
 
         # Open container
-        open_result = container_service.open_container(container_id, player_id)
+        open_result = await container_service.open_container(container_id, player_id)
         mutation_token = open_result["mutation_token"]
 
         # Attempt to add 3 items sequentially (should fail for the 3rd due to capacity)
@@ -600,7 +600,7 @@ class TestConcurrentContainerMutations:
 
         # Transfer first 2 items (should succeed)
         for i in range(2):
-            container_service.transfer_to_container(
+            await container_service.transfer_to_container(
                 container_id=container_id,
                 player_id=player_id,
                 mutation_token=mutation_token,
@@ -609,8 +609,8 @@ class TestConcurrentContainerMutations:
             )
             # Close container after transfer (using token before it's fully invalidated)
             # Then reopen to get new mutation token for next transfer
-            container_service.close_container(container_id, player_id, mutation_token)
-            open_result = container_service.open_container(container_id, player_id)
+            await container_service.close_container(container_id, player_id, mutation_token)
+            open_result = await container_service.open_container(container_id, player_id)
             mutation_token = open_result["mutation_token"]
 
         # Verify container has 2 items before attempting 3rd
@@ -620,7 +620,7 @@ class TestConcurrentContainerMutations:
 
         # Attempt to add 3rd item (should fail due to capacity limit)
         with pytest.raises(ContainerServiceError):  # Should raise ContainerServiceError due to capacity
-            container_service.transfer_to_container(
+            await container_service.transfer_to_container(
                 container_id=container_id,
                 player_id=player_id,
                 mutation_token=mutation_token,

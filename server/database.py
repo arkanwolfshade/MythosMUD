@@ -23,7 +23,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.pool import NullPool
 
-from .exceptions import ValidationError
+from .exceptions import DatabaseError, ValidationError
 from .logging.enhanced_logging_config import get_logger
 from .utils.error_logging import create_error_context, log_and_raise
 
@@ -155,15 +155,65 @@ class DatabaseManager:
             )
 
         # Create async engine with PostgreSQL configuration
-        self.engine = create_async_engine(
-            self.database_url,
-            echo=False,
-            pool_pre_ping=True,
-            **pool_kwargs,
-        )
+        # CRITICAL FIX: Add proper exception handling for engine creation
+        # Handles connection failures, authentication errors, and configuration issues
+        try:
+            self.engine = create_async_engine(
+                self.database_url,
+                echo=False,
+                pool_pre_ping=True,
+                **pool_kwargs,
+            )
 
-        pool_type = "NullPool" if "test" in self.database_url else "AsyncAdaptedQueuePool"
-        logger.info("Database engine created", pool_type=pool_type)
+            pool_type = "NullPool" if "test" in self.database_url else "AsyncAdaptedQueuePool"
+            logger.info("Database engine created", pool_type=pool_type)
+
+        except (ValueError, TypeError) as e:
+            # Configuration error (invalid URL format, invalid pool parameters)
+            context = create_error_context()
+            context.metadata["operation"] = "create_async_engine"
+            context.metadata["database_url_prefix"] = self.database_url[:30]  # Truncate for security
+            log_and_raise(
+                ValidationError,
+                f"Invalid database configuration: {e}",
+                context=context,
+                details={
+                    "error": str(e),
+                    "error_type": type(e).__name__,
+                    "pool_config": {k: v for k, v in pool_kwargs.items() if k not in ["pool_recycle"]},
+                },
+                user_friendly="Database configuration error. Please check DATABASE_URL environment variable.",
+            )
+        except (ConnectionError, OSError) as e:
+            # Network/connection error (database server unreachable, DNS failure)
+            context = create_error_context()
+            context.metadata["operation"] = "create_async_engine"
+            log_and_raise(
+                DatabaseError,
+                f"Failed to connect to database: {e}",
+                context=context,
+                details={
+                    "error": str(e),
+                    "error_type": type(e).__name__,
+                    "database_url_prefix": self.database_url[:30],
+                },
+                user_friendly="Cannot connect to database. Please check database server is running.",
+            )
+        except Exception as e:
+            # Catch-all for other errors (authentication, SSL, etc.)
+            context = create_error_context()
+            context.metadata["operation"] = "create_async_engine"
+            log_and_raise(
+                DatabaseError,
+                f"Failed to create database engine: {e}",
+                context=context,
+                details={
+                    "error": str(e),
+                    "error_type": type(e).__name__,
+                    "database_url_prefix": self.database_url[:30],
+                },
+                user_friendly="Database connection failed. Please check database configuration and credentials.",
+            )
 
         # Create async session maker
         self.session_maker = async_sessionmaker(

@@ -4,8 +4,12 @@ Player Death Service for managing player mortality and HP decay.
 This service handles the mortally wounded state (0 to -10 HP), automatic HP decay,
 and death detection. As documented in the Necronomicon's chapter on mortality,
 the threshold between life and death requires careful management.
+
+ASYNC MIGRATION (Phase 2):
+All persistence calls wrapped in asyncio.to_thread() to prevent event loop blocking.
 """
 
+import asyncio
 import uuid
 from typing import Any
 
@@ -293,7 +297,7 @@ class PlayerDeathService:
                 from ..persistence import get_persistence
 
                 persistence = get_persistence()
-                room = persistence.get_room(death_location) if death_location else None
+                room = await asyncio.to_thread(persistence.get_room, death_location) if death_location else None
                 room_name = room.name if room else death_location
 
                 event = PlayerDiedEvent(

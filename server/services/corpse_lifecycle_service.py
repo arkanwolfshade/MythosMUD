@@ -8,6 +8,7 @@ of player death, grace periods, decay timers, and item redistribution.
 
 from __future__ import annotations
 
+import asyncio
 import uuid
 from datetime import UTC, datetime, timedelta
 from typing import Any, cast
@@ -74,7 +75,7 @@ class CorpseLifecycleService:
         self.connection_manager = connection_manager
         self.time_service = time_service
 
-    def create_corpse_on_death(
+    async def create_corpse_on_death(
         self,
         player_id: UUID,
         room_id: str,
@@ -104,7 +105,7 @@ class CorpseLifecycleService:
         logger.info("Creating corpse container on death", player_id=str(player_id), room_id=room_id)
 
         # Get player
-        player = self.persistence.get_player(player_id)
+        player = await asyncio.to_thread(self.persistence.get_player, player_id)
         if not player:
             log_and_raise(
                 CorpseServiceError,
@@ -254,7 +255,7 @@ class CorpseLifecycleService:
 
         return current_time >= corpse.decay_at
 
-    def get_decayed_corpses_in_room(self, room_id: str) -> list[ContainerComponent]:
+    async def get_decayed_corpses_in_room(self, room_id: str) -> list[ContainerComponent]:
         """
         Get all decayed corpse containers in a room.
 
@@ -265,7 +266,7 @@ class CorpseLifecycleService:
             list[ContainerComponent]: List of decayed corpse containers
         """
         # Get all containers in room
-        containers_data = self.persistence.get_containers_by_room_id(room_id)
+        containers_data = await asyncio.to_thread(self.persistence.get_containers_by_room_id, room_id)
         if not containers_data:
             return []
 
@@ -285,7 +286,7 @@ class CorpseLifecycleService:
 
         return decayed
 
-    def cleanup_decayed_corpse(self, container_id: UUID) -> None:
+    async def cleanup_decayed_corpse(self, container_id: UUID) -> None:
         """
         Clean up a decayed corpse container.
 
@@ -306,7 +307,7 @@ class CorpseLifecycleService:
         logger.info("Cleaning up decayed corpse", container_id=str(container_id))
 
         # Get container
-        container_data = self.persistence.get_container(container_id)
+        container_data = await asyncio.to_thread(self.persistence.get_container, container_id)
         if not container_data:
             log_and_raise(
                 CorpseNotFoundError,
@@ -351,7 +352,7 @@ class CorpseLifecycleService:
                 user_friendly="Failed to clean up corpse",
             )
 
-    def cleanup_decayed_corpses_in_room(self, room_id: str) -> int:
+    async def cleanup_decayed_corpses_in_room(self, room_id: str) -> int:
         """
         Clean up all decayed corpse containers in a room.
 
@@ -363,12 +364,12 @@ class CorpseLifecycleService:
         """
         logger.info("Cleaning up decayed corpses in room", room_id=room_id)
 
-        decayed = self.get_decayed_corpses_in_room(room_id)
+        decayed = await self.get_decayed_corpses_in_room(room_id)
         cleaned_count = 0
 
         for corpse in decayed:
             try:
-                self.cleanup_decayed_corpse(corpse.container_id)
+                await self.cleanup_decayed_corpse(corpse.container_id)
                 cleaned_count += 1
             except Exception as e:
                 logger.error(
@@ -388,7 +389,7 @@ class CorpseLifecycleService:
 
         return cleaned_count
 
-    def get_all_decayed_corpses(self) -> list[ContainerComponent]:
+    async def get_all_decayed_corpses(self) -> list[ContainerComponent]:
         """
         Get all decayed corpse containers across all rooms.
 
@@ -402,7 +403,7 @@ class CorpseLifecycleService:
             current_time = datetime.now(UTC)
 
         # Get all decayed containers from persistence
-        decayed_data = self.persistence.get_decayed_containers(current_time)
+        decayed_data = await asyncio.to_thread(self.persistence.get_decayed_containers, current_time)
         if not decayed_data:
             return []
 
@@ -422,7 +423,7 @@ class CorpseLifecycleService:
 
         return decayed_corpses
 
-    def cleanup_all_decayed_corpses(self) -> int:
+    async def cleanup_all_decayed_corpses(self) -> int:
         """
         Clean up all decayed corpse containers across all rooms.
 
@@ -431,12 +432,12 @@ class CorpseLifecycleService:
         """
         logger.info("Cleaning up all decayed corpses")
 
-        decayed = self.get_all_decayed_corpses()
+        decayed = await self.get_all_decayed_corpses()
         cleaned_count = 0
 
         for corpse in decayed:
             try:
-                self.cleanup_decayed_corpse(corpse.container_id)
+                await self.cleanup_decayed_corpse(corpse.container_id)
                 cleaned_count += 1
             except Exception as e:
                 logger.error(
