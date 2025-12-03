@@ -469,6 +469,18 @@ class AsyncPersistenceLayer:
                 user_friendly="Failed to retrieve player list",
             )
 
+    def get_room_by_id(self, room_id: str) -> "Room | None":
+        """
+        Get a room by ID from the cache (synchronous - rooms are cached at startup).
+
+        Args:
+            room_id: The room ID
+
+        Returns:
+            Room | None: The room object or None if not found
+        """
+        return self._room_cache.get(room_id)
+
     async def get_players_in_room(self, room_id: str) -> list[Player]:
         """Get all players in a specific room using SQLAlchemy ORM."""
         context = create_error_context()

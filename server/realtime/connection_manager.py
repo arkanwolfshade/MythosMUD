@@ -422,10 +422,10 @@ class ConnectionManager:
                         # No active connections, remove the player entry
                         del self.player_websockets[player_id]
 
-            # Accept the WebSocket connection with subprotocol negotiation
-            # CRITICAL FIX: Client sends ['bearer', <token>] as subprotocols
-            # Server must select 'bearer' to complete the handshake
-            await websocket.accept(subprotocol="bearer")
+            # Accept the WebSocket connection without subprotocol
+            # CRITICAL FIX: Token is now passed via query parameter, not subprotocol
+            # No subprotocol negotiation needed
+            await websocket.accept()
             connection_id = str(uuid.uuid4())
             self.active_websockets[connection_id] = websocket
 
@@ -477,7 +477,7 @@ class ConnectionManager:
             )
 
             # Get player and room information
-            player = self._get_player(player_id)
+            player = await self._get_player(player_id)
             if not player:
                 if self.persistence is None:
                     logger.warning("Persistence not available, connecting without player tracking", player_id=player_id)
@@ -1990,9 +1990,9 @@ class ConnectionManager:
         """
         return self.message_queue.get_messages(str(player_id))
 
-    def _get_player(self, player_id: uuid.UUID) -> Player | None:
+    async def _get_player(self, player_id: uuid.UUID) -> Player | None:
         """
-        Get a player from the persistence layer.
+        Get a player from the persistence layer (async version).
 
         Args:
             player_id: The player's ID (UUID)
@@ -2000,20 +2000,10 @@ class ConnectionManager:
         Returns:
             Optional[Player]: The player object or None if not found
         """
-        if self.persistence is None:
-            # Structlog handles UUID objects automatically, no need to convert to string
-            logger.warning("Persistence layer not initialized for player lookup", player_id=player_id)
-            return None
+        from ..async_persistence import get_async_persistence
 
-        player = self.persistence.get_player(player_id)
-        if player is None:
-            # Fallback to get_player_by_name
-            logger.info("Player not found by ID, trying by name", player_id=player_id)
-            player = self.persistence.get_player_by_name(player_id)
-            if player:
-                logger.info("Player found by name", player_id=player_id)
-            else:
-                logger.warning("Player not found by name", player_id=player_id)
+        async_persistence = get_async_persistence()
+        player = await async_persistence.get_player_by_id(player_id)
         return player
 
     def _get_players_batch(self, player_ids: list[uuid.UUID]) -> dict[uuid.UUID, Player]:

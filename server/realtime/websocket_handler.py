@@ -107,11 +107,13 @@ async def handle_websocket_connection(
 
     try:
         # Send initial game state
-        player = connection_manager._get_player(player_id)
+        player = await connection_manager._get_player(player_id)
         if player and hasattr(player, "current_room_id"):
-            persistence = connection_manager.persistence
-            if persistence:
-                room = persistence.get_room(str(player.current_room_id))
+            from ..async_persistence import get_async_persistence
+
+            async_persistence = get_async_persistence()
+            if async_persistence:
+                room = async_persistence.get_room_by_id(str(player.current_room_id))
                 if room:
                     # Ensure player is added to their current room and track if we actually added them
                     logger.info("DEBUG: Room object ID before player_entered", room_id=id(room))
@@ -327,7 +329,10 @@ async def handle_websocket_connection(
                     # This handles players who connect with HP already at death threshold
                     # CRITICAL: Refresh player from database to ensure we have latest HP and room after respawn
                     # The persistence layer might have cached player data, so we need fresh data
-                    fresh_player = persistence.get_player(player_id)
+                    from ..async_persistence import get_async_persistence
+
+                    async_persistence = get_async_persistence()
+                    fresh_player = await async_persistence.get_player_by_id(player_id)
                     if fresh_player:
                         player = fresh_player
                         # Update canonical_room_id with fresh player's room to ensure accurate death check
@@ -381,7 +386,10 @@ async def handle_websocket_connection(
 
                     # Send initial room state ONLY to connecting player (not a broadcast)
                     try:
-                        room = persistence.get_room(canonical_room_id)
+                        from ..async_persistence import get_async_persistence
+
+                        async_persistence = get_async_persistence()
+                        room = async_persistence.get_room_by_id(canonical_room_id)
                         if room:
                             # Get room occupants and transform IDs to names
                             # AI Agent: Include both players AND NPCs in the occupants list
@@ -777,7 +785,7 @@ async def handle_game_command(
         # Handle broadcasting if the command result includes broadcast data
         if result.get("broadcast") and result.get("broadcast_type"):
             logger.debug("Broadcasting message to room", broadcast_type=result.get("broadcast_type"), player=player_id)
-            player = connection_manager._get_player(player_id)
+            player = await connection_manager._get_player(player_id)
             if player and hasattr(player, "current_room_id"):
                 room_id = player.current_room_id
                 broadcast_event = build_event("command_response", {"result": result["broadcast"]}, player_id=player_id)
@@ -834,7 +842,7 @@ async def process_websocket_command(cmd: str, args: list, player_id: str, connec
 
     # Get player from connection manager
     logger.debug("Getting player for ID", player_id=player_id, player_id_type=type(player_id))
-    player = connection_manager._get_player(player_id)
+    player = await connection_manager._get_player(player_id)
     logger.debug("Player object", player=player, player_type=type(player))
     if not player:
         logger.warning("Player not found", player_id=player_id)
@@ -950,7 +958,7 @@ async def handle_chat_message(websocket: WebSocket, player_id: str, message: str
         )
 
         # Broadcast to room
-        player = connection_manager._get_player(player_id)
+        player = await connection_manager._get_player(player_id)
         if player:
             await connection_manager.broadcast_to_room(
                 str(player.current_room_id), chat_event, exclude_player=player_id
@@ -994,7 +1002,10 @@ async def broadcast_room_update(player_id: str, room_id: str, connection_manager
             logger.warning("Persistence layer not available for room update")
             return
 
-        room = persistence.get_room(room_id)
+        from ..async_persistence import get_async_persistence
+
+        async_persistence = get_async_persistence()
+        room = async_persistence.get_room_by_id(room_id)
         if not room:
             logger.warning("Room not found for update", room_id=room_id)
             return
@@ -1158,7 +1169,7 @@ async def broadcast_room_update(player_id: str, room_id: str, connection_manager
         logger.debug("Room update event created", update_event=update_event)
 
         # Update player's room subscription
-        player = connection_manager._get_player(player_id)
+        player = await connection_manager._get_player(player_id)
         if player:
             # Unsubscribe from old room
             if hasattr(player, "current_room_id") and player.current_room_id and player.current_room_id != room_id:

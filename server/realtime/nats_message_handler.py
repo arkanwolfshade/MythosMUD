@@ -1771,7 +1771,7 @@ class NATSMessageHandler:
                 for participant_id_str, _participant_data in participants.items():
                     try:
                         # Get player by ID to send update
-                        player = self.connection_manager._get_player(participant_id_str)
+                        player = await self.connection_manager._get_player(participant_id_str)
                         if player:
                             # Send player update with in_combat status
                             player_update_event = build_event(
@@ -1812,7 +1812,7 @@ class NATSMessageHandler:
                 for participant_id_str in participants:
                     try:
                         # Get player by ID to send update
-                        player = self.connection_manager._get_player(participant_id_str)
+                        player = await self.connection_manager._get_player(participant_id_str)
                         if player:
                             # Send player update with in_combat status
                             player_update_event = build_event(

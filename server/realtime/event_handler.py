@@ -101,9 +101,9 @@ class RealTimeEventHandler:
         self._sequence_counter += 1
         return self._sequence_counter
 
-    def _get_player_info(self, player_id: uuid.UUID | str) -> tuple[Any, str] | None:
+    async def _get_player_info(self, player_id: uuid.UUID | str) -> tuple[Any, str] | None:
         """
-        Get player information and name.
+        Get player information and name (async version).
 
         Args:
             player_id: The player's ID (UUID or string for backward compatibility)
@@ -118,7 +118,7 @@ class RealTimeEventHandler:
             # Invalid UUID string - log and return None
             self._logger.warning("Invalid player_id format, cannot convert to UUID", player_id=player_id)
             return None
-        player = self.connection_manager._get_player(player_id_uuid)
+        player = await self.connection_manager._get_player(player_id_uuid)
         if not player:
             # Structlog handles UUID objects automatically, no need to convert to string
             self._logger.warning("Player not found", player_id=player_id_uuid)
@@ -486,7 +486,7 @@ class RealTimeEventHandler:
             )
 
             # Get player information
-            player_info = self._get_player_info(processed_event.player_id)
+            player_info = await self._get_player_info(processed_event.player_id)
             if not player_info:
                 return
             player, player_name = player_info
@@ -602,7 +602,7 @@ class RealTimeEventHandler:
             )
 
             # Get player information
-            player_info = self._get_player_info(processed_event.player_id)
+            player_info = await self._get_player_info(processed_event.player_id)
             if not player_info:
                 return
             player, player_name = player_info
@@ -1554,7 +1554,7 @@ class RealTimeEventHandler:
             player_id_str = str(event.player_id)
 
             # Get the current player data to send updated XP
-            player = self.connection_manager._get_player(player_id_str)
+            player = await self.connection_manager._get_player(player_id_str)
             if not player:
                 self._logger.warning("Player not found for XP award event", player_id=player_id_str)
                 return
@@ -1916,7 +1916,7 @@ class RealTimeEventHandler:
             # CRITICAL: Try to get player from connection manager, but if not found,
             # still send the HP update event with the data from the event itself
             # _get_player expects UUID, and event.player_id is now UUID
-            player = self.connection_manager._get_player(player_id)
+            player = await self.connection_manager._get_player(player_id)
 
             # Get full player stats including posture/position
             if player:
