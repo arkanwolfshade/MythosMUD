@@ -3289,105 +3289,38 @@ class ConnectionManager:
                     )
 
             # Get room occupants (players and NPCs)
+            # room_manager.get_room_occupants() now returns BOTH players AND NPCs with display names
             occupants = []
+            player_names_list = []
+            npc_names_list = []
+
             if room_id:
-                # Get player occupants
+                # Get ALL occupants (players + NPCs) from room_manager
                 online_players_str = {str(k): v for k, v in self.online_players.items()}
                 occ_infos = self.room_manager.get_room_occupants(room_id, online_players_str)
-                for occ_player_info in occ_infos:
-                    if isinstance(occ_player_info, dict) and occ_player_info.get("player_id") != player_id:
-                        occupants.append(occ_player_info.get("player_name", "Unknown"))
+                for occ_info in occ_infos:
+                    if isinstance(occ_info, dict):
+                        occupant_name = occ_info.get("player_name", "Unknown")
+                        is_npc = occ_info.get("is_npc", False)
 
-                # CRITICAL FIX: Query NPCs from lifecycle manager instead of Room instance
-                # Room instances are recreated from persistence and lose in-memory NPC tracking
-                npc_ids: list[str] = []
-                try:
-                    from ..services.npc_instance_service import get_npc_instance_service
+                        # Separate into players and NPCs for structured data
+                        if is_npc:
+                            npc_names_list.append(occupant_name)
+                        elif occ_info.get("player_id") != player_id:
+                            # Exclude current player from the list shown to them
+                            player_names_list.append(occupant_name)
+                        elif occ_info.get("player_id") == player_id:
+                            # BUGFIX: Include current player in the list (user wants to see themselves)
+                            player_names_list.append(occupant_name)
 
-                    npc_instance_service = get_npc_instance_service()
-                    if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
-                        lifecycle_manager = npc_instance_service.lifecycle_manager
-                        if lifecycle_manager and hasattr(lifecycle_manager, "active_npcs"):
-                            active_npcs_dict = lifecycle_manager.active_npcs
-                            # Query all active NPCs to find those in this room
-                            # BUGFIX: Filter out dead NPCs (is_alive=False) to prevent showing dead NPCs in occupants
-                            # As documented in investigation: 2025-11-30_session-001_npc-combat-start-failure.md
-                            for npc_id, npc_instance in active_npcs_dict.items():
-                                # Skip dead NPCs
-                                if not getattr(npc_instance, "is_alive", True):
-                                    logger.debug(
-                                        "Skipping dead NPC from occupants",
-                                        npc_id=npc_id,
-                                        npc_name=getattr(npc_instance, "name", "unknown"),
-                                        room_id=room_id,
-                                    )
-                                    continue
-
-                                # Check both current_room and current_room_id for compatibility
-                                current_room = getattr(npc_instance, "current_room", None)
-                                current_room_id = getattr(npc_instance, "current_room_id", None)
-                                npc_room_id = current_room or current_room_id
-                                if npc_room_id == room_id:
-                                    npc_ids.append(npc_id)
-
-                    logger.info("DEBUG: Room has NPCs from lifecycle manager", room_id=room_id, npc_ids=npc_ids)
-                    for npc_id in npc_ids:
-                        # Get NPC name from the actual NPC instance, preserving original case from database
-                        npc_name = _get_npc_name_from_instance(npc_id)
-                        if npc_name:
-                            logger.info("DEBUG: Got NPC name from database", npc_name=npc_name, npc_id=npc_id)
-                            occupants.append(npc_name)
+                        # Add to flat occupants list for backward compatibility
+                        if occ_info.get("player_id") != player_id or is_npc:
+                            occupants.append(occupant_name)
                         else:
-                            # Log warning if NPC instance not found - this should not happen in normal operation
-                            logger.warning("NPC instance not found for ID - skipping from room display", npc_id=npc_id)
-                except Exception as npc_query_error:
-                    logger.warning(
-                        "Error querying NPCs from lifecycle manager, falling back to room.get_npcs()",
-                        room_id=room_id,
-                        error=str(npc_query_error),
-                    )
-                    # Fallback to room.get_npcs() if lifecycle manager query fails
-                    # BUGFIX: Filter fallback NPCs to only include alive NPCs from active_npcs
-                    # As documented in investigation: 2025-11-30_session-001_npc-combat-start-failure.md
-                    if self.persistence:
-                        room = self.persistence.get_room(room_id)
-                        if room:
-                            room_npc_ids = room.get_npcs()
-                            logger.info("DEBUG: Room has NPCs from fallback", room_id=room_id, npc_ids=room_npc_ids)
+                            occupants.append(occupant_name)  # Include self
 
-                            # Filter fallback NPCs: only include those in active_npcs and alive
-                            filtered_npc_ids = []
-                            try:
-                                from ..services.npc_instance_service import get_npc_instance_service
-
-                                npc_instance_service = get_npc_instance_service()
-                                if npc_instance_service and hasattr(npc_instance_service, "lifecycle_manager"):
-                                    lifecycle_manager = npc_instance_service.lifecycle_manager
-                                    if lifecycle_manager and hasattr(lifecycle_manager, "active_npcs"):
-                                        for npc_id in room_npc_ids:
-                                            if npc_id in lifecycle_manager.active_npcs:
-                                                npc_instance = lifecycle_manager.active_npcs[npc_id]
-                                                # Only include alive NPCs
-                                                if getattr(npc_instance, "is_alive", True):
-                                                    filtered_npc_ids.append(npc_id)
-                                                else:
-                                                    logger.debug(
-                                                        "Filtered dead NPC from fallback occupants",
-                                                        npc_id=npc_id,
-                                                        room_id=room_id,
-                                                    )
-                            except Exception as filter_error:
-                                logger.warning(
-                                    "Error filtering fallback NPCs, using all room NPCs",
-                                    room_id=room_id,
-                                    error=str(filter_error),
-                                )
-                                filtered_npc_ids = room_npc_ids
-
-                            for npc_id in filtered_npc_ids:
-                                npc_name = _get_npc_name_from_instance(npc_id)
-                                if npc_name:
-                                    occupants.append(npc_name)
+                # NPCs are already included in occ_infos from room_manager.get_room_occupants()
+                # No need to query them again - that was causing duplicates!
 
             # Get complete player data using PlayerService (same pattern as websocket_handler.py)
             # This ensures all fields including stats, profession, and combat state are included
@@ -3466,7 +3399,17 @@ class ConnectionManager:
                 "occupants": occupants,
             }
 
-            logger.info("DEBUG: Sending initial game state with occupants", occupants=occupants)
+            # BUGFIX: Populate room_data with structured player/NPC arrays for new UI
+            if room_data:
+                room_data["players"] = player_names_list
+                room_data["npcs"] = npc_names_list
+                # Keep backward compatibility
+                room_data["occupants"] = occupants
+
+            logger.debug("Sending initial game state with structured occupants",
+                        occupants_count=len(occupants),
+                        players_count=len(player_names_list),
+                        npcs_count=len(npc_names_list))
 
             game_state_event = build_event("game_state", game_state_data, player_id=player_id, room_id=room_id)
 

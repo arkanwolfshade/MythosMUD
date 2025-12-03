@@ -59,7 +59,7 @@ class RoomSubscriptionManager:
             logger.debug("Player subscribed to room", player_id=player_id, room_id=canonical_id)
             return True
 
-        except Exception as e:
+        except (AttributeError, TypeError, KeyError) as e:
             logger.error("Error subscribing player to room", player_id=player_id, room_id=room_id, error=str(e))
             return False
 
@@ -345,12 +345,26 @@ class RoomSubscriptionManager:
                     npc_count=len(npc_ids),
                 )
                 for npc_id in npc_ids:
+                    # Get NPC display name from lifecycle manager
+                    # BUGFIX: Resolve name here instead of using npc_id to prevent UUID display
+                    npc_name = None
+                    try:
+                        if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
+                            npc_instance = lifecycle_manager.active_npcs[npc_id]
+                            npc_name = getattr(npc_instance, "name", None)
+                    except Exception:
+                        pass
+
+                    # Fallback to npc_id if name not found (shouldn't happen)
+                    if not npc_name:
+                        npc_name = npc_id
+                        logger.warning("NPC name not found, using ID as fallback", npc_id=npc_id)
+
                     # Create a minimal dict for NPC occupant (matching player format)
-                    # The NPC name will be resolved in broadcast_room_update via _get_npc_name_from_instance
                     occupants.append(
                         {
                             "player_id": npc_id,  # Use npc_id as player_id for compatibility
-                            "player_name": npc_id,  # Will be resolved to actual name in broadcast_room_update
+                            "player_name": npc_name,  # BUGFIX: Use display name, not ID!
                             "is_npc": True,
                         }
                     )
