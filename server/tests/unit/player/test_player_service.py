@@ -733,7 +733,7 @@ class TestPlayerServiceLayer:
         self.mock_persistence.async_apply_Lucidity_loss.return_value = None
 
         # Apply lucidity loss
-        result = await self.player_service.apply_Lucidity_loss("test-player-id", 10, "test-source")
+        result = await self.player_service.apply_lucidity_loss("test-player-id", 10, "test-source")
 
         # Verify result
         assert isinstance(result, dict)
@@ -750,7 +750,7 @@ class TestPlayerServiceLayer:
 
         # Attempt to apply lucidity loss to non-existent player
         with pytest.raises(CustomValidationError) as exc_info:
-            await self.player_service.apply_Lucidity_loss("nonexistent-id", 10, "test-source")
+            await self.player_service.apply_lucidity_loss("nonexistent-id", 10, "test-source")
 
         assert "Player not found: nonexistent-id" in str(exc_info.value)
         self.mock_persistence.async_get_player.assert_called_once_with("nonexistent-id")

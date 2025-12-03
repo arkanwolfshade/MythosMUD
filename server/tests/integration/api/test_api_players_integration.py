@@ -77,7 +77,7 @@ class TestPlayerAPIIntegration:
         mock_persistence.get_room = Mock(return_value=None)
 
         # Mock player combat service methods (used by some endpoints)
-        mock_persistence.apply_Lucidity_loss = AsyncMock(return_value=None)
+        mock_persistence.apply_lucidity_loss = AsyncMock(return_value=None)
         mock_persistence.apply_fear = AsyncMock(return_value=None)
         mock_persistence.apply_corruption = AsyncMock(return_value=None)
         mock_persistence.gain_occult_knowledge = AsyncMock(return_value=None)
@@ -236,7 +236,7 @@ class TestPlayerAPIIntegration:
         # Arrange
         player_id = str(uuid.uuid4())
         mock_persistence_for_api.async_get_player.return_value = sample_player_data
-        mock_persistence_for_api.apply_Lucidity_loss.return_value = None
+        mock_persistence_for_api.apply_lucidity_loss.return_value = None
 
         # Act
         response = container_test_client_class.post(

@@ -72,9 +72,9 @@ class TestStats:
         assert stats.max_health == 75  # Direct constitution value
 
     def test_stats_max_Lucidity_property(self):
-        """Test the max_Lucidity computed property."""
+        """Test the max_lucidity computed property."""
         stats = Stats(wisdom=90)
-        assert stats.max_Lucidity == 90  # Direct wisdom value
+        assert stats.max_lucidity == 90  # Direct wisdom value
 
     def test_stats_get_attribute_modifier(self):
         """Test the get_attribute_modifier method."""
@@ -456,4 +456,4 @@ class TestStatusEffectType:
         assert StatusEffectType.PARANOID == "paranoid"
         assert StatusEffectType.TREMBLING == "trembling"
         assert StatusEffectType.CORRUPTED == "corrupted"
-        assert StatusEffectType.delirious == "delirious"
+        assert StatusEffectType.DELIRIOUS == "delirious"

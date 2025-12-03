@@ -90,7 +90,7 @@ class TestModelConfigurationConsistency:
             Alias(name="test", command="say hello", extra_field="not_allowed")
 
         # Stats model ignores extra fields for backward compatibility with serialized stats
-        # that may include computed fields like max_health and max_Lucidity
+        # that may include computed fields like max_health and max_lucidity
         # Using "ignore" is safer than "allow" - extra fields are silently ignored
         stats = Stats(extra_field="ignored_for_compatibility")
         # With extra="ignore", the field is not stored, so accessing it raises AttributeError
@@ -179,7 +179,7 @@ class TestModelConfigurationConsistency:
 
         # Test computed fields
         assert stats.max_health == 75  # Direct constitution value
-        assert stats.max_Lucidity == 60  # Direct wisdom value
+        assert stats.max_lucidity == 60  # Direct wisdom value
 
     def test_model_repr_consistency(self):
         """Test that model string representations are consistent."""

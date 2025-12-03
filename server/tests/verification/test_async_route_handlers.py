@@ -72,7 +72,7 @@ class TestAsyncRouteHandlers:
             "GET /api/players/{player_id} - get_player",
             "GET /api/players/name/{player_name} - get_player_by_name",
             "DELETE /api/players/{player_id} - delete_player",
-            "POST /api/players/{player_id}/lucidity-loss - apply_Lucidity_loss",
+            "POST /api/players/{player_id}/lucidity-loss - apply_lucidity_loss",
             "POST /api/players/{player_id}/fear - apply_fear",
             "POST /api/players/{player_id}/corruption - apply_corruption",
             "POST /api/players/{player_id}/occult-knowledge - gain_occult_knowledge",

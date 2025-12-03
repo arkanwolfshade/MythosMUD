@@ -249,7 +249,7 @@ class TestServiceDependencyInjectionSimple:
             "get_player_by_name",
             "list_players",
             "delete_player",
-            "apply_Lucidity_loss",
+            "apply_lucidity_loss",
             "apply_fear",
             "apply_corruption",
             "gain_occult_knowledge",
