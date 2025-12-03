@@ -269,7 +269,9 @@ async def handle_websocket_connection(
                                 "stats": stats_data,
                             }
                     except Exception as e:
-                        logger.error("Error getting complete player data", error=str(e), player_id=player_id)
+                        logger.error(
+                            "Error getting complete player data", error=str(e), player_id=player_id, exc_info=True
+                        )
                         # Fallback to basic player data
                         player_data_for_client = {
                             "name": player.name,

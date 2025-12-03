@@ -3389,47 +3389,79 @@ class ConnectionManager:
                                 if npc_name:
                                     occupants.append(npc_name)
 
-            # CRITICAL: Extract player name - NEVER use UUID as fallback
-            player_name = getattr(player, "name", None)
-            if not player_name or not isinstance(player_name, str) or not player_name.strip():
-                # Try to get name from related User object if player.name is not available
-                if hasattr(player, "user"):
-                    try:
-                        user = getattr(player, "user", None)
-                        if user:
-                            player_name = getattr(user, "username", None) or getattr(user, "display_name", None)
-                    except Exception as e:
-                        logger.debug("Error accessing user relationship for player name", error=str(e))
+            # Get complete player data using PlayerService (same pattern as websocket_handler.py)
+            # This ensures all fields including stats, profession, and combat state are included
+            # BUGFIX: Character Info panel requires stats field to display character information
+            player_data_for_client = {}
+            try:
+                # Access app state to get PlayerService
+                app_state = getattr(self.app, "state", None) if hasattr(self, "app") and self.app else None
+                player_service = getattr(app_state, "player_service", None) if app_state else None
 
-                # If still no name, use placeholder (NEVER use UUID)
-                if not player_name or not isinstance(player_name, str) or not player_name.strip():
-                    player_name = "Unknown Player"
-
-            # CRITICAL: Final validation - ensure player_name is NEVER a UUID
-            if isinstance(player_name, str):
-                is_uuid_string = (
-                    len(player_name) == 36
-                    and player_name.count("-") == 4
-                    and all(c in "0123456789abcdefABCDEF-" for c in player_name)
-                )
-                if is_uuid_string:
-                    logger.error(
-                        "CRITICAL: Player name is a UUID string, this should never happen",
+                if player_service:
+                    # Use PlayerService to convert player to complete schema
+                    complete_player_data = await player_service._convert_player_to_schema(player)
+                    logger.debug(
+                        "ConnectionManager: Retrieved complete player data with profession",
                         player_id=player_id,
-                        player_name=player_name,
-                        player_name_from_db=getattr(player, "name", "NOT_FOUND"),
+                        has_profession=bool(getattr(complete_player_data, "profession_name", None)),
+                        has_stats=bool(getattr(complete_player_data, "stats", None)),
                     )
-                    player_name = "Unknown Player"
 
-            # Create game_state event
-            game_state_data = {
-                "player": {
+                    # Convert PlayerRead schema to dictionary for JSON serialization
+                    player_data_for_client = (
+                        complete_player_data.model_dump(mode="json")
+                        if hasattr(complete_player_data, "model_dump")
+                        else complete_player_data.dict()
+                    )
+                    # Map experience_points to xp for client compatibility
+                    if "experience_points" in player_data_for_client:
+                        player_data_for_client["xp"] = player_data_for_client["experience_points"]
+                else:
+                    # Fallback: PlayerService not available - use basic player data
+                    logger.warning(
+                        "PlayerService not available in connection_manager, using basic player data",
+                        player_id=player_id,
+                    )
+                    # Get stats from player object
+                    stats_data = {}
+                    if hasattr(player, "get_stats"):
+                        stats_data = player.get_stats()
+                    else:
+                        raw_stats = getattr(player, "stats", {})
+                        if isinstance(raw_stats, str):
+                            import json
+
+                            try:
+                                stats_data = json.loads(raw_stats)
+                            except (ValueError, TypeError, json.JSONDecodeError):
+                                stats_data = {}
+                        elif isinstance(raw_stats, dict):
+                            stats_data = raw_stats
+
+                    player_data_for_client = {
+                        "player_id": str(getattr(player, "player_id", player_id)),
+                        "name": getattr(player, "name", "Unknown Player"),
+                        "level": getattr(player, "level", 1),
+                        "xp": getattr(player, "experience_points", 0),
+                        "current_room_id": room_id,
+                        "stats": stats_data,  # Include stats in fallback
+                    }
+            except Exception as e:
+                logger.error("Error getting complete player data in connection_manager", error=str(e), player_id=player_id, exc_info=True)
+                # Final fallback to basic player data with empty stats
+                player_data_for_client = {
                     "player_id": str(getattr(player, "player_id", player_id)),
-                    "name": player_name,
+                    "name": getattr(player, "name", "Unknown Player"),
                     "level": getattr(player, "level", 1),
                     "xp": getattr(player, "experience_points", 0),
                     "current_room_id": room_id,
-                },
+                    "stats": {},  # Empty stats to prevent client errors
+                }
+
+            # Create game_state event
+            game_state_data = {
+                "player": player_data_for_client,
                 "room": room_data,
                 "occupants": occupants,
             }
