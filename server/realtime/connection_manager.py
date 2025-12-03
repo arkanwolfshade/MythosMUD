@@ -319,16 +319,16 @@ class ConnectionManager:
     async def subscribe_to_room(self, player_id: uuid.UUID, room_id: str):
         """Subscribe a player to a room (compatibility method)."""
         # Resolve canonical room ID first
-        canonical_id = self._canonical_room_id(room_id) or room_id
+        canonical_id = await self._canonical_room_id(room_id) or room_id
         return self.room_manager.subscribe_to_room(str(player_id), canonical_id)
 
     async def unsubscribe_from_room(self, player_id: uuid.UUID, room_id: str):
         """Unsubscribe a player from a room (compatibility method)."""
         # Resolve canonical room ID first (must match subscribe_to_room behavior)
-        canonical_id = self._canonical_room_id(room_id) or room_id
+        canonical_id = await self._canonical_room_id(room_id) or room_id
         return self.room_manager.unsubscribe_from_room(str(player_id), canonical_id)
 
-    def _canonical_room_id(self, room_id: str | None) -> str | None:
+    async def _canonical_room_id(self, room_id: str | None) -> str | None:
         """Resolve a room id to the canonical Room.id value (compatibility method)."""
         # First try the room manager's persistence
         result = self.room_manager._canonical_room_id(room_id)
@@ -340,7 +340,7 @@ class ConnectionManager:
             if not room_id:
                 return room_id
             if self.persistence is not None:
-                room = self.persistence.get_room(room_id)
+                room = await asyncio.to_thread(self.persistence.get_room, room_id)
                 if room is not None and getattr(room, "id", None):
                     return room.id
         except Exception as e:
@@ -2006,7 +2006,7 @@ class ConnectionManager:
         player = await async_persistence.get_player_by_id(player_id)
         return player
 
-    def _get_players_batch(self, player_ids: list[uuid.UUID]) -> dict[uuid.UUID, Player]:
+    async def _get_players_batch(self, player_ids: list[uuid.UUID]) -> dict[uuid.UUID, Player]:
         """
         Get multiple players from the persistence layer in a single batch operation.
 
@@ -2033,7 +2033,7 @@ class ConnectionManager:
         # Note: If persistence layer supports batch operations in the future, this can be optimized further
         for player_id in player_ids:
             try:
-                player = self.persistence.get_player(player_id)
+                player = await asyncio.to_thread(self.persistence.get_player, player_id)
                 if player:
                     players[player_id] = player
             except Exception as e:
@@ -2327,7 +2327,7 @@ class ConnectionManager:
                 # Update room occupants using canonical room id
                 room_id = getattr(player, "current_room_id", None)
                 if self.persistence and room_id:
-                    room = self.persistence.get_room(room_id)
+                    room = await asyncio.to_thread(self.persistence.get_room, room_id)
                     if room and getattr(room, "id", None):
                         room_id = room.id
                 if room_id:
@@ -2341,7 +2341,7 @@ class ConnectionManager:
                     # On initial connection, we only send player_entered_game, not player_entered
                     # player_entered events will be triggered when players move between rooms
                     if self.persistence:
-                        room = self.persistence.get_room(room_id)
+                        room = await asyncio.to_thread(self.persistence.get_room, room_id)
                         if room:
                             # Add player to room's internal set without triggering event (initial connection)
                             player_id_str = str(player_id)
@@ -2476,7 +2476,7 @@ class ConnectionManager:
         try:
             room_id = getattr(player, "current_room_id", None)
             if self.persistence and room_id:
-                room = self.persistence.get_room(room_id)
+                room = await asyncio.to_thread(self.persistence.get_room, room_id)
                 if room and getattr(room, "id", None):
                     room_id = room.id
 
@@ -2596,7 +2596,7 @@ class ConnectionManager:
             # This ensures the PlayerLeftRoom event is published, which triggers
             # _handle_player_left() in event_handler, which sends structured room_occupants update
             if room_id and self.persistence:
-                room = self.persistence.get_room(room_id)
+                room = await asyncio.to_thread(self.persistence.get_room, room_id)
                 if room:
                     for key in list(keys_to_remove):
                         player_id_str = str(key)
@@ -2609,8 +2609,6 @@ class ConnectionManager:
                             # CRITICAL FIX: Wait for PlayerLeftRoom event to be processed
                             # The event is published synchronously but handled asynchronously
                             # We need to yield control to allow the event handler to run
-                            import asyncio
-
                             await asyncio.sleep(0)  # Yield to event loop
                         else:
                             logger.warning(
@@ -3275,7 +3273,7 @@ class ConnectionManager:
             # Get room information
             room_data = None
             if self.persistence and room_id:
-                room = self.persistence.get_room(room_id)
+                room = await asyncio.to_thread(self.persistence.get_room, room_id)
                 if room:
                     room_data = room.to_dict()
                     # CRITICAL: Convert player UUIDs to names - NEVER send UUIDs to client
@@ -3381,7 +3379,12 @@ class ConnectionManager:
                         "stats": stats_data,  # Include stats in fallback
                     }
             except Exception as e:
-                logger.error("Error getting complete player data in connection_manager", error=str(e), player_id=player_id, exc_info=True)
+                logger.error(
+                    "Error getting complete player data in connection_manager",
+                    error=str(e),
+                    player_id=player_id,
+                    exc_info=True,
+                )
                 # Final fallback to basic player data with empty stats
                 player_data_for_client = {
                     "player_id": str(getattr(player, "player_id", player_id)),
@@ -3406,10 +3409,12 @@ class ConnectionManager:
                 # Keep backward compatibility
                 room_data["occupants"] = occupants
 
-            logger.debug("Sending initial game state with structured occupants",
-                        occupants_count=len(occupants),
-                        players_count=len(player_names_list),
-                        npcs_count=len(npc_names_list))
+            logger.debug(
+                "Sending initial game state with structured occupants",
+                occupants_count=len(occupants),
+                players_count=len(player_names_list),
+                npcs_count=len(npc_names_list),
+            )
 
             game_state_event = build_event("game_state", game_state_data, player_id=player_id, room_id=room_id)
 
