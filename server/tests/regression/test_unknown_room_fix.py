@@ -7,7 +7,7 @@ in the dimensional mapping protocols of the Pnakotic Manuscripts.
 """
 
 import os
-from unittest.mock import Mock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
@@ -29,7 +29,7 @@ class TestUnknownRoomFix:
     def test_validate_and_fix_player_room_valid_room(self, persistence):
         """Test that players in valid rooms are not moved."""
         # Arrange
-        persistence.get_room = Mock(return_value=Mock())  # Room exists
+        persistence.get_room = AsyncMock(return_value=Mock())  # Room exists
 
         player = Player(name="TestPlayer", current_room_id="valid_room_123")
 
@@ -44,7 +44,7 @@ class TestUnknownRoomFix:
     def test_validate_and_fix_player_room_invalid_room(self, persistence):
         """Test that players in invalid rooms are moved to default room."""
         # Arrange
-        persistence.get_room = Mock(return_value=None)  # Room doesn't exist
+        persistence.get_room = AsyncMock(return_value=None)  # Room doesn't exist
 
         # Mock config to return expected default room
         with patch("server.config.get_config") as mock_get_config:
@@ -65,7 +65,7 @@ class TestUnknownRoomFix:
     def test_validate_and_fix_player_room_fallback_default(self, persistence):
         """Test that fallback default room is used if config is missing."""
         # Arrange
-        persistence.get_room = Mock(return_value=None)  # Room doesn't exist
+        persistence.get_room = AsyncMock(return_value=None)  # Room doesn't exist
 
         # Mock config to fail, forcing fallback to hardcoded default
         with patch("server.config.get_config", side_effect=Exception("Config error")):
@@ -82,7 +82,7 @@ class TestUnknownRoomFix:
     def test_validate_and_fix_player_room_config_error(self, persistence):
         """Test that fallback default room is used if config loading fails."""
         # Arrange
-        persistence.get_room = Mock(return_value=None)  # Room doesn't exist
+        persistence.get_room = AsyncMock(return_value=None)  # Room doesn't exist
 
         # Mock config to raise an exception
         with patch("server.config.get_config") as mock_get_config:

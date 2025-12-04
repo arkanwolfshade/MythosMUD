@@ -32,7 +32,7 @@ class TestConnectionManagerOccupantEvents:
     def mock_room_manager(self):
         """Create a mock room manager for testing."""
         room_manager = Mock()
-        room_manager.get_room_occupants = Mock()
+        room_manager.get_room_occupants = AsyncMock()
         return room_manager
 
     @pytest.fixture

@@ -106,7 +106,7 @@ class TestEventHandlerBroadcasting:
     def mock_connection_manager(self):
         """Create a mock connection manager."""
         cm = AsyncMock()
-        cm._get_player = Mock()
+        cm._get_player = AsyncMock()
         cm.persistence = Mock()
         cm.broadcast_to_room = AsyncMock()
         cm.subscribe_to_room = AsyncMock()

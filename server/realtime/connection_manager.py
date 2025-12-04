@@ -3877,7 +3877,7 @@ class ConnectionManager:
             # Get current room occupants
             # CRITICAL: Convert UUID keys to strings for room_manager compatibility
             online_players_str = {str(k): v for k, v in self.online_players.items()}
-            occ_infos = self.room_manager.get_room_occupants(room_id, online_players_str)
+            occ_infos = await self.room_manager.get_room_occupants(room_id, online_players_str)
             names: list[str] = []
             for occ in occ_infos:
                 name = occ.get("player_name") if isinstance(occ, dict) else None
@@ -3981,7 +3981,7 @@ class ConnectionManager:
             # Get current room occupants
             # CRITICAL: Convert UUID keys to strings for room_manager compatibility
             online_players_str = {str(k): v for k, v in self.online_players.items()}
-            occ_infos = self.room_manager.get_room_occupants(room_id, online_players_str)
+            occ_infos = await self.room_manager.get_room_occupants(room_id, online_players_str)
             names: list[str] = []
             for occ in occ_infos:
                 name = occ.get("player_name") if isinstance(occ, dict) else None

@@ -37,6 +37,7 @@ class TestNPCRoomIntegration:
         """Create a mock connection manager."""
         manager = MagicMock(spec=ConnectionManager)
         manager.persistence = MagicMock()
+        manager.persistence.get_room = AsyncMock()
         manager.broadcast_to_room = AsyncMock()
         return manager
 
@@ -297,6 +298,7 @@ class TestNPCRoomIntegrationRegression:
         """Create a mock connection manager."""
         manager = MagicMock(spec=ConnectionManager)
         manager.persistence = MagicMock()
+        manager.persistence.get_room = AsyncMock()
         manager.broadcast_to_room = AsyncMock()
         return manager
 

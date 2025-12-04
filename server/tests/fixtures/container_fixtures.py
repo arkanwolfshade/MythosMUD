@@ -239,7 +239,7 @@ def container_test_client():
             # Also mock synchronous methods
             mock_persistence.list_players = Mock(return_value=[])
             mock_persistence.get_player = Mock(return_value=None)
-            mock_persistence.get_room = Mock(return_value=None)
+            mock_persistence.get_room = AsyncMock(return_value=None)
             # Set mock persistence on container
             container.persistence = mock_persistence
             logger.info("Container persistence set to mock (defensive)")
@@ -283,7 +283,7 @@ def container_test_client():
             mock_persistence.async_get_room = AsyncMock(return_value=None)
             mock_persistence.list_players = Mock(return_value=[])
             mock_persistence.get_player = Mock(return_value=None)
-            mock_persistence.get_room = Mock(return_value=None)
+            mock_persistence.get_room = AsyncMock(return_value=None)
             persistence_to_use = mock_persistence
             container.persistence = mock_persistence
             logger.info("Created mock persistence (defensive check)")
@@ -342,7 +342,7 @@ def container_test_client():
             emergency_mock.async_get_room = AsyncMock(return_value=None)
             emergency_mock.list_players = Mock(return_value=[])
             emergency_mock.get_player = Mock(return_value=None)
-            emergency_mock.get_room = Mock(return_value=None)
+            emergency_mock.get_room = AsyncMock(return_value=None)
             container.persistence = emergency_mock
             app.state.persistence = emergency_mock
             if container.player_service:
@@ -607,7 +607,7 @@ def container_test_client_class():
             mock_persistence.async_get_room = AsyncMock(return_value=None)
             mock_persistence.list_players = Mock(return_value=[])
             mock_persistence.get_player = Mock(return_value=None)
-            mock_persistence.get_room = Mock(return_value=None)
+            mock_persistence.get_room = AsyncMock(return_value=None)
             container.persistence = mock_persistence
 
         persistence_to_use = container.persistence
@@ -638,7 +638,7 @@ def container_test_client_class():
             mock_persistence.async_get_room = AsyncMock(return_value=None)
             mock_persistence.list_players = Mock(return_value=[])
             mock_persistence.get_player = Mock(return_value=None)
-            mock_persistence.get_room = Mock(return_value=None)
+            mock_persistence.get_room = AsyncMock(return_value=None)
             persistence_to_use = mock_persistence
             container.persistence = mock_persistence
 
@@ -671,7 +671,7 @@ def container_test_client_class():
             emergency_mock.async_get_room = AsyncMock(return_value=None)
             emergency_mock.list_players = Mock(return_value=[])
             emergency_mock.get_player = Mock(return_value=None)
-            emergency_mock.get_room = Mock(return_value=None)
+            emergency_mock.get_room = AsyncMock(return_value=None)
             container.persistence = emergency_mock
             app.state.persistence = emergency_mock
             if container.player_service:

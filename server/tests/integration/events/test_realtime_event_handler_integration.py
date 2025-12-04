@@ -30,7 +30,7 @@ class TestRealTimeEventHandlerIntegration:
     def mock_connection_manager(self):
         """Create a mock connection manager."""
         cm = AsyncMock()
-        cm._get_player = Mock()
+        cm._get_player = AsyncMock()
         cm.persistence = Mock()
         cm.broadcast_to_room = AsyncMock()
         cm.subscribe_to_room = AsyncMock()
@@ -69,7 +69,7 @@ class TestRealTimeEventHandlerIntegration:
         # Setup mock player (must return player for the UUID)
         mock_player = Mock()
         mock_player.name = "TestPlayer"
-        mock_connection_manager._get_player = Mock(return_value=mock_player)
+        mock_connection_manager._get_player = AsyncMock(return_value=mock_player)
 
         # Setup mock room
         mock_room = Mock()
@@ -104,7 +104,7 @@ class TestRealTimeEventHandlerIntegration:
         # Setup mock player (must return player for the UUID)
         mock_player = Mock()
         mock_player.name = "TestPlayer"
-        mock_connection_manager._get_player = Mock(return_value=mock_player)
+        mock_connection_manager._get_player = AsyncMock(return_value=mock_player)
 
         # Setup mock room
         mock_room = Mock()
@@ -153,7 +153,7 @@ class TestRealTimeEventHandlerIntegration:
         player_id_uuid = uuid.UUID(test_player_id)
         mock_player = Mock()
         mock_player.name = "TestPlayer"
-        mock_connection_manager._get_player = Mock(return_value=mock_player)
+        mock_connection_manager._get_player = AsyncMock(return_value=mock_player)
 
         # Reset mock to clear any calls from room creation
         mock_connection_manager.broadcast_to_room.reset_mock()

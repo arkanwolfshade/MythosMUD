@@ -65,9 +65,9 @@ class TestWebSocketConnectionEvents:
         cm = AsyncMock(spec=ConnectionManager)
         cm.connect_websocket = AsyncMock(return_value=True)
         cm.disconnect_websocket = AsyncMock()
-        cm._get_player = Mock()
+        cm._get_player = AsyncMock()
         cm.persistence = Mock()
-        cm.get_room_occupants = Mock(return_value=[])
+        cm.get_room_occupants = AsyncMock(return_value=[])
         # Fix async mock issues - _get_room_occupants is not async
         cm._get_room_occupants = Mock(return_value=[])
         # Ensure the method is not treated as async

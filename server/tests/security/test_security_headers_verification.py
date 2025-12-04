@@ -78,7 +78,7 @@ class TestSecurityHeadersVerification:
         mock_persistence.get_player = Mock(side_effect=mock_get_player)
         mock_persistence.get_player_by_name = Mock(return_value=mock_player)
         mock_persistence.get_profession_by_id = Mock(return_value=mock_profession)
-        mock_persistence.get_room = Mock(side_effect=mock_get_room)
+        mock_persistence.get_room = AsyncMock(side_effect=mock_get_room)
         mock_persistence.save_player = Mock(return_value=None)
         mock_persistence.delete_player = Mock(return_value=True)
 

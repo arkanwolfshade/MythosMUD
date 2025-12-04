@@ -51,7 +51,7 @@ class TestComprehensiveIntegration:
         # Configure sync methods (backward compatibility)
         mock_persistence.list_players = Mock(return_value=[])
         mock_persistence.get_player = Mock(return_value=None)
-        mock_persistence.get_room = Mock(return_value=None)
+        mock_persistence.get_room = AsyncMock(return_value=None)
         mock_persistence.save_player = Mock(return_value=None)
         mock_persistence.delete_player = Mock(return_value=True)
 

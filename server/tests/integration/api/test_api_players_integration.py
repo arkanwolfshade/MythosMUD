@@ -74,7 +74,7 @@ class TestPlayerAPIIntegration:
         mock_persistence.get_player_by_name = Mock(return_value=None)
         mock_persistence.save_player = Mock(return_value=None)
         mock_persistence.delete_player = Mock(return_value=True)
-        mock_persistence.get_room = Mock(return_value=None)
+        mock_persistence.get_room = AsyncMock(return_value=None)
 
         # Mock player combat service methods (used by some endpoints)
         mock_persistence.apply_lucidity_loss = AsyncMock(return_value=None)

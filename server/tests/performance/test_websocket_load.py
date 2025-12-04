@@ -54,7 +54,7 @@ class TestWebSocketLoad:
             player.current_room_id = "test_room_001"
             player.get_stats = Mock(return_value={"health": 100, "level": 1})
 
-            connection_manager._get_player = Mock(return_value=player)
+            connection_manager._get_player = AsyncMock(return_value=player)
 
         # Connect all WebSockets concurrently
         tasks = [
@@ -87,7 +87,7 @@ class TestWebSocketLoad:
         player.current_room_id = "test_room_001"
         player.get_stats = Mock(return_value={"health": 100, "level": 1})
 
-        connection_manager._get_player = Mock(return_value=player)
+        connection_manager._get_player = AsyncMock(return_value=player)
         await connection_manager.connect_websocket(websocket, player_id)
 
         connection_id = connection_manager.get_connection_id_from_websocket(websocket)
@@ -136,7 +136,7 @@ class TestWebSocketLoad:
                 player.current_room_id = "test_room_001"
                 player.get_stats = Mock(return_value={"health": 100, "level": 1})
 
-                connection_manager._get_player = Mock(return_value=player)
+                connection_manager._get_player = AsyncMock(return_value=player)
                 await connection_manager.connect_websocket(websocket, player_id)
 
             # Disconnect all connections
@@ -189,7 +189,7 @@ class TestWebSocketLoad:
             player.current_room_id = "test_room_001"
             player.get_stats = Mock(return_value={"health": 100, "level": 1})
 
-            connection_manager._get_player = Mock(return_value=player)
+            connection_manager._get_player = AsyncMock(return_value=player)
             await connection_manager.connect_websocket(websocket, player_id)
 
             # Subscribe to room
@@ -232,7 +232,7 @@ class TestWebSocketLoad:
             player.current_room_id = "test_room_001"
             player.get_stats = Mock(return_value={"health": 100, "level": 1})
 
-            connection_manager._get_player = Mock(return_value=player)
+            connection_manager._get_player = AsyncMock(return_value=player)
             await connection_manager.connect_websocket(websocket, player_id)
 
             connection_id = connection_manager.get_connection_id_from_websocket(websocket)

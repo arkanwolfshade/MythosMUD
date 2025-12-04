@@ -66,7 +66,7 @@ class TestOccupantCountIntegration:
     def mock_room_manager(self):
         """Create a mock room manager."""
         room_manager = MagicMock()
-        room_manager.get_room_occupants = MagicMock(return_value=[])
+        room_manager.get_room_occupants = AsyncMock(return_value=[])
 
         # Track room subscriptions for testing
         room_subscriptions = {}  # room_id -> set of player_ids
@@ -76,7 +76,7 @@ class TestOccupantCountIntegration:
                 room_subscriptions[room_id] = set()
             room_subscriptions[room_id].add(player_id)
 
-        def mock_get_room_subscribers(room_id):
+        async def mock_get_room_subscribers(room_id):
             return room_subscriptions.get(room_id, set())
 
         def mock_unsubscribe_from_room(player_id, room_id):
@@ -84,7 +84,7 @@ class TestOccupantCountIntegration:
                 room_subscriptions[room_id].discard(player_id)
 
         room_manager.subscribe_to_room = MagicMock(side_effect=mock_subscribe_to_room)
-        room_manager.get_room_subscribers = MagicMock(side_effect=mock_get_room_subscribers)
+        room_manager.get_room_subscribers = AsyncMock(side_effect=mock_get_room_subscribers)
         room_manager.unsubscribe_from_room = MagicMock(side_effect=mock_unsubscribe_from_room)
 
         return room_manager
@@ -479,8 +479,8 @@ class TestOccupantCountSimpleIntegration:
     def mock_room_manager(self):
         """Create a mock room manager."""
         room_manager = MagicMock()
-        room_manager.get_room_occupants = MagicMock(return_value=[])
-        room_manager.get_room_subscribers = MagicMock(return_value=[])
+        room_manager.get_room_occupants = AsyncMock(return_value=[])
+        room_manager.get_room_subscribers = AsyncMock(return_value=[])
         return room_manager
 
     @pytest.fixture

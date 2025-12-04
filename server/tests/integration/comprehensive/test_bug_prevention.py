@@ -326,12 +326,12 @@ class TestUUIDSerializationIntegration:
         connection_manager.broadcast_to_room = AsyncMock()
         event_handler.connection_manager = connection_manager
         event_handler.connection_manager.persistence = Mock()
-        event_handler.connection_manager._get_player = Mock(return_value=Mock(name="TestPlayer"))
+        event_handler.connection_manager._get_player = AsyncMock(return_value=Mock(name="TestPlayer"))
 
         # Mock the room to return an empty list of players
         mock_room = Mock()
         mock_room.get_players = Mock(return_value=[])
-        event_handler.connection_manager.persistence.get_room = Mock(return_value=mock_room)
+        event_handler.connection_manager.persistence.get_room = AsyncMock(return_value=mock_room)
 
         # Create event with UUID objects
         player_id = uuid4()

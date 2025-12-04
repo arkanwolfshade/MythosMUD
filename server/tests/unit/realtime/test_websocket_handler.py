@@ -43,10 +43,10 @@ class TestWebSocketConnection:
         mock_cm = MagicMock()
         mock_cm.connect_websocket = AsyncMock(return_value=True)
         mock_cm.disconnect_websocket = AsyncMock()
-        mock_cm._get_player = Mock()
+        mock_cm._get_player = AsyncMock()
         mock_cm.mark_player_seen = Mock()
         mock_cm.persistence = Mock()
-        mock_cm.get_room_occupants = Mock(return_value=[])
+        mock_cm.get_room_occupants = AsyncMock(return_value=[])
         mock_cm.broadcast_to_room = AsyncMock()
         mock_cm.broadcast_global = AsyncMock()
         mock_cm.subscribe_to_room = AsyncMock()
@@ -90,7 +90,7 @@ class TestWebSocketConnection:
         mock_room.exits = {"north": "room_2"}
         mock_room.has_player = Mock(return_value=False)
         mock_room.player_entered = Mock()
-        mock_room.get_players = Mock(return_value=[])
+        mock_room.get_players = AsyncMock(return_value=[])
         mock_room.to_dict = Mock(return_value={"id": "room_1", "name": "Test Room"})
 
         mock_connection_manager._get_player.return_value = mock_player
@@ -163,7 +163,7 @@ class TestWebSocketConnection:
         mock_room.name = "Test Room"
         mock_room.has_player = Mock(return_value=False)
         mock_room.player_entered = Mock()
-        mock_room.get_players = Mock(return_value=[])
+        mock_room.get_players = AsyncMock(return_value=[])
         mock_room.to_dict = Mock(return_value={"id": "room_1"})
 
         mock_connection_manager._get_player.return_value = mock_player
@@ -349,7 +349,7 @@ class TestWebSocketCommandProcessing:
         original_container = getattr(fastapi_app.state, "container", None)
         mock_container = MagicMock()
         mock_cm = MagicMock()
-        mock_cm._get_player = Mock()
+        mock_cm._get_player = AsyncMock()
         mock_cm.persistence = Mock()
         mock_cm.app = Mock()
         mock_container.connection_manager = mock_cm
@@ -451,13 +451,13 @@ class TestWebSocketCommandProcessing:
 
         mock_room = Mock()
         mock_room.exits = {"north": "room_2"}
-        mock_room.get_players = Mock(return_value=[player_id])
+        mock_room.get_players = AsyncMock(return_value=[player_id])
 
         mock_target_room = Mock()
         mock_target_room.name = "North Room"
         mock_target_room.description = "A room to the north"
         mock_target_room.exits = {"south": "room_1"}
-        mock_target_room.get_players = Mock(return_value=[])
+        mock_target_room.get_players = AsyncMock(return_value=[])
 
         # Mock get_room to return different rooms based on room_id
         def mock_get_room(room_id):
@@ -549,7 +549,7 @@ class TestChatMessageHandling:
         original_container = getattr(fastapi_app.state, "container", None)
         mock_container = MagicMock()
         mock_cm = MagicMock()
-        mock_cm._get_player = Mock()
+        mock_cm._get_player = AsyncMock()
         mock_cm.broadcast_to_room = AsyncMock()
         mock_container.connection_manager = mock_cm
         fastapi_app.state.container = mock_container
@@ -607,9 +607,9 @@ class TestRoomUpdateBroadcasting:
         original_container = getattr(fastapi_app.state, "container", None)
         mock_container = MagicMock()
         mock_cm = MagicMock()
-        mock_cm._get_player = Mock()
+        mock_cm._get_player = AsyncMock()
         mock_cm.persistence = Mock()
-        mock_cm.get_room_occupants = Mock(return_value=[])
+        mock_cm.get_room_occupants = AsyncMock(return_value=[])
         mock_cm.broadcast_to_room = AsyncMock()
         mock_cm.subscribe_to_room = AsyncMock()
         mock_cm.unsubscribe_from_room = AsyncMock()
@@ -634,7 +634,7 @@ class TestRoomUpdateBroadcasting:
         mock_connection_manager._get_player.return_value = mock_player
 
         mock_room = Mock()
-        mock_room.get_players = Mock(return_value=[])
+        mock_room.get_players = AsyncMock(return_value=[])
         mock_room.get_objects = Mock(return_value=[])
         mock_room.get_npcs = Mock(return_value=[])
         mock_room.get_occupant_count = Mock(return_value=0)

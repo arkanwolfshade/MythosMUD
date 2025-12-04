@@ -70,7 +70,7 @@ class TestNPCCombatIntegrationService:
         npc_instance._stats = {"hp": 5, "max_hp": 10}
         npc_instance.current_room = room_id  # Set the room ID to match player
 
-        self.service._get_npc_instance = Mock(return_value=npc_instance)
+        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
         self.service._get_player_name = Mock(return_value="TestPlayer")
 
         # Execute
@@ -103,7 +103,7 @@ class TestNPCCombatIntegrationService:
         npc_instance = Mock()
         npc_instance.is_alive = False
 
-        self.service._get_npc_instance = Mock(return_value=npc_instance)
+        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
 
         # Execute
         result = await self.service.handle_player_attack_on_npc(
@@ -124,7 +124,7 @@ class TestNPCCombatIntegrationService:
         npc_id = str(uuid4())
         room_id = "test_room_001"
 
-        self.service._get_npc_instance = Mock(return_value=None)
+        self.service._get_npc_instance = AsyncMock(return_value=None)
 
         # Execute
         result = await self.service.handle_player_attack_on_npc(
@@ -137,7 +137,8 @@ class TestNPCCombatIntegrationService:
         assert result is False
         self.event_publisher.publish_player_attacked.assert_not_called()
 
-    def test_handle_npc_death_success(self):
+    @pytest.mark.asyncio
+    async def test_handle_npc_death_success(self):
         """Test successful NPC death handling."""
         # Setup
         npc_id = str(uuid4())
@@ -160,14 +161,14 @@ class TestNPCCombatIntegrationService:
         # Mock game mechanics service
         game_mechanics = Mock()
         game_mechanics.gain_experience.return_value = (True, "XP awarded")
-        self.persistence.get_game_mechanics_service = Mock(return_value=game_mechanics)
+        self.persistence.get_game_mechanics_service = AsyncMock(return_value=game_mechanics)
 
-        self.service._get_npc_instance = Mock(return_value=npc_instance)
-        self.service._get_npc_definition = Mock(return_value=npc_definition)
-        self.persistence.get_player = Mock(return_value=player)
+        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_definition = AsyncMock(return_value=npc_definition)
+        self.persistence.get_player = AsyncMock(return_value=player)
 
         # Execute
-        result = self.service.handle_npc_death(
+        result = await self.service.handle_npc_death(
             npc_id=npc_id,
             room_id=room_id,
             killer_id=killer_id,
@@ -261,7 +262,7 @@ class TestNPCCombatIntegrationService:
         npc_instance.name = "Test NPC"
         npc_instance.get_stats = Mock(side_effect=Exception("Test error"))
 
-        self.service._get_npc_instance = Mock(return_value=npc_instance)
+        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
 
         # Execute
         result = await self.service.handle_player_attack_on_npc(
@@ -273,17 +274,18 @@ class TestNPCCombatIntegrationService:
         # Verify
         assert result is False
 
-    def test_handle_npc_death_error_handling(self):
+    @pytest.mark.asyncio
+    async def test_handle_npc_death_error_handling(self):
         """Test error handling in NPC death."""
         # Setup
         npc_id = str(uuid4())
         room_id = "test_room_001"
 
         # Mock NPC instance that raises exception
-        self.service._get_npc_instance = Mock(side_effect=Exception("Test error"))
+        self.service._get_npc_instance = AsyncMock(side_effect=Exception("Test error"))
 
         # Execute
-        result = self.service.handle_npc_death(
+        result = await self.service.handle_npc_death(
             npc_id=npc_id,
             room_id=room_id,
         )

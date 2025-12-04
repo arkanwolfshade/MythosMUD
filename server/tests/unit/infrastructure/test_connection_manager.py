@@ -60,7 +60,7 @@ class TestConnectionManagerComprehensive:
         persistence = Mock()
         persistence.get_player = Mock()
         persistence.get_player_by_name = Mock()
-        persistence.get_room = Mock()
+        persistence.get_room = AsyncMock()
         return persistence
 
     def _create_mock_websocket(self):

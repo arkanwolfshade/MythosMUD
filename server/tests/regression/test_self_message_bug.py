@@ -42,7 +42,7 @@ class TestSelfMessageBug:
         # Mock player lookup
         mock_player = Mock()
         mock_player.name = "Ithaqua"
-        connection_manager._get_player = Mock(return_value=mock_player)
+        connection_manager._get_player = AsyncMock(return_value=mock_player)
 
         # Create event for Ithaqua entering a room
         player_id = uuid4()
@@ -89,13 +89,13 @@ class TestSelfMessageBug:
         # Mock the player lookup
         mock_player = Mock()
         mock_player.name = "TestPlayer"
-        connection_manager._get_player = Mock(return_value=mock_player)
+        connection_manager._get_player = AsyncMock(return_value=mock_player)
 
         # Mock persistence.get_room for chat logging
         mock_room = Mock()
         mock_room.name = "Test Room"
         connection_manager.persistence = Mock()
-        connection_manager.persistence.get_room = Mock(return_value=mock_room)
+        connection_manager.persistence.get_room = AsyncMock(return_value=mock_room)
 
         # Mock the room sync service to just pass through the event
         event_handler.room_sync_service._process_event_with_ordering = Mock(return_value=event)
@@ -133,7 +133,7 @@ class TestSelfMessageBug:
 
         # Mock room_manager to return subscribers (use UUID strings)
         mock_room_manager = Mock()
-        mock_room_manager.get_room_subscribers = Mock(return_value={str(player_id1), str(player_id2), str(player_id3)})
+        mock_room_manager.get_room_subscribers = AsyncMock(return_value={str(player_id1), str(player_id2), str(player_id3)})
         cm.room_manager = mock_room_manager
 
         # Create a test event
@@ -168,7 +168,7 @@ class TestSelfMessageBug:
 
         # Mock room_manager to return subscribers (use UUID strings)
         mock_room_manager = Mock()
-        mock_room_manager.get_room_subscribers = Mock(return_value={str(player_id1), str(player_id2), str(player_id3)})
+        mock_room_manager.get_room_subscribers = AsyncMock(return_value={str(player_id1), str(player_id2), str(player_id3)})
         cm.room_manager = mock_room_manager
 
         # Create a test event

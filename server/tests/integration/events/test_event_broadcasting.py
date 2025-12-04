@@ -91,7 +91,7 @@ class TestPlayerMovementMessageExclusion:
         # Mock _get_player to return a player
         mock_player = Mock()
         mock_player.name = player_name
-        event_handler.connection_manager._get_player = Mock(return_value=mock_player)
+        event_handler.connection_manager._get_player = AsyncMock(return_value=mock_player)
 
         # Create and handle a PlayerEnteredRoomEvent
         event = PlayerEnteredRoom(player_id=player_id, room_id=room_id)
@@ -119,7 +119,7 @@ class TestPlayerMovementMessageExclusion:
         # Mock _get_player to return a player
         mock_player = Mock()
         mock_player.name = player_name
-        event_handler.connection_manager._get_player = Mock(return_value=mock_player)
+        event_handler.connection_manager._get_player = AsyncMock(return_value=mock_player)
 
         # Create and handle a PlayerLeftRoomEvent
         event = PlayerLeftRoom(player_id=player_id, room_id=room_id)
@@ -149,7 +149,7 @@ class TestPlayerMovementMessageExclusion:
         connection_manager.room_subscriptions[room_id] = {player_1_id, player_2_id}
 
         # Mock _get_player to return room occupants
-        def mock_get_player(player_id):
+        async def mock_get_player(player_id):
             player = Mock()
             player.current_room_id = room_id
             return player

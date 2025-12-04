@@ -61,15 +61,15 @@ class TestSelfMessageExclusionBugs:
         # Mock the player lookup
         mock_player = Mock()
         mock_player.name = player_name
-        event_handler.connection_manager._get_player = Mock(return_value=mock_player)
+        event_handler.connection_manager._get_player = AsyncMock(return_value=mock_player)
 
         # Mock the persistence layer
         event_handler.connection_manager.persistence = Mock()
         mock_room = Mock()
-        mock_room.get_players = Mock(return_value=[])
+        mock_room.get_players = AsyncMock(return_value=[])
         mock_room.get_npcs = Mock(return_value=[])  # Fix: return empty list instead of Mock
         mock_room.name = "Test Room"  # Fix: provide string name instead of Mock
-        event_handler.connection_manager.persistence.get_room = Mock(return_value=mock_room)
+        event_handler.connection_manager.persistence.get_room = AsyncMock(return_value=mock_room)
 
         # Mock room sync service to pass through the event
         mock_processed_left = PlayerLeftRoom(player_id=player_id, room_id=room_id)
@@ -120,15 +120,15 @@ class TestSelfMessageExclusionBugs:
         # Mock the player lookup
         mock_player = Mock()
         mock_player.name = player_name
-        event_handler.connection_manager._get_player = Mock(return_value=mock_player)
+        event_handler.connection_manager._get_player = AsyncMock(return_value=mock_player)
 
         # Mock the persistence layer
         event_handler.connection_manager.persistence = Mock()
         mock_room = Mock()
-        mock_room.get_players = Mock(return_value=[])
+        mock_room.get_players = AsyncMock(return_value=[])
         mock_room.get_npcs = Mock(return_value=[])  # Fix: return empty list instead of Mock
         mock_room.name = "Test Room"  # Fix: provide string name instead of Mock
-        event_handler.connection_manager.persistence.get_room = Mock(return_value=mock_room)
+        event_handler.connection_manager.persistence.get_room = AsyncMock(return_value=mock_room)
 
         # Mock room sync service to pass through the event
         mock_processed_entered = PlayerEnteredRoom(player_id=player_id, room_id=room_id)
@@ -242,10 +242,10 @@ class TestEventOrderingAndTimingBugs:
         # Mock the persistence layer
         event_handler.connection_manager.persistence = Mock()
         mock_room = Mock()
-        mock_room.get_players = Mock(return_value=[])
+        mock_room.get_players = AsyncMock(return_value=[])
         mock_room.get_npcs = Mock(return_value=[])  # Fix: return empty list instead of Mock
         mock_room.name = "Test Room"  # Fix: provide string name instead of Mock
-        event_handler.connection_manager.persistence.get_room = Mock(return_value=mock_room)
+        event_handler.connection_manager.persistence.get_room = AsyncMock(return_value=mock_room)
 
         # Mock room sync service to pass through events with correct player_id
         def mock_process_event(evt):

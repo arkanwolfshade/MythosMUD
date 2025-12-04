@@ -33,7 +33,7 @@ class TestRunningEventLoop:
 
         # Create mock connection manager
         mock_connection_manager = AsyncMock()
-        mock_connection_manager._get_player = Mock()
+        mock_connection_manager._get_player = AsyncMock()
         mock_connection_manager.persistence = Mock()
         mock_connection_manager.broadcast_to_room = AsyncMock()
         mock_connection_manager.subscribe_to_room = AsyncMock()
@@ -70,7 +70,7 @@ class TestRunningEventLoop:
                 return mock_player if pid == test_player_id else None
             return mock_player if str(pid) == str(test_player_id) else None
 
-        mock_connection_manager._get_player = Mock(side_effect=mock_get_player)
+        mock_connection_manager._get_player = AsyncMock(side_effect=mock_get_player)
 
         event = PlayerEnteredRoom(player_id=str(test_player_id), room_id="test_room_001")
 
@@ -101,7 +101,7 @@ class TestRunningEventLoop:
 
         # Create mock connection manager
         mock_connection_manager = AsyncMock()
-        mock_connection_manager._get_player = Mock()
+        mock_connection_manager._get_player = AsyncMock()
         mock_connection_manager.persistence = Mock()
         mock_connection_manager.broadcast_to_room = AsyncMock()
         mock_connection_manager.subscribe_to_room = AsyncMock()
@@ -132,7 +132,7 @@ class TestRunningEventLoop:
                 return mock_player if pid == test_player_id else None
             return mock_player if str(pid) == str(test_player_id) else None
 
-        mock_connection_manager._get_player = Mock(side_effect=mock_get_player)
+        mock_connection_manager._get_player = AsyncMock(side_effect=mock_get_player)
 
         # Setup the room with proper mock - use the real room for persistence
         mock_connection_manager.persistence.get_room.return_value = room
@@ -200,7 +200,7 @@ class TestRunningEventLoop:
 
         # Create mock connection manager
         mock_connection_manager = AsyncMock()
-        mock_connection_manager._get_player = Mock()
+        mock_connection_manager._get_player = AsyncMock()
         mock_connection_manager.persistence = Mock()
         mock_connection_manager.broadcast_to_room = AsyncMock()
         mock_connection_manager.subscribe_to_room = AsyncMock()

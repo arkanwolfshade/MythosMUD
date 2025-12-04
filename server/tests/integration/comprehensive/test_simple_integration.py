@@ -25,8 +25,9 @@ class TestSimpleIntegration:
     def mock_connection_manager(self):
         """Create a mock connection manager with realistic behavior."""
         cm = AsyncMock()
-        cm._get_player = Mock()
+        cm._get_player = AsyncMock()
         cm.persistence = Mock()
+        cm.persistence.get_room = AsyncMock()
         cm.broadcast_to_room = AsyncMock()
         cm.subscribe_to_room = AsyncMock()
         cm.unsubscribe_from_room = AsyncMock()
