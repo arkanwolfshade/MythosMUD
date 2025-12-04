@@ -125,7 +125,7 @@ class TestNPCCombatIntegrationService:
         npc_id = str(uuid4())
         room_id = "test_room_001"
 
-        self.service._get_npc_instance = AsyncMock(return_value=None)
+        self.service._get_npc_instance = Mock(return_value=None)
 
         # Execute
         result = await self.service.handle_player_attack_on_npc(
@@ -283,7 +283,7 @@ class TestNPCCombatIntegrationService:
         room_id = "test_room_001"
 
         # Mock NPC instance that raises exception
-        self.service._get_npc_instance = AsyncMock(side_effect=Exception("Test error"))
+        self.service._get_npc_instance = Mock(side_effect=Exception("Test error"))
 
         # Execute
         result = await self.service.handle_npc_death(

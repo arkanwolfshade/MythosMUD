@@ -564,7 +564,8 @@ class TestNPCCombatIntegrationServiceComprehensive:
 
         assert result == "Unknown Player"
 
-    def test_despawn_npc_lifecycle_manager(self):
+    @pytest.mark.asyncio
+    async def test_despawn_npc_lifecycle_manager(self):
         """Test despawning NPC with lifecycle manager."""
         npc_id = str(uuid4())
         room_id = "test_room_001"
@@ -573,12 +574,13 @@ class TestNPCCombatIntegrationServiceComprehensive:
         lifecycle_manager = Mock()
         self.persistence.get_npc_lifecycle_manager = Mock(return_value=lifecycle_manager)
 
-        self.service._despawn_npc(npc_id, room_id)
+        await self.service._despawn_npc(npc_id, room_id)
 
         lifecycle_manager.record_npc_death.assert_called_once_with(npc_id)
         lifecycle_manager.despawn_npc.assert_called_once_with(npc_id, "combat_death")
 
-    def test_despawn_npc_spawning_service(self):
+    @pytest.mark.asyncio
+    async def test_despawn_npc_spawning_service(self):
         """Test despawning NPC with spawning service fallback."""
         npc_id = str(uuid4())
         room_id = "test_room_001"
@@ -596,12 +598,13 @@ class TestNPCCombatIntegrationServiceComprehensive:
         lifecycle_manager.despawn_npc = mock_despawn_npc
         self.persistence.get_npc_lifecycle_manager = Mock(return_value=lifecycle_manager)
 
-        self.service._despawn_npc(npc_id, room_id)
+        await self.service._despawn_npc(npc_id, room_id)
 
         # Verify NPC was removed from lifecycle manager's active_npcs
         assert npc_id not in lifecycle_manager.active_npcs
 
-    def test_despawn_npc_exception(self):
+    @pytest.mark.asyncio
+    async def test_despawn_npc_exception(self):
         """Test despawning NPC with exception."""
         npc_id = str(uuid4())
         room_id = "test_room_001"
@@ -609,7 +612,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         self.persistence.get_npc_lifecycle_manager = Mock(side_effect=Exception("Service error"))
 
         # Should not raise exception
-        self.service._despawn_npc(npc_id, room_id)
+        await self.service._despawn_npc(npc_id, room_id)
 
     def test_is_valid_uuid_valid(self):
         """Test UUID validation with valid UUID."""

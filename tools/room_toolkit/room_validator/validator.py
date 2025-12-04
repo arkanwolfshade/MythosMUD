@@ -25,7 +25,6 @@ from core.schema_validator import SchemaValidator
 @click.option("--verbose", "-v", is_flag=True, help="Detailed output")
 @click.option("--schema-only", is_flag=True, help="Only validate JSON schema")
 @click.option("--validate-configs", is_flag=True, help="Also validate configuration files")
-@click.option("--ignore", help="Comma-separated list of rule types to ignore")
 @click.option("--output-format", type=click.Choice(["console", "json"]), default="console")
 @click.option("--base-path", default="./data/local/rooms", help="Base directory for room files")
 @click.option("--no-colors", is_flag=True, help="Disable colored output")
@@ -39,7 +38,6 @@ def main(
     verbose: bool,
     schema_only: bool,
     validate_configs: bool,
-    ignore: str | None,
     output_format: str,
     base_path: str,
     no_colors: bool,
@@ -336,7 +334,7 @@ def main(
         # Exit with appropriate code
         sys.exit(0 if len(errors) == 0 else 1)
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-except  # CLI tool needs to catch all errors for user-friendly output
         if verbose:
             raise
         print(f"❌ Error: {e}")
