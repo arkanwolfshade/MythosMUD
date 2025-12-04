@@ -109,6 +109,7 @@ def test_player_stats_include_position_by_default():
     assert stats["position"] == "standing", "default position should be standing"
 
 
+@pytest.mark.slow
 @pytest.mark.asyncio
 async def test_position_persists_across_logout_login_cycle(async_session_factory):
     """Verify that player position changes persist after saving and reloading."""
@@ -151,6 +152,7 @@ async def test_position_persists_across_logout_login_cycle(async_session_factory
     assert reloaded_player.get_stats()["position"] == "sitting"
 
 
+@pytest.mark.slow
 @pytest.mark.asyncio
 async def test_missing_position_defaults_to_standing_on_load(async_session_factory):
     """Players with legacy stats lacking position should default to standing."""

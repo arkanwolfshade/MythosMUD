@@ -117,6 +117,7 @@ def build_player(player_id: str, user_id: str, name: str | None = None) -> Playe
     return player
 
 
+@pytest.mark.slow
 @pytest.mark.asyncio
 async def test_save_player_with_oversized_inventory_rejected(
     async_session_factory,
@@ -176,6 +177,7 @@ async def test_save_player_with_oversized_inventory_rejected(
     caplog.clear()
 
 
+@pytest.mark.slow
 @pytest.mark.asyncio
 async def test_save_player_with_invalid_equipped_payload_rejected(
     async_session_factory,
@@ -234,6 +236,7 @@ async def test_save_player_with_invalid_equipped_payload_rejected(
     caplog.clear()
 
 
+@pytest.mark.slow
 @pytest.mark.asyncio
 async def test_loading_player_with_corrupt_inventory_raises(
     async_session_factory,

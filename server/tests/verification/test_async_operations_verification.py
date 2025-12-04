@@ -273,6 +273,7 @@ class TestAsyncOperationsVerification:
         # Should complete without memory issues
         assert len(results) == 100
 
+    @pytest.mark.slow
     @pytest.mark.asyncio
     async def test_async_operations_with_real_persistence_layer(self):
         """Test async operations with a real persistence layer instance."""
