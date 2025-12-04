@@ -499,7 +499,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         lifecycle_record.definition = Mock()
         lifecycle_manager.lifecycle_records = {npc_id: lifecycle_record}
 
-        self.persistence.get_npc_lifecycle_manager = AsyncMock(return_value=lifecycle_manager)
+        self.persistence.get_npc_lifecycle_manager = Mock(return_value=lifecycle_manager)
 
         result = await self.service._get_npc_definition(npc_id)
 
@@ -514,7 +514,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         lifecycle_manager = Mock()
         lifecycle_manager.lifecycle_records = {}
 
-        self.persistence.get_npc_lifecycle_manager = AsyncMock(return_value=lifecycle_manager)
+        self.persistence.get_npc_lifecycle_manager = Mock(return_value=lifecycle_manager)
 
         result = await self.service._get_npc_definition(npc_id)
 
