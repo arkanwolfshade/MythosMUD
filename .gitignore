@@ -315,3 +315,7 @@ coverage/
 .nyc_output/
 *.lcov
 coverage-final.json
+
+
+#Ignore cursor AI rules
+.cursor\rules\codacy.mdc

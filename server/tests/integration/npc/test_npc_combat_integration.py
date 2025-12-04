@@ -69,8 +69,9 @@ class TestNPCCombatIntegrationService:
         npc_instance.take_damage = Mock(return_value=True)
         npc_instance._stats = {"hp": 5, "max_hp": 10}
         npc_instance.current_room = room_id  # Set the room ID to match player
+        npc_instance.room_id = room_id  # Also set room_id for compatibility
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_player_name = Mock(return_value="TestPlayer")
 
         # Execute
@@ -103,7 +104,7 @@ class TestNPCCombatIntegrationService:
         npc_instance = Mock()
         npc_instance.is_alive = False
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
 
         # Execute
         result = await self.service.handle_player_attack_on_npc(
@@ -163,7 +164,7 @@ class TestNPCCombatIntegrationService:
         game_mechanics.gain_experience.return_value = (True, "XP awarded")
         self.persistence.get_game_mechanics_service = AsyncMock(return_value=game_mechanics)
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_npc_definition = AsyncMock(return_value=npc_definition)
         self.persistence.get_player = AsyncMock(return_value=player)
 
@@ -262,7 +263,7 @@ class TestNPCCombatIntegrationService:
         npc_instance.name = "Test NPC"
         npc_instance.get_stats = Mock(side_effect=Exception("Test error"))
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
 
         # Execute
         result = await self.service.handle_player_attack_on_npc(

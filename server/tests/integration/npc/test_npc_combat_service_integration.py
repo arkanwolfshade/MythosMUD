@@ -71,7 +71,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         npc_instance.current_room = room_id  # Set the room ID to match player
         npc_instance.get_stats.return_value = {"hp": 50, "max_hp": 100, "dexterity": 10}
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_player_name = Mock(return_value="TestPlayer")
 
         result = await self.service.handle_player_attack_on_npc(
@@ -101,7 +101,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         npc_instance.current_room = room_id  # Set the room ID to match player
         npc_instance.get_stats.return_value = {"hp": 50, "max_hp": 100, "dexterity": 10}
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_player_name = Mock(return_value="TestPlayer")
 
         result = await self.service.handle_player_attack_on_npc(
@@ -143,7 +143,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         npc_instance.current_room = room_id
         npc_instance.get_stats.return_value = {"hp": 50, "max_hp": 100, "dexterity": 10}
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_player_name = Mock(return_value="TestPlayer")
 
         result = await self.service.handle_player_attack_on_npc(
@@ -182,7 +182,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         npc_instance.current_room = room_id  # Set the room ID to match player
         npc_instance.get_stats.return_value = {"hp": 0, "max_hp": 100, "dexterity": 10}
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_player_name = Mock(return_value="TestPlayer")
         self.service.handle_npc_death = Mock(return_value=True)
 
@@ -216,7 +216,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         npc_instance.current_room = room_id  # Set the room ID to match player
         npc_instance.get_stats.return_value = {"hp": 50, "max_hp": 100, "dexterity": 10}
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_player_name = Mock(return_value="TestPlayer")
 
         result = await self.service.handle_player_attack_on_npc(
@@ -245,7 +245,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         npc_instance.current_room = room_id  # Set the room ID to match player
         npc_instance.get_stats.return_value = {"hp": 50, "max_hp": 100, "dexterity": 10}
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_player_name = Mock(return_value="TestPlayer")
 
         result = await self.service.handle_player_attack_on_npc(
@@ -276,7 +276,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         player = Mock()
         player.stats.experience_points = 100
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_npc_definition = AsyncMock(return_value=npc_definition)
         self.persistence.get_player.return_value = player
 
@@ -308,7 +308,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         game_mechanics.gain_experience.return_value = (True, "XP awarded")
         self.service._game_mechanics = game_mechanics
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_npc_definition = AsyncMock(return_value=npc_definition)
         self.persistence.get_player.return_value = player
 
@@ -339,7 +339,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         game_mechanics = Mock()
         game_mechanics.gain_experience.return_value = (False, "XP award failed")
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_npc_definition = AsyncMock(return_value=npc_definition)
         self.persistence.get_player.return_value = player
         self.persistence.get_game_mechanics_service = AsyncMock(return_value=game_mechanics)
@@ -372,7 +372,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         game_mechanics.gain_experience.return_value = (True, "XP awarded")
         self.service._game_mechanics = game_mechanics
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_npc_definition = AsyncMock(return_value=npc_definition)
         self.persistence.get_player.return_value = player
 
@@ -392,7 +392,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         npc_instance = Mock()
         npc_instance.name = "Test NPC"
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_npc_definition = AsyncMock(return_value=None)
 
         result = await self.service.handle_npc_death(npc_id=npc_id, room_id=room_id)
@@ -412,7 +412,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         npc_instance = Mock()
         npc_instance.name = "Test NPC"
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_npc_definition = AsyncMock(return_value=None)
 
         result = await self.service.handle_npc_death(npc_id=npc_id, room_id=room_id, killer_id=killer_id, combat_id=combat_id)
@@ -434,7 +434,7 @@ class TestNPCCombatIntegrationServiceComprehensive:
         npc_instance = Mock()
         npc_instance.name = "Test NPC"
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_npc_definition = AsyncMock(return_value=None)
 
         result = await self.service.handle_npc_death(npc_id=npc_id, room_id=room_id, killer_id=killer_id)
@@ -488,7 +488,8 @@ class TestNPCCombatIntegrationServiceComprehensive:
 
             assert result is None
 
-    def test_get_npc_definition_success(self):
+    @pytest.mark.asyncio
+    async def test_get_npc_definition_success(self):
         """Test getting NPC definition successfully."""
         npc_id = str(uuid4())
 
@@ -498,13 +499,14 @@ class TestNPCCombatIntegrationServiceComprehensive:
         lifecycle_record.definition = Mock()
         lifecycle_manager.lifecycle_records = {npc_id: lifecycle_record}
 
-        self.persistence.get_npc_lifecycle_manager = Mock(return_value=lifecycle_manager)
+        self.persistence.get_npc_lifecycle_manager = AsyncMock(return_value=lifecycle_manager)
 
-        result = self.service._get_npc_definition(npc_id)
+        result = await self.service._get_npc_definition(npc_id)
 
         assert result == lifecycle_record.definition
 
-    def test_get_npc_definition_not_found(self):
+    @pytest.mark.asyncio
+    async def test_get_npc_definition_not_found(self):
         """Test getting NPC definition when not found."""
         npc_id = str(uuid4())
 
@@ -512,19 +514,20 @@ class TestNPCCombatIntegrationServiceComprehensive:
         lifecycle_manager = Mock()
         lifecycle_manager.lifecycle_records = {}
 
-        self.persistence.get_npc_lifecycle_manager = Mock(return_value=lifecycle_manager)
+        self.persistence.get_npc_lifecycle_manager = AsyncMock(return_value=lifecycle_manager)
 
-        result = self.service._get_npc_definition(npc_id)
+        result = await self.service._get_npc_definition(npc_id)
 
         assert result is None
 
-    def test_get_npc_definition_exception(self):
+    @pytest.mark.asyncio
+    async def test_get_npc_definition_exception(self):
         """Test getting NPC definition with exception."""
         npc_id = str(uuid4())
 
-        self.persistence.get_npc_lifecycle_manager = Mock(side_effect=Exception("Service error"))
+        self.persistence.get_npc_lifecycle_manager = AsyncMock(side_effect=Exception("Service error"))
 
-        result = self.service._get_npc_definition(npc_id)
+        result = await self.service._get_npc_definition(npc_id)
 
         assert result is None
 
@@ -670,7 +673,7 @@ class TestNPCCombatIntegrationServiceEdgeCases:
         npc_instance.name = "Test NPC"
         npc_instance.get_stats.return_value = {"hp": 50, "max_hp": 100, "dexterity": 10}
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_player_name = Mock(return_value="TestPlayer")
 
         # Mock exception during combat processing
@@ -700,7 +703,7 @@ class TestNPCCombatIntegrationServiceEdgeCases:
         # Mock player
         player = Mock()
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_npc_definition = AsyncMock(return_value=npc_definition)
         self.persistence.get_player.return_value = player
         self.persistence.get_game_mechanics_service = AsyncMock(side_effect=Exception("Service error"))
@@ -724,7 +727,7 @@ class TestNPCCombatIntegrationServiceEdgeCases:
         npc_definition = Mock()
         npc_definition.base_stats = "not_a_dict"
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_npc_definition = AsyncMock(return_value=npc_definition)
 
         result = await self.service.handle_npc_death(npc_id=npc_id, room_id=room_id, killer_id=killer_id)
@@ -746,7 +749,7 @@ class TestNPCCombatIntegrationServiceEdgeCases:
         npc_definition = Mock()
         npc_definition.base_stats = {"hp": 100}
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_npc_definition = AsyncMock(return_value=npc_definition)
 
         result = await self.service.handle_npc_death(npc_id=npc_id, room_id=room_id, killer_id=killer_id)
@@ -768,7 +771,7 @@ class TestNPCCombatIntegrationServiceEdgeCases:
         npc_definition = Mock()
         npc_definition.base_stats = {"xp_reward": 0}
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_npc_definition = AsyncMock(return_value=npc_definition)
 
         result = await self.service.handle_npc_death(npc_id=npc_id, room_id=room_id, killer_id=killer_id)
@@ -787,7 +790,7 @@ class TestNPCCombatIntegrationServiceEdgeCases:
         npc_instance = Mock()
         npc_instance.name = "Test NPC"
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_npc_definition = AsyncMock(return_value=None)
 
         result = await self.service.handle_npc_death(npc_id=npc_id, room_id=room_id, killer_id=killer_id)
@@ -807,7 +810,7 @@ class TestNPCCombatIntegrationServiceEdgeCases:
         npc_instance = Mock()
         npc_instance.name = "Test NPC"
 
-        self.service._get_npc_instance = AsyncMock(return_value=npc_instance)
+        self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_npc_definition = AsyncMock(return_value=None)
 
         result = await self.service.handle_npc_death(npc_id=npc_id, room_id=room_id, killer_id=killer_id, combat_id=combat_id)
