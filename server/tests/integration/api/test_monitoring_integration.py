@@ -159,12 +159,10 @@ class TestConnectionMonitoring:
         """Test that performance stats don't grow indefinitely."""
         # Add many performance entries to test memory management
         for _i in range(1500):  # More than the 1000 limit
-            connection_manager.performance_stats["connection_establishment_times"].append(("websocket", 10.0))
+            connection_manager.performance_tracker.record_connection_establishment("websocket", 10.0)
 
-        # The list should be capped at 1000 entries (this happens during connection establishment)
-        # For this test, we'll verify the memory management logic exists
-        assert len(connection_manager.performance_stats["connection_establishment_times"]) == 1500
-        # The actual memory management happens in the connection methods, not here
+        # The list should be capped at 1000 entries (auto-trimmed by PerformanceTracker)
+        assert len(connection_manager.performance_tracker.performance_stats["connection_establishment_times"]) == 1000
 
     @pytest.mark.skip(reason="TODO: Fix after async migration - connection tracking not persisting in test environment")
     @pytest.mark.asyncio
