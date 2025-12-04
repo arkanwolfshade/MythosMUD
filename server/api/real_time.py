@@ -60,7 +60,8 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
     websocket_app = getattr(websocket, "app", None)
     websocket_state = getattr(websocket_app, "state", None)
     connection_manager = _resolve_connection_manager_from_state(websocket_state)
-    if connection_manager is None or getattr(connection_manager, "persistence", None) is None:
+    # ARCHITECTURAL FIX: Check for async_persistence instead of old sync persistence
+    if connection_manager is None or getattr(connection_manager, "async_persistence", None) is None:
         # CRITICAL FIX: Must accept WebSocket before closing or sending messages
         await websocket.accept()
         await websocket.send_json({"type": "error", "message": "Service temporarily unavailable"})

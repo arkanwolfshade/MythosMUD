@@ -150,7 +150,9 @@ async def lifespan(app: FastAPI):
     if container.connection_manager is None:
         raise RuntimeError("Connection manager not initialized in container")
 
-    container.connection_manager.async_persistence = container.persistence
+    # CRITICAL FIX: Use async_persistence (not sync persistence!)
+    # This was overwriting the correct async_persistence set in container.py
+    container.connection_manager.async_persistence = container.async_persistence
     container.connection_manager._event_bus = container.event_bus
     container.connection_manager.app = app
 

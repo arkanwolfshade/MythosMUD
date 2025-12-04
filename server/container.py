@@ -332,7 +332,9 @@ class ApplicationContainer:
                 # ARCHITECTURAL FIX: Use async_persistence instead of sync persistence
                 # This eliminates the need for asyncio.to_thread() wrappers and provides
                 # true async database operations that don't block the event loop
+                # Set async_persistence on BOTH connection_manager and room_manager directly
                 self.connection_manager.async_persistence = self.async_persistence
+                self.connection_manager.room_manager.async_persistence = self.async_persistence
                 self.connection_manager._event_bus = self.event_bus
 
                 # Initialize real-time event handler with event bus and connection_manager
