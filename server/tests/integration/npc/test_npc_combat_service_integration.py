@@ -280,7 +280,9 @@ class TestNPCCombatIntegrationServiceComprehensive:
         self.service._get_npc_definition = AsyncMock(return_value=npc_definition)
         self.persistence.get_player.return_value = player
 
-        result = await self.service.handle_npc_death(npc_id=npc_id, room_id=room_id, killer_id=killer_id, combat_id=combat_id)
+        result = await self.service.handle_npc_death(
+            npc_id=npc_id, room_id=room_id, killer_id=killer_id, combat_id=combat_id
+        )
 
         assert result is True
         # Note: publish_npc_died and broadcast_combat_death are handled by CombatService, not in handle_npc_death
@@ -415,7 +417,9 @@ class TestNPCCombatIntegrationServiceComprehensive:
         self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_npc_definition = AsyncMock(return_value=None)
 
-        result = await self.service.handle_npc_death(npc_id=npc_id, room_id=room_id, killer_id=killer_id, combat_id=combat_id)
+        result = await self.service.handle_npc_death(
+            npc_id=npc_id, room_id=room_id, killer_id=killer_id, combat_id=combat_id
+        )
 
         assert result is True
         # Note: publish_npc_died is handled by CombatService, not in handle_npc_death
@@ -816,7 +820,9 @@ class TestNPCCombatIntegrationServiceEdgeCases:
         self.service._get_npc_instance = Mock(return_value=npc_instance)
         self.service._get_npc_definition = AsyncMock(return_value=None)
 
-        result = await self.service.handle_npc_death(npc_id=npc_id, room_id=room_id, killer_id=killer_id, combat_id=combat_id)
+        result = await self.service.handle_npc_death(
+            npc_id=npc_id, room_id=room_id, killer_id=killer_id, combat_id=combat_id
+        )
 
         assert result is True
         # Note: publish_npc_died is handled by CombatService, not in handle_npc_death
