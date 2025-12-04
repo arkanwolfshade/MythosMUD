@@ -681,7 +681,7 @@ class NATSMessageHandler:
                     continue  # Skip sender
 
                 # Check if player is currently in the message's room
-                is_in_room = self._is_player_in_room(player_id, room_id)
+                is_in_room = await self._is_player_in_room(player_id, room_id)
                 logger.debug(
                     "=== BROADCAST FILTERING DEBUG: Player in room check ===",
                     room_id=room_id,
@@ -890,7 +890,7 @@ class NATSMessageHandler:
 
         return global_user_manager
 
-    def _is_player_in_room(self, player_id: str, room_id: str) -> bool:
+    async def _is_player_in_room(self, player_id: str, room_id: str) -> bool:
         """
         Check if a player is currently in the specified room.
 
@@ -915,17 +915,17 @@ class NATSMessageHandler:
 
                     return canonical_player_room == canonical_message_room
 
-            # Fallback: check persistence layer
-            persistence = getattr(self.connection_manager, "persistence", None)
-            if persistence and hasattr(persistence, "get_player"):
-                player = persistence.get_player(player_id)
+            # Fallback: check async persistence layer
+            async_persistence = getattr(self.connection_manager, "async_persistence", None)
+            if async_persistence:
+                player = await async_persistence.get_player_by_id(player_id)
                 if player and not isinstance(player, Mock):
                     player_room_id = getattr(player, "current_room_id", None)
                     if isinstance(player_room_id, str) and player_room_id:
                         canonical_player_room = (
-                            self.connection_manager._canonical_room_id(player_room_id) or player_room_id
+                            await self.connection_manager._canonical_room_id(player_room_id) or player_room_id
                         )
-                        canonical_message_room = self.connection_manager._canonical_room_id(room_id) or room_id
+                        canonical_message_room = await self.connection_manager._canonical_room_id(room_id) or room_id
 
                         return canonical_player_room == canonical_message_room
 

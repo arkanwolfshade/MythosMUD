@@ -1437,8 +1437,8 @@ async def handle_put_command(
                 if not container_found:
                     try:
                         player_id_uuid = UUID(str(player.player_id))
-                        wearable_containers = await _SHARED_WEARABLE_CONTAINER_SERVICE.get_wearable_containers_for_player(
-                            player_id_uuid
+                        wearable_containers = (
+                            await _SHARED_WEARABLE_CONTAINER_SERVICE.get_wearable_containers_for_player(player_id_uuid)
                         )
                         logger.debug(
                             "Searching wearable containers for put command",

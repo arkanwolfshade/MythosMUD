@@ -584,8 +584,8 @@ async def handle_look_command(
                 if not container_found:
                     try:
                         player_id_uuid = UUID(str(player.player_id))
-                        wearable_containers = await _SHARED_WEARABLE_CONTAINER_SERVICE.get_wearable_containers_for_player(
-                            player_id_uuid
+                        wearable_containers = (
+                            await _SHARED_WEARABLE_CONTAINER_SERVICE.get_wearable_containers_for_player(player_id_uuid)
                         )
                         slot_lower = slot.lower() if slot else ""
                         item_instance_id = item.get("item_instance_id")

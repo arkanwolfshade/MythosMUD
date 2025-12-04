@@ -140,7 +140,7 @@ async def handle_websocket_connection(
                     canonical_room_id = getattr(room, "id", None) or player.current_room_id
 
                     # Get room occupants
-                    room_occupants = connection_manager.get_room_occupants(str(canonical_room_id))
+                    room_occupants = await connection_manager.get_room_occupants(str(canonical_room_id))
 
                     # Transform to list of player names for client (UI expects string[])
                     # CRITICAL: Validate that names are not UUIDs before adding
@@ -173,7 +173,7 @@ async def handle_websocket_connection(
                     room_data = room.to_dict() if hasattr(room, "to_dict") else room
                     # CRITICAL: Convert player UUIDs to names - NEVER send UUIDs to client
                     if isinstance(room_data, dict):
-                        room_data = connection_manager._convert_room_players_uuids_to_names(room_data)
+                        room_data = await connection_manager._convert_room_players_uuids_to_names(room_data)
 
                     # Debug: Log room exits to verify they're being loaded
                     if hasattr(room, "exits"):
@@ -395,7 +395,7 @@ async def handle_websocket_connection(
                         if room:
                             # Get room occupants and transform IDs to names
                             # AI Agent: Include both players AND NPCs in the occupants list
-                            room_occupants = connection_manager.get_room_occupants(str(canonical_room_id))
+                            room_occupants = await connection_manager.get_room_occupants(str(canonical_room_id))
                             occupant_names = []
                             try:
                                 # Add player names
@@ -453,7 +453,7 @@ async def handle_websocket_connection(
                             # CRITICAL: Convert player UUIDs to names - NEVER send UUIDs to client
                             room_data_for_update = room.to_dict() if hasattr(room, "to_dict") else room
                             if isinstance(room_data_for_update, dict):
-                                room_data_for_update = connection_manager._convert_room_players_uuids_to_names(
+                                room_data_for_update = await connection_manager._convert_room_players_uuids_to_names(
                                     room_data_for_update
                                 )
                             initial_state = build_event(
@@ -855,10 +855,10 @@ async def process_websocket_command(cmd: str, args: list, player_id: str, connec
         logger.error("Player object is not a Player instance", player_type=type(player))
         return {"result": "Player data error"}
 
-    # Get persistence from connection manager
-    persistence = connection_manager.persistence
-    if not persistence:
-        logger.warning("Persistence layer not available")
+    # Get async persistence from connection manager
+    async_persistence = connection_manager.async_persistence
+    if not async_persistence:
+        logger.warning("Async persistence layer not available")
         return {"result": "Game system unavailable"}
 
     # CRITICAL FIX: Removed special case for "go" command
@@ -999,9 +999,9 @@ async def broadcast_room_update(player_id: str, room_id: str, connection_manager
             connection_manager = app.state.container.connection_manager
 
         # Get room data
-        persistence = connection_manager.persistence
-        if not persistence:
-            logger.warning("Persistence layer not available for room update")
+        async_persistence = connection_manager.async_persistence
+        if not async_persistence:
+            logger.warning("Async persistence layer not available for room update")
             return
 
         from ..async_persistence import get_async_persistence
@@ -1019,7 +1019,7 @@ async def broadcast_room_update(player_id: str, room_id: str, connection_manager
         occupant_names = []
 
         # Get player occupants
-        room_occupants = connection_manager.get_room_occupants(room_id)
+        room_occupants = await connection_manager.get_room_occupants(room_id)
         try:
             for occ in room_occupants or []:
                 name = occ.get("player_name") or occ.get("name")
@@ -1079,7 +1079,7 @@ async def broadcast_room_update(player_id: str, room_id: str, connection_manager
             # Fallback to room.get_npcs() if lifecycle manager query fails
             # BUGFIX: Filter fallback NPCs to only include alive NPCs from active_npcs
             # As documented in investigation: 2025-11-30_session-001_npc-combat-start-failure.md
-            if persistence:
+            if async_persistence:
                 room_npc_ids = room.get_npcs()
                 logger.debug("DEBUG: Room has NPCs from fallback", room_id=room_id, npc_ids=room_npc_ids)
 

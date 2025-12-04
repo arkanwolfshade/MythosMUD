@@ -30,14 +30,14 @@ class RoomSubscriptionManager:
         self.room_subscriptions: dict[str, set[str]] = {}
         # Room occupants (room_id -> set of player_ids)
         self.room_occupants: dict[str, set[str]] = {}
-        # Reference to persistence layer (set during initialization)
-        self.persistence: Any | None = None
+        # Reference to async persistence layer (set during initialization)
+        self.async_persistence: Any | None = None
         # Non-persistent room drops (room_id -> list of stacks)
         self.room_drops: dict[str, list[dict[str, Any]]] = {}
 
-    def set_persistence(self, persistence: Any) -> None:
-        """Set the persistence layer reference."""
-        self.persistence = persistence
+    def set_async_persistence(self, async_persistence: Any) -> None:
+        """Set the async persistence layer reference."""
+        self.async_persistence = async_persistence
 
     def subscribe_to_room(self, player_id: str, room_id: str) -> bool:
         """
@@ -88,7 +88,7 @@ class RoomSubscriptionManager:
             logger.error("Error unsubscribing player from room", player_id=player_id, room_id=room_id, error=str(e))
             return False
 
-    def get_room_subscribers(self, room_id: str) -> set[str]:
+    async def get_room_subscribers(self, room_id: str) -> set[str]:
         """
         Get all players subscribed to a room.
 
@@ -278,7 +278,7 @@ class RoomSubscriptionManager:
             logger.error("Error removing occupant from room", player_id=player_id, room_id=room_id, error=str(e))
             return False
 
-    def get_room_occupants(self, room_id: str, online_players: dict[str, Any]) -> list[dict[str, Any]]:
+    async def get_room_occupants(self, room_id: str, online_players: dict[str, Any]) -> list[dict[str, Any]]:
         """
         Get list of occupants (players and NPCs) in a room.
 
@@ -377,8 +377,8 @@ class RoomSubscriptionManager:
                 # Fallback to room.get_npcs() if lifecycle manager query fails
                 # BUGFIX: Filter fallback NPCs to only include alive NPCs from active_npcs
                 # As documented in investigation: 2025-11-30_session-001_npc-combat-start-failure.md
-                if self.persistence:
-                    room = self.persistence.get_room(canonical_id)
+                if self.async_persistence:
+                    room = self.async_persistence.get_room_by_id(canonical_id)  # Sync method, uses cache
                     if room and hasattr(room, "get_npcs"):
                         room_npc_ids = room.get_npcs()
                         logger.debug(
@@ -505,11 +505,11 @@ class RoomSubscriptionManager:
         if room_id is None or room_id == "":
             return room_id
 
-        if self.persistence is None:
+        if self.async_persistence is None:
             return room_id
 
         try:
-            room = self.persistence.get_room(room_id)
+            room = self.async_persistence.get_room_by_id(room_id)  # Sync method, uses cache
             if room is not None and getattr(room, "id", None):
                 return room.id
         except Exception as e:

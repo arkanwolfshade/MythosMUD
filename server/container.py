@@ -329,7 +329,10 @@ class ApplicationContainer:
                 # Initialize connection manager FIRST (needed by other services)
                 self.connection_manager = ConnectionManager()
                 set_global_connection_manager(self.connection_manager)
-                self.connection_manager.persistence = self.persistence
+                # ARCHITECTURAL FIX: Use async_persistence instead of sync persistence
+                # This eliminates the need for asyncio.to_thread() wrappers and provides
+                # true async database operations that don't block the event loop
+                self.connection_manager.async_persistence = self.async_persistence
                 self.connection_manager._event_bus = self.event_bus
 
                 # Initialize real-time event handler with event bus and connection_manager
