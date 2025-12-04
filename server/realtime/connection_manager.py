@@ -978,7 +978,6 @@ class ConnectionManager:
             if self.async_persistence:
                 last_update = self.last_active_update_times.get(player_id, 0.0)
                 if now_ts - last_update >= self.last_active_update_interval:
-
                     try:
                         # TODO: Add update_player_last_active to async_persistence or use save_player
                         # For now, skip - not critical for event loop blocking
@@ -2312,7 +2311,6 @@ class ConnectionManager:
                 # Use update_player_last_active instead of save_player to avoid overwriting inventory
                 if self.async_persistence:
                     try:
-
                         # TODO: Add update_player_last_active to async_persistence or use save_player
                         # For now, skip - not critical for event loop blocking
                         logger.debug("Updated last_active for player on connection", player_id=player_id)

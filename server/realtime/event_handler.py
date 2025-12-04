@@ -1307,53 +1307,9 @@ class RealTimeEventHandler:
                             npc_ids=npc_ids[:5],  # Log first 5 for debugging
                         )
 
-                        # CRITICAL: Warn only if there's evidence of a format mismatch
-                        # Don't warn if NPCs are simply in different rooms (normal case)
-                        if total_active_npcs > 0 and npcs_matched == 0 and npcs_without_room == 0:
-                            # Collect sample NPC room IDs and check for potential format mismatches
-                            sample_npc_room_ids = []
-                            npcs_in_same_zone = 0
-                            sample_count = 0
-
-                            # Extract zone/sub-zone from queried room ID (format: earth_zone_subzone_room_roomname_###)
-                            queried_zone_parts = room_id.split("_")[:3] if "_" in room_id else []
-                            queried_zone_key = "_".join(queried_zone_parts) if len(queried_zone_parts) >= 3 else ""
-
-                            for _sample_npc_id, sample_npc_instance in active_npcs_dict.items():
-                                sample_current_room = getattr(sample_npc_instance, "current_room", None)
-                                sample_current_room_id = getattr(sample_npc_instance, "current_room_id", None)
-                                sample_npc_room_id = sample_current_room or sample_current_room_id
-                                if sample_npc_room_id:
-                                    sample_npc_room_id_str = str(sample_npc_room_id)
-                                    if sample_count < 3:  # Log first 3 NPCs as samples
-                                        sample_npc_room_ids.append(sample_npc_room_id_str)
-                                    # Check if NPC is in same zone/sub-zone (potential format mismatch indicator)
-                                    if queried_zone_key:
-                                        sample_zone_parts = (
-                                            sample_npc_room_id_str.split("_")[:3]
-                                            if "_" in sample_npc_room_id_str
-                                            else []
-                                        )
-                                        sample_zone_key = (
-                                            "_".join(sample_zone_parts) if len(sample_zone_parts) >= 3 else ""
-                                        )
-                                        if sample_zone_key == queried_zone_key:
-                                            npcs_in_same_zone += 1
-                                    sample_count += 1
-
-                            # Only warn if NPCs exist in the same zone/sub-zone but didn't match
-                            # This suggests a format mismatch rather than just "no NPCs in this room"
-                            if npcs_in_same_zone > 0:
-                                self._logger.warning(
-                                    "No NPCs matched room ID - possible room ID format mismatch",
-                                    room_id=room_id,
-                                    canonical_room_id=canonical_room_id,
-                                    total_active_npcs=total_active_npcs,
-                                    npcs_checked=npcs_checked,
-                                    npcs_in_same_zone=npcs_in_same_zone,
-                                    sample_npc_room_ids=sample_npc_room_ids,
-                                    npcs_without_room=npcs_without_room,
-                                )
+                        # Note: Not finding NPCs in a specific room is normal behavior
+                        # NPCs are distributed across multiple rooms in the game world
+                        # This is expected and not an error condition
                     else:
                         self._logger.warning(
                             "Lifecycle manager or active_npcs not available",

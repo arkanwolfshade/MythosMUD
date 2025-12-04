@@ -9,7 +9,7 @@ from datetime import UTC, datetime
 from enum import Enum
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field, computed_field
+from pydantic import BaseModel, ConfigDict, Field, computed_field, model_validator
 
 
 class AttributeType(str, Enum):
@@ -163,6 +163,28 @@ class Stats(BaseModel):
     def max_lucidity(self) -> int:
         """Calculate max lucidity based on wisdom."""
         return self.wisdom or 50
+
+    @model_validator(mode="after")
+    def validate_current_vs_max_stats(self) -> "Stats":
+        """
+        Ensure current_health and lucidity don't exceed their max values.
+
+        BUGFIX: Initialize current_health and lucidity to their max values if not explicitly provided.
+        This prevents new characters from having impossible stats like current_health=100, max_health=66.
+        """
+        # Compute max values directly to avoid mypy @computed_field inference issues
+        max_health_value = self.constitution or 50
+        max_lucidity_value = self.wisdom or 50
+
+        # Cap current_health at max_health
+        if self.current_health > max_health_value:
+            self.current_health = max_health_value
+
+        # Cap lucidity at max_lucidity
+        if self.lucidity > max_lucidity_value:
+            self.lucidity = max_lucidity_value
+
+        return self
 
     def get_attribute_modifier(self, attribute: AttributeType) -> int:
         """Get the modifier for a given attribute (standard D&D-style calculation)."""

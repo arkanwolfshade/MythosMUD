@@ -101,9 +101,9 @@ class NPCDefinitionResponse(BaseModel):
             npc_type=str(npc_def.npc_type),
             sub_zone_id=str(npc_def.sub_zone_id),
             room_id=str(npc_def.room_id),
-            base_stats=base_stats,  # type: ignore[arg-type]
-            behavior_config=behavior_config,  # type: ignore[arg-type]
-            ai_integration_stub=ai_integration_stub,  # type: ignore[arg-type]
+            base_stats=base_stats,
+            behavior_config=behavior_config,
+            ai_integration_stub=ai_integration_stub,
         )
 
 
@@ -133,6 +133,8 @@ class NPCSpawnRuleCreate(BaseModel):
 class NPCSpawnRuleResponse(BaseModel):
     """Model for NPC spawn rule responses."""
 
+    model_config = {"from_attributes": True}
+
     id: int
     npc_definition_id: int
     sub_zone_id: str
@@ -149,7 +151,7 @@ class NPCSpawnRuleResponse(BaseModel):
             sub_zone_id=str(spawn_rule.sub_zone_id),
             min_population=int(spawn_rule.min_population),
             max_population=int(spawn_rule.max_population),
-            spawn_conditions=json.loads(str(spawn_rule.spawn_conditions))  # type: ignore[arg-type]
+            spawn_conditions=json.loads(str(spawn_rule.spawn_conditions))
             if isinstance(spawn_rule.spawn_conditions, str)  # type: ignore[unreachable]
             else spawn_rule.spawn_conditions,
         )

@@ -829,12 +829,12 @@ class AppConfig(BaseSettings):
     """
 
     # Sub-configurations
-    server: ServerConfig = Field(default_factory=ServerConfig)  # type: ignore[arg-type]
-    database: DatabaseConfig = Field(default_factory=DatabaseConfig)  # type: ignore[arg-type]
+    server: ServerConfig = Field(default_factory=ServerConfig)
+    database: DatabaseConfig = Field(default_factory=DatabaseConfig)
     nats: NATSConfig = Field(default_factory=NATSConfig)
-    security: SecurityConfig = Field(default_factory=SecurityConfig)  # type: ignore[arg-type]
-    logging: LoggingConfig = Field(default_factory=LoggingConfig)  # type: ignore[arg-type]
-    game: GameConfig = Field(default_factory=GameConfig)  # type: ignore[arg-type]
+    security: SecurityConfig = Field(default_factory=SecurityConfig)
+    logging: LoggingConfig = Field(default_factory=LoggingConfig)
+    game: GameConfig = Field(default_factory=GameConfig)
     chat: ChatConfig = Field(default_factory=ChatConfig)
     time: TimeConfig = Field(default_factory=TimeConfig)
     cors: CORSConfig = Field(default_factory=CORSConfig)
