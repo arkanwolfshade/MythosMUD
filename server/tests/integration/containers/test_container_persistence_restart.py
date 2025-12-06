@@ -162,7 +162,7 @@ def container_service(persistence):
     return ContainerService(persistence=persistence)
 
 
-def _create_test_player(
+async def _create_test_player(
     persistence, player_id: UUID, name: str, room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001"
 ) -> Player:
     """Helper function to create a test player in the database."""
@@ -239,7 +239,7 @@ def _create_test_player(
         created_at=now,
         last_active=now,
     )
-    persistence.save_player(player)
+    await persistence.save_player(player)
     return player
 
 
@@ -322,7 +322,7 @@ class TestContainerPersistenceRestart:
         """Test that wearable containers persist across server restarts."""
         # Create test player first (entity_id must reference a real player)
         entity_id = uuid4()
-        _create_test_player(persistence, entity_id, f"TestPlayer_{entity_id.hex[:8]}")
+        await _create_test_player(persistence, entity_id, f"TestPlayer_{entity_id.hex[:8]}")
 
         # Create wearable container
         container_result = await persistence.create_container(
@@ -387,7 +387,7 @@ class TestContainerPersistenceRestart:
         owner_id = uuid4()
 
         # Create test player (owner)
-        _create_test_player(persistence, owner_id, f"TestPlayer_{owner_id.hex[:8]}", room_id)
+        await _create_test_player(persistence, owner_id, f"TestPlayer_{owner_id.hex[:8]}", room_id)
 
         # Create corpse container
         from datetime import UTC, datetime, timedelta
@@ -495,7 +495,7 @@ class TestContainerPersistenceRestart:
         player_id = uuid4()
 
         # Create test player
-        _create_test_player(persistence, player_id, f"TestPlayer_{player_id.hex[:8]}", room_id)
+        await _create_test_player(persistence, player_id, f"TestPlayer_{player_id.hex[:8]}", room_id)
 
         # Create container
         container_result = await persistence.create_container(
@@ -530,7 +530,7 @@ class TestContainerPersistenceRestart:
         )
 
         # Verify items added before restart
-        container_before_data = container_service.persistence.get_container(container_id)
+        container_before_data = await container_service.persistence.get_container(container_id)
         assert container_before_data is not None
         container_before = ContainerComponent.model_validate(_filter_container_data(container_before_data))
         assert len(container_before.items) == 1
@@ -608,7 +608,7 @@ class TestContainerPersistenceRestart:
         room2_id = "earth_arkhamcity_sanitarium_room_hallway_001"
 
         # Create containers in different rooms
-        container1_result = persistence.create_container(
+        container1_result = await persistence.create_container(
             source_type="environment",
             room_id=room1_id,
             capacity_slots=10,
@@ -620,7 +620,7 @@ class TestContainerPersistenceRestart:
             else UUID(container1_result["container_id"])
         )
 
-        container2_result = persistence.create_container(
+        container2_result = await persistence.create_container(
             source_type="environment",
             room_id=room2_id,
             capacity_slots=10,

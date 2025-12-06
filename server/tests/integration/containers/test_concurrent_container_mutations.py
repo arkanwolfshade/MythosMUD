@@ -159,7 +159,7 @@ def container_service(ensure_containers_table):
     return ContainerService(persistence=persistence)
 
 
-def _create_test_player(persistence, player_id: UUID, name: str, room_id: str = "test_room_001") -> Player:
+async def _create_test_player(persistence, player_id: UUID, name: str, room_id: str = "test_room_001") -> Player:
     """Helper function to create a test player in the database."""
     from datetime import UTC, datetime
 
@@ -234,7 +234,7 @@ def _create_test_player(persistence, player_id: UUID, name: str, room_id: str = 
         created_at=now,
         last_active=now,
     )
-    persistence.save_player(player)
+    await persistence.save_player(player)
     return player
 
 
@@ -252,8 +252,8 @@ class TestConcurrentContainerMutations:
             player2_id = uuid4()
 
             # Create test players in database (in the same room as the container)
-            _create_test_player(container_service.persistence, player1_id, f"TestPlayer1_{player1_id.hex[:8]}", room_id)
-            _create_test_player(container_service.persistence, player2_id, f"TestPlayer2_{player2_id.hex[:8]}", room_id)
+            await _create_test_player(container_service.persistence, player1_id, f"TestPlayer1_{player1_id.hex[:8]}", room_id)
+            await _create_test_player(container_service.persistence, player2_id, f"TestPlayer2_{player2_id.hex[:8]}", room_id)
 
             # Create container in persistence
             container_result = await container_service.persistence.create_container(
@@ -302,7 +302,7 @@ class TestConcurrentContainerMutations:
         player_id = uuid4()
 
         # Create test player in database
-        _create_test_player(container_service.persistence, player_id, f"TestPlayer_{player_id.hex[:8]}", room_id)
+        await _create_test_player(container_service.persistence, player_id, f"TestPlayer_{player_id.hex[:8]}", room_id)
 
         # Create container with items
         container_result = await container_service.persistence.create_container(
@@ -390,8 +390,8 @@ class TestConcurrentContainerMutations:
         player2_id = uuid4()
 
         # Create test players in database
-        _create_test_player(container_service.persistence, player1_id, f"TestPlayer1_{player1_id.hex[:8]}", room_id)
-        _create_test_player(container_service.persistence, player2_id, f"TestPlayer2_{player2_id.hex[:8]}", room_id)
+        await _create_test_player(container_service.persistence, player1_id, f"TestPlayer1_{player1_id.hex[:8]}", room_id)
+        await _create_test_player(container_service.persistence, player2_id, f"TestPlayer2_{player2_id.hex[:8]}", room_id)
 
         # Create container
         container_result = await container_service.persistence.create_container(
@@ -465,7 +465,7 @@ class TestConcurrentContainerMutations:
         player_id = uuid4()
 
         # Create test player in database
-        _create_test_player(container_service.persistence, player_id, f"TestPlayer_{player_id.hex[:8]}", room_id)
+        await _create_test_player(container_service.persistence, player_id, f"TestPlayer_{player_id.hex[:8]}", room_id)
 
         # Create container
         container_result = await container_service.persistence.create_container(
@@ -517,7 +517,7 @@ class TestConcurrentContainerMutations:
         player_id = uuid4()
 
         # Create test player in database
-        _create_test_player(container_service.persistence, player_id, f"TestPlayer_{player_id.hex[:8]}", room_id)
+        await _create_test_player(container_service.persistence, player_id, f"TestPlayer_{player_id.hex[:8]}", room_id)
 
         # Create container
         container_result = await container_service.persistence.create_container(
@@ -581,7 +581,7 @@ class TestConcurrentContainerMutations:
         player_id = uuid4()
 
         # Create test player in database
-        _create_test_player(container_service.persistence, player_id, f"TestPlayer_{player_id.hex[:8]}", room_id)
+        await _create_test_player(container_service.persistence, player_id, f"TestPlayer_{player_id.hex[:8]}", room_id)
 
         # Create container with capacity of 2 items
         container_result = await container_service.persistence.create_container(

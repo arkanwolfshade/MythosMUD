@@ -11,7 +11,7 @@ existing dimensional architecture.
 
 import asyncio
 import time
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 from uuid import uuid4
 
 import pytest
@@ -503,12 +503,12 @@ class TestNPCCombatIntegration:
         # Mock the persistence layer to prevent database access issues
         mock_player = MagicMock()
         mock_player.stats.model_dump.return_value = {"constitution": 10, "health": 100}
-        mock_persistence.get_player_by_id = MagicMock(return_value=mock_player)
+        mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
 
         # Mock the game mechanics service
         mock_game_mechanics = MagicMock()
         # CRITICAL FIX: damage_player returns (success, message) tuple, not just True
-        mock_game_mechanics.damage_player.return_value = (True, "Damage applied successfully")
+        mock_game_mechanics.damage_player = AsyncMock(return_value=(True, "Damage applied successfully"))
 
         # Create combat integration with mocked dependencies
         with patch("server.npc.combat_integration.GameMechanicsService", return_value=mock_game_mechanics):

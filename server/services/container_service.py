@@ -12,7 +12,6 @@ Uses asyncio.to_thread() for synchronous persistence calls.
 
 from __future__ import annotations
 
-import asyncio
 import uuid
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
@@ -386,7 +385,7 @@ class ContainerService:
         transfer_mutation_token = mutation_token
 
         # Get container
-        container_data = await asyncio.to_thread(self.persistence.get_container, container_id)
+        container_data = await self.persistence.get_container(container_id)
         if not container_data:
             log_and_raise(
                 ContainerNotFoundError,
@@ -718,7 +717,7 @@ class ContainerService:
 
         self._verify_container_open(container_id, player_id, mutation_token)
 
-        container_data = await asyncio.to_thread(self.persistence.get_container, container_id)
+        container_data = await self.persistence.get_container(container_id)
         if not container_data:
             log_and_raise(
                 ContainerNotFoundError,
@@ -814,7 +813,7 @@ class ContainerService:
         self._verify_container_open(container_id, player_id, mutation_token)
 
         # Get container
-        container_data = await asyncio.to_thread(self.persistence.get_container, container_id)
+        container_data = await self.persistence.get_container(container_id)
         if not container_data:
             log_and_raise(
                 ContainerNotFoundError,
@@ -1104,7 +1103,7 @@ class ContainerService:
         )
 
         # Get container
-        container_data = await asyncio.to_thread(self.persistence.get_container, container_id)
+        container_data = await self.persistence.get_container(container_id)
         if not container_data:
             log_and_raise(
                 ContainerNotFoundError,
@@ -1190,7 +1189,7 @@ class ContainerService:
         logger.info("Unlocking container", container_id=str(container_id), player_id=str(player_id))
 
         # Get container
-        container_data = await asyncio.to_thread(self.persistence.get_container, container_id)
+        container_data = await self.persistence.get_container(container_id)
         if not container_data:
             log_and_raise(
                 ContainerNotFoundError,

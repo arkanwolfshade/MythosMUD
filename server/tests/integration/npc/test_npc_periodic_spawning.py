@@ -410,6 +410,7 @@ class TestCompleteLifecycle:
     """Test complete NPC lifecycle with periodic spawning."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(60)  # This test needs time for death suppression and respawn delays
     async def test_complete_spawn_despawn_respawn_cycle(
         self,
         lifecycle_manager,
@@ -436,7 +437,7 @@ class TestCompleteLifecycle:
 
         # Ensure lifecycle manager has persistence
         mock_persistence = MagicMock()
-        mock_persistence.get_room.return_value = fake_room
+        mock_persistence.get_room_by_id.return_value = fake_room
         lifecycle_manager.persistence = mock_persistence
 
         with patch.object(lifecycle_manager, "_can_spawn_npc", return_value=True):
