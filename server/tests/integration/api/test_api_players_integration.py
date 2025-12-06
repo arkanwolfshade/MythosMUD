@@ -55,7 +55,9 @@ class TestPlayerAPIIntegration:
 
         # Configure async mock behaviors (used by API endpoints)
         mock_persistence.async_list_players = AsyncMock(return_value=[])
+        mock_persistence.list_players = AsyncMock(return_value=[])  # Add missing list_players method
         mock_persistence.async_get_player = AsyncMock(return_value=None)
+        mock_persistence.get_player_by_id = AsyncMock(return_value=None)  # Also mock get_player_by_id (without async_ prefix)
         mock_persistence.async_get_player_by_name = AsyncMock(return_value=None)
         mock_persistence.async_save_player = AsyncMock(return_value=None)
         mock_persistence.async_delete_player = AsyncMock(return_value=True)
@@ -67,12 +69,14 @@ class TestPlayerAPIIntegration:
         mock_profession.description = "Test Description"
         mock_profession.flavor_text = "Test Flavor"
         mock_persistence.async_get_profession_by_id = AsyncMock(return_value=mock_profession)
+        mock_persistence.get_profession_by_id = AsyncMock(return_value=mock_profession)  # Also mock sync method name
 
         # Configure sync mock behaviors (for backward compatibility)
+        # Note: delete_player is actually async, so use AsyncMock
         mock_persistence.get_player = Mock(return_value=None)
         mock_persistence.get_player_by_name = Mock(return_value=None)
         mock_persistence.save_player = Mock(return_value=None)
-        mock_persistence.delete_player = Mock(return_value=True)
+        mock_persistence.delete_player = AsyncMock(return_value=True)
         mock_persistence.get_room = AsyncMock(return_value=None)
 
         # Mock player combat service methods (used by some endpoints)
@@ -157,6 +161,7 @@ class TestPlayerAPIIntegration:
         """Test successful player listing via API."""
         # Arrange
         mock_persistence_for_api.async_list_players.return_value = []
+        mock_persistence_for_api.list_players.return_value = []  # Also set list_players return value
 
         # Act
         response = container_test_client_class.get("/api/players/")
@@ -169,6 +174,7 @@ class TestPlayerAPIIntegration:
         # Arrange
         player_id = str(uuid.uuid4())
         mock_persistence_for_api.async_get_player.return_value = sample_player_data
+        mock_persistence_for_api.get_player_by_id.return_value = sample_player_data  # Code calls get_player_by_id()
 
         # Act
         response = container_test_client_class.get(f"/api/players/{player_id}")
@@ -184,6 +190,7 @@ class TestPlayerAPIIntegration:
 
         player_id = str(uuid.uuid4())
         mock_persistence_for_api.async_get_player.return_value = sample_player_data
+        mock_persistence_for_api.get_player_by_id.return_value = sample_player_data  # Code calls get_player_by_id()
 
         async def override_current_user():
             user = Mock()
@@ -221,6 +228,7 @@ class TestPlayerAPIIntegration:
         # Arrange
         player_id = str(uuid.uuid4())
         mock_persistence_for_api.async_get_player.return_value = sample_player_data
+        mock_persistence_for_api.get_player_by_id.return_value = sample_player_data  # Code calls get_player_by_id()
         mock_persistence_for_api.async_delete_player.return_value = (True, "Player deleted successfully")
 
         # Act
@@ -236,6 +244,7 @@ class TestPlayerAPIIntegration:
         # Arrange
         player_id = str(uuid.uuid4())
         mock_persistence_for_api.async_get_player.return_value = sample_player_data
+        mock_persistence_for_api.get_player_by_id.return_value = sample_player_data  # Code calls get_player_by_id()
         mock_persistence_for_api.apply_lucidity_loss.return_value = None
 
         # Act
@@ -249,11 +258,12 @@ class TestPlayerAPIIntegration:
     def test_apply_fear_success(self, container_test_client_class, mock_persistence_for_api, sample_player_data):
         """Test successful fear application via API."""
         # Arrange
+        player_id = str(uuid.uuid4())
         mock_persistence_for_api.async_get_player.return_value = sample_player_data
+        mock_persistence_for_api.get_player_by_id.return_value = sample_player_data  # Code calls get_player_by_id()
         mock_persistence_for_api.apply_fear.return_value = None
 
         # Act
-        player_id = str(uuid.uuid4())
         response = container_test_client_class.post(
             f"/api/players/{player_id}/fear", json={"amount": 5, "source": "test"}
         )
@@ -264,11 +274,12 @@ class TestPlayerAPIIntegration:
     def test_apply_corruption_success(self, container_test_client_class, mock_persistence_for_api, sample_player_data):
         """Test successful corruption application."""
         # Arrange
+        player_id = str(uuid.uuid4())
         mock_persistence_for_api.async_get_player.return_value = sample_player_data
+        mock_persistence_for_api.get_player_by_id.return_value = sample_player_data  # Code calls get_player_by_id()
         mock_persistence_for_api.apply_corruption.return_value = None
 
         # Act
-        player_id = str(uuid.uuid4())
         response = container_test_client_class.post(
             f"/api/players/{player_id}/corruption", json={"amount": 3, "source": "test"}
         )
@@ -281,11 +292,12 @@ class TestPlayerAPIIntegration:
     ):
         """Test successful occult knowledge gain."""
         # Arrange
+        player_id = str(uuid.uuid4())
         mock_persistence_for_api.async_get_player.return_value = sample_player_data
+        mock_persistence_for_api.get_player_by_id.return_value = sample_player_data  # Code calls get_player_by_id()
         mock_persistence_for_api.gain_occult_knowledge.return_value = None
 
         # Act
-        player_id = str(uuid.uuid4())
         response = container_test_client_class.post(
             f"/api/players/{player_id}/occult-knowledge", json={"amount": 2, "source": "test"}
         )
@@ -296,11 +308,12 @@ class TestPlayerAPIIntegration:
     def test_heal_player_success(self, container_test_client_class, mock_persistence_for_api, sample_player_data):
         """Test successful player healing."""
         # Arrange
+        player_id = str(uuid.uuid4())
         mock_persistence_for_api.async_get_player.return_value = sample_player_data
+        mock_persistence_for_api.get_player_by_id.return_value = sample_player_data  # Code calls get_player_by_id()
         mock_persistence_for_api.heal_player.return_value = None
 
         # Act
-        player_id = str(uuid.uuid4())
         response = container_test_client_class.post(f"/api/players/{player_id}/heal", json={"amount": 20})
 
         # Assert
@@ -309,11 +322,12 @@ class TestPlayerAPIIntegration:
     def test_damage_player_success(self, container_test_client_class, mock_persistence_for_api, sample_player_data):
         """Test successful player damage."""
         # Arrange
+        player_id = str(uuid.uuid4())
         mock_persistence_for_api.async_get_player.return_value = sample_player_data
+        mock_persistence_for_api.get_player_by_id.return_value = sample_player_data  # Code calls get_player_by_id()
         mock_persistence_for_api.damage_player.return_value = None
 
         # Act
-        player_id = str(uuid.uuid4())
         response = container_test_client_class.post(
             f"/api/players/{player_id}/damage", json={"amount": 15, "damage_type": "physical"}
         )

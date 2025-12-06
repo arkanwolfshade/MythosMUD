@@ -47,12 +47,12 @@ class TestComprehensiveIntegration:
         mock_persistence.async_save_player = AsyncMock(return_value=None)
         mock_persistence.async_delete_player = AsyncMock(return_value=True)
 
-        # Configure sync methods (backward compatibility)
-        mock_persistence.list_players = Mock(return_value=[])
+        # Configure sync methods (list_players is actually async, so use AsyncMock)
+        mock_persistence.list_players = AsyncMock(return_value=[])
         mock_persistence.get_player = Mock(return_value=None)
         mock_persistence.get_room = AsyncMock(return_value=None)
         mock_persistence.save_player = Mock(return_value=None)
-        mock_persistence.delete_player = Mock(return_value=True)
+        mock_persistence.delete_player = AsyncMock(return_value=True)  # delete_player is async
 
         # Replace container's persistence with mock
         app.state.container.persistence = mock_persistence

@@ -55,13 +55,23 @@ def _filter_container_data(container_data: dict[str, Any]) -> dict[str, Any]:
     The database returns created_at and updated_at fields, but the ContainerComponent
     model has extra="forbid", so these fields must be removed before validation.
 
+    Also converts items_json to items and metadata_json to metadata to match
+    the ContainerComponent model field names.
+
     Args:
         container_data: Raw container data from database
 
     Returns:
-        Filtered container data without database-specific fields
+        Filtered container data without database-specific fields, with field names converted
     """
     filtered = {k: v for k, v in container_data.items() if k not in ("created_at", "updated_at")}
+
+    # Convert items_json to items and metadata_json to metadata for ContainerComponent model
+    if "items_json" in filtered:
+        filtered["items"] = filtered.pop("items_json")
+    if "metadata_json" in filtered:
+        filtered["metadata"] = filtered.pop("metadata_json")
+
     return filtered
 
 

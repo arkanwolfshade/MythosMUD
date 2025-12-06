@@ -66,7 +66,10 @@ class BehaviorEngine:
             )
             return True
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
+            # Defensive: Catch all exceptions when adding behavior rules
+            # This handles malformed input (TypeError, KeyError, AttributeError)
+            # and ensures the method always returns a bool
             logger.error("Error adding behavior rule", error=str(e))
             return False
 
@@ -591,26 +594,33 @@ class NPCBase(ABC):
                 # Use the movement integration system for enhanced functionality
                 from .movement_integration import NPCMovementIntegration
 
-                # Get event bus from persistence if available
+                # Get event bus and persistence from container if available
                 event_bus = getattr(self, "_event_bus", None)
-                if not event_bus and hasattr(self, "definition"):
-                    # Try to get event bus from persistence
+                persistence = None
+
+                if not event_bus or not persistence:
                     try:
-                        # Get event bus from container or use None
+                        # Get event bus and persistence from container
                         from ..container import ApplicationContainer
 
                         container = ApplicationContainer.get_instance()
                         if container:
-                            event_bus = getattr(container, "event_bus", None)
-                        else:
-                            event_bus = None
+                            if not event_bus:
+                                event_bus = getattr(container, "event_bus", None)
+                            if not persistence:
+                                persistence = getattr(container, "async_persistence", None)
                     except (ImportError, AttributeError, RuntimeError) as e:
                         logger.error(
                             "Error getting persistence or event bus", error=str(e), error_type=type(e).__name__
                         )
-                        pass
 
-                movement_integration = NPCMovementIntegration(event_bus)
+                if not persistence:
+                    logger.error(
+                        "persistence (async_persistence) is required for NPCMovementIntegration", npc_id=self.npc_id
+                    )
+                    return False
+
+                movement_integration = NPCMovementIntegration(event_bus, persistence=persistence)
                 success = movement_integration.move_npc_to_room(self.npc_id, self.current_room or "unknown", room_id)
 
                 if success:
@@ -846,14 +856,14 @@ class NPCBase(ABC):
         return npc
 
     # Base action handlers
-    def _handle_die(self, context: dict[str, Any]) -> bool:
+    def _handle_die(self, _context: dict[str, Any]) -> bool:
         """Handle death action."""
         self.is_alive = False
         self.is_active = False
         logger.info("NPC died", npc_id=self.npc_id)
         return True
 
-    def _handle_idle(self, context: dict[str, Any]) -> bool:
+    def _handle_idle(self, _context: dict[str, Any]) -> bool:
         """Handle idle action."""
         logger.debug("NPC is idle", npc_id=self.npc_id)
         return True
@@ -1152,7 +1162,7 @@ class PassiveMobNPC(NPCBase):
             logger.error("Error scheduling idle movement", npc_id=self.npc_id, error=str(e))
             return False
 
-    def respond_to_player(self, player_id: str, interaction_type: str) -> bool:
+    def respond_to_player(self, player_id: str, _interaction_type: str) -> bool:
         """Respond to player interaction."""
         try:
             response_chance = self._behavior_config.get("response_chance", 0.5)

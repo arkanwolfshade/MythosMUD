@@ -83,23 +83,49 @@ class TestNPCMovementIntegration:
     def mock_persistence(self, mock_room_1, mock_room_2):
         """Create a mock persistence layer for testing."""
         persistence = MagicMock()
-        persistence.get_room.side_effect = lambda room_id: {
+        persistence.get_room_by_id = MagicMock(side_effect=lambda room_id: {
             "earth_arkhamcity_downtown_room_derby_st_001": mock_room_1,
             "earth_arkhamcity_downtown_room_derby_st_002": mock_room_2,
-        }.get(room_id)
+        }.get(room_id))
+        # Also set get_room for backward compatibility
+        persistence.get_room = MagicMock(side_effect=lambda room_id: {
+            "earth_arkhamcity_downtown_room_derby_st_001": mock_room_1,
+            "earth_arkhamcity_downtown_room_derby_st_002": mock_room_2,
+        }.get(room_id))
         return persistence
 
     @pytest.fixture
     def movement_service(self, event_bus, mock_persistence):
         """Create a movement service for testing."""
-        service = MovementService(event_bus)
-        service._persistence = mock_persistence
+        # MovementService now requires async_persistence parameter
+        service = MovementService(event_bus, async_persistence=mock_persistence)
         return service
 
     @pytest.fixture
-    def test_npc(self, mock_npc_definition):
-        """Create a test NPC instance."""
-        return PassiveMobNPC(mock_npc_definition, "test_npc_1")
+    def test_npc(self, mock_npc_definition, event_bus, mock_persistence):
+        """Create a test NPC instance with container setup for movement integration."""
+        # Set up a mock container so NPC can access persistence for movement integration
+        from unittest.mock import Mock
+
+        from server.container import ApplicationContainer
+
+        # Reset any existing instance first
+        ApplicationContainer.reset_instance()
+
+        # Create a mock container with persistence
+        mock_container = Mock()
+        mock_container.event_bus = event_bus
+        mock_container.async_persistence = mock_persistence
+
+        # Set the container instance directly (bypassing get_instance logic)
+        ApplicationContainer._instance = mock_container
+
+        try:
+            npc = PassiveMobNPC(mock_npc_definition, "test_npc_1", event_bus=event_bus)
+            yield npc
+        finally:
+            # Clean up container instance
+            ApplicationContainer.reset_instance()
 
     def test_npc_movement_basic(self, test_npc, movement_service, mock_room_1, mock_room_2):
         """Test basic NPC movement between rooms."""
@@ -164,7 +190,8 @@ class TestNPCMovementIntegration:
         # Last action time should be updated
         assert test_npc._last_action_time >= initial_time
 
-    def test_npc_movement_integration_with_movement_service(self, test_npc, movement_service, mock_room_1, mock_room_2):
+    @pytest.mark.asyncio
+    async def test_npc_movement_integration_with_movement_service(self, test_npc, movement_service, mock_room_1, mock_room_2):
         """Test NPC movement integration with the movement service."""
         # This test documents how NPCs could integrate with the movement service
         # Currently, NPCs handle their own movement, but this could be extended
@@ -174,11 +201,12 @@ class TestNPCMovementIntegration:
         from_room = "earth_arkhamcity_downtown_room_derby_st_001"
         to_room = "earth_arkhamcity_downtown_room_derby_st_002"
 
-        # Mock player movement
-        with patch.object(movement_service, "move_player", return_value=True) as mock_move:
-            result = movement_service.move_player(player_id, from_room, to_room)
-            assert result is True
-            mock_move.assert_called_once_with(player_id, from_room, to_room)
+        # Mock player movement (move_player is async, so use AsyncMock and await)
+        from unittest.mock import AsyncMock
+        movement_service.move_player = AsyncMock(return_value=True)
+        result = await movement_service.move_player(player_id, from_room, to_room)
+        assert result is True
+        movement_service.move_player.assert_called_once_with(player_id, from_room, to_room)
 
         # NPC movement should be independent
         npc_result = test_npc.move_to_room(to_room)

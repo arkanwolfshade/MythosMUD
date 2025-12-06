@@ -111,10 +111,10 @@ def mock_player_service():
     service = Mock()
     service.create_player = Mock()
     service.create_player_with_stats = Mock()
-    service.list_players = Mock()
+    service.list_players = AsyncMock()  # list_players is async
     service.get_player_by_id = Mock()
     service.get_player_by_name = Mock()
-    service.delete_player = Mock()
+    service.delete_player = AsyncMock()  # delete_player is async
     return service
 
 

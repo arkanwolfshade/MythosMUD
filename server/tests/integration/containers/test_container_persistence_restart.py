@@ -253,7 +253,7 @@ class TestContainerPersistenceRestart:
         room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
 
         # Create container with items
-        container_result = persistence.create_container(
+        container_result = await persistence.create_container(
             source_type="environment",
             room_id=room_id,
             capacity_slots=10,
@@ -325,7 +325,7 @@ class TestContainerPersistenceRestart:
         _create_test_player(persistence, entity_id, f"TestPlayer_{entity_id.hex[:8]}")
 
         # Create wearable container
-        container_result = persistence.create_container(
+        container_result = await persistence.create_container(
             source_type="equipment",
             entity_id=entity_id,
             capacity_slots=10,
@@ -394,7 +394,7 @@ class TestContainerPersistenceRestart:
 
         decay_at = datetime.now(UTC) + timedelta(hours=1)
 
-        container_result = persistence.create_container(
+        container_result = await persistence.create_container(
             source_type="corpse",
             owner_id=owner_id,
             room_id=room_id,
@@ -453,7 +453,7 @@ class TestContainerPersistenceRestart:
         # Use a real room ID that exists in the database
         room_id = "earth_arkhamcity_sanitarium_room_foyer_001"
 
-        container_result = persistence.create_container(
+        container_result = await persistence.create_container(
             source_type="environment",
             room_id=room_id,
             capacity_slots=10,
@@ -498,7 +498,7 @@ class TestContainerPersistenceRestart:
         _create_test_player(persistence, player_id, f"TestPlayer_{player_id.hex[:8]}", room_id)
 
         # Create container
-        container_result = persistence.create_container(
+        container_result = await persistence.create_container(
             source_type="environment",
             room_id=room_id,
             capacity_slots=10,
@@ -561,7 +561,7 @@ class TestContainerPersistenceRestart:
         containers = []
 
         for i in range(5):
-            container_result = persistence.create_container(
+            container_result = await persistence.create_container(
                 source_type="environment",
                 room_id=base_room_id,
                 capacity_slots=10,
