@@ -362,9 +362,12 @@ class PlayerRepository:
                 await session.commit()
                 self._logger.info("Player deleted successfully", player_id=player_id)
 
-                # Run hooks if event bus available
-                if self._event_bus:
-                    self._event_bus.publish("after_delete_player", player_id)
+                # Note: Player deletion events are not currently published
+                # If needed in the future, create a PlayerDeletedEvent and publish it here
+                # if self._event_bus:
+                #     from server.events.event_types import PlayerDeletedEvent
+                #     event = PlayerDeletedEvent(player_id=player_id)
+                #     self._event_bus.publish(event)
 
                 return True
             return False

@@ -111,7 +111,10 @@ class ContainerRepository:
 
         def _get_sync():
             with self._get_sync_connection() as conn:
-                result = container_persistence.get_container(conn, container_id)
+                # Convert UUID to string for psycopg2 compatibility
+                container_id_str = str(container_id) if isinstance(container_id, uuid.UUID) else container_id
+                container_id_uuid = uuid.UUID(container_id_str) if isinstance(container_id_str, str) else container_id
+                result = container_persistence.get_container(conn, container_id_uuid)
                 if not result:
                     return None
                 # Convert ContainerData to dict (use to_dict but map items_json)
@@ -148,7 +151,9 @@ class ContainerRepository:
 
         def _get_sync():
             with self._get_sync_connection() as conn:
-                results = container_persistence.get_containers_by_entity_id(conn, entity_id)
+                # Ensure entity_id is a UUID object (psycopg2 can handle UUID objects)
+                entity_id_uuid = uuid.UUID(str(entity_id)) if not isinstance(entity_id, uuid.UUID) else entity_id
+                results = container_persistence.get_containers_by_entity_id(conn, entity_id_uuid)
                 # Convert ContainerData objects to dicts
                 return [
                     {

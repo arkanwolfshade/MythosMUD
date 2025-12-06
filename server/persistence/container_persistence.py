@@ -61,6 +61,8 @@ def _fetch_container_items(conn: Any, container_id: UUID) -> list[dict[str, Any]
     Returns:
         List of item dictionaries matching the old items_json format
     """
+    # Convert UUID to string for psycopg2 compatibility
+    container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     cursor.execute(
         """
@@ -78,7 +80,7 @@ def _fetch_container_items(conn: Any, container_id: UUID) -> list[dict[str, Any]
         WHERE cc.container_id = %s
         ORDER BY cc.position
         """,
-        (container_id,),
+        (container_id_str,),
     )
     rows = cursor.fetchall()
     cursor.close()
@@ -425,6 +427,8 @@ def get_container(conn: Any, container_id: UUID) -> ContainerData | None:
 
     try:
         cursor = conn.cursor(cursor_factory=RealDictCursor)
+        # Convert UUID to string for psycopg2 compatibility
+        container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
         cursor.execute(
             """
             SELECT
@@ -435,7 +439,7 @@ def get_container(conn: Any, container_id: UUID) -> ContainerData | None:
             FROM containers
             WHERE container_instance_id = %s
             """,
-            (container_id,),
+            (container_id_str,),
         )
         row = cursor.fetchone()
         cursor.close()
@@ -577,7 +581,7 @@ def get_containers_by_entity_id(conn: Any, entity_id: UUID) -> list[ContainerDat
             WHERE entity_id = %s
             ORDER BY created_at
             """,
-            (entity_id,),
+            (str(entity_id) if isinstance(entity_id, UUID) else entity_id,),
         )
         rows = cursor.fetchall()
         cursor.close()
@@ -721,6 +725,8 @@ def update_container(
             params.append(current_time)
             params.append(container_id)
 
+            # Convert container_id to string for psycopg2 compatibility
+            params_str = [str(p) if isinstance(p, UUID) else p for p in params]
             cursor.execute(
                 f"""
                 UPDATE containers
@@ -728,7 +734,7 @@ def update_container(
                 WHERE container_instance_id = %s
                 RETURNING container_instance_id
                 """,
-                params,
+                params_str,
             )
             row = cursor.fetchone()
         elif items_json is not None:
@@ -737,6 +743,8 @@ def update_container(
             params.append(current_time)
             params.append(container_id)
 
+            # Convert container_id to string for psycopg2 compatibility
+            params_str = [str(p) if isinstance(p, UUID) else p for p in params]
             cursor.execute(
                 f"""
                 UPDATE containers
@@ -744,7 +752,7 @@ def update_container(
                 WHERE container_instance_id = %s
                 RETURNING container_instance_id
                 """,
-                params,
+                params_str,
             )
             row = cursor.fetchone()
 
@@ -867,9 +875,11 @@ def delete_container(conn: Any, container_id: UUID) -> bool:
 
     try:
         cursor = conn.cursor()
+        # Convert UUID to string for psycopg2 compatibility
+        container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
         cursor.execute(
             "DELETE FROM containers WHERE container_instance_id = %s RETURNING container_instance_id",
-            (container_id,),
+            (container_id_str,),
         )
         row = cursor.fetchone()
         conn.commit()

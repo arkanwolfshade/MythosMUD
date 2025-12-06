@@ -87,7 +87,14 @@ class ExperienceRepository:
 
             # Publish event if event bus available
             if self._event_bus:
-                self._event_bus.publish("player_xp_awarded", player_id=player.player_id, amount=amount, source=source)
+                from server.services.player_combat_service import PlayerXPAwardEvent
+
+                event = PlayerXPAwardEvent(
+                    player_id=uuid.UUID(str(player.player_id)),
+                    xp_amount=amount,
+                    new_level=int(player.level),
+                )
+                self._event_bus.publish(event)
 
         except ValueError:
             raise

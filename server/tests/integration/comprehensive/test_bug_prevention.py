@@ -152,8 +152,11 @@ class TestEventStormPrevention:
         # Create a shared EventBus
         shared_event_bus = EventBus()
 
+        # Create mock async_persistence
+        mock_async_persistence = AsyncMock()
+
         # Create MovementService with the shared EventBus
-        movement_service = MovementService(shared_event_bus)
+        movement_service = MovementService(shared_event_bus, async_persistence=mock_async_persistence)
 
         # Verify they use the same EventBus instance
         assert movement_service._event_bus is shared_event_bus
@@ -230,9 +233,13 @@ class TestEventStormPrevention:
         event_bus_1 = EventBus()
         event_bus_2 = EventBus()
 
+        # Create mock async_persistence instances
+        mock_async_persistence_1 = AsyncMock()
+        mock_async_persistence_2 = AsyncMock()
+
         # Create separate MovementService instances
-        movement_service_1 = MovementService(event_bus_1)
-        movement_service_2 = MovementService(event_bus_2)
+        movement_service_1 = MovementService(event_bus_1, async_persistence=mock_async_persistence_1)
+        movement_service_2 = MovementService(event_bus_2, async_persistence=mock_async_persistence_2)
 
         # Verify they use different EventBus instances
         assert movement_service_1._event_bus is event_bus_1
@@ -396,8 +403,11 @@ class TestEndToEndBugScenarios:
         # Mock broadcast method
         connection_manager.broadcast_to_room = AsyncMock()
 
+        # Create mock async_persistence
+        mock_async_persistence = AsyncMock()
+
         # Create MovementService with shared EventBus
-        movement_service = MovementService(event_bus)
+        movement_service = MovementService(event_bus, async_persistence=mock_async_persistence)
 
         # Mock movement service dependencies
         with (

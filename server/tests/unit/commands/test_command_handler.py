@@ -138,17 +138,17 @@ class TestCommandProcessing:
         mock_alias_storage.get_alias.return_value = None
         current_user = {"username": "testuser"}
 
-        # Mock room data
+        # Mock room data - use get_room_by_id (sync method)
         mock_room = Mock(spec=Room)
         mock_room.name = "Test Room"
         mock_room.description = "A test room"
         mock_room.exits = {"north": "room2"}
-        mock_request.app.state.persistence.get_room.return_value = mock_room
+        mock_request.app.state.persistence.get_room_by_id = Mock(return_value=mock_room)
 
-        # Mock player data
+        # Mock player data - use AsyncMock for async method
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
         result = await process_command("look", [], current_user, mock_request, mock_alias_storage, "testuser")
 
@@ -173,10 +173,10 @@ class TestCommandProcessing:
         mock_room.exits = {}
         mock_request.app.state.persistence.get_room.return_value = mock_room
 
-        # Mock player data
+        # Mock player data - use AsyncMock for async method
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
         result = await process_command("go", ["north"], current_user, mock_request, mock_alias_storage, "testuser")
 
@@ -323,11 +323,13 @@ class TestUnifiedCommandHandler:
     def mock_persistence(self):
         """Create a mock persistence layer."""
         persistence = MagicMock()
-        persistence.get_player_by_name.return_value = MagicMock(
-            player_id="test-player-id", name="testuser", current_room_id="room-1"
+        persistence.get_player_by_name = AsyncMock(
+            return_value=MagicMock(player_id="test-player-id", name="testuser", current_room_id="room-1")
         )
-        persistence.get_room.return_value = MagicMock(
-            name="Test Room", description="A test room for testing", exits={"north": "room-2", "south": None}
+        persistence.get_room_by_id = Mock(
+            return_value=MagicMock(
+                name="Test Room", description="A test room for testing", exits={"north": "room-2", "south": None}
+            )
         )
         return persistence
 
@@ -667,10 +669,10 @@ class TestCommandHandlerV2:
         mock_room.exits = {}  # Empty exits dict
         mock_request.app.state.persistence.get_room.return_value = mock_room
 
-        # Mock player data
+        # Mock player data - use AsyncMock for async method
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
         result = await process_command_unified("look", {"username": "testuser"}, mock_request, player_name="testuser")
         # The result should be a dict with a result key
@@ -694,22 +696,31 @@ class TestCommandHandlerV2:
     async def test_process_command_with_validation_success(self):
         """Test command processing with validation success."""
         mock_request = Mock()
+        mock_request.app = Mock()
+        mock_request.app.state = Mock()
         mock_request.app.state.persistence = Mock()
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
         current_user = {"username": "testuser"}
 
-        # Mock room data
+        # Mock room data - use get_room_by_id (sync method)
         mock_room = Mock()
         mock_room.name = "Test Room"
         mock_room.description = "A test room"
         mock_room.exits = {}
-        mock_request.app.state.persistence.get_room.return_value = mock_room
+        mock_request.app.state.persistence.get_room_by_id = Mock(return_value=mock_room)
 
-        # Mock player data
+        # Mock connection manager and room manager for room drops
+        mock_connection_manager = Mock()
+        mock_room_manager = Mock()
+        mock_room_manager.list_room_drops = Mock(return_value=[])  # Return empty list, not Mock
+        mock_connection_manager.room_manager = mock_room_manager
+        mock_request.app.state.connection_manager = mock_connection_manager
+
+        # Mock player data - use AsyncMock for async method
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
         result = await process_command("look", [], current_user, mock_request, mock_alias_storage, "testuser")
 

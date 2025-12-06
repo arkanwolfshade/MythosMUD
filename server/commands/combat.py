@@ -63,15 +63,16 @@ class CombatCommandHandler:
             "smack",
             "thump",
         }
+        # Use async_persistence directly (now the only persistence layer)
+        if async_persistence is None:
+            raise ValueError("async_persistence is required for CombatCommandHandler")
         self.npc_combat_service = NPCCombatIntegrationService(
             combat_service=combat_service,
             event_bus=event_bus,
             player_combat_service=player_combat_service,
             connection_manager=connection_manager,
+            async_persistence=async_persistence,
         )
-        # Use async_persistence directly (now the only persistence layer)
-        if async_persistence is None:
-            raise ValueError("async_persistence is required for CombatCommandHandler")
         self.persistence = async_persistence
         self.combat_validator = CombatValidator()
         # Initialize target resolution service

@@ -356,3 +356,12 @@ class NPCCombatIntegration:
                 return npc_stats
             logger.error("Error getting combat stats", entity_id=entity_id, error=str(e))
             return {}
+        except Exception as e:
+            # Catch any other exceptions (e.g., database errors) and return NPC stats if provided
+            if npc_stats:
+                logger.debug(
+                    "Error getting combat stats, returning provided NPC stats", entity_id=entity_id, error=str(e)
+                )
+                return npc_stats
+            logger.error("Error getting combat stats", entity_id=entity_id, error=str(e))
+            return {}

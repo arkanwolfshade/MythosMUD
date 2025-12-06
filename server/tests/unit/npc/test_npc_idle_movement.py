@@ -16,7 +16,8 @@ class TestIdleMovementHandler:
 
     def test_should_idle_move_enabled(self):
         """Test that idle movement works when enabled."""
-        handler = IdleMovementHandler()
+        mock_persistence = Mock()
+        handler = IdleMovementHandler(persistence=mock_persistence)
         npc_instance = Mock()
         npc_instance.npc_id = "test_npc_1"
         npc_instance.is_alive = True
@@ -36,7 +37,8 @@ class TestIdleMovementHandler:
 
     def test_should_idle_move_disabled(self):
         """Test that idle movement is skipped when disabled."""
-        handler = IdleMovementHandler()
+        mock_persistence = Mock()
+        handler = IdleMovementHandler(persistence=mock_persistence)
         npc_instance = Mock()
         npc_instance.npc_id = "test_npc_1"
         npc_instance.is_alive = True
@@ -50,7 +52,8 @@ class TestIdleMovementHandler:
 
     def test_should_idle_move_in_combat(self):
         """Test that idle movement is skipped when NPC is in combat."""
-        handler = IdleMovementHandler()
+        mock_persistence = Mock()
+        handler = IdleMovementHandler(persistence=mock_persistence)
         npc_instance = Mock()
         npc_instance.npc_id = "test_npc_1"
         npc_instance.is_alive = True
@@ -68,7 +71,8 @@ class TestIdleMovementHandler:
 
     def test_should_idle_move_not_alive(self):
         """Test that idle movement is skipped when NPC is not alive."""
-        handler = IdleMovementHandler()
+        mock_persistence = Mock()
+        handler = IdleMovementHandler(persistence=mock_persistence)
         npc_instance = Mock()
         npc_instance.npc_id = "test_npc_1"
         npc_instance.is_alive = False
@@ -86,7 +90,8 @@ class TestIdleMovementHandler:
 
     def test_get_valid_exits_filters_by_subzone(self):
         """Test that get_valid_exits filters exits by subzone."""
-        handler = IdleMovementHandler()
+        mock_persistence = Mock()
+        handler = IdleMovementHandler(persistence=mock_persistence)
         handler.movement_integration = Mock(spec=NPCMovementIntegration)
 
         current_room_id = "earth_arkhamcity_northside_room_001"
@@ -118,7 +123,8 @@ class TestIdleMovementHandler:
 
     def test_select_exit_weighted_home(self):
         """Test that exit selection prefers exits closer to spawn room."""
-        handler = IdleMovementHandler()
+        mock_persistence = Mock()
+        handler = IdleMovementHandler(persistence=mock_persistence)
 
         valid_exits = {
             "north": "earth_arkhamcity_northside_room_002",
@@ -155,7 +161,8 @@ class TestIdleMovementHandler:
 
     def test_select_exit_random_when_not_weighted(self):
         """Test that exit selection is random when weighted_home is False."""
-        handler = IdleMovementHandler()
+        mock_persistence = Mock()
+        handler = IdleMovementHandler(persistence=mock_persistence)
 
         valid_exits = {
             "north": "earth_arkhamcity_northside_room_002",
@@ -182,13 +189,13 @@ class TestNPCMovementIntegrationSubzoneValidation:
 
     def test_validate_subzone_boundary_same_subzone(self):
         """Test that validation passes for rooms in same subzone."""
-        integration = NPCMovementIntegration()
-        integration.persistence = Mock()
+        mock_persistence = Mock()
+        integration = NPCMovementIntegration(persistence=mock_persistence)
 
         # Mock room with subzone attribute
         room = Mock()
         room.sub_zone = "northside"
-        integration.persistence.get_room.return_value = room
+        mock_persistence.get_room_by_id.return_value = room
 
         npc_sub_zone_id = "northside"
         destination_room_id = "earth_arkhamcity_northside_room_001"
@@ -198,13 +205,13 @@ class TestNPCMovementIntegrationSubzoneValidation:
 
     def test_validate_subzone_boundary_different_subzone(self):
         """Test that validation fails for rooms in different subzones."""
-        integration = NPCMovementIntegration()
-        integration.persistence = Mock()
+        mock_persistence = Mock()
+        integration = NPCMovementIntegration(persistence=mock_persistence)
 
         # Mock room with different subzone
         room = Mock()
         room.sub_zone = "downtown"
-        integration.persistence.get_room.return_value = room
+        mock_persistence.get_room_by_id.return_value = room
 
         npc_sub_zone_id = "northside"
         destination_room_id = "earth_arkhamcity_downtown_room_001"
@@ -214,9 +221,9 @@ class TestNPCMovementIntegrationSubzoneValidation:
 
     def test_validate_subzone_boundary_room_not_found(self):
         """Test that validation fails when room is not found."""
-        integration = NPCMovementIntegration()
-        integration.persistence = Mock()
-        integration.persistence.get_room.return_value = None
+        mock_persistence = Mock()
+        integration = NPCMovementIntegration(persistence=mock_persistence)
+        mock_persistence.get_room_by_id.return_value = None
 
         npc_sub_zone_id = "northside"
         destination_room_id = "invalid_room_id"
@@ -226,13 +233,13 @@ class TestNPCMovementIntegrationSubzoneValidation:
 
     def test_validate_subzone_boundary_fallback_to_room_id_parsing(self):
         """Test that validation falls back to room ID parsing when sub_zone attribute missing."""
-        integration = NPCMovementIntegration()
-        integration.persistence = Mock()
+        mock_persistence = Mock()
+        integration = NPCMovementIntegration(persistence=mock_persistence)
 
         # Mock room without sub_zone attribute
         room = Mock()
         del room.sub_zone  # Remove sub_zone attribute
-        integration.persistence.get_room.return_value = room
+        mock_persistence.get_room_by_id.return_value = room
 
         npc_sub_zone_id = "northside"
         destination_room_id = "earth_arkhamcity_northside_room_001"

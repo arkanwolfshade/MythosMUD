@@ -35,17 +35,19 @@ class TestNPCCombatIntegrationService:
         self.event_publisher = Mock()
 
         with (
-            patch("server.services.npc_combat_integration_service.get_persistence") as mock_get_persistence,
             patch("server.services.npc_combat_integration_service.CombatService") as mock_combat_service,
             patch("server.services.npc_combat_integration_service.CombatMessagingIntegration") as mock_messaging,
             patch("server.services.npc_combat_integration_service.CombatEventPublisher") as mock_publisher,
         ):
-            mock_get_persistence.return_value = self.persistence
             mock_combat_service.return_value = self.combat_service
             mock_messaging.return_value = self.messaging_integration
             mock_publisher.return_value = self.event_publisher
 
-            self.service = NPCCombatIntegrationService(self.event_bus)
+            self.service = NPCCombatIntegrationService(
+                event_bus=self.event_bus,
+                combat_service=self.combat_service,
+                async_persistence=self.persistence,
+            )
 
     @pytest.mark.asyncio
     async def test_handle_player_attack_on_npc_success(self):

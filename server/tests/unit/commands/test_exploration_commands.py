@@ -1,5 +1,5 @@
 import uuid
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
@@ -24,6 +24,8 @@ def _build_request(persistence, connection_manager):
 
 @pytest.mark.asyncio
 async def test_handle_look_command_includes_room_drops():
+    from unittest.mock import AsyncMock
+
     persistence = MagicMock()
     connection_manager = MagicMock()
     room_manager = MagicMock()
@@ -31,13 +33,13 @@ async def test_handle_look_command_includes_room_drops():
 
     player = MagicMock()
     player.current_room_id = "arkham_observatory"
-    persistence.get_player_by_name.return_value = player
+    persistence.get_player_by_name = AsyncMock(return_value=player)
 
     room = MagicMock()
     room.name = "Arkham Observatory"
     room.description = "Dusty brass instruments point toward uncaring stars."
     room.exits = {"north": "arkham_rooftop"}
-    persistence.get_room.return_value = room
+    persistence.get_room_by_id = MagicMock(return_value=room)
 
     room_manager.list_room_drops.return_value = [
         {
@@ -72,6 +74,8 @@ async def test_handle_look_command_includes_room_drops():
 
 @pytest.mark.asyncio
 async def test_handle_look_command_no_room_drops_uses_mythos_tone():
+    from unittest.mock import AsyncMock
+
     persistence = MagicMock()
     connection_manager = MagicMock()
     room_manager = MagicMock()
@@ -79,13 +83,13 @@ async def test_handle_look_command_no_room_drops_uses_mythos_tone():
 
     player = MagicMock()
     player.current_room_id = "innsmouth_dock"
-    persistence.get_player_by_name.return_value = player
+    persistence.get_player_by_name = AsyncMock(return_value=player)
 
     room = MagicMock()
     room.name = "Innsmouth Dock"
     room.description = "Brackish waves slap against rotten pilings."
     room.exits = {}
-    persistence.get_room.return_value = room
+    persistence.get_room_by_id = MagicMock(return_value=room)
 
     room_manager.list_room_drops.return_value = []
 
@@ -313,7 +317,8 @@ class TestGetVisibleEquipment:
 class TestGetPlayersInRoom:
     """Test _get_players_in_room helper function."""
 
-    def test_get_players_in_room_single_player(self):
+    @pytest.mark.asyncio
+    async def test_get_players_in_room_single_player(self):
         """Test getting players from room with one player."""
         room = MagicMock()
         player_id_1 = str(uuid.uuid4())
@@ -322,13 +327,14 @@ class TestGetPlayersInRoom:
         persistence = MagicMock()
         player1 = MagicMock()
         player1.name = "Armitage"
-        persistence.get_player.return_value = player1
+        persistence.get_player_by_id = AsyncMock(return_value=player1)
 
-        players = _get_players_in_room(room, persistence)
+        players = await _get_players_in_room(room, persistence)
         assert len(players) == 1
         assert players[0].name == "Armitage"
 
-    def test_get_players_in_room_multiple_players(self):
+    @pytest.mark.asyncio
+    async def test_get_players_in_room_multiple_players(self):
         """Test getting players from room with multiple players."""
         room = MagicMock()
         player_id_1 = str(uuid.uuid4())
@@ -341,29 +347,31 @@ class TestGetPlayersInRoom:
         player2 = MagicMock()
         player2.name = "Marsh"
 
-        def get_player_side_effect(player_id):
+        async def get_player_side_effect(player_id):
             if str(player_id) == player_id_1:
                 return player1
             elif str(player_id) == player_id_2:
                 return player2
             return None
 
-        persistence.get_player.side_effect = get_player_side_effect
+        persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
 
-        players = _get_players_in_room(room, persistence)
+        players = await _get_players_in_room(room, persistence)
         assert len(players) == 2
         assert {p.name for p in players} == {"Armitage", "Marsh"}
 
-    def test_get_players_in_room_no_players(self):
+    @pytest.mark.asyncio
+    async def test_get_players_in_room_no_players(self):
         """Test getting players from empty room."""
         room = MagicMock()
         room.get_players.return_value = []
 
         persistence = MagicMock()
-        players = _get_players_in_room(room, persistence)
+        players = await _get_players_in_room(room, persistence)
         assert len(players) == 0
 
-    def test_get_players_in_room_filters_none(self):
+    @pytest.mark.asyncio
+    async def test_get_players_in_room_filters_none(self):
         """Test that None players are filtered out."""
         room = MagicMock()
         player_id_1 = str(uuid.uuid4())
@@ -374,16 +382,16 @@ class TestGetPlayersInRoom:
         player1 = MagicMock()
         player1.name = "Armitage"
 
-        def get_player_side_effect(player_id):
+        async def get_player_side_effect(player_id):
             if str(player_id) == player_id_1:
                 return player1
             elif str(player_id) == player_id_2:
                 return None  # Player not found
             return None
 
-        persistence.get_player.side_effect = get_player_side_effect
+        persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
 
-        players = _get_players_in_room(room, persistence)
+        players = await _get_players_in_room(room, persistence)
         assert len(players) == 1
         assert players[0].name == "Armitage"
 
@@ -403,13 +411,15 @@ class TestPlayerLookFunctionality:
         current_player = MagicMock()
         current_player.current_room_id = "test_room"
         current_player.name = "CurrentPlayer"
-        persistence.get_player_by_name.return_value = current_player
+        from unittest.mock import AsyncMock
+
+        persistence.get_player_by_name = AsyncMock(return_value=current_player)
 
         # Room
         room = MagicMock()
         room.get_players.return_value = ["target-player-id"]
         room.get_npcs.return_value = []
-        persistence.get_room.return_value = room
+        persistence.get_room_by_id = MagicMock(return_value=room)
 
         # Target player
         target_player = MagicMock()
@@ -418,7 +428,7 @@ class TestPlayerLookFunctionality:
         target_player.get_equipped_items.return_value = {"head": {"item_name": "Hat"}}
         target_player_id = uuid.uuid4()
         room.get_players.return_value = [str(target_player_id)]
-        persistence.get_player.return_value = target_player
+        persistence.get_player_by_id = AsyncMock(return_value=target_player)
 
         request = _build_request(persistence, connection_manager)
         current_user = {"username": "CurrentPlayer"}
@@ -440,12 +450,14 @@ class TestPlayerLookFunctionality:
         current_player = MagicMock()
         current_player.current_room_id = "test_room"
         current_player.name = "CurrentPlayer"
-        persistence.get_player_by_name.return_value = current_player
+        from unittest.mock import AsyncMock
+
+        persistence.get_player_by_name = AsyncMock(return_value=current_player)
 
         room = MagicMock()
         room.get_players.return_value = ["target-player-id"]
         room.get_npcs.return_value = []
-        persistence.get_room.return_value = room
+        persistence.get_room_by_id = MagicMock(return_value=room)
 
         # Test healthy player
         target_player = MagicMock()
@@ -454,7 +466,7 @@ class TestPlayerLookFunctionality:
         target_player.get_equipped_items.return_value = {}
         target_player_id = uuid.uuid4()
         room.get_players.return_value = [str(target_player_id)]
-        persistence.get_player.return_value = target_player
+        persistence.get_player_by_id = AsyncMock(return_value=target_player)
 
         request = _build_request(persistence, connection_manager)
         current_user = {"username": "CurrentPlayer"}
@@ -485,12 +497,14 @@ class TestPlayerLookFunctionality:
         current_player = MagicMock()
         current_player.current_room_id = "test_room"
         current_player.name = "CurrentPlayer"
-        persistence.get_player_by_name.return_value = current_player
+        from unittest.mock import AsyncMock
+
+        persistence.get_player_by_name = AsyncMock(return_value=current_player)
 
         room = MagicMock()
         room.get_players.return_value = ["target-player-id"]
         room.get_npcs.return_value = []
-        persistence.get_room.return_value = room
+        persistence.get_room_by_id = MagicMock(return_value=room)
 
         target_player = MagicMock()
         target_player.name = "Armitage"
@@ -498,7 +512,7 @@ class TestPlayerLookFunctionality:
         target_player.get_equipped_items.return_value = {}
         target_player_id = uuid.uuid4()
         room.get_players.return_value = [str(target_player_id)]
-        persistence.get_player.return_value = target_player
+        persistence.get_player_by_id = AsyncMock(return_value=target_player)
 
         request = _build_request(persistence, connection_manager)
         current_user = {"username": "CurrentPlayer"}
@@ -519,12 +533,14 @@ class TestPlayerLookFunctionality:
         current_player = MagicMock()
         current_player.current_room_id = "test_room"
         current_player.name = "CurrentPlayer"
-        persistence.get_player_by_name.return_value = current_player
+        from unittest.mock import AsyncMock
+
+        persistence.get_player_by_name = AsyncMock(return_value=current_player)
 
         room = MagicMock()
         room.get_players.return_value = ["target-player-id"]
         room.get_npcs.return_value = []
-        persistence.get_room.return_value = room
+        persistence.get_room_by_id = MagicMock(return_value=room)
 
         target_player = MagicMock()
         target_player.name = "Armitage"
@@ -536,7 +552,7 @@ class TestPlayerLookFunctionality:
         }
         target_player_id = uuid.uuid4()
         room.get_players.return_value = [str(target_player_id)]
-        persistence.get_player.return_value = target_player
+        persistence.get_player_by_id = AsyncMock(return_value=target_player)
 
         request = _build_request(persistence, connection_manager)
         current_user = {"username": "CurrentPlayer"}
@@ -557,12 +573,14 @@ class TestPlayerLookFunctionality:
         current_player = MagicMock()
         current_player.current_room_id = "test_room"
         current_player.name = "CurrentPlayer"
-        persistence.get_player_by_name.return_value = current_player
+        from unittest.mock import AsyncMock
+
+        persistence.get_player_by_name = AsyncMock(return_value=current_player)
 
         room = MagicMock()
         room.get_players.return_value = []
         room.get_npcs.return_value = []
-        persistence.get_room.return_value = room
+        persistence.get_room_by_id = MagicMock(return_value=room)
 
         request = _build_request(persistence, connection_manager)
         current_user = {"username": "CurrentPlayer"}
@@ -583,12 +601,14 @@ class TestPlayerLookFunctionality:
         current_player = MagicMock()
         current_player.current_room_id = "test_room"
         current_player.name = "CurrentPlayer"
-        persistence.get_player_by_name.return_value = current_player
+        from unittest.mock import AsyncMock
+
+        persistence.get_player_by_name = AsyncMock(return_value=current_player)
 
         room = MagicMock()
         room.get_players.return_value = ["player-id-1", "player-id-2"]
         room.get_npcs.return_value = []
-        persistence.get_room.return_value = room
+        persistence.get_room_by_id = MagicMock(return_value=room)
 
         player_id_1 = uuid.uuid4()
         player_id_2 = uuid.uuid4()
@@ -599,14 +619,14 @@ class TestPlayerLookFunctionality:
         player2 = MagicMock()
         player2.name = "Armitage"
 
-        def get_player_side_effect(player_id):
+        async def get_player_side_effect(player_id):
             if str(player_id) == str(player_id_1):
                 return player1
             elif str(player_id) == str(player_id_2):
                 return player2
             return None
 
-        persistence.get_player.side_effect = get_player_side_effect
+        persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
 
         request = _build_request(persistence, connection_manager)
         current_user = {"username": "CurrentPlayer"}
@@ -627,12 +647,14 @@ class TestPlayerLookFunctionality:
         current_player = MagicMock()
         current_player.current_room_id = "test_room"
         current_player.name = "CurrentPlayer"
-        persistence.get_player_by_name.return_value = current_player
+        from unittest.mock import AsyncMock
+
+        persistence.get_player_by_name = AsyncMock(return_value=current_player)
 
         room = MagicMock()
         room.get_players.return_value = ["player-id-1", "player-id-2"]
         room.get_npcs.return_value = []
-        persistence.get_room.return_value = room
+        persistence.get_room_by_id = MagicMock(return_value=room)
 
         player_id_1 = uuid.uuid4()
         player_id_2 = uuid.uuid4()
@@ -647,14 +669,14 @@ class TestPlayerLookFunctionality:
         player2.get_stats.return_value = {"health": 50, "max_health": 100, "lucidity": 100, "max_lucidity": 100}
         player2.get_equipped_items.return_value = {}
 
-        def get_player_side_effect(player_id):
+        async def get_player_side_effect(player_id):
             if str(player_id) == str(player_id_1):
                 return player1
             elif str(player_id) == str(player_id_2):
                 return player2
             return None
 
-        persistence.get_player.side_effect = get_player_side_effect
+        persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
 
         request = _build_request(persistence, connection_manager)
         current_user = {"username": "CurrentPlayer"}

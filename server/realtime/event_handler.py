@@ -112,6 +112,11 @@ class RealTimeEventHandler:
         Returns:
             tuple: (player, player_name) or None if player not found
         """
+        # Defensive check: if no connection_manager, cannot get player info
+        if not self.connection_manager:
+            self._logger.debug("Connection manager not available, cannot get player info", player_id=player_id)
+            return None
+
         # Convert to UUID if string (for backward compatibility)
         try:
             player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
@@ -176,6 +181,10 @@ class RealTimeEventHandler:
             room_id: The room ID
             movement_type: Type of movement ("joined" or "left")
         """
+        # Defensive check: if no connection_manager, skip logging
+        if not self.connection_manager:
+            return
+
         try:
             room = (
                 self.connection_manager.async_persistence.get_room_by_id(room_id)
@@ -246,6 +255,13 @@ class RealTimeEventHandler:
             player_id: The player's ID (UUID or string for backward compatibility)
             room_id: The room ID
         """
+        # Defensive check: if no connection_manager, cannot send updates
+        if not self.connection_manager:
+            self._logger.debug(
+                "Connection manager not available, cannot send room update", player_id=player_id, room_id=room_id
+            )
+            return
+
         # Convert to UUID if string (send_personal_message accepts UUID)
         player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
         try:
@@ -339,6 +355,13 @@ class RealTimeEventHandler:
             player_id: The player's ID (UUID or string for backward compatibility)
             room_id: The room ID
         """
+        # Defensive check: if no connection_manager, cannot send updates
+        if not self.connection_manager:
+            self._logger.debug(
+                "Connection manager not available, cannot send occupants snapshot", player_id=player_id, room_id=room_id
+            )
+            return
+
         # Convert to UUID if string (send_personal_message accepts UUID)
         player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
         try:
@@ -480,6 +503,15 @@ class RealTimeEventHandler:
         Args:
             event: The PlayerEnteredRoom event
         """
+        # Defensive check: if no connection_manager, skip handling
+        if not self.connection_manager:
+            self._logger.debug(
+                "Connection manager not available, skipping player entered event",
+                player_id=event.player_id,
+                room_id=event.room_id,
+            )
+            return
+
         try:
             # Process event with proper ordering to prevent race conditions
             processed_event = self.room_sync_service._process_event_with_ordering(event)
@@ -596,6 +628,15 @@ class RealTimeEventHandler:
         Args:
             event: The PlayerLeftRoom event
         """
+        # Defensive check: if no connection_manager, skip handling
+        if not self.connection_manager:
+            self._logger.debug(
+                "Connection manager not available, skipping player left event",
+                player_id=event.player_id,
+                room_id=event.room_id,
+            )
+            return
+
         try:
             # Process event with proper ordering to prevent race conditions
             processed_event = self.room_sync_service._process_event_with_ordering(event)
@@ -879,6 +920,11 @@ class RealTimeEventHandler:
             list[dict]: List of occupant information
         """
         occupants: list[dict[str, Any] | str] = []
+
+        # Defensive check: if no connection_manager, return empty list
+        if not self.connection_manager:
+            self._logger.debug("Connection manager not available, cannot get room occupants", room_id=room_id)
+            return occupants
 
         try:
             # Get room from async persistence
@@ -1376,6 +1422,15 @@ class RealTimeEventHandler:
         Args:
             event: NPCEnteredRoom event containing NPC and room information
         """
+        # Defensive check: if no connection_manager, skip handling
+        if not self.connection_manager:
+            self._logger.debug(
+                "Connection manager not available, skipping NPC entered event",
+                npc_id=event.npc_id,
+                room_id=event.room_id,
+            )
+            return
+
         try:
             self._logger.info("NPC entered room", npc_id=event.npc_id, room_id=event.room_id)
 
@@ -1448,6 +1503,13 @@ class RealTimeEventHandler:
         Args:
             event: NPCLeftRoom event containing NPC and room information
         """
+        # Defensive check: if no connection_manager, skip handling
+        if not self.connection_manager:
+            self._logger.debug(
+                "Connection manager not available, skipping NPC left event", npc_id=event.npc_id, room_id=event.room_id
+            )
+            return
+
         try:
             self._logger.info("NPC left room", npc_id=event.npc_id, room_id=event.room_id)
 
@@ -1522,6 +1584,13 @@ class RealTimeEventHandler:
         Args:
             event: The PlayerXPAwardEvent containing XP award information
         """
+        # Defensive check: if no connection_manager, skip handling
+        if not self.connection_manager:
+            self._logger.debug(
+                "Connection manager not available, skipping player XP awarded event", player_id=event.player_id
+            )
+            return
+
         try:
             player_id_str = str(event.player_id)
 
@@ -1852,6 +1921,13 @@ class RealTimeEventHandler:
         Args:
             event: The PlayerHPUpdated event containing HP change information
         """
+        # Defensive check: if no connection_manager, skip handling
+        if not self.connection_manager:
+            self._logger.debug(
+                "Connection manager not available, skipping player HP updated event", player_id=event.player_id
+            )
+            return
+
         try:
             # CRITICAL DEBUG: Log at the very start to verify handler is being called
             self._logger.info(
@@ -1957,6 +2033,14 @@ class RealTimeEventHandler:
         Args:
             event: The PlayerDiedEvent containing death information
         """
+        # Defensive check: if no connection_manager, skip handling
+        if not self.connection_manager:
+            self._logger.debug(
+                "Connection manager not available, skipping player died event",
+                player_id=getattr(event, "player_id", None),
+            )
+            return
+
         try:
             # Convert UUID to string for build_event (which expects str)
             player_id_str = str(event.player_id)
@@ -1996,6 +2080,14 @@ class RealTimeEventHandler:
         Args:
             event: The PlayerHPDecayEvent containing HP decay information
         """
+        # Defensive check: if no connection_manager, skip handling
+        if not self.connection_manager:
+            self._logger.debug(
+                "Connection manager not available, skipping player HP decay event",
+                player_id=getattr(event, "player_id", None),
+            )
+            return
+
         try:
             # Convert UUID to string for build_event (which expects str)
             player_id_str = str(event.player_id)

@@ -18,7 +18,7 @@ from server.events.combat_events import (
 from server.exceptions import MythosMUDError
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType, CombatStatus
 from server.services.combat_messaging_service import CombatMessagingService
-from server.services.combat_service import CombatService
+from server.services.combat_service import CombatParticipantData, CombatService
 
 
 class TestCombatModels:
@@ -184,18 +184,27 @@ class TestCombatService:
         player_id = uuid4()
         npc_id = uuid4()
 
+        attacker = CombatParticipantData(
+            participant_id=player_id,
+            name="TestPlayer",
+            current_hp=100,
+            max_hp=100,
+            dexterity=15,
+            participant_type=CombatParticipantType.PLAYER,
+        )
+        target = CombatParticipantData(
+            participant_id=npc_id,
+            name="TestNPC",
+            current_hp=50,
+            max_hp=50,
+            dexterity=10,
+            participant_type=CombatParticipantType.NPC,
+        )
+
         combat = await combat_service.start_combat(
             room_id="test_room",
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=100,
-            attacker_max_hp=100,
-            attacker_dex=15,
-            target_hp=50,
-            target_max_hp=50,
-            target_dex=10,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -213,18 +222,26 @@ class TestCombatService:
         npc_id = uuid4()
 
         # Start combat
+        attacker = CombatParticipantData(
+            participant_id=player_id,
+            name="TestPlayer",
+            current_hp=100,
+            max_hp=100,
+            dexterity=15,
+            participant_type=CombatParticipantType.PLAYER,
+        )
+        target = CombatParticipantData(
+            participant_id=npc_id,
+            name="TestNPC",
+            current_hp=50,
+            max_hp=50,
+            dexterity=10,
+            participant_type=CombatParticipantType.NPC,
+        )
         combat = await combat_service.start_combat(
             room_id="test_room",
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=100,
-            attacker_max_hp=100,
-            attacker_dex=15,
-            target_hp=50,
-            target_max_hp=50,
-            target_dex=10,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -247,18 +264,26 @@ class TestCombatService:
         npc_id = uuid4()
 
         # Start combat
+        attacker = CombatParticipantData(
+            participant_id=player_id,
+            name="TestPlayer",
+            current_hp=100,
+            max_hp=100,
+            dexterity=15,
+            participant_type=CombatParticipantType.PLAYER,
+        )
+        target = CombatParticipantData(
+            participant_id=npc_id,
+            name="TestNPC",
+            current_hp=50,
+            max_hp=50,
+            dexterity=10,
+            participant_type=CombatParticipantType.NPC,
+        )
         combat = await combat_service.start_combat(
             room_id="test_room",
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=100,
-            attacker_max_hp=100,
-            attacker_dex=15,
-            target_hp=50,
-            target_max_hp=50,
-            target_dex=10,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -287,18 +312,26 @@ class TestCombatService:
         # (since this test doesn't inject a player_combat_service with lifecycle manager)
 
         # Start combat
+        attacker = CombatParticipantData(
+            participant_id=player_id,
+            name="TestPlayer",
+            current_hp=100,
+            max_hp=100,
+            dexterity=15,
+            participant_type=CombatParticipantType.PLAYER,
+        )
+        target = CombatParticipantData(
+            participant_id=npc_id,
+            name="TestNPC",
+            current_hp=5,
+            max_hp=50,
+            dexterity=10,
+            participant_type=CombatParticipantType.NPC,
+        )
         combat = await combat_service.start_combat(
             room_id="test_room",
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=100,
-            attacker_max_hp=100,
-            attacker_dex=15,
-            target_hp=5,
-            target_max_hp=50,
-            target_dex=10,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -335,18 +368,26 @@ class TestCombatService:
         npc_id = uuid4()
 
         # Start combat
+        attacker = CombatParticipantData(
+            participant_id=player_id,
+            name="TestPlayer",
+            current_hp=100,
+            max_hp=100,
+            dexterity=10,  # Lower dex - goes second
+            participant_type=CombatParticipantType.PLAYER,
+        )
+        target = CombatParticipantData(
+            participant_id=npc_id,
+            name="TestNPC",
+            current_hp=50,
+            max_hp=50,
+            dexterity=15,  # Higher dex - goes first
+            participant_type=CombatParticipantType.NPC,
+        )
         await combat_service.start_combat(
             room_id="test_room",
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=100,
-            attacker_max_hp=100,
-            attacker_dex=10,  # Lower dex - goes second
-            target_hp=50,
-            target_max_hp=50,
-            target_dex=15,  # Higher dex - goes first
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -361,18 +402,26 @@ class TestCombatService:
         npc_id = uuid4()
 
         # Start combat
+        attacker = CombatParticipantData(
+            participant_id=player_id,
+            name="TestPlayer",
+            current_hp=100,
+            max_hp=100,
+            dexterity=15,
+            participant_type=CombatParticipantType.PLAYER,
+        )
+        target = CombatParticipantData(
+            participant_id=npc_id,
+            name="TestNPC",
+            current_hp=50,
+            max_hp=50,
+            dexterity=10,
+            participant_type=CombatParticipantType.NPC,
+        )
         combat = await combat_service.start_combat(
             room_id="test_room",
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=100,
-            attacker_max_hp=100,
-            attacker_dex=15,
-            target_hp=50,
-            target_max_hp=50,
-            target_dex=10,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -394,18 +443,26 @@ class TestCombatService:
         npc_id = uuid4()
 
         # Start combat
+        attacker = CombatParticipantData(
+            participant_id=player_id,
+            name="TestPlayer",
+            current_hp=100,
+            max_hp=100,
+            dexterity=15,
+            participant_type=CombatParticipantType.PLAYER,
+        )
+        target = CombatParticipantData(
+            participant_id=npc_id,
+            name="TestNPC",
+            current_hp=50,
+            max_hp=50,
+            dexterity=10,
+            participant_type=CombatParticipantType.NPC,
+        )
         combat = await combat_service.start_combat(
             room_id="test_room",
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=100,
-            attacker_max_hp=100,
-            attacker_dex=15,
-            target_hp=50,
-            target_max_hp=50,
-            target_dex=10,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 

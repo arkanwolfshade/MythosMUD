@@ -28,6 +28,70 @@ from structlog.stdlib import BoundLogger, LoggerFactory
 # Module-level logger for internal use
 logger = structlog.get_logger(__name__)
 
+# Thread-safe directory creation locks (one lock per directory path)
+_dir_locks: dict[str, threading.Lock] = {}
+_dir_locks_lock = threading.Lock()
+
+# Cache of directories we've successfully created (avoids repeated mkdir calls)
+# This prevents blocking on os.stat() inside mkdir() under heavy filesystem load
+_created_dirs: set[str] = set()
+_created_dirs_lock = threading.Lock()
+
+
+def _ensure_log_directory(log_path: Path) -> None:
+    """
+    Thread-safe directory creation for log files.
+
+    This function ensures that the parent directory of a log file exists,
+    using per-directory locks to prevent deadlocks when multiple threads
+    try to create the same directory simultaneously.
+
+    Uses a cache to avoid repeated mkdir() calls, which prevents blocking
+    on os.stat() inside mkdir() under heavy filesystem load.
+
+    Args:
+        log_path: Path to the log file (directory will be created for parent)
+    """
+    if not log_path or not log_path.parent:
+        return
+
+    dir_path = log_path.parent
+    dir_str = str(dir_path)
+
+    # Fast path: check cache first (no filesystem access needed)
+    with _created_dirs_lock:
+        if dir_str in _created_dirs:
+            return  # Directory already created in this process
+
+    # Get or create lock for this specific directory path
+    with _dir_locks_lock:
+        if dir_str not in _dir_locks:
+            _dir_locks[dir_str] = threading.Lock()
+        lock = _dir_locks[dir_str]
+
+    # Use per-directory lock to prevent concurrent creation attempts
+    with lock:
+        # Double-check cache after acquiring lock (another thread may have created it)
+        with _created_dirs_lock:
+            if dir_str in _created_dirs:
+                return
+
+        try:
+            dir_path.mkdir(parents=True, exist_ok=True)
+            # Successfully created - add to cache
+            with _created_dirs_lock:
+                _created_dirs.add(dir_str)
+        except (OSError, PermissionError) as e:
+            # Log but don't raise - logging should not fail due to directory issues
+            # This prevents deadlocks if directory creation fails
+            # Note: We don't add to cache on failure, so we'll retry next time
+            logger.warning(
+                "Failed to create log directory",
+                directory=str(dir_path),
+                error=str(e),
+                error_type=type(e).__name__,
+            )
+
 _LOGGING_INITIALIZED = False
 _LOGGING_SIGNATURE: str | None = None
 
@@ -479,11 +543,14 @@ class SafeRotatingFileHandler(RotatingFileHandler):
         This overrides the parent method to ensure the log directory exists
         before attempting to open the log file, preventing race conditions
         in CI environments where directories might be cleaned up.
+
+        Uses thread-safe directory creation to prevent deadlocks when multiple
+        threads try to create the same directory simultaneously.
         """
-        # Ensure directory exists before checking rollover
+        # Ensure directory exists before checking rollover (thread-safe)
         if self.baseFilename:
             log_path = Path(self.baseFilename)
-            log_path.parent.mkdir(parents=True, exist_ok=True)
+            _ensure_log_directory(log_path)
 
         # Call parent method to perform actual rollover check
         return super().shouldRollover(record)
@@ -547,7 +614,7 @@ def _create_aggregator_handler(
                 def shouldRollover(self, record):  # noqa: N802
                     if self.baseFilename:
                         log_path = Path(self.baseFilename)
-                        log_path.parent.mkdir(parents=True, exist_ok=True)
+                        _ensure_log_directory(log_path)
                     return super().shouldRollover(record)
 
             handler_class = SafeWinHandlerAggregator
@@ -556,7 +623,7 @@ def _create_aggregator_handler(
         handler_class = _BaseHandler
 
     # Ensure directory exists right before creating handler to prevent race conditions
-    log_path.parent.mkdir(parents=True, exist_ok=True)
+    _ensure_log_directory(log_path)
     try:
         handler = handler_class(
             log_path,
@@ -566,7 +633,7 @@ def _create_aggregator_handler(
         )
     except (FileNotFoundError, OSError):
         # If directory doesn't exist or was deleted, recreate it and try again
-        log_path.parent.mkdir(parents=True, exist_ok=True)
+        _ensure_log_directory(log_path)
         handler = handler_class(
             log_path,
             maxBytes=max_bytes,
@@ -623,7 +690,8 @@ def _setup_enhanced_file_logging(
 
     log_base = _resolve_log_base(log_config.get("log_base", "logs"))
     env_log_dir = log_base / environment
-    env_log_dir.mkdir(parents=True, exist_ok=True)
+    # Use thread-safe directory creation (pass dummy file path to ensure directory exists)
+    _ensure_log_directory(env_log_dir / ".dummy")
 
     # Rotate existing log files before setting up new handlers
     _rotate_log_files(env_log_dir)
@@ -738,7 +806,7 @@ def _setup_enhanced_file_logging(
                     def shouldRollover(self, record):  # noqa: N802
                         if self.baseFilename:
                             log_path = Path(self.baseFilename)
-                            log_path.parent.mkdir(parents=True, exist_ok=True)
+                            _ensure_log_directory(log_path)
                         return super().shouldRollover(record)
 
                 handler_class = SafeWinHandlerCategory
@@ -747,7 +815,7 @@ def _setup_enhanced_file_logging(
             handler_class = _BaseHandler
 
         # Ensure directory exists right before creating handler to prevent race conditions
-        log_path.parent.mkdir(parents=True, exist_ok=True)
+        _ensure_log_directory(log_path)
         try:
             handler = handler_class(
                 log_path,
@@ -757,7 +825,7 @@ def _setup_enhanced_file_logging(
             )
         except (FileNotFoundError, OSError):
             # If directory doesn't exist or was deleted, recreate it and try again
-            log_path.parent.mkdir(parents=True, exist_ok=True)
+            _ensure_log_directory(log_path)
             handler = handler_class(
                 log_path,
                 maxBytes=max_bytes,
@@ -838,7 +906,7 @@ def _setup_enhanced_file_logging(
                 def shouldRollover(self, record):  # noqa: N802
                     if self.baseFilename:
                         log_path = Path(self.baseFilename)
-                        log_path.parent.mkdir(parents=True, exist_ok=True)
+                        _ensure_log_directory(log_path)
                     return super().shouldRollover(record)
 
             handler_class = SafeWinHandlerConsole
@@ -846,7 +914,7 @@ def _setup_enhanced_file_logging(
         handler_class = _BaseHandler
 
     # Ensure directory exists right before creating handler to prevent race conditions
-    console_log_path.parent.mkdir(parents=True, exist_ok=True)
+    _ensure_log_directory(console_log_path)
     try:
         console_handler = handler_class(
             console_log_path,
@@ -856,7 +924,7 @@ def _setup_enhanced_file_logging(
         )
     except (FileNotFoundError, OSError):
         # If directory doesn't exist or was deleted, recreate it and try again
-        console_log_path.parent.mkdir(parents=True, exist_ok=True)
+        _ensure_log_directory(console_log_path)
         console_handler = handler_class(
             console_log_path,
             maxBytes=max_bytes,
