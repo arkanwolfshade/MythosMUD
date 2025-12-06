@@ -53,7 +53,6 @@ class TestMultiplePlayersMuting:
         }
 
     @pytest.mark.asyncio
-    @pytest.mark.slow
     async def test_multiple_players_muting_same_sender_say(self):
         """Say channel should ignore personal mutes so everyone in the room hears the message."""
         chat_event = self.create_chat_event("say", "Hello everyone!")

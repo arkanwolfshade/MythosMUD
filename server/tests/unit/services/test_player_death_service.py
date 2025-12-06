@@ -249,7 +249,6 @@ class TestPlayerDeathService:
         assert result is False
         mock_session.rollback.assert_called_once()
 
-    @pytest.mark.slow
     @pytest.mark.asyncio
     async def test_handle_player_death_with_event_bus(self, mock_player):
         """Test player death handling with event bus integration."""
@@ -333,7 +332,6 @@ class TestPlayerDeathService:
         call_args = mock_player_combat_service.clear_player_combat_state.call_args
         assert str(call_args[0][0]) == player_id
 
-    @pytest.mark.slow
     @pytest.mark.asyncio
     async def test_handle_player_death_without_combat_service(self, mock_player):
         """Test that player death works even without player combat service."""

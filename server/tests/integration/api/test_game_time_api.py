@@ -9,7 +9,6 @@ import pytest
 from server.api import game
 
 
-@pytest.mark.slow  # Mark as slow due to 26-30 second setup times (container_test_client fixture)
 class TestGameTimeApi:
     """Integration coverage for the /game/time endpoint."""
 

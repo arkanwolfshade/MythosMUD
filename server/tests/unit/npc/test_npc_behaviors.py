@@ -482,7 +482,6 @@ class TestPassiveMobNPC:
         assert mock_passive_mob.npc_type == NPCDefinitionType.PASSIVE_MOB
         assert mock_passive_mob.name == "Wandering Scholar"
 
-    @pytest.mark.slow
     def test_passive_mob_wandering_behavior(self, mock_passive_mob):
         """Test passive mob wandering behavior."""
         # Test wander interval configuration

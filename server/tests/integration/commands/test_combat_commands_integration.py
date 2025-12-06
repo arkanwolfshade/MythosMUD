@@ -57,7 +57,6 @@ class TestCombatCommandIntegration:
         assert "strike" in command_service.command_handlers
 
     @pytest.mark.asyncio
-    @pytest.mark.slow
     async def test_attack_command_no_target(self, mock_persistence):
         """Test attack command with no target specified."""
         handler = CombatCommandHandler(async_persistence=mock_persistence)
@@ -176,7 +175,6 @@ class TestCombatCommandIntegration:
         assert "No target named 'skeleton' found" in result["result"]
 
     @pytest.mark.asyncio
-    @pytest.mark.slow
     async def test_strike_command_alias(self, mock_persistence, mock_target_resolution_service):
         """Test strike command alias."""
         handler = CombatCommandHandler(async_persistence=mock_persistence)
@@ -234,7 +232,6 @@ class TestCombatCommandIntegration:
         # Since we don't have a room_id in current_user, expect "You are not in a room." message
         assert "You are not in a room." in result["result"]
 
-    @pytest.mark.slow
     def test_attack_aliases_defined(self, mock_persistence):
         """Test that attack aliases are properly defined."""
         handler = CombatCommandHandler(async_persistence=mock_persistence)

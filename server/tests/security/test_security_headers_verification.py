@@ -15,7 +15,6 @@ from server.logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-@pytest.mark.slow  # Mark as slow due to 26-30 second setup times (container_test_client_class fixture)
 class TestSecurityHeadersVerification:
     """
     Test security headers are applied to all endpoints.

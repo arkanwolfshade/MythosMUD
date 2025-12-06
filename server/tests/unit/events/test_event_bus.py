@@ -413,7 +413,6 @@ class TestEventBus(TestingAsyncMixin):
         await asyncio.sleep(0.1)
 
     @pytest.mark.asyncio
-    @pytest.mark.slow
     async def test_structured_concurrency_multiple_async_subscribers(self):
         """
         Test that EventBus uses structured concurrency for multiple async subscribers.
@@ -508,7 +507,6 @@ class TestEventBus(TestingAsyncMixin):
                 assert task.done() or task.cancelled(), f"Task {task} is not done or cancelled after shutdown"
 
     @pytest.mark.asyncio
-    @pytest.mark.slow
     async def test_structured_concurrency_task_cleanup(self):
         """
         Test that EventBus properly cleans up tasks after structured concurrency execution.

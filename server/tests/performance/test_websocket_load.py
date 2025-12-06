@@ -27,7 +27,6 @@ class TestWebSocketLoad:
         cm.persistence = None
         return cm
 
-    @pytest.mark.slow
     @pytest.mark.asyncio
     async def test_100_concurrent_connections(self, connection_manager):
         """Test system handles 100 concurrent WebSocket connections."""
@@ -69,7 +68,6 @@ class TestWebSocketLoad:
         # Verify no memory leaks (connection count should match)
         assert len(connection_manager.connection_metadata) == num_connections
 
-    @pytest.mark.slow
     @pytest.mark.asyncio
     async def test_message_flooding_protection(self, connection_manager):
         """Test system protects against message flooding attacks."""
@@ -107,7 +105,6 @@ class TestWebSocketLoad:
         assert allowed_count <= 100, "Rate limit should cap at 100 messages"
         assert blocked_count >= 100, "Rate limit should block excess messages"
 
-    @pytest.mark.slow
     @pytest.mark.asyncio
     async def test_memory_leak_detection(self, connection_manager):
         """Test for memory leaks in connection management."""
@@ -163,7 +160,6 @@ class TestWebSocketLoad:
         assert final_connections <= initial_connections + 5, "Memory leak detected: connections not cleaned up"
         assert final_metadata <= initial_metadata + 5, "Memory leak detected: metadata not cleaned up"
 
-    @pytest.mark.slow
     @pytest.mark.asyncio
     async def test_concurrent_message_broadcasting(self, connection_manager):
         """Test concurrent message broadcasting to many recipients."""
@@ -211,7 +207,6 @@ class TestWebSocketLoad:
         # Verify performance (should complete in reasonable time)
         assert duration < 5.0, f"Broadcast took too long: {duration}s"
 
-    @pytest.mark.slow
     @pytest.mark.asyncio
     async def test_rate_limiter_under_load(self, connection_manager):
         """Test rate limiter performance under load."""

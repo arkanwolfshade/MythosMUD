@@ -247,7 +247,6 @@ def _create_test_player(
 class TestContainerPersistenceRestart:
     """Test container persistence across server restarts."""
 
-    @pytest.mark.slow
     async def test_environmental_container_persistence(self, persistence) -> None:
         """Test that environmental containers persist across server restarts."""
         # Use a real room ID that exists in the database
@@ -319,7 +318,6 @@ class TestContainerPersistenceRestart:
         assert persisted_container.metadata["type"] == "chest"
         assert persisted_container.metadata["description"] == "A wooden chest"
 
-    @pytest.mark.slow
     async def test_wearable_container_persistence(self, persistence) -> None:
         """Test that wearable containers persist across server restarts."""
         # Create test player first (entity_id must reference a real player)
@@ -450,7 +448,6 @@ class TestContainerPersistenceRestart:
         assert len(persisted_container.items) == 1
         assert persisted_container.items[0]["item_id"] == "item_1"
 
-    @pytest.mark.slow
     async def test_container_state_persistence(self, persistence) -> None:
         """Test that container state (locked, capacity, etc.) persists."""
         # Use a real room ID that exists in the database
@@ -555,7 +552,6 @@ class TestContainerPersistenceRestart:
         assert container_after.items[0]["item_id"] == "item_1"
         assert container_after.items[0]["quantity"] == 5
 
-    @pytest.mark.slow
     async def test_multiple_containers_persist(self, persistence) -> None:
         """Test that multiple containers persist correctly."""
         # Use a real room ID that exists in the database
@@ -605,7 +601,6 @@ class TestContainerPersistenceRestart:
             assert len(persisted_container.items) == 1
             assert persisted_container.items[0]["item_id"] == f"item_{i + 1}"
 
-    @pytest.mark.slow
     async def test_container_room_relationship_persistence(self, persistence) -> None:
         """Test that container-room relationships persist."""
         # Use real room IDs that exist in the database

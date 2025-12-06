@@ -215,7 +215,6 @@ class TestPeriodicSpawning:
 class TestNPCRespawning:
     """Test NPC respawning functionality."""
 
-    @pytest.mark.slow
     @pytest.mark.timeout(60)  # This test needs 30+ seconds for death suppression
     def test_npc_respawn_after_death(
         self,
@@ -410,7 +409,6 @@ class TestCompleteLifecycle:
     """Test complete NPC lifecycle with periodic spawning."""
 
     @pytest.mark.asyncio
-    @pytest.mark.slow
     async def test_complete_spawn_despawn_respawn_cycle(
         self,
         lifecycle_manager,

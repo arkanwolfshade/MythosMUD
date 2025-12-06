@@ -24,7 +24,6 @@ from server.models.player import Player
 logger = get_logger(__name__)
 
 
-@pytest.mark.slow  # Mark as slow due to 26-30 second setup times (container_test_client_class fixture)
 class TestPlayerAPIIntegration:
     """
     Test player API endpoints using ApplicationContainer.

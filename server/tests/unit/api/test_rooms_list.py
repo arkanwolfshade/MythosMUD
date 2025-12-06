@@ -15,7 +15,6 @@ import pytest
 
 
 @pytest.mark.asyncio
-@pytest.mark.slow
 class TestRoomsListEndpoint:
     """Test cases for GET /api/rooms/list endpoint."""
 

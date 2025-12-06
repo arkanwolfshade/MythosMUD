@@ -166,7 +166,6 @@ is essential for maintaining the dimensional integrity of our server.
 class TestLifespanStartup:
     """Test application startup procedures."""
 
-    @pytest.mark.slow
     @pytest.mark.asyncio
     async def test_lifespan_startup_basic(self):
         """

@@ -10,7 +10,6 @@ from unittest.mock import Mock
 import pytest
 
 
-@pytest.mark.slow  # Mark as slow due to 26-30 second setup times (container_test_client fixture)
 class TestGameApiBroadcast:
     """Test game API broadcast endpoint."""
 

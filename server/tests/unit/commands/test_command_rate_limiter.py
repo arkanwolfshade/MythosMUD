@@ -10,8 +10,6 @@ AI: Tests sliding window rate limiting for command spam prevention.
 import time
 from datetime import UTC, datetime, timedelta
 
-import pytest
-
 from server.middleware.command_rate_limiter import CommandRateLimiter
 
 
@@ -197,7 +195,6 @@ class TestCommandRateLimiter:
 
         assert limiter.is_allowed("player1") is False
 
-    @pytest.mark.slow
     def test_very_short_window(self):
         """Very short time window works correctly."""
         limiter = CommandRateLimiter(max_commands=2, window_seconds=0.5)
