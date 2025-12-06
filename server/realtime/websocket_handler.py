@@ -53,6 +53,444 @@ def _get_npc_name_from_instance(npc_id: str) -> str | None:
         return None
 
 
+async def _check_shutdown_and_reject(websocket: WebSocket, player_id: uuid.UUID) -> bool:
+    """Check if server is shutting down and reject connection if so. Returns True if rejected."""
+    from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
+
+    try:
+        if hasattr(websocket, "app") and is_shutdown_pending(websocket.app):
+            error_message = get_shutdown_blocking_message("motd_progression")
+            await websocket.send_json({"type": "error", "message": error_message})
+            logger.info("DEBUG: Closing WebSocket due to server shutdown", player_id=player_id)
+            await websocket.close(code=1001, reason="Server shutting down")
+            logger.info("Rejected WebSocket connection - server shutting down", player_id=player_id)
+            return True
+    except Exception as e:
+        logger.debug("Could not check shutdown status in WebSocket connection", error=str(e))
+    return False
+
+
+def _load_player_mute_data(player_id_str: str) -> None:
+    """Load player mute data when they connect."""
+    try:
+        from ..services.user_manager import user_manager
+
+        user_manager.load_player_mutes(player_id_str)
+        logger.info("Loaded mute data", player_id=player_id_str)
+    except Exception as e:
+        logger.error("Error loading mute data", player_id=player_id_str, error=str(e))
+
+
+def _validate_occupant_name(name: str) -> bool:
+    """Validate that a name is not a UUID string."""
+    if not name or not isinstance(name, str):
+        return False
+    is_uuid = len(name) == 36 and name.count("-") == 4 and all(c in "0123456789abcdefABCDEF-" for c in name)
+    return not is_uuid
+
+
+async def _get_occupant_names(room_occupants: list[dict[str, Any]], room_id: str) -> list[str]:
+    """Extract and validate occupant names from room occupants list."""
+    occupant_names = []
+    try:
+        for occ in room_occupants or []:
+            name = occ.get("player_name") or occ.get("name")
+            if name and _validate_occupant_name(name):
+                occupant_names.append(name)
+            elif name:
+                logger.warning("Skipping UUID as player name", name=name, room_id=room_id)
+    except Exception as e:
+        logger.error("Error transforming occupants", room_id=room_id, error=str(e))
+    return occupant_names
+
+
+def _convert_uuids_to_strings(obj: Any) -> Any:
+    """Recursively convert UUID objects to strings for JSON serialization."""
+    if isinstance(obj, dict):
+        return {k: _convert_uuids_to_strings(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [_convert_uuids_to_strings(item) for item in obj]
+    elif hasattr(obj, "__class__") and "UUID" in obj.__class__.__name__:
+        return str(obj)
+    else:
+        return obj
+
+
+async def _prepare_player_data(player, player_id: uuid.UUID, connection_manager) -> dict[str, Any]:
+    """Prepare complete player data with profession information for client."""
+    try:
+        app_state = None
+        if hasattr(connection_manager, "app") and connection_manager.app:
+            app_state = getattr(connection_manager.app, "state", None)
+        player_service = getattr(app_state, "player_service", None) if app_state else None
+
+        if player_service:
+            complete_player_data = await player_service._convert_player_to_schema(player)
+            player_data_for_client = (
+                complete_player_data.model_dump(mode="json")
+                if hasattr(complete_player_data, "model_dump")
+                else complete_player_data.dict()
+            )
+            if "experience_points" in player_data_for_client:
+                player_data_for_client["xp"] = player_data_for_client["experience_points"]
+            return player_data_for_client
+        else:
+            logger.warning("PlayerService not available, using basic player data", player_id=player_id)
+            stats_data = player.get_stats() if hasattr(player, "get_stats") else {}
+            if isinstance(stats_data, str):
+                stats_data = json.loads(stats_data)
+            if "health" not in stats_data and "current_health" in stats_data:
+                stats_data["health"] = stats_data.get("current_health")
+            return {
+                "name": player.name,
+                "level": getattr(player, "level", 1),
+                "xp": getattr(player, "experience_points", 0),
+                "stats": stats_data,
+            }
+    except Exception as e:
+        logger.error("Error getting complete player data", error=str(e), player_id=player_id, exc_info=True)
+        stats_data = player.get_stats() if hasattr(player, "get_stats") else {}
+        if isinstance(stats_data, str):
+            stats_data = json.loads(stats_data)
+        return {
+            "name": player.name,
+            "level": getattr(player, "level", 1),
+            "xp": getattr(player, "experience_points", 0),
+            "stats": stats_data,
+        }
+
+
+async def _send_initial_game_state(
+    websocket: WebSocket, player_id: uuid.UUID, player_id_str: str, connection_manager
+) -> tuple[str | None, bool]:
+    """
+    Send initial game state to connecting player.
+    Returns tuple of (canonical_room_id, should_exit).
+    """
+    from starlette.websockets import WebSocketState
+
+    try:
+        player = await connection_manager._get_player(player_id)
+        if not player or not hasattr(player, "current_room_id"):
+            return None, False
+
+        from ..async_persistence import get_async_persistence
+
+        async_persistence = get_async_persistence()
+        if not async_persistence:
+            return None, False
+
+        room = async_persistence.get_room_by_id(str(player.current_room_id))
+        if not room:
+            return None, False
+
+        if not room.has_player(player_id_str):
+            logger.info("Adding player to room", player_id=player_id, room_id=str(player.current_room_id))
+            room.player_entered(player_id_str)
+
+        canonical_room_id = getattr(room, "id", None) or player.current_room_id
+        room_occupants = await connection_manager.get_room_occupants(str(canonical_room_id))
+        occupant_names = await _get_occupant_names(room_occupants, str(canonical_room_id))
+
+        room_data = room.to_dict() if hasattr(room, "to_dict") else room
+        if isinstance(room_data, dict):
+            room_data = await connection_manager._convert_room_players_uuids_to_names(room_data)
+        room_data = _convert_uuids_to_strings(room_data)
+
+        stats_data = {}
+        try:
+            if hasattr(player, "get_stats"):
+                stats_data = player.get_stats()
+            else:
+                raw_stats = getattr(player, "stats", {})
+                if isinstance(raw_stats, str):
+                    stats_data = json.loads(raw_stats)
+                elif isinstance(raw_stats, dict):
+                    stats_data = raw_stats
+        except (ValueError, TypeError, json.JSONDecodeError) as e:
+            logger.error("Error parsing stats data", error=str(e), error_type=type(e).__name__)
+            stats_data = {}
+
+        if "health" not in stats_data and "current_health" in stats_data:
+            try:
+                stats_data["health"] = stats_data.get("current_health")
+            except (KeyError, TypeError) as e:
+                logger.debug("Error normalizing health field", error=str(e), error_type=type(e).__name__)
+
+        player_data_for_client = await _prepare_player_data(player, player_id, connection_manager)
+
+        game_state_event = build_event(
+            "game_state",
+            {
+                "player": player_data_for_client,
+                "room": room_data,
+                "occupants": occupant_names,
+                "occupant_count": len(occupant_names),
+            },
+            player_id=player_id_str,
+            room_id=str(canonical_room_id),
+        )
+
+        ws_state = getattr(websocket, "application_state", None)
+        if ws_state == WebSocketState.DISCONNECTED:
+            logger.warning("WebSocket already disconnected, skipping game_state send", player_id=player_id_str)
+            return canonical_room_id, True
+
+        try:
+            await websocket.send_json(game_state_event)
+        except RuntimeError as send_err:
+            if "close message has been sent" in str(send_err) or "Cannot call" in str(send_err):
+                logger.warning(
+                    "WebSocket closed during send, exiting connection handler",
+                    player_id=player_id_str,
+                    error=str(send_err),
+                )
+                return canonical_room_id, True
+            raise
+
+        return canonical_room_id, False
+    except Exception as e:
+        logger.error("Error sending initial game state", player_id=player_id, error=str(e), exc_info=True)
+        return None, False
+
+
+async def _check_and_send_death_notification(
+    websocket: WebSocket, player_id: uuid.UUID, player_id_str: str, canonical_room_id: str, room, connection_manager
+) -> None:
+    """Check if player is dead and send death notification if needed."""
+    from ..async_persistence import get_async_persistence
+    from ..services.player_respawn_service import LIMBO_ROOM_ID
+
+    async_persistence = get_async_persistence()
+    fresh_player = await async_persistence.get_player_by_id(player_id)
+    if fresh_player:
+        player = fresh_player
+        canonical_room_id = str(player.current_room_id) if hasattr(player, "current_room_id") else canonical_room_id
+    else:
+        player = await connection_manager._get_player(player_id)
+        if not player:
+            return
+
+    stats = player.get_stats() if hasattr(player, "get_stats") else {}
+    current_hp = stats.get("current_health", 100)
+    if not isinstance(current_hp, int):
+        current_hp = 100
+
+    if current_hp <= -10 or str(canonical_room_id) == LIMBO_ROOM_ID:
+        death_location_name = room.name if room else "Unknown Location"
+        death_event = build_event(
+            "player_died",
+            {
+                "player_id": player_id_str,
+                "player_name": player.name,
+                "death_location": death_location_name,
+                "message": "You have died. The darkness claims you utterly.",
+            },
+            player_id=player_id_str,
+        )
+        await websocket.send_json(death_event)
+        logger.info(
+            "Sent death notification to player on login",
+            player_id=player_id_str,
+            current_hp=current_hp,
+            in_limbo=str(canonical_room_id) == LIMBO_ROOM_ID,
+        )
+
+
+async def _send_initial_room_state(
+    websocket: WebSocket, player_id: uuid.UUID, player_id_str: str, canonical_room_id: str, connection_manager
+) -> None:
+    """Send initial room state and occupants snapshot to connecting player."""
+    try:
+        from ..async_persistence import get_async_persistence
+
+        async_persistence = get_async_persistence()
+        room = async_persistence.get_room_by_id(canonical_room_id)
+        if not room:
+            return
+
+        room_occupants = await connection_manager.get_room_occupants(str(canonical_room_id))
+        occupant_names = await _get_occupant_names(room_occupants, canonical_room_id)
+
+        if hasattr(connection_manager, "app") and hasattr(connection_manager.app.state, "npc_lifecycle_manager"):
+            npc_lifecycle_manager = connection_manager.app.state.npc_lifecycle_manager
+            npc_ids = room.get_npcs()
+            for npc_id in npc_ids:
+                npc = npc_lifecycle_manager.active_npcs.get(npc_id)
+                if npc and hasattr(npc, "name"):
+                    occupant_names.append(npc.name)
+                    logger.info(
+                        "Added NPC to room occupants display",
+                        npc_name=npc.name,
+                        npc_id=npc_id,
+                        room_id=canonical_room_id,
+                    )
+
+        room_data_for_update = room.to_dict() if hasattr(room, "to_dict") else room
+        if isinstance(room_data_for_update, dict):
+            room_data_for_update = await connection_manager._convert_room_players_uuids_to_names(room_data_for_update)
+
+        initial_state = build_event(
+            "room_update",
+            {"room": room_data_for_update, "entities": [], "occupants": occupant_names},
+            player_id=player_id_str,
+        )
+        await websocket.send_json(initial_state)
+        logger.debug(
+            "Sent initial room state to connecting player", player_id=player_id_str, occupants_sent=occupant_names
+        )
+
+        event_handler = None
+        if hasattr(connection_manager, "app") and connection_manager.app:
+            event_handler = getattr(connection_manager.app.state, "event_handler", None)
+        elif hasattr(websocket, "app") and websocket.app:
+            event_handler = getattr(websocket.app.state, "event_handler", None)
+
+        if event_handler and hasattr(event_handler, "_send_occupants_snapshot_to_player"):
+            if room and room.has_player(player_id_str):
+                await event_handler._send_occupants_snapshot_to_player(player_id, str(canonical_room_id))
+                logger.debug(
+                    "Sent room_occupants event to connecting player",
+                    player_id=player_id_str,
+                    room_id=str(canonical_room_id),
+                )
+    except Exception as e:
+        logger.error("Error sending initial room state", player_id=player_id, error=str(e), exc_info=True)
+
+
+async def _handle_websocket_message_loop(
+    websocket: WebSocket, player_id: uuid.UUID, player_id_str: str, connection_manager
+) -> None:
+    """Handle the main WebSocket message loop."""
+    from .message_validator import MessageValidationError, get_message_validator
+
+    validator = get_message_validator()
+    connection_id = connection_manager.get_connection_id_from_websocket(websocket)
+
+    while True:
+        try:
+            data = await websocket.receive_text()
+
+            if connection_id:
+                if not connection_manager.rate_limiter.check_message_rate_limit(connection_id):
+                    logger.warning("Message rate limit exceeded", player_id=player_id_str, connection_id=connection_id)
+                    rate_limit_info = connection_manager.rate_limiter.get_message_rate_limit_info(connection_id)
+                    error_response = create_websocket_error_response(
+                        ErrorType.RATE_LIMIT_EXCEEDED,
+                        f"Message rate limit exceeded. Limit: {rate_limit_info['max_attempts']} messages per minute. Try again in {int(rate_limit_info['reset_time'] - time.time())} seconds.",
+                        ErrorMessages.RATE_LIMIT_EXCEEDED,
+                        {
+                            "player_id": player_id_str,
+                            "connection_id": connection_id,
+                            "rate_limit_info": rate_limit_info,
+                        },
+                    )
+                    await websocket.send_json(error_response)
+                    continue
+
+            try:
+                csrf_token = None
+                message = validator.parse_and_validate(
+                    data=data, player_id=player_id_str, schema=None, csrf_token=csrf_token
+                )
+            except MessageValidationError as e:
+                logger.warning(
+                    "Message validation failed",
+                    player_id=player_id_str,
+                    error_type=e.error_type,
+                    error_message=e.message,
+                )
+                error_response = create_websocket_error_response(
+                    ErrorType.INVALID_FORMAT,
+                    f"Message validation failed: {e.message}",
+                    ErrorMessages.INVALID_FORMAT,
+                    {"player_id": player_id_str, "error_type": e.error_type},
+                )
+                await websocket.send_json(error_response)
+                continue
+
+            connection_manager.mark_player_seen(player_id)
+            await handle_websocket_message(websocket, player_id_str, message)
+
+        except json.JSONDecodeError:
+            logger.warning("Invalid JSON from player", player_id=player_id)
+            error_response = create_websocket_error_response(
+                ErrorType.INVALID_FORMAT,
+                "Invalid JSON format",
+                ErrorMessages.INVALID_FORMAT,
+                {"player_id": player_id_str},
+            )
+            await websocket.send_json(error_response)
+
+        except WebSocketDisconnect:
+            logger.info("WebSocket disconnected", player_id=player_id_str, connection_id=connection_id)
+            break
+
+        except RuntimeError as e:
+            error_message = str(e)
+            if "WebSocket is not connected" in error_message or 'Need to call "accept" first' in error_message:
+                logger.warning(
+                    "WebSocket connection lost (not connected)",
+                    player_id=player_id_str,
+                    connection_id=connection_id,
+                    error=error_message,
+                )
+                break
+            raise
+
+        except Exception as e:
+            logger.error(
+                "Error handling WebSocket message",
+                player_id=player_id_str,
+                connection_id=connection_id,
+                error=str(e),
+                error_type=type(e).__name__,
+                exc_info=True,
+            )
+            try:
+                error_response = create_websocket_error_response(
+                    ErrorType.INTERNAL_ERROR,
+                    f"Internal server error: {str(e)}",
+                    ErrorMessages.INTERNAL_ERROR,
+                    {"player_id": player_id_str, "connection_id": connection_id, "error_type": type(e).__name__},
+                )
+                await websocket.send_json(error_response)
+            except Exception as send_error:
+                send_error_msg = str(send_error)
+                if "WebSocket is not connected" in send_error_msg or "close message has been sent" in send_error_msg:
+                    logger.warning(
+                        "WebSocket closed, breaking message loop",
+                        player_id=player_id_str,
+                        connection_id=connection_id,
+                        original_error=str(e),
+                        send_error=send_error_msg,
+                    )
+                    break
+                logger.error(
+                    "Failed to send error response to client",
+                    player_id=player_id_str,
+                    connection_id=connection_id,
+                    original_error=str(e),
+                    send_error=send_error_msg,
+                )
+
+
+async def _cleanup_connection(player_id: uuid.UUID, player_id_str: str, connection_manager) -> None:
+    """Clean up connection and player mute data on disconnect."""
+    try:
+        await connection_manager.disconnect_websocket(player_id)
+    except Exception as e:
+        logger.error("Error disconnecting WebSocket", player_id=player_id, error=str(e))
+
+    try:
+        from ..services.user_manager import user_manager
+
+        user_manager.cleanup_player_mutes(player_id_str)
+        logger.info("Cleaned up mute data", player_id=player_id)
+    except Exception as e:
+        logger.error("Error cleaning up mute data", player_id=player_id, error=str(e))
+
+
 async def handle_websocket_connection(
     websocket: WebSocket,
     player_id: uuid.UUID,
@@ -71,633 +509,47 @@ async def handle_websocket_connection(
 
     AI Agent: connection_manager now injected as parameter instead of global import
     """
-    # Check if server is shutting down - prevent new connections
-    # Import here to avoid circular imports
-    from ..commands.admin_shutdown_command import get_shutdown_blocking_message, is_shutdown_pending
+    if await _check_shutdown_and_reject(websocket, player_id):
+        return
 
-    # Try to get app from websocket state (may not always be available)
-    try:
-        if hasattr(websocket, "app") and is_shutdown_pending(websocket.app):
-            error_message = get_shutdown_blocking_message("motd_progression")
-            await websocket.send_json({"type": "error", "message": error_message})
-            logger.info("DEBUG: Closing WebSocket due to server shutdown", player_id=player_id)
-            await websocket.close(code=1001, reason="Server shutting down")
-            logger.info("Rejected WebSocket connection - server shutting down", player_id=player_id)
-            return
-    except Exception as e:
-        logger.debug("Could not check shutdown status in WebSocket connection", error=str(e))
-
-    # Connect the WebSocket with session tracking and token for revalidation (accepts UUID directly)
     success = await connection_manager.connect_websocket(websocket, player_id, session_id, token=token)
     if not success:
         logger.error("Failed to connect WebSocket", player_id=player_id)
         return
 
-    # Convert to string for user_manager (expects string) and other string-based operations
     player_id_str = str(player_id)
-
-    # Load player mute data when they connect to the game
-    try:
-        from ..services.user_manager import user_manager
-
-        user_manager.load_player_mutes(player_id_str)
-        logger.info("Loaded mute data", player_id=player_id)
-    except Exception as e:
-        logger.error("Error loading mute data", player_id=player_id, error=str(e))
+    _load_player_mute_data(player_id_str)
 
     try:
-        # Send initial game state
-        player = await connection_manager._get_player(player_id)
-        if player and hasattr(player, "current_room_id"):
+        canonical_room_id, should_exit = await _send_initial_game_state(
+            websocket, player_id, player_id_str, connection_manager
+        )
+        if should_exit:
+            return
+
+        if canonical_room_id:
             from ..async_persistence import get_async_persistence
 
             async_persistence = get_async_persistence()
             if async_persistence:
-                room = async_persistence.get_room_by_id(str(player.current_room_id))
+                room = async_persistence.get_room_by_id(canonical_room_id)
                 if room:
-                    # Ensure player is added to their current room and track if we actually added them
-                    logger.info("DEBUG: Room object ID before player_entered", room_id=id(room))
-                    if not room.has_player(player_id_str):
-                        logger.info("Adding player to room", player_id=player_id, room_id=str(player.current_room_id))
-                        room.player_entered(player_id_str)
-                        logger.info(
-                            "DEBUG: After player_entered, room has players",
-                            room_id=player.current_room_id,
-                            players=room.get_players(),
-                        )
-                        logger.info("DEBUG: Room object ID after player_entered", room_id=id(room))
-                    else:
-                        logger.info(
-                            "DEBUG: Player already in room",
-                            player_id=player_id_str,
-                            room_id=player.current_room_id,
-                            players=room.get_players(),
-                            player_id_uuid=player_id,
-                        )
-                        logger.info("DEBUG: Room object ID (already in room)", room_id=id(room))
-
-                    # Use canonical room id for subscriptions and broadcasts
-                    canonical_room_id = getattr(room, "id", None) or player.current_room_id
-
-                    # Get room occupants
-                    room_occupants = await connection_manager.get_room_occupants(str(canonical_room_id))
-
-                    # Transform to list of player names for client (UI expects string[])
-                    # CRITICAL: Validate that names are not UUIDs before adding
-                    occupant_names = []
-                    try:
-                        for occ in room_occupants or []:
-                            name = occ.get("player_name") or occ.get("name")
-                            if name and isinstance(name, str):
-                                # Validate that name is not a UUID string
-                                # UUID format: 36 chars, 4 dashes, hex characters
-                                is_uuid = (
-                                    len(name) == 36
-                                    and name.count("-") == 4
-                                    and all(c in "0123456789abcdefABCDEF-" for c in name)
-                                )
-                                if not is_uuid:
-                                    occupant_names.append(name)
-                                else:
-                                    logger.warning(
-                                        "Skipping UUID as player name in game_state occupants",
-                                        name=name,
-                                        room_id=player.current_room_id,
-                                    )
-                    except Exception as e:
-                        logger.error(
-                            "Error transforming game_state occupants", room_id=player.current_room_id, error=str(e)
-                        )
-
-                    # Get room data and ensure UUIDs are converted to strings
-                    room_data = room.to_dict() if hasattr(room, "to_dict") else room
-                    # CRITICAL: Convert player UUIDs to names - NEVER send UUIDs to client
-                    if isinstance(room_data, dict):
-                        room_data = await connection_manager._convert_room_players_uuids_to_names(room_data)
-
-                    # Debug: Log room exits to verify they're being loaded
-                    if hasattr(room, "exits"):
-                        logger.info(
-                            "DEBUG: Room exits in room object",
-                            room_id=room.id if hasattr(room, "id") else "unknown",
-                            exits=room.exits,
-                            exits_type=type(room.exits).__name__,
-                            exits_count=len(room.exits) if isinstance(room.exits, dict) else 0,
-                        )
-                    if isinstance(room_data, dict) and "exits" in room_data:
-                        logger.info(
-                            "DEBUG: Room exits in room_data dict",
-                            room_id=room_data.get("id", "unknown"),
-                            exits=room_data["exits"],
-                            exits_type=type(room_data["exits"]).__name__,
-                            exits_count=len(room_data["exits"]) if isinstance(room_data["exits"], dict) else 0,
-                        )
-
-                    # Ensure all UUID objects are converted to strings for JSON serialization
-                    def convert_uuids_to_strings(obj: Any) -> Any:
-                        if isinstance(obj, dict):
-                            return {k: convert_uuids_to_strings(v) for k, v in obj.items()}
-                        elif isinstance(obj, list):
-                            return [convert_uuids_to_strings(item) for item in obj]
-                        elif hasattr(obj, "__class__") and "UUID" in obj.__class__.__name__:
-                            return str(obj)
-                        else:
-                            return obj
-
-                    room_data = convert_uuids_to_strings(room_data)
-
-                    # Prepare player stats as a JSON object (not raw string)
-                    stats_data = {}
-                    try:
-                        if hasattr(player, "get_stats"):
-                            stats_data = player.get_stats()
-                        else:
-                            raw_stats = getattr(player, "stats", {})
-                            if isinstance(raw_stats, str):
-                                stats_data = json.loads(raw_stats)
-                            elif isinstance(raw_stats, dict):
-                                stats_data = raw_stats
-                    except (ValueError, TypeError, json.JSONDecodeError) as e:
-                        logger.error("Error parsing stats data", error=str(e), error_type=type(e).__name__)
-                        stats_data = {}
-
-                    # Normalize health field for client (health expected by client)
-                    if "health" not in stats_data and "current_health" in stats_data:
-                        try:
-                            stats_data["health"] = stats_data.get("current_health")
-                        except (KeyError, TypeError) as e:
-                            logger.debug("Error normalizing health field", error=str(e), error_type=type(e).__name__)
-
-                    # Get complete player data with profession information using PlayerService
-                    # This ensures the Status panel displays profession info automatically
-                    try:
-                        # Access app state through connection manager (same pattern as process_websocket_command)
-                        # Handle Mock objects in tests by checking for app attribute
-                        app_state = None
-                        if hasattr(connection_manager, "app") and connection_manager.app:
-                            app_state = getattr(connection_manager.app, "state", None)
-                        player_service = getattr(app_state, "player_service", None) if app_state else None
-
-                        if player_service:
-                            # Use PlayerService to get complete player data with profession
-                            complete_player_data = await player_service._convert_player_to_schema(player)
-                            logger.debug(
-                                "WebSocket handler: Retrieved complete player data with profession",
-                                player_id=player_id,
-                                has_profession=bool(getattr(complete_player_data, "profession_name", None)),
-                            )
-
-                            # Convert PlayerRead object to dictionary for JSON serialization
-                            player_data_for_client = (
-                                complete_player_data.model_dump(mode="json")
-                                if hasattr(complete_player_data, "model_dump")
-                                else complete_player_data.dict()
-                            )
-                            # Map experience_points to xp for client compatibility
-                            if "experience_points" in player_data_for_client:
-                                player_data_for_client["xp"] = player_data_for_client["experience_points"]
-                        else:
-                            # Fallback to basic player data if PlayerService not available
-                            logger.warning(
-                                "PlayerService not available in websocket handler, using basic player data",
-                                player_id=player_id,
-                            )
-                            player_data_for_client = {
-                                "name": player.name,
-                                "level": getattr(player, "level", 1),
-                                "xp": getattr(player, "experience_points", 0),
-                                "stats": stats_data,
-                            }
-                    except Exception as e:
-                        logger.error(
-                            "Error getting complete player data", error=str(e), player_id=player_id, exc_info=True
-                        )
-                        # Fallback to basic player data
-                        player_data_for_client = {
-                            "name": player.name,
-                            "level": getattr(player, "level", 1),
-                            "xp": getattr(player, "experience_points", 0),
-                            "stats": stats_data,
-                        }
-
-                    # Debug: Log the room_data that will be sent to verify exits are included
-                    if isinstance(room_data, dict):
-                        logger.info(
-                            "DEBUG: Room data being sent to client",
-                            room_id=room_data.get("id", "unknown"),
-                            has_exits="exits" in room_data,
-                            exits=room_data.get("exits", {}),
-                            exits_type=type(room_data.get("exits", {})).__name__,
-                            exits_count=len(room_data.get("exits", {}))
-                            if isinstance(room_data.get("exits"), dict)
-                            else 0,
-                        )
-
-                    game_state_event = build_event(
-                        "game_state",
-                        {
-                            "player": player_data_for_client,
-                            "room": room_data,
-                            "occupants": occupant_names,
-                            "occupant_count": len(occupant_names),
-                        },
-                        player_id=player_id_str,
-                        room_id=str(canonical_room_id),
+                    await _check_and_send_death_notification(
+                        websocket, player_id, player_id_str, canonical_room_id, room, connection_manager
                     )
-                    # Check websocket state before attempting to send
-                    from starlette.websockets import WebSocketState
-
-                    ws_state = getattr(websocket, "application_state", None)
-                    if ws_state == WebSocketState.DISCONNECTED:
-                        logger.warning(
-                            "WebSocket already disconnected, skipping game_state send", player_id=player_id_str
-                        )
-                        # Exit the connection handler early since websocket is closed
-                        return
-                    try:
-                        await websocket.send_json(game_state_event)
-                    except RuntimeError as send_err:
-                        if "close message has been sent" in str(send_err) or "Cannot call" in str(send_err):
-                            logger.warning(
-                                "WebSocket closed during send, exiting connection handler",
-                                player_id=player_id_str,
-                                error=str(send_err),
-                            )
-                            # Exit the connection handler early instead of raising
-                            return
-                        raise
-
-                    # Check if player is dead (HP <= -10) and send death event to trigger UI
-                    # This handles players who connect with HP already at death threshold
-                    # CRITICAL: Refresh player from database to ensure we have latest HP and room after respawn
-                    # The persistence layer might have cached player data, so we need fresh data
-                    from ..async_persistence import get_async_persistence
-
-                    async_persistence = get_async_persistence()
-                    fresh_player = await async_persistence.get_player_by_id(player_id)
-                    if fresh_player:
-                        player = fresh_player
-                        # Update canonical_room_id with fresh player's room to ensure accurate death check
-                        canonical_room_id = (
-                            str(player.current_room_id) if hasattr(player, "current_room_id") else canonical_room_id
-                        )
-
-                    stats = player.get_stats() if hasattr(player, "get_stats") else {}
-                    # Ensure stats is a dict and current_hp is an integer (handle Mock objects in tests)
-                    if isinstance(stats, dict):
-                        current_hp = stats.get("current_health", 100)
-                    else:
-                        # Fallback for Mock objects or unexpected types
-                        current_hp = 100
-                    # Ensure current_hp is an integer (not a Mock)
-                    if not isinstance(current_hp, int):
-                        current_hp = 100
-
-                    # Import LIMBO_ROOM_ID for comparison
-                    from ..services.player_respawn_service import LIMBO_ROOM_ID
-
-                    # Check if player is dead (HP <= -10) or in limbo
-                    # Use the fresh canonical_room_id which was updated from the refreshed player
-                    if current_hp <= -10 or str(canonical_room_id) == LIMBO_ROOM_ID:
-                        # Get room name for death location display
-                        death_location_name = room.name if room else "Unknown Location"
-
-                        death_event = build_event(
-                            "player_died",
-                            {
-                                "player_id": player_id_str,
-                                "player_name": player.name,
-                                "death_location": death_location_name,
-                                "message": "You have died. The darkness claims you utterly.",
-                            },
-                            player_id=player_id_str,
-                        )
-                        await websocket.send_json(death_event)
-                        logger.info(
-                            "Sent death notification to player on login",
-                            player_id=player_id_str,
-                            current_hp=current_hp,
-                            in_limbo=str(canonical_room_id) == LIMBO_ROOM_ID,
-                        )
-
-                    # Note: Room update happens via EventBus flow
-                    # Room.player_entered() publishes PlayerEnteredRoom event
-                    # → EventBus notifies RealTimeEventHandler
-                    # → RealTimeEventHandler sends "player_entered" to room occupants
-                    # → Connecting player receives room state via separate initial state message
-
-                    # Send initial room state ONLY to connecting player (not a broadcast)
-                    try:
-                        from ..async_persistence import get_async_persistence
-
-                        async_persistence = get_async_persistence()
-                        room = async_persistence.get_room_by_id(canonical_room_id)
-                        if room:
-                            # Get room occupants and transform IDs to names
-                            # AI Agent: Include both players AND NPCs in the occupants list
-                            room_occupants = await connection_manager.get_room_occupants(str(canonical_room_id))
-                            occupant_names = []
-                            try:
-                                # Add player names
-                                # CRITICAL: Validate that names are not UUIDs before adding
-                                for occ in room_occupants or []:
-                                    name = occ.get("player_name") or occ.get("name")
-                                    if name and isinstance(name, str):
-                                        # Validate that name is not a UUID string
-                                        # UUID format: 36 chars, 4 dashes, hex characters
-                                        is_uuid = (
-                                            len(name) == 36
-                                            and name.count("-") == 4
-                                            and all(c in "0123456789abcdefABCDEF-" for c in name)
-                                        )
-                                        if not is_uuid:
-                                            occupant_names.append(name)
-                                        else:
-                                            logger.warning(
-                                                "Skipping UUID as player name in room_update occupants",
-                                                name=name,
-                                                room_id=canonical_room_id,
-                                            )
-
-                                # AI Agent: CRITICAL FIX - Include NPCs in the initial room_update occupants list
-                                #           This ensures NPCs are displayed to the client on connection
-                                if hasattr(connection_manager, "app") and hasattr(
-                                    connection_manager.app.state, "npc_lifecycle_manager"
-                                ):
-                                    npc_lifecycle_manager = connection_manager.app.state.npc_lifecycle_manager
-                                    npc_ids = room.get_npcs()
-                                    for npc_id in npc_ids:
-                                        npc = npc_lifecycle_manager.active_npcs.get(npc_id)
-                                        if npc and hasattr(npc, "name"):
-                                            occupant_names.append(npc.name)
-                                            logger.info(
-                                                "Added NPC to room occupants display",
-                                                npc_name=npc.name,
-                                                npc_id=npc_id,
-                                                room_id=canonical_room_id,
-                                            )
-                                        else:
-                                            logger.warning(
-                                                "NPC instance not found for room occupant display",
-                                                npc_id=npc_id,
-                                                room_id=canonical_room_id,
-                                            )
-
-                            except Exception as e:
-                                logger.error(
-                                    "Error transforming initial_state occupants",
-                                    room_id=canonical_room_id,
-                                    error=str(e),
-                                )
-
-                            # CRITICAL: Convert player UUIDs to names - NEVER send UUIDs to client
-                            room_data_for_update = room.to_dict() if hasattr(room, "to_dict") else room
-                            if isinstance(room_data_for_update, dict):
-                                room_data_for_update = await connection_manager._convert_room_players_uuids_to_names(
-                                    room_data_for_update
-                                )
-                            initial_state = build_event(
-                                "room_update",
-                                {"room": room_data_for_update, "entities": [], "occupants": occupant_names},
-                                player_id=player_id_str,
-                            )
-                            await websocket.send_json(initial_state)
-                            logger.debug(
-                                "Sent initial room state to connecting player",
-                                player_id=player_id_str,
-                                occupants_sent=occupant_names,
-                            )
-
-                            # CRITICAL FIX: Send room_occupants event (authoritative source) after room_update
-                            # This ensures the client receives structured occupant data (players/npcs) that
-                            # the Room Occupants panel expects. The room_occupants event is the single
-                            # authoritative source for occupant data per architecture.
-                            # IMPORTANT: Send this AFTER room_update so client has room state to merge with
-                            try:
-                                # Access RealTimeEventHandler from app state
-                                event_handler = None
-                                if hasattr(connection_manager, "app") and connection_manager.app:
-                                    event_handler = getattr(connection_manager.app.state, "event_handler", None)
-                                elif hasattr(websocket, "app") and websocket.app:
-                                    event_handler = getattr(websocket.app.state, "event_handler", None)
-
-                                if event_handler and hasattr(event_handler, "_send_occupants_snapshot_to_player"):
-                                    # Verify room still exists and has the player before sending
-                                    # This ensures we're sending accurate occupant data
-                                    if room and room.has_player(player_id_str):
-                                        await event_handler._send_occupants_snapshot_to_player(
-                                            player_id, str(canonical_room_id)
-                                        )
-                                        logger.debug(
-                                            "Sent room_occupants event to connecting player",
-                                            player_id=player_id_str,
-                                            room_id=str(canonical_room_id),
-                                            room_has_player=room.has_player(player_id_str),
-                                            room_players=room.get_players(),
-                                        )
-                                    else:
-                                        logger.warning(
-                                            "Room not found or player not in room when sending room_occupants",
-                                            player_id=player_id_str,
-                                            room_id=str(canonical_room_id),
-                                            room_exists=room is not None,
-                                            room_has_player=room.has_player(player_id_str) if room else False,
-                                        )
-                                else:
-                                    logger.warning(
-                                        "RealTimeEventHandler not available for sending room_occupants event",
-                                        player_id=player_id_str,
-                                        has_connection_manager_app=hasattr(connection_manager, "app"),
-                                        has_websocket_app=hasattr(websocket, "app"),
-                                    )
-                            except Exception as e:
-                                logger.error(
-                                    "Error sending room_occupants event during initial connection",
-                                    player_id=player_id,
-                                    room_id=str(canonical_room_id),
-                                    error=str(e),
-                                    exc_info=True,
-                                )
-                    except Exception as e:
-                        logger.error("Error sending initial room state", player_id=player_id, error=str(e))
-
-                    # Note: Removed synthetic player_entered event generation to prevent duplicates
-                    # The natural PlayerEnteredRoom event from Room.player_entered() will handle
-                    # the notification to other players
-
-        # Send welcome message
-        welcome_event = build_event(
-            "welcome",
-            {"message": "Connected to MythosMUD"},
-            player_id=player_id_str,
-        )
-        await websocket.send_json(welcome_event)
-
-        # Main message loop
-        from .message_validator import MessageValidationError, get_message_validator
-
-        validator = get_message_validator()
-
-        # Get connection_id for rate limiting
-        connection_id = connection_manager.get_connection_id_from_websocket(websocket)
-
-        while True:
-            try:
-                # Receive message from client
-                data = await websocket.receive_text()
-
-                # Check message rate limit before processing
-                if connection_id:
-                    if not connection_manager.rate_limiter.check_message_rate_limit(connection_id):
-                        logger.warning(
-                            "Message rate limit exceeded",
-                            player_id=player_id_str,
-                            connection_id=connection_id,
-                        )
-                        rate_limit_info = connection_manager.rate_limiter.get_message_rate_limit_info(connection_id)
-                        error_response = create_websocket_error_response(
-                            ErrorType.RATE_LIMIT_EXCEEDED,
-                            f"Message rate limit exceeded. Limit: {rate_limit_info['max_attempts']} messages per minute. Try again in {int(rate_limit_info['reset_time'] - time.time())} seconds.",
-                            ErrorMessages.RATE_LIMIT_EXCEEDED,
-                            {
-                                "player_id": player_id_str,
-                                "connection_id": connection_id,
-                                "rate_limit_info": rate_limit_info,
-                            },
-                        )
-                        await websocket.send_json(error_response)
-                        continue
-
-                # Validate and parse message using comprehensive validator
-                try:
-                    # Get CSRF token if available (from connection metadata or session)
-                    csrf_token = None
-                    # TODO: Retrieve actual CSRF token from session/connection metadata
-                    # For now, validation will allow messages without tokens (backward compatibility)
-
-                    # Parse and validate message (handles size, depth, schema, CSRF)
-                    message = validator.parse_and_validate(
-                        data=data,
-                        player_id=player_id_str,
-                        schema=None,  # Basic validation for now, can be enhanced per message type
-                        csrf_token=csrf_token,
+                    await _send_initial_room_state(
+                        websocket, player_id, player_id_str, canonical_room_id, connection_manager
                     )
+    except Exception as e:
+        logger.error("Error in initial connection setup", player_id=player_id, error=str(e), exc_info=True)
 
-                except MessageValidationError as e:
-                    logger.warning(
-                        "Message validation failed",
-                        player_id=player_id_str,
-                        error_type=e.error_type,
-                        error_message=e.message,
-                    )
-                    error_response = create_websocket_error_response(
-                        ErrorType.INVALID_FORMAT,
-                        f"Message validation failed: {e.message}",
-                        ErrorMessages.INVALID_FORMAT,
-                        {"player_id": player_id_str, "error_type": e.error_type},
-                    )
-                    await websocket.send_json(error_response)
-                    continue
+    welcome_event = build_event("welcome", {"message": "Connected to MythosMUD"}, player_id=player_id_str)
+    await websocket.send_json(welcome_event)
 
-                # Mark presence on any inbound message
-                # Convert player_id_str to UUID for mark_player_seen
-                connection_manager.mark_player_seen(player_id)
-
-                # Process the message
-                await handle_websocket_message(websocket, player_id_str, message)
-
-            except json.JSONDecodeError:
-                logger.warning("Invalid JSON from player", player_id=player_id)
-                error_response = create_websocket_error_response(
-                    ErrorType.INVALID_FORMAT,
-                    "Invalid JSON format",
-                    ErrorMessages.INVALID_FORMAT,
-                    {"player_id": player_id_str},
-                )
-                await websocket.send_json(error_response)
-
-            except WebSocketDisconnect:
-                logger.info(
-                    "WebSocket disconnected",
-                    player_id=player_id_str,
-                    connection_id=connection_id,
-                )
-                break
-
-            except RuntimeError as e:
-                # Check if this is a WebSocket connection error
-                error_message = str(e)
-                if "WebSocket is not connected" in error_message or 'Need to call "accept" first' in error_message:
-                    logger.warning(
-                        "WebSocket connection lost (not connected)",
-                        player_id=player_id_str,
-                        connection_id=connection_id,
-                        error=error_message,
-                    )
-                    # Break out of loop - WebSocket is no longer valid
-                    break
-                # For other RuntimeErrors, fall through to general exception handler
-                raise
-
-            except Exception as e:
-                # Enhanced error context for debugging
-                logger.error(
-                    "Error handling WebSocket message",
-                    player_id=player_id_str,
-                    connection_id=connection_id,
-                    error=str(e),
-                    error_type=type(e).__name__,
-                    exc_info=True,
-                )
-                try:
-                    error_response = create_websocket_error_response(
-                        ErrorType.INTERNAL_ERROR,
-                        f"Internal server error: {str(e)}",
-                        ErrorMessages.INTERNAL_ERROR,
-                        {
-                            "player_id": player_id_str,
-                            "connection_id": connection_id,
-                            "error_type": type(e).__name__,
-                        },
-                    )
-                    await websocket.send_json(error_response)
-                except Exception as send_error:
-                    # If we can't send error response, check if WebSocket is closed
-                    send_error_msg = str(send_error)
-                    if (
-                        "WebSocket is not connected" in send_error_msg
-                        or "close message has been sent" in send_error_msg
-                    ):
-                        logger.warning(
-                            "WebSocket closed, breaking message loop",
-                            player_id=player_id_str,
-                            connection_id=connection_id,
-                            original_error=str(e),
-                            send_error=send_error_msg,
-                        )
-                        # WebSocket is closed, break out of loop
-                        break
-                    # For other send errors, log and continue (original behavior)
-                    logger.error(
-                        "Failed to send error response to client",
-                        player_id=player_id_str,
-                        connection_id=connection_id,
-                        original_error=str(e),
-                        send_error=send_error_msg,
-                    )
-
+    try:
+        await _handle_websocket_message_loop(websocket, player_id, player_id_str, connection_manager)
     finally:
-        # Clean up connection
-        await connection_manager.disconnect_websocket(player_id)
-
-        # Clean up player mute data when they disconnect
-        try:
-            from ..services.user_manager import user_manager
-
-            user_manager.cleanup_player_mutes(player_id_str)
-            logger.info("Cleaned up mute data", player_id=player_id)
-        except Exception as e:
-            logger.error("Error cleaning up mute data", player_id=player_id, error=str(e))
+        await _cleanup_connection(player_id, player_id_str, connection_manager)
 
 
 async def handle_websocket_message(websocket: WebSocket, player_id: str, message: dict) -> None:
