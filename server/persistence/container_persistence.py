@@ -285,6 +285,10 @@ def create_container(
         allowed_roles_jsonb = json.dumps(allowed_roles or [])
 
         # Insert container (items_json column removed - items go in container_contents)
+        # Convert UUID objects to strings for psycopg2 compatibility
+        owner_id_str = str(owner_id) if owner_id and isinstance(owner_id, UUID) else owner_id
+        entity_id_str = str(entity_id) if entity_id and isinstance(entity_id, UUID) else entity_id
+
         cursor = conn.cursor(cursor_factory=RealDictCursor)
         cursor.execute(
             """
@@ -299,9 +303,9 @@ def create_container(
             """,
             (
                 source_type,
-                owner_id,
+                owner_id_str,
                 room_id,
-                entity_id,
+                entity_id_str,
                 lock_state,
                 capacity_slots,
                 weight_limit,

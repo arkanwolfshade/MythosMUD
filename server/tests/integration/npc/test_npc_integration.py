@@ -83,15 +83,19 @@ class TestNPCMovementIntegration:
     def mock_persistence(self, mock_room_1, mock_room_2):
         """Create a mock persistence layer for testing."""
         persistence = MagicMock()
-        persistence.get_room_by_id = MagicMock(side_effect=lambda room_id: {
-            "earth_arkhamcity_downtown_room_derby_st_001": mock_room_1,
-            "earth_arkhamcity_downtown_room_derby_st_002": mock_room_2,
-        }.get(room_id))
+        persistence.get_room_by_id = MagicMock(
+            side_effect=lambda room_id: {
+                "earth_arkhamcity_downtown_room_derby_st_001": mock_room_1,
+                "earth_arkhamcity_downtown_room_derby_st_002": mock_room_2,
+            }.get(room_id)
+        )
         # Also set get_room for backward compatibility
-        persistence.get_room = MagicMock(side_effect=lambda room_id: {
-            "earth_arkhamcity_downtown_room_derby_st_001": mock_room_1,
-            "earth_arkhamcity_downtown_room_derby_st_002": mock_room_2,
-        }.get(room_id))
+        persistence.get_room = MagicMock(
+            side_effect=lambda room_id: {
+                "earth_arkhamcity_downtown_room_derby_st_001": mock_room_1,
+                "earth_arkhamcity_downtown_room_derby_st_002": mock_room_2,
+            }.get(room_id)
+        )
         return persistence
 
     @pytest.fixture
@@ -182,16 +186,16 @@ class TestNPCMovementIntegration:
     def test_npc_movement_with_behavior_trigger(self, test_npc):
         """Test that NPC movement can trigger behavior rules."""
         # Test that movement updates last action time
-        initial_time = test_npc._last_action_time
+        initial_time = test_npc.to_dict().get("last_action_time")
 
         # Move NPC
         test_npc.move_to_room("earth_arkhamcity_downtown_room_derby_st_002")
 
         # Last action time should be updated
-        assert test_npc._last_action_time >= initial_time
+        assert test_npc.to_dict().get("last_action_time") >= initial_time
 
     @pytest.mark.asyncio
-    async def test_npc_movement_integration_with_movement_service(self, test_npc, movement_service, mock_room_1, mock_room_2):
+    async def test_npc_movement_integration_with_movement_service(self, test_npc, movement_service):
         """Test NPC movement integration with the movement service."""
         # This test documents how NPCs could integrate with the movement service
         # Currently, NPCs handle their own movement, but this could be extended
@@ -203,6 +207,7 @@ class TestNPCMovementIntegration:
 
         # Mock player movement (move_player is async, so use AsyncMock and await)
         from unittest.mock import AsyncMock
+
         movement_service.move_player = AsyncMock(return_value=True)
         result = await movement_service.move_player(player_id, from_room, to_room)
         assert result is True
@@ -230,6 +235,12 @@ class TestNPCCombatIntegration:
         npc_def.behavior_config = '{"hunt_range": 5, "attack_damage": 25, "flee_threshold": 0.3}'
         npc_def.ai_integration_stub = '{"ai_enabled": false, "ai_model": null}'
         return npc_def
+
+    @pytest.fixture
+    def mock_persistence(self):
+        """Create a mock persistence layer for testing."""
+        persistence = MagicMock()
+        return persistence
 
     @pytest.fixture
     def aggressive_npc(self, mock_aggressive_npc_definition, event_bus):
@@ -458,12 +469,12 @@ class TestNPCCombatIntegration:
         result = aggressive_npc.flee()
         assert result is True
 
-    def test_npc_combat_integration_system(self, aggressive_npc, event_bus):
+    def test_npc_combat_integration_system(self, aggressive_npc, event_bus, mock_persistence):
         """Test the new NPC combat integration system."""
         from server.npc.combat_integration import NPCCombatIntegration
 
         # Create combat integration
-        combat_integration = NPCCombatIntegration(event_bus)
+        combat_integration = NPCCombatIntegration(event_bus, async_persistence=mock_persistence)
         aggressive_npc.combat_integration = combat_integration
 
         # Test damage calculation
@@ -485,15 +496,14 @@ class TestNPCCombatIntegration:
         assert stats["strength"] == 15
 
     @pytest.mark.asyncio
-    async def test_npc_combat_integration_with_enhanced_attack(self, aggressive_npc, event_bus):
+    async def test_npc_combat_integration_with_enhanced_attack(self, aggressive_npc, event_bus, mock_persistence):
         """Test NPC attack with enhanced combat integration."""
         from server.npc.combat_integration import NPCCombatIntegration
 
         # Mock the persistence layer to prevent database access issues
-        mock_persistence = MagicMock()
         mock_player = MagicMock()
         mock_player.stats.model_dump.return_value = {"constitution": 10, "health": 100}
-        mock_persistence.get_player.return_value = mock_player
+        mock_persistence.get_player_by_id = MagicMock(return_value=mock_player)
 
         # Mock the game mechanics service
         mock_game_mechanics = MagicMock()
@@ -501,36 +511,33 @@ class TestNPCCombatIntegration:
         mock_game_mechanics.damage_player.return_value = (True, "Damage applied successfully")
 
         # Create combat integration with mocked dependencies
-        with patch("server.npc.combat_integration.get_persistence", return_value=mock_persistence):
-            with patch("server.npc.combat_integration.GameMechanicsService", return_value=mock_game_mechanics):
-                combat_integration = NPCCombatIntegration(event_bus)
-                aggressive_npc.combat_integration = combat_integration
+        with patch("server.npc.combat_integration.GameMechanicsService", return_value=mock_game_mechanics):
+            combat_integration = NPCCombatIntegration(event_bus, async_persistence=mock_persistence)
+            aggressive_npc.combat_integration = combat_integration
 
-                events_received = []
+            events_received = []
 
-                def capture_events(event):
-                    events_received.append(event)
+            def capture_events(event):
+                events_received.append(event)
 
-                # Subscribe to combat events
-                from server.events.event_types import NPCAttacked
+            # Subscribe to combat events
+            from server.events.event_types import NPCAttacked
 
-                event_bus.subscribe(NPCAttacked, capture_events)
+            event_bus.subscribe(NPCAttacked, capture_events)
 
-                # Test enhanced attack with proper UUID
-                test_player_id = str(uuid4())
-                result = aggressive_npc.attack_target(test_player_id)
-                assert result is True
+            # Test enhanced attack with proper UUID
+            test_player_id = str(uuid4())
+            result = aggressive_npc.attack_target(test_player_id)
+            assert result is True
 
-                # Wait for event to be processed
-                import asyncio
+            # Wait for event to be processed
+            await asyncio.sleep(0.1)
 
-                await asyncio.sleep(0.1)
-
-                # Should have attack event
-                assert len(events_received) == 1
-                assert events_received[0].event_type == "NPCAttacked"
-                assert events_received[0].npc_id == "aggressive_npc_1"
-                assert events_received[0].target_id == test_player_id
+            # Should have attack event
+            assert len(events_received) == 1
+            assert events_received[0].event_type == "NPCAttacked"
+            assert events_received[0].npc_id == "aggressive_npc_1"
+            assert events_received[0].target_id == test_player_id
 
 
 class TestNPCCommunicationIntegration:
