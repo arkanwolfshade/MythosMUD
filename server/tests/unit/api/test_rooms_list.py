@@ -18,6 +18,7 @@ import pytest
 class TestRoomsListEndpoint:
     """Test cases for GET /api/rooms/list endpoint."""
 
+    @pytest.mark.slow
     async def test_list_rooms_requires_plane_and_zone(self, container_test_client_class):
         """Test that plane and zone parameters are required."""
         client = container_test_client_class

@@ -23,6 +23,7 @@ class TestGameApiBroadcast:
         """Set client as instance variable for backward compatibility."""
         self.client = client
 
+    @pytest.mark.slow
     def test_broadcast_endpoint_requires_superuser(self):
         """Test broadcast endpoint with authenticated superuser.
 

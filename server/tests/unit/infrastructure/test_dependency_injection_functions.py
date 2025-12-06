@@ -15,6 +15,7 @@ from server.game.player_service import PlayerService
 from server.game.room_service import RoomService
 
 
+@pytest.mark.slow
 class TestDependencyInjectionFunctions:
     """Test the dependency injection functions."""
 

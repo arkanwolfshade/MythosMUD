@@ -130,6 +130,7 @@ class TestPlayerAPIIntegration:
             last_active=datetime.now(UTC).replace(tzinfo=None),
         )
 
+    @pytest.mark.slow
     def test_create_player_success(self, container_test_client_class, mock_persistence_for_api, sample_player_data):
         """
         Test successful player creation via API.

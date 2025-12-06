@@ -96,6 +96,7 @@ class TestSecurityHeadersVerification:
 
         return mock_persistence
 
+    @pytest.mark.slow
     def test_security_headers_on_api_endpoints(self, container_test_client_class, mock_security_persistence):
         """Test that security headers are applied to all API endpoints."""
         # Define all API endpoints to test
