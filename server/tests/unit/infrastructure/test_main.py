@@ -45,38 +45,37 @@ class TestEndpoints:
     def client(self, mock_application_container):
         """Create a test client with initialized app state."""
         # Initialize the app state with persistence
-        with patch("server.persistence.get_persistence") as mock_get_persistence:
-            mock_persistence = AsyncMock()
-            mock_get_persistence.return_value = mock_persistence
+        # Use AsyncPersistenceLayer directly (PersistenceLayer removed)
+        mock_persistence = AsyncMock()
 
-            # Mock profession data to return proper string values
-            mock_profession = Mock()
-            mock_profession.name = "Scholar"
-            mock_profession.description = "A learned academic"
-            mock_profession.flavor_text = "Knowledge is power"
-            mock_persistence.async_get_profession_by_id = AsyncMock(return_value=mock_profession)
+        # Mock profession data to return proper string values
+        mock_profession = Mock()
+        mock_profession.name = "Scholar"
+        mock_profession.description = "A learned academic"
+        mock_profession.flavor_text = "Knowledge is power"
+        mock_persistence.async_get_profession_by_id = AsyncMock(return_value=mock_profession)
 
-            # Create a test client
-            test_client = TestClient(app)
+        # Create a test client
+        test_client = TestClient(app)
 
-            # Create real PlayerService with mocked persistence
-            # This allows tests to patch persistence methods and have those patches
-            # affect the service layer behavior
-            from server.game.player_service import PlayerService
+        # Create real PlayerService with mocked persistence
+        # This allows tests to patch persistence methods and have those patches
+        # affect the service layer behavior
+        from server.game.player_service import PlayerService
 
-            player_service = PlayerService(mock_persistence)
+        player_service = PlayerService(mock_persistence)
 
-            # Use the comprehensive mock container and update specific services
-            mock_application_container.persistence = mock_persistence
-            mock_application_container.player_service = player_service
+        # Use the comprehensive mock container and update specific services
+        mock_application_container.persistence = mock_persistence
+        mock_application_container.player_service = player_service
 
-            # Set container and services in app state
-            test_client.app.state.container = mock_application_container
-            test_client.app.state.persistence = mock_persistence
-            test_client.app.state.player_service = player_service
-            test_client.app.state.room_service = mock_application_container.room_service
+        # Set container and services in app state
+        test_client.app.state.container = mock_application_container
+        test_client.app.state.persistence = mock_persistence
+        test_client.app.state.player_service = player_service
+        test_client.app.state.room_service = mock_application_container.room_service
 
-            return test_client
+        return test_client
 
     def test_read_root(self, client):
         """Test the root endpoint."""

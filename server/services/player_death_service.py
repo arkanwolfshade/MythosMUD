@@ -9,7 +9,6 @@ ASYNC MIGRATION (Phase 2):
 All persistence calls wrapped in asyncio.to_thread() to prevent event loop blocking.
 """
 
-import asyncio
 import uuid
 from typing import Any
 
@@ -294,11 +293,15 @@ class PlayerDeathService:
             # Publish player died event if event bus is available
             if self._event_bus:
                 # Get room name for death location display
-                from ..persistence import get_persistence
+                from ..container import ApplicationContainer
 
-                persistence = get_persistence()
-                room = await asyncio.to_thread(persistence.get_room, death_location) if death_location else None
-                room_name = room.name if room else death_location
+                container = ApplicationContainer.get_instance()
+                if container and container.async_persistence and death_location:
+                    # Use sync cache method (get_room_by_id uses cache)
+                    room = container.async_persistence.get_room_by_id(death_location)
+                    room_name = room.name if room else death_location
+                else:
+                    room_name = death_location if death_location else "Unknown"
 
                 event = PlayerDiedEvent(
                     player_id=player_id,

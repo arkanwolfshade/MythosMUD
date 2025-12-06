@@ -20,7 +20,8 @@ from ..exceptions import LoggedHTTPException
 from ..game.room_service import RoomService
 from ..logging.enhanced_logging_config import get_logger
 from ..models.user import User
-from ..persistence import get_persistence
+
+# Removed: from ..persistence import get_persistence - now using async_persistence from request
 from ..services.admin_auth_service import AdminAction, get_admin_auth_service
 from ..services.exploration_service import get_exploration_service
 from ..utils.error_logging import create_context_from_request
@@ -31,6 +32,58 @@ logger = get_logger(__name__)
 room_router = APIRouter(prefix="/rooms", tags=["rooms"])
 
 logger.info("Rooms API router initialized", prefix="/rooms")
+
+
+def _validate_room_position_update(current_user: User | None, room_id: str, request: Request) -> None:
+    """Validate authentication and admin permissions for room position update."""
+    if not current_user:
+        context = create_context_from_request(request)
+        context.metadata["requested_room_id"] = room_id
+        raise LoggedHTTPException(status_code=401, detail="Authentication required", context=context)
+
+    auth_service = get_admin_auth_service()
+    auth_service.validate_permission(current_user, AdminAction.UPDATE_ROOM_POSITION, request)
+
+
+async def _update_room_position_in_db(
+    session: AsyncSession, room_id: str, map_x: int, map_y: int, request: Request
+) -> None:
+    """Update room position in database and verify the update succeeded."""
+    update_query = text(
+        """
+        UPDATE rooms
+        SET map_x = :map_x, map_y = :map_y
+        WHERE stable_id = :room_id
+        """
+    )
+
+    result = await session.execute(
+        update_query,
+        {
+            "map_x": map_x,
+            "map_y": map_y,
+            "room_id": room_id,
+        },
+    )
+
+    rowcount: int = getattr(result, "rowcount", 0)
+    if rowcount == 0:
+        logger.warning("No rows updated for room position", room_id=room_id)
+        context = create_context_from_request(request)
+        context.metadata["requested_room_id"] = room_id
+        raise LoggedHTTPException(
+            status_code=404,
+            detail="Room not found in database",
+            context=context,
+        )
+
+    await session.commit()
+
+
+async def _invalidate_room_cache(room_service: RoomService, room_id: str) -> None:
+    """Invalidate room cache to force reload."""
+    if room_service.room_cache:
+        await room_service.room_cache.invalidate_room(room_id)
 
 
 # IMPORTANT: /list route must come BEFORE /{room_id} route
@@ -78,9 +131,9 @@ async def list_rooms(
         if filter_explored and current_user:
             try:
                 # Get player from user
-                persistence = get_persistence()
+                persistence = request.app.state.persistence  # Now async_persistence
                 user_id = str(current_user.id)
-                player = persistence.get_player_by_user_id(user_id)
+                player = await persistence.get_player_by_user_id(user_id)
 
                 if player:
                     # Get explored rooms for this player
@@ -174,16 +227,10 @@ async def update_room_position(
     Requires admin privileges.
     """
     try:
-        # Check authentication first
-        if not current_user:
-            context = create_context_from_request(request)
-            context.metadata["requested_room_id"] = room_id
-            raise LoggedHTTPException(status_code=401, detail="Authentication required", context=context)
+        # Validate authentication and permissions
+        _validate_room_position_update(current_user, room_id, request)
 
-        # Validate admin permission
         auth_service = get_admin_auth_service()
-        auth_service.validate_permission(current_user, AdminAction.UPDATE_ROOM_POSITION, request)
-
         logger.info(
             "Room position update requested",
             user=auth_service.get_username(current_user),
@@ -201,42 +248,7 @@ async def update_room_position(
             raise LoggedHTTPException(status_code=404, detail="Room not found", context=context)
 
         # Update room position in database
-        # Note: This assumes map_x and map_y columns exist (will be added in Task 10)
-        # The query uses stable_id to find the room, as that's the unique identifier in the database
-        # The room_id passed to the API is the full hierarchical ID, which should match stable_id
-        update_query = text(
-            """
-            UPDATE rooms
-            SET map_x = :map_x, map_y = :map_y
-            WHERE stable_id = :room_id
-            """
-        )
-
-        result = await session.execute(
-            update_query,
-            {
-                "map_x": position_data.map_x,
-                "map_y": position_data.map_y,
-                "room_id": room_id,  # room_id should match stable_id in database
-            },
-        )
-
-        # Check if any rows were updated
-        # SQLAlchemy 2.0 async Result has rowcount for UPDATE statements
-        # Use getattr with default to handle type checking
-        rowcount: int = getattr(result, "rowcount", 0)
-        if rowcount == 0:
-            logger.warning("No rows updated for room position", room_id=room_id)
-            context = create_context_from_request(request)
-            context.metadata["requested_room_id"] = room_id
-            raise LoggedHTTPException(
-                status_code=404,
-                detail="Room not found in database",
-                context=context,
-            )
-
-        # Commit the transaction
-        await session.commit()
+        await _update_room_position_in_db(session, room_id, int(position_data.map_x), int(position_data.map_y), request)
 
         logger.info(
             "Room position updated successfully",
@@ -245,9 +257,8 @@ async def update_room_position(
             map_y=position_data.map_y,
         )
 
-        # Invalidate room cache to force reload
-        if room_service.room_cache:
-            await room_service.room_cache.invalidate_room(room_id)
+        # Invalidate room cache
+        await _invalidate_room_cache(room_service, room_id)
 
         return {
             "room_id": room_id,

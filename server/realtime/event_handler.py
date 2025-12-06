@@ -265,7 +265,7 @@ class RealTimeEventHandler:
             room_data = room.to_dict() if hasattr(room, "to_dict") else room
             # CRITICAL: Convert player UUIDs to names - NEVER send UUIDs to client
             if isinstance(room_data, dict):
-                room_data = self.connection_manager._convert_room_players_uuids_to_names(room_data)
+                room_data = await self.connection_manager._convert_room_players_uuids_to_names(room_data)
                 # CRITICAL FIX: Remove occupant fields from room_data - room_update should NEVER include these
                 # Occupants are ONLY sent via room_occupants events to prevent data conflicts
                 # This prevents room_update from overwriting structured NPC data
@@ -729,9 +729,22 @@ class RealTimeEventHandler:
             },
         }
 
+    async def send_room_occupants_update(self, room_id: str, exclude_player: str | None = None) -> None:
+        """
+        Send room occupants update to players in the room (public API).
+
+        Preserves player/NPC distinction by sending structured data with separate
+        players and npcs arrays, enabling the client UI to display them in separate columns.
+
+        Args:
+            room_id: The room ID
+            exclude_player: Optional player ID to exclude from the update
+        """
+        await self._send_room_occupants_update(room_id, exclude_player)
+
     async def _send_room_occupants_update(self, room_id: str, exclude_player: str | None = None) -> None:
         """
-        Send room occupants update to players in the room.
+        Internal implementation for sending room occupants update.
 
         Preserves player/NPC distinction by sending structured data with separate
         players and npcs arrays, enabling the client UI to display them in separate columns.
@@ -741,48 +754,8 @@ class RealTimeEventHandler:
             exclude_player: Optional player ID to exclude from the update
         """
         try:
-            # #region agent log
-            import json
-
-            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
-                f.write(
-                    json.dumps(
-                        {
-                            "location": "event_handler.py:740",
-                            "message": "_send_room_occupants_update ENTRY",
-                            "data": {"room_id": room_id, "exclude_player": exclude_player},
-                            "timestamp": __import__("time").time(),
-                            "sessionId": "debug-session",
-                            "hypothesisId": "H2",
-                        }
-                    )
-                    + "\n"
-                )
-            # #endregion
-
             # Get room occupants with structured data (includes player_name, npc_name, type)
             occupants_info: list[dict[str, Any] | str] = await self._get_room_occupants(room_id)
-
-            # #region agent log
-            with open(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log", "a", encoding="utf-8") as f:
-                f.write(
-                    json.dumps(
-                        {
-                            "location": "event_handler.py:741",
-                            "message": "Got occupants_info",
-                            "data": {
-                                "room_id": room_id,
-                                "occupants_count": len(occupants_info) if occupants_info else 0,
-                                "occupants_info_sample": occupants_info[:3] if occupants_info else [],
-                            },
-                            "timestamp": __import__("time").time(),
-                            "sessionId": "debug-session",
-                            "hypothesisId": "H2",
-                        }
-                    )
-                    + "\n"
-                )
-            # #endregion
 
             # Separate players and NPCs while maintaining backward compatibility
             players: list[str] = []
@@ -1856,8 +1829,6 @@ class RealTimeEventHandler:
                             "event_handler",
                         )
                     else:
-                        from ..async_utils.tracked_task_manager import get_global_tracked_manager
-
                         tracked_manager = get_global_tracked_manager()
                         tracked_manager.create_tracked_task(
                             self.connection_manager.send_personal_message(

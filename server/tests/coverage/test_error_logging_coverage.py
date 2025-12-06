@@ -531,6 +531,20 @@ class TestErrorLoggingPerformance:
 class TestAPIErrorLoggingIntegration:
     """Integration tests for API endpoint error logging."""
 
+    @pytest.fixture(autouse=True)
+    def mock_nats_service(self):
+        """Mock NATS service to prevent connection attempts during container initialization."""
+        # Patch NATSService at the point where it's imported in container.py
+        with patch("server.services.nats_service.NATSService") as mock_nats_class:
+            # Create a mock NATS service instance that doesn't try to connect
+            mock_nats_instance = Mock()
+            mock_nats_instance.connect = Mock(return_value=None)
+            mock_nats_instance.is_connected = Mock(return_value=False)
+            mock_nats_instance.subject_manager = Mock()
+            # Make the class return our mock instance when instantiated
+            mock_nats_class.return_value = mock_nats_instance
+            yield mock_nats_instance
+
     @pytest.fixture
     def test_mixin(self):
         """Provide error logging test mixin."""

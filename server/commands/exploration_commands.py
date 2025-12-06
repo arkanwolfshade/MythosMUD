@@ -16,7 +16,36 @@ from ..utils.room_renderer import build_room_drop_summary, clone_room_drops, for
 
 logger = get_logger(__name__)
 
-_SHARED_WEARABLE_CONTAINER_SERVICE = WearableContainerService()
+# Lazy-initialized shared service (initialized on first use)
+_SHARED_WEARABLE_CONTAINER_SERVICE: WearableContainerService | None = None
+
+
+def _get_wearable_container_service(request: Any) -> WearableContainerService:
+    """
+    Get shared WearableContainerService instance, initializing it lazily if needed.
+
+    This ensures the service is initialized with proper dependencies from the application container.
+
+    Args:
+        request: FastAPI request object to access app state
+
+    Returns:
+        WearableContainerService instance
+    """
+    global _SHARED_WEARABLE_CONTAINER_SERVICE
+
+    if _SHARED_WEARABLE_CONTAINER_SERVICE is None:
+        # Get async_persistence from container
+        app = getattr(request, "app", None)
+        container = getattr(app.state, "container", None) if app else None
+        async_persistence = getattr(container, "async_persistence", None) if container else None
+
+        if async_persistence is None:
+            raise ValueError("async_persistence is required but not available from container")
+
+        _SHARED_WEARABLE_CONTAINER_SERVICE = WearableContainerService(persistence=async_persistence)
+
+    return _SHARED_WEARABLE_CONTAINER_SERVICE
 
 
 def _parse_instance_number(target: str) -> tuple[str, int | None]:
@@ -123,13 +152,13 @@ def _get_visible_equipment(player: Any) -> dict[str, dict]:
     return {slot: item for slot, item in all_equipped.items() if slot in visible_slots}
 
 
-def _get_players_in_room(room: Any, persistence: Any) -> list[Any]:
+async def _get_players_in_room(room: Any, persistence: Any) -> list[Any]:
     """
     Get all Player objects currently in the room.
 
     Args:
         room: Room object with get_players() method
-        persistence: PersistenceLayer object with get_player() method
+        persistence: AsyncPersistenceLayer object with get_player_by_id() method
 
     Returns:
         List of Player objects in the room (None players filtered out)
@@ -142,8 +171,8 @@ def _get_players_in_room(room: Any, persistence: Any) -> list[Any]:
         try:
             # Convert string to UUID if needed
             player_id = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
-            # Use get_player (not get_player_by_id) as that's the actual method name
-            player = persistence.get_player(player_id) if hasattr(persistence, "get_player") else None
+            # Use get_player_by_id (async method)
+            player = await persistence.get_player_by_id(player_id) if hasattr(persistence, "get_player_by_id") else None
             if player:
                 players.append(player)
         except (ValueError, AttributeError):
@@ -392,13 +421,13 @@ async def handle_look_command(
         logger.warning("Look command failed - no persistence layer", player=player_name)
         return {"result": "You see nothing special."}
 
-    player = persistence.get_player_by_name(get_username_from_user(current_user))
+    player = await persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
         logger.warning("Look command failed - player not found", player=player_name)
         return {"result": "You see nothing special."}
 
     room_id = player.current_room_id
-    room = persistence.get_room(room_id)
+    room = persistence.get_room_by_id(room_id)  # Sync method, uses cache
     if not room:
         logger.warning("Look command failed - room not found", player=player_name, room_id=room_id)
         return {"result": "You see nothing special."}
@@ -425,7 +454,7 @@ async def handle_look_command(
         logger.debug("Looking at player", player=player_name, target=target, room_id=room_id)
 
         # Get players in room
-        players_in_room = _get_players_in_room(room, persistence)
+        players_in_room = await _get_players_in_room(room, persistence)
 
         # Find matching players (case-insensitive partial match)
         matching_players = []
@@ -572,7 +601,9 @@ async def handle_look_command(
                             UUID(inner_container_id) if isinstance(inner_container_id, str) else inner_container_id
                         )
                         container_data = (
-                            persistence.get_container(container_id) if hasattr(persistence, "get_container") else None
+                            await persistence.get_container(container_id)
+                            if hasattr(persistence, "get_container")
+                            else None
                         )
                         if container_data:
                             container_found = container_data
@@ -583,9 +614,10 @@ async def handle_look_command(
                 # If not found via inner_container, use wearable container service
                 if not container_found:
                     try:
+                        wearable_container_service = _get_wearable_container_service(request)
                         player_id_uuid = UUID(str(player.player_id))
-                        wearable_containers = (
-                            await _SHARED_WEARABLE_CONTAINER_SERVICE.get_wearable_containers_for_player(player_id_uuid)
+                        wearable_containers = await wearable_container_service.get_wearable_containers_for_player(
+                            player_id_uuid
                         )
                         slot_lower = slot.lower() if slot else ""
                         item_instance_id = item.get("item_instance_id")
@@ -609,7 +641,7 @@ async def handle_look_command(
                                 container_id_from_component = container_component.container_id
                                 if container_id_from_component:
                                     container_data = (
-                                        persistence.get_container(container_id_from_component)
+                                        await persistence.get_container(container_id_from_component)
                                         if hasattr(persistence, "get_container")
                                         else None
                                     )
@@ -633,7 +665,7 @@ async def handle_look_command(
                                 container_id_from_component = container_component.container_id
                                 if container_id_from_component:
                                     container_data = (
-                                        persistence.get_container(container_id_from_component)
+                                        await persistence.get_container(container_id_from_component)
                                         if hasattr(persistence, "get_container")
                                         else None
                                     )
@@ -736,7 +768,7 @@ async def handle_look_command(
             direction = target_lower
         else:
             # Priority 2: Try players first
-            players_in_room = _get_players_in_room(room, persistence)
+            players_in_room = await _get_players_in_room(room, persistence)
             matching_players = []
             for p in players_in_room:
                 if hasattr(p, "name") and target_lower in p.name.lower():
@@ -875,7 +907,7 @@ async def handle_look_command(
                     inner_container_id = item.get("inner_container")
                     if inner_container_id:
                         container_data = (
-                            persistence.get_container(inner_container_id)
+                            await persistence.get_container(inner_container_id)
                             if hasattr(persistence, "get_container")
                             else None
                         )
@@ -914,7 +946,7 @@ async def handle_look_command(
         exits = room.exits
         target_room_id = exits.get(direction)
         if target_room_id:
-            target_room = persistence.get_room(target_room_id)
+            target_room = persistence.get_room_by_id(target_room_id)  # Sync method, uses cache
             if target_room:
                 # Convert to strings to handle test mocks that might return MagicMock objects
                 name = str(target_room.name) if target_room.name is not None else "Unknown Room"
@@ -988,13 +1020,13 @@ async def handle_go_command(
     direction = direction.lower()
     logger.debug("Player attempting to move", player=player_name, direction=direction)
 
-    player = persistence.get_player_by_name(get_username_from_user(current_user))
+    player = await persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
         logger.warning("Go command failed - player not found", player=player_name)
         return {"result": "You can't go that way"}
 
     room_id = player.current_room_id
-    room = persistence.get_room(room_id)
+    room = persistence.get_room_by_id(room_id)  # Sync method, uses cache
     if not room:
         logger.warning("Go command failed - current room not found", player=player_name, room_id=room_id)
         return {"result": "You can't go that way"}
@@ -1064,7 +1096,7 @@ async def handle_go_command(
         # No exit in this direction - normal gameplay, just return error message to player
         return {"result": "You can't go that way"}
 
-    target_room = persistence.get_room(target_room_id)
+    target_room = persistence.get_room_by_id(target_room_id)  # Sync method, uses cache
     if not target_room:
         logger.warning("Go command failed - target room not found", player=player_name, target_room_id=target_room_id)
         return {"result": "You can't go that way"}
@@ -1078,8 +1110,10 @@ async def handle_go_command(
 
         # Pass the same event bus that persistence uses to ensure events are published correctly
         # Also pass player_combat_service to enforce combat state validation
-        movement_service = MovementService(persistence._event_bus, player_combat_service=player_combat_service)
-        success = movement_service.move_player(player.player_id, room_id, target_room_id)
+        movement_service = MovementService(
+            persistence._event_bus, player_combat_service=player_combat_service, async_persistence=persistence
+        )
+        success = await movement_service.move_player(player.player_id, room_id, target_room_id)
 
         if success:
             logger.info("Player moved successfully", player=player_name, from_room=room_id, to_room=target_room_id)

@@ -411,10 +411,15 @@ class NPCSpawningService:
             # The population controller will update its own statistics when needed
 
             # Mutate room state via Room API which will publish the event
-            from ..persistence import get_persistence
+            # Get room from persistence (sync method, uses cache)
+            # Note: This assumes persistence is available via container or passed parameter
+            from ..container import ApplicationContainer
 
-            persistence = get_persistence()
-            room = persistence.get_room(request.room_id)
+            container = ApplicationContainer.get_instance()
+            if container and container.async_persistence:
+                room = container.async_persistence.get_room_by_id(request.room_id)  # Sync method, uses cache
+            else:
+                room = None
             if not room:
                 definition_name = getattr(request.definition, "name", "Unknown NPC")
                 logger.warning("Room not found for NPC spawn", npc_name=definition_name, room_id=request.room_id)

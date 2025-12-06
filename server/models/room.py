@@ -104,6 +104,27 @@ class Room:
             event = PlayerEnteredRoom(player_id=player_id_str, room_id=self.id)
             self._event_bus.publish(event)
 
+    def add_player_silently(self, player_id: uuid.UUID | str) -> None:
+        """
+        Add a player to the room without triggering an event.
+
+        This method is used for initial connections where we want to track
+        the player's presence without triggering PlayerEnteredRoom events.
+        PlayerEnteredRoom events should be triggered when players move between rooms.
+
+        Args:
+            player_id: The ID of the player to add (UUID or string)
+        """
+        if not player_id:
+            raise ValueError("Player ID cannot be empty")
+
+        # Convert to string for internal storage (Room uses set[str] for _players)
+        player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
+
+        if player_id_str not in self._players:
+            self._players.add(player_id_str)
+            self._logger.debug("Player added to room silently", player_id=player_id, room_id=self.id)
+
     def player_left(self, player_id: uuid.UUID | str) -> None:
         """
         Remove a player from the room and trigger event.

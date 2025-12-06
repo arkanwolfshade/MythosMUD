@@ -13,10 +13,10 @@ from typing import Any, cast
 from sqlalchemy import Select, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ..async_persistence import AsyncPersistenceLayer
 from ..logging.enhanced_logging_config import get_logger
 from ..models.lucidity import PlayerLucidity
 from ..models.player import Player
-from ..persistence import PersistenceLayer
 from ..services.lucidity_service import CatatoniaObserverProtocol, LucidityService, LucidityUpdateResult
 
 try:
@@ -85,7 +85,7 @@ class PassiveLucidityFluxService:
 
     def __init__(
         self,
-        persistence: PersistenceLayer | None = None,
+        persistence: AsyncPersistenceLayer | None = None,
         performance_monitor: PerformanceMonitor | None = None,
         *,
         environment_config: dict[str, Any] | None = None,
@@ -280,7 +280,7 @@ class PassiveLucidityFluxService:
         # Cache miss or expired - fetch from database
         if self._persistence is not None:
             try:
-                room = await self._persistence.async_get_room(room_id)
+                room = self._persistence.get_room_by_id(room_id)
                 if room is not None:
                     # Update cache
                     self._room_cache[room_id] = CachedRoom(room=room, timestamp=current_time)
@@ -435,7 +435,7 @@ class PassiveLucidityFluxService:
         room = None
         if self._persistence is not None:
             try:
-                room = self._persistence.get_room(str(player.current_room_id))
+                room = self._persistence.get_room_by_id(str(player.current_room_id))
             except Exception as exc:  # pragma: no cover - defensive logging
                 logger.warning(
                     "Failed to resolve room for passive flux",

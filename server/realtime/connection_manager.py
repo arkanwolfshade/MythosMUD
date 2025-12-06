@@ -405,17 +405,33 @@ class ConnectionManager:
         canonical_id = self._canonical_room_id(room_id) or room_id
         return self.room_manager.unsubscribe_from_room(str(player_id), canonical_id)
 
+    def canonical_room_id(self, room_id: str | None) -> str | None:
+        """
+        Resolve a room id to the canonical Room.id value (public method).
+
+        Args:
+            room_id: The room ID to resolve
+
+        Returns:
+            Optional[str]: The canonical room ID or the original ID if resolution fails
+        """
+        return self._canonical_room_id(room_id)
+
     def _canonical_room_id(self, room_id: str | None) -> str | None:
         """Resolve a room id to the canonical Room.id value (compatibility method)."""
-        # First try the room manager's persistence
-        result = self.room_manager._canonical_room_id(room_id)
-        if result != room_id:  # If room manager resolved it, return that
-            return result
-
-        # Fallback to main persistence layer for compatibility
+        # Use room manager's persistence if available, otherwise use main persistence layer
+        # Both use the same async_persistence instance, so we can use either
         try:
             if not room_id:
                 return room_id
+
+            # Try room manager's persistence first (public attribute access)
+            if self.room_manager.async_persistence is not None:
+                room = self.room_manager.async_persistence.get_room_by_id(room_id)  # Sync method, uses cache
+                if room is not None and getattr(room, "id", None):
+                    return room.id
+
+            # Fallback to main persistence layer for compatibility
             if self.async_persistence is not None:
                 room = self.async_persistence.get_room_by_id(room_id)  # Sync method, uses cache
                 if room is not None and getattr(room, "id", None):
@@ -465,8 +481,8 @@ class ConnectionManager:
                         try:
                             # Check if the existing WebSocket is still open by checking its state
                             if existing_websocket.client_state.name != "CONNECTED":
-                                raise Exception("WebSocket not connected")
-                        except Exception as ping_error:
+                                raise ConnectionError("WebSocket not connected")
+                        except ConnectionError as ping_error:
                             logger.warning(
                                 "Dead WebSocket connection, will clean up",
                                 connection_id=connection_id,
@@ -620,6 +636,8 @@ class ConnectionManager:
             is_force_disconnect: If True, don't broadcast player_left_game
         """
         # Use disconnect_lock to prevent concurrent disconnects for the same player
+        # Initialize should_track_disconnect before the try block to ensure it's always defined
+        should_track_disconnect = False
         async with self.disconnect_lock:
             try:
                 logger.info(
@@ -664,7 +682,6 @@ class ConnectionManager:
                     del self.player_websockets[player_id]
 
                     # Check if we need to track disconnection (outside of disconnect_lock to avoid deadlock)
-                    should_track_disconnect = False
                     if not is_force_disconnect and not self.has_websocket_connection(player_id):
                         # Check if disconnect needs to be processed without holding the disconnect_lock
                         async with self.processed_disconnect_lock:
@@ -1047,9 +1064,16 @@ class ConnectionManager:
                 last_update = self.last_active_update_times.get(player_id, 0.0)
                 if now_ts - last_update >= self.last_active_update_interval:
                     try:
-                        # TODO: Add update_player_last_active to async_persistence or use save_player
-                        # For now, skip - not critical for event loop blocking
+                        # Fire-and-forget async call - not critical for event loop blocking
+                        # Update timestamp immediately to prevent rapid retries
                         self.last_active_update_times[player_id] = now_ts
+                        # Try to create task if event loop is running, otherwise skip (non-critical)
+                        try:
+                            loop = asyncio.get_running_loop()
+                            loop.create_task(self.async_persistence.update_player_last_active(player_id))
+                        except RuntimeError:
+                            # No running loop - skip update (non-critical)
+                            pass
                     except Exception as update_error:
                         logger.warning(
                             "Failed to persist last_active update",
@@ -1455,13 +1479,8 @@ class ConnectionManager:
         Returns:
             str: Connection ID if found, None otherwise
         """
-        # Try to get from websocket custom attribute first
-        if hasattr(websocket, "_mythos_connection_id"):
-            connection_id = websocket._mythos_connection_id
-            if connection_id:
-                return connection_id
-
-        # Fallback: search active_websockets
+        # Search active_websockets to find the connection ID
+        # This avoids accessing protected members on the WebSocket object
         for conn_id, ws in self.active_websockets.items():
             if ws is websocket:
                 return conn_id
@@ -1703,8 +1722,7 @@ class ConnectionManager:
                 # Use update_player_last_active instead of save_player to avoid overwriting inventory
                 if self.async_persistence:
                     try:
-                        # TODO: Add update_player_last_active to async_persistence or use save_player
-                        # For now, skip - not critical for event loop blocking
+                        await self.async_persistence.update_player_last_active(player_id)
                         logger.debug("Updated last_active for player on connection", player_id=player_id)
                     except Exception as e:
                         logger.warning("Failed to update last_active for player", player_id=player_id, error=str(e))
@@ -1736,9 +1754,8 @@ class ConnectionManager:
                         room = self.async_persistence.get_room_by_id(room_id)  # Sync method, uses cache
                         if room:
                             # Add player to room's internal set without triggering event (initial connection)
-                            player_id_str = str(player_id)
-                            if player_id_str not in room._players:
-                                room._players.add(player_id_str)
+                            if not room.has_player(player_id):
+                                room.add_player_silently(player_id)
                                 logger.info(
                                     "Player added to room on initial connection (no player_entered event)",
                                     player_id=player_id,
@@ -1825,13 +1842,13 @@ class ConnectionManager:
                         if self.app and hasattr(self.app, "state"):
                             event_handler = getattr(self.app.state, "event_handler", None)
 
-                        if event_handler and hasattr(event_handler, "_send_room_occupants_update"):
+                        if event_handler and hasattr(event_handler, "send_room_occupants_update"):
                             logger.debug(
                                 "Sending room_occupants update after player_entered_game",
                                 player_id=player_id,
                                 room_id=room_id,
                             )
-                            await event_handler._send_room_occupants_update(room_id, exclude_player=str(player_id))
+                            await event_handler.send_room_occupants_update(room_id, exclude_player=str(player_id))
                         else:
                             logger.warning(
                                 "Event handler not available to send room_occupants update",
@@ -2345,7 +2362,7 @@ class ConnectionManager:
             # Write to login log file
             login_log_path = "logs/development/new_logins.log"
             os.makedirs(os.path.dirname(login_log_path), exist_ok=True)
-            with open(login_log_path, "a") as f:
+            with open(login_log_path, "a", encoding="utf-8") as f:
                 f.write(json.dumps(login_log_entry) + "\n")
 
             # Terminate all existing connections
@@ -2498,6 +2515,18 @@ class ConnectionManager:
         )
 
     # --- Event Subscription Methods ---
+
+    def set_event_bus(self, event_bus: Any) -> None:
+        """
+        Set the event bus for the connection manager.
+
+        This public method allows external code to set the event bus
+        without accessing the protected _event_bus member.
+
+        Args:
+            event_bus: The EventBus instance to set
+        """
+        self._event_bus = event_bus
 
     def _get_event_bus(self):
         """Get the event bus from connection manager."""
@@ -2679,8 +2708,8 @@ async def send_game_event(player_id: uuid.UUID | str, event_type: str, data: dic
     try:
         from .envelope import build_event
 
-        connection_manager = resolve_connection_manager()
-        if connection_manager is None:
+        manager = resolve_connection_manager()
+        if manager is None:
             raise RuntimeError("Connection manager not available")
         # Convert player_id to UUID if it's a string
         if isinstance(player_id, str):
@@ -2692,9 +2721,7 @@ async def send_game_event(player_id: uuid.UUID | str, event_type: str, data: dic
         else:
             player_id_uuid = player_id
         # Pass UUID object directly to build_event (it accepts UUID | str)
-        await connection_manager.send_personal_message(
-            player_id_uuid, build_event(event_type, data, player_id=player_id_uuid)
-        )
+        await manager.send_personal_message(player_id_uuid, build_event(event_type, data, player_id=player_id_uuid))
 
     except Exception as e:
         logger.error("Error sending game event", player_id=player_id, error=str(e))
@@ -2712,10 +2739,10 @@ async def broadcast_game_event(event_type: str, data: dict, exclude_player: str 
     try:
         from .envelope import build_event
 
-        connection_manager = resolve_connection_manager()
-        if connection_manager is None:
+        manager = resolve_connection_manager()
+        if manager is None:
             raise RuntimeError("Connection manager not available")
-        await connection_manager.broadcast_global(build_event(event_type, data), exclude_player)
+        await manager.broadcast_global(build_event(event_type, data), exclude_player)
 
     except Exception as e:
         logger.error("Error broadcasting game event", error=str(e))
@@ -2734,10 +2761,10 @@ async def send_room_event(room_id: str, event_type: str, data: dict, exclude_pla
     try:
         from .envelope import build_event
 
-        connection_manager = resolve_connection_manager()
-        if connection_manager is None:
+        manager = resolve_connection_manager()
+        if manager is None:
             raise RuntimeError("Connection manager not available")
-        await connection_manager.broadcast_to_room(
+        await manager.broadcast_to_room(
             room_id,
             build_event(event_type, data, room_id=room_id),
             exclude_player,

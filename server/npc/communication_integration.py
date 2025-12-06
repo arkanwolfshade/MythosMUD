@@ -17,7 +17,8 @@ from typing import TYPE_CHECKING
 from ..events import EventBus
 from ..events.event_types import NPCListened, NPCSpoke
 from ..logging.enhanced_logging_config import get_logger
-from ..persistence import get_persistence
+
+# Removed: from ..persistence import get_persistence - no longer needed
 
 # Import ChatService only for type checking to avoid circular dependency
 # AI: ChatService is only needed for type annotations, not runtime
@@ -46,7 +47,7 @@ class NPCCommunicationIntegration:
             chat_service: Optional ChatService instance for direct integration.
         """
         self.event_bus = event_bus or EventBus()
-        self._persistence = get_persistence(event_bus)
+        # Removed: self._persistence = get_persistence(event_bus) - no longer needed
         self._chat_service = chat_service
         logger.debug("NPC communication integration initialized")
 
@@ -158,7 +159,7 @@ class NPCCommunicationIntegration:
 
             # Here you could add logic to trigger NPC responses based on the message
             # For example, keyword detection, sentiment analysis, etc.
-            self._process_message_for_response(npc_id, player_id, message, room_id, channel)
+            self._process_message_for_response(npc_id, message, room_id, channel)
 
             logger.debug(
                 "NPC handled player message", npc_id=npc_id, player_id=player_id, message=message, channel=channel
@@ -169,15 +170,12 @@ class NPCCommunicationIntegration:
             logger.error("Error handling player message for NPC", npc_id=npc_id, player_id=player_id, error=str(e))
             return False
 
-    def _process_message_for_response(
-        self, npc_id: str, player_id: str, message: str, room_id: str, channel: str
-    ) -> None:
+    def _process_message_for_response(self, npc_id: str, message: str, room_id: str, channel: str) -> None:
         """
         Process a message to determine if the NPC should respond.
 
         Args:
             npc_id: ID of the NPC
-            player_id: ID of the player who sent the message
             message: Message content
             room_id: ID of the room
             channel: Communication channel

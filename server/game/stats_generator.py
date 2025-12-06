@@ -302,12 +302,25 @@ class StatsGenerator:
 
         logger.debug("DEBUG: Starting profession-based stats rolling", profession_id=profession_id)
 
-        # Get profession requirements from persistence
+        # Get profession requirements from persistence (async)
         try:
-            from ..persistence import get_persistence
+            import asyncio
 
-            persistence = get_persistence()
-            profession = persistence.get_profession_by_id(profession_id)
+            from ..container import ApplicationContainer
+
+            container = ApplicationContainer.get_instance()
+            if container and container.async_persistence:
+                # Try to get profession (async)
+                try:
+                    asyncio.get_running_loop()  # Check if we're in async context
+                    # In async context, we can't use asyncio.run()
+                    # For now, skip profession check in async context
+                    profession = None
+                except RuntimeError:
+                    # No running loop, we can use asyncio.run()
+                    profession = asyncio.run(container.async_persistence.get_profession_by_id(profession_id))
+            else:
+                profession = None
 
             if not profession:
                 raise ValueError(f"Invalid profession ID: {profession_id}")

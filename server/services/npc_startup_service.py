@@ -271,17 +271,22 @@ class NPCStartupService:
             Room ID where the NPC should spawn, or None if no valid room found
         """
         try:
-            from ..persistence import get_persistence
+            from ..container import ApplicationContainer
 
-            persistence = get_persistence()
-            if not persistence:
+            container = ApplicationContainer.get_instance()
+            async_persistence = getattr(container, "async_persistence", None) if container else None
+
+            if not async_persistence:
                 logger.error("Persistence layer not available for room validation")
                 return None
+
+            persistence = async_persistence
 
             # If NPC has a specific room_id, verify it exists
             if hasattr(npc_def, "room_id") and npc_def.room_id:
                 room_id = npc_def.room_id
-                room = await asyncio.to_thread(persistence.get_room, room_id)
+                # Use sync cache method (get_room_by_id uses cache)
+                room = persistence.get_room_by_id(room_id)
                 if room:
                     logger.debug("Using specific room for NPC", npc_name=npc_def.name, room_id=room_id)
                     return room_id
@@ -298,7 +303,7 @@ class NPCStartupService:
             if hasattr(npc_def, "sub_zone_id") and npc_def.sub_zone_id:
                 default_room = self._get_default_room_for_sub_zone(npc_def.sub_zone_id)
                 if default_room:
-                    room = await asyncio.to_thread(persistence.get_room, default_room)
+                    room = await asyncio.to_thread(persistence.get_room_by_id, default_room)
                     if room:
                         logger.debug(
                             "Using default room for NPC in sub-zone",
@@ -317,7 +322,7 @@ class NPCStartupService:
 
             # Fallback to a default starting room
             fallback_room_id = "earth_arkhamcity_northside_intersection_derby_high"
-            room = await asyncio.to_thread(persistence.get_room, fallback_room_id)
+            room = await asyncio.to_thread(persistence.get_room_by_id, fallback_room_id)
             if room:
                 logger.debug("Using fallback room for NPC", npc_name=npc_def.name, room_id=fallback_room_id)
                 return fallback_room_id

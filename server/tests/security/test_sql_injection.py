@@ -13,32 +13,40 @@ from typing import cast
 
 import pytest
 
+from server.async_persistence import AsyncPersistenceLayer
 from server.exceptions import DatabaseError, ValidationError
 from server.models.player import Player
-from server.persistence import PersistenceLayer, get_persistence, reset_persistence
 
 
 class TestSQLInjectionPrevention:
     """Test SQL injection prevention in database operations."""
 
     @pytest.fixture(autouse=True)
-    def cleanup_players(self, persistence):
+    async def cleanup_players(self, persistence):
         """Clean up test players after each test."""
         # Clean up any existing player for test_user_id before test runs
+        # This prevents unique constraint violations on user_id
         try:
             test_user_id = getattr(persistence, "_test_user_id", None)
             if test_user_id:
-                # Delete any existing player for this user_id (user_id has unique constraint)
+                # Use async persistence methods
                 from uuid import UUID
 
                 try:
-                    # Try to get player by user_id (if such method exists) or find by name patterns
-                    # Since we can't easily query by user_id, we'll clean up after test
-                    pass
+                    # Get player by user_id (async)
+                    existing_player = await persistence.get_player_by_user_id(test_user_id)
+                    if existing_player:
+                        # Delete the player using async persistence
+                        player_id = (
+                            UUID(str(existing_player.player_id))
+                            if isinstance(existing_player.player_id, str)
+                            else existing_player.player_id
+                        )
+                        await persistence.delete_player(player_id)
                 except Exception:
-                    pass  # Ignore cleanup errors
+                    pass  # Ignore cleanup errors - player might not exist
         except Exception:
-            pass  # Ignore cleanup errors
+            pass  # Ignore cleanup errors - test will handle it
 
         yield
 
@@ -46,44 +54,38 @@ class TestSQLInjectionPrevention:
         try:
             test_user_id = getattr(persistence, "_test_user_id", None)
             if test_user_id:
-                # Delete test players for this user by trying common test names
-                # or by getting player by user_id if possible
+                # Use async persistence methods
                 from uuid import UUID
 
                 try:
-                    # Try to find player by user_id - we'll need to query the database directly
-                    # For now, try to delete by common test player names
-                    for name_pattern in ["TestPlayer", "TestPlayer2", "SafePlayer", "TestPlayer3", "ErrorPlayer"]:
-                        player = persistence.get_player_by_name(name_pattern)
-                        if player:
-                            try:
-                                player_id_uuid = (
-                                    UUID(str(player.player_id))
-                                    if isinstance(player.player_id, str)
-                                    else player.player_id
-                                )
-                                persistence.delete_player(player_id_uuid)
-                                break  # Found and deleted one, that's enough
-                            except Exception:
-                                pass  # Ignore cleanup errors
+                    # Get player by user_id (async)
+                    existing_player = await persistence.get_player_by_user_id(test_user_id)
+                    if existing_player:
+                        # Delete the player using async persistence
+                        player_id = (
+                            UUID(str(existing_player.player_id))
+                            if isinstance(existing_player.player_id, str)
+                            else existing_player.player_id
+                        )
+                        await persistence.delete_player(player_id)
                 except Exception:
                     pass  # Ignore cleanup errors
         except Exception:
             pass  # Ignore cleanup errors
 
     @pytest.fixture
-    def persistence(self):
-        """Create a persistence layer instance for testing."""
-        # Reset persistence to ensure clean state
-        reset_persistence()
-
+    async def persistence(self):
+        """Create an async persistence layer instance for testing."""
         # Use PostgreSQL from environment - SQLite is no longer supported
         database_url = os.getenv("DATABASE_URL")
         if not database_url or not database_url.startswith("postgresql"):
             pytest.skip("DATABASE_URL must be set to a PostgreSQL URL. SQLite is no longer supported.")
 
-        # Get persistence instance (uses singleton pattern)
-        persistence_instance = get_persistence()
+        # Create AsyncPersistenceLayer instance
+        from server.events.event_bus import EventBus
+
+        event_bus = EventBus()
+        persistence_instance = AsyncPersistenceLayer(event_bus=event_bus)
 
         # Create a test user in the database to satisfy foreign key constraints
         # This is needed because players table has a foreign key to users table
@@ -187,19 +189,13 @@ class TestSQLInjectionPrevention:
                     if not verified:
                         pytest.skip(f"User ID {final_user_id} was set but does not exist in database - schema mismatch")
                     persistence_instance._test_user_id = final_user_id
+                    break
                 else:
                     pytest.skip("Could not find or create a test user - database may be empty or schema mismatch")
                 break
 
-        # Run async function to create test user
-        import asyncio
-
-        try:
-            loop = asyncio.get_event_loop()
-        except RuntimeError:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-        loop.run_until_complete(create_test_user())
+        # Run async function to create test user (await since fixture is async)
+        await create_test_user()
 
         # Clean up any existing test players for this user before tests run
         test_user_id = getattr(persistence_instance, "_test_user_id", None)
@@ -210,25 +206,23 @@ class TestSQLInjectionPrevention:
 
                 from server.database import get_async_session
 
-                async def cleanup_existing_players():
-                    async for session in get_async_session():
-                        # Delete test players that might exist from previous test runs
-                        # Since player_id is now UUID, delete by user_id (which has unique constraint)
-                        delete_stmt = text("""
-                            DELETE FROM players
-                            WHERE user_id = :user_id
-                        """)
-                        await session.execute(delete_stmt, {"user_id": test_user_id})
-                        await session.commit()
-                        break
-
-                loop.run_until_complete(cleanup_existing_players())
+                async for session in get_async_session():
+                    # Delete test players that might exist from previous test runs
+                    # Since player_id is now UUID, delete by user_id (which has unique constraint)
+                    delete_stmt = text("""
+                        DELETE FROM players
+                        WHERE user_id = :user_id
+                    """)
+                    await session.execute(delete_stmt, {"user_id": test_user_id})
+                    await session.commit()
+                    break
             except Exception:
                 pass  # Ignore cleanup errors
 
         return persistence_instance
 
-    def test_update_player_stat_field_whitelist_validation(self, persistence: PersistenceLayer):
+    @pytest.mark.asyncio
+    async def test_update_player_stat_field_whitelist_validation(self, persistence: AsyncPersistenceLayer):
         """Test that update_player_stat_field validates field_name against whitelist."""
         # Create a test player with required fields
         # Use test user ID from persistence fixture (has corresponding user in database)
@@ -251,7 +245,7 @@ class TestSQLInjectionPrevention:
             status_effects=json.dumps([]),
             inventory=json.dumps([]),
         )
-        persistence.save_player(player)
+        await persistence.save_player(player)
 
         # Test valid field names (only fields that are in stats JSONB)
         # Note: experience_points is NOT in stats JSONB - it's a separate INTEGER column
@@ -275,7 +269,7 @@ class TestSQLInjectionPrevention:
             from uuid import UUID
 
             player_id_uuid = UUID(str(player.player_id))
-            persistence.update_player_stat_field(player_id_uuid, field_name, 10, "test")
+            await persistence._experience_repo.update_player_stat_field(player_id_uuid, field_name, 10, "test")
 
         # Test invalid field names (SQL injection attempts)
         invalid_fields = [
@@ -293,9 +287,10 @@ class TestSQLInjectionPrevention:
                 from uuid import UUID
 
                 player_id_uuid = UUID(str(player.player_id))
-                persistence.update_player_stat_field(player_id_uuid, field_name, 10, "test")
+                await persistence._experience_repo.update_player_stat_field(player_id_uuid, field_name, 10, "test")
 
-    def test_update_player_stat_field_parameterized_query(self, persistence: PersistenceLayer):
+    @pytest.mark.asyncio
+    async def test_update_player_stat_field_parameterized_query(self, persistence: AsyncPersistenceLayer):
         """Test that update_player_stat_field uses parameterized queries."""
         # Create a test player with required fields
         # Use test user ID from persistence fixture
@@ -317,7 +312,7 @@ class TestSQLInjectionPrevention:
             status_effects=json.dumps([]),
             inventory=json.dumps([]),
         )
-        persistence.save_player(player)
+        await persistence.save_player(player)
 
         # Attempt SQL injection via delta parameter
         # The delta is parameterized, so this should be safe
@@ -330,14 +325,15 @@ class TestSQLInjectionPrevention:
             from uuid import UUID
 
             player_id_uuid = UUID(str(player.player_id))
-            persistence.update_player_stat_field(
+            await persistence._experience_repo.update_player_stat_field(
                 player_id_uuid,
                 "current_health",
                 cast(int | float, malicious_delta),  # Intentionally passing wrong type to test type checking
                 "test",
             )
 
-    def test_get_player_by_name_parameterized(self, persistence: PersistenceLayer):
+    @pytest.mark.asyncio
+    async def test_get_player_by_name_parameterized(self, persistence: AsyncPersistenceLayer):
         """Test that get_player_by_name uses parameterized queries."""
         # Create a test player with required fields
         # Use test user ID from persistence fixture (has corresponding user in database)
@@ -360,7 +356,7 @@ class TestSQLInjectionPrevention:
             status_effects=json.dumps([]),
             inventory=json.dumps([]),
         )
-        persistence.save_player(player)
+        await persistence.save_player(player)
 
         # Attempt SQL injection via name parameter
         malicious_names = [
@@ -371,15 +367,16 @@ class TestSQLInjectionPrevention:
 
         for malicious_name in malicious_names:
             # Should return None (player not found), not execute malicious SQL
-            result = persistence.get_player_by_name(malicious_name)
+            result = await persistence.get_player_by_name(malicious_name)
             assert result is None, f"SQL injection attempt should not find player: {malicious_name}"
 
         # Valid name should still work
-        result = persistence.get_player_by_name("SafePlayer")
+        result = await persistence.get_player_by_name("SafePlayer")
         assert result is not None
         assert result.name == "SafePlayer"
 
-    def test_get_player_by_id_parameterized(self, persistence: PersistenceLayer):
+    @pytest.mark.asyncio
+    async def test_get_player_by_id_parameterized(self, persistence: AsyncPersistenceLayer):
         """Test that get_player uses parameterized queries."""
         # Create a test player with required fields
         # Use test user ID from persistence fixture
@@ -402,7 +399,7 @@ class TestSQLInjectionPrevention:
             status_effects=json.dumps([]),
             inventory=json.dumps([]),
         )
-        persistence.save_player(player)
+        await persistence.save_player(player)
 
         # Attempt SQL injection via player_id parameter
         # These should fail UUID validation before reaching the database
@@ -421,7 +418,7 @@ class TestSQLInjectionPrevention:
 
                 uuid_obj = UUID(malicious_id)
                 # If conversion succeeds (shouldn't for malicious strings), try get_player
-                result = persistence.get_player(uuid_obj)
+                result = await persistence.get_player_by_id(uuid_obj)
                 assert result is None, f"SQL injection attempt should not find player: {malicious_id}"
             except (ValueError, TypeError):
                 # Expected: UUID validation should reject invalid format before reaching database
@@ -434,7 +431,7 @@ class TestSQLInjectionPrevention:
         # Valid ID should still work - convert to UUID for get_player
         from uuid import UUID
 
-        result = persistence.get_player(UUID(test_player_id))
+        result = await persistence.get_player_by_id(UUID(test_player_id))
         assert result is not None
         assert str(result.player_id) == test_player_id
 
@@ -460,7 +457,8 @@ class TestSQLInjectionPrevention:
         assert "name" in PLAYER_COLUMNS
         assert "stats" in PLAYER_COLUMNS
 
-    def test_player_name_validation(self, persistence: PersistenceLayer):
+    @pytest.mark.asyncio
+    async def test_player_name_validation(self, persistence: AsyncPersistenceLayer):
         """Test that player names are validated to prevent injection."""
         # Attempt to create player with SQL injection in name
         malicious_names = [
@@ -485,9 +483,9 @@ class TestSQLInjectionPrevention:
             # Save should either succeed with sanitized name or fail validation
             # The important thing is that it doesn't execute malicious SQL
             try:
-                persistence.save_player(player)
+                await persistence.save_player(player)
                 # If it succeeds, verify the name was sanitized
-                saved_player = persistence.get_player_by_name(malicious_name)
+                saved_player = await persistence.get_player_by_name(malicious_name)
                 if saved_player:
                     # Name should be sanitized, not contain SQL
                     assert "DROP" not in saved_player.name

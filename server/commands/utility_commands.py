@@ -323,7 +323,7 @@ async def handle_logout_command(
 
         if persistence and player is None:
             try:
-                player = persistence.get_player_by_name(lookup_name)
+                player = await persistence.get_player_by_name(lookup_name)
                 cache_player(request, lookup_name, player)
             except Exception as e:
                 logger.error("Error updating last active on logout", error=str(e), error_type=type(e).__name__)
@@ -352,7 +352,7 @@ async def handle_logout_command(
                 from datetime import UTC, datetime
 
                 player.last_active = datetime.now(UTC)
-                persistence.save_player(player)
+                await persistence.save_player(player)
                 logger.info("Player logout - updated last active")
 
         # Disconnect player from all connections

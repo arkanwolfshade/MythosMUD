@@ -11,14 +11,14 @@ All persistence calls wrapped in asyncio.to_thread() to prevent event loop block
 
 from __future__ import annotations
 
-import asyncio
 from typing import Any, cast
 from uuid import UUID
 
 from ..exceptions import MythosMUDError
 from ..logging.enhanced_logging_config import get_logger
 from ..models.container import ContainerComponent, ContainerSourceType
-from ..persistence import get_persistence
+
+# Removed: from ..persistence import get_persistence - now using async_persistence parameter
 from ..utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
@@ -82,7 +82,9 @@ class WearableContainerService:
         Args:
             persistence: Persistence layer instance (optional, will get if not provided)
         """
-        self.persistence = persistence or get_persistence()
+        if persistence is None:
+            raise ValueError("persistence (async_persistence) is required for WearableContainerService")
+        self.persistence = persistence
 
     async def handle_equip_wearable_container(
         self, player_id: UUID, item_stack: dict[str, Any]
@@ -135,7 +137,7 @@ class WearableContainerService:
             )
 
         # Check if container already exists for this item
-        existing_containers = await asyncio.to_thread(self.persistence.get_containers_by_entity_id, player_id)
+        existing_containers = await self.persistence.get_containers_by_entity_id(player_id)
         item_instance_id = item_stack.get("item_instance_id")
 
         for existing in existing_containers:
@@ -216,7 +218,7 @@ class WearableContainerService:
         )
 
         # Find container for this item
-        existing_containers = await asyncio.to_thread(self.persistence.get_containers_by_entity_id, player_id)
+        existing_containers = await self.persistence.get_containers_by_entity_id(player_id)
         for existing in existing_containers:
             if existing.get("source_type") == "equipment":
                 existing_metadata = existing.get("metadata", {})
@@ -253,7 +255,7 @@ class WearableContainerService:
         Returns:
             list[ContainerComponent]: List of wearable containers
         """
-        containers_data = await asyncio.to_thread(self.persistence.get_containers_by_entity_id, player_id)
+        containers_data = await self.persistence.get_containers_by_entity_id(player_id)
         if not containers_data:
             return []
 
@@ -297,7 +299,7 @@ class WearableContainerService:
         context.metadata["container_id"] = str(container_id)
 
         # Get current container
-        container_data = await asyncio.to_thread(self.persistence.get_container, container_id)
+        container_data = await self.persistence.get_container(container_id)
         if not container_data:
             log_and_raise(
                 WearableContainerServiceError,
@@ -391,7 +393,7 @@ class WearableContainerService:
         context.metadata["container_id"] = str(container_id)
 
         # Get current container
-        container_data = await asyncio.to_thread(self.persistence.get_container, container_id)
+        container_data = await self.persistence.get_container(container_id)
         if not container_data:
             log_and_raise(
                 WearableContainerServiceError,
@@ -481,7 +483,7 @@ class WearableContainerService:
         )
 
         # Get player
-        player = await asyncio.to_thread(self.persistence.get_player, player_id)
+        player = await self.persistence.get_player_by_id(player_id)
         if not player:
             log_and_raise(
                 WearableContainerServiceError,
@@ -510,7 +512,7 @@ class WearableContainerService:
         # Update player inventory if items were added
         if spilled_items:
             player.set_inventory(player_inventory)
-            await asyncio.to_thread(self.persistence.save_player, player)
+            await self.persistence.save_player(player)
 
         # Create ground container for dropped items if any
         if ground_items:

@@ -377,7 +377,6 @@ async def respawn_player(
         HTTPException(500): Respawn failed
     """
     from ..database import get_async_session
-    from ..persistence import get_persistence
 
     logger.info("Respawn request received", user_id=current_user.id, username=current_user.username)
 
@@ -386,7 +385,7 @@ async def respawn_player(
             try:
                 # Get respawn service from app.state
                 respawn_service = request.app.state.player_respawn_service
-                persistence = get_persistence()
+                persistence = request.app.state.persistence  # Now async_persistence
 
                 # Use service layer method to handle respawn logic
                 return await player_service.respawn_player_by_user_id(

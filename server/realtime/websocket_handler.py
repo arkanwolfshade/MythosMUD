@@ -1121,7 +1121,7 @@ async def broadcast_room_update(player_id: str, room_id: str, connection_manager
         room_data = room.to_dict() if hasattr(room, "to_dict") else room
         # CRITICAL: Convert player UUIDs to names - NEVER send UUIDs to client
         if isinstance(room_data, dict):
-            room_data = connection_manager._convert_room_players_uuids_to_names(room_data)
+            room_data = await connection_manager._convert_room_players_uuids_to_names(room_data)
 
         # Debug: Log the room's actual occupants
         logger.debug("DEBUG: Room occupants breakdown", room_id=room_id)

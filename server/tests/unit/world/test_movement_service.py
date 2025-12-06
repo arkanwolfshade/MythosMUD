@@ -558,51 +558,52 @@ class TestMovementService:
             with pytest.raises(ValidationError, match="Room ID cannot be empty"):
                 service.remove_player_from_room("player1", "")
 
-    def test_get_player_room_success(self):
+    @pytest.mark.asyncio
+    async def test_get_player_room_success(self):
         """Test getting player's current room."""
-        import uuid as uuid_module
+        from unittest.mock import AsyncMock
         from uuid import uuid4
 
-        mock_persistence = Mock()
+        mock_persistence = AsyncMock()
         test_player_id = str(uuid4())
         player = Player(player_id=test_player_id, user_id=str(uuid4()), name="TestPlayer", current_room_id="room1")
-        player_uuid = uuid_module.UUID(test_player_id)
 
-        def get_player_side_effect(pid):
-            if isinstance(pid, uuid_module.UUID):
-                return player if pid == player_uuid else None
-            return player if str(pid) == test_player_id else None
-
-        mock_persistence.get_player = Mock(side_effect=get_player_side_effect)
+        mock_persistence.get_player_by_id = AsyncMock(return_value=player)
 
         with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
             service = MovementService()
 
-            result = service.get_player_room(test_player_id)
+            result = await service.get_player_room(test_player_id)
 
             assert result == "room1"
 
-    def test_get_player_room_player_not_found(self):
+    @pytest.mark.asyncio
+    async def test_get_player_room_player_not_found(self):
         """Test getting room for non-existent player returns None."""
-        mock_persistence = Mock()
-        mock_persistence.get_player.return_value = None
+        from unittest.mock import AsyncMock
+
+        mock_persistence = AsyncMock()
+        mock_persistence.get_player_by_id = AsyncMock(return_value=None)
 
         with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
             service = MovementService()
 
-            result = service.get_player_room("nonexistent")
+            result = await service.get_player_room("nonexistent")
 
             assert result is None
 
-    def test_get_player_room_empty_player_id(self):
+    @pytest.mark.asyncio
+    async def test_get_player_room_empty_player_id(self):
         """Test that empty player ID raises ValidationError."""
-        mock_persistence = Mock()
+        from unittest.mock import AsyncMock
+
+        mock_persistence = AsyncMock()
 
         with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
             service = MovementService()
 
             with pytest.raises(ValidationError, match="Player ID cannot be empty"):
-                service.get_player_room("")
+                await service.get_player_room("")
 
     def test_get_room_players_success(self):
         """Test getting players in a room."""

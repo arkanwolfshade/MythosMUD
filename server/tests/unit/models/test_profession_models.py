@@ -663,12 +663,14 @@ class TestPlayerProfessionIntegration:
 
         test_player_id = str(uuid_module.uuid4())
 
+        # Use unique player name to avoid unique constraint violation
+        unique_player_name = f"TestPlayer_{test_player_id[:8]}"
         db_session_with_professions.execute(
             text("""
             INSERT INTO players (player_id, user_id, name, profession_id, stats, inventory, status_effects, current_room_id, experience_points, level, is_admin, created_at, last_active)
-            VALUES (:player_id, :user_id, 'TestPlayer', 1, '{}', '[]', '[]', 'earth_arkhamcity_sanitarium_room_foyer_001', 0, 1, 0, NOW(), NOW())
+            VALUES (:player_id, :user_id, :player_name, 1, '{}', '[]', '[]', 'earth_arkhamcity_sanitarium_room_foyer_001', 0, 1, 0, NOW(), NOW())
         """),
-            {"player_id": test_player_id, "user_id": test_user_id},
+            {"player_id": test_player_id, "user_id": test_user_id, "player_name": unique_player_name},
         )
         db_session_with_professions.commit()
 

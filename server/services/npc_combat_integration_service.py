@@ -21,11 +21,12 @@ from ..events.event_bus import EventBus
 from ..game.mechanics import GameMechanicsService
 from ..logging.enhanced_logging_config import get_logger
 from ..models.combat import CombatParticipantType
-from ..persistence import get_persistence
+
+# Removed: from ..persistence import get_persistence - now using async_persistence parameter
 from .active_lucidity_service import ActiveLucidityService, UnknownEncounterCategoryError
 from .combat_event_publisher import CombatEventPublisher
 from .combat_messaging_integration import CombatMessagingIntegration
-from .combat_service import CombatService
+from .combat_service import CombatParticipantData, CombatService
 from .player_combat_service import PlayerCombatService
 
 logger = get_logger(__name__)
@@ -47,6 +48,7 @@ class NPCCombatIntegrationService:
         combat_service: "CombatService | None" = None,
         player_combat_service=None,
         connection_manager=None,
+        async_persistence=None,
     ):
         """
         Initialize the NPC combat integration service.
@@ -64,16 +66,19 @@ class NPCCombatIntegrationService:
                 If None, CombatMessagingIntegration will try to lazy-load from container.
                 CRITICAL: Production code should ALWAYS pass the shared instance
                 from container to prevent initialization failures.
+            async_persistence: Async persistence layer instance (required)
         """
+        if async_persistence is None:
+            raise ValueError("async_persistence is required for NPCCombatIntegrationService")
         self.event_bus = event_bus or EventBus()
-        self._persistence = get_persistence(event_bus)
+        self._persistence = async_persistence
         logger.debug(
             "NPCCombatIntegrationService constructor",
             persistence_type=type(self._persistence).__name__,
             persistence_is_none=self._persistence is None,
         )
         # Initialize GameMechanicsService for proper XP awards and stat updates
-        self._game_mechanics = GameMechanicsService(self._persistence)
+        self._game_mechanics = GameMechanicsService(async_persistence)
 
         # Use shared PlayerCombatService instance if provided, otherwise create new one (for tests)
         # CRITICAL: Production code must pass shared instance to prevent state desynchronization!
@@ -323,22 +328,28 @@ class NPCCombatIntegrationService:
                 npc_max_hp = npc_stats.get("max_hp", 100)
                 npc_dexterity = npc_stats.get("dexterity", 10)
 
-                # Start combat with auto-progression - fix parameter order
+                # Start combat with auto-progression
+                attacker_data = CombatParticipantData(
+                    participant_id=attacker_uuid,
+                    name=player_name,
+                    current_hp=attacker_hp,
+                    max_hp=attacker_max_hp,
+                    dexterity=attacker_dex,
+                    participant_type=CombatParticipantType.PLAYER,
+                )
+                target_data = CombatParticipantData(
+                    participant_id=target_uuid,
+                    name=npc_instance.name,
+                    current_hp=npc_current_hp,
+                    max_hp=npc_max_hp,
+                    dexterity=npc_dexterity,
+                    participant_type=CombatParticipantType.NPC,
+                )
                 await self._combat_service.start_combat(
                     room_id=room_id,
-                    attacker_id=attacker_uuid,
-                    target_id=target_uuid,
-                    attacker_name=player_name,
-                    target_name=npc_instance.name,
-                    attacker_hp=attacker_hp,
-                    attacker_max_hp=attacker_max_hp,
-                    attacker_dex=attacker_dex,
-                    target_hp=npc_current_hp,
-                    target_max_hp=npc_max_hp,
-                    target_dex=npc_dexterity,
+                    attacker=attacker_data,
+                    target=target_data,
                     current_tick=current_tick,
-                    attacker_type=CombatParticipantType.PLAYER,
-                    target_type=CombatParticipantType.NPC,
                 )
 
                 # Now process the attack (initial attack, so skip turn order check)

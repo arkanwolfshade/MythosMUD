@@ -97,14 +97,15 @@ class UserManager:
             player_id_uuid = self._normalize_to_uuid(player_id)
 
             # Update database
-            from ..persistence import get_persistence
+            from ..container import ApplicationContainer
 
-            persistence = get_persistence()
-
-            player = await asyncio.to_thread(persistence.get_player, player_id_uuid)
-            if player:
-                player.set_admin_status(True)
-                await asyncio.to_thread(persistence.save_player, player)
+            container = ApplicationContainer.get_instance()
+            if container and container.async_persistence:
+                persistence = container.async_persistence
+                player = await persistence.get_player_by_id(player_id_uuid)
+                if player:
+                    player.set_admin_status(True)
+                    await persistence.save_player(player)
                 logger.info(
                     "Player added as admin in database",
                     # Structlog handles UUID objects automatically, no need to convert to string
@@ -142,14 +143,15 @@ class UserManager:
             player_id_uuid = self._normalize_to_uuid(player_id)
 
             # Update database
-            from ..persistence import get_persistence
+            from ..container import ApplicationContainer
 
-            persistence = get_persistence()
-
-            player = await asyncio.to_thread(persistence.get_player, player_id_uuid)
-            if player:
-                player.set_admin_status(False)
-                await asyncio.to_thread(persistence.save_player, player)
+            container = ApplicationContainer.get_instance()
+            if container and container.async_persistence:
+                persistence = container.async_persistence
+                player = await persistence.get_player_by_id(player_id_uuid)
+                if player:
+                    player.set_admin_status(False)
+                    await persistence.save_player(player)
                 logger.info(
                     "Player admin status removed from database",
                     player_id=player_id_uuid,
@@ -193,11 +195,14 @@ class UserManager:
                 return True
 
             # Check database if not in cache
-            from ..persistence import get_persistence
+            from ..container import ApplicationContainer
 
-            persistence = get_persistence()
-
-            player = await asyncio.to_thread(persistence.get_player, player_id_uuid)
+            container = ApplicationContainer.get_instance()
+            if container and container.async_persistence:
+                persistence = container.async_persistence
+                player = await persistence.get_player_by_id(player_id_uuid)
+            else:
+                player = None
             if player and player.is_admin_user():
                 # Add to cache (using UUID object as key)
                 self._admin_players.add(player_id_uuid)

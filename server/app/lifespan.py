@@ -28,7 +28,7 @@ TICK_INTERVAL = 1.0  # seconds
 
 # Global tick counter for combat system
 # NOTE: This remains global for now as it's shared state needed by combat system
-# TODO: Move to domain layer when implementing Phase 3.3
+# FUTURE: Move to domain layer when implementing Phase 3.3
 _current_tick = 0
 
 
@@ -39,7 +39,7 @@ def get_current_tick() -> int:
 
 def reset_current_tick() -> None:
     """Reset the current tick for testing."""
-    global _current_tick
+    global _current_tick  # pylint: disable=global-statement
     _current_tick = 0
 
 
@@ -69,45 +69,26 @@ async def lifespan(app: FastAPI):
     container = ApplicationContainer()
     await container.initialize()
 
+    # CRITICAL: Set the singleton instance so get_instance() returns the initialized container
+    # This ensures NPCs and other code using get_instance() get the properly initialized container
+    # Using lock for thread safety (even though we're in single-threaded startup context)
+    with ApplicationContainer._lock:
+        ApplicationContainer._instance = container
+
     # Add container to app.state for dependency injection
     app.state.container = container
     logger.info("ApplicationContainer initialized and added to app.state")
 
-    # AI Agent: CRITICAL FIX - Ensure global persistence singleton uses container's instance
-    #           This prevents the dual-cache bug where NPCs are added to one cache
-    #           but player connections see a different cache
-    # Import _persistence_lock from the module file (not the package)
-    # Note: _persistence_lock exists in server/persistence.py but is not exported via the package
-    # We import it directly from the module file using importlib
-    import importlib.util
-    from pathlib import Path
-
-    _persistence_module_path = Path(__file__).parent.parent / "persistence.py"
-    if _persistence_module_path.exists():
-        _persistence_spec = importlib.util.spec_from_file_location(
-            "server.persistence_module", _persistence_module_path
-        )
-        if _persistence_spec and _persistence_spec.loader:
-            _persistence_module = importlib.util.module_from_spec(_persistence_spec)
-            _persistence_spec.loader.exec_module(_persistence_module)
-            _persistence_lock = _persistence_module._persistence_lock
-    else:
-        import threading
-
-        _persistence_lock = threading.Lock()  # Fallback
-
-    with _persistence_lock:
-        globals_module = __import__("server.persistence", fromlist=["_persistence_instance"])
-        globals_module._persistence_instance = container.persistence  # type: ignore[attr-defined]
-    logger.info("Global persistence singleton synchronized with container instance")
+    # NOTE: Global persistence singleton removed - all code now uses container.persistence (async_persistence)
+    # No need to synchronize global singleton since we're fully async
 
     # LEGACY COMPATIBILITY: Also expose services directly on app.state
     # This maintains backward compatibility during migration
-    # TODO: Remove these direct assignments once all code uses container
+    # FUTURE: Remove these direct assignments once all code uses container
     app.state.task_registry = container.task_registry
     app.state.event_bus = container.event_bus
     app.state.event_handler = container.real_time_event_handler
-    app.state.persistence = container.persistence
+    app.state.persistence = container.async_persistence  # Now async_persistence
     app.state.connection_manager = container.connection_manager
     app.state.player_service = container.player_service
     app.state.room_service = container.room_service
@@ -131,7 +112,7 @@ async def lifespan(app: FastAPI):
                 if asyncio.iscoroutine(entries):
                     try:
                         entries = await entries
-                    except Exception:  # noqa: BLE001
+                    except Exception:  # pylint: disable=broad-exception-caught
                         entries = None
                 if isinstance(entries, Iterable):
                     prototype_count = sum(1 for _ in entries)
@@ -153,7 +134,7 @@ async def lifespan(app: FastAPI):
     # CRITICAL FIX: Use async_persistence (not sync persistence!)
     # This was overwriting the correct async_persistence set in container.py
     container.connection_manager.async_persistence = container.async_persistence
-    container.connection_manager._event_bus = container.event_bus
+    container.connection_manager.set_event_bus(container.event_bus)
     container.connection_manager.app = app
 
     # Start periodic connection health checks
@@ -323,7 +304,7 @@ async def lifespan(app: FastAPI):
     logger.info("Catatonia registry initialized")
 
     app.state.passive_lucidity_flux_service = PassiveLucidityFluxService(
-        persistence=container.persistence,
+        persistence=container.async_persistence,
         performance_monitor=container.performance_monitor,
         catatonia_observer=app.state.catatonia_registry,
     )
@@ -594,7 +575,93 @@ async def game_tick_loop(app: FastAPI):
 
     while True:
         try:
-            # TODO: Implement status/effect ticks using persistence layer
+            # Process status/effect ticks using persistence layer
+            # This processes periodic effects like damage over time, healing, stat modifications, etc.
+            if hasattr(app.state, "container") and app.state.container:
+                container = app.state.container
+                if container.async_persistence:
+                    try:
+                        # Get all online players for status effect processing
+                        # Only process online players to avoid unnecessary database queries
+                        if hasattr(app.state, "connection_manager") and app.state.connection_manager:
+                            online_player_ids = list(app.state.connection_manager.online_players.keys())
+                            if online_player_ids:
+                                processed_count = 0
+                                for player_id in online_player_ids:
+                                    try:
+                                        player = await container.async_persistence.get_player_by_id(player_id)
+                                        if player:
+                                            # Get status effects
+                                            status_effects = player.get_status_effects()
+                                            if status_effects:
+                                                updated_effects = []
+                                                effect_applied = False
+
+                                                for effect in status_effects:
+                                                    effect_type = effect.get("type", "")
+                                                    duration = effect.get("duration", 0)
+                                                    remaining = effect.get("remaining", duration)
+
+                                                    # Decrement remaining duration
+                                                    remaining -= 1
+
+                                                    # Process effect based on type
+                                                    if effect_type == "damage_over_time" and remaining > 0:
+                                                        damage = effect.get("damage", 0)
+                                                        if damage > 0 and hasattr(app.state, "player_death_service"):
+                                                            # Apply periodic damage
+                                                            await container.async_persistence.damage_player(
+                                                                player, damage, "status_effect"
+                                                            )
+                                                            effect_applied = True
+                                                            logger.debug(
+                                                                "Applied damage over time",
+                                                                player_id=player_id,
+                                                                damage=damage,
+                                                                effect_type=effect_type,
+                                                            )
+                                                        updated_effects.append({**effect, "remaining": remaining})
+                                                    elif effect_type == "heal_over_time" and remaining > 0:
+                                                        healing = effect.get("healing", 0)
+                                                        if healing > 0:
+                                                            # Apply periodic healing
+                                                            await container.async_persistence.heal_player(
+                                                                player, healing
+                                                            )
+                                                            effect_applied = True
+                                                            logger.debug(
+                                                                "Applied heal over time",
+                                                                player_id=player_id,
+                                                                healing=healing,
+                                                                effect_type=effect_type,
+                                                            )
+                                                        updated_effects.append({**effect, "remaining": remaining})
+                                                    elif remaining > 0:
+                                                        # Keep effect if it hasn't expired
+                                                        updated_effects.append({**effect, "remaining": remaining})
+                                                    # If remaining <= 0, effect expires and is removed
+
+                                                # Update player's status effects if changed
+                                                if len(updated_effects) != len(status_effects) or effect_applied:
+                                                    player.set_status_effects(updated_effects)
+                                                    await container.async_persistence.save_player(player)
+                                                    processed_count += 1
+                                    except Exception as e:
+                                        logger.warning(
+                                            "Error processing status effects for player",
+                                            player_id=player_id,
+                                            error=str(e),
+                                        )
+
+                                if processed_count > 0:
+                                    logger.debug(
+                                        "Processed status effects",
+                                        tick_count=tick_count,
+                                        players_processed=processed_count,
+                                    )
+                    except Exception as e:
+                        logger.warning("Error processing status/effect ticks", tick_count=tick_count, error=str(e))
+
             logger.debug("Game tick", tick_count=tick_count)
 
             # Update global tick counter

@@ -16,7 +16,8 @@ import time
 from typing import Any
 
 from ..logging.enhanced_logging_config import get_logger
-from ..persistence import get_persistence
+
+# Removed: from ..persistence import get_persistence - now using async_persistence parameter
 from .movement_integration import NPCMovementIntegration
 
 logger = get_logger(__name__)
@@ -39,7 +40,9 @@ class IdleMovementHandler:
             event_bus: Optional EventBus instance for movement events
             persistence: Optional persistence layer instance
         """
-        self.persistence = persistence or get_persistence(event_bus)
+        if persistence is None:
+            raise ValueError("persistence (async_persistence) is required for IdleMovementHandler")
+        self.persistence = persistence
         self.movement_integration = NPCMovementIntegration(event_bus, self.persistence)
         logger.debug("Idle movement handler initialized")
 

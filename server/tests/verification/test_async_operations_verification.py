@@ -12,9 +12,9 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 
+from server.async_persistence import AsyncPersistenceLayer
 from server.game.player_service import PlayerService
 from server.game.room_service import RoomService
-from server.persistence import PersistenceLayer
 
 
 class TestAsyncOperationsVerification:
@@ -293,27 +293,27 @@ class TestAsyncOperationsVerification:
         DatabaseManager.reset_instance()
         reset_async_persistence()
 
-        # Create a real persistence layer (this will use PostgreSQL)
+        # Create a real async persistence layer (this will use PostgreSQL)
         # This will initialize the database manager in the current event loop
-        persistence = PersistenceLayer()
+        persistence = AsyncPersistenceLayer()
 
         # Test that async methods exist and are callable
-        assert hasattr(persistence, "async_list_players")
-        assert hasattr(persistence, "async_get_player")
-        assert hasattr(persistence, "async_get_room")
+        assert hasattr(persistence, "list_players")
+        assert hasattr(persistence, "get_player_by_id")
+        assert hasattr(persistence, "get_room_by_id")
 
         # Test that they return values (even if empty)
-        players = await persistence.async_list_players()
+        players = await persistence.list_players()
         assert isinstance(players, list)
 
         # Use a valid UUID string for testing (not a real player, but valid format)
         from uuid import uuid4
 
-        nonexistent_uuid = str(uuid4())
-        player = await persistence.async_get_player(nonexistent_uuid)
+        nonexistent_uuid = uuid4()
+        player = await persistence.get_player_by_id(nonexistent_uuid)
         assert player is None
 
-        room = await persistence.async_get_room("nonexistent")
+        room = persistence.get_room_by_id("nonexistent")
         assert room is None
 
     @pytest.mark.asyncio

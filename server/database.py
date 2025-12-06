@@ -101,7 +101,7 @@ class DatabaseManager:
             )
 
         # Allow test override via module-level _database_url
-        global _database_url
+        # Note: Reading module-level variable, no assignment needed
         if _database_url is not None:
             database_url = _database_url
         else:
@@ -145,18 +145,45 @@ class DatabaseManager:
             # For production, use default AsyncAdaptedQueuePool with configured pool size
             # AsyncAdaptedQueuePool is automatically used by create_async_engine()
             # Get pool configuration from config
+            # Extract database config to avoid type checker FieldInfo issues
             config = get_config()
+            # Access via model_dump to get actual values, not FieldInfo
+            db_config_dict = config.database.model_dump()
             pool_kwargs.update(
                 {
-                    "pool_size": config.database.pool_size,
-                    "max_overflow": config.database.max_overflow,
-                    "pool_timeout": config.database.pool_timeout,
+                    "pool_size": db_config_dict["pool_size"],
+                    "max_overflow": db_config_dict["max_overflow"],
+                    "pool_timeout": db_config_dict["pool_timeout"],
                 }
             )
 
         # Create async engine with PostgreSQL configuration
         # CRITICAL FIX: Add proper exception handling for engine creation
         # Handles connection failures, authentication errors, and configuration issues
+        # #region agent log
+        try:
+            import json
+
+            log_path = Path(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log")
+            with open(log_path, "a", encoding="utf-8") as f:
+                f.write(
+                    json.dumps(
+                        {
+                            "sessionId": "debug-session",
+                            "runId": "run1",
+                            "hypothesisId": "E",
+                            "location": "database.py:_initialize_database:before_create_engine",
+                            "message": "About to create async engine",
+                            "data": {"database_url_prefix": self.database_url[:30] if self.database_url else None},
+                            "timestamp": int(__import__("time").time() * 1000),
+                        }
+                    )
+                    + "\n"
+                )
+        except Exception:
+            pass
+        # #endregion agent log
+
         try:
             self.engine = create_async_engine(
                 self.database_url,
@@ -164,6 +191,27 @@ class DatabaseManager:
                 pool_pre_ping=True,
                 **pool_kwargs,
             )
+
+            # #region agent log
+            try:
+                with open(log_path, "a", encoding="utf-8") as f:
+                    f.write(
+                        json.dumps(
+                            {
+                                "sessionId": "debug-session",
+                                "runId": "run1",
+                                "hypothesisId": "E",
+                                "location": "database.py:_initialize_database:after_create_engine",
+                                "message": "Async engine created successfully",
+                                "data": {},
+                                "timestamp": int(__import__("time").time() * 1000),
+                            }
+                        )
+                        + "\n"
+                    )
+            except Exception:
+                pass
+            # #endregion agent log
 
             pool_type = "NullPool" if "test" in self.database_url else "AsyncAdaptedQueuePool"
             logger.info("Database engine created", pool_type=pool_type)
@@ -259,6 +307,30 @@ class DatabaseManager:
             current_loop = asyncio.get_running_loop()
             current_loop_id = id(current_loop)
             if self._creation_loop_id is not None and current_loop_id != self._creation_loop_id:
+                # #region agent log
+                try:
+                    import json
+
+                    log_path = Path(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log")
+                    with open(log_path, "a", encoding="utf-8") as f:
+                        f.write(
+                            json.dumps(
+                                {
+                                    "sessionId": "debug-session",
+                                    "runId": "run1",
+                                    "hypothesisId": "E",
+                                    "location": "database.py:get_engine:loop_changed",
+                                    "message": "Event loop changed, recreating engine",
+                                    "data": {"old_loop_id": self._creation_loop_id, "new_loop_id": current_loop_id},
+                                    "timestamp": int(__import__("time").time() * 1000),
+                                }
+                            )
+                            + "\n"
+                        )
+                except Exception:
+                    pass
+                # #endregion agent log
+
                 logger.warning(
                     "Event loop changed, recreating database engine",
                     old_loop_id=self._creation_loop_id,
@@ -277,7 +349,6 @@ class DatabaseManager:
         except RuntimeError:
             # No running loop - that's okay, engine will be created when needed
             logger.debug("No running event loop, engine will be created when needed")
-            pass
 
         assert self.engine is not None, "Database engine not initialized"
         return self.engine
@@ -333,8 +404,6 @@ class DatabaseManager:
                 context=context,
                 user_friendly="Database not initialized",
             )
-            # This should never be reached due to log_and_raise above
-            raise RuntimeError("Unreachable code")
 
         if database_url.startswith("postgresql"):
             # PostgreSQL doesn't have a file path
@@ -350,8 +419,6 @@ class DatabaseManager:
                 details={"database_url": database_url},
                 user_friendly="Unsupported database configuration - PostgreSQL required",
             )
-            # This should never be reached due to log_and_raise above
-            raise RuntimeError("Unreachable code")
 
     async def close(self) -> None:
         """Close database connections."""
@@ -532,15 +599,16 @@ async def init_db() -> None:
         # CRITICAL: Import ALL models that use metadata before configure_mappers()
         # This allows SQLAlchemy to resolve string references in relationships
         # Do NOT import NPC models here - they use npc_metadata, not metadata
-        from server.models.invite import Invite  # noqa: F401
-        from server.models.lucidity import (  # noqa: F401
+        # These imports are required for side effects (model registration) but appear unused
+        from server.models.invite import Invite  # noqa: F401  # pylint: disable=unused-import
+        from server.models.lucidity import (  # noqa: F401  # pylint: disable=unused-import
             LucidityAdjustmentLog,
             LucidityCooldown,
             LucidityExposureState,
             PlayerLucidity,
         )
-        from server.models.player import Player  # noqa: F401
-        from server.models.user import User  # noqa: F401
+        from server.models.player import Player  # noqa: F401  # pylint: disable=unused-import
+        from server.models.user import User  # noqa: F401  # pylint: disable=unused-import
 
         logger.debug("Configuring SQLAlchemy mappers")
         # ARCHITECTURE FIX Phase 3.1: Relationships now defined directly in models

@@ -4,71 +4,42 @@ This document explains when to use each database access pattern in the MythosMUD
 
 ## Overview
 
-The codebase currently uses three different database access patterns:
+The codebase currently uses two database access patterns:
 
-1. **PersistenceLayer** (sync psycopg2) - Legacy synchronous code
-2. **AsyncPersistenceLayer** (async asyncpg) - New async code, performance-critical
-3. **SQLAlchemy ORM** (async) - Preferred for new code, relationships, complex queries
+1. **AsyncPersistenceLayer** (async asyncpg) - Performance-critical operations, direct database access
+2. **SQLAlchemy ORM** (async) - Preferred for new code, relationships, complex queries
 
-## Pattern 1: PersistenceLayer (Synchronous psycopg2)
+**Note**: The legacy `PersistenceLayer` (synchronous psycopg2) has been removed. All code now uses async patterns.
 
-**Location**: `server/persistence.py`
-
-**When to Use**:
-- Legacy synchronous code that hasn't been migrated yet
-- Code that must remain synchronous for compatibility
-- Migration path from SQLite to PostgreSQL
-
-**Characteristics**:
-- Uses `psycopg2` for synchronous PostgreSQL connections
-- Raw SQL queries with parameterized placeholders (`%s`)
-- Thread-safe with `RLock`
-- Connection pooling via `PostgresConnectionPool`
-
-**Example**:
-```python
-from server.persistence import get_persistence
-
-persistence = get_persistence()
-player = persistence.get_player_by_name("Alice")
-```
-
-**Limitations**:
-- Blocks the event loop (not suitable for async code)
-- No eager loading support (raw SQL)
-- Manual relationship handling
-
-**Migration Path**:
-- Use `AsyncPersistenceLayer` for new async code
-- Migrate to SQLAlchemy ORM for relationship-heavy queries
-
-## Pattern 2: AsyncPersistenceLayer (Asynchronous asyncpg)
+## Pattern 1: AsyncPersistenceLayer (Asynchronous asyncpg)
 
 **Location**: `server/async_persistence.py`
 
 **When to Use**:
-- New async code paths
 - Performance-critical operations
 - When you need async but don't need ORM features
 - Direct asyncpg connection pool access
+- Simple queries without relationships
 
 **Characteristics**:
 - Uses `asyncpg` for true async PostgreSQL operations
 - Raw SQL queries with parameterized placeholders (`$1`, `$2`, etc.)
 - Connection pooling with configurable pool size
 - Non-blocking event loop operations
+- Access via `ApplicationContainer.async_persistence`
 
 **Example**:
 ```python
-from server.async_persistence import get_async_persistence
+from server.container import ApplicationContainer
 
-async_persistence = get_async_persistence()
+container = ApplicationContainer.get_instance()
+async_persistence = container.async_persistence
 player = await async_persistence.get_player_by_id(player_id)
 ```
 
 **Advantages**:
 - True async (doesn't block event loop)
-- Better performance than sync layer
+- High performance for simple operations
 - Connection pooling built-in
 
 **Limitations**:
@@ -79,7 +50,7 @@ player = await async_persistence.get_player_by_id(player_id)
 **Migration Path**:
 - Migrate to SQLAlchemy ORM when you need relationships or complex queries
 
-## Pattern 3: SQLAlchemy ORM (Asynchronous)
+## Pattern 2: SQLAlchemy ORM (Asynchronous)
 
 **Location**: `server/database.py`, `server/services/`, `server/game/`
 
@@ -128,37 +99,11 @@ async for session in get_async_session():
 
 ```
 Do you need relationships (e.g., Player.user)?
-├─ Yes → Use SQLAlchemy ORM (Pattern 3)
-└─ No → Is this async code?
-    ├─ Yes → Use AsyncPersistenceLayer (Pattern 2)
-    └─ No → Use PersistenceLayer (Pattern 1) [Legacy]
+├─ Yes → Use SQLAlchemy ORM (Pattern 2)
+└─ No → Use AsyncPersistenceLayer (Pattern 1)
 ```
 
 ## Migration Strategy
-
-### From PersistenceLayer to AsyncPersistenceLayer
-
-**When**: Migrating sync code to async
-
-**Steps**:
-1. Change method signature to `async def`
-2. Replace `get_persistence()` with `get_async_persistence()`
-3. Add `await` to all persistence calls
-4. Change `%s` placeholders to `$1`, `$2`, etc. (if writing raw SQL)
-5. Update error handling for async exceptions
-
-**Example**:
-```python
-# Before (sync)
-def get_player(name: str) -> Player | None:
-    persistence = get_persistence()
-    return persistence.get_player_by_name(name)
-
-# After (async)
-async def get_player(name: str) -> Player | None:
-    async_persistence = get_async_persistence()
-    return await async_persistence.get_player_by_name(name)
-```
 
 ### From AsyncPersistenceLayer to SQLAlchemy ORM
 
@@ -172,10 +117,12 @@ async def get_player(name: str) -> Player | None:
 
 **Example**:
 ```python
-# Before (raw SQL)
+# Before (AsyncPersistenceLayer)
+from server.container import ApplicationContainer
+
 async def get_player(player_id: str) -> Player | None:
-    async_persistence = get_async_persistence()
-    return await async_persistence.get_player_by_id(player_id)
+    container = ApplicationContainer.get_instance()
+    return await container.async_persistence.get_player_by_id(player_id)
 
 # After (ORM with eager loading)
 async def get_player(
@@ -195,25 +142,17 @@ async def get_player(
 
 ## Performance Considerations
 
-### Raw SQL (Patterns 1 & 2)
+### AsyncPersistenceLayer (Pattern 1)
 - **Pros**: Fastest execution, direct database access
 - **Cons**: No relationship handling, manual query optimization
 - **Use When**: Simple queries, performance-critical paths, no relationships needed
 
-### SQLAlchemy ORM (Pattern 3)
+### SQLAlchemy ORM (Pattern 2)
 - **Pros**: Relationship handling, eager loading, type safety
 - **Cons**: Slight overhead, requires ORM knowledge
 - **Use When**: Relationships needed, complex queries, maintainability important
 
 ## Error Handling Patterns
-
-### PersistenceLayer (Sync)
-```python
-try:
-    player = persistence.get_player_by_name(name)
-except psycopg2.Error as e:
-    log_and_raise(DatabaseError, f"Database error: {e}")
-```
 
 ### AsyncPersistenceLayer (Async)
 ```python
@@ -304,9 +243,8 @@ for player, lucidity in result:
 **Current State**: Persistence layers use f-strings with compile-time constants (e.g., `PLAYER_COLUMNS`). These are safe from SQL injection but represent an anti-pattern.
 
 **Limitation**: Full migration to SQLAlchemy ORM requires architectural changes:
-- `PersistenceLayer` uses synchronous `psycopg2` (not SQLAlchemy)
 - `AsyncPersistenceLayer` uses `asyncpg` directly (not SQLAlchemy)
-- Both would need to be refactored to use SQLAlchemy sessions
+- Would need to be refactored to use SQLAlchemy sessions for full ORM migration
 
 **Current Approach**:
 - F-strings separated from execution for better readability

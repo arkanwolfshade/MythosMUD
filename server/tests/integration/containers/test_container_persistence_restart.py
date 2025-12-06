@@ -21,7 +21,8 @@ import pytest
 
 from server.models.container import ContainerComponent, ContainerLockState
 from server.models.player import Player
-from server.persistence import get_persistence, reset_persistence
+
+# Removed: from server.persistence import get_persistence, reset_persistence - now using AsyncPersistenceLayer directly
 from server.services.container_service import ContainerService, _filter_container_data
 from server.services.inventory_service import InventoryStack
 
@@ -147,8 +148,12 @@ def ensure_containers_table():
 
 @pytest.fixture
 def persistence(ensure_containers_table):
-    """Create a PersistenceLayer instance for testing."""
-    return get_persistence()
+    """Create an AsyncPersistenceLayer instance for testing."""
+    from server.async_persistence import AsyncPersistenceLayer
+    from server.events.event_bus import EventBus
+
+    event_bus = EventBus()
+    return AsyncPersistenceLayer(event_bus=event_bus)
 
 
 @pytest.fixture
@@ -284,11 +289,15 @@ class TestContainerPersistenceRestart:
 
         # Simulate server restart by creating new persistence instance
         # (In real scenario, this would be a new server process)
-        reset_persistence()
-        new_persistence = get_persistence()
+        # Simulate server restart by creating new AsyncPersistenceLayer instance
+        from server.async_persistence import AsyncPersistenceLayer
+        from server.events.event_bus import EventBus
+
+        event_bus = EventBus()
+        new_persistence = AsyncPersistenceLayer(event_bus=event_bus)
 
         # Verify container still exists after "restart"
-        persisted_container_data = new_persistence.get_container(container_id)
+        persisted_container_data = await new_persistence.get_container(container_id)
         assert persisted_container_data is not None, "Container should persist after restart"
 
         # Convert to ContainerComponent for easier assertions
@@ -343,11 +352,15 @@ class TestContainerPersistenceRestart:
         )
 
         # Simulate server restart
-        reset_persistence()
-        new_persistence = get_persistence()
+        # Simulate server restart by creating new AsyncPersistenceLayer instance
+        from server.async_persistence import AsyncPersistenceLayer
+        from server.events.event_bus import EventBus
+
+        event_bus = EventBus()
+        new_persistence = AsyncPersistenceLayer(event_bus=event_bus)
 
         # Verify container persists
-        persisted_container_data = new_persistence.get_container(container_id)
+        persisted_container_data = await new_persistence.get_container(container_id)
         assert persisted_container_data is not None
 
         persisted_container = ContainerComponent.model_validate(_filter_container_data(persisted_container_data))
@@ -357,7 +370,7 @@ class TestContainerPersistenceRestart:
         assert persisted_container.metadata["equipped"] is True
 
         # Verify container can be found by entity_id
-        containers_by_entity_data = new_persistence.get_containers_by_entity_id(entity_id)
+        containers_by_entity_data = await new_persistence.get_containers_by_entity_id(entity_id)
         assert len(containers_by_entity_data) == 1
         found_container_id = containers_by_entity_data[0]["container_id"]
         found_container_id_uuid = (
@@ -415,11 +428,15 @@ class TestContainerPersistenceRestart:
         )
 
         # Simulate server restart
-        reset_persistence()
-        new_persistence = get_persistence()
+        # Simulate server restart by creating new AsyncPersistenceLayer instance
+        from server.async_persistence import AsyncPersistenceLayer
+        from server.events.event_bus import EventBus
+
+        event_bus = EventBus()
+        new_persistence = AsyncPersistenceLayer(event_bus=event_bus)
 
         # Verify container persists
-        persisted_container_data = new_persistence.get_container(container_id)
+        persisted_container_data = await new_persistence.get_container(container_id)
         assert persisted_container_data is not None
 
         persisted_container = ContainerComponent.model_validate(_filter_container_data(persisted_container_data))
@@ -454,11 +471,15 @@ class TestContainerPersistenceRestart:
         )
 
         # Simulate server restart
-        reset_persistence()
-        new_persistence = get_persistence()
+        # Simulate server restart by creating new AsyncPersistenceLayer instance
+        from server.async_persistence import AsyncPersistenceLayer
+        from server.events.event_bus import EventBus
+
+        event_bus = EventBus()
+        new_persistence = AsyncPersistenceLayer(event_bus=event_bus)
 
         # Verify state persisted
-        persisted_container_data = new_persistence.get_container(container_id)
+        persisted_container_data = await new_persistence.get_container(container_id)
         assert persisted_container_data is not None
 
         persisted_container = ContainerComponent.model_validate(_filter_container_data(persisted_container_data))
@@ -519,11 +540,15 @@ class TestContainerPersistenceRestart:
         assert container_before.items[0]["quantity"] == 5
 
         # Simulate server restart
-        reset_persistence()
-        new_persistence = get_persistence()
+        # Simulate server restart by creating new AsyncPersistenceLayer instance
+        from server.async_persistence import AsyncPersistenceLayer
+        from server.events.event_bus import EventBus
+
+        event_bus = EventBus()
+        new_persistence = AsyncPersistenceLayer(event_bus=event_bus)
 
         # Verify items persisted after restart
-        container_after_data = new_persistence.get_container(container_id)
+        container_after_data = await new_persistence.get_container(container_id)
         assert container_after_data is not None
         container_after = ContainerComponent.model_validate(_filter_container_data(container_after_data))
         assert len(container_after.items) == 1
@@ -565,12 +590,16 @@ class TestContainerPersistenceRestart:
             containers.append(container_id)
 
         # Simulate server restart
-        reset_persistence()
-        new_persistence = get_persistence()
+        # Simulate server restart by creating new AsyncPersistenceLayer instance
+        from server.async_persistence import AsyncPersistenceLayer
+        from server.events.event_bus import EventBus
+
+        event_bus = EventBus()
+        new_persistence = AsyncPersistenceLayer(event_bus=event_bus)
 
         # Verify all containers persist
         for i, container_id in enumerate(containers):
-            persisted_container_data = new_persistence.get_container(container_id)
+            persisted_container_data = await new_persistence.get_container(container_id)
             assert persisted_container_data is not None
             persisted_container = ContainerComponent.model_validate(_filter_container_data(persisted_container_data))
             assert len(persisted_container.items) == 1
@@ -609,12 +638,16 @@ class TestContainerPersistenceRestart:
         )
 
         # Simulate server restart
-        reset_persistence()
-        new_persistence = get_persistence()
+        # Simulate server restart by creating new AsyncPersistenceLayer instance
+        from server.async_persistence import AsyncPersistenceLayer
+        from server.events.event_bus import EventBus
+
+        event_bus = EventBus()
+        new_persistence = AsyncPersistenceLayer(event_bus=event_bus)
 
         # Verify containers can be found by room_id
-        containers_room1_data = new_persistence.get_containers_by_room_id(room1_id)
-        containers_room2_data = new_persistence.get_containers_by_room_id(room2_id)
+        containers_room1_data = await new_persistence.get_containers_by_room_id(room1_id)
+        containers_room2_data = await new_persistence.get_containers_by_room_id(room2_id)
 
         # Filter to find our test containers (there may be other containers in these rooms)
         def get_container_uuid(c):

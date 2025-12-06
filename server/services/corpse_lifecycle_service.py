@@ -8,7 +8,6 @@ of player death, grace periods, decay timers, and item redistribution.
 
 from __future__ import annotations
 
-import asyncio
 import uuid
 from datetime import UTC, datetime, timedelta
 from typing import Any, cast
@@ -17,7 +16,8 @@ from uuid import UUID
 from ..exceptions import MythosMUDError
 from ..logging.enhanced_logging_config import get_logger
 from ..models.container import ContainerComponent, ContainerLockState, ContainerSourceType
-from ..persistence import get_persistence
+
+# Removed: from ..persistence import get_persistence - now using async_persistence parameter
 from ..utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
@@ -71,7 +71,9 @@ class CorpseLifecycleService:
             connection_manager: ConnectionManager instance for WebSocket events (optional)
             time_service: Time service instance for decay checks (optional)
         """
-        self.persistence = persistence or get_persistence()
+        if persistence is None:
+            raise ValueError("persistence (async_persistence) is required for CorpseLifecycleService")
+        self.persistence = persistence
         self.connection_manager = connection_manager
         self.time_service = time_service
 
@@ -105,7 +107,7 @@ class CorpseLifecycleService:
         logger.info("Creating corpse container on death", player_id=str(player_id), room_id=room_id)
 
         # Get player
-        player = await asyncio.to_thread(self.persistence.get_player, player_id)
+        player = await self.persistence.get_player_by_id(player_id)
         if not player:
             log_and_raise(
                 CorpseServiceError,
@@ -147,7 +149,7 @@ class CorpseLifecycleService:
             items_dicts: list[dict[str, Any]] = [
                 cast(dict[str, Any], dict(item) if not isinstance(item, dict) else item) for item in corpse.items
             ]
-            container_data = self.persistence.create_container(
+            container_data = await self.persistence.create_container(
                 source_type=_get_enum_value(corpse.source_type),
                 owner_id=corpse.owner_id,
                 room_id=corpse.room_id,
@@ -266,7 +268,7 @@ class CorpseLifecycleService:
             list[ContainerComponent]: List of decayed corpse containers
         """
         # Get all containers in room
-        containers_data = await asyncio.to_thread(self.persistence.get_containers_by_room_id, room_id)
+        containers_data = await self.persistence.get_containers_by_room_id(room_id)
         if not containers_data:
             return []
 
@@ -307,7 +309,7 @@ class CorpseLifecycleService:
         logger.info("Cleaning up decayed corpse", container_id=str(container_id))
 
         # Get container
-        container_data = await asyncio.to_thread(self.persistence.get_container, container_id)
+        container_data = await self.persistence.get_container(container_id)
         if not container_data:
             log_and_raise(
                 CorpseNotFoundError,
@@ -334,7 +336,7 @@ class CorpseLifecycleService:
 
         # Delete container
         try:
-            self.persistence.delete_container(container_id)
+            await self.persistence.delete_container(container_id)
 
             logger.info(
                 "Decayed corpse cleaned up",
@@ -403,7 +405,7 @@ class CorpseLifecycleService:
             current_time = datetime.now(UTC)
 
         # Get all decayed containers from persistence
-        decayed_data = await asyncio.to_thread(self.persistence.get_decayed_containers, current_time)
+        decayed_data = await self.persistence.get_decayed_containers(current_time)
         if not decayed_data:
             return []
 

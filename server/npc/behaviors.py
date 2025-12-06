@@ -596,10 +596,14 @@ class NPCBase(ABC):
                 if not event_bus and hasattr(self, "definition"):
                     # Try to get event bus from persistence
                     try:
-                        from ..persistence import get_persistence
+                        # Get event bus from container or use None
+                        from ..container import ApplicationContainer
 
-                        persistence = get_persistence()
-                        event_bus = getattr(persistence, "_event_bus", None)
+                        container = ApplicationContainer.get_instance()
+                        if container:
+                            event_bus = getattr(container, "event_bus", None)
+                        else:
+                            event_bus = None
                     except (ImportError, AttributeError, RuntimeError) as e:
                         logger.error(
                             "Error getting persistence or event bus", error=str(e), error_type=type(e).__name__
@@ -1047,11 +1051,20 @@ class PassiveMobNPC(NPCBase):
         """Perform wandering behavior using idle movement system."""
         try:
             # Use idle movement handler for wandering
+            from ..container import ApplicationContainer
             from .idle_movement import IdleMovementHandler
+
+            # Get async_persistence from container
+            container = ApplicationContainer.get_instance()
+            async_persistence = getattr(container, "async_persistence", None) if container else None
+
+            if async_persistence is None:
+                logger.error("async_persistence not available for idle movement", npc_id=self.npc_id)
+                return False
 
             movement_handler = IdleMovementHandler(
                 event_bus=self.event_bus,
-                persistence=None,  # Will use default persistence
+                persistence=async_persistence,
             )
 
             # Get NPC definition
@@ -1241,10 +1254,31 @@ class AggressiveMobNPC(NPCBase):
 
             # Use combat integration for attack handling
             if hasattr(self, "combat_integration") and self.combat_integration:
-                success = self.combat_integration.handle_npc_attack(
-                    self.npc_id, target_id, self.current_room, attack_damage, "physical", self.get_stats()
-                )
-                return success
+                import asyncio
+
+                try:
+                    # Try to get running event loop
+                    asyncio.get_running_loop()
+                    # Fire-and-forget: create task for async call
+                    asyncio.create_task(
+                        self.combat_integration.handle_npc_attack(
+                            self.npc_id, target_id, self.current_room, attack_damage, "physical", self.get_stats()
+                        )
+                    )
+                    # Return True immediately (attack is queued)
+                    return True
+                except RuntimeError:
+                    # No running loop - use asyncio.run() if possible
+                    try:
+                        success = asyncio.run(
+                            self.combat_integration.handle_npc_attack(
+                                self.npc_id, target_id, self.current_room, attack_damage, "physical", self.get_stats()
+                            )
+                        )
+                        return success
+                    except Exception as e:
+                        logger.error("Failed to execute NPC attack", npc_id=self.npc_id, error=str(e))
+                        return False
             else:
                 # Fallback to direct event publishing
                 if self.event_bus:
