@@ -88,7 +88,9 @@ class TestMovementPersistence:
 
         # Configure mocks
         mock_persistence.get_player_by_id = AsyncMock(return_value=player)
-        mock_persistence.get_room_by_id = Mock(side_effect=lambda room_id: start_room if room_id == "start_room" else end_room)
+        mock_persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: start_room if room_id == "start_room" else end_room
+        )
         mock_persistence.save_player = AsyncMock()
 
         # Create movement service with mocked persistence

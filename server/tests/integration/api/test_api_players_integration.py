@@ -57,7 +57,9 @@ class TestPlayerAPIIntegration:
         mock_persistence.async_list_players = AsyncMock(return_value=[])
         mock_persistence.list_players = AsyncMock(return_value=[])  # Add missing list_players method
         mock_persistence.async_get_player = AsyncMock(return_value=None)
-        mock_persistence.get_player_by_id = AsyncMock(return_value=None)  # Also mock get_player_by_id (without async_ prefix)
+        mock_persistence.get_player_by_id = AsyncMock(
+            return_value=None
+        )  # Also mock get_player_by_id (without async_ prefix)
         mock_persistence.async_get_player_by_name = AsyncMock(return_value=None)
         mock_persistence.async_save_player = AsyncMock(return_value=None)
         mock_persistence.async_delete_player = AsyncMock(return_value=True)

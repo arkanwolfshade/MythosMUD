@@ -128,7 +128,7 @@ async def handle_who_command(
         return {"result": "Player information is not available."}
 
     try:
-        players = persistence.list_players()
+        players = await persistence.list_players()
         if players:
             # Filter to only show online players (those with recent activity)
             from datetime import UTC, datetime, timedelta
@@ -416,13 +416,13 @@ async def handle_status_command(
         return {"result": "Status information is not available."}
 
     try:
-        player = persistence.get_player_by_name(get_username_from_user(current_user))
+        player = await persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
             logger.warning("Status command failed - player not found")
             return {"result": "Player information not found."}
 
         # Get current room information
-        room = persistence.get_room(player.current_room_id) if player.current_room_id else None
+        room = persistence.get_room_by_id(player.current_room_id) if player.current_room_id else None
         room_name = room.name if room else "Unknown location"
 
         # Get player stats as dictionary
@@ -442,7 +442,7 @@ async def handle_status_command(
         # Fetch profession details from persistence
         if profession_id is not None:
             try:
-                profession = persistence.get_profession_by_id(profession_id)
+                profession = await persistence.get_profession_by_id(profession_id)
                 if profession:
                     profession_name = profession.name
                     profession_description = profession.description

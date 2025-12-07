@@ -235,7 +235,7 @@ class PlayerService:
         """
         logger.debug("Getting player by name")
 
-        player = await self.persistence.async_get_player_by_name(player_name)
+        player = await self.persistence.get_player_by_name(player_name)
         if not player:
             logger.debug("Player not found by name")
             return None

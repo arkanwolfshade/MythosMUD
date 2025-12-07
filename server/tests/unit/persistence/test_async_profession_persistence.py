@@ -41,6 +41,7 @@ class TestAsyncProfessionPersistence:
     async def test_get_professions(self, async_persistence, sample_profession):
         """Test getting all available professions."""
         professions = [sample_profession]
+
         # Mock the async session generator and query
         # get_async_session is an async generator that yields sessions
         async def mock_session_generator():

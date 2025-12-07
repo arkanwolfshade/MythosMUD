@@ -92,6 +92,7 @@ def _ensure_log_directory(log_path: Path) -> None:
                 error_type=type(e).__name__,
             )
 
+
 _LOGGING_INITIALIZED = False
 _LOGGING_SIGNATURE: str | None = None
 

@@ -502,12 +502,29 @@ async def roll_character_stats(
         timeout_seconds = request_data.timeout_seconds
 
         if profession_id is not None:
-            # Use profession-based stat rolling
+            # Fetch profession first (async)
+            from ..async_persistence import get_async_persistence
+
+            async_persistence = get_async_persistence()
+            profession = await async_persistence.get_profession_by_id(profession_id)
+
+            if not profession:
+                context = create_error_context()
+                if current_user:
+                    context.user_id = str(current_user.id)
+                context.metadata["operation"] = "roll_stats"
+                context.metadata["profession_id"] = profession_id
+                raise LoggedHTTPException(
+                    status_code=404, detail=f"Profession with ID {profession_id} not found", context=context
+                )
+
+            # Use profession-based stat rolling with fetched profession
             stats, meets_requirements = stats_generator.roll_stats_with_profession(
                 method=method,
                 profession_id=profession_id,
                 timeout_seconds=timeout_seconds,
                 max_attempts=max_attempts,
+                profession=profession,  # Pass profession to avoid async lookup
             )
             stat_summary = stats_generator.get_stat_summary(stats)
 

@@ -239,7 +239,7 @@ def _resolve_state(request: Any) -> tuple[Any, Any]:
     return persistence, connection_manager
 
 
-def _resolve_player(
+async def _resolve_player(
     persistence: Any,
     current_user: dict,
     fallback_player_name: str,
@@ -255,7 +255,7 @@ def _resolve_player(
         return None, {"result": str(exc)}
 
     try:
-        player = persistence.get_player_by_name(username)
+        player = await persistence.get_player_by_name(username)
     except Exception as exc:  # pragma: no cover - defensive logging path
         logger.error("Persistence error resolving player", player=username, error=str(exc))
         return None, {"result": f"Error resolving player: {str(exc)}"}
@@ -477,7 +477,7 @@ async def handle_inventory_command(
     """Display the player's inventory and equipped items, including container contents."""
 
     persistence, _connection_manager = _resolve_state(request)
-    player, error = _resolve_player(persistence, current_user, player_name)
+    player, error = await _resolve_player(persistence, current_user, player_name)
     if error or not player:
         return error or {"result": "Player information not found."}
 
@@ -617,7 +617,7 @@ async def handle_pickup_command(
     """Move an item stack from room drops into the player's inventory."""
 
     persistence, connection_manager = _resolve_state(request)
-    player, error = _resolve_player(persistence, current_user, player_name)
+    player, error = await _resolve_player(persistence, current_user, player_name)
     if error or not player:
         return error or {"result": "Player information not found."}
 
@@ -830,7 +830,7 @@ async def handle_drop_command(
     """Drop an inventory stack into the current room."""
 
     persistence, connection_manager = _resolve_state(request)
-    player, error = _resolve_player(persistence, current_user, player_name)
+    player, error = await _resolve_player(persistence, current_user, player_name)
     if error or not player:
         return error or {"result": "Player information not found."}
 
@@ -929,7 +929,7 @@ async def handle_equip_command(
     """Equip an item from inventory."""
 
     persistence, connection_manager = _resolve_state(request)
-    player, error = _resolve_player(persistence, current_user, player_name)
+    player, error = await _resolve_player(persistence, current_user, player_name)
     if error or not player:
         return error or {"result": "Player information not found."}
 
@@ -1148,7 +1148,7 @@ async def handle_unequip_command(
     """Unequip an item into the player's inventory."""
 
     persistence, connection_manager = _resolve_state(request)
-    player, error = _resolve_player(persistence, current_user, player_name)
+    player, error = await _resolve_player(persistence, current_user, player_name)
     if error or not player:
         return error or {"result": "Player information not found."}
 
@@ -1324,7 +1324,7 @@ async def handle_put_command(
     """Put an item from inventory into a container."""
 
     persistence, connection_manager = _resolve_state(request)
-    player, error = _resolve_player(persistence, current_user, player_name)
+    player, error = await _resolve_player(persistence, current_user, player_name)
     if error or not player:
         return error or {"result": "Player information not found."}
 
@@ -1741,7 +1741,7 @@ async def handle_get_command(
     """Get an item from a container into inventory."""
 
     persistence, connection_manager = _resolve_state(request)
-    player, error = _resolve_player(persistence, current_user, player_name)
+    player, error = await _resolve_player(persistence, current_user, player_name)
     if error or not player:
         return error or {"result": "Player information not found."}
 

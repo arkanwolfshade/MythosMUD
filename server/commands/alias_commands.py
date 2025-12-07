@@ -28,35 +28,56 @@ async def handle_alias_command(
     Returns:
         dict: Command result
     """
-    # Extract args from command_data
-    args: list = command_data.get("args", [])
-
-    logger.debug("Processing alias command", player_name=player_name, args=args)
-
     if alias_storage is None:
         logger.error("Alias storage not available", player_name=player_name)
         return {"result": "Alias system is not available"}
 
-    if not args:
-        logger.warning("Alias command with no arguments", player_name=player_name)
-        return {"result": "Usage: alias <name> [command] or alias <name> to view"}
+    # Check for structured data from parsed command model first
+    alias_name = command_data.get("alias_name")
+    command = command_data.get("command")
 
-    alias_name = args[0].lower()
+    # Fall back to args if structured data not available
+    if alias_name is None:
+        args: list = command_data.get("args", [])
+        logger.debug("Processing alias command from args", player_name=player_name, args=args)
 
-    # View existing alias
-    if len(args) == 1:
-        logger.debug("Viewing alias", player_name=player_name, alias_name=alias_name)
-        # AI Agent: get_alias requires player_name as first argument
-        alias = alias_storage.get_alias(player_name, alias_name)
-        if alias:
-            logger.debug("Alias found", player_name=player_name, alias_name=alias_name, command=alias.command)
-            return {"result": f"Alias '{alias_name}' = '{alias.command}'"}
-        else:
-            logger.debug("Alias not found", player_name=player_name, alias_name=alias_name)
-            return {"result": f"No alias found for '{alias_name}'"}
+        if not args:
+            logger.warning("Alias command with no arguments", player_name=player_name)
+            return {"result": "Usage: alias <name> [command] or alias <name> to view"}
 
-    # Create/update alias
-    command = " ".join(args[1:])
+        alias_name = args[0].lower()
+
+        # View existing alias
+        if len(args) == 1:
+            logger.debug("Viewing alias", player_name=player_name, alias_name=alias_name)
+            # AI Agent: get_alias requires player_name as first argument
+            alias = alias_storage.get_alias(player_name, alias_name)
+            if alias:
+                logger.debug("Alias found", player_name=player_name, alias_name=alias_name, command=alias.command)
+                return {"result": f"Alias '{alias_name}' = '{alias.command}'"}
+            else:
+                logger.debug("Alias not found", player_name=player_name, alias_name=alias_name)
+                return {"result": f"No alias found for '{alias_name}'"}
+
+        # Create/update alias
+        command = " ".join(args[1:])
+    else:
+        # Use structured data from parsed command
+        alias_name = alias_name.lower()
+        logger.debug("Processing alias command from structured data", player_name=player_name, alias_name=alias_name, command=command)
+
+        # View existing alias (command is None)
+        if command is None:
+            logger.debug("Viewing alias", player_name=player_name, alias_name=alias_name)
+            # AI Agent: get_alias requires player_name as first argument
+            alias = alias_storage.get_alias(player_name, alias_name)
+            if alias:
+                logger.debug("Alias found", player_name=player_name, alias_name=alias_name, command=alias.command)
+                return {"result": f"Alias '{alias_name}' = '{alias.command}'"}
+            else:
+                logger.debug("Alias not found", player_name=player_name, alias_name=alias_name)
+                return {"result": f"No alias found for '{alias_name}'"}
+
     logger.debug("Creating/updating alias", player_name=player_name, alias_name=alias_name, command=command)
 
     # Validate alias name

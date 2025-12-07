@@ -64,7 +64,9 @@ class TestMovementService:
 
         # Configure mocks
         mock_persistence.get_player_by_id = AsyncMock(return_value=player)
-        mock_persistence.get_room_by_id = Mock(side_effect=lambda room_id: mock_from_room if room_id == "room1" else mock_to_room)
+        mock_persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: mock_from_room if room_id == "room1" else mock_to_room
+        )
         mock_persistence.save_player = AsyncMock()
         mock_from_room.has_player.return_value = True
         mock_to_room.has_player.return_value = False
@@ -156,9 +158,11 @@ class TestMovementService:
         # Make get_room_by_id return None for the from_room to trigger the exception
         # Return a valid room for to_room so validation passes
         mock_to_room = Mock(spec=Room)
-        mock_persistence.get_room_by_id = Mock(side_effect=(
-            lambda room_id: None if room_id == "nonexistent" else (mock_to_room if room_id == "room2" else None)
-        ))
+        mock_persistence.get_room_by_id = Mock(
+            side_effect=(
+                lambda room_id: None if room_id == "nonexistent" else (mock_to_room if room_id == "room2" else None)
+            )
+        )
 
         service = MovementService(async_persistence=mock_persistence)
         # The service should raise DatabaseError when from_room is not found
@@ -194,10 +198,14 @@ class TestMovementService:
         mock_from_room.has_player.return_value = True
         mock_from_room.exits = {"north": "nonexistent"}
         mock_from_room.id = "room1"
-        mock_persistence.get_room_by_id = Mock(side_effect=lambda room_id: mock_from_room if room_id == "room1" else None)
+        mock_persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: mock_from_room if room_id == "room1" else None
+        )
 
         mock_persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
-        mock_persistence.get_room_by_id = Mock(side_effect=lambda room_id: mock_from_room if room_id == "room1" else None)
+        mock_persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: mock_from_room if room_id == "room1" else None
+        )
 
         service = MovementService(async_persistence=mock_persistence)
         # The service should raise DatabaseError when to_room is not found
@@ -225,9 +233,9 @@ class TestMovementService:
 
         mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
         mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
-        mock_persistence.get_room_by_id = Mock(side_effect=lambda room_id: {"room1": mock_from_room, "room2": mock_to_room}.get(
-            room_id
-        ))
+        mock_persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: {"room1": mock_from_room, "room2": mock_to_room}.get(room_id)
+        )
         mock_from_room.has_player.return_value = False  # Player not in from room
 
         service = MovementService(async_persistence=mock_persistence)
@@ -257,9 +265,9 @@ class TestMovementService:
         mock_from_room.exits = {"north": "room2"}
         mock_from_room.id = "room1"
         mock_to_room.id = "room2"
-        mock_persistence.get_room_by_id = Mock(side_effect=lambda room_id: {"room1": mock_from_room, "room2": mock_to_room}.get(
-            room_id
-        ))
+        mock_persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: {"room1": mock_from_room, "room2": mock_to_room}.get(room_id)
+        )
         # Player is in from_room (for validation to pass)
         mock_from_room.has_player.return_value = True
         # Player is also in to_room (should cause failure)
@@ -297,7 +305,9 @@ class TestMovementService:
 
         # Configure mocks - player is in combat
         mock_persistence.get_player_by_id = AsyncMock(return_value=player)
-        mock_persistence.get_room_by_id = Mock(side_effect=lambda room_id: mock_from_room if room_id == "room1" else mock_to_room)
+        mock_persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: mock_from_room if room_id == "room1" else mock_to_room
+        )
         mock_persistence.save_player = AsyncMock()
         mock_from_room.has_player.return_value = True
         mock_to_room.has_player.return_value = False
@@ -305,7 +315,9 @@ class TestMovementService:
         mock_from_room.id = "room1"
 
         # Create movement service with player combat service
-        movement_service = MovementService(async_persistence=mock_persistence, player_combat_service=mock_player_combat_service)
+        movement_service = MovementService(
+            async_persistence=mock_persistence, player_combat_service=mock_player_combat_service
+        )
 
         # Attempt to move player - should be blocked (async)
         success = asyncio.run(movement_service.move_player(test_player_uuid, "room1", "room2"))
@@ -342,7 +354,9 @@ class TestMovementService:
 
         # Configure mocks - player is NOT in combat
         mock_persistence.get_player_by_id = AsyncMock(return_value=player)
-        mock_persistence.get_room_by_id = Mock(side_effect=lambda room_id: mock_from_room if room_id == "room1" else mock_to_room)
+        mock_persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: mock_from_room if room_id == "room1" else mock_to_room
+        )
         mock_persistence.save_player = AsyncMock()
         mock_from_room.has_player.return_value = True
         mock_to_room.has_player.return_value = False
@@ -350,7 +364,9 @@ class TestMovementService:
         mock_from_room.id = "room1"
 
         # Create movement service with player combat service
-        movement_service = MovementService(async_persistence=mock_persistence, player_combat_service=mock_player_combat_service)
+        movement_service = MovementService(
+            async_persistence=mock_persistence, player_combat_service=mock_player_combat_service
+        )
 
         # Move player - should succeed (async)
         success = asyncio.run(movement_service.move_player(test_player_uuid, "room1", "room2"))
@@ -388,7 +404,9 @@ class TestMovementService:
 
         # Configure mocks
         mock_persistence.get_player_by_id = AsyncMock(return_value=player)
-        mock_persistence.get_room_by_id = Mock(side_effect=lambda room_id: mock_from_room if room_id == "room1" else mock_to_room)
+        mock_persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: mock_from_room if room_id == "room1" else mock_to_room
+        )
         mock_persistence.save_player = AsyncMock()
         mock_from_room.has_player.return_value = True
         mock_to_room.has_player.return_value = False
@@ -695,9 +713,9 @@ class TestMovementService:
         mock_player = Mock()
 
         # Setup mocks
-        mock_persistence.get_room_by_id = Mock(side_effect=lambda room_id: {"room1": mock_from_room, "room2": mock_to_room}.get(
-            room_id
-        ))
+        mock_persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: {"room1": mock_from_room, "room2": mock_to_room}.get(room_id)
+        )
         mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
         mock_persistence.save_player = AsyncMock()
         mock_from_room.has_player.return_value = True
@@ -785,12 +803,14 @@ class TestComprehensiveMovement:
 
         # Mock persistence
         mock_persistence = Mock()
-        mock_persistence.get_room_by_id = Mock(side_effect=lambda room_id: {
-            "room1": room1,
-            "room2": room2,
-            "room3": room3,
-            "room4": room4,
-        }.get(room_id))
+        mock_persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: {
+                "room1": room1,
+                "room2": room2,
+                "room3": room3,
+                "room4": room4,
+            }.get(room_id)
+        )
         mock_persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.save_player = AsyncMock()
 
@@ -846,9 +866,9 @@ class TestComprehensiveMovement:
 
         # Mock persistence
         mock_persistence = Mock()
-        mock_persistence.get_room_by_id = Mock(side_effect=lambda room_id: {"room1": room1, "room2": room2, "room3": room3}.get(
-            room_id
-        ))
+        mock_persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: {"room1": room1, "room2": room2, "room3": room3}.get(room_id)
+        )
         mock_persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.save_player = AsyncMock()
 
@@ -910,7 +930,9 @@ class TestComprehensiveMovement:
 
         # Mock persistence
         mock_persistence = Mock()
-        mock_persistence.get_room_by_id = Mock(side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id))
+        mock_persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id)
+        )
         mock_persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.save_player = AsyncMock()
 
@@ -952,7 +974,9 @@ class TestComprehensiveMovement:
 
         # Mock persistence
         mock_persistence = Mock()
-        mock_persistence.get_room_by_id = Mock(side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id))
+        mock_persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id)
+        )
 
         # Create multiple players
         mock_players = {}
@@ -1033,7 +1057,9 @@ class TestComprehensiveMovement:
 
         # Mock persistence
         mock_persistence = Mock()
-        mock_persistence.get_room_by_id = Mock(side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id))
+        mock_persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id)
+        )
         mock_persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.get_player_by_name = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.save_player = AsyncMock()
@@ -1082,7 +1108,9 @@ class TestComprehensiveMovement:
 
         # Mock persistence
         mock_persistence = Mock()
-        mock_persistence.get_room_by_id = Mock(side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id))
+        mock_persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id)
+        )
         mock_persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.save_player = AsyncMock()
 
@@ -1212,7 +1240,9 @@ class TestComprehensiveMovement:
 
         # Mock persistence
         mock_persistence = Mock()
-        mock_persistence.get_room_by_id = Mock(side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id))
+        mock_persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id)
+        )
         mock_persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.save_player = AsyncMock()
 
@@ -1264,7 +1294,9 @@ class TestComprehensiveMovement:
 
         # Mock persistence that fails intermittently
         mock_persistence = Mock()
-        mock_persistence.get_room_by_id = Mock(side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id))
+        mock_persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id)
+        )
         mock_persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.save_player = AsyncMock()
 
@@ -1314,7 +1346,9 @@ class TestComprehensiveMovement:
 
         # Mock persistence
         mock_persistence = Mock()
-        mock_persistence.get_room_by_id = Mock(side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id))
+        mock_persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: {"room1": room1, "room2": room2}.get(room_id)
+        )
         mock_persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.get_player_by_name = AsyncMock(side_effect=get_player_side_effect)
         mock_persistence.save_player = AsyncMock()

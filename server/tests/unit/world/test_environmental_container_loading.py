@@ -164,7 +164,9 @@ class TestContainerMigrationToPostgreSQL:
         }
         mock_persistence.get_containers_by_room_id.return_value = []
 
-        container_id = await loader.migrate_room_container_to_postgresql(sample_room_json_with_container, sample_room_id)
+        container_id = await loader.migrate_room_container_to_postgresql(
+            sample_room_json_with_container, sample_room_id
+        )
 
         assert container_id is not None
         mock_persistence.create_container.assert_called_once()
@@ -193,19 +195,25 @@ class TestContainerMigrationToPostgreSQL:
 
         loader = EnvironmentalContainerLoader(persistence=mock_persistence)
 
-        container_id = await loader.migrate_room_container_to_postgresql(sample_room_json_with_container, sample_room_id)
+        container_id = await loader.migrate_room_container_to_postgresql(
+            sample_room_json_with_container, sample_room_id
+        )
 
         assert container_id == existing_container_id
         # Should not create a new container
         mock_persistence.create_container.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_migrate_room_without_container(self, mock_persistence, sample_room_json_without_container, sample_room_id):
+    async def test_migrate_room_without_container(
+        self, mock_persistence, sample_room_json_without_container, sample_room_id
+    ):
         """Test migrating a room without a container."""
         loader = EnvironmentalContainerLoader(persistence=mock_persistence)
         mock_persistence.get_containers_by_room_id.return_value = []
 
-        container_id = await loader.migrate_room_container_to_postgresql(sample_room_json_without_container, sample_room_id)
+        container_id = await loader.migrate_room_container_to_postgresql(
+            sample_room_json_without_container, sample_room_id
+        )
 
         assert container_id is None
         mock_persistence.create_container.assert_not_called()

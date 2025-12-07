@@ -922,10 +922,11 @@ class NATSMessageHandler:
                 if player and not isinstance(player, Mock):
                     player_room_id = getattr(player, "current_room_id", None)
                     if isinstance(player_room_id, str) and player_room_id:
+                        # _canonical_room_id is synchronous, not async
                         canonical_player_room = (
-                            await self.connection_manager._canonical_room_id(player_room_id) or player_room_id
+                            self.connection_manager._canonical_room_id(player_room_id) or player_room_id
                         )
-                        canonical_message_room = await self.connection_manager._canonical_room_id(room_id) or room_id
+                        canonical_message_room = self.connection_manager._canonical_room_id(room_id) or room_id
 
                         return canonical_player_room == canonical_message_room
 

@@ -252,8 +252,12 @@ class TestConcurrentContainerMutations:
             player2_id = uuid4()
 
             # Create test players in database (in the same room as the container)
-            await _create_test_player(container_service.persistence, player1_id, f"TestPlayer1_{player1_id.hex[:8]}", room_id)
-            await _create_test_player(container_service.persistence, player2_id, f"TestPlayer2_{player2_id.hex[:8]}", room_id)
+            await _create_test_player(
+                container_service.persistence, player1_id, f"TestPlayer1_{player1_id.hex[:8]}", room_id
+            )
+            await _create_test_player(
+                container_service.persistence, player2_id, f"TestPlayer2_{player2_id.hex[:8]}", room_id
+            )
 
             # Create container in persistence
             container_result = await container_service.persistence.create_container(
@@ -392,8 +396,12 @@ class TestConcurrentContainerMutations:
         player2_id = uuid4()
 
         # Create test players in database
-        await _create_test_player(container_service.persistence, player1_id, f"TestPlayer1_{player1_id.hex[:8]}", room_id)
-        await _create_test_player(container_service.persistence, player2_id, f"TestPlayer2_{player2_id.hex[:8]}", room_id)
+        await _create_test_player(
+            container_service.persistence, player1_id, f"TestPlayer1_{player1_id.hex[:8]}", room_id
+        )
+        await _create_test_player(
+            container_service.persistence, player2_id, f"TestPlayer2_{player2_id.hex[:8]}", room_id
+        )
 
         # Create container
         container_result = await container_service.persistence.create_container(

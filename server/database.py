@@ -14,6 +14,7 @@ from collections.abc import AsyncGenerator
 from pathlib import Path
 from typing import Any
 
+from fastapi import HTTPException
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -545,7 +546,13 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
         try:
             logger.debug("Database session created successfully")
             yield session
+        except HTTPException:
+            # HTTP exceptions (including LoggedHTTPException) are business logic errors,
+            # not database errors. They're already logged by LoggedHTTPException,
+            # so we should not log them as database errors. Just re-raise.
+            raise
         except Exception as e:
+            # Only log actual database-related exceptions
             context.metadata["error_type"] = type(e).__name__
             context.metadata["error_message"] = str(e)
             logger.error(

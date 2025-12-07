@@ -300,8 +300,8 @@ class CommandService:
                 # Merge parsed command fields (use Pydantic model_dump for completeness)
                 try:
                     # DEBUG: Inspect parsed_command object before model_dump()
-                    logger.error(
-                        "DEBUG: parsed_command object inspection",
+                    logger.debug(
+                        "Parsed command object inspection",
                         player=player_name,
                         command_type=cmd,
                         parsed_command_type=type(parsed_command).__name__,
@@ -313,8 +313,8 @@ class CommandService:
                     # Check if item and container exist and get their values
                     if hasattr(parsed_command, "item"):
                         item_value = getattr(parsed_command, "item", None)
-                        logger.info(
-                            "DEBUG: parsed_command.item value",
+                        logger.debug(
+                            "Parsed command item value",
                             player=player_name,
                             command_type=cmd,
                             item_value=item_value,
@@ -322,8 +322,8 @@ class CommandService:
                         )
                     if hasattr(parsed_command, "container"):
                         container_value = getattr(parsed_command, "container", None)
-                        logger.info(
-                            "DEBUG: parsed_command.container value",
+                        logger.debug(
+                            "Parsed command container value",
                             player=player_name,
                             command_type=cmd,
                             container_value=container_value,
@@ -336,8 +336,8 @@ class CommandService:
                         for key in dir(parsed_command)
                         if not key.startswith("_") and not callable(getattr(parsed_command, key, None))
                     }
-                    logger.info(
-                        "DEBUG: parsed_command all attributes",
+                    logger.debug(
+                        "Parsed command all attributes",
                         player=player_name,
                         command_type=cmd,
                         all_attrs_keys=list(all_attrs.keys()),
@@ -347,8 +347,8 @@ class CommandService:
                     # Use model_dump without exclude_none to see all fields
                     # Then manually filter None values if needed
                     parsed_fields = parsed_command.model_dump()
-                    logger.error(
-                        "DEBUG: model_dump() result",
+                    logger.debug(
+                        "Model dump result",
                         player=player_name,
                         command_type=cmd,
                         parsed_fields_keys=list(parsed_fields.keys()),
@@ -391,7 +391,7 @@ class CommandService:
                     )
                     raise
                 command_data.update(parsed_fields)
-                logger.error(
+                logger.debug(
                     "Command data after merge",
                     player=player_name,
                     command_type=cmd,
