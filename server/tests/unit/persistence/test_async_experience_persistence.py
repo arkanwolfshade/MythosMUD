@@ -37,9 +37,9 @@ class TestAsyncExperiencePersistence:
             user_id="test_user_123",
             current_room_id="earth_arkhamcity_downtown_room_derby_st_001",
         )
-        player.lucidity = 50
-        player.fear = 0
-        player.corruption = 0
+        # Note: lucidity, fear, and corruption are SQLAlchemy relationships,
+        # not simple attributes. The test doesn't need to set them since we're
+        # just testing that the repository method is called correctly.
         return player
 
     @pytest.mark.asyncio

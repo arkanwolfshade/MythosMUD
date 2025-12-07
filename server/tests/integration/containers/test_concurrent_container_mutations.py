@@ -293,6 +293,8 @@ class TestConcurrentContainerMutations:
             skip_reason = str(e) if e else "Test timed out after 25 seconds"
             pytest.skip(skip_reason)
 
+    @pytest.mark.slow
+    @pytest.mark.timeout(60)
     async def test_concurrent_transfer_operations(
         self, container_service: ContainerService, ensure_test_item_prototypes
     ) -> None:

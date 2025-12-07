@@ -9,7 +9,7 @@ JSON definitions into PostgreSQL and subsequent retrieval.
 from __future__ import annotations
 
 import uuid
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
@@ -21,6 +21,9 @@ from server.services.environmental_container_loader import EnvironmentalContaine
 def mock_persistence():
     """Create a mock persistence layer."""
     persistence = MagicMock()
+    # Mock async methods with AsyncMock
+    persistence.create_container = AsyncMock()
+    persistence.get_containers_by_room_id = AsyncMock()
     return persistence
 
 
@@ -148,7 +151,8 @@ class TestContainerLoadingFromJSON:
 class TestContainerMigrationToPostgreSQL:
     """Test migrating containers from JSON to PostgreSQL."""
 
-    def test_migrate_room_container_to_postgresql(
+    @pytest.mark.asyncio
+    async def test_migrate_room_container_to_postgresql(
         self, mock_persistence, sample_room_json_with_container, sample_room_id
     ):
         """Test migrating a container from room JSON to PostgreSQL."""
@@ -158,8 +162,9 @@ class TestContainerMigrationToPostgreSQL:
         mock_persistence.create_container.return_value = {
             "container_id": str(uuid.uuid4()),
         }
+        mock_persistence.get_containers_by_room_id.return_value = []
 
-        container_id = loader.migrate_room_container_to_postgresql(sample_room_json_with_container, sample_room_id)
+        container_id = await loader.migrate_room_container_to_postgresql(sample_room_json_with_container, sample_room_id)
 
         assert container_id is not None
         mock_persistence.create_container.assert_called_once()
@@ -171,7 +176,8 @@ class TestContainerMigrationToPostgreSQL:
         assert call_args.kwargs["capacity_slots"] == 8
         assert call_args.kwargs["lock_state"] == "locked"
 
-    def test_migrate_room_container_already_exists(
+    @pytest.mark.asyncio
+    async def test_migrate_room_container_already_exists(
         self, mock_persistence, sample_room_json_with_container, sample_room_id
     ):
         """Test that existing containers are not recreated."""
@@ -187,17 +193,19 @@ class TestContainerMigrationToPostgreSQL:
 
         loader = EnvironmentalContainerLoader(persistence=mock_persistence)
 
-        container_id = loader.migrate_room_container_to_postgresql(sample_room_json_with_container, sample_room_id)
+        container_id = await loader.migrate_room_container_to_postgresql(sample_room_json_with_container, sample_room_id)
 
         assert container_id == existing_container_id
         # Should not create a new container
         mock_persistence.create_container.assert_not_called()
 
-    def test_migrate_room_without_container(self, mock_persistence, sample_room_json_without_container, sample_room_id):
+    @pytest.mark.asyncio
+    async def test_migrate_room_without_container(self, mock_persistence, sample_room_json_without_container, sample_room_id):
         """Test migrating a room without a container."""
         loader = EnvironmentalContainerLoader(persistence=mock_persistence)
+        mock_persistence.get_containers_by_room_id.return_value = []
 
-        container_id = loader.migrate_room_container_to_postgresql(sample_room_json_without_container, sample_room_id)
+        container_id = await loader.migrate_room_container_to_postgresql(sample_room_json_without_container, sample_room_id)
 
         assert container_id is None
         mock_persistence.create_container.assert_not_called()
@@ -206,7 +214,8 @@ class TestContainerMigrationToPostgreSQL:
 class TestContainerLoadingFromPostgreSQL:
     """Test loading containers from PostgreSQL when loading rooms."""
 
-    def test_load_containers_for_room(self, mock_persistence, sample_room_id):
+    @pytest.mark.asyncio
+    async def test_load_containers_for_room(self, mock_persistence, sample_room_id):
         """Test loading containers for a room from PostgreSQL."""
         # Mock container data (using container_id as returned by to_dict())
         container_data = {
@@ -223,23 +232,25 @@ class TestContainerLoadingFromPostgreSQL:
 
         loader = EnvironmentalContainerLoader(persistence=mock_persistence)
 
-        containers = loader.load_containers_for_room(sample_room_id)
+        containers = await loader.load_containers_for_room(sample_room_id)
 
         assert len(containers) == 1
         assert containers[0].source_type == ContainerSourceType.ENVIRONMENT
         assert containers[0].room_id == sample_room_id
 
-    def test_load_containers_for_room_none_found(self, mock_persistence, sample_room_id):
+    @pytest.mark.asyncio
+    async def test_load_containers_for_room_none_found(self, mock_persistence, sample_room_id):
         """Test loading containers when none exist."""
         mock_persistence.get_containers_by_room_id.return_value = []
 
         loader = EnvironmentalContainerLoader(persistence=mock_persistence)
 
-        containers = loader.load_containers_for_room(sample_room_id)
+        containers = await loader.load_containers_for_room(sample_room_id)
 
         assert len(containers) == 0
 
-    def test_load_containers_for_room_multiple(self, mock_persistence, sample_room_id):
+    @pytest.mark.asyncio
+    async def test_load_containers_for_room_multiple(self, mock_persistence, sample_room_id):
         """Test loading multiple containers for a room."""
         container_data_1 = {
             "container_id": str(uuid.uuid4()),
@@ -265,7 +276,7 @@ class TestContainerLoadingFromPostgreSQL:
 
         loader = EnvironmentalContainerLoader(persistence=mock_persistence)
 
-        containers = loader.load_containers_for_room(sample_room_id)
+        containers = await loader.load_containers_for_room(sample_room_id)
 
         assert len(containers) == 2
 
@@ -273,7 +284,8 @@ class TestContainerLoadingFromPostgreSQL:
 class TestRoomContainerIntegration:
     """Test integration of containers with room loading."""
 
-    def test_room_with_container_includes_containers(self, mock_persistence, sample_room_id):
+    @pytest.mark.asyncio
+    async def test_room_with_container_includes_containers(self, mock_persistence, sample_room_id):
         """Test that rooms loaded from database include their containers."""
         # Mock container data (using container_id as returned by to_dict())
         container_data = {
@@ -291,7 +303,7 @@ class TestRoomContainerIntegration:
         loader = EnvironmentalContainerLoader(persistence=mock_persistence)
 
         # Load containers for room
-        containers = loader.load_containers_for_room(sample_room_id)
+        containers = await loader.load_containers_for_room(sample_room_id)
 
         # Verify containers are loaded
         assert len(containers) == 1

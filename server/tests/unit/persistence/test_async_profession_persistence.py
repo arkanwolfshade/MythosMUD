@@ -41,11 +41,21 @@ class TestAsyncProfessionPersistence:
     async def test_get_professions(self, async_persistence, sample_profession):
         """Test getting all available professions."""
         professions = [sample_profession]
-        # Mock the async session and query
-        with patch("server.async_persistence.get_async_session") as mock_session:
-            mock_session.return_value.__aenter__.return_value.execute = AsyncMock()
-            mock_session.return_value.__aenter__.return_value.execute.return_value.scalars.return_value.all.return_value = professions
+        # Mock the async session generator and query
+        # get_async_session is an async generator that yields sessions
+        async def mock_session_generator():
+            mock_session = AsyncMock()
+            mock_result = AsyncMock()
+            # scalars() returns an object with .all() method (not async)
+            mock_scalars_obj = Mock()
+            mock_scalars_obj.all.return_value = professions
+            # scalars() is a method that returns the object, not a coroutine
+            mock_result.scalars = Mock(return_value=mock_scalars_obj)
+            mock_session.execute = AsyncMock(return_value=mock_result)
+            yield mock_session
 
+        # Patch at the async_persistence module level where it's used
+        with patch("server.async_persistence.get_async_session", return_value=mock_session_generator()):
             result = await async_persistence.get_professions()
 
             assert isinstance(result, list)

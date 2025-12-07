@@ -665,6 +665,9 @@ def update_container(
         )
 
     try:
+        # Convert container_id to string for psycopg2 compatibility
+        container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
+
         # Build update query dynamically
         updates: list[str] = []
         params: list[Any] = []
@@ -674,7 +677,7 @@ def update_container(
         if items_json is not None:
             # Use stored procedures to update container contents
             # First, clear existing contents
-            cursor.execute("SELECT clear_container_contents(%s)", (container_id,))
+            cursor.execute("SELECT clear_container_contents(%s)", (container_id_str,))
 
             # Then add each item using stored procedure
             # First ensure item instances exist, then add them to container
@@ -693,7 +696,7 @@ def update_container(
                             item_instance_id=item_instance_id,
                             prototype_id=prototype_id,
                             owner_type="container",
-                            owner_id=str(container_id),
+                            owner_id=container_id_str,
                             quantity=item.get("quantity", 1),
                             metadata=item.get("metadata", {}),
                         )
@@ -709,7 +712,7 @@ def update_container(
                     # Now add item to container
                     cursor.execute(
                         "SELECT add_item_to_container(%s, %s, %s)",
-                        (container_id, item_instance_id, position),
+                        (container_id_str, item_instance_id, position),
                     )
 
         if lock_state is not None:
@@ -727,10 +730,8 @@ def update_container(
             # Always update updated_at
             updates.append("updated_at = %s")
             params.append(current_time)
-            params.append(container_id)
+            params.append(container_id_str)
 
-            # Convert container_id to string for psycopg2 compatibility
-            params_str = [str(p) if isinstance(p, UUID) else p for p in params]
             cursor.execute(
                 f"""
                 UPDATE containers
@@ -738,17 +739,15 @@ def update_container(
                 WHERE container_instance_id = %s
                 RETURNING container_instance_id
                 """,
-                params_str,
+                params,
             )
             row = cursor.fetchone()
         elif items_json is not None:
             # If only items_json was provided, still update updated_at
             updates.append("updated_at = %s")
             params.append(current_time)
-            params.append(container_id)
+            params.append(container_id_str)
 
-            # Convert container_id to string for psycopg2 compatibility
-            params_str = [str(p) if isinstance(p, UUID) else p for p in params]
             cursor.execute(
                 f"""
                 UPDATE containers
@@ -756,7 +755,7 @@ def update_container(
                 WHERE container_instance_id = %s
                 RETURNING container_instance_id
                 """,
-                params_str,
+                params,
             )
             row = cursor.fetchone()
 

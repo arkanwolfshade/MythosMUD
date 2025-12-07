@@ -104,16 +104,17 @@ class TestAsyncOperationsVerification:
         service = PlayerService(mock_persistence)
 
         # Configure mock to track calls
-        mock_persistence.async_list_players.reset_mock()
-        mock_persistence.async_get_player.reset_mock()
+        # PlayerService calls self.persistence.list_players() and self.persistence.get_player_by_id()
+        mock_persistence.list_players = AsyncMock(return_value=[])
+        mock_persistence.get_player_by_id = AsyncMock(return_value=None)
 
         # Call async methods
         await service.list_players()
         await service.get_player_by_id("test_id")
 
         # Verify async methods were called
-        mock_persistence.async_list_players.assert_called_once()
-        mock_persistence.async_get_player.assert_called_once_with("test_id")
+        mock_persistence.list_players.assert_called_once()
+        mock_persistence.get_player_by_id.assert_called_once_with("test_id")
 
     @pytest.mark.asyncio
     async def test_room_service_async_methods_actually_await(self, mock_persistence):
@@ -167,7 +168,10 @@ class TestAsyncOperationsVerification:
         mock_profession.flavor_text = "Test flavor"
         mock_persistence.get_profession_by_id.return_value = mock_profession
 
-        mock_persistence.async_get_player.return_value = mock_player
+        # PlayerService calls self.persistence.get_player_by_id(), not async_get_player
+        mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+        # Return list with single mock_player for list_players
+        mock_persistence.list_players = AsyncMock(return_value=[mock_player])
 
         start_time = time.time()
 
@@ -200,7 +204,8 @@ class TestAsyncOperationsVerification:
             await asyncio.sleep(1.0)
             return []
 
-        mock_persistence.async_list_players.side_effect = slow_operation
+        # PlayerService.list_players() calls self.persistence.list_players(), not async_list_players
+        mock_persistence.list_players = slow_operation
 
         # Test with timeout
         with pytest.raises(asyncio.TimeoutError):
@@ -212,7 +217,11 @@ class TestAsyncOperationsVerification:
         service = PlayerService(mock_persistence)
 
         # Configure mock to raise an exception
-        mock_persistence.async_list_players.side_effect = Exception("Database error")
+        # PlayerService.list_players() calls self.persistence.list_players(), not async_list_players
+        async def raise_error(*args, **kwargs):
+            raise Exception("Database error")
+
+        mock_persistence.list_players = raise_error
 
         # Test that exception is properly propagated
         with pytest.raises(Exception, match="Database error"):
@@ -228,7 +237,8 @@ class TestAsyncOperationsVerification:
             await asyncio.sleep(1.0)
             return []
 
-        mock_persistence.async_list_players.side_effect = slow_operation
+        # PlayerService.list_players() calls self.persistence.list_players(), not async_list_players
+        mock_persistence.list_players = slow_operation
 
         # Create task and cancel it
         task = asyncio.create_task(service.list_players())
@@ -487,14 +497,17 @@ class TestAsyncOperationsVerification:
         service = PlayerService(mock_persistence)
 
         # First call fails
-        mock_persistence.async_list_players.side_effect = Exception("Temporary error")
+        # PlayerService calls self.persistence.list_players(), not async_list_players
+        async def raise_error(*args, **kwargs):
+            raise Exception("Temporary error")
+
+        mock_persistence.list_players = raise_error
 
         with pytest.raises(Exception, match="Temporary error"):
             await service.list_players()
 
         # Second call succeeds
-        mock_persistence.async_list_players.side_effect = None
-        mock_persistence.async_list_players.return_value = []
+        mock_persistence.list_players = AsyncMock(return_value=[])
 
         result = await service.list_players()
         assert result == []
@@ -503,6 +516,10 @@ class TestAsyncOperationsVerification:
     async def test_async_operations_with_different_await_patterns(self, mock_persistence):
         """Test async operations with different await patterns."""
         service = PlayerService(mock_persistence)
+
+        # Configure mocks - PlayerService calls self.persistence.list_players() and get_player_by_id()
+        mock_persistence.list_players = AsyncMock(return_value=[])
+        mock_persistence.get_player_by_id = AsyncMock(return_value=None)
 
         # Test direct await
         result1 = await service.list_players()
