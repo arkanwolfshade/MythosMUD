@@ -240,3 +240,128 @@ async def test_apply_lucidity_adjustment_emits_success_rescue_update_on_recovery
             assert first_call.args[0] == player.player_id
         else:
             assert first_call.kwargs.get("player_id") == player.player_id
+
+
+@pytest.mark.asyncio
+async def test_apply_lucidity_adjustment_triggers_delirium_respawn_at_minus_10(session_factory):
+    """Test that lucidity adjustment triggers delirium respawn event when reaching -10."""
+    session_maker = session_factory
+    async with session_maker() as session:
+        player = await create_player(session, "delirious")
+        session.add(
+            PlayerLucidity(
+                player_id=player.player_id,
+                current_lcd=-9,  # Just above threshold
+                current_tier="catatonic",
+            )
+        )
+        await session.flush()
+
+        service = LucidityService(session)
+
+        with patch(
+            "server.services.lucidity_service.send_rescue_update_event",
+            new_callable=AsyncMock,
+        ) as mock_rescue_event:
+            # Apply adjustment that brings lucidity to exactly -10
+            result = await service.apply_lucidity_adjustment(
+                player.player_id,
+                -1,
+                reason_code="test_delirium",
+            )
+
+        # Verify lucidity reached -10
+        assert result.new_lcd == -10
+
+        # Verify delirium rescue event was sent
+        delirium_calls = [
+            call
+            for call in mock_rescue_event.await_args_list
+            if call.kwargs.get("status") == "delirium"
+        ]
+        assert len(delirium_calls) > 0
+        delirium_call = delirium_calls[0]
+        assert delirium_call.kwargs.get("current_lcd") == -10
+        assert "delirium" in delirium_call.kwargs.get("message", "").lower()
+
+
+@pytest.mark.asyncio
+async def test_apply_lucidity_adjustment_triggers_delirium_respawn_below_minus_10(session_factory):
+    """Test that lucidity adjustment triggers delirium respawn event when going below -10."""
+    session_maker = session_factory
+    async with session_maker() as session:
+        player = await create_player(session, "delirious")
+        session.add(
+            PlayerLucidity(
+                player_id=player.player_id,
+                current_lcd=-5,  # Above threshold
+                current_tier="catatonic",
+            )
+        )
+        await session.flush()
+
+        service = LucidityService(session)
+
+        with patch(
+            "server.services.lucidity_service.send_rescue_update_event",
+            new_callable=AsyncMock,
+        ) as mock_rescue_event:
+            # Apply adjustment that brings lucidity below -10
+            result = await service.apply_lucidity_adjustment(
+                player.player_id,
+                -10,
+                reason_code="test_delirium",
+            )
+
+        # Verify lucidity went below -10
+        assert result.new_lcd == -15
+
+        # Verify delirium rescue event was sent
+        delirium_calls = [
+            call
+            for call in mock_rescue_event.await_args_list
+            if call.kwargs.get("status") == "delirium"
+        ]
+        assert len(delirium_calls) > 0
+        delirium_call = delirium_calls[0]
+        assert delirium_call.kwargs.get("current_lcd") == -15
+
+
+@pytest.mark.asyncio
+async def test_apply_lucidity_adjustment_no_delirium_event_when_above_threshold(session_factory):
+    """Test that delirium respawn event is NOT triggered when lucidity is above -10."""
+    session_maker = session_factory
+    async with session_maker() as session:
+        player = await create_player(session, "stable")
+        session.add(
+            PlayerLucidity(
+                player_id=player.player_id,
+                current_lcd=-5,  # Above -10 threshold
+                current_tier="catatonic",
+            )
+        )
+        await session.flush()
+
+        service = LucidityService(session)
+
+        with patch(
+            "server.services.lucidity_service.send_rescue_update_event",
+            new_callable=AsyncMock,
+        ) as mock_rescue_event:
+            # Apply adjustment that keeps lucidity above -10
+            result = await service.apply_lucidity_adjustment(
+                player.player_id,
+                -2,
+                reason_code="test_stable",
+            )
+
+        # Verify lucidity is still above -10
+        assert result.new_lcd == -7
+
+        # Verify NO delirium rescue event was sent
+        delirium_calls = [
+            call
+            for call in mock_rescue_event.await_args_list
+            if call.kwargs.get("status") == "delirium"
+        ]
+        assert len(delirium_calls) == 0

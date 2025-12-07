@@ -89,11 +89,17 @@ class RealTimeEventHandler:
         )
 
         # Subscribe to death/respawn events
-        from ..events.event_types import PlayerDiedEvent, PlayerHPDecayEvent, PlayerRespawnedEvent
+        from ..events.event_types import (
+            PlayerDeliriumRespawnedEvent,
+            PlayerDiedEvent,
+            PlayerHPDecayEvent,
+            PlayerRespawnedEvent,
+        )
 
         self.event_bus.subscribe(PlayerDiedEvent, self._handle_player_died)
         self.event_bus.subscribe(PlayerHPDecayEvent, self._handle_player_hp_decay)
         self.event_bus.subscribe(PlayerRespawnedEvent, self._handle_player_respawned)
+        self.event_bus.subscribe(PlayerDeliriumRespawnedEvent, self._handle_player_delirium_respawned)
 
         self._logger.info("Subscribed to PlayerEnteredRoom, PlayerLeftRoom, NPCEnteredRoom, and NPCLeftRoom events")
 
@@ -2254,6 +2260,143 @@ class RealTimeEventHandler:
 
         except Exception as e:
             self._logger.error("Error handling player respawn event", error=str(e), exc_info=True)
+
+    async def _handle_player_delirium_respawned(self, event: Any) -> None:
+        """
+        Handle player delirium respawn events by sending respawn notification to the client.
+
+        Args:
+            event: The PlayerDeliriumRespawnedEvent containing delirium respawn information
+        """
+        try:
+            # Convert UUID to string for build_event (which expects str)
+            player_id_str = str(event.player_id)
+
+            # Get updated player data to include in event payload
+            player_data = None
+            updated_position = "standing"
+            if self.connection_manager and hasattr(self.connection_manager, "persistence"):
+                async_persistence = self.connection_manager.async_persistence
+                if async_persistence:
+                    try:
+                        # Get player from async persistence to retrieve updated stats including position
+                        player = await async_persistence.get_player_by_id(uuid.UUID(player_id_str))
+                        if player:
+                            stats = player.get_stats()
+                            updated_position = stats.get("position", "standing")
+
+                            # Update connection manager's in-memory position state
+                            if hasattr(self.connection_manager, "online_players"):
+                                player_uuid = uuid.UUID(player_id_str)
+                                if player_uuid in self.connection_manager.online_players:
+                                    self.connection_manager.online_players[player_uuid]["position"] = updated_position
+                                    self._logger.debug(
+                                        "Updated connection manager position state",
+                                        player_id=player_id_str,
+                                        position=updated_position,
+                                    )
+
+                            # Get updated lucidity from PlayerLucidity table
+                            from ..database import get_async_session
+                            from ..models.lucidity import PlayerLucidity
+
+                            current_lucidity = event.new_lucidity
+                            async for session in get_async_session():
+                                lucidity_record = await session.get(PlayerLucidity, player_uuid)
+                                if lucidity_record:
+                                    current_lucidity = lucidity_record.current_lcd
+                                break
+
+                            # Convert player to client-expected format
+                            player_data = {
+                                "id": str(player.player_id),
+                                "name": player.name,
+                                "level": player.level,
+                                "xp": player.experience_points,
+                                "stats": {
+                                    "current_health": stats.get("current_health", 100),
+                                    "max_health": stats.get("max_health", 100),
+                                    "lucidity": current_lucidity,
+                                    "max_lucidity": stats.get("max_lucidity", 100),
+                                    "strength": stats.get("strength"),
+                                    "dexterity": stats.get("dexterity"),
+                                    "constitution": stats.get("constitution"),
+                                    "intelligence": stats.get("intelligence"),
+                                    "wisdom": stats.get("wisdom"),
+                                    "charisma": stats.get("charisma"),
+                                    "occult_knowledge": stats.get("occult_knowledge", 0),
+                                    "fear": stats.get("fear", 0),
+                                    "corruption": stats.get("corruption", 0),
+                                    "cult_affiliation": stats.get("cult_affiliation", 0),
+                                    "position": updated_position,
+                                },
+                                "position": updated_position,
+                                "in_combat": False,  # Combat state cleared during respawn
+                            }
+                            self._logger.debug(
+                                "Retrieved player data for delirium respawn event",
+                                player_id=player_id_str,
+                                position=updated_position,
+                                lucidity=current_lucidity,
+                            )
+                    except Exception as e:
+                        self._logger.warning(
+                            "Failed to retrieve player data for delirium respawn event",
+                            player_id=player_id_str,
+                            error=str(e),
+                        )
+
+            # Send personal message to the player
+            from .envelope import build_event
+
+            respawn_event = build_event(
+                "player_delirium_respawned",
+                {
+                    "player_id": player_id_str,
+                    "player_name": event.player_name,
+                    "respawn_room_id": event.respawn_room_id,
+                    "old_lucidity": event.old_lucidity,
+                    "new_lucidity": event.new_lucidity,
+                    "message": "You have been restored to lucidity and returned to the Sanitarium.",
+                    "player": player_data,
+                },
+                player_id=player_id_str,
+            )
+
+            # Retry sending respawn event to handle temporary connection unavailability
+            import asyncio
+            import uuid as uuid_lib
+
+            max_wait_time = 2.0
+            poll_interval = 0.05
+            max_polls = int(max_wait_time / poll_interval)
+            player_id_uuid = uuid_lib.UUID(player_id_str)
+
+            for _poll_count in range(max_polls):
+                has_websocket = player_id_uuid in self.connection_manager.player_websockets
+
+                if has_websocket:
+                    delivery_status = await self.connection_manager.send_personal_message(
+                        player_id_uuid,
+                        respawn_event,
+                    )
+                    websocket_delivered = delivery_status.get("websocket_delivered", 0) > 0
+                    active_connections = delivery_status.get("active_connections", 0)
+                    if websocket_delivered and active_connections > 0:
+                        break
+
+                await asyncio.sleep(poll_interval)
+
+            self._logger.info(
+                "Sent delirium respawn notification to player",
+                player_id=player_id_str,
+                respawn_room=event.respawn_room_id,
+                new_lucidity=event.new_lucidity,
+                player_data_included=player_data is not None,
+            )
+
+        except Exception as e:
+            self._logger.error("Error handling player delirium respawn event", error=str(e), exc_info=True)
 
 
 # AI Agent: Global singleton removed - use ApplicationContainer.real_time_event_handler instead

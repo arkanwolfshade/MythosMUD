@@ -14,6 +14,7 @@ import { DAYPART_MESSAGES, buildMythosTimeState, formatMythosTime12Hour } from '
 import { inputSanitizer } from '../../utils/security';
 import { convertToPlayerInterface, parseStatusResponse } from '../../utils/statusParser';
 import { DeathInterstitial } from '../DeathInterstitial';
+import { DeliriumInterstitial } from '../DeliriumInterstitial';
 import { MainMenuModal } from '../MainMenuModal';
 import { MapView } from '../MapView';
 import { GameClientV2 } from './GameClientV2';
@@ -117,6 +118,9 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   const [isDead, setIsDead] = useState(false);
   const [deathLocation] = useState<string>('Unknown Location');
   const [isRespawning, setIsRespawning] = useState(false);
+  const [isDelirious, setIsDelirious] = useState(false);
+  const [deliriumLocation, setDeliriumLocation] = useState<string>('Unknown Location');
+  const [isDeliriumRespawning, setIsDeliriumRespawning] = useState(false);
   const [lucidityStatus, setLucidityStatus] = useState<LucidityStatus | null>(null);
   const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
   const [, setHallucinationFeed] = useState<HallucinationMessage[]>([]);
@@ -416,6 +420,84 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                 },
               };
             }
+            break;
+          }
+          case 'rescue_update': {
+            // Handle rescue update events, including delirium status
+            const rescueData = event.data as {
+              status?: string;
+              current_lcd?: number;
+              message?: string;
+              [key: string]: unknown;
+            };
+
+            if (rescueData.status === 'delirium') {
+              // Player has reached delirium threshold - show delirium screen
+              setIsDelirious(true);
+              if (rescueData.message) {
+                appendMessage(
+                  sanitizeChatMessageForState({
+                    text: rescueData.message,
+                    timestamp: event.timestamp,
+                    messageType: 'system',
+                    channel: 'system',
+                    isHtml: false,
+                  })
+                );
+              }
+              logger.info('GameClientV2Container', 'Delirium status detected from rescue_update', {
+                current_lcd: rescueData.current_lcd,
+              });
+            }
+            break;
+          }
+          case 'player_delirium_respawned':
+          case 'playerdeliriumrespawned': {
+            // Player delirium respawned event - hide delirium interstitial and update player state
+            const respawnData = event.data as {
+              player?: Player;
+              respawn_room_id?: string;
+              old_lucidity?: number;
+              new_lucidity?: number;
+              message?: string;
+              [key: string]: unknown;
+            };
+
+            setIsDelirious(false);
+            setIsDeliriumRespawning(false);
+
+            if (respawnData.player) {
+              updates.player = respawnData.player as Player;
+              // Update lucidity status from player data
+              if (respawnData.player.stats?.lucidity !== undefined) {
+                const playerStats = respawnData.player.stats;
+                const currentLucidity = playerStats.lucidity;
+                // Update lucidity status
+                if (lucidityStatusRef.current) {
+                  setLucidityStatus({
+                    ...lucidityStatusRef.current,
+                    current: currentLucidity,
+                  });
+                }
+              }
+            }
+
+            if (respawnData.message) {
+              appendMessage(
+                sanitizeChatMessageForState({
+                  text: respawnData.message,
+                  timestamp: event.timestamp,
+                  messageType: 'system',
+                  channel: 'system',
+                  isHtml: false,
+                })
+              );
+            }
+
+            logger.info('GameClientV2Container', 'Player delirium respawned event received', {
+              respawn_room: respawnData.respawn_room_id,
+              new_lucidity: respawnData.new_lucidity,
+            });
             break;
           }
           case 'player_hp_updated':
@@ -1286,6 +1368,35 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
     }
   }, [gameState.player, gameState.room, isDead]);
 
+  // Check if player is delirious based on lucidity
+  useEffect(() => {
+    const player = gameState.player;
+    if (!player) return;
+
+    // Check lucidity from lucidityStatus (from lucidity_change events) or player stats
+    const currentLucidity = lucidityStatus?.current_lcd ?? player.stats?.lucidity ?? 100;
+    const roomId = gameState.room?.id;
+
+    // Player is delirious if lucidity <= -10
+    if (currentLucidity <= -10) {
+      if (!isDelirious) {
+        setIsDelirious(true);
+        setDeliriumLocation(roomId || 'Unknown Location');
+        logger.info('GameClientV2Container', 'Player detected as delirious', {
+          currentLucidity,
+          roomId,
+        });
+      }
+    } else if (isDelirious && currentLucidity > -10) {
+      // Player is no longer delirious
+      setIsDelirious(false);
+      logger.info('GameClientV2Container', 'Player detected as lucid', {
+        currentLucidity,
+        roomId,
+      });
+    }
+  }, [gameState.player, gameState.room, lucidityStatus, isDelirious]);
+
   const handleCommandSubmit = async (command: string) => {
     if (!command.trim() || !isConnected) return;
 
@@ -1376,6 +1487,95 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
         disconnect();
       }
     }, 500);
+  };
+
+  const handleDeliriumRespawn = async () => {
+    logger.info('GameClientV2Container', 'Delirium respawn requested');
+    setIsDeliriumRespawning(true);
+
+    try {
+      const response = await fetch('/api/players/respawn-delirium', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        logger.error('GameClientV2Container', 'Delirium respawn failed', {
+          status: response.status,
+          error: errorData,
+        });
+
+        const errorMessage: ChatMessage = sanitizeChatMessageForState({
+          text: `Delirium respawn failed: ${errorData.detail || 'Unknown error'}`,
+          timestamp: new Date().toISOString(),
+          messageType: 'error',
+          isHtml: false,
+        });
+
+        setGameState(prev => ({
+          ...prev,
+          messages: [...prev.messages, errorMessage],
+        }));
+
+        setIsDeliriumRespawning(false);
+        return;
+      }
+
+      const respawnData = await response.json();
+      logger.info('GameClientV2Container', 'Delirium respawn successful', {
+        room: respawnData.room,
+        player: respawnData.player,
+      });
+
+      setIsDeliriumRespawning(false);
+      setIsDelirious(false);
+
+      // Update game state with respawned player data
+      setGameState(prev => ({
+        ...prev,
+        player: {
+          ...prev.player,
+          ...respawnData.player,
+          stats: {
+            ...prev.player?.stats,
+            lucidity: respawnData.player.lucidity,
+            current_health: respawnData.player.hp,
+          },
+        } as Player,
+        room: respawnData.room as Room,
+      }));
+
+      const respawnMessage: ChatMessage = sanitizeChatMessageForState({
+        text: respawnData.message || 'You have been restored to lucidity and returned to the Sanitarium',
+        timestamp: new Date().toISOString(),
+        messageType: 'system',
+        isHtml: false,
+      });
+
+      setGameState(prev => ({
+        ...prev,
+        messages: [...prev.messages, respawnMessage],
+      }));
+    } catch (error) {
+      logger.error('GameClientV2Container', 'Error calling delirium respawn API', { error });
+      const errorMessage: ChatMessage = sanitizeChatMessageForState({
+        text: 'Failed to respawn from delirium due to network error. Please try again.',
+        timestamp: new Date().toISOString(),
+        messageType: 'error',
+        isHtml: false,
+      });
+
+      setGameState(prev => ({
+        ...prev,
+        messages: [...prev.messages, errorMessage],
+      }));
+
+      setIsDeliriumRespawning(false);
+    }
   };
 
   const handleRespawn = async () => {
@@ -1519,6 +1719,12 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
         deathLocation={deathLocation}
         onRespawn={handleRespawn}
         isRespawning={isRespawning}
+      />
+      <DeliriumInterstitial
+        isVisible={isDelirious}
+        deliriumLocation={deliriumLocation}
+        onRespawn={handleDeliriumRespawn}
+        isRespawning={isDeliriumRespawning}
       />
 
       <MainMenuModal

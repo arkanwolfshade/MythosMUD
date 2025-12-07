@@ -303,6 +303,25 @@ class LucidityService:
                     message="Consciousness steadies; the grounding ritual completes.",
                 )
 
+        # Delirium respawn trigger: When lucidity reaches -10, player should respawn in Sanitarium
+        # As documented in "Delirium and Sanitarium Intervention" - Dr. Armitage, 1930
+        # When a player's lucidity drops to -10, they enter a state of complete delirium
+        # requiring immediate intervention at the Arkham Sanitarium
+        if new_lcd <= -10 and previous_lcd > -10:
+            logger.warning(
+                "Delirium respawn threshold reached",
+                player_id=player_id,
+                previous_lcd=previous_lcd,
+                lcd=new_lcd,
+            )
+            # Send delirium event to trigger respawn screen on client
+            await send_rescue_update_event(
+                player_id=str(player_id),
+                status="delirium",
+                current_lcd=new_lcd,
+                message="Your mind fractures completely. The sanitarium calls you back from the edge of madness...",
+            )
+
         if new_lcd <= -100 and previous_lcd > -100 and self._catatonia_observer:
             logger.error(
                 "Sanitarium failover triggered",
