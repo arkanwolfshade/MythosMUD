@@ -147,17 +147,34 @@ def ensure_containers_table():
 
 
 @pytest.fixture
-def persistence(ensure_containers_table):
-    """Create an AsyncPersistenceLayer instance for testing."""
+async def persistence(ensure_containers_table):
+    """Create an AsyncPersistenceLayer instance for testing with proper cleanup."""
     from server.async_persistence import AsyncPersistenceLayer
+    from server.database import DatabaseManager
     from server.events.event_bus import EventBus
 
     event_bus = EventBus()
-    return AsyncPersistenceLayer(event_bus=event_bus)
+    persistence_instance = AsyncPersistenceLayer(event_bus=event_bus)
+
+    yield persistence_instance
+
+    # Cleanup: Close database connections before event loop closes
+    # This prevents "Event loop is closed" errors during teardown
+    try:
+        await persistence_instance.close()
+        # Also ensure database manager closes connections
+        db_manager = DatabaseManager.get_instance()
+        if db_manager and hasattr(db_manager, "engine"):
+            await db_manager.engine.dispose(close=True)
+    except Exception as e:
+        # Log but don't fail on cleanup errors
+        import logging
+
+        logging.getLogger(__name__).warning(f"Error during persistence cleanup: {e}")
 
 
 @pytest.fixture
-def container_service(persistence):
+async def container_service(persistence):
     """Create a ContainerService instance for testing."""
     return ContainerService(persistence=persistence)
 

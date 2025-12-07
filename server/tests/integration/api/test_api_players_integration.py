@@ -75,8 +75,9 @@ class TestPlayerAPIIntegration:
 
         # Configure sync mock behaviors (for backward compatibility)
         # Note: delete_player is actually async, so use AsyncMock
+        # CRITICAL: get_player_by_name must be AsyncMock because it's awaited in player_service
         mock_persistence.get_player = Mock(return_value=None)
-        mock_persistence.get_player_by_name = Mock(return_value=None)
+        mock_persistence.get_player_by_name = AsyncMock(return_value=None)
         mock_persistence.save_player = Mock(return_value=None)
         mock_persistence.delete_player = AsyncMock(return_value=True)
         mock_persistence.get_room = AsyncMock(return_value=None)
@@ -217,7 +218,10 @@ class TestPlayerAPIIntegration:
     ):
         """Test successful player retrieval by name via API."""
         # Arrange
+        # CRITICAL: Set both async_get_player_by_name and get_player_by_name
+        # The code calls get_player_by_name (without async_ prefix) which is now AsyncMock
         mock_persistence_for_api.async_get_player_by_name.return_value = sample_player_data
+        mock_persistence_for_api.get_player_by_name.return_value = sample_player_data
 
         # Act
         response = container_test_client_class.get("/api/players/name/TestPlayer")

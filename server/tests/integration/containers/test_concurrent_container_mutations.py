@@ -19,7 +19,7 @@ import pytest
 from server.models.player import Player
 
 # Removed: from server.persistence import get_persistence - now using AsyncPersistenceLayer directly
-from server.services.container_service import ContainerService, ContainerServiceError
+from server.services.container_service import ContainerService, ContainerServiceError, _filter_container_data
 from server.services.inventory_service import InventoryStack
 
 
@@ -143,20 +143,32 @@ def ensure_containers_table():
 
 
 @pytest.fixture
-def container_service(ensure_containers_table):
-    """Create a ContainerService instance for testing."""
-    from unittest.mock import Mock
+async def container_service(ensure_containers_table):
+    """Create a ContainerService instance for testing with proper cleanup."""
 
-    # Removed: reset_persistence() - no longer needed with AsyncPersistenceLayer
-    # Each test gets its own persistence instance
-
-    # Create persistence with mock event_bus to avoid NoneType errors
-    mock_event_bus = Mock()
-    mock_event_bus.publish = Mock()  # EventBus.publish() method
     from server.async_persistence import AsyncPersistenceLayer
+    from server.database import DatabaseManager
+    from server.events.event_bus import EventBus
 
-    persistence = AsyncPersistenceLayer(event_bus=mock_event_bus)
-    return ContainerService(persistence=persistence)
+    # Create persistence with real event_bus (not mock) for proper async operations
+    event_bus = EventBus()
+    persistence = AsyncPersistenceLayer(event_bus=event_bus)
+    service = ContainerService(persistence=persistence)
+
+    yield service
+
+    # Cleanup: Close database connections before event loop closes
+    # This prevents "Event loop is closed" errors during teardown
+    try:
+        await persistence.close()
+        # Also ensure database manager closes connections
+        db_manager = DatabaseManager.get_instance()
+        if db_manager and hasattr(db_manager, "engine"):
+            await db_manager.engine.dispose(close=True)
+    except Exception as e:
+        # Log but don't fail on cleanup errors
+        import logging
+        logging.getLogger(__name__).warning(f"Error during persistence cleanup: {e}")
 
 
 async def _create_test_player(persistence, player_id: UUID, name: str, room_id: str = "test_room_001") -> Player:
@@ -641,8 +653,9 @@ class TestConcurrentContainerMutations:
             mutation_token = open_result["mutation_token"]
 
         # Verify container has 2 items before attempting 3rd
-        container = container_service.persistence.get_container(container_id)
-        assert container is not None
+        container_data = await container_service.persistence.get_container(container_id)
+        assert container_data is not None
+        container = _filter_container_data(container_data)
         assert len(container["items"]) == 2, "Container should have 2 items before attempting 3rd"
 
         # Attempt to add 3rd item (should fail due to capacity limit)
@@ -656,6 +669,7 @@ class TestConcurrentContainerMutations:
             )
 
         # Verify final container state - still has only 2 items
-        container = container_service.persistence.get_container(container_id)
-        assert container is not None
+        container_data = await container_service.persistence.get_container(container_id)
+        assert container_data is not None
+        container = _filter_container_data(container_data)
         assert len(container["items"]) == 2, "Container should still have exactly 2 items after failed 3rd transfer"

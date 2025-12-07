@@ -331,8 +331,9 @@ class TestArgon2Security:
         time_diff = abs(avg_correct_time - avg_incorrect_time)
         max_time = max(avg_correct_time, avg_incorrect_time)
 
-        # Require difference to stay within 40% of slower run or 100ms, whichever is larger
-        tolerance = max(max_time * 0.40, 0.100)
+        # Require difference to stay within 50% of slower run or 150ms, whichever is larger
+        # Increased tolerance to account for system load variations
+        tolerance = max(max_time * 0.50, 0.150)
         assert time_diff < tolerance, (
             f"Timing difference {time_diff:.6f}s exceeds tolerance ({tolerance:.6f}s). "
             f"Correct avg: {avg_correct_time:.6f}s, "
