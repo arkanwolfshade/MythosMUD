@@ -357,7 +357,10 @@ class TestCommunicationCommands:
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
         mock_player.pose = None
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+        # Use AsyncMock for get_player_by_name since it's awaited
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+        # Use AsyncMock for save_player since it's awaited
+        mock_request.app.state.persistence.save_player = AsyncMock(return_value=None)
 
         # Mock room data
         mock_room = Mock(spec=Room)
@@ -763,7 +766,8 @@ class TestMovementAndExplorationCommands:
         """Test go command when player not found."""
         mock_request = Mock()
         mock_request.app.state.persistence = Mock()
-        mock_request.app.state.persistence.get_player_by_name.return_value = None
+        # Use AsyncMock for get_player_by_name since it's awaited
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=None)
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
         current_user = {"username": "testuser"}
@@ -786,7 +790,8 @@ class TestMovementAndExplorationCommands:
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
         mock_player.get_stats.return_value = {"position": "standing"}
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+        # Use AsyncMock for get_player_by_name since it's awaited
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
         # Mock room not found
         mock_request.app.state.persistence.get_room.return_value = None
@@ -813,7 +818,8 @@ class TestMovementAndExplorationCommands:
         mock_player.player_id = "test_player_id"
         mock_player.id = "test_player_id"
         mock_player.get_stats.return_value = {"position": "standing"}
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+        # Use AsyncMock for get_player_by_name since it's awaited
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
         # Mock room data with no north exit
         mock_room = Mock(spec=Room)
@@ -845,7 +851,8 @@ class TestMovementAndExplorationCommands:
         mock_player.player_id = "test_player_id"
         mock_player.id = "test_player_id"
         mock_player.get_stats.return_value = {"position": "standing"}
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+        # Use AsyncMock for get_player_by_name since it's awaited
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
         # Mock room data with invalid target
         mock_room = Mock(spec=Room)
@@ -885,7 +892,8 @@ class TestMovementAndExplorationCommands:
         mock_player.player_id = "test_player_id"
         mock_player.id = "test_player_id"
         mock_player.get_stats.return_value = {"position": "sitting"}
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+        # Use AsyncMock for get_player_by_name since it's awaited
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
         mock_room = Mock(spec=Room)
         mock_room.id = "test_room_001"
@@ -919,7 +927,8 @@ class TestMovementAndExplorationCommands:
         """Test look command when player not found."""
         mock_request = Mock()
         mock_request.app.state.persistence = Mock()
-        mock_request.app.state.persistence.get_player_by_name.return_value = None
+        # Use AsyncMock for get_player_by_name since it's awaited
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=None)
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
         current_user = {"username": "testuser"}
@@ -941,7 +950,8 @@ class TestMovementAndExplorationCommands:
         # Mock player data
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+        # Use AsyncMock for get_player_by_name since it's awaited
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
         # Mock room not found
         mock_request.app.state.persistence.get_room.return_value = None
@@ -963,7 +973,8 @@ class TestMovementAndExplorationCommands:
         # Mock player data
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+        # Use AsyncMock for get_player_by_name since it's awaited
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
         # Mock room data with no north exit
         mock_room = Mock(spec=Room)
@@ -989,7 +1000,8 @@ class TestMovementAndExplorationCommands:
         # Mock player data
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+        # Use AsyncMock for get_player_by_name since it's awaited
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
         # Mock room data with invalid target
         mock_room = Mock(spec=Room)
@@ -1015,7 +1027,8 @@ class TestMovementAndExplorationCommands:
         # Mock player data
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+        # Use AsyncMock for get_player_by_name since it's awaited
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
         # Mock room data with null exits
         mock_room = Mock(spec=Room)
