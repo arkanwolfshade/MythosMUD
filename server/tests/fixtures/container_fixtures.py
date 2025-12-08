@@ -189,6 +189,13 @@ def container_test_client():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
+    # Patch NATS connection to prevent timeout in tests
+    # AsyncMock is already imported at module level
+    from unittest.mock import patch
+
+    nats_patcher = patch("server.services.nats_service.NATSService.connect", new_callable=AsyncMock)
+    nats_patcher.start()
+
     try:
         # Initialize container synchronously using event loop
         container = ApplicationContainer()
@@ -476,6 +483,14 @@ def container_test_client():
             except Exception as e:
                 logger.debug("Error cancelling remaining tasks", error=str(e))
     finally:
+        # Stop NATS patcher
+        try:
+            nats_patcher.stop()
+        except Exception:  # noqa: BLE001
+            # Defensive: Ignore any errors when stopping patch in cleanup
+            # This ensures cleanup continues even if patch.stop() fails
+            pass
+
         # Cleanup: Close event loop and reset to None
         # AI: This prevents "Event loop is closed" errors in subsequent tests
         # by ensuring asyncio.get_event_loop() doesn't return a closed loop

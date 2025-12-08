@@ -180,6 +180,8 @@ class TestEventStormPrevention:
         player = Mock()
         player.player_id = uuid4()
         player.name = "TestPlayer"
+        player.current_room_id = "room_1"
+        player.get_stats = Mock(return_value={"position": "standing"})
 
         # Create real Room objects with EventBus
         old_room_data = {
@@ -193,7 +195,8 @@ class TestEventStormPrevention:
         }
         old_room = Room(old_room_data, shared_event_bus)
         # Manually add player to old room's internal state without triggering events
-        old_room._players.add(player.player_id)
+        # Convert UUID to string for set[str] compatibility
+        old_room._players.add(str(player.player_id))
 
         new_room_data = {
             "id": "room_2",
