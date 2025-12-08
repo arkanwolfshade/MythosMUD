@@ -745,6 +745,20 @@ async def game_tick_loop(app: FastAPI):
             await _process_combat_tick(app, tick_count)
             await _process_hp_decay_and_death(app, tick_count)
 
+            # Broadcast game tick to all connected players (normal path)
+            tick_data = {
+                "tick_number": tick_count,
+                "timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
+                "active_players": len(app.state.container.connection_manager.player_websockets),
+            }
+            logger.debug(
+                "Broadcasting game tick",
+                tick_count=tick_count,
+                player_count=len(app.state.container.connection_manager.player_websockets),
+            )
+            await broadcast_game_event("game_tick", tick_data)
+            logger.debug("Game tick broadcast completed", tick_count=tick_count)
+
             # Sleep for tick interval
             await asyncio.sleep(TICK_INTERVAL)
             tick_count += 1

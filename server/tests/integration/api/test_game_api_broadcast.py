@@ -52,6 +52,7 @@ class TestGameApiBroadcast:
             container = self.client.app.state.container
             if not hasattr(container, "connection_manager") or container.connection_manager is None:
                 from server.realtime.connection_manager import ConnectionManager
+
                 container.connection_manager = ConnectionManager()
             # Mock broadcast_global_event to avoid actual broadcasting
             container.connection_manager.broadcast_global_event = AsyncMock(

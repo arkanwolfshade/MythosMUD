@@ -526,6 +526,14 @@ class TestMonitoringAPI:
 
     def test_validate_room_integrity(self):
         """Test room integrity validation."""
+        # Ensure persistence is set up for this test
+        from unittest.mock import AsyncMock
+
+        if not hasattr(self.app.state, "persistence") or self.app.state.persistence is None:
+            mock_persistence = AsyncMock()
+            mock_persistence.list_rooms = AsyncMock(return_value=[])
+            self.app.state.persistence = mock_persistence
+
         response = self.client.get("/monitoring/integrity")
 
         assert response.status_code == 200

@@ -88,7 +88,9 @@ class HealthService:
 
             start_time = time.time()
             container = ApplicationContainer.get_instance()
-            room_service = container.room_service if container else None
+
+            # Container is guaranteed to be non-None (get_instance() always returns ApplicationContainer)
+            room_service = container.room_service
 
             # Simple health check - try to list rooms (async)
             rooms: list[dict[str, Any]] = []

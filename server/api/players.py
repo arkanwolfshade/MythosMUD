@@ -597,6 +597,13 @@ async def roll_character_stats(
             from ..async_persistence import get_async_persistence
 
             async_persistence = get_async_persistence()
+            if not async_persistence:
+                context = create_error_context()
+                if current_user:
+                    context.user_id = str(current_user.id)
+                context.metadata["operation"] = "roll_stats"
+                context.metadata["profession_id"] = profession_id
+                raise LoggedHTTPException(status_code=500, detail="Persistence layer not available", context=context)
             profession = await async_persistence.get_profession_by_id(profession_id)
 
             if not profession:
@@ -650,6 +657,9 @@ async def roll_character_stats(
         context.metadata["operation"] = "roll_stats"
         context.metadata["error"] = str(e)
         raise LoggedHTTPException(status_code=400, detail=f"Invalid profession: {str(e)}", context=context) from e
+    except LoggedHTTPException:
+        # Re-raise LoggedHTTPException without modification
+        raise
     except Exception as e:
         context = create_error_context()
         if current_user:

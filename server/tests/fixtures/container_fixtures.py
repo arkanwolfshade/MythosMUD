@@ -612,6 +612,7 @@ def container_test_client_class():
             mock_persistence.async_list_players = AsyncMock(return_value=[])
             mock_persistence.async_get_player = AsyncMock(return_value=None)
             mock_persistence.async_get_room = AsyncMock(return_value=None)
+            mock_persistence.async_list_rooms = AsyncMock(return_value=[])  # Add for room_service.list_rooms
             mock_persistence.list_players = AsyncMock(return_value=[])
             mock_persistence.get_player = Mock(return_value=None)
             mock_persistence.get_room = AsyncMock(return_value=None)
@@ -641,6 +642,7 @@ def container_test_client_class():
             mock_persistence.async_list_players = AsyncMock(return_value=[])
             mock_persistence.async_get_player = AsyncMock(return_value=None)
             mock_persistence.async_get_room = AsyncMock(return_value=None)
+            mock_persistence.async_list_rooms = AsyncMock(return_value=[])  # Add for room_service.list_rooms
             mock_persistence.list_players = AsyncMock(return_value=[])
             mock_persistence.get_player = Mock(return_value=None)
             mock_persistence.get_room = AsyncMock(return_value=None)

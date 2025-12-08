@@ -229,6 +229,9 @@ async def reset_circuit_breaker(current_user: User = Depends(verify_admin_access
 
         return {"status": "success", "message": "Circuit breaker reset to CLOSED state"}
 
+    except HTTPException:
+        # Re-raise HTTPExceptions (like 503 SERVICE_UNAVAILABLE) without wrapping
+        raise
     except Exception as e:
         logger.error("Error resetting circuit breaker", error=str(e))
         raise HTTPException(

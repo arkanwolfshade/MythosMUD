@@ -100,7 +100,7 @@ class TestServerMetrics:
 class TestDatabaseHealth:
     """Test database health checks."""
 
-    @patch("server.services.health_service.ApplicationContainer.get_instance")
+    @patch("server.container.ApplicationContainer.get_instance")
     def test_check_database_health_healthy(self, mock_get_instance):
         """Test database health check when healthy."""
         # Mock container and room service
@@ -116,7 +116,7 @@ class TestDatabaseHealth:
         assert health["connection_count"] == 0  # No actual query, just service check
         assert health["last_query_time_ms"] is not None
 
-    @patch("server.services.health_service.ApplicationContainer.get_instance")
+    @patch("server.container.ApplicationContainer.get_instance")
     def test_check_database_health_degraded(self, mock_get_instance):
         """Test database health check when degraded (slow response)."""
         import time
@@ -141,7 +141,7 @@ class TestDatabaseHealth:
         # Since the implementation doesn't actually query, we just verify it returns a status
         assert health["status"] in [HealthStatus.HEALTHY, HealthStatus.DEGRADED, HealthStatus.UNHEALTHY]
 
-    @patch("server.services.health_service.ApplicationContainer.get_instance")
+    @patch("server.container.ApplicationContainer.get_instance")
     def test_check_database_health_unhealthy(self, mock_get_instance):
         """Test database health check when unhealthy (no container)."""
         # Mock container as None to simulate unhealthy state
@@ -153,7 +153,7 @@ class TestDatabaseHealth:
         assert health["status"] == HealthStatus.UNHEALTHY
         assert health["connection_count"] == 0
 
-    @patch("server.services.health_service.ApplicationContainer.get_instance")
+    @patch("server.container.ApplicationContainer.get_instance")
     def test_check_database_health_exception(self, mock_get_instance):
         """Test database health check handles exceptions."""
         mock_get_instance.side_effect = Exception("Database unavailable")

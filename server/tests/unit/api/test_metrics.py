@@ -97,13 +97,14 @@ class TestGetMetrics:
 
     @pytest.mark.asyncio
     @patch("server.api.metrics.metrics_collector")
-    @patch("server.api.metrics.app")
-    @patch("server.api.metrics.nats_service", None)
+    @patch("server.services.nats_service.nats_service")
+    @patch("server.main.app")
     async def test_get_metrics_without_nats_handler(
-        self, mock_app, mock_metrics_collector, metrics_module, mock_admin_user
+        self, mock_app, mock_nats_service, mock_metrics_collector, metrics_module, mock_admin_user
     ):
         """Test metrics retrieval when NATS handler not available."""
         mock_metrics_collector.get_metrics.return_value = {"messages_sent": 100, "circuit_breaker": {}}
+        mock_nats_service.is_connected.return_value = True
 
         mock_app.state.container.nats_message_handler = None
 
@@ -119,12 +120,14 @@ class TestGetMetricsSummary:
 
     @pytest.mark.asyncio
     @patch("server.api.metrics.metrics_collector")
-    @patch("server.api.metrics.app")
+    @patch("server.services.nats_service.nats_service")
+    @patch("server.main.app")
     async def test_get_metrics_summary_without_nats_handler(
-        self, mock_app, mock_metrics_collector, metrics_module, mock_admin_user
+        self, mock_app, mock_nats_service, mock_metrics_collector, metrics_module, mock_admin_user
     ):
         """Test summary retrieval when NATS handler not available."""
         mock_metrics_collector.get_summary.return_value = {"health": "ok", "uptime": 3600}
+        mock_nats_service.is_connected.return_value = True
 
         mock_app.state.container.nats_message_handler = None
 
@@ -153,7 +156,7 @@ class TestGetDLQMessages:
     """Test DLQ message retrieval."""
 
     @pytest.mark.asyncio
-    @patch("server.api.metrics.app")
+    @patch("server.main.app")
     async def test_get_dlq_messages_when_handler_not_available(self, mock_app, metrics_module, mock_admin_user):
         """Test DLQ endpoint returns empty when handler not available."""
         mock_app.state.container.nats_message_handler = None
@@ -168,7 +171,7 @@ class TestResetCircuitBreaker:
     """Test circuit breaker reset endpoint."""
 
     @pytest.mark.asyncio
-    @patch("server.api.metrics.app")
+    @patch("server.main.app")
     async def test_reset_circuit_breaker_when_handler_not_available(self, mock_app, metrics_module, mock_admin_user):
         """Test circuit breaker reset fails when handler not available."""
         mock_app.state.container.nats_message_handler = None
@@ -177,4 +180,4 @@ class TestResetCircuitBreaker:
             await metrics_module.reset_circuit_breaker(current_user=mock_admin_user)
 
         assert exc_info.value.status_code == status.HTTP_503_SERVICE_UNAVAILABLE
-        assert "not available" in exc_info.value.detail
+        assert "not available" in exc_info.value.detail.lower()

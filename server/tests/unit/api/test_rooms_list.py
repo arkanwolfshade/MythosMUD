@@ -18,6 +18,23 @@ import pytest
 class TestRoomsListEndpoint:
     """Test cases for GET /api/rooms/list endpoint."""
 
+    @pytest.fixture(autouse=True)
+    def setup_get_async_session_mock(self, container_test_client_class):
+        """Auto-setup mock for get_async_session dependency."""
+        from sqlalchemy.ext.asyncio import AsyncSession
+
+        from server.database import get_async_session
+
+        client = container_test_client_class
+        mock_session = AsyncMock(spec=AsyncSession)
+
+        async def mock_get_async_session():
+            yield mock_session
+
+        client.app.dependency_overrides[get_async_session] = mock_get_async_session
+        yield
+        client.app.dependency_overrides.clear()
+
     @pytest.mark.slow
     async def test_list_rooms_requires_plane_and_zone(self, container_test_client_class):
         """Test that plane and zone parameters are required."""
@@ -37,17 +54,20 @@ class TestRoomsListEndpoint:
 
     async def test_list_rooms_with_plane_and_zone(self, container_test_client_class):
         """Test listing rooms with required plane and zone parameters."""
+        from unittest.mock import AsyncMock
+
         client = container_test_client_class
         # Ensure room_service is available in container
         if hasattr(client.app.state, "container") and client.app.state.container:
-            if not hasattr(client.app.state.container, "room_service") or client.app.state.container.room_service is None:
-                from unittest.mock import AsyncMock
-
+            if (
+                not hasattr(client.app.state.container, "room_service")
+                or client.app.state.container.room_service is None
+            ):
                 from server.game.room_service import RoomService
+
                 mock_persistence = AsyncMock()
+                mock_persistence.async_list_rooms = AsyncMock(return_value=[])
                 client.app.state.container.room_service = RoomService(mock_persistence)
-                # Mock list_rooms to return empty list for this test
-                client.app.state.container.room_service.list_rooms = AsyncMock(return_value=[])
 
         response = client.get("/api/rooms/list?plane=earth&zone=arkhamcity")
 
@@ -66,13 +86,19 @@ class TestRoomsListEndpoint:
         client = container_test_client_class
         # Ensure room_service is available in container
         if hasattr(client.app.state, "container") and client.app.state.container:
-            if not hasattr(client.app.state.container, "room_service") or client.app.state.container.room_service is None:
+            if (
+                not hasattr(client.app.state.container, "room_service")
+                or client.app.state.container.room_service is None
+            ):
                 from unittest.mock import AsyncMock
 
                 from server.game.room_service import RoomService
+
                 mock_persistence = AsyncMock()
+                mock_persistence.async_list_rooms = AsyncMock(
+                    return_value=[]
+                )  # Ensure persistence has async_list_rooms
                 client.app.state.container.room_service = RoomService(mock_persistence)
-                client.app.state.container.room_service.list_rooms = AsyncMock(return_value=[])
         response = client.get("/api/rooms/list?plane=earth&zone=arkhamcity&sub_zone=campus")
 
         assert response.status_code == 200
@@ -89,13 +115,19 @@ class TestRoomsListEndpoint:
         client = container_test_client_class
         # Ensure room_service is available in container
         if hasattr(client.app.state, "container") and client.app.state.container:
-            if not hasattr(client.app.state.container, "room_service") or client.app.state.container.room_service is None:
+            if (
+                not hasattr(client.app.state.container, "room_service")
+                or client.app.state.container.room_service is None
+            ):
                 from unittest.mock import AsyncMock
 
                 from server.game.room_service import RoomService
+
                 mock_persistence = AsyncMock()
+                mock_persistence.async_list_rooms = AsyncMock(
+                    return_value=[]
+                )  # Ensure persistence has async_list_rooms
                 client.app.state.container.room_service = RoomService(mock_persistence)
-                client.app.state.container.room_service.list_rooms = AsyncMock(return_value=[])
         response = client.get("/api/rooms/list?plane=earth&zone=arkhamcity")
 
         assert response.status_code == 200
@@ -109,13 +141,19 @@ class TestRoomsListEndpoint:
         client = container_test_client_class
         # Ensure room_service is available in container
         if hasattr(client.app.state, "container") and client.app.state.container:
-            if not hasattr(client.app.state.container, "room_service") or client.app.state.container.room_service is None:
+            if (
+                not hasattr(client.app.state.container, "room_service")
+                or client.app.state.container.room_service is None
+            ):
                 from unittest.mock import AsyncMock
 
                 from server.game.room_service import RoomService
+
                 mock_persistence = AsyncMock()
+                mock_persistence.async_list_rooms = AsyncMock(
+                    return_value=[]
+                )  # Ensure persistence has async_list_rooms
                 client.app.state.container.room_service = RoomService(mock_persistence)
-                client.app.state.container.room_service.list_rooms = AsyncMock(return_value=[])
         response = client.get("/api/rooms/list?plane=earth&zone=arkhamcity&include_exits=false")
 
         assert response.status_code == 200
@@ -130,13 +168,19 @@ class TestRoomsListEndpoint:
         client = container_test_client_class
         # Ensure room_service is available in container
         if hasattr(client.app.state, "container") and client.app.state.container:
-            if not hasattr(client.app.state.container, "room_service") or client.app.state.container.room_service is None:
+            if (
+                not hasattr(client.app.state.container, "room_service")
+                or client.app.state.container.room_service is None
+            ):
                 from unittest.mock import AsyncMock
 
                 from server.game.room_service import RoomService
+
                 mock_persistence = AsyncMock()
+                mock_persistence.async_list_rooms = AsyncMock(
+                    return_value=[]
+                )  # Ensure persistence has async_list_rooms
                 client.app.state.container.room_service = RoomService(mock_persistence)
-                client.app.state.container.room_service.list_rooms = AsyncMock(return_value=[])
         response = client.get("/api/rooms/list?plane=earth&zone=arkhamcity&filter_explored=true")
 
         assert response.status_code == 200

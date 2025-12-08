@@ -127,9 +127,11 @@ class TestProfessionRetrieval:
         from unittest.mock import AsyncMock, patch
 
         mock_async_persistence = AsyncMock()
-        mock_async_persistence.get_professions = AsyncMock(return_value=[sample_profession_data, sample_profession_data_2])
+        mock_async_persistence.get_professions = AsyncMock(
+            return_value=[sample_profession_data, sample_profession_data_2]
+        )
 
-        with patch("server.api.professions.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
             result = await get_all_professions(mock_request, mock_current_user)
 
             assert "professions" in result
@@ -149,7 +151,7 @@ class TestProfessionRetrieval:
         mock_async_persistence = AsyncMock()
         mock_async_persistence.get_professions = AsyncMock(return_value=[])
 
-        with patch("server.api.professions.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
             result = await get_all_professions(mock_request, mock_current_user)
 
             assert "professions" in result
@@ -165,7 +167,7 @@ class TestProfessionRetrieval:
         mock_async_persistence = AsyncMock()
         mock_async_persistence.get_professions = AsyncMock(side_effect=Exception("Database connection failed"))
 
-        with patch("server.api.professions.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await get_all_professions(mock_request, mock_current_user)
 
@@ -183,7 +185,7 @@ class TestProfessionRetrieval:
         mock_async_persistence = AsyncMock()
         mock_async_persistence.get_profession_by_id = AsyncMock(return_value=sample_profession_data)
 
-        with patch("server.api.professions.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
             result = await get_profession_by_id(0, mock_request, mock_current_user)
 
             assert result["id"] == 0
@@ -209,7 +211,7 @@ class TestProfessionRetrieval:
         mock_async_persistence = AsyncMock()
         mock_async_persistence.get_profession_by_id = AsyncMock(return_value=sample_profession_with_requirements)
 
-        with patch("server.api.professions.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
             result = await get_profession_by_id(2, mock_request, mock_current_user)
 
             assert result["id"] == 2
@@ -226,7 +228,7 @@ class TestProfessionRetrieval:
         mock_async_persistence = AsyncMock()
         mock_async_persistence.get_profession_by_id = AsyncMock(return_value=None)
 
-        with patch("server.api.professions.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await get_profession_by_id(999, mock_request, mock_current_user)
 
@@ -243,7 +245,7 @@ class TestProfessionRetrieval:
         mock_async_persistence = AsyncMock()
         mock_async_persistence.get_profession_by_id = AsyncMock(side_effect=Exception("Database connection failed"))
 
-        with patch("server.api.professions.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await get_profession_by_id(0, mock_request, mock_current_user)
 
@@ -259,7 +261,7 @@ class TestProfessionRetrieval:
         mock_async_persistence = AsyncMock()
         mock_async_persistence.get_profession_by_id = AsyncMock(return_value=None)
 
-        with patch("server.api.professions.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
             # FastAPI will validate the type before calling the function, so this will raise a validation error
             # But if it gets through, it will return None and raise 404
             with pytest.raises((LoggedHTTPException, ValueError)) as exc_info:
@@ -285,7 +287,7 @@ class TestProfessionDataValidation:
         mock_async_persistence = AsyncMock()
         mock_async_persistence.get_profession_by_id = AsyncMock(return_value=sample_profession_data)
 
-        with patch("server.api.professions.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
             result = await get_profession_by_id(0, mock_request, mock_current_user)
 
         # Check required fields are present
@@ -321,7 +323,7 @@ class TestProfessionDataValidation:
         mock_async_persistence = AsyncMock()
         mock_async_persistence.get_profession_by_id = AsyncMock(return_value=sample_profession_with_requirements)
 
-        with patch("server.api.professions.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
             result = await get_profession_by_id(2, mock_request, mock_current_user)
 
         assert result["stat_requirements"] == {"strength": 12, "intelligence": 14}
@@ -338,7 +340,7 @@ class TestProfessionDataValidation:
         mock_async_persistence = AsyncMock()
         mock_async_persistence.get_profession_by_id = AsyncMock(return_value=sample_profession_data)
 
-        with patch("server.api.professions.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
             result = await get_profession_by_id(0, mock_request, mock_current_user)
 
         assert result["mechanical_effects"] == {}
@@ -353,9 +355,11 @@ class TestProfessionDataValidation:
         from unittest.mock import AsyncMock, patch
 
         mock_async_persistence = AsyncMock()
-        mock_async_persistence.get_professions = AsyncMock(return_value=[sample_profession_data, sample_profession_data_2])
+        mock_async_persistence.get_professions = AsyncMock(
+            return_value=[sample_profession_data, sample_profession_data_2]
+        )
 
-        with patch("server.api.professions.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
             result = await get_all_professions(mock_request, mock_current_user)
 
         assert "professions" in result
@@ -386,7 +390,7 @@ class TestProfessionErrorHandling:
         # Setup mocks - get_async_persistence returns None
         from unittest.mock import patch
 
-        with patch("server.api.professions.get_async_persistence", return_value=None):
+        with patch("server.async_persistence.get_async_persistence", return_value=None):
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await get_all_professions(mock_request, mock_current_user)
 
@@ -399,7 +403,7 @@ class TestProfessionErrorHandling:
         # Setup mocks - get_async_persistence returns None
         from unittest.mock import patch
 
-        with patch("server.api.professions.get_async_persistence", return_value=None):
+        with patch("server.async_persistence.get_async_persistence", return_value=None):
             with pytest.raises(LoggedHTTPException) as exc_info:
                 await get_profession_by_id(0, mock_request, mock_current_user)
 
@@ -439,7 +443,7 @@ class TestStrongmanProfession:
         mock_async_persistence = AsyncMock()
         mock_async_persistence.get_profession_by_id = AsyncMock(return_value=sample_strongman_profession)
 
-        with patch("server.api.professions.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
             result = await get_profession_by_id(2, mock_request, mock_current_user)
 
         assert result["id"] == 2
@@ -452,7 +456,7 @@ class TestStrongmanProfession:
         assert result["stat_requirements"] == {"strength": 10}
         assert result["mechanical_effects"] == {}
         assert result["is_available"] is True
-        mock_persistence.get_profession_by_id.assert_called_once_with(2)
+        mock_async_persistence.get_profession_by_id.assert_called_once_with(2)
 
     @pytest.mark.asyncio
     async def test_strongman_profession_stat_requirements_format(
@@ -465,7 +469,7 @@ class TestStrongmanProfession:
         mock_async_persistence = AsyncMock()
         mock_async_persistence.get_profession_by_id = AsyncMock(return_value=sample_strongman_profession)
 
-        with patch("server.api.professions.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
             result = await get_profession_by_id(2, mock_request, mock_current_user)
 
         # Verify stat requirements are correctly parsed and formatted
@@ -497,7 +501,7 @@ class TestStrongmanProfession:
             ]
         )
 
-        with patch("server.api.professions.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
             result = await get_all_professions(mock_request, mock_current_user)
 
         assert "professions" in result
@@ -512,4 +516,4 @@ class TestStrongmanProfession:
 
         assert strongman_profession is not None
         assert strongman_profession["stat_requirements"] == {"strength": 10}
-        mock_persistence.get_all_professions.assert_called_once()
+        mock_async_persistence.get_professions.assert_called_once()

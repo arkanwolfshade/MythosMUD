@@ -874,13 +874,14 @@ class TestCharacterCreation:
 
         # Mock shutdown check and async_persistence
         from unittest.mock import patch as mock_patch
+
         mock_profession = Mock()
         mock_profession.id = 1
         mock_profession.name = "TestProfession"
 
         with (
-            mock_patch("server.api.players.is_shutdown_pending", return_value=False),
-            mock_patch("server.api.players.get_async_persistence") as mock_get_persistence,
+            mock_patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False),
+            mock_patch("server.async_persistence.get_async_persistence") as mock_get_persistence,
         ):
             mock_persistence = AsyncMock()
             mock_persistence.get_profession_by_id = AsyncMock(return_value=mock_profession)
@@ -919,8 +920,8 @@ class TestCharacterCreation:
         from unittest.mock import patch as mock_patch
 
         with (
-            mock_patch("server.api.players.is_shutdown_pending", return_value=False),
-            mock_patch("server.api.players.get_async_persistence") as mock_get_persistence,
+            mock_patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False),
+            mock_patch("server.async_persistence.get_async_persistence") as mock_get_persistence,
         ):
             # Mock persistence to return None for invalid profession
             mock_persistence = AsyncMock()
