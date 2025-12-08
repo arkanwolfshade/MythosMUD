@@ -549,21 +549,33 @@ class SafeRotatingFileHandler(RotatingFileHandler):
         threads try to create the same directory simultaneously.
         """
         # Ensure directory exists before checking rollover (thread-safe)
-        if self.baseFilename:
-            log_path = Path(self.baseFilename)
+        if not self.baseFilename:
+            return False
+
+        log_path = Path(self.baseFilename)
+        max_retries = 3
+
+        for attempt in range(max_retries):
+            # Ensure directory exists before each attempt (handles race conditions)
             _ensure_log_directory(log_path)
 
-        # Call parent method to perform actual rollover check
-        # Wrap in try-except to handle race conditions where directory might be deleted
-        # between the check above and when parent tries to open the file
-        try:
-            return super().shouldRollover(record)
-        except (FileNotFoundError, OSError):
-            # Directory might have been deleted, recreate it and try again
-            if self.baseFilename:
-                log_path = Path(self.baseFilename)
-                _ensure_log_directory(log_path)
-            return super().shouldRollover(record)
+            # Call parent method to perform actual rollover check
+            # Wrap in try-except to handle race conditions where directory might be deleted
+            # between the check above and when parent tries to open the file
+            try:
+                return super().shouldRollover(record)
+            except (FileNotFoundError, OSError):
+                # Directory might have been deleted, will retry on next iteration
+                if attempt == max_retries - 1:
+                    # Final attempt failed - return False (no rollover) rather than raising
+                    # This prevents logging errors from breaking tests in CI environments
+                    # where directories might be cleaned up during test execution
+                    return False
+                # Continue to next retry attempt
+                continue
+
+        # Should never reach here, but return False as safe fallback
+        return False
 
 
 class WarningOnlyFilter(logging.Filter):
