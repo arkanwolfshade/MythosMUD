@@ -217,6 +217,29 @@ class TestErrorLoggingSystemPerformance:
 
     def test_error_logging_memory_leak_prevention(self, perf_mixin):
         """Test that error logging doesn't cause memory leaks."""
+        # Import here to avoid circular imports
+        from server.config import get_config
+        from server.logging.enhanced_logging_config import _ensure_log_directory, _resolve_log_base
+        from server.logging.log_aggregator import get_log_aggregator
+        from server.services.chat_logger import chat_logger
+
+        # Ensure log directories exist before test runs to prevent FileNotFoundError
+        # This is necessary because the logging system may try to write to files
+        # even when loggers are mocked, if the underlying handlers are still active
+        try:
+            config = get_config()
+            log_base = config.logging.log_base
+            environment = config.logging.environment
+            resolved_log_base = _resolve_log_base(log_base)
+            env_log_dir = resolved_log_base / environment
+            # Ensure all log file directories exist
+            for log_file in ["errors.log", "warnings.log", "console.log", "server.log"]:
+                log_path = env_log_dir / log_file
+                _ensure_log_directory(log_path)
+        except Exception:  # pylint: disable=broad-except
+            # If directory creation fails, continue - the test will handle it
+            pass
+
         with (
             patch("server.utils.error_logging.get_logger") as mock_get_logger,
             patch("server.exceptions.get_logger") as mock_exceptions_logger,
@@ -247,19 +270,34 @@ class TestErrorLoggingSystemPerformance:
 
                 return contexts
 
-            # Run multiple iterations to test for memory leaks
-            initial_memory = perf_mixin.measure_memory_usage(lambda: None)[0]
+            try:
+                # Run multiple iterations to test for memory leaks
+                initial_memory = perf_mixin.measure_memory_usage(lambda: None)[0]
 
-            for _iteration in range(5):
-                contexts = create_and_log_errors(1000)
-                del contexts  # Explicitly delete to help garbage collection
-                gc.collect()  # Force garbage collection
+                for _iteration in range(5):
+                    contexts = create_and_log_errors(1000)
+                    del contexts  # Explicitly delete to help garbage collection
+                    gc.collect()  # Force garbage collection
 
-            final_memory = perf_mixin.measure_memory_usage(lambda: None)[0]
-            memory_growth = final_memory - initial_memory
+                final_memory = perf_mixin.measure_memory_usage(lambda: None)[0]
+                memory_growth = final_memory - initial_memory
 
-            # Memory growth should be minimal (less than 10MB)
-            assert memory_growth < 10, f"Potential memory leak detected: {memory_growth:.2f}MB growth"
+                # Memory growth should be minimal (less than 10MB)
+                assert memory_growth < 10, f"Potential memory leak detected: {memory_growth:.2f}MB growth"
+            finally:
+                # Cleanup: Shutdown background threads to prevent test timeout
+                try:
+                    log_aggregator = get_log_aggregator()
+                    if log_aggregator:
+                        log_aggregator.shutdown()
+                except Exception:  # pylint: disable=broad-except
+                    pass  # Ignore errors during cleanup
+
+                try:
+                    if chat_logger:
+                        chat_logger.shutdown()
+                except Exception:  # pylint: disable=broad-except
+                    pass  # Ignore errors during cleanup
 
     def test_error_logging_file_io_performance(self, perf_mixin):
         """Test error logging performance with actual file I/O."""

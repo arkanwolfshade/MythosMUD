@@ -147,7 +147,7 @@ class TestPlayerRespawnService:
         """Test that respawn always restores to 100 HP."""
         # Test with different negative HP values
         for hp in [-10, -5, -1, 0]:
-            stats = {"current_health": hp, "sanity": 50}
+            stats = {"current_health": hp, "lucidity": 50}
             mock_player.get_stats.return_value = stats.copy()
             mock_player.current_room_id = LIMBO_ROOM_ID
 
@@ -160,7 +160,7 @@ class TestPlayerRespawnService:
             updated_stats = mock_player.set_stats.call_args[0][0]
             assert updated_stats["current_health"] == 100
             # Verify other stats were preserved
-            assert updated_stats["sanity"] == 50
+            assert updated_stats["lucidity"] == 50
 
             mock_player.reset_mock()
 
@@ -285,3 +285,150 @@ class TestPlayerRespawnService:
 
         assert result is True
         mock_session.commit.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_respawn_player_from_delirium_success(self, player_respawn_service, mock_player):
+        """Test successful delirium respawn."""
+        from server.models.lucidity import PlayerLucidity
+
+        # Set player to delirious state (lucidity <= -10)
+        stats = {"current_health": 50, "position": "standing"}
+        mock_player.get_stats.return_value = stats
+        mock_player.current_room_id = "test-room"
+
+        # Create mock lucidity record
+        mock_lucidity = Mock(spec=PlayerLucidity)
+        mock_lucidity.current_lcd = -15
+        mock_lucidity.current_tier = "catatonic"
+
+        mock_session = AsyncMock()
+        mock_session.get.side_effect = lambda model, id: (
+            mock_player if model == Player else (mock_lucidity if model == PlayerLucidity else None)
+        )
+
+        result = await player_respawn_service.respawn_player_from_delirium(TEST_PLAYER_ID, mock_session)
+
+        assert result is True
+        # Verify lucidity was set to 10
+        assert mock_lucidity.current_lcd == 10
+        assert mock_lucidity.current_tier == "lucid"
+        # Verify player was moved to Sanitarium
+        assert mock_player.current_room_id == DEFAULT_RESPAWN_ROOM
+        # Verify posture is standing
+        mock_player.set_stats.assert_called_once()
+        updated_stats = mock_player.set_stats.call_args[0][0]
+        assert updated_stats["position"] == "standing"
+        mock_session.commit.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_respawn_player_from_delirium_player_not_found(self, player_respawn_service):
+        """Test delirium respawn when player doesn't exist."""
+        mock_session = AsyncMock()
+        mock_session.get.return_value = None
+
+        result = await player_respawn_service.respawn_player_from_delirium(TEST_PLAYER_ID, mock_session)
+
+        assert result is False
+
+    @pytest.mark.asyncio
+    async def test_respawn_player_from_delirium_lucidity_not_found(self, player_respawn_service, mock_player):
+        """Test delirium respawn when lucidity record doesn't exist."""
+
+        mock_session = AsyncMock()
+        # Return player but not lucidity record
+        mock_session.get.side_effect = lambda model, id: (mock_player if model == Player else None)
+
+        result = await player_respawn_service.respawn_player_from_delirium(TEST_PLAYER_ID, mock_session)
+
+        assert result is False
+
+    @pytest.mark.asyncio
+    async def test_respawn_player_from_delirium_with_event_bus(self, mock_player):
+        """Test delirium respawn with event bus integration."""
+        from server.models.lucidity import PlayerLucidity
+
+        # Create service with event bus
+        mock_event_bus = Mock()
+        service = PlayerRespawnService(event_bus=mock_event_bus)
+
+        stats = {"current_health": 50, "position": "standing"}
+        mock_player.get_stats.return_value = stats
+        mock_player.name = "TestPlayer"
+        mock_player.current_room_id = "test-room"
+
+        # Create mock lucidity record
+        mock_lucidity = Mock(spec=PlayerLucidity)
+        mock_lucidity.current_lcd = -15
+        mock_lucidity.current_tier = "catatonic"
+
+        mock_session = AsyncMock()
+        mock_session.get.side_effect = lambda model, id: (
+            mock_player if model == Player else (mock_lucidity if model == PlayerLucidity else None)
+        )
+
+        result = await service.respawn_player_from_delirium(TEST_PLAYER_ID, mock_session)
+
+        assert result is True
+        # Verify event was published
+        mock_event_bus.publish.assert_called_once()
+        event = mock_event_bus.publish.call_args[0][0]
+        assert event.event_type == "PlayerDeliriumRespawnedEvent"
+        assert event.player_id == TEST_PLAYER_ID
+        assert event.old_lucidity == -15
+        assert event.new_lucidity == 10
+        assert event.respawn_room_id == DEFAULT_RESPAWN_ROOM
+
+    @pytest.mark.asyncio
+    async def test_respawn_player_from_delirium_clears_combat_state(self, mock_player):
+        """Test that delirium respawn clears combat state."""
+        from server.models.lucidity import PlayerLucidity
+
+        # Create service with both event bus and player combat service
+        mock_event_bus = Mock()
+        mock_player_combat_service = AsyncMock()
+        service = PlayerRespawnService(event_bus=mock_event_bus, player_combat_service=mock_player_combat_service)
+
+        stats = {"current_health": 50, "position": "standing"}
+        mock_player.player_id = TEST_PLAYER_ID
+        mock_player.get_stats.return_value = stats
+        mock_player.name = "TestPlayer"
+        mock_player.current_room_id = "test-room"
+
+        # Create mock lucidity record
+        mock_lucidity = Mock(spec=PlayerLucidity)
+        mock_lucidity.current_lcd = -15
+        mock_lucidity.current_tier = "catatonic"
+
+        mock_session = AsyncMock()
+        mock_session.get.side_effect = lambda model, id: (
+            mock_player if model == Player else (mock_lucidity if model == PlayerLucidity else None)
+        )
+
+        result = await service.respawn_player_from_delirium(TEST_PLAYER_ID, mock_session)
+
+        assert result is True
+        # Verify combat state was cleared
+        mock_player_combat_service.clear_player_combat_state.assert_called_once()
+        call_args = mock_player_combat_service.clear_player_combat_state.call_args
+        assert call_args[0][0] == TEST_PLAYER_ID
+
+    @pytest.mark.asyncio
+    async def test_respawn_player_from_delirium_database_exception(self, player_respawn_service, mock_player):
+        """Test delirium respawn handles database exceptions gracefully."""
+        from server.models.lucidity import PlayerLucidity
+
+        mock_lucidity = Mock(spec=PlayerLucidity)
+        mock_lucidity.current_lcd = -15
+
+        mock_session = AsyncMock()
+        mock_session.get.side_effect = lambda model, id: (
+            mock_player if model == Player else (mock_lucidity if model == PlayerLucidity else None)
+        )
+        mock_session.commit.side_effect = Exception("Database error")
+
+        mock_player.get_stats.return_value = {"current_health": 50}
+
+        result = await player_respawn_service.respawn_player_from_delirium(TEST_PLAYER_ID, mock_session)
+
+        assert result is False
+        mock_session.rollback.assert_called_once()

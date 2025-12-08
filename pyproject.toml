@@ -175,7 +175,7 @@ asyncio_default_fixture_loop_scope = "function"
 [tool.mypy]
 python_version = "3.12"
 files = ["server"]
-plugins = ["sqlalchemy.ext.mypy.plugin"]
+plugins = ["sqlalchemy.ext.mypy.plugin", "pydantic.mypy"]
 mypy_path = "server/stubs"
 
 # Gradual strictness: Enable checks incrementally for established codebase

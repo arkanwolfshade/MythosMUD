@@ -10,7 +10,7 @@ import {
   MessagesCount,
   PlayerName,
   PlayerStats,
-  SanityStat,
+  LucidityStat,
   StatusPanel,
 } from '../StatusPanel';
 
@@ -22,7 +22,7 @@ describe('StatusPanel Compound Component', () => {
       stats: {
         current_health: 100,
         max_health: 100,
-        sanity: 80,
+        lucidity: 80,
         strength: 10,
         dexterity: 12,
         constitution: 14,
@@ -158,26 +158,26 @@ describe('StatusPanel Compound Component', () => {
     });
   });
 
-  describe('SanityStat', () => {
-    it('should display sanity when player has stats', () => {
+  describe('LucidityStat', () => {
+    it('should display lucidity when player has stats', () => {
       render(
         <StatusPanel {...defaultProps}>
-          <SanityStat />
+          <LucidityStat />
         </StatusPanel>
       );
 
-      expect(screen.getByText('Sanity:')).toBeInTheDocument();
+      expect(screen.getByText('Lucidity:')).toBeInTheDocument();
       expect(screen.getByText('80')).toBeInTheDocument();
     });
 
     it('should not display when player has no stats', () => {
       render(
         <StatusPanel {...defaultProps} player={null}>
-          <SanityStat />
+          <LucidityStat />
         </StatusPanel>
       );
 
-      expect(screen.queryByText('Sanity:')).not.toBeInTheDocument();
+      expect(screen.queryByText('Lucidity:')).not.toBeInTheDocument();
     });
   });
 
@@ -219,7 +219,7 @@ describe('StatusPanel Compound Component', () => {
         ...defaultProps.player,
         stats: {
           current_health: 100,
-          sanity: 80,
+          lucidity: 80,
           strength: 10,
           dexterity: 12,
         },
@@ -272,7 +272,7 @@ describe('StatusPanel Compound Component', () => {
         ...defaultProps.player,
         stats: {
           current_health: 100,
-          sanity: 80,
+          lucidity: 80,
           occult_knowledge: 5,
           fear: 2,
         },
@@ -326,7 +326,7 @@ describe('StatusPanel Compound Component', () => {
       );
 
       expect(screen.getByText('Health:')).toBeInTheDocument();
-      expect(screen.getByText('Sanity:')).toBeInTheDocument();
+      expect(screen.getByText('Lucidity:')).toBeInTheDocument();
       expect(screen.getByText('Core Attributes:')).toBeInTheDocument();
       expect(screen.getByText('Horror Stats:')).toBeInTheDocument();
     });
@@ -339,7 +339,7 @@ describe('StatusPanel Compound Component', () => {
       );
 
       expect(screen.queryByText('Health:')).not.toBeInTheDocument();
-      expect(screen.queryByText('Sanity:')).not.toBeInTheDocument();
+      expect(screen.queryByText('Lucidity:')).not.toBeInTheDocument();
     });
   });
 
@@ -354,7 +354,7 @@ describe('StatusPanel Compound Component', () => {
       expect(screen.getByText('Connection:')).toBeInTheDocument();
       expect(screen.getByText('Player:')).toBeInTheDocument();
       expect(screen.getByText('Health:')).toBeInTheDocument();
-      expect(screen.getByText('Sanity:')).toBeInTheDocument();
+      expect(screen.getByText('Lucidity:')).toBeInTheDocument();
       expect(screen.getByText('Core Attributes:')).toBeInTheDocument();
       expect(screen.getByText('Horror Stats:')).toBeInTheDocument();
       expect(screen.getByText('Messages:')).toBeInTheDocument();
@@ -378,7 +378,7 @@ describe('StatusPanel Compound Component', () => {
       expect(screen.getByText('Health:')).toBeInTheDocument();
       expect(screen.getByText('Messages:')).toBeInTheDocument();
       // Should not display components not included
-      expect(screen.queryByText('Sanity:')).not.toBeInTheDocument();
+      expect(screen.queryByText('Lucidity:')).not.toBeInTheDocument();
       expect(screen.queryByText('Commands:')).not.toBeInTheDocument();
     });
   });

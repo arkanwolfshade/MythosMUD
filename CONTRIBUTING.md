@@ -532,7 +532,7 @@ interface PlayerStatsProps {
 interface PlayerStats {
   strength: number;
   dexterity: number;
-  sanity: number;
+  lucidity: number;
 }
 
 /**
@@ -584,7 +584,7 @@ export const PlayerStats: React.FC<PlayerStatsProps> = ({
     <div className="player-stats">
       <div className="stat">Strength: {stats.strength}</div>
       <div className="stat">Dexterity: {stats.dexterity}</div>
-      <div className="stat">Sanity: {stats.sanity}</div>
+      <div className="stat">lucidity: {stats.lucidity}</div>
     </div>
   );
 };
@@ -886,11 +886,11 @@ See [server/tests/SETUP.md](server/tests/SETUP.md) for detailed testing guide.
 1. **Docstrings**: Write clear docstrings for all public functions and classes
 
    ```python
-   def calculate_sanity_loss(exposure_time: int, entity_type: str) -> int:
-       """Calculate sanity loss from exposure to eldritch entities.
+   def calculate_lucidity_loss(exposure_time: int, entity_type: str) -> int:
+       """Calculate lucidity loss from exposure to eldritch entities.
 
        Based on research from "Psychological Effects of Non-Euclidean Architecture"
-       by Dr. Armitage, 1928. Sanity loss increases exponentially with exposure time
+       by Dr. Armitage, 1928. lucidity loss increases exponentially with exposure time
        and varies by entity type.
 
        Args:
@@ -898,13 +898,13 @@ See [server/tests/SETUP.md](server/tests/SETUP.md) for detailed testing guide.
            entity_type: Type of eldritch entity ("shoggoth", "deep_one", etc.)
 
        Returns:
-           Amount of sanity points lost (0-100)
+           Amount of lucidity points lost (0-100)
 
        Raises:
            ValueError: If entity_type is not recognized
 
        Example:
-           >>> calculate_sanity_loss(10, "shoggoth")
+           >>> calculate_lucidity_loss(10, "shoggoth")
            25
        """
    ```
@@ -912,10 +912,10 @@ See [server/tests/SETUP.md](server/tests/SETUP.md) for detailed testing guide.
 2. **Inline Comments**: Explain complex logic and business rules
 
    ```python
-   # The Wilmarth Coefficient adjusts sanity loss based on entity proximity
+   # The Wilmarth Coefficient adjusts lucidity loss based on entity proximity
    # See: "The Whisperer in Darkness" correspondence, 1928
    proximity_factor = 1.0 / max(1, distance_to_entity)
-   sanity_loss = base_loss * proximity_factor * WILMARTH_COEFFICIENT
+   lucidity_loss = base_loss * proximity_factor * WILMARTH_COEFFICIENT
    ```
 
 3. **Type Hints**: Use type hints for better code clarity

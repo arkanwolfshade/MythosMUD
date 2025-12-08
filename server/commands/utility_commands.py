@@ -4,6 +4,7 @@ Utility commands for MythosMUD.
 This module contains handlers for utility commands like who, quit, and other system utilities.
 """
 
+import inspect
 from typing import Any
 
 from ..alias_storage import AliasStorage
@@ -128,7 +129,7 @@ async def handle_who_command(
         return {"result": "Player information is not available."}
 
     try:
-        players = persistence.list_players()
+        players = await persistence.list_players()
         if players:
             # Filter to only show online players (those with recent activity)
             from datetime import UTC, datetime, timedelta
@@ -321,10 +322,31 @@ async def handle_logout_command(
         lookup_name = player_name or get_username_from_user(current_user)
         player = get_cached_player(request, lookup_name)
 
+        # Ensure player is not a coroutine (defensive check)
+        if player is not None:
+            if inspect.iscoroutine(player):
+                logger.warning(
+                    "Cached player is a coroutine, clearing cache and fetching fresh", lookup_name=lookup_name
+                )
+                # Clear the corrupted cache entry
+                cache = (
+                    getattr(request.state, "_command_player_cache", None)
+                    if request and hasattr(request, "state")
+                    else None
+                )
+                if isinstance(cache, dict):
+                    cache.pop(lookup_name, None)
+                player = None
+
         if persistence and player is None:
             try:
-                player = persistence.get_player_by_name(lookup_name)
-                cache_player(request, lookup_name, player)
+                player = await persistence.get_player_by_name(lookup_name)
+                # Double-check we're not caching a coroutine
+                if inspect.iscoroutine(player):
+                    logger.error("get_player_by_name returned a coroutine instead of player", lookup_name=lookup_name)
+                    player = None
+                else:
+                    cache_player(request, lookup_name, player)
             except Exception as e:
                 logger.error("Error updating last active on logout", error=str(e), error_type=type(e).__name__)
                 player = None
@@ -352,7 +374,7 @@ async def handle_logout_command(
                 from datetime import UTC, datetime
 
                 player.last_active = datetime.now(UTC)
-                persistence.save_player(player)
+                await persistence.save_player(player)
                 logger.info("Player logout - updated last active")
 
         # Disconnect player from all connections
@@ -416,13 +438,13 @@ async def handle_status_command(
         return {"result": "Status information is not available."}
 
     try:
-        player = persistence.get_player_by_name(get_username_from_user(current_user))
+        player = await persistence.get_player_by_name(get_username_from_user(current_user))
         if not player:
             logger.warning("Status command failed - player not found")
             return {"result": "Player information not found."}
 
         # Get current room information
-        room = persistence.get_room(player.current_room_id) if player.current_room_id else None
+        room = persistence.get_room_by_id(player.current_room_id) if player.current_room_id else None
         room_name = room.name if room else "Unknown location"
 
         # Get player stats as dictionary
@@ -442,7 +464,7 @@ async def handle_status_command(
         # Fetch profession details from persistence
         if profession_id is not None:
             try:
-                profession = persistence.get_profession_by_id(profession_id)
+                profession = await persistence.get_profession_by_id(profession_id)
                 if profession:
                     profession_name = profession.name
                     profession_description = profession.description
@@ -472,7 +494,7 @@ async def handle_status_command(
             f"Location: {room_name}",
             f"Position: {position_label}",
             f"Health: {stats.get('current_health', 100)}/{stats.get('max_health', 100)}",
-            f"Sanity: {stats.get('sanity', 100)}/{stats.get('max_sanity', 100)}",
+            f"lucidity: {stats.get('lucidity', 100)}/{stats.get('max_lucidity', 100)}",
             f"XP: {player.experience_points}",
             f"In Combat: {'Yes' if in_combat else 'No'}",
         ]

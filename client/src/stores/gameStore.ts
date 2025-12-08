@@ -8,8 +8,8 @@ export interface Player {
   stats: {
     current_health: number;
     max_health?: number;
-    sanity: number;
-    max_sanity?: number;
+    lucidity: number;
+    max_lucidity?: number;
     strength?: number;
     dexterity?: number;
     constitution?: number;

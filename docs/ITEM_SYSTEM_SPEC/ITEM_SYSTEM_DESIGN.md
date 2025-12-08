@@ -23,7 +23,7 @@ granting modern extensibility akin to Evennia-style component stacks.
 
 - **Prototype & Instance Split**: Immutable prototypes define canonical attributes; lightweight instances carry mutable runtime
   state (condition, attunement, binding).
-- **Component-Based Augmentation**: Behaviors (e.g., sanity effects, light emission) attach via reusable components inspired by
+- **Component-Based Augmentation**: Behaviors (e.g., lucidity effects, light emission) attach via reusable components inspired by
   Diku/ROM affects and Evennia mixins.
 - **Bitvector Flag Encoding**: Performance-oriented representation of wear locations, usage permissions, and effect toggles.
 - **Data-Driven Extensibility**: Prototypes stored in structured data (JSON or YAML) with schema validation before promotion to
@@ -43,7 +43,7 @@ granting modern extensibility akin to Evennia-style component stacks.
 
 - **Consumables**: Potions, scrolls, ritual reagents; typically single-use with scripted effects.
 - **Equipment**: Weapons, armor, talismans; support wear locations, durability, attribute modifiers.
-- **Artifacts & Relics**: Unique lore-bound items with sanity effects or progression gating.
+- **Artifacts & Relics**: Unique lore-bound items with lucidity effects or progression gating.
 - **Containers**: Bags, chests, cosmic reliquaries; may modify inventory capacity or apply dimensional effects.
 - **Quest Items**: Progression-critical objects, often soulbound and tracked via journal metadata.
 - **Environmental Objects**: Placeable or interactive props (torches, glyphs, wards) with scripted world hooks.
@@ -62,11 +62,11 @@ granting modern extensibility akin to Evennia-style component stacks.
 | `base_value`         | Economic valuation                                                                           | int            | Subject to faction modifiers      |
 | `durability`         | Max structural integrity                                                                     | int            | `None` when not applicable        |
 | `current_condition`  | Runtime condition (instances only)                                                           | int            | 0..durability                     |
-| `stat_modifiers`     | Mapping of stat → delta                                                                      | dict[str, int] | Includes sanity modifiers         |
+| `stat_modifiers`     | Mapping of stat → delta                                                                      | dict[str, int] | Includes lucidity modifiers         |
 | `effect_components`  | List of component IDs                                                                        | list[str]      | e.g., `component.fear_aura`       |
 | `flags`              | Bitvector encoding for properties                                                            | int            | Defined in central registry       |
 | `wear_locations`     | Bitvector or list referencing allowed slots                                                  | int            | Mask for compatibility checks     |
-| `usage_restrictions` | Structured rules (class, faction, sanity thresholds)                                         | dict           | Evaluated server-side             |
+| `usage_restrictions` | Structured rules (class, faction, lucidity thresholds)                                         | dict           | Evaluated server-side             |
 | `stacking_rules`     | Max stack size, merge policy                                                                 | dict           | Instances track `quantity`        |
 | `binding`            | Binding type: `unbind`, `pickup`, `equip`, `quest`                                           | str            | Instances store bound player      |
 | `lifecycle_hooks`    | Script references executed on events                                                         | dict[str, str] | e.g., `on_use`, `on_tick`         |
@@ -77,7 +77,7 @@ granting modern extensibility akin to Evennia-style component stacks.
 | Component                 | Purpose                            | Notes                                       |
 | ------------------------- | ---------------------------------- | ------------------------------------------- |
 | `DurabilityComponent`     | Applies wear and break mechanics   | Integrates with crafting repairs            |
-| `SanityComponent`         | Adjusts sanity on use/equip        | Pulls tables from Arkham Psychiatry ledger  |
+| `LucidityComponent`       | Adjusts lucidity on use/equip        | Pulls tables from Arkham Psychiatry ledger  |
 | `LightEmitterComponent`   | Provides illumination radius       | Coordinates with room lighting system       |
 | `AuraComponent`           | Broadcasts passive effects         | Reuses monitoring hooks for anomalies       |
 | `ChargeComponent`         | Tracks limited charges             | Works with `Rechargeable` trait             |
@@ -229,7 +229,7 @@ ItemComponentState
 - **Unit Tests**: Prototype parsing, component behaviors, binding rules (`pytest`).
 - **Property Tests**: Ensure flag masks remain invertible and collision-free.
 - **Integration Tests**: Inventory command coverage (`server/tests/unit/commands/test_inventory_commands.py` extensions).
-- **Playwright Scenarios**: Multi-client equipment flows, sanity effect propagation.
+- **Playwright Scenarios**: Multi-client equipment flows, lucidity effect propagation.
 - **Load Tests**: Monitor mutation guard pressure during mass loot events.
 
 ## Implementation Phases
@@ -244,7 +244,7 @@ ItemComponentState
 - Should prototype sources remain JSON/YAML or migrate to database-backed content authoring?
 - What governance process promotes prototype drafts to canonical circulation?
 - Do we need real-time prototype diff broadcast to connected clients for GM tooling?
-- How do we sequence sanity effects with broader mental health systems still in design?
+- How do we sequence lucidity effects with broader mental health systems still in design?
 
 ## Next Steps
 

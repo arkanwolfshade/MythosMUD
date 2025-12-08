@@ -4,6 +4,10 @@ Container service for unified container system operations.
 As documented in the restricted archives of Miskatonic University, container
 service operations require careful orchestration to ensure proper handling
 of investigator artifacts, secure storage, and auditable interactions.
+
+ASYNC MIGRATION (Phase 2):
+All service methods made async to prevent event loop blocking.
+Uses asyncio.to_thread() for synchronous persistence calls.
 """
 
 from __future__ import annotations
@@ -11,7 +15,7 @@ from __future__ import annotations
 import uuid
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
-from typing import Any, cast
+from typing import Any
 from uuid import UUID
 
 from ..exceptions import MythosMUDError, ValidationError
@@ -50,13 +54,23 @@ def _filter_container_data(container_data: dict[str, Any]) -> dict[str, Any]:
     The database returns created_at and updated_at fields, but the ContainerComponent
     model has extra="forbid", so these fields must be removed before validation.
 
+    Also converts items_json to items and metadata_json to metadata to match
+    the ContainerComponent model field names.
+
     Args:
         container_data: Raw container data from database
 
     Returns:
-        Filtered container data without database-specific fields
+        Filtered container data without database-specific fields, with field names converted
     """
     filtered = {k: v for k, v in container_data.items() if k not in ("created_at", "updated_at")}
+
+    # Convert items_json to items and metadata_json to metadata for ContainerComponent model
+    if "items_json" in filtered:
+        filtered["items"] = filtered.pop("items_json")
+    if "metadata_json" in filtered:
+        filtered["metadata"] = filtered.pop("metadata_json")
+
     return filtered
 
 
@@ -96,7 +110,7 @@ class ContainerService:
     # Track open containers: {container_id: {player_id: mutation_token}}
     _open_containers: dict[UUID, dict[UUID, str]] = field(default_factory=dict, init=False)
 
-    def open_container(self, container_id: UUID, player_id: UUID) -> dict[str, Any]:
+    async def open_container(self, container_id: UUID, player_id: UUID) -> dict[str, Any]:
         """
         Open a container for interaction.
 
@@ -120,7 +134,7 @@ class ContainerService:
         logger.info("Opening container", container_id=str(container_id), player_id=str(player_id))
 
         # Check if container exists
-        container_data = self.persistence.get_container(container_id)
+        container_data = await self.persistence.get_container(container_id)
         if not container_data:
             log_and_raise(
                 ContainerNotFoundError,
@@ -134,7 +148,8 @@ class ContainerService:
         container = ContainerComponent.model_validate(_filter_container_data(container_data))
 
         # Get player for access control checks
-        player = self.persistence.get_player(player_id)
+        # ASYNC MIGRATION: Use asyncio.to_thread() to prevent event loop blocking
+        player = await self.persistence.get_player_by_id(player_id)
         if not player:
             log_and_raise(
                 ValidationError,
@@ -221,26 +236,8 @@ class ContainerService:
             "mutation_token": mutation_token,
         }
 
-    def close_container(self, container_id: UUID, player_id: UUID, mutation_token: str) -> None:
-        """
-        Close a container and release mutation guard.
-
-        Args:
-            container_id: Container UUID to close
-            player_id: Player UUID closing the container
-            mutation_token: Mutation token from open operation
-
-        Raises:
-            ContainerServiceError: If container is not open or token is invalid
-        """
-        context = create_error_context()
-        context.metadata["operation"] = "close_container"
-        context.metadata["container_id"] = str(container_id)
-        context.metadata["player_id"] = str(player_id)
-
-        logger.info("Closing container", container_id=str(container_id), player_id=str(player_id))
-
-        # Check if container is open
+    def _validate_container_close(self, container_id: UUID, player_id: UUID, mutation_token: str, context: Any) -> None:
+        """Validate that container is open and mutation token is valid."""
         if container_id not in self._open_containers:
             log_and_raise(
                 ContainerServiceError,
@@ -259,7 +256,6 @@ class ContainerService:
                 user_friendly="Container is not open",
             )
 
-        # Verify mutation token
         stored_token = self._open_containers[container_id][player_id]
         if stored_token != mutation_token:
             log_and_raise(
@@ -270,26 +266,20 @@ class ContainerService:
                 user_friendly="Invalid mutation token",
             )
 
-        # Remove from open containers
+    def _remove_container_from_open_list(self, container_id: UUID, player_id: UUID) -> None:
+        """Remove container from open containers dictionary."""
         del self._open_containers[container_id][player_id]
         if not self._open_containers[container_id]:
             del self._open_containers[container_id]
 
-        logger.info("Container closed", container_id=str(container_id), player_id=str(player_id))
-
-        # Audit log container close
+    async def _audit_log_container_close(self, container_id: UUID, player_id: UUID) -> None:
+        """Log container close event to audit log."""
         try:
-            # Get container and player for audit log
-            container_data = self.persistence.get_container(container_id)
-            player = self.persistence.get_player(player_id)
+            container_data = await self.persistence.get_container(container_id)
+            player = await self.persistence.get_player_by_id(player_id)
             if container_data and player:
                 container = ContainerComponent.model_validate(_filter_container_data(container_data))
-                # Handle source_type - it may be an enum or a string
-                source_type_value = (
-                    container.source_type.value
-                    if hasattr(container.source_type, "value")
-                    else str(container.source_type)
-                )
+                source_type_value = _get_enum_value(container.source_type)
                 audit_logger.log_container_interaction(
                     player_id=str(player_id),
                     player_name=player.name,
@@ -301,6 +291,36 @@ class ContainerService:
                 )
         except Exception as e:
             logger.warning("Failed to log container close to audit log", error=str(e))
+
+    async def close_container(self, container_id: UUID, player_id: UUID, mutation_token: str) -> None:
+        """
+        Close a container and release mutation guard.
+
+        Args:
+            container_id: Container UUID to close
+            player_id: Player UUID closing the container
+            mutation_token: Mutation token from open operation
+
+        Raises:
+            ContainerServiceError: If container is not open or token is invalid
+        """
+        context = create_error_context()
+        context.metadata["operation"] = "close_container"
+        context.metadata["container_id"] = str(container_id)
+        context.metadata["player_id"] = str(player_id)
+
+        logger.info("Closing container", container_id=str(container_id), player_id=str(player_id))
+
+        # Validate container is open and token is valid
+        self._validate_container_close(container_id, player_id, mutation_token, context)
+
+        # Remove from open containers
+        self._remove_container_from_open_list(container_id, player_id)
+
+        logger.info("Container closed", container_id=str(container_id), player_id=str(player_id))
+
+        # Audit log container close
+        await self._audit_log_container_close(container_id, player_id)
 
     def get_container_token(self, container_id: UUID, player_id: UUID) -> str | None:
         """
@@ -317,7 +337,7 @@ class ContainerService:
             return self._open_containers[container_id].get(player_id)
         return None
 
-    def transfer_to_container(
+    async def transfer_to_container(
         self,
         container_id: UUID,
         player_id: UUID,
@@ -365,7 +385,7 @@ class ContainerService:
         transfer_mutation_token = mutation_token
 
         # Get container
-        container_data = self.persistence.get_container(container_id)
+        container_data = await self.persistence.get_container(container_id)
         if not container_data:
             log_and_raise(
                 ContainerNotFoundError,
@@ -427,7 +447,7 @@ class ContainerService:
             pass
 
         # Get player inventory
-        player = self.persistence.get_player(player_id)
+        player = await self.persistence.get_player_by_id(player_id)
         if not player:
             log_and_raise(
                 ValidationError,
@@ -437,8 +457,8 @@ class ContainerService:
                 user_friendly="Player not found",
             )
 
-        # Use mutation guard with the new transfer-specific token
-        with self.mutation_guard.acquire(str(player_id), transfer_mutation_token) as decision:
+        # Use mutation guard with the new transfer-specific token (async version)
+        async with self.mutation_guard.acquire_async(str(player_id), transfer_mutation_token) as decision:
             if not decision.should_apply:
                 logger.warning(
                     "Transfer suppressed by mutation guard",
@@ -474,7 +494,7 @@ class ContainerService:
             container.items = new_container_items
 
             # Persist container
-            self.persistence.update_container(
+            await self.persistence.update_container(
                 container_id,
                 items_json=new_container_items,
             )
@@ -515,7 +535,139 @@ class ContainerService:
                 "player_inventory": player.inventory if hasattr(player, "inventory") else [],
             }
 
-    def transfer_from_container(
+    def _prepare_transfer_item(self, item: InventoryStack, quantity: int | None, context: Any) -> InventoryStack:
+        """Prepare item for transfer, handling quantity and slot_type."""
+        # TypedDict.copy() returns a dict, which is compatible with InventoryStack at runtime
+        # Create a mutable copy to allow modifications
+        transfer_item: dict[str, Any] = dict(item.copy())
+        if quantity and quantity < transfer_item.get("quantity", 1):
+            transfer_item["quantity"] = quantity
+
+        # Ensure slot_type is present (required in InventoryStack but defensive check for data integrity)
+        # Note: slot_type is required in InventoryStack TypedDict, but we check defensively
+        # in case data comes from external sources that might not have validated it
+        transfer_item.setdefault("slot_type", transfer_item.get("metadata", {}).get("slot_type", "backpack"))
+
+        return transfer_item  # type: ignore[return-value]  # dict[str, Any] is compatible with InventoryStack TypedDict
+
+    def _remove_item_from_container(
+        self, container: ContainerComponent, transfer_item_dict: InventoryStack, container_id: UUID, player_id: UUID
+    ) -> list[InventoryStack]:
+        """Remove item from container items list."""
+        logger.debug(
+            "Container items before transfer_from_container",
+            container_id=str(container_id),
+            player_id=str(player_id),
+            items_length=len(container.items),
+            items_types=[type(stack).__name__ for stack in container.items[:5]],
+            items_sample=[str(stack)[:100] for stack in container.items[:3]],
+        )
+
+        new_container_items = []
+        item_found = False
+
+        for stack in container.items:
+            if stack.get("item_id") == transfer_item_dict.get("item_id") and stack.get(
+                "item_instance_id"
+            ) == transfer_item_dict.get("item_instance_id"):
+                item_found = True
+                remaining_quantity = stack.get("quantity", 1) - transfer_item_dict.get("quantity", 1)
+                if remaining_quantity > 0:
+                    new_stack = stack.copy()
+                    new_stack["quantity"] = remaining_quantity
+                    new_container_items.append(new_stack)
+            else:
+                new_container_items.append(stack)
+
+        if not item_found:
+            context = create_error_context()
+            log_and_raise(
+                ContainerServiceError,
+                f"Item not found in container: {transfer_item_dict.get('item_id')}",
+                context=context,
+                details={"item_id": transfer_item_dict.get("item_id"), "container_id": str(container_id)},
+                user_friendly="Item not found in container",
+            )
+
+        return new_container_items
+
+    def _add_item_to_player_inventory(
+        self, player: Any, transfer_item_dict: InventoryStack, container_id: UUID, player_id: UUID, context: Any
+    ) -> list[InventoryStack]:
+        """Add item to player inventory using InventoryService."""
+        player_inventory = getattr(player, "inventory", [])
+
+        try:
+            inventory_length = len(player_inventory)
+        except TypeError:
+            inventory_length = None
+
+        logger.debug(
+            "Player inventory before add_stack",
+            container_id=str(container_id),
+            player_id=str(player_id),
+            inventory_length=inventory_length,
+            inventory_types=[type(stack).__name__ for stack in list(player_inventory)[:5]]
+            if isinstance(player_inventory, list | tuple)
+            else type(player_inventory).__name__,
+        )
+
+        try:
+            return self.inventory_service.add_stack(player_inventory, transfer_item_dict)
+        except InventoryCapacityError as e:
+            log_and_raise(
+                ContainerCapacityError,
+                f"Player inventory capacity exceeded: {e}",
+                context=context,
+                details={"player_id": str(player_id), "error": str(e)},
+                user_friendly="Your inventory is full",
+            )
+
+    async def _persist_and_audit_transfer_from_container(
+        self,
+        container: ContainerComponent,
+        container_id: UUID,
+        player: Any,
+        item: InventoryStack,
+        transfer_item_dict: InventoryStack,
+        new_container_items: list[InventoryStack],
+        new_player_inventory: list[InventoryStack],
+    ) -> dict[str, Any]:
+        """Persist container changes and log audit trail."""
+        container.items = new_container_items
+
+        await self.persistence.update_container(container_id, items_json=new_container_items)
+
+        logger.info(
+            "Item transferred from container",
+            container_id=str(container_id),
+            player_id=str(player.id),
+            item_id=item.get("item_id"),
+            quantity=transfer_item_dict.get("quantity"),
+        )
+
+        try:
+            audit_logger.log_container_interaction(
+                player_id=str(player.id),
+                player_name=player.name,
+                container_id=str(container_id),
+                event_type="container_transfer",
+                source_type=_get_enum_value(container.source_type),
+                room_id=container.room_id,
+                direction="from_container",
+                item_id=item.get("item_id"),
+                item_name=item.get("item_name"),
+                success=True,
+            )
+        except Exception as e:
+            logger.warning("Failed to log container transfer to audit log", error=str(e))
+
+        return {
+            "container": container.model_dump(),
+            "player_inventory": new_player_inventory,
+        }
+
+    async def transfer_from_container(
         self,
         container_id: UUID,
         player_id: UUID,
@@ -540,7 +692,6 @@ class ContainerService:
             ContainerServiceError: If container is not open or token is invalid
             ValidationError: If player not found
         """
-        # Ensure item is a dictionary before using it
         if not isinstance(item, dict):
             log_and_raise(
                 ContainerServiceError,
@@ -564,16 +715,9 @@ class ContainerService:
             quantity=quantity,
         )
 
-        # Verify container is open (using the open token)
         self._verify_container_open(container_id, player_id, mutation_token)
 
-        # Use the original mutation token for the mutation guard
-        # This ensures that duplicate operations with the same token are prevented
-        # The mutation guard will detect if the same token is used multiple times
-        transfer_mutation_token = mutation_token
-
-        # Get container
-        container_data = self.persistence.get_container(container_id)
+        container_data = await self.persistence.get_container(container_id)
         if not container_data:
             log_and_raise(
                 ContainerNotFoundError,
@@ -585,8 +729,7 @@ class ContainerService:
 
         container = ContainerComponent.model_validate(_filter_container_data(container_data))
 
-        # Get player inventory
-        player = self.persistence.get_player(player_id)
+        player = await self.persistence.get_player_by_id(player_id)
         if not player:
             log_and_raise(
                 ValidationError,
@@ -596,8 +739,7 @@ class ContainerService:
                 user_friendly="Player not found",
             )
 
-        # Use mutation guard with the new transfer-specific token
-        with self.mutation_guard.acquire(str(player_id), transfer_mutation_token) as decision:
+        async with self.mutation_guard.acquire_async(str(player_id), mutation_token) as decision:
             if not decision.should_apply:
                 logger.warning(
                     "Transfer suppressed by mutation guard",
@@ -608,150 +750,17 @@ class ContainerService:
                 raise ContainerServiceError("Transfer suppressed by mutation guard")
 
             try:
-                # Prepare item for transfer
-                transfer_item = item.copy()
-                # Ensure transfer_item is still a dictionary after copy
-                if not isinstance(transfer_item, dict):
-                    log_and_raise(
-                        ContainerServiceError,
-                        f"Item copy is not a dictionary, got {type(transfer_item).__name__}",
-                        context=context,
-                        details={
-                            "item_type": type(item).__name__,
-                            "transfer_item_type": type(transfer_item).__name__,
-                            "item": str(item),
-                        },
-                        user_friendly="Invalid item data format",
-                    )
-                # After the check above, transfer_item is guaranteed to be a dict
-                # Mypy needs explicit type narrowing via cast
-                transfer_item_dict = cast(dict[str, Any], transfer_item)
-                if quantity and quantity < transfer_item_dict.get("quantity", 1):
-                    transfer_item_dict["quantity"] = quantity
-                # Preserve original slot_type if present (for equippable items)
-                # If the item was equipped before being put in the container, restore that slot_type
-                # Check both direct slot_type field and metadata for backward compatibility
-                if "slot_type" not in transfer_item_dict:
-                    item_metadata = transfer_item_dict.get("metadata", {})
-                    if isinstance(item_metadata, dict) and "slot_type" in item_metadata:
-                        transfer_item_dict["slot_type"] = item_metadata["slot_type"]
-                    else:
-                        # Default to "backpack" for general inventory if no slot_type found
-                        transfer_item_dict["slot_type"] = "backpack"
-
-                # Remove item from container
-                # Find and remove item from container.items
-                new_container_items = []
-                item_found = False
-
-                # Instrumentation: log container.items structure before mutation
-                logger.debug(
-                    "Container items before transfer_from_container",
-                    container_id=str(container_id),
-                    player_id=str(player_id),
-                    items_length=len(container.items),
-                    items_types=[type(stack).__name__ for stack in container.items[:5]],
-                    items_sample=[str(stack)[:100] for stack in container.items[:3]],
+                transfer_item_dict = self._prepare_transfer_item(item, quantity, context)
+                new_container_items = self._remove_item_from_container(
+                    container, transfer_item_dict, container_id, player_id
                 )
-
-                for stack in container.items:
-                    # Note: InventoryStack is a TypedDict (dict-like), so stack is always a dict
-                    # No need for isinstance check - mypy knows the type
-
-                    # Note: transfer_item_dict is already guaranteed to be a dict from the check above
-                    # This defensive check is kept for runtime safety but is unreachable according to mypy
-
-                    if stack.get("item_id") == transfer_item_dict.get("item_id") and stack.get(
-                        "item_instance_id"
-                    ) == transfer_item_dict.get("item_instance_id"):
-                        item_found = True
-                        remaining_quantity = stack.get("quantity", 1) - transfer_item_dict.get("quantity", 1)
-                        if remaining_quantity > 0:
-                            new_stack = stack.copy()
-                            new_stack["quantity"] = remaining_quantity
-                            new_container_items.append(new_stack)
-                    else:
-                        new_container_items.append(stack)
-
-                if not item_found:
-                    log_and_raise(
-                        ContainerServiceError,
-                        f"Item not found in container: {transfer_item_dict.get('item_id')}",
-                        context=context,
-                        details={"item_id": transfer_item_dict.get("item_id"), "container_id": str(container_id)},
-                        user_friendly="Item not found in container",
-                    )
-
-                # Add item to player inventory using InventoryService
-                player_inventory = getattr(player, "inventory", [])
-
-                # Instrumentation: log player inventory structure before mutation
-                try:
-                    inventory_length = len(player_inventory)
-                except TypeError:
-                    inventory_length = None
-
-                logger.debug(
-                    "Player inventory before add_stack",
-                    container_id=str(container_id),
-                    player_id=str(player_id),
-                    inventory_length=inventory_length,
-                    inventory_types=[type(stack).__name__ for stack in list(player_inventory)[:5]]
-                    if isinstance(player_inventory, (list, tuple))
-                    else type(player_inventory).__name__,
+                new_player_inventory = self._add_item_to_player_inventory(
+                    player, transfer_item_dict, container_id, player_id, context
                 )
-
-                try:
-                    new_player_inventory = self.inventory_service.add_stack(player_inventory, transfer_item_dict)
-                except InventoryCapacityError as e:
-                    log_and_raise(
-                        ContainerCapacityError,
-                        f"Player inventory capacity exceeded: {e}",
-                        context=context,
-                        details={"player_id": str(player_id), "error": str(e)},
-                        user_friendly="Your inventory is full",
-                    )
-
-                # Update container
-                container.items = new_container_items
-
-                # Persist container
-                self.persistence.update_container(
-                    container_id,
-                    items_json=new_container_items,
+                return await self._persist_and_audit_transfer_from_container(
+                    container, container_id, player, item, transfer_item_dict, new_container_items, new_player_inventory
                 )
-
-                logger.info(
-                    "Item transferred from container",
-                    container_id=str(container_id),
-                    player_id=str(player_id),
-                    item_id=item.get("item_id"),
-                    quantity=transfer_item_dict.get("quantity"),
-                )
-
-                # Audit log container transfer
-                try:
-                    audit_logger.log_container_interaction(
-                        player_id=str(player_id),
-                        player_name=player.name,
-                        container_id=str(container_id),
-                        event_type="container_transfer",
-                        source_type=_get_enum_value(container.source_type),
-                        room_id=container.room_id,
-                        direction="from_container",
-                        item_id=item.get("item_id"),
-                        item_name=item.get("item_name"),
-                        success=True,
-                    )
-                except Exception as e:
-                    logger.warning("Failed to log container transfer to audit log", error=str(e))
-
-                return {
-                    "container": container.model_dump(),
-                    "player_inventory": new_player_inventory,
-                }
             except Exception as e:
-                # Instrumentation: capture unexpected errors, including type issues like 'str'.get
                 logger.error(
                     "Unexpected error during transfer_from_container",
                     container_id=str(container_id),
@@ -765,7 +774,7 @@ class ContainerService:
                 )
                 raise
 
-    def loot_all(
+    async def loot_all(
         self,
         container_id: UUID,
         player_id: UUID,
@@ -804,7 +813,7 @@ class ContainerService:
         self._verify_container_open(container_id, player_id, mutation_token)
 
         # Get container
-        container_data = self.persistence.get_container(container_id)
+        container_data = await self.persistence.get_container(container_id)
         if not container_data:
             log_and_raise(
                 ContainerNotFoundError,
@@ -820,7 +829,7 @@ class ContainerService:
         initial_items_count = len(container.items)
 
         # Get player
-        player = self.persistence.get_player(player_id)
+        player = await self.persistence.get_player_by_id(player_id)
         if not player:
             log_and_raise(
                 ContainerServiceError,
@@ -835,7 +844,7 @@ class ContainerService:
         # Try to transfer each item
         for item in container.items:
             try:
-                result = self.transfer_from_container(
+                result = await self.transfer_from_container(
                     container_id,
                     player_id,
                     mutation_token,
@@ -865,7 +874,7 @@ class ContainerService:
                 continue
 
         # Get final container state
-        final_container_data = self.persistence.get_container(container_id)
+        final_container_data = await self.persistence.get_container(container_id)
         if final_container_data:
             final_container = ContainerComponent.model_validate(final_container_data)
         else:
@@ -910,6 +919,102 @@ class ContainerService:
         if stored_token != mutation_token:
             raise ContainerServiceError(f"Invalid mutation token: {container_id}")
 
+    def _validate_proximity(self, container: ContainerComponent, player: Any, player_id: str, context: Any) -> None:
+        """Validate player is in same room as container for environment/corpse containers."""
+        if container.source_type in (ContainerSourceType.ENVIRONMENT, ContainerSourceType.CORPSE):
+            player_room_id = getattr(player, "current_room_id", None)
+            if player_room_id != container.room_id:
+                log_and_raise(
+                    ContainerAccessDeniedError,
+                    f"Player not in same room as container: {container.container_id}",
+                    context=context,
+                    details={
+                        "container_id": str(container.container_id),
+                        "player_id": str(player_id),
+                        "container_room_id": container.room_id,
+                        "player_room_id": player_room_id,
+                    },
+                    user_friendly="You must be in the same room as the container",
+                )
+
+    def _validate_ownership(self, container: ContainerComponent, player_id: str, context: Any) -> None:
+        """Validate player owns equipment container."""
+        if container.source_type == ContainerSourceType.EQUIPMENT:
+            player_id_uuid = UUID(str(player_id)) if player_id else None
+            container_entity_id_uuid = UUID(str(container.entity_id)) if container.entity_id else None
+            if container_entity_id_uuid != player_id_uuid:
+                log_and_raise(
+                    ContainerAccessDeniedError,
+                    f"Player does not own equipment container: {container.container_id}",
+                    context=context,
+                    details={
+                        "container_id": str(container.container_id),
+                        "player_id": str(player_id),
+                        "owner_id": str(container.entity_id),
+                    },
+                    user_friendly="You do not own this container",
+                )
+
+    def _validate_role_access(
+        self, container: ContainerComponent, player_id: str, is_admin: bool, context: Any
+    ) -> None:
+        """Validate player has required role for container access."""
+        if container.allowed_roles and not is_admin:
+            player_role = "admin" if is_admin else "player"
+            if player_role not in container.allowed_roles:
+                log_and_raise(
+                    ContainerAccessDeniedError,
+                    f"Player role not allowed: {container.container_id}",
+                    context=context,
+                    details={
+                        "container_id": str(container.container_id),
+                        "player_id": str(player_id),
+                        "player_role": player_role,
+                        "allowed_roles": container.allowed_roles,
+                    },
+                    user_friendly="You do not have permission to access this container",
+                )
+
+    def _validate_corpse_grace_period(
+        self, container: ContainerComponent, player_id: str, is_admin: bool, context: Any
+    ) -> None:
+        """Validate corpse grace period access rules."""
+        if container.source_type == ContainerSourceType.CORPSE and container.owner_id:
+            grace_period_seconds = container.metadata.get("grace_period_seconds", 300)
+            grace_period_start_str = container.metadata.get("grace_period_start")
+
+            if grace_period_start_str:
+                grace_period_start = datetime.fromisoformat(grace_period_start_str.replace("Z", "+00:00"))
+                grace_period_end = grace_period_start + timedelta(seconds=grace_period_seconds)
+                current_time = datetime.now(UTC)
+
+                if current_time < grace_period_end and container.owner_id != player_id and not is_admin:
+                    log_and_raise(
+                        ContainerAccessDeniedError,
+                        f"Corpse grace period active: {container.container_id}",
+                        context=context,
+                        details={
+                            "container_id": str(container.container_id),
+                            "player_id": str(player_id),
+                            "owner_id": str(container.owner_id),
+                            "grace_period_end": grace_period_end.isoformat(),
+                        },
+                        user_friendly="The corpse's owner has exclusive access during the grace period",
+                    )
+            else:
+                if container.owner_id != player_id and not is_admin:
+                    log_and_raise(
+                        ContainerAccessDeniedError,
+                        f"Corpse grace period active: {container.container_id}",
+                        context=context,
+                        details={
+                            "container_id": str(container.container_id),
+                            "player_id": str(player_id),
+                            "owner_id": str(container.owner_id),
+                        },
+                        user_friendly="The corpse's owner has exclusive access during the grace period",
+                    )
+
     def _validate_container_access(self, container: ContainerComponent, player: Any, context: Any) -> None:
         """
         Validate that player has access to the container.
@@ -927,99 +1032,10 @@ class ContainerService:
         player_id = getattr(player, "player_id", None) or getattr(player, "id", None)
         is_admin = getattr(player, "is_admin", False)
 
-        # Check proximity for environment and corpse containers
-        if container.source_type in (ContainerSourceType.ENVIRONMENT, ContainerSourceType.CORPSE):
-            player_room_id = getattr(player, "current_room_id", None)
-            if player_room_id != container.room_id:
-                log_and_raise(
-                    ContainerAccessDeniedError,
-                    f"Player not in same room as container: {container.container_id}",
-                    context=context,
-                    details={
-                        "container_id": str(container.container_id),
-                        "player_id": str(player_id),
-                        "container_room_id": container.room_id,
-                        "player_room_id": player_room_id,
-                    },
-                    user_friendly="You must be in the same room as the container",
-                )
-
-        # Check ownership for equipment containers
-        if container.source_type == ContainerSourceType.EQUIPMENT:
-            # Normalize both IDs to UUID for comparison
-            # This handles cases where one is a UUID object and the other is a string
-            player_id_uuid = UUID(str(player_id)) if player_id else None
-            container_entity_id_uuid = UUID(str(container.entity_id)) if container.entity_id else None
-            if container_entity_id_uuid != player_id_uuid:
-                log_and_raise(
-                    ContainerAccessDeniedError,
-                    f"Player does not own equipment container: {container.container_id}",
-                    context=context,
-                    details={
-                        "container_id": str(container.container_id),
-                        "player_id": str(player_id),
-                        "owner_id": str(container.entity_id),
-                    },
-                    user_friendly="You do not own this container",
-                )
-
-        # Check role-based access control
-        if container.allowed_roles and not is_admin:
-            # Get player role (simplified - would need proper role system)
-            player_role = "admin" if is_admin else "player"
-            if player_role not in container.allowed_roles:
-                log_and_raise(
-                    ContainerAccessDeniedError,
-                    f"Player role not allowed: {container.container_id}",
-                    context=context,
-                    details={
-                        "container_id": str(container.container_id),
-                        "player_id": str(player_id),
-                        "player_role": player_role,
-                        "allowed_roles": container.allowed_roles,
-                    },
-                    user_friendly="You do not have permission to access this container",
-                )
-
-        # Check corpse grace period
-        if container.source_type == ContainerSourceType.CORPSE and container.owner_id:
-            grace_period_seconds = container.metadata.get("grace_period_seconds", 300)  # Default 5 minutes
-            grace_period_start_str = container.metadata.get("grace_period_start")
-
-            if grace_period_start_str:
-                grace_period_start = datetime.fromisoformat(grace_period_start_str.replace("Z", "+00:00"))
-                grace_period_end = grace_period_start + timedelta(seconds=grace_period_seconds)
-                current_time = datetime.now(UTC)
-
-                # If still in grace period, only owner can access
-                if current_time < grace_period_end and container.owner_id != player_id and not is_admin:
-                    log_and_raise(
-                        ContainerAccessDeniedError,
-                        f"Corpse grace period active: {container.container_id}",
-                        context=context,
-                        details={
-                            "container_id": str(container.container_id),
-                            "player_id": str(player_id),
-                            "owner_id": str(container.owner_id),
-                            "grace_period_end": grace_period_end.isoformat(),
-                        },
-                        user_friendly="The corpse's owner has exclusive access during the grace period",
-                    )
-            else:
-                # No grace_period_start means grace period is still active (just created)
-                # Only owner can access during grace period
-                if container.owner_id != player_id and not is_admin:
-                    log_and_raise(
-                        ContainerAccessDeniedError,
-                        f"Corpse grace period active: {container.container_id}",
-                        context=context,
-                        details={
-                            "container_id": str(container.container_id),
-                            "player_id": str(player_id),
-                            "owner_id": str(container.owner_id),
-                        },
-                        user_friendly="The corpse's owner has exclusive access during the grace period",
-                    )
+        self._validate_proximity(container, player, str(player_id), context)
+        self._validate_ownership(container, str(player_id), context)
+        self._validate_role_access(container, str(player_id), is_admin, context)
+        self._validate_corpse_grace_period(container, str(player_id), is_admin, context)
 
     def _can_unlock_container(self, container: ContainerComponent, player: Any) -> bool:
         """
@@ -1059,7 +1075,9 @@ class ContainerService:
         # Unlocked containers can be opened
         return container.lock_state == ContainerLockState.UNLOCKED
 
-    def lock_container(self, container_id: UUID, player_id: UUID, lock_state: ContainerLockState) -> dict[str, Any]:
+    async def lock_container(
+        self, container_id: UUID, player_id: UUID, lock_state: ContainerLockState
+    ) -> dict[str, Any]:
         """
         Lock a container.
 
@@ -1085,7 +1103,7 @@ class ContainerService:
         )
 
         # Get container
-        container_data = self.persistence.get_container(container_id)
+        container_data = await self.persistence.get_container(container_id)
         if not container_data:
             log_and_raise(
                 ContainerNotFoundError,
@@ -1098,7 +1116,7 @@ class ContainerService:
         container = ContainerComponent.model_validate(_filter_container_data(container_data))
 
         # Get player for access control
-        player = self.persistence.get_player(player_id)
+        player = await self.persistence.get_player_by_id(player_id)
         if not player:
             log_and_raise(
                 ValidationError,
@@ -1132,7 +1150,7 @@ class ContainerService:
                 )
 
         # Update lock state
-        updated = self.persistence.update_container(container_id, lock_state=lock_state.value)
+        updated = await self.persistence.update_container(container_id, lock_state=lock_state.value)
         if not updated:
             log_and_raise(
                 ContainerServiceError,
@@ -1148,7 +1166,7 @@ class ContainerService:
 
         return updated
 
-    def unlock_container(self, container_id: UUID, player_id: UUID) -> dict[str, Any]:
+    async def unlock_container(self, container_id: UUID, player_id: UUID) -> dict[str, Any]:
         """
         Unlock a container.
 
@@ -1171,7 +1189,7 @@ class ContainerService:
         logger.info("Unlocking container", container_id=str(container_id), player_id=str(player_id))
 
         # Get container
-        container_data = self.persistence.get_container(container_id)
+        container_data = await self.persistence.get_container(container_id)
         if not container_data:
             log_and_raise(
                 ContainerNotFoundError,
@@ -1184,7 +1202,7 @@ class ContainerService:
         container = ContainerComponent.model_validate(_filter_container_data(container_data))
 
         # Get player for access control
-        player = self.persistence.get_player(player_id)
+        player = await self.persistence.get_player_by_id(player_id)
         if not player:
             log_and_raise(
                 ValidationError,

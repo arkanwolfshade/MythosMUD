@@ -75,6 +75,8 @@ def summon_context(monkeypatch, summon_dashboard_stub):
     item_factory, registry = _build_item_factory()
 
     persistence = MagicMock()
+    # CRITICAL: get_player_by_name must be AsyncMock because it's awaited in _resolve_player
+    persistence.get_player_by_name = AsyncMock(return_value=None)
     connection_manager = MagicMock()
     connection_manager.room_manager = RoomSubscriptionManager()
     connection_manager.broadcast_to_room = AsyncMock()

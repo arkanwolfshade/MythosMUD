@@ -278,7 +278,12 @@ class StatsGenerator:
         return stats, available_classes
 
     def roll_stats_with_profession(
-        self, method: str = "3d6", profession_id: int = 0, timeout_seconds: float = 1.0, max_attempts: int = 10
+        self,
+        method: str = "3d6",
+        profession_id: int = 0,
+        timeout_seconds: float = 1.0,
+        max_attempts: int = 10,
+        profession: Any | None = None,
     ) -> tuple[Stats, bool]:
         """
         Roll stats and validate against profession requirements.
@@ -288,6 +293,7 @@ class StatsGenerator:
             profession_id: The profession ID to validate against
             timeout_seconds: Maximum time in seconds to spend rolling for valid stats
             max_attempts: Maximum number of attempts to roll stats that meet requirements
+            profession: Optional profession object (if provided, skips database lookup)
 
         Returns:
             Tuple[Stats, bool]: (stats, meets_requirements)
@@ -302,12 +308,29 @@ class StatsGenerator:
 
         logger.debug("DEBUG: Starting profession-based stats rolling", profession_id=profession_id)
 
-        # Get profession requirements from persistence
+        # Get profession requirements from persistence (async) or use provided profession
         try:
-            from ..persistence import get_persistence
+            if profession is None:
+                import asyncio
 
-            persistence = get_persistence()
-            profession = persistence.get_profession_by_id(profession_id)
+                from ..container import ApplicationContainer
+
+                container = ApplicationContainer.get_instance()
+                if container and container.async_persistence:
+                    # Try to get profession (async)
+                    try:
+                        asyncio.get_running_loop()  # Check if we're in async context
+                        # In async context, we can't use asyncio.run()
+                        # Profession should be fetched by caller and passed in
+                        raise ValueError(
+                            f"Profession must be provided when called from async context. "
+                            f"Invalid profession ID: {profession_id}"
+                        )
+                    except RuntimeError:
+                        # No running loop, we can use asyncio.run()
+                        profession = asyncio.run(container.async_persistence.get_profession_by_id(profession_id))
+                else:
+                    profession = None
 
             if not profession:
                 raise ValueError(f"Invalid profession ID: {profession_id}")
@@ -427,7 +450,7 @@ class StatsGenerator:
             },
             "derived_stats": {
                 "max_health": stats.max_health,
-                "max_sanity": stats.max_sanity,
+                "max_lucidity": stats.max_lucidity,
             },
             "total_points": sum(
                 [

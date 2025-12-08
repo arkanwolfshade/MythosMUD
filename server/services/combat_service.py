@@ -5,6 +5,7 @@ This service handles all combat-related operations including state management,
 turn order calculation, and combat resolution.
 """
 
+from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from typing import Any
 from uuid import UUID
@@ -32,6 +33,18 @@ from server.services.combat_event_publisher import CombatEventPublisher
 from server.services.player_combat_service import PlayerCombatService
 
 logger = get_logger(__name__)
+
+
+@dataclass
+class CombatParticipantData:
+    """Data for a combat participant."""
+
+    participant_id: UUID
+    name: str
+    current_hp: int
+    max_hp: int
+    dexterity: int
+    participant_type: CombatParticipantType = CombatParticipantType.PLAYER
 
 
 class CombatService:
@@ -108,35 +121,18 @@ class CombatService:
     async def start_combat(
         self,
         room_id: str,
-        attacker_id: UUID,
-        target_id: UUID,
-        attacker_name: str,
-        target_name: str,
-        attacker_hp: int,
-        attacker_max_hp: int,
-        attacker_dex: int,
-        target_hp: int,
-        target_max_hp: int,
-        target_dex: int,
+        attacker: CombatParticipantData,
+        target: CombatParticipantData,
         current_tick: int,
-        attacker_type: CombatParticipantType = CombatParticipantType.PLAYER,
-        target_type: CombatParticipantType = CombatParticipantType.NPC,
     ) -> CombatInstance:
         """
         Start a new combat instance between two participants.
 
         Args:
             room_id: The room where combat is taking place
-            attacker_id: ID of the participant initiating combat
-            target_id: ID of the target participant
-            attacker_name: Name of the attacker
-            target_name: Name of the target
-            attacker_hp: Current HP of attacker
-            attacker_max_hp: Max HP of attacker
-            attacker_dex: Dexterity of attacker
-            target_hp: Current HP of target
-            target_max_hp: Max HP of target
-            target_dex: Dexterity of target
+            attacker: Data for the attacking participant
+            target: Data for the target participant
+            current_tick: Current game tick
 
         Returns:
             The created CombatInstance
@@ -144,10 +140,10 @@ class CombatService:
         Raises:
             ValueError: If combat cannot be started (invalid participants, etc.)
         """
-        logger.info("Starting combat", attacker=attacker_name, target=target_name, room_id=room_id)
+        logger.info("Starting combat", attacker=attacker.name, target=target.name, room_id=room_id)
 
         # Check if either participant is already in combat
-        if attacker_id in self._player_combats or target_id in self._npc_combats:
+        if attacker.participant_id in self._player_combats or target.participant_id in self._npc_combats:
             raise ValueError("One or both participants are already in combat")
 
         # Create combat instance with auto-progression configuration
@@ -160,31 +156,31 @@ class CombatService:
             next_turn_tick=current_tick + self._turn_interval_seconds,
         )
 
-        # Create participants
-        attacker = CombatParticipant(
-            participant_id=attacker_id,
-            participant_type=attacker_type,
-            name=attacker_name,
-            current_hp=attacker_hp,
-            max_hp=attacker_max_hp,
-            dexterity=attacker_dex,
+        # Create participant objects
+        attacker_participant = CombatParticipant(
+            participant_id=attacker.participant_id,
+            participant_type=attacker.participant_type,
+            name=attacker.name,
+            current_hp=attacker.current_hp,
+            max_hp=attacker.max_hp,
+            dexterity=attacker.dexterity,
         )
 
-        target = CombatParticipant(
-            participant_id=target_id,
-            participant_type=target_type,
-            name=target_name,
-            current_hp=target_hp,
-            max_hp=target_max_hp,
-            dexterity=target_dex,
+        target_participant = CombatParticipant(
+            participant_id=target.participant_id,
+            participant_type=target.participant_type,
+            name=target.name,
+            current_hp=target.current_hp,
+            max_hp=target.max_hp,
+            dexterity=target.dexterity,
         )
 
         # Add participants to combat
-        combat.participants[attacker_id] = attacker
-        combat.participants[target_id] = target
+        combat.participants[attacker.participant_id] = attacker_participant
+        combat.participants[target.participant_id] = target_participant
 
         # Calculate turn order: all participants sorted by dexterity (highest first)
-        all_participants = [(attacker_id, attacker_dex), (target_id, target_dex)]
+        all_participants = [(attacker.participant_id, attacker.dexterity), (target.participant_id, target.dexterity)]
         all_participants.sort(key=lambda x: x[1], reverse=True)
 
         # Build turn order: highest dexterity first
@@ -192,13 +188,16 @@ class CombatService:
 
         # Store combat instance
         self._active_combats[combat.combat_id] = combat
-        self._player_combats[attacker_id] = combat.combat_id
-        self._npc_combats[target_id] = combat.combat_id
+        self._player_combats[attacker.participant_id] = combat.combat_id
+        self._npc_combats[target.participant_id] = combat.combat_id
 
         # Track player combat state if player combat service is available
         if self._player_combat_service:
             await self._player_combat_service.track_player_combat_state(
-                player_id=attacker_id, player_name=attacker_name, combat_id=combat.combat_id, room_id=room_id
+                player_id=attacker.participant_id,
+                player_name=attacker.name,
+                combat_id=combat.combat_id,
+                room_id=room_id,
             )
 
         logger.info("Combat started", combat_id=combat.combat_id, turn_order=combat.turn_order)
@@ -514,6 +513,234 @@ class CombatService:
             return self._active_combats.get(combat_id)
         return None
 
+    def _validate_attack(self, combat: CombatInstance, attacker_id: UUID, is_initial_attack: bool) -> None:
+        """Validate that attack is allowed."""
+        if combat.status != CombatStatus.ACTIVE:
+            raise ValueError("Combat is not active")
+
+        if not is_initial_attack:
+            current_participant = combat.get_current_turn_participant()
+            if not current_participant or current_participant.participant_id != attacker_id:
+                raise ValueError("It is not the attacker's turn")
+
+    def _apply_damage(self, target: CombatParticipant, damage: int) -> tuple[int, bool, bool]:
+        """
+        Apply damage to target and check death states.
+
+        Returns:
+            Tuple of (old_hp, target_died, target_mortally_wounded)
+        """
+        old_hp = target.current_hp
+        if target.participant_type == CombatParticipantType.PLAYER:
+            target.current_hp = max(-10, target.current_hp - damage)
+            target_died = target.current_hp <= -10
+            target_mortally_wounded = old_hp > 0 and target.current_hp == 0
+        else:
+            target.current_hp = max(0, target.current_hp - damage)
+            target_died = target.current_hp <= 0
+            target_mortally_wounded = False
+        return old_hp, target_died, target_mortally_wounded
+
+    async def _handle_player_hp_update(self, target: CombatParticipant, old_hp: int, combat: CombatInstance) -> None:
+        """Handle player HP update, persistence, and event publishing."""
+        await self._publish_player_hp_update_event(
+            target.participant_id,
+            old_hp,
+            target.current_hp,
+            target.max_hp,
+            combat_id=str(combat.combat_id),
+            room_id=combat.room_id,
+        )
+        self._persist_player_hp_background(
+            target.participant_id,
+            target.current_hp,
+            old_hp,
+            target.max_hp,
+            combat.room_id,
+            str(combat.combat_id),
+        )
+
+    async def _handle_player_death_events(
+        self, target: CombatParticipant, current_participant: CombatParticipant, combat: CombatInstance
+    ) -> None:
+        """Handle player death events including mortally wounded, death, and corpse creation."""
+        try:
+            from ..services.combat_messaging_integration import combat_messaging_integration
+
+            await combat_messaging_integration.broadcast_player_death(
+                player_id=str(target.participant_id),
+                player_name=target.name,
+                room_id=combat.room_id,
+                death_location=combat.room_id,
+            )
+            logger.info("Player death event published", player_id=target.participant_id, player_name=target.name)
+
+            # Create corpse container on death
+            await self._create_corpse_on_death(target, combat)
+        except Exception as e:
+            logger.error("Error publishing player death event", error=str(e), exc_info=True)
+
+    async def _create_corpse_on_death(self, target: CombatParticipant, combat: CombatInstance) -> None:
+        """Create corpse container when player dies."""
+        try:
+            from ..container import ApplicationContainer
+            from ..services.corpse_lifecycle_service import CorpseLifecycleService
+
+            connection_manager = getattr(self, "_connection_manager", None)
+            persistence = None
+
+            if connection_manager is None:
+                try:
+                    container = ApplicationContainer.get_instance()
+                    connection_manager = getattr(container, "connection_manager", None)
+                    persistence = getattr(container, "async_persistence", None) if container else None
+                except Exception:
+                    pass
+
+            if persistence is None:
+                logger.warning("Could not get persistence for corpse creation, skipping")
+                return
+
+            corpse_service = CorpseLifecycleService(persistence=persistence, connection_manager=connection_manager)
+            corpse = await corpse_service.create_corpse_on_death(
+                player_id=target.participant_id,
+                room_id=combat.room_id,
+                grace_period_seconds=300,
+                decay_hours=1,
+            )
+            logger.info(
+                "Corpse container created on death",
+                container_id=str(corpse.container_id),
+                player_id=target.participant_id,
+                room_id=combat.room_id,
+            )
+        except Exception as corpse_error:
+            logger.error(
+                "Error creating corpse container on death",
+                error=str(corpse_error),
+                player_id=target.participant_id,
+                room_id=combat.room_id,
+                exc_info=True,
+            )
+
+    async def _publish_attack_events(
+        self,
+        current_participant: CombatParticipant,
+        target: CombatParticipant,
+        damage: int,
+        combat: CombatInstance,
+    ) -> None:
+        """Publish combat attack events based on participant types."""
+        if current_participant.participant_type == CombatParticipantType.PLAYER:
+            attack_event = PlayerAttackedEvent(
+                combat_id=combat.combat_id,
+                room_id=combat.room_id,
+                attacker_id=current_participant.participant_id,
+                attacker_name=current_participant.name,
+                target_id=target.participant_id,
+                target_name=target.name,
+                damage=damage,
+                action_type="auto_attack",
+                target_current_hp=target.current_hp,
+                target_max_hp=target.max_hp,
+            )
+            await self._combat_event_publisher.publish_player_attacked(attack_event)
+        else:
+            npc_attack_event = NPCAttackedEvent(
+                combat_id=combat.combat_id,
+                room_id=combat.room_id,
+                attacker_id=current_participant.participant_id,
+                attacker_name=current_participant.name,
+                npc_id=target.participant_id,
+                npc_name=target.name,
+                damage=damage,
+                action_type="auto_attack",
+                target_current_hp=target.current_hp,
+                target_max_hp=target.max_hp,
+            )
+            await self._combat_event_publisher.publish_npc_attacked(npc_attack_event)
+
+        if target.participant_type == CombatParticipantType.NPC:
+            damage_event = NPCTookDamageEvent(
+                combat_id=combat.combat_id,
+                room_id=combat.room_id,
+                npc_id=target.participant_id,
+                npc_name=target.name,
+                damage=damage,
+                current_hp=target.current_hp,
+                max_hp=target.max_hp,
+            )
+            await self._combat_event_publisher.publish_npc_took_damage(damage_event)
+
+    async def _handle_npc_death(self, target: CombatParticipant, combat: CombatInstance, xp_reward: int) -> None:
+        """Handle NPC death event publishing and ID resolution."""
+        try:
+            from ..realtime.connection_manager import get_global_connection_manager
+
+            connection_manager = get_global_connection_manager()
+            if connection_manager is not None:
+                canonical_room_id = connection_manager.canonical_room_id(combat.room_id) or combat.room_id
+                room_subscribers = connection_manager.room_subscriptions.get(canonical_room_id, set())
+                logger.debug(
+                    "Connection state check before NPC death event",
+                    room_id=combat.room_id,
+                    canonical_room_id=canonical_room_id,
+                    connected_players_count=len(room_subscribers),
+                    connected_player_ids=list(room_subscribers),
+                )
+        except Exception as conn_check_error:
+            logger.warning(
+                "Could not check connection state before NPC death event",
+                error=str(conn_check_error),
+                room_id=combat.room_id,
+            )
+
+        try:
+            original_npc_id = str(target.participant_id)
+            if self._npc_combat_integration_service:
+                resolved_id = self._npc_combat_integration_service.get_original_string_id(target.participant_id)
+                if resolved_id:
+                    original_npc_id = resolved_id
+                    logger.info(
+                        "Resolved UUID to original NPC ID for death event",
+                        uuid=target.participant_id,
+                        original_id=original_npc_id,
+                    )
+                else:
+                    logger.error(
+                        "UUID not found in mapping - NPC WILL NOT RESPAWN!",
+                        uuid=target.participant_id,
+                        npc_name=target.name,
+                        combat_id=combat.combat_id,
+                    )
+            else:
+                logger.error(
+                    "NPC combat integration service not available - NPC WILL NOT RESPAWN!",
+                    uuid=target.participant_id,
+                    npc_name=target.name,
+                    combat_id=combat.combat_id,
+                )
+
+            death_event = NPCDiedEvent(
+                combat_id=combat.combat_id,
+                room_id=combat.room_id,
+                npc_id=original_npc_id,
+                npc_name=target.name,
+                xp_reward=xp_reward,
+            )
+            await self._combat_event_publisher.publish_npc_died(death_event)
+            logger.info("NPCDiedEvent published successfully", npc_id=original_npc_id, combat_id=combat.combat_id)
+        except Exception as death_event_error:
+            logger.error(
+                "Error publishing NPC death event - preventing disconnect",
+                target_name=target.name,
+                target_id=target.participant_id,
+                combat_id=combat.combat_id,
+                room_id=combat.room_id,
+                error=str(death_event_error),
+                exc_info=True,
+            )
+
     async def process_attack(
         self, attacker_id: UUID, target_id: UUID, damage: int = 10, is_initial_attack: bool = False
     ) -> CombatResult:
@@ -535,16 +762,8 @@ class CombatService:
         if not combat:
             raise ValueError("Attacker is not in combat")
 
-        if combat.status != CombatStatus.ACTIVE:
-            raise ValueError("Combat is not active")
+        self._validate_attack(combat, attacker_id, is_initial_attack)
 
-        # Check if it's the attacker's turn (skip for initial attack)
-        if not is_initial_attack:
-            current_participant = combat.get_current_turn_participant()
-            if not current_participant or current_participant.participant_id != attacker_id:
-                raise ValueError("It is not the attacker's turn")
-
-        # Validate target
         target = combat.participants.get(target_id)
         if not target:
             raise ValueError("Target is not in this combat")
@@ -552,57 +771,20 @@ class CombatService:
         if not target.is_alive():
             raise ValueError("Target is already dead")
 
-        # Get current participant for logging
         current_participant = combat.participants.get(attacker_id)
         if not current_participant:
             raise ValueError("Attacker not found in combat")
 
         logger.info("Processing attack", attacker_name=current_participant.name, target_name=target.name, damage=damage)
 
-        # Apply damage with different caps for players vs NPCs
-        # Players: cap at -10 (death threshold), NPCs: cap at 0
-        old_hp = target.current_hp
+        old_hp, target_died, target_mortally_wounded = self._apply_damage(target, damage)
+
         if target.participant_type == CombatParticipantType.PLAYER:
-            # Players can go to -10 HP before death
-            target.current_hp = max(-10, target.current_hp - damage)
-        else:
-            # NPCs die at 0 HP
-            target.current_hp = max(0, target.current_hp - damage)
+            await self._handle_player_hp_update(target, old_hp, combat)
 
-        # Check for death states (different for players vs NPCs)
-        if target.participant_type == CombatParticipantType.PLAYER:
-            # Players die at -10 HP
-            target_died = target.current_hp <= -10
-            target_mortally_wounded = old_hp > 0 and target.current_hp == 0
-        else:
-            # NPCs die at 0 HP
-            target_died = target.current_hp <= 0
-            target_mortally_wounded = False
-
-        # Publish HP update event IMMEDIATELY for real-time UI updates (before database persistence)
-        # This provides instant feedback while database save happens in background
-        if target.participant_type == CombatParticipantType.PLAYER:
-            await self._publish_player_hp_update_event(
-                target.participant_id,
-                old_hp,
-                target.current_hp,
-                target.max_hp,
-                combat_id=str(combat.combat_id),
-                room_id=combat.room_id,
-            )
-            # Persist player HP to database in background (fire-and-forget with error handling)
-            # If persistence fails, we'll send a correction event
-            self._persist_player_hp_background(
-                target.participant_id, target.current_hp, old_hp, target.max_hp, combat.room_id, str(combat.combat_id)
-            )
-
-        # Update combat activity
-        combat.update_activity(0)  # Will be updated with actual tick in game loop
-
-        # Check if combat should end
+        combat.update_activity(0)
         combat_ended = combat.is_combat_over()
 
-        # Create result with health information
         health_info = f" ({target.current_hp}/{target.max_hp} HP)"
         attack_message = f"{current_participant.name} attacks {target.name} for {damage} damage{health_info}"
         result = CombatResult(
@@ -614,7 +796,6 @@ class CombatService:
             combat_id=combat.combat_id,
         )
 
-        # Publish player mortally wounded event if applicable
         if target_mortally_wounded and target.participant_type == CombatParticipantType.PLAYER:
             try:
                 from ..services.combat_messaging_integration import combat_messaging_integration
@@ -634,228 +815,16 @@ class CombatService:
             except Exception as e:
                 logger.error("Error publishing player mortally wounded event", error=str(e), exc_info=True)
 
-        # Publish player death event if applicable
         if target_died and target.participant_type == CombatParticipantType.PLAYER:
-            try:
-                from ..services.combat_messaging_integration import combat_messaging_integration
+            await self._handle_player_death_events(target, current_participant, combat)
 
-                await combat_messaging_integration.broadcast_player_death(
-                    player_id=str(target.participant_id),
-                    player_name=target.name,
-                    room_id=combat.room_id,
-                    death_location=combat.room_id,
-                )
-                logger.info("Player death event published", player_id=target.participant_id, player_name=target.name)
-
-                # Create corpse container on death
-                try:
-                    from ..persistence import get_persistence
-                    from ..services.corpse_lifecycle_service import CorpseLifecycleService
-
-                    persistence = get_persistence()
-                    connection_manager = getattr(self, "_connection_manager", None)
-                    if connection_manager is None:
-                        # Try to get from app state if available
-                        try:
-                            from ..container import ApplicationContainer
-
-                            container = ApplicationContainer.get_instance()
-                            connection_manager = getattr(container, "connection_manager", None)
-                        except Exception:
-                            pass
-
-                    corpse_service = CorpseLifecycleService(
-                        persistence=persistence,
-                        connection_manager=connection_manager,
-                    )
-
-                    corpse = corpse_service.create_corpse_on_death(
-                        player_id=target.participant_id,
-                        room_id=combat.room_id,
-                        grace_period_seconds=300,  # 5 minutes grace period
-                        decay_hours=1,  # Decay after 1 hour
-                    )
-
-                    logger.info(
-                        "Corpse container created on death",
-                        container_id=str(corpse.container_id),
-                        player_id=target.participant_id,
-                        room_id=combat.room_id,
-                    )
-                except Exception as corpse_error:
-                    # Log but don't fail - corpse creation is not critical
-                    logger.error(
-                        "Error creating corpse container on death",
-                        error=str(corpse_error),
-                        player_id=target.participant_id,
-                        room_id=combat.room_id,
-                        exc_info=True,
-                    )
-
-            except Exception as e:
-                logger.error("Error publishing player death event", error=str(e), exc_info=True)
-
-        # Publish combat events
         try:
-            logger.debug(
-                "Publishing combat events for attack", attacker_name=current_participant.name, target_name=target.name
-            )
-            logger.info("About to publish combat events", attacker_type=current_participant.participant_type)
-            # Publish attack event based on attacker type
-            attack_event: PlayerAttackedEvent | NPCAttackedEvent
-            if current_participant.participant_type == CombatParticipantType.PLAYER:
-                logger.info("Creating PlayerAttackedEvent")
-                attack_event = PlayerAttackedEvent(
-                    combat_id=combat.combat_id,
-                    room_id=combat.room_id,
-                    attacker_id=current_participant.participant_id,
-                    attacker_name=current_participant.name,
-                    target_id=target.participant_id,
-                    target_name=target.name,
-                    damage=damage,
-                    action_type="auto_attack",
-                    target_current_hp=target.current_hp,
-                    target_max_hp=target.max_hp,
-                )
-                logger.info("Calling publish_player_attacked", attack_event=attack_event)
-                await self._combat_event_publisher.publish_player_attacked(attack_event)
-                logger.info("publish_player_attacked completed")
-            else:
-                logger.info("Creating NPCAttackedEvent")
-                npc_attack_event = NPCAttackedEvent(
-                    combat_id=combat.combat_id,
-                    room_id=combat.room_id,
-                    attacker_id=current_participant.participant_id,
-                    attacker_name=current_participant.name,
-                    npc_id=target.participant_id,
-                    npc_name=target.name,
-                    damage=damage,
-                    action_type="auto_attack",
-                    target_current_hp=target.current_hp,
-                    target_max_hp=target.max_hp,
-                )
-                logger.info("Calling publish_npc_attacked", attack_event=npc_attack_event)
-                await self._combat_event_publisher.publish_npc_attacked(npc_attack_event)
-                logger.info("publish_npc_attacked completed")
+            await self._publish_attack_events(current_participant, target, damage, combat)
 
-            # Publish damage event if target is NPC
-            if target.participant_type == CombatParticipantType.NPC:
-                damage_event = NPCTookDamageEvent(
-                    combat_id=combat.combat_id,
-                    room_id=combat.room_id,
-                    npc_id=target.participant_id,
-                    npc_name=target.name,
-                    damage=damage,
-                    current_hp=target.current_hp,
-                    max_hp=target.max_hp,
-                )
-                await self._combat_event_publisher.publish_npc_took_damage(damage_event)
-
-            # Award XP if target died and attacker is a player
             if target_died:
                 result.xp_awarded = await self._calculate_xp_reward(target_id)
-
-            # Publish death event if target died
-            # BUGFIX: Enhanced logging and defensive exception handling to prevent disconnections
-            # during NPC death event publishing. See: investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md
-            if target_died and target.participant_type == CombatParticipantType.NPC:
-                logger.info(
-                    "NPC died in combat - starting death event handling",
-                    target_name=target.name,
-                    target_id=target.participant_id,
-                    combat_id=combat.combat_id,
-                    room_id=combat.room_id,
-                )
-
-                # Check connection state before NPC death handling
-                try:
-                    from ..realtime.connection_manager import get_global_connection_manager
-
-                    connection_manager = get_global_connection_manager()
-                    # Check if any players are connected in this room
-                    if connection_manager is not None:
-                        canonical_room_id = connection_manager._canonical_room_id(combat.room_id) or combat.room_id
-                        room_subscribers = connection_manager.room_subscriptions.get(canonical_room_id, set())
-                        logger.debug(
-                            "Connection state check before NPC death event",
-                            room_id=combat.room_id,
-                            canonical_room_id=canonical_room_id,
-                            connected_players_count=len(room_subscribers),
-                            connected_player_ids=list(room_subscribers),
-                        )
-                except Exception as conn_check_error:
-                    logger.warning(
-                        "Could not check connection state before NPC death event",
-                        error=str(conn_check_error),
-                        room_id=combat.room_id,
-                    )
-
-                try:
-                    # AI Agent: CRITICAL FIX - Resolve UUID back to original string ID for lifecycle manager
-                    #           Combat uses random UUIDs for NPCs, but lifecycle_manager uses string IDs.
-                    #           Without this mapping, NPCs won't be queued for respawn!
-                    original_npc_id = str(target.participant_id)  # Default to UUID string (will fail respawn!)
-                    if self._npc_combat_integration_service and hasattr(
-                        self._npc_combat_integration_service, "_uuid_to_string_id_mapping"
-                    ):
-                        uuid_mapping = self._npc_combat_integration_service._uuid_to_string_id_mapping
-                        if target.participant_id in uuid_mapping:
-                            original_npc_id = uuid_mapping[target.participant_id]
-                            logger.info(
-                                "Resolved UUID to original NPC ID for death event",
-                                uuid=target.participant_id,
-                                original_id=original_npc_id,
-                            )
-                        else:
-                            # AI Agent: CRITICAL - UUID not in mapping means NPC won't queue for respawn!
-                            #           This is a severe error that breaks the respawn system.
-                            logger.error(
-                                "UUID not found in mapping - NPC WILL NOT RESPAWN!",
-                                uuid=target.participant_id,
-                                npc_name=target.name,
-                                combat_id=combat.combat_id,
-                                available_mappings=list(uuid_mapping.keys()),
-                            )
-                    else:
-                        # AI Agent: CRITICAL - No NPC combat integration service means NO respawns!
-                        logger.error(
-                            "NPC combat integration service not available - NPC WILL NOT RESPAWN!",
-                            uuid=target.participant_id,
-                            npc_name=target.name,
-                            combat_id=combat.combat_id,
-                        )
-
-                    death_event = NPCDiedEvent(
-                        combat_id=combat.combat_id,
-                        room_id=combat.room_id,
-                        npc_id=original_npc_id,  # Use resolved string ID
-                        npc_name=target.name,
-                        xp_reward=result.xp_awarded or 0,
-                    )
-                    logger.info(
-                        "Publishing NPCDiedEvent",
-                        death_event=death_event,
-                        original_npc_id=original_npc_id,
-                        combat_id=combat.combat_id,
-                    )
-                    await self._combat_event_publisher.publish_npc_died(death_event)
-                    logger.info(
-                        "NPCDiedEvent published successfully",
-                        npc_id=original_npc_id,
-                        combat_id=combat.combat_id,
-                    )
-                except Exception as death_event_error:
-                    # CRITICAL: Prevent NPC death event errors from disconnecting players
-                    logger.error(
-                        "Error publishing NPC death event - preventing disconnect",
-                        target_name=target.name,
-                        target_id=target.participant_id,
-                        combat_id=combat.combat_id,
-                        room_id=combat.room_id,
-                        error=str(death_event_error),
-                        exc_info=True,
-                    )
-                    # Continue execution - don't raise exception that could disconnect player
+                if target.participant_type == CombatParticipantType.NPC:
+                    await self._handle_npc_death(target, combat, result.xp_awarded or 0)
 
         except Exception as e:
             logger.error("Error publishing combat events", error=str(e), exc_info=True)
@@ -926,6 +895,68 @@ class CombatService:
 
         return result
 
+    def _cleanup_combat_tracking(self, combat: CombatInstance) -> None:
+        """Remove combat from tracking dictionaries."""
+        for participant_id in combat.participants.keys():
+            self._player_combats.pop(participant_id, None)
+            self._npc_combats.pop(participant_id, None)
+        self._active_combats.pop(combat.combat_id, None)
+
+    def _check_connection_state(self, room_id: str) -> None:
+        """Check connection state before publishing combat ended event."""
+        try:
+            from ..realtime.connection_manager import get_global_connection_manager
+
+            connection_manager = get_global_connection_manager()
+            if connection_manager is not None:
+                canonical_room_id = connection_manager.canonical_room_id(room_id) or room_id
+                room_subscribers = connection_manager.room_subscriptions.get(canonical_room_id, set())
+                logger.debug(
+                    "Connection state check before combat ended event",
+                    room_id=room_id,
+                    canonical_room_id=canonical_room_id,
+                    connected_players_count=len(room_subscribers),
+                    connected_player_ids=list(room_subscribers),
+                )
+        except Exception as conn_check_error:
+            logger.warning(
+                "Could not check connection state before combat ended event",
+                error=str(conn_check_error),
+                room_id=room_id,
+            )
+
+    async def _publish_combat_ended_event(self, combat: CombatInstance, reason: str) -> None:
+        """Publish combat ended event."""
+        try:
+            ended_event = CombatEndedEvent(
+                combat_id=combat.combat_id,
+                room_id=combat.room_id,
+                reason=reason,
+                duration_seconds=int((datetime.now() - combat.start_time).total_seconds())
+                if hasattr(combat, "start_time")
+                else 0,
+                participants={
+                    str(p.participant_id): {"name": p.name, "hp": p.current_hp, "max_hp": p.max_hp}
+                    for p in combat.participants.values()
+                },
+            )
+            logger.info(
+                "Publishing combat ended event",
+                combat_id=combat.combat_id,
+                room_id=combat.room_id,
+                participant_count=len(combat.participants),
+            )
+            await self._combat_event_publisher.publish_combat_ended(ended_event)
+            logger.info("Combat ended event published successfully", combat_id=combat.combat_id)
+        except Exception as e:
+            logger.error(
+                "Error publishing combat ended event - combat already cleaned up",
+                combat_id=combat.combat_id,
+                room_id=combat.room_id,
+                error=str(e),
+                exc_info=True,
+            )
+
     async def end_combat(self, combat_id: UUID, reason: str = "Combat ended") -> None:
         """
         End a combat instance.
@@ -941,23 +972,12 @@ class CombatService:
 
         logger.info("Ending combat", combat_id=combat_id, reason=reason)
 
-        # Update combat status
         combat.status = CombatStatus.ENDED
+        self._cleanup_combat_tracking(combat)
 
-        # Remove from tracking dictionaries
-        for participant_id in combat.participants.keys():
-            self._player_combats.pop(participant_id, None)
-            self._npc_combats.pop(participant_id, None)
-
-        # Remove from active combats
-        self._active_combats.pop(combat_id, None)
-
-        # Clear player combat states if player combat service is available
         if self._player_combat_service:
             await self._player_combat_service.handle_combat_end(combat_id)
 
-        # Publish combat ended event
-        # BUGFIX: Enhanced logging and connection state preservation during combat end event publishing
         logger.debug(
             "Preparing combat ended event",
             combat_id=combat_id,
@@ -965,60 +985,8 @@ class CombatService:
             participant_count=len(combat.participants),
         )
 
-        # Check connection state before publishing combat ended event
-        try:
-            from ..realtime.connection_manager import get_global_connection_manager
-
-            connection_manager = get_global_connection_manager()
-            if connection_manager is not None:
-                canonical_room_id = connection_manager._canonical_room_id(combat.room_id) or combat.room_id
-                room_subscribers = connection_manager.room_subscriptions.get(canonical_room_id, set())
-                logger.debug(
-                    "Connection state check before combat ended event",
-                    room_id=combat.room_id,
-                    canonical_room_id=canonical_room_id,
-                    connected_players_count=len(room_subscribers),
-                    connected_player_ids=list(room_subscribers),
-                )
-        except Exception as conn_check_error:
-            logger.warning(
-                "Could not check connection state before combat ended event",
-                error=str(conn_check_error),
-                room_id=combat.room_id,
-            )
-
-        try:
-            ended_event = CombatEndedEvent(
-                combat_id=combat_id,
-                room_id=combat.room_id,
-                reason=reason,
-                duration_seconds=int((datetime.now() - combat.start_time).total_seconds())
-                if hasattr(combat, "start_time")
-                else 0,
-                participants={
-                    str(p.participant_id): {"name": p.name, "hp": p.current_hp, "max_hp": p.max_hp}
-                    for p in combat.participants.values()
-                },
-            )
-            logger.info(
-                "Publishing combat ended event",
-                combat_id=combat_id,
-                room_id=combat.room_id,
-                participant_count=len(combat.participants),
-            )
-            await self._combat_event_publisher.publish_combat_ended(ended_event)
-            logger.info("Combat ended event published successfully", combat_id=combat_id)
-        except Exception as e:
-            # CRITICAL: Prevent combat ended event errors from causing issues
-            # Note: Log error but don't raise - combat has already been cleaned up
-            logger.error(
-                "Error publishing combat ended event - combat already cleaned up",
-                combat_id=combat_id,
-                room_id=combat.room_id,
-                error=str(e),
-                exc_info=True,
-            )
-            # Don't raise - combat cleanup has already happened
+        self._check_connection_state(combat.room_id)
+        await self._publish_combat_ended_event(combat, reason)
 
         logger.info("Combat ended successfully", combat_id=combat_id)
 
@@ -1192,18 +1160,23 @@ class CombatService:
         """
         try:
             logger.info("_persist_player_hp called", player_id=player_id, current_hp=current_hp)
-            if not self._player_combat_service:
-                logger.warning("No player combat service available for HP persistence", player_id=player_id)
-                return
 
-            # Get persistence layer from player combat service
-            persistence = self._player_combat_service._persistence
+            # Get persistence layer from application container
+            try:
+                from ..container import ApplicationContainer
+
+                container = ApplicationContainer.get_instance()
+                persistence = getattr(container, "async_persistence", None) if container else None
+            except Exception as e:
+                logger.warning("Could not get persistence from container", error=str(e), player_id=player_id)
+                persistence = None
+
             if not persistence:
                 logger.warning("No persistence layer available for HP persistence", player_id=player_id)
                 return
 
             # Get player from database
-            player = await persistence.async_get_player(player_id)
+            player = await persistence.get_player_by_id(player_id)
             if not player:
                 logger.warning("Player not found for HP persistence", player_id=player_id)
                 return
@@ -1337,20 +1310,12 @@ class CombatService:
                 max_hp=max_hp,
                 has_player_combat_service=bool(self._player_combat_service),
             )
-            if not self._player_combat_service:
-                logger.warning("No player combat service available for HP update event", player_id=player_id)
-                return
-            if not self._player_combat_service._event_bus:
-                logger.warning(
-                    "No event bus available for HP update event",
-                    player_id=player_id,
-                    event_bus_type=type(self._player_combat_service._event_bus).__name__
-                    if self._player_combat_service._event_bus
-                    else None,
-                )
-                return
-
+            from server.events.event_bus import EventBus
             from server.events.event_types import PlayerHPUpdated
+
+            # Get event bus - use global EventBus instance
+            # EventBus instances are designed to be shared across the application
+            event_bus = EventBus()
 
             # Calculate damage taken (negative for healing)
             damage_taken = old_hp - new_hp
@@ -1369,7 +1334,6 @@ class CombatService:
 
             # Publish to event bus so RealTimeEventHandler can send it to the client
             # CRITICAL: RealTimeEventHandler subscribes to the event bus, not NATS directly
-            event_bus = self._player_combat_service._event_bus
             if event_bus:
                 try:
                     event_bus.publish(hp_update_event)
@@ -1475,14 +1439,12 @@ class CombatService:
                 correct_hp=correct_hp,
                 error_message=error_message,
             )
-            if not self._player_combat_service:
-                logger.warning("No player combat service available for HP correction event", player_id=player_id)
-                return
-            if not self._player_combat_service._event_bus:
-                logger.warning("No event bus available for HP correction event", player_id=player_id)
-                return
-
+            from server.events.event_bus import EventBus
             from server.events.event_types import PlayerHPUpdated
+
+            # Get event bus - use global EventBus instance
+            # EventBus instances are designed to be shared across the application
+            event_bus = EventBus()
 
             # Create correction event - damage_taken is 0 since we're reverting
             correction_event = PlayerHPUpdated(
@@ -1497,7 +1459,6 @@ class CombatService:
             )
 
             # Publish to event bus
-            event_bus = self._player_combat_service._event_bus
             if event_bus:
                 try:
                     event_bus.publish(correction_event)
@@ -1541,13 +1502,11 @@ class CombatService:
             has_player_service=bool(self._player_combat_service),
         )
 
-        # Use the PlayerCombatService from NPCCombatIntegrationService if available
-        # This ensures we have access to the UUID-to-string ID mapping
-        if self._npc_combat_integration_service and self._npc_combat_integration_service._player_combat_service:
-            logger.info("Using PlayerCombatService from NPCCombatIntegrationService", npc_id=npc_id)
-            return await self._npc_combat_integration_service._player_combat_service.calculate_xp_reward(npc_id)
-        elif self._player_combat_service:
-            logger.info("Using PlayerCombatService from CombatService", npc_id=npc_id)
+        # Use PlayerCombatService if available
+        # When NPCCombatIntegrationService is initialized, it sets self._player_combat_service
+        # to the same instance that has access to the UUID-to-string ID mapping
+        if self._player_combat_service:
+            logger.info("Using PlayerCombatService for XP calculation", npc_id=npc_id)
             return await self._player_combat_service.calculate_xp_reward(npc_id)
         else:
             # Fallback to default XP value if no player combat service

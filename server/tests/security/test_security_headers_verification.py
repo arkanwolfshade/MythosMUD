@@ -15,7 +15,6 @@ from server.logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-@pytest.mark.slow  # Mark as slow due to 26-30 second setup times (container_test_client_class fixture)
 class TestSecurityHeadersVerification:
     """
     Test security headers are applied to all endpoints.
@@ -73,14 +72,14 @@ class TestSecurityHeadersVerification:
         mock_persistence.async_save_player = AsyncMock(return_value=None)
         mock_persistence.async_delete_player = AsyncMock(return_value=True)
 
-        # Configure sync methods
-        mock_persistence.list_players = Mock(return_value=[mock_player])
+        # Configure sync methods (list_players is actually async, so use AsyncMock)
+        mock_persistence.list_players = AsyncMock(return_value=[mock_player])
         mock_persistence.get_player = Mock(side_effect=mock_get_player)
         mock_persistence.get_player_by_name = Mock(return_value=mock_player)
         mock_persistence.get_profession_by_id = Mock(return_value=mock_profession)
-        mock_persistence.get_room = Mock(side_effect=mock_get_room)
+        mock_persistence.get_room = AsyncMock(side_effect=mock_get_room)
         mock_persistence.save_player = Mock(return_value=None)
-        mock_persistence.delete_player = Mock(return_value=True)
+        mock_persistence.delete_player = AsyncMock(return_value=True)  # delete_player is async
 
         # Replace container persistence
         app.state.container.persistence = mock_persistence
@@ -97,6 +96,7 @@ class TestSecurityHeadersVerification:
 
         return mock_persistence
 
+    @pytest.mark.slow
     def test_security_headers_on_api_endpoints(self, container_test_client_class, mock_security_persistence):
         """Test that security headers are applied to all API endpoints."""
         # Define all API endpoints to test
@@ -107,7 +107,7 @@ class TestSecurityHeadersVerification:
             ("GET", "/players/test-player-id"),
             ("GET", "/players/name/test-player"),
             ("DELETE", "/players/test-player-id"),
-            ("POST", "/players/test-player-id/sanity"),
+            ("POST", "/players/test-player-id/lucidity"),
             ("POST", "/players/test-player-id/fear"),
             ("POST", "/players/test-player-id/corruption"),
             ("POST", "/players/test-player-id/occult-knowledge"),

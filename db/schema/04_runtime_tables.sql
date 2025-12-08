@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS players (
     player_id varchar(255) PRIMARY KEY,
     user_id uuid NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
     name varchar(50) NOT NULL UNIQUE,
-    stats text NOT NULL DEFAULT '{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100, "position": "standing"}',
+    stats text NOT NULL DEFAULT '{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "lucidity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100, "position": "standing"}',
     inventory text NOT NULL DEFAULT '[]',
     status_effects text NOT NULL DEFAULT '[]',
     current_room_id varchar(50) NOT NULL DEFAULT 'earth_arkhamcity_sanitarium_room_foyer_001',
@@ -65,11 +65,11 @@ CREATE TABLE IF NOT EXISTS invites (
 );
 CREATE INDEX IF NOT EXISTS idx_invites_code ON invites(invite_code);
 CREATE INDEX IF NOT EXISTS idx_invites_used_by_user_id ON invites(used_by_user_id);
--- Player sanity tables
-CREATE TABLE IF NOT EXISTS player_sanity (
+-- Player lucidity tables
+CREATE TABLE IF NOT EXISTS player_lucidity (
     player_id varchar(255) PRIMARY KEY REFERENCES players(player_id) ON DELETE CASCADE,
-    current_san integer NOT NULL DEFAULT 100 CHECK (
-        current_san BETWEEN -100 AND 100
+    current_luc integer NOT NULL DEFAULT 100 CHECK (
+        current_luc BETWEEN -100 AND 100
     ),
     current_tier varchar(32) NOT NULL DEFAULT 'lucid' CHECK (
         current_tier IN (

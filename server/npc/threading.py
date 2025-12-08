@@ -448,11 +448,20 @@ class NPCThreadManager:
                     behavior_config = {}
 
             # Execute idle movement using the handler
+            from ..container import ApplicationContainer
             from .idle_movement import IdleMovementHandler
+
+            # Get async_persistence from container
+            container = ApplicationContainer.get_instance()
+            async_persistence = getattr(container, "async_persistence", None) if container else None
+
+            if async_persistence is None:
+                logger.error("async_persistence not available for idle movement", npc_id=npc_id)
+                return
 
             movement_handler = IdleMovementHandler(
                 event_bus=getattr(npc_instance, "event_bus", None),
-                persistence=None,  # Will use default persistence
+                persistence=async_persistence,
             )
 
             # execute_idle_movement takes npc_instance, npc_definition, and behavior_config

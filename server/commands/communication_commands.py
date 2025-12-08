@@ -155,7 +155,7 @@ async def handle_pose_command(
         logger.warning("Pose command failed - no persistence layer", player_name=player_name)
         return {"result": "You cannot set your pose right now."}
 
-    player = persistence.get_player_by_name(get_username_from_user(current_user))
+    player = await persistence.get_player_by_name(get_username_from_user(current_user))
     if not player:
         logger.warning("Pose command failed - player not found", player_name=player_name)
         return {"result": "You cannot set your pose right now."}
@@ -165,7 +165,7 @@ async def handle_pose_command(
     if not pose:
         # Clear pose
         player.pose = None
-        persistence.save_player(player)
+        await persistence.save_player(player)
         logger.info("Player cleared pose", player_name=player_name)
         return {"result": "Your pose has been cleared."}
 
@@ -174,7 +174,7 @@ async def handle_pose_command(
 
     # Set the pose
     player.pose = pose_description
-    persistence.save_player(player)
+    await persistence.save_player(player)
 
     logger.info("Player pose set", player_name=player_name, pose_description=pose_description)
     return {"result": f"Your pose is now: {pose_description}"}

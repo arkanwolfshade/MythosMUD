@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Tests for XState connection state machine.
  *
  * As documented in the Necronomicon's chapter on dimensional gateways,

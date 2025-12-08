@@ -8,7 +8,7 @@
 
 The `api/players.py` file contains **15 API endpoints** covering:
 - Basic CRUD operations (create, read, list, delete)
-- Player effects (sanity, fear, corruption, occult knowledge, healing, damage)
+- Player effects (lucidity, fear, corruption, occult knowledge, healing, damage)
 - Character creation with stats generation
 - Stats validation and class availability
 
@@ -39,7 +39,7 @@ server/tests/test_api_players.py
 - `delete_player()` - Success, player not found (404)
 
 **B. Player Effects (6 endpoints)**
-- `apply_sanity_loss()` - Success, player not found
+- `apply_lucidity_loss()` - Success, player not found
 - `apply_fear()` - Success, player not found
 - `apply_corruption()` - Success, player not found
 - `gain_occult_knowledge()` - Success, player not found
@@ -120,8 +120,8 @@ class TestPlayerCRUD:
 **Phase 2: Player Effects Tests**
 ```python
 class TestPlayerEffects:
-    def test_apply_sanity_loss_success()
-    def test_apply_sanity_loss_player_not_found()
+    def test_apply_lucidity_loss_success()
+    def test_apply_lucidity_loss_player_not_found()
     def test_apply_fear_success()
     def test_apply_fear_player_not_found()
     def test_apply_corruption_success()

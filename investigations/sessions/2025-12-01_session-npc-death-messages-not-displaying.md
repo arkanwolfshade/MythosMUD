@@ -167,7 +167,7 @@ The client processes events in `processEventQueue()` function with a switch stat
 **Handled Event Types**:
 - `game_state`
 - `room_update` / `room_state`
-- `sanity_change`
+- `lucidity_change`
 - `player_hp_updated`
 - `command_response`
 - `chat_message`

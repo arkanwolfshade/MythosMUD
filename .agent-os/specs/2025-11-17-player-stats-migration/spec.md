@@ -19,7 +19,7 @@ As a game developer, I want player stats to use a 1-100 range instead of 1-20, s
 3. All formulas and calculations are updated to work with the new range
 4. Class prerequisites are scaled proportionally (e.g., 12 → 60, 14 → 70)
 5. Combat damage calculations use the new midpoint (50 instead of 10)
-6. Derived stats (max health, max sanity) use direct stat values instead of multipliers
+6. Derived stats (max health, max lucidity) use direct stat values instead of multipliers
 
 ### As a Player
 
@@ -28,7 +28,7 @@ As a player, I want my character stats to be displayed and calculated using the 
 **Workflow:**
 1. Player views character stats in the UI and sees values in 1-100 range
 2. Player creates a new character and receives stats rolled in 15-90 range
-3. Player's max health and sanity are calculated directly from constitution and wisdom stats
+3. Player's max health and lucidity are calculated directly from constitution and wisdom stats
 4. Combat damage calculations properly reflect the new stat ranges
 
 ## Spec Scope
@@ -37,7 +37,7 @@ As a player, I want my character stats to be displayed and calculated using the 
 
 2. **Stat Generation System** - Update StatsGenerator to use 15-90 range for random stat generation (scaled from 3-18), update all rolling methods (3d6, 4d6_drop_lowest, point_buy), and scale class prerequisites by 5x
 
-3. **Formula Updates** - Update attribute modifier formula from `(attr_value - 10) // 2` to `(attr_value - 50) // 2`, change max_health from `constitution * 10` to `constitution`, and change max_sanity from `wisdom * 5` to `wisdom`
+3. **Formula Updates** - Update attribute modifier formula from `(attr_value - 10) // 2` to `(attr_value - 50) // 2`, change max_health from `constitution * 10` to `constitution`, and change max_lucidity from `wisdom * 5` to `wisdom`
 
 4. **Combat System Updates** - Update combat damage calculations to use 50 as the midpoint instead of 10 for strength bonuses and constitution-based damage reduction
 
@@ -52,7 +52,7 @@ As a player, I want my character stats to be displayed and calculated using the 
 ## Out of Scope
 
 - Migration of existing player stats by scaling (all stats will be reset to defaults)
-- Changes to sanity, occult_knowledge, fear, corruption, or cult_affiliation ranges (these remain 0-100)
+- Changes to lucidity, occult_knowledge, fear, corruption, or cult_affiliation ranges (these remain 0-100)
 - Changes to current_health calculation or health regeneration formulas
 - UI redesign for stat display (existing UI should handle the range correctly)
 - Changes to NPC stat ranges (NPCs may be updated separately in future work)

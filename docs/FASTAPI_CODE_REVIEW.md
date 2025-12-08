@@ -140,8 +140,8 @@ async for session in get_async_session():
 
 ```python
 # ❌ ANTI-PATTERN: No validation on query parameters
-@player_router.post("/{player_id}/sanity-loss")
-async def apply_sanity_loss(
+@player_router.post("/{player_id}/lucidity-loss")
+async def apply_lucidity_loss(
     player_id: str,
     amount: int,  # No validation for range
     ...
@@ -152,13 +152,13 @@ async def apply_sanity_loss(
 
 ```python
 # ✅ CORRECT: Use Pydantic for validation
-class SanityLossRequest(BaseModel):
+class LucidityLossRequest(BaseModel):
     amount: int = Field(..., ge=0, le=100)
 
-@player_router.post("/{player_id}/sanity-loss")
-async def apply_sanity_loss(
+@player_router.post("/{player_id}/lucidity-loss")
+async def apply_lucidity_loss(
     player_id: str,
-    request: SanityLossRequest,
+    request: LucidityLossRequest,
     ...
 ):
 ```

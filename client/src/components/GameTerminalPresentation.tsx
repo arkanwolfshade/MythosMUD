@@ -25,7 +25,7 @@ export interface GameTerminalPresentationProps {
     name: string;
     stats: {
       current_health: number;
-      sanity: number;
+      lucidity: number;
       strength?: number;
       dexterity?: number;
       constitution?: number;
@@ -268,8 +268,8 @@ export const GameTerminalPresentation: React.FC<GameTerminalPresentationProps> =
                     <span className="text-base text-mythos-terminal-text">{player.stats.current_health}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-base text-mythos-terminal-text-secondary">Sanity:</span>
-                    <span className="text-base text-mythos-terminal-text">{player.stats.sanity}</span>
+                    <span className="text-base text-mythos-terminal-text-secondary">Lucidity:</span>
+                    <span className="text-base text-mythos-terminal-text">{player.stats.lucidity}</span>
                   </div>
                   {/* Core Attributes */}
                   <div className="border-t border-mythos-terminal-border pt-2">

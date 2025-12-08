@@ -43,6 +43,7 @@ class ChatMessageSchema(BaseMessageSchema):
     room_id: str | None = Field(None, description="Room ID for room-scoped messages")
     subzone: str | None = Field(None, description="Subzone for subzone-scoped messages")
     target_id: str | None = Field(None, description="Target player ID for whisper messages")
+    target_name: str | None = Field(None, description="Target player name for whisper messages")
 
     @field_validator("channel")
     @classmethod

@@ -25,8 +25,9 @@ class TestSimpleIntegration:
     def mock_connection_manager(self):
         """Create a mock connection manager with realistic behavior."""
         cm = AsyncMock()
-        cm._get_player = Mock()
+        cm._get_player = AsyncMock()
         cm.persistence = Mock()
+        cm.persistence.get_room = AsyncMock()
         cm.broadcast_to_room = AsyncMock()
         cm.subscribe_to_room = AsyncMock()
         cm.unsubscribe_from_room = AsyncMock()
@@ -257,11 +258,35 @@ class TestSimpleIntegration:
 
         mock_connection_manager._get_player.side_effect = mock_get_player
 
+        # Mock _get_players_batch to return a dictionary of players when awaited
+        async def mock_get_players_batch(player_ids):
+            """Return a dictionary of player_id -> player for the batch request."""
+            result = {}
+            for player_id in player_ids:
+                if player_id == player_id1:
+                    result[player_id] = mock_player1
+                elif player_id == player_id2:
+                    result[player_id] = mock_player2
+            return result
+
+        mock_connection_manager._get_players_batch = AsyncMock(side_effect=mock_get_players_batch)
+
         # Setup mock room
         mock_room = Mock()
         mock_room.name = "Test Room"
         mock_room.get_players.return_value = []
+        mock_room.get_npcs.return_value = []  # Return empty list for NPCs
+        # Mock both persistence.get_room and async_persistence.get_room_by_id
         mock_connection_manager.persistence.get_room.return_value = mock_room
+        # async_persistence.get_room_by_id is a sync method that uses cache (not async)
+        if (
+            not hasattr(mock_connection_manager, "async_persistence")
+            or mock_connection_manager.async_persistence is None
+        ):
+            mock_connection_manager.async_persistence = Mock()
+        mock_connection_manager.async_persistence.get_room_by_id = Mock(return_value=mock_room)
+        # Mock _canonical_room_id to return the room_id directly (not a coroutine)
+        mock_connection_manager._canonical_room_id = Mock(return_value="test_room_001")
 
         # Create room with event bus
         room_data = {"id": "test_room_001", "name": "Test Room"}

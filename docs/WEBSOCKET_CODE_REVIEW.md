@@ -1,32 +1,48 @@
 # WebSocket Code Review - Branch: feature/sqlite-to-postgresql
 
+> ⚠️ **DEPRECATION NOTICE** (December 4, 2025)
+>
+> This code review references the original monolithic ConnectionManager (3,653 lines).
+> The ConnectionManager has since been refactored into a modular architecture (35% reduction).
+> Many issues identified below may have been resolved by the refactoring.
+>
+> **See**: `CONNECTION_MANAGER_ARCHITECTURE.md` for current architecture
+> **See**: `REFACTORING_SUMMARY.md` for refactoring details
+
 **Review Date**: 2025-01-XX
 **Reviewer**: AI Code Review Agent
 **Scope**: WebSocket implementation changes vs. `main` branch
 **Reference**: `.cursor/rules/websocket.mdc` best practices
+**Status**: ⚠️ OUTDATED - ConnectionManager refactored December 2025
 
 ## Executive Summary
 
 This review examines WebSocket-related code changes in the `feature/sqlite-to-postgresql` branch against WebSocket best practices. Overall, the codebase demonstrates good architectural patterns with dependency injection and modular design. However, several anti-patterns and potential issues were identified that should be addressed.
 
+**Note**: Line numbers and specific code references below are now outdated due to the December 2025 refactoring.
+
 ## ✅ Positive Findings
 
 ### 1. **Dependency Injection Pattern**
+
 - ✅ ConnectionManager is injected rather than using global singletons
 - ✅ Event handlers receive dependencies via constructor
 - ✅ No global WebSocket instances found
 
 ### 2. **Modern Async Patterns**
+
 - ✅ Uses `asyncio.get_running_loop()` instead of deprecated `get_event_loop()`
 - ✅ Proper async/await usage throughout
 - ✅ Task tracking for memory leak prevention
 
 ### 3. **Error Boundaries**
+
 - ✅ Circuit breaker pattern implemented in NATSMessageHandler
 - ✅ Dead letter queue for failed messages
 - ✅ Retry logic with exponential backoff
 
 ### 4. **Security**
+
 - ✅ Input sanitization on client side (`inputSanitizer.sanitizeCommand`)
 - ✅ Message validation in NATS handler (`validate_message`)
 - ✅ CSRF token structure in place (validation TODO noted)
@@ -52,6 +68,7 @@ except RuntimeError:
 ```
 
 **Problem**: Skipping disconnect processing can lead to:
+
 - Memory leaks (connections not properly cleaned up)
 - Stale connection references
 - Inconsistent state between connection tracking and actual connections
@@ -84,12 +101,14 @@ if "message" in message and isinstance(message["message"], str):
 ```
 
 **Problems**:
+
 - No size limit on incoming messages (DoS risk)
 - No schema validation before processing
 - CSRF validation is TODO (security gap)
 - Nested JSON parsing without depth limits
 
 **Recommendation**:
+
 1. Add message size limits (e.g., 10KB max)
 2. Implement Pydantic schema validation
 3. Add JSON depth limits
@@ -140,12 +159,14 @@ game_state_event = build_event(
 ```
 
 **Problem**:
+
 - No payload size limits
 - Full room data sent on every connection
 - No compression for large payloads
 - Can cause network congestion with many players
 
 **Recommendation**:
+
 1. Implement payload size limits and monitoring
 2. Use incremental updates instead of full state dumps
 3. Consider compression for large payloads
@@ -162,6 +183,7 @@ game_state_event = build_event(
 **Location**: `server/realtime/event_handler.py:90-234` (`_handle_player_entered`)
 
 **Issue**: The `_handle_player_entered` method is 144 lines and performs multiple responsibilities:
+
 - Event processing
 - Player lookup
 - Room occupant updates
@@ -171,6 +193,7 @@ game_state_event = build_event(
 **Problem**: Violates single responsibility principle, making testing and maintenance difficult.
 
 **Recommendation**: Break into smaller, focused methods:
+
 - `_process_player_entered_event()`
 - `_send_room_occupants_update()`
 - `_send_initial_room_state()`
@@ -204,6 +227,7 @@ connection_manager = app.state.container.connection_manager
 **Location**: `server/realtime/connection_manager.py`
 
 **Issue**: Client has reconnection logic, but server doesn't handle reconnection scenarios gracefully:
+
 - No detection of stale connections
 - No automatic cleanup of dead connections
 - Connection health checks are minimal
@@ -211,6 +235,7 @@ connection_manager = app.state.container.connection_manager
 **Problem**: Dead connections can accumulate, causing memory leaks.
 
 **Recommendation**:
+
 1. Implement periodic connection health checks
 2. Add timeout-based connection cleanup
 3. Detect and remove stale connections proactively
@@ -224,11 +249,13 @@ connection_manager = app.state.container.connection_manager
 **Location**: Multiple locations
 
 **Issues**:
+
 1. `server/realtime/websocket_handler.py:374-376` - WebSocketDisconnect caught but no cleanup logging
 2. `server/realtime/event_handler.py:519-521` - RuntimeError caught but async operation silently skipped
 3. Missing error context in several catch blocks
 
 **Recommendation**:
+
 1. Add comprehensive error logging with context
 2. Ensure all error paths perform cleanup
 3. Don't silently skip critical operations
@@ -293,6 +320,7 @@ for player_id in filtered_targets:
 **Problem**: DoS vulnerability - malicious client can overwhelm server.
 
 **Recommendation**:
+
 1. Implement per-connection message rate limiting
 2. Add throttling for command processing
 3. Monitor and alert on suspicious patterns
@@ -310,6 +338,7 @@ for player_id in filtered_targets:
 **Problem**: If token is revoked, connection remains active until disconnect.
 
 **Recommendation**:
+
 1. Implement periodic token validation
 2. Add token expiration checks
 3. Handle token revocation gracefully

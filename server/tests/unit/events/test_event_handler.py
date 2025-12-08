@@ -106,8 +106,11 @@ class TestEventHandlerBroadcasting:
     def mock_connection_manager(self):
         """Create a mock connection manager."""
         cm = AsyncMock()
-        cm._get_player = Mock()
+        cm._get_player = AsyncMock()
         cm.persistence = Mock()
+        # Mock async_persistence with get_room_by_id (sync method)
+        cm.async_persistence = Mock()
+        cm.async_persistence.get_room_by_id = Mock()
         cm.broadcast_to_room = AsyncMock()
         cm.subscribe_to_room = AsyncMock()
         cm.unsubscribe_from_room = AsyncMock()
@@ -132,11 +135,11 @@ class TestEventHandlerBroadcasting:
         mock_player.name = "TestPlayer"
         mock_connection_manager._get_player.return_value = mock_player
 
-        # Setup mock room
+        # Setup mock room - use get_room_by_id (sync method)
         mock_room = Mock()
         mock_room.name = "Test Room"
         mock_room.get_players.return_value = []  # Return empty list to avoid iteration errors
-        mock_connection_manager.persistence.get_room.return_value = mock_room
+        mock_connection_manager.async_persistence.get_room_by_id.return_value = mock_room
 
         # Mock room sync service to pass through the event with the correct player_id
         def mock_process_event(evt):
@@ -187,11 +190,11 @@ class TestEventHandlerBroadcasting:
         mock_player.name = "TestPlayer"
         mock_connection_manager._get_player.return_value = mock_player
 
-        # Setup mock room
+        # Setup mock room - use get_room_by_id (sync method)
         mock_room = Mock()
         mock_room.name = "Test Room"
         mock_room.get_players.return_value = []  # Return empty list to avoid iteration errors
-        mock_connection_manager.persistence.get_room.return_value = mock_room
+        mock_connection_manager.async_persistence.get_room_by_id.return_value = mock_room
 
         # Mock room sync service to pass through the event with the correct player_id
         def mock_process_event(evt):
@@ -265,7 +268,7 @@ class TestEventHandlerBroadcasting:
         mock_connection_manager._get_player.return_value = mock_player
 
         # Setup mock to return None for room lookup
-        mock_connection_manager.persistence.get_room.return_value = None
+        mock_connection_manager.async_persistence.get_room_by_id.return_value = None
 
         # Create and publish event (use UUID for player_id)
         test_player_id = str(uuid4())

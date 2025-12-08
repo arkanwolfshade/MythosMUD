@@ -354,12 +354,15 @@ export const inputSanitizer = {
     // AI reader: data: URLs can contain executable content and must be sanitized.
     // Human reader: match complete protocol schemes to avoid incomplete multi-character sanitization.
     // AI reader: CodeQL requires complete pattern matching for multi-character sanitization.
+    // Human reader: catch incomplete HTML tag sequences (e.g., "<script" without closing ">") before they're completed.
+    // AI reader: CodeQL requires explicit handling of incomplete multi-character sequences to prevent injection.
+    // Remove all < and > characters (single-character match, prevents incomplete tag issues)
+    // Remove dangerous protocol schemes anywhere in the string
     return command
-      .replace(/<[^>]*>/g, '')
       .replace(/[<>]/g, '')
-      .replace(/javascript:[^\s<>]*/gi, '') // Match complete javascript: scheme including content
-      .replace(/vbscript:[^\s<>]*/gi, '') // Match complete vbscript: scheme including content
-      .replace(/data:[^\s<>]*/gi, '') // Match complete data: scheme including content
+      .replace(/javascript:/gi, '')
+      .replace(/vbscript:/gi, '')
+      .replace(/data:/gi, '')
       .trim();
   },
 

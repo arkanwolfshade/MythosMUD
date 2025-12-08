@@ -116,6 +116,53 @@ All real-time messages follow this structure:
 
 ## Connection Management
 
+### **Modular Architecture (Refactored December 2025)**
+
+The ConnectionManager has been refactored into a modular architecture following the Facade pattern. This improves maintainability, testability, and code organization:
+
+**Component Groups**:
+
+```
+server/realtime/
+├── connection_manager.py (Facade - coordinates components)
+├── monitoring/
+│   ├── performance_tracker.py (Performance metrics)
+│   ├── statistics_aggregator.py (Statistics reporting)
+│   └── health_monitor.py (Connection health checks)
+├── errors/
+│   └── error_handler.py (Error detection & recovery)
+├── maintenance/
+│   └── connection_cleaner.py (Cleanup & ghost player removal)
+├── messaging/
+│   ├── personal_message_sender.py (Direct messages)
+│   └── message_broadcaster.py (Room/global broadcasts)
+└── integration/
+    ├── game_state_provider.py (Initial state delivery)
+    └── room_event_handler.py (Room entry/exit events)
+```
+
+**Benefits**:
+- Each component has a single, focused responsibility
+- Components can be tested independently
+- Changes are localized to specific modules
+- Clear separation of concerns improves maintainability
+- Dependency injection enables flexible configuration
+
+**Core Responsibilities Retained**:
+- WebSocket lifecycle management (connect/disconnect)
+- Player presence tracking (online players, last seen)
+- Connection metadata management
+- Component coordination via facade pattern
+
+**Refactoring Metrics**:
+- Original: 3,653 lines (monolithic)
+- Current: 2,382 lines (modular facade)
+- Reduction: 35% (1,271 lines extracted)
+- Components: 7 specialized modules
+- Test Coverage: 99.8% maintained
+
+See `REFACTORING_SUMMARY.md` for complete details.
+
 ### **Connection States**
 
 1. **Connecting**: Initial connection attempt
@@ -145,17 +192,17 @@ const handleError = (error: string) => {
 
 ### **Core Events**
 
-| Event Type | Purpose | Data Structure |
-|------------|---------|----------------|
-| `game_state` | Initial game state | `{player, room}` |
-| `room_update` | Room changes | `{room, entities}` |
-| `player_entered` | Player joins room | `{player_name, player_id}` |
-| `player_left` | Player leaves room | `{player_name, player_id}` |
-| `combat_event` | Combat updates | `{message, damage, target}` |
-| `chat_message` | Chat messages | `{channel, player_name, message}` |
-| `game_tick` | Periodic updates | `{tick_number, timestamp}` |
-| `command_response` | Command results | `{command, result, success}` |
-| `heartbeat` | Connection keep-alive | `{}` |
+| Event Type         | Purpose               | Data Structure                    |
+| ------------------ | --------------------- | --------------------------------- |
+| `game_state`       | Initial game state    | `{player, room}`                  |
+| `room_update`      | Room changes          | `{room, entities}`                |
+| `player_entered`   | Player joins room     | `{player_name, player_id}`        |
+| `player_left`      | Player leaves room    | `{player_name, player_id}`        |
+| `combat_event`     | Combat updates        | `{message, damage, target}`       |
+| `chat_message`     | Chat messages         | `{channel, player_name, message}` |
+| `game_tick`        | Periodic updates      | `{tick_number, timestamp}`        |
+| `command_response` | Command results       | `{command, result, success}`      |
+| `heartbeat`        | Connection keep-alive | `{}`                              |
 
 ### **Event Processing**
 

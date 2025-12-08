@@ -23,9 +23,14 @@ class TestCombatCommandSecurity:
     """Test security validation for combat commands."""
 
     @pytest.fixture
-    def combat_handler(self):
+    def mock_async_persistence(self):
+        """Create a mock async persistence layer."""
+        return Mock()
+
+    @pytest.fixture
+    def combat_handler(self, mock_async_persistence):
         """Create a combat command handler for testing."""
-        return CombatCommandHandler()
+        return CombatCommandHandler(async_persistence=mock_async_persistence)
 
     @pytest.fixture
     def sample_player(self):
@@ -244,9 +249,14 @@ class TestCombatRateLimiting:
     """Test rate limiting for combat commands."""
 
     @pytest.fixture
-    def combat_handler(self):
+    def mock_async_persistence(self):
+        """Create a mock async persistence layer."""
+        return Mock()
+
+    @pytest.fixture
+    def combat_handler(self, mock_async_persistence):
         """Create a combat command handler for testing."""
-        return CombatCommandHandler()
+        return CombatCommandHandler(async_persistence=mock_async_persistence)
 
     @pytest.mark.asyncio
     async def test_combat_command_rate_limiting(self, combat_handler):
@@ -302,9 +312,14 @@ class TestCombatAuditLogging:
     """Test audit logging for combat commands."""
 
     @pytest.fixture
-    def combat_handler(self):
+    def mock_async_persistence(self):
+        """Create a mock async persistence layer."""
+        return Mock()
+
+    @pytest.fixture
+    def combat_handler(self, mock_async_persistence):
         """Create a combat command handler for testing."""
-        return CombatCommandHandler()
+        return CombatCommandHandler(async_persistence=mock_async_persistence)
 
     @pytest.mark.asyncio
     async def test_combat_command_audit_logging(self, combat_handler):
@@ -442,9 +457,14 @@ class TestCombatSecurityIntegration:
     """Test integration of security measures with combat system."""
 
     @pytest.fixture
-    def npc_combat_service(self):
+    def mock_async_persistence(self):
+        """Create a mock async persistence layer."""
+        return Mock()
+
+    @pytest.fixture
+    def npc_combat_service(self, mock_async_persistence):
         """Create an NPC combat integration service for testing."""
-        return NPCCombatIntegrationService()
+        return NPCCombatIntegrationService(async_persistence=mock_async_persistence)
 
     @pytest.mark.asyncio
     async def test_combat_service_security_integration(self, npc_combat_service):
@@ -472,9 +492,14 @@ class TestCombatSecurityErrorHandling:
     """Test error handling in combat security measures."""
 
     @pytest.fixture
-    def combat_handler(self):
+    def mock_async_persistence(self):
+        """Create a mock async persistence layer."""
+        return Mock()
+
+    @pytest.fixture
+    def combat_handler(self, mock_async_persistence):
         """Create a combat command handler for testing."""
-        return CombatCommandHandler()
+        return CombatCommandHandler(async_persistence=mock_async_persistence)
 
     @pytest.mark.asyncio
     async def test_combat_security_error_handling(self, combat_handler):

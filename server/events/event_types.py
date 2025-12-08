@@ -383,6 +383,28 @@ class PlayerRespawnedEvent(BaseEvent):
 
 
 @dataclass
+class PlayerDeliriumRespawnedEvent(BaseEvent):
+    """
+    Event fired when a player respawns after delirium.
+
+    This event is triggered when a player completes the delirium/respawn sequence
+    and returns to the game world at the Sanitarium with restored lucidity.
+    """
+
+    player_id: UUID
+    player_name: str
+    respawn_room_id: str
+    old_lucidity: int
+    new_lucidity: int
+    delirium_location: str | None = None  # Where the player entered delirium
+
+    def __post_init__(self) -> None:
+        """Initialize the event with proper type."""
+        super().__post_init__()
+        self.event_type = "PlayerDeliriumRespawnedEvent"
+
+
+@dataclass
 class MythosHourTickEvent(BaseEvent):
     """Event fired when the accelerated Mythos clock rolls over to a new hour."""
 

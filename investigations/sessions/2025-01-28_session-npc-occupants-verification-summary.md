@@ -17,7 +17,7 @@
 3. ✅ Created verification script `server/scripts/verify_npc_occupants.py` for standalone testing
 4. ✅ **FIXED**: UUID handling bug in `exploration_service.py` causing `'asyncpg.pgproto.pgproto.UUID' object has no attribute 'replace'` error
 5. ✅ **FIXED**: `_send_occupants_snapshot_to_player` now sends structured format (players/npcs) instead of legacy format
-6. ✅ **VERIFIED**: NPCs ARE being found and sent (see warnings.log line 3: `npcs=['Dr. Francis Morgan', 'Sanitarium Patient', 'Sanitarium Patient']`)
+6. ✅ **VERIFIED**: NPCs ARE being found and sent (see warnings.log line 3: `npcs=['Dr. Francis Morgan', 'Sanitarium patient', 'Sanitarium patient']`)
 7. 🔄 **PENDING**: Restart server and verify NPCs appear in client UI
 
 ---
@@ -94,7 +94,7 @@ Players (1):
 
 NPCs (2):
   - Dr. Francis Morgan
-  - Sanitarium Patient
+  - Sanitarium patient
 
 ✅ Occupant update broadcast triggered. Check logs for detailed NPC query information.
 ```
@@ -161,9 +161,9 @@ return UUID(str(room_uuid_result))  # Convert asyncpg UUID via string
 
 **Evidence from logs** (line 3):
 ```
-npcs=['Dr. Francis Morgan', 'Sanitarium Patient', 'Sanitarium Patient']
+npcs=['Dr. Francis Morgan', 'Sanitarium patient', 'Sanitarium patient']
 players=['ArkanWolfshade']
-all_occupants=['ArkanWolfshade', 'Dr. Francis Morgan', 'Sanitarium Patient', 'Sanitarium Patient']
+all_occupants=['ArkanWolfshade', 'Dr. Francis Morgan', 'Sanitarium patient', 'Sanitarium patient']
 ```
 
 **Findings**:
@@ -189,7 +189,7 @@ This was called AFTER `_send_room_occupants_update()` which sends structured for
 }
 ```
 
-**Note**: There appears to be a duplicate "Sanitarium Patient" in the NPC list - this may indicate duplicate spawning, but that's a separate issue from the display problem.
+**Note**: There appears to be a duplicate "Sanitarium patient" in the NPC list - this may indicate duplicate spawning, but that's a separate issue from the display problem.
 
 ---
 
@@ -199,7 +199,7 @@ This was called AFTER `_send_room_occupants_update()` which sends structured for
 
 1. **NPCs Are Spawning** ✅
    - Server logs show NPCs spawned at startup (21:46:13)
-   - Sanitarium Patient spawned in `earth_arkhamcity_sanitarium_room_foyer_001`
+   - Sanitarium patient spawned in `earth_arkhamcity_sanitarium_room_foyer_001`
    - Multiple other NPCs spawned in various rooms
 
 2. **NPCs Use `current_room` Attribute** ✅
@@ -382,7 +382,7 @@ The investigation will be successful when:
 
 The warnings.log line 3 shows:
 ```
-npcs=['Dr. Francis Morgan', 'Sanitarium Patient', 'Sanitarium Patient']
+npcs=['Dr. Francis Morgan', 'Sanitarium patient', 'Sanitarium patient']
 ```
 
 This confirms:

@@ -68,11 +68,11 @@ Executing the modular E2E test suite per `@.cursor/rules/run-multiplayer-playboo
 
 - **Issue**: Players should not see stale messages from previous sessions
 - **Expected**: Each new connection starts with a clean slate
-- **Result**: ✅ **VERIFIED** - Both AW and Ithaqua's Game Logs show only current session messages (game ticks, sanity changes)
+- **Result**: ✅ **VERIFIED** - Both AW and Ithaqua's Game Logs show only current session messages (game ticks, lucidity changes)
 - **Status**: Clean game state is working correctly
 - **Details**:
-  - AW's Game Log: Only game ticks and sanity changes, NO connection/disconnection messages
-  - Ithaqua's Game Log: Only game ticks and sanity changes, NO connection/disconnection messages
+  - AW's Game Log: Only game ticks and lucidity changes, NO connection/disconnection messages
+  - Ithaqua's Game Log: Only game ticks and lucidity changes, NO connection/disconnection messages
   - Both players start with fresh sessions and don't see stale messages
 
 #### 2. Tab Management Working ✅

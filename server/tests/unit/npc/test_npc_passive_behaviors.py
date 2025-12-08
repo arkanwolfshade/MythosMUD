@@ -14,11 +14,41 @@ from uuid import uuid4
 import pytest
 
 from server.models.combat import CombatParticipantType, CombatStatus
-from server.services.combat_service import CombatService
+from server.services.combat_service import CombatParticipantData, CombatService
 
 
 class TestNPCPassiveBehaviorSystem:
     """Test the NPC passive behavior system with non-combat actions."""
+
+    def _create_combat_participants(
+        self,
+        player_id,
+        npc_id,
+        attacker_hp=10,
+        attacker_max_hp=10,
+        attacker_dex=10,
+        target_hp=10,
+        target_max_hp=10,
+        target_dex=10,
+    ):
+        """Helper to create CombatParticipantData objects for tests."""
+        attacker = CombatParticipantData(
+            participant_id=player_id,
+            name="TestPlayer",
+            current_hp=attacker_hp,
+            max_hp=attacker_max_hp,
+            dexterity=attacker_dex,
+            participant_type=CombatParticipantType.PLAYER,
+        )
+        target = CombatParticipantData(
+            participant_id=npc_id,
+            name="TestNPC",
+            current_hp=target_hp,
+            max_hp=target_max_hp,
+            dexterity=target_dex,
+            participant_type=CombatParticipantType.NPC,
+        )
+        return attacker, target
 
     @pytest.fixture
     def mock_player_combat_service(self):
@@ -42,18 +72,20 @@ class TestNPCPassiveBehaviorSystem:
         room_id = "test_room_001"
 
         # Start combat
-        combat = await combat_service.start_combat(
-            room_id=room_id,
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
+        attacker, target = self._create_combat_participants(
+            player_id,
+            npc_id,
             attacker_hp=10,
             attacker_max_hp=10,
-            attacker_dex=15,  # Higher dexterity, goes first
+            attacker_dex=15,
             target_hp=10,
             target_max_hp=10,
-            target_dex=10,  # Lower dexterity, goes second
+            target_dex=10,
+        )
+        combat = await combat_service.start_combat(
+            room_id=room_id,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -80,18 +112,20 @@ class TestNPCPassiveBehaviorSystem:
         room_id = "test_room_001"
 
         # Start combat
-        combat = await combat_service.start_combat(
-            room_id=room_id,
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
+        attacker, target = self._create_combat_participants(
+            player_id,
+            npc_id,
             attacker_hp=10,
             attacker_max_hp=10,
             attacker_dex=10,
             target_hp=10,
             target_max_hp=10,
             target_dex=15,
+        )
+        combat = await combat_service.start_combat(
+            room_id=room_id,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -117,18 +151,20 @@ class TestNPCPassiveBehaviorSystem:
         room_id = "test_room_001"
 
         # Start combat
-        combat = await combat_service.start_combat(
-            room_id=room_id,
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
+        attacker, target = self._create_combat_participants(
+            player_id,
+            npc_id,
             attacker_hp=10,
             attacker_max_hp=10,
             attacker_dex=10,
             target_hp=10,
             target_max_hp=10,
             target_dex=15,
+        )
+        combat = await combat_service.start_combat(
+            room_id=room_id,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -151,18 +187,20 @@ class TestNPCPassiveBehaviorSystem:
         room_id = "test_room_001"
 
         # Start combat
-        combat = await combat_service.start_combat(
-            room_id=room_id,
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
+        attacker, target = self._create_combat_participants(
+            player_id,
+            npc_id,
             attacker_hp=10,
             attacker_max_hp=10,
             attacker_dex=10,
             target_hp=10,
             target_max_hp=10,
             target_dex=15,
+        )
+        combat = await combat_service.start_combat(
+            room_id=room_id,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -185,18 +223,20 @@ class TestNPCPassiveBehaviorSystem:
         room_id = "test_room_001"
 
         # Start combat
-        combat = await combat_service.start_combat(
-            room_id=room_id,
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
+        attacker, target = self._create_combat_participants(
+            player_id,
+            npc_id,
             attacker_hp=10,
             attacker_max_hp=10,
             attacker_dex=10,
             target_hp=10,
             target_max_hp=10,
             target_dex=15,
+        )
+        combat = await combat_service.start_combat(
+            room_id=room_id,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -219,18 +259,20 @@ class TestNPCPassiveBehaviorSystem:
         room_id = "test_room_001"
 
         # Start combat
-        combat = await combat_service.start_combat(
-            room_id=room_id,
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
+        attacker, target = self._create_combat_participants(
+            player_id,
+            npc_id,
             attacker_hp=10,
             attacker_max_hp=10,
             attacker_dex=10,
-            target_hp=50,  # Higher HP so NPC doesn't die
+            target_hp=50,
             target_max_hp=50,
             target_dex=15,
+        )
+        combat = await combat_service.start_combat(
+            room_id=room_id,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -256,18 +298,20 @@ class TestNPCPassiveBehaviorSystem:
         room_id = "test_room_001"
 
         # Start combat with higher player HP so they don't die immediately
-        combat = await combat_service.start_combat(
-            room_id=room_id,
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=50,  # Higher HP so player doesn't die
+        attacker, target = self._create_combat_participants(
+            player_id,
+            npc_id,
+            attacker_hp=50,
             attacker_max_hp=50,
             attacker_dex=10,
             target_hp=10,
             target_max_hp=10,
             target_dex=15,
+        )
+        combat = await combat_service.start_combat(
+            room_id=room_id,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -295,18 +339,20 @@ class TestNPCPassiveBehaviorSystem:
         room_id = "test_room_001"
 
         # Start combat with higher HP so it can last multiple rounds
-        combat = await combat_service.start_combat(
-            room_id=room_id,
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=50,  # Higher HP for multiple rounds
+        attacker, target = self._create_combat_participants(
+            player_id,
+            npc_id,
+            attacker_hp=50,
             attacker_max_hp=50,
             attacker_dex=10,
-            target_hp=50,  # Higher HP for multiple rounds
+            target_hp=50,
             target_max_hp=50,
             target_dex=15,
+        )
+        combat = await combat_service.start_combat(
+            room_id=room_id,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -341,18 +387,20 @@ class TestNPCPassiveBehaviorSystem:
         room_id = "test_room_001"
 
         # Start combat
-        combat = await combat_service.start_combat(
-            room_id=room_id,
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
+        attacker, target = self._create_combat_participants(
+            player_id,
+            npc_id,
             attacker_hp=10,
             attacker_max_hp=10,
             attacker_dex=10,
-            target_hp=50,  # Higher HP so NPC doesn't die
+            target_hp=50,
             target_max_hp=50,
             target_dex=15,
+        )
+        combat = await combat_service.start_combat(
+            room_id=room_id,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -377,18 +425,20 @@ class TestNPCPassiveBehaviorSystem:
         room_id = "test_room_001"
 
         # Start combat
-        combat = await combat_service.start_combat(
-            room_id=room_id,
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
+        attacker, target = self._create_combat_participants(
+            player_id,
+            npc_id,
             attacker_hp=10,
             attacker_max_hp=10,
             attacker_dex=10,
             target_hp=10,
             target_max_hp=10,
             target_dex=15,
+        )
+        combat = await combat_service.start_combat(
+            room_id=room_id,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -400,7 +450,14 @@ class TestNPCPassiveBehaviorSystem:
         start_time = datetime.now(UTC)
 
         for _ in range(10):  # 10 NPC turns
+            # Check if combat is still active before processing turn
+            if combat.status != CombatStatus.ACTIVE:
+                break
             await combat_service._process_npc_turn(combat, current_participant, current_tick=2)
+            # Advance turn if combat is still active
+            if combat.status == CombatStatus.ACTIVE:
+                combat.advance_turn(current_tick=2)
+                current_participant = combat.get_current_turn_participant()
 
         end_time = datetime.now(UTC)
         duration = (end_time - start_time).total_seconds()

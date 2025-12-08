@@ -8,8 +8,8 @@ interface StatusPanelContextType {
     stats: {
       current_health: number;
       max_health?: number;
-      sanity: number;
-      max_sanity?: number;
+      lucidity: number;
+      max_lucidity?: number;
       strength?: number;
       dexterity?: number;
       constitution?: number;
@@ -125,16 +125,16 @@ export const HealthStat: React.FC = () => {
   );
 };
 
-// Sanity stat sub-component
-export const SanityStat: React.FC = () => {
+// Lucidity stat sub-component
+export const LucidityStat: React.FC = () => {
   const { player } = useStatusPanel();
 
-  if (!player?.stats?.sanity) return null;
+  if (!player?.stats?.lucidity) return null;
 
   return (
     <div className="flex items-center justify-between">
-      <span className="text-base text-mythos-terminal-text-secondary">Sanity:</span>
-      <span className="text-base text-mythos-terminal-text">{player.stats.sanity}</span>
+      <span className="text-base text-mythos-terminal-text-secondary">Lucidity:</span>
+      <span className="text-base text-mythos-terminal-text">{player.stats.lucidity}</span>
     </div>
   );
 };
@@ -242,7 +242,7 @@ export const PlayerStats: React.FC = () => {
   return (
     <>
       <HealthStat />
-      <SanityStat />
+      <LucidityStat />
       <CoreAttributes />
       <HorrorStats />
     </>

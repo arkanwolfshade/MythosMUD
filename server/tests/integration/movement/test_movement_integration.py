@@ -4,7 +4,8 @@ Tests for movement integration with command handler.
 This module tests the integration between the command handler and movement service.
 """
 
-from unittest.mock import Mock, patch
+import uuid
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
@@ -25,9 +26,9 @@ class TestMovementIntegration:
         mock_player = Mock()
 
         # Setup mocks
-        mock_persistence.get_player_by_name.return_value = mock_player
-        mock_player.player_id = "player1"
+        mock_player.player_id = uuid.uuid4()
         mock_player.current_room_id = "room1"
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_persistence.get_room.return_value = mock_room
         mock_room.exits = {"north": "room2"}
 
@@ -65,9 +66,9 @@ class TestMovementIntegration:
         mock_player = Mock()
 
         # Setup mocks
-        mock_persistence.get_player_by_name.return_value = mock_player
-        mock_player.player_id = "player1"
+        mock_player.player_id = uuid.uuid4()
         mock_player.current_room_id = "room1"
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_persistence.get_room.return_value = mock_room
         mock_room.exits = {"north": "room2"}
 

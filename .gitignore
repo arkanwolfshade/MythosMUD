@@ -273,6 +273,8 @@ test-*.txt
 
 # Node.js
 node_modules/
+scripts/node_modules/
+scripts/static_data/node_modules/
 .npm/
 .node_repl_history
 .yarn/
@@ -315,3 +317,7 @@ coverage/
 .nyc_output/
 *.lcov
 coverage-final.json
+
+
+#Ignore cursor AI rules
+.cursor\rules\codacy.mdc

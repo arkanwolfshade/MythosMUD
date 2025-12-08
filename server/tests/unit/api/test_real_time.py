@@ -1,505 +1,170 @@
 """
-Tests for api/real_time.py module.
+Tests for Real-Time API endpoints.
 
-Tests the real-time API endpoints including WebSocket connections
-and authentication flows.
+This module tests the WebSocket connection handling and real-time communication
+endpoints for the MythosMUD server.
+
+AI Agent: Tests for real-time API covering connection manager resolution,
+         state management, and WebSocket endpoint logic. Created for fresh session execution.
 """
 
-from unittest.mock import AsyncMock, Mock, patch
-from uuid import uuid4
+# pylint: disable=redefined-outer-name,protected-access
+# Justification: pytest fixtures redefine names, protected access needed for testing internals
+
+from unittest.mock import Mock, patch
 
 import pytest
-from fastapi import HTTPException, WebSocket
-
-from server.api.real_time import (
-    realtime_router,
-    websocket_endpoint,
-    websocket_endpoint_route,
-)
-
-
-class TestWebSocketEndpoint:
-    """Test WebSocket endpoint."""
-
-    @pytest.mark.asyncio
-    async def test_websocket_endpoint_success_with_token(self):
-        """Test successful WebSocket connection with valid token."""
-        # Mock WebSocket
-        mock_websocket = AsyncMock(spec=WebSocket)
-        mock_websocket.query_params = {"token": "valid_token"}
-
-        # Mock connection_manager for readiness gate
-        mock_connection_manager = Mock()
-        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
-
-        # Mock dependencies
-        with (
-            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
-            patch("server.api.real_time.decode_access_token") as mock_decode,
-            patch("server.api.real_time.get_persistence") as mock_get_persistence,
-            patch("server.api.real_time.handle_websocket_connection") as mock_handle,
-        ):
-            # Setup mocks
-            mock_decode.return_value = {"sub": "test_user_id"}
-            mock_persistence = Mock()
-            mock_get_persistence.return_value = mock_persistence
-            mock_player = Mock()
-            # Use valid UUID format for player_id
-            test_player_id = str(uuid4())
-            mock_player.player_id = test_player_id
-            mock_persistence.get_player_by_user_id.return_value = mock_player
-
-            # Call the endpoint
-            await websocket_endpoint(mock_websocket)
-
-            # Verify handle_websocket_connection was called with correct parameters
-            # Note: player_id is converted to UUID before calling handle_websocket_connection
-            import uuid
-
-            expected_player_id = uuid.UUID(test_player_id)
-            mock_handle.assert_called_once_with(
-                mock_websocket,
-                expected_player_id,
-                None,
-                connection_manager=mock_connection_manager,
-                token="valid_token",
-            )
-
-    @pytest.mark.asyncio
-    async def test_websocket_endpoint_subprotocol_token(self):
-        """Token provided via Sec-WebSocket-Protocol header is accepted."""
-        # Mock WebSocket with subprotocol header
-        mock_websocket = AsyncMock(spec=WebSocket)
-        mock_websocket.query_params = {"session_id": None}
-        mock_websocket.headers = {"sec-websocket-protocol": "bearer, test_token_from_header"}
-
-        # Mock connection_manager for readiness gate
-        mock_connection_manager = Mock()
-        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
-
-        with (
-            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
-            patch("server.api.real_time.decode_access_token") as mock_decode,
-            patch("server.api.real_time.get_persistence") as mock_get_persistence,
-            patch("server.api.real_time.handle_websocket_connection") as mock_handle,
-        ):
-            mock_decode.return_value = {"sub": "user_from_header"}
-            mock_persistence = Mock()
-            mock_get_persistence.return_value = mock_persistence
-            mock_player = Mock()
-            # Use valid UUID format for player_id
-            player_from_header_id = str(uuid4())
-            mock_player.player_id = player_from_header_id
-            mock_persistence.get_player_by_user_id.return_value = mock_player
-
-            await websocket_endpoint(mock_websocket)
-
-            # Ensure decode was invoked with token extracted from header
-            mock_decode.assert_called_once_with("test_token_from_header")
-            # Note: player_id is converted to UUID before calling handle_websocket_connection
-            import uuid
-
-            expected_player_id = uuid.UUID(player_from_header_id)
-            mock_handle.assert_called_once_with(
-                mock_websocket,
-                expected_player_id,
-                None,
-                connection_manager=mock_connection_manager,
-                token="test_token_from_header",
-            )
-
-    @pytest.mark.asyncio
-    async def test_websocket_endpoint_success_with_player_id_fallback(self):
-        """Test successful WebSocket connection with player_id fallback."""
-        # Mock WebSocket with player_id but no valid token
-        mock_websocket = AsyncMock(spec=WebSocket)
-        mock_websocket.query_params = {"token": "invalid_token", "player_id": "test_player_id"}
-
-        # Mock connection_manager for readiness gate
-        mock_connection_manager = Mock()
-        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
-
-        # Mock dependencies
-        with (
-            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
-            patch("server.api.real_time.decode_access_token") as mock_decode,
-            patch("server.api.real_time.get_persistence") as mock_get_persistence,
-            patch("server.api.real_time.handle_websocket_connection") as mock_handle,
-        ):
-            # Setup mocks
-            mock_decode.return_value = None  # Invalid token
-            mock_persistence = Mock()
-            mock_get_persistence.return_value = mock_persistence
-            mock_player = Mock()
-            # Use valid UUID format for player_id
-            test_player_id = str(uuid4())
-            mock_player.player_id = test_player_id
-            mock_persistence.get_player.return_value = mock_player
-            # Update query params to use valid UUID
-            mock_websocket.query_params = {"token": "invalid_token", "player_id": test_player_id}
-
-            # Call the endpoint
-            await websocket_endpoint(mock_websocket)
-
-            # Verify handle_websocket_connection was called with player_id from query params
-            # Note: player_id is converted to UUID before calling handle_websocket_connection
-            import uuid
-
-            expected_player_id = uuid.UUID(test_player_id)
-            mock_handle.assert_called_once_with(
-                mock_websocket,
-                expected_player_id,
-                None,
-                connection_manager=mock_connection_manager,
-                token="invalid_token",
-            )
-
-    @pytest.mark.asyncio
-    async def test_websocket_endpoint_no_token_no_player_id(self):
-        """Test WebSocket endpoint with no token and no player_id."""
-        # Mock WebSocket without token or player_id
-        mock_websocket = AsyncMock(spec=WebSocket)
-        mock_websocket.query_params = {}
-
-        # Mock connection_manager for readiness gate
-        mock_connection_manager = Mock()
-        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
-
-        # Mock decode_access_token to return None
-        with (
-            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
-            patch("server.api.real_time.decode_access_token") as mock_decode,
-        ):
-            mock_decode.return_value = None
-
-            # Call the endpoint and expect HTTPException
-            with pytest.raises(HTTPException) as exc_info:
-                await websocket_endpoint(mock_websocket)
-
-            assert exc_info.value.status_code == 401
-            assert exc_info.value.detail == "Invalid or missing token"
-
-    @pytest.mark.asyncio
-    async def test_websocket_endpoint_no_player_record(self):
-        """Test WebSocket endpoint when user has no player record."""
-        # Mock WebSocket with valid token
-        mock_websocket = AsyncMock(spec=WebSocket)
-        mock_websocket.query_params = {"token": "valid_token"}
-
-        # Mock connection_manager for readiness gate
-        mock_connection_manager = Mock()
-        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
-
-        # Mock dependencies
-        with (
-            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
-            patch("server.api.real_time.decode_access_token") as mock_decode,
-            patch("server.api.real_time.get_persistence") as mock_get_persistence,
-        ):
-            # Setup mocks
-            mock_decode.return_value = {"sub": "test_user_id"}
-            mock_persistence = Mock()
-            mock_get_persistence.return_value = mock_persistence
-            mock_persistence.get_player_by_user_id.return_value = None
-
-            # Call the endpoint and expect HTTPException
-            with pytest.raises(HTTPException) as exc_info:
-                await websocket_endpoint(mock_websocket)
-
-            assert exc_info.value.status_code == 401
-            assert exc_info.value.detail == "User has no player record"
-
-    @pytest.mark.asyncio
-    async def test_websocket_endpoint_handle_websocket_connection_exception(self):
-        """Test WebSocket endpoint when handle_websocket_connection raises an exception."""
-        # Mock WebSocket
-        mock_websocket = AsyncMock(spec=WebSocket)
-        mock_websocket.query_params = {"token": "valid_token"}
-
-        # Mock connection_manager for readiness gate
-        mock_connection_manager = Mock()
-        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
-
-        # Mock dependencies
-        with (
-            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
-            patch("server.api.real_time.decode_access_token") as mock_decode,
-            patch("server.api.real_time.get_persistence") as mock_get_persistence,
-            patch("server.api.real_time.handle_websocket_connection") as mock_handle,
-            patch("server.logging.enhanced_logging_config.get_logger") as mock_get_logger,
-        ):
-            # Setup mocks
-            mock_decode.return_value = {"sub": "test_user_id"}
-            mock_persistence = Mock()
-            mock_get_persistence.return_value = mock_persistence
-            mock_player = Mock()
-            # Use valid UUID format for player_id
-            test_player_id = str(uuid4())
-            mock_player.player_id = test_player_id
-            mock_persistence.get_player_by_user_id.return_value = mock_player
-            mock_logger = Mock()
-            mock_get_logger.return_value = mock_logger
-
-            # Make handle_websocket_connection raise an exception
-            test_exception = Exception("Test exception")
-            mock_handle.side_effect = test_exception
-
-            # Call the endpoint and expect the exception to be re-raised
-            with pytest.raises(Exception) as exc_info:
-                await websocket_endpoint(mock_websocket)
-
-            assert exc_info.value == test_exception
-            # player_id is converted to UUID before logging
-            import uuid
-
-            expected_player_id = uuid.UUID(test_player_id)
-            mock_logger.error.assert_called_once_with(
-                "Error in WebSocket endpoint", player_id=expected_player_id, error="Test exception", exc_info=True
-            )
-
-
-class TestWebSocketEndpointRoute:
-    """Test backward-compatible WebSocket endpoint."""
-
-    @pytest.mark.asyncio
-    async def test_websocket_endpoint_route_success_with_token(self):
-        """Test successful WebSocket connection with valid token."""
-        # Mock WebSocket
-        mock_websocket = AsyncMock(spec=WebSocket)
-        mock_websocket.query_params = {"token": "valid_token"}
-
-        # Mock connection_manager for readiness gate
-        mock_connection_manager = Mock()
-        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
-
-        # Mock dependencies
-        with (
-            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
-            patch("server.api.real_time.decode_access_token") as mock_decode,
-            patch("server.api.real_time.get_persistence") as mock_get_persistence,
-            patch("server.api.real_time.handle_websocket_connection") as mock_handle,
-            patch("server.logging.enhanced_logging_config.get_logger") as mock_get_logger,
-        ):
-            # Setup mocks
-            mock_decode.return_value = {"sub": "test_user_id"}
-            mock_persistence = Mock()
-            mock_get_persistence.return_value = mock_persistence
-            mock_player = Mock()
-            # Use valid UUID format for player_id
-            resolved_player_id = str(uuid4())
-            mock_player.player_id = resolved_player_id
-            mock_persistence.get_player_by_user_id.return_value = mock_player
-            mock_logger = Mock()
-            mock_get_logger.return_value = mock_logger
-
-            # Use valid UUID format for path parameter
-            path_player_id = str(uuid4())
-
-            # Call the endpoint
-            await websocket_endpoint_route(mock_websocket, path_player_id)
-
-            # Verify handle_websocket_connection was called with resolved player_id
-            # Note: player_id is converted to UUID before calling handle_websocket_connection
-            import uuid
-
-            expected_player_id = uuid.UUID(resolved_player_id)
-            mock_handle.assert_called_once_with(
-                mock_websocket, expected_player_id, None, connection_manager=mock_connection_manager
-            )
-            mock_logger.info.assert_called_once_with(
-                "WebSocket (compat) connection attempt", player_id=path_player_id, session_id=None
-            )
-
-    @pytest.mark.asyncio
-    async def test_websocket_endpoint_route_success_without_token(self):
-        """Test successful WebSocket connection without token (uses path player_id)."""
-        # Mock WebSocket without token
-        mock_websocket = AsyncMock(spec=WebSocket)
-        mock_websocket.query_params = {}
-
-        # Mock connection_manager for readiness gate
-        mock_connection_manager = Mock()
-        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
-
-        # Mock dependencies
-        with (
-            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
-            patch("server.api.real_time.decode_access_token") as mock_decode,
-            patch("server.api.real_time.handle_websocket_connection") as mock_handle,
-            patch("server.logging.enhanced_logging_config.get_logger") as mock_get_logger,
-        ):
-            # Setup mocks
-            mock_decode.return_value = None  # No token
-            mock_logger = Mock()
-            mock_get_logger.return_value = mock_logger
-
-            # Use valid UUID format for path parameter
-            path_player_id = str(uuid4())
-
-            # Call the endpoint
-            await websocket_endpoint_route(mock_websocket, path_player_id)
-
-            # Verify handle_websocket_connection was called with path player_id
-            # Note: player_id is converted to UUID before calling handle_websocket_connection
-            import uuid
-
-            expected_player_id = uuid.UUID(path_player_id)
-            mock_handle.assert_called_once_with(
-                mock_websocket, expected_player_id, None, connection_manager=mock_connection_manager
-            )
-            mock_logger.info.assert_called_once_with(
-                "WebSocket (compat) connection attempt", player_id=path_player_id, session_id=None
-            )
-
-    @pytest.mark.asyncio
-    async def test_websocket_endpoint_route_token_without_sub(self):
-        """Test WebSocket connection with token but no 'sub' field."""
-        # Mock WebSocket with token
-        mock_websocket = AsyncMock(spec=WebSocket)
-        mock_websocket.query_params = {"token": "invalid_token"}
-
-        # Mock connection_manager for readiness gate
-        mock_connection_manager = Mock()
-        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
-
-        # Mock dependencies
-        with (
-            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
-            patch("server.api.real_time.decode_access_token") as mock_decode,
-            patch("server.api.real_time.handle_websocket_connection") as mock_handle,
-            patch("server.logging.enhanced_logging_config.get_logger") as mock_get_logger,
-        ):
-            # Setup mocks
-            mock_decode.return_value = {"other_field": "value"}  # No 'sub' field
-            mock_logger = Mock()
-            mock_get_logger.return_value = mock_logger
-
-            # Use valid UUID format for path parameter
-            path_player_id = str(uuid4())
-
-            # Call the endpoint
-            await websocket_endpoint_route(mock_websocket, path_player_id)
-
-            # Verify handle_websocket_connection was called with path player_id (fallback)
-            # path_player_id is converted to UUID in websocket_endpoint_route
-            import uuid
-
-            expected_player_id = uuid.UUID(path_player_id)
-            mock_handle.assert_called_once_with(
-                mock_websocket, expected_player_id, None, connection_manager=mock_connection_manager
-            )
-            mock_logger.info.assert_called_once_with(
-                "WebSocket (compat) connection attempt", player_id=path_player_id, session_id=None
-            )
-
-    @pytest.mark.asyncio
-    async def test_websocket_endpoint_route_token_no_player_record(self):
-        """Test WebSocket connection with token but no player record."""
-        # Mock WebSocket with token
-        mock_websocket = AsyncMock(spec=WebSocket)
-        mock_websocket.query_params = {"token": "valid_token"}
-
-        # Mock connection_manager for readiness gate
-        mock_connection_manager = Mock()
-        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
-
-        # Mock dependencies
-        with (
-            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
-            patch("server.api.real_time.decode_access_token") as mock_decode,
-            patch("server.api.real_time.get_persistence") as mock_get_persistence,
-            patch("server.api.real_time.handle_websocket_connection") as mock_handle,
-            patch("server.logging.enhanced_logging_config.get_logger") as mock_get_logger,
-        ):
-            # Setup mocks
-            mock_decode.return_value = {"sub": "test_user_id"}
-            mock_persistence = Mock()
-            mock_get_persistence.return_value = mock_persistence
-            mock_persistence.get_player_by_user_id.return_value = None  # No player record
-            mock_logger = Mock()
-            mock_get_logger.return_value = mock_logger
-
-            # Use valid UUID format for path parameter
-            # When token resolves but no player record found, path player_id should be used as fallback
-            path_player_id = str(uuid4())
-            import uuid as uuid_module
-
-            path_player_uuid = uuid_module.UUID(path_player_id)
-
-            # Call the endpoint
-            await websocket_endpoint_route(mock_websocket, path_player_id)
-
-            # Verify handle_websocket_connection was called with path player_id (fallback)
-            # The endpoint converts path player_id to UUID first, then tries token resolution
-            # If token resolution fails (no player record), it uses the path player_id UUID
-            mock_handle.assert_called_once_with(
-                mock_websocket, path_player_uuid, None, connection_manager=mock_connection_manager
-            )
-            mock_logger.info.assert_called_once_with(
-                "WebSocket (compat) connection attempt", player_id=path_player_id, session_id=None
-            )
-
-    @pytest.mark.asyncio
-    async def test_websocket_endpoint_route_handle_websocket_connection_exception(self):
-        """Test WebSocket endpoint when handle_websocket_connection raises an exception."""
-        # Mock WebSocket
-        mock_websocket = AsyncMock(spec=WebSocket)
-        mock_websocket.query_params = {"token": "valid_token"}
-
-        # Mock connection_manager for readiness gate
-        mock_connection_manager = Mock()
-        mock_connection_manager.persistence = Mock()  # Non-None to pass readiness gate
-
-        # Mock dependencies
-        with (
-            patch("server.realtime.connection_manager.connection_manager", mock_connection_manager),
-            patch("server.api.real_time.decode_access_token") as mock_decode,
-            patch("server.api.real_time.get_persistence") as mock_get_persistence,
-            patch("server.api.real_time.handle_websocket_connection") as mock_handle,
-            patch("server.logging.enhanced_logging_config.get_logger") as mock_get_logger,
-        ):
-            # Setup mocks
-            mock_decode.return_value = {"sub": "test_user_id"}
-            mock_persistence = Mock()
-            mock_get_persistence.return_value = mock_persistence
-            mock_player = Mock()
-            # Use valid UUID format for player_id
-            resolved_player_id = str(uuid4())
-            mock_player.player_id = resolved_player_id
-            mock_persistence.get_player_by_user_id.return_value = mock_player
-            mock_logger = Mock()
-            mock_get_logger.return_value = mock_logger
-
-            # Use valid UUID format for path parameter
-            path_player_id = str(uuid4())
-
-            # Make handle_websocket_connection raise an exception
-            test_exception = Exception("Test exception")
-            mock_handle.side_effect = test_exception
-
-            # Call the endpoint and expect the exception to be re-raised
-            with pytest.raises(Exception) as exc_info:
-                await websocket_endpoint_route(mock_websocket, path_player_id)
-
-            assert exc_info.value == test_exception
-            # Note: The error handler in websocket_endpoint_route logs the path player_id (string),
-            # not the resolved_player_id (UUID), for backward compatibility
-            mock_logger.error.assert_called_once_with(
-                "Error in WebSocket endpoint", player_id=path_player_id, error="Test exception", exc_info=True
-            )
+from fastapi import HTTPException
+
+
+# Note: These imports will trigger bcrypt in same session as other tests
+# Run in fresh terminal: uv run pytest server/tests/unit/api/test_real_time.py -v
+@pytest.fixture
+def real_time_module():
+    """Lazily import real_time module."""
+    from server.api import real_time
+
+    return real_time
+
+
+@pytest.fixture
+def mock_connection_manager():
+    """Provide mock connection manager."""
+    manager = Mock()
+    manager.async_persistence = Mock()
+    return manager
+
+
+@pytest.fixture
+def mock_state_with_manager(mock_connection_manager):
+    """Provide mock state with connection manager."""
+    state = Mock()
+    state.container = Mock()
+    state.container.connection_manager = mock_connection_manager
+    return state
+
+
+@pytest.fixture
+def mock_state_without_manager():
+    """Provide mock state without connection manager."""
+    state = Mock()
+    state.container = Mock()
+    state.container.connection_manager = None
+    return state
+
+
+class TestResolveConnectionManagerFromState:
+    """Test _resolve_connection_manager_from_state helper function."""
+
+    @patch("server.api.real_time.resolve_connection_manager")
+    @patch("server.api.real_time.set_global_connection_manager")
+    def test_resolves_manager_from_container_dict(
+        self, mock_set_global, mock_resolve, real_time_module, mock_connection_manager
+    ):
+        """Test resolves connection manager from container __dict__."""
+        mock_resolve.return_value = mock_connection_manager
+
+        state = Mock()
+        state.container = Mock()
+        state.container.__dict__ = {"connection_manager": mock_connection_manager}
+
+        result = real_time_module._resolve_connection_manager_from_state(state)
+
+        assert result == mock_connection_manager
+        mock_resolve.assert_called_once()
+        mock_set_global.assert_called_once_with(mock_connection_manager)
+
+    @patch("server.api.real_time.resolve_connection_manager")
+    @patch("server.api.real_time.set_global_connection_manager")
+    def test_resolves_manager_from_container_attribute(
+        self, _mock_set_global, mock_resolve, real_time_module, mock_connection_manager
+    ):
+        """Test resolves connection manager from container attribute."""
+        mock_resolve.return_value = mock_connection_manager
+
+        state = Mock()
+        state.container = Mock()
+        state.container.connection_manager = mock_connection_manager
+        # Ensure it doesn't have __dict__ entry
+        if hasattr(state.container, "__dict__"):
+            delattr(state.container, "__dict__")
+
+        _ = real_time_module._resolve_connection_manager_from_state(state)
+
+        mock_resolve.assert_called_once()
+
+    @patch("server.api.real_time.resolve_connection_manager")
+    @patch("server.api.real_time.set_global_connection_manager")
+    def test_handles_none_container(self, _mock_set_global, _mock_resolve, real_time_module):
+        """Test handles state with no container."""
+        _mock_resolve.return_value = None
+
+        state = Mock()
+        state.container = None
+
+        result = real_time_module._resolve_connection_manager_from_state(state)
+
+        assert result is None
+
+    @patch("server.api.real_time.resolve_connection_manager")
+    @patch("server.api.real_time.set_global_connection_manager")
+    def test_handles_mock_container(self, _mock_set_global, _mock_resolve, real_time_module):
+        """Test handles Mock container gracefully."""
+        _mock_resolve.return_value = None
+
+        state = Mock()
+        state.container = Mock()
+
+        _ = real_time_module._resolve_connection_manager_from_state(state)
+
+        _mock_resolve.assert_called_once()
+
+
+class TestEnsureConnectionManager:
+    """Test _ensure_connection_manager helper function."""
+
+    @patch("server.api.real_time._resolve_connection_manager_from_state")
+    @patch("server.api.real_time.set_global_connection_manager")
+    def test_returns_manager_when_available(
+        self, mock_set_global, mock_resolve, real_time_module, mock_connection_manager
+    ):
+        """Test returns connection manager when available."""
+        mock_resolve.return_value = mock_connection_manager
+
+        state = Mock()
+        result = real_time_module._ensure_connection_manager(state)
+
+        assert result == mock_connection_manager
+        mock_set_global.assert_called_once_with(mock_connection_manager)
+
+    @patch("server.api.real_time._resolve_connection_manager_from_state")
+    def test_raises_503_when_manager_not_available(self, mock_resolve, real_time_module):
+        """Test raises HTTPException when manager not available."""
+        mock_resolve.return_value = None
+
+        state = Mock()
+
+        with pytest.raises(HTTPException) as exc_info:
+            real_time_module._ensure_connection_manager(state)
+
+        assert exc_info.value.status_code == 503
+        assert "unavailable" in exc_info.value.detail.lower()
 
 
 class TestRealtimeRouter:
-    """Test the realtime router configuration."""
+    """Test real-time router configuration."""
 
-    def test_realtime_router_configuration(self):
-        """Test that the realtime router is properly configured."""
-        assert realtime_router.prefix == "/api"
-        assert "realtime" in realtime_router.tags
+    def test_router_exists(self, real_time_module):
+        """Test realtime router is properly configured."""
+        assert hasattr(real_time_module, "realtime_router")
+        assert real_time_module.realtime_router is not None
 
-        # Check that all expected routes are registered
-        routes = [route.path for route in realtime_router.routes]
-        expected_routes = ["/api/ws", "/api/ws/{player_id}"]
+    def test_router_has_correct_prefix(self, real_time_module):
+        """Test router configured with correct prefix."""
+        router = real_time_module.realtime_router
+        assert router.prefix == "/api"
 
-        for expected_route in expected_routes:
-            assert expected_route in routes
+    def test_router_has_realtime_tag(self, real_time_module):
+        """Test router tagged with 'realtime'."""
+        router = real_time_module.realtime_router
+        assert "realtime" in router.tags

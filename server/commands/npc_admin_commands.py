@@ -772,7 +772,7 @@ async def handle_npc_test_occupants_command(
             result_lines.append("  (none)")
 
         # Also trigger the actual occupant update broadcast
-        await event_handler._send_room_occupants_update(room_id)
+        await event_handler.send_room_occupants_update(room_id)
 
         result_lines.append("\n✅ Occupant update broadcast triggered. Check logs for detailed NPC query information.")
 

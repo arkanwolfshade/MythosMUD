@@ -144,7 +144,7 @@ class TestModelPerformanceBenchmarks:
         "intelligence": 16,
         "wisdom": 13,
         "charisma": 11,
-        "sanity": 85,
+        "lucidity": 85,
         "occult_knowledge": 25,
         "fear": 15,
         "corruption": 5,

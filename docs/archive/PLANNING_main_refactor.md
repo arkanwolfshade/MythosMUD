@@ -81,7 +81,7 @@ server/
 │   └── rooms.py          # Room-related endpoints
 ├── game/                  # Game business logic
 │   ├── __init__.py
-│   ├── mechanics.py      # Sanity, fear, corruption logic
+│   ├── mechanics.py      # lucidity, fear, corruption logic
 │   ├── player_service.py # Player business operations
 │   └── room_service.py   # Room-related operations
 ├── realtime/             # Real-time communication

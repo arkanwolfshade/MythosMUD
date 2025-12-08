@@ -121,7 +121,7 @@ const filteredMessages = messages.filter(message => {
 
 The chat message routing issue has been successfully resolved. Chat messages now appear exclusively in the Chat Panel, while system and command messages remain in the Game Log Panel. The fix is minimal, consistent with existing patterns, and maintains all existing functionality.
 
-As noted in the Pnakotic Manuscripts, proper categorization of messages is essential for maintaining the sanity of those who venture into the digital realms. This fix ensures that the boundaries between different types of communication remain properly defined, preventing the chaotic intermingling that can lead to confusion and madness.
+As noted in the Pnakotic Manuscripts, proper categorization of messages is essential for maintaining the lucidity of those who venture into the digital realms. This fix ensures that the boundaries between different types of communication remain properly defined, preventing the chaotic intermingling that can lead to confusion and madness.
 
 ---
 

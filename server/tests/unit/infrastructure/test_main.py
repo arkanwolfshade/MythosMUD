@@ -45,38 +45,39 @@ class TestEndpoints:
     def client(self, mock_application_container):
         """Create a test client with initialized app state."""
         # Initialize the app state with persistence
-        with patch("server.persistence.get_persistence") as mock_get_persistence:
-            mock_persistence = AsyncMock()
-            mock_get_persistence.return_value = mock_persistence
+        # Use AsyncPersistenceLayer directly (PersistenceLayer removed)
+        mock_persistence = AsyncMock()
 
-            # Mock profession data to return proper string values
-            mock_profession = Mock()
-            mock_profession.name = "Scholar"
-            mock_profession.description = "A learned academic"
-            mock_profession.flavor_text = "Knowledge is power"
-            mock_persistence.async_get_profession_by_id = AsyncMock(return_value=mock_profession)
+        # Mock profession data to return proper string values
+        mock_profession = Mock()
+        mock_profession.name = "Scholar"
+        mock_profession.description = "A learned academic"
+        mock_profession.flavor_text = "Knowledge is power"
+        mock_persistence.async_get_profession_by_id = AsyncMock(return_value=mock_profession)
+        # Also mock get_profession_by_id for _convert_player_to_schema
+        mock_persistence.get_profession_by_id = AsyncMock(return_value=mock_profession)
 
-            # Create a test client
-            test_client = TestClient(app)
+        # Create a test client
+        test_client = TestClient(app)
 
-            # Create real PlayerService with mocked persistence
-            # This allows tests to patch persistence methods and have those patches
-            # affect the service layer behavior
-            from server.game.player_service import PlayerService
+        # Create real PlayerService with mocked persistence
+        # This allows tests to patch persistence methods and have those patches
+        # affect the service layer behavior
+        from server.game.player_service import PlayerService
 
-            player_service = PlayerService(mock_persistence)
+        player_service = PlayerService(mock_persistence)
 
-            # Use the comprehensive mock container and update specific services
-            mock_application_container.persistence = mock_persistence
-            mock_application_container.player_service = player_service
+        # Use the comprehensive mock container and update specific services
+        mock_application_container.persistence = mock_persistence
+        mock_application_container.player_service = player_service
 
-            # Set container and services in app state
-            test_client.app.state.container = mock_application_container
-            test_client.app.state.persistence = mock_persistence
-            test_client.app.state.player_service = player_service
-            test_client.app.state.room_service = mock_application_container.room_service
+        # Set container and services in app state
+        test_client.app.state.container = mock_application_container
+        test_client.app.state.persistence = mock_persistence
+        test_client.app.state.player_service = player_service
+        test_client.app.state.room_service = mock_application_container.room_service
 
-            return test_client
+        return test_client
 
     def test_read_root(self, client):
         """Test the root endpoint."""
@@ -135,7 +136,7 @@ class TestEndpoints:
         mock_player.user_id = "550e8400-e29b-41d4-a716-446655440001"
         mock_player.experience_points = 0
         mock_player.level = 1
-        mock_player.stats = {"health": 100, "sanity": 90, "position": "standing"}
+        mock_player.stats = {"health": 100, "lucidity": 90, "position": "standing"}
         mock_player.inventory = []
         mock_player.status_effects = []
         mock_player.created_at = "2024-01-01T00:00:00Z"
@@ -217,7 +218,7 @@ class TestEndpoints:
                 "player_id": test_uuid1,
                 "name": "player1",
                 "user_id": test_user_uuid1,
-                "stats": {"health": 100, "sanity": 90},
+                "stats": {"health": 100, "lucidity": 90},
                 "inventory": [],
                 "status_effects": [],
                 "created_at": "2024-01-01T00:00:00Z",
@@ -238,7 +239,7 @@ class TestEndpoints:
                 "player_id": test_uuid2,
                 "name": "player2",
                 "user_id": test_user_uuid2,
-                "stats": {"health": 100, "sanity": 90},
+                "stats": {"health": 100, "lucidity": 90},
                 "inventory": [],
                 "status_effects": [],
                 "created_at": "2024-01-01T00:00:00Z",
@@ -256,10 +257,18 @@ class TestEndpoints:
                 "profession_flavor_text": "Knowledge is power",
             },
         ]
-        with patch.object(
-            client.app.state.persistence, "async_list_players", new_callable=AsyncMock
-        ) as mock_list_players:
-            mock_list_players.return_value = mock_players
+        # Patch player_service.list_players directly since endpoint uses dependency injection
+        from server.schemas.player import PlayerRead
+
+        # Convert player_id to id for PlayerRead schema
+        player_objects = []
+        for player in mock_players:
+            player_data = player.copy()
+            player_data["id"] = player_data.pop("player_id")
+            player_objects.append(PlayerRead(**player_data))
+
+        with patch.object(client.app.state.player_service, "list_players", new_callable=AsyncMock) as mock_list_players:
+            mock_list_players.return_value = player_objects
 
             response = client.get("/api/players")
 
@@ -281,7 +290,7 @@ class TestEndpoints:
             "player_id": test_uuid,
             "name": "testplayer",
             "user_id": test_user_uuid,
-            "stats": {"health": 100, "sanity": 90},
+            "stats": {"health": 100, "lucidity": 90},
             "inventory": [],
             "status_effects": [],
             "created_at": "2024-01-01T00:00:00Z",
@@ -298,8 +307,16 @@ class TestEndpoints:
             "profession_description": "A learned academic",
             "profession_flavor_text": "Knowledge is power",
         }
-        with patch.object(client.app.state.persistence, "async_get_player", new_callable=AsyncMock) as mock_get_player:
-            mock_get_player.return_value = mock_player
+        with patch.object(
+            client.app.state.player_service, "get_player_by_id", new_callable=AsyncMock
+        ) as mock_get_player:
+            from server.schemas.player import PlayerRead
+
+            # Convert player_id to id for PlayerRead schema
+            mock_player_data = mock_player.copy()
+            mock_player_data["id"] = mock_player_data.pop("player_id")
+            mock_player_obj = PlayerRead(**mock_player_data)
+            mock_get_player.return_value = mock_player_obj
 
             response = client.get(f"/api/players/{test_uuid}")
 
@@ -312,7 +329,9 @@ class TestEndpoints:
     def test_get_player_by_id_not_found(self, client):
         """Test getting a non-existent player by ID."""
         test_uuid = str(uuid.uuid4())
-        with patch.object(client.app.state.persistence, "async_get_player", new_callable=AsyncMock) as mock_get_player:
+        with patch.object(
+            client.app.state.player_service, "get_player_by_id", new_callable=AsyncMock
+        ) as mock_get_player:
             mock_get_player.return_value = None
 
             response = client.get(f"/api/players/{test_uuid}")
@@ -329,7 +348,7 @@ class TestEndpoints:
             "player_id": test_uuid,
             "name": "testplayer",
             "user_id": test_user_uuid,
-            "stats": {"health": 100, "sanity": 90},
+            "stats": {"health": 100, "lucidity": 90},
             "inventory": [],
             "status_effects": [],
             "created_at": "2024-01-01T00:00:00Z",
@@ -342,9 +361,20 @@ class TestEndpoints:
             "position": "standing",
         }
         with patch.object(
-            client.app.state.persistence, "async_get_player_by_name", new_callable=AsyncMock
+            client.app.state.player_service, "get_player_by_name", new_callable=AsyncMock
         ) as mock_get_player:
-            mock_get_player.return_value = mock_player
+            from server.schemas.player import PlayerRead
+
+            # Convert player_id to id for PlayerRead schema
+            mock_player_data = mock_player.copy()
+            mock_player_data["id"] = mock_player_data.pop("player_id")
+            # Add profession fields that are populated by _convert_player_to_schema
+            mock_player_data["profession_id"] = 0
+            mock_player_data["profession_name"] = "Scholar"
+            mock_player_data["profession_description"] = "A learned academic"
+            mock_player_data["profession_flavor_text"] = "Knowledge is power"
+            mock_player_obj = PlayerRead(**mock_player_data)
+            mock_get_player.return_value = mock_player_obj
 
             response = client.get("/api/players/name/testplayer")
 
@@ -362,7 +392,7 @@ class TestEndpoints:
     def test_get_player_by_name_not_found(self, client):
         """Test getting a non-existent player by name."""
         with patch.object(
-            client.app.state.persistence, "async_get_player_by_name", new_callable=AsyncMock
+            client.app.state.player_service, "get_player_by_name", new_callable=AsyncMock
         ) as mock_get_player:
             mock_get_player.return_value = None
 
@@ -373,12 +403,18 @@ class TestEndpoints:
 
     def test_delete_player_not_found(self, client):
         """Test that delete player endpoint returns 404 for non-existent player."""
-        test_uuid = str(uuid.uuid4())
-        with patch.object(client.app.state.persistence, "async_get_player", new_callable=AsyncMock) as mock_get_player:
-            # Mock that player doesn't exist
-            mock_get_player.return_value = None
+        test_uuid = uuid.uuid4()
+        test_uuid_str = str(test_uuid)
+        # Mock delete_player to raise ValidationError (which the API converts to 404)
+        with patch.object(
+            client.app.state.player_service, "delete_player", new_callable=AsyncMock
+        ) as mock_delete_player:
+            from server.exceptions import ValidationError
 
-            response = client.delete(f"/api/players/{test_uuid}")
+            # Mock that delete_player raises ValidationError when player not found
+            mock_delete_player.side_effect = ValidationError("Player not found for deletion")
+
+            response = client.delete(f"/api/players/{test_uuid_str}")
 
             assert response.status_code == 404
             assert "Player not found" in response.text
@@ -387,28 +423,21 @@ class TestEndpoints:
         """Test that delete player endpoint successfully deletes a player."""
         test_uuid = uuid.uuid4()
         test_uuid_str = str(test_uuid)
-        # Mock the persistence methods
-        with patch.object(client.app.state.persistence, "async_get_player", new_callable=AsyncMock) as mock_get_player:
-            with patch.object(
-                client.app.state.persistence, "async_delete_player", new_callable=AsyncMock
-            ) as mock_delete_player:
-                # Mock a player that exists
-                mock_player = Mock()
-                mock_player.name = "TestDeletePlayer"
-                mock_get_player.return_value = mock_player
+        # Mock the player service delete_player method
+        with patch.object(
+            client.app.state.player_service, "delete_player", new_callable=AsyncMock
+        ) as mock_delete_player:
+            # Mock successful deletion - delete_player returns (success: bool, message: str)
+            mock_delete_player.return_value = (True, f"Player {test_uuid_str} has been deleted")
 
-                # Mock successful deletion
-                mock_delete_player.return_value = True
+            # Test the delete endpoint
+            response = client.delete(f"/api/players/{test_uuid_str}")
 
-                # Test the delete endpoint
-                response = client.delete(f"/api/players/{test_uuid_str}")
+            assert response.status_code == 200
+            assert "has been deleted" in response.text
 
-                assert response.status_code == 200
-                assert "has been deleted" in response.text
-
-                # Verify the persistence methods were called
-                mock_get_player.assert_called_once_with(test_uuid)
-                mock_delete_player.assert_called_once_with(test_uuid)
+            # Verify the player service method was called
+            mock_delete_player.assert_called_once_with(test_uuid)
 
     def test_get_game_status(self, client):
         """Test getting game status."""

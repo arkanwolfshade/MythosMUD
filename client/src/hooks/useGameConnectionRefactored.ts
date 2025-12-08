@@ -266,7 +266,7 @@ export function useGameConnection(options: UseGameConnectionOptions) {
       logger.debug('GameConnection', 'Auto-connecting', { sessionId });
       startConnection();
     }
-  }, [autoConnectPending, sessionId, isConnectionEstablished, isConnectionInProgress, startConnection]);
+  }, [autoConnectPending, sessionId, isConnectionEstablished, isConnectionInProgress, startConnection, authToken]);
 
   // Main connect function
   // BUGFIX: Don't directly call startWebSocket - let the state machine and useEffect hooks handle it
