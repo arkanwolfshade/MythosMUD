@@ -217,6 +217,10 @@ class TestErrorLoggingSystemPerformance:
 
     def test_error_logging_memory_leak_prevention(self, perf_mixin):
         """Test that error logging doesn't cause memory leaks."""
+        # Import here to avoid circular imports
+        from server.logging.log_aggregator import get_log_aggregator
+        from server.services.chat_logger import chat_logger
+
         with (
             patch("server.utils.error_logging.get_logger") as mock_get_logger,
             patch("server.exceptions.get_logger") as mock_exceptions_logger,
@@ -247,19 +251,34 @@ class TestErrorLoggingSystemPerformance:
 
                 return contexts
 
-            # Run multiple iterations to test for memory leaks
-            initial_memory = perf_mixin.measure_memory_usage(lambda: None)[0]
+            try:
+                # Run multiple iterations to test for memory leaks
+                initial_memory = perf_mixin.measure_memory_usage(lambda: None)[0]
 
-            for _iteration in range(5):
-                contexts = create_and_log_errors(1000)
-                del contexts  # Explicitly delete to help garbage collection
-                gc.collect()  # Force garbage collection
+                for _iteration in range(5):
+                    contexts = create_and_log_errors(1000)
+                    del contexts  # Explicitly delete to help garbage collection
+                    gc.collect()  # Force garbage collection
 
-            final_memory = perf_mixin.measure_memory_usage(lambda: None)[0]
-            memory_growth = final_memory - initial_memory
+                final_memory = perf_mixin.measure_memory_usage(lambda: None)[0]
+                memory_growth = final_memory - initial_memory
 
-            # Memory growth should be minimal (less than 10MB)
-            assert memory_growth < 10, f"Potential memory leak detected: {memory_growth:.2f}MB growth"
+                # Memory growth should be minimal (less than 10MB)
+                assert memory_growth < 10, f"Potential memory leak detected: {memory_growth:.2f}MB growth"
+            finally:
+                # Cleanup: Shutdown background threads to prevent test timeout
+                try:
+                    log_aggregator = get_log_aggregator()
+                    if log_aggregator:
+                        log_aggregator.shutdown()
+                except Exception:  # pylint: disable=broad-except
+                    pass  # Ignore errors during cleanup
+
+                try:
+                    if chat_logger:
+                        chat_logger.shutdown()
+                except Exception:  # pylint: disable=broad-except
+                    pass  # Ignore errors during cleanup
 
     def test_error_logging_file_io_performance(self, perf_mixin):
         """Test error logging performance with actual file I/O."""
