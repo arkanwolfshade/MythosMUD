@@ -457,8 +457,8 @@ class ContainerService:
                 user_friendly="Player not found",
             )
 
-        # Use mutation guard with the new transfer-specific token
-        with self.mutation_guard.acquire(str(player_id), transfer_mutation_token) as decision:
+        # Use mutation guard with the new transfer-specific token (async version)
+        async with self.mutation_guard.acquire_async(str(player_id), transfer_mutation_token) as decision:
             if not decision.should_apply:
                 logger.warning(
                     "Transfer suppressed by mutation guard",
@@ -739,7 +739,7 @@ class ContainerService:
                 user_friendly="Player not found",
             )
 
-        with self.mutation_guard.acquire(str(player_id), mutation_token) as decision:
+        async with self.mutation_guard.acquire_async(str(player_id), mutation_token) as decision:
             if not decision.should_apply:
                 logger.warning(
                     "Transfer suppressed by mutation guard",
