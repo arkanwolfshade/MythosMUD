@@ -55,9 +55,9 @@ class TestCombatPerformance:
         return CombatService(player_combat_service=player_combat_service, nats_service=mock_nats_service)
 
     @pytest.fixture
-    def combat_command_handler(self):
+    def combat_command_handler(self, mock_persistence):
         """Create a combat command handler."""
-        return CombatCommandHandler()
+        return CombatCommandHandler(async_persistence=mock_persistence)
 
     @pytest.mark.asyncio
     async def test_combat_startup_performance(self, combat_service):

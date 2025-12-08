@@ -255,10 +255,14 @@ class TestEndpoints:
                 "profession_flavor_text": "Knowledge is power",
             },
         ]
+        # Patch player_service.list_players directly since endpoint uses dependency injection
+        from server.models.player import PlayerRead
+        player_objects = [PlayerRead(**player) for player in mock_players]
+
         with patch.object(
-            client.app.state.persistence, "async_list_players", new_callable=AsyncMock
+            client.app.state.player_service, "list_players", new_callable=AsyncMock
         ) as mock_list_players:
-            mock_list_players.return_value = mock_players
+            mock_list_players.return_value = player_objects
 
             response = client.get("/api/players")
 

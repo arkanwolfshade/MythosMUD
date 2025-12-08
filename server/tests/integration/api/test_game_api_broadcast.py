@@ -32,6 +32,8 @@ class TestGameApiBroadcast:
         and allows superusers to broadcast messages.
         """
         # Mock the authentication dependency to return a superuser
+        from unittest.mock import AsyncMock
+
         from server.auth.dependencies import get_current_superuser
 
         # Create a mock superuser object with required attributes
@@ -42,6 +44,19 @@ class TestGameApiBroadcast:
 
         async def mock_get_current_superuser():
             return mock_superuser
+
+        # Ensure container and connection_manager are set up
+        # The container should already be set up by container_test_client_class fixture
+        # But ensure connection_manager exists and is mocked
+        if hasattr(self.client.app.state, "container") and self.client.app.state.container:
+            container = self.client.app.state.container
+            if not hasattr(container, "connection_manager") or container.connection_manager is None:
+                from server.realtime.connection_manager import ConnectionManager
+                container.connection_manager = ConnectionManager()
+            # Mock broadcast_global_event to avoid actual broadcasting
+            container.connection_manager.broadcast_global_event = AsyncMock(
+                return_value={"successful_deliveries": 0, "message": "Test broadcast message"}
+            )
 
         # Patch dependency override on the test client's app
         self.client.app.dependency_overrides[get_current_superuser] = mock_get_current_superuser

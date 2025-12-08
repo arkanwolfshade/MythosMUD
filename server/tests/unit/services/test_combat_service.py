@@ -230,18 +230,11 @@ class TestCombatServiceUnit:
         npc_id = uuid4()
 
         # Start combat with low target HP
+        attacker, target = create_test_participants(player_id, npc_id, target_hp=5, target_max_hp=50)
         await combat_service_with_player_service.start_combat(
             room_id="test_room",
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=100,
-            attacker_max_hp=100,
-            attacker_dex=15,
-            target_hp=5,  # Low HP
-            target_max_hp=50,
-            target_dex=10,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -318,18 +311,11 @@ class TestCombatServiceUnit:
         npc_id = uuid4()
 
         # Start combat
+        attacker, target = create_test_participants(player_id, npc_id)
         combat = await combat_service_with_player_service.start_combat(
             room_id="test_room",
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=100,
-            attacker_max_hp=100,
-            attacker_dex=15,
-            target_hp=50,
-            target_max_hp=50,
-            target_dex=10,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -375,18 +361,11 @@ class TestCombatServiceUnit:
         npc_id = uuid4()
 
         # Start combat
+        attacker, target = create_test_participants(player_id, npc_id)
         combat = await combat_service_with_player_service.start_combat(
             room_id="test_room",
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=100,
-            attacker_max_hp=100,
-            attacker_dex=15,
-            target_hp=50,
-            target_max_hp=50,
-            target_dex=10,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 

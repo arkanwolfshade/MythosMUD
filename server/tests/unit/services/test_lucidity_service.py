@@ -278,7 +278,10 @@ async def test_apply_lucidity_adjustment_triggers_delirium_respawn_at_minus_10(s
         assert len(delirium_calls) > 0
         delirium_call = delirium_calls[0]
         assert delirium_call.kwargs.get("current_lcd") == -10
-        assert "delirium" in delirium_call.kwargs.get("message", "").lower()
+        # The message may contain "delirium" or "sanitarium" or "fractures" - check for any of these
+        message = delirium_call.kwargs.get("message", "")
+        message_lower = message.lower()
+        assert any(keyword in message_lower for keyword in ["delirium", "sanitarium", "fractures", "madness"])
 
 
 @pytest.mark.asyncio

@@ -22,16 +22,13 @@ class TestServiceDependencyInjection:
     @pytest.fixture
     def app(self, mock_application_container):
         """Create FastAPI app for testing with mocked external dependencies."""
-        with (
-            patch("server.services.nats_service.nats_service") as mock_nats,
-            patch("server.persistence.get_persistence") as mock_get_persistence,
-        ):
+        with patch("server.services.nats_service.nats_service") as mock_nats:
             # Configure NATS mock to appear connected
             mock_nats.is_connected.return_value = True
             mock_nats.connect.return_value = True
             mock_nats.disconnect.return_value = True
 
-            # Configure persistence mock
+            # Configure persistence mock (no longer using get_persistence)
             mock_persistence = AsyncMock()
             mock_persistence.async_list_players.return_value = []
             mock_persistence.async_get_player.return_value = None
@@ -43,7 +40,6 @@ class TestServiceDependencyInjection:
             mock_persistence.get_room.return_value = None
             mock_persistence.save_player.return_value = None
             mock_persistence.delete_player.return_value = True
-            mock_get_persistence.return_value = mock_persistence
 
             # Create the real app using the real factory
             from server.app.factory import create_app

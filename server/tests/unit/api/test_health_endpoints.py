@@ -27,7 +27,22 @@ from server.models.health import (
 @pytest.fixture
 def client():
     """Create a test client for the FastAPI application."""
+
     app = create_app()
+
+    # Ensure container and connection_manager are set up for health endpoint
+    if not hasattr(app.state, "container") or app.state.container is None:
+        from server.container import ApplicationContainer
+        app.state.container = ApplicationContainer.get_instance()
+
+    # Ensure connection_manager exists
+    if hasattr(app.state.container, "connection_manager") and app.state.container.connection_manager is None:
+        from server.realtime.connection_manager import ConnectionManager
+        app.state.container.connection_manager = ConnectionManager()
+    elif not hasattr(app.state.container, "connection_manager"):
+        from server.realtime.connection_manager import ConnectionManager
+        app.state.container.connection_manager = ConnectionManager()
+
     return TestClient(app)
 
 

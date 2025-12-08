@@ -872,14 +872,28 @@ class TestCharacterCreation:
         mock_generator.get_stat_summary.return_value = {"total": 73, "average": 12.17}
         mock_stats_generator_class.return_value = mock_generator
 
-        request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=1)
-        result = await roll_character_stats(
-            request_data,
-            mock_request,
-            max_attempts=10,
-            current_user=mock_current_user,
-            stats_generator=mock_generator,
-        )
+        # Mock shutdown check and async_persistence
+        from unittest.mock import patch as mock_patch
+        mock_profession = Mock()
+        mock_profession.id = 1
+        mock_profession.name = "TestProfession"
+
+        with (
+            mock_patch("server.api.players.is_shutdown_pending", return_value=False),
+            mock_patch("server.api.players.get_async_persistence") as mock_get_persistence,
+        ):
+            mock_persistence = AsyncMock()
+            mock_persistence.get_profession_by_id = AsyncMock(return_value=mock_profession)
+            mock_get_persistence.return_value = mock_persistence
+
+            request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=1)
+            result = await roll_character_stats(
+                request_data,
+                mock_request,
+                max_attempts=10,
+                current_user=mock_current_user,
+                stats_generator=mock_generator,
+            )
 
         assert "stats" in result
         assert "stat_summary" in result
@@ -901,18 +915,30 @@ class TestCharacterCreation:
         mock_generator.roll_stats_with_profession.side_effect = ValueError("Invalid profession ID")
         mock_stats_generator_class.return_value = mock_generator
 
-        request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=999)
-        with pytest.raises(HTTPException) as exc_info:
-            await roll_character_stats(
-                request_data,
-                mock_request,
-                max_attempts=10,
-                current_user=mock_current_user,
-                stats_generator=mock_generator,
-            )
+        # Mock shutdown check and async_persistence
+        from unittest.mock import patch as mock_patch
 
-        assert exc_info.value.status_code == 400
-        assert "Invalid profession" in str(exc_info.value.detail)
+        with (
+            mock_patch("server.api.players.is_shutdown_pending", return_value=False),
+            mock_patch("server.api.players.get_async_persistence") as mock_get_persistence,
+        ):
+            # Mock persistence to return None for invalid profession
+            mock_persistence = AsyncMock()
+            mock_persistence.get_profession_by_id = AsyncMock(return_value=None)
+            mock_get_persistence.return_value = mock_persistence
+
+            request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=999)
+            with pytest.raises(LoggedHTTPException) as exc_info:
+                await roll_character_stats(
+                    request_data,
+                    mock_request,
+                    max_attempts=10,
+                    current_user=mock_current_user,
+                    stats_generator=mock_generator,
+                )
+
+            assert exc_info.value.status_code == 404  # Profession not found
+            assert "not found" in str(exc_info.value.detail).lower()
 
     @patch("server.api.players.StatsGenerator")
     @patch("server.api.players.stats_roll_limiter")

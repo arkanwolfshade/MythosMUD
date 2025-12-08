@@ -5,7 +5,7 @@ This module tests the new monitoring API endpoints that provide dual connection
 statistics, performance metrics, and connection health information.
 """
 
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
 from fastapi import FastAPI
@@ -668,19 +668,19 @@ class TestMonitoringAPI:
         room2.player_entered("player1")
 
         # Mock persistence to return our test rooms
-        with patch("server.api.monitoring.get_persistence") as mock_get_persistence:
-            mock_persistence = Mock()
-            mock_persistence.list_rooms.return_value = [room1, room2]
-            mock_get_persistence.return_value = mock_persistence
+        # Set up persistence in app.state (replaces get_persistence)
+        mock_persistence = AsyncMock()
+        mock_persistence.list_rooms = AsyncMock(return_value=[room1, room2])
+        self.app.state.persistence = mock_persistence
 
-            response = self.client.get("/monitoring/integrity")
+        response = self.client.get("/monitoring/integrity")
 
-            assert response.status_code == 200
-            data = response.json()
+        assert response.status_code == 200
+        data = response.json()
 
-            assert data["valid"] is False
-            assert len(data["violations"]) == 1
-            assert "Player player1 found in multiple rooms" in data["violations"][0]
+        assert data["valid"] is False
+        assert len(data["violations"]) == 1
+        assert "Player player1 found in multiple rooms" in data["violations"][0]
 
     def test_error_handling(self):
         """Test error handling in monitoring endpoints."""
