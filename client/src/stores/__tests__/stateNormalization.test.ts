@@ -180,7 +180,7 @@ describe('State Normalization', () => {
         player: {
           id: 'player-1',
           name: 'TestPlayer',
-          stats: { current_health: 100, sanity: 80 },
+          stats: { current_health: 100, lucidity: 80 },
           level: 5,
         },
         room: {
@@ -216,7 +216,7 @@ describe('State Normalization', () => {
           'player-1': {
             id: 'player-1',
             name: 'TestPlayer',
-            stats: { current_health: 100, sanity: 80 },
+            stats: { current_health: 100, lucidity: 80 },
             level: 5,
           },
           'room-1': {
@@ -293,7 +293,7 @@ describe('State Normalization', () => {
           'player-1': {
             id: 'player-1',
             name: 'TestPlayer',
-            stats: { current_health: 100, sanity: 80 },
+            stats: { current_health: 100, lucidity: 80 },
             level: 5,
           },
           'room-1': {
@@ -321,7 +321,7 @@ describe('State Normalization', () => {
         player: {
           id: 'player-1',
           name: 'TestPlayer',
-          stats: { current_health: 100, sanity: 80 },
+          stats: { current_health: 100, lucidity: 80 },
           level: 5,
         },
         room: {
@@ -401,7 +401,7 @@ describe('State Normalization', () => {
         player: {
           id: 'player-1',
           name: 'TestPlayer',
-          stats: { current_health: 100, sanity: 80 },
+          stats: { current_health: 100, lucidity: 80 },
           level: 5,
         },
         room: {

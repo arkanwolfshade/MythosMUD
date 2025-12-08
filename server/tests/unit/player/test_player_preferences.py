@@ -39,7 +39,7 @@ async def session_factory():
 
 @pytest.fixture(autouse=True)
 async def cleanup_players(session_factory):
-    """Delete all players, preferences, users, and sanity records before each test to ensure isolation."""
+    """Delete all players, preferences, users, and lucidity records before each test to ensure isolation."""
     yield
     # Cleanup after test
     async with session_factory() as session:
@@ -48,7 +48,7 @@ async def cleanup_players(session_factory):
         try:
             # Delete in order to respect foreign key constraints
             await session.execute(text("DELETE FROM player_channel_preferences"))
-            await session.execute(text("DELETE FROM player_sanity"))
+            await session.execute(text("DELETE FROM player_Lucidity"))
             await session.execute(text("DELETE FROM players"))
             await session.execute(text("DELETE FROM users"))
             await session.commit()

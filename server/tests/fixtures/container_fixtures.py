@@ -25,7 +25,7 @@ Best Practices Followed:
 
 import asyncio
 from typing import Any
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, Mock
 from uuid import uuid4
 
 import pytest
@@ -189,13 +189,21 @@ def container_test_client():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
+    # Patch NATS connection to prevent timeout in tests
+    # AsyncMock is already imported at module level
+    from unittest.mock import patch
+
+    nats_patcher = patch("server.services.nats_service.NATSService.connect", new_callable=AsyncMock)
+    nats_patcher.start()
+
     try:
         # Initialize container synchronously using event loop
         container = ApplicationContainer()
         try:
             loop.run_until_complete(container.initialize())
-        except Exception as init_error:
-            # If initialization fails, log and continue with defensive setup
+        except Exception as init_error:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+            # Defensive: Catch all exceptions during test container initialization
+            # This allows tests to continue with mock persistence if real initialization fails
             # This can happen in test environments where database isn't available
             logger.warning("Container initialization failed, using defensive setup", error=str(init_error))
             # Ensure persistence is None so our defensive checks will create a mock
@@ -229,17 +237,16 @@ def container_test_client():
             # Defensive: If persistence is None, create a mock to prevent 503 errors
             # This can happen in test environments where database isn't fully initialized
             logger.warning("Container persistence is None, creating mock persistence")
-            from unittest.mock import AsyncMock, Mock
 
             mock_persistence = Mock()
             # Ensure mock has async methods that might be called
             mock_persistence.async_list_players = AsyncMock(return_value=[])
             mock_persistence.async_get_player = AsyncMock(return_value=None)
             mock_persistence.async_get_room = AsyncMock(return_value=None)
-            # Also mock synchronous methods
-            mock_persistence.list_players = Mock(return_value=[])
+            # Also mock synchronous methods (list_players is actually async, so use AsyncMock)
+            mock_persistence.list_players = AsyncMock(return_value=[])
             mock_persistence.get_player = Mock(return_value=None)
-            mock_persistence.get_room = Mock(return_value=None)
+            mock_persistence.get_room = AsyncMock(return_value=None)
             # Set mock persistence on container
             container.persistence = mock_persistence
             logger.info("Container persistence set to mock (defensive)")
@@ -269,21 +276,20 @@ def container_test_client():
                 if not hasattr(persistence_to_use, method_name) or not callable(
                     getattr(persistence_to_use, method_name, None)
                 ):
-                    logger.warning("Persistence missing required method, creating mock", method_name=method_name)
+                    logger.warning("Persistence missing required method, creating mock", missing_method=method_name)
                     needs_mock_persistence = True
                     break
 
         if needs_mock_persistence:
             # Create mock persistence if needed
-            from unittest.mock import AsyncMock, Mock
 
             mock_persistence = Mock()
             mock_persistence.async_list_players = AsyncMock(return_value=[])
             mock_persistence.async_get_player = AsyncMock(return_value=None)
             mock_persistence.async_get_room = AsyncMock(return_value=None)
-            mock_persistence.list_players = Mock(return_value=[])
+            mock_persistence.list_players = AsyncMock(return_value=[])
             mock_persistence.get_player = Mock(return_value=None)
-            mock_persistence.get_room = Mock(return_value=None)
+            mock_persistence.get_room = AsyncMock(return_value=None)
             persistence_to_use = mock_persistence
             container.persistence = mock_persistence
             logger.info("Created mock persistence (defensive check)")
@@ -334,15 +340,14 @@ def container_test_client():
         # CRITICAL: Final verification - ensure container.persistence is not None
         if container.persistence is None:
             logger.error("container.persistence is None after all fixes - creating emergency mock")
-            from unittest.mock import AsyncMock, Mock
 
             emergency_mock = Mock()
             emergency_mock.async_list_players = AsyncMock(return_value=[])
             emergency_mock.async_get_player = AsyncMock(return_value=None)
             emergency_mock.async_get_room = AsyncMock(return_value=None)
-            emergency_mock.list_players = Mock(return_value=[])
+            emergency_mock.list_players = AsyncMock(return_value=[])
             emergency_mock.get_player = Mock(return_value=None)
-            emergency_mock.get_room = Mock(return_value=None)
+            emergency_mock.get_room = AsyncMock(return_value=None)
             container.persistence = emergency_mock
             app.state.persistence = emergency_mock
             if container.player_service:
@@ -478,6 +483,14 @@ def container_test_client():
             except Exception as e:
                 logger.debug("Error cancelling remaining tasks", error=str(e))
     finally:
+        # Stop NATS patcher
+        try:
+            nats_patcher.stop()
+        except Exception:  # noqa: BLE001
+            # Defensive: Ignore any errors when stopping patch in cleanup
+            # This ensures cleanup continues even if patch.stop() fails
+            pass
+
         # Cleanup: Close event loop and reset to None
         # AI: This prevents "Event loop is closed" errors in subsequent tests
         # by ensuring asyncio.get_event_loop() doesn't return a closed loop
@@ -580,8 +593,19 @@ def container_test_client_class():
         # Initialize container synchronously using event loop
         container = ApplicationContainer()
         try:
-            loop.run_until_complete(container.initialize())
-        except Exception as init_error:
+            # Add timeout to prevent hanging in CI environments
+            # Use asyncio.wait_for with a reasonable timeout (30 seconds)
+            async def init_with_timeout():
+                await asyncio.wait_for(container.initialize(), timeout=30.0)
+
+            loop.run_until_complete(init_with_timeout())
+        except TimeoutError:
+            # Container initialization timed out - use defensive setup
+            logger.warning("Container initialization timed out, using defensive setup")
+            container.persistence = None
+        except Exception as init_error:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+            # Defensive: Catch all exceptions during test container initialization
+            # This allows tests to continue with mock persistence if real initialization fails
             logger.warning("Container initialization failed, using defensive setup", error=str(init_error))
             container.persistence = None
 
@@ -599,15 +623,14 @@ def container_test_client_class():
 
         # Same defensive persistence setup as function-scoped version
         if container.persistence is None:
-            from unittest.mock import AsyncMock, Mock
-
             mock_persistence = Mock()
             mock_persistence.async_list_players = AsyncMock(return_value=[])
             mock_persistence.async_get_player = AsyncMock(return_value=None)
             mock_persistence.async_get_room = AsyncMock(return_value=None)
-            mock_persistence.list_players = Mock(return_value=[])
+            mock_persistence.async_list_rooms = AsyncMock(return_value=[])  # Add for room_service.list_rooms
+            mock_persistence.list_players = AsyncMock(return_value=[])
             mock_persistence.get_player = Mock(return_value=None)
-            mock_persistence.get_room = Mock(return_value=None)
+            mock_persistence.get_room = AsyncMock(return_value=None)
             container.persistence = mock_persistence
 
         persistence_to_use = container.persistence
@@ -630,15 +653,14 @@ def container_test_client_class():
                     break
 
         if needs_mock_persistence:
-            from unittest.mock import AsyncMock, Mock
-
             mock_persistence = Mock()
             mock_persistence.async_list_players = AsyncMock(return_value=[])
             mock_persistence.async_get_player = AsyncMock(return_value=None)
             mock_persistence.async_get_room = AsyncMock(return_value=None)
-            mock_persistence.list_players = Mock(return_value=[])
+            mock_persistence.async_list_rooms = AsyncMock(return_value=[])  # Add for room_service.list_rooms
+            mock_persistence.list_players = AsyncMock(return_value=[])
             mock_persistence.get_player = Mock(return_value=None)
-            mock_persistence.get_room = Mock(return_value=None)
+            mock_persistence.get_room = AsyncMock(return_value=None)
             persistence_to_use = mock_persistence
             container.persistence = mock_persistence
 
@@ -663,15 +685,13 @@ def container_test_client_class():
             container.connection_manager.persistence = container.persistence
 
         if container.persistence is None:
-            from unittest.mock import AsyncMock, Mock
-
             emergency_mock = Mock()
             emergency_mock.async_list_players = AsyncMock(return_value=[])
             emergency_mock.async_get_player = AsyncMock(return_value=None)
             emergency_mock.async_get_room = AsyncMock(return_value=None)
-            emergency_mock.list_players = Mock(return_value=[])
+            emergency_mock.list_players = AsyncMock(return_value=[])
             emergency_mock.get_player = Mock(return_value=None)
-            emergency_mock.get_room = Mock(return_value=None)
+            emergency_mock.get_room = AsyncMock(return_value=None)
             container.persistence = emergency_mock
             app.state.persistence = emergency_mock
             if container.player_service:
@@ -985,7 +1005,7 @@ def player_factory():
             "intelligence": 10,
             "wisdom": 10,
             "charisma": 10,
-            "sanity": 100,
+            "lucidity": 100,
             "occult_knowledge": 0,
             "fear": 0,
             "corruption": 0,

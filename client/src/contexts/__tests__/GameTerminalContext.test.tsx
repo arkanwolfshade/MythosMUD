@@ -30,7 +30,7 @@ function createDefaultGameTerminalState() {
     player: {
       id: 'player-1',
       name: 'TestPlayer',
-      stats: { current_health: 100, sanity: 80 },
+      stats: { current_health: 100, lucidity: 80 },
       level: 5,
     },
     room: {
@@ -391,7 +391,7 @@ describe('GameTerminalContext', () => {
         player: {
           id: 'player-1',
           name: 'TestPlayer',
-          stats: { current_health: 100, sanity: 80 },
+          stats: { current_health: 100, lucidity: 80 },
           level: 5,
         },
         room: {

@@ -49,7 +49,7 @@ The game client uses a three-column layout with five draggable panels:
 - **Z-Index:** `1004` (highest, right column top)
 - **Variant:** `default`
 - **Location:** Right column, top
-- **Purpose:** Player stats, health, sanity, attributes, profession
+- **Purpose:** Player stats, health, lucidity, attributes, profession
 
 ### Commands Panel
 

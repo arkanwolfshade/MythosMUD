@@ -12,7 +12,6 @@ import pytest
 
 
 @pytest.mark.asyncio
-@pytest.mark.slow
 class TestRoomsPositionEndpoint:
     """Test cases for POST /api/rooms/{room_id}/position endpoint."""
 

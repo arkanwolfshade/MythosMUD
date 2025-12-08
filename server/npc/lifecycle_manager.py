@@ -25,7 +25,8 @@ from server.npc.spawning_service import NPCSpawningService
 from server.schemas.calendar import ScheduleEntry
 
 from ..logging.enhanced_logging_config import get_logger
-from ..persistence import get_persistence
+
+# Removed: from ..persistence import get_persistence - now using async_persistence parameter
 
 logger = get_logger(__name__)
 
@@ -330,7 +331,7 @@ class NPCLifecycleManager:
                 # Remove from room if we have persistence
                 if self.persistence:
                     room_id = getattr(npc_instance, "room_id", event.room_id)
-                    room = self.persistence.get_room(room_id)
+                    room = self.persistence.get_room_by_id(room_id)  # Sync method, uses cache
                     if room:
                         room.npc_left(event.npc_id)
                         logger.debug("NPC removed from room after death", npc_id=event.npc_id, room_id=room_id)
@@ -443,8 +444,11 @@ class NPCLifecycleManager:
                 )
 
             # Mutate room state via Room API (single source of truth) which will publish the event
-            persistence = get_persistence()
-            room = persistence.get_room(room_id)
+            # Get room from persistence (sync method, uses cache)
+            if self.persistence:
+                room = self.persistence.get_room_by_id(room_id)  # Sync method, uses cache
+            else:
+                room = None
             if not room:
                 logger.warning(
                     "Room not found for NPC spawn",
@@ -526,7 +530,7 @@ class NPCLifecycleManager:
                 # Remove NPC from room (which publishes NPCLeftRoom event)
                 # AI: Proper domain-driven design - mutate state via domain entity, not by publishing event directly
                 if self.persistence:
-                    room = self.persistence.get_room(room_id)
+                    room = self.persistence.get_room_by_id(room_id)  # Sync method, uses cache
                     if room:
                         room.npc_left(npc_id)
                         logger.debug("NPC removed from room during despawn", npc_id=npc_id, room_id=room_id)
@@ -625,6 +629,47 @@ class NPCLifecycleManager:
                 record.add_event(NPCLifecycleEvent.ERROR_OCCURRED, {"error": str(e)})
             return False
 
+    def _process_respawn_queue_entry(
+        self, npc_id: str, respawn_data: dict[str, Any], current_time: float
+    ) -> tuple[bool, bool]:
+        """
+        Process a single respawn queue entry.
+
+        Returns:
+            Tuple of (should_remove, was_respawned)
+        """
+        if current_time < respawn_data["scheduled_time"]:
+            logger.debug(
+                "NPC not yet ready for respawn",
+                npc_id=npc_id,
+                scheduled_time=respawn_data["scheduled_time"],
+                current_time=current_time,
+                time_remaining=respawn_data["scheduled_time"] - current_time,
+            )
+            return False, False
+
+        logger.debug("Attempting respawn for NPC", npc_id=npc_id, respawn_data=respawn_data)
+        success = self._attempt_respawn(npc_id, respawn_data)
+
+        if success:
+            logger.info("NPC successfully respawned from queue", npc_id=npc_id)
+            return True, True
+
+        logger.warning("NPC respawn attempt failed", npc_id=npc_id, attempts=respawn_data.get("attempts", 0))
+        respawn_data["attempts"] = respawn_data.get("attempts", 0) + 1
+
+        if respawn_data["attempts"] >= self.max_respawn_attempts:
+            logger.warning("Max respawn attempts reached for NPC", npc_id=npc_id)
+            return True, False
+
+        return False, False
+
+    def _cleanup_respawn_queue(self, npcs_to_remove: list[str]) -> None:
+        """Remove processed NPCs from respawn queue."""
+        for npc_id in npcs_to_remove:
+            logger.debug("Removing NPC from respawn queue", npc_id=npc_id)
+            del self.respawn_queue[npc_id]
+
     def process_respawn_queue(self) -> int:
         """
         Process the respawn queue and spawn NPCs that are ready.
@@ -636,7 +681,6 @@ class NPCLifecycleManager:
         respawned_count = 0
         npcs_to_remove = []
 
-        # AI Agent: CRITICAL DEBUG - Log respawn queue processing details
         logger.debug(
             "Processing respawn queue",
             queue_size=len(self.respawn_queue),
@@ -653,36 +697,13 @@ class NPCLifecycleManager:
         )
 
         for npc_id, respawn_data in self.respawn_queue.items():
-            if current_time >= respawn_data["scheduled_time"]:
-                logger.debug("Attempting respawn for NPC", npc_id=npc_id, respawn_data=respawn_data)
-                # Attempt to respawn
-                success = self._attempt_respawn(npc_id, respawn_data)
-                if success:
-                    logger.info("NPC successfully respawned from queue", npc_id=npc_id)
-                    respawned_count += 1
-                    npcs_to_remove.append(npc_id)
-                else:
-                    logger.warning(
-                        "NPC respawn attempt failed", npc_id=npc_id, attempts=respawn_data.get("attempts", 0)
-                    )
-                    # Increment attempt count
-                    respawn_data["attempts"] += 1
-                    if respawn_data["attempts"] >= self.max_respawn_attempts:
-                        logger.warning("Max respawn attempts reached for NPC", npc_id=npc_id)
-                        npcs_to_remove.append(npc_id)
-            else:
-                logger.debug(
-                    "NPC not yet ready for respawn",
-                    npc_id=npc_id,
-                    scheduled_time=respawn_data["scheduled_time"],
-                    current_time=current_time,
-                    time_remaining=respawn_data["scheduled_time"] - current_time,
-                )
+            should_remove, was_respawned = self._process_respawn_queue_entry(npc_id, respawn_data, current_time)
+            if should_remove:
+                npcs_to_remove.append(npc_id)
+            if was_respawned:
+                respawned_count += 1
 
-        # Remove processed NPCs from queue
-        for npc_id in npcs_to_remove:
-            logger.debug("Removing NPC from respawn queue", npc_id=npc_id)
-            del self.respawn_queue[npc_id]
+        self._cleanup_respawn_queue(npcs_to_remove)
 
         logger.debug(
             "Respawn queue processing completed", respawned_count=respawned_count, removed_count=len(npcs_to_remove)

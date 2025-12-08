@@ -5,6 +5,7 @@ This module provides an enhanced logging system with MDC (Mapped Diagnostic
 Context), correlation IDs, security sanitization, and performance optimizations.
 """
 
+import io
 import json
 import logging
 import os
@@ -27,6 +28,71 @@ from structlog.stdlib import BoundLogger, LoggerFactory
 
 # Module-level logger for internal use
 logger = structlog.get_logger(__name__)
+
+# Thread-safe directory creation locks (one lock per directory path)
+_dir_locks: dict[str, threading.Lock] = {}
+_dir_locks_lock = threading.Lock()
+
+# Cache of directories we've successfully created (avoids repeated mkdir calls)
+# This prevents blocking on os.stat() inside mkdir() under heavy filesystem load
+_created_dirs: set[str] = set()
+_created_dirs_lock = threading.Lock()
+
+
+def _ensure_log_directory(log_path: Path) -> None:
+    """
+    Thread-safe directory creation for log files.
+
+    This function ensures that the parent directory of a log file exists,
+    using per-directory locks to prevent deadlocks when multiple threads
+    try to create the same directory simultaneously.
+
+    Uses a cache to avoid repeated mkdir() calls, which prevents blocking
+    on os.stat() inside mkdir() under heavy filesystem load.
+
+    Args:
+        log_path: Path to the log file (directory will be created for parent)
+    """
+    if not log_path or not log_path.parent:
+        return
+
+    dir_path = log_path.parent
+    dir_str = str(dir_path)
+
+    # Fast path: check cache first (no filesystem access needed)
+    with _created_dirs_lock:
+        if dir_str in _created_dirs:
+            return  # Directory already created in this process
+
+    # Get or create lock for this specific directory path
+    with _dir_locks_lock:
+        if dir_str not in _dir_locks:
+            _dir_locks[dir_str] = threading.Lock()
+        lock = _dir_locks[dir_str]
+
+    # Use per-directory lock to prevent concurrent creation attempts
+    with lock:
+        # Double-check cache after acquiring lock (another thread may have created it)
+        with _created_dirs_lock:
+            if dir_str in _created_dirs:
+                return
+
+        try:
+            dir_path.mkdir(parents=True, exist_ok=True)
+            # Successfully created - add to cache
+            with _created_dirs_lock:
+                _created_dirs.add(dir_str)
+        except (OSError, PermissionError) as e:
+            # Log but don't raise - logging should not fail due to directory issues
+            # This prevents deadlocks if directory creation fails
+            # Note: We don't add to cache on failure, so we'll retry next time
+            logger.warning(
+                "Failed to create log directory",
+                directory=str(dir_path),
+                error=str(e),
+                error_type=type(e).__name__,
+            )
+
 
 _LOGGING_INITIALIZED = False
 _LOGGING_SIGNATURE: str | None = None
@@ -131,8 +197,8 @@ def _rotate_log_files(env_log_dir: Path) -> None:
                         log_file.rename(rotated_path)
 
                     # Log the rotation (this will go to the new log file)
-                    logger = get_enhanced_logger("server.logging")
-                    logger.info(
+                    rotation_logger = get_enhanced_logger("server.logging")
+                    rotation_logger.info(
                         "Rotated log file",
                         old_name=log_file.name,
                         new_name=rotated_name,
@@ -146,8 +212,8 @@ def _rotate_log_files(env_log_dir: Path) -> None:
                         retry_delay *= 2  # Exponential backoff
                     else:
                         # Final attempt failed, log the error
-                        logger = get_enhanced_logger("server.logging")
-                        logger.warning(
+                        rotation_logger = get_enhanced_logger("server.logging")
+                        rotation_logger.warning(
                             "Could not rotate log file after retries",
                             name=log_file.name,
                             error=str(e),
@@ -365,8 +431,6 @@ def enhance_player_ids(_logger: Any, _name: str, event_dict: dict[str, Any]) -> 
                         try:
                             # Try to get the player name
                             # Convert string to UUID if needed
-                            import uuid
-
                             player_id_uuid = uuid.UUID(value) if isinstance(value, str) else value
                             player = _global_player_service.persistence.get_player(player_id_uuid)
                             if player and hasattr(player, "name"):
@@ -431,12 +495,12 @@ def configure_enhanced_structlog(
         _setup_enhanced_file_logging(environment, log_config, log_level, player_service, enable_async)
 
     # Configure structlog with a custom renderer that strips ANSI codes
-    def strip_ansi_renderer(logger: Any, name: str, event_dict: dict[str, Any]) -> str | bytes:
+    def strip_ansi_renderer(bound_logger: Any, name: str, event_dict: dict[str, Any]) -> str | bytes:
         """Custom renderer that strips ANSI escape sequences."""
         import re
 
         # Use KeyValueRenderer to get the formatted message
-        formatted = structlog.processors.KeyValueRenderer()(logger, name, event_dict)
+        formatted = structlog.processors.KeyValueRenderer()(bound_logger, name, event_dict)
 
         # Strip ANSI escape sequences
         ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
@@ -472,6 +536,54 @@ class SafeRotatingFileHandler(RotatingFileHandler):
     when shouldRollover() is called from different threads in CI environments.
     """
 
+    def _open(self):  # noqa: N802
+        """
+        Open the log file, ensuring directory exists first.
+
+        This overrides the parent method to ensure the log directory exists
+        before attempting to open the log file, preventing FileNotFoundError
+        in CI environments where directories might be cleaned up.
+        """
+        if not self.baseFilename:
+            return super()._open()
+
+        log_path = Path(self.baseFilename)
+        max_retries = 3
+
+        for attempt in range(max_retries):
+            # Ensure directory exists right before opening (handles race conditions)
+            # This minimizes the window between directory creation and file opening
+            _ensure_log_directory(log_path)
+
+            # Try to open the file - ensure directory exists again right before opening
+            # to handle cases where directory is deleted between check and open
+            try:
+                # Double-check directory exists right before opening
+                _ensure_log_directory(log_path)
+                return super()._open()
+            except (FileNotFoundError, OSError):
+                # Directory might have been deleted, will retry on next iteration
+                if attempt == max_retries - 1:
+                    # Final attempt failed - try one more time with directory creation
+                    # This handles cases where directory is deleted between check and open
+                    try:
+                        _ensure_log_directory(log_path)
+                        # One more directory check right before opening
+                        _ensure_log_directory(log_path)
+                        return super()._open()
+                    except (FileNotFoundError, OSError):  # pylint: disable=try-except-raise
+                        # If still failing after all retries, return a no-op StringIO as fallback
+                        # This prevents infinite recursion when logging errors
+                        # The logging system will handle this gracefully
+                        # Using StringIO instead of sys.stderr to avoid "I/O operation on closed file" errors
+                        return io.StringIO()
+                # Continue to next retry attempt immediately (no sleep needed since
+                # directory creation is thread-safe and retries are fast)
+                continue
+
+        # Should never reach here, but call parent as fallback
+        return super()._open()
+
     def shouldRollover(self, record):  # noqa: N802
         """
         Determine if rollover should occur, ensuring directory exists first.
@@ -479,14 +591,38 @@ class SafeRotatingFileHandler(RotatingFileHandler):
         This overrides the parent method to ensure the log directory exists
         before attempting to open the log file, preventing race conditions
         in CI environments where directories might be cleaned up.
-        """
-        # Ensure directory exists before checking rollover
-        if self.baseFilename:
-            log_path = Path(self.baseFilename)
-            log_path.parent.mkdir(parents=True, exist_ok=True)
 
-        # Call parent method to perform actual rollover check
-        return super().shouldRollover(record)
+        Uses thread-safe directory creation to prevent deadlocks when multiple
+        threads try to create the same directory simultaneously.
+        """
+        # Ensure directory exists before checking rollover (thread-safe)
+        if not self.baseFilename:
+            return False
+
+        log_path = Path(self.baseFilename)
+        max_retries = 3
+
+        for attempt in range(max_retries):
+            # Ensure directory exists before each attempt (handles race conditions)
+            _ensure_log_directory(log_path)
+
+            # Call parent method to perform actual rollover check
+            # Wrap in try-except to handle race conditions where directory might be deleted
+            # between the check above and when parent tries to open the file
+            try:
+                return super().shouldRollover(record)
+            except (FileNotFoundError, OSError):
+                # Directory might have been deleted, will retry on next iteration
+                if attempt == max_retries - 1:
+                    # Final attempt failed - return False (no rollover) rather than raising
+                    # This prevents logging errors from breaking tests in CI environments
+                    # where directories might be cleaned up during test execution
+                    return False
+                # Continue to next retry attempt
+                continue
+
+        # Should never reach here, but return False as safe fallback
+        return False
 
 
 class WarningOnlyFilter(logging.Filter):
@@ -547,7 +683,7 @@ def _create_aggregator_handler(
                 def shouldRollover(self, record):  # noqa: N802
                     if self.baseFilename:
                         log_path = Path(self.baseFilename)
-                        log_path.parent.mkdir(parents=True, exist_ok=True)
+                        _ensure_log_directory(log_path)
                     return super().shouldRollover(record)
 
             handler_class = SafeWinHandlerAggregator
@@ -556,7 +692,7 @@ def _create_aggregator_handler(
         handler_class = _BaseHandler
 
     # Ensure directory exists right before creating handler to prevent race conditions
-    log_path.parent.mkdir(parents=True, exist_ok=True)
+    _ensure_log_directory(log_path)
     try:
         handler = handler_class(
             log_path,
@@ -566,7 +702,7 @@ def _create_aggregator_handler(
         )
     except (FileNotFoundError, OSError):
         # If directory doesn't exist or was deleted, recreate it and try again
-        log_path.parent.mkdir(parents=True, exist_ok=True)
+        _ensure_log_directory(log_path)
         handler = handler_class(
             log_path,
             maxBytes=max_bytes,
@@ -606,7 +742,7 @@ def _setup_enhanced_file_logging(
     log_config: dict[str, Any],
     log_level: str,
     player_service: Any = None,
-    enable_async: bool = True,  # noqa: ARG001
+    enable_async: bool = True,  # noqa: ARG001  # pylint: disable=unused-argument
 ) -> None:
     """Set up enhanced file logging handlers with async support."""
     # Use Windows-safe rotation handlers when available
@@ -623,7 +759,8 @@ def _setup_enhanced_file_logging(
 
     log_base = _resolve_log_base(log_config.get("log_base", "logs"))
     env_log_dir = log_base / environment
-    env_log_dir.mkdir(parents=True, exist_ok=True)
+    # Use thread-safe directory creation (pass dummy file path to ensure directory exists)
+    _ensure_log_directory(env_log_dir / ".dummy")
 
     # Rotate existing log files before setting up new handlers
     _rotate_log_files(env_log_dir)
@@ -738,7 +875,7 @@ def _setup_enhanced_file_logging(
                     def shouldRollover(self, record):  # noqa: N802
                         if self.baseFilename:
                             log_path = Path(self.baseFilename)
-                            log_path.parent.mkdir(parents=True, exist_ok=True)
+                            _ensure_log_directory(log_path)
                         return super().shouldRollover(record)
 
                 handler_class = SafeWinHandlerCategory
@@ -747,7 +884,7 @@ def _setup_enhanced_file_logging(
             handler_class = _BaseHandler
 
         # Ensure directory exists right before creating handler to prevent race conditions
-        log_path.parent.mkdir(parents=True, exist_ok=True)
+        _ensure_log_directory(log_path)
         try:
             handler = handler_class(
                 log_path,
@@ -757,7 +894,7 @@ def _setup_enhanced_file_logging(
             )
         except (FileNotFoundError, OSError):
             # If directory doesn't exist or was deleted, recreate it and try again
-            log_path.parent.mkdir(parents=True, exist_ok=True)
+            _ensure_log_directory(log_path)
             handler = handler_class(
                 log_path,
                 maxBytes=max_bytes,
@@ -793,14 +930,14 @@ def _setup_enhanced_file_logging(
                 logger_names.append(f"server.{prefix}")
 
             for logger_name in logger_names:
-                logger = logging.getLogger(logger_name)
-                logger.addHandler(handler)
+                target_logger = logging.getLogger(logger_name)
+                target_logger.addHandler(handler)
                 # Set DEBUG level for combat modules in local/debug environments
                 if log_file == "combat" and (environment == "local" or log_level == "DEBUG"):
-                    logger.setLevel(logging.DEBUG)
+                    target_logger.setLevel(logging.DEBUG)
                 else:
-                    logger.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
-                logger.propagate = True
+                    target_logger.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
+                target_logger.propagate = True
 
     # Create warnings.log aggregator handler
     # This captures ALL WARNING level logs from ALL subsystems
@@ -838,15 +975,17 @@ def _setup_enhanced_file_logging(
                 def shouldRollover(self, record):  # noqa: N802
                     if self.baseFilename:
                         log_path = Path(self.baseFilename)
-                        log_path.parent.mkdir(parents=True, exist_ok=True)
+                        _ensure_log_directory(log_path)
                     return super().shouldRollover(record)
 
             handler_class = SafeWinHandlerConsole
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
+        # Defensive fallback: if class definition fails for any reason,
+        # fall back to base handler (e.g., if _WinSafeHandler is invalid)
         handler_class = _BaseHandler
 
     # Ensure directory exists right before creating handler to prevent race conditions
-    console_log_path.parent.mkdir(parents=True, exist_ok=True)
+    _ensure_log_directory(console_log_path)
     try:
         console_handler = handler_class(
             console_log_path,
@@ -856,7 +995,7 @@ def _setup_enhanced_file_logging(
         )
     except (FileNotFoundError, OSError):
         # If directory doesn't exist or was deleted, recreate it and try again
-        console_log_path.parent.mkdir(parents=True, exist_ok=True)
+        _ensure_log_directory(console_log_path)
         console_handler = handler_class(
             console_log_path,
             maxBytes=max_bytes,
@@ -936,8 +1075,8 @@ def setup_enhanced_logging(
     _configure_enhanced_uvicorn_logging()
 
     # Log the setup
-    logger = get_logger("server.logging.enhanced")
-    logger.info(
+    setup_logger = get_logger("server.logging.enhanced")
+    setup_logger.info(
         "Enhanced logging system initialized",
         environment=environment,
         log_level=log_level,
@@ -953,7 +1092,7 @@ def setup_enhanced_logging(
 
 def _configure_enhanced_uvicorn_logging() -> None:
     """Configure uvicorn to use our enhanced StructLog system."""
-    logger = get_logger("uvicorn.enhanced")
+    config_logger = get_logger("uvicorn.enhanced")
 
     # Configure uvicorn's access logger to use our enhanced system
     uvicorn_access_logger = logging.getLogger("uvicorn.access")
@@ -973,7 +1112,7 @@ def _configure_enhanced_uvicorn_logging() -> None:
     uvicorn_logger.propagate = True
     uvicorn_logger.setLevel(logging.DEBUG)
 
-    logger.info("Enhanced uvicorn logging configured")
+    config_logger.info("Enhanced uvicorn logging configured")
 
 
 # Context management utilities
@@ -1029,12 +1168,12 @@ def get_current_context() -> dict[str, Any]:
         return {}
 
 
-def log_with_context(logger: BoundLogger, level: str, message: str, **kwargs) -> None:
+def log_with_context(bound_logger: BoundLogger, level: str, message: str, **kwargs) -> None:
     """
     Log a message with the current context automatically included.
 
     Args:
-        logger: Structlog logger instance
+        bound_logger: Structlog logger instance
         level: Log level (debug, info, warning, error, critical)
         message: Log message
         **kwargs: Additional log data
@@ -1044,7 +1183,7 @@ def log_with_context(logger: BoundLogger, level: str, message: str, **kwargs) ->
     log_data = {**current_context, **kwargs}
 
     # Log at the specified level
-    log_method = getattr(logger, level.lower(), logger.info)
+    log_method = getattr(bound_logger, level.lower(), bound_logger.info)
     log_method(message, **log_data)
 
 
@@ -1138,8 +1277,8 @@ def update_logging_with_player_service(player_service: Any) -> None:
     ]
 
     for category in log_categories:
-        logger = logging.getLogger(category)
-        for handler in logger.handlers:
+        category_logger = logging.getLogger(category)
+        for handler in category_logger.handlers:
             if hasattr(handler, "setFormatter"):
                 handler.setFormatter(enhanced_formatter)
 
@@ -1149,7 +1288,7 @@ def update_logging_with_player_service(player_service: Any) -> None:
 
 
 def log_exception_once(
-    logger: BoundLogger,
+    bound_logger: BoundLogger,
     level: str,
     message: str,
     *,
@@ -1161,7 +1300,7 @@ def log_exception_once(
     Log an exception once, respecting exceptions that have already been logged.
 
     Args:
-        logger: Structlog bound logger instance.
+        bound_logger: Structlog bound logger instance.
         level: Logging level to use (for example, "error" or "warning").
         message: Log message to emit.
         exc: Optional exception to include in the log entry.
@@ -1175,12 +1314,12 @@ def log_exception_once(
         kwargs.setdefault("error_type", type(exc).__name__)
         kwargs.setdefault("error", str(exc))
 
-    log_method = getattr(logger, level.lower(), logger.error)
+    log_method = getattr(bound_logger, level.lower(), bound_logger.error)
     log_method(message, **kwargs)
 
     if exc is not None and mark_logged:
         marker = getattr(exc, "mark_logged", None)
         if callable(marker):
-            marker()
+            marker()  # pylint: disable=not-callable
         else:
-            cast(Any, exc)._already_logged = True
+            cast(Any, exc)._already_logged = True  # pylint: disable=protected-access

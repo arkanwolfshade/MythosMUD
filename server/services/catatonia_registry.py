@@ -9,7 +9,7 @@ from datetime import UTC, datetime
 from threading import RLock
 
 from ..logging.enhanced_logging_config import get_logger
-from .sanity_service import CatatoniaObserverProtocol
+from .lucidity_service import CatatoniaObserverProtocol
 
 logger = get_logger(__name__)
 
@@ -28,7 +28,7 @@ class CatatoniaRegistry(CatatoniaObserverProtocol):
 
     # Observer protocol implementations -------------------------------------------------
 
-    def on_catatonia_entered(self, *, player_id: uuid.UUID | str, entered_at: datetime, current_san: int) -> None:
+    def on_catatonia_entered(self, *, player_id: uuid.UUID | str, entered_at: datetime, current_lcd: int) -> None:
         # Convert UUID to string for dictionary key (uses strings as keys)
         player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
         with self._lock:
@@ -39,7 +39,7 @@ class CatatoniaRegistry(CatatoniaObserverProtocol):
             # Structlog handles UUID objects automatically, no need to convert to string
             player_id=player_id,
             entered_at=entered_at.isoformat(),
-            current_san=current_san,
+            current_lcd=current_lcd,
         )
 
     def on_catatonia_cleared(self, *, player_id: uuid.UUID | str, resolved_at: datetime) -> None:
@@ -55,7 +55,7 @@ class CatatoniaRegistry(CatatoniaObserverProtocol):
             resolved_at=resolved_at.isoformat(),
         )
 
-    def on_sanitarium_failover(self, *, player_id: uuid.UUID | str, current_san: int) -> None:
+    def on_sanitarium_failover(self, *, player_id: uuid.UUID | str, current_lcd: int) -> None:
         # Convert UUID to string for dictionary key (uses strings as keys)
         player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
         with self._lock:
@@ -65,7 +65,7 @@ class CatatoniaRegistry(CatatoniaObserverProtocol):
             "Catatonia failover triggered",
             # Structlog handles UUID objects automatically, no need to convert to string
             player_id=player_id,
-            current_san=current_san,
+            current_lcd=current_lcd,
         )
 
         callback = self._failover_callback
@@ -74,7 +74,7 @@ class CatatoniaRegistry(CatatoniaObserverProtocol):
 
         try:
             # Callback expects string (legacy interface)
-            result = callback(player_id_str, current_san)
+            result = callback(player_id_str, current_lcd)
             if asyncio.iscoroutine(result):
                 # Fire-and-forget failover task
                 # AnyIO Pattern: For fire-and-forget tasks, we create them but don't track

@@ -38,7 +38,7 @@ def test_item_models_persist_and_cascade():
             wear_slots=["head"],
             stacking_rules={"max_stack": 1},
             usage_restrictions={"profession": ["trainee"]},
-            effect_components=["component.sanity_guard"],
+            effect_components=["component.Lucidity_guard"],
             metadata_payload={"lore": "Fabricated in the Sanitarium test lab"},
             tags=["equipment", "head"],
         )
@@ -60,7 +60,7 @@ def test_item_models_persist_and_cascade():
         instance.apply_flag("BLESSED")
 
         component_state = ItemComponentState(
-            component_id="component.sanity_guard",
+            component_id="component.Lucidity_guard",
             state_payload={"charges": 3},
         )
         instance.component_states.append(component_state)

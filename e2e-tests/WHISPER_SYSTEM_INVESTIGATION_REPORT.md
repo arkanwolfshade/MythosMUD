@@ -1427,7 +1427,7 @@ chat.whisper.player.12aed7c5-dc99-488f-a979-28b9d227e858
 
 1. **Playwright MCP** - Browser automation for E2E testing
 2. **PowerShell** - Server management and log analysis
-3. **SQLite CLI** - Database state verification
+3. **PostgreSQL CLI (psql)** - Database state verification
 4. **grep** - Log file analysis
 5. **Browser Developer Tools** - Client-side debugging
 
@@ -1459,7 +1459,7 @@ chat.whisper.player.12aed7c5-dc99-488f-a979-28b9d227e858
 
 **Database Evidence:**
 
-- Player records verified in `e2e_players.db`
+- Player records verified in PostgreSQL database `mythos_e2e`
 - Both players in correct room
 - Correct permissions set
 

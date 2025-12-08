@@ -57,11 +57,9 @@ class TestCombatCommandIntegration:
         assert "strike" in command_service.command_handlers
 
     @pytest.mark.asyncio
-    @pytest.mark.slow
     async def test_attack_command_no_target(self, mock_persistence):
         """Test attack command with no target specified."""
-        handler = CombatCommandHandler()
-        handler.persistence = mock_persistence
+        handler = CombatCommandHandler(async_persistence=mock_persistence)
 
         command_data = {
             "command_type": "attack",
@@ -89,8 +87,7 @@ class TestCombatCommandIntegration:
     @pytest.mark.asyncio
     async def test_attack_command_with_target(self, mock_persistence, mock_target_resolution_service):
         """Test attack command with target specified."""
-        handler = CombatCommandHandler()
-        handler.persistence = mock_persistence
+        handler = CombatCommandHandler(async_persistence=mock_persistence)
         handler.target_resolution_service = mock_target_resolution_service
 
         command_data = {
@@ -120,8 +117,7 @@ class TestCombatCommandIntegration:
     @pytest.mark.asyncio
     async def test_punch_command_alias(self, mock_persistence, mock_target_resolution_service):
         """Test punch command alias."""
-        handler = CombatCommandHandler()
-        handler.persistence = mock_persistence
+        handler = CombatCommandHandler(async_persistence=mock_persistence)
         handler.target_resolution_service = mock_target_resolution_service
 
         command_data = {
@@ -151,8 +147,7 @@ class TestCombatCommandIntegration:
     @pytest.mark.asyncio
     async def test_kick_command_alias(self, mock_persistence, mock_target_resolution_service):
         """Test kick command alias."""
-        handler = CombatCommandHandler()
-        handler.persistence = mock_persistence
+        handler = CombatCommandHandler(async_persistence=mock_persistence)
         handler.target_resolution_service = mock_target_resolution_service
 
         command_data = {
@@ -180,11 +175,9 @@ class TestCombatCommandIntegration:
         assert "No target named 'skeleton' found" in result["result"]
 
     @pytest.mark.asyncio
-    @pytest.mark.slow
     async def test_strike_command_alias(self, mock_persistence, mock_target_resolution_service):
         """Test strike command alias."""
-        handler = CombatCommandHandler()
-        handler.persistence = mock_persistence
+        handler = CombatCommandHandler(async_persistence=mock_persistence)
         handler.target_resolution_service = mock_target_resolution_service
 
         command_data = {
@@ -214,8 +207,7 @@ class TestCombatCommandIntegration:
     @pytest.mark.asyncio
     async def test_invalid_combat_command(self, mock_persistence):
         """Test invalid combat command."""
-        handler = CombatCommandHandler()
-        handler.persistence = mock_persistence
+        handler = CombatCommandHandler(async_persistence=mock_persistence)
 
         # Set up mock request with app.state.persistence
         mock_request = MagicMock()
@@ -240,10 +232,9 @@ class TestCombatCommandIntegration:
         # Since we don't have a room_id in current_user, expect "You are not in a room." message
         assert "You are not in a room." in result["result"]
 
-    @pytest.mark.slow
-    def test_attack_aliases_defined(self):
+    def test_attack_aliases_defined(self, mock_persistence):
         """Test that attack aliases are properly defined."""
-        handler = CombatCommandHandler()
+        handler = CombatCommandHandler(async_persistence=mock_persistence)
 
         expected_aliases = {"attack", "punch", "kick", "strike", "hit", "smack", "thump"}
 

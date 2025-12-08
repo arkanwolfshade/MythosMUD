@@ -26,7 +26,7 @@ async def handle_summon_command(
     """Handle the `/summon` administrative command."""
 
     persistence, connection_manager = _resolve_state(request)
-    player, error = _resolve_player(persistence, current_user, player_name)
+    player, error = await _resolve_player(persistence, current_user, player_name)
     if error or not player:
         return error or {"result": "Player information not found."}
 

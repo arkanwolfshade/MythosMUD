@@ -66,7 +66,7 @@ class PlayerPositionService:
                     error=str(exc),
                 )
 
-    def change_position(self, player_name: str, target_position: str) -> dict[str, Any]:
+    async def change_position(self, player_name: str, target_position: str) -> dict[str, Any]:
         """Mutate persistence and in-memory tracking to reflect the requested position."""
         normalized_position = target_position.lower()
         if normalized_position not in VALID_POSITIONS:

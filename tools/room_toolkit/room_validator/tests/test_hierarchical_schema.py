@@ -92,7 +92,7 @@ class TestHierarchicalSchema(unittest.TestCase):
             "environment": "outdoors",
             "description": "A bustling urban area",
             "weather_patterns": ["fog", "rain", "overcast"],
-            "special_rules": {"sanity_drain_rate": 0.1, "npc_spawn_modifier": 1.2},
+            "special_rules": {"lucidity_drain_rate": 0.1, "npc_spawn_modifier": 1.2},
         }
 
         result = self.validator.validate_room(zone_config, self.zone_schema)
@@ -115,7 +115,7 @@ class TestHierarchicalSchema(unittest.TestCase):
         subzone_config = {
             "environment": "indoors",
             "description": "A residential district",
-            "special_rules": {"sanity_drain_rate": 0.05, "npc_spawn_modifier": 0.8},
+            "special_rules": {"lucidity_drain_rate": 0.05, "npc_spawn_modifier": 0.8},
         }
 
         result = self.validator.validate_room(subzone_config, self.subzone_schema)

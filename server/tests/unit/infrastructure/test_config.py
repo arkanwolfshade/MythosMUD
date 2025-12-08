@@ -336,7 +336,7 @@ class TestPlayerStatsConfig:
         """Test health validation rejects values below 1."""
         with pytest.raises(ValidationError) as exc_info:
             PlayerStatsConfig(max_health=0)
-        assert "Health/sanity must be between 1 and 1000" in str(exc_info.value)
+        assert "Health/lucidity must be between 1 and 1000" in str(exc_info.value)
 
     def test_to_dict_format(self):
         """Test conversion to dict format."""

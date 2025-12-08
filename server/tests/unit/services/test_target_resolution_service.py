@@ -3,7 +3,7 @@ Tests for target resolution service.
 """
 
 import uuid
-from unittest.mock import Mock, patch
+from unittest.mock import AsyncMock, Mock, patch
 from uuid import uuid4
 
 import pytest
@@ -134,7 +134,7 @@ class TestTargetResolutionService:
         mock_room.get_npcs.return_value = ["npc_1"]
         # TargetResolutionService prefers get_room_by_id when available
         mock_persistence.get_room_by_id = Mock(return_value=mock_room)
-        mock_persistence.get_room = Mock(return_value=mock_room)
+        mock_persistence.get_room = AsyncMock(return_value=mock_room)
 
         # Mock NPC instance
         mock_npc = Mock()

@@ -373,10 +373,19 @@ class ExplorationService:
                 # This is fire-and-forget - we don't await it
                 loop.create_task(_mark_explored_async())
             except RuntimeError:
-                # No running loop - run in a new event loop
-                # This is a blocking call, but it's the best we can do from sync code
-                # In practice, this should rarely happen as the server runs in an async context
-                asyncio.run(_mark_explored_async())
+                # CRITICAL FIX: No running loop - log and skip instead of asyncio.run()
+                # asyncio.run() can cause RuntimeError if called from event loop context
+                # and creates unnecessary overhead. Since this is fire-and-forget,
+                # it's safe to skip if no loop is available.
+                # AI Agent: This should rarely happen as server runs in async context
+                logger.warning(
+                    "No event loop available for exploration tracking (skipped)",
+                    player_id=player_id,
+                    room_id=room_id,
+                    reason="no_running_loop",
+                )
+                # Alternative: Could use threading to run in background, but adds complexity
+                # Since exploration is non-critical, skipping is acceptable
 
         except Exception as e:
             # Log error but don't raise - exploration failures shouldn't block movement

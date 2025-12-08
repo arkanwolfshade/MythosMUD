@@ -42,7 +42,7 @@ class _FakePersistence:
         return self._room
 
 
-def test_event_handler_does_not_mutate_room_on_npc_events() -> None:
+async def test_event_handler_does_not_mutate_room_on_npc_events() -> None:
     event_bus = EventBus()
     connection_manager = MagicMock()
     handler = RealTimeEventHandler(event_bus=event_bus, connection_manager=connection_manager)
@@ -51,9 +51,9 @@ def test_event_handler_does_not_mutate_room_on_npc_events() -> None:
     handler.connection_manager.persistence = _FakePersistence(fake_room)
 
     # NPC enters
-    handler._handle_npc_entered(NPCEnteredRoom(npc_id="npc_001", room_id="room_001"))
+    await handler._handle_npc_entered(NPCEnteredRoom(npc_id="npc_001", room_id="room_001"))
     assert fake_room.npc_entered_called is False
 
     # NPC leaves
-    handler._handle_npc_left(NPCLeftRoom(npc_id="npc_001", room_id="room_001"))
+    await handler._handle_npc_left(NPCLeftRoom(npc_id="npc_001", room_id="room_001"))
     assert fake_room.npc_left_called is False

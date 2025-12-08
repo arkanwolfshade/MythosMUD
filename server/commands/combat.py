@@ -10,7 +10,8 @@ from typing import TYPE_CHECKING, Any
 from server.alias_storage import AliasStorage
 from server.config import get_config
 from server.logging.enhanced_logging_config import get_logger
-from server.persistence import get_persistence
+
+# Removed: from server.persistence import get_persistence - now using async_persistence parameter
 from server.schemas.target_resolution import TargetType
 from server.services.npc_combat_integration_service import (
     NPCCombatIntegrationService,
@@ -62,23 +63,23 @@ class CombatCommandHandler:
             "smack",
             "thump",
         }
+        # Use async_persistence directly (now the only persistence layer)
+        if async_persistence is None:
+            raise ValueError("async_persistence is required for CombatCommandHandler")
         self.npc_combat_service = NPCCombatIntegrationService(
             combat_service=combat_service,
             event_bus=event_bus,
             player_combat_service=player_combat_service,
             connection_manager=connection_manager,
+            async_persistence=async_persistence,
         )
-        self.persistence = get_persistence(event_bus)
+        self.persistence = async_persistence
         self.combat_validator = CombatValidator()
         # Initialize target resolution service
         from server.game.player_service import PlayerService
 
-        # Use async persistence if available (better performance, no lock blocking)
-        # Fallback to sync persistence if async not available
-        persistence_for_target_resolution = async_persistence if async_persistence else self.persistence
-        self.target_resolution_service = TargetResolutionService(
-            persistence_for_target_resolution, PlayerService(self.persistence)
-        )
+        # Use async persistence for target resolution and player service
+        self.target_resolution_service = TargetResolutionService(async_persistence, PlayerService(async_persistence))
 
     async def handle_attack_command(
         self,

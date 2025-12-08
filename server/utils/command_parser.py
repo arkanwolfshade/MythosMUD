@@ -425,7 +425,7 @@ class CommandParser:
             )
         # Convert to lowercase for case-insensitive matching
         direction = args[0].lower()
-        return GoCommand(direction=direction)  # type: ignore[arg-type]
+        return GoCommand(direction=direction)
 
     def _create_say_command(self, args: list[str]) -> SayCommand:
         """Create SayCommand from arguments."""

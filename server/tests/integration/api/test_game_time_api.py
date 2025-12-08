@@ -9,7 +9,6 @@ import pytest
 from server.api import game
 
 
-@pytest.mark.slow  # Mark as slow due to 26-30 second setup times (container_test_client fixture)
 class TestGameTimeApi:
     """Integration coverage for the /game/time endpoint."""
 
@@ -23,6 +22,7 @@ class TestGameTimeApi:
         """Set client as instance variable for backward compatibility."""
         self.client = client
 
+    @pytest.mark.slow
     def test_game_time_endpoint_returns_calendar_payload(self, monkeypatch) -> None:
         """Ensure the endpoint surfaces formatted Mythos time metadata."""
 

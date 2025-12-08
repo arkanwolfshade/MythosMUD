@@ -3,7 +3,7 @@ Tests for EmoteService functionality.
 
 This module tests the emote service which handles predefined emotes,
 emote aliases, and message formatting. As noted in the Pnakotic Manuscripts,
-proper emotional expression is essential for maintaining sanity in our
+proper emotional expression is essential for maintaining lucidity in our
 eldritch adventures.
 """
 

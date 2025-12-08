@@ -1,21 +1,21 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
+import type { HealthStatus } from '../../types/health';
+import { determineHealthTier } from '../../types/health';
+import type { LucidityStatus } from '../../types/lucidity';
+import { HeaderBar } from './HeaderBar';
+import { PanelContainer } from './PanelSystem/PanelContainer';
 import { PanelManagerProvider } from './PanelSystem/PanelManager';
 import { usePanelManager } from './PanelSystem/usePanelManager';
-import { PanelContainer } from './PanelSystem/PanelContainer';
-import { HeaderBar } from './HeaderBar';
-import { ChatHistoryPanel } from './panels/ChatHistoryPanel';
-import { LocationPanel } from './panels/LocationPanel';
-import { RoomDescriptionPanel } from './panels/RoomDescriptionPanel';
-import { OccupantsPanel } from './panels/OccupantsPanel';
-import { GameInfoPanel } from './panels/GameInfoPanel';
 import { CharacterInfoPanel } from './panels/CharacterInfoPanel';
+import { ChatHistoryPanel } from './panels/ChatHistoryPanel';
 import { CommandHistoryPanel } from './panels/CommandHistoryPanel';
 import { CommandInputPanel } from './panels/CommandInputPanel';
+import { GameInfoPanel } from './panels/GameInfoPanel';
+import { LocationPanel } from './panels/LocationPanel';
+import { OccupantsPanel } from './panels/OccupantsPanel';
+import { RoomDescriptionPanel } from './panels/RoomDescriptionPanel';
+import type { ChatMessage, MythosTimeState, Player, Room } from './types';
 import { createDefaultPanelLayout } from './utils/panelLayout';
-import type { ChatMessage, Player, Room, MythosTimeState } from './types';
-import type { HealthStatus } from '../../types/health';
-import type { SanityStatus } from '../../types/sanity';
-import { determineHealthTier } from '../../types/health';
 
 interface GameClientV2Props {
   playerName: string;
@@ -34,7 +34,7 @@ interface GameClientV2Props {
   reconnectAttempts: number;
   mythosTime: MythosTimeState | null;
   healthStatus: HealthStatus | null;
-  sanityStatus: SanityStatus | null;
+  lucidityStatus: LucidityStatus | null;
   // Event handlers
   onSendCommand: (command: string) => void;
   onSendChatMessage: (message: string, channel: string) => void;
@@ -59,7 +59,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
   reconnectAttempts,
   mythosTime,
   healthStatus,
-  sanityStatus,
+  lucidityStatus,
   onSendCommand,
   onSendChatMessage,
   onClearMessages,
@@ -68,7 +68,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
 }) => {
   const panelManager = usePanelManager();
 
-  // Derive health and sanity status (similar to GameTerminal)
+  // Derive health and lucidity status (similar to GameTerminal)
   const derivedHealthStatus = useMemo<HealthStatus | null>(() => {
     if (healthStatus) {
       return healthStatus;
@@ -86,20 +86,20 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
     return null;
   }, [healthStatus, player]);
 
-  const derivedSanityStatus = useMemo<SanityStatus | null>(() => {
-    if (sanityStatus) {
-      return sanityStatus;
+  const derivedLucidityStatus = useMemo<LucidityStatus | null>(() => {
+    if (lucidityStatus) {
+      return lucidityStatus;
     }
-    if (player?.stats?.sanity !== undefined) {
+    if (player?.stats?.lucidity !== undefined) {
       return {
-        current: player.stats.sanity,
-        max: player.stats.max_sanity ?? 100,
+        current: player.stats.lucidity,
+        max: player.stats.max_lucidity ?? 100,
         tier: 'lucid',
         liabilities: [],
       };
     }
     return null;
-  }, [sanityStatus, player]);
+  }, [lucidityStatus, player]);
 
   // Handle window resize - scale panels proportionally based on viewport
   // Maintains three-column layout structure from wireframe
@@ -304,7 +304,11 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
             onMaximize={panelManager.toggleMaximize}
             onFocus={panelManager.focusPanel}
           >
-            <CharacterInfoPanel player={player} healthStatus={derivedHealthStatus} sanityStatus={derivedSanityStatus} />
+            <CharacterInfoPanel
+              player={player}
+              healthStatus={derivedHealthStatus}
+              lucidityStatus={derivedLucidityStatus}
+            />
           </PanelContainer>
         )}
 

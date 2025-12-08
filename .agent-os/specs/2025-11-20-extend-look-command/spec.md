@@ -11,7 +11,7 @@ Extend the `/look` command to support examining players, items, and containers w
 
 ### Examining Other Players
 
-As a player, I want to look at other players in my room to see their visible equipment, position, and apparent health/sanity status, so that I can assess their condition and appearance. When I use `/look player Armitage` or `/look Armitage`, I should see their name, externally visible equipment (head, torso, legs, hands, feet, weapons), current position, and descriptive health/sanity labels like "healthy" or "wounded" and "sane" or "disturbed".
+As a player, I want to look at other players in my room to see their visible equipment, position, and apparent health/lucidity status, so that I can assess their condition and appearance. When I use `/look player Armitage` or `/look Armitage`, I should see their name, externally visible equipment (head, torso, legs, hands, feet, weapons), current position, and descriptive health/lucidity labels like "healthy" or "wounded" and "lucid" or "disturbed".
 
 ### Examining Items
 
@@ -24,7 +24,7 @@ As a player, I want to look inside containers to see what items they contain, th
 ## Spec Scope
 
 1. **Command Parser Extensions** - Add support for explicit type syntax (`/look player <name>`, `/look item <name>`, `/look container <name>`) and instance targeting (`backpack-2` or `backpack 2`) in the command parser.
-2. **Player Look Functionality** - Implement player examination showing visible equipment, position, and descriptive health/sanity labels with priority resolution.
+2. **Player Look Functionality** - Implement player examination showing visible equipment, position, and descriptive health/lucidity labels with priority resolution.
 3. **Item Look Functionality** - Implement item examination across all locations (room, inventory, equipped, containers) with prototype description lookup.
 4. **Container Look Functionality** - Implement container examination with contents listing, capacity information, and lock status display.
 5. **Target Resolution Priority** - Establish priority order (Players > NPCs > Items > Containers > Directions) for ambiguous target resolution.

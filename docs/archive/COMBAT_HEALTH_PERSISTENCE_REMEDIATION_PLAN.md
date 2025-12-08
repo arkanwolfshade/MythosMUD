@@ -712,5 +712,5 @@ CREATE TABLE players (
 
 ---
 
-*"In the restricted archives of Miskatonic University, we have learned that data persistence is as critical as the sanity of our investigators. Let us ensure no knowledge is lost to the void."*
+*"In the restricted archives of Miskatonic University, we have learned that data persistence is as critical as the lucidity of our investigators. Let us ensure no knowledge is lost to the void."*
 — From the Digital Pnakotic Manuscripts

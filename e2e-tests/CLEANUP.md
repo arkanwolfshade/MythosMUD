@@ -62,19 +62,11 @@ netstat -an | findstr :5173
 **Cursor Commands**:
 
 ```powershell
-# Open SQLite database
-sqlite3 data/e2e_test/players/e2e_players.db
-```
+# Reset players to starting room
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "UPDATE players SET current_room_id = 'earth_arkhamcity_sanitarium_room_foyer_001' WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
 
-```sql
--- Reset players to starting room
-UPDATE players SET current_room_id = 'earth_arkhamcity_sanitarium_room_foyer_001' WHERE name IN ('ArkanWolfshade', 'Ithaqua');
-
--- Verify reset
-SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');
-
--- Commit changes
-.quit
+# Verify reset
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
 ```
 
 **Expected Result**: Both players in Main Foyer, AW with admin privileges

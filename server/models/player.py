@@ -19,11 +19,11 @@ from .base import Base  # ARCHITECTURE FIX Phase 3.1: Use shared Base
 # Forward references for type checking (resolves circular imports)
 # Note: SQLAlchemy will resolve string references via shared registry at runtime
 if TYPE_CHECKING:
-    from .sanity import (
-        PlayerSanity,
-        SanityAdjustmentLog,
-        SanityCooldown,
-        SanityExposureState,
+    from .lucidity import (
+        LucidityAdjustmentLog,
+        LucidityCooldown,
+        LucidityExposureState,
+        PlayerLucidity,
     )
     from .user import User
 
@@ -63,7 +63,7 @@ class Player(Base):
             "intelligence": 50,
             "wisdom": 50,
             "charisma": 50,
-            "sanity": 100,
+            "lucidity": 100,
             "occult_knowledge": 0,
             "fear": 0,
             "corruption": 0,
@@ -129,7 +129,7 @@ class Player(Base):
                 "intelligence": 50,
                 "wisdom": 50,
                 "charisma": 50,
-                "sanity": 100,
+                "lucidity": 100,
                 "occult_knowledge": 0,
                 "fear": 0,
                 "corruption": 0,
@@ -280,29 +280,29 @@ class Player(Base):
         max_health = 100  # Could be made configurable
         return float((current_health / max_health) * 100)
 
-    sanity: Mapped["PlayerSanity"] = relationship(
-        "PlayerSanity",
+    lucidity: Mapped["PlayerLucidity"] = relationship(
+        "PlayerLucidity",
         back_populates="player",
         uselist=False,
         cascade="all, delete-orphan",
         single_parent=True,
     )
 
-    sanity_adjustments: Mapped[list["SanityAdjustmentLog"]] = relationship(
-        "SanityAdjustmentLog",
+    lucidity_adjustments: Mapped[list["LucidityAdjustmentLog"]] = relationship(
+        "LucidityAdjustmentLog",
         back_populates="player",
         cascade="all, delete-orphan",
-        order_by="desc(SanityAdjustmentLog.created_at)",
+        order_by="desc(LucidityAdjustmentLog.created_at)",
     )
 
-    sanity_exposures: Mapped[list["SanityExposureState"]] = relationship(
-        "SanityExposureState",
+    lucidity_exposures: Mapped[list["LucidityExposureState"]] = relationship(
+        "LucidityExposureState",
         back_populates="player",
         cascade="all, delete-orphan",
     )
 
-    sanity_cooldowns: Mapped[list["SanityCooldown"]] = relationship(
-        "SanityCooldown",
+    lucidity_cooldowns: Mapped[list["LucidityCooldown"]] = relationship(
+        "LucidityCooldown",
         back_populates="player",
         cascade="all, delete-orphan",
     )
@@ -384,7 +384,7 @@ def _convert_legacy_stats_string(target: Player, context: Any) -> None:
                 "intelligence": 50,
                 "wisdom": 50,
                 "charisma": 50,
-                "sanity": 100,
+                "lucidity": 100,
                 "occult_knowledge": 0,
                 "fear": 0,
                 "corruption": 0,

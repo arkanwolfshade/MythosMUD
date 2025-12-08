@@ -5,6 +5,7 @@ This module provides a service class for publishing player_entered, player_left,
 and game_tick events to NATS subjects for real-time game event distribution.
 """
 
+import uuid
 from datetime import datetime
 from typing import Any
 
@@ -40,6 +41,7 @@ class EventPublisher:
         self.nats_service = nats_service
         self.subject_manager = subject_manager
         self.sequence_number = initial_sequence
+        self._async_persistence: Any | None = None  # Lazy-loaded from ApplicationContainer
 
         logger.info("EventPublisher initialized", subject_manager_enabled=subject_manager is not None)
 
@@ -68,12 +70,35 @@ class EventPublisher:
                 logger.warning("NATS service not connected, cannot publish player_entered event")
                 return False
 
+            # Get actual player and room names from persistence
+            player_name = f"Player_{player_id}"  # Fallback
+            room_name = f"Room_{room_id}"  # Fallback
+
+            async_persistence = self._get_async_persistence()
+            if async_persistence:
+                try:
+                    # Get player name
+                    try:
+                        player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+                        player = await async_persistence.get_player_by_id(player_id_uuid)
+                        if player and hasattr(player, "name") and player.name:
+                            player_name = player.name
+                    except (ValueError, TypeError, AttributeError) as e:
+                        logger.debug("Failed to get player name", player_id=player_id, error=str(e))
+
+                    # Get room name (sync cache method)
+                    room = async_persistence.get_room_by_id(room_id)
+                    if room and hasattr(room, "name") and room.name:
+                        room_name = room.name
+                except Exception as e:
+                    logger.debug("Failed to get player/room names", player_id=player_id, room_id=room_id, error=str(e))
+
             # Generate event data
             event_data = {
                 "player_id": player_id,
                 "room_id": room_id,
-                "player_name": f"Player_{player_id}",  # TODO: Get actual player name from persistence
-                "room_name": f"Room_{room_id}",  # TODO: Get actual room name from persistence
+                "player_name": player_name,
+                "room_name": room_name,
             }
 
             # Create the complete event message
@@ -148,12 +173,35 @@ class EventPublisher:
                 logger.warning("NATS service not connected, cannot publish player_left event")
                 return False
 
+            # Get actual player and room names from persistence
+            player_name = f"Player_{player_id}"  # Fallback
+            room_name = f"Room_{room_id}"  # Fallback
+
+            async_persistence = self._get_async_persistence()
+            if async_persistence:
+                try:
+                    # Get player name
+                    try:
+                        player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+                        player = await async_persistence.get_player_by_id(player_id_uuid)
+                        if player and hasattr(player, "name") and player.name:
+                            player_name = player.name
+                    except (ValueError, TypeError, AttributeError) as e:
+                        logger.debug("Failed to get player name", player_id=player_id, error=str(e))
+
+                    # Get room name (sync cache method)
+                    room = async_persistence.get_room_by_id(room_id)
+                    if room and hasattr(room, "name") and room.name:
+                        room_name = room.name
+                except Exception as e:
+                    logger.debug("Failed to get player/room names", player_id=player_id, room_id=room_id, error=str(e))
+
             # Generate event data
             event_data = {
                 "player_id": player_id,
                 "room_id": room_id,
-                "player_name": f"Player_{player_id}",  # TODO: Get actual player name from persistence
-                "room_name": f"Room_{room_id}",  # TODO: Get actual room name from persistence
+                "player_name": player_name,
+                "room_name": room_name,
             }
 
             # Create the complete event message
@@ -321,6 +369,19 @@ class EventPublisher:
         """Reset the sequence number to 0."""
         self.sequence_number = 0
         logger.info("EventPublisher sequence number reset")
+
+    def _get_async_persistence(self) -> Any | None:
+        """Get async_persistence from ApplicationContainer (lazy-loaded)."""
+        if self._async_persistence is None:
+            try:
+                from ..container import ApplicationContainer
+
+                container = ApplicationContainer.get_instance()
+                if container and container.async_persistence:
+                    self._async_persistence = container.async_persistence
+            except Exception as e:
+                logger.warning("Failed to get async_persistence from ApplicationContainer", error=str(e))
+        return self._async_persistence
 
 
 # AI Agent: Global singleton removed - use ApplicationContainer.event_publisher instead

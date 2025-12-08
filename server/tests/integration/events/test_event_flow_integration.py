@@ -25,7 +25,7 @@ class TestCompleteEventFlowIntegration:
     def mock_connection_manager(self):
         """Create a mock connection manager with realistic behavior."""
         cm = AsyncMock()
-        cm._get_player = Mock()
+        cm._get_player = AsyncMock()
         cm.persistence = Mock()
         cm.broadcast_to_room = AsyncMock()
         cm.subscribe_to_room = AsyncMock()
@@ -378,7 +378,7 @@ class TestRealEventFlow:
     def mock_connection_manager(self):
         """Create a mock connection manager."""
         cm = AsyncMock()
-        cm._get_player = Mock()
+        cm._get_player = AsyncMock()
         cm.persistence = Mock()
         cm.broadcast_to_room = AsyncMock()
         cm.subscribe_to_room = AsyncMock()
@@ -412,7 +412,7 @@ class TestRealEventFlow:
                 return mock_player if pid == test_player_id else None
             return mock_player if str(pid) == str(test_player_id) else None
 
-        mock_connection_manager._get_player = Mock(side_effect=mock_get_player)
+        mock_connection_manager._get_player = AsyncMock(side_effect=mock_get_player)
 
         mock_room = Mock()
         mock_room.name = "Test Room"

@@ -12,11 +12,11 @@
 Investigation of warnings in `logs/local/warnings.log` identified three distinct warning types:
 
 1. **RealTimeEventHandler Room Occupants Warnings** (2 occurrences): Debug-level logging incorrectly set to WARNING level, causing normal operational events to appear as warnings
-2. **Performance Monitor Alert** (1 occurrence): Legitimate performance concern - `passive_sanity_flux_tick` operation exceeded 1000ms threshold, taking 1669ms
+2. **Performance Monitor Alert** (1 occurrence): Legitimate performance concern - `passive_lucidity_flux_tick` operation exceeded 1000ms threshold, taking 1669ms
 
 **Root Cause**:
 - **Issue 1**: Debug logging statement incorrectly uses `logger.warning()` instead of `logger.debug()` for normal operational events
-- **Issue 2**: Performance bottleneck in passive sanity flux tick processing - requires optimization investigation
+- **Issue 2**: Performance bottleneck in passive lucidity flux tick processing - requires optimization investigation
 
 **System Impact**:
 - **Issue 1**: Low - Log noise, no functional impact
@@ -82,8 +82,8 @@ event='Sending room_occupants event'
 ```
 room_id='earth_arkhamcity_sanitarium_room_foyer_001'
 players=['ArkanWolfshade']
-npcs=['Dr. Francis Morgan', 'Sanitarium Patient', 'Sanitarium Patient']
-all_occupants=['ArkanWolfshade', 'Dr. Francis Morgan', 'Sanitarium Patient', 'Sanitarium Patient']
+npcs=['Dr. Francis Morgan', 'Sanitarium patient', 'Sanitarium patient']
+all_occupants=['ArkanWolfshade', 'Dr. Francis Morgan', 'Sanitarium patient', 'Sanitarium patient']
 players_count=1
 npcs_count=3
 event='Sending room_occupants event'
@@ -101,7 +101,7 @@ event='Sending room_occupants event'
 
 ---
 
-### Warning 3: Performance Monitor Alert - Passive Sanity Flux Tick (Line 3)
+### Warning 3: Performance Monitor Alert - Passive lucidity Flux Tick (Line 3)
 
 **Timestamp**: 2025-11-29 10:36:09
 **Location**: `server/monitoring/performance_monitor.py:215`
@@ -110,7 +110,7 @@ event='Sending room_occupants event'
 
 **Log Entry**:
 ```
-operation='passive_sanity_flux_tick'
+operation='passive_lucidity_flux_tick'
 duration_ms=1669.6974999504164
 threshold_ms=1000.0
 metadata={'evaluated_players': 3, 'applied_adjustments': 3}
@@ -175,29 +175,29 @@ The code at `server/realtime/event_handler.py:707` uses `self._logger.warning()`
 
 ---
 
-### Issue 2: Performance Bottleneck in Passive Sanity Flux Tick
+### Issue 2: Performance Bottleneck in Passive lucidity Flux Tick
 
 **Root Cause**:
-The `passive_sanity_flux_tick` operation is taking longer than the 1000ms threshold. The operation processed 3 players and applied 3 adjustments, taking 1669ms total.
+The `passive_lucidity_flux_tick` operation is taking longer than the 1000ms threshold. The operation processed 3 players and applied 3 adjustments, taking 1669ms total.
 
 **Why This Might Be Happening**:
 - Possible N+1 query patterns in player evaluation
 - Database query inefficiencies
 - Synchronous operations blocking async event loop
-- Complex sanity calculation logic
+- Complex lucidity calculation logic
 - Lack of caching for repeated operations
 
 **Impact**:
 - Performance degradation: Game tick processing delayed
 - Potential cascading delays: Other tick operations may be affected
-- User experience: Possible lag or unresponsiveness during sanity flux processing
+- User experience: Possible lag or unresponsiveness during lucidity flux processing
 
 **Affected Code**:
-- `server/services/passive_sanity_flux_service.py:397` - `record_metric()` call
+- `server/services/passive_lucidity_flux_service.py:397` - `record_metric()` call
 - Performance monitoring threshold: `server/monitoring/performance_monitor.py:56` - `alert_threshold_ms=1000.0`
 
 **Investigation Needed**:
-- Review `passive_sanity_flux_service.py` for performance bottlenecks
+- Review `passive_lucidity_flux_service.py` for performance bottlenecks
 - Analyze database queries for N+1 patterns
 - Check for synchronous operations in async context
 - Review caching strategies for player data
@@ -223,15 +223,15 @@ The `passive_sanity_flux_tick` operation is taking longer than the 1000ms thresh
 ### Issue 2: Performance Bottleneck
 
 **Severity**: Medium
-**Scope**: Game tick processing, passive sanity flux system
-**User Impact**: Potential lag during sanity flux processing
+**Scope**: Game tick processing, passive lucidity flux system
+**User Impact**: Potential lag during lucidity flux processing
 **System Impact**: Game tick delays, potential cascading performance issues
 **Priority**: Medium - Requires investigation and optimization
 
 **Affected Components**:
-- Passive sanity flux service
+- Passive lucidity flux service
 - Game tick processing
-- Player sanity calculations
+- Player lucidity calculations
 - Database query performance
 
 **Performance Metrics**:
@@ -279,7 +279,7 @@ The `passive_sanity_flux_tick` operation is taking longer than the 1000ms thresh
 - Lines: 96-97, 212-217
 - Threshold: 1000ms
 - Actual: 1669ms
-- Source: `server/services/passive_sanity_flux_service.py:397`
+- Source: `server/services/passive_lucidity_flux_service.py:397`
 
 ---
 
@@ -303,10 +303,10 @@ The `passive_sanity_flux_tick` operation is taking longer than the 1000ms thresh
 
 ### Priority 2: Investigate Performance Bottleneck
 
-**Action**: Conduct performance analysis of `passive_sanity_flux_tick` operation
+**Action**: Conduct performance analysis of `passive_lucidity_flux_tick` operation
 
 **Investigation Steps**:
-1. Review `server/services/passive_sanity_flux_service.py` for:
+1. Review `server/services/passive_lucidity_flux_service.py` for:
    - N+1 query patterns
    - Synchronous operations in async context
    - Inefficient database queries
@@ -337,7 +337,7 @@ The `passive_sanity_flux_tick` operation is taking longer than the 1000ms thresh
 
 ### Priority 3: Enhanced Performance Monitoring
 
-**Action**: Add detailed performance metrics for passive sanity flux tick
+**Action**: Add detailed performance metrics for passive lucidity flux tick
 
 **Recommendations**:
 - Add sub-operation timing (player evaluation, adjustment calculation, database writes)
@@ -389,12 +389,12 @@ Method: _send_room_occupants_update()
 **For Issue 2 (Performance Investigation)**:
 
 ```
-Investigate and optimize passive_sanity_flux_tick performance bottleneck
+Investigate and optimize passive_lucidity_flux_tick performance bottleneck
 
-The passive_sanity_flux_tick operation is taking 1669ms, exceeding the 1000ms threshold by 66.9%. This is causing performance alerts and potential game tick delays.
+The passive_lucidity_flux_tick operation is taking 1669ms, exceeding the 1000ms threshold by 66.9%. This is causing performance alerts and potential game tick delays.
 
 Investigation required:
-1. Review server/services/passive_sanity_flux_service.py for performance bottlenecks
+1. Review server/services/passive_lucidity_flux_service.py for performance bottlenecks
 2. Check for N+1 query patterns in player evaluation
 3. Identify synchronous operations blocking async event loop
 4. Analyze database query performance
@@ -412,7 +412,7 @@ After investigation, either:
 - Adjust threshold if performance is acceptable for the operation complexity
 - Add caching or batch processing if applicable
 
-File: server/services/passive_sanity_flux_service.py
+File: server/services/passive_lucidity_flux_service.py
 Related: server/monitoring/performance_monitor.py
 ```
 

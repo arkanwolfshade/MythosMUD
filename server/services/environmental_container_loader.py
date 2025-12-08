@@ -15,7 +15,8 @@ from uuid import UUID
 from ..exceptions import ValidationError
 from ..logging.enhanced_logging_config import get_logger
 from ..models.container import ContainerComponent, ContainerLockState, ContainerSourceType
-from ..persistence import get_persistence
+
+# Removed: from ..persistence import get_persistence - now using async_persistence parameter
 from ..utils.error_logging import create_error_context, log_and_raise
 
 logger = get_logger(__name__)
@@ -36,7 +37,9 @@ class EnvironmentalContainerLoader:
         Args:
             persistence: Persistence layer instance (optional, will get if not provided)
         """
-        self.persistence = persistence or get_persistence()
+        if persistence is None:
+            raise ValueError("persistence (async_persistence) is required for EnvironmentalContainerLoader")
+        self.persistence = persistence
 
     def load_container_from_room_json(self, room_json: dict[str, Any], room_id: str) -> ContainerComponent | None:
         """
@@ -122,7 +125,7 @@ class EnvironmentalContainerLoader:
 
         return container
 
-    def migrate_room_container_to_postgresql(self, room_json: dict[str, Any], room_id: str) -> UUID | None:
+    async def migrate_room_container_to_postgresql(self, room_json: dict[str, Any], room_id: str) -> UUID | None:
         """
         Migrate a container from room JSON to PostgreSQL.
 
@@ -140,8 +143,8 @@ class EnvironmentalContainerLoader:
         if not container:
             return None
 
-        # Check if container already exists for this room
-        existing_containers = self.persistence.get_containers_by_room_id(room_id)
+        # Check if container already exists for this room (async)
+        existing_containers = await self.persistence.get_containers_by_room_id(room_id)
         for existing in existing_containers:
             if existing.get("source_type") == "environment":
                 # Container already exists, return its ID
@@ -163,7 +166,7 @@ class EnvironmentalContainerLoader:
             lock_state_value = (
                 container.lock_state.value if hasattr(container.lock_state, "value") else str(container.lock_state)
             )
-            container_data = self.persistence.create_container(
+            container_data = await self.persistence.create_container(
                 source_type=source_type_value,
                 room_id=container.room_id,
                 capacity_slots=container.capacity_slots,
@@ -193,7 +196,7 @@ class EnvironmentalContainerLoader:
                 user_friendly="Failed to create container",
             )
 
-    def load_containers_for_room(self, room_id: str) -> list[ContainerComponent]:
+    async def load_containers_for_room(self, room_id: str) -> list[ContainerComponent]:
         """
         Load all environmental containers for a room from PostgreSQL.
 
@@ -203,7 +206,7 @@ class EnvironmentalContainerLoader:
         Returns:
             list[ContainerComponent]: List of containers in the room
         """
-        containers_data = self.persistence.get_containers_by_room_id(room_id)
+        containers_data = await self.persistence.get_containers_by_room_id(room_id)
         if not containers_data:
             return []
 

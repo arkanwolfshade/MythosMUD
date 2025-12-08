@@ -47,7 +47,7 @@ class ZoneConfiguration:
 
         # Extract NPC-related modifiers
         self.npc_spawn_modifier = self.special_rules.get("npc_spawn_modifier", 1.0)
-        self.sanity_drain_rate = self.special_rules.get("sanity_drain_rate", 0.0)
+        self.lucidity_drain_rate = self.special_rules.get("lucidity_drain_rate", 0.0)
         self.combat_modifier = self.special_rules.get("combat_modifier", 1.0)
         self.exploration_bonus = self.special_rules.get("exploration_bonus", 0.0)
         self.access_requirements = self.special_rules.get("access_requirements", [])

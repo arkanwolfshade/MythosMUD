@@ -3,8 +3,12 @@ Player combat service for managing player combat state and XP rewards.
 
 This service handles player combat state tracking, XP reward calculation,
 and integration with the existing player service for XP persistence.
+
+ASYNC MIGRATION (Phase 2):
+All persistence calls wrapped in asyncio.to_thread() to prevent event loop blocking.
 """
 
+import asyncio
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from typing import Any
@@ -340,7 +344,7 @@ class PlayerCombatService:
                 has_method=hasattr(self._persistence, "get_npc_lifecycle_manager"),
             )
             if hasattr(self._persistence, "get_npc_lifecycle_manager"):
-                lifecycle_manager = self._persistence.get_npc_lifecycle_manager()
+                lifecycle_manager = await asyncio.to_thread(self._persistence.get_npc_lifecycle_manager)
                 logger.debug("Got lifecycle manager", has_lifecycle_manager=bool(lifecycle_manager))
 
                 # First try to get the original string ID from the NPC combat integration service

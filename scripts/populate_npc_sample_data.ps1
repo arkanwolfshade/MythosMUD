@@ -54,7 +54,7 @@ try {
         Write-Host "Sample data includes:" -ForegroundColor Cyan
         Write-Host "  • 2 Shopkeepers (Ezekiel Whateley, Madame Lavinia)" -ForegroundColor White
         Write-Host "  • 2 Quest Givers (Professor Armitage, Dr. Morgan)" -ForegroundColor White
-        Write-Host "  • 3 Passive Mobs (Wandering Scholar, Sanitarium Patient, Street Vendor)" -ForegroundColor White
+        Write-Host "  • 3 Passive Mobs (Wandering Scholar, Sanitarium patient, Street Vendor)" -ForegroundColor White
         Write-Host "  • 3 Aggressive Mobs (Cultist, Deep One Hybrid, Nightgaunt)" -ForegroundColor White
         Write-Host "  • Spawn rules for different conditions and sub-zones" -ForegroundColor White
         Write-Host "  • NPC relationships (allies, enemies, followers)" -ForegroundColor White

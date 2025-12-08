@@ -29,12 +29,48 @@ logger = get_logger(__name__)
 
 DEFAULT_SLOT_CAPACITY = 20
 
-_SHARED_INVENTORY_SERVICE = InventoryService()
-_SHARED_WEARABLE_CONTAINER_SERVICE = WearableContainerService()
-_SHARED_EQUIPMENT_SERVICE = EquipmentService(
-    inventory_service=_SHARED_INVENTORY_SERVICE,
-    wearable_container_service=_SHARED_WEARABLE_CONTAINER_SERVICE,
-)
+# Lazy-initialized shared services (initialized on first use)
+_SHARED_INVENTORY_SERVICE: InventoryService | None = None
+_SHARED_WEARABLE_CONTAINER_SERVICE: WearableContainerService | None = None
+_SHARED_EQUIPMENT_SERVICE: EquipmentService | None = None
+
+
+def _get_shared_services(request: Any) -> tuple[InventoryService, WearableContainerService, EquipmentService]:
+    """
+    Get shared service instances, initializing them lazily if needed.
+
+    This ensures services are initialized with proper dependencies from the application container.
+
+    Args:
+        request: FastAPI request object to access app state
+
+    Returns:
+        Tuple of (inventory_service, wearable_container_service, equipment_service)
+    """
+    global _SHARED_INVENTORY_SERVICE, _SHARED_WEARABLE_CONTAINER_SERVICE, _SHARED_EQUIPMENT_SERVICE
+
+    if _SHARED_INVENTORY_SERVICE is None:
+        # Get async_persistence from container
+        app = getattr(request, "app", None)
+        container = getattr(app.state, "container", None) if app else None
+        async_persistence = getattr(container, "async_persistence", None) if container else None
+
+        if async_persistence is None:
+            raise ValueError("async_persistence is required but not available from container")
+
+        _SHARED_INVENTORY_SERVICE = InventoryService()
+        _SHARED_WEARABLE_CONTAINER_SERVICE = WearableContainerService(persistence=async_persistence)
+        _SHARED_EQUIPMENT_SERVICE = EquipmentService(
+            inventory_service=_SHARED_INVENTORY_SERVICE,
+            wearable_container_service=_SHARED_WEARABLE_CONTAINER_SERVICE,
+        )
+
+    # Type narrowing: After initialization, these are guaranteed to be non-None
+    assert _SHARED_INVENTORY_SERVICE is not None
+    assert _SHARED_WEARABLE_CONTAINER_SERVICE is not None
+    assert _SHARED_EQUIPMENT_SERVICE is not None
+
+    return _SHARED_INVENTORY_SERVICE, _SHARED_WEARABLE_CONTAINER_SERVICE, _SHARED_EQUIPMENT_SERVICE
 
 
 def _match_room_drop_by_name(drop_list: list[dict[str, Any]], search_term: str) -> int | None:
@@ -203,7 +239,7 @@ def _resolve_state(request: Any) -> tuple[Any, Any]:
     return persistence, connection_manager
 
 
-def _resolve_player(
+async def _resolve_player(
     persistence: Any,
     current_user: dict,
     fallback_player_name: str,
@@ -219,7 +255,7 @@ def _resolve_player(
         return None, {"result": str(exc)}
 
     try:
-        player = persistence.get_player_by_name(username)
+        player = await persistence.get_player_by_name(username)
     except Exception as exc:  # pragma: no cover - defensive logging path
         logger.error("Persistence error resolving player", player=username, error=str(exc))
         return None, {"result": f"Error resolving player: {str(exc)}"}
@@ -441,7 +477,7 @@ async def handle_inventory_command(
     """Display the player's inventory and equipped items, including container contents."""
 
     persistence, _connection_manager = _resolve_state(request)
-    player, error = _resolve_player(persistence, current_user, player_name)
+    player, error = await _resolve_player(persistence, current_user, player_name)
     if error or not player:
         return error or {"result": "Player information not found."}
 
@@ -454,8 +490,9 @@ async def handle_inventory_command(
     container_capacities: dict[str, int] = {}
     container_lock_states: dict[str, str] = {}
     try:
+        _, wearable_container_service, _ = _get_shared_services(request)
         player_id_uuid = UUID(str(player.player_id))
-        wearable_containers = _SHARED_WEARABLE_CONTAINER_SERVICE.get_wearable_containers_for_player(player_id_uuid)
+        wearable_containers = await wearable_container_service.get_wearable_containers_for_player(player_id_uuid)
         logger.debug(
             "Getting container contents",
             player_id=str(player_id_uuid),
@@ -580,7 +617,7 @@ async def handle_pickup_command(
     """Move an item stack from room drops into the player's inventory."""
 
     persistence, connection_manager = _resolve_state(request)
-    player, error = _resolve_player(persistence, current_user, player_name)
+    player, error = await _resolve_player(persistence, current_user, player_name)
     if error or not player:
         return error or {"result": "Player information not found."}
 
@@ -793,7 +830,7 @@ async def handle_drop_command(
     """Drop an inventory stack into the current room."""
 
     persistence, connection_manager = _resolve_state(request)
-    player, error = _resolve_player(persistence, current_user, player_name)
+    player, error = await _resolve_player(persistence, current_user, player_name)
     if error or not player:
         return error or {"result": "Player information not found."}
 
@@ -892,7 +929,7 @@ async def handle_equip_command(
     """Equip an item from inventory."""
 
     persistence, connection_manager = _resolve_state(request)
-    player, error = _resolve_player(persistence, current_user, player_name)
+    player, error = await _resolve_player(persistence, current_user, player_name)
     if error or not player:
         return error or {"result": "Player information not found."}
 
@@ -946,8 +983,7 @@ async def handle_equip_command(
         if normalized_selected_slot:
             selected_stack["slot_type"] = normalized_selected_slot
 
-    inventory_service = _SHARED_INVENTORY_SERVICE
-    equipment_service = _SHARED_EQUIPMENT_SERVICE
+    inventory_service, wearable_container_service, equipment_service = _get_shared_services(request)
     mutation_token = command_data.get("mutation_token")
 
     previous_inventory = _clone_inventory(player)
@@ -1039,7 +1075,8 @@ async def handle_equip_command(
     # Handle wearable container creation if this is a container item
     if equipped_item and equipped_item.get("inner_container"):
         try:
-            container_result = _SHARED_WEARABLE_CONTAINER_SERVICE.handle_equip_wearable_container(
+            _, wearable_container_service, _ = _get_shared_services(request)
+            container_result = await wearable_container_service.handle_equip_wearable_container(
                 player_id=UUID(str(player.player_id)),
                 item_stack=cast(dict[str, Any], equipped_item),
             )
@@ -1111,7 +1148,7 @@ async def handle_unequip_command(
     """Unequip an item into the player's inventory."""
 
     persistence, connection_manager = _resolve_state(request)
-    player, error = _resolve_player(persistence, current_user, player_name)
+    player, error = await _resolve_player(persistence, current_user, player_name)
     if error or not player:
         return error or {"result": "Player information not found."}
 
@@ -1122,8 +1159,7 @@ async def handle_unequip_command(
     if normalized_slot is None and not (isinstance(search_term, str) and search_term.strip()):
         return {"result": "Usage: unequip <slot|item-name>"}
 
-    inventory_service = _SHARED_INVENTORY_SERVICE
-    equipment_service = _SHARED_EQUIPMENT_SERVICE
+    inventory_service, wearable_container_service, equipment_service = _get_shared_services(request)
     mutation_token = command_data.get("mutation_token")
 
     previous_inventory = _clone_inventory(player)
@@ -1209,7 +1245,8 @@ async def handle_unequip_command(
     # Handle wearable container preservation if this is a container item
     if unequipped_item.get("inner_container"):
         try:
-            container_result = _SHARED_WEARABLE_CONTAINER_SERVICE.handle_unequip_wearable_container(
+            _, wearable_container_service, _ = _get_shared_services(request)
+            container_result = await wearable_container_service.handle_unequip_wearable_container(
                 player_id=UUID(str(player.player_id)),
                 item_stack=cast(dict[str, Any], unequipped_item),
             )
@@ -1287,7 +1324,7 @@ async def handle_put_command(
     """Put an item from inventory into a container."""
 
     persistence, connection_manager = _resolve_state(request)
-    player, error = _resolve_player(persistence, current_user, player_name)
+    player, error = await _resolve_player(persistence, current_user, player_name)
     if error or not player:
         return error or {"result": "Player information not found."}
 
@@ -1434,8 +1471,9 @@ async def handle_put_command(
                 # This handles cases where the container exists but inner_container wasn't set on the item
                 if not container_found:
                     try:
+                        _, wearable_container_service, _ = _get_shared_services(request)
                         player_id_uuid = UUID(str(player.player_id))
-                        wearable_containers = _SHARED_WEARABLE_CONTAINER_SERVICE.get_wearable_containers_for_player(
+                        wearable_containers = await wearable_container_service.get_wearable_containers_for_player(
                             player_id_uuid
                         )
                         logger.debug(
@@ -1500,7 +1538,8 @@ async def handle_put_command(
                                 player=player.name,
                             )
                             # Try to create container for this equipped item
-                            container_result = _SHARED_WEARABLE_CONTAINER_SERVICE.handle_equip_wearable_container(
+                            _, wearable_container_service, _ = _get_shared_services(request)
+                            container_result = await wearable_container_service.handle_equip_wearable_container(
                                 player_id=player_id_uuid,
                                 item_stack=cast(dict[str, Any], item),
                             )
@@ -1598,7 +1637,7 @@ async def handle_put_command(
     if not mutation_token:
         # Container not open, open it now
         try:
-            open_result = container_service.open_container(container_id, player_id_uuid)
+            open_result = await container_service.open_container(container_id, player_id_uuid)
             mutation_token = open_result.get("mutation_token")
         except Exception as e:
             return {"result": f"Cannot access container: {str(e)}"}
@@ -1653,7 +1692,7 @@ async def handle_put_command(
             container_id=str(container_id),
             quantity=transfer_quantity,
         )
-        container_service.transfer_to_container(
+        await container_service.transfer_to_container(
             container_id=container_id,
             player_id=UUID(str(player.player_id)),
             mutation_token=mutation_token,
@@ -1702,7 +1741,7 @@ async def handle_get_command(
     """Get an item from a container into inventory."""
 
     persistence, connection_manager = _resolve_state(request)
-    player, error = _resolve_player(persistence, current_user, player_name)
+    player, error = await _resolve_player(persistence, current_user, player_name)
     if error or not player:
         return error or {"result": "Player information not found."}
 
@@ -1798,8 +1837,9 @@ async def handle_get_command(
             # If not found via inner_container, use wearable container service
             if not container_found:
                 try:
+                    _, wearable_container_service, _ = _get_shared_services(request)
                     player_id_uuid = UUID(str(player.player_id))
-                    wearable_containers = _SHARED_WEARABLE_CONTAINER_SERVICE.get_wearable_containers_for_player(
+                    wearable_containers = await wearable_container_service.get_wearable_containers_for_player(
                         player_id_uuid
                     )
 
@@ -2027,7 +2067,7 @@ async def handle_get_command(
     if not mutation_token:
         # Container not open, open it now
         try:
-            open_result = container_service.open_container(container_id, player_id_uuid)
+            open_result = await container_service.open_container(container_id, player_id_uuid)
             mutation_token = open_result.get("mutation_token")
         except Exception as e:
             return {"result": f"Cannot access container: {str(e)}"}
@@ -2036,7 +2076,7 @@ async def handle_get_command(
     # Note: item_found is already validated as a dict at line 1827
     try:
         transfer_quantity = quantity if quantity else item_found.get("quantity", 1)
-        result = container_service.transfer_from_container(
+        result = await container_service.transfer_from_container(
             container_id=container_id,
             player_id=UUID(str(player.player_id)),
             mutation_token=mutation_token,

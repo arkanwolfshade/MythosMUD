@@ -26,7 +26,7 @@ class TestGameTickLoop:
     """Test game tick loop functionality."""
 
     @pytest.mark.asyncio
-    @patch("server.app.lifespan.broadcast_game_event")
+    @patch("server.app.lifespan.broadcast_game_event", new_callable=AsyncMock)
     async def test_game_tick_loop_runs(self, mock_broadcast):
         """Test game tick loop executes ticks."""
         mock_connection_manager = MagicMock()
@@ -39,8 +39,8 @@ class TestGameTickLoop:
 
         task = asyncio.create_task(game_tick_loop(app))
 
-        # Let it run for a few ticks
-        await asyncio.sleep(0.3)
+        # Let it run for a few ticks (TICK_INTERVAL is 1.0 seconds, need at least 1.1 seconds for one tick)
+        await asyncio.sleep(1.5)
 
         # Cancel the task
         task.cancel()
@@ -53,7 +53,7 @@ class TestGameTickLoop:
         assert mock_broadcast.call_count >= 1
 
     @pytest.mark.asyncio
-    @patch("server.app.lifespan.broadcast_game_event")
+    @patch("server.app.lifespan.broadcast_game_event", new_callable=AsyncMock)
     async def test_game_tick_loop_broadcast_data(self, mock_broadcast):
         """Test game tick loop broadcasts correct data."""
         mock_connection_manager = MagicMock()
@@ -66,8 +66,8 @@ class TestGameTickLoop:
 
         task = asyncio.create_task(game_tick_loop(app))
 
-        # Let one tick execute
-        await asyncio.sleep(0.1)
+        # Let one tick execute (TICK_INTERVAL is 1.0 seconds, need at least 1.1 seconds for one tick)
+        await asyncio.sleep(1.5)
 
         # Cancel the task
         task.cancel()
@@ -86,7 +86,7 @@ class TestGameTickLoop:
             assert "active_players" in tick_data
 
     @pytest.mark.asyncio
-    @patch("server.app.lifespan.broadcast_game_event")
+    @patch("server.app.lifespan.broadcast_game_event", new_callable=AsyncMock)
     async def test_game_tick_loop_handles_exception(self, mock_broadcast):
         """Test game tick loop continues after exception."""
         mock_connection_manager = MagicMock()
@@ -122,7 +122,7 @@ class TestGameTickLoop:
         assert call_count[0] >= 3
 
     @pytest.mark.asyncio
-    @patch("server.app.lifespan.broadcast_game_event")
+    @patch("server.realtime.connection_manager.broadcast_game_event", new_callable=AsyncMock)
     async def test_game_tick_loop_cancellation(self, mock_broadcast):
         """Test game tick loop handles cancellation gracefully."""
         mock_connection_manager = MagicMock()
@@ -229,7 +229,7 @@ class TestGameTickLoopLegacy:
         """
         app = FastAPI()
 
-        with patch("server.app.lifespan.broadcast_game_event", AsyncMock()) as mock_broadcast:
+        with patch("server.app.lifespan.broadcast_game_event", new_callable=AsyncMock) as mock_broadcast:
             mock_conn_mgr = MagicMock()
             mock_conn_mgr.player_websockets = {}
 
@@ -239,8 +239,8 @@ class TestGameTickLoopLegacy:
             # Run loop for a short time
             task = asyncio.create_task(game_tick_loop(app))
 
-            # Wait for a few ticks
-            await asyncio.sleep(0.1)
+            # Wait for at least one tick (TICK_INTERVAL is 1.0 seconds, need at least 1.1 seconds for one tick)
+            await asyncio.sleep(1.5)
 
             # Cancel the loop
             task.cancel()
@@ -263,7 +263,7 @@ class TestGameTickLoopLegacy:
         """
         app = FastAPI()
 
-        with patch("server.app.lifespan.broadcast_game_event", AsyncMock()):
+        with patch("server.realtime.connection_manager.broadcast_game_event", new_callable=AsyncMock):
             mock_conn_mgr = MagicMock()
             mock_conn_mgr.player_websockets = {}
 
@@ -301,7 +301,9 @@ class TestGameTickLoopLegacy:
                 raise Exception("Broadcast error")
             # Succeed on subsequent calls
 
-        with patch("server.app.lifespan.broadcast_game_event", mock_broadcast_with_error):
+        with patch(
+            "server.app.lifespan.broadcast_game_event", new_callable=AsyncMock, side_effect=mock_broadcast_with_error
+        ):
             mock_conn_mgr = MagicMock()
             mock_conn_mgr.player_websockets = {}
 
@@ -335,7 +337,7 @@ class TestGameTickLoopLegacy:
         async def capture_broadcast(event_type, data):
             captured_data.append((event_type, data))
 
-        with patch("server.app.lifespan.broadcast_game_event", capture_broadcast):
+        with patch("server.app.lifespan.broadcast_game_event", new_callable=AsyncMock, side_effect=capture_broadcast):
             mock_conn_mgr = MagicMock()
             mock_conn_mgr.player_websockets = {"player1": Mock(), "player2": Mock()}
 
@@ -344,8 +346,8 @@ class TestGameTickLoopLegacy:
 
             task = asyncio.create_task(game_tick_loop(app))
 
-            # Wait for at least one tick
-            await asyncio.sleep(0.05)
+            # Wait for at least one tick (TICK_INTERVAL is 1.0 seconds, need at least 1.1 seconds for one tick)
+            await asyncio.sleep(1.5)
 
             task.cancel()
             try:

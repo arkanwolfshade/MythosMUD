@@ -49,7 +49,7 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
   const manualDisconnectRef = useRef<boolean>(false);
   const reconnectAttemptsRef = useRef<number>(0);
   const hasEverConnectedRef = useRef<boolean>(false);
-  const connectRef = useRef<() => void>();
+  const connectRef = useRef<(() => void) | undefined>(undefined);
 
   // Use state instead of refs for values that need to trigger re-renders
   const [isConnected, setIsConnected] = useState(false);
@@ -178,13 +178,14 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
 
     try {
       manualDisconnectRef.current = false;
-      // Use relative URL with Vite proxy and pass JWT via subprotocols (bearer, <token>)
-      const wsUrl = `/api/ws?session_id=${encodeURIComponent(sessionId)}`;
-      const protocols: string[] = ['bearer', authToken];
+      // CRITICAL FIX: Pass JWT via query parameter, not subprotocol
+      // JWT tokens contain characters (dots, etc.) that are invalid in WebSocket subprotocols
+      // This causes the browser to reject the handshake
+      const wsUrl = `/api/ws?session_id=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(authToken)}`;
 
       logger.info('WebSocketConnection', 'Connecting to WebSocket', { url: wsUrl });
 
-      const ws = new WebSocket(wsUrl, protocols);
+      const ws = new WebSocket(wsUrl);
       websocketRef.current = ws;
       lastWebSocketRef.current = ws;
 

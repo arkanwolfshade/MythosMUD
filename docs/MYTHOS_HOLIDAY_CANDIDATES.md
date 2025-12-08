@@ -23,13 +23,13 @@
 
 - **Overlap Management:** Walpurgis (30 Apr) appears twice (Arkham witches, Dunwich sabbat). Treat as region-specific variants sharing buff templates with localized flavor.
 - **Duration Constraints:** For compliance with the two-day holiday cap, keep each observance to ≤48 Mythos hours even if the lore implies longer revels.
-- **Event Hooks:** Map rituals to gameplay beats (e.g., cult raids, NPC migrations, sanity effects). Use `tradition` values (`kingsport`, `cthulhu_cult`, `witch_cult`, etc.) in holiday JSON for filtering.
+- **Event Hooks:** Map rituals to gameplay beats (e.g., cult raids, NPC migrations, lucidity effects). Use `tradition` values (`kingsport`, `cthulhu_cult`, `witch_cult`, etc.) in holiday JSON for filtering.
 - **Needs Alignment Entries:** propose alignment during design sprint—e.g., tie Innsmouth offerings to the first spring tide after the Vernal Equinox and the autumn equinox supermoon.
 
 ### Narrative Flavor Seeds
 
 - **Sevenfold Tide Offering (Innsmouth):** One week after Easter, Innsmouth’s foghorns fall silent as Deep One processions slip from Shadow Alley to the reef. Fishing hauls double, but townsfolk whisper of wet footprints leading back inland. Players assisting the Order gain rare pearls at the cost of mounting suspicion.
-- **Equinox Serpent Vigil (Feast of Yig):** On the eve of the autumn equinox, prairie winds carry a rattling susurrus. Snake effigies decorate crossroads; offending reptiles must be placated with fresh milk and braided corn dolls. Travelers who ignore the rites risk waking to scales etched into their skin and sanity erosion.
+- **Equinox Serpent Vigil (Feast of Yig):** On the eve of the autumn equinox, prairie winds carry a rattling susurrus. Snake effigies decorate crossroads; offending reptiles must be placated with fresh milk and braided corn dolls. Travelers who ignore the rites risk waking to scales etched into their skin and lucidity erosion.
 - **Ghoulmarket Convocation (24 Oct):** A week before Halloween, catacomb doors grind open beneath Arkham and Kingsport. Ghouls arrange a neutral-market parley where human artisans trade grave goods for rare alchemical reagents. Surface dwellers who prove respectful may secure forbidden lore—so long as they stomach the banquet.
 
 ## Opportunities for Expansion

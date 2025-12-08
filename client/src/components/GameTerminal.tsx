@@ -7,9 +7,9 @@ import { RoomInfoPanel } from './RoomInfoPanel';
 import { ChatPanel } from './panels/ChatPanel';
 import { CommandPanel } from './panels/CommandPanel';
 import { GameLogPanel } from './panels/GameLogPanel';
-import { SanityMeter, HallucinationTicker, RescueStatusBanner } from './sanity';
+import { LucidityMeter, HallucinationTicker, RescueStatusBanner } from './lucidity';
 import { HealthMeter, IncapacitatedBanner } from './health';
-import type { SanityStatus, HallucinationMessage, RescueState } from '../types/sanity';
+import type { LucidityStatus, HallucinationMessage, RescueState } from '../types/lucidity';
 import type { HealthStatus } from '../types/health';
 import { determineHealthTier } from '../types/health';
 import type { MythosTimeState } from '../types/mythosTime';
@@ -32,8 +32,8 @@ interface Player {
   stats?: {
     current_health: number;
     max_health?: number;
-    sanity: number;
-    max_sanity?: number;
+    lucidity: number;
+    max_lucidity?: number;
     strength?: number;
     dexterity?: number;
     constitution?: number;
@@ -114,7 +114,7 @@ interface GameTerminalProps {
   player: Player | null;
   messages: ChatMessage[];
   commandHistory: string[];
-  sanityStatus: SanityStatus | null;
+  lucidityStatus: LucidityStatus | null;
   healthStatus?: HealthStatus | null;
   hallucinations: HallucinationMessage[];
   rescueState: RescueState | null;
@@ -145,7 +145,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
   player,
   messages,
   commandHistory,
-  sanityStatus,
+  lucidityStatus,
   healthStatus,
   hallucinations,
   rescueState,
@@ -173,14 +173,14 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
   const [wasIncapacitated, setWasIncapacitated] = useState(false);
   const previousHealthRef = useRef<number | null>(null);
 
-  const derivedSanityStatus = useMemo<SanityStatus | null>(() => {
-    if (sanityStatus) {
-      return sanityStatus;
+  const derivedLucidityStatus = useMemo<LucidityStatus | null>(() => {
+    if (lucidityStatus) {
+      return lucidityStatus;
     }
 
-    if (player?.stats?.sanity !== undefined) {
+    if (player?.stats?.lucidity !== undefined) {
       return {
-        current: player.stats.sanity,
+        current: player.stats.lucidity,
         max: 100,
         tier: 'lucid',
         liabilities: [],
@@ -188,7 +188,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
     }
 
     return null;
-  }, [player, sanityStatus]);
+  }, [player, lucidityStatus]);
 
   const derivedHealthStatus = useMemo<HealthStatus | null>(() => {
     if (healthStatus) {
@@ -474,7 +474,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
               {player?.stats && (
                 <>
                   <HealthMeter status={derivedHealthStatus} />
-                  <SanityMeter status={derivedSanityStatus} className="mt-2" />
+                  <LucidityMeter status={derivedLucidityStatus} className="mt-2" />
                   <div className="flex items-center justify-between">
                     <span className="text-base text-mythos-terminal-text-secondary">XP:</span>
                     <span className="text-base text-mythos-terminal-text">{player.xp || 0}</span>

@@ -54,13 +54,13 @@ class RollStatsRequest(BaseModel):
     profession_id: int | None = None
 
 
-class SanityLossRequest(BaseModel):
-    """Request model for applying sanity loss."""
+class LucidityLossRequest(BaseModel):
+    """Request model for applying lucidity loss."""
 
     __slots__ = ()  # Performance optimization
 
-    amount: int = Field(..., ge=0, le=100, description="Amount of sanity to lose (0-100)")
-    source: str = Field(default="unknown", description="Source of sanity loss")
+    amount: int = Field(..., ge=0, le=100, description="Amount of lucidity to lose (0-100)")
+    source: str = Field(default="unknown", description="Source of lucidity loss")
 
 
 class FearRequest(BaseModel):
@@ -238,19 +238,19 @@ async def delete_player(
 
 
 # Player stats and effects endpoints
-@player_router.post("/{player_id}/sanity-loss")
-async def apply_sanity_loss(
+@player_router.post("/{player_id}/lucidity-loss")
+async def apply_lucidity_loss(
     player_id: uuid.UUID,
-    request_data: SanityLossRequest,
+    request_data: LucidityLossRequest,
     request: Request,
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
 ) -> dict[str, str]:
-    """Apply sanity loss to a player."""
+    """Apply lucidity loss to a player."""
     try:
-        result = await player_service.apply_sanity_loss(player_id, request_data.amount, request_data.source)
+        result = await player_service.apply_lucidity_loss(player_id, request_data.amount, request_data.source)
         if not isinstance(result, dict):
-            raise RuntimeError(f"Expected dict from player_service.apply_sanity_loss(), got {type(result).__name__}")
+            raise RuntimeError(f"Expected dict from player_service.apply_lucidity_loss(), got {type(result).__name__}")
         return result
     except ValidationError as e:
         context = _create_error_context(request, current_user, requested_player_id=player_id)
@@ -303,7 +303,7 @@ async def gain_occult_knowledge(
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
 ) -> dict[str, str]:
-    """Gain occult knowledge (with sanity loss)."""
+    """Gain occult knowledge (with lucidity loss)."""
     try:
         result = await player_service.gain_occult_knowledge(player_id, request_data.amount, request_data.source)
         if not isinstance(result, dict):
@@ -354,6 +354,97 @@ async def damage_player(
         raise LoggedHTTPException(status_code=404, detail=ErrorMessages.PLAYER_NOT_FOUND, context=context) from e
 
 
+@player_router.post("/respawn-delirium")
+async def respawn_player_from_delirium(
+    request: Request,
+    current_user: User = Depends(get_current_active_user),
+    player_service: PlayerService = PlayerServiceDep,
+) -> dict[str, Any]:
+    """
+    Respawn a delirious player at the Sanitarium with restored lucidity.
+
+    This endpoint handles player respawn after delirium, moving them to
+    the Sanitarium and restoring their lucidity to 10.
+
+    Rate limited to 1 request per 5 seconds per user.
+
+    Returns:
+        dict: Respawn room data and updated player state
+
+    Raises:
+        HTTPException(403): Player is not delirious
+        HTTPException(404): Player not found
+        HTTPException(500): Respawn failed
+    """
+    from ..database import get_async_session
+
+    logger.info("Delirium respawn request received", user_id=current_user.id, username=current_user.username)
+
+    try:
+        async for session in get_async_session():
+            try:
+                # Get respawn service from app.state
+                respawn_service = request.app.state.player_respawn_service
+                persistence = request.app.state.persistence  # Now async_persistence
+
+                # Use service layer method to handle delirium respawn logic
+                return await player_service.respawn_player_from_delirium_by_user_id(
+                    user_id=str(current_user.id),
+                    session=session,
+                    respawn_service=respawn_service,
+                    persistence=persistence,
+                )
+            except ValidationError as e:
+                # Convert ValidationError to appropriate HTTPException
+                context = _create_error_context(request, current_user)
+                if "not found" in str(e).lower():
+                    raise LoggedHTTPException(status_code=404, detail="Player not found", context=context) from e
+                elif "must be delirious" in str(e).lower() or "lucidity" in str(e).lower():
+                    raise LoggedHTTPException(
+                        status_code=403,
+                        detail="Player must be delirious to respawn (lucidity must be -10 or below)",
+                        context=context,
+                    ) from e
+                else:
+                    raise LoggedHTTPException(
+                        status_code=500, detail="Failed to respawn player from delirium", context=context
+                    ) from e
+            except LoggedHTTPException:
+                raise
+            except Exception as e:
+                context = _create_error_context(request, current_user, operation="respawn_player_from_delirium")
+                logger.error(
+                    "Error in delirium respawn endpoint",
+                    error=str(e),
+                    exc_info=True,
+                    context=context.to_dict(),
+                )
+                raise LoggedHTTPException(
+                    status_code=500, detail="Failed to process delirium respawn request", context=context
+                ) from e
+
+        # This should never be reached, but mypy needs it
+        raise LoggedHTTPException(
+            status_code=500,
+            detail="No database session available",
+            context=_create_error_context(request, current_user),
+        )
+
+    except LoggedHTTPException:
+        raise
+    except Exception as e:
+        context = _create_error_context(request, current_user, operation="respawn_player_from_delirium")
+        logger.error(
+            "Unexpected error in delirium respawn endpoint",
+            error=str(e),
+            exc_info=True,
+            context=context.to_dict(),
+        )
+        raise LoggedHTTPException(
+            status_code=500, detail="Unexpected error during delirium respawn", context=context
+        ) from e
+
+
 @player_router.post("/respawn")
 async def respawn_player(
     request: Request,
@@ -377,7 +468,6 @@ async def respawn_player(
         HTTPException(500): Respawn failed
     """
     from ..database import get_async_session
-    from ..persistence import get_persistence
 
     logger.info("Respawn request received", user_id=current_user.id, username=current_user.username)
 
@@ -386,7 +476,7 @@ async def respawn_player(
             try:
                 # Get respawn service from app.state
                 respawn_service = request.app.state.player_respawn_service
-                persistence = get_persistence()
+                persistence = request.app.state.persistence  # Now async_persistence
 
                 # Use service layer method to handle respawn logic
                 return await player_service.respawn_player_by_user_id(
@@ -503,12 +593,36 @@ async def roll_character_stats(
         timeout_seconds = request_data.timeout_seconds
 
         if profession_id is not None:
-            # Use profession-based stat rolling
+            # Fetch profession first (async)
+            from ..async_persistence import get_async_persistence
+
+            async_persistence = get_async_persistence()
+            if not async_persistence:
+                context = create_error_context()
+                if current_user:
+                    context.user_id = str(current_user.id)
+                context.metadata["operation"] = "roll_stats"
+                context.metadata["profession_id"] = profession_id
+                raise LoggedHTTPException(status_code=500, detail="Persistence layer not available", context=context)
+            profession = await async_persistence.get_profession_by_id(profession_id)
+
+            if not profession:
+                context = create_error_context()
+                if current_user:
+                    context.user_id = str(current_user.id)
+                context.metadata["operation"] = "roll_stats"
+                context.metadata["profession_id"] = profession_id
+                raise LoggedHTTPException(
+                    status_code=404, detail=f"Profession with ID {profession_id} not found", context=context
+                )
+
+            # Use profession-based stat rolling with fetched profession
             stats, meets_requirements = stats_generator.roll_stats_with_profession(
                 method=method,
                 profession_id=profession_id,
                 timeout_seconds=timeout_seconds,
                 max_attempts=max_attempts,
+                profession=profession,  # Pass profession to avoid async lookup
             )
             stat_summary = stats_generator.get_stat_summary(stats)
 
@@ -543,6 +657,9 @@ async def roll_character_stats(
         context.metadata["operation"] = "roll_stats"
         context.metadata["error"] = str(e)
         raise LoggedHTTPException(status_code=400, detail=f"Invalid profession: {str(e)}", context=context) from e
+    except LoggedHTTPException:
+        # Re-raise LoggedHTTPException without modification
+        raise
     except Exception as e:
         context = create_error_context()
         if current_user:
@@ -694,7 +811,7 @@ def get_class_description(class_name: str) -> str:
     """Get a description for a character class."""
     descriptions = {
         "investigator": "A skilled researcher and detective, specializing in uncovering mysteries and gathering information.",
-        "occultist": "A scholar of forbidden knowledge, capable of wielding dangerous magic at the cost of sanity.",
+        "occultist": "A scholar of forbidden knowledge, capable of wielding dangerous magic at the cost of lucidity.",
         "survivor": "A resilient individual who has learned to endure the horrors of the Mythos through sheer determination.",
         "cultist": "A charismatic leader who can manipulate others and has ties to dark organizations.",
         "academic": "A brilliant researcher and scholar, specializing in historical and scientific knowledge.",

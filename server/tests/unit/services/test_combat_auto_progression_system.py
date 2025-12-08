@@ -14,7 +14,7 @@ from uuid import uuid4
 import pytest
 
 from server.models.combat import CombatParticipantType, CombatStatus
-from server.services.combat_service import CombatService
+from server.services.combat_service import CombatParticipantData, CombatService
 
 
 class TestCombatAutoProgressionSystem:
@@ -42,18 +42,26 @@ class TestCombatAutoProgressionSystem:
         room_id = "test_room_001"
 
         # Start combat
+        attacker = CombatParticipantData(
+            participant_id=player_id,
+            name="TestPlayer",
+            current_hp=10,
+            max_hp=10,
+            dexterity=15,
+            participant_type=CombatParticipantType.PLAYER,
+        )
+        target = CombatParticipantData(
+            participant_id=npc_id,
+            name="TestNPC",
+            current_hp=10,
+            max_hp=10,
+            dexterity=10,
+            participant_type=CombatParticipantType.NPC,
+        )
         combat = await combat_service.start_combat(
             room_id=room_id,
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=10,
-            attacker_max_hp=10,
-            attacker_dex=15,
-            target_hp=10,
-            target_max_hp=10,
-            target_dex=10,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -73,18 +81,26 @@ class TestCombatAutoProgressionSystem:
         room_id = "test_room_001"
 
         # Start combat
+        attacker = CombatParticipantData(
+            participant_id=player_id,
+            name="TestPlayer",
+            current_hp=10,
+            max_hp=10,
+            dexterity=15,  # Higher dexterity, goes first
+            participant_type=CombatParticipantType.PLAYER,
+        )
+        target = CombatParticipantData(
+            participant_id=npc_id,
+            name="TestNPC",
+            current_hp=10,
+            max_hp=10,
+            dexterity=10,
+            participant_type=CombatParticipantType.NPC,
+        )
         combat = await combat_service.start_combat(
             room_id=room_id,
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=10,
-            attacker_max_hp=10,
-            attacker_dex=15,  # Higher dexterity, goes first
-            target_hp=10,
-            target_max_hp=10,
-            target_dex=10,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -111,18 +127,26 @@ class TestCombatAutoProgressionSystem:
         room_id = "test_room_001"
 
         # Start combat
+        attacker = CombatParticipantData(
+            participant_id=player_id,
+            name="TestPlayer",
+            current_hp=10,
+            max_hp=10,
+            dexterity=15,  # Higher dexterity, goes first
+            participant_type=CombatParticipantType.PLAYER,
+        )
+        target = CombatParticipantData(
+            participant_id=npc_id,
+            name="TestNPC",
+            current_hp=10,
+            max_hp=10,
+            dexterity=10,
+            participant_type=CombatParticipantType.NPC,
+        )
         combat = await combat_service.start_combat(
             room_id=room_id,
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=10,
-            attacker_max_hp=10,
-            attacker_dex=15,  # Higher dexterity, goes first
-            target_hp=10,
-            target_max_hp=10,
-            target_dex=10,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -147,18 +171,26 @@ class TestCombatAutoProgressionSystem:
         room_id = "test_room_001"
 
         # Start combat
+        attacker = CombatParticipantData(
+            participant_id=player_id,
+            name="TestPlayer",
+            current_hp=10,
+            max_hp=10,
+            dexterity=15,
+            participant_type=CombatParticipantType.PLAYER,
+        )
+        target = CombatParticipantData(
+            participant_id=npc_id,
+            name="TestNPC",
+            current_hp=10,
+            max_hp=10,
+            dexterity=10,
+            participant_type=CombatParticipantType.NPC,
+        )
         combat = await combat_service.start_combat(
             room_id=room_id,
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=10,
-            attacker_max_hp=10,
-            attacker_dex=15,
-            target_hp=10,
-            target_max_hp=10,
-            target_dex=10,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -178,18 +210,26 @@ class TestCombatAutoProgressionSystem:
         room_id = "test_room_001"
 
         # Start combat
+        attacker = CombatParticipantData(
+            participant_id=player_id,
+            name="TestPlayer",
+            current_hp=10,
+            max_hp=10,
+            dexterity=15,  # Higher dexterity, goes first
+            participant_type=CombatParticipantType.PLAYER,
+        )
+        target = CombatParticipantData(
+            participant_id=npc_id,
+            name="TestNPC",
+            current_hp=10,
+            max_hp=10,
+            dexterity=10,
+            participant_type=CombatParticipantType.NPC,
+        )
         combat = await combat_service.start_combat(
             room_id=room_id,
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=10,
-            attacker_max_hp=10,
-            attacker_dex=15,  # Higher dexterity, goes first
-            target_hp=10,
-            target_max_hp=10,
-            target_dex=10,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -213,18 +253,26 @@ class TestCombatAutoProgressionSystem:
         room_id = "test_room_001"
 
         # Start combat
+        attacker = CombatParticipantData(
+            participant_id=player_id,
+            name="TestPlayer",
+            current_hp=10,
+            max_hp=10,
+            dexterity=15,  # Higher dexterity, goes first
+            participant_type=CombatParticipantType.PLAYER,
+        )
+        target = CombatParticipantData(
+            participant_id=npc_id,
+            name="TestNPC",
+            current_hp=10,
+            max_hp=10,
+            dexterity=10,
+            participant_type=CombatParticipantType.NPC,
+        )
         combat = await combat_service.start_combat(
             room_id=room_id,
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=10,
-            attacker_max_hp=10,
-            attacker_dex=15,  # Higher dexterity, goes first
-            target_hp=10,
-            target_max_hp=10,
-            target_dex=10,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -251,18 +299,26 @@ class TestCombatAutoProgressionSystem:
         room_id = "test_room_001"
 
         # Start combat
+        attacker = CombatParticipantData(
+            participant_id=player_id,
+            name="TestPlayer",
+            current_hp=10,
+            max_hp=10,
+            dexterity=15,
+            participant_type=CombatParticipantType.PLAYER,
+        )
+        target = CombatParticipantData(
+            participant_id=npc_id,
+            name="TestNPC",
+            current_hp=10,
+            max_hp=10,
+            dexterity=10,
+            participant_type=CombatParticipantType.NPC,
+        )
         combat = await combat_service.start_combat(
             room_id=room_id,
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=10,
-            attacker_max_hp=10,
-            attacker_dex=15,
-            target_hp=10,
-            target_max_hp=10,
-            target_dex=10,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -285,18 +341,26 @@ class TestCombatAutoProgressionSystem:
         room_id = "test_room_001"
 
         # Start combat
+        attacker = CombatParticipantData(
+            participant_id=player_id,
+            name="TestPlayer",
+            current_hp=10,
+            max_hp=10,
+            dexterity=15,
+            participant_type=CombatParticipantType.PLAYER,
+        )
+        target = CombatParticipantData(
+            participant_id=npc_id,
+            name="TestNPC",
+            current_hp=10,
+            max_hp=10,
+            dexterity=10,
+            participant_type=CombatParticipantType.NPC,
+        )
         combat = await combat_service.start_combat(
             room_id=room_id,
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=10,
-            attacker_max_hp=10,
-            attacker_dex=15,
-            target_hp=10,
-            target_max_hp=10,
-            target_dex=10,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -321,18 +385,26 @@ class TestCombatAutoProgressionSystem:
         room_id = "test_room_001"
 
         # Start combat
+        attacker = CombatParticipantData(
+            participant_id=player_id,
+            name="TestPlayer",
+            current_hp=10,
+            max_hp=10,
+            dexterity=15,
+            participant_type=CombatParticipantType.PLAYER,
+        )
+        target = CombatParticipantData(
+            participant_id=npc_id,
+            name="TestNPC",
+            current_hp=10,
+            max_hp=10,
+            dexterity=10,
+            participant_type=CombatParticipantType.NPC,
+        )
         combat = await combat_service.start_combat(
             room_id=room_id,
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=10,
-            attacker_max_hp=10,
-            attacker_dex=15,
-            target_hp=10,
-            target_max_hp=10,
-            target_dex=10,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 
@@ -368,18 +440,26 @@ class TestCombatAutoProgressionSystem:
         room_id = "test_room_001"
 
         # Start combat
+        attacker = CombatParticipantData(
+            participant_id=player_id,
+            name="TestPlayer",
+            current_hp=10,
+            max_hp=10,
+            dexterity=15,
+            participant_type=CombatParticipantType.PLAYER,
+        )
+        target = CombatParticipantData(
+            participant_id=npc_id,
+            name="TestNPC",
+            current_hp=10,
+            max_hp=10,
+            dexterity=10,
+            participant_type=CombatParticipantType.NPC,
+        )
         combat = await combat_service.start_combat(
             room_id=room_id,
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=10,
-            attacker_max_hp=10,
-            attacker_dex=15,
-            target_hp=10,
-            target_max_hp=10,
-            target_dex=10,
+            attacker=attacker,
+            target=target,
             current_tick=1,
         )
 

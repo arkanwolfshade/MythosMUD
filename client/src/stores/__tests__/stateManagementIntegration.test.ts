@@ -52,7 +52,7 @@ describe('State Management Integration', () => {
         player: {
           id: 'player-123',
           name: 'TestCharacter',
-          stats: { current_health: 100, sanity: 80 },
+          stats: { current_health: 100, lucidity: 80 },
           level: 5,
         },
         room: {
@@ -108,7 +108,7 @@ describe('State Management Integration', () => {
         gameResult.current.setPlayer({
           id: 'player-123',
           name: 'TestPlayer',
-          stats: { current_health: 100, sanity: 80 },
+          stats: { current_health: 100, lucidity: 80 },
           level: 5,
         });
       });
@@ -151,7 +151,7 @@ describe('State Management Integration', () => {
         gameResult.current.setPlayer({
           id: 'player-123',
           name: 'TestCharacter',
-          stats: { current_health: 100, sanity: 80 },
+          stats: { current_health: 100, lucidity: 80 },
           level: 5,
         });
         commandResult.current.addToHistory('look around');
@@ -187,7 +187,7 @@ describe('State Management Integration', () => {
         player: {
           id: 'player-123',
           name: 'TestCharacter',
-          stats: { current_health: 100, sanity: 80 },
+          stats: { current_health: 100, lucidity: 80 },
           level: 5,
           inventory: [
             { id: 'item-1', name: 'Sword', type: 'weapon' },
@@ -263,7 +263,7 @@ describe('State Management Integration', () => {
         player: {
           id: 'player-123',
           name: 'TestCharacter',
-          stats: { current_health: 100, sanity: 80 },
+          stats: { current_health: 100, lucidity: 80 },
           level: 5,
         },
         room: {
@@ -446,7 +446,7 @@ describe('State Management Integration', () => {
         gameResult.current.setPlayer({
           id: 'player-123',
           name: 'TestCharacter',
-          stats: { current_health: 100, sanity: 80 },
+          stats: { current_health: 100, lucidity: 80 },
           level: 5,
         });
       });

@@ -156,7 +156,7 @@ class TestInitDB:
                 with patch("server.models.invite.Invite"):
                     with patch("server.models.player.Player"):
                         with patch("server.models.user.User"):
-                            with patch("server.models.sanity.PlayerSanity"):
+                            with patch("server.models.lucidity.PlayerLucidity"):
                                 await init_db()
 
             # Verify that connectivity check was performed (SELECT 1)
@@ -283,7 +283,7 @@ class TestDatabaseIntegration:
                     with patch("server.models.invite.Invite"):
                         with patch("server.models.player.Player"):
                             with patch("server.models.user.User"):
-                                with patch("server.models.sanity.PlayerSanity"):
+                                with patch("server.models.lucidity.PlayerLucidity"):
                                     await init_db()
                                     # Verify connectivity check was performed
                                     mock_conn.execute.assert_called_once()

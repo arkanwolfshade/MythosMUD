@@ -5,6 +5,7 @@
 MythosMUD uses a **hybrid E2E testing approach**:
 
 ### Automated Playwright CLI Tests (10 Scenarios)
+
 - **114 automated tests** covering error handling, accessibility, and integration
 - **Location**: `client/tests/e2e/runtime/`
 - **Execution**: `make test-client-runtime` or `npm run test:e2e:runtime`
@@ -13,6 +14,7 @@ MythosMUD uses a **hybrid E2E testing approach**:
 - **See**: [E2E Testing Guide](../docs/E2E_TESTING_GUIDE.md)
 
 ### Playwright MCP Scenarios (11 Scenarios)
+
 - **11 multi-player scenarios** requiring AI Agent coordination
 - **Location**: `e2e-tests/scenarios/`
 - **Execution**: Via AI Agent with Playwright MCP (this document)
@@ -70,10 +72,10 @@ if (messages.length === 0) {
 
 **MANDATORY LLM REQUIREMENT:**
 
-- **MUST USE GPT-4**: This playbook requires GPT-4 level reasoning and instruction adherence
+- **MUST USE GPT-4**: This playbook requires GPT-4 or higher level reasoning and instruction adherence
 - **DO NOT USE**: GPT-3.5, Claude, or other LLMs for playbook execution
 - **REASON**: Complex multi-step scenarios with strict execution requirements need advanced reasoning capabilities
-- **VERIFICATION**: Confirm you are using GPT-4 before proceeding with any scenario
+- **VERIFICATION**: Confirm you are using GPT-4 or greater before proceeding with any scenario
 
 ## 🚨 CRITICAL INSTRUCTION FOR AI EXECUTORS 🚨
 
@@ -108,7 +110,7 @@ if (messages.length === 0) {
 - **Server Port**: 54731 (from `server/server_config.yaml`)
 - **Client Port**: 5173 (from `client/vite.config.ts`)
 - **Starting Room**: `earth_arkhamcity_sanitarium_room_foyer_001` (Main Foyer)
-- **Database**: `data/e2e_test/players/e2e_players.db`
+- **Database**: PostgreSQL `mythos_e2e` database (connection: `postgresql://postgres:Cthulhu1@localhost:5432/mythos_e2e`)
 - **Log Directory**: `logs/e2e_test/`
 
 ### Command Syntax
@@ -132,7 +134,7 @@ if (messages.length === 0) {
 - **Tab switching**: 2 seconds
 - **Page load**: 5 seconds
 
-### Low-Performance Machine Timeouts
+<!-- ### Low-Performance Machine Timeouts
 
 - **Login form wait**: 30 seconds
 - **MOTD screen wait**: 30 seconds
@@ -148,7 +150,7 @@ if (messages.length === 0) {
 - **Game interface load**: 5 seconds
 - **Message delivery wait**: 3 seconds
 - **Tab switching**: 1 second
-- **Page load**: 2 seconds
+- **Page load**: 2 seconds -->
 
 ## CRITICAL SERVER MANAGEMENT RULES
 
@@ -223,16 +225,16 @@ netstat -an | findstr :5173
 
 ```powershell
 # MANDATORY: Check if players exist and their current state
-sqlite3 "data/e2e_test/players/e2e_players.db" "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
 
 # MANDATORY: Update players to starting room (ALWAYS run this)
-sqlite3 "data/e2e_test/players/e2e_players.db" "UPDATE players SET current_room_id = 'earth_arkhamcity_sanitarium_room_foyer_001' WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "UPDATE players SET current_room_id = 'earth_arkhamcity_sanitarium_room_foyer_001' WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
 
 # MANDATORY: Verify ArkanWolfshade has admin privileges (ALWAYS run this)
-sqlite3 "data/e2e_test/players/e2e_players.db" "UPDATE players SET is_admin = 1 WHERE name = 'ArkanWolfshade';"
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "UPDATE players SET is_admin = 1 WHERE name = 'ArkanWolfshade';"
 
 # MANDATORY: Verify the updates worked
-sqlite3 "data/e2e_test/players/e2e_players.db" "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
+$env:PGPASSWORD="Cthulhu1"; psql -h localhost -U postgres -d mythos_e2e -c "SELECT name, current_room_id, is_admin FROM players WHERE name IN ('ArkanWolfshade', 'Ithaqua');"
 ```
 
 **MANDATORY VERIFICATION**: Both players must exist, be in Main Foyer (`earth_arkhamcity_sanitarium_room_foyer_001`), and AW must have admin privileges (is_admin = 1)
@@ -336,7 +338,7 @@ After each step, document:
 ## Security and Environment
 
 - **Security-First Mindset**: Before starting the server, ensure all security configurations are properly set, especially COPPA compliance settings for minor users
-- **Database Placement**: Verify database files are in correct locations (/data/players/ for production, /data/unit_test/players/ for tests)
+- **Database Configuration**: Verify PostgreSQL database connection is properly configured via DATABASE_URL environment variable
 - **Environment Variables**: Ensure all secrets are properly configured via environment variables, never hardcoded
 
 ## VIOLATION CONSEQUENCES

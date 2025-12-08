@@ -20,17 +20,17 @@
 - [x] 3. Helper Functions and Utilities
   - [x] 3.1 Write tests for _parse_instance_number() helper function
   - [x] 3.2 Write tests for _get_health_label() helper function
-  - [x] 3.3 Write tests for _get_sanity_label() helper function
+  - [x] 3.3 Write tests for _get_lucidity_label() helper function
   - [x] 3.4 Write tests for _get_visible_equipment() helper function
   - [x] 3.5 Implement _parse_instance_number() in server/commands/exploration_commands.py
   - [x] 3.6 Implement _get_health_label() helper function
-  - [x] 3.7 Implement _get_sanity_label() helper function
+  - [x] 3.7 Implement _get_lucidity_label() helper function
   - [x] 3.8 Implement _get_visible_equipment() helper function
   - [x] 3.9 Verify all helper function tests pass
 
 - [x] 4. Player Look Functionality
   - [x] 4.1 Write tests for _get_players_in_room() helper function
-  - [x] 4.2 Write tests for player look with various health/sanity states
+  - [x] 4.2 Write tests for player look with various health/lucidity states
   - [x] 4.3 Write tests for player look with visible equipment display
   - [x] 4.4 Write tests for player look instance targeting
   - [x] 4.5 Write tests for player look error cases (not found, multiple matches)

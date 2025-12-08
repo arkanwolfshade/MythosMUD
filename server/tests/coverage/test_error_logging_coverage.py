@@ -11,7 +11,7 @@ sufficient context for future scholars to understand what went wrong."
 
 import json
 from datetime import UTC, datetime
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 from uuid import uuid4
 
 import pytest
@@ -531,6 +531,20 @@ class TestErrorLoggingPerformance:
 class TestAPIErrorLoggingIntegration:
     """Integration tests for API endpoint error logging."""
 
+    @pytest.fixture(autouse=True)
+    def mock_nats_service(self):
+        """Mock NATS service to prevent connection attempts during container initialization."""
+        # Patch NATSService at the point where it's imported in container.py
+        with patch("server.services.nats_service.NATSService") as mock_nats_class:
+            # Create a mock NATS service instance that doesn't try to connect
+            mock_nats_instance = Mock()
+            mock_nats_instance.connect = Mock(return_value=None)
+            mock_nats_instance.is_connected = Mock(return_value=False)
+            mock_nats_instance.subject_manager = Mock()
+            # Make the class return our mock instance when instantiated
+            mock_nats_class.return_value = mock_nats_instance
+            yield mock_nats_instance
+
     @pytest.fixture
     def test_mixin(self):
         """Provide error logging test mixin."""
@@ -586,8 +600,6 @@ class TestAPIErrorLoggingIntegration:
 
     def test_api_player_deletion_error_logging(self, test_mixin, container_test_client):
         """Test error logging in player deletion API endpoint."""
-        from uuid import uuid4
-
         # Use a valid UUID format for the path parameter
         nonexistent_player_id = str(uuid4())
 
@@ -611,8 +623,6 @@ class TestAPIErrorLoggingIntegration:
 
     def test_api_player_retrieval_error_logging(self, test_mixin, container_test_client):
         """Test error logging in player retrieval API endpoint."""
-        from uuid import uuid4
-
         # Use a valid UUID format for the path parameter
         nonexistent_player_id = str(uuid4())
 
@@ -648,6 +658,10 @@ class TestCommandHandlerErrorLoggingIntegration:
         """Mock FastAPI request object."""
         request = Mock()
         request.app.state.persistence = Mock()
+        # Mock player for catatonia check
+        mock_player = Mock()
+        mock_player.player_id = uuid4()
+        request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         return request
 
     @pytest.fixture

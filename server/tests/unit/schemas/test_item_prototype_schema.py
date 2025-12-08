@@ -18,7 +18,7 @@ def build_valid_payload(**overrides):
         "wear_slots": ["off_hand"],
         "usage_restrictions": {"faction": ["miskatonic"]},
         "stacking_rules": {"max_stack": 1},
-        "effect_components": ["component.sanity_whisper"],
+        "effect_components": ["component.Lucidity_whisper"],
         "metadata": {"lore": "Restricted Archive shelf A-17"},
         "tags": ["lore", "codex"],
     }

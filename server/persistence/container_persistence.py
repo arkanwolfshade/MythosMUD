@@ -61,6 +61,8 @@ def _fetch_container_items(conn: Any, container_id: UUID) -> list[dict[str, Any]
     Returns:
         List of item dictionaries matching the old items_json format
     """
+    # Convert UUID to string for psycopg2 compatibility
+    container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     cursor.execute(
         """
@@ -78,7 +80,7 @@ def _fetch_container_items(conn: Any, container_id: UUID) -> list[dict[str, Any]
         WHERE cc.container_id = %s
         ORDER BY cc.position
         """,
-        (container_id,),
+        (container_id_str,),
     )
     rows = cursor.fetchall()
     cursor.close()
@@ -283,6 +285,10 @@ def create_container(
         allowed_roles_jsonb = json.dumps(allowed_roles or [])
 
         # Insert container (items_json column removed - items go in container_contents)
+        # Convert UUID objects to strings for psycopg2 compatibility
+        owner_id_str = str(owner_id) if owner_id and isinstance(owner_id, UUID) else owner_id
+        entity_id_str = str(entity_id) if entity_id and isinstance(entity_id, UUID) else entity_id
+
         cursor = conn.cursor(cursor_factory=RealDictCursor)
         cursor.execute(
             """
@@ -297,9 +303,9 @@ def create_container(
             """,
             (
                 source_type,
-                owner_id,
+                owner_id_str,
                 room_id,
-                entity_id,
+                entity_id_str,
                 lock_state,
                 capacity_slots,
                 weight_limit,
@@ -425,6 +431,8 @@ def get_container(conn: Any, container_id: UUID) -> ContainerData | None:
 
     try:
         cursor = conn.cursor(cursor_factory=RealDictCursor)
+        # Convert UUID to string for psycopg2 compatibility
+        container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
         cursor.execute(
             """
             SELECT
@@ -435,7 +443,7 @@ def get_container(conn: Any, container_id: UUID) -> ContainerData | None:
             FROM containers
             WHERE container_instance_id = %s
             """,
-            (container_id,),
+            (container_id_str,),
         )
         row = cursor.fetchone()
         cursor.close()
@@ -577,7 +585,7 @@ def get_containers_by_entity_id(conn: Any, entity_id: UUID) -> list[ContainerDat
             WHERE entity_id = %s
             ORDER BY created_at
             """,
-            (entity_id,),
+            (str(entity_id) if isinstance(entity_id, UUID) else entity_id,),
         )
         rows = cursor.fetchall()
         cursor.close()
@@ -657,6 +665,9 @@ def update_container(
         )
 
     try:
+        # Convert container_id to string for psycopg2 compatibility
+        container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
+
         # Build update query dynamically
         updates: list[str] = []
         params: list[Any] = []
@@ -666,7 +677,7 @@ def update_container(
         if items_json is not None:
             # Use stored procedures to update container contents
             # First, clear existing contents
-            cursor.execute("SELECT clear_container_contents(%s)", (container_id,))
+            cursor.execute("SELECT clear_container_contents(%s)", (container_id_str,))
 
             # Then add each item using stored procedure
             # First ensure item instances exist, then add them to container
@@ -685,7 +696,7 @@ def update_container(
                             item_instance_id=item_instance_id,
                             prototype_id=prototype_id,
                             owner_type="container",
-                            owner_id=str(container_id),
+                            owner_id=container_id_str,
                             quantity=item.get("quantity", 1),
                             metadata=item.get("metadata", {}),
                         )
@@ -701,7 +712,7 @@ def update_container(
                     # Now add item to container
                     cursor.execute(
                         "SELECT add_item_to_container(%s, %s, %s)",
-                        (container_id, item_instance_id, position),
+                        (container_id_str, item_instance_id, position),
                     )
 
         if lock_state is not None:
@@ -719,7 +730,7 @@ def update_container(
             # Always update updated_at
             updates.append("updated_at = %s")
             params.append(current_time)
-            params.append(container_id)
+            params.append(container_id_str)
 
             cursor.execute(
                 f"""
@@ -735,7 +746,7 @@ def update_container(
             # If only items_json was provided, still update updated_at
             updates.append("updated_at = %s")
             params.append(current_time)
-            params.append(container_id)
+            params.append(container_id_str)
 
             cursor.execute(
                 f"""
@@ -867,9 +878,11 @@ def delete_container(conn: Any, container_id: UUID) -> bool:
 
     try:
         cursor = conn.cursor()
+        # Convert UUID to string for psycopg2 compatibility
+        container_id_str = str(container_id) if isinstance(container_id, UUID) else container_id
         cursor.execute(
             "DELETE FROM containers WHERE container_instance_id = %s RETURNING container_instance_id",
-            (container_id,),
+            (container_id_str,),
         )
         row = cursor.fetchone()
         conn.commit()

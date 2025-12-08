@@ -3,17 +3,18 @@ import { useGameConnection } from '../../hooks/useGameConnectionRefactored';
 import { useContainerStore } from '../../stores/containerStore';
 import type { HealthStatus } from '../../types/health';
 import { determineHealthTier } from '../../types/health';
+import type { HallucinationMessage, LucidityStatus, RescueState } from '../../types/lucidity';
 import type { MythosTimePayload, MythosTimeState } from '../../types/mythosTime';
-import type { HallucinationMessage, RescueState, SanityStatus } from '../../types/sanity';
 import { buildHealthStatusFromEvent } from '../../utils/healthEventUtils';
 import { logger } from '../../utils/logger';
+import { buildLucidityStatus } from '../../utils/lucidityEventUtils';
 import { useMemoryMonitor } from '../../utils/memoryMonitor';
 import { determineMessageType } from '../../utils/messageTypeUtils';
 import { DAYPART_MESSAGES, buildMythosTimeState, formatMythosTime12Hour } from '../../utils/mythosTime';
-import { buildSanityStatus } from '../../utils/sanityEventUtils';
 import { inputSanitizer } from '../../utils/security';
 import { convertToPlayerInterface, parseStatusResponse } from '../../utils/statusParser';
 import { DeathInterstitial } from '../DeathInterstitial';
+import { DeliriumInterstitial } from '../DeliriumInterstitial';
 import { MainMenuModal } from '../MainMenuModal';
 import { MapView } from '../MapView';
 import { GameClientV2 } from './GameClientV2';
@@ -117,7 +118,10 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   const [isDead, setIsDead] = useState(false);
   const [deathLocation] = useState<string>('Unknown Location');
   const [isRespawning, setIsRespawning] = useState(false);
-  const [sanityStatus, setSanityStatus] = useState<SanityStatus | null>(null);
+  const [isDelirious, setIsDelirious] = useState(false);
+  const [deliriumLocation, setDeliriumLocation] = useState<string>('Unknown Location');
+  const [isDeliriumRespawning, setIsDeliriumRespawning] = useState(false);
+  const [lucidityStatus, setLucidityStatus] = useState<LucidityStatus | null>(null);
   const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
   const [, setHallucinationFeed] = useState<HallucinationMessage[]>([]);
   const [rescueState, setRescueState] = useState<RescueState | null>(null);
@@ -154,7 +158,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   const currentMessagesRef = useRef<ChatMessage[]>([]);
   const currentRoomRef = useRef<Room | null>(null);
   const currentPlayerRef = useRef<Player | null>(null);
-  const sanityStatusRef = useRef<SanityStatus | null>(null);
+  const lucidityStatusRef = useRef<LucidityStatus | null>(null);
   const healthStatusRef = useRef<HealthStatus | null>(null);
   const rescueStateRef = useRef<RescueState | null>(null);
   const lastDaypartRef = useRef<string | null>(null);
@@ -182,8 +186,8 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   }, [healthStatus]);
 
   useEffect(() => {
-    sanityStatusRef.current = sanityStatus;
-  }, [sanityStatus]);
+    lucidityStatusRef.current = lucidityStatus;
+  }, [lucidityStatus]);
 
   useEffect(() => {
     rescueStateRef.current = rescueState;
@@ -283,6 +287,37 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
         };
 
         switch (eventType) {
+          case 'player_entered_game': {
+            // Handle player_entered_game events - initial connection messages
+            const playerName = event.data?.player_name as string | undefined;
+            if (playerName && typeof playerName === 'string' && playerName.trim()) {
+              appendMessage({
+                text: `${playerName} has entered the game.`,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: 'system',
+                channel: 'game',
+                type: 'system',
+              });
+            }
+            break;
+          }
+          case 'player_entered': {
+            // Handle player_entered events - movement messages
+            const playerName = event.data.player_name as string;
+            const messageText = event.data?.message as string;
+            if (messageText && playerName) {
+              appendMessage({
+                text: messageText,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: 'system',
+                channel: 'game',
+                type: 'system',
+              });
+            }
+            break;
+          }
           case 'game_state': {
             const playerData = event.data.player as Player;
             const roomData = event.data.room as Room;
@@ -367,20 +402,102 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             }
             break;
           }
-          case 'sanity_change':
-          case 'sanitychange': {
-            const { status: updatedStatus } = buildSanityStatus(sanityStatusRef.current, event.data, event.timestamp);
-            setSanityStatus(updatedStatus);
+          case 'lucidity_change':
+          case 'luciditychange': {
+            const { status: updatedStatus } = buildLucidityStatus(
+              lucidityStatusRef.current,
+              event.data,
+              event.timestamp
+            );
+            setLucidityStatus(updatedStatus);
             if (currentPlayerRef.current) {
               updates.player = {
                 ...currentPlayerRef.current,
                 stats: {
                   ...currentPlayerRef.current.stats,
                   current_health: currentPlayerRef.current.stats?.current_health ?? 0,
-                  sanity: updatedStatus.current,
+                  lucidity: updatedStatus.current,
                 },
               };
             }
+            break;
+          }
+          case 'rescue_update': {
+            // Handle rescue update events, including delirium status
+            const rescueData = event.data as {
+              status?: string;
+              current_lcd?: number;
+              message?: string;
+              [key: string]: unknown;
+            };
+
+            if (rescueData.status === 'delirium') {
+              // Player has reached delirium threshold - show delirium screen
+              setIsDelirious(true);
+              if (rescueData.message) {
+                appendMessage(
+                  sanitizeChatMessageForState({
+                    text: rescueData.message,
+                    timestamp: event.timestamp,
+                    messageType: 'system',
+                    channel: 'system',
+                    isHtml: false,
+                  })
+                );
+              }
+              logger.info('GameClientV2Container', 'Delirium status detected from rescue_update', {
+                current_lcd: rescueData.current_lcd,
+              });
+            }
+            break;
+          }
+          case 'player_delirium_respawned':
+          case 'playerdeliriumrespawned': {
+            // Player delirium respawned event - hide delirium interstitial and update player state
+            const respawnData = event.data as {
+              player?: Player;
+              respawn_room_id?: string;
+              old_lucidity?: number;
+              new_lucidity?: number;
+              message?: string;
+              [key: string]: unknown;
+            };
+
+            setIsDelirious(false);
+            setIsDeliriumRespawning(false);
+
+            if (respawnData.player) {
+              updates.player = respawnData.player as Player;
+              // Update lucidity status from player data
+              if (respawnData.player.stats?.lucidity !== undefined) {
+                const playerStats = respawnData.player.stats;
+                const currentLucidity = playerStats.lucidity;
+                // Update lucidity status
+                if (lucidityStatusRef.current) {
+                  setLucidityStatus({
+                    ...lucidityStatusRef.current,
+                    current: currentLucidity,
+                  });
+                }
+              }
+            }
+
+            if (respawnData.message) {
+              appendMessage(
+                sanitizeChatMessageForState({
+                  text: respawnData.message,
+                  timestamp: event.timestamp,
+                  messageType: 'system',
+                  channel: 'system',
+                  isHtml: false,
+                })
+              );
+            }
+
+            logger.info('GameClientV2Container', 'Player delirium respawned event received', {
+              respawn_room: respawnData.respawn_room_id,
+              new_lucidity: respawnData.new_lucidity,
+            });
             break;
           }
           case 'player_hp_updated':
@@ -412,7 +529,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                   ...currentPlayerRef.current.stats,
                   current_health: updatedHealthStatus.current,
                   max_health: updatedHealthStatus.max,
-                  sanity: currentPlayerRef.current.stats?.sanity ?? 0,
+                  lucidity: currentPlayerRef.current.stats?.lucidity ?? 0,
                 },
               };
               logger.info('GameClientV2Container', 'Updated player stats', {
@@ -436,7 +553,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                 : undefined) || message;
 
             if (message) {
-              if (message.includes('Name:') && message.includes('Health:') && message.includes('Sanity:')) {
+              if (message.includes('Name:') && message.includes('Health:') && message.includes('Lucidity:')) {
                 try {
                   const parsedPlayerData = parseStatusResponse(message);
                   const playerData = convertToPlayerInterface(parsedPlayerData);
@@ -479,6 +596,36 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
                 isHtml,
                 messageType: 'system',
                 channel: gameLogChannel,
+                type: 'system',
+              });
+            }
+            break;
+          }
+          case 'player_left_game': {
+            // Handle player_left_game events - disconnection messages
+            const playerName = event.data?.player_name as string;
+            if (playerName) {
+              appendMessage({
+                text: `${playerName} has left the game.`,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: 'system',
+                channel: 'game',
+                type: 'system',
+              });
+            }
+            break;
+          }
+          case 'player_left': {
+            // Handle player_left events - movement messages
+            const messageText = event.data?.message as string;
+            if (messageText) {
+              appendMessage({
+                text: messageText,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: 'system',
+                channel: 'game',
                 type: 'system',
               });
             }
@@ -964,6 +1111,25 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             }
             break;
           }
+          case 'system': {
+            // Handle system event type - admin notifications, teleportation messages, etc.
+            const systemMessage = event.data?.message;
+            if (systemMessage && typeof systemMessage === 'string') {
+              appendMessage({
+                text: systemMessage,
+                timestamp: event.timestamp,
+                isHtml: false,
+                messageType: 'system',
+                channel: 'game',
+                type: 'system',
+              });
+              logger.info('GameClientV2Container', 'Processing event', {
+                event_type: 'system',
+                message: systemMessage,
+              });
+            }
+            break;
+          }
           // Add more event types as needed - this is a simplified version
           default: {
             logger.info('GameClientV2Container', 'Unhandled event type', {
@@ -990,6 +1156,9 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
           let finalRoom = updates.room || prev.room;
 
           if (updates.room && prev.room) {
+            // CRITICAL FIX: Check if room ID changed - if so, don't preserve NPCs from old room
+            const roomIdChanged = updates.room.id !== prev.room.id;
+
             // Preserve occupant data if updates.room doesn't have populated occupant arrays
             // This handles room_update events that only update metadata
             // CRITICAL FIX: Check if arrays are populated, not just if they're defined
@@ -1008,36 +1177,43 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
 
             // Merge strategy:
             // 1. If updates has populated data, use it (from room_occupants - authoritative)
-            // 2. If updates has empty arrays but prev has populated data, preserve from prev
-            // 3. If updates has no data (undefined), preserve from prev
+            // 2. If room ID changed, use new room's data (even if empty) - don't preserve old room's NPCs
+            // 3. If updates has empty arrays but prev has populated data AND room ID didn't change, preserve from prev
+            // 4. If updates has no data (undefined), preserve from prev (only if same room)
             // CRITICAL FIX: Empty arrays [] are NOT undefined, so ?? operator won't work
             // We must explicitly check for populated arrays, not just existence
 
             // Calculate merged players array
             const mergedPlayers: string[] = updatesHasPopulatedPlayers
               ? (updates.room.players ?? [])
-              : prevHasPopulatedPlayers
-                ? (prev.room.players ?? [])
-                : (updates.room.players ?? prev.room.players ?? []);
+              : roomIdChanged
+                ? (updates.room.players ?? []) // Room changed - use new room's players (even if empty)
+                : prevHasPopulatedPlayers
+                  ? (prev.room.players ?? [])
+                  : (updates.room.players ?? prev.room.players ?? []);
 
             // Calculate merged NPCs array
             let mergedNpcs: string[];
             if (updatesHasPopulatedNpcs) {
               mergedNpcs = updates.room.npcs ?? []; // Updates has populated NPCs (from room_occupants) - use it
+            } else if (roomIdChanged) {
+              // CRITICAL FIX: Room ID changed - use new room's NPCs (even if empty), don't preserve old room's NPCs
+              mergedNpcs = updates.room.npcs ?? []; // New room's NPCs (empty array if not set yet)
             } else if (prevHasPopulatedNpcs) {
-              mergedNpcs = prev.room.npcs ?? []; // Updates has no NPCs but prev does - preserve prev
+              mergedNpcs = prev.room.npcs ?? []; // Updates has no NPCs but prev does - preserve prev (same room)
             } else {
-              // Neither has populated NPCs
+              // Neither has populated NPCs, and room ID didn't change
               // CRITICAL: If updates explicitly set npcs: [] (empty array from room_update)
-              // but prev has NPCs (from previous room_occupants), preserve prev
-              // Only use empty array if both are empty
+              // but prev has NPCs (from previous room_occupants), preserve prev ONLY if same room
+              // (roomIdChanged check above already handles room changes)
               if (
                 updates.room.npcs !== undefined &&
                 updates.room.npcs.length === 0 &&
                 prev.room.npcs &&
                 prev.room.npcs.length > 0
               ) {
-                mergedNpcs = prev.room.npcs; // room_update tried to clear NPCs, but prev has them - preserve prev
+                // room_update tried to clear NPCs, but prev has them - preserve prev (same room)
+                mergedNpcs = prev.room.npcs;
               } else {
                 mergedNpcs = updates.room.npcs ?? prev.room.npcs ?? []; // Default fallback
               }
@@ -1192,6 +1368,35 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
     }
   }, [gameState.player, gameState.room, isDead]);
 
+  // Check if player is delirious based on lucidity
+  useEffect(() => {
+    const player = gameState.player;
+    if (!player) return;
+
+    // Check lucidity from lucidityStatus (from lucidity_change events) or player stats
+    const currentLucidity = lucidityStatus?.current_lcd ?? player.stats?.lucidity ?? 100;
+    const roomId = gameState.room?.id;
+
+    // Player is delirious if lucidity <= -10
+    if (currentLucidity <= -10) {
+      if (!isDelirious) {
+        setIsDelirious(true);
+        setDeliriumLocation(roomId || 'Unknown Location');
+        logger.info('GameClientV2Container', 'Player detected as delirious', {
+          currentLucidity,
+          roomId,
+        });
+      }
+    } else if (isDelirious && currentLucidity > -10) {
+      // Player is no longer delirious
+      setIsDelirious(false);
+      logger.info('GameClientV2Container', 'Player detected as lucid', {
+        currentLucidity,
+        roomId,
+      });
+    }
+  }, [gameState.player, gameState.room, lucidityStatus, isDelirious]);
+
   const handleCommandSubmit = async (command: string) => {
     if (!command.trim() || !isConnected) return;
 
@@ -1282,6 +1487,95 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
         disconnect();
       }
     }, 500);
+  };
+
+  const handleDeliriumRespawn = async () => {
+    logger.info('GameClientV2Container', 'Delirium respawn requested');
+    setIsDeliriumRespawning(true);
+
+    try {
+      const response = await fetch('/api/players/respawn-delirium', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        logger.error('GameClientV2Container', 'Delirium respawn failed', {
+          status: response.status,
+          error: errorData,
+        });
+
+        const errorMessage: ChatMessage = sanitizeChatMessageForState({
+          text: `Delirium respawn failed: ${errorData.detail || 'Unknown error'}`,
+          timestamp: new Date().toISOString(),
+          messageType: 'error',
+          isHtml: false,
+        });
+
+        setGameState(prev => ({
+          ...prev,
+          messages: [...prev.messages, errorMessage],
+        }));
+
+        setIsDeliriumRespawning(false);
+        return;
+      }
+
+      const respawnData = await response.json();
+      logger.info('GameClientV2Container', 'Delirium respawn successful', {
+        room: respawnData.room,
+        player: respawnData.player,
+      });
+
+      setIsDeliriumRespawning(false);
+      setIsDelirious(false);
+
+      // Update game state with respawned player data
+      setGameState(prev => ({
+        ...prev,
+        player: {
+          ...prev.player,
+          ...respawnData.player,
+          stats: {
+            ...prev.player?.stats,
+            lucidity: respawnData.player.lucidity,
+            current_health: respawnData.player.hp,
+          },
+        } as Player,
+        room: respawnData.room as Room,
+      }));
+
+      const respawnMessage: ChatMessage = sanitizeChatMessageForState({
+        text: respawnData.message || 'You have been restored to lucidity and returned to the Sanitarium',
+        timestamp: new Date().toISOString(),
+        messageType: 'system',
+        isHtml: false,
+      });
+
+      setGameState(prev => ({
+        ...prev,
+        messages: [...prev.messages, respawnMessage],
+      }));
+    } catch (error) {
+      logger.error('GameClientV2Container', 'Error calling delirium respawn API', { error });
+      const errorMessage: ChatMessage = sanitizeChatMessageForState({
+        text: 'Failed to respawn from delirium due to network error. Please try again.',
+        timestamp: new Date().toISOString(),
+        messageType: 'error',
+        isHtml: false,
+      });
+
+      setGameState(prev => ({
+        ...prev,
+        messages: [...prev.messages, errorMessage],
+      }));
+
+      setIsDeliriumRespawning(false);
+    }
   };
 
   const handleRespawn = async () => {
@@ -1411,7 +1705,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
           reconnectAttempts={reconnectAttempts}
           mythosTime={mythosTime}
           healthStatus={healthStatus}
-          sanityStatus={sanityStatus}
+          lucidityStatus={lucidityStatus}
           onSendCommand={handleCommandSubmit}
           onSendChatMessage={handleChatMessage}
           onClearMessages={handleClearMessages}
@@ -1425,6 +1719,12 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
         deathLocation={deathLocation}
         onRespawn={handleRespawn}
         isRespawning={isRespawning}
+      />
+      <DeliriumInterstitial
+        isVisible={isDelirious}
+        deliriumLocation={deliriumLocation}
+        onRespawn={handleDeliriumRespawn}
+        isRespawning={isDeliriumRespawning}
       />
 
       <MainMenuModal

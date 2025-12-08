@@ -91,7 +91,7 @@ def optional_npc_definition():
         max_population=3,
         spawn_probability=0.3,  # 30% chance
         room_id="earth_arkhamcity_downtown_001",
-        base_stats='{"strength": 5, "sanity": 30, "current_health": 50}',
+        base_stats='{"strength": 5, "lucidity": 30, "current_health": 50}',
         behavior_config='{"wander_probability": 0.2}',
         ai_integration_stub="{}",
     )
@@ -111,7 +111,7 @@ def required_npc_definition():
         max_population=1,
         spawn_probability=1.0,
         room_id="earth_arkhamcity_sanitarium_office",
-        base_stats='{"strength": 10, "sanity": 80, "current_health": 100}',
+        base_stats='{"strength": 10, "lucidity": 80, "current_health": 100}',
         behavior_config="{}",
         ai_integration_stub="{}",
     )
@@ -143,16 +143,18 @@ class TestPeriodicSpawning:
                     def npc_entered(self, _nid):
                         pass  # Don't publish event for this test
 
-                with patch("server.npc.lifecycle_manager.get_persistence") as mock_get_persistence:
-                    mock_get_persistence.return_value.get_room.return_value = _FakeRoom()
+                # Mock persistence on the lifecycle_manager instance
+                mock_persistence = MagicMock()
+                mock_persistence.get_room_by_id.return_value = _FakeRoom()
+                lifecycle_manager.persistence = mock_persistence
 
-                    # Force spawn probability to 100% for testing
-                    with patch("random.random", return_value=0.0):  # Will be <= any positive probability
-                        results = lifecycle_manager.periodic_maintenance()
+                # Force spawn probability to 100% for testing
+                with patch("random.random", return_value=0.0):  # Will be <= any positive probability
+                    results = lifecycle_manager.periodic_maintenance()
 
-                        # Verify spawn check was performed
-                        assert "spawn_checks_performed" in results
-                        assert "spawned_npcs" in results
+                    # Verify spawn check was performed
+                    assert "spawn_checks_performed" in results
+                    assert "spawned_npcs" in results
 
     def test_periodic_maintenance_respects_spawn_interval(
         self,
@@ -214,6 +216,7 @@ class TestNPCRespawning:
     """Test NPC respawning functionality."""
 
     @pytest.mark.slow
+    @pytest.mark.timeout(60)  # This test needs 30+ seconds for death suppression
     def test_npc_respawn_after_death(
         self,
         lifecycle_manager,
@@ -238,43 +241,45 @@ class TestNPCRespawning:
                     def npc_left(self, _nid):
                         pass
 
-                with patch("server.npc.lifecycle_manager.get_persistence") as mock_get_persistence:
-                    mock_get_persistence.return_value.get_room.return_value = _FakeRoom()
+                # Mock persistence on the lifecycle_manager instance
+                mock_persistence = MagicMock()
+                mock_persistence.get_room_by_id.return_value = _FakeRoom()
+                lifecycle_manager.persistence = mock_persistence
 
-                    # Spawn NPC
-                    npc_id = lifecycle_manager.spawn_npc(
-                        optional_npc_definition,
-                        "earth_arkhamcity_downtown_001",
-                        "test",
-                    )
-                    assert npc_id is not None
+                # Spawn NPC
+                npc_id = lifecycle_manager.spawn_npc(
+                    optional_npc_definition,
+                    "earth_arkhamcity_downtown_001",
+                    "test",
+                )
+                assert npc_id is not None
 
-                    # Despawn the NPC
-                    result = lifecycle_manager.despawn_npc(npc_id, "death")
-                    assert result is True
+                # Despawn the NPC
+                result = lifecycle_manager.despawn_npc(npc_id, "death")
+                assert result is True
 
-                    # Record death AFTER despawn (simulating actual death flow)
-                    lifecycle_manager.record_npc_death(npc_id)
+                # Record death AFTER despawn (simulating actual death flow)
+                lifecycle_manager.record_npc_death(npc_id)
 
-                    # Try to schedule respawn immediately - should fail due to death suppression
-                    result = lifecycle_manager.respawn_npc(npc_id, delay=0.1, reason="death")
-                    assert result is False  # Death suppression blocks respawn
+                # Try to schedule respawn immediately - should fail due to death suppression
+                result = lifecycle_manager.respawn_npc(npc_id, delay=0.1, reason="death")
+                assert result is False  # Death suppression blocks respawn
 
-                    # Wait for death suppression to expire
-                    time.sleep(lifecycle_manager.death_suppression_duration + 0.1)
+                # Wait for death suppression to expire
+                time.sleep(lifecycle_manager.death_suppression_duration + 0.1)
 
-                    # Now respawn should work
-                    result = lifecycle_manager.respawn_npc(npc_id, delay=0.1, reason="death")
-                    assert result is True
+                # Now respawn should work
+                result = lifecycle_manager.respawn_npc(npc_id, delay=0.1, reason="death")
+                assert result is True
 
-                    # Wait for respawn delay
-                    time.sleep(0.2)
+                # Wait for respawn delay
+                time.sleep(0.2)
 
-                    # Process respawn queue
-                    respawned_count = lifecycle_manager.process_respawn_queue()
+                # Process respawn queue
+                respawned_count = lifecycle_manager.process_respawn_queue()
 
-                    # Should have respawned now
-                    assert respawned_count >= 0
+                # Should have respawned now
+                assert respawned_count >= 0
 
     def test_respawn_queue_processes_correctly(
         self,
@@ -314,15 +319,17 @@ class TestNPCRespawning:
                     def npc_entered(self, _nid):
                         pass
 
-                with patch("server.npc.lifecycle_manager.get_persistence") as mock_get_persistence:
-                    mock_get_persistence.return_value.get_room.return_value = _FakeRoom()
+                # Mock persistence on the lifecycle_manager instance
+                mock_persistence = MagicMock()
+                mock_persistence.get_room_by_id.return_value = _FakeRoom()
+                lifecycle_manager.persistence = mock_persistence
 
-                    # Process respawn queue
-                    respawned_count = lifecycle_manager.process_respawn_queue()
+                # Process respawn queue
+                respawned_count = lifecycle_manager.process_respawn_queue()
 
-                    # Verify respawn occurred
-                    assert respawned_count == 1
-                    assert "npc_001" not in lifecycle_manager.respawn_queue
+                # Verify respawn occurred
+                assert respawned_count == 1
+                assert "npc_001" not in lifecycle_manager.respawn_queue
 
     def test_max_respawn_attempts_respected(
         self,
@@ -403,7 +410,7 @@ class TestCompleteLifecycle:
     """Test complete NPC lifecycle with periodic spawning."""
 
     @pytest.mark.asyncio
-    @pytest.mark.slow
+    @pytest.mark.timeout(60)  # This test needs time for death suppression and respawn delays
     async def test_complete_spawn_despawn_respawn_cycle(
         self,
         lifecycle_manager,
@@ -430,7 +437,7 @@ class TestCompleteLifecycle:
 
         # Ensure lifecycle manager has persistence
         mock_persistence = MagicMock()
-        mock_persistence.get_room.return_value = fake_room
+        mock_persistence.get_room_by_id.return_value = fake_room
         lifecycle_manager.persistence = mock_persistence
 
         with patch.object(lifecycle_manager, "_can_spawn_npc", return_value=True):
@@ -439,42 +446,42 @@ class TestCompleteLifecycle:
                 mock_npc.room_id = "earth_arkhamcity_downtown_001"
                 mock_create.return_value = mock_npc
 
-                with patch("server.npc.lifecycle_manager.get_persistence") as mock_get_persistence:
-                    mock_get_persistence.return_value = mock_persistence
+                # Set persistence directly on the lifecycle_manager instance
+                lifecycle_manager.persistence = mock_persistence
 
-                    # Step 1: Spawn NPC
-                    npc_id = lifecycle_manager.spawn_npc(
-                        optional_npc_definition,
-                        "earth_arkhamcity_downtown_001",
-                        "test",
-                    )
-                    assert npc_id is not None
-                    assert npc_id in lifecycle_manager.active_npcs
-                    assert npc_id in fake_room.npcs
+                # Step 1: Spawn NPC
+                npc_id = lifecycle_manager.spawn_npc(
+                    optional_npc_definition,
+                    "earth_arkhamcity_downtown_001",
+                    "test",
+                )
+                assert npc_id is not None
+                assert npc_id in lifecycle_manager.active_npcs
+                assert npc_id in fake_room.npcs
 
-                    # Step 2: Despawn NPC (simulate death)
-                    result = lifecycle_manager.despawn_npc(npc_id, "death")
-                    assert result is True
-                    assert npc_id not in lifecycle_manager.active_npcs
-                    assert npc_id not in fake_room.npcs  # Should be removed now
+                # Step 2: Despawn NPC (simulate death)
+                result = lifecycle_manager.despawn_npc(npc_id, "death")
+                assert result is True
+                assert npc_id not in lifecycle_manager.active_npcs
+                assert npc_id not in fake_room.npcs  # Should be removed now
 
-                    # Step 3: Record death and schedule respawn
-                    lifecycle_manager.record_npc_death(npc_id)
-                    # Wait for death suppression to expire
-                    await asyncio.sleep(lifecycle_manager.death_suppression_duration + 0.1)
+                # Step 3: Record death and schedule respawn
+                lifecycle_manager.record_npc_death(npc_id)
+                # Wait for death suppression to expire
+                await asyncio.sleep(lifecycle_manager.death_suppression_duration + 0.1)
 
-                    result = lifecycle_manager.respawn_npc(npc_id, delay=0.1, reason="death")
-                    assert result is True
-                    assert npc_id in lifecycle_manager.respawn_queue
+                result = lifecycle_manager.respawn_npc(npc_id, delay=0.1, reason="death")
+                assert result is True
+                assert npc_id in lifecycle_manager.respawn_queue
 
-                    # Step 4: Wait for respawn delay
-                    await asyncio.sleep(0.15)
+                # Step 4: Wait for respawn delay
+                await asyncio.sleep(0.15)
 
-                    # Step 5: Process respawn queue
-                    respawned_count = lifecycle_manager.process_respawn_queue()
+                # Step 5: Process respawn queue
+                respawned_count = lifecycle_manager.process_respawn_queue()
 
-                    # Should have respawned
-                    assert respawned_count >= 0
+                # Should have respawned
+                assert respawned_count >= 0
 
     def test_periodic_spawn_checks_honor_probability(
         self,
@@ -567,15 +574,17 @@ class TestMultipleNPCTypes:
                     def npc_entered(self, _nid):
                         pass
 
-                with patch("server.npc.lifecycle_manager.get_persistence") as mock_get_persistence:
-                    mock_get_persistence.return_value.get_room.return_value = _FakeRoom()
+                # Mock persistence on the lifecycle_manager instance
+                mock_persistence = MagicMock()
+                mock_persistence.get_room_by_id.return_value = _FakeRoom()
+                lifecycle_manager.persistence = mock_persistence
 
-                    # Force spawn probability to 100%
-                    with patch("random.random", return_value=0.0):
-                        results = lifecycle_manager._check_optional_npc_spawns()
+                # Force spawn probability to 100%
+                with patch("random.random", return_value=0.0):
+                    results = lifecycle_manager._check_optional_npc_spawns()
 
-                        # Should check both NPCs
-                        assert results["checks_performed"] >= 0
+                    # Should check both NPCs
+                    assert results["checks_performed"] >= 0
 
 
 class TestEdgeCases:

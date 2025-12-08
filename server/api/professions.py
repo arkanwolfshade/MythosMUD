@@ -23,7 +23,7 @@ profession_router = APIRouter(prefix="/professions", tags=["professions"])
 
 
 @profession_router.get("/")
-def get_all_professions(
+async def get_all_professions(
     request: Request,
     current_user: User = Depends(get_current_user),
 ) -> dict[str, Any]:
@@ -44,16 +44,19 @@ def get_all_professions(
         if not request:
             raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR)
 
-        persistence = request.app.state.persistence
-        if not persistence:
+        # Use async persistence layer
+        from ..async_persistence import get_async_persistence
+
+        async_persistence = get_async_persistence()
+        if not async_persistence:
             context = create_context_from_request(request)
             if current_user:
                 context.user_id = str(current_user.id)
             context.metadata["operation"] = "get_all_professions"
             raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context)
 
-        # Query directly from persistence for unit-test friendliness
-        professions = persistence.get_all_professions()
+        # Query using async persistence method
+        professions = await async_persistence.get_professions()
 
         # Convert profession objects to dictionaries
         profession_list = []
@@ -81,7 +84,7 @@ def get_all_professions(
 
 
 @profession_router.get("/{profession_id}")
-def get_profession_by_id(
+async def get_profession_by_id(
     profession_id: int,
     request: Request,
     current_user: User = Depends(get_current_user),
@@ -102,8 +105,11 @@ def get_profession_by_id(
         if not request:
             raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR)
 
-        persistence = request.app.state.persistence
-        if not persistence:
+        # Use async persistence layer
+        from ..async_persistence import get_async_persistence
+
+        async_persistence = get_async_persistence()
+        if not async_persistence:
             context = create_context_from_request(request)
             if current_user:
                 context.user_id = str(current_user.id)
@@ -111,8 +117,8 @@ def get_profession_by_id(
             context.metadata["profession_id"] = profession_id
             raise LoggedHTTPException(status_code=500, detail=ErrorMessages.INTERNAL_ERROR, context=context)
 
-        # Query directly from persistence for unit-test friendliness
-        profession = persistence.get_profession_by_id(profession_id)
+        # Query using async persistence method
+        profession = await async_persistence.get_profession_by_id(profession_id)
 
         if not profession:
             context = create_context_from_request(request)

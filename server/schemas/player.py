@@ -31,7 +31,7 @@ class PlayerCreate(PlayerBase):
     __slots__ = ()  # Performance optimization
 
     user_id: uuid.UUID = Field(..., description="Associated user ID")
-    stats: dict[str, Any] = Field(default={"health": 100, "sanity": 100, "strength": 10}, description="Player stats")
+    stats: dict[str, Any] = Field(default={"health": 100, "lucidity": 100, "strength": 10}, description="Player stats")
     inventory: list[dict[str, Any]] = Field(default=[], description="Player inventory")
     status_effects: list[dict[str, Any]] = Field(default=[], description="Player status effects")
 
@@ -43,7 +43,7 @@ class PlayerCreate(PlayerBase):
                 "current_room_id": "earth_arkhamcity_northside_intersection_derby_high",
                 "experience_points": 0,
                 "level": 1,
-                "stats": {"health": 100, "sanity": 100, "strength": 10},
+                "stats": {"health": 100, "lucidity": 100, "strength": 10},
                 "inventory": [],
                 "status_effects": [],
             }
@@ -86,7 +86,7 @@ class PlayerRead(PlayerBase):
                 "current_room_id": "earth_arkhamcity_northside_intersection_derby_high",
                 "experience_points": 150,
                 "level": 2,
-                "stats": {"health": 95, "sanity": 88, "strength": 12},
+                "stats": {"health": 95, "lucidity": 88, "strength": 12},
                 "inventory": [{"id": "sword", "name": "Rusty Sword"}],
                 "status_effects": [{"type": "poison", "duration": 5}],
                 "created_at": "2024-01-01T00:00:00Z",
@@ -116,7 +116,7 @@ class PlayerUpdate(BaseModel):
                 "current_room_id": "arkham_002",
                 "experience_points": 200,
                 "level": 3,
-                "stats": {"health": 100, "sanity": 90, "strength": 15},
+                "stats": {"health": 100, "lucidity": 90, "strength": 15},
                 "inventory": [{"id": "potion", "name": "Health Potion"}],
                 "status_effects": [],
             }

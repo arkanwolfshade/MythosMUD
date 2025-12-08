@@ -221,7 +221,7 @@ def mock_container():
 - ✅ `test_get_player_success` - **Container working, needs mock config**
 - ✅ `test_get_player_by_name_success` - **Container working, needs mock config**
 - ✅ `test_delete_player_success` - **Container working, needs mock config**
-- ✅ `test_apply_sanity_loss_success` - **Container working, needs mock config**
+- ✅ `test_apply_lucidity_loss_success` - **Container working, needs mock config**
 - ✅ `test_apply_fear_success` - **Container working, needs mock config**
 
 **Root Cause Analysis:** ✅ **RESOLVED**

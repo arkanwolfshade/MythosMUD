@@ -11,7 +11,7 @@
 
 Two critical bugs have been identified in the MythosMUD game system:
 
-1. **Bug #1 - Catatonic Movement Prevention**: ✅ **FIXED** - Players with sanity <= 0 were able to move because the WebSocket handler bypassed the unified command handler. The fix ensures all commands (including "go") go through the unified handler which includes catatonia checks.
+1. **Bug #1 - Catatonic Movement Prevention**: ✅ **FIXED** - Players with lucidity <= 0 were able to move because the WebSocket handler bypassed the unified command handler. The fix ensures all commands (including "go") go through the unified handler which includes catatonia checks.
 
 2. **Bug #2 - Exit Navigation Failure**: ✅ **FIXED & VERIFIED** - Database schema issue: `current_room_id` column was VARCHAR(50) but room IDs like "earth_arkhamcity_sanitarium_room_foyer_entrance_001" are 54 characters. This caused movement to fail when saving player state, preventing subsequent movement commands. Fixed by increasing column length to VARCHAR(255). Verified working: player can now move south from Main Foyer to Sanitarium Entrance and back north successfully.
 
@@ -21,7 +21,7 @@ Two critical bugs have been identified in the MythosMUD game system:
 
 ### Problem Description
 
-Players with sanity <= 0 (catatonic state) are able to perform movement actions, despite the requirement that catatonic players should be prevented from all actions except those in `CATATONIA_ALLOWED_COMMANDS` (help, who, status, time).
+Players with lucidity <= 0 (catatonic state) are able to perform movement actions, despite the requirement that catatonic players should be prevented from all actions except those in `CATATONIA_ALLOWED_COMMANDS` (help, who, status, time).
 
 ### Root Cause Analysis
 
@@ -45,8 +45,8 @@ async def _check_catatonia_block(player_name: str, command: str, request: Reques
     try:
         async for session in get_async_session():
             try:
-                sanity_record = await session.get(PlayerSanity, str(player_id))
-                if sanity_record and sanity_record.current_tier == "catatonic":
+                lucidity_record = await session.get(Playerlucidity, str(player_id))
+                if lucidity_record and lucidity_record.current_tier == "catatonic":
                     logger.info("Catatonic player command blocked", player=player_name, command=command)
                     return (
                         True,
@@ -56,27 +56,27 @@ async def _check_catatonia_block(player_name: str, command: str, request: Reques
 
 **Issue Identified**:
 
-The check only validates `current_tier == "catatonic"` but does NOT check `current_san <= 0`. According to the sanity tier resolution logic in `server/services/sanity_service.py`:
+The check only validates `current_tier == "catatonic"` but does NOT check `current_san <= 0`. According to the lucidity tier resolution logic in `server/services/lucidity_service.py`:
 
 ```python
-def resolve_tier(sanity_value: int) -> Tier:
-    """Derive tier label based on SAN thresholds."""
-    if sanity_value >= 70:
+def resolve_tier(lucidity_value: int) -> Tier:
+    """Derive tier label based on LCD thresholds."""
+    if lucidity_value >= 70:
         return "lucid"
-    if sanity_value >= 40:
+    if lucidity_value >= 40:
         return "uneasy"
-    if sanity_value >= 20:
+    if lucidity_value >= 20:
         return "fractured"
-    if sanity_value >= 1:
+    if lucidity_value >= 1:
         return "deranged"
-    return "catatonic"  # This is returned when sanity_value <= 0
+    return "catatonic"  # This is returned when lucidity_value <= 0
 ```
 
 **The Problem**:
 
 1. **PRIMARY ISSUE**: The WebSocket handler (`process_websocket_command()`) had a special case for "go" commands (lines 674-751) that directly processed movement without going through the unified command handler. This completely bypassed the catatonia check in `_check_catatonia_block()`.
 
-2. **SECONDARY ISSUE**: Even if the unified handler was used, the catatonia check only validated `current_tier == "catatonic"` but did NOT check `current_san <= 0`. If a player's sanity drops to <= 0, but the `current_tier` field in the database hasn't been updated yet (due to async processing, race conditions, or delayed tier updates), the check would fail to block movement.
+2. **SECONDARY ISSUE**: Even if the unified handler was used, the catatonia check only validated `current_tier == "catatonic"` but did NOT check `current_san <= 0`. If a player's lucidity drops to <= 0, but the `current_tier` field in the database hasn't been updated yet (due to async processing, race conditions, or delayed tier updates), the check would fail to block movement.
 
 **The Fix**:
 
@@ -90,8 +90,8 @@ def resolve_tier(sanity_value: int) -> Tier:
    - Only checks `current_tier == "catatonic"`
    - Does not check `current_san <= 0`
 
-2. **Tier Resolution Logic**: `server/services/sanity_service.py:44-54`
-   - Confirms that `sanity_value <= 0` should result in "catatonic" tier
+2. **Tier Resolution Logic**: `server/services/lucidity_service.py:44-54`
+   - Confirms that `lucidity_value <= 0` should result in "catatonic" tier
    - But tier updates may be asynchronous
 
 3. **Command Processing Flow**: `server/command_handler_unified.py:320-325`
@@ -112,7 +112,7 @@ def resolve_tier(sanity_value: int) -> Tier:
 ### System Impact
 
 - **Severity**: HIGH
-- **Scope**: All players with sanity <= 0
+- **Scope**: All players with lucidity <= 0
 - **Impact**: Game balance violation - catatonic players should be immobile
 - **Security**: Low (gameplay issue, not security vulnerability)
 
@@ -236,8 +236,8 @@ From `earth_arkhamcity_sanitarium_room_foyer_entrance_001` (Sanitarium Entrance)
 
 1. ✅ Searched codebase for catatonic checking logic
 2. ✅ Located `_check_catatonia_block()` function in `command_handler_unified.py`
-3. ✅ Reviewed sanity tier resolution logic
-4. ✅ Examined `PlayerSanity` model structure
+3. ✅ Reviewed lucidity tier resolution logic
+4. ✅ Examined `Playerlucidity` model structure
 5. ✅ Identified gap in catatonic checking (missing `current_san <= 0` check)
 6. ✅ Located movement command handlers (`exploration_commands.py`)
 7. ✅ Located exit validation logic (`movement_service.py`)
@@ -273,8 +273,8 @@ From `earth_arkhamcity_sanitarium_room_foyer_entrance_001` (Sanitarium Entrance)
 ### Code Quality Improvements
 
 1. **Consistency Check**: Investigate how hitpoints <= 0 prevents actions and ensure catatonic state uses the same pattern
-2. **Defensive Programming**: Add checks for both tier and sanity value to prevent race conditions
-3. **Testing**: Add unit tests for catatonic state blocking with sanity <= 0 but tier not yet updated
+2. **Defensive Programming**: Add checks for both tier and lucidity value to prevent race conditions
+3. **Testing**: Add unit tests for catatonic state blocking with lucidity <= 0 but tier not yet updated
 
 ### Testing Recommendations
 
@@ -289,11 +289,11 @@ From `earth_arkhamcity_sanitarium_room_foyer_entrance_001` (Sanitarium Entrance)
 **For Cursor Chat**:
 
 ```
-Fix the catatonic state checking in `server/command_handler_unified.py` to prevent movement when sanity <= 0, not just when current_tier == "catatonic".
+Fix the catatonic state checking in `server/command_handler_unified.py` to prevent movement when lucidity <= 0, not just when current_tier == "catatonic".
 
 The `_check_catatonia_block()` function currently only checks `current_tier == "catatonic"`, but it should also check `current_san <= 0` to prevent movement even if the tier hasn't been updated yet.
 
-According to `server/services/sanity_service.py`, sanity <= 0 should result in "catatonic" tier, but tier updates may be asynchronous, creating a window where movement is allowed.
+According to `server/services/lucidity_service.py`, lucidity <= 0 should result in "catatonic" tier, but tier updates may be asynchronous, creating a window where movement is allowed.
 
 Update the check to block commands when EITHER:
 - `current_tier == "catatonic"` OR
@@ -359,7 +359,7 @@ Please:
 
 ---
 
-*"In the restricted archives, we learn that systematic investigation reveals the truth hidden in the code. The catatonic state check, like the sanity system itself, requires both tier and value validation to prevent the gaps that allow forbidden movement."*
+*"In the restricted archives, we learn that systematic investigation reveals the truth hidden in the code. The catatonic state check, like the lucidity system itself, requires both tier and value validation to prevent the gaps that allow forbidden movement."*
 
 **Investigation Status**:
 
@@ -407,14 +407,14 @@ Please:
 2. **Enhanced Catatonia Check** (`server/command_handler_unified.py`):
    ```python
    # Before: Only checked current_tier == "catatonic"
-   if sanity_record and sanity_record.current_tier == "catatonic":
+   if lucidity_record and lucidity_record.current_tier == "catatonic":
 
-   # After: Checks both tier and sanity value
-   if sanity_record and (sanity_record.current_tier == "catatonic" or sanity_record.current_san <= 0):
+   # After: Checks both tier and lucidity value
+   if lucidity_record and (lucidity_record.current_tier == "catatonic" or lucidity_record.current_san <= 0):
    ```
 
 3. **Added Diagnostic Logging**:
-   - Enhanced logging in `_check_catatonia_block()` to track sanity record retrieval
+   - Enhanced logging in `_check_catatonia_block()` to track lucidity record retrieval
    - Added logging in command processing to track catatonia check results
    - This will help identify any future issues with the catatonia blocking system
 
