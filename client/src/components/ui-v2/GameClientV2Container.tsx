@@ -304,7 +304,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
           }
           case 'player_entered': {
             // Handle player_entered events - movement messages
-            const playerName = event.data?.player_name as string;
+            const playerName = event.data.player_name as string;
             const messageText = event.data?.message as string;
             if (messageText && playerName) {
               appendMessage({
