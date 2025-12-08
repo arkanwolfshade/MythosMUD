@@ -494,12 +494,12 @@ def configure_enhanced_structlog(
         _setup_enhanced_file_logging(environment, log_config, log_level, player_service, enable_async)
 
     # Configure structlog with a custom renderer that strips ANSI codes
-    def strip_ansi_renderer(logger: Any, name: str, event_dict: dict[str, Any]) -> str | bytes:
+    def strip_ansi_renderer(bound_logger: Any, name: str, event_dict: dict[str, Any]) -> str | bytes:
         """Custom renderer that strips ANSI escape sequences."""
         import re
 
         # Use KeyValueRenderer to get the formatted message
-        formatted = structlog.processors.KeyValueRenderer()(logger, name, event_dict)
+        formatted = structlog.processors.KeyValueRenderer()(bound_logger, name, event_dict)
 
         # Strip ANSI escape sequences
         ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
@@ -548,7 +548,6 @@ class SafeRotatingFileHandler(RotatingFileHandler):
 
         log_path = Path(self.baseFilename)
         max_retries = 3
-        retry_delay = 0.1  # Start with 100ms delay
 
         for attempt in range(max_retries):
             # Ensure directory exists before each attempt (handles race conditions)
@@ -565,16 +564,14 @@ class SafeRotatingFileHandler(RotatingFileHandler):
                     try:
                         _ensure_log_directory(log_path)
                         return super()._open()
-                    except (FileNotFoundError, OSError):
+                    except (FileNotFoundError, OSError):  # pylint: disable=try-except-raise
                         # If still failing after all retries, re-raise the exception
                         # We cannot log here because logging would trigger _open() again,
                         # causing infinite recursion. The exception will be handled
                         # by the logging system's error handling.
                         raise
-                # Wait before retrying (exponential backoff)
-                time.sleep(retry_delay)
-                retry_delay *= 2  # Exponential backoff
-                # Continue to next retry attempt
+                # Continue to next retry attempt immediately (no sleep needed since
+                # directory creation is thread-safe and retries are fast)
                 continue
 
         # Should never reach here, but call parent as fallback
