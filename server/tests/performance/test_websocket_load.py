@@ -109,57 +109,66 @@ class TestWebSocketLoad:
     @pytest.mark.asyncio
     async def test_memory_leak_detection(self, connection_manager):
         """Test for memory leaks in connection management."""
+        from unittest.mock import patch
 
-        # Get initial memory usage (approximate)
-        initial_connections = len(connection_manager.active_websockets)
-        initial_metadata = len(connection_manager.connection_metadata)
+        # Patch logger to avoid file I/O blocking under high concurrency
+        # The logging system uses threading locks which can block the async event loop
+        with patch("server.realtime.integration.game_state_provider.logger") as mock_logger:
+            mock_logger.warning = Mock()
+            mock_logger.info = Mock()
+            mock_logger.debug = Mock()
+            mock_logger.error = Mock()
 
-        # Create and destroy many connections
-        num_cycles = 50
-        connections_per_cycle = 10
+            # Get initial memory usage (approximate)
+            initial_connections = len(connection_manager.active_websockets)
+            initial_metadata = len(connection_manager.connection_metadata)
 
-        for cycle in range(num_cycles):
-            # Create connections
-            for i in range(connections_per_cycle):
-                websocket = AsyncMock()
-                websocket.accept = AsyncMock()
-                websocket.send_json = AsyncMock()
-                websocket.client_state.name = "CONNECTED"
-                websocket.state = {}
+            # Create and destroy many connections
+            num_cycles = 50
+            connections_per_cycle = 10
 
-                player_id = f"leak_test_player_{cycle}_{i}"
-                player = Mock()
-                player.player_id = player_id
-                player.name = f"LeakTestPlayer{cycle}_{i}"
-                player.current_room_id = "test_room_001"
-                player.get_stats = Mock(return_value={"health": 100, "level": 1})
+            for cycle in range(num_cycles):
+                # Create connections
+                for i in range(connections_per_cycle):
+                    websocket = AsyncMock()
+                    websocket.accept = AsyncMock()
+                    websocket.send_json = AsyncMock()
+                    websocket.client_state.name = "CONNECTED"
+                    websocket.state = {}
 
-                connection_manager._get_player = AsyncMock(return_value=player)
-                await connection_manager.connect_websocket(websocket, player_id)
+                    player_id = f"leak_test_player_{cycle}_{i}"
+                    player = Mock()
+                    player.player_id = player_id
+                    player.name = f"LeakTestPlayer{cycle}_{i}"
+                    player.current_room_id = "test_room_001"
+                    player.get_stats = Mock(return_value={"health": 100, "level": 1})
 
-            # Disconnect all connections
-            for i in range(connections_per_cycle):
-                player_id = f"leak_test_player_{cycle}_{i}"
-                await connection_manager.disconnect_websocket(player_id)
+                    connection_manager._get_player = AsyncMock(return_value=player)
+                    await connection_manager.connect_websocket(websocket, player_id)
 
-            # Force garbage collection
+                # Disconnect all connections
+                for i in range(connections_per_cycle):
+                    player_id = f"leak_test_player_{cycle}_{i}"
+                    await connection_manager.disconnect_websocket(player_id)
+
+                # Force garbage collection
+                gc.collect()
+
+                # Verify cleanup (allow some tolerance for async cleanup)
+                await asyncio.sleep(0.1)
+
+            # Final cleanup
+            await asyncio.sleep(0.5)
             gc.collect()
 
-            # Verify cleanup (allow some tolerance for async cleanup)
-            await asyncio.sleep(0.1)
+            # Verify no memory leaks (connections should be cleaned up)
+            # Note: Some connections may remain if cleanup is async, but should be minimal
+            final_connections = len(connection_manager.active_websockets)
+            final_metadata = len(connection_manager.connection_metadata)
 
-        # Final cleanup
-        await asyncio.sleep(0.5)
-        gc.collect()
-
-        # Verify no memory leaks (connections should be cleaned up)
-        # Note: Some connections may remain if cleanup is async, but should be minimal
-        final_connections = len(connection_manager.active_websockets)
-        final_metadata = len(connection_manager.connection_metadata)
-
-        # Connections should be cleaned up (allow small tolerance)
-        assert final_connections <= initial_connections + 5, "Memory leak detected: connections not cleaned up"
-        assert final_metadata <= initial_metadata + 5, "Memory leak detected: metadata not cleaned up"
+            # Connections should be cleaned up (allow small tolerance)
+            assert final_connections <= initial_connections + 5, "Memory leak detected: connections not cleaned up"
+            assert final_metadata <= initial_metadata + 5, "Memory leak detected: metadata not cleaned up"
 
     @pytest.mark.asyncio
     async def test_concurrent_message_broadcasting(self, connection_manager):
