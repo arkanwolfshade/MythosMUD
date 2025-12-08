@@ -196,8 +196,8 @@ def _rotate_log_files(env_log_dir: Path) -> None:
                         log_file.rename(rotated_path)
 
                     # Log the rotation (this will go to the new log file)
-                    logger = get_enhanced_logger("server.logging")
-                    logger.info(
+                    rotation_logger = get_enhanced_logger("server.logging")
+                    rotation_logger.info(
                         "Rotated log file",
                         old_name=log_file.name,
                         new_name=rotated_name,
@@ -211,8 +211,8 @@ def _rotate_log_files(env_log_dir: Path) -> None:
                         retry_delay *= 2  # Exponential backoff
                     else:
                         # Final attempt failed, log the error
-                        logger = get_enhanced_logger("server.logging")
-                        logger.warning(
+                        rotation_logger = get_enhanced_logger("server.logging")
+                        rotation_logger.warning(
                             "Could not rotate log file after retries",
                             name=log_file.name,
                             error=str(e),
@@ -430,8 +430,6 @@ def enhance_player_ids(_logger: Any, _name: str, event_dict: dict[str, Any]) -> 
                         try:
                             # Try to get the player name
                             # Convert string to UUID if needed
-                            import uuid
-
                             player_id_uuid = uuid.UUID(value) if isinstance(value, str) else value
                             player = _global_player_service.persistence.get_player(player_id_uuid)
                             if player and hasattr(player, "name"):
@@ -695,7 +693,7 @@ def _setup_enhanced_file_logging(
     log_config: dict[str, Any],
     log_level: str,
     player_service: Any = None,
-    enable_async: bool = True,  # noqa: ARG001
+    enable_async: bool = True,  # noqa: ARG001  # pylint: disable=unused-argument
 ) -> None:
     """Set up enhanced file logging handlers with async support."""
     # Use Windows-safe rotation handlers when available
@@ -883,14 +881,14 @@ def _setup_enhanced_file_logging(
                 logger_names.append(f"server.{prefix}")
 
             for logger_name in logger_names:
-                logger = logging.getLogger(logger_name)
-                logger.addHandler(handler)
+                target_logger = logging.getLogger(logger_name)
+                target_logger.addHandler(handler)
                 # Set DEBUG level for combat modules in local/debug environments
                 if log_file == "combat" and (environment == "local" or log_level == "DEBUG"):
-                    logger.setLevel(logging.DEBUG)
+                    target_logger.setLevel(logging.DEBUG)
                 else:
-                    logger.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
-                logger.propagate = True
+                    target_logger.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
+                target_logger.propagate = True
 
     # Create warnings.log aggregator handler
     # This captures ALL WARNING level logs from ALL subsystems
@@ -932,7 +930,9 @@ def _setup_enhanced_file_logging(
                     return super().shouldRollover(record)
 
             handler_class = SafeWinHandlerConsole
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
+        # Defensive fallback: if class definition fails for any reason,
+        # fall back to base handler (e.g., if _WinSafeHandler is invalid)
         handler_class = _BaseHandler
 
     # Ensure directory exists right before creating handler to prevent race conditions
@@ -1026,8 +1026,8 @@ def setup_enhanced_logging(
     _configure_enhanced_uvicorn_logging()
 
     # Log the setup
-    logger = get_logger("server.logging.enhanced")
-    logger.info(
+    setup_logger = get_logger("server.logging.enhanced")
+    setup_logger.info(
         "Enhanced logging system initialized",
         environment=environment,
         log_level=log_level,
@@ -1043,7 +1043,7 @@ def setup_enhanced_logging(
 
 def _configure_enhanced_uvicorn_logging() -> None:
     """Configure uvicorn to use our enhanced StructLog system."""
-    logger = get_logger("uvicorn.enhanced")
+    config_logger = get_logger("uvicorn.enhanced")
 
     # Configure uvicorn's access logger to use our enhanced system
     uvicorn_access_logger = logging.getLogger("uvicorn.access")
@@ -1063,7 +1063,7 @@ def _configure_enhanced_uvicorn_logging() -> None:
     uvicorn_logger.propagate = True
     uvicorn_logger.setLevel(logging.DEBUG)
 
-    logger.info("Enhanced uvicorn logging configured")
+    config_logger.info("Enhanced uvicorn logging configured")
 
 
 # Context management utilities
@@ -1119,12 +1119,12 @@ def get_current_context() -> dict[str, Any]:
         return {}
 
 
-def log_with_context(logger: BoundLogger, level: str, message: str, **kwargs) -> None:
+def log_with_context(bound_logger: BoundLogger, level: str, message: str, **kwargs) -> None:
     """
     Log a message with the current context automatically included.
 
     Args:
-        logger: Structlog logger instance
+        bound_logger: Structlog logger instance
         level: Log level (debug, info, warning, error, critical)
         message: Log message
         **kwargs: Additional log data
@@ -1134,7 +1134,7 @@ def log_with_context(logger: BoundLogger, level: str, message: str, **kwargs) ->
     log_data = {**current_context, **kwargs}
 
     # Log at the specified level
-    log_method = getattr(logger, level.lower(), logger.info)
+    log_method = getattr(bound_logger, level.lower(), bound_logger.info)
     log_method(message, **log_data)
 
 
@@ -1228,8 +1228,8 @@ def update_logging_with_player_service(player_service: Any) -> None:
     ]
 
     for category in log_categories:
-        logger = logging.getLogger(category)
-        for handler in logger.handlers:
+        category_logger = logging.getLogger(category)
+        for handler in category_logger.handlers:
             if hasattr(handler, "setFormatter"):
                 handler.setFormatter(enhanced_formatter)
 
@@ -1239,7 +1239,7 @@ def update_logging_with_player_service(player_service: Any) -> None:
 
 
 def log_exception_once(
-    logger: BoundLogger,
+    bound_logger: BoundLogger,
     level: str,
     message: str,
     *,
@@ -1251,7 +1251,7 @@ def log_exception_once(
     Log an exception once, respecting exceptions that have already been logged.
 
     Args:
-        logger: Structlog bound logger instance.
+        bound_logger: Structlog bound logger instance.
         level: Logging level to use (for example, "error" or "warning").
         message: Log message to emit.
         exc: Optional exception to include in the log entry.
@@ -1265,12 +1265,12 @@ def log_exception_once(
         kwargs.setdefault("error_type", type(exc).__name__)
         kwargs.setdefault("error", str(exc))
 
-    log_method = getattr(logger, level.lower(), logger.error)
+    log_method = getattr(bound_logger, level.lower(), bound_logger.error)
     log_method(message, **kwargs)
 
     if exc is not None and mark_logged:
         marker = getattr(exc, "mark_logged", None)
         if callable(marker):
-            marker()
+            marker()  # pylint: disable=not-callable
         else:
-            cast(Any, exc)._already_logged = True
+            cast(Any, exc)._already_logged = True  # pylint: disable=protected-access
