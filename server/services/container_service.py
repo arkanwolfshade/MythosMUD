@@ -608,7 +608,7 @@ class ContainerService:
             player_id=str(player_id),
             inventory_length=inventory_length,
             inventory_types=[type(stack).__name__ for stack in list(player_inventory)[:5]]
-            if isinstance(player_inventory, (list, tuple))
+            if isinstance(player_inventory, list | tuple)
             else type(player_inventory).__name__,
         )
 

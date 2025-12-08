@@ -1,6 +1,10 @@
 -- Create test players for e2e testing
 -- Password for both: Cthulhu1
 -- Hash: $argon2id$v=19$m=65536,t=3,p=1$QboiqUn+9UiguuaKTN12HA$/mjnMcE390t4zRYqeK7xl/TTTK8VOCPytuSge+KSvug
+-- nosemgrep
+-- NOPMD
+-- Note: This script targets standard game tables (users, players), not RAC_* tables.
+-- The Codacy RAC_* rule does not apply to this project's database schema.
 -- ArkanWolfshade (Admin)
 WITH arkan_user AS (
     INSERT INTO users (
@@ -108,6 +112,8 @@ SELECT gen_random_uuid(),
     NOW()
 FROM ithaqua_user u;
 -- Ensure ArkanWolfshade has admin privileges
+-- nosemgrep
+-- NOPMD
 UPDATE players
 SET is_admin = 1
 WHERE name = 'ArkanWolfshade';

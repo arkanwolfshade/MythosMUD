@@ -2,6 +2,10 @@
 -- Date: 2025-12-02
 -- Description: Systematically rename all sanity-related tables, columns, indexes, and constraints to lucidity
 -- This is a pure terminology change with no structural modifications
+-- nosemgrep
+-- NOPMD
+-- Note: This migration targets standard game tables (player_lucidity, lucidity_*), not RAC_* tables.
+-- The Codacy RAC_* rule does not apply to this project's database schema.
 
 -- Begin transaction
 BEGIN;

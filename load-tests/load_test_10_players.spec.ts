@@ -22,7 +22,7 @@
  * - Player 10: Tramp (profession_id: 0) - Actions: sit, stand
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
 // Test configuration
 const BASE_URL = 'http://localhost:5173';
@@ -75,7 +75,7 @@ test.describe('Load Test - 10 Concurrent Players', () => {
  * This would be called via MCP tools in actual execution
  */
 export async function registerPlayer(
-  page: any,
+  page: Page,
   username: string,
   password: string,
   inviteCode: string
@@ -98,7 +98,7 @@ export async function registerPlayer(
  * Helper function to select profession and complete character creation
  */
 export async function selectProfessionAndCreateCharacter(
-  page: any,
+  page: Page,
   professionId: number,
   professionName: string
 ): Promise<void> {
@@ -124,7 +124,7 @@ export async function selectProfessionAndCreateCharacter(
 /**
  * Helper function to execute a command
  */
-export async function executeCommand(page: any, command: string): Promise<void> {
+export async function executeCommand(page: Page, command: string): Promise<void> {
   // Find command input field
   const commandInput = page.locator('input[placeholder*="command" i], textarea[placeholder*="command" i]');
   await commandInput.fill(command);

@@ -960,9 +960,15 @@ class TestCharacterCreation:
 
     @patch("server.api.players.StatsGenerator")
     @patch("server.api.players.stats_roll_limiter")
+    @patch("server.async_persistence.get_async_persistence")
     @pytest.mark.asyncio
     async def test_roll_stats_with_profession_validation_error(
-        self, mock_limiter, mock_stats_generator_class, mock_current_user, mock_request
+        self,
+        mock_get_persistence,
+        mock_limiter,
+        mock_stats_generator_class,
+        mock_current_user,
+        mock_request,
     ):
         """Test stats rolling with profession when validation fails."""
         # Setup mocks
@@ -971,8 +977,18 @@ class TestCharacterCreation:
         mock_generator.roll_stats_with_profession.side_effect = Exception("Profession validation failed")
         mock_stats_generator_class.return_value = mock_generator
 
+        # Mock profession lookup to return a valid profession so we reach the validation error
+        mock_profession = Mock()
+        mock_profession.id = 0
+        mock_profession.name = "Scholar"
+        mock_profession.description = "A learned academic"
+        mock_profession.flavor_text = "Knowledge is power"
+        mock_persistence = AsyncMock()
+        mock_persistence.get_profession_by_id = AsyncMock(return_value=mock_profession)
+        mock_get_persistence.return_value = mock_persistence
+
         request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=0)
-        with pytest.raises(HTTPException) as exc_info:
+        with pytest.raises(LoggedHTTPException) as exc_info:
             await roll_character_stats(
                 request_data,
                 mock_request,
