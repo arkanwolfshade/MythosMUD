@@ -535,6 +535,38 @@ class SafeRotatingFileHandler(RotatingFileHandler):
     when shouldRollover() is called from different threads in CI environments.
     """
 
+    def _open(self):  # noqa: N802
+        """
+        Open the log file, ensuring directory exists first.
+
+        This overrides the parent method to ensure the log directory exists
+        before attempting to open the log file, preventing FileNotFoundError
+        in CI environments where directories might be cleaned up.
+        """
+        if not self.baseFilename:
+            return super()._open()
+
+        log_path = Path(self.baseFilename)
+        max_retries = 3
+
+        for attempt in range(max_retries):
+            # Ensure directory exists before each attempt (handles race conditions)
+            _ensure_log_directory(log_path)
+
+            # Try to open the file
+            try:
+                return super()._open()
+            except (FileNotFoundError, OSError):
+                # Directory might have been deleted, will retry on next iteration
+                if attempt == max_retries - 1:
+                    # Final attempt failed - re-raise the error
+                    raise
+                # Continue to next retry attempt
+                continue
+
+        # Should never reach here, but call parent as fallback
+        return super()._open()
+
     def shouldRollover(self, record):  # noqa: N802
         """
         Determine if rollover should occur, ensuring directory exists first.
