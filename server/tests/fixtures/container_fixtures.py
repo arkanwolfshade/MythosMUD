@@ -269,7 +269,7 @@ def container_test_client():
                 if not hasattr(persistence_to_use, method_name) or not callable(
                     getattr(persistence_to_use, method_name, None)
                 ):
-                    logger.warning("Persistence missing required method, creating mock", method_name=method_name)
+                    logger.warning("Persistence missing required method, creating mock", missing_method=method_name)
                     needs_mock_persistence = True
                     break
 
