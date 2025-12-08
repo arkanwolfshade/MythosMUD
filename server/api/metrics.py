@@ -239,6 +239,113 @@ async def reset_circuit_breaker(current_user: User = Depends(verify_admin_access
         ) from e
 
 
+def _load_dlq_message(dlq_path) -> dict[str, Any]:
+    """
+    Load and validate DLQ message data from file.
+
+    Args:
+        dlq_path: Path to the DLQ file
+
+    Returns:
+        Message data dictionary
+
+    Raises:
+        HTTPException: If file not found or data is invalid
+    """
+    import json
+
+    if not dlq_path.exists():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"DLQ file not found: {dlq_path}")
+
+    with open(dlq_path, encoding="utf-8") as f:
+        dlq_entry = json.load(f)
+
+    # DeadLetterQueue stores entries via DeadLetterMessage.to_dict(),
+    # where the original message is under the "data" key (not "message").
+    # Support legacy shape that may have used "message".
+    message_data = dlq_entry.get("data") or dlq_entry.get("message")
+    if not isinstance(message_data, dict):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid DLQ entry: missing or malformed message data",
+        )
+
+    return message_data
+
+
+async def _replay_message_safely(
+    nats_message_handler, message_data: dict[str, Any], dlq_path, filepath: str, current_user: User
+) -> dict[str, Any]:
+    """
+    Attempt to replay a DLQ message and handle errors safely.
+
+    Args:
+        nats_message_handler: NATS message handler instance
+        message_data: Message data to replay
+        dlq_path: Path to DLQ file
+        filepath: Original filepath for logging
+        current_user: Current admin user
+
+    Returns:
+        Success response dict
+
+    Raises:
+        Exception: If replay fails (logged but not exposed to user)
+    """
+    await nats_message_handler._process_single_message(message_data)
+
+    # Success! Remove from DLQ
+    nats_message_handler.dead_letter_queue.delete_message(str(dlq_path))
+
+    logger.info(
+        "DLQ message replayed successfully",
+        filepath=filepath,
+        message_id=message_data.get("message_id"),
+        admin_user=current_user.username,
+    )
+
+    return {"status": "success", "message": f"Message replayed and removed from DLQ: {filepath}"}
+
+
+def _handle_replay_error(replay_error: Exception, filepath: str, current_user: User) -> dict[str, Any]:
+    """
+    Handle replay errors and return safe error response.
+
+    Args:
+        replay_error: The exception that occurred during replay
+        filepath: Path to the DLQ file
+        current_user: Current admin user
+
+    Returns:
+        Error response dict
+    """
+    logger.error(
+        "Failed to replay DLQ message - details logged",
+        filepath=filepath,
+        error=str(replay_error),
+        admin_user=current_user.username,
+    )
+
+    # Human reader: sanitize error message to prevent stack trace exposure.
+    # AI reader: never expose stack traces in API responses, only in logs.
+    # Human reader: CodeQL requires no exception information exposure to external users.
+    # AI reader: return generic error message to prevent information leakage.
+    return {
+        "status": "failed",
+        "message": "Replay failed. Message remains in DLQ.",
+    }
+
+
+def _get_nats_handler():
+    """Get NATS message handler from app state."""
+    from ..main import app
+
+    nats_message_handler = app.state.container.nats_message_handler
+    if not nats_message_handler:
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="NATS handler not available")
+    return nats_message_handler
+
+
 @router.post("/dlq/{filepath:path}/replay")
 async def replay_dlq_message(filepath: str, current_user: User = Depends(verify_admin_access)) -> dict[str, Any]:
     """
@@ -257,72 +364,22 @@ async def replay_dlq_message(filepath: str, current_user: User = Depends(verify_
     AI: For manual incident recovery - use after fixing underlying issue.
     """
     try:
-        # AI Agent: Access nats_message_handler via app.state.container (no longer a global)
-        from ..main import app
-
-        nats_message_handler = app.state.container.nats_message_handler
-
-        if not nats_message_handler:
-            raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="NATS handler not available")
-
-        # Read the DLQ message
-        import json
-
+        nats_message_handler = _get_nats_handler()
         dlq_path = nats_message_handler.dead_letter_queue.storage_dir / filepath
-
-        if not dlq_path.exists():
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"DLQ file not found: {filepath}")
-
-        # Load message data
-        with open(dlq_path, encoding="utf-8") as f:
-            dlq_entry = json.load(f)
-
-        # DeadLetterQueue stores entries via DeadLetterMessage.to_dict(),
-        # where the original message is under the "data" key (not "message").
-        # Support legacy shape that may have used "message".
-        message_data = dlq_entry.get("data") or dlq_entry.get("message")
-        if not isinstance(message_data, dict):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Invalid DLQ entry: missing or malformed message data",
-            )
+        message_data = _load_dlq_message(dlq_path)
 
         # Attempt to replay message
         try:
-            await nats_message_handler._process_single_message(message_data)
-
-            # Success! Remove from DLQ
-            nats_message_handler.dead_letter_queue.delete_message(str(dlq_path))
-
-            logger.info(
-                "DLQ message replayed successfully",
-                filepath=filepath,
-                message_id=message_data.get("message_id"),
-                admin_user=current_user.username,
-            )
-
-            return {"status": "success", "message": f"Message replayed and removed from DLQ: {filepath}"}
-
-        except Exception as replay_error:
-            logger.error(
-                "Failed to replay DLQ message",
-                filepath=filepath,
-                error=str(replay_error),
-                admin_user=current_user.username,
-            )
-
-            # Human reader: sanitize error message to prevent stack trace exposure.
-            # AI reader: never expose stack traces in API responses, only in logs.
-            error_msg = str(replay_error).split("\n")[0].strip()  # Get first line only
-            # Remove file paths and line numbers
-            if any(pattern in error_msg.lower() for pattern in ['file "', "line ", "traceback"]):
-                error_msg = "An error occurred during replay"
-
-            return {
-                "status": "failed",
-                "message": f"Replay failed: {error_msg}. Message remains in DLQ.",
-                "error": error_msg,
-            }
+            return await _replay_message_safely(nats_message_handler, message_data, dlq_path, filepath, current_user)
+        except (ValueError, RuntimeError, OSError, AttributeError) as replay_error:
+            # Catch specific exceptions that can occur during message replay
+            return _handle_replay_error(replay_error, filepath, current_user)
+        except Exception as replay_error:  # pylint: disable=broad-except
+            # Catch any other unexpected exceptions during replay
+            # This is necessary because message processing can fail for various reasons
+            # (network errors, processing errors, etc.) and we want to handle all of them
+            # the same way (log and return generic error to user)
+            return _handle_replay_error(replay_error, filepath, current_user)
 
     except HTTPException:
         raise
