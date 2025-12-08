@@ -418,6 +418,20 @@ class AsyncPersistenceLayer:
         """Get a room by ID from the cache. Delegates to RoomRepository."""
         return self._room_repo.get_room_by_id(room_id)
 
+    async def async_list_rooms(self) -> list["Room"]:
+        """
+        List all rooms from the cache. Delegates to RoomRepository.
+
+        Returns:
+            list[Room]: List of all cached rooms
+
+        Note: This is async for API consistency, though the underlying
+        operation is synchronous as rooms are cached in memory.
+        """
+        # RoomRepository.list_rooms() is synchronous but we expose it as async
+        # for consistency with the async API surface
+        return self._room_repo.list_rooms()
+
     async def get_players_in_room(self, room_id: str) -> list[Player]:
         """Get all players in a specific room. Delegates to PlayerRepository."""
         return await self._player_repo.get_players_in_room(room_id)

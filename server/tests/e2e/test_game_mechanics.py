@@ -24,7 +24,7 @@ class TestGameMechanicsService:
         """Set up test fixtures."""
         # Create a mock persistence object with the required methods
         # pylint: disable=attribute-defined-outside-init
-        self.mock_persistence = Mock()  # noqa: PLW0201
+        self.mock_persistence = Mock()
         # GameMechanicsService uses get_player_by_id (async), not get_player
         self.mock_persistence.get_player_by_id = AsyncMock()
         self.mock_persistence.apply_lucidity_loss = AsyncMock()
@@ -35,10 +35,10 @@ class TestGameMechanicsService:
         self.mock_persistence.damage_player = AsyncMock()
 
         # Create the service instance
-        self.mechanics_service = GameMechanicsService(self.mock_persistence)  # noqa: PLW0201
+        self.mechanics_service = GameMechanicsService(self.mock_persistence)
 
         # Create a mock player for testing
-        self.mock_player = Mock()  # noqa: PLW0201
+        self.mock_player = Mock()
         self.mock_player.name = "TestPlayer"
         self.mock_player.player_id = str(uuid.uuid4())
 

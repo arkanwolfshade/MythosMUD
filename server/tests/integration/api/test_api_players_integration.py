@@ -76,9 +76,10 @@ class TestPlayerAPIIntegration:
         # Configure sync mock behaviors (for backward compatibility)
         # Note: delete_player is actually async, so use AsyncMock
         # CRITICAL: get_player_by_name must be AsyncMock because it's awaited in player_service
+        # CRITICAL: save_player must be AsyncMock because it's awaited in player_service.create_player
         mock_persistence.get_player = Mock(return_value=None)
         mock_persistence.get_player_by_name = AsyncMock(return_value=None)
-        mock_persistence.save_player = Mock(return_value=None)
+        mock_persistence.save_player = AsyncMock(return_value=None)  # Changed from Mock to AsyncMock
         mock_persistence.delete_player = AsyncMock(return_value=True)
         mock_persistence.get_room = AsyncMock(return_value=None)
 

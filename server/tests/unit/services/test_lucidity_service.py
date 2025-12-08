@@ -274,11 +274,7 @@ async def test_apply_lucidity_adjustment_triggers_delirium_respawn_at_minus_10(s
         assert result.new_lcd == -10
 
         # Verify delirium rescue event was sent
-        delirium_calls = [
-            call
-            for call in mock_rescue_event.await_args_list
-            if call.kwargs.get("status") == "delirium"
-        ]
+        delirium_calls = [call for call in mock_rescue_event.await_args_list if call.kwargs.get("status") == "delirium"]
         assert len(delirium_calls) > 0
         delirium_call = delirium_calls[0]
         assert delirium_call.kwargs.get("current_lcd") == -10
@@ -317,11 +313,7 @@ async def test_apply_lucidity_adjustment_triggers_delirium_respawn_below_minus_1
         assert result.new_lcd == -15
 
         # Verify delirium rescue event was sent
-        delirium_calls = [
-            call
-            for call in mock_rescue_event.await_args_list
-            if call.kwargs.get("status") == "delirium"
-        ]
+        delirium_calls = [call for call in mock_rescue_event.await_args_list if call.kwargs.get("status") == "delirium"]
         assert len(delirium_calls) > 0
         delirium_call = delirium_calls[0]
         assert delirium_call.kwargs.get("current_lcd") == -15
@@ -359,9 +351,5 @@ async def test_apply_lucidity_adjustment_no_delirium_event_when_above_threshold(
         assert result.new_lcd == -7
 
         # Verify NO delirium rescue event was sent
-        delirium_calls = [
-            call
-            for call in mock_rescue_event.await_args_list
-            if call.kwargs.get("status") == "delirium"
-        ]
+        delirium_calls = [call for call in mock_rescue_event.await_args_list if call.kwargs.get("status") == "delirium"]
         assert len(delirium_calls) == 0

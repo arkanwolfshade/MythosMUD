@@ -168,6 +168,7 @@ async def container_service(ensure_containers_table):
     except Exception as e:
         # Log but don't fail on cleanup errors
         import logging
+
         logging.getLogger(__name__).warning(f"Error during persistence cleanup: {e}")
 
 

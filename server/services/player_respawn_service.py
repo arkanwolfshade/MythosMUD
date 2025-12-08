@@ -22,6 +22,7 @@ def _utc_now() -> datetime:
     """Return naive UTC timestamp suitable for PostgreSQL TIMESTAMP WITHOUT TIME ZONE."""
     return datetime.now(UTC).replace(tzinfo=None)
 
+
 logger = get_logger(__name__)
 
 # Default respawn location (Arkham Sanitarium foyer)

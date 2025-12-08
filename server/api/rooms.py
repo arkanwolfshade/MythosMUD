@@ -10,7 +10,7 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, Query, Request, status
 from pydantic import BaseModel, Field
-from sqlalchemy import text
+from sqlalchemy import bindparam, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..auth.users import get_current_user
@@ -144,9 +144,14 @@ async def list_rooms(
                     # Convert explored room UUIDs to stable_ids for filtering
                     # We need to look up stable_ids from room UUIDs
                     if explored_room_ids:
-                        # Query to get stable_ids from room UUIDs (using PostgreSQL array syntax)
-                        lookup_query = text("SELECT stable_id FROM rooms WHERE id = ANY(:room_ids::uuid[])")
-                        result = await session.execute(lookup_query, {"room_ids": explored_room_ids})
+                        # Convert string UUIDs to UUID objects for proper PostgreSQL type handling
+                        room_uuid_list = [uuid.UUID(rid) for rid in explored_room_ids]
+                        # Use IN clause with expanding parameters for proper array handling
+                        # This avoids mixing parameter syntax with casting syntax that causes asyncpg errors
+                        lookup_query = text("SELECT stable_id FROM rooms WHERE id IN :room_ids").bindparams(
+                            bindparam("room_ids", expanding=True)
+                        )
+                        result = await session.execute(lookup_query, {"room_ids": room_uuid_list})
                         explored_stable_ids = {row[0] for row in result.fetchall()}
 
                         # Filter rooms to only include explored ones

@@ -13,7 +13,7 @@ from uuid import uuid4
 import pytest
 
 from server.commands.combat import CombatCommandHandler
-from server.services.combat_service import CombatService
+from server.services.combat_service import CombatParticipantData, CombatParticipantType, CombatService
 from server.services.player_combat_service import PlayerCombatService
 
 # Mark entire module as slow for CI/CD-only execution
@@ -31,7 +31,10 @@ class TestCombatPerformance:
     @pytest.fixture
     def mock_event_bus(self):
         """Create a mock event bus."""
-        return AsyncMock()
+        mock_bus = Mock()
+        # Mock publish method to avoid UnicodeEncodeError from event publishing
+        mock_bus.publish = Mock()
+        return mock_bus
 
     @pytest.fixture
     def player_combat_service(self, mock_persistence, mock_event_bus):
@@ -68,18 +71,27 @@ class TestCombatPerformance:
             player_id = uuid4()
             npc_id = uuid4()
 
+            attacker = CombatParticipantData(
+                participant_id=player_id,
+                name=f"Player_{i}",
+                current_hp=100,
+                max_hp=100,
+                dexterity=15,
+                participant_type=CombatParticipantType.PLAYER,
+            )
+            target = CombatParticipantData(
+                participant_id=npc_id,
+                name=f"NPC_{i}",
+                current_hp=50,
+                max_hp=50,
+                dexterity=10,
+                participant_type=CombatParticipantType.NPC,
+            )
+
             task = combat_service.start_combat(
                 room_id=f"room_{i}",
-                attacker_id=player_id,
-                target_id=npc_id,
-                attacker_name=f"Player_{i}",
-                target_name=f"NPC_{i}",
-                attacker_hp=100,
-                attacker_max_hp=100,
-                attacker_dex=15,
-                target_hp=50,
-                target_max_hp=50,
-                target_dex=10,
+                attacker=attacker,
+                target=target,
                 current_tick=0,
             )
             tasks.append(task)
@@ -95,40 +107,65 @@ class TestCombatPerformance:
         assert len(combat_service._active_combats) == num_combats
 
     @pytest.mark.asyncio
-    async def test_combat_attack_performance(self, combat_service):
+    async def test_combat_attack_performance(self, combat_service, mock_event_bus):
         """Test performance of processing multiple attacks."""
-        num_attacks = 1000
-        start_time = time.time()
+        # Patch EventBus where it's imported (inside _publish_player_hp_update_event)
+        # Also patch logger to prevent UnicodeEncodeError on Windows console
+        with (
+            patch("server.events.event_bus.EventBus", return_value=mock_event_bus),
+            patch("server.services.combat_service.logger") as mock_logger,
+        ):
+            # Configure mock logger to avoid UnicodeEncodeError
+            mock_logger.info = Mock()
+            mock_logger.debug = Mock()
+            mock_logger.warning = Mock()
+            mock_logger.error = Mock()
 
-        # Start a combat
-        player_id = uuid4()
-        npc_id = uuid4()
+            num_attacks = 1000
+            start_time = time.time()
 
-        await combat_service.start_combat(
-            room_id="test_room",
-            attacker_id=player_id,
-            target_id=npc_id,
-            attacker_name="TestPlayer",
-            target_name="TestNPC",
-            attacker_hp=100,
-            attacker_max_hp=100,
-            attacker_dex=15,
-            target_hp=1000,  # High HP to survive many attacks
-            target_max_hp=1000,
-            target_dex=10,
-            current_tick=0,
-        )
+            # Start a combat
+            player_id = uuid4()
+            npc_id = uuid4()
 
-        # Process multiple attacks (system handles turn progression automatically)
-        for _i in range(num_attacks):
-            await combat_service.process_attack(player_id, npc_id, damage=1)
+            attacker = CombatParticipantData(
+                participant_id=player_id,
+                name="TestPlayer",
+                current_hp=100,
+                max_hp=100,
+                dexterity=15,
+                participant_type=CombatParticipantType.PLAYER,
+            )
+            target = CombatParticipantData(
+                participant_id=npc_id,
+                name="TestNPC",
+                current_hp=1000,  # High HP to survive many attacks
+                max_hp=1000,
+                dexterity=10,
+                participant_type=CombatParticipantType.NPC,
+            )
 
-        end_time = time.time()
-        duration = end_time - start_time
+            await combat_service.start_combat(
+                room_id="test_room",
+                attacker=attacker,
+                target=target,
+                current_tick=0,
+            )
 
-        # Performance assertion: should complete within reasonable time
-        # Increased threshold for CI environments which are slower than local development
-        assert duration < 15.0  # Should complete within 15 seconds
+            # Process multiple attacks (system handles turn progression automatically)
+            # Use is_initial_attack=True for first attack, then False for subsequent ones
+            for attack_num in range(num_attacks):
+                await combat_service.process_attack(player_id, npc_id, damage=1, is_initial_attack=(attack_num == 0))
+
+            # Give background tasks a moment to complete to avoid coroutine warnings
+            await asyncio.sleep(0.01)
+
+            end_time = time.time()
+            duration = end_time - start_time
+
+            # Performance assertion: should complete within reasonable time
+            # Increased threshold for CI environments which are slower than local development
+            assert duration < 15.0  # Should complete within 15 seconds
 
     @pytest.mark.asyncio
     async def test_combat_memory_usage(self, combat_service):
@@ -146,18 +183,27 @@ class TestCombatPerformance:
             player_id = uuid4()
             npc_id = uuid4()
 
+            attacker = CombatParticipantData(
+                participant_id=player_id,
+                name=f"Player_{i}",
+                current_hp=100,
+                max_hp=100,
+                dexterity=15,
+                participant_type=CombatParticipantType.PLAYER,
+            )
+            target = CombatParticipantData(
+                participant_id=npc_id,
+                name=f"NPC_{i}",
+                current_hp=50,
+                max_hp=50,
+                dexterity=10,
+                participant_type=CombatParticipantType.NPC,
+            )
+
             await combat_service.start_combat(
                 room_id=f"room_{i}",
-                attacker_id=player_id,
-                target_id=npc_id,
-                attacker_name=f"Player_{i}",
-                target_name=f"NPC_{i}",
-                attacker_hp=100,
-                attacker_max_hp=100,
-                attacker_dex=15,
-                target_hp=50,
-                target_max_hp=50,
-                target_dex=10,
+                attacker=attacker,
+                target=target,
                 current_tick=0,
             )
 
@@ -180,18 +226,27 @@ class TestCombatPerformance:
             player_id = uuid4()
             npc_id = uuid4()
 
+            attacker = CombatParticipantData(
+                participant_id=player_id,
+                name=f"Player_{i}",
+                current_hp=100,
+                max_hp=100,
+                dexterity=15,
+                participant_type=CombatParticipantType.PLAYER,
+            )
+            target = CombatParticipantData(
+                participant_id=npc_id,
+                name=f"NPC_{i}",
+                current_hp=50,
+                max_hp=50,
+                dexterity=10,
+                participant_type=CombatParticipantType.NPC,
+            )
+
             combat = await combat_service.start_combat(
                 room_id=f"room_{i}",
-                attacker_id=player_id,
-                target_id=npc_id,
-                attacker_name=f"Player_{i}",
-                target_name=f"NPC_{i}",
-                attacker_hp=100,
-                attacker_max_hp=100,
-                attacker_dex=15,
-                target_hp=50,
-                target_max_hp=50,
-                target_dex=10,
+                attacker=attacker,
+                target=target,
                 current_tick=0,
             )
             combat_ids.append(combat.combat_id)
@@ -220,18 +275,27 @@ class TestCombatPerformance:
             player_id = uuid4()
             npc_id = uuid4()
 
+            attacker = CombatParticipantData(
+                participant_id=player_id,
+                name=f"Player_{i}",
+                current_hp=100,
+                max_hp=100,
+                dexterity=15,
+                participant_type=CombatParticipantType.PLAYER,
+            )
+            target = CombatParticipantData(
+                participant_id=npc_id,
+                name=f"NPC_{i}",
+                current_hp=50,
+                max_hp=50,
+                dexterity=10,
+                participant_type=CombatParticipantType.NPC,
+            )
+
             return await combat_service.start_combat(
                 room_id=f"room_{i}",
-                attacker_id=player_id,
-                target_id=npc_id,
-                attacker_name=f"Player_{i}",
-                target_name=f"NPC_{i}",
-                attacker_hp=100,
-                attacker_max_hp=100,
-                attacker_dex=15,
-                target_hp=50,
-                target_max_hp=50,
-                target_dex=10,
+                attacker=attacker,
+                target=target,
                 current_tick=0,
             )
 
@@ -292,18 +356,27 @@ class TestCombatPerformance:
             player_id = uuid4()
             npc_id = uuid4()
 
+            attacker = CombatParticipantData(
+                participant_id=player_id,
+                name=f"Player_{i}",
+                current_hp=100,
+                max_hp=100,
+                dexterity=15,
+                participant_type=CombatParticipantType.PLAYER,
+            )
+            target = CombatParticipantData(
+                participant_id=npc_id,
+                name=f"NPC_{i}",
+                current_hp=50,
+                max_hp=50,
+                dexterity=10,
+                participant_type=CombatParticipantType.NPC,
+            )
+
             await combat_service.start_combat(
                 room_id=f"room_{i}",
-                attacker_id=player_id,
-                target_id=npc_id,
-                attacker_name=f"Player_{i}",
-                target_name=f"NPC_{i}",
-                attacker_hp=100,
-                attacker_max_hp=100,
-                attacker_dex=15,
-                target_hp=50,
-                target_max_hp=50,
-                target_dex=10,
+                attacker=attacker,
+                target=target,
                 current_tick=0,
             )
 
@@ -329,18 +402,27 @@ class TestCombatPerformance:
             player_id = uuid4()
             npc_id = uuid4()
 
+            attacker = CombatParticipantData(
+                participant_id=player_id,
+                name=f"Player_{i}",
+                current_hp=100,
+                max_hp=100,
+                dexterity=15,
+                participant_type=CombatParticipantType.PLAYER,
+            )
+            target = CombatParticipantData(
+                participant_id=npc_id,
+                name=f"NPC_{i}",
+                current_hp=50,
+                max_hp=50,
+                dexterity=10,
+                participant_type=CombatParticipantType.NPC,
+            )
+
             await combat_service.start_combat(
                 room_id=f"room_{i}",
-                attacker_id=player_id,
-                target_id=npc_id,
-                attacker_name=f"Player_{i}",
-                target_name=f"NPC_{i}",
-                attacker_hp=100,
-                attacker_max_hp=100,
-                attacker_dex=15,
-                target_hp=50,
-                target_max_hp=50,
-                target_dex=10,
+                attacker=attacker,
+                target=target,
                 current_tick=0,
             )
 
@@ -439,18 +521,27 @@ class TestCombatPerformance:
             npc_id = uuid4()
 
             # Start combat
+            attacker = CombatParticipantData(
+                participant_id=player_id,
+                name=f"Player_{i}",
+                current_hp=100,
+                max_hp=100,
+                dexterity=15,
+                participant_type=CombatParticipantType.PLAYER,
+            )
+            target = CombatParticipantData(
+                participant_id=npc_id,
+                name=f"NPC_{i}",
+                current_hp=100,  # High HP to survive attacks
+                max_hp=100,
+                dexterity=10,
+                participant_type=CombatParticipantType.NPC,
+            )
+
             combat = await combat_service.start_combat(
                 room_id=f"room_{i}",
-                attacker_id=player_id,
-                target_id=npc_id,
-                attacker_name=f"Player_{i}",
-                target_name=f"NPC_{i}",
-                attacker_hp=100,
-                attacker_max_hp=100,
-                attacker_dex=15,
-                target_hp=100,  # High HP to survive attacks
-                target_max_hp=100,
-                target_dex=10,
+                attacker=attacker,
+                target=target,
                 current_tick=0,
             )
 

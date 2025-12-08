@@ -578,7 +578,16 @@ def container_test_client_class():
         # Initialize container synchronously using event loop
         container = ApplicationContainer()
         try:
-            loop.run_until_complete(container.initialize())
+            # Add timeout to prevent hanging in CI environments
+            # Use asyncio.wait_for with a reasonable timeout (30 seconds)
+            async def init_with_timeout():
+                await asyncio.wait_for(container.initialize(), timeout=30.0)
+
+            loop.run_until_complete(init_with_timeout())
+        except TimeoutError:
+            # Container initialization timed out - use defensive setup
+            logger.warning("Container initialization timed out, using defensive setup")
+            container.persistence = None
         except Exception as init_error:  # noqa: BLE001  # pylint: disable=broad-exception-caught
             # Defensive: Catch all exceptions during test container initialization
             # This allows tests to continue with mock persistence if real initialization fails

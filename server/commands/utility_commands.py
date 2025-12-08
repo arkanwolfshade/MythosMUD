@@ -4,6 +4,7 @@ Utility commands for MythosMUD.
 This module contains handlers for utility commands like who, quit, and other system utilities.
 """
 
+import inspect
 from typing import Any
 
 from ..alias_storage import AliasStorage
@@ -321,10 +322,31 @@ async def handle_logout_command(
         lookup_name = player_name or get_username_from_user(current_user)
         player = get_cached_player(request, lookup_name)
 
+        # Ensure player is not a coroutine (defensive check)
+        if player is not None:
+            if inspect.iscoroutine(player):
+                logger.warning(
+                    "Cached player is a coroutine, clearing cache and fetching fresh", lookup_name=lookup_name
+                )
+                # Clear the corrupted cache entry
+                cache = (
+                    getattr(request.state, "_command_player_cache", None)
+                    if request and hasattr(request, "state")
+                    else None
+                )
+                if isinstance(cache, dict):
+                    cache.pop(lookup_name, None)
+                player = None
+
         if persistence and player is None:
             try:
                 player = await persistence.get_player_by_name(lookup_name)
-                cache_player(request, lookup_name, player)
+                # Double-check we're not caching a coroutine
+                if inspect.iscoroutine(player):
+                    logger.error("get_player_by_name returned a coroutine instead of player", lookup_name=lookup_name)
+                    player = None
+                else:
+                    cache_player(request, lookup_name, player)
             except Exception as e:
                 logger.error("Error updating last active on logout", error=str(e), error_type=type(e).__name__)
                 player = None

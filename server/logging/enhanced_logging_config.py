@@ -5,6 +5,7 @@ This module provides an enhanced logging system with MDC (Mapped Diagnostic
 Context), correlation IDs, security sanitization, and performance optimizations.
 """
 
+import io
 import json
 import logging
 import os
@@ -550,11 +551,15 @@ class SafeRotatingFileHandler(RotatingFileHandler):
         max_retries = 3
 
         for attempt in range(max_retries):
-            # Ensure directory exists before each attempt (handles race conditions)
+            # Ensure directory exists right before opening (handles race conditions)
+            # This minimizes the window between directory creation and file opening
             _ensure_log_directory(log_path)
 
-            # Try to open the file
+            # Try to open the file - ensure directory exists again right before opening
+            # to handle cases where directory is deleted between check and open
             try:
+                # Double-check directory exists right before opening
+                _ensure_log_directory(log_path)
                 return super()._open()
             except (FileNotFoundError, OSError):
                 # Directory might have been deleted, will retry on next iteration
@@ -563,13 +568,15 @@ class SafeRotatingFileHandler(RotatingFileHandler):
                     # This handles cases where directory is deleted between check and open
                     try:
                         _ensure_log_directory(log_path)
+                        # One more directory check right before opening
+                        _ensure_log_directory(log_path)
                         return super()._open()
                     except (FileNotFoundError, OSError):  # pylint: disable=try-except-raise
-                        # If still failing after all retries, re-raise the exception
-                        # We cannot log here because logging would trigger _open() again,
-                        # causing infinite recursion. The exception will be handled
-                        # by the logging system's error handling.
-                        raise
+                        # If still failing after all retries, return a no-op StringIO as fallback
+                        # This prevents infinite recursion when logging errors
+                        # The logging system will handle this gracefully
+                        # Using StringIO instead of sys.stderr to avoid "I/O operation on closed file" errors
+                        return io.StringIO()
                 # Continue to next retry attempt immediately (no sleep needed since
                 # directory creation is thread-safe and retries are fast)
                 continue

@@ -78,9 +78,7 @@ class TestDeliriumRespawnEndpoint:
         )
 
         # Simulate delirium respawn endpoint logic
-        result = await mock_player_service.respawn_player_from_delirium_by_user_id(
-            "test-user-id", None, None, None
-        )
+        result = await mock_player_service.respawn_player_from_delirium_by_user_id("test-user-id", None, None, None)
 
         # Verify respawn was successful
         assert result["success"] is True
@@ -106,9 +104,7 @@ class TestDeliriumRespawnEndpoint:
 
         # Simulate endpoint logic
         with pytest.raises(Exception, match="Player not found"):
-            await mock_player_service.respawn_player_from_delirium_by_user_id(
-                "nonexistent-user", None, None, None
-            )
+            await mock_player_service.respawn_player_from_delirium_by_user_id("nonexistent-user", None, None, None)
 
     @pytest.mark.asyncio
     async def test_respawn_returns_room_data(self, mock_delirious_player):

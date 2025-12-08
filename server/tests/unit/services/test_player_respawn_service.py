@@ -336,9 +336,7 @@ class TestPlayerRespawnService:
 
         mock_session = AsyncMock()
         # Return player but not lucidity record
-        mock_session.get.side_effect = lambda model, id: (
-            mock_player if model == Player else None
-        )
+        mock_session.get.side_effect = lambda model, id: (mock_player if model == Player else None)
 
         result = await player_respawn_service.respawn_player_from_delirium(TEST_PLAYER_ID, mock_session)
 
@@ -388,9 +386,7 @@ class TestPlayerRespawnService:
         # Create service with both event bus and player combat service
         mock_event_bus = Mock()
         mock_player_combat_service = AsyncMock()
-        service = PlayerRespawnService(
-            event_bus=mock_event_bus, player_combat_service=mock_player_combat_service
-        )
+        service = PlayerRespawnService(event_bus=mock_event_bus, player_combat_service=mock_player_combat_service)
 
         stats = {"current_health": 50, "position": "standing"}
         mock_player.player_id = TEST_PLAYER_ID

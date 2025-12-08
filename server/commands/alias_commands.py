@@ -64,7 +64,12 @@ async def handle_alias_command(
     else:
         # Use structured data from parsed command
         alias_name = alias_name.lower()
-        logger.debug("Processing alias command from structured data", player_name=player_name, alias_name=alias_name, command=command)
+        logger.debug(
+            "Processing alias command from structured data",
+            player_name=player_name,
+            alias_name=alias_name,
+            command=command,
+        )
 
         # View existing alias (command is None)
         if command is None:
