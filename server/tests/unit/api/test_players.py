@@ -59,8 +59,8 @@ def mock_current_user():
 def sample_player_data():
     """Sample player data for testing."""
     player = Mock()
-    player.player_id = str(uuid.uuid4())
-    player.user_id = str(uuid.uuid4())
+    player.player_id = uuid.uuid4()
+    player.user_id = uuid.uuid4()
     player.name = "TestPlayer"
     player.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
     player.experience_points = 100
@@ -251,7 +251,7 @@ class TestPlayerCRUD:
         mock_service.get_player_by_id.return_value = sample_player_data
         mock_player_service_class.return_value = mock_service
 
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         result = await get_player(player_id, mock_current_user, mock_request, mock_service)
 
         assert result == sample_player_data.model_dump()
@@ -266,7 +266,7 @@ class TestPlayerCRUD:
         mock_service.get_player_by_id.return_value = None
         mock_player_service_class.return_value = mock_service
 
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         with pytest.raises(HTTPException) as exc_info:
             await get_player(player_id, mock_current_user, mock_request, mock_service)
 
@@ -313,7 +313,7 @@ class TestPlayerCRUD:
         mock_service.delete_player.return_value = (True, "Player deleted successfully")
         mock_player_service_class.return_value = mock_service
 
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         result = await delete_player(player_id, mock_current_user, mock_request, mock_service)
 
         assert result["message"] == "Player deleted successfully"
@@ -328,7 +328,7 @@ class TestPlayerCRUD:
         mock_service.delete_player.return_value = (False, "Player not found")
         mock_player_service_class.return_value = mock_service
 
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         with pytest.raises(HTTPException) as exc_info:
             await delete_player(player_id, mock_current_user, mock_request, mock_service)
 

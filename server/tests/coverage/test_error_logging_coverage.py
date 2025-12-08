@@ -11,7 +11,7 @@ sufficient context for future scholars to understand what went wrong."
 
 import json
 from datetime import UTC, datetime
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 from uuid import uuid4
 
 import pytest
@@ -600,8 +600,6 @@ class TestAPIErrorLoggingIntegration:
 
     def test_api_player_deletion_error_logging(self, test_mixin, container_test_client):
         """Test error logging in player deletion API endpoint."""
-        from uuid import uuid4
-
         # Use a valid UUID format for the path parameter
         nonexistent_player_id = str(uuid4())
 
@@ -625,8 +623,6 @@ class TestAPIErrorLoggingIntegration:
 
     def test_api_player_retrieval_error_logging(self, test_mixin, container_test_client):
         """Test error logging in player retrieval API endpoint."""
-        from uuid import uuid4
-
         # Use a valid UUID format for the path parameter
         nonexistent_player_id = str(uuid4())
 
@@ -662,6 +658,10 @@ class TestCommandHandlerErrorLoggingIntegration:
         """Mock FastAPI request object."""
         request = Mock()
         request.app.state.persistence = Mock()
+        # Mock player for catatonia check
+        mock_player = Mock()
+        mock_player.player_id = uuid4()
+        request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         return request
 
     @pytest.fixture

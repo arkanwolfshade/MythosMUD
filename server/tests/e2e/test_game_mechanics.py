@@ -40,13 +40,13 @@ class TestGameMechanicsService:
         # Create a mock player for testing
         self.mock_player = Mock()
         self.mock_player.name = "TestPlayer"
-        self.mock_player.player_id = str(uuid.uuid4())
+        self.mock_player.player_id = uuid.uuid4()
 
     @pytest.mark.asyncio
     async def test_apply_Lucidity_loss_success(self):
         """Test successful lucidity loss application."""
         # Setup
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         amount = 10
         source = "eldritch tome"
 
@@ -65,7 +65,7 @@ class TestGameMechanicsService:
     async def test_apply_Lucidity_loss_player_not_found(self):
         """Test lucidity loss application when player is not found."""
         # Setup
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         amount = 10
         source = "eldritch tome"
 
@@ -81,7 +81,7 @@ class TestGameMechanicsService:
     async def test_apply_Lucidity_loss_default_source(self):
         """Test lucidity loss application with default source."""
         # Setup
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         amount = 10
 
         self.mock_persistence.get_player_by_id.return_value = self.mock_player
@@ -97,7 +97,7 @@ class TestGameMechanicsService:
     async def test_apply_fear_success(self):
         """Test successful fear application."""
         # Setup
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         amount = 15
         source = "dark ritual"
 
@@ -116,7 +116,7 @@ class TestGameMechanicsService:
     async def test_apply_fear_player_not_found(self):
         """Test fear application when player is not found."""
         # Setup
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         amount = 15
         source = "dark ritual"
 
@@ -132,7 +132,7 @@ class TestGameMechanicsService:
     async def test_apply_corruption_success(self):
         """Test successful corruption application."""
         # Setup
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         amount = 5
         source = "forbidden knowledge"
 
@@ -151,7 +151,7 @@ class TestGameMechanicsService:
     async def test_apply_corruption_player_not_found(self):
         """Test corruption application when player is not found."""
         # Setup
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         amount = 5
         source = "forbidden knowledge"
 
@@ -169,7 +169,7 @@ class TestGameMechanicsService:
         from unittest.mock import patch
 
         # Setup
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         amount = 20
         source = "necronomicon"
 
@@ -197,7 +197,7 @@ class TestGameMechanicsService:
     async def test_gain_occult_knowledge_player_not_found(self):
         """Test occult knowledge gain when player is not found."""
         # Setup
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         amount = 20
         source = "necronomicon"
 
@@ -213,7 +213,7 @@ class TestGameMechanicsService:
     async def test_heal_player_success(self):
         """Test successful player healing."""
         # Setup
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         amount = 25
 
         self.mock_persistence.get_player_by_id.return_value = self.mock_player
@@ -231,7 +231,7 @@ class TestGameMechanicsService:
     async def test_heal_player_not_found(self):
         """Test healing when player is not found."""
         # Setup
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         amount = 25
 
         self.mock_persistence.get_player_by_id.return_value = None
@@ -246,7 +246,7 @@ class TestGameMechanicsService:
     async def test_damage_player_success(self):
         """Test successful player damage."""
         # Setup
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         amount = 30
         damage_type = "psychic"
 
@@ -265,7 +265,7 @@ class TestGameMechanicsService:
     async def test_damage_player_default_type(self):
         """Test player damage with default damage type."""
         # Setup
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         amount = 30
 
         self.mock_persistence.get_player_by_id.return_value = self.mock_player
@@ -282,7 +282,7 @@ class TestGameMechanicsService:
     async def test_damage_player_not_found(self):
         """Test damage when player is not found."""
         # Setup
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         amount = 30
         damage_type = "psychic"
 
@@ -300,7 +300,7 @@ class TestGameMechanicsService:
         from unittest.mock import patch
 
         # Setup
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
 
         self.mock_persistence.get_player_by_id.return_value = self.mock_player
 
@@ -337,7 +337,7 @@ class TestGameMechanicsService:
         from unittest.mock import patch
 
         # Setup
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
 
         self.mock_persistence.get_player_by_id.return_value = self.mock_player
 
@@ -374,7 +374,7 @@ class TestGameMechanicsService:
         from unittest.mock import patch
 
         # Setup
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
 
         self.mock_persistence.get_player_by_id.return_value = self.mock_player
 
@@ -422,7 +422,7 @@ class TestGameMechanicsService:
         from unittest.mock import patch
 
         # Setup
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
 
         self.mock_persistence.get_player_by_id.return_value = self.mock_player
 

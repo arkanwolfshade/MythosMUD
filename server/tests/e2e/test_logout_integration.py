@@ -186,9 +186,12 @@ class TestLogoutIntegration:
     @pytest.mark.asyncio
     async def test_logout_command_case_insensitive(self, mock_current_user, mock_request):
         """Test logout command is case insensitive."""
+        import uuid
+
         # Mock the persistence layer
         mock_player = MagicMock()
         mock_player.name = "testplayer"
+        mock_player.player_id = uuid.uuid4()
         # Use AsyncMock for async methods
         mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_request.app.state.persistence.save_player = AsyncMock()

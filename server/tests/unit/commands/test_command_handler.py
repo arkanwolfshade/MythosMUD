@@ -200,8 +200,15 @@ class TestCommandProcessing:
     @pytest.mark.asyncio
     async def test_process_command_unknown(self):
         """Test processing unknown command."""
+        import uuid
+        from unittest.mock import AsyncMock
+
         mock_request = Mock()
         mock_request.app.state.persistence = Mock()
+        # Mock player for catatonia check
+        mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
         current_user = {"username": "testuser"}
@@ -216,8 +223,15 @@ class TestCommandProcessing:
     @pytest.mark.asyncio
     async def test_process_command_alias(self):
         """Test processing alias command."""
+        import uuid
+        from unittest.mock import AsyncMock
+
         mock_request = Mock()
         mock_request.app.state.persistence = Mock()
+        # Mock player for catatonia check
+        mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
         current_user = {"username": "testuser"}

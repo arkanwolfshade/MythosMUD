@@ -35,9 +35,16 @@ class TestTwibbleEmoteBug:
     @pytest.mark.asyncio
     async def test_single_word_emote_processing(self):
         """Test that single-word emotes like 'twibble' are processed correctly."""
+        import uuid
+
         # Mock dependencies
         current_user = {"username": "Ithaqua"}
         request = Mock()
+        request.app.state.persistence = Mock()
+        # Mock player for catatonia check
+        mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
+        request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         alias_storage = Mock()
         alias_storage.get_alias.return_value = None  # No alias found
         player_name = "Ithaqua"
@@ -171,7 +178,7 @@ class TestEventStormPrevention:
 
         # Mock movement service dependencies
         player = Mock()
-        player.player_id = str(uuid4())
+        player.player_id = uuid4()
         player.name = "TestPlayer"
 
         # Create real Room objects with EventBus
@@ -408,7 +415,7 @@ class TestEndToEndBugScenarios:
 
         # Mock movement service dependencies
         player = Mock()
-        player.player_id = str(uuid4())
+        player.player_id = uuid4()
         player.name = "Ithaqua"
 
         old_room = Mock()

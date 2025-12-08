@@ -9,6 +9,7 @@ This module tests the missing critical codepaths in command_handler_unified.py i
 - Alias management edge cases
 """
 
+import uuid
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
@@ -63,6 +64,10 @@ class TestCommunicationCommands:
         """Test say command with no message."""
         mock_request = Mock()
         mock_request.app.state.persistence = Mock()
+        # Mock player for catatonia check
+        mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
         current_user = {"username": "testuser"}
@@ -78,6 +83,10 @@ class TestCommunicationCommands:
         """Test say command with empty message."""
         mock_request = Mock()
         mock_request.app.state.persistence = Mock()
+        # Mock player for catatonia check
+        mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
         current_user = {"username": "testuser"}
@@ -115,10 +124,11 @@ class TestCommunicationCommands:
 
         # Mock player data
         mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
         mock_player.current_room_id = "test_room_001"
         mock_player.get_stats.return_value = {"position": "standing"}
         mock_player.get_stats.return_value = {"position": "standing"}
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
         # Mock room data
         mock_room = Mock(spec=Room)
@@ -170,6 +180,10 @@ class TestCommunicationCommands:
         """Test emote command with no action."""
         mock_request = Mock()
         mock_request.app.state.persistence = Mock()
+        # Mock player for catatonia check
+        mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
         current_user = {"username": "testuser"}
@@ -194,10 +208,12 @@ class TestCommunicationCommands:
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
         mock_player.id = "test_player_id"
-        mock_player.player_id = "test_player_id"
+        mock_player.player_id = uuid.uuid4()
         mock_player_service.resolve_player_name.return_value = mock_player
         mock_request.app.state.chat_service = mock_chat_service
         mock_request.app.state.player_service = mock_player_service
+        # Mock player for catatonia check
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
         current_user = {"username": "testuser"}
@@ -225,11 +241,13 @@ class TestCommunicationCommands:
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
         mock_player.id = "test_player_id"
-        mock_player.player_id = "test_player_id"
+        mock_player.player_id = uuid.uuid4()
         mock_player.get_stats.return_value = {"position": "standing"}
         mock_player_service.resolve_player_name.return_value = mock_player
         mock_request.app.state.chat_service = mock_chat_service
         mock_request.app.state.player_service = mock_player_service
+        # Mock player for catatonia check
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
         current_user = {"username": "testuser"}
@@ -259,10 +277,11 @@ class TestCommunicationCommands:
 
         # Mock player data
         mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
         mock_player.current_room_id = "test_room_001"
         mock_player.get_stats.return_value = {"position": "standing"}
         mock_player.get_stats.return_value = {"position": "standing"}
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
         # Mock room data
         mock_room = Mock(spec=Room)
@@ -308,9 +327,10 @@ class TestCommunicationCommands:
 
         # Mock player data
         mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
         mock_player.current_room_id = "test_room_001"
         mock_player.get_stats.return_value = {"position": "standing"}
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
         # Mock room data
         mock_room = Mock(spec=Room)
@@ -355,6 +375,7 @@ class TestCommunicationCommands:
 
         # Mock player data
         mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
         mock_player.current_room_id = "test_room_001"
         mock_player.pose = None
         # Use AsyncMock for get_player_by_name since it's awaited
@@ -382,6 +403,10 @@ class TestCommunicationCommands:
         """Test pose command with too long pose."""
         mock_request = Mock()
         mock_request.app.state.persistence = Mock()
+        # Mock player for catatonia check
+        mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
         current_user = {"username": "testuser"}
@@ -412,6 +437,10 @@ class TestUserManagementCommands:
         """Test mute command with no arguments."""
         mock_request = Mock()
         mock_request.app.state.persistence = Mock()
+        # Mock player for catatonia check
+        mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
         current_user = {"username": "testuser"}
@@ -434,15 +463,15 @@ class TestUserManagementCommands:
         # Mock player data
         mock_player = Mock()
         mock_player.id = "testuser_id"
+        mock_player.player_id = uuid.uuid4()
         mock_player.current_room_id = "test_room_001"
         mock_player.is_admin = True
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         # Mock target player
         mock_target_player = Mock()
         mock_target_player.id = "targetuser_id"
         mock_target_player.username = "targetuser"
-        mock_request.app.state.persistence.get_player_by_name.side_effect = [mock_player, mock_target_player]
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(side_effect=[mock_player, mock_target_player])
 
         # Mock player_service with AsyncMock for resolve_player_name
         mock_player_service = Mock()
@@ -473,15 +502,15 @@ class TestUserManagementCommands:
         # Mock player data
         mock_player = Mock()
         mock_player.id = "testuser_id"
+        mock_player.player_id = uuid.uuid4()
         mock_player.current_room_id = "test_room_001"
         mock_player.is_admin = True
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         # Mock target player
         mock_target_player = Mock()
         mock_target_player.id = "targetuser_id"
         mock_target_player.username = "targetuser"
-        mock_request.app.state.persistence.get_player_by_name.side_effect = [mock_player, mock_target_player]
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(side_effect=[mock_player, mock_target_player])
 
         # Mock player_service with AsyncMock for resolve_player_name
         mock_player_service = Mock()
@@ -512,12 +541,10 @@ class TestUserManagementCommands:
         # Mock player data
         mock_player = Mock()
         mock_player.id = "testuser_id"
+        mock_player.player_id = uuid.uuid4()
         mock_player.current_room_id = "test_room_001"
         mock_player.is_admin = True
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
-
-        # Mock target player not found
-        mock_request.app.state.persistence.get_player_by_name.side_effect = [mock_player, None]
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(side_effect=[mock_player, None])
 
         # Mock player_service with AsyncMock for resolve_player_name
         mock_player_service = Mock()
@@ -548,14 +575,15 @@ class TestUserManagementCommands:
         # Mock player data (not admin)
         mock_player = Mock()
         mock_player.id = "testuser_id"
+        mock_player.player_id = uuid.uuid4()
         mock_player.current_room_id = "test_room_001"
         mock_player.is_admin = False
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         # Mock target player
         mock_target_player = Mock()
         mock_target_player.id = "targetuser_id"
         mock_target_player.username = "targetuser"
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(side_effect=[mock_player, mock_target_player])
 
         # Mock player_service with AsyncMock for resolve_player_name
         mock_player_service = Mock()
@@ -586,16 +614,16 @@ class TestUserManagementCommands:
         # Mock player data
         mock_player = Mock()
         mock_player.id = "testuser_id"
+        mock_player.player_id = uuid.uuid4()
         mock_player.current_room_id = "test_room_001"
         mock_player.is_admin = True
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         # Mock target player
         mock_target_player = Mock()
         mock_target_player.id = "targetuser_id"
         mock_target_player.username = "targetuser"
         mock_target_player.is_muted = True
-        mock_request.app.state.persistence.get_player_by_name.side_effect = [mock_player, mock_target_player]
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(side_effect=[mock_player, mock_target_player])
 
         # Mock player_service with AsyncMock for resolve_player_name
         mock_player_service = Mock()
@@ -625,14 +653,14 @@ class TestUserManagementCommands:
 
         # Mock player data
         mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
         mock_player.current_room_id = "test_room_001"
         mock_player.is_admin = True
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         # Mock target player
         mock_target_player = Mock()
         mock_target_player.username = "targetuser"
-        mock_request.app.state.persistence.get_player_by_name.side_effect = [mock_player, mock_target_player]
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(side_effect=[mock_player, mock_target_player])
 
         result = await process_command(
             "mute_global", ["targetuser", "120"], current_user, mock_request, mock_alias_storage, "testuser"
@@ -652,15 +680,15 @@ class TestUserManagementCommands:
 
         # Mock player data
         mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
         mock_player.current_room_id = "test_room_001"
         mock_player.is_admin = True
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         # Mock target player
         mock_target_player = Mock()
         mock_target_player.username = "targetuser"
         mock_target_player.is_muted_global = True
-        mock_request.app.state.persistence.get_player_by_name.side_effect = [mock_player, mock_target_player]
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(side_effect=[mock_player, mock_target_player])
 
         result = await process_command(
             "unmute_global", ["targetuser"], current_user, mock_request, mock_alias_storage, "testuser"
@@ -680,15 +708,15 @@ class TestUserManagementCommands:
 
         # Mock player data
         mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
         mock_player.current_room_id = "test_room_001"
         mock_player.is_admin = True
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
 
         # Mock target player
         mock_target_player = Mock()
         mock_target_player.username = "targetuser"
         mock_target_player.is_admin = False
-        mock_request.app.state.persistence.get_player_by_name.side_effect = [mock_player, mock_target_player]
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(side_effect=[mock_player, mock_target_player])
 
         result = await process_command(
             "add_admin", ["targetuser"], current_user, mock_request, mock_alias_storage, "testuser"
@@ -709,9 +737,10 @@ class TestUserManagementCommands:
 
         # Mock player data
         mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
         mock_player.current_room_id = "test_room_001"
         mock_player.is_admin = True
-        mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
         result = await process_command("mutes", [], current_user, mock_request, mock_alias_storage, "testuser")
 
@@ -751,6 +780,10 @@ class TestMovementAndExplorationCommands:
         """Test go command with no direction."""
         mock_request = Mock()
         mock_request.app.state.persistence = Mock()
+        # Mock player for catatonia check
+        mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
         current_user = {"username": "testuser"}
@@ -1234,6 +1267,10 @@ class TestCommandHandlerValidation:
         """
         mock_request = Mock()
         mock_request.app.state.persistence = Mock()
+        # Mock player for catatonia check
+        mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
         current_user = {"username": "testuser"}
@@ -1290,6 +1327,10 @@ class TestCommandHandlerAliasExpansion:
 
         mock_request = Mock()
         mock_request.app.state.persistence = Mock()
+        # Mock player for catatonia check
+        mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
         # Create circular alias: 'a' -> 'b' and 'b' -> 'a'
         alias_a = Alias(name="a", command="b")
@@ -1319,6 +1360,10 @@ class TestCommandHandlerAliasExpansion:
 
         mock_request = Mock()
         mock_request.app.state.persistence = Mock()
+        # Mock player for catatonia check
+        mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
         # Create an alias that would have deep expansion
         deep_alias = Alias(name="deep", command="look north")
@@ -1347,6 +1392,10 @@ class TestCommandHandlerAliasExpansion:
 
         mock_request = Mock()
         mock_request.app.state.persistence = Mock()
+        # Mock player for catatonia check
+        mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
         # Create alias that expands to very long command
         long_command = "say " + ("a" * 10000)
@@ -1375,6 +1424,10 @@ class TestCommandHandlerAliasExpansion:
 
         mock_request = Mock()
         mock_request.app.state.persistence = Mock()
+        # Mock player for catatonia check
+        mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
         # Create alias that expands to potentially malicious command
         malicious_alias = Alias(name="bad", command="say '; DROP TABLE players; --")
@@ -1409,6 +1462,10 @@ class TestCommandHandlerErrorPaths:
         """
         mock_request = Mock()
         mock_request.app.state.persistence = Mock()
+        # Mock player for catatonia check
+        mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
+        mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
         current_user = {"username": "testuser"}
