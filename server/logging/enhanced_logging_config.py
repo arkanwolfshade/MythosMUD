@@ -554,7 +554,16 @@ class SafeRotatingFileHandler(RotatingFileHandler):
             _ensure_log_directory(log_path)
 
         # Call parent method to perform actual rollover check
-        return super().shouldRollover(record)
+        # Wrap in try-except to handle race conditions where directory might be deleted
+        # between the check above and when parent tries to open the file
+        try:
+            return super().shouldRollover(record)
+        except (FileNotFoundError, OSError):
+            # Directory might have been deleted, recreate it and try again
+            if self.baseFilename:
+                log_path = Path(self.baseFilename)
+                _ensure_log_directory(log_path)
+            return super().shouldRollover(record)
 
 
 class WarningOnlyFilter(logging.Filter):
