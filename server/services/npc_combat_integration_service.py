@@ -196,7 +196,7 @@ class NPCCombatIntegrationService:
                 return False
 
             # Validate that player and NPC are in the same room
-            player_room_id = self._get_player_room_id(player_id)
+            player_room_id = await self._get_player_room_id(player_id)
             npc_room_id = getattr(npc_instance, "current_room", None)
 
             logger.debug(
@@ -298,13 +298,13 @@ class NPCCombatIntegrationService:
                 )
             else:
                 # Start new combat first
-                player_name = self._get_player_name(player_id)
+                player_name = await self._get_player_name(player_id)
 
                 # Fetch actual player stats from persistence to ensure correct HP
                 # BUGFIX: Was hardcoded to 100, causing HP to reset between combats
                 # Convert player_id to UUID if it's a string
                 player_id_uuid = UUID(player_id) if isinstance(player_id, str) else player_id
-                player = await asyncio.to_thread(self._persistence.get_player, player_id_uuid)
+                player = await self._persistence.get_player_by_id(player_id_uuid)
                 if not player:
                     logger.error("Player not found when starting combat", player_id=player_id)
                     return False
@@ -361,7 +361,7 @@ class NPCCombatIntegrationService:
                 # Broadcast attack message with health info
                 await self._messaging_integration.broadcast_combat_attack(
                     room_id=room_id,
-                    attacker_name=self._get_player_name(player_id),
+                    attacker_name=await self._get_player_name(player_id),
                     target_name=npc_instance.name,
                     damage=damage,
                     action_type=action_type,
@@ -673,12 +673,12 @@ class NPCCombatIntegrationService:
             logger.error("Error getting NPC definition", npc_id=npc_id, error=str(e))
             return None
 
-    def _get_player_name(self, player_id: str) -> str:
+    async def _get_player_name(self, player_id: str) -> str:
         """Get player name for messaging."""
         try:
             # Convert player_id to UUID if it's a string
             player_id_uuid = UUID(player_id) if isinstance(player_id, str) else player_id
-            player = self._persistence.get_player(player_id_uuid)
+            player = await self._persistence.get_player_by_id(player_id_uuid)
             return str(player.name) if player else "Unknown Player"
         except (OSError, ValueError, TypeError, Exception) as e:
             logger.error("Error getting player name", player_id=player_id, error=str(e), error_type=type(e).__name__)
@@ -705,7 +705,7 @@ class NPCCombatIntegrationService:
         except Exception as e:
             logger.error("Error despawning NPC", npc_id=npc_id, error=str(e))
 
-    def _get_player_room_id(self, player_id: str) -> str | None:
+    async def _get_player_room_id(self, player_id: str) -> str | None:
         """
         Get the current room ID for a player.
 
@@ -718,7 +718,7 @@ class NPCCombatIntegrationService:
         try:
             # Convert player_id to UUID if it's a string
             player_id_uuid = UUID(player_id) if isinstance(player_id, str) else player_id
-            player = self._persistence.get_player(player_id_uuid)
+            player = await self._persistence.get_player_by_id(player_id_uuid)
             if player:
                 return str(player.current_room_id)
             return None
