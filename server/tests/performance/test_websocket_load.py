@@ -111,13 +111,19 @@ class TestWebSocketLoad:
         """Test for memory leaks in connection management."""
         from unittest.mock import patch
 
-        # Patch logger to avoid file I/O blocking under high concurrency
+        # Patch loggers to avoid file I/O blocking under high concurrency
         # The logging system uses threading locks which can block the async event loop
-        with patch("server.realtime.integration.game_state_provider.logger") as mock_logger:
-            mock_logger.warning = Mock()
-            mock_logger.info = Mock()
-            mock_logger.debug = Mock()
-            mock_logger.error = Mock()
+        with (
+            patch("server.realtime.integration.game_state_provider.logger") as mock_game_state_logger,
+            patch("server.realtime.connection_manager.logger") as mock_connection_logger,
+            patch("server.realtime.websocket_handler.logger") as mock_websocket_logger,
+        ):
+            # Mock all logging methods for all loggers
+            for mock_logger in [mock_game_state_logger, mock_connection_logger, mock_websocket_logger]:
+                mock_logger.warning = Mock()
+                mock_logger.info = Mock()
+                mock_logger.debug = Mock()
+                mock_logger.error = Mock()
 
             # Get initial memory usage (approximate)
             initial_connections = len(connection_manager.active_websockets)
