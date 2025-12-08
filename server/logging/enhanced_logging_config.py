@@ -548,6 +548,7 @@ class SafeRotatingFileHandler(RotatingFileHandler):
 
         log_path = Path(self.baseFilename)
         max_retries = 3
+        retry_delay = 0.1  # Start with 100ms delay
 
         for attempt in range(max_retries):
             # Ensure directory exists before each attempt (handles race conditions)
@@ -559,8 +560,20 @@ class SafeRotatingFileHandler(RotatingFileHandler):
             except (FileNotFoundError, OSError):
                 # Directory might have been deleted, will retry on next iteration
                 if attempt == max_retries - 1:
-                    # Final attempt failed - re-raise the error
-                    raise
+                    # Final attempt failed - try one more time with directory creation
+                    # This handles cases where directory is deleted between check and open
+                    try:
+                        _ensure_log_directory(log_path)
+                        return super()._open()
+                    except (FileNotFoundError, OSError):
+                        # If still failing after all retries, re-raise the exception
+                        # We cannot log here because logging would trigger _open() again,
+                        # causing infinite recursion. The exception will be handled
+                        # by the logging system's error handling.
+                        raise
+                # Wait before retrying (exponential backoff)
+                time.sleep(retry_delay)
+                retry_delay *= 2  # Exponential backoff
                 # Continue to next retry attempt
                 continue
 
