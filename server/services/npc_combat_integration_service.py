@@ -7,8 +7,12 @@ including combat memory management and basic combat interactions.
 As documented in the Cultes des Goules, proper combat integration is essential
 for maintaining the balance between mortal investigators and the eldritch
 entities they encounter in our world.
+
+ASYNC MIGRATION (Phase 2):
+All persistence calls wrapped in asyncio.to_thread() to prevent event loop blocking.
 """
 
+import asyncio
 from typing import Any
 from uuid import UUID, uuid4
 
@@ -17,11 +21,12 @@ from ..events.event_bus import EventBus
 from ..game.mechanics import GameMechanicsService
 from ..logging.enhanced_logging_config import get_logger
 from ..models.combat import CombatParticipantType
-from ..persistence import get_persistence
-from .active_sanity_service import ActiveSanityService, UnknownEncounterCategoryError
+
+# Removed: from ..persistence import get_persistence - now using async_persistence parameter
+from .active_lucidity_service import ActiveLucidityService, UnknownEncounterCategoryError
 from .combat_event_publisher import CombatEventPublisher
 from .combat_messaging_integration import CombatMessagingIntegration
-from .combat_service import CombatService
+from .combat_service import CombatParticipantData, CombatService
 from .player_combat_service import PlayerCombatService
 
 logger = get_logger(__name__)
@@ -43,6 +48,7 @@ class NPCCombatIntegrationService:
         combat_service: "CombatService | None" = None,
         player_combat_service=None,
         connection_manager=None,
+        async_persistence=None,
     ):
         """
         Initialize the NPC combat integration service.
@@ -60,16 +66,19 @@ class NPCCombatIntegrationService:
                 If None, CombatMessagingIntegration will try to lazy-load from container.
                 CRITICAL: Production code should ALWAYS pass the shared instance
                 from container to prevent initialization failures.
+            async_persistence: Async persistence layer instance (required)
         """
+        if async_persistence is None:
+            raise ValueError("async_persistence is required for NPCCombatIntegrationService")
         self.event_bus = event_bus or EventBus()
-        self._persistence = get_persistence(event_bus)
+        self._persistence = async_persistence
         logger.debug(
             "NPCCombatIntegrationService constructor",
             persistence_type=type(self._persistence).__name__,
             persistence_is_none=self._persistence is None,
         )
         # Initialize GameMechanicsService for proper XP awards and stat updates
-        self._game_mechanics = GameMechanicsService(self._persistence)
+        self._game_mechanics = GameMechanicsService(async_persistence)
 
         # Use shared PlayerCombatService instance if provided, otherwise create new one (for tests)
         # CRITICAL: Production code must pass shared instance to prevent state desynchronization!
@@ -227,14 +236,14 @@ class NPCCombatIntegrationService:
                     # Also store the XP value directly for this UUID
                     # This avoids the need to look it up from the lifecycle manager
                     # during XP calculation, since NPCs may be removed by then
-                    npc_definition = self._get_npc_definition(npc_id)
+                    npc_definition = await self._get_npc_definition(npc_id)
                     logger.debug(
                         "Retrieved NPC definition",
                         npc_id=npc_id,
                         has_definition=bool(npc_definition),
                     )
                     if npc_definition and first_engagement:
-                        await self._apply_encounter_sanity_effect(player_id, npc_id, npc_definition, room_id)
+                        await self._apply_encounter_lucidity_effect(player_id, npc_id, npc_definition, room_id)
                     if npc_definition:
                         base_stats = npc_definition.get_base_stats()
                         logger.debug(
@@ -295,7 +304,7 @@ class NPCCombatIntegrationService:
                 # BUGFIX: Was hardcoded to 100, causing HP to reset between combats
                 # Convert player_id to UUID if it's a string
                 player_id_uuid = UUID(player_id) if isinstance(player_id, str) else player_id
-                player = self._persistence.get_player(player_id_uuid)
+                player = await asyncio.to_thread(self._persistence.get_player, player_id_uuid)
                 if not player:
                     logger.error("Player not found when starting combat", player_id=player_id)
                     return False
@@ -319,22 +328,28 @@ class NPCCombatIntegrationService:
                 npc_max_hp = npc_stats.get("max_hp", 100)
                 npc_dexterity = npc_stats.get("dexterity", 10)
 
-                # Start combat with auto-progression - fix parameter order
+                # Start combat with auto-progression
+                attacker_data = CombatParticipantData(
+                    participant_id=attacker_uuid,
+                    name=player_name,
+                    current_hp=attacker_hp,
+                    max_hp=attacker_max_hp,
+                    dexterity=attacker_dex,
+                    participant_type=CombatParticipantType.PLAYER,
+                )
+                target_data = CombatParticipantData(
+                    participant_id=target_uuid,
+                    name=npc_instance.name,
+                    current_hp=npc_current_hp,
+                    max_hp=npc_max_hp,
+                    dexterity=npc_dexterity,
+                    participant_type=CombatParticipantType.NPC,
+                )
                 await self._combat_service.start_combat(
                     room_id=room_id,
-                    attacker_id=attacker_uuid,
-                    target_id=target_uuid,
-                    attacker_name=player_name,
-                    target_name=npc_instance.name,
-                    attacker_hp=attacker_hp,
-                    attacker_max_hp=attacker_max_hp,
-                    attacker_dex=attacker_dex,
-                    target_hp=npc_current_hp,
-                    target_max_hp=npc_max_hp,
-                    target_dex=npc_dexterity,
+                    attacker=attacker_data,
+                    target=target_data,
                     current_tick=current_tick,
-                    attacker_type=CombatParticipantType.PLAYER,
-                    target_type=CombatParticipantType.NPC,
                 )
 
                 # Now process the attack (initial attack, so skip turn order check)
@@ -382,7 +397,7 @@ class NPCCombatIntegrationService:
                                 has_sse=has_sse,
                             )
 
-                        self.handle_npc_death(npc_id, room_id, player_id, str(combat_result.combat_id))
+                        await self.handle_npc_death(npc_id, room_id, player_id, str(combat_result.combat_id))
                         logger.info(
                             "NPC death handled successfully",
                             player_id=player_id,
@@ -429,7 +444,7 @@ class NPCCombatIntegrationService:
             )
             return False
 
-    def handle_npc_death(
+    async def handle_npc_death(
         self,
         npc_id: str,
         room_id: str,
@@ -469,7 +484,7 @@ class NPCCombatIntegrationService:
                 return False
 
             # Get NPC definition for XP reward
-            npc_definition = self._get_npc_definition(npc_id)
+            npc_definition = await self._get_npc_definition(npc_id)
             xp_reward = 0
             if npc_definition:
                 # Use the get_base_stats() method to parse the JSON string
@@ -549,7 +564,7 @@ class NPCCombatIntegrationService:
             # Despawn NPC with defensive error handling
             logger.debug("Despawning NPC", npc_id=npc_id, room_id=room_id)
             try:
-                self._despawn_npc(str(npc_id), room_id)
+                await self._despawn_npc(str(npc_id), room_id)
                 logger.debug("NPC despawned successfully", npc_id=npc_id, room_id=room_id)
             except Exception as despawn_error:
                 # CRITICAL: Don't let despawn errors disconnect player
@@ -632,12 +647,12 @@ class NPCCombatIntegrationService:
             logger.error("Error getting NPC instance", npc_id=npc_id, error=str(e))
             return None
 
-    def _get_npc_definition(self, npc_id: str) -> Any | None:
+    async def _get_npc_definition(self, npc_id: str) -> Any | None:
         """Get NPC definition for an NPC instance."""
         try:
             # Try to get from lifecycle manager if available
             if hasattr(self._persistence, "get_npc_lifecycle_manager"):
-                lifecycle_manager = self._persistence.get_npc_lifecycle_manager()
+                lifecycle_manager = await asyncio.to_thread(self._persistence.get_npc_lifecycle_manager)
                 if lifecycle_manager:
                     keys = list(lifecycle_manager.lifecycle_records.keys())
                 else:
@@ -669,12 +684,12 @@ class NPCCombatIntegrationService:
             logger.error("Error getting player name", player_id=player_id, error=str(e), error_type=type(e).__name__)
             return "Unknown Player"
 
-    def _despawn_npc(self, npc_id: str, _room_id: str) -> None:
+    async def _despawn_npc(self, npc_id: str, _room_id: str) -> None:
         """Despawn an NPC."""
         try:
             # Try lifecycle manager if available
             if hasattr(self._persistence, "get_npc_lifecycle_manager"):
-                lifecycle_manager = self._persistence.get_npc_lifecycle_manager()
+                lifecycle_manager = await asyncio.to_thread(self._persistence.get_npc_lifecycle_manager)
                 if lifecycle_manager:
                     # Record the death for 30-second respawn suppression
                     lifecycle_manager.record_npc_death(npc_id)
@@ -683,7 +698,7 @@ class NPCCombatIntegrationService:
 
             # Fallback: try lifecycle manager if available
             if hasattr(self._persistence, "get_npc_lifecycle_manager"):
-                lifecycle_manager = self._persistence.get_npc_lifecycle_manager()
+                lifecycle_manager = await asyncio.to_thread(self._persistence.get_npc_lifecycle_manager)
                 if lifecycle_manager and npc_id in lifecycle_manager.active_npcs:
                     del lifecycle_manager.active_npcs[npc_id]
 
@@ -738,14 +753,14 @@ class NPCCombatIntegrationService:
         )
         return result
 
-    async def _apply_encounter_sanity_effect(
+    async def _apply_encounter_lucidity_effect(
         self,
         player_id: str,
         npc_id: str,
         npc_definition: Any | None,
         room_id: str,
     ) -> None:
-        """Apply sanity loss when a player engages an eldritch entity."""
+        """Apply lucidity loss when a player engages an eldritch entity."""
 
         definition_name: str | None = None
         if npc_definition is not None:
@@ -754,12 +769,12 @@ class NPCCombatIntegrationService:
                 definition_name = potential_name
 
         archetype = definition_name or npc_id
-        category = self._resolve_sanity_category(npc_definition)
+        category = self._resolve_lucidity_category(npc_definition)
 
         async for session in get_async_session():
-            service = ActiveSanityService(session)
+            service = ActiveLucidityService(session)
             try:
-                await service.apply_encounter_sanity_loss(
+                await service.apply_encounter_lucidity_loss(
                     player_id=str(player_id),
                     entity_archetype=str(archetype),
                     category=category,
@@ -774,7 +789,7 @@ class NPCCombatIntegrationService:
                     provided_category=category,
                 )
                 try:
-                    await service.apply_encounter_sanity_loss(
+                    await service.apply_encounter_lucidity_loss(
                         player_id=str(player_id),
                         entity_archetype=str(archetype),
                         category="disturbing",
@@ -784,7 +799,7 @@ class NPCCombatIntegrationService:
                 except Exception as nested_exc:  # pragma: no cover - defensive logging
                     await session.rollback()
                     logger.error(
-                        "Failed to apply fallback encounter sanity loss",
+                        "Failed to apply fallback encounter lucidity loss",
                         npc_id=npc_id,
                         player_id=player_id,
                         error=str(nested_exc),
@@ -792,7 +807,7 @@ class NPCCombatIntegrationService:
             except Exception as exc:  # pragma: no cover - defensive logging
                 await session.rollback()
                 logger.error(
-                    "Active encounter sanity adjustment failed",
+                    "Active encounter lucidity adjustment failed",
                     npc_id=npc_id,
                     player_id=player_id,
                     room_id=room_id,
@@ -800,7 +815,7 @@ class NPCCombatIntegrationService:
                 )
             else:
                 logger.info(
-                    "Applied encounter sanity loss",
+                    "Applied encounter lucidity loss",
                     npc_id=npc_id,
                     player_id=player_id,
                     archetype=archetype,
@@ -808,7 +823,7 @@ class NPCCombatIntegrationService:
                 )
             break
 
-    def _resolve_sanity_category(self, npc_definition: Any | None) -> str:
+    def _resolve_lucidity_category(self, npc_definition: Any | None) -> str:
         """Determine encounter category based on NPC definition metadata."""
 
         if npc_definition is None:
@@ -826,7 +841,7 @@ class NPCCombatIntegrationService:
 
         for source in (base_stats, behavior_config):
             if isinstance(source, dict):
-                category = source.get("sanity_category") or source.get("mythos_tier")
+                category = source.get("lucidity_category") or source.get("mythos_tier")
                 if isinstance(category, str):
                     return category.lower()
 

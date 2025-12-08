@@ -394,10 +394,10 @@ async def login_user(
     )
 
     # Check if user has a character
-    from ..persistence import get_persistence
+    from ..async_persistence import get_async_persistence
 
-    persistence = get_persistence()
-    player = persistence.get_player_by_user_id(str(user.id))
+    async_persistence = get_async_persistence()
+    player = await async_persistence.get_player_by_user_id(str(user.id))
 
     has_character = player is not None
     character_name: str | None = str(player.name) if player else None

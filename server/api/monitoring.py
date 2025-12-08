@@ -20,7 +20,8 @@ from pydantic import BaseModel
 from ..exceptions import LoggedHTTPException
 from ..game.movement_monitor import get_movement_monitor
 from ..models.health import HealthErrorResponse, HealthResponse, HealthStatus
-from ..persistence import get_persistence
+
+# Removed: from ..persistence import get_persistence - now using async_persistence from request
 from ..realtime.connection_manager import resolve_connection_manager, set_global_connection_manager
 from ..services.health_service import get_health_service
 from ..utils.error_logging import create_context_from_request
@@ -166,11 +167,11 @@ async def validate_room_integrity(request: Request) -> IntegrityResponse:
     """Validate room data integrity and return results."""
     try:
         monitor = get_movement_monitor()
-        persistence = get_persistence()
+        persistence = request.app.state.persistence  # Now async_persistence
 
         # Get all rooms from persistence
         rooms = {}
-        room_list = persistence.list_rooms()
+        room_list = await persistence.list_rooms()
         for room in room_list:
             rooms[room.id] = room
 
@@ -252,12 +253,10 @@ async def get_performance_summary(request: Request) -> dict[str, Any]:
 async def get_memory_stats(request: Request) -> MemoryStatsResponse:
     """Get comprehensive memory and connection statistics."""
     try:
-        import datetime
-
         # AI Agent: Get connection_manager from container instead of global import
         connection_manager = _resolve_connection_manager_from_request(request)
         memory_stats = connection_manager.get_memory_stats()
-        memory_stats["timestamp"] = datetime.datetime.now(datetime.UTC).isoformat()
+        memory_stats["timestamp"] = datetime.now(UTC).isoformat()
 
         return MemoryStatsResponse(**memory_stats)
     except Exception as e:
@@ -272,15 +271,11 @@ async def get_memory_stats(request: Request) -> MemoryStatsResponse:
 async def get_memory_alerts(request: Request) -> MemoryAlertsResponse:
     """Get memory-related alerts and warnings."""
     try:
-        import datetime
-
         # AI Agent: Get connection_manager from container instead of global import
         connection_manager = _resolve_connection_manager_from_request(request)
         alerts = connection_manager.get_memory_alerts()
 
-        return MemoryAlertsResponse(
-            alerts=alerts, alert_count=len(alerts), timestamp=datetime.datetime.now(datetime.UTC).isoformat()
-        )
+        return MemoryAlertsResponse(alerts=alerts, alert_count=len(alerts), timestamp=datetime.now(UTC).isoformat())
     except Exception as e:
         context = create_context_from_request(request)
         context.metadata["operation"] = "get_memory_alerts"

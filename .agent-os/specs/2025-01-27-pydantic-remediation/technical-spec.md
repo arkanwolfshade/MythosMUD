@@ -263,7 +263,7 @@ class AttributeType(str, Enum):
     INT = "intelligence"
     WIS = "wisdom"
     CHA = "charisma"
-    SAN = "sanity"
+    SAN = "lucidity"
     OCC = "occult_knowledge"
     FEAR = "fear"
     CORR = "corruption"
@@ -277,7 +277,7 @@ class StatusEffectType(str, Enum):
     PARANOID = "paranoid"
     TREMBLING = "trembling"
     CORRUPTED = "corrupted"
-    INSANE = "insane"
+    DELIRIOUS = "delirious"
 
 class StatusEffectModel(SecureBaseModel):
     """Represents a status effect with proper validation."""
@@ -309,7 +309,7 @@ class StatsModel(SecureBaseModel):
     charisma: int = Field(ge=1, le=20, description="Social skills and influence")
 
     # Horror-Specific Attributes
-    sanity: int = Field(ge=0, le=100, default=100, description="Mental stability")
+    lucidity: int = Field(ge=0, le=100, default=100, description="Mental stability")
     occult_knowledge: int = Field(ge=0, le=100, default=0, description="Knowledge of forbidden lore")
     fear: int = Field(ge=0, le=100, default=0, description="Susceptibility to terror")
 
@@ -328,8 +328,8 @@ class StatsModel(SecureBaseModel):
 
     @computed_field
     @property
-    def max_sanity(self) -> int:
-        """Calculate max sanity based on wisdom."""
+    def max_lucidity(self) -> int:
+        """Calculate max lucidity based on wisdom."""
         return self.wisdom * 5
 
     def get_attribute_modifier(self, attribute: AttributeType) -> int:

@@ -25,7 +25,7 @@ vi.mock('../stores', () => ({
     player: {
       id: 'player-1',
       name: 'TestPlayer',
-      stats: { current_health: 100, sanity: 80 },
+      stats: { current_health: 100, lucidity: 80 },
       level: 5,
     },
     room: {
@@ -115,7 +115,7 @@ describe('useGameTerminal', () => {
       expect(result.current.player).toEqual({
         id: 'player-1',
         name: 'TestPlayer',
-        stats: { current_health: 100, sanity: 80 },
+        stats: { current_health: 100, lucidity: 80 },
         level: 5,
       });
       expect(result.current.messages).toHaveLength(1);
@@ -196,7 +196,7 @@ describe('useGameTerminal', () => {
         player: {
           id: 'player-1',
           name: 'TestPlayer',
-          stats: { current_health: 80, sanity: 60 },
+          stats: { current_health: 80, lucidity: 60 },
           level: 5,
         },
         room: result.current.room,
@@ -207,7 +207,7 @@ describe('useGameTerminal', () => {
       rerender();
 
       expect(result.current.player?.stats.current_health).toBe(80);
-      expect(result.current.player?.stats.sanity).toBe(60);
+      expect(result.current.player?.stats.lucidity).toBe(60);
     });
 
     it('should update when session state changes', () => {
@@ -339,7 +339,7 @@ describe('useGameTerminal', () => {
         player: {
           id: 'player-1',
           name: 'TestPlayer',
-          stats: { current_health: 100, sanity: 80 },
+          stats: { current_health: 100, lucidity: 80 },
           level: 5,
         },
         room: {

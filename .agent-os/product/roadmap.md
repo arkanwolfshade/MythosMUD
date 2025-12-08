@@ -28,7 +28,7 @@
 ### Features
 
 - [ ] **Combat System** - Real-time combat mechanics with Lovecraftian themes `L`
-- [ ] **Magic/Spellcasting** - Spell system with sanity costs and eldritch effects `L`
+- [ ] **Magic/Spellcasting** - Spell system with lucidity costs and eldritch effects `L`
 - [ ] **Quest System** - Dynamic quest generation and tracking `M`
 - [ ] **NPC Interactions** - Advanced NPC behavior and dialogue systems `M`
 - [ ] **Item System** - Inventory management and item interactions `M`

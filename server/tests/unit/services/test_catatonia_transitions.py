@@ -1,4 +1,4 @@
-"""Tests for catatonia transitions within the sanity service."""
+"""Tests for catatonia transitions within the lucidity service."""
 
 from __future__ import annotations
 
@@ -9,10 +9,10 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from server.models.base import Base
+from server.models.lucidity import PlayerLucidity
 from server.models.player import Player
-from server.models.sanity import PlayerSanity
 from server.models.user import User
-from server.services.sanity_service import SanityService
+from server.services.lucidity_service import LucidityService
 
 
 @pytest.fixture
@@ -40,10 +40,10 @@ async def create_player(
     session: AsyncSession,
     *,
     name: str,
-    sanity: int = 100,
+    lucidity: int = 100,
     tier: str = "lucid",
 ) -> Player:
-    """Create a player and associated sanity record for testing."""
+    """Create a player and associated lucidity record for testing."""
 
     player_id = str(uuid.uuid4())
     # Add unique suffix to username to avoid conflicts in parallel test runs
@@ -65,12 +65,12 @@ async def create_player(
         name=unique_username,  # Use unique username to avoid duplicate key violations
         current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
     )
-    sanity_record = PlayerSanity(
+    lucidity_record = PlayerLucidity(
         player_id=player_id,
-        current_san=sanity,
+        current_lcd=lucidity,
         current_tier=tier,
     )
-    session.add_all([user, player, sanity_record])
+    session.add_all([user, player, lucidity_record])
     await session.flush()
     return player
 
@@ -81,11 +81,11 @@ async def test_catatonia_entry_sets_timestamp_and_notifies(session_factory):
 
     session_maker = session_factory
     async with session_maker() as session:
-        player = await create_player(session, name="victim", sanity=5, tier="deranged")
+        player = await create_player(session, name="victim", lucidity=5, tier="deranged")
         observer = MagicMock()
-        service = SanityService(session, catatonia_observer=observer)
+        service = LucidityService(session, catatonia_observer=observer)
 
-        result = await service.apply_sanity_adjustment(
+        result = await service.apply_lucidity_adjustment(
             player.player_id,
             -10,
             reason_code="eldritch_cascade",
@@ -93,7 +93,7 @@ async def test_catatonia_entry_sets_timestamp_and_notifies(session_factory):
         )
         await session.commit()
 
-        refreshed = await session.get(PlayerSanity, player.player_id)
+        refreshed = await session.get(PlayerLucidity, player.player_id)
         assert refreshed is not None
         assert refreshed.current_tier == "catatonic"
         assert refreshed.catatonia_entered_at is not None
@@ -101,7 +101,7 @@ async def test_catatonia_entry_sets_timestamp_and_notifies(session_factory):
         observer.on_catatonia_entered.assert_called_once_with(
             player_id=player.player_id,
             entered_at=ANY,
-            current_san=result.new_san,
+            current_lcd=result.new_lcd,
         )
         observer.on_catatonia_cleared.assert_not_called()
 
@@ -112,19 +112,19 @@ async def test_catatonia_clearance_resets_timestamp_and_notifies(session_factory
 
     session_maker = session_factory
     async with session_maker() as session:
-        player = await create_player(session, name="victim", sanity=5, tier="deranged")
+        player = await create_player(session, name="victim", lucidity=5, tier="deranged")
         observer = MagicMock()
-        service = SanityService(session, catatonia_observer=observer)
+        service = LucidityService(session, catatonia_observer=observer)
 
-        await service.apply_sanity_adjustment(player.player_id, -15, reason_code="shock")
+        await service.apply_lucidity_adjustment(player.player_id, -15, reason_code="shock")
         await session.commit()
 
         observer.reset_mock()
 
-        await service.apply_sanity_adjustment(player.player_id, 20, reason_code="rescue_ritual")
+        await service.apply_lucidity_adjustment(player.player_id, 20, reason_code="rescue_ritual")
         await session.commit()
 
-        refreshed = await session.get(PlayerSanity, player.player_id)
+        refreshed = await session.get(PlayerLucidity, player.player_id)
         assert refreshed is not None
         assert refreshed.current_tier != "catatonic"
         assert refreshed.catatonia_entered_at is None
@@ -137,22 +137,22 @@ async def test_catatonia_clearance_resets_timestamp_and_notifies(session_factory
 
 @pytest.mark.asyncio
 async def test_catatonia_failover_notifies_when_san_bottoms_out(session_factory):
-    """Ensure observers are notified when SAN hits the absolute floor."""
+    """Ensure observers are notified when LCD hits the absolute floor."""
 
     session_maker = session_factory
     async with session_maker() as session:
-        player = await create_player(session, name="victim", sanity=0, tier="catatonic")
+        player = await create_player(session, name="victim", lucidity=0, tier="catatonic")
         observer = MagicMock()
-        service = SanityService(session, catatonia_observer=observer)
+        service = LucidityService(session, catatonia_observer=observer)
 
-        await service.apply_sanity_adjustment(player.player_id, -200, reason_code="void_gaze")
+        await service.apply_lucidity_adjustment(player.player_id, -200, reason_code="void_gaze")
         await session.commit()
 
-        refreshed = await session.get(PlayerSanity, player.player_id)
+        refreshed = await session.get(PlayerLucidity, player.player_id)
         assert refreshed is not None
-        assert refreshed.current_san == -100
+        assert refreshed.current_lcd == -100
 
         observer.on_sanitarium_failover.assert_called_once_with(
             player_id=player.player_id,
-            current_san=-100,
+            current_lcd=-100,
         )

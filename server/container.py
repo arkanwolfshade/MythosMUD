@@ -53,7 +53,8 @@ if TYPE_CHECKING:
     from .monitoring.exception_tracker import ExceptionTracker
     from .monitoring.monitoring_dashboard import MonitoringDashboard
     from .monitoring.performance_monitor import PerformanceMonitor
-    from .persistence import PersistenceLayer
+
+    # Removed: from .persistence import PersistenceLayer - now using AsyncPersistenceLayer only
     from .realtime.connection_manager import ConnectionManager
     from .realtime.event_handler import RealTimeEventHandler
     from .services.holiday_service import HolidayService
@@ -115,7 +116,8 @@ class ApplicationContainer:
         self.event_bus: EventBus | None = None
 
         # Persistence layer (sync and async versions)
-        self.persistence: PersistenceLayer | None = None
+        # Persistence layer (async only - persistence alias for backward compatibility)
+        self.persistence: AsyncPersistenceLayer | None = None
         self.async_persistence: AsyncPersistenceLayer | None = None
 
         # Real-time communication
@@ -226,6 +228,7 @@ class ApplicationContainer:
                 from .config import get_config
 
                 self.config = get_config()
+                # Access logging config directly - mypy correctly infers LoggingConfig type
                 logger.info("Configuration loaded", environment=self.config.logging.environment)
                 normalized_environment = normalize_environment(self.config.logging.environment)
 
@@ -256,14 +259,14 @@ class ApplicationContainer:
                 self.event_bus = EventBus()  # EventBus doesn't accept task_registry parameter
                 logger.info("Event system initialized")
 
-                # Phase 5: Persistence layer (both sync and async versions)
+                # Phase 5: Persistence layer (async only)
                 logger.debug("Initializing persistence layer...")
                 from .async_persistence import AsyncPersistenceLayer
-                from .persistence import PersistenceLayer
 
-                self.persistence = PersistenceLayer(event_bus=self.event_bus)
                 self.async_persistence = AsyncPersistenceLayer(event_bus=self.event_bus)
-                logger.info("Persistence layers initialized (sync and async)")
+                # Use async_persistence as persistence for backward compatibility during migration
+                self.persistence = self.async_persistence
+                logger.info("Persistence layer initialized (async only)")
 
                 # Phase 5.5: Temporal services (holidays and schedules - require async_persistence)
                 logger.debug("Initializing temporal services...")
@@ -329,8 +332,13 @@ class ApplicationContainer:
                 # Initialize connection manager FIRST (needed by other services)
                 self.connection_manager = ConnectionManager()
                 set_global_connection_manager(self.connection_manager)
-                self.connection_manager.persistence = self.persistence
-                self.connection_manager._event_bus = self.event_bus
+                # ARCHITECTURAL FIX: Use async_persistence instead of sync persistence
+                # This eliminates the need for asyncio.to_thread() wrappers and provides
+                # true async database operations that don't block the event loop
+                # Set async_persistence on BOTH connection_manager and room_manager directly
+                self.connection_manager.async_persistence = self.async_persistence
+                self.connection_manager.room_manager.async_persistence = self.async_persistence
+                self.connection_manager.set_event_bus(self.event_bus)
 
                 # Initialize real-time event handler with event bus and connection_manager
                 # AI Agent: Pass connection_manager as dependency to complete migration

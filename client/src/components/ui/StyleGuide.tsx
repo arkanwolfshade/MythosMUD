@@ -9,7 +9,7 @@ import {
   MessagesCount,
   MythosPanel,
   PlayerName,
-  SanityStat,
+  LucidityStat,
   StatusPanel,
   TerminalButton,
   TerminalCard,
@@ -31,7 +31,7 @@ export const StyleGuide: React.FC = () => {
     name: 'TestPlayer',
     stats: {
       current_health: 100,
-      sanity: 80,
+      lucidity: 80,
       strength: 10,
       dexterity: 12,
       constitution: 14,
@@ -234,7 +234,7 @@ export const StyleGuide: React.FC = () => {
                   <ConnectionStatus />
                   <PlayerName />
                   <HealthStat />
-                  <SanityStat />
+                  <LucidityStat />
                   <MessagesCount />
                 </StatusPanel>
               </div>

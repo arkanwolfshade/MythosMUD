@@ -50,5 +50,5 @@ All three databases now have:
 - ✅ All static data tables (world, calendar, emotes, aliases)
 - ✅ All NPC definition tables
 - ✅ All identity and moderation tables
-- ✅ All runtime game tables (users, players, sanity, items)
+- ✅ All runtime game tables (users, players, lucidity, items)
 - ✅ All indexes and foreign key constraints

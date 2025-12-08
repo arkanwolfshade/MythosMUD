@@ -35,9 +35,16 @@ class TestTwibbleEmoteBug:
     @pytest.mark.asyncio
     async def test_single_word_emote_processing(self):
         """Test that single-word emotes like 'twibble' are processed correctly."""
+        import uuid
+
         # Mock dependencies
         current_user = {"username": "Ithaqua"}
         request = Mock()
+        request.app.state.persistence = Mock()
+        # Mock player for catatonia check
+        mock_player = Mock()
+        mock_player.player_id = uuid.uuid4()
+        request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         alias_storage = Mock()
         alias_storage.get_alias.return_value = None  # No alias found
         player_name = "Ithaqua"
@@ -146,14 +153,16 @@ class TestEventStormPrevention:
     """Test that prevents the event storm bug from multiple EventBus instances."""
 
     @pytest.mark.asyncio
-    @pytest.mark.slow
     async def test_movement_service_uses_shared_event_bus(self):
         """Test that MovementService uses the shared EventBus from PersistenceLayer."""
         # Create a shared EventBus
         shared_event_bus = EventBus()
 
+        # Create mock async_persistence
+        mock_async_persistence = AsyncMock()
+
         # Create MovementService with the shared EventBus
-        movement_service = MovementService(shared_event_bus)
+        movement_service = MovementService(shared_event_bus, async_persistence=mock_async_persistence)
 
         # Verify they use the same EventBus instance
         assert movement_service._event_bus is shared_event_bus
@@ -168,60 +177,61 @@ class TestEventStormPrevention:
         shared_event_bus.subscribe(PlayerEnteredRoom, event_capturer)
 
         # Mock movement service dependencies
-        with (
-            patch.object(movement_service._persistence, "get_player") as mock_get_player,
-            patch.object(movement_service._persistence, "get_room") as mock_get_room,
-            patch.object(movement_service._persistence, "save_player") as mock_save_player,
-        ):
-            player = Mock()
-            player.player_id = str(uuid4())
-            player.name = "TestPlayer"
+        player = Mock()
+        player.player_id = uuid4()
+        player.name = "TestPlayer"
+        player.current_room_id = "room_1"
+        player.get_stats = Mock(return_value={"position": "standing"})
 
-            # Create real Room objects with EventBus
-            old_room_data = {
-                "id": "room_1",
-                "name": "Old Room",
-                "description": "An old room",
-                "plane": "earth",
-                "zone": "test",
-                "sub_zone": "test",
-                "exits": {"south": "room_2"},
-            }
-            old_room = Room(old_room_data, shared_event_bus)
-            # Manually add player to old room's internal state without triggering events
-            old_room._players.add(player.player_id)
+        # Create real Room objects with EventBus
+        old_room_data = {
+            "id": "room_1",
+            "name": "Old Room",
+            "description": "An old room",
+            "plane": "earth",
+            "zone": "test",
+            "sub_zone": "test",
+            "exits": {"south": "room_2"},
+        }
+        old_room = Room(old_room_data, shared_event_bus)
+        # Manually add player to old room's internal state without triggering events
+        # Convert UUID to string for set[str] compatibility
+        old_room._players.add(str(player.player_id))
 
-            new_room_data = {
-                "id": "room_2",
-                "name": "New Room",
-                "description": "A new room",
-                "plane": "earth",
-                "zone": "test",
-                "sub_zone": "test",
-                "exits": {},
-            }
-            new_room = Room(new_room_data, shared_event_bus)
+        new_room_data = {
+            "id": "room_2",
+            "name": "New Room",
+            "description": "A new room",
+            "plane": "earth",
+            "zone": "test",
+            "sub_zone": "test",
+            "exits": {},
+        }
+        new_room = Room(new_room_data, shared_event_bus)
 
-            mock_get_player.return_value = player
-            mock_get_room.side_effect = lambda room_id: old_room if room_id == "room_1" else new_room
-            mock_save_player.return_value = True
+        # Set up mocks directly on persistence
+        movement_service._persistence.get_player_by_id = AsyncMock(return_value=player)
+        movement_service._persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: old_room if room_id == "room_1" else new_room
+        )
+        movement_service._persistence.save_player = AsyncMock(return_value=True)
 
-            # Perform movement
-            success = movement_service.move_player(str(player.player_id), "room_1", "room_2")
+        # Perform movement
+        success = await movement_service.move_player(str(player.player_id), "room_1", "room_2")
 
-            # The movement should succeed
-            assert success is True
+        # The movement should succeed
+        assert success is True
 
-            # Allow events to be processed
-            await asyncio.sleep(0.1)
+        # Allow events to be processed
+        await asyncio.sleep(0.1)
 
-            # Verify exactly 2 events were published (not more, which would indicate event storm)
-            assert len(published_events) == 2
+        # Verify exactly 2 events were published (not more, which would indicate event storm)
+        assert len(published_events) == 2
 
-            # Verify events are of correct types
-            event_types = [type(event) for event in published_events]
-            assert PlayerLeftRoom in event_types
-            assert PlayerEnteredRoom in event_types
+        # Verify events are of correct types
+        event_types = [type(event) for event in published_events]
+        assert PlayerLeftRoom in event_types
+        assert PlayerEnteredRoom in event_types
 
     @pytest.mark.asyncio
     async def test_multiple_movement_services_dont_create_duplicate_events(self):
@@ -230,9 +240,13 @@ class TestEventStormPrevention:
         event_bus_1 = EventBus()
         event_bus_2 = EventBus()
 
+        # Create mock async_persistence instances
+        mock_async_persistence_1 = AsyncMock()
+        mock_async_persistence_2 = AsyncMock()
+
         # Create separate MovementService instances
-        movement_service_1 = MovementService(event_bus_1)
-        movement_service_2 = MovementService(event_bus_2)
+        movement_service_1 = MovementService(event_bus_1, async_persistence=mock_async_persistence_1)
+        movement_service_2 = MovementService(event_bus_2, async_persistence=mock_async_persistence_2)
 
         # Verify they use different EventBus instances
         assert movement_service_1._event_bus is event_bus_1
@@ -326,12 +340,12 @@ class TestUUIDSerializationIntegration:
         connection_manager.broadcast_to_room = AsyncMock()
         event_handler.connection_manager = connection_manager
         event_handler.connection_manager.persistence = Mock()
-        event_handler.connection_manager._get_player = Mock(return_value=Mock(name="TestPlayer"))
+        event_handler.connection_manager._get_player = AsyncMock(return_value=Mock(name="TestPlayer"))
 
         # Mock the room to return an empty list of players
         mock_room = Mock()
         mock_room.get_players = Mock(return_value=[])
-        event_handler.connection_manager.persistence.get_room = Mock(return_value=mock_room)
+        event_handler.connection_manager.persistence.get_room = AsyncMock(return_value=mock_room)
 
         # Create event with UUID objects
         player_id = uuid4()
@@ -396,40 +410,46 @@ class TestEndToEndBugScenarios:
         # Mock broadcast method
         connection_manager.broadcast_to_room = AsyncMock()
 
+        # Create mock async_persistence
+        mock_async_persistence = AsyncMock()
+
         # Create MovementService with shared EventBus
-        movement_service = MovementService(event_bus)
+        movement_service = MovementService(event_bus, async_persistence=mock_async_persistence)
 
         # Mock movement service dependencies
-        with (
-            patch.object(movement_service._persistence, "get_player") as mock_get_player,
-            patch.object(movement_service._persistence, "get_room") as mock_get_room,
-            patch.object(movement_service._persistence, "save_player") as mock_save_player,
-        ):
-            player = Mock()
-            player.player_id = str(uuid4())
-            player.name = "Ithaqua"
+        player = Mock()
+        player.player_id = uuid4()
+        player.name = "Ithaqua"
 
-            old_room = Mock()
-            old_room.room_id = "arkham_001"
+        old_room = Mock()
+        old_room.id = "arkham_001"
+        old_room.room_id = "arkham_001"
+        old_room.has_player = Mock(return_value=False)
+        old_room.player_entered = Mock()
 
-            new_room = Mock()
-            new_room.room_id = "arkham_002"
-            new_room.player_entered = Mock()
+        new_room = Mock()
+        new_room.id = "arkham_002"
+        new_room.room_id = "arkham_002"
+        new_room.has_player = Mock(return_value=False)
+        new_room.player_entered = Mock()
 
-            mock_get_player.return_value = player
-            mock_get_room.side_effect = lambda room_id: old_room if room_id == "arkham_001" else new_room
-            mock_save_player.return_value = True
+        # Set up mocks directly on persistence
+        movement_service._persistence.get_player_by_id = AsyncMock(return_value=player)
+        movement_service._persistence.get_room_by_id = Mock(
+            side_effect=lambda room_id: old_room if room_id == "arkham_001" else new_room
+        )
+        movement_service._persistence.save_player = AsyncMock(return_value=True)
 
-            # Perform movement
-            success = movement_service.move_player(str(player.player_id), "arkham_001", "arkham_002")
+        # Perform movement
+        success = await movement_service.move_player(str(player.player_id), "arkham_001", "arkham_002")
 
-            # The movement might fail if the player is already in the target room
-            # This is expected behavior, so we just verify the method was called
-            assert isinstance(success, bool)
+        # The movement might fail if the player is already in the target room
+        # This is expected behavior, so we just verify the method was called
+        assert isinstance(success, bool)
 
-            # Allow events to be processed
-            await asyncio.sleep(0.1)  # Give time for events to be processed
+        # Allow events to be processed
+        await asyncio.sleep(0.1)  # Give time for events to be processed
 
-            # The movement might fail, but we can still verify the method was called
-            # The actual event broadcasting is tested in other unit tests
-            assert isinstance(success, bool)
+        # The movement might fail, but we can still verify the method was called
+        # The actual event broadcasting is tested in other unit tests
+        assert isinstance(success, bool)

@@ -44,7 +44,7 @@ SELECT name, stats FROM players WHERE name = 'Ithaqua';
   "intelligence": 10,
   "wisdom": 10,
   "charisma": 10,
-  "sanity": 100,
+  "lucidity": 100,
   "occult_knowledge": 0,
   "fear": 0,
   "corruption": 0,

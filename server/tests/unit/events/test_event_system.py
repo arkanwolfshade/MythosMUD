@@ -28,7 +28,7 @@ class TestWorkingEventSystem:
 
         # Create mock connection manager
         mock_connection_manager = AsyncMock()
-        mock_connection_manager._get_player = Mock()
+        mock_connection_manager._get_player = AsyncMock()
         mock_connection_manager.persistence = Mock()
         mock_connection_manager.broadcast_to_room = AsyncMock()
         mock_connection_manager.subscribe_to_room = AsyncMock()
@@ -87,7 +87,7 @@ class TestWorkingEventSystem:
 
         # Create mock connection manager
         mock_connection_manager = AsyncMock()
-        mock_connection_manager._get_player = Mock()
+        mock_connection_manager._get_player = AsyncMock()
         mock_connection_manager.persistence = Mock()
         mock_connection_manager.broadcast_to_room = AsyncMock()
         mock_connection_manager.subscribe_to_room = AsyncMock()
@@ -140,7 +140,7 @@ class TestWorkingEventSystem:
 
         # Create mock connection manager
         mock_connection_manager = AsyncMock()
-        mock_connection_manager._get_player = Mock()
+        mock_connection_manager._get_player = AsyncMock()
         mock_connection_manager.persistence = Mock()
         mock_connection_manager.broadcast_to_room = AsyncMock()
         mock_connection_manager.subscribe_to_room = AsyncMock()

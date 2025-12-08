@@ -7,14 +7,21 @@ the spaces between worlds.
 """
 
 import uuid
+from datetime import UTC, datetime
 from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from server.events.event_types import PlayerRespawnedEvent
+from server.events.event_types import PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent
 from server.logging.enhanced_logging_config import get_logger
 from server.models.game import PositionState
 from server.models.player import Player
+
+
+def _utc_now() -> datetime:
+    """Return naive UTC timestamp suitable for PostgreSQL TIMESTAMP WITHOUT TIME ZONE."""
+    return datetime.now(UTC).replace(tzinfo=None)
+
 
 logger = get_logger(__name__)
 
@@ -220,5 +227,101 @@ class PlayerRespawnService:
 
         except Exception as e:
             logger.error("Error respawning player", player_id=player_id, error=str(e), exc_info=True)
+            await session.rollback()
+            return False
+
+    async def respawn_player_from_delirium(self, player_id: uuid.UUID, session: AsyncSession) -> bool:
+        """
+        Respawn a delirious player at the Sanitarium with restored lucidity.
+
+        This method:
+        1. Sets player lucidity to 10
+        2. Moves player to Sanitarium (default respawn room)
+        3. Publishes delirium respawn event for UI updates
+
+        Args:
+            player_id: ID of the player to respawn
+            session: Database session for player data access
+
+        Returns:
+            True if respawn was successful, False otherwise
+        """
+        try:
+            # Retrieve player from database using async API
+            player = await session.get(Player, player_id)
+            if not player:
+                logger.warning("Player not found for delirium respawn", player_id=player_id)
+                return False
+
+            # Get current lucidity from PlayerLucidity table
+            from ..models.lucidity import PlayerLucidity
+
+            lucidity_record = await session.get(PlayerLucidity, player_id)
+            if not lucidity_record:
+                logger.warning("Lucidity record not found for delirium respawn", player_id=player_id)
+                return False
+
+            old_lucidity = lucidity_record.current_lcd
+            new_lucidity = 10  # Restore to 10 lucidity after delirium respawn
+
+            # Update lucidity
+            lucidity_record.current_lcd = new_lucidity
+            lucidity_record.current_tier = "lucid"  # Reset tier to lucid
+            lucidity_record.last_updated_at = _utc_now()
+
+            # Get respawn room (always Sanitarium for delirium respawn)
+            respawn_room = DEFAULT_RESPAWN_ROOM
+
+            # Get current stats and ensure posture is standing
+            stats = player.get_stats()
+            stats["position"] = PositionState.STANDING
+
+            # Update player stats and location
+            player.set_stats(stats)
+            old_room = player.current_room_id
+            player.current_room_id = respawn_room  # type: ignore[assignment]
+
+            # Clear player combat state when they respawn from delirium
+            if self._player_combat_service:
+                try:
+                    await self._player_combat_service.clear_player_combat_state(player_id)
+                    logger.info("Cleared combat state for delirium respawned player", player_id=player_id)
+                except Exception as e:
+                    logger.error(
+                        "Error clearing combat state for delirium respawned player",
+                        player_id=player_id,
+                        error=str(e),
+                        exc_info=True,
+                    )
+
+            # Commit changes using async API
+            await session.commit()
+
+            logger.info(
+                "Player respawned from delirium",
+                player_id=player_id,
+                player_name=player.name,
+                respawn_room=respawn_room,
+                old_lucidity=old_lucidity,
+                new_lucidity=new_lucidity,
+                from_room=old_room,
+            )
+
+            # Publish delirium respawn event if event bus is available
+            if self._event_bus:
+                event = PlayerDeliriumRespawnedEvent(
+                    player_id=player_id,
+                    player_name=str(player.name),
+                    respawn_room_id=respawn_room,
+                    old_lucidity=old_lucidity,
+                    new_lucidity=new_lucidity,
+                    delirium_location=old_room if old_room != LIMBO_ROOM_ID else None,  # type: ignore[arg-type]
+                )
+                self._event_bus.publish(event)
+
+            return True
+
+        except Exception as e:
+            logger.error("Error respawning player from delirium", player_id=player_id, error=str(e), exc_info=True)
             await session.rollback()
             return False

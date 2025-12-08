@@ -24,13 +24,11 @@ class TestNPCCombatIntegrationComprehensive:
         self.game_mechanics = Mock()
 
         with (
-            patch("server.npc.combat_integration.get_persistence") as mock_get_persistence,
             patch("server.npc.combat_integration.GameMechanicsService") as mock_game_mechanics,
         ):
-            mock_get_persistence.return_value = self.persistence
             mock_game_mechanics.return_value = self.game_mechanics
 
-            self.integration = NPCCombatIntegration(self.event_bus)
+            self.integration = NPCCombatIntegration(self.event_bus, async_persistence=self.persistence)
 
     def test_calculate_damage_physical_attack(self):
         """Test damage calculation for physical attacks."""
@@ -102,111 +100,138 @@ class TestNPCCombatIntegrationComprehensive:
         # Should return minimum damage on error
         assert damage == 1
 
-    def test_apply_combat_effects_player_success(self):
+    @pytest.mark.asyncio
+    async def test_apply_combat_effects_player_success(self):
         """Test applying combat effects to a player successfully."""
         target_id = str(uuid4())
         damage = 10
         damage_type = "physical"
         source_id = str(uuid4())
 
-        # Mock player
-        player = Mock()
-        self.persistence.get_player.return_value = player
-        self.game_mechanics.damage_player.return_value = (True, "Damage applied")
+        # Mock player - use AsyncMock for async method
+        from unittest.mock import AsyncMock
 
-        result = self.integration.apply_combat_effects(target_id, damage, damage_type, source_id)
+        player = Mock()
+        self.persistence.get_player_by_id = AsyncMock(return_value=player)
+        self.game_mechanics.damage_player = AsyncMock(return_value=(True, "Damage applied"))
+
+        result = await self.integration.apply_combat_effects(target_id, damage, damage_type, source_id)
 
         assert result is True
         self.game_mechanics.damage_player.assert_called_once_with(target_id, damage, damage_type)
 
-    def test_apply_combat_effects_player_with_sanity_loss(self):
-        """Test applying combat effects with sanity loss for mental damage."""
+    @pytest.mark.asyncio
+    async def test_apply_combat_effects_player_with_Lucidity_loss(self):
+        """Test applying combat effects with lucidity loss for mental damage."""
         target_id = str(uuid4())
         damage = 10
         damage_type = "mental"
         source_id = str(uuid4())
 
-        # Mock player
-        player = Mock()
-        self.persistence.get_player.return_value = player
-        self.game_mechanics.damage_player.return_value = (True, "Damage applied")
+        # Mock player - use AsyncMock for async method
+        from unittest.mock import AsyncMock
 
-        result = self.integration.apply_combat_effects(target_id, damage, damage_type, source_id)
+        player = Mock()
+        self.persistence.get_player_by_id = AsyncMock(return_value=player)
+        self.game_mechanics.damage_player = AsyncMock(return_value=(True, "Damage applied"))
+        self.game_mechanics.apply_lucidity_loss = AsyncMock()
+
+        result = await self.integration.apply_combat_effects(target_id, damage, damage_type, source_id)
 
         assert result is True
         self.game_mechanics.damage_player.assert_called_once_with(target_id, damage, damage_type)
-        # Should apply sanity loss for mental damage
-        self.game_mechanics.apply_sanity_loss.assert_called_once()
+        # Should apply lucidity loss for mental damage
+        self.game_mechanics.apply_lucidity_loss.assert_called_once()
 
-    def test_apply_combat_effects_player_with_fear_gain(self):
+    @pytest.mark.asyncio
+    async def test_apply_combat_effects_player_with_fear_gain(self):
         """Test applying combat effects with fear gain for occult damage."""
         target_id = str(uuid4())
         damage = 15
         damage_type = "occult"
         source_id = str(uuid4())
 
-        # Mock player
-        player = Mock()
-        self.persistence.get_player.return_value = player
-        self.game_mechanics.damage_player.return_value = (True, "Damage applied")
+        # Mock player - use AsyncMock for async method
+        from unittest.mock import AsyncMock
 
-        result = self.integration.apply_combat_effects(target_id, damage, damage_type, source_id)
+        player = Mock()
+        self.persistence.get_player_by_id = AsyncMock(return_value=player)
+        self.game_mechanics.damage_player = AsyncMock(return_value=(True, "Damage applied"))
+        # Occult damage triggers both lucidity loss and fear
+        self.game_mechanics.apply_lucidity_loss = AsyncMock()
+        self.game_mechanics.apply_fear = AsyncMock()
+
+        result = await self.integration.apply_combat_effects(target_id, damage, damage_type, source_id)
 
         assert result is True
         self.game_mechanics.damage_player.assert_called_once_with(target_id, damage, damage_type)
-        # Should apply fear for occult damage
+        # Should apply lucidity loss for occult damage (occult is in ["mental", "occult"])
+        self.game_mechanics.apply_lucidity_loss.assert_called_once()
+        # Should apply fear for occult damage (occult is in ["occult", "eldritch"])
         self.game_mechanics.apply_fear.assert_called_once()
 
-    def test_apply_combat_effects_player_with_eldritch_damage(self):
+    @pytest.mark.asyncio
+    async def test_apply_combat_effects_player_with_eldritch_damage(self):
         """Test applying combat effects with fear gain for eldritch damage."""
         target_id = str(uuid4())
         damage = 20
         damage_type = "eldritch"
         source_id = str(uuid4())
 
-        # Mock player
-        player = Mock()
-        self.persistence.get_player.return_value = player
-        self.game_mechanics.damage_player.return_value = (True, "Damage applied")
+        # Mock player - use AsyncMock for async method
+        from unittest.mock import AsyncMock
 
-        result = self.integration.apply_combat_effects(target_id, damage, damage_type, source_id)
+        player = Mock()
+        self.persistence.get_player_by_id = AsyncMock(return_value=player)
+        self.game_mechanics.damage_player = AsyncMock(return_value=(True, "Damage applied"))
+        self.game_mechanics.apply_fear = AsyncMock()
+
+        result = await self.integration.apply_combat_effects(target_id, damage, damage_type, source_id)
 
         assert result is True
         self.game_mechanics.damage_player.assert_called_once_with(target_id, damage, damage_type)
         # Should apply fear for eldritch damage
         self.game_mechanics.apply_fear.assert_called_once()
 
-    def test_apply_combat_effects_non_player(self):
+    @pytest.mark.asyncio
+    async def test_apply_combat_effects_non_player(self):
         """Test applying combat effects to non-player entity."""
         target_id = str(uuid4())
         damage = 10
         damage_type = "physical"
         source_id = str(uuid4())
 
-        # Mock no player found
-        self.persistence.get_player.return_value = None
+        # Mock no player found - use AsyncMock for async method
+        from unittest.mock import AsyncMock
 
-        result = self.integration.apply_combat_effects(target_id, damage, damage_type, source_id)
+        self.persistence.get_player_by_id = AsyncMock(return_value=None)
+
+        result = await self.integration.apply_combat_effects(target_id, damage, damage_type, source_id)
 
         assert result is True
-        self.game_mechanics.damage_player.assert_not_called()
+        if hasattr(self.game_mechanics, "damage_player"):
+            self.game_mechanics.damage_player.assert_not_called()
 
-    def test_apply_combat_effects_exception_handling(self):
+    @pytest.mark.asyncio
+    async def test_apply_combat_effects_exception_handling(self):
         """Test applying combat effects re-raises exceptions (CRITICAL FIX)."""
         target_id = str(uuid4())
         damage = 10
         damage_type = "physical"
         source_id = str(uuid4())
 
-        # Mock exception
-        self.persistence.get_player.side_effect = Exception("Database error")
+        # Mock exception - use AsyncMock for async method
+        from unittest.mock import AsyncMock
+
+        self.persistence.get_player_by_id = AsyncMock(side_effect=Exception("Database error"))
 
         # CRITICAL FIX: Exceptions should be re-raised, not silently caught
         # This ensures errors are visible in logs and monitoring
         with pytest.raises(Exception, match="Database error"):
-            self.integration.apply_combat_effects(target_id, damage, damage_type, source_id)
+            await self.integration.apply_combat_effects(target_id, damage, damage_type, source_id)
 
-    def test_handle_npc_attack_with_player_target(self):
+    @pytest.mark.asyncio
+    async def test_handle_npc_attack_with_player_target(self):
         """Test handling NPC attack on player target."""
         npc_id = str(uuid4())
         target_id = str(uuid4())
@@ -215,13 +240,17 @@ class TestNPCCombatIntegrationComprehensive:
         attack_type = "physical"
         npc_stats = {"strength": 14, "constitution": 12}
 
-        # Mock player target
+        # Mock player target - use AsyncMock for async method
+        from unittest.mock import AsyncMock
+
         player = Mock()
         player.stats.model_dump.return_value = {"constitution": 10}
-        self.persistence.get_player.return_value = player
+        self.persistence.get_player_by_id = AsyncMock(return_value=player)
 
-        with patch.object(self.integration, "apply_combat_effects", return_value=True) as mock_apply:
-            result = self.integration.handle_npc_attack(
+        with patch.object(
+            self.integration, "apply_combat_effects", new_callable=AsyncMock, return_value=True
+        ) as mock_apply:
+            result = await self.integration.handle_npc_attack(
                 npc_id, target_id, room_id, attack_damage, attack_type, npc_stats
             )
 
@@ -236,7 +265,8 @@ class TestNPCCombatIntegrationComprehensive:
         assert published_event.target_id == target_id
         assert published_event.room_id == room_id
 
-    def test_handle_npc_attack_with_npc_target(self):
+    @pytest.mark.asyncio
+    async def test_handle_npc_attack_with_npc_target(self):
         """Test handling NPC attack on NPC target."""
         npc_id = str(uuid4())
         target_id = str(uuid4())
@@ -245,18 +275,23 @@ class TestNPCCombatIntegrationComprehensive:
         attack_type = "physical"
         npc_stats = {"strength": 14, "constitution": 12}
 
-        # Mock no player found (NPC target)
-        self.persistence.get_player.return_value = None
+        # Mock no player found (NPC target) - use AsyncMock for async method
+        from unittest.mock import AsyncMock
 
-        with patch.object(self.integration, "apply_combat_effects", return_value=True) as mock_apply:
-            result = self.integration.handle_npc_attack(
+        self.persistence.get_player_by_id = AsyncMock(return_value=None)
+
+        with patch.object(
+            self.integration, "apply_combat_effects", new_callable=AsyncMock, return_value=True
+        ) as mock_apply:
+            result = await self.integration.handle_npc_attack(
                 npc_id, target_id, room_id, attack_damage, attack_type, npc_stats
             )
 
         assert result is True
         mock_apply.assert_called_once()
 
-    def test_handle_npc_attack_with_default_stats(self):
+    @pytest.mark.asyncio
+    async def test_handle_npc_attack_with_default_stats(self):
         """Test handling NPC attack with default stats."""
         npc_id = str(uuid4())
         target_id = str(uuid4())
@@ -264,18 +299,23 @@ class TestNPCCombatIntegrationComprehensive:
         attack_damage = 5
         attack_type = "physical"
 
-        # Mock player target
+        # Mock player target - use AsyncMock for async method
+        from unittest.mock import AsyncMock
+
         player = Mock()
         player.stats.model_dump.return_value = {"constitution": 10}
-        self.persistence.get_player.return_value = player
+        self.persistence.get_player_by_id = AsyncMock(return_value=player)
 
-        with patch.object(self.integration, "apply_combat_effects", return_value=True) as mock_apply:
-            result = self.integration.handle_npc_attack(npc_id, target_id, room_id, attack_damage, attack_type)
+        with patch.object(
+            self.integration, "apply_combat_effects", new_callable=AsyncMock, return_value=True
+        ) as mock_apply:
+            result = await self.integration.handle_npc_attack(npc_id, target_id, room_id, attack_damage, attack_type)
 
         assert result is True
         mock_apply.assert_called_once()
 
-    def test_handle_npc_attack_exception_handling(self):
+    @pytest.mark.asyncio
+    async def test_handle_npc_attack_exception_handling(self):
         """Test handling NPC attack with exception."""
         npc_id = str(uuid4())
         target_id = str(uuid4())
@@ -283,77 +323,99 @@ class TestNPCCombatIntegrationComprehensive:
         attack_damage = 5
         attack_type = "physical"
 
-        # Mock exception
-        self.persistence.get_player.side_effect = Exception("Database error")
+        # Mock exception in _get_target_stats - use regular Mock since it's not async
+        # The exception happens in get_player which is called synchronously in _get_target_stats
+        # Note: handle_npc_attack only catches specific exceptions, so we need to raise one of those
+        self.persistence.get_player = Mock(side_effect=AttributeError("Database error"))
 
-        result = self.integration.handle_npc_attack(npc_id, target_id, room_id, attack_damage, attack_type)
+        result = await self.integration.handle_npc_attack(npc_id, target_id, room_id, attack_damage, attack_type)
 
         assert result is False
 
-    def test_handle_npc_death_with_player_killer(self):
+    @pytest.mark.asyncio
+    async def test_handle_npc_death_with_player_killer(self):
         """Test handling NPC death with player killer."""
         npc_id = str(uuid4())
         room_id = "test_room_001"
         cause = "combat"
         killer_id = str(uuid4())
 
-        # Mock player killer
+        # Mock player killer - use AsyncMock for async method
+        from unittest.mock import AsyncMock
+
         player = Mock()
-        self.persistence.get_player.return_value = player
+        self.persistence.get_player_by_id = AsyncMock(return_value=player)
 
         # Mock NPC
         npc = Mock()
         npc.npc_type.value = "aggressive_mob"
-        self.persistence.get_npc.return_value = npc
+        self.persistence.get_npc = Mock(return_value=npc)
 
-        result = self.integration.handle_npc_death(npc_id, room_id, cause, killer_id)
+        # Mock async game mechanics methods
+        self.game_mechanics.gain_occult_knowledge = AsyncMock()
+        self.game_mechanics.apply_lucidity_loss = AsyncMock()
+
+        result = await self.integration.handle_npc_death(npc_id, room_id, cause, killer_id)
 
         assert result is True
         self.game_mechanics.gain_occult_knowledge.assert_called_once()
-        self.game_mechanics.apply_sanity_loss.assert_called_once()
+        self.game_mechanics.apply_lucidity_loss.assert_called_once()
         # Note: NPCDied event is now published by CombatService via NATS, not by this integration service
 
-    def test_handle_npc_death_without_killer(self):
+    @pytest.mark.asyncio
+    async def test_handle_npc_death_without_killer(self):
         """Test handling NPC death without killer."""
         npc_id = str(uuid4())
         room_id = "test_room_001"
         cause = "timeout"
 
-        result = self.integration.handle_npc_death(npc_id, room_id, cause)
+        result = await self.integration.handle_npc_death(npc_id, room_id, cause)
 
         assert result is True
-        self.game_mechanics.gain_occult_knowledge.assert_not_called()
-        self.game_mechanics.apply_sanity_loss.assert_not_called()
+        if hasattr(self.game_mechanics, "gain_occult_knowledge"):
+            self.game_mechanics.gain_occult_knowledge.assert_not_called()
+        if hasattr(self.game_mechanics, "apply_lucidity_loss"):
+            self.game_mechanics.apply_lucidity_loss.assert_not_called()
         # Note: NPCDied event is now published by CombatService via NATS, not by this integration service
 
-    def test_handle_npc_death_with_non_player_killer(self):
+    @pytest.mark.asyncio
+    async def test_handle_npc_death_with_non_player_killer(self):
         """Test handling NPC death with non-player killer."""
         npc_id = str(uuid4())
         room_id = "test_room_001"
         cause = "combat"
         killer_id = str(uuid4())
 
-        # Mock no player found
-        self.persistence.get_player.return_value = None
+        # Mock no player found - use AsyncMock for async method
+        from unittest.mock import AsyncMock
 
-        result = self.integration.handle_npc_death(npc_id, room_id, cause, killer_id)
+        self.persistence.get_player_by_id = AsyncMock(return_value=None)
+
+        result = await self.integration.handle_npc_death(npc_id, room_id, cause, killer_id)
 
         assert result is True
-        self.game_mechanics.gain_occult_knowledge.assert_not_called()
-        self.game_mechanics.apply_sanity_loss.assert_not_called()
+        if hasattr(self.game_mechanics, "gain_occult_knowledge"):
+            self.game_mechanics.gain_occult_knowledge.assert_not_called()
+        if hasattr(self.game_mechanics, "apply_lucidity_loss"):
+            self.game_mechanics.apply_lucidity_loss.assert_not_called()
         # Note: NPCDied event is now published by CombatService via NATS, not by this integration service
 
-    def test_handle_npc_death_exception_handling(self):
+    @pytest.mark.asyncio
+    async def test_handle_npc_death_exception_handling(self):
         """Test handling NPC death with exception."""
         npc_id = str(uuid4())
         room_id = "test_room_001"
         cause = "combat"
         killer_id = str(uuid4())
 
-        # Mock exception
-        self.persistence.get_player.side_effect = Exception("Database error")
+        # Mock exception - use AsyncMock for async method
+        # Note: handle_npc_death only catches specific exceptions (ValueError, TypeError, AttributeError, ValidationError)
+        # So we need to raise one of those, not a generic Exception
+        from unittest.mock import AsyncMock
 
-        result = self.integration.handle_npc_death(npc_id, room_id, cause, killer_id)
+        self.persistence.get_player_by_id = AsyncMock(side_effect=AttributeError("Database error"))
+
+        result = await self.integration.handle_npc_death(npc_id, room_id, cause, killer_id)
 
         assert result is False
 
@@ -368,7 +430,7 @@ class TestNPCCombatIntegrationComprehensive:
             "max_health": 100,
             "strength": 12,
             "constitution": 14,
-            "sanity": 80,
+            "lucidity": 80,
             "fear": 20,
             "corruption": 5,
         }
@@ -380,7 +442,7 @@ class TestNPCCombatIntegrationComprehensive:
         assert result["max_hp"] == 100
         assert result["strength"] == 12
         assert result["constitution"] == 14
-        assert result["sanity"] == 80
+        assert result["lucidity"] == 80
         assert result["fear"] == 20
         assert result["corruption"] == 5
 
@@ -417,7 +479,7 @@ class TestNPCCombatIntegrationComprehensive:
         entity_id = str(uuid4())
         npc_stats = {"hp": 50, "max_hp": 50}
 
-        # Mock database error
+        # Mock database error - the method should catch it and return npc_stats
         self.persistence.get_player.side_effect = Exception("Database error")
 
         result = self.integration.get_combat_stats(entity_id, npc_stats)
@@ -457,13 +519,11 @@ class TestNPCCombatIntegrationEdgeCases:
         self.game_mechanics = Mock()
 
         with (
-            patch("server.npc.combat_integration.get_persistence") as mock_get_persistence,
             patch("server.npc.combat_integration.GameMechanicsService") as mock_game_mechanics,
         ):
-            mock_get_persistence.return_value = self.persistence
             mock_game_mechanics.return_value = self.game_mechanics
 
-            self.integration = NPCCombatIntegration(self.event_bus)
+            self.integration = NPCCombatIntegration(self.event_bus, async_persistence=self.persistence)
 
     def test_calculate_damage_extreme_values(self):
         """Test damage calculation with extreme values."""
@@ -487,36 +547,46 @@ class TestNPCCombatIntegrationEdgeCases:
         # Should use default values (10 for strength/constitution)
         assert damage == 5
 
-    def test_apply_combat_effects_capped_sanity_loss(self):
-        """Test that sanity loss is capped appropriately."""
+    @pytest.mark.asyncio
+    async def test_apply_combat_effects_capped_Lucidity_loss(self):
+        """Test that lucidity loss is capped appropriately."""
         target_id = str(uuid4())
         damage = 50  # High damage
         damage_type = "mental"
 
-        # Mock player
+        # Mock player - use AsyncMock for async method
+        from unittest.mock import AsyncMock
+
         player = Mock()
-        self.persistence.get_player.return_value = player
-        self.game_mechanics.damage_player.return_value = (True, "Damage applied")
+        self.persistence.get_player_by_id = AsyncMock(return_value=player)
+        self.game_mechanics.damage_player = AsyncMock(return_value=(True, "Damage applied"))
+        self.game_mechanics.apply_lucidity_loss = AsyncMock()
 
-        self.integration.apply_combat_effects(target_id, damage, damage_type)
+        await self.integration.apply_combat_effects(target_id, damage, damage_type)
 
-        # Should apply capped sanity loss (max 10)
-        self.game_mechanics.apply_sanity_loss.assert_called_once()
-        call_args = self.game_mechanics.apply_sanity_loss.call_args
-        assert call_args[0][1] <= 10  # Sanity loss should be capped
+        # Should apply capped lucidity loss (max 10)
+        self.game_mechanics.apply_lucidity_loss.assert_called_once()
+        call_args = self.game_mechanics.apply_lucidity_loss.call_args
+        assert call_args[0][1] <= 10  # lucidity loss should be capped
 
-    def test_apply_combat_effects_capped_fear_gain(self):
+    @pytest.mark.asyncio
+    async def test_apply_combat_effects_capped_fear_gain(self):
         """Test that fear gain is capped appropriately."""
         target_id = str(uuid4())
         damage = 50  # High damage
         damage_type = "occult"
 
-        # Mock player
-        player = Mock()
-        self.persistence.get_player.return_value = player
-        self.game_mechanics.damage_player.return_value = (True, "Damage applied")
+        # Mock player - use AsyncMock for async method
+        from unittest.mock import AsyncMock
 
-        self.integration.apply_combat_effects(target_id, damage, damage_type)
+        player = Mock()
+        self.persistence.get_player_by_id = AsyncMock(return_value=player)
+        self.game_mechanics.damage_player = AsyncMock(return_value=(True, "Damage applied"))
+        # Occult damage triggers both lucidity loss and fear
+        self.game_mechanics.apply_lucidity_loss = AsyncMock()
+        self.game_mechanics.apply_fear = AsyncMock()
+
+        await self.integration.apply_combat_effects(target_id, damage, damage_type)
 
         # Should apply capped fear gain (max 5)
         self.game_mechanics.apply_fear.assert_called_once()

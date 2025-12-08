@@ -24,7 +24,7 @@ def test_registry_emits_observability_warning_for_malformed_payload(tmp_path: Pa
         "wear_slots": ["off_hand"],
         "usage_restrictions": {},
         "stacking_rules": {"max_stack": 1},
-        "effect_components": ["component.sanity_whisper"],
+        "effect_components": ["component.Lucidity_whisper"],
         "metadata": {},
         "tags": ["lore"],
     }
@@ -36,7 +36,7 @@ def test_registry_emits_observability_warning_for_malformed_payload(tmp_path: Pa
         "wear_slots": [],
         "usage_restrictions": {},
         "stacking_rules": {"max_stack": 1},
-        "effect_components": ["component.sanity_whisper"],
+        "effect_components": ["component.Lucidity_whisper"],
         "metadata": {},
         "tags": ["lore"],
     }

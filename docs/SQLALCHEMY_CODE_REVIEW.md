@@ -76,11 +76,11 @@ cursor = conn.execute(
 
 **Location**: Multiple locations in `server/services/` and `server/api/`
 
-**Issue**: The codebase uses `selectinload()` in some places (e.g., `sanity_service.py:110`) but relationships in other models may not be eagerly loaded, leading to N+1 query problems.
+**Issue**: The codebase uses `selectinload()` in some places (e.g., `lucidity_service.py:110`) but relationships in other models may not be eagerly loaded, leading to N+1 query problems.
 
 **Examples**:
 - `Player.user` relationship (defined in `server/models/player.py:73`) may trigger lazy loads
-- `PlayerSanity.player` relationship is eagerly loaded, but other relationships may not be
+- `PlayerLucidity.player` relationship is eagerly loaded, but other relationships may not be
 
 **Recommendation**:
 1. Audit all relationship accesses in service/API layers
@@ -90,7 +90,7 @@ cursor = conn.execute(
 
    stmt = select(Player).options(
        selectinload(Player.user),
-       selectinload(Player.sanity),  # if relationship exists
+       selectinload(Player.lucidity),  # if relationship exists
    ).where(Player.player_id == player_id)
    ```
 

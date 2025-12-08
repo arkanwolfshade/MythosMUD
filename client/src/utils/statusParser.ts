@@ -11,7 +11,7 @@ export interface ParsedPlayerData {
     current: number;
     max: number;
   };
-  sanity?: {
+  lucidity?: {
     current: number;
     max: number;
   };
@@ -36,8 +36,8 @@ export interface PlayerWithProfession {
   stats: {
     current_health: number;
     max_health: number;
-    sanity: number;
-    max_sanity: number;
+    lucidity: number;
+    max_lucidity: number;
     fear: number;
     corruption: number;
     occult_knowledge: number;
@@ -73,11 +73,11 @@ export function parseStatusResponse(statusResponse: string): ParsedPlayerData {
       if (!isNaN(current) && !isNaN(max)) {
         playerData.health = { current, max };
       }
-    } else if (line.startsWith('Sanity:')) {
-      const sanityStr = line.replace('Sanity:', '').trim();
-      const [current, max] = sanityStr.split('/').map(s => parseInt(s.trim(), 10));
+    } else if (line.startsWith('lucidity:')) {
+      const LucidityStr = line.replace('lucidity:', '').trim();
+      const [current, max] = LucidityStr.split('/').map(s => parseInt(s.trim(), 10));
       if (!isNaN(current) && !isNaN(max)) {
-        playerData.sanity = { current, max };
+        playerData.lucidity = { current, max };
       }
     } else if (line.startsWith('Profession:')) {
       playerData.profession = playerData.profession || { name: '', description: '', flavor_text: '' };
@@ -136,8 +136,8 @@ export function convertToPlayerInterface(parsedData: ParsedPlayerData): PlayerWi
     stats: {
       current_health: parsedData.health?.current || 100,
       max_health: parsedData.health?.max || 100,
-      sanity: parsedData.sanity?.current || 100,
-      max_sanity: parsedData.sanity?.max || 100,
+      lucidity: parsedData.lucidity?.current || 100,
+      max_lucidity: parsedData.lucidity?.max || 100,
       fear: parsedData.fear || 0,
       corruption: parsedData.corruption || 0,
       occult_knowledge: parsedData.occult_knowledge || 0,

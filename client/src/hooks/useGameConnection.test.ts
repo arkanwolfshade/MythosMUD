@@ -382,11 +382,17 @@ describe('useGameConnection', () => {
         })
       );
 
-      // The WebSocket constructor should be called with session_id parameter
+      // The WebSocket constructor should be called with session_id and token as query parameters
+      // NOTE: JWT tokens are passed via query string, not subprotocol, because JWT contains
+      // characters (dots) that are invalid in WebSocket subprotocols
       expect(global.WebSocket).toHaveBeenCalledWith(
-        expect.stringContaining(`session_id=${encodeURIComponent(customSessionId)}`),
-        ['bearer', 'test-token']
+        expect.stringContaining(`session_id=${encodeURIComponent(customSessionId)}`)
       );
+
+      // Verify the token is also in the URL
+      const calls = (global.WebSocket as unknown as jest.Mock).mock.calls;
+      const lastCall = calls[calls.length - 1];
+      expect(lastCall[0]).toContain('token=test-token');
     });
 
     it('should handle session switching with reconnection', async () => {

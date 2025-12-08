@@ -20,7 +20,7 @@ Example:
 
     # Business logic lives in the entity
     player.take_damage(damage=5, source="deep_one")
-    player.apply_sanity_loss(loss=10, source="non_euclidean_geometry")
+    player.apply_lucidity_loss(loss=10, source="non_euclidean_geometry")
 """
 
 __all__ = []

@@ -63,7 +63,7 @@ The client crashed when initiating combat with an NPC (`/attack dr`) while in th
 
 5. **Performance Warning** (Line 5):
    ```
-   WARNING - operation='passive_sanity_flux_tick' duration_ms=1350.564
+   WARNING - operation='passive_lucidity_flux_tick' duration_ms=1350.564
    threshold_ms=1000.0
    event='Performance alert: operation exceeded threshold'
    ```
@@ -286,7 +286,7 @@ class EventMessageSchema(BaseMessageSchema):
 #### Priority 3: MEDIUM - Performance Monitoring
 
 **Investigation Areas**:
-1. Review `passive_sanity_flux_tick` operation performance (exceeded 1000ms threshold)
+1. Review `passive_lucidity_flux_tick` operation performance (exceeded 1000ms threshold)
 2. Investigate if performance degradation is related to combat system issues
 3. Monitor system performance during combat scenarios
 

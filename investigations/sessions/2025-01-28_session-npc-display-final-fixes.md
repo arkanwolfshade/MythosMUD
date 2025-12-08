@@ -80,7 +80,7 @@ Fixed multiple bugs preventing NPCs from displaying correctly in the room occupa
 
 From `warnings.log`:
 ```
-npcs=['Dr. Francis Morgan', 'Sanitarium Patient', ...] npcs_count=13
+npcs=['Dr. Francis Morgan', 'Sanitarium patient', ...] npcs_count=13
 ```
 
 This confirms:

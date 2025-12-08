@@ -21,7 +21,7 @@ class _FakePersistence:
     def __init__(self, room: Room):
         self._room = room
 
-    def get_room(self, room_id: str):  # pragma: no cover
+    def get_room_by_id(self, room_id: str):  # pragma: no cover
         return self._room if self._room.id == room_id else None
 
 
@@ -32,11 +32,6 @@ async def test_spawn_npc_emits_single_enter_event(monkeypatch) -> None:
     # Wire a real Room with the same event bus so it publishes via the bus
     room = Room({"id": "room_001", "name": "Test Room", "exits": {}}, event_bus=event_bus)
     fake_persistence = _FakePersistence(room)
-
-    # Patch get_persistence used inside lifecycle_manager.spawn_npc
-    import server.npc.lifecycle_manager as lm
-
-    monkeypatch.setattr(lm, "get_persistence", lambda: fake_persistence)
 
     # Capture NPCEnteredRoom events
     events: list[NPCEnteredRoom] = []
@@ -60,7 +55,7 @@ async def test_spawn_npc_emits_single_enter_event(monkeypatch) -> None:
 
     spawning_service = NPCSpawningService(event_bus, population_controller=None)
     lifecycle_manager = NPCLifecycleManager(
-        event_bus, population_controller=None, spawning_service=spawning_service, persistence=None
+        event_bus, population_controller=None, spawning_service=spawning_service, persistence=fake_persistence
     )
 
     npc_id = lifecycle_manager.spawn_npc(definition, "room_001")

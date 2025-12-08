@@ -49,7 +49,7 @@ class Player(BaseModel):
 
 # server/schemas/player.py - PlayerCreate (PROBLEMATIC)
 class PlayerCreate(PlayerBase):
-    stats: dict[str, Any] = Field(default={"health": 100, "sanity": 100, "strength": 10})
+    stats: dict[str, Any] = Field(default={"health": 100, "lucidity": 100, "strength": 10})
     inventory: list[dict[str, Any]] = Field(default=[])
     status_effects: list[dict[str, Any]] = Field(default=[])
 ```

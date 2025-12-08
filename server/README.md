@@ -30,8 +30,8 @@ The game features a comprehensive stats system with Lovecraftian horror elements
 
 #### Horror-Specific Attributes (0-100 scale)
 
-- **Sanity**: Mental stability (0 = complete madness)
-- **Occult Knowledge**: Forbidden lore knowledge (causes sanity loss)
+- **Lucidity**: Mental stability (0 = complete madness)
+- **Occult Knowledge**: Forbidden lore knowledge (causes lucidity loss)
 - **Fear**: Susceptibility to terror and panic
 - **Corruption**: Taint from dark forces
 - **Cult Affiliation**: Ties to cults and secret societies
@@ -44,7 +44,7 @@ The game features a comprehensive stats system with Lovecraftian horror elements
 - **Paranoid**: Mental instability
 - **Trembling**: Reduced dexterity
 - **Corrupted**: Physical/mental changes
-- **Insane**: Complete mental breakdown
+- **Delirious**: Complete mental breakdown
 
 ## API Endpoints
 
@@ -195,7 +195,7 @@ The game features a comprehensive stats system with Lovecraftian horror elements
 
 ### Player Stats & Effects
 
-- `POST /players/{player_id}/sanity-loss` - Apply sanity loss
+- `POST /players/{player_id}/lucidity-loss` - Apply lucidity loss
 - `POST /players/{player_id}/fear` - Apply fear
 - `POST /players/{player_id}/corruption` - Apply corruption
 - `POST /players/{player_id}/occult-knowledge` - Gain occult knowledge
@@ -235,12 +235,12 @@ python test_player_stats.py
 
 ## Game Mechanics
 
-### Sanity System
+### Lucidity System
 
-- Players start with 100 sanity
-- Encountering horrors, reading forbidden texts, or learning occult knowledge reduces sanity
-- Low sanity triggers status effects (paranoia, hallucinations, insanity)
-- Sanity can be recovered through rest, therapy, or certain items
+- Players start with 100 lucidity
+- Encountering horrors, reading forbidden texts, or learning occult knowledge reduces lucidity
+- Low lucidity triggers status effects (paranoia, hallucinations, delirium)
+- Lucidity can be recovered through rest, therapy, or certain items
 
 ### Fear System
 
@@ -257,7 +257,7 @@ python test_player_stats.py
 ### Occult Knowledge
 
 - Learning forbidden lore increases occult knowledge
-- Each point of occult knowledge gained costs 0.5 sanity
+- Each point of occult knowledge gained costs 0.5 lucidity
 - High occult knowledge provides access to powerful abilities but increases vulnerability
 
 ## Development

@@ -43,20 +43,20 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
   [Visible Equipment: head, torso, legs, hands, feet, main_hand, off_hand]
   Position: [standing/sitting/etc.]
   Health: [descriptive label]
-  Sanity: [descriptive label]
+  Lucidity: [descriptive label]
   ```
 
-**Health/Sanity Label Functions:**
+**Health/Lucidity Label Functions:**
 - `_get_health_label(stats: dict) -> str`:
   - "healthy" if health > 75%
   - "wounded" if health 25-75%
   - "critical" if health 1-24%
   - "mortally wounded" if health <= 0
-- `_get_sanity_label(stats: dict) -> str`:
-  - "sane" if sanity > 75%
-  - "disturbed" if sanity 25-75%
-  - "unstable" if sanity 1-24%
-  - "mad" if sanity <= 0
+- `_get_lucidity_label(stats: dict) -> str`:
+  - "lucid" if lucidity > 75%
+  - "disturbed" if lucidity 25-75%
+  - "unstable" if lucidity 1-24%
+  - "mad" if lucidity <= 0
 
 **Visible Equipment Filter:**
 - Include only external slots: `head`, `torso`, `legs`, `hands`, `feet`, `main_hand`, `off_hand`
@@ -96,7 +96,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 **Helper Functions:**
 - `_get_players_in_room(room: Room, persistence: PersistenceLayer) -> list[Player]`
 - `_get_health_label(stats: dict) -> str`
-- `_get_sanity_label(stats: dict) -> str`
+- `_get_lucidity_label(stats: dict) -> str`
 - `_get_visible_equipment(player: Player) -> dict[str, dict]`
 - `_find_item_in_room(room: Room, room_manager, target: str, instance_number: int | None) -> dict | None`
 - `_find_item_in_inventory(player: Player, target: str, instance_number: int | None) -> dict | None`
@@ -135,7 +135,7 @@ This is the technical specification for the spec detailed in @.agent-os/specs/20
 ### Testing Requirements
 
 **Unit Tests (`server/tests/unit/commands/test_exploration_commands.py`):**
-- Test player look with various health/sanity states
+- Test player look with various health/lucidity states
 - Test item look in different locations (room, inventory, equipped, container)
 - Test container look with different lock states
 - Test instance targeting (`backpack-2`, `backpack 2`)

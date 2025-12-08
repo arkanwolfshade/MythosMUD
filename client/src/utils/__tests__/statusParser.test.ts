@@ -37,15 +37,15 @@ describe('Status Parser Utilities', () => {
       expect(parsed.health).toEqual({ current: 85, max: 100 });
     });
 
-    it('should parse sanity from status response', () => {
+    it('should parse lucidity from status response', () => {
       // Arrange
-      const statusResponse = 'Sanity: 70/100\n';
+      const statusResponse = 'lucidity: 70/100\n';
 
       // Act
       const parsed = parseStatusResponse(statusResponse);
 
       // Assert
-      expect(parsed.sanity).toEqual({ current: 70, max: 100 });
+      expect(parsed.lucidity).toEqual({ current: 70, max: 100 });
     });
 
     it('should parse profession information', () => {
@@ -117,7 +117,7 @@ Occult Knowledge: 50\n`;
       const statusResponse = `Name: TestPlayer
 Location: Arkham City - Library
 Health: 85/100
-Sanity: 70/100
+lucidity: 70/100
 Profession: Investigator
 Description: A seeker of truth
 Background: You have seen things...
@@ -135,7 +135,7 @@ XP: 1500\n`;
       expect(parsed.name).toBe('TestPlayer');
       expect(parsed.location).toBe('Arkham City - Library');
       expect(parsed.health).toEqual({ current: 85, max: 100 });
-      expect(parsed.sanity).toEqual({ current: 70, max: 100 });
+      expect(parsed.lucidity).toEqual({ current: 70, max: 100 });
       expect(parsed.profession?.name).toBe('Investigator');
       expect(parsed.fear).toBe(25);
       expect(parsed.corruption).toBe(10);
@@ -207,7 +207,7 @@ XP: 1500\n`;
 Location: Arkham City
 
 Health: 85/100
-Sanity: 70/100
+lucidity: 70/100
 
 Profession: Investigator`;
 
@@ -228,7 +228,7 @@ Profession: Investigator`;
         name: 'TestPlayer',
         location: 'Arkham City',
         health: { current: 85, max: 100 },
-        sanity: { current: 70, max: 100 },
+        lucidity: { current: 70, max: 100 },
         profession: {
           name: 'Investigator',
           description: 'A seeker of truth',
@@ -252,8 +252,8 @@ Profession: Investigator`;
       expect(player.profession_flavor_text).toBe('You have seen things...');
       expect(player.stats.current_health).toBe(85);
       expect(player.stats.max_health).toBe(100);
-      expect(player.stats.sanity).toBe(70);
-      expect(player.stats.max_sanity).toBe(100);
+      expect(player.stats.lucidity).toBe(70);
+      expect(player.stats.max_lucidity).toBe(100);
       expect(player.stats.fear).toBe(25);
       expect(player.stats.corruption).toBe(10);
       expect(player.stats.occult_knowledge).toBe(50);
@@ -275,8 +275,8 @@ Profession: Investigator`;
       expect(player.name).toBe('TestPlayer');
       expect(player.stats.current_health).toBe(100);
       expect(player.stats.max_health).toBe(100);
-      expect(player.stats.sanity).toBe(100);
-      expect(player.stats.max_sanity).toBe(100);
+      expect(player.stats.lucidity).toBe(100);
+      expect(player.stats.max_lucidity).toBe(100);
       expect(player.stats.fear).toBe(0);
       expect(player.stats.corruption).toBe(0);
       expect(player.stats.occult_knowledge).toBe(0);

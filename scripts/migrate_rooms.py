@@ -72,7 +72,7 @@ def create_zone_config(zone_name: str, zone_type: str = "city") -> dict:
         "description": f"A {zone_type} area in the MythosMUD world",
         "weather_patterns": ["fog", "rain", "overcast"],
         "special_rules": {
-            "sanity_drain_rate": 0.1,
+            "lucidity_drain_rate": 0.1,
             "npc_spawn_modifier": 1.0,
             "combat_modifier": 1.0,
             "exploration_bonus": 0.5,
@@ -94,7 +94,7 @@ def create_subzone_config(subzone_name: str) -> dict:
         "environment": "outdoors",
         "description": "A sub-zone within the MythosMUD world",
         "special_rules": {
-            "sanity_drain_rate": 0.05,
+            "lucidity_drain_rate": 0.05,
             "npc_spawn_modifier": 1.0,
             "combat_modifier": 1.0,
             "exploration_bonus": 0.3,

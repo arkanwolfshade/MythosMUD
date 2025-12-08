@@ -49,9 +49,9 @@ class TestWebSocketRateLimitingIntegration:
     async def test_message_rate_limit_enforced_during_connection(self, connection_manager, mock_websocket, mock_player):
         """Test that message rate limits are enforced during active WebSocket connection."""
         # Setup
-        connection_manager._get_player = Mock(return_value=mock_player)
+        connection_manager._get_player = AsyncMock(return_value=mock_player)
         connection_manager.persistence = Mock()
-        connection_manager.persistence.get_room = Mock(return_value=None)
+        connection_manager.persistence.get_room = AsyncMock(return_value=None)
 
         # Connect WebSocket
         await connection_manager.connect_websocket(mock_websocket, mock_player.player_id)
@@ -70,7 +70,7 @@ class TestWebSocketRateLimitingIntegration:
     async def test_rate_limit_reset_after_window(self, connection_manager, mock_websocket, mock_player):
         """Test that rate limit resets after time window expires."""
         # Setup
-        connection_manager._get_player = Mock(return_value=mock_player)
+        connection_manager._get_player = AsyncMock(return_value=mock_player)
         await connection_manager.connect_websocket(mock_websocket, mock_player.player_id)
         connection_id = connection_manager.get_connection_id_from_websocket(mock_websocket)
 
@@ -102,7 +102,7 @@ class TestWebSocketRateLimitingIntegration:
         websocket2.client_state.name = "CONNECTED"
         websocket2.state = {}
 
-        connection_manager._get_player = Mock(return_value=mock_player)
+        connection_manager._get_player = AsyncMock(return_value=mock_player)
 
         # Connect both
         await connection_manager.connect_websocket(websocket1, mock_player.player_id)
@@ -125,7 +125,7 @@ class TestWebSocketRateLimitingIntegration:
     async def test_rate_limit_cleanup_on_disconnect(self, connection_manager, mock_websocket, mock_player):
         """Test that rate limit data is cleaned up on disconnect."""
         # Setup
-        connection_manager._get_player = Mock(return_value=mock_player)
+        connection_manager._get_player = AsyncMock(return_value=mock_player)
         await connection_manager.connect_websocket(mock_websocket, mock_player.player_id)
         connection_id = connection_manager.get_connection_id_from_websocket(mock_websocket)
 
@@ -150,7 +150,7 @@ class TestWebSocketRateLimitingIntegration:
         from server.realtime.message_validator import get_message_validator
 
         validator = get_message_validator()
-        connection_manager._get_player = Mock(return_value=mock_player)
+        connection_manager._get_player = AsyncMock(return_value=mock_player)
         await connection_manager.connect_websocket(mock_websocket, mock_player.player_id)
         connection_id = connection_manager.get_connection_id_from_websocket(mock_websocket)
 
@@ -171,7 +171,7 @@ class TestWebSocketRateLimitingIntegration:
     @pytest.mark.asyncio
     async def test_rate_limit_error_response_format(self, connection_manager, mock_websocket, mock_player):
         """Test that rate limit errors return proper error response format."""
-        connection_manager._get_player = Mock(return_value=mock_player)
+        connection_manager._get_player = AsyncMock(return_value=mock_player)
         await connection_manager.connect_websocket(mock_websocket, mock_player.player_id)
         connection_id = connection_manager.get_connection_id_from_websocket(mock_websocket)
 

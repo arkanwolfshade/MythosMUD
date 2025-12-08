@@ -9,7 +9,7 @@ from datetime import UTC, datetime
 from enum import Enum
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field, computed_field
+from pydantic import BaseModel, ConfigDict, Field, computed_field, model_validator
 
 
 class AttributeType(str, Enum):
@@ -21,7 +21,7 @@ class AttributeType(str, Enum):
     INT = "intelligence"
     WIS = "wisdom"
     CHA = "charisma"
-    SAN = "sanity"
+    LCD = "lucidity"
     OCC = "occult_knowledge"
     FEAR = "fear"
     CORR = "corruption"
@@ -37,7 +37,7 @@ class StatusEffectType(str, Enum):
     PARANOID = "paranoid"
     TREMBLING = "trembling"
     CORRUPTED = "corrupted"
-    INSANE = "insane"
+    DELIRIOUS = "delirious"
 
 
 class PositionState(str, Enum):
@@ -102,7 +102,7 @@ class Stats(BaseModel):
     charisma: int | None = Field(ge=1, le=100, default=None, description="Social skills and influence")
 
     # Horror-Specific Attributes
-    sanity: int = Field(ge=0, le=100, default=100, description="Mental stability (0 = complete madness)")
+    lucidity: int = Field(ge=0, le=100, default=100, description="Mental clarity (0 = complete delirium)")
     occult_knowledge: int = Field(ge=0, le=100, default=0, description="Knowledge of forbidden lore")
     fear: int = Field(ge=0, le=100, default=0, description="Susceptibility to terror and panic")
 
@@ -160,26 +160,48 @@ class Stats(BaseModel):
         return self.constitution or 50
 
     @computed_field
-    def max_sanity(self) -> int:
-        """Calculate max sanity based on wisdom."""
+    def max_lucidity(self) -> int:
+        """Calculate max lucidity based on wisdom."""
         return self.wisdom or 50
+
+    @model_validator(mode="after")
+    def validate_current_vs_max_stats(self) -> "Stats":
+        """
+        Ensure current_health and lucidity don't exceed their max values.
+
+        BUGFIX: Initialize current_health and lucidity to their max values if not explicitly provided.
+        This prevents new characters from having impossible stats like current_health=100, max_health=66.
+        """
+        # Compute max values directly to avoid mypy @computed_field inference issues
+        max_health_value = self.constitution or 50
+        max_lucidity_value = self.wisdom or 50
+
+        # Cap current_health at max_health
+        if self.current_health > max_health_value:
+            self.current_health = max_health_value
+
+        # Cap lucidity at max_lucidity
+        if self.lucidity > max_lucidity_value:
+            self.lucidity = max_lucidity_value
+
+        return self
 
     def get_attribute_modifier(self, attribute: AttributeType) -> int:
         """Get the modifier for a given attribute (standard D&D-style calculation)."""
         attr_value = getattr(self, attribute.value, 50)
         return (attr_value - 50) // 2
 
-    def is_sane(self) -> bool:
-        """Check if the character is still mentally stable."""
-        return self.sanity > 0
+    def is_lucid(self) -> bool:
+        """Check if the character is still mentally clear."""
+        return self.lucidity > 0
 
     def is_corrupted(self) -> bool:
         """Check if the character has significant corruption."""
         return self.corruption >= 50
 
-    def is_insane(self) -> bool:
-        """Check if the character has lost their sanity completely."""
-        return self.sanity <= 0
+    def is_delirious(self) -> bool:
+        """Check if the character has lost their lucidity completely."""
+        return self.lucidity <= 0
 
 
 class InventoryItem(BaseModel):

@@ -1,8 +1,8 @@
-# BUG INVESTIGATION REPORT: Passive Sanity Flux Performance Degradation
+# BUG INVESTIGATION REPORT: Passive lucidity Flux Performance Degradation
 
 **Investigation Date**: 2025-11-30
 **Investigator**: AI Assistant (GPT-4)
-**Session ID**: 2025-11-30_session-001_passive-sanity-flux-performance
+**Session ID**: 2025-11-30_session-001_passive-lucidity-flux-performance
 **Bug Type**: Performance/System Issue
 **Severity**: Medium-High
 
@@ -10,7 +10,7 @@
 
 ## EXECUTIVE SUMMARY
 
-The `passive_sanity_flux_tick` operation is experiencing severe performance degradation, with execution times increasing from 3.6 seconds to 17.4 seconds over a short period. The operation consistently processes 3 players and applies 3 adjustments, indicating the slowdown is not due to increased workload but rather systemic performance issues. The progressive nature of the degradation suggests resource accumulation, blocking operations, or database query degradation.
+The `passive_lucidity_flux_tick` operation is experiencing severe performance degradation, with execution times increasing from 3.6 seconds to 17.4 seconds over a short period. The operation consistently processes 3 players and applies 3 adjustments, indicating the slowdown is not due to increased workload but rather systemic performance issues. The progressive nature of the degradation suggests resource accumulation, blocking operations, or database query degradation.
 
 **Key Findings**:
 - Operation duration increased 383% over 4 warnings (3.6s → 17.4s)
@@ -26,7 +26,7 @@ The `passive_sanity_flux_tick` operation is experiencing severe performance degr
 ### Phase 1: Initial Bug Report Analysis
 
 **Bug Description**:
-Performance warnings in `logs/local/warnings.log` showing `passive_sanity_flux_tick` operation exceeding 1000ms threshold with progressive degradation:
+Performance warnings in `logs/local/warnings.log` showing `passive_lucidity_flux_tick` operation exceeding 1000ms threshold with progressive degradation:
 
 1. **Warning 1** (Line 1): 3578.67ms (3.6 seconds) - 258% over threshold
 2. **Warning 2** (Line 2): 6677.25ms (6.7 seconds) - 568% over threshold
@@ -34,11 +34,11 @@ Performance warnings in `logs/local/warnings.log` showing `passive_sanity_flux_t
 4. **Warning 4** (Line 4): 17391.08ms (17.4 seconds) - 1639% over threshold
 
 **Affected Systems**:
-- `server/services/passive_sanity_flux_service.py` - Passive sanity flux processing
+- `server/services/passive_lucidity_flux_service.py` - Passive lucidity flux processing
 - `server/monitoring/performance_monitor.py` - Performance monitoring and alerting
 - `server/app/lifespan.py` - Game tick loop integration
 - `server/persistence.py` - Room lookup operations
-- Database operations (PostgreSQL) - Player and sanity record queries
+- Database operations (PostgreSQL) - Player and lucidity record queries
 
 **Investigation Scope**:
 - Performance bottleneck identification
@@ -57,7 +57,7 @@ All warnings show consistent metadata:
 - `evaluated_players: 3`
 - `applied_adjustments: 3`
 - `threshold_ms: 1000.0`
-- Operation: `passive_sanity_flux_tick`
+- Operation: `passive_lucidity_flux_tick`
 
 **Timeline Analysis**:
 - Warning 1: 2025-11-30 11:34:11 (3578ms)
@@ -75,22 +75,22 @@ All warnings show consistent metadata:
 
 ### Phase 3: Code Analysis
 
-#### 3.1 Passive Sanity Flux Service Implementation
+#### 3.1 Passive lucidity Flux Service Implementation
 
-**File**: `server/services/passive_sanity_flux_service.py`
+**File**: `server/services/passive_lucidity_flux_service.py`
 
 **Key Operations**:
 
 1. **`process_tick()` Method** (Lines 113-219):
    - Loads all players: `await self._load_players(session)` (Line 134)
-   - Loads all sanity records: `await self._load_sanity_records(session)` (Line 135)
+   - Loads all lucidity records: `await self._load_lucidity_records(session)` (Line 135)
    - Iterates through players (Line 137)
    - For each player:
      - Resolves context: `self._resolve_context(player, timestamp)` (Line 147)
      - Calculates companion modifier (Line 150)
      - Applies adaptive resistance (Line 153)
      - Applies residual (Line 154)
-     - Applies sanity adjustment: `await sanity_service.apply_sanity_adjustment()` (Line 174)
+     - Applies lucidity adjustment: `await lucidity_service.apply_lucidity_adjustment()` (Line 174)
    - Commits all adjustments: `await session.commit()` (Line 191)
 
 2. **`_resolve_context()` Method** (Lines 235-290):
@@ -103,16 +103,16 @@ All warnings show consistent metadata:
    - Simple SELECT query: `select(Player)`
    - Should be efficient, but loads ALL players (not just active ones)
 
-4. **`_load_sanity_records()` Method** (Lines 229-233):
-   - Simple SELECT query: `select(PlayerSanity)`
-   - Loads ALL sanity records into memory
+4. **`_load_lucidity_records()` Method** (Lines 229-233):
+   - Simple SELECT query: `select(Playerlucidity)`
+   - Loads ALL lucidity records into memory
    - Creates dictionary mapping: `{str(record.player_id): record}`
 
-5. **`apply_sanity_adjustment()` Calls** (Line 174):
+5. **`apply_lucidity_adjustment()` Calls** (Line 174):
    - Each call performs:
-     - Database query: `get_or_create_player_sanity()`
-     - Database write: Update `PlayerSanity` record
-     - Database write: Insert `SanityAdjustmentLog` entry
+     - Database query: `get_or_create_player_lucidity()`
+     - Database write: Update `Playerlucidity` record
+     - Database write: Insert `lucidityAdjustmentLog` entry
      - Potential liability processing
      - `await self._session.flush()` per adjustment
 
@@ -137,11 +137,11 @@ All warnings show consistent metadata:
 **Potential N+1 Patterns**:
 1. **Player Loading**: Loads all players, then processes each individually
 2. **Room Lookups**: Synchronous `get_room()` called for each player (no batching)
-3. **Sanity Adjustments**: Each adjustment triggers separate database operations
+3. **lucidity Adjustments**: Each adjustment triggers separate database operations
 
 **Transaction Management**:
 - Single commit after all adjustments (Line 191) - Good
-- But each `apply_sanity_adjustment()` calls `flush()` (Line 337 in sanity_service.py)
+- But each `apply_lucidity_adjustment()` calls `flush()` (Line 337 in lucidity_service.py)
 - Multiple flushes before commit may cause lock contention
 
 #### 3.4 Game Tick Loop Integration
@@ -150,9 +150,9 @@ All warnings show consistent metadata:
 
 **Integration Point** (Lines 644-649):
 ```python
-if hasattr(app.state, "passive_sanity_flux_service"):
+if hasattr(app.state, "passive_lucidity_flux_service"):
     try:
-        await app.state.passive_sanity_flux_service.process_tick(
+        await app.state.passive_lucidity_flux_service.process_tick(
             session=session,
             tick_count=tick_count,
             now=datetime.datetime.now(datetime.UTC),
@@ -175,7 +175,7 @@ if hasattr(app.state, "passive_sanity_flux_service"):
 **Warning 1**:
 ```
 2025-11-30 11:34:11 - server.monitoring.performance_monitor - WARNING
-operation='passive_sanity_flux_tick'
+operation='passive_lucidity_flux_tick'
 duration_ms=3578.672799980268
 threshold_ms=1000.0
 metadata={'evaluated_players': 3, 'applied_adjustments': 3}
@@ -185,7 +185,7 @@ correlation_id='ae7a1025-8688-45a1-ae4f-53ebd9f0cd79'
 **Warning 2**:
 ```
 2025-11-30 11:34:38 - server.monitoring.performance_monitor - WARNING
-operation='passive_sanity_flux_tick'
+operation='passive_lucidity_flux_tick'
 duration_ms=6677.247800049372
 threshold_ms=1000.0
 metadata={'evaluated_players': 3, 'applied_adjustments': 3}
@@ -195,7 +195,7 @@ correlation_id='6112785e-597b-4022-a964-0eca12916244'
 **Warning 3**:
 ```
 2025-11-30 11:35:29 - server.monitoring.performance_monitor - WARNING
-operation='passive_sanity_flux_tick'
+operation='passive_lucidity_flux_tick'
 duration_ms=15737.52969992347
 threshold_ms=1000.0
 metadata={'evaluated_players': 3, 'applied_adjustments': 3}
@@ -205,7 +205,7 @@ correlation_id='59577c4f-391e-44d8-985a-89368b231295'
 **Warning 4**:
 ```
 2025-11-30 11:36:49 - server.monitoring.performance_monitor - WARNING
-operation='passive_sanity_flux_tick'
+operation='passive_lucidity_flux_tick'
 duration_ms=17391.079199966043
 threshold_ms=1000.0
 metadata={'evaluated_players': 3, 'applied_adjustments': 3}
@@ -215,14 +215,14 @@ correlation_id='dcd44258-4dd8-4c7b-8917-66d7e55b598d'
 #### 4.2 Code Evidence
 
 **Synchronous Blocking Operation**:
-```242:242:server/services/passive_sanity_flux_service.py
+```242:242:server/services/passive_lucidity_flux_service.py
                 room = self._persistence.get_room(str(player.current_room_id))
 ```
 
 **Performance Monitoring**:
-```396:401:server/services/passive_sanity_flux_service.py
+```396:401:server/services/passive_lucidity_flux_service.py
             self._performance_monitor.record_metric(
-                "passive_sanity_flux_tick",
+                "passive_lucidity_flux_tick",
                 duration_ms,
                 success=success,
                 metadata=metadata,
@@ -256,7 +256,7 @@ correlation_id='dcd44258-4dd8-4c7b-8917-66d7e55b598d'
 
 **Technical Analysis**:
 
-The `passive_sanity_flux_tick` operation calls `self._persistence.get_room()` synchronously within an async function. This blocks the async event loop for each player processed. The blocking operation has the following impact:
+The `passive_lucidity_flux_tick` operation calls `self._persistence.get_room()` synchronously within an async function. This blocks the async event loop for each player processed. The blocking operation has the following impact:
 
 1. **Event Loop Blocking**: Each `get_room()` call blocks the entire async event loop
 2. **Cumulative Effect**: With 3 players, 3 blocking operations occur per tick
@@ -282,7 +282,7 @@ The `passive_sanity_flux_tick` operation calls `self._persistence.get_room()` sy
 
 #### 2.2 Multiple Database Flushes
 
-**Issue**: Each `apply_sanity_adjustment()` calls `flush()` before the final `commit()`
+**Issue**: Each `apply_lucidity_adjustment()` calls `flush()` before the final `commit()`
 
 **Impact**:
 - Multiple round-trips to database
@@ -306,12 +306,12 @@ The `passive_sanity_flux_tick` operation calls `self._persistence.get_room()` sy
 
 **Scope**:
 - Game tick processing system
-- Passive sanity flux service
+- Passive lucidity flux service
 - Database performance
 - Overall game responsiveness
 
 **User Impact**:
-- **Potential lag**: 3-17 second delays during sanity flux processing
+- **Potential lag**: 3-17 second delays during lucidity flux processing
 - **Game tick delays**: Other tick operations may be delayed
 - **Cascading effects**: Slow ticks may cause other systems to slow down
 - **User experience**: Players may notice unresponsiveness during tick processing
@@ -329,9 +329,9 @@ The `passive_sanity_flux_tick` operation calls `self._persistence.get_room()` sy
 - **Frequency**: Every game tick (depends on `ticks_per_minute` configuration)
 
 **Affected Components**:
-1. `PassiveSanityFluxService` - Core service experiencing slowdown
+1. `PassivelucidityFluxService` - Core service experiencing slowdown
 2. `PersistenceLayer.get_room()` - Synchronous blocking operation
-3. `SanityService.apply_sanity_adjustment()` - Database operations
+3. `lucidityService.apply_lucidity_adjustment()` - Database operations
 4. Game tick loop - Overall tick processing
 5. Database connection pool - Potential exhaustion
 
@@ -374,7 +374,7 @@ The `passive_sanity_flux_tick` operation calls `self._persistence.get_room()` sy
 **Action**: Reduce database round-trips and optimize transaction boundaries
 
 **Investigation Steps**:
-1. Review `apply_sanity_adjustment()` flush() calls
+1. Review `apply_lucidity_adjustment()` flush() calls
 2. Consider batching adjustments before flushing
 3. Evaluate transaction boundaries and commit frequency
 4. Analyze database query patterns for N+1 issues
@@ -390,7 +390,7 @@ The `passive_sanity_flux_tick` operation calls `self._persistence.get_room()` sy
 
 **Investigation Steps**:
 1. Review player loading to filter inactive players
-2. Evaluate if offline players need passive sanity flux
+2. Evaluate if offline players need passive lucidity flux
 3. Consider adding player status filtering to `_load_players()`
 4. Measure performance impact of filtering
 
@@ -404,7 +404,7 @@ The `passive_sanity_flux_tick` operation calls `self._persistence.get_room()` sy
 **Action**: Add detailed timing instrumentation to identify bottlenecks
 
 **Investigation Steps**:
-1. Add timing logs for each major operation (player loading, room lookup, sanity adjustment)
+1. Add timing logs for each major operation (player loading, room lookup, lucidity adjustment)
 2. Measure time spent in synchronous vs async operations
 3. Track database query durations
 4. Monitor resource usage (memory, connections)
@@ -425,7 +425,7 @@ The `passive_sanity_flux_tick` operation calls `self._persistence.get_room()` sy
 **Total Warnings**: 4
 
 **Warning Details**:
-- All warnings are for `passive_sanity_flux_tick` operation
+- All warnings are for `passive_lucidity_flux_tick` operation
 - Consistent metadata: 3 players evaluated, 3 adjustments applied
 - Progressive duration increase: 3.6s → 6.7s → 15.7s → 17.4s
 - All exceed 1000ms threshold by significant margins
@@ -433,24 +433,24 @@ The `passive_sanity_flux_tick` operation calls `self._persistence.get_room()` sy
 ### Code Evidence
 
 **Synchronous Blocking**:
-- `server/services/passive_sanity_flux_service.py:242` - `self._persistence.get_room()` call
+- `server/services/passive_lucidity_flux_service.py:242` - `self._persistence.get_room()` call
 - `server/persistence.py:1387-1419` - Synchronous `get_room()` implementation
 - `server/persistence.py:1421-1463` - `_sync_room_players()` called synchronously
 
 **Database Operations**:
-- `server/services/passive_sanity_flux_service.py:134-135` - Player and sanity record loading
-- `server/services/passive_sanity_flux_service.py:174` - Sanity adjustment calls
-- `server/services/passive_sanity_flux_service.py:191` - Single commit after all adjustments
-- `server/services/sanity_service.py:337` - Flush called per adjustment
+- `server/services/passive_lucidity_flux_service.py:134-135` - Player and lucidity record loading
+- `server/services/passive_lucidity_flux_service.py:174` - lucidity adjustment calls
+- `server/services/passive_lucidity_flux_service.py:191` - Single commit after all adjustments
+- `server/services/lucidity_service.py:337` - Flush called per adjustment
 
 **Performance Monitoring**:
 - `server/monitoring/performance_monitor.py:56` - Alert threshold: 1000ms
-- `server/services/passive_sanity_flux_service.py:396-401` - Performance metric recording
+- `server/services/passive_lucidity_flux_service.py:396-401` - Performance metric recording
 
 ### System Architecture Evidence
 
 **Game Tick Integration**:
-- `server/app/lifespan.py:644-649` - Passive sanity flux called in game tick loop
+- `server/app/lifespan.py:644-649` - Passive lucidity flux called in game tick loop
 - Uses same database session as HP decay processing
 - Runs every game tick (frequency configurable)
 
@@ -466,14 +466,14 @@ The `passive_sanity_flux_tick` operation calls `self._persistence.get_room()` sy
 **If root cause is confirmed, use this prompt for fixing:**
 
 ```
-Fix performance degradation in passive_sanity_flux_tick operation
+Fix performance degradation in passive_lucidity_flux_tick operation
 
-The passive_sanity_flux_tick operation is experiencing severe performance degradation,
+The passive_lucidity_flux_tick operation is experiencing severe performance degradation,
 increasing from 3.6 seconds to 17.4 seconds over a short period. The primary root
 cause is synchronous blocking operations in async context.
 
 Key issues identified:
-1. Synchronous get_room() call at server/services/passive_sanity_flux_service.py:242
+1. Synchronous get_room() call at server/services/passive_lucidity_flux_service.py:242
    blocks the async event loop for each player
 2. No caching for room lookups - rooms are looked up every tick for every player
 3. Multiple database flushes before commit may cause lock contention
@@ -492,7 +492,7 @@ Expected improvement: 95%+ reduction in execution time
 
 Test requirements:
 - Verify operation completes under 1000ms threshold
-- Ensure no functional regressions in sanity flux calculations
+- Ensure no functional regressions in lucidity flux calculations
 - Confirm room lookups work correctly with caching
 - Validate database operations maintain data consistency
 ```

@@ -26,7 +26,7 @@ def prototype_directory(tmp_path: Path) -> Path:
         "wear_slots": ["off_hand"],
         "usage_restrictions": {},
         "stacking_rules": {"max_stack": 1},
-        "effect_components": ["component.sanity_whisper"],
+        "effect_components": ["component.Lucidity_whisper"],
         "metadata": {"lore": "Restricted Archive shelf A-17"},
         "tags": ["lore", "codex"],
     }
@@ -61,7 +61,7 @@ def test_factory_creates_instance_with_overrides(prototype_directory: Path):
     assert instance.flags == ["MAGICAL"]
     assert instance.metadata["edition"] == "expurgated"
     assert instance.origin["source"] == "admin_spawn"
-    assert instance.metadata["components"] == ["component.sanity_whisper"]
+    assert instance.metadata["components"] == ["component.Lucidity_whisper"]
     assert "item_instance_id" in instance.to_inventory_stack()
 
 

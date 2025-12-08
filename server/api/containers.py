@@ -21,7 +21,8 @@ from ..exceptions import LoggedHTTPException, RateLimitError, ValidationError
 from ..logging.enhanced_logging_config import get_logger
 from ..models.container import ContainerComponent
 from ..models.user import User
-from ..persistence import get_persistence
+
+# Removed: from ..persistence import get_persistence - now using async_persistence from request
 from ..services.container_service import (
     ContainerAccessDeniedError,
     ContainerCapacityError,
@@ -127,13 +128,13 @@ def _create_error_context(request: Request | None, current_user: User | None, **
     return context
 
 
-def _get_player_id_from_user(current_user: User, persistence: Any) -> UUID:
+async def _get_player_id_from_user(current_user: User, persistence: Any) -> UUID:
     """
     Get player_id from user.
 
     Args:
         current_user: Current authenticated user
-        persistence: Persistence layer instance
+        persistence: Async persistence layer instance
 
     Returns:
         UUID: Player UUID
@@ -141,7 +142,7 @@ def _get_player_id_from_user(current_user: User, persistence: Any) -> UUID:
     Raises:
         LoggedHTTPException: If player not found
     """
-    player = persistence.get_player_by_user_id(str(current_user.id))
+    player = await persistence.get_player_by_user_id(str(current_user.id))
     if not player:
         raise LoggedHTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -151,18 +152,21 @@ def _get_player_id_from_user(current_user: User, persistence: Any) -> UUID:
     return UUID(str(player.player_id))
 
 
-def _get_container_service(persistence: Any | None = None) -> ContainerService:
+def _get_container_service(persistence: Any | None = None, request: Request | None = None) -> ContainerService:
     """
     Get ContainerService instance.
 
     Args:
-        persistence: Persistence layer instance (optional, will get if not provided)
+        persistence: Async persistence layer instance (optional, will get from request if not provided)
+        request: FastAPI Request object (required if persistence is None)
 
     Returns:
         ContainerService: Container service instance
     """
     if persistence is None:
-        persistence = get_persistence()
+        if request is None:
+            raise ValueError("Either persistence or request must be provided")
+        persistence = request.app.state.persistence  # Now async_persistence
     return ContainerService(persistence=persistence)
 
 
@@ -216,17 +220,17 @@ async def open_container(
         ) from e
 
     try:
-        # Get persistence
-        persistence = get_persistence()
+        # Get persistence from request (now async_persistence)
+        persistence = request.app.state.persistence
 
         # Get player_id from user
-        player_id = _get_player_id_from_user(current_user, persistence)
+        player_id = await _get_player_id_from_user(current_user, persistence)
 
         # Get container service
-        container_service = _get_container_service(persistence)
+        container_service = _get_container_service(persistence, request)
 
         # Open container
-        result = container_service.open_container(request_data.container_id, player_id)
+        result = await container_service.open_container(request_data.container_id, player_id)
 
         # Emit WebSocket event
         try:
@@ -384,18 +388,18 @@ async def transfer_items(
         ) from e
 
     try:
-        # Get persistence
-        persistence = get_persistence()
+        # Get persistence from request (now async_persistence)
+        persistence = request.app.state.persistence
 
         # Get player_id from user
-        player_id = _get_player_id_from_user(current_user, persistence)
+        player_id = await _get_player_id_from_user(current_user, persistence)
 
         # Get container service
-        container_service = _get_container_service(persistence)
+        container_service = _get_container_service(persistence, request)
 
         # Transfer items
         if request_data.direction == "to_container":
-            result = container_service.transfer_to_container(
+            result = await container_service.transfer_to_container(
                 request_data.container_id,
                 player_id,
                 request_data.mutation_token,
@@ -403,7 +407,7 @@ async def transfer_items(
                 request_data.quantity,
             )
         else:  # to_player
-            result = container_service.transfer_from_container(
+            result = await container_service.transfer_from_container(
                 request_data.container_id,
                 player_id,
                 request_data.mutation_token,
@@ -575,17 +579,17 @@ async def close_container(
         ) from e
 
     try:
-        # Get persistence
-        persistence = get_persistence()
+        # Get persistence from request (now async_persistence)
+        persistence = request.app.state.persistence
 
         # Get player_id from user
-        player_id = _get_player_id_from_user(current_user, persistence)
+        player_id = await _get_player_id_from_user(current_user, persistence)
 
         # Get container service
-        container_service = _get_container_service(persistence)
+        container_service = _get_container_service(persistence, request)
 
         # Close container
-        container_service.close_container(request_data.container_id, player_id, request_data.mutation_token)
+        await container_service.close_container(request_data.container_id, player_id, request_data.mutation_token)
 
         # Emit WebSocket event
         try:
@@ -594,8 +598,6 @@ async def close_container(
                 # Get container to find room_id
                 container_data = persistence.get_container(request_data.container_id)
                 if container_data:
-                    from ..models.container import ContainerComponent
-
                     container = ContainerComponent.model_validate(container_data)
                     if container.room_id:
                         await emit_container_closed(
@@ -710,17 +712,17 @@ async def loot_all_items(
         ) from e
 
     try:
-        # Get persistence
-        persistence = get_persistence()
+        # Get persistence from request (now async_persistence)
+        persistence = request.app.state.persistence
 
         # Get player_id from user
-        player_id = _get_player_id_from_user(current_user, persistence)
+        player_id = await _get_player_id_from_user(current_user, persistence)
 
         # Get container service
-        container_service = _get_container_service(persistence)
+        container_service = _get_container_service(persistence, request)
 
         # Get container to check items
-        container_data = persistence.get_container(request_data.container_id)
+        container_data = await persistence.get_container(request_data.container_id)
         if not container_data:
             context = _create_error_context(
                 request, current_user, container_id=str(request_data.container_id), operation="loot_all"
@@ -732,8 +734,6 @@ async def loot_all_items(
             )
 
         # Transfer all items from container to player
-        from ..models.container import ContainerComponent
-
         container = ContainerComponent.model_validate(container_data)
         player_inventory: list[InventoryStack] = []
 
@@ -752,7 +752,7 @@ async def loot_all_items(
         # Try to transfer each item
         for item in container.items:
             try:
-                result = container_service.transfer_from_container(
+                result = await container_service.transfer_from_container(
                     request_data.container_id,
                     player_id,
                     request_data.mutation_token,

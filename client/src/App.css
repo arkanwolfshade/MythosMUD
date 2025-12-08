@@ -171,13 +171,16 @@ body {
 /* Profession Selection Screen Styles */
 .profession-selection-screen {
   min-height: 100vh;
+  max-height: 100vh; /* Constrain to viewport height */
   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
   color: #00ff00;
   font-family: 'Courier New', monospace;
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Start from top instead of center */
   justify-content: center;
   padding: 2rem;
+  overflow-y: auto; /* Enable vertical scrolling when content exceeds viewport */
+  box-sizing: border-box; /* Include padding in height calculation */
 }
 
 .profession-selection-container {

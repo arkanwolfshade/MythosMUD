@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 from uuid import uuid4
 
 from server.events.event_types import (
+    PlayerDeliriumRespawnedEvent,
     PlayerDiedEvent,
     PlayerHPDecayEvent,
     PlayerMortallyWoundedEvent,
@@ -157,3 +158,41 @@ class TestPlayerRespawnedEvent:
         event.timestamp = datetime.now(UTC)
 
         assert event.death_room_id == "dangerous-cave"
+
+
+class TestPlayerDeliriumRespawnedEvent:
+    """Test suite for PlayerDeliriumRespawnedEvent."""
+
+    def test_event_creation_basic(self):
+        """Test basic delirium respawn event creation."""
+        test_player_id = uuid4()
+        event = PlayerDeliriumRespawnedEvent(
+            player_id=test_player_id,
+            player_name="TestPlayer",
+            respawn_room_id="sanitarium-foyer",
+            old_lucidity=-15,
+            new_lucidity=10,
+        )
+        event.timestamp = datetime.now(UTC)
+
+        assert event.player_id == test_player_id
+        assert event.player_name == "TestPlayer"
+        assert event.respawn_room_id == "sanitarium-foyer"
+        assert event.old_lucidity == -15
+        assert event.new_lucidity == 10
+        assert event.event_type == "PlayerDeliriumRespawnedEvent"
+
+    def test_event_creation_with_delirium_location(self):
+        """Test event creation with delirium location info."""
+        test_player_id = uuid4()
+        event = PlayerDeliriumRespawnedEvent(
+            player_id=test_player_id,
+            player_name="TestPlayer",
+            respawn_room_id="sanitarium-foyer",
+            old_lucidity=-10,
+            new_lucidity=10,
+            delirium_location="dangerous-cave",
+        )
+        event.timestamp = datetime.now(UTC)
+
+        assert event.delirium_location == "dangerous-cave"

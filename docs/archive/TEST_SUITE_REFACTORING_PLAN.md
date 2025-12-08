@@ -853,6 +853,6 @@ test-slow:
 
 ---
 
-*"In organizing the forbidden knowledge of our test suite, we must be methodical, thorough, and patient. Only through careful cataloguing can we hope to maintain our sanity... and our test coverage."*
+*"In organizing the forbidden knowledge of our test suite, we must be methodical, thorough, and patient. Only through careful cataloguing can we hope to maintain our lucidity... and our test coverage."*
 
 — End of Refactoring Plan —

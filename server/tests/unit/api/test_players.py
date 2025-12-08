@@ -19,12 +19,12 @@ from server.api.players import (
     DamageRequest,
     FearRequest,
     HealRequest,
+    LucidityLossRequest,
     OccultKnowledgeRequest,
     RollStatsRequest,
-    SanityLossRequest,
     apply_corruption,
     apply_fear,
-    apply_sanity_loss,
+    apply_lucidity_loss,
     create_character_with_stats,
     create_player,
     damage_player,
@@ -59,13 +59,13 @@ def mock_current_user():
 def sample_player_data():
     """Sample player data for testing."""
     player = Mock()
-    player.player_id = str(uuid.uuid4())
-    player.user_id = str(uuid.uuid4())
+    player.player_id = uuid.uuid4()
+    player.user_id = uuid.uuid4()
     player.name = "TestPlayer"
     player.current_room_id = "earth_arkhamcity_northside_intersection_derby_high"
     player.experience_points = 100
     player.level = 5
-    player.stats = {"health": 100, "sanity": 100, "strength": 10}
+    player.stats = {"health": 100, "lucidity": 100, "strength": 10}
     player.inventory = []
     player.status_effects = []
     player.created_at = datetime.now()
@@ -111,10 +111,10 @@ def mock_player_service():
     service = Mock()
     service.create_player = Mock()
     service.create_player_with_stats = Mock()
-    service.list_players = Mock()
+    service.list_players = AsyncMock()  # list_players is async
     service.get_player_by_id = Mock()
     service.get_player_by_name = Mock()
-    service.delete_player = Mock()
+    service.delete_player = AsyncMock()  # delete_player is async
     return service
 
 
@@ -142,7 +142,7 @@ def mock_persistence():
     """Mock persistence layer for testing."""
     persistence = Mock()
     persistence.get_player = Mock()
-    persistence.apply_sanity_loss = Mock()
+    persistence.apply_lucidity_loss = Mock()
     persistence.apply_fear = Mock()
     persistence.apply_corruption = Mock()
     persistence.gain_occult_knowledge = Mock()
@@ -251,7 +251,7 @@ class TestPlayerCRUD:
         mock_service.get_player_by_id.return_value = sample_player_data
         mock_player_service_class.return_value = mock_service
 
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         result = await get_player(player_id, mock_current_user, mock_request, mock_service)
 
         assert result == sample_player_data.model_dump()
@@ -266,7 +266,7 @@ class TestPlayerCRUD:
         mock_service.get_player_by_id.return_value = None
         mock_player_service_class.return_value = mock_service
 
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         with pytest.raises(HTTPException) as exc_info:
             await get_player(player_id, mock_current_user, mock_request, mock_service)
 
@@ -313,7 +313,7 @@ class TestPlayerCRUD:
         mock_service.delete_player.return_value = (True, "Player deleted successfully")
         mock_player_service_class.return_value = mock_service
 
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         result = await delete_player(player_id, mock_current_user, mock_request, mock_service)
 
         assert result["message"] == "Player deleted successfully"
@@ -328,7 +328,7 @@ class TestPlayerCRUD:
         mock_service.delete_player.return_value = (False, "Player not found")
         mock_player_service_class.return_value = mock_service
 
-        player_id = str(uuid.uuid4())
+        player_id = uuid.uuid4()
         with pytest.raises(HTTPException) as exc_info:
             await delete_player(player_id, mock_current_user, mock_request, mock_service)
 
@@ -341,43 +341,45 @@ class TestPlayerEffects:
 
     @patch("server.api.players.PlayerServiceDep")
     @pytest.mark.asyncio
-    async def test_apply_sanity_loss_success(
+    async def test_apply_lucidity_loss_success(
         self, mock_player_service_dep, mock_current_user, sample_player_data, mock_persistence, mock_request
     ):
-        """Test successful sanity loss application."""
+        """Test successful lucidity loss application."""
         # Setup mocks
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_player.return_value = sample_player_data
 
         # Mock the PlayerService dependency
         mock_service = AsyncMock()
-        mock_service.apply_sanity_loss.return_value = {"message": "Applied 10 sanity loss to TestPlayer"}
+        mock_service.apply_lucidity_loss.return_value = {"message": "Applied 10 lucidity loss to TestPlayer"}
         mock_player_service_dep.return_value = mock_service
 
-        request_data = SanityLossRequest(amount=10, source="test")
-        result = await apply_sanity_loss("test-player-id", request_data, mock_request, mock_current_user, mock_service)
+        request_data = LucidityLossRequest(amount=10, source="test")
+        result = await apply_lucidity_loss(
+            "test-player-id", request_data, mock_request, mock_current_user, mock_service
+        )
 
-        assert "Applied 10 sanity loss to TestPlayer" in result["message"]
-        mock_service.apply_sanity_loss.assert_called_once_with("test-player-id", 10, "test")
+        assert "Applied 10 lucidity loss to TestPlayer" in result["message"]
+        mock_service.apply_lucidity_loss.assert_called_once_with("test-player-id", 10, "test")
 
     @patch("server.api.players.PlayerServiceDep")
     @pytest.mark.asyncio
-    async def test_apply_sanity_loss_player_not_found(
+    async def test_apply_lucidity_loss_player_not_found(
         self, mock_player_service_dep, mock_current_user, mock_persistence, mock_request
     ):
-        """Test sanity loss application when player not found."""
+        """Test lucidity loss application when player not found."""
         # Setup mocks
         mock_request.app.state.persistence = mock_persistence
         mock_persistence.get_player.return_value = None
 
         # Mock the PlayerService dependency
         mock_service = AsyncMock()
-        mock_service.apply_sanity_loss.side_effect = ValidationError("Player not found")
+        mock_service.apply_lucidity_loss.side_effect = ValidationError("Player not found")
         mock_player_service_dep.return_value = mock_service
 
         with pytest.raises(LoggedHTTPException) as exc_info:
-            request_data = SanityLossRequest(amount=10, source="test")
-            await apply_sanity_loss("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
+            request_data = LucidityLossRequest(amount=10, source="test")
+            await apply_lucidity_loss("nonexistent-id", request_data, mock_request, mock_current_user, mock_service)
 
         assert exc_info.value.status_code == 404
         assert "Player not found" in str(exc_info.value.detail)
@@ -821,9 +823,16 @@ class TestCharacterCreation:
 
     @patch("server.api.players.StatsGenerator")
     @patch("server.api.players.stats_roll_limiter")
+    @patch("server.async_persistence.get_async_persistence")
     @pytest.mark.asyncio
     async def test_roll_stats_with_profession_success(
-        self, mock_limiter, mock_stats_generator_class, mock_current_user, mock_request, sample_stats_data
+        self,
+        mock_get_persistence,
+        mock_limiter,
+        mock_stats_generator_class,
+        mock_current_user,
+        mock_request,
+        sample_stats_data,
     ):
         """Test successful stats rolling with profession ID."""
         # Setup mocks
@@ -835,6 +844,16 @@ class TestCharacterCreation:
         )
         mock_generator.get_stat_summary.return_value = {"total": 73, "average": 12.17}
         mock_stats_generator_class.return_value = mock_generator
+
+        # Mock profession lookup
+        mock_profession = Mock()
+        mock_profession.id = 0
+        mock_profession.name = "Scholar"
+        mock_profession.description = "A learned academic"
+        mock_profession.flavor_text = "Knowledge is power"
+        mock_persistence = AsyncMock()
+        mock_persistence.get_profession_by_id = AsyncMock(return_value=mock_profession)
+        mock_get_persistence.return_value = mock_persistence
 
         request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=0)
         result = await roll_character_stats(
@@ -870,14 +889,29 @@ class TestCharacterCreation:
         mock_generator.get_stat_summary.return_value = {"total": 73, "average": 12.17}
         mock_stats_generator_class.return_value = mock_generator
 
-        request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=1)
-        result = await roll_character_stats(
-            request_data,
-            mock_request,
-            max_attempts=10,
-            current_user=mock_current_user,
-            stats_generator=mock_generator,
-        )
+        # Mock shutdown check and async_persistence
+        from unittest.mock import patch as mock_patch
+
+        mock_profession = Mock()
+        mock_profession.id = 1
+        mock_profession.name = "TestProfession"
+
+        with (
+            mock_patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False),
+            mock_patch("server.async_persistence.get_async_persistence") as mock_get_persistence,
+        ):
+            mock_persistence = AsyncMock()
+            mock_persistence.get_profession_by_id = AsyncMock(return_value=mock_profession)
+            mock_get_persistence.return_value = mock_persistence
+
+            request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=1)
+            result = await roll_character_stats(
+                request_data,
+                mock_request,
+                max_attempts=10,
+                current_user=mock_current_user,
+                stats_generator=mock_generator,
+            )
 
         assert "stats" in result
         assert "stat_summary" in result
@@ -899,24 +933,42 @@ class TestCharacterCreation:
         mock_generator.roll_stats_with_profession.side_effect = ValueError("Invalid profession ID")
         mock_stats_generator_class.return_value = mock_generator
 
-        request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=999)
-        with pytest.raises(HTTPException) as exc_info:
-            await roll_character_stats(
-                request_data,
-                mock_request,
-                max_attempts=10,
-                current_user=mock_current_user,
-                stats_generator=mock_generator,
-            )
+        # Mock shutdown check and async_persistence
+        from unittest.mock import patch as mock_patch
 
-        assert exc_info.value.status_code == 400
-        assert "Invalid profession" in str(exc_info.value.detail)
+        with (
+            mock_patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False),
+            mock_patch("server.async_persistence.get_async_persistence") as mock_get_persistence,
+        ):
+            # Mock persistence to return None for invalid profession
+            mock_persistence = AsyncMock()
+            mock_persistence.get_profession_by_id = AsyncMock(return_value=None)
+            mock_get_persistence.return_value = mock_persistence
+
+            request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=999)
+            with pytest.raises(LoggedHTTPException) as exc_info:
+                await roll_character_stats(
+                    request_data,
+                    mock_request,
+                    max_attempts=10,
+                    current_user=mock_current_user,
+                    stats_generator=mock_generator,
+                )
+
+            assert exc_info.value.status_code == 404  # Profession not found
+            assert "not found" in str(exc_info.value.detail).lower()
 
     @patch("server.api.players.StatsGenerator")
     @patch("server.api.players.stats_roll_limiter")
+    @patch("server.async_persistence.get_async_persistence")
     @pytest.mark.asyncio
     async def test_roll_stats_with_profession_validation_error(
-        self, mock_limiter, mock_stats_generator_class, mock_current_user, mock_request
+        self,
+        mock_get_persistence,
+        mock_limiter,
+        mock_stats_generator_class,
+        mock_current_user,
+        mock_request,
     ):
         """Test stats rolling with profession when validation fails."""
         # Setup mocks
@@ -925,8 +977,18 @@ class TestCharacterCreation:
         mock_generator.roll_stats_with_profession.side_effect = Exception("Profession validation failed")
         mock_stats_generator_class.return_value = mock_generator
 
+        # Mock profession lookup to return a valid profession so we reach the validation error
+        mock_profession = Mock()
+        mock_profession.id = 0
+        mock_profession.name = "Scholar"
+        mock_profession.description = "A learned academic"
+        mock_profession.flavor_text = "Knowledge is power"
+        mock_persistence = AsyncMock()
+        mock_persistence.get_profession_by_id = AsyncMock(return_value=mock_profession)
+        mock_get_persistence.return_value = mock_persistence
+
         request_data = RollStatsRequest(method="3d6", required_class=None, timeout_seconds=1.0, profession_id=0)
-        with pytest.raises(HTTPException) as exc_info:
+        with pytest.raises(LoggedHTTPException) as exc_info:
             await roll_character_stats(
                 request_data,
                 mock_request,
@@ -1047,4 +1109,4 @@ class TestClassDescriptions:
         description = get_class_description("occultist")
         assert "forbidden knowledge" in description.lower()
         assert "magic" in description.lower()
-        assert "sanity" in description.lower()
+        assert "lucidity" in description.lower()

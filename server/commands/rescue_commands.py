@@ -9,9 +9,9 @@ from typing import Any
 from ..alias_storage import AliasStorage
 from ..database import get_async_session
 from ..logging.enhanced_logging_config import get_logger
-from ..models.sanity import PlayerSanity
-from ..services.sanity_event_dispatcher import send_rescue_update_event
-from ..services.sanity_service import SanityService
+from ..models.lucidity import PlayerLucidity
+from ..services.lucidity_event_dispatcher import send_rescue_update_event
+from ..services.lucidity_service import LucidityService
 from ..utils.command_parser import get_username_from_user
 
 logger = get_logger(__name__)
@@ -24,7 +24,7 @@ async def handle_ground_command(
     alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, str]:
-    """Attempt to ground a catatonic ally back to 1 SAN."""
+    """Attempt to ground a catatonic ally back to 1 LCD."""
 
     app = getattr(request, "app", None)
     state = getattr(app, "state", None) if app else None
@@ -71,12 +71,12 @@ async def handle_ground_command(
     rescuer_player_id_str = str(rescuer_player_id)
 
     async for session in get_async_session():
-        sanity_record = await session.get(PlayerSanity, target_player_id_str)
-        if sanity_record is None:
-            logger.warning("Ground command missing sanity record", target_id=target.player_id)
+        lucidity_record = await session.get(PlayerLucidity, target_player_id_str)
+        if lucidity_record is None:
+            logger.warning("Ground command missing lucidity record", target_id=target.player_id)
             return {"result": "The target's aura cannot be located among the ledgers of the mind."}
 
-        if sanity_record.current_tier != "catatonic":
+        if lucidity_record.current_tier != "catatonic":
             return {"result": f"{target_name} isn't catatonic and needs no grounding."}
 
         await send_rescue_update_event(
@@ -96,13 +96,13 @@ async def handle_ground_command(
             progress=10.0,
         )
 
-        delta = 1 - sanity_record.current_san
+        delta = 1 - lucidity_record.current_lcd
         if delta <= 0:
             delta = 1  # Ensure at least a single point of recovery
 
-        service = SanityService(session, catatonia_observer=registry)
+        service = LucidityService(session, catatonia_observer=registry)
         try:
-            result = await service.apply_sanity_adjustment(
+            result = await service.apply_lucidity_adjustment(
                 target_player_id,
                 delta,
                 reason_code="ground_rescue",
@@ -139,34 +139,34 @@ async def handle_ground_command(
             return {"result": "Eldritch interference scatters your grounding ritual. Try again shortly."}
 
     if registry and hasattr(registry, "on_catatonia_cleared"):
-        logger.debug("Catatonia registry notified via sanity service observer", target=target_name)
+        logger.debug("Catatonia registry notified via lucidity service observer", target=target_name)
 
     logger.info(
         "Ground command succeeded",
         rescuer=rescuer_username,
         target=target_name,
-        new_san=result.new_san,
+        new_lcd=result.new_lcd,
     )
 
     await send_rescue_update_event(
         target_player_id,
         status="success",
-        current_san=result.new_san,
+        current_lcd=result.new_lcd,
         rescuer_name=rescuer_username,
         target_name=target_name,
-        message=f"{rescuer_username} anchors your mind. Stability steadies at {result.new_san}/100.",
+        message=f"{rescuer_username} anchors your mind. Stability steadies at {result.new_lcd}/100.",
     )
     await send_rescue_update_event(
         rescuer_player_id,
         status="success",
         rescuer_name=rescuer_username,
         target_name=target_name,
-        message=f"{target_name} steadies at {result.new_san}/100 SAN.",
+        message=f"{target_name} steadies at {result.new_lcd}/100 LCD.",
     )
 
     narrative = (
         f"You kneel beside {target_name} and anchor their mind.\n"
-        f"Stability steadies at {result.new_san}/100, the fragility of reality humming in your ears."
+        f"Stability steadies at {result.new_lcd}/100, the fragility of reality humming in your ears."
     )
     return {"result": narrative}
 

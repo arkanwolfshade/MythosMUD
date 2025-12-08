@@ -26,7 +26,7 @@ from .database import get_async_session
 from .exceptions import ValidationError
 from .logging.enhanced_logging_config import get_logger
 from .middleware.command_rate_limiter import command_rate_limiter
-from .models.sanity import PlayerSanity
+from .models.lucidity import PlayerLucidity
 from .utils.alias_graph import AliasGraph
 from .utils.audit_logger import audit_logger
 from .utils.command_parser import get_username_from_user
@@ -111,6 +111,82 @@ def _is_predefined_emote(command: str) -> bool:
         return False
 
 
+# List of known system commands that should NOT be treated as emotes
+_SYSTEM_COMMANDS = {
+    "look",
+    "say",
+    "go",
+    "move",
+    "quit",
+    "logout",
+    "help",
+    "who",
+    "time",
+    "emote",
+    "alias",
+    "aliases",
+    "unalias",
+    "mute",
+    "mutes",
+    "unmute",
+    "admin",
+    "summon",
+    "pose",
+    "tell",
+    "whisper",
+    "shout",
+    "yell",
+    "chat",
+    "ooc",
+    "ic",
+    "afk",
+    "back",
+    "inventory",
+    "inv",
+    "i",
+    "examine",
+    "ex",
+    "get",
+    "take",
+    "drop",
+    "put",
+    "give",
+    "wear",
+    "remove",
+    "wield",
+    "unwield",
+    "kill",
+    "attack",
+    "flee",
+    "rest",
+    "sleep",
+    "wake",
+    "sit",
+    "stand",
+    "north",
+    "south",
+    "east",
+    "west",
+    "up",
+    "down",
+    "n",
+    "s",
+    "e",
+    "w",
+    "u",
+    "d",
+    "ne",
+    "nw",
+    "se",
+    "sw",
+    "northeast",
+    "northwest",
+    "southeast",
+    "southwest",
+    "unknown_command",
+}
+
+
 def _should_treat_as_emote(command: str) -> bool:
     """
     Check if a single word command should be treated as an emote.
@@ -124,83 +200,8 @@ def _should_treat_as_emote(command: str) -> bool:
     Returns:
         True if the command should be treated as an emote, False otherwise
     """
-    # List of known system commands that should NOT be treated as emotes
-    system_commands = {
-        "look",
-        "say",
-        "go",
-        "move",
-        "quit",
-        "logout",
-        "help",
-        "who",
-        "time",
-        "emote",
-        "alias",
-        "aliases",
-        "unalias",
-        "mute",
-        "mutes",
-        "unmute",
-        "admin",
-        "summon",
-        "pose",
-        "tell",
-        "whisper",
-        "shout",
-        "yell",
-        "chat",
-        "ooc",
-        "ic",
-        "afk",
-        "back",
-        "inventory",
-        "inv",
-        "i",
-        "examine",
-        "ex",
-        "get",
-        "take",
-        "drop",
-        "put",
-        "give",
-        "wear",
-        "remove",
-        "wield",
-        "unwield",
-        "kill",
-        "attack",
-        "flee",
-        "rest",
-        "sleep",
-        "wake",
-        "sit",
-        "stand",
-        "north",
-        "south",
-        "east",
-        "west",
-        "up",
-        "down",
-        "n",
-        "s",
-        "e",
-        "w",
-        "u",
-        "d",
-        "ne",
-        "nw",
-        "se",
-        "sw",
-        "northeast",
-        "northwest",
-        "southeast",
-        "southwest",
-        "unknown_command",
-    }
-
     # If it's a known system command, don't treat as emote
-    if command.lower() in system_commands:
+    if command.lower() in _SYSTEM_COMMANDS:
         return False
 
     # If it's a predefined emote, treat as emote
@@ -524,7 +525,7 @@ async def process_command_with_validation(
         return result
 
     except ValidationError as e:
-        logger.warning("Command validation error")
+        logger.warning("Command validation error", error_type=type(e).__name__)
 
         # NEW: Audit log validation failures for security-sensitive commands (CRITICAL-3)
         if CommandValidator.is_security_sensitive(command_line):
@@ -532,11 +533,13 @@ async def process_command_with_validation(
                 player_name=player_name,
                 command=command_line,
                 success=False,
-                result=f"Validation error: {str(e)}",
+                result="Validation error occurred",
                 metadata={"error_type": "ValidationError"},
             )
 
-        return {"result": str(e)}
+        # Human reader: do not expose exception details to users.
+        # AI reader: CodeQL requires no exception information exposure to external users.
+        return {"result": "Invalid command format"}
     except Exception as e:
         # Format exception traceback and sanitize ANSI codes for Windows compatibility
         try:
@@ -644,9 +647,98 @@ def get_help_content(command_name: str | None = None) -> str:
     return get_help_content_new(command_name)
 
 
+def _load_player_for_catatonia_check(request: Request, player_name: str, persistence) -> Any | None:
+    """Load player for catatonia check, using cache if available."""
+    player = get_cached_player(request, player_name)
+    if player is None:
+        try:
+            player = persistence.get_player_by_name(player_name)
+            cache_player(request, player_name, player)
+        except Exception:  # pragma: no cover - defensive
+            logger.exception("Failed to load player for catatonia check", player=player_name)
+            return None
+    return player
+
+
+def _check_catatonia_registry(state: Any, player_id: str | uuid.UUID, player_name: str) -> tuple[bool, str | None]:
+    """Check catatonia status via registry."""
+    registry = getattr(state, "__dict__", {}).get("catatonia_registry")
+    if registry is not None and hasattr(registry, "is_catatonic"):
+        try:
+            if registry.is_catatonic(player_id):
+                logger.info("Catatonic player command blocked via registry", player=player_name)
+                return (
+                    True,
+                    "Your body lies unresponsive, trapped in catatonia. Another must ground you.",
+                )
+        except Exception:  # pragma: no cover - defensive
+            logger.exception("Catatonia registry lookup failed", player=player_name)
+    return False, None
+
+
+def _is_catatonic(lucidity_record) -> bool:
+    """Check if player is catatonic based on lucidity record."""
+    if not lucidity_record:
+        return False
+    return lucidity_record.current_tier == "catatonic" or lucidity_record.current_lcd <= 0
+
+
+async def _fetch_lucidity_record(session, player_id_uuid: uuid.UUID, player_name: str):
+    """Fetch lucidity record from database session."""
+    lucidity_record = await session.get(PlayerLucidity, player_id_uuid)
+    logger.debug(
+        "Lucidity record retrieved",
+        player=player_name,
+        player_id=player_id_uuid,
+        lucidity_record_exists=bool(lucidity_record),
+        current_lcd=lucidity_record.current_lcd if lucidity_record else None,
+        current_tier=lucidity_record.current_tier if lucidity_record else None,
+    )
+    return lucidity_record
+
+
+async def _query_lucidity_record(player_id_uuid: uuid.UUID, player_name: str):
+    """Query lucidity record from database with error handling."""
+    try:
+        async for session in get_async_session():
+            try:
+                return await _fetch_lucidity_record(session, player_id_uuid, player_name)
+            except Exception as e:
+                logger.warning(
+                    "Failed to check catatonia status in database",
+                    player=player_name,
+                    error=str(e),
+                    error_type=type(e).__name__,
+                )
+                return None
+    except (RuntimeError, AttributeError) as e:
+        logger.debug("Database session unavailable for catatonia check", player=player_name, error=str(e))
+        return None
+    except Exception as e:
+        logger.warning("Error checking catatonia status", player=player_name, error=str(e))
+        return None
+    return None
+
+
+async def _check_catatonia_database(player_id_uuid: uuid.UUID, player_name: str) -> tuple[bool, str | None]:
+    """Check catatonia status via database."""
+    lucidity_record = await _query_lucidity_record(player_id_uuid, player_name)
+    if lucidity_record and _is_catatonic(lucidity_record):
+        logger.info(
+            "Catatonic player command blocked",
+            player=player_name,
+            lucidity=lucidity_record.current_lcd,
+            tier=lucidity_record.current_tier,
+        )
+        return (
+            True,
+            "Your body lies unresponsive, trapped in catatonia. Another must ground you.",
+        )
+    return False, None
+
+
 async def _check_catatonia_block(player_name: str, command: str, request: Request) -> tuple[bool, str | None]:
     """Determine whether to block command execution due to catatonia."""
-
     if command in CATATONIA_ALLOWED_COMMANDS:
         return False, None
 
@@ -659,15 +751,7 @@ async def _check_catatonia_block(player_name: str, command: str, request: Reques
     if persistence is None:
         return False, None
 
-    player = get_cached_player(request, player_name)
-    if player is None:
-        try:
-            player = persistence.get_player_by_name(player_name)
-        except Exception:  # pragma: no cover - defensive
-            logger.exception("Failed to load player for catatonia check", player=player_name)
-            return False, None
-        cache_player(request, player_name, player)
-
+    player = _load_player_for_catatonia_check(request, player_name, persistence)
     if not player:
         return False, None
 
@@ -675,88 +759,12 @@ async def _check_catatonia_block(player_name: str, command: str, request: Reques
     if not player_id:
         return False, None
 
-    registry = getattr(state, "__dict__", {}).get("catatonia_registry")
-    if registry is not None and hasattr(registry, "is_catatonic"):
-        try:
-            # is_catatonic accepts UUID | str, converts internally
-            if registry.is_catatonic(player_id):
-                logger.info("Catatonic player command blocked via registry", player=player_name, command=command)
-                return (
-                    True,
-                    "Your body lies unresponsive, trapped in catatonia. Another must ground you.",
-                )
-        except Exception:  # pragma: no cover - defensive
-            logger.exception("Catatonia registry lookup failed", player=player_name)
+    # Check registry first
+    blocked, message = _check_catatonia_registry(state, player_id, player_name)
+    if blocked:
+        return blocked, message
 
-    try:
-        # Convert player_id to UUID if needed (Player model stores as string due to UUID(as_uuid=False))
-        player_id_uuid = player_id if isinstance(player_id, uuid.UUID) else uuid.UUID(player_id)
-
-        logger.debug(
-            "Starting catatonia check",
-            player=player_name,
-            command=command,
-            # Structlog handles UUID objects automatically, no need to convert to string
-            player_id=player_id_uuid,
-        )
-        async for session in get_async_session():
-            try:
-                # Structlog handles UUID objects automatically, no need to convert to string
-                logger.debug(
-                    "Database session obtained for catatonia check", player=player_name, player_id=player_id_uuid
-                )
-                # PlayerSanity.player_id is UUID type, but stored as string (UUID(as_uuid=False))
-                # SQLAlchemy accepts UUID directly and converts internally
-                sanity_record = await session.get(PlayerSanity, player_id_uuid)
-                logger.debug(
-                    "Sanity record retrieved",
-                    player=player_name,
-                    # Structlog handles UUID objects automatically, no need to convert to string
-                    player_id=player_id_uuid,
-                    sanity_record_exists=bool(sanity_record),
-                    current_san=sanity_record.current_san if sanity_record else None,
-                    current_tier=sanity_record.current_tier if sanity_record else None,
-                )
-                # Block if tier is catatonic OR sanity is <= 0
-                # This prevents movement even if tier hasn't been updated yet
-                # As noted in the Pnakotic Manuscripts, sanity <= 0 should always result in catatonic state
-                if sanity_record and (sanity_record.current_tier == "catatonic" or sanity_record.current_san <= 0):
-                    logger.info(
-                        "Catatonic player command blocked",
-                        player=player_name,
-                        command=command,
-                        sanity=sanity_record.current_san,
-                        tier=sanity_record.current_tier,
-                    )
-                    return (
-                        True,
-                        "Your body lies unresponsive, trapped in catatonia. Another must ground you.",
-                    )
-                else:
-                    logger.debug(
-                        "Player not catatonic, allowing command",
-                        player=player_name,
-                        command=command,
-                        sanity=sanity_record.current_san if sanity_record else None,
-                        tier=sanity_record.current_tier if sanity_record else None,
-                    )
-            except Exception as e:
-                # If database query fails, log but don't block command
-                logger.warning(
-                    "Failed to check catatonia status in database",
-                    player=player_name,
-                    error=str(e),
-                    error_type=type(e).__name__,
-                )
-                return False, None
-    except (RuntimeError, AttributeError) as e:
-        # Event loop is closed or database is unavailable - don't block command
-        # This can happen during test cleanup on Windows
-        logger.debug("Database session unavailable for catatonia check", player=player_name, error=str(e))
-        return False, None
-    except Exception as e:
-        # Any other error - log but don't block command
-        logger.warning("Error checking catatonia status", player=player_name, error=str(e))
-        return False, None
-
-    return False, None
+    # Check database
+    player_id_uuid = player_id if isinstance(player_id, uuid.UUID) else uuid.UUID(player_id)
+    logger.debug("Starting catatonia check", player=player_name, command=command, player_id=player_id_uuid)
+    return await _check_catatonia_database(player_id_uuid, player_name)

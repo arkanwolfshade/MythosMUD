@@ -14,7 +14,8 @@ from typing import TYPE_CHECKING
 
 from ..events import EventBus, NPCEnteredRoom, NPCLeftRoom
 from ..logging.enhanced_logging_config import get_logger
-from ..persistence import get_persistence
+
+# Removed: from ..persistence import get_persistence - now using async_persistence parameter
 from ..utils.room_utils import extract_subzone_from_room_id
 
 if TYPE_CHECKING:
@@ -40,7 +41,9 @@ class NPCMovementIntegration:
             persistence: Optional persistence layer instance
         """
         self.event_bus = event_bus
-        self.persistence = persistence or get_persistence(event_bus)
+        if persistence is None:
+            raise ValueError("persistence (async_persistence) is required for NPCMovementIntegration")
+        self.persistence = persistence
         # Lazy import to avoid circular dependency
         # MovementService imports from services/ which imports npc_instance_service
         # which imports from npc/__init__ which imports this module
@@ -48,7 +51,7 @@ class NPCMovementIntegration:
         if event_bus:
             from ..game.movement_service import MovementService
 
-            self.movement_service = MovementService(event_bus)
+            self.movement_service = MovementService(event_bus=event_bus, async_persistence=persistence)
 
         logger.debug("NPC movement integration initialized")
 
@@ -82,8 +85,8 @@ class NPCMovementIntegration:
                 return True
 
             # Get room objects
-            from_room = self.persistence.get_room(from_room_id)
-            to_room = self.persistence.get_room(to_room_id)
+            from_room = self.persistence.get_room_by_id(from_room_id)
+            to_room = self.persistence.get_room_by_id(to_room_id)
 
             if not from_room:
                 logger.warning("Source room not found", npc_id=npc_id, from_room=from_room_id)
@@ -213,7 +216,7 @@ class NPCMovementIntegration:
             list[str]: List of NPC IDs in the room
         """
         try:
-            room = self.persistence.get_room(room_id)
+            room = self.persistence.get_room_by_id(room_id)
             if room:
                 return room.get_npcs()
             return []
@@ -235,8 +238,8 @@ class NPCMovementIntegration:
         """
         try:
             # Check if rooms exist
-            from_room = self.persistence.get_room(from_room_id)
-            to_room = self.persistence.get_room(to_room_id)
+            from_room = self.persistence.get_room_by_id(from_room_id)
+            to_room = self.persistence.get_room_by_id(to_room_id)
 
             if not from_room or not to_room:
                 return False
@@ -266,7 +269,7 @@ class NPCMovementIntegration:
             dict[str, str]: Dictionary of direction -> room_id mappings
         """
         try:
-            room = self.persistence.get_room(room_id)
+            room = self.persistence.get_room_by_id(room_id)
             if room:
                 return room.exits
             return {}
@@ -289,7 +292,7 @@ class NPCMovementIntegration:
         """
         try:
             # Simple implementation - just return direct connection if it exists
-            from_room = self.persistence.get_room(from_room_id)
+            from_room = self.persistence.get_room_by_id(from_room_id)
             if from_room and to_room_id in from_room.exits.values():
                 return [from_room_id, to_room_id]
 
@@ -324,7 +327,7 @@ class NPCMovementIntegration:
                 return False
 
             # Get the destination room to check its subzone
-            destination_room = self.persistence.get_room(destination_room_id)
+            destination_room = self.persistence.get_room_by_id(destination_room_id)
             if not destination_room:
                 logger.warning(
                     "Destination room not found for subzone validation", destination_room_id=destination_room_id

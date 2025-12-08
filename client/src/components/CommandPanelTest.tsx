@@ -71,7 +71,7 @@ export const CommandPanelTest: React.FC = () => {
       'whisper to Yog-Sothoth',
       'perform eldritch ritual',
       'summon deep ones',
-      'cast sanity drain',
+      'cast lucidity drain',
       'flee from madness',
     ];
     setCommandHistory(prev => [...prev, ...mythosCommands]);

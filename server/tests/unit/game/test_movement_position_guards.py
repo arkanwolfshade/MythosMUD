@@ -1,6 +1,6 @@
 """Tests for MovementService posture-based movement guards."""
 
-from unittest.mock import Mock, patch
+from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
 
 import pytest
@@ -41,13 +41,11 @@ def _build_room(room_id: str, exits: dict[str, str], event_bus: EventBus) -> Roo
 @pytest.fixture
 def movement_harness(event_bus, player_combat_service):
     """Create a MovementService with patched persistence for controlled tests."""
-    mock_persistence = Mock()
-
-    with patch("server.game.movement_service.get_persistence", return_value=mock_persistence):
-        movement_service = MovementService(event_bus, player_combat_service=player_combat_service)
-
-    # Ensure the patched persistence is retained post-construction
-    movement_service._persistence = mock_persistence
+    mock_persistence = AsyncMock()
+    # Pass persistence directly to MovementService constructor
+    movement_service = MovementService(
+        event_bus, player_combat_service=player_combat_service, async_persistence=mock_persistence
+    )
     return movement_service, mock_persistence
 
 
@@ -59,14 +57,10 @@ def _configure_player(mock_persistence, player_id: str, current_room_id: str, po
     player.current_room_id = current_room_id
     player.get_stats.return_value = {"position": position}
 
-    def get_player(identifier):
-        if str(identifier) in {player_id, player.name}:
-            return player
-        return None
-
-    mock_persistence.get_player.side_effect = get_player
-    mock_persistence.get_player_by_name.side_effect = lambda name: player if name == player.name else None
-    mock_persistence.save_player = Mock()
+    # Use AsyncMock for async methods
+    mock_persistence.get_player_by_id = AsyncMock(return_value=player)
+    mock_persistence.get_player_by_name = AsyncMock(return_value=player)
+    mock_persistence.save_player = AsyncMock()
 
     return player
 
@@ -79,7 +73,11 @@ def _configure_rooms(mock_persistence, event_bus, player_id: str):
     # Ensure the player is registered in the origin room
     from_room._players.add(player_id)
 
-    mock_persistence.get_room.side_effect = lambda room_id: from_room if room_id == "room_1" else to_room
+    # Use get_room_by_id (sync method) for room lookup
+    def get_room_by_id(room_id):
+        return from_room if room_id == "room_1" else to_room
+
+    mock_persistence.get_room_by_id = Mock(side_effect=get_room_by_id)
 
     return from_room, to_room
 
@@ -87,14 +85,15 @@ def _configure_rooms(mock_persistence, event_bus, player_id: str):
 class TestMovementPositionGuards:
     """Verify that non-standing postures block movement just like combat guards."""
 
-    def test_move_player_blocked_while_sitting(self, movement_harness, event_bus):
+    @pytest.mark.asyncio
+    async def test_move_player_blocked_while_sitting(self, movement_harness, event_bus):
         movement_service, mock_persistence = movement_harness
         player_id = str(uuid4())
 
         player = _configure_player(mock_persistence, player_id, "room_1", position="sitting")
         from_room, to_room = _configure_rooms(mock_persistence, event_bus, player_id)
 
-        result = movement_service.move_player(player_id, "room_1", "room_2")
+        result = await movement_service.move_player(player_id, "room_1", "room_2")
 
         assert result is False
         player.get_stats.assert_called_once()
@@ -103,14 +102,15 @@ class TestMovementPositionGuards:
         assert player_id in from_room._players
         assert player_id not in to_room._players
 
-    def test_move_player_blocked_while_lying(self, movement_harness, event_bus):
+    @pytest.mark.asyncio
+    async def test_move_player_blocked_while_lying(self, movement_harness, event_bus):
         movement_service, mock_persistence = movement_harness
         player_id = str(uuid4())
 
         player = _configure_player(mock_persistence, player_id, "room_1", position="lying")
         from_room, to_room = _configure_rooms(mock_persistence, event_bus, player_id)
 
-        result = movement_service.move_player(player_id, "room_1", "room_2")
+        result = await movement_service.move_player(player_id, "room_1", "room_2")
 
         assert result is False
         player.get_stats.assert_called_once()

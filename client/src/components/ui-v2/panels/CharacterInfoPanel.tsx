@@ -1,19 +1,20 @@
 import React from 'react';
 import { HealthMeter } from '../../health/HealthMeter';
-import { SanityMeter } from '../../sanity/SanityMeter';
+import { LucidityMeter } from '../../lucidity/LucidityMeter';
 import type { Player } from '../types';
 import type { HealthStatus } from '../../../types/health';
-import type { SanityStatus } from '../../../types/sanity';
+import type { LucidityStatus } from '../../../types/lucidity';
 
 interface CharacterInfoPanelProps {
   player: Player | null;
   healthStatus: HealthStatus | null;
-  sanityStatus: SanityStatus | null;
+  lucidityStatus: LucidityStatus | null;
 }
 
-// Simplified character info panel without connection status and player name (moved to header)
+// Character info panel displays character name, profession, stats, and attributes
+// Login username is displayed in the header; character name is displayed here
 // Based on findings from "Character State Display in Mythos Interfaces" - Dr. Armitage, 1928
-export const CharacterInfoPanel: React.FC<CharacterInfoPanelProps> = ({ player, healthStatus, sanityStatus }) => {
+export const CharacterInfoPanel: React.FC<CharacterInfoPanelProps> = ({ player, healthStatus, lucidityStatus }) => {
   if (!player?.stats) {
     return (
       <div className="p-4 text-mythos-terminal-text-secondary">
@@ -24,10 +25,26 @@ export const CharacterInfoPanel: React.FC<CharacterInfoPanelProps> = ({ player, 
 
   return (
     <div className="p-4 space-y-4">
-      {/* Health and Sanity Bars */}
+      {/* Character Name and Profession */}
+      {player.name && (
+        <div className="border-b border-mythos-terminal-border pb-2">
+          <div className="flex items-center justify-between">
+            <span className="text-base text-mythos-terminal-text-secondary">Character:</span>
+            <span className="text-base text-mythos-terminal-text font-bold">{player.name}</span>
+          </div>
+          {player.profession_name && (
+            <div className="flex items-center justify-between mt-1">
+              <span className="text-sm text-mythos-terminal-text-secondary">Profession:</span>
+              <span className="text-sm text-mythos-terminal-primary">{player.profession_name}</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Health and Lucidity Bars */}
       <div className="space-y-2">
         <HealthMeter status={healthStatus} />
-        <SanityMeter status={sanityStatus} className="mt-2" />
+        <LucidityMeter status={lucidityStatus} className="mt-2" />
         {player.level !== undefined && (
           <div className="flex items-center justify-between">
             <span className="text-base text-mythos-terminal-text-secondary">Level:</span>

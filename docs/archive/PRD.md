@@ -51,10 +51,10 @@
   - Highlighting
   - Command history
 
-### **4.3 Sanity System**
+### **4.3 lucidity System**
 
 - Based on Call of Cthulhu mechanics.
-- Sanity drops from encounters with Mythos elements or spells.
+- lucidity drops from encounters with Mythos elements or spells.
 - Below-threshold effects:
   - Hallucinations
   - Distorted messages or room descriptions
@@ -115,11 +115,11 @@
 ## **6. Character System**
 
 - Character creation modeled after **pre-D20 Call of Cthulhu**:
-  - Attributes include STR, DEX, INT, CON, EDU, SAN, etc.
+  - Attributes include STR, DEX, INT, CON, EDU, LCD, etc.
 - XP-based leveling system:
-  - Levels grant health, mana, sanity, skill points
+  - Levels grant health, mana, lucidity, skill points
 - Inventory system with equipables and consumables
-- Magic system (Mythos spells, sanity costs)
+- Magic system (Mythos spells, lucidity costs)
 - Crafting system: **TBD**
 
 ---
@@ -193,7 +193,7 @@
   - World state
   - Inventory
   - Quest status
-  - Sanity levels
+  - lucidity levels
 - Suggested tech: PostgreSQL, or AWS DynamoDB for low-cost hosting
 
 ### **9.4 Hosting**

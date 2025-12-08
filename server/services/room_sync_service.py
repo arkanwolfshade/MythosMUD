@@ -12,7 +12,7 @@ of our eldritch architecture.
 import asyncio
 import time
 from collections import defaultdict
-from typing import Any, TypeVar
+from typing import Any, TypeAlias, TypeVar
 
 from ..events.event_types import BaseEvent
 from ..logging.enhanced_logging_config import get_logger
@@ -21,8 +21,9 @@ from ..logging.enhanced_logging_config import get_logger
 T = TypeVar("T", bound=BaseEvent)
 
 # Type aliases for better readability
-type RoomData = dict[str, Any]
-type EventSequence = dict[str, int]
+# Using TypeAlias instead of 'type' keyword for Pylint compatibility (Pylint 3.3.6 doesn't support Python 3.12+ 'type' keyword)
+RoomData: TypeAlias = dict[str, Any]  # noqa: UP040
+EventSequence: TypeAlias = dict[str, int]  # noqa: UP040
 
 logger = get_logger(__name__)
 

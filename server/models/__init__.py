@@ -14,9 +14,9 @@ from .game import AttributeType, Stats, StatusEffect, StatusEffectType
 from .health import HealthErrorResponse, HealthResponse, HealthStatus
 from .invite import Invite
 from .item import ItemComponentState, ItemInstance, ItemPrototype
+from .lucidity import LucidityAdjustmentLog, LucidityCooldown, LucidityExposureState, PlayerLucidity
 from .npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
 from .player import Player
-from .sanity import PlayerSanity, SanityAdjustmentLog, SanityCooldown, SanityExposureState
 from .user import User
 
 # ARCHITECTURE FIX Phase 3.1: Removed setup_relationships import
@@ -25,10 +25,10 @@ from .user import User
 __all__ = [
     "User",
     "Player",
-    "PlayerSanity",
-    "SanityAdjustmentLog",
-    "SanityExposureState",
-    "SanityCooldown",
+    "PlayerLucidity",
+    "LucidityAdjustmentLog",
+    "LucidityExposureState",
+    "LucidityCooldown",
     "Invite",
     "Alias",
     "ItemPrototype",

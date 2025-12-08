@@ -80,7 +80,7 @@ import type { StatusPanelProps } from '../ui';
   <ConnectionStatus />
   <PlayerName />
   <HealthStat />
-  <SanityStat />
+  <LucidityStat />
   <CoreAttributes />
   <HorrorStats />
   <MessagesCount />

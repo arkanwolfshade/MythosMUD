@@ -38,7 +38,7 @@ VALUES (
     'test-player-arkan-001',
     'test-user-arkan-001',
     'ArkanWolfshade',
-    '{"health": 100, "sanity": 100, "strength": 12, "dexterity": 14, "constitution": 10, "intelligence": 16, "wisdom": 8, "charisma": 10, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100, "max_health": 100, "max_sanity": 100}',
+    '{"health": 100, "lucidity": 100, "strength": 12, "dexterity": 14, "constitution": 10, "intelligence": 16, "wisdom": 8, "charisma": 10, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100, "max_health": 100, "max_lucidity": 100}',
     '[]',
     '[]',
     'earth_arkhamcity_sanitarium_room_foyer_001',
@@ -72,7 +72,7 @@ VALUES (
     'test-player-ithaqua-001',
     'test-user-ithaqua-001',
     'Ithaqua',
-    '{"health": 100, "sanity": 100, "strength": 10, "dexterity": 12, "constitution": 14, "intelligence": 10, "wisdom": 16, "charisma": 8, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100, "max_health": 100, "max_sanity": 100}',
+    '{"health": 100, "lucidity": 100, "strength": 10, "dexterity": 12, "constitution": 14, "intelligence": 10, "wisdom": 16, "charisma": 8, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100, "max_health": 100, "max_lucidity": 100}',
     '[]',
     '[]',
     'earth_arkhamcity_sanitarium_room_foyer_001',
@@ -106,7 +106,7 @@ VALUES (
     'test-player-admin-001',
     'test-user-admin-001',
     'TestAdmin',
-    '{"health": 100, "sanity": 100, "strength": 15, "dexterity": 15, "constitution": 15, "intelligence": 15, "wisdom": 15, "charisma": 15, "occult_knowledge": 100, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100, "max_health": 100, "max_sanity": 100}',
+    '{"health": 100, "lucidity": 100, "strength": 15, "dexterity": 15, "constitution": 15, "intelligence": 15, "wisdom": 15, "charisma": 15, "occult_knowledge": 100, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100, "max_health": 100, "max_lucidity": 100}',
     '[]',
     '[]',
     'earth_arkhamcity_sanitarium_room_foyer_001',
@@ -212,7 +212,7 @@ export async function seedTestDatabase(): Promise<void> {
     // Insert player
     const defaultStats = JSON.stringify({
       health: 100,
-      sanity: 100,
+      lucidity: 100,
       strength: 10,
       dexterity: 10,
       constitution: 10,
@@ -225,7 +225,7 @@ export async function seedTestDatabase(): Promise<void> {
       cult_affiliation: 0,
       current_health: 100,
       max_health: 100,
-      max_sanity: 100
+      max_lucidity: 100
     });
 
     db.prepare(`
@@ -277,7 +277,7 @@ async function createDatabaseSchema(db: Database): Promise<void> {
       player_id TEXT PRIMARY KEY NOT NULL,
       user_id TEXT NOT NULL UNIQUE,
       name TEXT UNIQUE NOT NULL,
-      stats TEXT NOT NULL DEFAULT '{"health": 100, "sanity": 100, "strength": 10}',
+      stats TEXT NOT NULL DEFAULT '{"health": 100, "lucidity": 100, "strength": 10}',
       inventory TEXT NOT NULL DEFAULT '[]',
       status_effects TEXT NOT NULL DEFAULT '[]',
       current_room_id TEXT NOT NULL DEFAULT 'earth_arkham_city_intersection_derby_high',

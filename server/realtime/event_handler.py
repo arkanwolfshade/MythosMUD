@@ -9,6 +9,7 @@ for maintaining awareness of the dimensional shifts that occur throughout our
 eldritch architecture.
 """
 
+import asyncio
 import uuid
 from datetime import UTC, datetime
 from typing import Any, cast
@@ -88,11 +89,17 @@ class RealTimeEventHandler:
         )
 
         # Subscribe to death/respawn events
-        from ..events.event_types import PlayerDiedEvent, PlayerHPDecayEvent, PlayerRespawnedEvent
+        from ..events.event_types import (
+            PlayerDeliriumRespawnedEvent,
+            PlayerDiedEvent,
+            PlayerHPDecayEvent,
+            PlayerRespawnedEvent,
+        )
 
         self.event_bus.subscribe(PlayerDiedEvent, self._handle_player_died)
         self.event_bus.subscribe(PlayerHPDecayEvent, self._handle_player_hp_decay)
         self.event_bus.subscribe(PlayerRespawnedEvent, self._handle_player_respawned)
+        self.event_bus.subscribe(PlayerDeliriumRespawnedEvent, self._handle_player_delirium_respawned)
 
         self._logger.info("Subscribed to PlayerEnteredRoom, PlayerLeftRoom, NPCEnteredRoom, and NPCLeftRoom events")
 
@@ -101,9 +108,9 @@ class RealTimeEventHandler:
         self._sequence_counter += 1
         return self._sequence_counter
 
-    def _get_player_info(self, player_id: uuid.UUID | str) -> tuple[Any, str] | None:
+    async def _get_player_info(self, player_id: uuid.UUID | str) -> tuple[Any, str] | None:
         """
-        Get player information and name.
+        Get player information and name (async version).
 
         Args:
             player_id: The player's ID (UUID or string for backward compatibility)
@@ -111,6 +118,11 @@ class RealTimeEventHandler:
         Returns:
             tuple: (player, player_name) or None if player not found
         """
+        # Defensive check: if no connection_manager, cannot get player info
+        if not self.connection_manager:
+            self._logger.debug("Connection manager not available, cannot get player info", player_id=player_id)
+            return None
+
         # Convert to UUID if string (for backward compatibility)
         try:
             player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
@@ -118,7 +130,7 @@ class RealTimeEventHandler:
             # Invalid UUID string - log and return None
             self._logger.warning("Invalid player_id format, cannot convert to UUID", player_id=player_id)
             return None
-        player = self.connection_manager._get_player(player_id_uuid)
+        player = await self.connection_manager._get_player(player_id_uuid)
         if not player:
             # Structlog handles UUID objects automatically, no need to convert to string
             self._logger.warning("Player not found", player_id=player_id_uuid)
@@ -163,7 +175,7 @@ class RealTimeEventHandler:
 
         return (player, player_name)
 
-    def _log_player_movement(
+    async def _log_player_movement(
         self, player_id: uuid.UUID | str, player_name: str, room_id: str, movement_type: str
     ) -> None:
         """
@@ -175,9 +187,15 @@ class RealTimeEventHandler:
             room_id: The room ID
             movement_type: Type of movement ("joined" or "left")
         """
+        # Defensive check: if no connection_manager, skip logging
+        if not self.connection_manager:
+            return
+
         try:
             room = (
-                self.connection_manager.persistence.get_room(room_id) if self.connection_manager.persistence else None
+                self.connection_manager.async_persistence.get_room_by_id(room_id)
+                if self.connection_manager.async_persistence
+                else None
             )
             room_name = getattr(room, "name", room_id) if room else room_id
 
@@ -243,24 +261,33 @@ class RealTimeEventHandler:
             player_id: The player's ID (UUID or string for backward compatibility)
             room_id: The room ID
         """
+        # Defensive check: if no connection_manager, cannot send updates
+        if not self.connection_manager:
+            self._logger.debug(
+                "Connection manager not available, cannot send room update", player_id=player_id, room_id=room_id
+            )
+            return
+
         # Convert to UUID if string (send_personal_message accepts UUID)
         player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
         try:
             room = (
-                self.connection_manager.persistence.get_room(room_id) if self.connection_manager.persistence else None
+                self.connection_manager.async_persistence.get_room_by_id(room_id)
+                if self.connection_manager.async_persistence
+                else None
             )
             if not room:
                 return
 
             # Get room occupants and transform to names
-            occupants_info = self._get_room_occupants(room_id)
+            occupants_info = await self._get_room_occupants(room_id)
             occupant_names = self._extract_occupant_names(occupants_info)
 
             # Create room_update event with full room data
             room_data = room.to_dict() if hasattr(room, "to_dict") else room
             # CRITICAL: Convert player UUIDs to names - NEVER send UUIDs to client
             if isinstance(room_data, dict):
-                room_data = self.connection_manager._convert_room_players_uuids_to_names(room_data)
+                room_data = await self.connection_manager._convert_room_players_uuids_to_names(room_data)
                 # CRITICAL FIX: Remove occupant fields from room_data - room_update should NEVER include these
                 # Occupants are ONLY sent via room_occupants events to prevent data conflicts
                 # This prevents room_update from overwriting structured NPC data
@@ -334,6 +361,13 @@ class RealTimeEventHandler:
             player_id: The player's ID (UUID or string for backward compatibility)
             room_id: The room ID
         """
+        # Defensive check: if no connection_manager, cannot send updates
+        if not self.connection_manager:
+            self._logger.debug(
+                "Connection manager not available, cannot send occupants snapshot", player_id=player_id, room_id=room_id
+            )
+            return
+
         # Convert to UUID if string (send_personal_message accepts UUID)
         player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
         try:
@@ -343,7 +377,7 @@ class RealTimeEventHandler:
                 player_id=player_id_uuid,
                 room_id=room_id,
             )
-            occupants_snapshot = self._get_room_occupants(room_id, ensure_player_included=player_id_uuid)
+            occupants_snapshot = await self._get_room_occupants(room_id, ensure_player_included=player_id_uuid)
 
             # CRITICAL: Verify NPCs are included in snapshot
             npc_count = sum(1 for occ in occupants_snapshot if isinstance(occ, dict) and "npc_name" in occ)
@@ -475,6 +509,15 @@ class RealTimeEventHandler:
         Args:
             event: The PlayerEnteredRoom event
         """
+        # Defensive check: if no connection_manager, skip handling
+        if not self.connection_manager:
+            self._logger.debug(
+                "Connection manager not available, skipping player entered event",
+                player_id=event.player_id,
+                room_id=event.room_id,
+            )
+            return
+
         try:
             # Process event with proper ordering to prevent race conditions
             processed_event = self.room_sync_service._process_event_with_ordering(event)
@@ -486,13 +529,13 @@ class RealTimeEventHandler:
             )
 
             # Get player information
-            player_info = self._get_player_info(processed_event.player_id)
+            player_info = await self._get_player_info(processed_event.player_id)
             if not player_info:
                 return
             player, player_name = player_info
 
             # Log player movement for AI processing
-            self._log_player_movement(processed_event.player_id, player_name, processed_event.room_id, "joined")
+            await self._log_player_movement(processed_event.player_id, player_name, processed_event.room_id, "joined")
 
             # Create real-time message with processed event
             message = self._create_player_entered_message(processed_event, player_name)
@@ -591,6 +634,15 @@ class RealTimeEventHandler:
         Args:
             event: The PlayerLeftRoom event
         """
+        # Defensive check: if no connection_manager, skip handling
+        if not self.connection_manager:
+            self._logger.debug(
+                "Connection manager not available, skipping player left event",
+                player_id=event.player_id,
+                room_id=event.room_id,
+            )
+            return
+
         try:
             # Process event with proper ordering to prevent race conditions
             processed_event = self.room_sync_service._process_event_with_ordering(event)
@@ -602,18 +654,52 @@ class RealTimeEventHandler:
             )
 
             # Get player information
-            player_info = self._get_player_info(processed_event.player_id)
+            player_info = await self._get_player_info(processed_event.player_id)
             if not player_info:
                 return
             player, player_name = player_info
 
             # Log player movement for AI processing
-            self._log_player_movement(processed_event.player_id, player_name, processed_event.room_id, "left")
+            await self._log_player_movement(processed_event.player_id, player_name, processed_event.room_id, "left")
 
             # Create real-time message with processed event
             message = self._create_player_left_message(processed_event, player_name)
 
-            # Unsubscribe player from the room
+            # CRITICAL FIX: Ensure player_id is always a string for proper comparison
+            exclude_player_id = str(processed_event.player_id) if processed_event.player_id else None
+            room_id_str = str(processed_event.room_id) if processed_event.room_id else None
+
+            # Check if this is a disconnect (not a movement)
+            # If the player is disconnecting, skip the "leaves the room" message since we already send "left the game"
+            try:
+                player_id_uuid = (
+                    uuid.UUID(processed_event.player_id)
+                    if isinstance(processed_event.player_id, str)
+                    else processed_event.player_id
+                )
+                is_disconnecting = player_id_uuid in self.connection_manager.disconnecting_players
+            except (ValueError, AttributeError):
+                is_disconnecting = False
+
+            self._logger.debug(
+                "Broadcasting player_left",
+                exclude_player=exclude_player_id,
+                room_id=room_id_str,
+                is_disconnecting=is_disconnecting,
+            )
+
+            # Broadcast to remaining room occupants (excluding the leaving player)
+            # SKIP the "leaves the room" message if player is disconnecting (they get "left the game" instead)
+            if room_id_str is not None and not is_disconnecting:
+                await self.connection_manager.broadcast_to_room(room_id_str, message, exclude_player=exclude_player_id)
+
+            # CRITICAL FIX: Send room occupants update BEFORE unsubscribing player
+            # This ensures the update can still query the leaving player from room tracking
+            # if needed, and correctly shows remaining players
+            if room_id_str is not None and exclude_player_id is not None:
+                await self._send_room_occupants_update(room_id_str, exclude_player=exclude_player_id)
+
+            # Unsubscribe player from the room AFTER sending occupants update
             # Convert string player_id to UUID for unsubscribe_from_room (which expects UUID)
             try:
                 player_id_uuid = (
@@ -626,24 +712,6 @@ class RealTimeEventHandler:
                 self._logger.warning(
                     "Failed to convert player_id to UUID for room unsubscription", player_id=processed_event.player_id
                 )
-
-            # CRITICAL FIX: Ensure player_id is always a string for proper comparison
-            exclude_player_id = str(processed_event.player_id) if processed_event.player_id else None
-            room_id_str = str(processed_event.room_id) if processed_event.room_id else None
-
-            self._logger.debug(
-                "Broadcasting player_left",
-                exclude_player=exclude_player_id,
-                room_id=room_id_str,
-            )
-
-            # Broadcast to remaining room occupants (excluding the leaving player)
-            if room_id_str is not None:
-                await self.connection_manager.broadcast_to_room(room_id_str, message, exclude_player=exclude_player_id)
-
-            # Send room occupants update to remaining players
-            if room_id_str is not None and exclude_player_id is not None:
-                await self._send_room_occupants_update(room_id_str, exclude_player=exclude_player_id)
 
             self._logger.info(
                 "Player left room with enhanced synchronization",
@@ -708,9 +776,22 @@ class RealTimeEventHandler:
             },
         }
 
+    async def send_room_occupants_update(self, room_id: str, exclude_player: str | None = None) -> None:
+        """
+        Send room occupants update to players in the room (public API).
+
+        Preserves player/NPC distinction by sending structured data with separate
+        players and npcs arrays, enabling the client UI to display them in separate columns.
+
+        Args:
+            room_id: The room ID
+            exclude_player: Optional player ID to exclude from the update
+        """
+        await self._send_room_occupants_update(room_id, exclude_player)
+
     async def _send_room_occupants_update(self, room_id: str, exclude_player: str | None = None) -> None:
         """
-        Send room occupants update to players in the room.
+        Internal implementation for sending room occupants update.
 
         Preserves player/NPC distinction by sending structured data with separate
         players and npcs arrays, enabling the client UI to display them in separate columns.
@@ -721,7 +802,7 @@ class RealTimeEventHandler:
         """
         try:
             # Get room occupants with structured data (includes player_name, npc_name, type)
-            occupants_info: list[dict[str, Any] | str] = self._get_room_occupants(room_id)
+            occupants_info: list[dict[str, Any] | str] = await self._get_room_occupants(room_id)
 
             # Separate players and NPCs while maintaining backward compatibility
             players: list[str] = []
@@ -830,7 +911,7 @@ class RealTimeEventHandler:
         except Exception as e:
             self._logger.error("Error sending room occupants update", error=str(e), exc_info=True)
 
-    def _get_room_occupants(
+    async def _get_room_occupants(
         self, room_id: str, ensure_player_included: uuid.UUID | str | None = None
     ) -> list[dict[str, Any] | str]:
         """
@@ -846,13 +927,18 @@ class RealTimeEventHandler:
         """
         occupants: list[dict[str, Any] | str] = []
 
+        # Defensive check: if no connection_manager, return empty list
+        if not self.connection_manager:
+            self._logger.debug("Connection manager not available, cannot get room occupants", room_id=room_id)
+            return occupants
+
         try:
-            # Get room from persistence
-            persistence = self.connection_manager.persistence
-            if not persistence:
+            # Get room from async persistence
+            async_persistence = self.connection_manager.async_persistence
+            if not async_persistence:
                 return occupants
 
-            room = persistence.get_room(room_id)
+            room = async_persistence.get_room_by_id(room_id)  # Sync method, uses cache
             if not room:
                 return occupants
 
@@ -886,7 +972,7 @@ class RealTimeEventHandler:
                     continue
 
             # OPTIMIZATION: Batch load all players at once to eliminate N+1 queries
-            players = self.connection_manager._get_players_batch(player_id_uuids)
+            players = await self.connection_manager._get_players_batch(player_id_uuids)
 
             self._logger.debug(
                 "Batch loaded players for room occupants",
@@ -1120,7 +1206,9 @@ class RealTimeEventHandler:
                         npcs_checked = 0
                         npcs_matched = 0
                         npcs_without_room = 0
-                        for npc_id, npc_instance in active_npcs_dict.items():
+                        # BUGFIX: Create snapshot of dict to prevent "dictionary changed size during iteration" errors
+                        # NPCs can move/spawn/die during iteration, causing the dict to change
+                        for npc_id, npc_instance in list(active_npcs_dict.items()):
                             npcs_checked += 1
 
                             # BUGFIX: Filter out dead NPCs (is_alive=False) to prevent showing dead NPCs in occupants
@@ -1244,53 +1332,9 @@ class RealTimeEventHandler:
                             npc_ids=npc_ids[:5],  # Log first 5 for debugging
                         )
 
-                        # CRITICAL: Warn only if there's evidence of a format mismatch
-                        # Don't warn if NPCs are simply in different rooms (normal case)
-                        if total_active_npcs > 0 and npcs_matched == 0 and npcs_without_room == 0:
-                            # Collect sample NPC room IDs and check for potential format mismatches
-                            sample_npc_room_ids = []
-                            npcs_in_same_zone = 0
-                            sample_count = 0
-
-                            # Extract zone/sub-zone from queried room ID (format: earth_zone_subzone_room_roomname_###)
-                            queried_zone_parts = room_id.split("_")[:3] if "_" in room_id else []
-                            queried_zone_key = "_".join(queried_zone_parts) if len(queried_zone_parts) >= 3 else ""
-
-                            for _sample_npc_id, sample_npc_instance in active_npcs_dict.items():
-                                sample_current_room = getattr(sample_npc_instance, "current_room", None)
-                                sample_current_room_id = getattr(sample_npc_instance, "current_room_id", None)
-                                sample_npc_room_id = sample_current_room or sample_current_room_id
-                                if sample_npc_room_id:
-                                    sample_npc_room_id_str = str(sample_npc_room_id)
-                                    if sample_count < 3:  # Log first 3 NPCs as samples
-                                        sample_npc_room_ids.append(sample_npc_room_id_str)
-                                    # Check if NPC is in same zone/sub-zone (potential format mismatch indicator)
-                                    if queried_zone_key:
-                                        sample_zone_parts = (
-                                            sample_npc_room_id_str.split("_")[:3]
-                                            if "_" in sample_npc_room_id_str
-                                            else []
-                                        )
-                                        sample_zone_key = (
-                                            "_".join(sample_zone_parts) if len(sample_zone_parts) >= 3 else ""
-                                        )
-                                        if sample_zone_key == queried_zone_key:
-                                            npcs_in_same_zone += 1
-                                    sample_count += 1
-
-                            # Only warn if NPCs exist in the same zone/sub-zone but didn't match
-                            # This suggests a format mismatch rather than just "no NPCs in this room"
-                            if npcs_in_same_zone > 0:
-                                self._logger.warning(
-                                    "No NPCs matched room ID - possible room ID format mismatch",
-                                    room_id=room_id,
-                                    canonical_room_id=canonical_room_id,
-                                    total_active_npcs=total_active_npcs,
-                                    npcs_checked=npcs_checked,
-                                    npcs_in_same_zone=npcs_in_same_zone,
-                                    sample_npc_room_ids=sample_npc_room_ids,
-                                    npcs_without_room=npcs_without_room,
-                                )
+                        # Note: Not finding NPCs in a specific room is normal behavior
+                        # NPCs are distributed across multiple rooms in the game world
+                        # This is expected and not an error condition
                     else:
                         self._logger.warning(
                             "Lifecycle manager or active_npcs not available",
@@ -1374,7 +1418,7 @@ class RealTimeEventHandler:
 
         return occupants
 
-    def _handle_npc_entered(self, event: NPCEnteredRoom) -> None:
+    async def _handle_npc_entered(self, event: NPCEnteredRoom) -> None:
         """
         Handle NPC entering a room.
 
@@ -1384,16 +1428,25 @@ class RealTimeEventHandler:
         Args:
             event: NPCEnteredRoom event containing NPC and room information
         """
+        # Defensive check: if no connection_manager, skip handling
+        if not self.connection_manager:
+            self._logger.debug(
+                "Connection manager not available, skipping NPC entered event",
+                npc_id=event.npc_id,
+                room_id=event.room_id,
+            )
+            return
+
         try:
             self._logger.info("NPC entered room", npc_id=event.npc_id, room_id=event.room_id)
 
-            # Get the room from persistence
-            persistence = self.connection_manager.persistence
-            if not persistence:
-                self._logger.warning("Persistence layer not available for NPC room entry")
+            # Get the room from async persistence
+            async_persistence = self.connection_manager.async_persistence
+            if not async_persistence:
+                self._logger.warning("Async persistence layer not available for NPC room entry")
                 return
 
-            room = persistence.get_room(event.room_id)
+            room = async_persistence.get_room_by_id(event.room_id)  # Sync method, uses cache
             if not room:
                 self._logger.warning("Room not found for NPC entry", room_id=event.room_id)
                 return
@@ -1406,20 +1459,18 @@ class RealTimeEventHandler:
             # Check if this is a movement (has from_room_id) or a spawn (no from_room_id)
             if event.from_room_id:
                 # This is a movement - create directional message
-                direction = self._determine_direction_from_rooms(event.from_room_id, event.room_id)
+                direction = await self._determine_direction_from_rooms(event.from_room_id, event.room_id)
                 movement_message = self._create_npc_movement_message(npc_name, direction, "entered")
                 # Send movement message to all players in the room as system message
-                self._send_room_message(event.room_id, movement_message, message_type="system")
+                await self._send_room_message(event.room_id, movement_message, message_type="system")
             else:
                 # This is a spawn - use spawn message from behavior_config
                 spawn_message = self._get_npc_spawn_message(event.npc_id)
                 if spawn_message:
                     # Send the spawn message to all players in the room
-                    self._send_room_message(event.room_id, spawn_message)
+                    await self._send_room_message(event.room_id, spawn_message)
 
             # Schedule room update broadcast (async operation)
-            import asyncio
-
             try:
                 # Use get_running_loop() instead of deprecated get_event_loop()
                 # get_running_loop() raises RuntimeError if no loop is running
@@ -1448,7 +1499,7 @@ class RealTimeEventHandler:
         except Exception as e:
             self._logger.error("Error handling NPC entered room event", error=str(e), exc_info=True)
 
-    def _handle_npc_left(self, event: NPCLeftRoom) -> None:
+    async def _handle_npc_left(self, event: NPCLeftRoom) -> None:
         """
         Handle NPC leaving a room.
 
@@ -1458,16 +1509,23 @@ class RealTimeEventHandler:
         Args:
             event: NPCLeftRoom event containing NPC and room information
         """
+        # Defensive check: if no connection_manager, skip handling
+        if not self.connection_manager:
+            self._logger.debug(
+                "Connection manager not available, skipping NPC left event", npc_id=event.npc_id, room_id=event.room_id
+            )
+            return
+
         try:
             self._logger.info("NPC left room", npc_id=event.npc_id, room_id=event.room_id)
 
-            # Get the room from persistence
-            persistence = self.connection_manager.persistence
-            if not persistence:
-                self._logger.warning("Persistence layer not available for NPC room exit")
+            # Get the room from async persistence
+            async_persistence = self.connection_manager.async_persistence
+            if not async_persistence:
+                self._logger.warning("Async persistence layer not available for NPC room exit")
                 return
 
-            room = persistence.get_room(event.room_id)
+            room = async_persistence.get_room_by_id(event.room_id)  # Sync method, uses cache
             if not room:
                 self._logger.warning("Room not found for NPC exit", room_id=event.room_id)
                 return
@@ -1480,20 +1538,18 @@ class RealTimeEventHandler:
             # Check if this is a movement (has to_room_id) or a departure (no to_room_id)
             if event.to_room_id:
                 # This is a movement - create directional message
-                direction = self._determine_direction_from_rooms(event.room_id, event.to_room_id)
+                direction = await self._determine_direction_from_rooms(event.room_id, event.to_room_id)
                 movement_message = self._create_npc_movement_message(npc_name, direction, "left")
                 # Send movement message to all players in the room as system message
-                self._send_room_message(event.room_id, movement_message, message_type="system")
+                await self._send_room_message(event.room_id, movement_message, message_type="system")
             else:
                 # This is a departure (not movement) - use departure message from behavior_config
                 departure_message = self._get_npc_departure_message(event.npc_id)
                 if departure_message:
                     # Send the departure message to all players in the room
-                    self._send_room_message(event.room_id, departure_message)
+                    await self._send_room_message(event.room_id, departure_message)
 
             # Schedule room update broadcast (async operation)
-            import asyncio
-
             try:
                 # Use get_running_loop() instead of deprecated get_event_loop()
                 # get_running_loop() raises RuntimeError if no loop is running
@@ -1534,11 +1590,18 @@ class RealTimeEventHandler:
         Args:
             event: The PlayerXPAwardEvent containing XP award information
         """
+        # Defensive check: if no connection_manager, skip handling
+        if not self.connection_manager:
+            self._logger.debug(
+                "Connection manager not available, skipping player XP awarded event", player_id=event.player_id
+            )
+            return
+
         try:
             player_id_str = str(event.player_id)
 
             # Get the current player data to send updated XP
-            player = self.connection_manager._get_player(player_id_str)
+            player = await self.connection_manager._get_player(player_id_str)
             if not player:
                 self._logger.warning("Player not found for XP award event", player_id=player_id_str)
                 return
@@ -1669,7 +1732,7 @@ class RealTimeEventHandler:
             self._logger.debug("Error getting NPC name", npc_id=npc_id, error=str(e))
             return None
 
-    def _determine_direction_from_rooms(self, from_room_id: str, to_room_id: str) -> str | None:
+    async def _determine_direction_from_rooms(self, from_room_id: str, to_room_id: str) -> str | None:
         """
         Determine the direction from one room to another by checking room exits.
 
@@ -1681,11 +1744,11 @@ class RealTimeEventHandler:
             Direction string (e.g., "north", "south") or None if not found
         """
         try:
-            persistence = self.connection_manager.persistence
-            if not persistence:
+            async_persistence = self.connection_manager.async_persistence
+            if not async_persistence:
                 return None
 
-            from_room = persistence.get_room(from_room_id)
+            from_room = async_persistence.get_room_by_id(from_room_id)  # Sync method, uses cache
             if not from_room:
                 return None
 
@@ -1782,7 +1845,7 @@ class RealTimeEventHandler:
             self._logger.debug("Error getting NPC departure message", npc_id=npc_id, error=str(e))
             return None
 
-    def _send_room_message(self, room_id: str, message: str, message_type: str = "npc_spawn") -> None:
+    async def _send_room_message(self, room_id: str, message: str, message_type: str = "npc_spawn") -> None:
         """
         Send a message to all players in a room.
 
@@ -1805,7 +1868,7 @@ class RealTimeEventHandler:
                 return
 
             # Get all player IDs subscribed to this room (as strings, same as broadcast_to_room)
-            player_ids_str = self.connection_manager.room_manager.get_room_subscribers(room_id)
+            player_ids_str = await self.connection_manager.room_manager.get_room_subscribers(room_id)
             player_ids = [
                 uuid.UUID(pid_str) for pid_str in player_ids_str
             ]  # Convert to UUIDs for send_personal_message
@@ -1841,8 +1904,6 @@ class RealTimeEventHandler:
                             "event_handler",
                         )
                     else:
-                        from ..async_utils.tracked_task_manager import get_global_tracked_manager
-
                         tracked_manager = get_global_tracked_manager()
                         tracked_manager.create_tracked_task(
                             self.connection_manager.send_personal_message(
@@ -1866,6 +1927,13 @@ class RealTimeEventHandler:
         Args:
             event: The PlayerHPUpdated event containing HP change information
         """
+        # Defensive check: if no connection_manager, skip handling
+        if not self.connection_manager:
+            self._logger.debug(
+                "Connection manager not available, skipping player HP updated event", player_id=event.player_id
+            )
+            return
+
         try:
             # CRITICAL DEBUG: Log at the very start to verify handler is being called
             self._logger.info(
@@ -1900,7 +1968,7 @@ class RealTimeEventHandler:
             # CRITICAL: Try to get player from connection manager, but if not found,
             # still send the HP update event with the data from the event itself
             # _get_player expects UUID, and event.player_id is now UUID
-            player = self.connection_manager._get_player(player_id)
+            player = await self.connection_manager._get_player(player_id)
 
             # Get full player stats including posture/position
             if player:
@@ -1971,6 +2039,14 @@ class RealTimeEventHandler:
         Args:
             event: The PlayerDiedEvent containing death information
         """
+        # Defensive check: if no connection_manager, skip handling
+        if not self.connection_manager:
+            self._logger.debug(
+                "Connection manager not available, skipping player died event",
+                player_id=getattr(event, "player_id", None),
+            )
+            return
+
         try:
             # Convert UUID to string for build_event (which expects str)
             player_id_str = str(event.player_id)
@@ -2010,6 +2086,14 @@ class RealTimeEventHandler:
         Args:
             event: The PlayerHPDecayEvent containing HP decay information
         """
+        # Defensive check: if no connection_manager, skip handling
+        if not self.connection_manager:
+            self._logger.debug(
+                "Connection manager not available, skipping player HP decay event",
+                player_id=getattr(event, "player_id", None),
+            )
+            return
+
         try:
             # Convert UUID to string for build_event (which expects str)
             player_id_str = str(event.player_id)
@@ -2057,11 +2141,11 @@ class RealTimeEventHandler:
             player_data = None
             updated_position = "standing"
             if self.connection_manager and hasattr(self.connection_manager, "persistence"):
-                persistence = self.connection_manager.persistence
-                if persistence:
+                async_persistence = self.connection_manager.async_persistence
+                if async_persistence:
                     try:
-                        # Get player from persistence to retrieve updated stats including position
-                        player = persistence.get_player(uuid.UUID(player_id_str))
+                        # Get player from async persistence to retrieve updated stats including position
+                        player = await async_persistence.get_player_by_id(uuid.UUID(player_id_str))
                         if player:
                             stats = player.get_stats()
                             updated_position = stats.get("position", "standing")
@@ -2088,8 +2172,8 @@ class RealTimeEventHandler:
                                 "stats": {
                                     "current_health": stats.get("current_health", 100),
                                     "max_health": stats.get("max_health", 100),
-                                    "sanity": stats.get("sanity", 100),
-                                    "max_sanity": stats.get("max_sanity", 100),
+                                    "lucidity": stats.get("lucidity", 100),
+                                    "max_lucidity": stats.get("max_lucidity", 100),
                                     "strength": stats.get("strength"),
                                     "dexterity": stats.get("dexterity"),
                                     "constitution": stats.get("constitution"),
@@ -2176,6 +2260,143 @@ class RealTimeEventHandler:
 
         except Exception as e:
             self._logger.error("Error handling player respawn event", error=str(e), exc_info=True)
+
+    async def _handle_player_delirium_respawned(self, event: Any) -> None:
+        """
+        Handle player delirium respawn events by sending respawn notification to the client.
+
+        Args:
+            event: The PlayerDeliriumRespawnedEvent containing delirium respawn information
+        """
+        try:
+            # Convert UUID to string for build_event (which expects str)
+            player_id_str = str(event.player_id)
+
+            # Get updated player data to include in event payload
+            player_data = None
+            updated_position = "standing"
+            if self.connection_manager and hasattr(self.connection_manager, "persistence"):
+                async_persistence = self.connection_manager.async_persistence
+                if async_persistence:
+                    try:
+                        # Get player from async persistence to retrieve updated stats including position
+                        player = await async_persistence.get_player_by_id(uuid.UUID(player_id_str))
+                        if player:
+                            stats = player.get_stats()
+                            updated_position = stats.get("position", "standing")
+
+                            # Update connection manager's in-memory position state
+                            if hasattr(self.connection_manager, "online_players"):
+                                player_uuid = uuid.UUID(player_id_str)
+                                if player_uuid in self.connection_manager.online_players:
+                                    self.connection_manager.online_players[player_uuid]["position"] = updated_position
+                                    self._logger.debug(
+                                        "Updated connection manager position state",
+                                        player_id=player_id_str,
+                                        position=updated_position,
+                                    )
+
+                            # Get updated lucidity from PlayerLucidity table
+                            from ..database import get_async_session
+                            from ..models.lucidity import PlayerLucidity
+
+                            current_lucidity = event.new_lucidity
+                            async for session in get_async_session():
+                                lucidity_record = await session.get(PlayerLucidity, player_uuid)
+                                if lucidity_record:
+                                    current_lucidity = lucidity_record.current_lcd
+                                break
+
+                            # Convert player to client-expected format
+                            player_data = {
+                                "id": str(player.player_id),
+                                "name": player.name,
+                                "level": player.level,
+                                "xp": player.experience_points,
+                                "stats": {
+                                    "current_health": stats.get("current_health", 100),
+                                    "max_health": stats.get("max_health", 100),
+                                    "lucidity": current_lucidity,
+                                    "max_lucidity": stats.get("max_lucidity", 100),
+                                    "strength": stats.get("strength"),
+                                    "dexterity": stats.get("dexterity"),
+                                    "constitution": stats.get("constitution"),
+                                    "intelligence": stats.get("intelligence"),
+                                    "wisdom": stats.get("wisdom"),
+                                    "charisma": stats.get("charisma"),
+                                    "occult_knowledge": stats.get("occult_knowledge", 0),
+                                    "fear": stats.get("fear", 0),
+                                    "corruption": stats.get("corruption", 0),
+                                    "cult_affiliation": stats.get("cult_affiliation", 0),
+                                    "position": updated_position,
+                                },
+                                "position": updated_position,
+                                "in_combat": False,  # Combat state cleared during respawn
+                            }
+                            self._logger.debug(
+                                "Retrieved player data for delirium respawn event",
+                                player_id=player_id_str,
+                                position=updated_position,
+                                lucidity=current_lucidity,
+                            )
+                    except Exception as e:
+                        self._logger.warning(
+                            "Failed to retrieve player data for delirium respawn event",
+                            player_id=player_id_str,
+                            error=str(e),
+                        )
+
+            # Send personal message to the player
+            from .envelope import build_event
+
+            respawn_event = build_event(
+                "player_delirium_respawned",
+                {
+                    "player_id": player_id_str,
+                    "player_name": event.player_name,
+                    "respawn_room_id": event.respawn_room_id,
+                    "old_lucidity": event.old_lucidity,
+                    "new_lucidity": event.new_lucidity,
+                    "message": "You have been restored to lucidity and returned to the Sanitarium.",
+                    "player": player_data,
+                },
+                player_id=player_id_str,
+            )
+
+            # Retry sending respawn event to handle temporary connection unavailability
+            import asyncio
+            import uuid as uuid_lib
+
+            max_wait_time = 2.0
+            poll_interval = 0.05
+            max_polls = int(max_wait_time / poll_interval)
+            player_id_uuid = uuid_lib.UUID(player_id_str)
+
+            for _poll_count in range(max_polls):
+                has_websocket = player_id_uuid in self.connection_manager.player_websockets
+
+                if has_websocket:
+                    delivery_status = await self.connection_manager.send_personal_message(
+                        player_id_uuid,
+                        respawn_event,
+                    )
+                    websocket_delivered = delivery_status.get("websocket_delivered", 0) > 0
+                    active_connections = delivery_status.get("active_connections", 0)
+                    if websocket_delivered and active_connections > 0:
+                        break
+
+                await asyncio.sleep(poll_interval)
+
+            self._logger.info(
+                "Sent delirium respawn notification to player",
+                player_id=player_id_str,
+                respawn_room=event.respawn_room_id,
+                new_lucidity=event.new_lucidity,
+                player_data_included=player_data is not None,
+            )
+
+        except Exception as e:
+            self._logger.error("Error handling player delirium respawn event", error=str(e), exc_info=True)
 
 
 # AI Agent: Global singleton removed - use ApplicationContainer.real_time_event_handler instead

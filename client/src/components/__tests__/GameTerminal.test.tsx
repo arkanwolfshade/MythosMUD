@@ -155,7 +155,7 @@ describe('GameTerminal', () => {
       name: 'TestPlayer',
       stats: {
         current_health: 100,
-        sanity: 80,
+        lucidity: 80,
         strength: 10,
         dexterity: 12,
         constitution: 14,
@@ -174,7 +174,7 @@ describe('GameTerminal', () => {
       },
     ],
     commandHistory: ['look', 'inventory', 'status'],
-    sanityStatus: null,
+    LucidityStatus: null,
     healthStatus: null,
     hallucinations: [],
     rescueState: null,
@@ -252,9 +252,9 @@ describe('GameTerminal', () => {
       expect(screen.getByText('Health')).toBeInTheDocument();
       const healthMeter = screen.getByTestId('health-meter');
       expect(healthMeter).toHaveTextContent(/100/);
-      // SanityMeter renders "Sanity" (without colon) and value as "80 / 100"
-      expect(screen.getByText('Sanity')).toBeInTheDocument();
-      // Sanity value should be 80, not 100
+      // LucidityMeter renders "Lucidity" (capitalized, without colon) and value as "80 / 100"
+      expect(screen.getByText('Lucidity')).toBeInTheDocument();
+      // lucidity value should be 80, not 100
       expect(screen.getByText(/^80/)).toBeInTheDocument();
       // Core attributes still use colon format
       expect(screen.getByText('STR:')).toBeInTheDocument();
@@ -370,7 +370,7 @@ describe('GameTerminal', () => {
 
       // Should not display player stats
       expect(screen.queryByText('Health:')).not.toBeInTheDocument();
-      expect(screen.queryByText('Sanity:')).not.toBeInTheDocument();
+      expect(screen.queryByText('Lucidity:')).not.toBeInTheDocument();
     });
 
     it('should handle empty messages array', () => {
@@ -392,7 +392,7 @@ describe('GameTerminal', () => {
 
       // Should not display stats section
       expect(screen.queryByText('Health:')).not.toBeInTheDocument();
-      expect(screen.queryByText('Sanity:')).not.toBeInTheDocument();
+      expect(screen.queryByText('Lucidity:')).not.toBeInTheDocument();
     });
   });
 
