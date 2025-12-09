@@ -176,6 +176,28 @@ class UserManager:
             logger.error("Unexpected error removing admin status", error=str(e), error_type=type(e).__name__)
             return False
 
+    def is_admin_sync(self, player_id: uuid.UUID | str) -> bool:
+        """
+        Synchronous version of is_admin that only checks the cache.
+
+        Use this in synchronous contexts. For async contexts, use is_admin().
+
+        Args:
+            player_id: Player ID
+
+        Returns:
+            True if player is admin (and in cache), False otherwise
+        """
+        try:
+            # Normalize to UUID for dictionary operations
+            player_id_uuid = self._normalize_to_uuid(player_id)
+
+            # Check in-memory cache only
+            return player_id_uuid in self._admin_players
+        except (ValueError, TypeError, AttributeError) as e:
+            logger.warning("Error in is_admin_sync", player_id=player_id, error=str(e))
+            return False
+
     async def is_admin(self, player_id: uuid.UUID | str) -> bool:
         """
         Check if a player is an admin.
@@ -251,7 +273,7 @@ class UserManager:
             target_id_uuid = self._normalize_to_uuid(target_id)
 
             # Check if target is admin (immune to mutes)
-            if self.is_admin(target_id_uuid):
+            if self.is_admin_sync(target_id_uuid):
                 logger.warning("Attempted to mute admin player")
                 return False
 
@@ -904,7 +926,7 @@ class UserManager:
 
         try:
             # Admins can always send messages
-            if self.is_admin(sender_id):
+            if self.is_admin_sync(sender_id):
                 return True
 
             # Check global mute first
@@ -921,7 +943,7 @@ class UserManager:
 
             return True
 
-        except Exception as e:
+        except (OSError, ValueError, TypeError, AttributeError) as e:
             logger.error(
                 "Error checking message permissions",
                 error=str(e),

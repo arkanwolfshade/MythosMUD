@@ -1055,7 +1055,7 @@ class NATSMessageHandler:
                 sender_id=sender_id,
             )
             is_globally_muted = user_manager.is_player_muted_by_others(sender_id)
-            is_receiver_admin = user_manager.is_admin(receiver_id)
+            is_receiver_admin = user_manager.is_admin_sync(receiver_id)
 
             logger.info(
                 "=== MUTE FILTERING: Global mute check result ===",
@@ -1178,7 +1178,7 @@ class NATSMessageHandler:
             # Load global mutes and check if sender is globally muted by anyone
             # Only apply global mute if receiver is not an admin (admins can see globally muted players)
             is_globally_muted = user_manager.is_player_muted_by_others(sender_id)
-            is_receiver_admin = user_manager.is_admin(receiver_id)
+            is_receiver_admin = await user_manager.is_admin(receiver_id)
 
             logger.debug(
                 "=== MUTE FILTERING DEBUG: Global mute check ===",
