@@ -325,7 +325,19 @@ class NPCCombatIntegrationService:
                 # Get NPC stats properly from the NPC instance
                 npc_stats = npc_instance.get_stats()
                 npc_current_hp = npc_stats.get("hp", 100)
-                npc_max_hp = npc_stats.get("max_hp", 100)
+                # Check both max_hp and max_health keys (NPCs may use either)
+                npc_max_hp = npc_stats.get("max_hp", npc_stats.get("max_health", 100))
+                # #region agent log
+                logger.info(
+                    "DEBUG: NPC stats extraction",
+                    npc_id=npc_id,
+                    npc_name=npc_instance.name,
+                    npc_stats_keys=list(npc_stats.keys()),
+                    npc_max_hp=npc_max_hp,
+                    has_max_hp="max_hp" in npc_stats,
+                    has_max_health="max_health" in npc_stats,
+                )
+                # #endregion
                 npc_dexterity = npc_stats.get("dexterity", 10)
 
                 # Start combat with auto-progression

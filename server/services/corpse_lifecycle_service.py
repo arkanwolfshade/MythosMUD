@@ -117,8 +117,8 @@ class CorpseLifecycleService:
                 user_friendly="Player not found",
             )
 
-        # Get player inventory
-        player_inventory = getattr(player, "inventory", [])
+        # Get player inventory using the proper method that handles JSON string conversion
+        player_inventory = player.get_inventory()
         player_name = getattr(player, "name", "Unknown")
 
         # Calculate timestamps

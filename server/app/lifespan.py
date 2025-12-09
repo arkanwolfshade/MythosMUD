@@ -304,6 +304,7 @@ async def _initialize_nats_and_combat_services(app: FastAPI, container: Applicat
             container.nats_service,
             player_death_service=app.state.player_death_service,
             player_respawn_service=app.state.player_respawn_service,
+            event_bus=container.event_bus,
         )
 
         set_combat_service(app.state.combat_service)

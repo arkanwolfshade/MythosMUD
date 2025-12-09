@@ -209,7 +209,7 @@ class RoomCacheService:
 
         # Load from persistence
         logger.debug("Room cache miss, loading from persistence (sync)", room_id=room_id)
-        room = self.persistence.get_room(room_id)
+        room = self.persistence.get_room_by_id(room_id)
 
         if room:
             # Convert to dictionary if needed
@@ -251,7 +251,7 @@ class RoomCacheService:
 
         for room_id in room_ids:
             if room_id not in self.rooms_cache:
-                room = self.persistence.get_room(room_id)
+                room = self.persistence.get_room_by_id(room_id)
                 if room:
                     if hasattr(room, "to_dict"):
                         room_dict = room.to_dict()

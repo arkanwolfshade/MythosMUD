@@ -899,10 +899,15 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             const attackerName = (event.data.attacker_name || event.data.npc_name) as string | undefined;
             const damage = event.data.damage as number | undefined;
             const actionType = event.data.action_type as string | undefined;
+            const targetCurrentHp = event.data.target_current_hp as number | undefined;
+            const targetMaxHp = event.data.target_max_hp as number | undefined;
 
             if (attackerName && damage !== undefined) {
-              // Format: "Dr. Francis Morgan attacks you for 10 damage."
-              const message = `${attackerName} ${actionType || 'attacks'} you for ${damage} damage.`;
+              // Format: "Dr. Francis Morgan attacks you for 10 damage. (11/21 HP)"
+              let message = `${attackerName} ${actionType || 'attacks'} you for ${damage} damage.`;
+              if (targetCurrentHp !== undefined && targetMaxHp !== undefined) {
+                message += ` (${targetCurrentHp}/${targetMaxHp} HP)`;
+              }
               appendMessage(
                 sanitizeChatMessageForState({
                   text: message,

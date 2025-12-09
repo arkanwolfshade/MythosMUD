@@ -647,12 +647,12 @@ def get_help_content(command_name: str | None = None) -> str:
     return get_help_content_new(command_name)
 
 
-def _load_player_for_catatonia_check(request: Request, player_name: str, persistence) -> Any | None:
+async def _load_player_for_catatonia_check(request: Request, player_name: str, persistence) -> Any | None:
     """Load player for catatonia check, using cache if available."""
     player = get_cached_player(request, player_name)
     if player is None:
         try:
-            player = persistence.get_player_by_name(player_name)
+            player = await persistence.get_player_by_name(player_name)
             cache_player(request, player_name, player)
         except Exception:  # pragma: no cover - defensive
             logger.exception("Failed to load player for catatonia check", player=player_name)
@@ -751,7 +751,7 @@ async def _check_catatonia_block(player_name: str, command: str, request: Reques
     if persistence is None:
         return False, None
 
-    player = _load_player_for_catatonia_check(request, player_name, persistence)
+    player = await _load_player_for_catatonia_check(request, player_name, persistence)
     if not player:
         return False, None
 
