@@ -20,6 +20,7 @@ class TestNPCCombatIntegrationService:
         """Set up test environment."""
         self.event_bus = Mock()
         self.persistence = Mock()
+        self.persistence.get_player_by_id = AsyncMock(return_value=None)
         self.combat_service = AsyncMock()
         # Mock the combat result object
         mock_combat_result = Mock()
@@ -62,7 +63,9 @@ class TestNPCCombatIntegrationService:
         # Mock player with proper room ID
         mock_player = Mock()
         mock_player.current_room_id = room_id
+        mock_player.get_stats.return_value = {"current_health": 100, "max_health": 100, "dexterity": 10}
         self.persistence.get_player.return_value = mock_player
+        self.persistence.get_player_by_id = AsyncMock(return_value=mock_player)
 
         # Mock NPC instance with proper room ID
         npc_instance = Mock()
@@ -70,11 +73,13 @@ class TestNPCCombatIntegrationService:
         npc_instance.name = "Test Rat"
         npc_instance.take_damage = Mock(return_value=True)
         npc_instance._stats = {"hp": 5, "max_hp": 10}
+        npc_instance.get_stats.return_value = {"hp": 5, "max_hp": 10, "dexterity": 10}
         npc_instance.current_room = room_id  # Set the room ID to match player
         npc_instance.room_id = room_id  # Also set room_id for compatibility
 
         self.service._get_npc_instance = Mock(return_value=npc_instance)
-        self.service._get_player_name = Mock(return_value="TestPlayer")
+        self.service._get_player_name = AsyncMock(return_value="TestPlayer")
+        self.service._get_player_room_id = AsyncMock(return_value=room_id)
 
         # Execute
         result = await self.service.handle_player_attack_on_npc(

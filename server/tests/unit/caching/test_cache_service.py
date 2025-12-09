@@ -29,6 +29,7 @@ def mock_persistence():
     persistence = Mock()
     persistence.async_get_room = AsyncMock()
     persistence.get_room = Mock()
+    persistence.get_room_by_id = Mock()
     persistence.get_all_professions = Mock()
     return persistence
 
@@ -175,7 +176,7 @@ class TestRoomCacheServiceOperations:
         result = service.get_room_sync("room3")
 
         assert result == cached_room
-        mock_persistence.get_room.assert_not_called()
+        mock_persistence.get_room_by_id.assert_not_called()
 
     @patch("server.caching.cache_service.get_cache_manager")
     def test_invalidate_room(self, mock_get_cache_manager, mock_persistence, mock_cache_manager):
@@ -400,12 +401,12 @@ class TestCacheServiceOperations:
         mock_cache_manager.get_cache = Mock(return_value=cache)
         mock_get_cache_manager.return_value = mock_cache_manager
 
-        mock_persistence.get_room.return_value = {"id": "start_room"}
+        mock_persistence.get_room_by_id.return_value = {"id": "start_room"}
         mock_persistence.get_all_professions.return_value = [{"id": 1}]
 
         service = CacheService(mock_persistence)
         service.preload_frequently_accessed_data()
 
         # Verify persistence was called
-        assert mock_persistence.get_room.called
+        assert mock_persistence.get_room_by_id.called
         assert mock_persistence.get_all_professions.called

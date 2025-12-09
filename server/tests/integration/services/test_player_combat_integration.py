@@ -192,7 +192,7 @@ class TestPlayerXPIntegration:
 
         # Mock persistence to return the player
         player_combat_service._persistence.async_get_player = AsyncMock(return_value=sample_player)
-        player_combat_service._persistence.async_save_player = AsyncMock()
+        player_combat_service._persistence.save_player = AsyncMock()
 
         # Award XP
         await player_combat_service.award_xp_on_npc_death(player_id=player_id, npc_id=npc_id, xp_amount=xp_reward)
@@ -202,7 +202,7 @@ class TestPlayerXPIntegration:
         assert sample_player.level == 2  # (125 // 100) + 1 = 1 + 1 = 2
 
         # Verify player was saved
-        player_combat_service._persistence.async_save_player.assert_called_once_with(sample_player)
+        player_combat_service._persistence.save_player.assert_called_once_with(sample_player)
 
     @pytest.mark.asyncio
     async def test_award_xp_player_not_found(self, player_combat_service):
@@ -218,7 +218,7 @@ class TestPlayerXPIntegration:
         await player_combat_service.award_xp_on_npc_death(player_id=player_id, npc_id=npc_id, xp_amount=xp_reward)
 
         # Verify no save was called
-        player_combat_service._persistence.async_save_player.assert_not_called()
+        player_combat_service._persistence.save_player.assert_not_called()
 
     @pytest.mark.asyncio
     async def test_calculate_xp_reward_based_on_npc_level(self, player_combat_service):
@@ -273,7 +273,7 @@ class TestPlayerXPIntegration:
 
         # Mock persistence
         player_combat_service._persistence.async_get_player = AsyncMock(return_value=sample_player)
-        player_combat_service._persistence.async_save_player = AsyncMock()
+        player_combat_service._persistence.save_player = AsyncMock()
 
         # Award XP
         await player_combat_service.award_xp_on_npc_death(player_id=player_id, npc_id=npc_id, xp_amount=xp_reward)
@@ -291,7 +291,7 @@ class TestPlayerXPIntegration:
 
         # Mock persistence
         player_combat_service._persistence.async_get_player = AsyncMock(return_value=sample_player)
-        player_combat_service._persistence.async_save_player = AsyncMock()
+        player_combat_service._persistence.save_player = AsyncMock()
 
         # Award XP
         await player_combat_service.award_xp_on_npc_death(player_id=player_id, npc_id=npc_id, xp_amount=xp_reward)
@@ -383,7 +383,7 @@ class TestPlayerCombatIntegration:
 
         # Mock persistence
         player_combat_service._persistence.async_get_player = AsyncMock(return_value=sample_player)
-        player_combat_service._persistence.async_save_player = AsyncMock()
+        player_combat_service._persistence.save_player = AsyncMock()
 
         # Start combat tracking
         await player_combat_service.handle_combat_start(
@@ -398,7 +398,7 @@ class TestPlayerCombatIntegration:
 
         # Verify XP was awarded
         assert sample_player.experience_points == 130  # 100 + 30
-        player_combat_service._persistence.async_save_player.assert_called_once_with(sample_player)
+        player_combat_service._persistence.save_player.assert_called_once_with(sample_player)
 
         # Verify event was published
         player_combat_service._event_bus.publish.assert_called_once()
@@ -478,7 +478,7 @@ class TestPlayerCombatIntegration:
         await player_combat_service.award_xp_on_npc_death(player_id=player_id, npc_id=npc_id, xp_amount=xp_reward)
 
         # Verify no save was attempted
-        player_combat_service._persistence.async_save_player.assert_not_called()
+        player_combat_service._persistence.save_player.assert_not_called()
 
     @pytest.mark.asyncio
     async def test_combat_state_persistence_across_restarts(self, player_combat_service):

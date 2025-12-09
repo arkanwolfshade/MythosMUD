@@ -764,7 +764,24 @@ async def _check_catatonia_block(player_name: str, command: str, request: Reques
     if blocked:
         return blocked, message
 
-    # Check database
-    player_id_uuid = player_id if isinstance(player_id, uuid.UUID) else uuid.UUID(player_id)
+    # Check database - convert player_id to UUID if needed
+    try:
+        if isinstance(player_id, uuid.UUID):
+            player_id_uuid = player_id
+        elif isinstance(player_id, str) and len(player_id) == 36:  # Valid UUID string length
+            player_id_uuid = uuid.UUID(player_id)
+        else:
+            # Invalid player_id format, skip database check
+            logger.debug(
+                "Skipping catatonia database check - invalid player_id format",
+                player=player_name,
+                player_id_type=type(player_id).__name__,
+            )
+            return False, None
+    except (ValueError, AttributeError, TypeError) as e:
+        # Invalid UUID format, skip database check
+        logger.debug("Skipping catatonia database check - UUID conversion failed", player=player_name, error=str(e))
+        return False, None
+
     logger.debug("Starting catatonia check", player=player_name, command=command, player_id=player_id_uuid)
     return await _check_catatonia_database(player_id_uuid, player_name)

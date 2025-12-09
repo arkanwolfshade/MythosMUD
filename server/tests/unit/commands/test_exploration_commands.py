@@ -162,43 +162,43 @@ class TestGetHealthLabel:
 
     def test_get_health_label_healthy(self):
         """Test health label for healthy player (>75%)."""
-        stats = {"health": 100, "max_health": 100}
+        stats = {"current_health": 100, "max_health": 100}
         assert _get_health_label(stats) == "healthy"
 
-        stats = {"health": 80, "max_health": 100}
+        stats = {"current_health": 80, "max_health": 100}
         assert _get_health_label(stats) == "healthy"
 
-        stats = {"health": 76, "max_health": 100}
+        stats = {"current_health": 76, "max_health": 100}
         assert _get_health_label(stats) == "healthy"
 
     def test_get_health_label_wounded(self):
         """Test health label for wounded player (25-75%)."""
-        stats = {"health": 75, "max_health": 100}
+        stats = {"current_health": 75, "max_health": 100}
         assert _get_health_label(stats) == "wounded"
 
-        stats = {"health": 50, "max_health": 100}
+        stats = {"current_health": 50, "max_health": 100}
         assert _get_health_label(stats) == "wounded"
 
-        stats = {"health": 25, "max_health": 100}
+        stats = {"current_health": 25, "max_health": 100}
         assert _get_health_label(stats) == "wounded"
 
     def test_get_health_label_critical(self):
         """Test health label for critical player (1-24%)."""
-        stats = {"health": 24, "max_health": 100}
+        stats = {"current_health": 24, "max_health": 100}
         assert _get_health_label(stats) == "critical"
 
-        stats = {"health": 10, "max_health": 100}
+        stats = {"current_health": 10, "max_health": 100}
         assert _get_health_label(stats) == "critical"
 
-        stats = {"health": 1, "max_health": 100}
+        stats = {"current_health": 1, "max_health": 100}
         assert _get_health_label(stats) == "critical"
 
     def test_get_health_label_mortally_wounded(self):
         """Test health label for mortally wounded player (<=0%)."""
-        stats = {"health": 0, "max_health": 100}
+        stats = {"current_health": 0, "max_health": 100}
         assert _get_health_label(stats) == "mortally wounded"
 
-        stats = {"health": -10, "max_health": 100}
+        stats = {"current_health": -10, "max_health": 100}
         assert _get_health_label(stats) == "mortally wounded"
 
 
@@ -424,7 +424,12 @@ class TestPlayerLookFunctionality:
         # Target player
         target_player = MagicMock()
         target_player.name = "Armitage"
-        target_player.get_stats.return_value = {"health": 100, "max_health": 100, "lucidity": 100, "max_lucidity": 100}
+        target_player.get_stats.return_value = {
+            "current_health": 100,
+            "max_health": 100,
+            "lucidity": 100,
+            "max_lucidity": 100,
+        }
         target_player.get_equipped_items.return_value = {"head": {"item_name": "Hat"}}
         target_player_id = uuid.uuid4()
         room.get_players.return_value = [str(target_player_id)]
@@ -462,7 +467,12 @@ class TestPlayerLookFunctionality:
         # Test healthy player
         target_player = MagicMock()
         target_player.name = "Armitage"
-        target_player.get_stats.return_value = {"health": 100, "max_health": 100, "lucidity": 100, "max_lucidity": 100}
+        target_player.get_stats.return_value = {
+            "current_health": 100,
+            "max_health": 100,
+            "lucidity": 100,
+            "max_lucidity": 100,
+        }
         target_player.get_equipped_items.return_value = {}
         target_player_id = uuid.uuid4()
         room.get_players.return_value = [str(target_player_id)]
@@ -477,12 +487,22 @@ class TestPlayerLookFunctionality:
         assert "healthy" in result["result"]
 
         # Test wounded player
-        target_player.get_stats.return_value = {"health": 50, "max_health": 100, "lucidity": 100, "max_lucidity": 100}
+        target_player.get_stats.return_value = {
+            "current_health": 50,
+            "max_health": 100,
+            "lucidity": 100,
+            "max_lucidity": 100,
+        }
         result = await handle_look_command(command_data, current_user, request, None, "CurrentPlayer")
         assert "wounded" in result["result"]
 
         # Test critical player
-        target_player.get_stats.return_value = {"health": 10, "max_health": 100, "lucidity": 100, "max_lucidity": 100}
+        target_player.get_stats.return_value = {
+            "current_health": 10,
+            "max_health": 100,
+            "lucidity": 100,
+            "max_lucidity": 100,
+        }
         result = await handle_look_command(command_data, current_user, request, None, "CurrentPlayer")
         assert "critical" in result["result"]
 
@@ -508,7 +528,12 @@ class TestPlayerLookFunctionality:
 
         target_player = MagicMock()
         target_player.name = "Armitage"
-        target_player.get_stats.return_value = {"health": 100, "max_health": 100, "lucidity": 50, "max_lucidity": 100}
+        target_player.get_stats.return_value = {
+            "current_health": 100,
+            "max_health": 100,
+            "lucidity": 50,
+            "max_lucidity": 100,
+        }
         target_player.get_equipped_items.return_value = {}
         target_player_id = uuid.uuid4()
         room.get_players.return_value = [str(target_player_id)]
@@ -544,7 +569,12 @@ class TestPlayerLookFunctionality:
 
         target_player = MagicMock()
         target_player.name = "Armitage"
-        target_player.get_stats.return_value = {"health": 100, "max_health": 100, "lucidity": 100, "max_lucidity": 100}
+        target_player.get_stats.return_value = {
+            "current_health": 100,
+            "max_health": 100,
+            "lucidity": 100,
+            "max_lucidity": 100,
+        }
         target_player.get_equipped_items.return_value = {
             "head": {"item_name": "Hat"},
             "torso": {"item_name": "Coat"},
@@ -662,7 +692,12 @@ class TestPlayerLookFunctionality:
 
         player1 = MagicMock()
         player1.name = "Armitage"
-        player1.get_stats.return_value = {"health": 100, "max_health": 100, "lucidity": 100, "max_lucidity": 100}
+        player1.get_stats.return_value = {
+            "current_health": 100,
+            "max_health": 100,
+            "lucidity": 100,
+            "max_lucidity": 100,
+        }
         player1.get_equipped_items.return_value = {}
         player2 = MagicMock()
         player2.name = "Armitage"

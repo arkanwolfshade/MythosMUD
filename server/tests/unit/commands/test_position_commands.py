@@ -52,7 +52,8 @@ def baseline_alias_storage():
 async def test_sit_command_updates_persistence_and_connection(mock_request, mock_player, baseline_alias_storage):
     """Sit command should persist position changes and update live tracking."""
     mock_request.app.state.persistence = MagicMock()
-    mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+    mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_request.app.state.persistence.save_player = AsyncMock()
 
     result = await handle_sit_command(
         command_data={"command_type": "sit", "args": []},
@@ -100,7 +101,8 @@ async def test_sit_command_updates_persistence_and_connection(mock_request, mock
 async def test_stand_command_no_change_skips_persistence(mock_request, mock_player):
     """Stand command should be a no-op when already standing."""
     mock_request.app.state.persistence = MagicMock()
-    mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+    mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_request.app.state.persistence.save_player = AsyncMock()
 
     alias_storage = MagicMock()
     alias_storage.get_alias.side_effect = [
@@ -136,7 +138,8 @@ async def test_stand_command_no_change_skips_persistence(mock_request, mock_play
 async def test_lie_command_accepts_down_modifier(mock_request, mock_player, baseline_alias_storage):
     """Lie command should accept the optional 'down' modifier."""
     mock_request.app.state.persistence = MagicMock()
-    mock_request.app.state.persistence.get_player_by_name.return_value = mock_player
+    mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
+    mock_request.app.state.persistence.save_player = AsyncMock()
 
     result = await handle_lie_command(
         command_data={"command_type": "lie", "args": ["down"], "modifier": "down"},

@@ -5,7 +5,8 @@ This module tests the integration of combat commands with the existing
 command validation and routing system.
 """
 
-from unittest.mock import MagicMock, Mock
+from unittest.mock import AsyncMock, MagicMock, Mock
+from uuid import uuid4
 
 import pytest
 
@@ -22,10 +23,10 @@ class TestCombatCommandIntegration:
         mock_persistence = Mock()
         # Mock a player object
         mock_player = Mock()
-        mock_player.player_id = "test_player_123"
-        mock_player.current_room_id = None  # Set to None to test "not in a room" case
+        mock_player.player_id = uuid4()  # Use valid UUID
+        mock_player.current_room_id = "earth_arkhamcity_campus_intersection_boundary_crane"  # Set to valid room ID
         mock_persistence.get_player.return_value = mock_player
-        mock_persistence.get_player_by_name.return_value = mock_player
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         return mock_persistence
 
     @pytest.fixture
@@ -103,10 +104,16 @@ class TestCombatCommandIntegration:
             "username": "TestPlayer",
         }
 
+        # Set up mock request with app.state.persistence
+        mock_request = MagicMock()
+        mock_request.app = MagicMock()
+        mock_request.app.state = MagicMock()
+        mock_request.app.state.persistence = mock_persistence
+
         result = await handler.handle_attack_command(
             command_data=command_data,
             current_user=current_user,
-            request=MagicMock(),
+            request=mock_request,
             alias_storage=MagicMock(),
             player_name="TestPlayer",
         )
@@ -133,10 +140,16 @@ class TestCombatCommandIntegration:
             "username": "TestPlayer",
         }
 
+        # Set up mock request with app.state.persistence
+        mock_request = MagicMock()
+        mock_request.app = MagicMock()
+        mock_request.app.state = MagicMock()
+        mock_request.app.state.persistence = mock_persistence
+
         result = await handler.handle_attack_command(
             command_data=command_data,
             current_user=current_user,
-            request=MagicMock(),
+            request=mock_request,
             alias_storage=MagicMock(),
             player_name="TestPlayer",
         )
@@ -163,10 +176,16 @@ class TestCombatCommandIntegration:
             "username": "TestPlayer",
         }
 
+        # Set up mock request with app.state.persistence
+        mock_request = MagicMock()
+        mock_request.app = MagicMock()
+        mock_request.app.state = MagicMock()
+        mock_request.app.state.persistence = mock_persistence
+
         result = await handler.handle_attack_command(
             command_data=command_data,
             current_user=current_user,
-            request=MagicMock(),
+            request=mock_request,
             alias_storage=MagicMock(),
             player_name="TestPlayer",
         )
@@ -193,10 +212,16 @@ class TestCombatCommandIntegration:
             "username": "TestPlayer",
         }
 
+        # Set up mock request with app.state.persistence
+        mock_request = MagicMock()
+        mock_request.app = MagicMock()
+        mock_request.app.state = MagicMock()
+        mock_request.app.state.persistence = mock_persistence
+
         result = await handler.handle_attack_command(
             command_data=command_data,
             current_user=current_user,
-            request=MagicMock(),
+            request=mock_request,
             alias_storage=MagicMock(),
             player_name="TestPlayer",
         )
@@ -214,6 +239,12 @@ class TestCombatCommandIntegration:
         mock_app = MagicMock()
         mock_app.state.persistence = mock_persistence
         mock_request.app = mock_app
+
+        # Create a player mock with no room_id for this test
+        mock_player_no_room = Mock()
+        mock_player_no_room.player_id = uuid4()
+        mock_player_no_room.current_room_id = None  # No room for this test
+        mock_persistence.get_player_by_name = AsyncMock(return_value=mock_player_no_room)
 
         command_data = {
             "command_type": "invalid_command",
