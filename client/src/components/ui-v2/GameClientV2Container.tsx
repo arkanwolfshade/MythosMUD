@@ -569,7 +569,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             // Process player_update from command responses (e.g., posture changes)
             // As documented in "State Synchronization Patterns" - Dr. Armitage, 1928
             // Command responses can include player_update fields that need to be applied to player state
-            if (event.data?.player_update && currentPlayerRef.current && currentPlayerRef.current.stats) {
+            if (event.data.player_update && currentPlayerRef.current && currentPlayerRef.current.stats) {
               const playerUpdate = event.data.player_update as {
                 position?: string;
                 previous_position?: string;
