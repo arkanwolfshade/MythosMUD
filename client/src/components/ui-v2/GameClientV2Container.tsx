@@ -116,7 +116,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
 
   const [isMortallyWounded, setIsMortallyWounded] = useState(false);
   const [isDead, setIsDead] = useState(false);
-  const [deathLocation] = useState<string>('Unknown Location');
+  const [deathLocation, setDeathLocation] = useState<string>('Unknown Location');
   const [isRespawning, setIsRespawning] = useState(false);
   const [isDelirious, setIsDelirious] = useState(false);
   const [deliriumLocation, setDeliriumLocation] = useState<string>('Unknown Location');
@@ -566,6 +566,24 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               }
             }
 
+            // Process player_update from command responses (e.g., posture changes)
+            // As documented in "State Synchronization Patterns" - Dr. Armitage, 1928
+            // Command responses can include player_update fields that need to be applied to player state
+            if (event.data.player_update && currentPlayerRef.current && currentPlayerRef.current.stats) {
+              const playerUpdate = event.data.player_update as {
+                position?: string;
+                previous_position?: string;
+                [key: string]: unknown;
+              };
+              updates.player = {
+                ...currentPlayerRef.current,
+                stats: {
+                  ...currentPlayerRef.current.stats,
+                  ...(playerUpdate.position && { position: playerUpdate.position }),
+                },
+              };
+            }
+
             // Filter out room name-only messages (these are sent by the server for room updates
             // but should not be displayed as they duplicate the Room Info panel)
             // Room names are typically just the room name without description or other content
@@ -899,10 +917,15 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
             const attackerName = (event.data.attacker_name || event.data.npc_name) as string | undefined;
             const damage = event.data.damage as number | undefined;
             const actionType = event.data.action_type as string | undefined;
+            const targetCurrentHp = event.data.target_current_hp as number | undefined;
+            const targetMaxHp = event.data.target_max_hp as number | undefined;
 
             if (attackerName && damage !== undefined) {
-              // Format: "Dr. Francis Morgan attacks you for 10 damage."
-              const message = `${attackerName} ${actionType || 'attacks'} you for ${damage} damage.`;
+              // Format: "Dr. Francis Morgan attacks you for 10 damage. (11/21 HP)"
+              let message = `${attackerName} ${actionType || 'attacks'} you for ${damage} damage.`;
+              if (targetCurrentHp !== undefined && targetMaxHp !== undefined) {
+                message += ` (${targetCurrentHp}/${targetMaxHp} HP)`;
+              }
               appendMessage(
                 sanitizeChatMessageForState({
                   text: message,
@@ -977,9 +1000,12 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
           case 'playerdied': {
             // Player died event - show death interstitial
             const deathData = event.data as { death_location?: string; room_id?: string; [key: string]: unknown };
-            const deathLocation = deathData.death_location || deathData.room_id || 'Unknown Location';
+            const extractedDeathLocation = deathData.death_location || deathData.room_id || 'Unknown Location';
+            setDeathLocation(extractedDeathLocation);
             setIsDead(true);
-            logger.info('GameClientV2Container', 'Player died event received', { deathLocation });
+            logger.info('GameClientV2Container', 'Player died event received', {
+              deathLocation: extractedDeathLocation,
+            });
             break;
           }
           case 'player_respawned':

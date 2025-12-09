@@ -849,7 +849,7 @@ async def handle_teleport_command(
         target_room_id = current_player.current_room_id
         target_room_name = None
         if direction_value:
-            admin_room = persistence.get_room(current_player.current_room_id) if persistence else None
+            admin_room = persistence.get_room_by_id(current_player.current_room_id) if persistence else None
             if not admin_room:
                 logger.warning(
                     "Teleport command failed - admin room not found",
@@ -870,7 +870,7 @@ async def handle_teleport_command(
                 return {"result": f"There is no exit to the {direction_value} from here."}
 
             if persistence:
-                target_room = persistence.get_room(target_room_id)
+                target_room = persistence.get_room_by_id(target_room_id)
                 if target_room and hasattr(target_room, "name"):
                     target_room_name = target_room.name
 
@@ -946,10 +946,10 @@ async def handle_teleport_command(
 
                 if persistence:
                     try:
-                        source_room = persistence.get_room(original_room_id)
+                        source_room = persistence.get_room_by_id(original_room_id)
                         if source_room:
                             source_room.player_left(target_player_identifier)
-                    except Exception as exc:
+                    except (ValueError, AttributeError, TypeError) as exc:
                         logger.debug(
                             "Failed to mark teleport target as leaving source room",
                             player_id=target_player_identifier,
@@ -958,10 +958,10 @@ async def handle_teleport_command(
                         )
 
                     try:
-                        destination_room = persistence.get_room(target_room_id)
+                        destination_room = persistence.get_room_by_id(target_room_id)
                         if destination_room:
                             destination_room.player_entered(target_player_identifier)
-                    except Exception as exc:
+                    except (ValueError, AttributeError, TypeError) as exc:
                         logger.debug(
                             "Failed to mark teleport target as entering destination room",
                             player_id=target_player_identifier,

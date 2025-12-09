@@ -647,12 +647,12 @@ def get_help_content(command_name: str | None = None) -> str:
     return get_help_content_new(command_name)
 
 
-def _load_player_for_catatonia_check(request: Request, player_name: str, persistence) -> Any | None:
+async def _load_player_for_catatonia_check(request: Request, player_name: str, persistence) -> Any | None:
     """Load player for catatonia check, using cache if available."""
     player = get_cached_player(request, player_name)
     if player is None:
         try:
-            player = persistence.get_player_by_name(player_name)
+            player = await persistence.get_player_by_name(player_name)
             cache_player(request, player_name, player)
         except Exception:  # pragma: no cover - defensive
             logger.exception("Failed to load player for catatonia check", player=player_name)
@@ -751,7 +751,7 @@ async def _check_catatonia_block(player_name: str, command: str, request: Reques
     if persistence is None:
         return False, None
 
-    player = _load_player_for_catatonia_check(request, player_name, persistence)
+    player = await _load_player_for_catatonia_check(request, player_name, persistence)
     if not player:
         return False, None
 
@@ -764,7 +764,24 @@ async def _check_catatonia_block(player_name: str, command: str, request: Reques
     if blocked:
         return blocked, message
 
-    # Check database
-    player_id_uuid = player_id if isinstance(player_id, uuid.UUID) else uuid.UUID(player_id)
+    # Check database - convert player_id to UUID if needed
+    try:
+        if isinstance(player_id, uuid.UUID):
+            player_id_uuid = player_id
+        elif isinstance(player_id, str) and len(player_id) == 36:  # Valid UUID string length
+            player_id_uuid = uuid.UUID(player_id)
+        else:
+            # Invalid player_id format, skip database check
+            logger.debug(
+                "Skipping catatonia database check - invalid player_id format",
+                player=player_name,
+                player_id_type=type(player_id).__name__,
+            )
+            return False, None
+    except (ValueError, AttributeError, TypeError) as e:
+        # Invalid UUID format, skip database check
+        logger.debug("Skipping catatonia database check - UUID conversion failed", player=player_name, error=str(e))
+        return False, None
+
     logger.debug("Starting catatonia check", player=player_name, command=command, player_id=player_id_uuid)
     return await _check_catatonia_database(player_id_uuid, player_name)

@@ -2054,13 +2054,13 @@ class RealTimeEventHandler:
             # Send personal message to the player
             from .envelope import build_event
 
+            death_location_value = event.death_location or event.room_id
             death_event = build_event(
                 "player_died",
                 {
                     "player_id": player_id_str,
                     "player_name": event.player_name,
-                    "death_location": event.death_location
-                    or event.room_id,  # Use death_location if available, fallback to room_id
+                    "death_location": death_location_value,  # Use death_location if available, fallback to room_id
                     "killer_id": event.killer_id,
                     "killer_name": event.killer_name,
                     "message": "You have died. The darkness claims you utterly.",
@@ -2069,12 +2069,28 @@ class RealTimeEventHandler:
             )
 
             # ARCHITECTURE: Server-initiated events (death) sent via WebSocket
-            await self.connection_manager.send_personal_message(
-                player_id_str,
-                death_event,
-            )
+            # CRITICAL FIX: Convert player_id_str to UUID for send_personal_message
+            from uuid import UUID
 
-            self._logger.info("Sent death notification to player", player_id=player_id_str, room_id=event.room_id)
+            try:
+                player_id_uuid = UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
+                delivery_status = await self.connection_manager.send_personal_message(
+                    player_id_uuid,
+                    death_event,
+                )
+                self._logger.info(
+                    "Sent death notification to player",
+                    player_id=player_id_str,
+                    room_id=event.room_id,
+                    delivery_status=delivery_status,
+                )
+            except (ValueError, TypeError) as uuid_error:
+                self._logger.error(
+                    "Failed to send death notification - invalid player_id format",
+                    player_id=player_id_str,
+                    error=str(uuid_error),
+                    exc_info=True,
+                )
 
         except Exception as e:
             self._logger.error("Error handling player died event", error=str(e), exc_info=True)

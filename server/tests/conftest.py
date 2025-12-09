@@ -573,10 +573,16 @@ def _cleanup_event_loop(loop):
                 # This engine belongs to this loop - dispose it before closing the loop
                 if not loop.is_closed() and not loop.is_running():
                     try:
+                        # CRITICAL: For asyncpg, add a small delay to allow pending operations to complete
+                        # This helps prevent RuntimeWarning about unawaited Connection._cancel coroutines
+                        async def _dispose_with_delay():
+                            await asyncio.sleep(0.1)  # Allow pending operations to complete
+                            await db_manager.engine.dispose()
+
                         # Use run_until_complete to dispose in this loop
                         # This is safe because the test has completed and loop is not running
-                        loop.run_until_complete(asyncio.wait_for(db_manager.engine.dispose(), timeout=1.0))
-                    except (TimeoutError, RuntimeError, Exception):
+                        loop.run_until_complete(asyncio.wait_for(_dispose_with_delay(), timeout=1.5))
+                    except (TimeoutError, RuntimeError, AttributeError, TypeError, asyncio.CancelledError):
                         # If disposal fails or times out, continue with cleanup
                         # The engine will be garbage collected eventually
                         pass
@@ -591,10 +597,16 @@ def _cleanup_event_loop(loop):
                     if _npc_creation_loop_id == id(loop):
                         if not loop.is_closed() and not loop.is_running():
                             try:
+                                # CRITICAL: For asyncpg, add a small delay to allow pending operations to complete
+                                # This helps prevent RuntimeWarning about unawaited Connection._cancel coroutines
+                                async def _dispose_npc_with_delay():
+                                    await asyncio.sleep(0.1)  # Allow pending operations to complete
+                                    await npc_engine.dispose()
+
                                 # Use run_until_complete to dispose in this loop
                                 # This is safe because the test has completed and loop is not running
-                                loop.run_until_complete(asyncio.wait_for(npc_engine.dispose(), timeout=1.0))
-                            except (TimeoutError, RuntimeError, Exception):
+                                loop.run_until_complete(asyncio.wait_for(_dispose_npc_with_delay(), timeout=1.5))
+                            except (TimeoutError, RuntimeError, AttributeError, TypeError, asyncio.CancelledError):
                                 # If disposal fails or times out, continue with cleanup
                                 # The engine will be garbage collected eventually
                                 pass

@@ -834,7 +834,7 @@ class PlayerService:
 
         # Get respawn room data
         respawn_room_id = player.current_room_id  # Updated by respawn_player
-        room = persistence.get_room(str(respawn_room_id))
+        room = persistence.get_room_by_id(str(respawn_room_id))
 
         if not room:
             logger.warning("Respawn room not found", respawn_room_id=respawn_room_id)
@@ -948,7 +948,7 @@ class PlayerService:
 
         # Get respawn room data
         respawn_room_id = player.current_room_id  # Updated by respawn_player_from_delirium
-        room = persistence.get_room(str(respawn_room_id))
+        room = persistence.get_room_by_id(str(respawn_room_id))
 
         if not room:
             logger.warning("Respawn room not found", respawn_room_id=respawn_room_id)

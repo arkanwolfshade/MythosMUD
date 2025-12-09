@@ -11,6 +11,7 @@ from __future__ import annotations
 from typing import Any, cast
 
 from ..alias_storage import AliasStorage
+from ..exceptions import DatabaseError
 from ..logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -90,8 +91,8 @@ class PlayerPositionService:
             return response
 
         try:
-            player = self._persistence.get_player_by_name(player_name)
-        except Exception as exc:
+            player = await self._persistence.get_player_by_name(player_name)
+        except (DatabaseError, ValueError, AttributeError, TypeError) as exc:
             logger.error(
                 "Failed to retrieve player for position update",
                 player_name=player_name,
@@ -142,8 +143,8 @@ class PlayerPositionService:
             player.set_stats(stats)
 
         try:
-            self._persistence.save_player(player)
-        except Exception as exc:
+            await self._persistence.save_player(player)
+        except (DatabaseError, ValueError, AttributeError, TypeError) as exc:
             logger.error(
                 "Failed to persist player position",
                 player_name=player_name,

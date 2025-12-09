@@ -440,8 +440,14 @@ class DatabaseManager:
                     # No running loop - that's okay, we can still try to dispose
                     pass
 
-                # For Windows/asyncpg: Use a timeout and force close if needed
+                # For Windows/asyncpg: Close connections gracefully before disposal
+                # CRITICAL: asyncpg connections must be closed in the same event loop they were created in
+                # We add a small delay to allow any pending operations to complete before disposal
+                # This helps prevent RuntimeWarning about unawaited Connection._cancel coroutines
                 try:
+                    # Give any pending operations a moment to complete
+                    await asyncio.sleep(0.1)
+
                     # Try graceful disposal first
                     await asyncio.wait_for(engine.dispose(), timeout=1.0)
                     logger.info("Database connections closed")
@@ -449,12 +455,12 @@ class DatabaseManager:
                     # If disposal times out, try to force close connections
                     logger.warning("Engine disposal timed out, attempting force close")
                     try:
-                        # Force close by setting pool to None and clearing connections
+                        # Force close by disposing the pool directly
                         if hasattr(engine, "sync_engine") and hasattr(engine.sync_engine, "pool"):
                             pool = engine.sync_engine.pool
                             if pool:
                                 pool.dispose()
-                    except Exception:
+                    except (RuntimeError, AttributeError, TypeError):
                         pass  # Ignore errors during force close
                     logger.info("Database connections force closed")
             except (RuntimeError, AttributeError) as e:

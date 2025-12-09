@@ -63,8 +63,11 @@ class CombatService:
         subject_manager=None,
         player_death_service=None,
         player_respawn_service=None,
+        event_bus=None,
     ):
         """Initialize the combat service."""
+        from server.events.event_bus import EventBus
+
         self._active_combats: dict[UUID, CombatInstance] = {}
         self._player_combats: dict[UUID, UUID] = {}  # player_id -> combat_id
         self._npc_combats: dict[UUID, UUID] = {}  # npc_id -> combat_id
@@ -74,6 +77,8 @@ class CombatService:
         self._npc_combat_integration_service = npc_combat_integration_service
         self._player_death_service = player_death_service
         self._player_respawn_service = player_respawn_service
+        # CRITICAL: Use shared EventBus instance, not a new one
+        self._event_bus = event_bus or EventBus()
         # Create combat event publisher with proper NATS service and subject_manager
         logger.debug("Creating CombatEventPublisher with NATS service", nats_service_available=bool(nats_service))
         try:
@@ -141,7 +146,6 @@ class CombatService:
             ValueError: If combat cannot be started (invalid participants, etc.)
         """
         logger.info("Starting combat", attacker=attacker.name, target=target.name, room_id=room_id)
-
         # Check if either participant is already in combat
         if attacker.participant_id in self._player_combats or target.participant_id in self._npc_combats:
             raise ValueError("One or both participants are already in combat")
@@ -1222,10 +1226,10 @@ class CombatService:
             )
 
             # Save player to database
-            await persistence.async_save_player(player)
+            await persistence.save_player(player)
 
             # AI Agent: CRITICAL DEBUG - Verify save by reading back immediately
-            verification_player = await persistence.async_get_player(str(player_id))
+            verification_player = await persistence.get_player_by_id(player_id)
             if verification_player:
                 verification_stats = verification_player.get_stats()
                 verification_hp = verification_stats.get("current_health", -999)
@@ -1310,12 +1314,11 @@ class CombatService:
                 max_hp=max_hp,
                 has_player_combat_service=bool(self._player_combat_service),
             )
-            from server.events.event_bus import EventBus
             from server.events.event_types import PlayerHPUpdated
 
-            # Get event bus - use global EventBus instance
-            # EventBus instances are designed to be shared across the application
-            event_bus = EventBus()
+            # CRITICAL: Use the shared EventBus instance from __init__, not a new one
+            # This ensures events are routed to the same EventBus that RealTimeEventHandler subscribes to
+            event_bus = self._event_bus
 
             # Calculate damage taken (negative for healing)
             damage_taken = old_hp - new_hp
@@ -1378,7 +1381,7 @@ class CombatService:
                 message_data = {
                     "event_type": "player_hp_updated",
                     "data": {
-                        "player_id": hp_update_event.player_id,
+                        "player_id": str(hp_update_event.player_id),
                         "old_hp": hp_update_event.old_hp,
                         "new_hp": hp_update_event.new_hp,
                         "max_hp": hp_update_event.max_hp,
@@ -1439,12 +1442,12 @@ class CombatService:
                 correct_hp=correct_hp,
                 error_message=error_message,
             )
-            from server.events.event_bus import EventBus
             from server.events.event_types import PlayerHPUpdated
 
             # Get event bus - use global EventBus instance
             # EventBus instances are designed to be shared across the application
-            event_bus = EventBus()
+            # CRITICAL: Use the shared EventBus instance from __init__, not a new one
+            event_bus = self._event_bus
 
             # Create correction event - damage_taken is 0 since we're reverting
             correction_event = PlayerHPUpdated(

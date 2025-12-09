@@ -159,9 +159,9 @@ class CombatHPSync:
                 new_current_health=current_hp,
             )
 
-            await persistence.async_save_player(player)
+            await persistence.save_player(player)
 
-            verification_player = await persistence.async_get_player(str(player_id))
+            verification_player = await persistence.get_player_by_id(player_id)
             if verification_player:
                 verification_stats = verification_player.get_stats()
                 verification_hp = verification_stats.get("current_health", -999)

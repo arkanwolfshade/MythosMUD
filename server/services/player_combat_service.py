@@ -279,7 +279,7 @@ class PlayerCombatService:
             player.add_experience(xp_amount)
 
             # Save player
-            await self._persistence.async_save_player(player)
+            await self._persistence.save_player(player)
 
             # Publish XP award event
             event = PlayerXPAwardEvent(

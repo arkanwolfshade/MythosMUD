@@ -245,7 +245,6 @@ class EventBus:
             subscriber_count=len(subscribers),
             subscriber_names=[getattr(s, "__name__", "unknown") for s in subscribers],
         )
-
         import inspect
 
         # Separate async and sync subscribers

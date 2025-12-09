@@ -157,7 +157,7 @@ class CombatCommandHandler:
             logger.debug("DEBUG: Getting player data", player_name=player_name)
             from ..utils.command_parser import get_username_from_user
 
-            player = persistence.get_player_by_name(get_username_from_user(current_user))
+            player = await persistence.get_player_by_name(get_username_from_user(current_user))
             if not player:
                 logger.debug("DEBUG: Player not found", player_name=player_name)
                 return {"result": "You are not recognized by the cosmic forces."}
@@ -175,7 +175,7 @@ class CombatCommandHandler:
 
             # Get room data
             logger.debug("DEBUG: Getting room data", player_name=player_name)
-            room = persistence.get_room(room_id)
+            room = persistence.get_room_by_id(room_id)  # Sync method, uses cache
             if not room:
                 logger.debug("DEBUG: Room data not found", player_name=player_name)
                 return {"result": "You are in an unknown room."}
@@ -250,8 +250,8 @@ class CombatCommandHandler:
     def _get_room_data(self, room_id: str) -> Any | None:
         """Get room data from persistence."""
         try:
-            return self.persistence.get_room(room_id)
-        except Exception as e:
+            return self.persistence.get_room_by_id(room_id)  # Sync method, uses cache
+        except (AttributeError, TypeError) as e:
             logger.error("Error getting room data", room_id=room_id, error=str(e))
             return None
 
@@ -296,7 +296,7 @@ class CombatCommandHandler:
         try:
             # Get player ID from the persistence layer
             # We need to get the player object to get the player ID
-            player = self.persistence.get_player_by_name(player_name)
+            player = await self.persistence.get_player_by_name(player_name)
             if not player:
                 logger.error("Player not found for combat action", player_name=player_name)
                 return {"result": "You are not recognized by the cosmic forces."}
