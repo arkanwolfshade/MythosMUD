@@ -348,8 +348,21 @@ async def close_npc_db():
                     # No running loop - that's okay, we can still try to dispose
                     pass
 
-                await engine.dispose()
-                logger.info("NPC database connections closed")
+                # For Windows/asyncpg: Close connections gracefully before disposal
+                # CRITICAL: asyncpg connections must be closed in the same event loop they were created in
+                # We add a small delay to allow any pending operations to complete before disposal
+                # This helps prevent RuntimeWarning about unawaited Connection._cancel coroutines
+                try:
+                    # Give any pending operations a moment to complete
+                    await asyncio.sleep(0.1)
+
+                    # Now dispose the engine
+                    await engine.dispose()
+                    logger.info("NPC database connections closed")
+                except TimeoutError:
+                    # If disposal times out, log but continue
+                    logger.warning("NPC engine disposal timed out")
+                    logger.info("NPC database connections force closed")
             except (RuntimeError, AttributeError) as e:
                 # Event loop is closed or proactor is None - this is expected during cleanup
                 # Don't log as error, just as debug since this is normal during test teardown
