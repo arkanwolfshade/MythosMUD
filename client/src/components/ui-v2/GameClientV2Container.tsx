@@ -116,7 +116,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
 
   const [isMortallyWounded, setIsMortallyWounded] = useState(false);
   const [isDead, setIsDead] = useState(false);
-  const [deathLocation] = useState<string>('Unknown Location');
+  const [deathLocation, setDeathLocation] = useState<string>('Unknown Location');
   const [isRespawning, setIsRespawning] = useState(false);
   const [isDelirious, setIsDelirious] = useState(false);
   const [deliriumLocation, setDeliriumLocation] = useState<string>('Unknown Location');
@@ -982,9 +982,12 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
           case 'playerdied': {
             // Player died event - show death interstitial
             const deathData = event.data as { death_location?: string; room_id?: string; [key: string]: unknown };
-            const deathLocation = deathData.death_location || deathData.room_id || 'Unknown Location';
+            const extractedDeathLocation = deathData.death_location || deathData.room_id || 'Unknown Location';
+            setDeathLocation(extractedDeathLocation);
             setIsDead(true);
-            logger.info('GameClientV2Container', 'Player died event received', { deathLocation });
+            logger.info('GameClientV2Container', 'Player died event received', {
+              deathLocation: extractedDeathLocation,
+            });
             break;
           }
           case 'player_respawned':
