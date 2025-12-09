@@ -138,7 +138,7 @@ class TestMuteDataConsistency:
         mock_user_manager._player_mutes = {}
         mock_user_manager.is_player_muted.return_value = False
         mock_user_manager.is_player_muted_by_others.return_value = True  # Globally muted
-        mock_user_manager.is_admin.return_value = False
+        mock_user_manager.is_admin_sync.return_value = False
 
         # Test mute check for global mute
         result = self.handler._is_player_muted_by_receiver("receiver_1", "sender_1")
@@ -153,7 +153,7 @@ class TestMuteDataConsistency:
         mock_user_manager._player_mutes = {}
         mock_user_manager.is_player_muted.return_value = False
         mock_user_manager.is_player_muted_by_others.return_value = True  # Globally muted
-        mock_user_manager.is_admin.return_value = True  # Receiver is admin
+        mock_user_manager.is_admin_sync.return_value = True  # Receiver is admin
 
         # Test mute check for admin receiver
         result = self.handler._is_player_muted_by_receiver("receiver_1", "sender_1")

@@ -239,7 +239,7 @@ class TestEmoteMuteFiltering:
         with patch("server.services.user_manager.user_manager") as mock_user_manager:
             mock_user_manager.is_player_muted.return_value = False
             mock_user_manager.is_player_muted_by_others.return_value = True  # Sender is globally muted
-            mock_user_manager.is_admin.return_value = False  # Receiver is not admin
+            mock_user_manager.is_admin_sync.return_value = False  # Receiver is not admin
 
             # Execute
             result = self.nats_handler._is_player_muted_by_receiver(self.receiver_id, self.sender_id)
@@ -254,14 +254,14 @@ class TestEmoteMuteFiltering:
         with patch("server.services.user_manager.user_manager") as mock_user_manager:
             mock_user_manager.is_player_muted.return_value = False
             mock_user_manager.is_player_muted_by_others.return_value = True  # Sender is globally muted
-            mock_user_manager.is_admin.return_value = True  # Receiver is admin
+            mock_user_manager.is_admin_sync.return_value = True  # Receiver is admin
 
             # Execute
             result = self.nats_handler._is_player_muted_by_receiver(self.receiver_id, self.sender_id)
 
             # Verify
             assert result is False  # Admin can see globally muted players
-            mock_user_manager.is_admin.assert_called_once_with(self.receiver_id)
+            mock_user_manager.is_admin_sync.assert_called_once_with(self.receiver_id)
 
     def test_is_player_muted_by_receiver_handles_exception(self):
         """Test that _is_player_muted_by_receiver handles exceptions gracefully."""
