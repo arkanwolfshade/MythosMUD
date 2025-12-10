@@ -1,21 +1,21 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import type { HealthStatus } from '../../types/health';
-import { determineHealthTier } from '../../types/health';
-import type { LucidityStatus } from '../../types/lucidity';
-import { HeaderBar } from './HeaderBar';
-import { PanelContainer } from './PanelSystem/PanelContainer';
 import { PanelManagerProvider } from './PanelSystem/PanelManager';
 import { usePanelManager } from './PanelSystem/usePanelManager';
-import { CharacterInfoPanel } from './panels/CharacterInfoPanel';
+import { PanelContainer } from './PanelSystem/PanelContainer';
+import { HeaderBar } from './HeaderBar';
 import { ChatHistoryPanel } from './panels/ChatHistoryPanel';
+import { LocationPanel } from './panels/LocationPanel';
+import { RoomDescriptionPanel } from './panels/RoomDescriptionPanel';
+import { OccupantsPanel } from './panels/OccupantsPanel';
+import { GameInfoPanel } from './panels/GameInfoPanel';
+import { CharacterInfoPanel } from './panels/CharacterInfoPanel';
 import { CommandHistoryPanel } from './panels/CommandHistoryPanel';
 import { CommandInputPanel } from './panels/CommandInputPanel';
-import { GameInfoPanel } from './panels/GameInfoPanel';
-import { LocationPanel } from './panels/LocationPanel';
-import { OccupantsPanel } from './panels/OccupantsPanel';
-import { RoomDescriptionPanel } from './panels/RoomDescriptionPanel';
-import type { ChatMessage, MythosTimeState, Player, Room } from './types';
 import { createDefaultPanelLayout } from './utils/panelLayout';
+import type { ChatMessage, Player, Room, MythosTimeState } from './types';
+import type { HealthStatus } from '../../types/health';
+import type { LucidityStatus } from '../../types/lucidity';
+import { determineHealthTier } from '../../types/health';
 
 interface GameClientV2Props {
   playerName: string;

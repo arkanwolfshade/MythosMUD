@@ -258,9 +258,7 @@ export const ChatPanelTest: React.FC = () => {
                 <TerminalButton
                   variant="secondary"
                   size="sm"
-                  onClick={() => {
-                    addSampleMessage('error', 'WARNING: Your lucidity is dangerously low!');
-                  }}
+                  onClick={() => addSampleMessage('error', 'WARNING: Your lucidity is dangerously low!')}
                   className="w-full"
                 >
                   Add Error

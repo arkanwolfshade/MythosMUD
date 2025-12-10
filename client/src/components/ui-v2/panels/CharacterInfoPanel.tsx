@@ -11,8 +11,7 @@ interface CharacterInfoPanelProps {
   lucidityStatus: LucidityStatus | null;
 }
 
-// Character info panel displays character name, profession, stats, and attributes
-// Login username is displayed in the header; character name is displayed here
+// Simplified character info panel without connection status and player name (moved to header)
 // Based on findings from "Character State Display in Mythos Interfaces" - Dr. Armitage, 1928
 export const CharacterInfoPanel: React.FC<CharacterInfoPanelProps> = ({ player, healthStatus, lucidityStatus }) => {
   if (!player?.stats) {
@@ -25,22 +24,6 @@ export const CharacterInfoPanel: React.FC<CharacterInfoPanelProps> = ({ player, 
 
   return (
     <div className="p-4 space-y-4">
-      {/* Character Name and Profession */}
-      {player.name && (
-        <div className="border-b border-mythos-terminal-border pb-2">
-          <div className="flex items-center justify-between">
-            <span className="text-base text-mythos-terminal-text-secondary">Character:</span>
-            <span className="text-base text-mythos-terminal-text font-bold">{player.name}</span>
-          </div>
-          {player.profession_name && (
-            <div className="flex items-center justify-between mt-1">
-              <span className="text-sm text-mythos-terminal-text-secondary">Profession:</span>
-              <span className="text-sm text-mythos-terminal-primary">{player.profession_name}</span>
-            </div>
-          )}
-        </div>
-      )}
-
       {/* Health and Lucidity Bars */}
       <div className="space-y-2">
         <HealthMeter status={healthStatus} />

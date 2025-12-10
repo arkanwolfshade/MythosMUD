@@ -14,7 +14,6 @@ from collections.abc import AsyncGenerator
 from pathlib import Path
 from typing import Any
 
-from fastapi import HTTPException
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -24,7 +23,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.pool import NullPool
 
-from .exceptions import DatabaseError, ValidationError
+from .exceptions import ValidationError
 from .logging.enhanced_logging_config import get_logger
 from .utils.error_logging import create_error_context, log_and_raise
 
@@ -102,7 +101,7 @@ class DatabaseManager:
             )
 
         # Allow test override via module-level _database_url
-        # Note: Reading module-level variable, no assignment needed
+        global _database_url
         if _database_url is not None:
             database_url = _database_url
         else:
@@ -146,123 +145,25 @@ class DatabaseManager:
             # For production, use default AsyncAdaptedQueuePool with configured pool size
             # AsyncAdaptedQueuePool is automatically used by create_async_engine()
             # Get pool configuration from config
-            # Extract database config to avoid type checker FieldInfo issues
             config = get_config()
-            # Access via model_dump to get actual values, not FieldInfo
-            db_config_dict = config.database.model_dump()
             pool_kwargs.update(
                 {
-                    "pool_size": db_config_dict["pool_size"],
-                    "max_overflow": db_config_dict["max_overflow"],
-                    "pool_timeout": db_config_dict["pool_timeout"],
+                    "pool_size": config.database.pool_size,
+                    "max_overflow": config.database.max_overflow,
+                    "pool_timeout": config.database.pool_timeout,
                 }
             )
 
         # Create async engine with PostgreSQL configuration
-        # CRITICAL FIX: Add proper exception handling for engine creation
-        # Handles connection failures, authentication errors, and configuration issues
-        # #region agent log
-        try:
-            import json
+        self.engine = create_async_engine(
+            self.database_url,
+            echo=False,
+            pool_pre_ping=True,
+            **pool_kwargs,
+        )
 
-            log_path = Path(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log")
-            with open(log_path, "a", encoding="utf-8") as f:
-                f.write(
-                    json.dumps(
-                        {
-                            "sessionId": "debug-session",
-                            "runId": "run1",
-                            "hypothesisId": "E",
-                            "location": "database.py:_initialize_database:before_create_engine",
-                            "message": "About to create async engine",
-                            "data": {"database_url_prefix": self.database_url[:30] if self.database_url else None},
-                            "timestamp": int(__import__("time").time() * 1000),
-                        }
-                    )
-                    + "\n"
-                )
-        except Exception:
-            pass
-        # #endregion agent log
-
-        try:
-            self.engine = create_async_engine(
-                self.database_url,
-                echo=False,
-                pool_pre_ping=True,
-                **pool_kwargs,
-            )
-
-            # #region agent log
-            try:
-                with open(log_path, "a", encoding="utf-8") as f:
-                    f.write(
-                        json.dumps(
-                            {
-                                "sessionId": "debug-session",
-                                "runId": "run1",
-                                "hypothesisId": "E",
-                                "location": "database.py:_initialize_database:after_create_engine",
-                                "message": "Async engine created successfully",
-                                "data": {},
-                                "timestamp": int(__import__("time").time() * 1000),
-                            }
-                        )
-                        + "\n"
-                    )
-            except Exception:
-                pass
-            # #endregion agent log
-
-            pool_type = "NullPool" if "test" in self.database_url else "AsyncAdaptedQueuePool"
-            logger.info("Database engine created", pool_type=pool_type)
-
-        except (ValueError, TypeError) as e:
-            # Configuration error (invalid URL format, invalid pool parameters)
-            context = create_error_context()
-            context.metadata["operation"] = "create_async_engine"
-            context.metadata["database_url_prefix"] = self.database_url[:30]  # Truncate for security
-            log_and_raise(
-                ValidationError,
-                f"Invalid database configuration: {e}",
-                context=context,
-                details={
-                    "error": str(e),
-                    "error_type": type(e).__name__,
-                    "pool_config": {k: v for k, v in pool_kwargs.items() if k not in ["pool_recycle"]},
-                },
-                user_friendly="Database configuration error. Please check DATABASE_URL environment variable.",
-            )
-        except (ConnectionError, OSError) as e:
-            # Network/connection error (database server unreachable, DNS failure)
-            context = create_error_context()
-            context.metadata["operation"] = "create_async_engine"
-            log_and_raise(
-                DatabaseError,
-                f"Failed to connect to database: {e}",
-                context=context,
-                details={
-                    "error": str(e),
-                    "error_type": type(e).__name__,
-                    "database_url_prefix": self.database_url[:30],
-                },
-                user_friendly="Cannot connect to database. Please check database server is running.",
-            )
-        except Exception as e:
-            # Catch-all for other errors (authentication, SSL, etc.)
-            context = create_error_context()
-            context.metadata["operation"] = "create_async_engine"
-            log_and_raise(
-                DatabaseError,
-                f"Failed to create database engine: {e}",
-                context=context,
-                details={
-                    "error": str(e),
-                    "error_type": type(e).__name__,
-                    "database_url_prefix": self.database_url[:30],
-                },
-                user_friendly="Database connection failed. Please check database configuration and credentials.",
-            )
+        pool_type = "NullPool" if "test" in self.database_url else "AsyncAdaptedQueuePool"
+        logger.info("Database engine created", pool_type=pool_type)
 
         # Create async session maker
         self.session_maker = async_sessionmaker(
@@ -308,30 +209,6 @@ class DatabaseManager:
             current_loop = asyncio.get_running_loop()
             current_loop_id = id(current_loop)
             if self._creation_loop_id is not None and current_loop_id != self._creation_loop_id:
-                # #region agent log
-                try:
-                    import json
-
-                    log_path = Path(r"e:\projects\GitHub\MythosMUD\.cursor\debug.log")
-                    with open(log_path, "a", encoding="utf-8") as f:
-                        f.write(
-                            json.dumps(
-                                {
-                                    "sessionId": "debug-session",
-                                    "runId": "run1",
-                                    "hypothesisId": "E",
-                                    "location": "database.py:get_engine:loop_changed",
-                                    "message": "Event loop changed, recreating engine",
-                                    "data": {"old_loop_id": self._creation_loop_id, "new_loop_id": current_loop_id},
-                                    "timestamp": int(__import__("time").time() * 1000),
-                                }
-                            )
-                            + "\n"
-                        )
-                except Exception:
-                    pass
-                # #endregion agent log
-
                 logger.warning(
                     "Event loop changed, recreating database engine",
                     old_loop_id=self._creation_loop_id,
@@ -350,6 +227,7 @@ class DatabaseManager:
         except RuntimeError:
             # No running loop - that's okay, engine will be created when needed
             logger.debug("No running event loop, engine will be created when needed")
+            pass
 
         assert self.engine is not None, "Database engine not initialized"
         return self.engine
@@ -405,6 +283,8 @@ class DatabaseManager:
                 context=context,
                 user_friendly="Database not initialized",
             )
+            # This should never be reached due to log_and_raise above
+            raise RuntimeError("Unreachable code")
 
         if database_url.startswith("postgresql"):
             # PostgreSQL doesn't have a file path
@@ -420,6 +300,8 @@ class DatabaseManager:
                 details={"database_url": database_url},
                 user_friendly="Unsupported database configuration - PostgreSQL required",
             )
+            # This should never be reached due to log_and_raise above
+            raise RuntimeError("Unreachable code")
 
     async def close(self) -> None:
         """Close database connections."""
@@ -440,14 +322,8 @@ class DatabaseManager:
                     # No running loop - that's okay, we can still try to dispose
                     pass
 
-                # For Windows/asyncpg: Close connections gracefully before disposal
-                # CRITICAL: asyncpg connections must be closed in the same event loop they were created in
-                # We add a small delay to allow any pending operations to complete before disposal
-                # This helps prevent RuntimeWarning about unawaited Connection._cancel coroutines
+                # For Windows/asyncpg: Use a timeout and force close if needed
                 try:
-                    # Give any pending operations a moment to complete
-                    await asyncio.sleep(0.1)
-
                     # Try graceful disposal first
                     await asyncio.wait_for(engine.dispose(), timeout=1.0)
                     logger.info("Database connections closed")
@@ -455,12 +331,12 @@ class DatabaseManager:
                     # If disposal times out, try to force close connections
                     logger.warning("Engine disposal timed out, attempting force close")
                     try:
-                        # Force close by disposing the pool directly
+                        # Force close by setting pool to None and clearing connections
                         if hasattr(engine, "sync_engine") and hasattr(engine.sync_engine, "pool"):
                             pool = engine.sync_engine.pool
                             if pool:
                                 pool.dispose()
-                    except (RuntimeError, AttributeError, TypeError):
+                    except Exception:
                         pass  # Ignore errors during force close
                     logger.info("Database connections force closed")
             except (RuntimeError, AttributeError) as e:
@@ -552,13 +428,7 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
         try:
             logger.debug("Database session created successfully")
             yield session
-        except HTTPException:
-            # HTTP exceptions (including LoggedHTTPException) are business logic errors,
-            # not database errors. They're already logged by LoggedHTTPException,
-            # so we should not log them as database errors. Just re-raise.
-            raise
         except Exception as e:
-            # Only log actual database-related exceptions
             context.metadata["error_type"] = type(e).__name__
             context.metadata["error_message"] = str(e)
             logger.error(
@@ -612,16 +482,15 @@ async def init_db() -> None:
         # CRITICAL: Import ALL models that use metadata before configure_mappers()
         # This allows SQLAlchemy to resolve string references in relationships
         # Do NOT import NPC models here - they use npc_metadata, not metadata
-        # These imports are required for side effects (model registration) but appear unused
-        from server.models.invite import Invite  # noqa: F401  # pylint: disable=unused-import
-        from server.models.lucidity import (  # noqa: F401  # pylint: disable=unused-import
+        from server.models.invite import Invite  # noqa: F401
+        from server.models.lucidity import (  # noqa: F401
             LucidityAdjustmentLog,
             LucidityCooldown,
             LucidityExposureState,
             PlayerLucidity,
         )
-        from server.models.player import Player  # noqa: F401  # pylint: disable=unused-import
-        from server.models.user import User  # noqa: F401  # pylint: disable=unused-import
+        from server.models.player import Player  # noqa: F401
+        from server.models.user import User  # noqa: F401
 
         logger.debug("Configuring SQLAlchemy mappers")
         # ARCHITECTURE FIX Phase 3.1: Relationships now defined directly in models
