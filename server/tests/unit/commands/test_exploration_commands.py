@@ -3,14 +3,14 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from server.commands.exploration_commands import (
+from server.commands.look_command import handle_look_command
+from server.commands.look_helpers import (
     _get_health_label,
-    _get_Lucidity_label,
-    _get_players_in_room,
+    _get_lucidity_label,
     _get_visible_equipment,
     _parse_instance_number,
-    handle_look_command,
 )
+from server.commands.look_player import _get_players_in_room
 
 
 def _build_request(persistence, connection_manager):
@@ -24,8 +24,6 @@ def _build_request(persistence, connection_manager):
 
 @pytest.mark.asyncio
 async def test_handle_look_command_includes_room_drops():
-    from unittest.mock import AsyncMock
-
     persistence = MagicMock()
     connection_manager = MagicMock()
     room_manager = MagicMock()
@@ -63,7 +61,19 @@ async def test_handle_look_command_includes_room_drops():
     request = _build_request(persistence, connection_manager)
     current_user = {"username": "Armitage"}
 
-    result = await handle_look_command({}, current_user, request, None, "Armitage")
+    # Mock NPC instance service - patch where it's imported
+    import server.commands.look_npc as look_npc_module
+    import server.services.npc_instance_service as npc_service_module
+
+    mock_npc_instance_service = MagicMock()
+    mock_lifecycle_manager = MagicMock()
+    mock_lifecycle_manager.active_npcs = {}
+    mock_npc_instance_service.lifecycle_manager = mock_lifecycle_manager
+
+    with pytest.MonkeyPatch().context() as m:
+        m.setattr(npc_service_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+        m.setattr(look_npc_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+        result = await handle_look_command({}, current_user, request, None, "Armitage")
 
     text = result["result"]
     assert "Scattered upon the floor" in text
@@ -74,8 +84,6 @@ async def test_handle_look_command_includes_room_drops():
 
 @pytest.mark.asyncio
 async def test_handle_look_command_no_room_drops_uses_mythos_tone():
-    from unittest.mock import AsyncMock
-
     persistence = MagicMock()
     connection_manager = MagicMock()
     room_manager = MagicMock()
@@ -96,7 +104,19 @@ async def test_handle_look_command_no_room_drops_uses_mythos_tone():
     request = _build_request(persistence, connection_manager)
     current_user = {"username": "Marsh"}
 
-    result = await handle_look_command({}, current_user, request, None, "Marsh")
+    # Mock NPC instance service - patch where it's imported
+    import server.commands.look_npc as look_npc_module
+    import server.services.npc_instance_service as npc_service_module
+
+    mock_npc_instance_service = MagicMock()
+    mock_lifecycle_manager = MagicMock()
+    mock_lifecycle_manager.active_npcs = {}
+    mock_npc_instance_service.lifecycle_manager = mock_lifecycle_manager
+
+    with pytest.MonkeyPatch().context() as m:
+        m.setattr(npc_service_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+        m.setattr(look_npc_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+        result = await handle_look_command({}, current_user, request, None, "Marsh")
 
     text = result["result"]
     assert "The floor bears no abandoned curios." in text
@@ -203,48 +223,48 @@ class TestGetHealthLabel:
 
 
 class TestGetLucidityLabel:
-    """Test _get_Lucidity_label helper function."""
+    """Test _get_lucidity_label helper function."""
 
-    def test_get_Lucidity_label_lucid(self):
+    def test_get_lucidity_label_lucid(self):
         """Test lucidity label for lucid player (>75%)."""
         stats = {"lucidity": 100, "max_lucidity": 100}
-        assert _get_Lucidity_label(stats) == "lucid"
+        assert _get_lucidity_label(stats) == "lucid"
 
         stats = {"lucidity": 80, "max_lucidity": 100}
-        assert _get_Lucidity_label(stats) == "lucid"
+        assert _get_lucidity_label(stats) == "lucid"
 
         stats = {"lucidity": 76, "max_lucidity": 100}
-        assert _get_Lucidity_label(stats) == "lucid"
+        assert _get_lucidity_label(stats) == "lucid"
 
-    def test_get_Lucidity_label_disturbed(self):
+    def test_get_lucidity_label_disturbed(self):
         """Test lucidity label for disturbed player (25-75%)."""
         stats = {"lucidity": 75, "max_lucidity": 100}
-        assert _get_Lucidity_label(stats) == "disturbed"
+        assert _get_lucidity_label(stats) == "disturbed"
 
         stats = {"lucidity": 50, "max_lucidity": 100}
-        assert _get_Lucidity_label(stats) == "disturbed"
+        assert _get_lucidity_label(stats) == "disturbed"
 
         stats = {"lucidity": 25, "max_lucidity": 100}
-        assert _get_Lucidity_label(stats) == "disturbed"
+        assert _get_lucidity_label(stats) == "disturbed"
 
-    def test_get_Lucidity_label_unstable(self):
+    def test_get_lucidity_label_unstable(self):
         """Test lucidity label for unstable player (1-24%)."""
         stats = {"lucidity": 24, "max_lucidity": 100}
-        assert _get_Lucidity_label(stats) == "unstable"
+        assert _get_lucidity_label(stats) == "unstable"
 
         stats = {"lucidity": 10, "max_lucidity": 100}
-        assert _get_Lucidity_label(stats) == "unstable"
+        assert _get_lucidity_label(stats) == "unstable"
 
         stats = {"lucidity": 1, "max_lucidity": 100}
-        assert _get_Lucidity_label(stats) == "unstable"
+        assert _get_lucidity_label(stats) == "unstable"
 
-    def test_get_Lucidity_label_mad(self):
+    def test_get_lucidity_label_mad(self):
         """Test lucidity label for mad player (<=0%)."""
         stats = {"lucidity": 0, "max_lucidity": 100}
-        assert _get_Lucidity_label(stats) == "mad"
+        assert _get_lucidity_label(stats) == "mad"
 
         stats = {"lucidity": -10, "max_lucidity": 100}
-        assert _get_Lucidity_label(stats) == "mad"
+        assert _get_lucidity_label(stats) == "mad"
 
 
 class TestGetVisibleEquipment:
@@ -411,7 +431,6 @@ class TestPlayerLookFunctionality:
         current_player = MagicMock()
         current_player.current_room_id = "test_room"
         current_player.name = "CurrentPlayer"
-        from unittest.mock import AsyncMock
 
         persistence.get_player_by_name = AsyncMock(return_value=current_player)
 
@@ -455,7 +474,6 @@ class TestPlayerLookFunctionality:
         current_player = MagicMock()
         current_player.current_room_id = "test_room"
         current_player.name = "CurrentPlayer"
-        from unittest.mock import AsyncMock
 
         persistence.get_player_by_name = AsyncMock(return_value=current_player)
 
@@ -507,7 +525,7 @@ class TestPlayerLookFunctionality:
         assert "critical" in result["result"]
 
     @pytest.mark.asyncio
-    async def test_look_player_Lucidity_states(self):
+    async def test_look_player_lucidity_states(self):
         """Test player look with various lucidity states."""
         persistence = MagicMock()
         connection_manager = MagicMock()
@@ -517,7 +535,6 @@ class TestPlayerLookFunctionality:
         current_player = MagicMock()
         current_player.current_room_id = "test_room"
         current_player.name = "CurrentPlayer"
-        from unittest.mock import AsyncMock
 
         persistence.get_player_by_name = AsyncMock(return_value=current_player)
 
@@ -558,7 +575,6 @@ class TestPlayerLookFunctionality:
         current_player = MagicMock()
         current_player.current_room_id = "test_room"
         current_player.name = "CurrentPlayer"
-        from unittest.mock import AsyncMock
 
         persistence.get_player_by_name = AsyncMock(return_value=current_player)
 
@@ -603,7 +619,6 @@ class TestPlayerLookFunctionality:
         current_player = MagicMock()
         current_player.current_room_id = "test_room"
         current_player.name = "CurrentPlayer"
-        from unittest.mock import AsyncMock
 
         persistence.get_player_by_name = AsyncMock(return_value=current_player)
 
@@ -631,7 +646,6 @@ class TestPlayerLookFunctionality:
         current_player = MagicMock()
         current_player.current_room_id = "test_room"
         current_player.name = "CurrentPlayer"
-        from unittest.mock import AsyncMock
 
         persistence.get_player_by_name = AsyncMock(return_value=current_player)
 
@@ -677,7 +691,6 @@ class TestPlayerLookFunctionality:
         current_player = MagicMock()
         current_player.current_room_id = "test_room"
         current_player.name = "CurrentPlayer"
-        from unittest.mock import AsyncMock
 
         persistence.get_player_by_name = AsyncMock(return_value=current_player)
 
@@ -722,3 +735,418 @@ class TestPlayerLookFunctionality:
 
         # Should show the second player (wounded)
         assert "wounded" in result["result"] or "Armitage" in result["result"]
+
+
+class TestLookCommandRoomOccupants:
+    """Test look command with room occupants and objects."""
+
+    @pytest.mark.asyncio
+    async def test_look_command_with_players_in_room(self):
+        """Test look command displays other players in room."""
+        persistence = MagicMock()
+        connection_manager = MagicMock()
+        room_manager = MagicMock()
+        connection_manager.room_manager = room_manager
+
+        player = MagicMock()
+        player.current_room_id = "test_room"
+        player.name = "CurrentPlayer"
+        persistence.get_player_by_name = AsyncMock(return_value=player)
+
+        room = MagicMock()
+        room.name = "Test Room"
+        room.description = "A test room."
+        room.exits = {"north": "other_room"}
+        # Use proper UUIDs for player IDs
+        player1_id = str(uuid.uuid4())
+        player2_id = str(uuid.uuid4())
+        room.get_players = MagicMock(return_value=[player1_id, player2_id])
+        persistence.get_room_by_id = MagicMock(return_value=room)
+
+        room_manager.list_room_drops.return_value = []
+
+        # Mock other players
+        player1 = MagicMock()
+        player1.name = "Alice"
+        player2 = MagicMock()
+        player2.name = "Bob"
+
+        async def get_player_side_effect(player_id):
+            player_id_str = str(player_id)
+            if player_id_str == player1_id:
+                return player1
+            elif player_id_str == player2_id:
+                return player2
+            return None
+
+        persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
+
+        # Mock NPC instance service - patch where it's imported
+        import server.commands.look_npc as look_npc_module
+        import server.services.npc_instance_service as npc_service_module
+
+        mock_npc_instance_service = MagicMock()
+        mock_lifecycle_manager = MagicMock()
+        mock_lifecycle_manager.active_npcs = {}
+        mock_npc_instance_service.lifecycle_manager = mock_lifecycle_manager
+
+        request = _build_request(persistence, connection_manager)
+        current_user = {"username": "CurrentPlayer"}
+
+        with pytest.MonkeyPatch().context() as m:
+            m.setattr(npc_service_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+            m.setattr(look_npc_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+            result = await handle_look_command({}, current_user, request, None, "CurrentPlayer")
+
+        text = result["result"]
+        assert "Also here: Alice, Bob" in text or "Also here: Bob, Alice" in text
+        assert "CurrentPlayer" not in text  # Current player should not be listed
+
+    @pytest.mark.asyncio
+    async def test_look_command_with_npcs_in_room(self):
+        """Test look command displays NPCs in room."""
+        persistence = MagicMock()
+        connection_manager = MagicMock()
+        room_manager = MagicMock()
+        connection_manager.room_manager = room_manager
+
+        player = MagicMock()
+        player.current_room_id = "test_room"
+        player.name = "CurrentPlayer"
+        persistence.get_player_by_name = AsyncMock(return_value=player)
+
+        room = MagicMock()
+        room.id = "test_room"
+        room.name = "Test Room"
+        room.description = "A test room."
+        room.exits = {"north": "other_room"}
+        room.get_players = MagicMock(return_value=[])
+        persistence.get_room_by_id = MagicMock(return_value=room)
+
+        room_manager.list_room_drops.return_value = []
+
+        # Mock containers (empty for this test)
+        persistence.get_containers_by_room_id = AsyncMock(return_value=[])
+
+        # Mock NPC instance service
+        npc_instance = MagicMock()
+        npc_instance.name = "Guard"
+        npc_instance.is_alive = True
+        npc_instance.current_room_id = "test_room"
+
+        npc_instance_service = MagicMock()
+        lifecycle_manager = MagicMock()
+        lifecycle_manager.active_npcs = {"npc1": npc_instance}
+        npc_instance_service.lifecycle_manager = lifecycle_manager
+
+        # Patch the get_npc_instance_service function - patch where it's imported
+        import server.commands.look_npc as look_npc_module
+        import server.services.npc_instance_service as npc_service_module
+
+        request = _build_request(persistence, connection_manager)
+        current_user = {"username": "CurrentPlayer"}
+
+        # Temporarily patch the import
+        with pytest.MonkeyPatch().context() as m:
+            m.setattr(npc_service_module, "get_npc_instance_service", lambda: npc_instance_service)
+            m.setattr(look_npc_module, "get_npc_instance_service", lambda: npc_instance_service)
+            result = await handle_look_command({}, current_user, request, None, "CurrentPlayer")
+
+        text = result["result"]
+        assert "Also here: Guard" in text
+
+    @pytest.mark.asyncio
+    async def test_look_command_with_containers_in_room(self):
+        """Test look command displays containers in room."""
+        persistence = MagicMock()
+        connection_manager = MagicMock()
+        room_manager = MagicMock()
+        connection_manager.room_manager = room_manager
+
+        player = MagicMock()
+        player.current_room_id = "test_room"
+        player.name = "CurrentPlayer"
+        persistence.get_player_by_name = AsyncMock(return_value=player)
+
+        room = MagicMock()
+        room.id = "test_room"
+        room.name = "Test Room"
+        room.description = "A test room."
+        room.exits = {"north": "other_room"}
+        room.get_players = MagicMock(return_value=[])
+        persistence.get_room_by_id = MagicMock(return_value=room)
+
+        room_manager.list_room_drops.return_value = []
+
+        # Mock containers
+        containers_data = [
+            {
+                "container_id": "container1",
+                "source_type": "environment",
+                "metadata": {"name": "Wooden Chest"},
+            },
+            {
+                "container_id": "container2",
+                "source_type": "environment",
+                "metadata": {"name": "Barrel"},
+            },
+        ]
+        persistence.get_containers_by_room_id = AsyncMock(return_value=containers_data)
+
+        # Mock NPC instance service - patch where it's imported
+        import server.commands.look_npc as look_npc_module
+        import server.services.npc_instance_service as npc_service_module
+
+        mock_npc_instance_service = MagicMock()
+        mock_lifecycle_manager = MagicMock()
+        mock_lifecycle_manager.active_npcs = {}
+        mock_npc_instance_service.lifecycle_manager = mock_lifecycle_manager
+
+        request = _build_request(persistence, connection_manager)
+        current_user = {"username": "CurrentPlayer"}
+
+        with pytest.MonkeyPatch().context() as m:
+            m.setattr(npc_service_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+            m.setattr(look_npc_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+            result = await handle_look_command({}, current_user, request, None, "CurrentPlayer")
+
+        text = result["result"]
+        assert "You see: Wooden Chest, Barrel" in text or "You see: Barrel, Wooden Chest" in text
+
+    @pytest.mark.asyncio
+    async def test_look_command_with_corpses_in_room(self):
+        """Test look command displays corpses in room."""
+        persistence = MagicMock()
+        connection_manager = MagicMock()
+        room_manager = MagicMock()
+        connection_manager.room_manager = room_manager
+
+        player = MagicMock()
+        player.current_room_id = "test_room"
+        player.name = "CurrentPlayer"
+        persistence.get_player_by_name = AsyncMock(return_value=player)
+
+        room = MagicMock()
+        room.id = "test_room"
+        room.name = "Test Room"
+        room.description = "A test room."
+        room.exits = {"north": "other_room"}
+        room.get_players = MagicMock(return_value=[])
+        persistence.get_room_by_id = MagicMock(return_value=room)
+
+        room_manager.list_room_drops.return_value = []
+
+        # Mock corpses
+        containers_data = [
+            {
+                "container_id": "corpse1",
+                "source_type": "corpse",
+                "metadata": {"player_name": "DeadPlayer"},
+            },
+        ]
+        persistence.get_containers_by_room_id = AsyncMock(return_value=containers_data)
+
+        # Mock NPC instance service - patch where it's imported
+        import server.commands.look_npc as look_npc_module
+        import server.services.npc_instance_service as npc_service_module
+
+        mock_npc_instance_service = MagicMock()
+        mock_lifecycle_manager = MagicMock()
+        mock_lifecycle_manager.active_npcs = {}
+        mock_npc_instance_service.lifecycle_manager = mock_lifecycle_manager
+
+        request = _build_request(persistence, connection_manager)
+        current_user = {"username": "CurrentPlayer"}
+
+        with pytest.MonkeyPatch().context() as m:
+            m.setattr(npc_service_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+            m.setattr(look_npc_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+            result = await handle_look_command({}, current_user, request, None, "CurrentPlayer")
+
+        text = result["result"]
+        assert "the corpse of DeadPlayer" in text
+
+    @pytest.mark.asyncio
+    async def test_look_command_with_all_entities(self):
+        """Test look command displays all entities when present."""
+        persistence = MagicMock()
+        connection_manager = MagicMock()
+        room_manager = MagicMock()
+        connection_manager.room_manager = room_manager
+
+        player = MagicMock()
+        player.current_room_id = "test_room"
+        player.name = "CurrentPlayer"
+        persistence.get_player_by_name = AsyncMock(return_value=player)
+
+        room = MagicMock()
+        room.id = "test_room"
+        room.name = "Test Room"
+        room.description = "A test room."
+        room.exits = {"north": "other_room"}
+        # Use proper UUID for player ID
+        player1_id = str(uuid.uuid4())
+        room.get_players = MagicMock(return_value=[player1_id])
+        persistence.get_room_by_id = MagicMock(return_value=room)
+
+        room_manager.list_room_drops.return_value = []
+
+        # Mock other player
+        other_player = MagicMock()
+        other_player.name = "Alice"
+
+        async def get_player_side_effect(player_id):
+            if str(player_id) == player1_id:
+                return other_player
+            return None
+
+        persistence.get_player_by_id = AsyncMock(side_effect=get_player_side_effect)
+
+        # Mock NPC
+        npc_instance = MagicMock()
+        npc_instance.name = "Guard"
+        npc_instance.is_alive = True
+        npc_instance.current_room_id = "test_room"
+
+        npc_instance_service = MagicMock()
+        lifecycle_manager = MagicMock()
+        lifecycle_manager.active_npcs = {"npc1": npc_instance}
+        npc_instance_service.lifecycle_manager = lifecycle_manager
+
+        # Mock containers and corpses
+        containers_data = [
+            {
+                "container_id": "container1",
+                "source_type": "environment",
+                "metadata": {"name": "Chest"},
+            },
+            {
+                "container_id": "corpse1",
+                "source_type": "corpse",
+                "metadata": {"player_name": "DeadPlayer"},
+            },
+        ]
+        persistence.get_containers_by_room_id = AsyncMock(return_value=containers_data)
+
+        request = _build_request(persistence, connection_manager)
+        current_user = {"username": "CurrentPlayer"}
+
+        # Temporarily patch the import - patch where it's imported
+        import server.commands.look_npc as look_npc_module
+        import server.services.npc_instance_service as npc_service_module
+
+        with pytest.MonkeyPatch().context() as m:
+            m.setattr(npc_service_module, "get_npc_instance_service", lambda: npc_instance_service)
+            m.setattr(look_npc_module, "get_npc_instance_service", lambda: npc_instance_service)
+            result = await handle_look_command({}, current_user, request, None, "CurrentPlayer")
+
+        text = result["result"]
+        assert "Also here:" in text
+        assert "Alice" in text or "Guard" in text
+        assert "You see:" in text
+        assert "Chest" in text
+        assert "the corpse of DeadPlayer" in text
+
+    @pytest.mark.asyncio
+    async def test_look_command_filters_dead_npcs(self):
+        """Test look command filters out dead NPCs."""
+        persistence = MagicMock()
+        connection_manager = MagicMock()
+        room_manager = MagicMock()
+        connection_manager.room_manager = room_manager
+
+        player = MagicMock()
+        player.current_room_id = "test_room"
+        player.name = "CurrentPlayer"
+        persistence.get_player_by_name = AsyncMock(return_value=player)
+
+        room = MagicMock()
+        room.id = "test_room"
+        room.name = "Test Room"
+        room.description = "A test room."
+        room.exits = {"north": "other_room"}
+        room.get_players = MagicMock(return_value=[])
+        persistence.get_room_by_id = MagicMock(return_value=room)
+
+        room_manager.list_room_drops.return_value = []
+
+        # Mock containers (empty for this test)
+        persistence.get_containers_by_room_id = AsyncMock(return_value=[])
+
+        # Mock NPC instance service with one alive and one dead NPC
+        alive_npc = MagicMock()
+        alive_npc.name = "AliveGuard"
+        alive_npc.is_alive = True
+        alive_npc.current_room_id = "test_room"
+
+        dead_npc = MagicMock()
+        dead_npc.name = "DeadGuard"
+        dead_npc.is_alive = False
+        dead_npc.current_room_id = "test_room"
+
+        npc_instance_service = MagicMock()
+        lifecycle_manager = MagicMock()
+        lifecycle_manager.active_npcs = {"npc1": alive_npc, "npc2": dead_npc}
+        npc_instance_service.lifecycle_manager = lifecycle_manager
+
+        request = _build_request(persistence, connection_manager)
+        current_user = {"username": "CurrentPlayer"}
+
+        # Temporarily patch the import - patch where it's imported
+        import server.commands.look_npc as look_npc_module
+        import server.services.npc_instance_service as npc_service_module
+
+        with pytest.MonkeyPatch().context() as m:
+            m.setattr(npc_service_module, "get_npc_instance_service", lambda: npc_instance_service)
+            m.setattr(look_npc_module, "get_npc_instance_service", lambda: npc_instance_service)
+            result = await handle_look_command({}, current_user, request, None, "CurrentPlayer")
+
+        text = result["result"]
+        assert "AliveGuard" in text
+        assert "DeadGuard" not in text
+
+    @pytest.mark.asyncio
+    async def test_look_command_empty_room(self):
+        """Test look command with no additional entities."""
+        persistence = MagicMock()
+        connection_manager = MagicMock()
+        room_manager = MagicMock()
+        connection_manager.room_manager = room_manager
+
+        player = MagicMock()
+        player.current_room_id = "test_room"
+        player.name = "CurrentPlayer"
+        persistence.get_player_by_name = AsyncMock(return_value=player)
+
+        room = MagicMock()
+        room.id = "test_room"
+        room.name = "Test Room"
+        room.description = "A test room."
+        room.exits = {"north": "other_room"}
+        room.get_players = MagicMock(return_value=[])
+        persistence.get_room_by_id = MagicMock(return_value=room)
+
+        room_manager.list_room_drops.return_value = []
+        persistence.get_containers_by_room_id = AsyncMock(return_value=[])
+
+        # Mock NPC instance service - patch where it's imported
+        import server.commands.look_npc as look_npc_module
+        import server.services.npc_instance_service as npc_service_module
+
+        mock_npc_instance_service = MagicMock()
+        mock_lifecycle_manager = MagicMock()
+        mock_lifecycle_manager.active_npcs = {}
+        mock_npc_instance_service.lifecycle_manager = mock_lifecycle_manager
+
+        request = _build_request(persistence, connection_manager)
+        current_user = {"username": "CurrentPlayer"}
+
+        with pytest.MonkeyPatch().context() as m:
+            m.setattr(npc_service_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+            m.setattr(look_npc_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+            result = await handle_look_command({}, current_user, request, None, "CurrentPlayer")
+
+        text = result["result"]
+        assert "Also here:" not in text
+        assert "You see:" not in text
+        assert "Exits: north" in text

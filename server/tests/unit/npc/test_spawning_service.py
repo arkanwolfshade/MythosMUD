@@ -29,6 +29,7 @@ def simple_npc_definition():
         name="Test NPC",
         npc_type="passive_mob",
         room_id="earth_arkhamcity_northside_alley_01",
+        description="A test NPC for unit testing",
         base_stats='{"health": 100, "attack": 10}',
         behavior_config='{"wander": true}',
         ai_integration_stub='{"enabled": false}',
