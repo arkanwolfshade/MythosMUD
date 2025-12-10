@@ -3,14 +3,14 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from server.commands.look_command import (
+from server.commands.look_command import handle_look_command
+from server.commands.look_helpers import (
     _get_health_label,
     _get_lucidity_label,
-    _get_players_in_room,
     _get_visible_equipment,
     _parse_instance_number,
-    handle_look_command,
 )
+from server.commands.look_player import _get_players_in_room
 
 
 def _build_request(persistence, connection_manager):

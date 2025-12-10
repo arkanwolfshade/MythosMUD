@@ -35,6 +35,7 @@ class SimpleNPCDefinition:
     name: str
     npc_type: str
     room_id: str | None
+    description: str | None
     base_stats: str
     behavior_config: str
     ai_integration_stub: str
@@ -467,6 +468,7 @@ class NPCSpawningService:
             definition_name = getattr(definition, "name", "Unknown NPC")
             definition_type = getattr(definition, "npc_type", "unknown")
             definition_room_id = getattr(definition, "room_id", None)
+            definition_description = getattr(definition, "description", None)
             definition_base_stats = getattr(definition, "base_stats", "{}")
             definition_behavior_config = getattr(definition, "behavior_config", "{}")
             definition_ai_integration_stub = getattr(definition, "ai_integration_stub", "{}")
@@ -477,6 +479,7 @@ class NPCSpawningService:
                 name=definition_name,
                 npc_type=definition_type,
                 room_id=definition_room_id,
+                description=definition_description,
                 base_stats=definition_base_stats,
                 behavior_config=definition_behavior_config,
                 ai_integration_stub=definition_ai_integration_stub,
