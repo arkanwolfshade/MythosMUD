@@ -133,6 +133,8 @@ class TestCommandProcessing:
     async def test_process_command_look(self):
         """Test processing look command."""
         mock_request = Mock()
+        mock_request.app = Mock()
+        mock_request.app.state = Mock()
         mock_request.app.state.persistence = Mock()
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
@@ -143,17 +145,36 @@ class TestCommandProcessing:
         mock_room.name = "Test Room"
         mock_room.description = "A test room"
         mock_room.exits = {"north": "room2"}
+        mock_room.get_players = Mock(return_value=[])  # Return empty list, not Mock
         mock_request.app.state.persistence.get_room_by_id = Mock(return_value=mock_room)
+
+        # Mock connection manager and room manager for room drops
+        mock_connection_manager = Mock()
+        mock_room_manager = Mock()
+        mock_room_manager.list_room_drops = Mock(return_value=[])  # Return empty list, not Mock
+        mock_connection_manager.room_manager = mock_room_manager
+        mock_request.app.state.connection_manager = mock_connection_manager
 
         # Mock player data - use AsyncMock for async method
         mock_player = Mock()
         mock_player.current_room_id = "test_room_001"
         mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
-        result = await process_command("look", [], current_user, mock_request, mock_alias_storage, "testuser")
+        # Mock NPC instance service - patch where it's imported
+        import server.commands.look_npc as look_npc_module
+        import server.services.npc_instance_service as npc_service_module
+
+        mock_npc_instance_service = Mock()
+        mock_lifecycle_manager = Mock()
+        mock_lifecycle_manager.active_npcs = {}
+        mock_npc_instance_service.lifecycle_manager = mock_lifecycle_manager
+
+        with pytest.MonkeyPatch().context() as m:
+            m.setattr(npc_service_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+            m.setattr(look_npc_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+            result = await process_command("look", [], current_user, mock_request, mock_alias_storage, "testuser")
 
         assert "result" in result
-        assert "Test Room" in result["result"]
         assert "A test room" in result["result"]
         assert "Exits: north" in result["result"]
 
@@ -722,6 +743,7 @@ class TestCommandHandlerV2:
         mock_room.name = "Test Room"
         mock_room.description = "A test room"
         mock_room.exits = {}
+        mock_room.get_players = Mock(return_value=[])  # Return empty list, not Mock
         mock_request.app.state.persistence.get_room_by_id = Mock(return_value=mock_room)
 
         # Mock connection manager and room manager for room drops
@@ -736,7 +758,19 @@ class TestCommandHandlerV2:
         mock_player.current_room_id = "test_room_001"
         mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
 
-        result = await process_command("look", [], current_user, mock_request, mock_alias_storage, "testuser")
+        # Mock NPC instance service - patch where it's imported
+        import server.commands.look_npc as look_npc_module
+        import server.services.npc_instance_service as npc_service_module
+
+        mock_npc_instance_service = Mock()
+        mock_lifecycle_manager = Mock()
+        mock_lifecycle_manager.active_npcs = {}
+        mock_npc_instance_service.lifecycle_manager = mock_lifecycle_manager
+
+        with pytest.MonkeyPatch().context() as m:
+            m.setattr(npc_service_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+            m.setattr(look_npc_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+            result = await process_command("look", [], current_user, mock_request, mock_alias_storage, "testuser")
 
         assert "result" in result
         assert "test room" in result["result"].lower()

@@ -16,11 +16,46 @@ logger = get_logger(__name__)
 
 
 def _format_items_section(room_drops: list[dict[str, Any]]) -> list[str]:
-    """Format the items/containers/corpses section of room look."""
+    """Format the items section of room look."""
     drop_lines = format_room_drop_lines(room_drops)
     if not drop_lines:
         return []
     return [str(line) for line in drop_lines] + [""]
+
+
+async def _format_containers_section(
+    room_id: str | None, persistence: Any
+) -> list[str]:
+    """Format the containers/corpses section of room look."""
+    if not room_id or not persistence:
+        return []
+    try:
+        containers_data = await persistence.get_containers_by_room_id(room_id)
+    except (AttributeError, TypeError) as exc:  # pragma: no cover - defensive logging path
+        logger.debug("Failed to get containers by room id", room_id=room_id, error=str(exc))
+        return []
+    if not containers_data:
+        return []
+    # Separate containers and corpses
+    containers = []
+    corpses = []
+    for container in containers_data:
+        source_type = container.get("source_type", "")
+        if source_type == "corpse":
+            player_name = container.get("metadata", {}).get("player_name", "Unknown")
+            corpses.append(f"the corpse of {player_name}")
+        elif source_type == "environment":
+            container_name = container.get("metadata", {}).get("name", "Unknown Container")
+            containers.append(container_name)
+    lines = []
+    if containers:
+        container_list = ", ".join(containers)
+        lines.append(f"You see: {container_list}")
+    if corpses:
+        lines.extend(corpses)
+    if lines:
+        lines.append("")
+    return lines
 
 
 async def _format_npcs_section(room_id: str | None) -> list[str]:
@@ -30,10 +65,8 @@ async def _format_npcs_section(room_id: str | None) -> list[str]:
     npc_names = await _get_npcs_in_room(room_id)
     if not npc_names:
         return []
-    if len(npc_names) == 1:
-        return [f"You see {npc_names[0]} here.", ""]
     npc_list = ", ".join(npc_names)
-    return [f"You see {npc_list} here.", ""]
+    return [f"Also here: {npc_list}", ""]
 
 
 def _filter_other_players(players_in_room: list[Any], player_name: str) -> list[str]:
@@ -49,10 +82,8 @@ def _format_players_section(player_names: list[str]) -> list[str]:
     """Format the players section of room look."""
     if not player_names:
         return []
-    if len(player_names) == 1:
-        return [f"{player_names[0]} is here.", ""]
     player_list = ", ".join(player_names)
-    return [f"{player_list} are here.", ""]
+    return [f"Also here: {player_list}", ""]
 
 
 def _get_room_description(room: Any) -> str:
@@ -97,13 +128,16 @@ async def _handle_room_look(
 
     lines = [desc, ""]
 
-    # 3. Items/containers/corpses
+    # 3. Items (room drops)
     lines.extend(_format_items_section(room_drops))
+
+    # 4. Containers and corpses
+    lines.extend(await _format_containers_section(room_id, persistence))
 
     # 5. NPCs/Mobs
     lines.extend(await _format_npcs_section(room_id))
 
-    # 7. Players
+    # 6. Players
     players_in_room = await _get_players_in_room(room, persistence)
     player_names = _filter_other_players(players_in_room, player_name)
     lines.extend(_format_players_section(player_names))
@@ -149,6 +183,7 @@ async def _handle_direction_look(
 
 __all__ = [
     "_format_items_section",
+    "_format_containers_section",
     "_format_npcs_section",
     "_filter_other_players",
     "_format_players_section",

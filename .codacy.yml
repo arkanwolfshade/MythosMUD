@@ -8,6 +8,24 @@ exclude_paths:
   - '**/dist/**'
   - '**/build/**'
 
+# Ignore assert statements in test files
+# Assert statements are standard and expected in test files (pytest uses them extensively)
+# Common assert-related patterns: Bandit B101, Pylint warnings
+ignore_patterns:
+  # Bandit B101: Use of assert detected (security warning that's acceptable in tests)
+  - pattern_id: 'Bandit_B101'
+    file_paths:
+      - '**/test_*.py'
+      - '**/tests/**/*.py'
+      - '**/*_test.py'
+
+# Line length configuration
+# The project uses 120 character line length (not Codacy's default of 100)
+# - Python: Configured via .pylintrc (max-line-length=120)
+#   Enable "Use configuration file" for Pylint in Codacy's Code patterns page
+# - TypeScript/JavaScript: Configured via client/eslint.config.js (max-len: 120)
+#   Enable "Use configuration file" for ESLint in Codacy's Code patterns page
+
 # Note: Package.json dependency version warnings cannot be suppressed via config file
 # because JSON doesn't support comments. These warnings need to be suppressed via:
 # 1. Codacy web interface (recommended)

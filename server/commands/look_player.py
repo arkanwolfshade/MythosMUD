@@ -26,19 +26,42 @@ async def _get_players_in_room(room: Any, persistence: Any) -> list[Any]:
         List of Player objects in the room (None players filtered out)
     """
     player_ids = room.get_players() if hasattr(room, "get_players") else []
-    players = []
-    for player_id_str in player_ids:
+    # Ensure player_ids is iterable (handle Mock objects in tests)
+    # Check if it's a list/tuple first, then try to iterate safely
+    if not isinstance(player_ids, (list, tuple)):
+        # If it's not a list/tuple, try to convert it safely
+        # Mock objects can be iterable but might not behave as expected
         try:
-            # Convert string to UUID if needed
-            player_id = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
-            # Use get_player_by_id (async method)
-            player = await persistence.get_player_by_id(player_id) if hasattr(persistence, "get_player_by_id") else None
-            if player:
-                players.append(player)
-        except (ValueError, AttributeError):
-            # Invalid UUID format or persistence doesn't have get_player
-            logger.debug("Failed to get player", player_id=player_id_str, error="Invalid UUID or missing method")
-            continue
+            # Try to convert to list to validate it's truly iterable
+            if player_ids is not None:
+                player_ids = list(player_ids)
+            else:
+                player_ids = []
+        except (TypeError, ValueError) as e:
+            logger.debug(
+                "room.get_players() returned non-iterable value",
+                room_id=getattr(room, "id", None),
+                error=str(e),
+            )
+            return []
+    players = []
+    try:
+        for player_id_str in player_ids:
+            try:
+                # Convert string to UUID if needed
+                player_id = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
+                # Use get_player_by_id (async method)
+                player = await persistence.get_player_by_id(player_id) if hasattr(persistence, "get_player_by_id") else None
+                if player:
+                    players.append(player)
+            except (ValueError, AttributeError):
+                # Invalid UUID format or persistence doesn't have get_player
+                logger.debug("Failed to get player", player_id=player_id_str, error="Invalid UUID or missing method")
+                continue
+    except TypeError as e:
+        # Handle case where player_ids is not iterable (e.g., Mock object)
+        logger.debug("Cannot iterate over player_ids", room_id=getattr(room, "id", None), error=str(e))
+        return []
     return players
 
 

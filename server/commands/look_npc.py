@@ -93,9 +93,15 @@ async def _get_npcs_in_room(room_id: str) -> list[str]:
         active_npcs_dict = lifecycle_manager.active_npcs
         for _npc_id, npc_instance in active_npcs_dict.items():
             # Check both current_room and current_room_id for compatibility
-            current_room = getattr(npc_instance, "current_room", None)
-            current_room_id = getattr(npc_instance, "current_room_id", None)
-            npc_room_id = current_room or current_room_id
+            # Use hasattr to check if attribute exists to avoid MagicMock auto-creation
+            current_room = None
+            if hasattr(npc_instance, "current_room"):
+                current_room = getattr(npc_instance, "current_room", None)
+            current_room_id = None
+            if hasattr(npc_instance, "current_room_id"):
+                current_room_id = getattr(npc_instance, "current_room_id", None)
+            # Prefer current_room_id over current_room, but use current_room if current_room_id is None
+            npc_room_id = current_room_id if current_room_id is not None else current_room
             if npc_room_id == room_id:
                 npc_name = getattr(npc_instance, "name", None)
                 if npc_name and getattr(npc_instance, "is_alive", True):
