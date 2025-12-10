@@ -83,7 +83,8 @@ from .utility_commands import (
 logger = get_logger(__name__)
 
 # Type alias for command handler functions
-CommandHandler = Callable[[dict, dict, Any, AliasStorage | None, str], Awaitable[dict[str, str]]]
+# Note: Return type uses Any for values since handlers may return str, bool, or other types
+CommandHandler = Callable[[dict, dict, Any, AliasStorage | None, str], Awaitable[dict[str, Any]]]
 
 
 class CommandService:
@@ -173,7 +174,7 @@ class CommandService:
         request: Any,
         alias_storage: AliasStorage | None,
         player_name: str,
-    ) -> dict[str, str]:
+    ) -> dict[str, Any]:
         """
         Process a validated command with routing.
 
@@ -243,6 +244,195 @@ class CommandService:
                     pass
             return {"result": f"Error processing {command_type} command: {str(e)}"}
 
+    def _parse_command_string(self, command: str, player_name: str) -> tuple[Any, str, list[Any]] | dict[str, str]:
+        """
+        Parse and validate command string.
+
+        Returns:
+            tuple of (parsed_command, cmd, args) on success, or error dict on failure
+        """
+        try:
+            parsed_command = parse_command(command)
+            cmd = parsed_command.command_type.value
+            args = getattr(parsed_command, "args", [])
+
+            # CRITICAL: For commands with subcommands (admin, npc), reconstruct args array
+            # to include subcommand as first element for backward compatibility with handlers
+            if hasattr(parsed_command, "subcommand") and parsed_command.subcommand:
+                args = [parsed_command.subcommand] + args
+
+            logger.debug("Command parsed successfully", player=player_name, command=cmd, args=args)
+            return (parsed_command, cmd, args)
+        except MythosValidationError as e:
+            logger.info("Command validation failed", error=str(e))
+            return {"result": str(e)}
+        except Exception as e:
+            logger.error("Unexpected error during command parsing", error=str(e))
+            return {"result": f"Error processing command: {str(e)}"}
+
+    def _prepare_command_data(self, parsed_command: Any, cmd: str, args: list[Any], player_name: str) -> dict[str, Any]:
+        """
+        Prepare command_data dictionary by merging parsed command fields.
+
+        Returns:
+            dict: Prepared command_data dictionary
+        """
+        command_data = {
+            "command_type": cmd,
+            "args": args,
+            "target_player": args[0] if args else None,
+            "parsed_command": parsed_command,
+        }
+
+        parsed_fields = self._extract_parsed_fields(parsed_command, cmd, player_name, command_data)
+        command_data.update(parsed_fields)
+        logger.debug(
+            "Command data after merge",
+            player=player_name,
+            command_type=cmd,
+            command_data_keys=list(command_data.keys()),
+            command_data=command_data,
+        )
+        return command_data
+
+    def _extract_parsed_fields(
+        self, parsed_command: Any, cmd: str, player_name: str, command_data: dict[str, Any]
+    ) -> dict[str, Any]:
+        """
+        Extract fields from parsed_command using model_dump or fallback method.
+
+        Returns:
+            dict: Extracted fields
+        """
+        try:
+            self._log_parsed_command_inspection(parsed_command, cmd, player_name)
+            parsed_fields = parsed_command.model_dump()
+            self._log_model_dump_result(parsed_fields, cmd, player_name)
+            parsed_fields = {k: v for k, v in parsed_fields.items() if v is not None}
+            logger.info(
+                "DEBUG: parsed_fields after filtering None",
+                player=player_name,
+                command_type=cmd,
+                parsed_fields_keys=list(parsed_fields.keys()),
+                parsed_fields=parsed_fields,
+            )
+            return parsed_fields
+        except AttributeError as e:
+            logger.error(
+                "ERROR: AttributeError during model_dump",
+                player=player_name,
+                command_type=cmd,
+                error=str(e),
+                error_type=type(e).__name__,
+            )
+            return {
+                key: getattr(parsed_command, key)
+                for key in dir(parsed_command)
+                if not key.startswith("_") and not callable(getattr(parsed_command, key)) and key not in command_data
+            }
+        except Exception as e:
+            logger.error(
+                "ERROR: Exception during model_dump",
+                player=player_name,
+                command_type=cmd,
+                error=str(e),
+                error_type=type(e).__name__,
+            )
+            raise
+
+    def _log_parsed_command_inspection(self, parsed_command: Any, cmd: str, player_name: str) -> None:
+        """Log parsed command object inspection details."""
+        logger.debug(
+            "Parsed command object inspection",
+            player=player_name,
+            command_type=cmd,
+            parsed_command_type=type(parsed_command).__name__,
+            parsed_command_module=type(parsed_command).__module__,
+            has_item=hasattr(parsed_command, "item"),
+            has_container=hasattr(parsed_command, "container"),
+        )
+
+        if hasattr(parsed_command, "item"):
+            item_value = getattr(parsed_command, "item", None)
+            logger.debug(
+                "Parsed command item value",
+                player=player_name,
+                command_type=cmd,
+                item_value=item_value,
+                item_type=type(item_value).__name__,
+            )
+        if hasattr(parsed_command, "container"):
+            container_value = getattr(parsed_command, "container", None)
+            logger.debug(
+                "Parsed command container value",
+                player=player_name,
+                command_type=cmd,
+                container_value=container_value,
+                container_type=type(container_value).__name__,
+            )
+
+        all_attrs = {
+            key: getattr(parsed_command, key, "<NOT FOUND>")
+            for key in dir(parsed_command)
+            if not key.startswith("_") and not callable(getattr(parsed_command, key, None))
+        }
+        logger.debug(
+            "Parsed command all attributes",
+            player=player_name,
+            command_type=cmd,
+            all_attrs_keys=list(all_attrs.keys()),
+            all_attrs=all_attrs,
+        )
+
+    def _log_model_dump_result(self, parsed_fields: dict[str, Any], cmd: str, player_name: str) -> None:
+        """Log model_dump result details."""
+        logger.debug(
+            "Model dump result",
+            player=player_name,
+            command_type=cmd,
+            parsed_fields_keys=list(parsed_fields.keys()),
+            parsed_fields=parsed_fields,
+            has_item_in_result="item" in parsed_fields,
+            has_container_in_result="container" in parsed_fields,
+        )
+
+    async def _execute_command_handler(
+        self,
+        handler: CommandHandler,
+        command_data: dict[str, Any],
+        parsed_command: Any,
+        current_user: dict,
+        request: Any,
+        alias_storage: AliasStorage | None,
+        player_name: str,
+        cmd: str,
+    ) -> dict[str, Any]:
+        """
+        Execute command handler with error handling.
+
+        Returns:
+            dict: Command result
+        """
+        try:
+            assert handler is not None  # Type narrowing for mypy
+            result = await handler(command_data, current_user, request, alias_storage, player_name)
+            logger.debug("Command processed successfully with command_data", player=player_name, command=cmd)
+            assert isinstance(result, dict)
+            return result
+        except Exception as e:
+            logger.error(
+                "Command processing error",
+                player=player_name,
+                command=cmd,
+                command_data=command_data,
+                parsed_command=str(parsed_command),
+                handler_function=str(handler),
+                error_type=type(e).__name__,
+                error_message=str(e),
+                exc_info=True,
+            )
+            return {"result": f"Error processing command: {str(e)}"}
+
     async def process_command(
         self,
         command: str,
@@ -250,7 +440,7 @@ class CommandService:
         request: Any,
         alias_storage: AliasStorage | None,
         player_name: str,
-    ) -> dict[str, str]:
+    ) -> dict[str, Any]:
         """
         Process a command with full validation and routing.
 
@@ -266,167 +456,28 @@ class CommandService:
         """
         logger.debug("Processing command", player=player_name, command=command)
 
-        # Step 1: Parse and validate command using the command parser
-        try:
-            parsed_command = parse_command(command)
-            cmd = parsed_command.command_type.value
-            args = getattr(parsed_command, "args", [])
+        # Step 1: Parse and validate command
+        parse_result = self._parse_command_string(command, player_name)
+        if isinstance(parse_result, dict):
+            return parse_result  # Error result
+        parsed_command, cmd, args = parse_result
 
-            # CRITICAL: For commands with subcommands (admin, npc), reconstruct args array
-            # to include subcommand as first element for backward compatibility with handlers
-            if hasattr(parsed_command, "subcommand") and parsed_command.subcommand:
-                args = [parsed_command.subcommand] + args
-
-            logger.debug("Command parsed successfully", player=player_name, command=cmd, args=args)
-        except MythosValidationError as e:
-            logger.info("Command validation failed", error=str(e))
-            return {"result": str(e)}
-        except Exception as e:
-            logger.error("Unexpected error during command parsing", error=str(e))
-            return {"result": f"Error processing command: {str(e)}"}
-
-        # Step 4: Route to appropriate handler
-        if cmd in self.command_handlers:
-            handler: CommandHandler = self.command_handlers[cmd]
-            try:
-                # Create command_data dictionary for handler using parsed command data
-                command_data = {
-                    "command_type": cmd,
-                    "args": args,
-                    "target_player": args[0] if args else None,
-                    "parsed_command": parsed_command,  # Include the full parsed command object
-                }
-
-                # Merge parsed command fields (use Pydantic model_dump for completeness)
-                try:
-                    # DEBUG: Inspect parsed_command object before model_dump()
-                    logger.debug(
-                        "Parsed command object inspection",
-                        player=player_name,
-                        command_type=cmd,
-                        parsed_command_type=type(parsed_command).__name__,
-                        parsed_command_module=type(parsed_command).__module__,
-                        has_item=hasattr(parsed_command, "item"),
-                        has_container=hasattr(parsed_command, "container"),
-                    )
-
-                    # Check if item and container exist and get their values
-                    if hasattr(parsed_command, "item"):
-                        item_value = getattr(parsed_command, "item", None)
-                        logger.debug(
-                            "Parsed command item value",
-                            player=player_name,
-                            command_type=cmd,
-                            item_value=item_value,
-                            item_type=type(item_value).__name__,
-                        )
-                    if hasattr(parsed_command, "container"):
-                        container_value = getattr(parsed_command, "container", None)
-                        logger.debug(
-                            "Parsed command container value",
-                            player=player_name,
-                            command_type=cmd,
-                            container_value=container_value,
-                            container_type=type(container_value).__name__,
-                        )
-
-                    # Get all attributes of the parsed_command object
-                    all_attrs = {
-                        key: getattr(parsed_command, key, "<NOT FOUND>")
-                        for key in dir(parsed_command)
-                        if not key.startswith("_") and not callable(getattr(parsed_command, key, None))
-                    }
-                    logger.debug(
-                        "Parsed command all attributes",
-                        player=player_name,
-                        command_type=cmd,
-                        all_attrs_keys=list(all_attrs.keys()),
-                        all_attrs=all_attrs,
-                    )
-
-                    # Use model_dump without exclude_none to see all fields
-                    # Then manually filter None values if needed
-                    parsed_fields = parsed_command.model_dump()
-                    logger.debug(
-                        "Model dump result",
-                        player=player_name,
-                        command_type=cmd,
-                        parsed_fields_keys=list(parsed_fields.keys()),
-                        parsed_fields=parsed_fields,
-                        has_item_in_result="item" in parsed_fields,
-                        has_container_in_result="container" in parsed_fields,
-                    )
-
-                    # Filter None values manually
-                    parsed_fields = {k: v for k, v in parsed_fields.items() if v is not None}
-                    logger.info(
-                        "DEBUG: parsed_fields after filtering None",
-                        player=player_name,
-                        command_type=cmd,
-                        parsed_fields_keys=list(parsed_fields.keys()),
-                        parsed_fields=parsed_fields,
-                    )
-                except AttributeError as e:
-                    logger.error(
-                        "ERROR: AttributeError during model_dump",
-                        player=player_name,
-                        command_type=cmd,
-                        error=str(e),
-                        error_type=type(e).__name__,
-                    )
-                    parsed_fields = {
-                        key: getattr(parsed_command, key)
-                        for key in dir(parsed_command)
-                        if not key.startswith("_")
-                        and not callable(getattr(parsed_command, key))
-                        and key not in command_data
-                    }
-                except Exception as e:
-                    logger.error(
-                        "ERROR: Exception during model_dump",
-                        player=player_name,
-                        command_type=cmd,
-                        error=str(e),
-                        error_type=type(e).__name__,
-                    )
-                    raise
-                command_data.update(parsed_fields)
-                logger.debug(
-                    "Command data after merge",
-                    player=player_name,
-                    command_type=cmd,
-                    command_data_keys=list(command_data.keys()),
-                    command_data=command_data,
-                )
-
-                assert handler is not None  # Type narrowing for mypy
-                result = await handler(command_data, current_user, request, alias_storage, player_name)
-                logger.debug("Command processed successfully with command_data", player=player_name, command=cmd)
-                # Type assertion to help MyPy understand the return type
-                assert isinstance(result, dict)
-                return result
-            except Exception as e:
-                logger.error(
-                    "Command processing error",
-                    player=player_name,
-                    command=cmd,
-                    command_data=command_data,
-                    parsed_command=str(parsed_command),
-                    handler_function=str(handler),
-                    error_type=type(e).__name__,
-                    error_message=str(e),
-                    exc_info=True,
-                )
-                return {"result": f"Error processing command: {str(e)}"}
-        else:
+        # Step 2: Route to appropriate handler
+        if cmd not in self.command_handlers:
             logger.info("Unknown command", command=cmd)
             return {"result": f"Unknown command: {cmd}. Use 'help' for available commands."}
+
+        handler: CommandHandler = self.command_handlers[cmd]
+        command_data = self._prepare_command_data(parsed_command, cmd, args, player_name)
+        return await self._execute_command_handler(
+            handler, command_data, parsed_command, current_user, request, alias_storage, player_name, cmd
+        )
 
     def get_available_commands(self) -> list[str]:
         """Get list of available commands."""
         return list(self.command_handlers.keys())
 
-    def register_command_handler(self, command: str, handler: Callable[..., Awaitable[dict[str, str]]]) -> None:
+    def register_command_handler(self, command: str, handler: Callable[..., Awaitable[dict[str, Any]]]) -> None:
         """
         Register a new command handler.
 
