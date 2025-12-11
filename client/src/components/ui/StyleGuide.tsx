@@ -37,7 +37,7 @@ export const StyleGuide: React.FC = () => {
     id: 'player-1',
     name: 'TestPlayer',
     stats: {
-      current_db: 100,
+      current_dp: 100,
       lucidity: 80,
       strength: 10,
       dexterity: 12,

@@ -73,7 +73,7 @@ class PlayerDeathService:
             mortally_wounded = []
             for player in all_players:
                 stats = player.get_stats()
-                current_dp = stats.get("current_determination_points", 0)  # current_determination_points represents DP
+                current_dp = stats.get("current_dp", 0)  # current_dp represents DP
                 if 0 >= current_dp > -10:
                     mortally_wounded.append(player)
 
@@ -114,7 +114,7 @@ class PlayerDeathService:
             dead_players = []
             for player in all_players:
                 stats = player.get_stats()
-                current_dp = stats.get("current_determination_points", 0)  # current_determination_points represents DP
+                current_dp = stats.get("current_dp", 0)  # current_dp represents DP
                 if current_dp <= -10:
                     dead_players.append(player)
 
@@ -163,14 +163,14 @@ class PlayerDeathService:
 
             # Get current stats and apply decay
             stats = player.get_stats()
-            current_dp = stats.get("current_db", 0)  # current_db represents DP
+            current_dp = stats.get("current_dp", 0)  # current_dp represents DP
             old_dp = current_dp
 
             # Decrease DP by 1, cap at -10
             new_dp = max(current_dp - 1, -10)
 
             # Update player stats
-            stats["current_db"] = new_dp
+            stats["current_dp"] = new_dp
 
             # BUGFIX: Automatically change posture to lying when DP drops to <= 0
             # As documented in "Corporeal Collapse and Unconsciousness" - Dr. Armitage, 1928

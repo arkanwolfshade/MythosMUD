@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS professions (
     description TEXT NOT NULL,
     flavor_text TEXT NOT NULL,
     stat_requirements TEXT NOT NULL,
-    -- JSON: {"strength": 12, "intelligence": 10}
+    -- JSON: {"strength": 12, "intelligence": 50}
     mechanical_effects TEXT NOT NULL,
     -- JSON: future bonuses/penalties
     is_available BOOLEAN NOT NULL DEFAULT 1

@@ -111,7 +111,7 @@ class Stats(BaseModel):
     corruption: int = Field(default=0, description="Taint from dark forces")
 
     # Derived Stats (tracked separately from base stats)
-    current_db: int = Field(default=100, description="Current determination points (DP)")
+    current_dp: int = Field(default=100, description="Current determination points (DP)")
     magic_points: int = Field(default=0, description="Current magic points (MP)")
 
     position: PositionState = Field(default=PositionState.STANDING, description="Current body posture")
@@ -169,7 +169,7 @@ class Stats(BaseModel):
         return (con + siz) // 5
 
     @computed_field
-    def max_determination_points(self) -> int:
+    def max_dp(self) -> int:
         """Calculate max determination points (DP) using formula: (CON + SIZ) / 5."""
         # Compute directly to avoid mypy @computed_field inference issues
         con = self.constitution or 50
@@ -192,9 +192,9 @@ class Stats(BaseModel):
     @model_validator(mode="after")
     def validate_current_vs_max_stats(self) -> "Stats":
         """
-        Ensure current_db (DP), magic_points (MP), and lucidity don't exceed their max values.
+        Ensure current_dp (DP), magic_points (MP), and lucidity don't exceed their max values.
 
-        BUGFIX: Initialize current_db, magic_points, and lucidity to their max values if not explicitly provided.
+        BUGFIX: Initialize current_dp, magic_points, and lucidity to their max values if not explicitly provided.
         This prevents new characters from having impossible stats.
         """
         # Compute max values directly to avoid mypy @computed_field inference issues
@@ -212,9 +212,9 @@ class Stats(BaseModel):
         # Calculate max_lucidity: education value
         max_lucidity_value = self.education or 50
 
-        # Cap current_db (DP) at max_determination_points
-        if self.current_db > max_dp:
-            self.current_db = max_dp
+        # Cap current_dp (DP) at max_dp
+        if self.current_dp > max_dp:
+            self.current_dp = max_dp
 
         # Cap magic_points at max_magic_points
         if self.magic_points > max_mp:

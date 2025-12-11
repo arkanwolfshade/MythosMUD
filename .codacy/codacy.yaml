@@ -1,9 +1,6 @@
 runtimes:
-    - node@22.2.0
-    - dart@3.7.2
     - python@3.11.11
+    - node@22.2.0
 tools:
+    - semgrep@1.78.0
     - eslint@8.57.0
-    - trivy@0.66.0
-    - dartanalyzer@3.7.2
-    - lizard@1.17.31

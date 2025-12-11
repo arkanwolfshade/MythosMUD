@@ -53,7 +53,7 @@ EXPECTED_STATS_KEYS = {
     "fear",
     "corruption",
     "cult_affiliation",
-    "current_db",
+    "current_dp",
     "position",
 }
 

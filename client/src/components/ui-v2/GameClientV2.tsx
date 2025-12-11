@@ -92,12 +92,12 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
     if (healthStatus) {
       return healthStatus;
     }
-    if (player?.stats?.current_db !== undefined) {
+    if (player?.stats?.current_dp !== undefined) {
       const maxHealth = player.stats.max_health ?? 100;
       return {
-        current: player.stats.current_db,
+        current: player.stats.current_dp,
         max: maxHealth,
-        tier: determineHealthTier(player.stats.current_db, maxHealth),
+        tier: determineHealthTier(player.stats.current_dp, maxHealth),
         posture: player.stats.position,
         inCombat: player.in_combat ?? false,
       };

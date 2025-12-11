@@ -24,7 +24,7 @@ BASE_STATS_COMBAT_SCHEMA = {
             "minimum": 0,
             "description": "Current determination points (DP)",
         },
-        "max_determination_points": {
+        "max_dp": {
             "type": "integer",
             "minimum": 1,
             "description": "Maximum determination points (DP)",
@@ -90,7 +90,7 @@ BASE_STATS_COMBAT_SCHEMA = {
             "description": "NPC luck",
         },
     },
-    "required": ["determination_points", "max_determination_points", "xp_value"],
+    "required": ["determination_points", "max_dp", "xp_value"],
     "additionalProperties": True,
 }
 
@@ -165,7 +165,7 @@ BEHAVIOR_CONFIG_COMBAT_SCHEMA = {
 # Default combat data templates
 DEFAULT_COMBAT_STATS = {
     "determination_points": 20,  # DP max = (CON + SIZ) / 5 = (50 + 50) / 5 = 20
-    "max_determination_points": 20,
+    "max_dp": 20,
     "magic_points": 10,  # MP max = ceil(POW * 0.2) = ceil(50 * 0.2) = 10
     "max_magic_points": 10,
     "xp_value": 1,
@@ -368,7 +368,7 @@ def get_combat_stats_summary(npc_definition) -> dict[str, Any]:
         "npc_type": npc_definition.npc_type,
         "combat_stats": {
             "determination_points": stats.get("determination_points", 0),
-            "max_determination_points": stats.get("max_determination_points", 0),
+            "max_dp": stats.get("max_dp", 0),
             "magic_points": stats.get("magic_points", 0),
             "max_magic_points": stats.get("max_magic_points", 0),
             "xp_value": stats.get("xp_value", 0),

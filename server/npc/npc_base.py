@@ -100,7 +100,7 @@ class NPCBase(ABC):
             logger.warning("Invalid stats JSON, using defaults", npc_id=self.npc_id)
             return {
                 "determination_points": 20,
-                "max_determination_points": 20,
+                "max_dp": 20,
                 "strength": 50,
                 "intelligence": 40,
                 "charisma": 30,
@@ -337,9 +337,7 @@ class NPCBase(ABC):
             current_dp = self._stats.get(
                 "determination_points", self._stats.get("dp", self._stats.get("determination_points", 0))
             )
-            max_dp = self._stats.get(
-                "max_determination_points", self._stats.get("max_dp", self._stats.get("max_determination_points", 20))
-            )
+            max_dp = self._stats.get("max_dp", self._stats.get("max_dp", self._stats.get("max_dp", 20)))
             new_dp = min(max_dp, current_dp + amount)
             self._stats["determination_points"] = new_dp
             # Also update "dp" and "determination_points" if they exist for backward compatibility

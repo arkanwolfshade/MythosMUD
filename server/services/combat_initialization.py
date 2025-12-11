@@ -6,7 +6,7 @@ Handles creation and setup of combat instances.
 
 from server.logging.enhanced_logging_config import get_logger
 from server.models.combat import CombatInstance, CombatParticipant
-from server.services.combat_service import CombatParticipantData
+from server.services.combat_types import CombatParticipantData
 
 logger = get_logger(__name__)
 

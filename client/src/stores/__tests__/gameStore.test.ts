@@ -33,7 +33,7 @@ describe('Game Store', () => {
         id: 'player-123',
         name: 'TestPlayer',
         stats: {
-          current_db: 100,
+          current_dp: 100,
           lucidity: 80,
           strength: 15,
           dexterity: 12,
@@ -58,7 +58,7 @@ describe('Game Store', () => {
         id: 'player-123',
         name: 'TestPlayer',
         stats: {
-          current_db: 100,
+          current_dp: 100,
           lucidity: 80,
           strength: 15,
         },
@@ -68,12 +68,12 @@ describe('Game Store', () => {
       act(() => {
         result.current.setPlayer(initialPlayer);
         result.current.updatePlayerStats({
-          current_db: 80,
+          current_dp: 80,
           lucidity: 70,
         });
       });
 
-      expect(result.current.player?.stats.current_db).toBe(80);
+      expect(result.current.player?.stats.current_dp).toBe(80);
       expect(result.current.player?.stats.lucidity).toBe(70);
       expect(result.current.player?.stats.strength).toBe(15); // Should remain unchanged
     });
@@ -85,7 +85,7 @@ describe('Game Store', () => {
         result.current.setPlayer({
           id: 'player-123',
           name: 'TestPlayer',
-          stats: { current_db: 100, lucidity: 80 },
+          stats: { current_dp: 100, lucidity: 80 },
           level: 5,
         });
         result.current.clearPlayer();
@@ -339,7 +339,7 @@ describe('Game Store', () => {
         result.current.setPlayer({
           id: 'player-123',
           name: 'TestPlayer',
-          stats: { current_db: 100, lucidity: 80 },
+          stats: { current_dp: 100, lucidity: 80 },
           level: 5,
         });
       });
@@ -357,7 +357,7 @@ describe('Game Store', () => {
         result.current.setPlayer({
           id: 'player-123',
           name: 'TestPlayer',
-          stats: { current_db: 100, lucidity: 80 },
+          stats: { current_dp: 100, lucidity: 80 },
           level: 5,
         });
         result.current.setRoom({
@@ -402,7 +402,7 @@ describe('Game Store', () => {
           id: 'player-123',
           name: 'TestPlayer',
           stats: {
-            current_db: 100,
+            current_dp: 100,
             lucidity: 80,
             strength: 15,
           },
@@ -411,7 +411,7 @@ describe('Game Store', () => {
       });
 
       expect(result.current.getPlayerStats()).toEqual({
-        current_db: 100,
+        current_dp: 100,
         lucidity: 80,
         strength: 15,
       });
@@ -484,7 +484,7 @@ describe('Game Store', () => {
       act(() => {
         // Don't set player first
         result.current.updatePlayerStats({
-          current_db: 80,
+          current_dp: 80,
           lucidity: 70,
         });
       });

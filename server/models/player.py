@@ -69,7 +69,7 @@ class Player(Base):
             "lucidity": 100,
             "occult": 0,
             "corruption": 0,
-            "current_db": 20,  # DP max = (CON + SIZ) / 5 = (50 + 50) / 5 = 20
+            "current_dp": 20,  # DP max = (CON + SIZ) / 5 = (50 + 50) / 5 = 20
             "magic_points": 10,  # MP max = ceil(POW * 0.2) = ceil(50 * 0.2) = 10
             "position": "standing",
         },
@@ -137,7 +137,7 @@ class Player(Base):
                 "lucidity": 100,
                 "occult": 0,
                 "corruption": 0,
-                "current_db": 20,  # DP max = (CON + SIZ) / 5 = (50 + 50) / 5 = 20
+                "current_dp": 20,  # DP max = (CON + SIZ) / 5 = (50 + 50) / 5 = 20
                 "magic_points": 10,  # MP max = ceil(POW * 0.2) = ceil(50 * 0.2) = 10
                 "position": "standing",
             }

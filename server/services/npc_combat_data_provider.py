@@ -12,7 +12,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from ..logging.enhanced_logging_config import get_logger
 from ..models.combat import CombatParticipantType
-from .combat_service import CombatParticipantData
+from .combat_types import CombatParticipantData
 
 logger = get_logger(__name__)
 
@@ -155,8 +155,8 @@ class NPCCombatDataProvider:
             raise ValueError(f"Player {player_id} not found")
 
         player_stats = player.get_stats()
-        attacker_dp = player_stats.get("current_determination_points", 100)
-        attacker_max_dp = player_stats.get("max_determination_points", 100)
+        attacker_dp = player_stats.get("current_dp", 100)
+        attacker_max_dp = player_stats.get("max_dp", 100)
         attacker_dex = player_stats.get("dexterity", 10)
 
         logger.info(
@@ -190,8 +190,8 @@ class NPCCombatDataProvider:
         # Get NPC stats properly from the NPC instance
         npc_stats = npc_instance.get_stats()
         npc_current_dp = npc_stats.get("determination_points", npc_stats.get("dp", 100))
-        # Check both max_dp and max_determination_points keys (NPCs may use either)
-        npc_max_dp = npc_stats.get("max_determination_points", npc_stats.get("max_determination_points", 100))
+        # Check both max_dp and max_dp keys (NPCs may use either)
+        npc_max_dp = npc_stats.get("max_dp", npc_stats.get("max_dp", 100))
         npc_id = getattr(npc_instance, "id", "unknown")
         logger.info(
             "DEBUG: NPC stats extraction",
@@ -199,7 +199,7 @@ class NPCCombatDataProvider:
             npc_name=npc_instance.name,
             npc_stats_keys=list(npc_stats.keys()),
             npc_max_dp=npc_max_dp,
-            has_max_dp="max_determination_points" in npc_stats,
+            has_max_dp="max_dp" in npc_stats,
         )
         npc_dexterity = npc_stats.get("dexterity", 10)
 

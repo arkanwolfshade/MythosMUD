@@ -8,7 +8,7 @@ describe('State Normalization - Normalization Functions', () => {
         player: {
           id: 'player-1',
           name: 'TestPlayer',
-          stats: { current_db: 100, lucidity: 80 },
+          stats: { current_dp: 100, lucidity: 80 },
           level: 5,
         },
         room: {
@@ -44,7 +44,7 @@ describe('State Normalization - Normalization Functions', () => {
           'player-1': {
             id: 'player-1',
             name: 'TestPlayer',
-            stats: { current_db: 100, lucidity: 80 },
+            stats: { current_dp: 100, lucidity: 80 },
             level: 5,
           },
           'room-1': {
@@ -89,7 +89,7 @@ describe('State Normalization - Normalization Functions', () => {
         player: {
           id: 'player-1',
           name: 'TestPlayer',
-          stats: { current_db: 100 },
+          stats: { current_dp: 100 },
         },
       };
 
@@ -104,7 +104,7 @@ describe('State Normalization - Normalization Functions', () => {
           'player-1': {
             id: 'player-1',
             name: 'TestPlayer',
-            stats: { current_db: 100 },
+            stats: { current_dp: 100 },
           },
         },
       });
@@ -122,7 +122,7 @@ describe('State Normalization - Normalization Functions', () => {
           'player-1': {
             id: 'player-1',
             name: 'TestPlayer',
-            stats: { current_db: 100, lucidity: 80 },
+            stats: { current_dp: 100, lucidity: 80 },
             level: 5,
           },
           'room-1': {
@@ -150,7 +150,7 @@ describe('State Normalization - Normalization Functions', () => {
         player: {
           id: 'player-1',
           name: 'TestPlayer',
-          stats: { current_db: 100, lucidity: 80 },
+          stats: { current_dp: 100, lucidity: 80 },
           level: 5,
         },
         room: {
@@ -186,7 +186,7 @@ describe('State Normalization - Normalization Functions', () => {
           'player-1': {
             id: 'player-1',
             name: 'TestPlayer',
-            stats: { current_db: 100 },
+            stats: { current_dp: 100 },
           },
           // Missing room-1 and msg-1 entities
         },
@@ -198,7 +198,7 @@ describe('State Normalization - Normalization Functions', () => {
         player: {
           id: 'player-1',
           name: 'TestPlayer',
-          stats: { current_db: 100 },
+          stats: { current_dp: 100 },
         },
         room: null, // Should be null when entity is missing
         chatMessages: [], // Should be empty array when entities are missing
@@ -232,7 +232,7 @@ describe('State Normalization - Normalization Functions', () => {
         player: {
           id: 'player-1',
           name: 'TestPlayer',
-          stats: { current_db: 100, lucidity: 80 },
+          stats: { current_dp: 100, lucidity: 80 },
           level: 5,
         },
         room: {

@@ -70,7 +70,7 @@ describe('GameTerminal Panel Sizing', () => {
     player: {
       name: 'TestPlayer',
       stats: {
-        current_db: 100,
+        current_dp: 100,
         lucidity: 80,
         position: 'standing',
       },

@@ -81,12 +81,12 @@ def _get_health_label(stats: dict) -> str:
     Get descriptive health label based on health percentage.
 
     Args:
-        stats: Dictionary containing 'current_db' and 'max_health' keys
+        stats: Dictionary containing 'current_dp' and 'max_health' keys
 
     Returns:
         Descriptive health label: "healthy", "wounded", "critical", or "mortally wounded"
     """
-    health = stats.get("current_db", 0)
+    health = stats.get("current_dp", 0)
     max_health = stats.get("max_health", 100)
     if max_health == 0:
         return "mortally wounded"

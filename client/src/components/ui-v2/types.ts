@@ -8,7 +8,7 @@ export interface Player {
   profession_description?: string;
   profession_flavor_text?: string;
   stats?: {
-    current_db: number; // Represents determination points (DP)
+    current_dp: number; // Represents determination points (DP)
     max_health?: number; // Represents max determination points (DP)
     lucidity: number;
     max_lucidity?: number;

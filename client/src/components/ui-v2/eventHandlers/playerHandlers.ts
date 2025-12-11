@@ -1,11 +1,11 @@
 // Player-related event handlers
 // As documented in "Player State Management" - Dr. Armitage, 1928
 
-import type { Player } from '../types';
-import type { EventHandler, GameStateUpdates } from './types';
 import { determineHealthTier } from '../../../types/health';
 import { buildHealthStatusFromEvent } from '../../../utils/healthEventUtils';
 import { logger } from '../../../utils/logger';
+import type { Player } from '../types';
+import type { EventHandler, GameStateUpdates } from './types';
 
 export const handlePlayerEnteredGame: EventHandler = (event, _context, appendMessage) => {
   const playerName = event.data?.player_name as string | undefined;
@@ -90,9 +90,9 @@ export const handlePlayerRespawned: EventHandler = (event, context) => {
   if (respawnData.player) {
     updates.player = respawnData.player as Player;
     // Update health status from player data
-    if (respawnData.player.stats?.current_db !== undefined) {
+    if (respawnData.player.stats?.current_dp !== undefined) {
       const playerStats = respawnData.player.stats;
-      const currentHealth = playerStats.current_db;
+      const currentHealth = playerStats.current_dp;
       const maxHealth = playerStats.max_health ?? 100;
       const healthStatusUpdate = {
         current: currentHealth,
@@ -184,7 +184,7 @@ export const handlePlayerDpUpdated: EventHandler = (event, context) => {
         ...context.currentPlayerRef.current,
         stats: {
           ...context.currentPlayerRef.current.stats,
-          current_db: updatedHealthStatus.current,
+          current_dp: updatedHealthStatus.current,
           max_health: updatedHealthStatus.max,
           lucidity: context.currentPlayerRef.current.stats?.lucidity ?? 0,
         },

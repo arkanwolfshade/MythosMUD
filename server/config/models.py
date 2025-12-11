@@ -820,7 +820,7 @@ class PlayerStatsConfig(BaseSettings):
     education: int = Field(default=50, description="Default education")
     charisma: int = Field(default=50, description="Default charisma")
     luck: int = Field(default=50, description="Default luck")
-    max_determination_points: int = Field(default=20, description="Default max determination points (DP)")
+    max_dp: int = Field(default=20, description="Default max determination points (DP)")
     max_magic_points: int = Field(default=10, description="Default max magic points (MP)")
     max_lucidity: int = Field(default=100, description="Default max lucidity")
     determination_points: int = Field(default=20, description="Default starting determination points (DP)")
@@ -841,7 +841,7 @@ class PlayerStatsConfig(BaseSettings):
         return v
 
     @field_validator(
-        "max_determination_points",
+        "max_dp",
         "max_magic_points",
         "max_lucidity",
         "determination_points",
@@ -869,7 +869,7 @@ class PlayerStatsConfig(BaseSettings):
             "education": self.education,
             "charisma": self.charisma,
             "luck": self.luck,
-            "max_determination_points": self.max_determination_points,
+            "max_dp": self.max_dp,
             "max_magic_points": self.max_magic_points,
             "max_lucidity": self.max_lucidity,
             "determination_points": self.determination_points,

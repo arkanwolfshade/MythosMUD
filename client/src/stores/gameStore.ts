@@ -5,7 +5,7 @@ export interface Player {
   id: string;
   name: string;
   stats: {
-    current_db: number; // Represents determination points (DP)
+    current_dp: number; // Represents determination points (DP)
     max_health?: number; // Represents max determination points (DP)
     lucidity: number;
     max_lucidity?: number;

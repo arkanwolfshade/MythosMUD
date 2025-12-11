@@ -11,7 +11,7 @@ BEGIN;
 DELETE FROM players;
 
 -- Reset all NPC stats to new stats structure
--- Convert hp/max_hp to determination_points/max_determination_points
+-- Convert hp/max_hp to determination_points/max_dp
 -- Add new stats: size, power, education, luck, magic_points, max_magic_points
 -- Remove old stats: fear, cult_affiliation
 -- Rename: wisdom -> education, occult_knowledge -> occult
@@ -30,8 +30,8 @@ SET base_stats = (
 
         -- Derived stats: DP and MP
         'determination_points', COALESCE((stats_json->>'determination_points')::integer, (stats_json->>'hp')::integer, 20),
-        'max_determination_points', COALESCE(
-            (stats_json->>'max_determination_points')::integer,
+        'max_dp', COALESCE(
+            (stats_json->>'max_dp')::integer,
             (stats_json->>'max_hp')::integer,
             -- Calculate from CON + SIZ if available, otherwise default
             CASE
@@ -76,7 +76,7 @@ SET base_stats = '{
     "charisma": 50,
     "luck": 50,
     "determination_points": 20,
-    "max_determination_points": 20,
+    "max_dp": 20,
     "magic_points": 10,
     "max_magic_points": 10,
     "occult": 0,

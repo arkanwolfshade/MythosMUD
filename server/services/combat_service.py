@@ -5,7 +5,6 @@ This service handles all combat-related operations including state management,
 turn order calculation, and combat resolution.
 """
 
-from dataclasses import dataclass
 from uuid import UUID
 
 from server.app.lifespan import get_current_tick
@@ -26,22 +25,11 @@ from server.services.combat_event_publisher import CombatEventPublisher
 from server.services.combat_initialization import CombatInitializer
 from server.services.combat_persistence_handler import CombatPersistenceHandler
 from server.services.combat_turn_processor import CombatTurnProcessor
+from server.services.combat_types import CombatParticipantData
 from server.services.nats_exceptions import NATSError
 from server.services.player_combat_service import PlayerCombatService
 
 logger = get_logger(__name__)
-
-
-@dataclass
-class CombatParticipantData:
-    """Data for a combat participant."""
-
-    participant_id: UUID
-    name: str
-    current_dp: int  # Current determination points (DP)
-    max_dp: int  # Maximum determination points (DP)
-    dexterity: int
-    participant_type: CombatParticipantType = CombatParticipantType.PLAYER
 
 
 class CombatService:

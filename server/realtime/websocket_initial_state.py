@@ -121,7 +121,7 @@ async def check_and_send_death_notification(
             return
 
     stats = player.get_stats() if hasattr(player, "get_stats") else {}
-    current_dp = stats.get("current_db", 20)  # current_db represents DP
+    current_dp = stats.get("current_dp", 20)  # current_dp represents DP
     if not isinstance(current_dp, int):
         current_dp = 20
 

@@ -6,7 +6,7 @@ interface StatusPanelContextType {
     id: string;
     name: string;
     stats: {
-      current_db?: number;
+      current_dp?: number;
       max_health?: number;
       lucidity: number;
       max_lucidity?: number;
@@ -146,7 +146,7 @@ export const PlayerName: React.FC = () => {
 // Health stat sub-component
 export const HealthStat: React.FC = () => {
   const { player } = useStatusPanel();
-  const currentHealth = player?.stats?.current_db;
+  const currentHealth = player?.stats?.current_dp;
   const maxHealth = player?.stats?.max_health ?? 100;
 
   if (currentHealth === undefined) return null;

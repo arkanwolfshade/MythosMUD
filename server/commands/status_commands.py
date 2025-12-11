@@ -93,7 +93,7 @@ def _build_base_status_lines(player: Any, room_name: str, stats: dict, in_combat
         f"Name: {player.name}",
         f"Location: {room_name}",
         f"Position: {position_label}",
-        f"Health: {stats.get('current_db', 100)}/{stats.get('max_health', 100)}",
+        f"Health: {stats.get('current_dp', 100)}/{stats.get('max_health', 100)}",
         f"lucidity: {stats.get('lucidity', 100)}/{stats.get('max_lucidity', 100)}",
         f"XP: {player.experience_points}",
         f"In Combat: {'Yes' if in_combat else 'No'}",

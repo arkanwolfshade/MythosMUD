@@ -5,7 +5,7 @@
 -- Status: Active
 DO $$ BEGIN RAISE NOTICE 'Resetting player stats to new defaults (50 for core attributes)...';
 -- Update all existing player stats to new defaults
--- Preserve other stats (sanity, occult_knowledge, fear, corruption, cult_affiliation, current_db, position)
+-- Preserve other stats (sanity, occult_knowledge, fear, corruption, cult_affiliation, current_dp, position)
 UPDATE players
 SET stats = jsonb_set(
         jsonb_set(
@@ -59,8 +59,8 @@ SET stats = jsonb_build_object(
         COALESCE(stats->>'corruption', '0'),
         'cult_affiliation',
         COALESCE(stats->>'cult_affiliation', '0'),
-        'current_db',
-        COALESCE(stats->>'current_db', '100'),
+        'current_dp',
+        COALESCE(stats->>'current_dp', '100'),
         'position',
         COALESCE(stats->>'position', 'standing')
     )

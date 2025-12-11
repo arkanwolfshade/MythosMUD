@@ -1,12 +1,12 @@
 // System-related event handlers (time, ticks, lucidity, rescue)
 // As documented in "System Event Processing" - Dr. Armitage, 1928
 
-import type { EventHandler } from './types';
+import type { MythosTimePayload } from '../../../types/mythosTime';
+import { logger } from '../../../utils/logger';
 import { buildLucidityStatus } from '../../../utils/lucidityEventUtils';
 import { DAYPART_MESSAGES, buildMythosTimeState, formatMythosTime12Hour } from '../../../utils/mythosTime';
-import { logger } from '../../../utils/logger';
 import { sanitizeChatMessageForState } from '../utils/messageUtils';
-import type { MythosTimePayload } from '../../../types/mythosTime';
+import type { EventHandler } from './types';
 
 export const handleLucidityChange: EventHandler = (event, context) => {
   const { status: updatedStatus } = buildLucidityStatus(context.lucidityStatusRef.current, event.data, event.timestamp);
@@ -17,7 +17,7 @@ export const handleLucidityChange: EventHandler = (event, context) => {
         ...context.currentPlayerRef.current,
         stats: {
           ...context.currentPlayerRef.current.stats,
-          current_db: context.currentPlayerRef.current.stats?.current_db ?? 0,
+          current_dp: context.currentPlayerRef.current.stats?.current_dp ?? 0,
           lucidity: updatedStatus.current,
         },
       },

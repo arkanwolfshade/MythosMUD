@@ -128,8 +128,8 @@ def get_player_stats_data(player) -> dict[str, Any]:
     stats_data = player.get_stats() if hasattr(player, "get_stats") else {}
     if isinstance(stats_data, str):
         stats_data = json.loads(stats_data)
-    if "health" not in stats_data and "current_db" in stats_data:
-        stats_data["health"] = stats_data.get("current_db")
+    if "health" not in stats_data and "current_dp" in stats_data:
+        stats_data["health"] = stats_data.get("current_dp")
     return stats_data
 
 

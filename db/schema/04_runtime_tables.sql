@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS players (
     player_id varchar(255) PRIMARY KEY,
     user_id uuid NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
     name varchar(50) NOT NULL UNIQUE,
-    stats text NOT NULL DEFAULT '{"strength": 50, "dexterity": 50, "constitution": 50, "size": 50, "intelligence": 50, "power": 50, "education": 50, "charisma": 50, "luck": 50, "lucidity": 100, "occult": 0, "corruption": 0, "current_db": 20, "magic_points": 10, "position": "standing"}',
+    stats text NOT NULL DEFAULT '{"strength": 50, "dexterity": 50, "constitution": 50, "size": 50, "intelligence": 50, "power": 50, "education": 50, "charisma": 50, "luck": 50, "lucidity": 100, "occult": 0, "corruption": 0, "current_dp": 20, "magic_points": 10, "position": "standing"}',
     inventory text NOT NULL DEFAULT '[]',
     status_effects text NOT NULL DEFAULT '[]',
     current_room_id varchar(50) NOT NULL DEFAULT 'earth_arkhamcity_sanitarium_room_foyer_001',

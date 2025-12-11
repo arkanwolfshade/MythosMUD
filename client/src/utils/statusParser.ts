@@ -34,7 +34,7 @@ export interface PlayerWithProfession {
   profession_description?: string;
   profession_flavor_text?: string;
   stats: {
-    current_db: number;
+    current_dp: number;
     max_health: number;
     lucidity: number;
     max_lucidity: number;
@@ -134,7 +134,7 @@ export function convertToPlayerInterface(parsedData: ParsedPlayerData): PlayerWi
     profession_description: parsedData.profession?.description,
     profession_flavor_text: parsedData.profession?.flavor_text,
     stats: {
-      current_db: parsedData.health?.current || 100,
+      current_dp: parsedData.health?.current || 100,
       max_health: parsedData.health?.max || 100,
       lucidity: parsedData.lucidity?.current || 100,
       max_lucidity: parsedData.lucidity?.max || 100,

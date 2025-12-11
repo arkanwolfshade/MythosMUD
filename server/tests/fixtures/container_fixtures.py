@@ -889,10 +889,10 @@ def player_factory():
             Player: Configured Player instance
         """
         default_stats = {
-            "strength": 10,
-            "dexterity": 10,
-            "constitution": 10,
-            "intelligence": 10,
+            "strength": 50,
+            "dexterity": 50,
+            "constitution": 50,
+            "intelligence": 50,
             "wisdom": 10,
             "charisma": 10,
             "lucidity": 100,
@@ -900,7 +900,7 @@ def player_factory():
             "fear": 0,
             "corruption": 0,
             "cult_affiliation": 0,
-            "current_db": 100,
+            "current_dp": 100,
             "position": "standing",
         }
 

@@ -329,9 +329,21 @@ class NPCCombatIntegration:
             player = self._persistence.get_player(entity_id_uuid)
             if player:
                 stats = player.stats.model_dump()
+                # Use current_dp for determination points
+                current_dp = stats.get("current_dp", 100)
+                # Handle both max_dp and max_health for backward compatibility
+                # If neither exists, try to compute from constitution and size, or default to 100
+                max_dp = stats.get("max_dp")
+                if max_dp is None:
+                    max_dp = stats.get("max_health")
+                if max_dp is None:
+                    # Try to compute from constitution and size if available
+                    con = stats.get("constitution", 50)
+                    siz = stats.get("size", 50)
+                    max_dp = (con + siz) // 5 if con and siz else 100
                 return {
-                    "dp": stats.get("current_determination_points", 100),
-                    "max_dp": stats.get("max_determination_points", 100),
+                    "dp": current_dp,
+                    "max_dp": max_dp,
                     "strength": stats.get("strength", 50),
                     "constitution": stats.get("constitution", 50),
                     "lucidity": stats.get("lucidity", 100),

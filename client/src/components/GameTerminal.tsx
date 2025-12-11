@@ -30,7 +30,7 @@ interface Player {
   profession_description?: string;
   profession_flavor_text?: string;
   stats?: {
-    current_db: number;
+    current_dp: number;
     max_dp?: number;
     lucidity: number;
     max_lucidity?: number;
@@ -56,15 +56,15 @@ const buildHealthStatus = (
   lastChange: HealthStatus['lastChange'] | undefined
 ): HealthStatus | null => {
   const stats = player?.stats;
-  if (!stats || stats.current_db === undefined) {
+  if (!stats || stats.current_dp === undefined) {
     return null;
   }
 
   const maxDp = stats.max_dp ?? 100;
   return {
-    current: stats.current_db,
+    current: stats.current_dp,
     max: maxDp,
-    tier: determineHealthTier(stats.current_db, maxDp),
+    tier: determineHealthTier(stats.current_dp, maxDp),
     lastChange,
     posture: stats.position,
     inCombat: player?.in_combat ?? false,
@@ -234,7 +234,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
       return;
     }
 
-    const currentHealth = player?.stats?.current_db;
+    const currentHealth = player?.stats?.current_dp;
     if (typeof currentHealth !== 'number') {
       previousHealthRef.current = null;
       setHealthChange(undefined);

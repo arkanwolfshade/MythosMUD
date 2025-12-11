@@ -2,8 +2,8 @@
 // Extracted from GameClientV2Container to reduce complexity
 
 import { useCallback, useEffect } from 'react';
-import { logger } from '../../../utils/logger';
 import type { LucidityStatus } from '../../../types/lucidity';
+import { logger } from '../../../utils/logger';
 import type { Player, Room } from '../types';
 
 interface UsePlayerStatusEffectsParams {
@@ -67,7 +67,7 @@ export const usePlayerStatusEffects = ({
   useEffect(() => {
     if (!player) return;
 
-    const currentDp = player.stats?.current_db ?? 0;
+    const currentDp = player.stats?.current_dp ?? 0;
     const roomId = room?.id;
     const isInLimbo = roomId === 'limbo_death_void_limbo_death_void';
 

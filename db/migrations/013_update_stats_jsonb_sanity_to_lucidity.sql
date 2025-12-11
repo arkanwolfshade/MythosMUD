@@ -15,7 +15,7 @@ BEGIN;
 
 -- Update the default stats JSONB to use "lucidity" instead of "sanity"
 ALTER TABLE players ALTER COLUMN stats SET DEFAULT
-    '{"fear": 0, "lucidity": 100, "wisdom": 10, "charisma": 10, "position": "standing", "strength": 10, "dexterity": 10, "corruption": 0, "constitution": 10, "intelligence": 10, "current_db": 100, "cult_affiliation": 0, "occult_knowledge": 0}'::jsonb;
+    '{"fear": 0, "lucidity": 100, "wisdom": 10, "charisma": 10, "position": "standing", "strength": 50, "dexterity": 50, "corruption": 0, "constitution": 50, "intelligence": 50, "current_dp": 100, "cult_affiliation": 0, "occult_knowledge": 0}'::jsonb;
 
 -- ============================================================================
 -- STEP 2: Update existing player records

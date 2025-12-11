@@ -475,7 +475,7 @@ class StatsGenerator:
             },
             "derived_stats": {
                 "max_health": stats.max_health,
-                "max_determination_points": stats.max_determination_points,
+                "max_dp": stats.max_dp,
                 "max_magic_points": stats.max_magic_points,
                 "max_lucidity": stats.max_lucidity,
             },

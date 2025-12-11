@@ -56,11 +56,11 @@ class HealthRepository:
         try:
             # Get current stats from in-memory player object
             stats = player.get_stats()
-            current_db = stats.get("current_db", 100)
-            new_health = max(0, current_db - amount)
+            current_dp = stats.get("current_dp", 100)
+            new_health = max(0, current_dp - amount)
 
             # Update the in-memory player object (for immediate UI feedback)
-            stats["current_db"] = new_health
+            stats["current_dp"] = new_health
             player.set_stats(stats)
 
             # Atomic database update
@@ -71,7 +71,7 @@ class HealthRepository:
                 player_id=player.player_id,
                 player_name=player.name,
                 damage=amount,
-                old_health=current_db,
+                old_health=current_dp,
                 new_health=new_health,
                 damage_type=damage_type,
             )
@@ -108,13 +108,13 @@ class HealthRepository:
         try:
             # Get current stats from in-memory player object
             stats = player.get_stats()
-            current_db = stats.get("current_db", 100)
+            current_dp = stats.get("current_dp", 100)
             # NOTE: Max health is currently hardcoded; future enhancement will make it configurable
             max_health = 100
-            new_health = min(max_health, current_db + amount)
+            new_health = min(max_health, current_dp + amount)
 
             # Update the in-memory player object (for immediate UI feedback)
-            stats["current_db"] = new_health
+            stats["current_dp"] = new_health
             player.set_stats(stats)
 
             # Atomic database update
@@ -125,7 +125,7 @@ class HealthRepository:
                 player_id=player.player_id,
                 player_name=player.name,
                 healing=amount,
-                old_health=current_db,
+                old_health=current_dp,
                 new_health=new_health,
             )
         except ValueError:
@@ -144,7 +144,7 @@ class HealthRepository:
 
     async def update_player_health(self, player_id: uuid.UUID, delta: int, reason: str = "") -> None:
         """
-        Update player current_db field atomically.
+        Update player current_dp field atomically.
 
         Args:
             player_id: Player UUID
@@ -163,14 +163,14 @@ class HealthRepository:
         try:
             async for session in get_async_session():
                 # Use JSON path update for atomic health modification
-                # This prevents race conditions by updating only the current_db field
+                # This prevents race conditions by updating only the current_dp field
                 update_query = text(
                     """
                     UPDATE players
                     SET stats = jsonb_set(
                         stats,
-                        '{current_db}',
-                        (GREATEST(0, LEAST(100, (stats->>'current_db')::int + :delta)))::text::jsonb
+                        '{current_dp}',
+                        (GREATEST(0, LEAST(100, (stats->>'current_dp')::int + :delta)))::text::jsonb
                     )
                     WHERE player_id = :player_id
                     """

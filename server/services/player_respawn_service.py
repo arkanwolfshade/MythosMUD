@@ -145,7 +145,7 @@ class PlayerRespawnService:
         Respawn a dead player at their respawn location with full DP.
 
         This method:
-        1. Restores player DP to their max_determination_points (not hardcoded 100)
+        1. Restores player DP to their max_dp (not hardcoded 100)
         2. Moves player from limbo to respawn room
         3. Publishes respawn event for UI updates
 
@@ -168,9 +168,9 @@ class PlayerRespawnService:
 
             # Get current stats and restore DP to max determination points
             stats = player.get_stats()
-            old_dp = stats.get("current_determination_points", 0)
-            max_dp = stats.get("max_determination_points", 100)  # Default to 100 if max_determination_points not found
-            stats["current_determination_points"] = max_dp  # Restore to max determination points, not hardcoded 100
+            old_dp = stats.get("current_dp", 0)
+            max_dp = stats.get("max_dp", 100)  # Default to 100 if max_dp not found
+            stats["current_dp"] = max_dp  # Restore to max determination points, not hardcoded 100
 
             # BUGFIX: Restore posture to standing when player respawns
             # As documented in "Resurrection and Corporeal Restoration" - Dr. Armitage, 1930

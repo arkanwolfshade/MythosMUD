@@ -120,7 +120,7 @@ IF has_old_schema THEN EXECUTE $sql$ CREATE TABLE players_new (
     player_id varchar(255) PRIMARY KEY,
     user_id uuid NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
     name varchar(50) NOT NULL UNIQUE,
-    stats text NOT NULL DEFAULT '{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_db": 100, "position": "standing"}',
+    stats text NOT NULL DEFAULT '{"strength": 50, "dexterity": 50, "constitution": 50, "intelligence": 50, "wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_dp": 100, "position": "standing"}',
     inventory text NOT NULL DEFAULT '[]',
     status_effects text NOT NULL DEFAULT '[]',
     current_room_id varchar(50) NOT NULL DEFAULT 'earth_arkhamcity_sanitarium_room_foyer_001',
@@ -235,13 +235,13 @@ SELECT -- Convert uuid id to varchar player_id
             0,
             'cult_affiliation',
             0,
-            'current_db',
+            'current_dp',
             100,
             'position',
             'standing'
         )::text
         ELSE -- Default stats
-        '{"strength": 10, "dexterity": 10, "constitution": 10, "intelligence": 10, "wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_db": 100, "position": "standing"}'
+        '{"strength": 50, "dexterity": 50, "constitution": 50, "intelligence": 50, "wisdom": 10, "charisma": 10, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_dp": 100, "position": "standing"}'
     END AS stats,
     '[]' AS inventory,
     -- Default, no migration path from old schema
