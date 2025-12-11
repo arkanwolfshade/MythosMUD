@@ -474,7 +474,6 @@ class StatsGenerator:
                 "luck": {"value": stats.luck, "modifier": stats.get_attribute_modifier(AttributeType.LUCK)},
             },
             "derived_stats": {
-                "max_health": stats.max_health,
                 "max_dp": stats.max_dp,
                 "max_magic_points": stats.max_magic_points,
                 "max_lucidity": stats.max_lucidity,

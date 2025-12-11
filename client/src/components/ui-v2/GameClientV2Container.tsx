@@ -63,7 +63,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
   const [deliriumLocation, setDeliriumLocation] = useState<string>('Unknown Location');
   const [isDeliriumRespawning, setIsDeliriumRespawning] = useState(false);
   const [lucidityStatus, setLucidityStatus] = useState<LucidityStatus | null>(null);
-  const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
+  const [healthStatus, setDpStatus] = useState<HealthStatus | null>(null);
   const [, setHallucinationFeed] = useState<HallucinationMessage[]>([]);
   const [rescueState, setRescueState] = useState<RescueState | null>(null);
   const [mythosTime, setMythosTime] = useState<MythosTimeState | null>(null);
@@ -142,7 +142,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
     lastHourRef,
     lastHolidayIdsRef,
     lastRoomUpdateTime,
-    setHealthStatus,
+    setDpStatus: setDpStatus,
     setLucidityStatus,
     setMythosTime,
     setIsDead,

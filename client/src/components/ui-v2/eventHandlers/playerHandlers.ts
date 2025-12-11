@@ -1,7 +1,7 @@
 // Player-related event handlers
 // As documented in "Player State Management" - Dr. Armitage, 1928
 
-import { determineHealthTier } from '../../../types/health';
+import { determineDpTier } from '../../../types/health';
 import { buildHealthStatusFromEvent } from '../../../utils/healthEventUtils';
 import { logger } from '../../../utils/logger';
 import type { Player } from '../types';
@@ -92,21 +92,21 @@ export const handlePlayerRespawned: EventHandler = (event, context) => {
     // Update health status from player data
     if (respawnData.player.stats?.current_dp !== undefined) {
       const playerStats = respawnData.player.stats;
-      const currentHealth = playerStats.current_dp;
-      const maxHealth = playerStats.max_health ?? 100;
+      const currentDp = playerStats.current_dp;
+      const maxDp = playerStats.max_dp ?? 100;
       const healthStatusUpdate = {
-        current: currentHealth,
-        max: maxHealth,
-        tier: determineHealthTier(currentHealth, maxHealth),
+        current: currentDp,
+        max: maxDp,
+        tier: determineDpTier(currentDp, maxDp),
         posture: playerStats.position,
         inCombat: respawnData.player.in_combat ?? false,
         lastChange: {
-          delta: currentHealth - (context.healthStatusRef.current?.current ?? 0),
+          delta: currentDp - (context.healthStatusRef.current?.current ?? 0),
           reason: 'respawn',
           timestamp: event.timestamp,
         },
       };
-      context.setHealthStatus(healthStatusUpdate);
+      context.setDpStatus(healthStatusUpdate);
     }
   }
 
@@ -170,13 +170,13 @@ export const handlePlayerDpUpdated: EventHandler = (event, context) => {
     damage_taken: event.data.damage_taken,
   });
 
-  const { status: updatedHealthStatus } = buildHealthStatusFromEvent(
+  const { status: updatedDpStatus } = buildHealthStatusFromEvent(
     context.healthStatusRef.current,
     event.data,
     event.timestamp
   );
 
-  context.setHealthStatus(updatedHealthStatus);
+  context.setDpStatus(updatedDpStatus);
 
   if (context.currentPlayerRef.current) {
     return {
@@ -184,8 +184,8 @@ export const handlePlayerDpUpdated: EventHandler = (event, context) => {
         ...context.currentPlayerRef.current,
         stats: {
           ...context.currentPlayerRef.current.stats,
-          current_dp: updatedHealthStatus.current,
-          max_health: updatedHealthStatus.max,
+          current_dp: updatedDpStatus.current,
+          max_dp: updatedDpStatus.max,
           lucidity: context.currentPlayerRef.current.stats?.lucidity ?? 0,
         },
       },

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import { DEFAULT_CHANNEL } from '../config/channels';
 import type { HealthStatus } from '../types/health';
-import { determineHealthTier } from '../types/health';
+import { determineDpTier } from '../types/health';
 import type { HallucinationMessage, LucidityStatus, RescueState } from '../types/lucidity';
 import type { MythosTimeState } from '../types/mythosTime';
 import { debugLogger } from '../utils/debugLogger';
@@ -64,7 +64,7 @@ const buildHealthStatus = (
   return {
     current: stats.current_dp,
     max: maxDp,
-    tier: determineHealthTier(stats.current_dp, maxDp),
+    tier: determineDpTier(stats.current_dp, maxDp),
     lastChange,
     posture: stats.position,
     inCombat: player?.in_combat ?? false,

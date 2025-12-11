@@ -162,13 +162,6 @@ class Stats(BaseModel):
 
     # Derived stats - computed fields
     @computed_field
-    def max_health(self) -> int:
-        """Calculate max determination points (DP) using formula: (CON + SIZ) / 5."""
-        con = self.constitution or 50
-        siz = self.size or 50
-        return (con + siz) // 5
-
-    @computed_field
     def max_dp(self) -> int:
         """Calculate max determination points (DP) using formula: (CON + SIZ) / 5."""
         # Compute directly to avoid mypy @computed_field inference issues

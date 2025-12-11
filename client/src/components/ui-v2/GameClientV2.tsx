@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import type { HealthStatus } from '../../types/health';
-import { determineHealthTier } from '../../types/health';
+import { determineDpTier } from '../../types/health';
 import type { LucidityStatus } from '../../types/lucidity';
 import { HeaderBar } from './HeaderBar';
 import { PanelContainer } from './PanelSystem/PanelContainer';
@@ -93,11 +93,11 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
       return healthStatus;
     }
     if (player?.stats?.current_dp !== undefined) {
-      const maxHealth = player.stats.max_health ?? 100;
+      const maxDp = player.stats.max_dp ?? 100;
       return {
         current: player.stats.current_dp,
-        max: maxHealth,
-        tier: determineHealthTier(player.stats.current_dp, maxHealth),
+        max: maxDp,
+        tier: determineDpTier(player.stats.current_dp, maxDp),
         posture: player.stats.position,
         inCombat: player.in_combat ?? false,
       };

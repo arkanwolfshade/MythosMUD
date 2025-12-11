@@ -251,7 +251,7 @@ Profession: Investigator`;
       expect(player.profession_description).toBe('A seeker of truth');
       expect(player.profession_flavor_text).toBe('You have seen things...');
       expect(player.stats.current_dp).toBe(85);
-      expect(player.stats.max_health).toBe(100);
+      expect(player.stats.max_dp).toBe(100);
       expect(player.stats.lucidity).toBe(70);
       expect(player.stats.max_lucidity).toBe(100);
       expect(player.stats.fear).toBe(25);
@@ -274,7 +274,7 @@ Profession: Investigator`;
       // Assert
       expect(player.name).toBe('TestPlayer');
       expect(player.stats.current_dp).toBe(100);
-      expect(player.stats.max_health).toBe(100);
+      expect(player.stats.max_dp).toBe(100);
       expect(player.stats.lucidity).toBe(100);
       expect(player.stats.max_lucidity).toBe(100);
       expect(player.stats.fear).toBe(0);

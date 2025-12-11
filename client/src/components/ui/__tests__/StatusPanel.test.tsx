@@ -21,7 +21,7 @@ describe('StatusPanel Compound Component', () => {
       name: 'TestPlayer',
       stats: {
         current_dp: 100,
-        max_health: 100,
+        max_dp: 100,
         lucidity: 80,
         strength: 10,
         dexterity: 12,

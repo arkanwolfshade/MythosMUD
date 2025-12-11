@@ -96,7 +96,7 @@ class PlayerRespawnEventHandler:
                 "xp": player.experience_points,
                 "stats": {
                     "current_dp": stats.get("current_dp", 100),
-                    "max_health": stats.get("max_health", 100),
+                    "max_dp": stats.get("max_dp", 100),
                     "lucidity": stats.get("lucidity", 100),
                     "max_lucidity": stats.get("max_lucidity", 100),
                     "strength": stats.get("strength"),
@@ -279,7 +279,7 @@ class PlayerRespawnEventHandler:
                 "xp": player.experience_points,
                 "stats": {
                     "current_dp": stats.get("current_dp", 100),
-                    "max_health": stats.get("max_health", 100),
+                    "max_dp": stats.get("max_dp", 100),
                     "lucidity": current_lucidity,
                     "max_lucidity": stats.get("max_lucidity", 100),
                     "strength": stats.get("strength"),

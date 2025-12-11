@@ -1,5 +1,5 @@
 import type { HealthStatus } from '../types/health';
-import { determineHealthTier } from '../types/health';
+import { determineDpTier } from '../types/health';
 
 const DEFAULT_MAX_DP = 100;
 
@@ -79,7 +79,7 @@ export const buildHealthStatusFromEvent = (
   const status: HealthStatus = {
     current: newDp,
     max: maxDp > 0 ? maxDp : DEFAULT_MAX_DP,
-    tier: determineHealthTier(newDp, maxDp > 0 ? maxDp : DEFAULT_MAX_DP),
+    tier: determineDpTier(newDp, maxDp > 0 ? maxDp : DEFAULT_MAX_DP),
     posture,
     inCombat,
     lastChange: {

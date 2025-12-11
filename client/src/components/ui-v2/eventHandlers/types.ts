@@ -36,7 +36,7 @@ export interface EventHandlerContext {
   lastHourRef: React.MutableRefObject<number | null>;
   lastHolidayIdsRef: React.MutableRefObject<string[]>;
   lastRoomUpdateTime: React.MutableRefObject<number>;
-  setHealthStatus: (status: HealthStatus) => void;
+  setDpStatus: (status: HealthStatus) => void;
   setLucidityStatus: (status: LucidityStatus) => void;
   setMythosTime: (time: MythosTimeState) => void;
   setIsDead: (dead: boolean) => void;

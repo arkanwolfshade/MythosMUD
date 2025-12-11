@@ -57,10 +57,10 @@ class HealthRepository:
             # Get current stats from in-memory player object
             stats = player.get_stats()
             current_dp = stats.get("current_dp", 100)
-            new_health = max(0, current_dp - amount)
+            new_dp = max(0, current_dp - amount)
 
             # Update the in-memory player object (for immediate UI feedback)
-            stats["current_dp"] = new_health
+            stats["current_dp"] = new_dp
             player.set_stats(stats)
 
             # Atomic database update
@@ -71,8 +71,8 @@ class HealthRepository:
                 player_id=player.player_id,
                 player_name=player.name,
                 damage=amount,
-                old_health=current_dp,
-                new_health=new_health,
+                old_dp=current_dp,
+                new_dp=new_dp,
                 damage_type=damage_type,
             )
         except ValueError:
@@ -109,12 +109,16 @@ class HealthRepository:
             # Get current stats from in-memory player object
             stats = player.get_stats()
             current_dp = stats.get("current_dp", 100)
-            # NOTE: Max health is currently hardcoded; future enhancement will make it configurable
-            max_health = 100
-            new_health = min(max_health, current_dp + amount)
+            # Calculate max DP from CON + SIZ if available, otherwise use default
+            constitution = stats.get("constitution", 50)
+            size = stats.get("size", 50)
+            max_dp = stats.get("max_dp", (constitution + size) // 5)  # DP max = (CON + SIZ) / 5
+            if max_dp == 0:
+                max_dp = 20  # Prevent division by zero
+            new_dp = min(max_dp, current_dp + amount)
 
             # Update the in-memory player object (for immediate UI feedback)
-            stats["current_dp"] = new_health
+            stats["current_dp"] = new_dp
             player.set_stats(stats)
 
             # Atomic database update
@@ -125,8 +129,8 @@ class HealthRepository:
                 player_id=player.player_id,
                 player_name=player.name,
                 healing=amount,
-                old_health=current_dp,
-                new_health=new_health,
+                old_dp=current_dp,
+                new_dp=new_dp,
             )
         except ValueError:
             raise
