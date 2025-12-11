@@ -1,7 +1,7 @@
 """
-Player Death Service for managing player mortality and HP decay.
+Player Death Service for managing player mortality and DP decay.
 
-This service handles the mortally wounded state (0 to -10 HP), automatic HP decay,
+This service handles the mortally wounded state (0 to -10 DP), automatic DP decay,
 and death detection. As documented in the Necronomicon's chapter on mortality,
 the threshold between life and death requires careful management.
 
@@ -13,9 +13,10 @@ import uuid
 from typing import Any
 
 from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from server.events.event_types import PlayerDiedEvent, PlayerHPDecayEvent
+from server.events.event_types import PlayerDiedEvent, PlayerDPDecayEvent
 from server.logging.enhanced_logging_config import get_logger, log_exception_once
 from server.models.game import PositionState
 from server.models.player import Player
@@ -25,12 +26,12 @@ logger = get_logger(__name__)
 
 class PlayerDeathService:
     """
-    Service for managing player death, mortally wounded state, and HP decay.
+    Service for managing player death, mortally wounded state, and DP decay.
 
     This service handles:
-    - Identifying mortally wounded players (0 >= HP > -10)
-    - Processing HP decay (1 HP per tick, capped at -10)
-    - Detecting and handling player death (HP <= -10)
+    - Identifying mortally wounded players (0 >= DP > -10)
+    - Processing DP decay (1 DP per tick, capped at -10)
+    - Detecting and handling player death (DP <= -10)
     - Publishing appropriate events for UI updates
     - Clearing combat state when player dies
     """
@@ -55,7 +56,7 @@ class PlayerDeathService:
         """
         Get all players currently in the mortally wounded state.
 
-        A player is considered mortally wounded if their HP is between 0 and -9 (inclusive).
+        A player is considered mortally wounded if their DP is between 0 and -9 (inclusive).
 
         Args:
             session: Async database session for querying players
@@ -68,12 +69,12 @@ class PlayerDeathService:
             result = await session.execute(select(Player))
             all_players = result.scalars().all()
 
-            # Filter for mortally wounded players (0 >= HP > -10)
+            # Filter for mortally wounded players (0 >= DP > -10)
             mortally_wounded = []
             for player in all_players:
                 stats = player.get_stats()
-                current_hp = stats.get("current_health", 0)
-                if 0 >= current_hp > -10:
+                current_dp = stats.get("current_determination_points", 0)  # current_determination_points represents DP
+                if 0 >= current_dp > -10:
                     mortally_wounded.append(player)
 
             logger.debug(
@@ -84,7 +85,7 @@ class PlayerDeathService:
 
             return mortally_wounded
 
-        except Exception as e:
+        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
             log_exception_once(
                 logger,
                 "error",
@@ -96,7 +97,7 @@ class PlayerDeathService:
 
     async def get_dead_players(self, session: AsyncSession) -> list[Player]:
         """
-        Get all players who are dead (HP <= -10).
+        Get all players who are dead (DP <= -10).
 
         Args:
             session: Async database session for querying players
@@ -109,12 +110,12 @@ class PlayerDeathService:
             result = await session.execute(select(Player))
             all_players = result.scalars().all()
 
-            # Filter for dead players (HP <= -10)
+            # Filter for dead players (DP <= -10)
             dead_players = []
             for player in all_players:
                 stats = player.get_stats()
-                current_hp = stats.get("current_health", 0)
-                if current_hp <= -10:
+                current_dp = stats.get("current_determination_points", 0)  # current_determination_points represents DP
+                if current_dp <= -10:
                     dead_players.append(player)
 
             logger.debug(
@@ -125,7 +126,7 @@ class PlayerDeathService:
 
             return dead_players
 
-        except Exception as e:
+        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
             log_exception_once(
                 logger,
                 "error",
@@ -137,53 +138,53 @@ class PlayerDeathService:
 
     async def process_mortally_wounded_tick(self, player_id: uuid.UUID, session: AsyncSession) -> bool:
         """
-        Process HP decay for a single mortally wounded player.
+        Process DP decay for a single mortally wounded player.
 
-        Decreases player HP by 1, capped at -10. Returns True if decay was applied.
+        Decreases player DP by 1, capped at 0. Returns True if decay was applied.
 
         Args:
             player_id: ID of the player to process
             session: Database session for player data access
 
         Returns:
-            True if HP decay was applied, False otherwise
+            True if DP decay was applied, False otherwise
         """
         try:
             # Retrieve player from database using async API
             player = await session.get(Player, player_id)
             if not player:
-                logger.warning("Player not found for HP decay", player_id=player_id)
+                logger.warning("Player not found for DP decay", player_id=player_id)
                 return False
 
-            # Check if player is already dead (HP <= -10)
+            # Check if player is already dead (DP <= -10)
             if player.is_dead():
-                logger.debug("Player already dead, skipping HP decay", player_id=player_id)
+                logger.debug("Player already dead, skipping DP decay", player_id=player_id)
                 return False
 
             # Get current stats and apply decay
             stats = player.get_stats()
-            current_hp = stats.get("current_health", 0)
-            old_hp = current_hp
+            current_dp = stats.get("current_db", 0)  # current_db represents DP
+            old_dp = current_dp
 
-            # Decrease HP by 1, cap at -10
-            new_hp = max(current_hp - 1, -10)
+            # Decrease DP by 1, cap at -10
+            new_dp = max(current_dp - 1, -10)
 
             # Update player stats
-            stats["current_health"] = new_hp
+            stats["current_db"] = new_dp
 
-            # BUGFIX: Automatically change posture to lying when HP drops to <= 0
+            # BUGFIX: Automatically change posture to lying when DP drops to <= 0
             # As documented in "Corporeal Collapse and Unconsciousness" - Dr. Armitage, 1928
-            # When a player's life force drops to zero or below, their body automatically collapses
-            if new_hp <= 0 and old_hp > 0:
+            # When a player's determination points drop to zero or below, their body automatically collapses
+            if new_dp <= 0 and old_dp > 0:
                 stats["position"] = PositionState.LYING
                 logger.info(
                     "Player posture changed to lying (unconscious)",
                     player_id=player_id,
                     player_name=player.name,
-                    hp=new_hp,
+                    dp=new_dp,
                 )
-            elif new_hp <= 0 and stats.get("position") != PositionState.LYING:
-                # Ensure player is lying if already at <= 0 HP
+            elif new_dp <= 0 and stats.get("position") != PositionState.LYING:
+                # Ensure player is lying if already at <= 0 DP
                 stats["position"] = PositionState.LYING
 
             player.set_stats(stats)
@@ -192,20 +193,20 @@ class PlayerDeathService:
             await session.commit()
 
             logger.info(
-                "HP decay applied to player",
+                "DP decay applied to player",
                 player_id=player_id,
                 player_name=player.name,
-                old_hp=old_hp,
-                new_hp=new_hp,
+                old_dp=old_dp,
+                new_dp=new_dp,
                 delta=-1,
             )
 
-            # Publish HP decay event if event bus is available
+            # Publish DP decay event if event bus is available
             if self._event_bus:
-                event = PlayerHPDecayEvent(
+                event = PlayerDPDecayEvent(
                     player_id=player_id,
-                    old_hp=old_hp,
-                    new_hp=new_hp,
+                    old_dp=old_dp,
+                    new_dp=new_dp,
                     decay_amount=1,
                     room_id=str(player.current_room_id),
                 )
@@ -213,11 +214,11 @@ class PlayerDeathService:
 
             return True
 
-        except Exception as e:
+        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
             log_exception_once(
                 logger,
                 "error",
-                "Error processing HP decay for player",
+                "Error processing DP decay for player",
                 exc=e,
                 exc_info=True,
                 player_id=player_id,
@@ -225,11 +226,104 @@ class PlayerDeathService:
             await session.rollback()
             return False
 
+    async def _ensure_player_posture_lying(self, player: Player, player_id: uuid.UUID) -> None:
+        """
+        Ensure player posture is set to lying when dead.
+
+        Args:
+            player: Player object to update
+            player_id: ID of the player for logging
+        """
+        stats = player.get_stats()
+        if stats.get("position") != PositionState.LYING:
+            stats["position"] = PositionState.LYING
+            player.set_stats(stats)
+            logger.debug(
+                "Set player posture to lying on death",
+                player_id=player_id,
+                player_name=player.name,
+            )
+
+    async def _clear_player_combat_state(self, player_id: uuid.UUID) -> None:
+        """
+        Clear player combat state when they die.
+
+        BUGFIX #244: As documented in "Mortality and Combat State Persistence" - Dr. Armitage, 1929
+        A player's combat essence must be severed upon death to prevent lingering in combat.
+
+        Args:
+            player_id: ID of the player whose combat state should be cleared
+        """
+        if not self._player_combat_service:
+            return
+
+        try:
+            await self._player_combat_service.clear_player_combat_state(player_id)
+            logger.info("Cleared combat state for deceased player", player_id=player_id)
+        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
+            log_exception_once(
+                logger,
+                "error",
+                "Error clearing combat state for deceased player",
+                exc=e,
+                exc_info=True,
+                player_id=player_id,
+            )
+
+    def _get_room_name_for_death(self, death_location: str) -> str:
+        """
+        Get room name for death location display.
+
+        Args:
+            death_location: Room ID where the player died
+
+        Returns:
+            Room name if available, otherwise the room ID or "Unknown"
+        """
+        if not death_location:
+            return "Unknown"
+
+        from ..container import ApplicationContainer
+
+        container = ApplicationContainer.get_instance()
+        if container and container.async_persistence:
+            room = container.async_persistence.get_room_by_id(death_location)
+            return room.name if room else death_location
+
+        return death_location
+
+    def _publish_death_event(
+        self, player_id: uuid.UUID, player_name: str, death_location: str, killer_info: dict | None
+    ) -> None:
+        """
+        Publish player died event if event bus is available.
+
+        Args:
+            player_id: ID of the player who died
+            player_name: Name of the player who died
+            death_location: Room ID where the player died
+            killer_info: Optional dict with killer_id and killer_name
+        """
+        if not self._event_bus:
+            return
+
+        room_name = self._get_room_name_for_death(death_location)
+
+        event = PlayerDiedEvent(
+            player_id=player_id,
+            player_name=str(player_name),
+            room_id=death_location,
+            death_location=room_name,
+            killer_id=killer_info.get("killer_id") if killer_info else None,
+            killer_name=killer_info.get("killer_name") if killer_info else None,
+        )
+        self._event_bus.publish(event)
+
     async def handle_player_death(
         self, player_id: uuid.UUID, death_location: str, killer_info: dict | None, session: AsyncSession
     ) -> bool:
         """
-        Handle player death when HP reaches -10.
+        Handle player death when DP reaches 0.
 
         Records death location and killer information, then triggers respawn sequence.
 
@@ -250,15 +344,7 @@ class PlayerDeathService:
                 return False
 
             # Ensure player posture is set to lying when dead
-            stats = player.get_stats()
-            if stats.get("position") != PositionState.LYING:
-                stats["position"] = PositionState.LYING
-                player.set_stats(stats)
-                logger.debug(
-                    "Set player posture to lying on death",
-                    player_id=player_id,
-                    player_name=player.name,
-                )
+            await self._ensure_player_posture_lying(player, player_id)
 
             # Log death event
             logger.info(
@@ -270,52 +356,18 @@ class PlayerDeathService:
                 killer_name=killer_info.get("killer_name") if killer_info else None,
             )
 
-            # BUGFIX #244: Clear player combat state when they die
-            # As documented in "Mortality and Combat State Persistence" - Dr. Armitage, 1929
-            # A player's combat essence must be severed upon death to prevent lingering in combat
-            if self._player_combat_service:
-                try:
-                    await self._player_combat_service.clear_player_combat_state(player_id)
-                    logger.info("Cleared combat state for deceased player", player_id=player_id)
-                except Exception as e:
-                    log_exception_once(
-                        logger,
-                        "error",
-                        "Error clearing combat state for deceased player",
-                        exc=e,
-                        exc_info=True,
-                        player_id=player_id,
-                    )
+            # Clear player combat state when they die
+            await self._clear_player_combat_state(player_id)
 
             # Commit any pending changes using async API
             await session.commit()
 
             # Publish player died event if event bus is available
-            if self._event_bus:
-                # Get room name for death location display
-                from ..container import ApplicationContainer
-
-                container = ApplicationContainer.get_instance()
-                if container and container.async_persistence and death_location:
-                    # Use sync cache method (get_room_by_id uses cache)
-                    room = container.async_persistence.get_room_by_id(death_location)
-                    room_name = room.name if room else death_location
-                else:
-                    room_name = death_location if death_location else "Unknown"
-
-                event = PlayerDiedEvent(
-                    player_id=player_id,
-                    player_name=str(player.name),
-                    room_id=death_location,
-                    death_location=room_name,  # Set death_location for client display
-                    killer_id=killer_info.get("killer_id") if killer_info else None,
-                    killer_name=killer_info.get("killer_name") if killer_info else None,
-                )
-                self._event_bus.publish(event)
+            self._publish_death_event(player_id, str(player.name), death_location, killer_info)
 
             return True
 
-        except Exception as e:
+        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
             log_exception_once(
                 logger,
                 "error",

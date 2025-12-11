@@ -33,7 +33,7 @@ describe('Game Store', () => {
         id: 'player-123',
         name: 'TestPlayer',
         stats: {
-          current_health: 100,
+          current_db: 100,
           lucidity: 80,
           strength: 15,
           dexterity: 12,
@@ -58,7 +58,7 @@ describe('Game Store', () => {
         id: 'player-123',
         name: 'TestPlayer',
         stats: {
-          current_health: 100,
+          current_db: 100,
           lucidity: 80,
           strength: 15,
         },
@@ -68,12 +68,12 @@ describe('Game Store', () => {
       act(() => {
         result.current.setPlayer(initialPlayer);
         result.current.updatePlayerStats({
-          current_health: 80,
+          current_db: 80,
           lucidity: 70,
         });
       });
 
-      expect(result.current.player?.stats.current_health).toBe(80);
+      expect(result.current.player?.stats.current_db).toBe(80);
       expect(result.current.player?.stats.lucidity).toBe(70);
       expect(result.current.player?.stats.strength).toBe(15); // Should remain unchanged
     });
@@ -85,7 +85,7 @@ describe('Game Store', () => {
         result.current.setPlayer({
           id: 'player-123',
           name: 'TestPlayer',
-          stats: { current_health: 100, lucidity: 80 },
+          stats: { current_db: 100, lucidity: 80 },
           level: 5,
         });
         result.current.clearPlayer();
@@ -105,7 +105,7 @@ describe('Game Store', () => {
         exits: { north: 'room-124', south: 'room-122' },
         occupants: ['player-123', 'player-456'],
         occupant_count: 2,
-        entities: [{ name: 'Test Entity', type: 'npc' }],
+        entities: [{ id: 'entity-123', name: 'Test Entity', type: 'npc' }],
       };
 
       act(() => {
@@ -159,8 +159,8 @@ describe('Game Store', () => {
         text: 'Hello world!',
         timestamp: '2024-01-01T12:00:00Z',
         isHtml: false,
-        type: 'say',
-        channel: 'local',
+        type: 'say' as const,
+        channel: 'local' as const,
         sender: 'TestPlayer',
       };
 
@@ -179,16 +179,16 @@ describe('Game Store', () => {
           text: 'First message',
           timestamp: '2024-01-01T12:00:00Z',
           isHtml: false,
-          type: 'say',
-          channel: 'local',
+          type: 'say' as const,
+          channel: 'local' as const,
           sender: 'Player1',
         },
         {
           text: 'Second message',
           timestamp: '2024-01-01T12:01:00Z',
           isHtml: false,
-          type: 'say',
-          channel: 'local',
+          type: 'say' as const,
+          channel: 'local' as const,
           sender: 'Player2',
         },
       ];
@@ -210,8 +210,8 @@ describe('Game Store', () => {
           text: 'Test message',
           timestamp: '2024-01-01T12:00:00Z',
           isHtml: false,
-          type: 'say',
-          channel: 'local',
+          type: 'say' as const,
+          channel: 'local' as const,
           sender: 'TestPlayer',
         });
         result.current.clearChatMessages();
@@ -230,8 +230,8 @@ describe('Game Store', () => {
             text: `Message ${i}`,
             timestamp: `2024-01-01T12:${i.toString().padStart(2, '0')}:00Z`,
             isHtml: false,
-            type: 'say',
-            channel: 'local',
+            type: 'say' as const,
+            channel: 'local' as const,
             sender: 'TestPlayer',
           });
         }
@@ -249,7 +249,7 @@ describe('Game Store', () => {
         text: 'You enter the room',
         timestamp: '2024-01-01T12:00:00Z',
         isHtml: false,
-        type: 'system',
+        type: 'system' as const,
       };
 
       act(() => {
@@ -268,7 +268,7 @@ describe('Game Store', () => {
           text: 'Test log entry',
           timestamp: '2024-01-01T12:00:00Z',
           isHtml: false,
-          type: 'system',
+          type: 'system' as const,
         });
         result.current.clearGameLog();
       });
@@ -286,7 +286,7 @@ describe('Game Store', () => {
             text: `Log entry ${i}`,
             timestamp: `2024-01-01T12:${i.toString().padStart(2, '0')}:00Z`,
             isHtml: false,
-            type: 'system',
+            type: 'system' as const,
           });
         }
       });
@@ -339,7 +339,7 @@ describe('Game Store', () => {
         result.current.setPlayer({
           id: 'player-123',
           name: 'TestPlayer',
-          stats: { current_health: 100, lucidity: 80 },
+          stats: { current_db: 100, lucidity: 80 },
           level: 5,
         });
       });
@@ -357,7 +357,7 @@ describe('Game Store', () => {
         result.current.setPlayer({
           id: 'player-123',
           name: 'TestPlayer',
-          stats: { current_health: 100, lucidity: 80 },
+          stats: { current_db: 100, lucidity: 80 },
           level: 5,
         });
         result.current.setRoom({
@@ -370,8 +370,8 @@ describe('Game Store', () => {
           text: 'Test message',
           timestamp: '2024-01-01T12:00:00Z',
           isHtml: false,
-          type: 'say',
-          channel: 'local',
+          type: 'say' as const,
+          channel: 'local' as const,
           sender: 'TestPlayer',
         });
         result.current.setLoading(true);
@@ -402,7 +402,7 @@ describe('Game Store', () => {
           id: 'player-123',
           name: 'TestPlayer',
           stats: {
-            current_health: 100,
+            current_db: 100,
             lucidity: 80,
             strength: 15,
           },
@@ -411,7 +411,7 @@ describe('Game Store', () => {
       });
 
       expect(result.current.getPlayerStats()).toEqual({
-        current_health: 100,
+        current_db: 100,
         lucidity: 80,
         strength: 15,
       });
@@ -445,8 +445,8 @@ describe('Game Store', () => {
             text: `Message ${i}`,
             timestamp: `2024-01-01T12:${i.toString().padStart(2, '0')}:00Z`,
             isHtml: false,
-            type: 'say',
-            channel: 'local',
+            type: 'say' as const,
+            channel: 'local' as const,
             sender: 'TestPlayer',
           });
         }
@@ -467,7 +467,7 @@ describe('Game Store', () => {
             text: `Log entry ${i}`,
             timestamp: `2024-01-01T12:${i.toString().padStart(2, '0')}:00Z`,
             isHtml: false,
-            type: 'system',
+            type: 'system' as const,
           });
         }
       });
@@ -484,7 +484,7 @@ describe('Game Store', () => {
       act(() => {
         // Don't set player first
         result.current.updatePlayerStats({
-          current_health: 80,
+          current_db: 80,
           lucidity: 70,
         });
       });

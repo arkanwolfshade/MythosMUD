@@ -339,7 +339,7 @@ class GameStateProvider:
 
                 if player_service:
                     # Use PlayerService to convert player to complete schema
-                    complete_player_data = await player_service._convert_player_to_schema(player)
+                    complete_player_data = await player_service.convert_player_to_schema(player)
                     logger.debug(
                         "GameStateProvider: Retrieved complete player data with profession",
                         player_id=player_id,

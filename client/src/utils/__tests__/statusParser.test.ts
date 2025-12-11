@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { parseStatusResponse, convertToPlayerInterface } from '../statusParser';
 import type { ParsedPlayerData } from '../statusParser';
+import { convertToPlayerInterface, parseStatusResponse } from '../statusParser';
 
 describe('Status Parser Utilities', () => {
   describe('parseStatusResponse', () => {
@@ -250,7 +250,7 @@ Profession: Investigator`;
       expect(player.profession_name).toBe('Investigator');
       expect(player.profession_description).toBe('A seeker of truth');
       expect(player.profession_flavor_text).toBe('You have seen things...');
-      expect(player.stats.current_health).toBe(85);
+      expect(player.stats.current_db).toBe(85);
       expect(player.stats.max_health).toBe(100);
       expect(player.stats.lucidity).toBe(70);
       expect(player.stats.max_lucidity).toBe(100);
@@ -273,7 +273,7 @@ Profession: Investigator`;
 
       // Assert
       expect(player.name).toBe('TestPlayer');
-      expect(player.stats.current_health).toBe(100);
+      expect(player.stats.current_db).toBe(100);
       expect(player.stats.max_health).toBe(100);
       expect(player.stats.lucidity).toBe(100);
       expect(player.stats.max_lucidity).toBe(100);

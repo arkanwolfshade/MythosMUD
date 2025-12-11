@@ -2,7 +2,7 @@
 Health repository for async persistence operations.
 
 This module provides async database operations for player health management
-including damage, healing, and HP updates using SQLAlchemy ORM with PostgreSQL.
+including damage, healing, and DP updates using SQLAlchemy ORM with PostgreSQL.
 """
 
 import uuid
@@ -23,7 +23,7 @@ class HealthRepository:
     """
     Repository for player health persistence operations.
 
-    Handles damage, healing, and HP updates with atomic database operations
+    Handles damage, healing, and DP updates with atomic database operations
     to prevent race conditions.
     """
 
@@ -32,7 +32,7 @@ class HealthRepository:
         Initialize the health repository.
 
         Args:
-            event_bus: Optional EventBus for publishing HP change events
+            event_bus: Optional EventBus for publishing DP change events
         """
         self._event_bus = event_bus
         self._logger = get_logger(__name__)
@@ -56,11 +56,11 @@ class HealthRepository:
         try:
             # Get current stats from in-memory player object
             stats = player.get_stats()
-            current_health = stats.get("current_health", 100)
-            new_health = max(0, current_health - amount)
+            current_db = stats.get("current_db", 100)
+            new_health = max(0, current_db - amount)
 
             # Update the in-memory player object (for immediate UI feedback)
-            stats["current_health"] = new_health
+            stats["current_db"] = new_health
             player.set_stats(stats)
 
             # Atomic database update
@@ -71,7 +71,7 @@ class HealthRepository:
                 player_id=player.player_id,
                 player_name=player.name,
                 damage=amount,
-                old_health=current_health,
+                old_health=current_db,
                 new_health=new_health,
                 damage_type=damage_type,
             )
@@ -108,13 +108,13 @@ class HealthRepository:
         try:
             # Get current stats from in-memory player object
             stats = player.get_stats()
-            current_health = stats.get("current_health", 100)
+            current_db = stats.get("current_db", 100)
             # NOTE: Max health is currently hardcoded; future enhancement will make it configurable
             max_health = 100
-            new_health = min(max_health, current_health + amount)
+            new_health = min(max_health, current_db + amount)
 
             # Update the in-memory player object (for immediate UI feedback)
-            stats["current_health"] = new_health
+            stats["current_db"] = new_health
             player.set_stats(stats)
 
             # Atomic database update
@@ -125,7 +125,7 @@ class HealthRepository:
                 player_id=player.player_id,
                 player_name=player.name,
                 healing=amount,
-                old_health=current_health,
+                old_health=current_db,
                 new_health=new_health,
             )
         except ValueError:
@@ -144,7 +144,7 @@ class HealthRepository:
 
     async def update_player_health(self, player_id: uuid.UUID, delta: int, reason: str = "") -> None:
         """
-        Update player current_health field atomically.
+        Update player current_db field atomically.
 
         Args:
             player_id: Player UUID
@@ -163,14 +163,14 @@ class HealthRepository:
         try:
             async for session in get_async_session():
                 # Use JSON path update for atomic health modification
-                # This prevents race conditions by updating only the current_health field
+                # This prevents race conditions by updating only the current_db field
                 update_query = text(
                     """
                     UPDATE players
                     SET stats = jsonb_set(
                         stats,
-                        '{current_health}',
-                        (GREATEST(0, LEAST(100, (stats->>'current_health')::int + :delta)))::text::jsonb
+                        '{current_db}',
+                        (GREATEST(0, LEAST(100, (stats->>'current_db')::int + :delta)))::text::jsonb
                     )
                     WHERE player_id = :player_id
                     """

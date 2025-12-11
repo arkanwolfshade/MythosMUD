@@ -82,7 +82,10 @@ class NPCDefinition(Base):
 
     # Configuration stored as JSON
     base_stats = Column(
-        Text, nullable=False, default="{}", comment="Base statistics for the NPC (HP, MP, attributes, etc.)"
+        Text,
+        nullable=False,
+        default="{}",
+        comment="Base statistics for the NPC (DP, MP, attributes, etc.)",
     )
     behavior_config = Column(
         Text, nullable=False, default="{}", comment="Behavior-specific configuration (aggression, wandering, etc.)"

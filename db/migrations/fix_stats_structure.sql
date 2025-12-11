@@ -21,7 +21,7 @@ SET stats = (
         'fear', COALESCE((stats_json->'stats'->>'fear')::integer, (stats_json->>'fear')::integer, 0),
         'corruption', COALESCE((stats_json->'stats'->>'corruption')::integer, (stats_json->>'corruption')::integer, 0),
         'cult_affiliation', COALESCE((stats_json->'stats'->>'cult_affiliation')::integer, (stats_json->>'cult_affiliation')::integer, 0),
-        'current_health', COALESCE((stats_json->'stats'->>'current_health')::integer, (stats_json->>'current_health')::integer, 100),
+        'current_db', COALESCE((stats_json->'stats'->>'current_db')::integer, (stats_json->>'current_db')::integer, 100),
         'position', COALESCE(stats_json->'stats'->>'position', stats_json->>'position', 'standing')
     )::text
     FROM (SELECT stats::jsonb as stats_json) AS s

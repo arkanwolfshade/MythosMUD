@@ -208,7 +208,7 @@ class CombatEventPublisher:
                 )
                 return False
 
-        except Exception as e:
+        except (AttributeError, TypeError, ValueError, KeyError) as e:
             logger.error(
                 "Error publishing combat started event",
                 combat_id=combat_id,
@@ -303,7 +303,7 @@ class CombatEventPublisher:
                 )
                 return False
 
-        except Exception as e:
+        except (AttributeError, TypeError, ValueError, KeyError) as e:
             logger.error(
                 "Error publishing combat ended event",
                 combat_id=str(event.combat_id),
@@ -364,8 +364,8 @@ class CombatEventPublisher:
                 "target_name": event.target_name,
                 "damage": event.damage,
                 "action_type": event.action_type,
-                "target_current_hp": event.target_current_hp,
-                "target_max_hp": event.target_max_hp,
+                "target_current_dp": event.target_current_dp,
+                "target_max_dp": event.target_max_dp,
                 "timestamp": event.timestamp.isoformat(),
             }
 
@@ -408,7 +408,7 @@ class CombatEventPublisher:
                 )
                 return False
 
-        except Exception as e:
+        except (AttributeError, TypeError, ValueError, KeyError) as e:
             logger.error(
                 "Error publishing player attacked event",
                 combat_id=str(event.combat_id),
@@ -469,8 +469,8 @@ class CombatEventPublisher:
                 "npc_name": event.npc_name,
                 "damage": event.damage,
                 "action_type": event.action_type,
-                "target_current_hp": event.target_current_hp,
-                "target_max_hp": event.target_max_hp,
+                "target_current_dp": event.target_current_dp,
+                "target_max_dp": event.target_max_dp,
                 "timestamp": event.timestamp.isoformat(),
             }
 
@@ -513,7 +513,7 @@ class CombatEventPublisher:
                 )
                 return False
 
-        except Exception as e:
+        except (AttributeError, TypeError, ValueError, KeyError) as e:
             logger.error(
                 "Error publishing NPC attacked event",
                 combat_id=str(event.combat_id),
@@ -542,8 +542,8 @@ class CombatEventPublisher:
                     npc_id=str(event.npc_id),
                     npc_name=event.npc_name,
                     damage=event.damage,
-                    current_hp=event.current_hp,
-                    max_hp=event.max_hp,
+                    current_dp=event.current_dp,
+                    max_dp=event.max_dp,
                 )
                 return False
 
@@ -557,8 +557,8 @@ class CombatEventPublisher:
                     npc_id=str(event.npc_id),
                     npc_name=event.npc_name,
                     damage=event.damage,
-                    current_hp=event.current_hp,
-                    max_hp=event.max_hp,
+                    current_dp=event.current_dp,
+                    max_dp=event.max_dp,
                 )
                 return False
 
@@ -569,8 +569,8 @@ class CombatEventPublisher:
                 "npc_id": str(event.npc_id),
                 "npc_name": event.npc_name,
                 "damage": event.damage,
-                "current_hp": event.current_hp,
-                "max_hp": event.max_hp,
+                "current_dp": event.current_dp,
+                "max_dp": event.max_dp,
                 "timestamp": event.timestamp.isoformat(),
             }
 
@@ -601,7 +601,7 @@ class CombatEventPublisher:
                     combat_id=str(event.combat_id),
                     npc_name=event.npc_name,
                     damage=event.damage,
-                    current_hp=event.current_hp,
+                    current_dp=event.current_dp,
                 )
                 return True
             except NATSPublishError as e:
@@ -613,7 +613,7 @@ class CombatEventPublisher:
                 )
                 return False
 
-        except Exception as e:
+        except (AttributeError, TypeError, ValueError, KeyError) as e:
             logger.error(
                 "Error publishing NPC took damage event",
                 combat_id=str(event.combat_id),
@@ -706,7 +706,7 @@ class CombatEventPublisher:
                 )
                 return False
 
-        except Exception as e:
+        except (AttributeError, TypeError, ValueError, KeyError) as e:
             logger.error(
                 "Error publishing NPC died event",
                 combat_id=str(event.combat_id),
@@ -799,7 +799,7 @@ class CombatEventPublisher:
                 )
                 return False
 
-        except Exception as e:
+        except (AttributeError, TypeError, ValueError, KeyError) as e:
             logger.error(
                 "Error publishing combat turn advanced event",
                 combat_id=str(event.combat_id),
@@ -889,7 +889,7 @@ class CombatEventPublisher:
                 )
                 return False
 
-        except Exception as e:
+        except (AttributeError, TypeError, ValueError, KeyError) as e:
             logger.error(
                 "Error publishing combat timeout event",
                 combat_id=str(event.combat_id),

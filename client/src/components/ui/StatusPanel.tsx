@@ -6,7 +6,7 @@ interface StatusPanelContextType {
     id: string;
     name: string;
     stats: {
-      current_health: number;
+      current_db?: number;
       max_health?: number;
       lucidity: number;
       max_lucidity?: number;
@@ -43,8 +43,34 @@ const useStatusPanel = () => {
   return context;
 };
 
+// Helper function to get connection status text and class
+const getConnectionStatus = (isConnected: boolean, isConnecting: boolean) => {
+  if (isConnected) {
+    return { text: 'Connected', className: 'text-mythos-terminal-success' };
+  }
+  if (isConnecting) {
+    return { text: 'Connecting...', className: 'text-mythos-terminal-error' };
+  }
+  return { text: 'Disconnected', className: 'text-mythos-terminal-error' };
+};
+
+// Type helper for player stats
+type PlayerStats = NonNullable<StatusPanelContextType['player']>['stats'];
+
+// Helper function to check if a stat exists
+const hasStat = (stats: PlayerStats | undefined, key: string): boolean => {
+  if (!stats) return false;
+  return stats[key as keyof typeof stats] !== undefined;
+};
+
+// Helper function to get stat value
+const getStatValue = (stats: PlayerStats | undefined, key: string): number | undefined => {
+  if (!stats) return undefined;
+  return stats[key as keyof typeof stats] as number | undefined;
+};
+
 // Main compound component
-interface StatusPanelProps {
+export interface StatusPanelProps {
   player: StatusPanelContextType['player'];
   isConnected: boolean;
   isConnecting: boolean;
@@ -79,17 +105,33 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({
   );
 };
 
+// Reusable single stat display component
+interface SingleStatProps {
+  label: string;
+  value: number | string | undefined;
+}
+
+const SingleStat: React.FC<SingleStatProps> = ({ label, value }) => {
+  if (value === undefined) return null;
+
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-base text-mythos-terminal-text-secondary">{label}:</span>
+      <span className="text-base text-mythos-terminal-text">{value}</span>
+    </div>
+  );
+};
+
 // Connection status sub-component
 export const ConnectionStatus: React.FC = () => {
   const { isConnected, isConnecting } = useStatusPanel();
+  const { text, className } = getConnectionStatus(isConnected, isConnecting);
 
   return (
     <div className="flex items-center justify-between">
       <span className="text-base text-mythos-terminal-text-secondary">Connection:</span>
       <div className="flex items-center space-x-2">
-        <span className={`text-base ${isConnected ? 'text-mythos-terminal-success' : 'text-mythos-terminal-error'}`}>
-          {isConnected ? 'Connected' : isConnecting ? 'Connecting...' : 'Disconnected'}
-        </span>
+        <span className={`text-base ${className}`}>{text}</span>
       </div>
     </div>
   );
@@ -98,139 +140,97 @@ export const ConnectionStatus: React.FC = () => {
 // Player name sub-component
 export const PlayerName: React.FC = () => {
   const { playerName } = useStatusPanel();
-
-  return (
-    <div className="flex items-center justify-between">
-      <span className="text-base text-mythos-terminal-text-secondary">Player:</span>
-      <span className="text-base text-mythos-terminal-text">{playerName}</span>
-    </div>
-  );
+  return <SingleStat label="Player" value={playerName} />;
 };
 
 // Health stat sub-component
 export const HealthStat: React.FC = () => {
   const { player } = useStatusPanel();
+  const currentHealth = player?.stats?.current_db;
+  const maxHealth = player?.stats?.max_health ?? 100;
 
-  if (player?.stats?.current_health === undefined) return null;
+  if (currentHealth === undefined) return null;
 
-  const maxHealth = player.stats.max_health ?? 100;
-
-  return (
-    <div className="flex items-center justify-between">
-      <span className="text-base text-mythos-terminal-text-secondary">Health:</span>
-      <span className="text-base text-mythos-terminal-text">
-        {player.stats.current_health} / {maxHealth}
-      </span>
-    </div>
-  );
+  return <SingleStat label="Health" value={`${currentHealth} / ${maxHealth}`} />;
 };
 
 // Lucidity stat sub-component
 export const LucidityStat: React.FC = () => {
   const { player } = useStatusPanel();
+  const lucidity = player?.stats?.lucidity;
+  return <SingleStat label="Lucidity" value={lucidity} />;
+};
 
-  if (!player?.stats?.lucidity) return null;
+// Reusable stat group component
+interface StatGroupProps {
+  title: string;
+  stats: Array<{ key: string; label: string }>;
+  playerStats: PlayerStats | undefined;
+}
+
+const StatGroup: React.FC<StatGroupProps> = ({ title, stats, playerStats }) => {
+  const availableStats = stats.filter(stat => hasStat(playerStats, stat.key));
+
+  if (availableStats.length === 0) return null;
 
   return (
-    <div className="flex items-center justify-between">
-      <span className="text-base text-mythos-terminal-text-secondary">Lucidity:</span>
-      <span className="text-base text-mythos-terminal-text">{player.stats.lucidity}</span>
+    <div className="border-t border-mythos-terminal-border pt-2">
+      <h5 className="text-sm text-mythos-terminal-primary font-bold mb-1">{title}:</h5>
+      <div className="grid grid-cols-2 gap-1 text-sm">
+        {availableStats.map(stat => {
+          const value = getStatValue(playerStats, stat.key);
+          return (
+            <div key={stat.key} className="flex justify-between">
+              <span className="text-mythos-terminal-text-secondary">{stat.label}:</span>
+              <span className="text-mythos-terminal-text">{value}</span>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
 
+// Core attributes configuration
+const CORE_ATTRIBUTES = [
+  { key: 'strength', label: 'STR' },
+  { key: 'dexterity', label: 'DEX' },
+  { key: 'constitution', label: 'CON' },
+  { key: 'intelligence', label: 'INT' },
+  { key: 'wisdom', label: 'WIS' },
+  { key: 'charisma', label: 'CHA' },
+];
+
+// Horror stats configuration
+const HORROR_STATS = [
+  { key: 'occult_knowledge', label: 'Occult' },
+  { key: 'fear', label: 'Fear' },
+  { key: 'corruption', label: 'Corruption' },
+  { key: 'cult_affiliation', label: 'Cult' },
+];
+
 // Core attributes sub-component
 export const CoreAttributes: React.FC = () => {
   const { player } = useStatusPanel();
-
-  if (!player?.stats) return null;
-
-  const attributes = [
-    { key: 'strength', label: 'STR' },
-    { key: 'dexterity', label: 'DEX' },
-    { key: 'constitution', label: 'CON' },
-    { key: 'intelligence', label: 'INT' },
-    { key: 'wisdom', label: 'WIS' },
-    { key: 'charisma', label: 'CHA' },
-  ];
-
-  const availableAttributes = attributes.filter(
-    attr => player.stats[attr.key as keyof typeof player.stats] !== undefined
-  );
-
-  if (availableAttributes.length === 0) return null;
-
-  return (
-    <div className="border-t border-mythos-terminal-border pt-2">
-      <h5 className="text-sm text-mythos-terminal-primary font-bold mb-1">Core Attributes:</h5>
-      <div className="grid grid-cols-2 gap-1 text-sm">
-        {availableAttributes.map(attr => (
-          <div key={attr.key} className="flex justify-between">
-            <span className="text-mythos-terminal-text-secondary">{attr.label}:</span>
-            <span className="text-mythos-terminal-text">{player.stats[attr.key as keyof typeof player.stats]}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+  return <StatGroup title="Core Attributes" stats={CORE_ATTRIBUTES} playerStats={player?.stats} />;
 };
 
 // Horror stats sub-component
 export const HorrorStats: React.FC = () => {
   const { player } = useStatusPanel();
-
-  if (!player?.stats) return null;
-
-  const horrorStats = [
-    { key: 'occult_knowledge', label: 'Occult' },
-    { key: 'fear', label: 'Fear' },
-    { key: 'corruption', label: 'Corruption' },
-    { key: 'cult_affiliation', label: 'Cult' },
-  ];
-
-  const availableHorrorStats = horrorStats.filter(
-    stat => player.stats[stat.key as keyof typeof player.stats] !== undefined
-  );
-
-  if (availableHorrorStats.length === 0) return null;
-
-  return (
-    <div className="border-t border-mythos-terminal-border pt-2">
-      <h5 className="text-sm text-mythos-terminal-primary font-bold mb-1">Horror Stats:</h5>
-      <div className="grid grid-cols-2 gap-1 text-sm">
-        {availableHorrorStats.map(stat => (
-          <div key={stat.key} className="flex justify-between">
-            <span className="text-mythos-terminal-text-secondary">{stat.label}:</span>
-            <span className="text-mythos-terminal-text">{player.stats[stat.key as keyof typeof player.stats]}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+  return <StatGroup title="Horror Stats" stats={HORROR_STATS} playerStats={player?.stats} />;
 };
 
 // Messages count sub-component
 export const MessagesCount: React.FC = () => {
   const { messagesCount } = useStatusPanel();
-
-  return (
-    <div className="flex items-center justify-between">
-      <span className="text-base text-mythos-terminal-text-secondary">Messages:</span>
-      <span className="text-base text-mythos-terminal-text">{messagesCount}</span>
-    </div>
-  );
+  return <SingleStat label="Messages" value={messagesCount} />;
 };
 
 // Commands count sub-component
 export const CommandsCount: React.FC = () => {
   const { commandsCount } = useStatusPanel();
-
-  return (
-    <div className="flex items-center justify-between">
-      <span className="text-base text-mythos-terminal-text-secondary">Commands:</span>
-      <span className="text-base text-mythos-terminal-text">{commandsCount}</span>
-    </div>
-  );
+  return <SingleStat label="Commands" value={commandsCount} />;
 };
 
 // Player stats group sub-component

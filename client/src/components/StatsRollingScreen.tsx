@@ -6,9 +6,12 @@ interface Stats {
   strength: number;
   dexterity: number;
   constitution: number;
+  size: number;
   intelligence: number;
-  wisdom: number;
+  power: number;
+  education: number;
   charisma: number;
+  luck: number;
 }
 
 interface Profession {
@@ -305,16 +308,28 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
             <span className="stat-value">{currentStats.constitution}</span>
           </div>
           <div className="stat-item">
+            <label>Size:</label>
+            <span className="stat-value">{currentStats.size}</span>
+          </div>
+          <div className="stat-item">
             <label>Intelligence:</label>
             <span className="stat-value">{currentStats.intelligence}</span>
           </div>
           <div className="stat-item">
-            <label>Wisdom:</label>
-            <span className="stat-value">{currentStats.wisdom}</span>
+            <label>Power:</label>
+            <span className="stat-value">{currentStats.power}</span>
+          </div>
+          <div className="stat-item">
+            <label>Education:</label>
+            <span className="stat-value">{currentStats.education}</span>
           </div>
           <div className="stat-item">
             <label>Charisma:</label>
             <span className="stat-value">{currentStats.charisma}</span>
+          </div>
+          <div className="stat-item">
+            <label>Luck:</label>
+            <span className="stat-value">{currentStats.luck}</span>
           </div>
         </div>
       </div>
@@ -342,7 +357,13 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
       </div>
 
       <div className="stats-info">
-        <p>These stats were generated using the 3d6 method.</p>
+        <p>Stats generated using methods:</p>
+        <ul className="stats-info-list">
+          <li>Most stats: Rolled 15-90 (scaled percentile)</li>
+          <li>Size: Rolled using CoC formula: (2D6+6)*5 (range 40-90)</li>
+          <li>Determination Points max = (CON + SIZ) / 5</li>
+          <li>Magic Points max = 20% of Power (ceiling rounded)</li>
+        </ul>
         <p>You can reroll as many times as you like, with a 1-second cooldown between rolls.</p>
       </div>
     </div>

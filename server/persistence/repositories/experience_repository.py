@@ -29,7 +29,7 @@ class ExperienceRepository:
 
     # Field name to PostgreSQL array literal mapping for atomic updates
     FIELD_NAME_TO_ARRAY: dict[str, str] = {
-        "current_health": "ARRAY['current_health']::text[]",
+        "current_db": "ARRAY['current_db']::text[]",
         "lucidity": "ARRAY['lucidity']::text[]",
         "occult_knowledge": "ARRAY['occult_knowledge']::text[]",
         "fear": "ARRAY['fear']::text[]",

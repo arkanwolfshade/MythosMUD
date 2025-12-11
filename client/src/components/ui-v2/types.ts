@@ -8,20 +8,23 @@ export interface Player {
   profession_description?: string;
   profession_flavor_text?: string;
   stats?: {
-    current_health: number;
-    max_health?: number;
+    current_db: number; // Represents determination points (DP)
+    max_health?: number; // Represents max determination points (DP)
     lucidity: number;
     max_lucidity?: number;
     strength?: number;
     dexterity?: number;
     constitution?: number;
+    size?: number;
     intelligence?: number;
-    wisdom?: number;
+    power?: number;
+    education?: number;
     charisma?: number;
-    occult_knowledge?: number;
-    fear?: number;
+    luck?: number;
+    occult?: number;
     corruption?: number;
-    cult_affiliation?: number;
+    magic_points?: number;
+    max_magic_points?: number;
     position?: string;
   };
   level?: number;

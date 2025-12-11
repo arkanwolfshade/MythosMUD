@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { buildClasses } from './designTokens';
 import {
   AllStats,
+  Channel,
   ChannelSelector,
   ConnectionStatus,
   EldritchIcon,
   HealthStat,
+  LucidityStat,
   MessagesCount,
   MythosPanel,
   PlayerName,
-  LucidityStat,
   StatusPanel,
   TerminalButton,
   TerminalCard,
@@ -25,12 +26,18 @@ import {
 export const StyleGuide: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [selectedChannel, setSelectedChannel] = useState('local');
+  const [disabledInputValue, setDisabledInputValue] = useState('');
+  const [errorInputValue, setErrorInputValue] = useState('');
+  const [sizeSmValue, setSizeSmValue] = useState('');
+  const [sizeMdValue, setSizeMdValue] = useState('');
+  const [sizeLgValue, setSizeLgValue] = useState('');
+  const [formInputValue, setFormInputValue] = useState('');
 
   const mockPlayer = {
     id: 'player-1',
     name: 'TestPlayer',
     stats: {
-      current_health: 100,
+      current_db: 100,
       lucidity: 80,
       strength: 10,
       dexterity: 12,
@@ -46,10 +53,31 @@ export const StyleGuide: React.FC = () => {
     level: 5,
   };
 
-  const channels = [
-    { id: 'local', name: 'Local', shortcut: 'say' },
-    { id: 'global', name: 'Global', shortcut: 'chat' },
-    { id: 'whisper', name: 'Whisper', shortcut: 'whisper' },
+  const channels: Channel[] = [
+    {
+      id: 'local',
+      name: 'Local',
+      description: 'Chat with players in your current room',
+      icon: 'local',
+      color: '#10b981',
+      shortcut: 'say',
+    },
+    {
+      id: 'global',
+      name: 'Global',
+      description: 'Chat with all players across the game',
+      icon: 'global',
+      color: '#3b82f6',
+      shortcut: 'chat',
+    },
+    {
+      id: 'whisper',
+      name: 'Whisper',
+      description: 'Send a private message to a specific player',
+      icon: 'whisper',
+      color: '#8b5cf6',
+      shortcut: 'whisper',
+    },
   ];
 
   return (
@@ -71,7 +99,7 @@ export const StyleGuide: React.FC = () => {
               <div className="space-y-2">
                 <TerminalButton variant="primary">Primary</TerminalButton>
                 <TerminalButton variant="secondary">Secondary</TerminalButton>
-                <TerminalButton variant="error">Error</TerminalButton>
+                <TerminalButton variant="danger">Error</TerminalButton>
                 <TerminalButton variant="success">Success</TerminalButton>
                 <TerminalButton variant="warning">Warning</TerminalButton>
               </div>
@@ -105,8 +133,8 @@ export const StyleGuide: React.FC = () => {
                   <EldritchIcon name="chat" size={16} className="mr-2" />
                   Chat
                 </TerminalButton>
-                <TerminalButton variant="error">
-                  <EldritchIcon name="error" size={16} className="mr-2" />
+                <TerminalButton variant="danger">
+                  <EldritchIcon name="horror" size={16} className="mr-2" />
                   Error
                 </TerminalButton>
               </div>
@@ -136,9 +164,16 @@ export const StyleGuide: React.FC = () => {
                   value={inputValue}
                   onChange={e => setInputValue(e.target.value)}
                 />
-                <TerminalInput placeholder="Disabled input" disabled />
+                <TerminalInput
+                  placeholder="Disabled input"
+                  value={disabledInputValue}
+                  onChange={e => setDisabledInputValue(e.target.value)}
+                  disabled
+                />
                 <TerminalInput
                   placeholder="Error state"
+                  value={errorInputValue}
+                  onChange={e => setErrorInputValue(e.target.value)}
                   className="border-red-500 focus:border-red-500 focus:ring-red-500"
                 />
               </div>
@@ -148,9 +183,24 @@ export const StyleGuide: React.FC = () => {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Sizes</h3>
               <div className="space-y-3">
-                <TerminalInput size="sm" placeholder="Small input" />
-                <TerminalInput size="md" placeholder="Medium input" />
-                <TerminalInput size="lg" placeholder="Large input" />
+                <TerminalInput
+                  size="sm"
+                  placeholder="Small input"
+                  value={sizeSmValue}
+                  onChange={e => setSizeSmValue(e.target.value)}
+                />
+                <TerminalInput
+                  size="md"
+                  placeholder="Medium input"
+                  value={sizeMdValue}
+                  onChange={e => setSizeMdValue(e.target.value)}
+                />
+                <TerminalInput
+                  size="lg"
+                  placeholder="Large input"
+                  value={sizeLgValue}
+                  onChange={e => setSizeLgValue(e.target.value)}
+                />
               </div>
             </div>
 
@@ -263,7 +313,11 @@ export const StyleGuide: React.FC = () => {
                   value={inputValue}
                   onChange={e => setInputValue(e.target.value)}
                 />
-                <TerminalInput placeholder="Character name" />
+                <TerminalInput
+                  placeholder="Character name"
+                  value={formInputValue}
+                  onChange={e => setFormInputValue(e.target.value)}
+                />
                 <div className="flex gap-2">
                   <TerminalButton type="submit" variant="primary">
                     Submit
@@ -294,11 +348,11 @@ export const StyleGuide: React.FC = () => {
               <p className="text-xs mt-1">connection</p>
             </div>
             <div className="text-center">
-              <EldritchIcon name="error" size={24} variant="error" />
+              <EldritchIcon name="horror" size={24} variant="error" />
               <p className="text-xs mt-1">error</p>
             </div>
             <div className="text-center">
-              <EldritchIcon name="warning" size={24} variant="warning" />
+              <EldritchIcon name="eye" size={24} variant="warning" />
               <p className="text-xs mt-1">warning</p>
             </div>
             <div className="text-center">

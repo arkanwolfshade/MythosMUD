@@ -452,10 +452,10 @@ async def respawn_player(
     player_service: PlayerService = PlayerServiceDep,
 ) -> dict[str, Any]:
     """
-    Respawn a dead player at their respawn location with full HP.
+    Respawn a dead player at their respawn location with full DP.
 
     This endpoint handles player resurrection after death, moving them from
-    limbo to their designated respawn room and restoring their HP to 100.
+    limbo to their designated respawn room and restoring their DP to 100.
 
     Rate limited to 1 request per 5 seconds per user.
 
@@ -493,7 +493,7 @@ async def respawn_player(
                 elif "must be dead" in str(e).lower():
                     raise LoggedHTTPException(
                         status_code=403,
-                        detail="Player must be dead to respawn (HP must be -10 or below)",
+                        detail="Player must be dead to respawn (DP must be -10 or below)",
                         context=context,
                     ) from e
                 else:

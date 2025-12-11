@@ -20,7 +20,7 @@ export interface GameTerminalContextType {
     id: string;
     name: string;
     stats: {
-      current_health: number;
+      current_db: number;
       lucidity: number;
       strength?: number;
       dexterity?: number;

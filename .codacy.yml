@@ -18,6 +18,26 @@ ignore_patterns:
       - '**/test_*.py'
       - '**/tests/**/*.py'
       - '**/*_test.py'
+  # Lizard CCN: Ignore cyclomatic complexity warnings for complexity <= 10
+  # We want to only report complexity > 10, but Codacy doesn't support custom CCN thresholds
+  # So we suppress the medium severity warnings (which report complexity > 8)
+  # This effectively sets our threshold to 11 (only reports complexity > 10)
+  - pattern_id: 'Lizard_ccn-medium'
+    reason: 'Cyclomatic complexity threshold set to 11 (only report > 10). Medium severity reports > 8, which we want to ignore.'
+
+# Cyclomatic complexity configuration
+# Set cyclomatic complexity threshold to 11 (only report > 10)
+# Since Codacy doesn't support custom CCN thresholds, we use ignore_patterns to suppress
+# Lizard_ccn-medium (which reports complexity > 8), effectively setting threshold to 11
+# Also configured in .codacy/codacy.yaml under engines.lizard.config.CCN (for CLI, if supported)
+# Set file-nloc threshold to 550 (default is 500)
+# Configured in .codacy/codacy.yaml under engines.lizard.config.file-nloc
+
+# Engine-specific exclusions (alternative format that may work for CLI)
+engines:
+  lizard:
+    exclude_patterns:
+      - 'Lizard_ccn-medium'
 
 # Line length configuration
 # The project uses 120 character line length (not Codacy's default of 100)

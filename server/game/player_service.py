@@ -800,12 +800,12 @@ class PlayerService:
             context = create_error_context()
             context.metadata["operation"] = "respawn_player_by_user_id"
             context.metadata["user_id"] = user_id
-            context.metadata["player_hp"] = player.get_stats().get("current_health", 0)
+            context.metadata["player_dp"] = player.get_stats().get("current_dp", 0)
             log_and_raise_enhanced(
                 ValidationError,
-                "Player must be dead to respawn (HP must be -10 or below)",
+                "Player must be dead to respawn (DP must be -10 or below)",
                 context=context,
-                details={"user_id": user_id, "player_hp": player.get_stats().get("current_health", 0)},
+                details={"user_id": user_id, "player_dp": player.get_stats().get("current_dp", 0)},
                 user_friendly="Player must be dead to respawn",
             )
 
@@ -852,8 +852,8 @@ class PlayerService:
             "player": {
                 "id": player.player_id,
                 "name": player.name,
-                "hp": updated_stats.get("current_health", 100),
-                "max_hp": updated_stats.get("max_health", 100),
+                "dp": updated_stats.get("current_dp", 100),
+                "max_dp": updated_stats.get("max_dp", 100),
                 "current_room_id": respawn_room_id,
             },
             "room": room_data,
@@ -975,14 +975,28 @@ class PlayerService:
             "player": {
                 "id": player.player_id,
                 "name": player.name,
-                "hp": updated_stats.get("current_health", 100),
-                "max_hp": updated_stats.get("max_health", 100),
+                "dp": updated_stats.get("current_dp", 100),
+                "max_dp": updated_stats.get("max_dp", 100),
                 "lucidity": updated_lucidity,
                 "current_room_id": respawn_room_id,
             },
             "room": room_data,
             "message": "You have been restored to lucidity and returned to the Sanitarium",
         }
+
+    async def convert_player_to_schema(self, player) -> PlayerRead:
+        """
+        Convert a player object to PlayerRead schema.
+
+        This is a public method that wraps the internal conversion logic.
+
+        Args:
+            player: Player object or dictionary
+
+        Returns:
+            PlayerRead: The player data in schema format
+        """
+        return await self._convert_player_to_schema(player)
 
     async def _convert_player_to_schema(self, player) -> PlayerRead:
         """

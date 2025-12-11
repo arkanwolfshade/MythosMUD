@@ -1,91 +1,112 @@
 """
-HP synchronization module for combat service.
+DP synchronization module for combat service.
 
-This module handles player HP persistence and event publishing for combat operations.
+This module handles player DP persistence and event publishing for combat operations.
 Separated from combat_service.py to reduce file size and improve maintainability.
 
-As documented in the restricted archives, HP synchronization requires careful
+As documented in the restricted archives, DP synchronization requires careful
 coordination between in-memory combat state and persistent database storage.
 """
 
 from uuid import UUID
 
 from ..events.event_bus import EventBus
-from ..events.event_types import PlayerHPUpdated
+from ..events.event_types import PlayerDPUpdated
+from ..exceptions import DatabaseError
 from ..logging.enhanced_logging_config import get_logger
 from ..models.game import PositionState
 
 logger = get_logger(__name__)
 
 
-class CombatHPSync:
-    """Handles HP synchronization for combat operations."""
+class CombatDPSync:
+    """Handles DP synchronization for combat operations."""
 
     def __init__(self, combat_service):
-        """Initialize HP sync with reference to parent combat service."""
+        """Initialize DP sync with reference to parent combat service."""
         self._combat_service = combat_service
         self._nats_service = getattr(combat_service, "_nats_service", None)
         self._combat_event_publisher = getattr(combat_service, "_combat_event_publisher", None)
 
-    def _persist_player_hp_background(
+    def _persist_player_dp_background(
         self,
         player_id: UUID,
-        current_hp: int,
-        old_hp: int,
-        max_hp: int,
+        current_dp: int,
+        old_dp: int,
+        max_dp: int,
         room_id: str | None = None,
         combat_id: str | None = None,
     ) -> None:
         """
-        Persist player HP to database in background (fire-and-forget).
+        Persist player DP to database in background (fire-and-forget).
 
         This method runs database persistence asynchronously without blocking the combat flow.
-        If persistence fails, a correction event is sent to update the client with the correct HP.
+        If persistence fails, a correction event is sent to update the client with the correct DP.
 
         Args:
-            player_id: ID of the player whose HP changed
-            current_hp: New current HP value
-            old_hp: Previous HP value (for correction events if save fails)
-            max_hp: Maximum HP value
+            player_id: ID of the player whose DP changed
+            current_dp: New current DP value
+            old_dp: Previous DP value (for correction events if save fails)
+            max_dp: Maximum DP value
             room_id: Room ID where the change occurred (for error context)
         """
         import asyncio
 
         async def _persist_and_handle_errors() -> None:
-            """Background task to persist HP and handle errors."""
+            """Background task to persist DP and handle errors."""
             try:
-                await self._persist_player_hp_sync(player_id, current_hp)
+                await self._persist_player_dp_sync(player_id, current_dp)
                 logger.debug(
-                    "Background HP persistence completed successfully",
+                    "Background DP persistence completed successfully",
                     player_id=player_id,
-                    current_hp=current_hp,
+                    current_dp=current_dp,
                 )
-            except Exception as e:
+            except (
+                DatabaseError,
+                AttributeError,
+                ValueError,
+                TypeError,
+                RuntimeError,
+                ConnectionError,
+                TimeoutError,
+                OSError,
+            ) as e:
                 logger.error(
-                    "Background HP persistence failed - sending correction event",
+                    "Background DP persistence failed - sending correction event",
                     player_id=player_id,
-                    current_hp=current_hp,
+                    current_dp=current_dp,
                     error=str(e),
+                    error_type=type(e).__name__,
                     exc_info=True,
                 )
                 try:
-                    await self._combat_service._publish_player_hp_correction_event(
-                        player_id, old_hp, max_hp, room_id, combat_id, str(e)
+                    await self._publish_player_dp_correction_event(
+                        player_id, old_dp, max_dp, room_id, combat_id, str(e)
                     )
-                except Exception as correction_error:
+                except (
+                    DatabaseError,
+                    AttributeError,
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                    ConnectionError,
+                    TimeoutError,
+                    OSError,
+                ) as correction_error:
                     logger.error(
-                        "Failed to send HP correction event after persistence failure",
+                        "Failed to send DP correction event after persistence failure",
                         player_id=player_id,
                         error=str(correction_error),
+                        error_type=type(correction_error).__name__,
                         exc_info=True,
                     )
 
         try:
             asyncio.create_task(_persist_and_handle_errors())
             logger.debug(
-                "Created background task for HP persistence",
+                "Created background task for DP persistence",
                 player_id=player_id,
-                current_hp=current_hp,
+                current_dp=current_dp,
             )
         except RuntimeError as e:
             logger.error(
@@ -94,145 +115,222 @@ class CombatHPSync:
                 error=str(e),
             )
 
-    async def _persist_player_hp_sync(self, player_id: UUID, current_hp: int) -> None:
+    def _get_persistence(self, player_id: UUID):
         """
-        Synchronously persist player HP to database.
-
-        This is the actual persistence logic, called from the background task.
-        Separated from the old _persist_player_hp to allow background execution.
+        Get persistence layer from application container.
 
         Args:
-            player_id: ID of the player whose HP changed
-            current_hp: New current HP value
+            player_id: Player ID for logging context
+
+        Returns:
+            Persistence instance or None if unavailable
         """
         try:
-            logger.info("_persist_player_hp called", player_id=player_id, current_hp=current_hp)
+            from ..container import ApplicationContainer
 
-            try:
-                from ..container import ApplicationContainer
+            container = ApplicationContainer.get_instance()
+            return getattr(container, "async_persistence", None) if container else None
+        except (ImportError, AttributeError, RuntimeError, TypeError) as e:
+            logger.warning("Could not get persistence from container", error=str(e), player_id=player_id)
+            return None
 
-                container = ApplicationContainer.get_instance()
-                persistence = getattr(container, "async_persistence", None) if container else None
-            except Exception as e:
-                logger.warning("Could not get persistence from container", error=str(e), player_id=player_id)
-                persistence = None
+    def _update_player_position(
+        self, stats: dict, current_dp: int, old_dp: int, player_id: UUID, player_name: str
+    ) -> None:
+        """
+        Update player position based on DP threshold.
 
+        Args:
+            stats: Player stats dictionary to update
+            current_dp: New current DP value
+            old_dp: Previous DP value
+            player_id: Player ID for logging
+            player_name: Player name for logging
+        """
+        if current_dp <= 0 and old_dp > 0:
+            stats["position"] = PositionState.LYING
+            logger.info(
+                "Player posture changed to lying (unconscious in combat)",
+                player_id=player_id,
+                player_name=player_name,
+                dp=current_dp,
+            )
+        elif current_dp <= 0 and stats.get("position") != PositionState.LYING:
+            stats["position"] = PositionState.LYING
+
+    async def _verify_player_save(
+        self, persistence, player_id: UUID, player_name: str, old_dp: int, current_dp: int
+    ) -> None:
+        """
+        Verify that player DP was successfully saved to database.
+
+        Args:
+            persistence: Persistence layer instance
+            player_id: Player ID
+            player_name: Player name for logging
+            old_dp: Previous DP value
+            current_dp: Expected current DP value
+        """
+        verification_player = await persistence.get_player_by_id(player_id)
+        if verification_player:
+            verification_stats = verification_player.get_stats()
+            verification_dp = verification_stats.get("current_dp", -999)
+            logger.info(
+                "Player DP persisted to database - VERIFICATION",
+                player_id=player_id,
+                player_name=player_name,
+                old_dp=old_dp,
+                new_dp=current_dp,
+                verified_dp_from_db=verification_dp,
+                save_successful=verification_dp == current_dp,
+            )
+        else:
+            logger.error("Could not verify player save - player not found after save", player_id=player_id)
+
+    def _log_death_threshold_events(self, current_dp: int, old_dp: int, player_id: UUID, player_name: str) -> None:
+        """
+        Log death threshold events based on DP changes.
+
+        Args:
+            current_dp: New current DP value
+            old_dp: Previous DP value
+            player_id: Player ID for logging
+            player_name: Player name for logging
+        """
+        if current_dp <= -10 and old_dp > -10:
+            logger.info(
+                "Player reached death threshold in combat - triggering immediate death handling",
+                player_id=player_id,
+                player_name=player_name,
+                final_dp=current_dp,
+            )
+            logger.debug(
+                "Player reached death threshold - will be handled by game tick loop within 1 second",
+                player_id=player_id,
+                player_name=player_name,
+            )
+        elif current_dp <= 0 and old_dp > 0:
+            logger.info(
+                "Player became mortally wounded in combat",
+                player_id=player_id,
+                player_name=player_name,
+                dp=current_dp,
+            )
+
+    async def _update_and_save_player_dp(self, persistence, player_id: UUID, current_dp: int) -> tuple | None:
+        """
+        Update player DP and save to database.
+
+        Args:
+            persistence: Persistence layer instance
+            player_id: Player ID
+            current_dp: New current DP value
+
+        Returns:
+            Tuple of (player, old_dp) if successful, None otherwise
+        """
+        player = await persistence.get_player_by_id(player_id)
+        if not player:
+            logger.warning("Player not found for DP persistence", player_id=player_id)
+            return None
+
+        stats = player.get_stats()
+        old_dp = stats.get("current_dp", 100)
+
+        logger.debug(
+            "Stats before DP update",
+            player_id=player_id,
+            raw_stats=player.stats,
+            parsed_stats=stats,
+            current_dp_in_stats=stats.get("current_dp"),
+        )
+
+        stats["current_dp"] = current_dp
+        self._update_player_position(stats, current_dp, old_dp, player_id, player.name)
+        player.set_stats(stats)
+
+        logger.debug(
+            "Stats after DP update, before save",
+            player_id=player_id,
+            raw_stats_after_set=player.stats,
+            new_current_dp=current_dp,
+        )
+
+        await persistence.save_player(player)
+        return (player, old_dp)
+
+    async def _persist_player_dp_sync(self, player_id: UUID, current_dp: int) -> None:
+        """
+        Synchronously persist player DP to database.
+
+        This is the actual persistence logic, called from the background task.
+        Separated from the old _persist_player_dp to allow background execution.
+
+        Args:
+            player_id: ID of the player whose DP changed
+            current_dp: New current DP value
+        """
+        try:
+            logger.info("_persist_player_dp called", player_id=player_id, current_dp=current_dp)
+
+            persistence = self._get_persistence(player_id)
             if not persistence:
-                logger.warning("No persistence layer available for HP persistence", player_id=player_id)
+                logger.warning("No persistence layer available for DP persistence", player_id=player_id)
                 return
 
-            player = await persistence.get_player_by_id(player_id)
-            if not player:
-                logger.warning("Player not found for HP persistence", player_id=player_id)
+            result = await self._update_and_save_player_dp(persistence, player_id, current_dp)
+            if not result:
                 return
 
-            stats = player.get_stats()
-            old_hp = stats.get("current_health", 100)
+            player, old_dp = result
+            await self._verify_player_save(persistence, player_id, player.name, old_dp, current_dp)
+            self._log_death_threshold_events(current_dp, old_dp, player_id, player.name)
 
-            logger.debug(
-                "Stats before HP update",
-                player_id=player_id,
-                raw_stats=player.stats,
-                parsed_stats=stats,
-                current_health_in_stats=stats.get("current_health"),
-            )
-
-            stats["current_health"] = current_hp
-
-            if current_hp <= 0 and old_hp > 0:
-                stats["position"] = PositionState.LYING
-                logger.info(
-                    "Player posture changed to lying (unconscious in combat)",
-                    player_id=player_id,
-                    player_name=player.name,
-                    hp=current_hp,
-                )
-            elif current_hp <= 0 and stats.get("position") != PositionState.LYING:
-                stats["position"] = PositionState.LYING
-
-            player.set_stats(stats)
-
-            logger.debug(
-                "Stats after HP update, before save",
-                player_id=player_id,
-                raw_stats_after_set=player.stats,
-                new_current_health=current_hp,
-            )
-
-            await persistence.save_player(player)
-
-            verification_player = await persistence.get_player_by_id(player_id)
-            if verification_player:
-                verification_stats = verification_player.get_stats()
-                verification_hp = verification_stats.get("current_health", -999)
-                logger.info(
-                    "Player HP persisted to database - VERIFICATION",
-                    player_id=player_id,
-                    player_name=player.name,
-                    old_hp=old_hp,
-                    new_hp=current_hp,
-                    verified_hp_from_db=verification_hp,
-                    save_successful=verification_hp == current_hp,
-                )
-            else:
-                logger.error("Could not verify player save - player not found after save", player_id=player_id)
-
-            if current_hp <= -10 and old_hp > -10:
-                logger.info(
-                    "Player reached death threshold in combat - triggering immediate death handling",
-                    player_id=player_id,
-                    player_name=player.name,
-                    final_hp=current_hp,
-                )
-                logger.debug(
-                    "Player reached death threshold - will be handled by game tick loop within 1 second",
-                    player_id=player_id,
-                    player_name=player.name,
-                )
-            elif current_hp <= 0 and old_hp > 0:
-                logger.info(
-                    "Player became mortally wounded in combat",
-                    player_id=player_id,
-                    player_name=player.name,
-                    hp=current_hp,
-                )
-
-        except Exception as e:
+        except (
+            DatabaseError,
+            AttributeError,
+            ValueError,
+            TypeError,
+            RuntimeError,
+            ConnectionError,
+            TimeoutError,
+            OSError,
+        ) as e:
             logger.error(
-                "Error persisting player HP",
+                "Error persisting player DP",
                 player_id=player_id,
-                current_hp=current_hp,
+                current_dp=current_dp,
                 error=str(e),
                 exc_info=True,
             )
 
-    async def _publish_player_hp_update_event(
+    async def _publish_player_dp_update_event(
         self,
         player_id: UUID,
-        old_hp: int,
-        new_hp: int,
-        max_hp: int,
+        old_dp: int,
+        new_dp: int,
+        max_dp: int,
         combat_id: str | None = None,
         room_id: str | None = None,
     ) -> None:
-        """Publish a PlayerHPUpdated event for real-time UI updates."""
+        """Publish a PlayerDPUpdated event for real-time UI updates."""
         try:
             logger.info(
-                "_publish_player_hp_update_event called",
+                "_publish_player_dp_update_event called",
                 player_id=player_id,
-                old_hp=old_hp,
-                new_hp=new_hp,
-                max_hp=max_hp,
+                old_dp=old_dp,
+                new_dp=new_dp,
+                max_dp=max_dp,
             )
 
             event_bus = EventBus()
-            damage_taken = old_hp - new_hp
+            damage_taken = old_dp - new_dp
 
-            hp_update_event = PlayerHPUpdated(
+            dp_update_event = PlayerDPUpdated(
                 player_id=player_id,
-                old_hp=old_hp,
-                new_hp=new_hp,
-                max_hp=max_hp,
+                old_dp=old_dp,
+                new_dp=new_dp,
+                max_dp=max_dp,
                 damage_taken=damage_taken,
                 source_id=None,
                 combat_id=combat_id,
@@ -241,24 +339,29 @@ class CombatHPSync:
 
             if event_bus:
                 try:
-                    event_bus.publish(hp_update_event)
+                    event_bus.publish(dp_update_event)
                     logger.info(
-                        "Published PlayerHPUpdated event to event bus (immediate UI update)",
+                        "Published PlayerDPUpdated event to event bus (immediate UI update)",
                         player_id=player_id,
-                        old_hp=old_hp,
-                        new_hp=new_hp,
+                        old_dp=old_dp,
+                        new_dp=new_dp,
                         event_bus_type=type(event_bus).__name__,
                     )
-                except Exception as e:
+                except (
+                    AttributeError,
+                    RuntimeError,
+                    ValueError,
+                    TypeError,
+                ) as e:
                     logger.error(
-                        "Failed to publish PlayerHPUpdated event to event bus",
+                        "Failed to publish PlayerDPUpdated event to event bus",
                         player_id=player_id,
                         error=str(e),
                         error_type=type(e).__name__,
                         exc_info=True,
                     )
             else:
-                logger.warning("No event bus available for HP update event", player_id=player_id)
+                logger.warning("No event bus available for DP update event", player_id=player_id)
 
             if self._nats_service:
                 if (
@@ -266,55 +369,64 @@ class CombatHPSync:
                     and self._combat_event_publisher.subject_manager
                 ):
                     subject = self._combat_event_publisher.subject_manager.build_subject(
-                        "combat_hp_update", player_id=str(hp_update_event.player_id)
+                        "combat_dp_update", player_id=str(dp_update_event.player_id)
                     )
                 else:
-                    subject = f"combat.hp_update.{hp_update_event.player_id}"
+                    subject = f"combat.dp_update.{dp_update_event.player_id}"
                     logger.warning(
                         "Using legacy subject construction - subject_manager not available",
-                        event_type="combat_hp_update",
-                        player_id=str(hp_update_event.player_id),
+                        event_type="combat_dp_update",
+                        player_id=str(dp_update_event.player_id),
                     )
 
                 message_data = {
-                    "event_type": "player_hp_updated",
+                    "event_type": "player_dp_updated",
                     "data": {
-                        "player_id": hp_update_event.player_id,
-                        "old_hp": hp_update_event.old_hp,
-                        "new_hp": hp_update_event.new_hp,
-                        "max_hp": hp_update_event.max_hp,
-                        "damage_taken": hp_update_event.damage_taken,
-                        "timestamp": hp_update_event.timestamp.isoformat(),
+                        "player_id": dp_update_event.player_id,
+                        "old_dp": dp_update_event.old_dp,
+                        "new_dp": dp_update_event.new_dp,
+                        "max_dp": dp_update_event.max_dp,
+                        "damage_taken": dp_update_event.damage_taken,
+                        "timestamp": dp_update_event.timestamp.isoformat(),
                     },
                 }
                 await self._nats_service.publish(subject, message_data)
-                logger.debug("Published PlayerHPUpdated event to NATS", player_id=player_id)
+                logger.debug("Published PlayerDPUpdated event to NATS", player_id=player_id)
             else:
-                logger.debug("No NATS service available for HP update event", player_id=player_id)
+                logger.debug("No NATS service available for DP update event", player_id=player_id)
 
             logger.info(
-                "Published PlayerHPUpdated event",
+                "Published PlayerDPUpdated event",
                 player_id=player_id,
-                old_hp=old_hp,
-                new_hp=new_hp,
+                old_dp=old_dp,
+                new_dp=new_dp,
                 damage_taken=damage_taken,
             )
 
-        except Exception as e:
+        except (
+            DatabaseError,
+            AttributeError,
+            ValueError,
+            TypeError,
+            RuntimeError,
+            ConnectionError,
+            TimeoutError,
+            OSError,
+        ) as e:
             logger.error(
-                "Error publishing PlayerHPUpdated event",
+                "Error publishing PlayerDPUpdated event",
                 player_id=player_id,
-                old_hp=old_hp,
-                new_hp=new_hp,
+                old_dp=old_dp,
+                new_dp=new_dp,
                 error=str(e),
                 exc_info=True,
             )
 
-    async def _publish_player_hp_correction_event(
+    async def _publish_player_dp_correction_event(
         self,
         player_id: UUID,
-        correct_hp: int,
-        max_hp: int,
+        correct_dp: int,
+        max_dp: int,
         room_id: str | None = None,
         combat_id: str | None = None,
         error_message: str | None = None,
@@ -322,19 +434,19 @@ class CombatHPSync:
         """Publish a correction event when database persistence fails."""
         try:
             logger.warning(
-                "Publishing HP correction event due to persistence failure",
+                "Publishing DP correction event due to persistence failure",
                 player_id=player_id,
-                correct_hp=correct_hp,
+                correct_dp=correct_dp,
                 error_message=error_message,
             )
 
             event_bus = EventBus()
 
-            correction_event = PlayerHPUpdated(
+            correction_event = PlayerDPUpdated(
                 player_id=player_id,
-                old_hp=correct_hp,
-                new_hp=correct_hp,
-                max_hp=max_hp,
+                old_dp=correct_dp,
+                new_dp=correct_dp,
+                max_dp=max_dp,
                 damage_taken=0,
                 source_id=None,
                 combat_id=combat_id,
@@ -345,23 +457,37 @@ class CombatHPSync:
                 try:
                     event_bus.publish(correction_event)
                     logger.info(
-                        "Published HP correction event to event bus",
+                        "Published DP correction event to event bus",
                         player_id=player_id,
-                        correct_hp=correct_hp,
+                        correct_dp=correct_dp,
                     )
-                except Exception as e:
+                except (
+                    AttributeError,
+                    RuntimeError,
+                    ValueError,
+                    TypeError,
+                ) as e:
                     logger.error(
-                        "Failed to publish HP correction event to event bus",
+                        "Failed to publish DP correction event to event bus",
                         player_id=player_id,
                         error=str(e),
                         exc_info=True,
                     )
             else:
-                logger.warning("No event bus available for HP correction event", player_id=player_id)
+                logger.warning("No event bus available for DP correction event", player_id=player_id)
 
-        except Exception as e:
+        except (
+            DatabaseError,
+            AttributeError,
+            ValueError,
+            TypeError,
+            RuntimeError,
+            ConnectionError,
+            TimeoutError,
+            OSError,
+        ) as e:
             logger.error(
-                "Error publishing HP correction event",
+                "Error publishing DP correction event",
                 player_id=player_id,
                 error=str(e),
                 exc_info=True,

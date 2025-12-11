@@ -194,6 +194,24 @@ class ApplicationContainer:
                 cls._instance = None
         logger.info("ApplicationContainer instance reset")
 
+    @classmethod
+    def set_instance(cls, instance: "ApplicationContainer") -> None:
+        """
+        Set the singleton container instance.
+
+        This method is used during application startup to register the container
+        instance that was created and initialized in the lifespan context.
+
+        Args:
+            instance: The ApplicationContainer instance to set as the singleton
+
+        AI: This provides a public API for setting the instance, avoiding direct
+            access to protected members (_lock, _instance) from external code.
+        """
+        with cls._lock:
+            cls._instance = instance
+        logger.debug("ApplicationContainer instance set via set_instance()")
+
     async def initialize(self) -> None:
         """
         Initialize all services in proper dependency order.

@@ -1,10 +1,10 @@
-import { fireEvent, render, screen, waitFor, act } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { StatsRollingScreen } from './StatsRollingScreen';
 
 // Mock fetch globally
 const mockFetch = vi.fn();
-global.fetch = mockFetch;
+vi.stubGlobal('fetch', mockFetch);
 
 // Mock the logger
 vi.mock('../utils/logger', () => ({
@@ -37,12 +37,15 @@ describe('StatsRollingScreen', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           stats: {
-            strength: 12,
-            dexterity: 14,
-            constitution: 10,
-            intelligence: 16,
-            wisdom: 8,
-            charisma: 13,
+            strength: 60,
+            dexterity: 70,
+            constitution: 50,
+            size: 55,
+            intelligence: 80,
+            power: 65,
+            education: 40,
+            charisma: 65,
+            luck: 50,
           },
         }),
       };
@@ -69,12 +72,15 @@ describe('StatsRollingScreen', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           stats: {
-            strength: 12,
-            dexterity: 14,
-            constitution: 10,
-            intelligence: 16,
-            wisdom: 8,
-            charisma: 13,
+            strength: 60,
+            dexterity: 70,
+            constitution: 50,
+            size: 55,
+            intelligence: 80,
+            power: 65,
+            education: 40,
+            charisma: 65,
+            luck: 50,
           },
         }),
       } as unknown as Response;
@@ -104,12 +110,15 @@ describe('StatsRollingScreen', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           stats: {
-            strength: 12,
-            dexterity: 14,
-            constitution: 10,
-            intelligence: 16,
-            wisdom: 8,
-            charisma: 13,
+            strength: 60,
+            dexterity: 70,
+            constitution: 50,
+            size: 55,
+            intelligence: 80,
+            power: 65,
+            education: 40,
+            charisma: 65,
+            luck: 50,
           },
         }),
       };
@@ -131,12 +140,15 @@ describe('StatsRollingScreen', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByText('12')).toBeInTheDocument();
-        expect(screen.getByText('14')).toBeInTheDocument();
-        expect(screen.getByText('10')).toBeInTheDocument();
-        expect(screen.getByText('16')).toBeInTheDocument();
-        expect(screen.getByText('8')).toBeInTheDocument();
-        expect(screen.getByText('13')).toBeInTheDocument();
+        expect(screen.getByText('60')).toBeInTheDocument();
+        expect(screen.getByText('70')).toBeInTheDocument();
+        expect(screen.getByText('50')).toBeInTheDocument();
+        expect(screen.getByText('55')).toBeInTheDocument();
+        expect(screen.getByText('80')).toBeInTheDocument();
+        expect(screen.getByText('65')).toBeInTheDocument();
+        expect(screen.getByText('40')).toBeInTheDocument();
+        expect(screen.getByText('65')).toBeInTheDocument();
+        expect(screen.getByText('50')).toBeInTheDocument();
       });
     });
 
@@ -145,12 +157,15 @@ describe('StatsRollingScreen', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           stats: {
-            strength: 15,
-            dexterity: 12,
-            constitution: 14,
-            intelligence: 10,
-            wisdom: 13,
-            charisma: 11,
+            strength: 75,
+            dexterity: 60,
+            constitution: 70,
+            size: 55,
+            intelligence: 50,
+            power: 50,
+            education: 65,
+            charisma: 55,
+            luck: 50,
           },
         }),
       };
@@ -161,12 +176,17 @@ describe('StatsRollingScreen', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByText('15')).toBeInTheDocument();
-        expect(screen.getByText('12')).toBeInTheDocument();
-        expect(screen.getByText('14')).toBeInTheDocument();
-        expect(screen.getByText('10')).toBeInTheDocument();
-        expect(screen.getByText('13')).toBeInTheDocument();
-        expect(screen.getByText('11')).toBeInTheDocument();
+        expect(screen.getByText('75')).toBeInTheDocument();
+        expect(screen.getByText('60')).toBeInTheDocument();
+        expect(screen.getByText('70')).toBeInTheDocument();
+        expect(screen.getByText('55')).toBeInTheDocument();
+        expect(screen.getByText('50')).toBeInTheDocument();
+        expect(screen.getByText('50')).toBeInTheDocument();
+        expect(screen.getByText('65')).toBeInTheDocument();
+        expect(screen.getByText('55')).toBeInTheDocument();
+        expect(screen.getByText('50')).toBeInTheDocument();
+        expect(screen.getByText('65')).toBeInTheDocument();
+        expect(screen.getByText('55')).toBeInTheDocument();
       });
 
       expect(screen.getByText('Accept Stats & Create Character')).toBeInTheDocument();
@@ -214,12 +234,15 @@ describe('StatsRollingScreen', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           stats: {
-            strength: 12,
-            dexterity: 14,
-            constitution: 10,
-            intelligence: 16,
-            wisdom: 8,
-            charisma: 13,
+            strength: 60,
+            dexterity: 70,
+            constitution: 50,
+            size: 55,
+            intelligence: 80,
+            power: 65,
+            education: 40,
+            charisma: 65,
+            luck: 50,
           },
         }),
       };
@@ -252,12 +275,15 @@ describe('StatsRollingScreen', () => {
 
       await waitFor(() => {
         expect(defaultProps.onStatsAccepted).toHaveBeenCalledWith({
-          strength: 12,
-          dexterity: 14,
-          constitution: 10,
-          intelligence: 16,
-          wisdom: 8,
-          charisma: 13,
+          strength: 60,
+          dexterity: 70,
+          constitution: 50,
+          size: 55,
+          intelligence: 80,
+          power: 65,
+          education: 40,
+          charisma: 65,
+          luck: 50,
         });
       });
     });
@@ -269,12 +295,15 @@ describe('StatsRollingScreen', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           stats: {
-            strength: 12,
-            dexterity: 14,
-            constitution: 10,
-            intelligence: 16,
-            wisdom: 8,
-            charisma: 13,
+            strength: 60,
+            dexterity: 70,
+            constitution: 50,
+            size: 55,
+            intelligence: 80,
+            power: 65,
+            education: 40,
+            charisma: 65,
+            luck: 50,
           },
         }),
       };

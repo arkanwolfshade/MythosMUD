@@ -23,9 +23,7 @@ def _format_items_section(room_drops: list[dict[str, Any]]) -> list[str]:
     return [str(line) for line in drop_lines] + [""]
 
 
-async def _format_containers_section(
-    room_id: str | None, persistence: Any
-) -> list[str]:
+async def _format_containers_section(room_id: str | None, persistence: Any) -> list[str]:
     """Format the containers/corpses section of room look."""
     if not room_id or not persistence:
         return []

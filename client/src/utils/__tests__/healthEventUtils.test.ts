@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { buildHealthStatusFromEvent, buildHealthChangeMessage, HEALTH_LOG_TAGS } from '../healthEventUtils';
 import type { HealthStatus } from '../../types/health';
+import { HEALTH_LOG_TAGS, buildHealthChangeMessage, buildHealthStatusFromEvent } from '../healthEventUtils';
 
 describe('Health Event Utilities', () => {
   describe('buildHealthStatusFromEvent', () => {
     it('should build health status from event data', () => {
       // Arrange
       const data = {
-        old_hp: 100,
-        new_hp: 85,
-        max_hp: 100,
+        old_dp: 100,
+        new_dp: 85,
+        max_dp: 100,
         reason: 'combat_damage',
         posture: 'standing',
         in_combat: true,
@@ -34,9 +34,9 @@ describe('Health Event Utilities', () => {
     it('should handle camelCase property names', () => {
       // Arrange
       const data = {
-        oldHp: 100,
-        newHp: 85,
-        maxHp: 100,
+        oldDp: 100,
+        newDp: 85,
+        maxDp: 100,
         damageTaken: 15,
       };
       const timestamp = '2024-01-01T12:00:00Z';
@@ -55,7 +55,7 @@ describe('Health Event Utilities', () => {
       const previous: HealthStatus = {
         current: 100,
         max: 100,
-        tier: 'healthy',
+        tier: 'vigorous',
         posture: 'standing',
         inCombat: false,
         lastChange: {
@@ -65,7 +65,7 @@ describe('Health Event Utilities', () => {
         },
       };
       const data = {
-        new_hp: 75,
+        new_dp: 75,
       };
       const timestamp = '2024-01-01T12:00:00Z';
 
@@ -82,8 +82,8 @@ describe('Health Event Utilities', () => {
     it('should compute reason from delta if not provided', () => {
       // Arrange
       const data = {
-        old_hp: 100,
-        new_hp: 80,
+        old_dp: 100,
+        new_dp: 80,
         damage_taken: 20,
       };
       const timestamp = '2024-01-01T12:00:00Z';
@@ -98,8 +98,8 @@ describe('Health Event Utilities', () => {
     it('should compute healing reason from positive delta', () => {
       // Arrange
       const data = {
-        old_hp: 80,
-        new_hp: 100,
+        old_dp: 80,
+        new_dp: 100,
       };
       const timestamp = '2024-01-01T12:00:00Z';
 
@@ -114,9 +114,9 @@ describe('Health Event Utilities', () => {
     it('should handle string number values', () => {
       // Arrange
       const data = {
-        old_hp: '100',
-        new_hp: '85',
-        max_hp: '100',
+        old_dp: '100',
+        new_dp: '85',
+        max_dp: '100',
       };
       const timestamp = '2024-01-01T12:00:00Z';
 
@@ -129,10 +129,10 @@ describe('Health Event Utilities', () => {
       expect(result.delta).toBe(-15);
     });
 
-    it('should use default max HP when not provided', () => {
+    it('should use default max DP when not provided', () => {
       // Arrange
       const data = {
-        new_hp: 50,
+        new_dp: 50,
       };
       const timestamp = '2024-01-01T12:00:00Z';
 
@@ -140,14 +140,14 @@ describe('Health Event Utilities', () => {
       const result = buildHealthStatusFromEvent(null, data, timestamp);
 
       // Assert
-      expect(result.status.max).toBe(100); // DEFAULT_MAX_HP
+      expect(result.status.max).toBe(100); // DEFAULT_MAX_DP
     });
 
-    it('should handle zero max HP', () => {
+    it('should handle zero max DP', () => {
       // Arrange
       const data = {
-        new_hp: 50,
-        max_hp: 0,
+        new_dp: 50,
+        max_dp: 0,
       };
       const timestamp = '2024-01-01T12:00:00Z';
 
@@ -155,15 +155,15 @@ describe('Health Event Utilities', () => {
       const result = buildHealthStatusFromEvent(null, data, timestamp);
 
       // Assert
-      expect(result.status.max).toBe(100); // Falls back to DEFAULT_MAX_HP
+      expect(result.status.max).toBe(100); // Falls back to DEFAULT_MAX_DP
     });
 
     it('should handle invalid number values gracefully', () => {
       // Arrange
       const data = {
-        old_hp: 'invalid',
-        new_hp: null,
-        max_hp: undefined,
+        old_dp: 'invalid',
+        new_dp: null,
+        max_dp: undefined,
       };
       const timestamp = '2024-01-01T12:00:00Z';
 
@@ -180,7 +180,7 @@ describe('Health Event Utilities', () => {
       const previous: HealthStatus = {
         current: 100,
         max: 100,
-        tier: 'healthy',
+        tier: 'vigorous',
         posture: 'sitting',
         lastChange: {
           delta: 0,
@@ -188,7 +188,7 @@ describe('Health Event Utilities', () => {
         },
       };
       const data = {
-        new_hp: 90,
+        new_dp: 90,
       };
       const timestamp = '2024-01-01T12:00:00Z';
 
@@ -204,7 +204,7 @@ describe('Health Event Utilities', () => {
       const previous: HealthStatus = {
         current: 100,
         max: 100,
-        tier: 'healthy',
+        tier: 'vigorous',
         inCombat: true,
         lastChange: {
           delta: 0,
@@ -212,7 +212,7 @@ describe('Health Event Utilities', () => {
         },
       };
       const data = {
-        new_hp: 90,
+        new_dp: 90,
       };
       const timestamp = '2024-01-01T12:00:00Z';
 
@@ -230,7 +230,7 @@ describe('Health Event Utilities', () => {
       const status: HealthStatus = {
         current: 85,
         max: 100,
-        tier: 'healthy',
+        tier: 'vigorous',
         lastChange: {
           delta: -15,
           reason: 'damage',
@@ -247,7 +247,7 @@ describe('Health Event Utilities', () => {
       expect(message).toContain('Health loses 15');
       expect(message).toContain('(damage)');
       expect(message).toContain('→ 85/100');
-      expect(message).toContain('(Healthy)');
+      expect(message).toContain('(Vigorous)');
     });
 
     it('should build message for healing', () => {
@@ -255,7 +255,7 @@ describe('Health Event Utilities', () => {
       const status: HealthStatus = {
         current: 95,
         max: 100,
-        tier: 'healthy',
+        tier: 'vigorous',
         lastChange: {
           delta: 10,
           reason: 'healing',
@@ -279,7 +279,7 @@ describe('Health Event Utilities', () => {
       const status: HealthStatus = {
         current: 85,
         max: 100,
-        tier: 'healthy',
+        tier: 'vigorous',
         lastChange: {
           delta: -15,
           reason: 'damage',
@@ -303,7 +303,7 @@ describe('Health Event Utilities', () => {
       const status: HealthStatus = {
         current: 85,
         max: 100,
-        tier: 'healthy',
+        tier: 'vigorous',
         lastChange: {
           delta: -15,
           reason: 'damage',
@@ -327,7 +327,7 @@ describe('Health Event Utilities', () => {
       const status: HealthStatus = {
         current: 85,
         max: 100,
-        tier: 'healthy',
+        tier: 'vigorous',
         lastChange: {
           delta: -15,
           reason: 'damage',
@@ -351,7 +351,7 @@ describe('Health Event Utilities', () => {
       const status: HealthStatus = {
         current: 85,
         max: 100,
-        tier: 'healthy',
+        tier: 'vigorous',
         lastChange: {
           delta: -15,
           reason: 'combat_damage',
@@ -374,7 +374,7 @@ describe('Health Event Utilities', () => {
       const status: HealthStatus = {
         current: 85,
         max: 100,
-        tier: 'healthy',
+        tier: 'vigorous',
         lastChange: {
           delta: -15,
           timestamp: '2024-01-01T12:00:00Z',

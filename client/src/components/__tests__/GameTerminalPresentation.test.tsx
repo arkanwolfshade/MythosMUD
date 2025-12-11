@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ChatMessage } from '../../stores/gameStore';
-import { GameTerminalPresentation } from '../GameTerminalPresentation';
+import { GameTerminalPresentation, GameTerminalPresentationProps } from '../GameTerminalPresentation';
 
 // Mock the debug logger
 vi.mock('../../utils/debugLogger', () => ({
@@ -105,7 +105,7 @@ vi.mock('../DraggablePanel', () => ({
     onMinimize?: () => void;
     onMaximize?: () => void;
   }) => (
-    <div data-testid={`draggable-panel-${title.toLowerCase().replace(' ', '-')}`}>
+    <div data-testid={`draggable-panel-${(title || 'panel').toLowerCase().replace(' ', '-')}`}>
       <div data-testid="panel-title">{title}</div>
       <button data-testid="panel-close" onClick={onClose}>
         Close
@@ -163,7 +163,7 @@ describe('GameTerminalPresentation', () => {
       id: 'player-1',
       name: 'TestPlayer',
       stats: {
-        current_health: 100,
+        current_db: 100,
         lucidity: 80,
         strength: 10,
         dexterity: 12,
@@ -428,7 +428,13 @@ describe('GameTerminalPresentation', () => {
     });
 
     it('should handle player without stats', () => {
-      const playerWithoutStats = { id: 'player-1', name: 'TestPlayer', level: 5 };
+      // Type assertion needed to test edge case where player exists but stats are missing
+      // The component handles this gracefully with optional chaining (player?.stats)
+      const playerWithoutStats = {
+        id: 'player-1',
+        name: 'TestPlayer',
+        level: 5,
+      } as unknown as NonNullable<GameTerminalPresentationProps['player']>;
       render(<GameTerminalPresentation {...defaultProps} player={playerWithoutStats} />);
 
       // Should not display stats section

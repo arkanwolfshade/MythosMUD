@@ -984,7 +984,7 @@ CREATE TABLE public.players (
     profession_id integer,
     created_at timestamp with time zone DEFAULT now() CONSTRAINT players_new_created_at_not_null NOT NULL,
     last_active timestamp with time zone DEFAULT now() CONSTRAINT players_new_last_active_not_null NOT NULL,
-    stats jsonb DEFAULT '{"fear": 0, "wisdom": 10, "charisma": 10, "lucidity": 100, "position": "standing", "strength": 10, "dexterity": 10, "corruption": 0, "constitution": 10, "intelligence": 10, "current_health": 100, "cult_affiliation": 0, "occult_knowledge": 0}'::jsonb CONSTRAINT players_stats_jsonb_not_null NOT NULL
+    stats jsonb DEFAULT '{"fear": 0, "wisdom": 10, "charisma": 10, "lucidity": 100, "position": "standing", "strength": 10, "dexterity": 10, "corruption": 0, "constitution": 10, "intelligence": 10, "current_db": 100, "cult_affiliation": 0, "occult_knowledge": 0}'::jsonb CONSTRAINT players_stats_jsonb_not_null NOT NULL
 );
 
 

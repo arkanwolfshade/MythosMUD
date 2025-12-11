@@ -46,8 +46,8 @@ class PlayerAttackedEvent(BaseEvent):
     target_name: str
     damage: int
     action_type: str
-    target_current_hp: int
-    target_max_hp: int
+    target_current_dp: int
+    target_max_dp: int
 
 
 @dataclass
@@ -62,8 +62,8 @@ class NPCAttackedEvent(BaseEvent):
     npc_name: str
     damage: int
     action_type: str
-    target_current_hp: int
-    target_max_hp: int
+    target_current_dp: int
+    target_max_dp: int
 
 
 @dataclass
@@ -75,8 +75,8 @@ class NPCTookDamageEvent(BaseEvent):
     npc_id: UUID
     npc_name: str
     damage: int
-    current_hp: int
-    max_hp: int
+    current_dp: int
+    max_dp: int
 
 
 @dataclass

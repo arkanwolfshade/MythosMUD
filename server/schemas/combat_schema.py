@@ -19,41 +19,78 @@ class CombatSchemaValidationError(Exception):
 BASE_STATS_COMBAT_SCHEMA = {
     "type": "object",
     "properties": {
-        "hp": {
+        "determination_points": {
             "type": "integer",
             "minimum": 0,
-            "description": "Current hit points",
+            "description": "Current determination points (DP)",
         },
-        "max_hp": {
+        "max_determination_points": {
             "type": "integer",
             "minimum": 1,
-            "description": "Maximum hit points",
+            "description": "Maximum determination points (DP)",
+        },
+        "magic_points": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Current magic points (MP)",
+        },
+        "max_magic_points": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Maximum magic points (MP)",
         },
         "xp_value": {
             "type": "integer",
             "minimum": 0,
             "description": "Experience points awarded when NPC is defeated",
         },
-        "dexterity": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 20,
-            "description": "NPC dexterity for turn order calculation",
-        },
         "strength": {
             "type": "integer",
             "minimum": 1,
-            "maximum": 20,
-            "description": "NPC strength (for future expansion)",
+            "description": "NPC strength",
         },
         "constitution": {
             "type": "integer",
             "minimum": 1,
-            "maximum": 20,
-            "description": "NPC constitution (for future expansion)",
+            "description": "NPC constitution",
+        },
+        "size": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "NPC size",
+        },
+        "dexterity": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "NPC dexterity for turn order calculation",
+        },
+        "intelligence": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "NPC intelligence",
+        },
+        "power": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "NPC power",
+        },
+        "education": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "NPC education",
+        },
+        "charisma": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "NPC charisma",
+        },
+        "luck": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "NPC luck",
         },
     },
-    "required": ["hp", "max_hp", "xp_value"],
+    "required": ["determination_points", "max_determination_points", "xp_value"],
     "additionalProperties": True,
 }
 
@@ -104,7 +141,7 @@ COMBAT_BEHAVIOR_SCHEMA = {
             "type": "number",
             "minimum": 0,
             "maximum": 1,
-            "description": "HP percentage threshold for retreat",
+            "description": "DP percentage threshold for retreat",
         },
         "combat_timeout": {
             "type": "integer",
@@ -127,12 +164,20 @@ BEHAVIOR_CONFIG_COMBAT_SCHEMA = {
 
 # Default combat data templates
 DEFAULT_COMBAT_STATS = {
-    "hp": 50,
-    "max_hp": 50,
+    "determination_points": 20,  # DP max = (CON + SIZ) / 5 = (50 + 50) / 5 = 20
+    "max_determination_points": 20,
+    "magic_points": 10,  # MP max = ceil(POW * 0.2) = ceil(50 * 0.2) = 10
+    "max_magic_points": 10,
     "xp_value": 1,
-    "dexterity": 10,
-    "strength": 10,
-    "constitution": 8,
+    "strength": 50,
+    "constitution": 50,
+    "size": 50,
+    "dexterity": 50,
+    "intelligence": 50,
+    "power": 50,
+    "education": 50,
+    "charisma": 50,
+    "luck": 50,
 }
 
 DEFAULT_COMBAT_MESSAGES = {
@@ -322,12 +367,20 @@ def get_combat_stats_summary(npc_definition) -> dict[str, Any]:
         "npc_name": npc_definition.name,
         "npc_type": npc_definition.npc_type,
         "combat_stats": {
-            "hp": stats.get("hp", 0),
-            "max_hp": stats.get("max_hp", 0),
+            "determination_points": stats.get("determination_points", 0),
+            "max_determination_points": stats.get("max_determination_points", 0),
+            "magic_points": stats.get("magic_points", 0),
+            "max_magic_points": stats.get("max_magic_points", 0),
             "xp_value": stats.get("xp_value", 0),
-            "dexterity": stats.get("dexterity", 10),
-            "strength": stats.get("strength", 10),
-            "constitution": stats.get("constitution", 8),
+            "strength": stats.get("strength", 50),
+            "constitution": stats.get("constitution", 50),
+            "size": stats.get("size", 50),
+            "dexterity": stats.get("dexterity", 50),
+            "intelligence": stats.get("intelligence", 50),
+            "power": stats.get("power", 50),
+            "education": stats.get("education", 50),
+            "charisma": stats.get("charisma", 50),
+            "luck": stats.get("luck", 50),
         },
         "has_combat_messages": "combat_messages" in config,
         "has_combat_behavior": "combat_behavior" in config,

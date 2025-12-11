@@ -1,25 +1,27 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import type { StateCreator } from 'zustand';
 
 export interface Player {
   id: string;
   name: string;
   stats: {
-    current_health: number;
-    max_health?: number;
+    current_db: number; // Represents determination points (DP)
+    max_health?: number; // Represents max determination points (DP)
     lucidity: number;
     max_lucidity?: number;
     strength?: number;
     dexterity?: number;
     constitution?: number;
+    size?: number;
     intelligence?: number;
-    wisdom?: number;
+    power?: number;
+    education?: number;
     charisma?: number;
-    occult_knowledge?: number;
-    fear?: number;
+    luck?: number;
+    occult?: number;
     corruption?: number;
-    cult_affiliation?: number;
+    magic_points?: number;
+    max_magic_points?: number;
     position?: string;
   };
   level?: number;
@@ -141,12 +143,8 @@ const createInitialState = (): GameState => ({
   lastUpdate: null,
 });
 
-const withDevtools: <T>(fn: StateCreator<T, [], []>) => StateCreator<T, [], []> = import.meta.env.DEV
-  ? (devtools as unknown as <T>(fn: StateCreator<T, [], []>) => StateCreator<T, [], []>)
-  : fn => fn;
-
 export const useGameStore = create<GameStore>()(
-  withDevtools(
+  devtools(
     (set, get) => ({
       ...createInitialState(),
 
@@ -247,7 +245,7 @@ export const useGameStore = create<GameStore>()(
     }),
     {
       name: 'game-store',
-      partialize: state => ({
+      partialize: (state: GameStore) => ({
         player: state.player,
         room: state.room,
         lastUpdate: state.lastUpdate,

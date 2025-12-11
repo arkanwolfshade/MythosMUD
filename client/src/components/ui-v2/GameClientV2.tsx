@@ -17,6 +17,25 @@ import { RoomDescriptionPanel } from './panels/RoomDescriptionPanel';
 import type { ChatMessage, MythosTimeState, Player, Room } from './types';
 import { createDefaultPanelLayout } from './utils/panelLayout';
 
+// Helper function to calculate occupant count from room data
+// Extracted to reduce cyclomatic complexity
+const calculateOccupantCount = (room: Room | null): number => {
+  if (!room) {
+    return 0;
+  }
+  if (typeof room.occupant_count === 'number') {
+    return room.occupant_count;
+  }
+  const players = room.players ?? [];
+  const npcs = room.npcs ?? [];
+  const calculatedCount = players.length + npcs.length;
+  if (calculatedCount > 0) {
+    return calculatedCount;
+  }
+  const legacyOccupants = room.occupants ?? [];
+  return legacyOccupants.length;
+};
+
 interface GameClientV2Props {
   playerName: string;
   authToken: string;
@@ -73,12 +92,12 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
     if (healthStatus) {
       return healthStatus;
     }
-    if (player?.stats?.current_health !== undefined) {
+    if (player?.stats?.current_db !== undefined) {
       const maxHealth = player.stats.max_health ?? 100;
       return {
-        current: player.stats.current_health,
+        current: player.stats.current_db,
         max: maxHealth,
-        tier: determineHealthTier(player.stats.current_health, maxHealth),
+        tier: determineHealthTier(player.stats.current_db, maxHealth),
         posture: player.stats.position,
         inCombat: player.in_combat ?? false,
       };
@@ -114,7 +133,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
     };
 
     // Use debounce to avoid excessive updates during resize
-    let resizeTimeout: NodeJS.Timeout;
+    let resizeTimeout: number;
     const debouncedHandleResize = () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(handleResize, 150);
@@ -131,6 +150,16 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
   const handleSelectCommand = useCallback((_command: string) => {
     // Command selection handler - currently unused but kept for future use
   }, []);
+
+  // Calculate occupants panel title with count
+  // Derived from occupant count calculation logic described in room occupancy studies
+  const occupantsTitle = useMemo(() => {
+    const totalCount = calculateOccupantCount(room);
+    if (totalCount > 0) {
+      return `Occupants (${totalCount})`;
+    }
+    return 'Occupants';
+  }, [room]);
 
   // Get panel state for each panel
   const chatHistoryPanel = panelManager.getPanel('chatHistory');
@@ -230,39 +259,27 @@ const GameClientV2Content: React.FC<GameClientV2Props> = ({
           </PanelContainer>
         )}
 
-        {occupantsPanel &&
-          occupantsPanel.isVisible &&
-          (() => {
-            // Calculate total occupant count for title
-            const players = room?.players ?? [];
-            const npcs = room?.npcs ?? [];
-            const legacyOccupants = room?.occupants ?? [];
-            const totalCount = room?.occupant_count ?? (players.length + npcs.length || legacyOccupants.length);
-            const occupantsTitle =
-              typeof totalCount === 'number' && totalCount > 0 ? `Occupants (${totalCount})` : 'Occupants';
-
-            return (
-              <PanelContainer
-                id={occupantsPanel.id}
-                title={occupantsTitle}
-                position={occupantsPanel.position}
-                size={occupantsPanel.size}
-                zIndex={occupantsPanel.zIndex}
-                isMinimized={occupantsPanel.isMinimized}
-                isMaximized={occupantsPanel.isMaximized}
-                isVisible={occupantsPanel.isVisible}
-                minSize={occupantsPanel.minSize}
-                variant="default"
-                onPositionChange={panelManager.updatePosition}
-                onSizeChange={panelManager.updateSize}
-                onMinimize={panelManager.toggleMinimize}
-                onMaximize={panelManager.toggleMaximize}
-                onFocus={panelManager.focusPanel}
-              >
-                <OccupantsPanel room={room} />
-              </PanelContainer>
-            );
-          })()}
+        {occupantsPanel && occupantsPanel.isVisible && (
+          <PanelContainer
+            id={occupantsPanel.id}
+            title={occupantsTitle}
+            position={occupantsPanel.position}
+            size={occupantsPanel.size}
+            zIndex={occupantsPanel.zIndex}
+            isMinimized={occupantsPanel.isMinimized}
+            isMaximized={occupantsPanel.isMaximized}
+            isVisible={occupantsPanel.isVisible}
+            minSize={occupantsPanel.minSize}
+            variant="default"
+            onPositionChange={panelManager.updatePosition}
+            onSizeChange={panelManager.updateSize}
+            onMinimize={panelManager.toggleMinimize}
+            onMaximize={panelManager.toggleMaximize}
+            onFocus={panelManager.focusPanel}
+          >
+            <OccupantsPanel room={room} />
+          </PanelContainer>
+        )}
 
         {gameInfoPanel && gameInfoPanel.isVisible && (
           <PanelContainer

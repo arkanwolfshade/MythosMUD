@@ -22,18 +22,18 @@ ADD COLUMN IF NOT EXISTS stats_jsonb JSONB;
 UPDATE players
 SET stats_jsonb = CASE
         WHEN stats IS NULL
-        OR stats = '' THEN '{"strength": 50, "dexterity": 50, "constitution": 50, "intelligence": 50, "wisdom": 50, "charisma": 50, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100, "position": "standing"}'::jsonb
+        OR stats = '' THEN '{"strength": 50, "dexterity": 50, "constitution": 50, "intelligence": 50, "wisdom": 50, "charisma": 50, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_db": 100, "position": "standing"}'::jsonb
         WHEN stats::text ~ '^\s*\{' THEN -- Valid JSON object - cast to JSONB
         stats::jsonb
         ELSE -- Invalid JSON - use default
-        '{"strength": 50, "dexterity": 50, "constitution": 50, "intelligence": 50, "wisdom": 50, "charisma": 50, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100, "position": "standing"}'::jsonb
+        '{"strength": 50, "dexterity": 50, "constitution": 50, "intelligence": 50, "wisdom": 50, "charisma": 50, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_db": 100, "position": "standing"}'::jsonb
     END;
 -- Step 3: Make the new column NOT NULL with default
 ALTER TABLE players
 ALTER COLUMN stats_jsonb
 SET NOT NULL,
     ALTER COLUMN stats_jsonb
-SET DEFAULT '{"strength": 50, "dexterity": 50, "constitution": 50, "intelligence": 50, "wisdom": 50, "charisma": 50, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_health": 100, "position": "standing"}'::jsonb;
+SET DEFAULT '{"strength": 50, "dexterity": 50, "constitution": 50, "intelligence": 50, "wisdom": 50, "charisma": 50, "sanity": 100, "occult_knowledge": 0, "fear": 0, "corruption": 0, "cult_affiliation": 0, "current_db": 100, "position": "standing"}'::jsonb;
 -- Step 4: Drop the old TEXT column
 ALTER TABLE players DROP COLUMN stats;
 -- Step 5: Rename the new column to stats

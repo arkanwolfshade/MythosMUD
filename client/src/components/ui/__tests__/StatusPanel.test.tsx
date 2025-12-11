@@ -7,10 +7,10 @@ import {
   CoreAttributes,
   HealthStat,
   HorrorStats,
+  LucidityStat,
   MessagesCount,
   PlayerName,
   PlayerStats,
-  LucidityStat,
   StatusPanel,
 } from '../StatusPanel';
 
@@ -20,7 +20,7 @@ describe('StatusPanel Compound Component', () => {
       id: 'player-1',
       name: 'TestPlayer',
       stats: {
-        current_health: 100,
+        current_db: 100,
         max_health: 100,
         lucidity: 80,
         strength: 10,
@@ -145,7 +145,7 @@ describe('StatusPanel Compound Component', () => {
     it('should not display when player has no health stat', () => {
       const playerWithoutHealth = {
         ...defaultProps.player,
-        stats: { ...defaultProps.player.stats, current_health: undefined },
+        stats: { ...defaultProps.player.stats, current_db: undefined },
       };
 
       render(
@@ -218,7 +218,7 @@ describe('StatusPanel Compound Component', () => {
       const playerWithLimitedStats = {
         ...defaultProps.player,
         stats: {
-          current_health: 100,
+          current_db: 100,
           lucidity: 80,
           strength: 10,
           dexterity: 12,
@@ -271,7 +271,7 @@ describe('StatusPanel Compound Component', () => {
       const playerWithLimitedHorrorStats = {
         ...defaultProps.player,
         stats: {
-          current_health: 100,
+          current_db: 100,
           lucidity: 80,
           occult_knowledge: 5,
           fear: 2,

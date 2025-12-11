@@ -105,7 +105,7 @@ vi.mock('../DraggablePanel', () => ({
     onMinimize?: () => void;
     onMaximize?: () => void;
   }) => (
-    <div data-testid={`draggable-panel-${title.toLowerCase().replace(' ', '-')}`}>
+    <div data-testid={`draggable-panel-${(title || 'untitled').toLowerCase().replace(' ', '-')}`}>
       <div data-testid="panel-title">{title}</div>
       <button data-testid="panel-close" onClick={onClose}>
         Close
@@ -154,7 +154,7 @@ describe('GameTerminal', () => {
     player: {
       name: 'TestPlayer',
       stats: {
-        current_health: 100,
+        current_db: 100,
         lucidity: 80,
         strength: 10,
         dexterity: 12,
@@ -174,7 +174,7 @@ describe('GameTerminal', () => {
       },
     ],
     commandHistory: ['look', 'inventory', 'status'],
-    LucidityStatus: null,
+    lucidityStatus: null,
     healthStatus: null,
     hallucinations: [],
     rescueState: null,

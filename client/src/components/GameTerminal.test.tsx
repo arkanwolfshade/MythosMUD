@@ -70,7 +70,7 @@ describe('GameTerminal Panel Sizing', () => {
     player: {
       name: 'TestPlayer',
       stats: {
-        current_health: 100,
+        current_db: 100,
         lucidity: 80,
         position: 'standing',
       },
@@ -78,7 +78,7 @@ describe('GameTerminal Panel Sizing', () => {
     messages: [{ text: 'Welcome to MythosMUD', timestamp: '2024-01-01T00:00:00Z', isHtml: false }],
     commandHistory: ['look', 'inventory'],
     hallucinations: [],
-    LucidityStatus: null,
+    lucidityStatus: null,
     healthStatus: null,
     rescueState: null,
     isLoggingOut: false,

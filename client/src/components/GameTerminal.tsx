@@ -1,19 +1,19 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import { DEFAULT_CHANNEL } from '../config/channels';
+import type { HealthStatus } from '../types/health';
+import { determineHealthTier } from '../types/health';
+import type { HallucinationMessage, LucidityStatus, RescueState } from '../types/lucidity';
+import type { MythosTimeState } from '../types/mythosTime';
 import { debugLogger } from '../utils/debugLogger';
 import { DraggablePanel } from './DraggablePanel';
+import { HolidayBanner, MythosTimeHud } from './MythosTimeHud';
 import { RoomInfoPanel } from './RoomInfoPanel';
+import { HealthMeter, IncapacitatedBanner } from './health';
+import { HallucinationTicker, LucidityMeter, RescueStatusBanner } from './lucidity';
 import { ChatPanel } from './panels/ChatPanel';
 import { CommandPanel } from './panels/CommandPanel';
 import { GameLogPanel } from './panels/GameLogPanel';
-import { LucidityMeter, HallucinationTicker, RescueStatusBanner } from './lucidity';
-import { HealthMeter, IncapacitatedBanner } from './health';
-import type { LucidityStatus, HallucinationMessage, RescueState } from '../types/lucidity';
-import type { HealthStatus } from '../types/health';
-import { determineHealthTier } from '../types/health';
-import type { MythosTimeState } from '../types/mythosTime';
-import { HolidayBanner, MythosTimeHud } from './MythosTimeHud';
 
 const formatPosture = (value?: string): string => {
   if (!value) {
@@ -30,8 +30,8 @@ interface Player {
   profession_description?: string;
   profession_flavor_text?: string;
   stats?: {
-    current_health: number;
-    max_health?: number;
+    current_db: number;
+    max_dp?: number;
     lucidity: number;
     max_lucidity?: number;
     strength?: number;
@@ -56,15 +56,15 @@ const buildHealthStatus = (
   lastChange: HealthStatus['lastChange'] | undefined
 ): HealthStatus | null => {
   const stats = player?.stats;
-  if (!stats || stats.current_health === undefined) {
+  if (!stats || stats.current_db === undefined) {
     return null;
   }
 
-  const maxHealth = stats.max_health ?? 100;
+  const maxDp = stats.max_dp ?? 100;
   return {
-    current: stats.current_health,
-    max: maxHealth,
-    tier: determineHealthTier(stats.current_health, maxHealth),
+    current: stats.current_db,
+    max: maxDp,
+    tier: determineHealthTier(stats.current_db, maxDp),
     lastChange,
     posture: stats.position,
     inCombat: player?.in_combat ?? false,
@@ -234,7 +234,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
       return;
     }
 
-    const currentHealth = player?.stats?.current_health;
+    const currentHealth = player?.stats?.current_db;
     if (typeof currentHealth !== 'number') {
       previousHealthRef.current = null;
       setHealthChange(undefined);
@@ -282,7 +282,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
       style={{ minHeight: '100vh', width: '100%' }}
     >
       {/* Header */}
-      <div className="fixed top-0 left-0 right-0 z-[9999] border-b border-gray-800 bg-mythos-terminal-surface/95 px-4 py-2">
+      <div className="fixed top-0 left-0 right-0 z-9999 border-b border-gray-800 bg-mythos-terminal-surface/95 px-4 py-2">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap items-center gap-3" data-testid="connection-banner">
             <span className={`text-sm font-semibold ${isConnected ? 'text-green-300' : 'text-red-300'}`}>
@@ -303,7 +303,7 @@ export const GameTerminal: React.FC<GameTerminalProps> = ({
       {(rescueState && rescueState.status !== 'idle') ||
       (mythosTime && mythosTime.active_holidays.length > 0) ||
       shouldShowIncapacitatedBanner ? (
-        <div className="absolute left-0 right-0 top-12 z-[9999] px-4 space-y-2">
+        <div className="absolute left-0 right-0 top-12 z-9999 px-4 space-y-2">
           {shouldShowIncapacitatedBanner && <IncapacitatedBanner onDismiss={handleDismissIncapacitated} />}
           {rescueState && rescueState.status !== 'idle' && (
             <RescueStatusBanner state={rescueState} onDismiss={onDismissRescue} />

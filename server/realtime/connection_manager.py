@@ -1567,6 +1567,18 @@ class ConnectionManager:
             return None
         return await self.game_state_provider.get_player(player_id)
 
+    async def get_player(self, player_id: uuid.UUID) -> Player | None:
+        """
+        Get a player from the persistence layer (public API).
+
+        Args:
+            player_id: The player's ID (UUID)
+
+        Returns:
+            Optional[Player]: The player object or None if not found
+        """
+        return await self._get_player(player_id)
+
     async def _get_players_batch(self, player_ids: list[uuid.UUID]) -> dict[uuid.UUID, Player]:
         """Get multiple players from the persistence layer in a single batch operation."""
         if self.game_state_provider is None:
@@ -1574,7 +1586,7 @@ class ConnectionManager:
             return {}
         return await self.game_state_provider.get_players_batch(player_ids)
 
-    async def _convert_room_players_uuids_to_names(self, room_data: dict[str, Any]) -> dict[str, Any]:
+    async def convert_room_players_uuids_to_names(self, room_data: dict[str, Any]) -> dict[str, Any]:
         """Convert player UUIDs and NPC IDs in room_data to names."""
         if self.game_state_provider is None:
             logger.error("Game state provider not initialized")
@@ -2527,6 +2539,18 @@ class ConnectionManager:
             event_bus: The EventBus instance to set
         """
         self._event_bus = event_bus
+
+    def set_player_combat_service(self, player_combat_service: Any) -> None:
+        """
+        Set the player combat service for the connection manager.
+
+        This public method allows external code to set the player combat service
+        without accessing the protected _player_combat_service member.
+
+        Args:
+            player_combat_service: The PlayerCombatService instance to set
+        """
+        self._player_combat_service = player_combat_service
 
     def _get_event_bus(self):
         """Get the event bus from connection manager."""
