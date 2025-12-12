@@ -142,6 +142,7 @@ class TestCommandProcessing:
 
         # Mock room data - use get_room_by_id (sync method)
         mock_room = Mock(spec=Room)
+        mock_room.id = "test_room_001"
         mock_room.name = "Test Room"
         mock_room.description = "A test room"
         mock_room.exits = {"north": "room2"}
@@ -222,7 +223,6 @@ class TestCommandProcessing:
     async def test_process_command_unknown(self):
         """Test processing unknown command."""
         import uuid
-        from unittest.mock import AsyncMock
 
         mock_request = Mock()
         mock_request.app.state.persistence = Mock()
@@ -245,7 +245,6 @@ class TestCommandProcessing:
     async def test_process_command_alias(self):
         """Test processing alias command."""
         import uuid
-        from unittest.mock import AsyncMock
 
         mock_request = Mock()
         mock_request.app.state.persistence = Mock()

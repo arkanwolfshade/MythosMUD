@@ -36,7 +36,9 @@ class TestNPCBaseClass:
         npc_def.required_npc = True
         npc_def.max_population = 1
         npc_def.spawn_probability = 1.0
-        npc_def.base_stats = '{"hp": 100, "strength": 10, "intelligence": 8, "charisma": 6}'
+        npc_def.base_stats = (
+            '{"determination_points": 100, "max_dp": 100, "strength": 10, "intelligence": 8, "charisma": 6}'
+        )
         npc_def.behavior_config = '{"wander_interval": 30, "response_chance": 0.7}'
         npc_def.ai_integration_stub = '{"ai_enabled": false, "ai_model": null}'
         return npc_def
@@ -60,7 +62,7 @@ class TestNPCBaseClass:
     def test_npc_base_stats_parsing(self, mock_npc_base):
         """Test that NPC base stats are parsed correctly."""
         stats = mock_npc_base.get_stats()
-        assert stats["hp"] == 100
+        assert stats["determination_points"] == 100
         assert stats["strength"] == 10
         assert stats["intelligence"] == 8
         assert stats["charisma"] == 6
@@ -118,22 +120,29 @@ class TestNPCBaseClass:
 
     def test_npc_base_health_management(self, mock_npc_base):
         """Test NPC health management."""
-        # Test taking damage
+        # Test taking damage (NPCs use determination_points/dp, not hp)
         result = mock_npc_base.take_damage(25)
         assert result is True
 
         stats = mock_npc_base.get_stats()
-        assert stats["hp"] == 75
+        # NPCs use determination_points (or dp) instead of hp
+        dp = stats.get("determination_points", stats.get("dp", 0))
+        assert dp == 75  # Started with 100, took 25 damage
 
         # Test healing
         result = mock_npc_base.heal(10)
         assert result is True
 
         stats = mock_npc_base.get_stats()
-        assert stats["hp"] == 85
+        # NPCs use determination_points (or dp) instead of hp
+        dp = stats.get("determination_points", stats.get("dp", 0))
+        assert dp == 85  # Was 75, healed 10
 
-        # Test death
-        result = mock_npc_base.take_damage(100)
+        # Test death (NPCs use determination_points/dp, not hp)
+        # Take enough damage to kill
+        stats_before = mock_npc_base.get_stats()
+        current_dp = stats_before.get("determination_points", stats_before.get("dp", 85))
+        result = mock_npc_base.take_damage(current_dp + 10)  # Deal enough damage to kill
         assert result is True
         assert mock_npc_base.is_alive is False
 
@@ -178,7 +187,7 @@ class TestNPCBaseClass:
 
         assert restored_npc.npc_id == npc.npc_id
         assert restored_npc.current_room == npc.current_room
-        assert restored_npc.get_stats()["hp"] == npc.get_stats()["hp"]
+        assert restored_npc.get_stats()["determination_points"] == npc.get_stats()["determination_points"]
         assert len(restored_npc.get_inventory()) == len(npc.get_inventory())
 
 
@@ -602,7 +611,8 @@ class TestAggressiveMobNPC:
         rule_names = [rule["name"] for rule in rules]
         assert "hunt_players" in rule_names
         assert "attack_on_sight" in rule_names
-        assert "flee_when_low_hp" in rule_names
+        # Rule name changed from flee_when_low_hp to flee_when_low_dp (health -> determination points)
+        assert "flee_when_low_dp" in rule_names
         assert "patrol_territory" in rule_names
 
 

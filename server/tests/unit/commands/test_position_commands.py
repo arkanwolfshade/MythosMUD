@@ -1,5 +1,6 @@
 """Tests for the posture command handlers (sit/stand/lie)."""
 
+# pylint: disable=redefined-outer-name
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -37,6 +38,7 @@ def mock_player():
     player.name = "TestPlayer"
     player.current_room_id = "room-001"
     player.get_stats.return_value = {"position": "standing"}
+    player.set_stats = MagicMock()
     return player
 
 
@@ -56,11 +58,11 @@ async def test_sit_command_updates_persistence_and_connection(mock_request, mock
     mock_request.app.state.persistence.save_player = AsyncMock()
 
     result = await handle_sit_command(
-        command_data={"command_type": "sit", "args": []},
-        current_user={"username": "TestPlayer"},
-        request=mock_request,
-        alias_storage=baseline_alias_storage,
-        player_name="TestPlayer",
+        {"command_type": "sit", "args": []},
+        {"username": "TestPlayer"},
+        mock_request,
+        baseline_alias_storage,
+        "TestPlayer",
     )
 
     mock_player.set_stats.assert_called_once()
@@ -112,11 +114,11 @@ async def test_stand_command_no_change_skips_persistence(mock_request, mock_play
     ]
 
     result = await handle_stand_command(
-        command_data={"command_type": "stand", "args": []},
-        current_user={"username": "TestPlayer"},
-        request=mock_request,
-        alias_storage=alias_storage,
-        player_name="TestPlayer",
+        {"command_type": "stand", "args": []},
+        {"username": "TestPlayer"},
+        mock_request,
+        alias_storage,
+        "TestPlayer",
     )
 
     mock_player.set_stats.assert_not_called()
@@ -142,11 +144,11 @@ async def test_lie_command_accepts_down_modifier(mock_request, mock_player, base
     mock_request.app.state.persistence.save_player = AsyncMock()
 
     result = await handle_lie_command(
-        command_data={"command_type": "lie", "args": ["down"], "modifier": "down"},
-        current_user={"username": "TestPlayer"},
-        request=mock_request,
-        alias_storage=baseline_alias_storage,
-        player_name="TestPlayer",
+        {"command_type": "lie", "args": ["down"], "modifier": "down"},
+        {"username": "TestPlayer"},
+        mock_request,
+        baseline_alias_storage,
+        "TestPlayer",
     )
 
     mock_player.set_stats.assert_called()
@@ -179,11 +181,11 @@ async def test_position_command_handles_missing_persistence(mock_request, baseli
     mock_request.app.state.persistence = None
 
     result = await handle_sit_command(
-        command_data={"command_type": "sit", "args": []},
-        current_user={"username": "TestPlayer"},
-        request=mock_request,
-        alias_storage=baseline_alias_storage,
-        player_name="TestPlayer",
+        {"command_type": "sit", "args": []},
+        {"username": "TestPlayer"},
+        mock_request,
+        baseline_alias_storage,
+        "TestPlayer",
     )
 
     assert result["result"] == "Position changes are currently unavailable."

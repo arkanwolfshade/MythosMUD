@@ -138,6 +138,12 @@ class NATSMessageHandler:
     @connection_manager.setter
     def connection_manager(self, value):
         self._connection_manager = value
+        # Update filtering helper's connection_manager reference
+        if hasattr(self, "_filtering_helper"):
+            self._filtering_helper.connection_manager = value
+        # Update event handler's connection_manager reference
+        if hasattr(self, "_event_handler"):
+            self._event_handler.connection_manager = value
 
     async def start(self, enable_event_subscriptions: bool = True):
         """
@@ -227,7 +233,17 @@ class NATSMessageHandler:
 
         for pattern in subscription_patterns:
             logger.info("About to subscribe to pattern", pattern=pattern, debug=True)
-            await self._subscribe_to_subject(pattern)
+            try:
+                await self._subscribe_to_subject(pattern)
+            except (NATSError, RuntimeError) as e:
+                logger.error(
+                    "Failed to subscribe to pattern, continuing with other patterns",
+                    pattern=pattern,
+                    error=str(e),
+                    debug=True,
+                )
+                # Continue with other patterns even if one fails
+                continue
 
         logger.info("Finished _subscribe_to_standardized_chat_subjects", debug=True)
 
@@ -247,7 +263,7 @@ class NATSMessageHandler:
             await self.nats_service.subscribe(subject, self._handle_nats_message)
             self.subscriptions[subject] = True
             logger.info("Successfully subscribed to NATS subject", subject=subject, debug=True)
-        except Exception as e:
+        except (NATSError, RuntimeError) as e:
             logger.error("Error subscribing to NATS subject", subject=subject, error=str(e), debug=True)
             # Re-raise to propagate error
             raise
@@ -567,7 +583,7 @@ class NATSMessageHandler:
             strategy = channel_strategy_factory.get_strategy(channel)
             await strategy.broadcast(chat_event, room_id, party_id, target_player_id, sender_id, self)
 
-        except (NATSError, RuntimeError) as e:
+        except (NATSError, RuntimeError, ValueError, AttributeError, TypeError) as e:
             logger.error(
                 "Error broadcasting message by channel type",
                 error=str(e),

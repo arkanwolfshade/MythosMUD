@@ -351,20 +351,38 @@ class NPCCombatIntegration:
                     "corruption": stats.get("corruption", 0),
                 }
 
-            # For NPCs, use provided stats or return empty dict
+            # For NPCs, normalize stats to include 'hp' for backward compatibility
             if npc_stats:
-                return npc_stats
+                normalized_stats = dict(npc_stats)
+                # Map determination_points or dp to hp if hp is missing
+                if "hp" not in normalized_stats:
+                    # Check determination_points first, then dp
+                    hp_value = normalized_stats.get("determination_points")
+                    if hp_value is None:
+                        hp_value = normalized_stats.get("dp")
+                    if hp_value is not None:
+                        normalized_stats["hp"] = hp_value
+                return normalized_stats
 
             logger.warning("Entity not found for combat stats", entity_id=entity_id)
             return {}
 
         except (ValueError, TypeError, AttributeError, DatabaseError, ValidationError) as e:
             # If there's an error (e.g., invalid UUID, missing attributes, type mismatch, database errors),
-            # try to return NPC stats if provided
+            # try to return NPC stats if provided (normalized to include 'hp' for backward compatibility)
             if npc_stats:
                 logger.debug(
                     "Error getting combat stats, returning provided NPC stats", entity_id=entity_id, error=str(e)
                 )
-                return npc_stats
+                normalized_stats = dict(npc_stats)
+                # Map determination_points or dp to hp if hp is missing
+                if "hp" not in normalized_stats:
+                    # Check determination_points first, then dp
+                    hp_value = normalized_stats.get("determination_points")
+                    if hp_value is None:
+                        hp_value = normalized_stats.get("dp")
+                    if hp_value is not None:
+                        normalized_stats["hp"] = hp_value
+                return normalized_stats
             logger.error("Error getting combat stats", entity_id=entity_id, error=str(e))
             return {}

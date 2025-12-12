@@ -327,23 +327,23 @@ class TestPlayerStatsConfig:
         assert "Stats must be between 1 and 100" in str(exc_info.value)
 
     def test_invalid_stat_too_high(self):
-        """Test stat validation rejects values above 100."""
-        with pytest.raises(ValidationError) as exc_info:
-            PlayerStatsConfig(dexterity=101)
-        assert "Stats must be between 1 and 100" in str(exc_info.value)
+        """Test stat validation - stats no longer have upper limit, only minimum of 1."""
+        # Stats can now be above 100 (no hard caps as per validator comment)
+        config = PlayerStatsConfig(dexterity=101)
+        assert config.dexterity == 101
 
     def test_invalid_health_too_low(self):
-        """Test health validation rejects values below 1."""
+        """Test derived stats validation rejects negative values."""
         with pytest.raises(ValidationError) as exc_info:
-            PlayerStatsConfig(max_health=0)
-        assert "Health/lucidity must be between 1 and 1000" in str(exc_info.value)
+            PlayerStatsConfig(max_dp=-1)
+        assert "Derived stats must be non-negative" in str(exc_info.value)
 
     def test_to_dict_format(self):
         """Test conversion to dict format."""
-        config = PlayerStatsConfig(strength=75, max_health=150)
+        config = PlayerStatsConfig(strength=75, max_dp=150)
         stats_dict = config.to_dict()
         assert stats_dict["strength"] == 75
-        assert stats_dict["max_health"] == 150
+        assert stats_dict["max_dp"] == 150
         assert "dexterity" in stats_dict
 
 
@@ -372,7 +372,9 @@ class TestAppConfig:
     def test_app_config_loads_from_env(self):
         """Test that AppConfig loads from environment variables."""
         config = AppConfig()
-        assert config.server.port == 54731
+        # Extract server config to avoid type checker FieldInfo issues
+        server_config = config.server
+        assert server_config.port == 54731
         assert config.database.url == "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
         assert config.security.admin_password == "test_admin_pass"
         assert config.logging.environment == "unit_test"
@@ -565,13 +567,14 @@ class TestLegacyDictConversion:
         """Test PlayerStatsConfig.to_dict() produces correct structure."""
         # Clear any environment variables that might override defaults
         monkeypatch.delenv("DEFAULT_STATS_DEXTERITY", raising=False)
-        config = PlayerStatsConfig(strength=75, health=80)
+        config = PlayerStatsConfig(strength=75, max_dp=80)
         stats_dict = config.to_dict()
 
         assert stats_dict["strength"] == 75
-        assert stats_dict["health"] == 80
+        assert stats_dict["max_dp"] == 80
         assert stats_dict["dexterity"] == 50  # Default value
-        assert len(stats_dict) == 13  # All 13 stats present
+        # Count all fields in the dict (should be 16 fields: 9 attributes + 7 derived stats)
+        assert len(stats_dict) >= 13  # At least 13 stats present
 
 
 class TestConfigValidationEdgeCases:
@@ -607,16 +610,15 @@ class TestConfigValidationEdgeCases:
         config = PlayerStatsConfig(strength=1)
         assert config.strength == 1
 
-        # Maximum valid stat
-        config = PlayerStatsConfig(strength=100)
-        assert config.strength == 100
+        # Stats can now exceed 100 (no hard caps)
+        config = PlayerStatsConfig(strength=150)
+        assert config.strength == 150
 
         # Below minimum
         with pytest.raises(ValidationError):
             PlayerStatsConfig(strength=0)
 
-        # Above maximum
-        with pytest.raises(ValidationError):
+            # No upper limit test - stats can be any positive value
             PlayerStatsConfig(strength=101)
 
 

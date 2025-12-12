@@ -28,6 +28,9 @@ class TestSimpleIntegration:
         cm._get_player = AsyncMock()
         cm.persistence = Mock()
         cm.persistence.get_room = AsyncMock()
+        # async_persistence.get_room_by_id is a sync method (uses cache)
+        cm.async_persistence = Mock()
+        cm.async_persistence.get_room_by_id = Mock()
         cm.broadcast_to_room = AsyncMock()
         cm.subscribe_to_room = AsyncMock()
         cm.unsubscribe_from_room = AsyncMock()
@@ -41,9 +44,11 @@ class TestSimpleIntegration:
         event_bus = EventBus()
         event_bus.set_main_loop(asyncio.get_running_loop())
 
-        # Create event handler
-        event_handler = RealTimeEventHandler(event_bus)
-        event_handler.connection_manager = mock_connection_manager
+        # Create event handler with connection manager
+        event_handler = RealTimeEventHandler(event_bus, connection_manager=mock_connection_manager)
+        # Also update player_handler's connection_manager in case it was already initialized
+        event_handler.player_handler.connection_manager = mock_connection_manager
+        event_handler.player_handler._room_handler.connection_manager = mock_connection_manager
 
         # Use UUID for player_id
         player_id = uuid4()
@@ -51,13 +56,18 @@ class TestSimpleIntegration:
         # Setup mock player
         mock_player = Mock()
         mock_player.name = "TestPlayer"
-        mock_connection_manager._get_player.return_value = mock_player
+        # Mock both _get_player (legacy) and get_player (current)
+        mock_connection_manager._get_player = AsyncMock(return_value=mock_player)
+        mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
 
         # Setup mock room
         mock_room = Mock()
         mock_room.name = "Test Room"
         mock_room.get_players.return_value = []
+        # Mock both persistence methods
         mock_connection_manager.persistence.get_room.return_value = mock_room
+        # async_persistence.get_room_by_id is a sync method (uses cache)
+        mock_connection_manager.async_persistence.get_room_by_id.return_value = mock_room
 
         # Simulate the WebSocket connection flow
         # 1. Create room with event bus
@@ -106,9 +116,11 @@ class TestSimpleIntegration:
         event_bus = EventBus()
         event_bus.set_main_loop(asyncio.get_running_loop())
 
-        # Create event handler
-        event_handler = RealTimeEventHandler(event_bus)
-        event_handler.connection_manager = mock_connection_manager
+        # Create event handler with connection manager
+        event_handler = RealTimeEventHandler(event_bus, connection_manager=mock_connection_manager)
+        # Also update player_handler's connection_manager in case it was already initialized
+        event_handler.player_handler.connection_manager = mock_connection_manager
+        event_handler.player_handler._room_handler.connection_manager = mock_connection_manager
 
         # Use UUID for player_id
         player_id = uuid4()
@@ -116,13 +128,18 @@ class TestSimpleIntegration:
         # Setup mock player
         mock_player = Mock()
         mock_player.name = "TestPlayer"
-        mock_connection_manager._get_player.return_value = mock_player
+        # Mock both _get_player (legacy) and get_player (current)
+        mock_connection_manager._get_player = AsyncMock(return_value=mock_player)
+        mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
 
         # Setup mock room
         mock_room = Mock()
         mock_room.name = "Test Room"
         mock_room.get_players.return_value = []
+        # Mock both persistence methods
         mock_connection_manager.persistence.get_room.return_value = mock_room
+        # async_persistence.get_room_by_id is a sync method (uses cache)
+        mock_connection_manager.async_persistence.get_room_by_id.return_value = mock_room
 
         # Simulate the WebSocket disconnection flow
         # 1. Create room with event bus
@@ -166,20 +183,27 @@ class TestSimpleIntegration:
         event_bus = EventBus()
         event_bus.set_main_loop(asyncio.get_running_loop())
 
-        # Create event handler
-        event_handler = RealTimeEventHandler(event_bus)
-        event_handler.connection_manager = mock_connection_manager
+        # Create event handler with connection manager
+        event_handler = RealTimeEventHandler(event_bus, connection_manager=mock_connection_manager)
+        # Also update player_handler's connection_manager in case it was already initialized
+        event_handler.player_handler.connection_manager = mock_connection_manager
+        event_handler.player_handler._room_handler.connection_manager = mock_connection_manager
 
         # Setup mock player
         mock_player = Mock()
         mock_player.name = "TestPlayer"
-        mock_connection_manager._get_player.return_value = mock_player
+        # Mock both _get_player (legacy) and get_player (current)
+        mock_connection_manager._get_player = AsyncMock(return_value=mock_player)
+        mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
 
         # Setup mock room
         mock_room = Mock()
         mock_room.name = "Test Room"
         mock_room.get_players.return_value = []
+        # Mock both persistence methods
         mock_connection_manager.persistence.get_room.return_value = mock_room
+        # async_persistence.get_room_by_id is a sync method (uses cache)
+        mock_connection_manager.async_persistence.get_room_by_id.return_value = mock_room
 
         # Use UUID for player_id
         player_id = uuid4()
@@ -232,9 +256,11 @@ class TestSimpleIntegration:
         event_bus = EventBus()
         event_bus.set_main_loop(asyncio.get_running_loop())
 
-        # Create event handler
-        event_handler = RealTimeEventHandler(event_bus)
-        event_handler.connection_manager = mock_connection_manager
+        # Create event handler with connection manager
+        event_handler = RealTimeEventHandler(event_bus, connection_manager=mock_connection_manager)
+        # Also update player_handler's connection_manager in case it was already initialized
+        event_handler.player_handler.connection_manager = mock_connection_manager
+        event_handler.player_handler._room_handler.connection_manager = mock_connection_manager
 
         # Use UUIDs for player_ids
         player_id1 = uuid4()
@@ -256,7 +282,8 @@ class TestSimpleIntegration:
                 return mock_player2
             return None
 
-        mock_connection_manager._get_player.side_effect = mock_get_player
+        mock_connection_manager._get_player = AsyncMock(side_effect=mock_get_player)
+        mock_connection_manager.get_player = AsyncMock(side_effect=mock_get_player)
 
         # Mock _get_players_batch to return a dictionary of players when awaited
         async def mock_get_players_batch(player_ids):

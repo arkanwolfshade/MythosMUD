@@ -161,9 +161,9 @@ class TestHealthTrackingSystem:
         )
 
         # Advance to NPC's turn (NPC performs non-combat action, no damage)
-        await combat_service._advance_turn_automatically(combat, current_tick=2)
+        await combat_service._turn_processor._advance_turn_automatically(combat, current_tick=2)
         current_participant = combat.get_current_turn_participant()
-        await combat_service._process_npc_turn(combat, current_participant, current_tick=2)
+        await combat_service._turn_processor._process_npc_turn(combat, current_participant, current_tick=2)
 
         # Verify player health is unchanged (NPC doesn't attack in passive mode)
         player_participant = combat.participants[player_id]
@@ -298,7 +298,10 @@ class TestHealthTrackingSystem:
 
         # Auto-progression should continue without affecting health
         # (NPC performs non-combat actions)
-        await combat_service._process_automatic_combat_progression(combat)
+        # Add combat to active_combats and use process_game_tick
+        combat_service._active_combats[combat.combat_id] = combat
+        combat.next_turn_tick = 3  # Set to trigger advancement
+        await combat_service.process_game_tick(current_tick=3)
 
         # Verify health remains unchanged after NPC non-combat action
         assert npc_participant.current_dp == 6

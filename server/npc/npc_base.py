@@ -53,10 +53,16 @@ class NPCBase(ABC):
         self._ai_config = self._parse_ai_config(getattr(definition, "ai_integration_stub", "{}"))
 
         # CRITICAL FIX: NPC stats use "determination_points"
-        # Support backward compatibility with "dp" and "determination_points" during migration
+        # Support backward compatibility with "hp", "dp", and "determination_points" during migration
         if "determination_points" not in self._stats:
             if "dp" in self._stats:
                 self._stats["determination_points"] = self._stats["dp"]
+            elif "hp" in self._stats:
+                # Convert legacy "hp" to "determination_points"
+                self._stats["determination_points"] = self._stats["hp"]
+                # Also set max_dp from max_hp if present
+                if "max_hp" in self._stats and "max_dp" not in self._stats:
+                    self._stats["max_dp"] = self._stats["max_hp"]
             elif "determination_points" in self._stats:
                 self._stats["determination_points"] = self._stats["determination_points"]
             else:

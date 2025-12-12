@@ -154,6 +154,7 @@ all:
 	cd $(PROJECT_ROOT) && make format
 	cd $(PROJECT_ROOT) && make mypy
 	cd $(PROJECT_ROOT) && make lint
-	cd $(PROJECT_ROOT) && make semgrep
+	cd $(PROJECT_ROOT) && make lint-sqlalchemy
+	cd $(PROJECT_ROOT) && make semgrep-autofix
 	cd $(PROJECT_ROOT) && make build
 	cd $(PROJECT_ROOT) && make test-coverage

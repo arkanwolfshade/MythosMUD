@@ -402,7 +402,7 @@ class MessageFilteringHelper:
             )
             return False
 
-        except NATSError as e:
+        except (NATSError, RuntimeError, Exception) as e:
             logger.error(
                 "Error checking mute status",
                 error=str(e),

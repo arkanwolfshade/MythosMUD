@@ -338,7 +338,7 @@ class TestCombatAutoProgression:
         npc_hp_before_unconscious_turn = npc_participant.current_dp
 
         # Process player turn while unconscious (auto-progression)
-        await combat_service._process_player_turn(combat, player_participant, current_tick=2)
+        await combat_service._turn_processor._process_player_turn(combat, player_participant, current_tick=2)
 
         # CRITICAL: NPC HP should NOT have changed (unconscious player cannot attack)
         assert npc_participant.current_dp == npc_hp_before_unconscious_turn
@@ -393,7 +393,7 @@ class TestCombatAutoProgression:
         npc_hp_before = npc_participant.current_dp
 
         # Process player turn while mortally wounded
-        await combat_service._process_player_turn(combat, player_participant, current_tick=2)
+        await combat_service._turn_processor._process_player_turn(combat, player_participant, current_tick=2)
 
         # CRITICAL: NPC HP should NOT have changed
         assert npc_participant.current_dp == npc_hp_before
@@ -463,7 +463,7 @@ class TestCombatAutoProgression:
         player_hp_before_dead_turn = player_participant.current_dp
 
         # Process NPC turn while dead (auto-progression)
-        await combat_service._process_npc_turn(combat, npc_participant, current_tick=2)
+        await combat_service._turn_processor._process_npc_turn(combat, npc_participant, current_tick=2)
 
         # CRITICAL: Player HP should NOT have changed (dead NPC cannot attack)
         assert player_participant.current_dp == player_hp_before_dead_turn
@@ -518,7 +518,7 @@ class TestCombatAutoProgression:
         player_hp_before = player_participant.current_dp
 
         # Process NPC turn while dead
-        await combat_service._process_npc_turn(combat, npc_participant, current_tick=2)
+        await combat_service._turn_processor._process_npc_turn(combat, npc_participant, current_tick=2)
 
         # CRITICAL: Player HP should NOT have changed
         assert player_participant.current_dp == player_hp_before

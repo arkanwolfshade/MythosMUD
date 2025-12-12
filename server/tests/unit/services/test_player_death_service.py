@@ -20,7 +20,7 @@ TEST_PLAYER_ID = uuid4()
 
 
 @pytest.fixture
-def mock_player():
+def mock_player():  # pylint: disable=redefined-outer-name
     """Create a mock player with configurable HP."""
     player = Mock(spec=Player)
     player.player_id = TEST_PLAYER_ID
@@ -29,7 +29,7 @@ def mock_player():
     return player
 
 
-class TestPlayerDeathService:
+class TestPlayerDeathService:  # pylint: disable=redefined-outer-name
     """Test suite for PlayerDeathService."""
 
     @pytest.mark.asyncio
@@ -53,19 +53,19 @@ class TestPlayerDeathService:
         # Create mock players with different HP values
         player1 = Mock(spec=Player)
         player1.player_id = "player-1"
-        player1.get_stats.return_value = {"current_health": 0}  # Mortally wounded
+        player1.get_stats.return_value = {"current_dp": 0}  # Mortally wounded
 
         player2 = Mock(spec=Player)
         player2.player_id = "player-2"
-        player2.get_stats.return_value = {"current_health": -5}  # Mortally wounded
+        player2.get_stats.return_value = {"current_dp": -5}  # Mortally wounded
 
         player3 = Mock(spec=Player)
         player3.player_id = "player-3"
-        player3.get_stats.return_value = {"current_health": 50}  # Alive
+        player3.get_stats.return_value = {"current_dp": 50}  # Alive
 
         player4 = Mock(spec=Player)
         player4.player_id = "player-4"
-        player4.get_stats.return_value = {"current_health": -10}  # Dead
+        player4.get_stats.return_value = {"current_dp": -10}  # Dead
 
         # Mock database session to return all players (using async SQLAlchemy 2.0 API)
         mock_session = AsyncMock()
@@ -88,7 +88,7 @@ class TestPlayerDeathService:
     async def test_process_mortally_wounded_tick_normal_decay(self, player_death_service, mock_player):
         """Test HP decay processing for a mortally wounded player."""
         # Set player to mortally wounded state
-        stats = {"current_health": -3}
+        stats = {"current_dp": -3}
         mock_player.get_stats.return_value = stats
         mock_player.is_dead.return_value = False
 
@@ -101,14 +101,14 @@ class TestPlayerDeathService:
         assert result is True
         mock_player.set_stats.assert_called_once()
         updated_stats = mock_player.set_stats.call_args[0][0]
-        assert updated_stats["current_health"] == -4
+        assert updated_stats["current_dp"] == -4
         mock_session.commit.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_process_mortally_wounded_tick_cap_at_minus_ten(self, player_death_service, mock_player):
         """Test HP decay caps at -10."""
         # Set player to -9 HP (one away from death)
-        stats = {"current_health": -9}
+        stats = {"current_dp": -9}
         mock_player.get_stats.return_value = stats
         mock_player.is_dead.return_value = False
 
@@ -120,14 +120,14 @@ class TestPlayerDeathService:
         # Verify HP was decreased to exactly -10 (capped)
         assert result is True
         updated_stats = mock_player.set_stats.call_args[0][0]
-        assert updated_stats["current_health"] == -10
+        assert updated_stats["current_dp"] == -10
         mock_session.commit.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_process_mortally_wounded_tick_already_at_cap(self, player_death_service, mock_player):
         """Test HP decay when already at -10."""
         # Set player to exactly -10 HP
-        stats = {"current_health": -10}
+        stats = {"current_dp": -10}
         mock_player.get_stats.return_value = stats
         mock_player.is_dead.return_value = True
 
@@ -157,7 +157,7 @@ class TestPlayerDeathService:
         mock_player.current_room_id = "death-room"
         mock_player.name = "DeadPlayer"
         # get_stats() must return a mutable dict, not a Mock
-        mock_player.get_stats.return_value = {"current_health": -10, "position": "standing"}
+        mock_player.get_stats.return_value = {"current_dp": -10, "position": "standing"}
         mock_player.set_stats = Mock()
 
         mock_session = AsyncMock()
@@ -176,7 +176,7 @@ class TestPlayerDeathService:
         mock_player.current_room_id = "death-room"
         mock_player.name = "DeadPlayer"
         # get_stats() must return a mutable dict, not a Mock
-        mock_player.get_stats.return_value = {"current_health": -10, "position": "standing"}
+        mock_player.get_stats.return_value = {"current_dp": -10, "position": "standing"}
         mock_player.set_stats = Mock()
 
         mock_session = AsyncMock()
@@ -216,7 +216,7 @@ class TestPlayerDeathService:
         mock_event_bus = Mock()
         service = PlayerDeathService(event_bus=mock_event_bus)
 
-        stats = {"current_health": -5}
+        stats = {"current_dp": -5}
         mock_player.get_stats.return_value = stats
         mock_player.is_dead.return_value = False
         mock_player.name = "TestPlayer"
@@ -230,9 +230,9 @@ class TestPlayerDeathService:
         # Verify event was published
         mock_event_bus.publish.assert_called_once()
         event = mock_event_bus.publish.call_args[0][0]
-        assert event.event_type == "PlayerHPDecayEvent"
-        assert event.old_hp == -5
-        assert event.new_hp == -6
+        assert event.event_type == "PlayerDPDecayEvent"
+        assert event.old_dp == -5
+        assert event.new_dp == -6
 
     @pytest.mark.asyncio
     async def test_process_mortally_wounded_tick_database_exception(self, player_death_service, mock_player):
@@ -241,7 +241,7 @@ class TestPlayerDeathService:
         mock_session.get.return_value = mock_player
         mock_session.commit.side_effect = Exception("Database error")
 
-        mock_player.get_stats.return_value = {"current_health": -5}
+        mock_player.get_stats.return_value = {"current_dp": -5}
         mock_player.is_dead.return_value = False
 
         result = await player_death_service.process_mortally_wounded_tick(TEST_PLAYER_ID, mock_session)
@@ -259,7 +259,7 @@ class TestPlayerDeathService:
         mock_player.name = "TestPlayer"
         mock_player.current_room_id = "death-room"
         # get_stats() must return a mutable dict, not a Mock
-        mock_player.get_stats.return_value = {"current_health": -10, "position": "standing"}
+        mock_player.get_stats.return_value = {"current_dp": -10, "position": "standing"}
         mock_player.set_stats = Mock()
 
         mock_session = AsyncMock()
@@ -283,7 +283,7 @@ class TestPlayerDeathService:
         mock_player.current_room_id = "death-room"
         mock_player.name = "DeadPlayer"
         # get_stats() must return a mutable dict, not a Mock
-        mock_player.get_stats.return_value = {"current_health": -10, "position": "standing"}
+        mock_player.get_stats.return_value = {"current_dp": -10, "position": "standing"}
         mock_player.set_stats = Mock()
 
         mock_session = AsyncMock()
@@ -298,8 +298,6 @@ class TestPlayerDeathService:
     @pytest.mark.asyncio
     async def test_handle_player_death_clears_combat_state(self, mock_player):
         """Test that player death clears combat state (GitHub issue #244)."""
-        from uuid import uuid4
-
         # Create service with both event bus and player combat service
         mock_event_bus = Mock()
         mock_player_combat_service = AsyncMock()
@@ -311,7 +309,7 @@ class TestPlayerDeathService:
         mock_player.name = "TestPlayer"
         mock_player.current_room_id = "death-room"
         # get_stats() must return a mutable dict, not a Mock
-        mock_player.get_stats.return_value = {"current_health": -10, "position": "standing"}
+        mock_player.get_stats.return_value = {"current_dp": -10, "position": "standing"}
         mock_player.set_stats = Mock()
 
         mock_session = AsyncMock()
@@ -342,7 +340,7 @@ class TestPlayerDeathService:
         mock_player.name = "TestPlayer"
         mock_player.current_room_id = "death-room"
         # get_stats() must return a mutable dict, not a Mock
-        mock_player.get_stats.return_value = {"current_health": -10, "position": "standing"}
+        mock_player.get_stats.return_value = {"current_dp": -10, "position": "standing"}
         mock_player.set_stats = Mock()
 
         mock_session = AsyncMock()

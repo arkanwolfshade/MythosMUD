@@ -182,43 +182,43 @@ class TestGetHealthLabel:
 
     def test_get_health_label_healthy(self):
         """Test health label for healthy player (>75%)."""
-        stats = {"current_health": 100, "max_health": 100}
+        stats = {"current_dp": 100, "max_dp": 100}
         assert _get_health_label(stats) == "healthy"
 
-        stats = {"current_health": 80, "max_health": 100}
+        stats = {"current_dp": 80, "max_dp": 100}
         assert _get_health_label(stats) == "healthy"
 
-        stats = {"current_health": 76, "max_health": 100}
+        stats = {"current_dp": 76, "max_dp": 100}
         assert _get_health_label(stats) == "healthy"
 
     def test_get_health_label_wounded(self):
         """Test health label for wounded player (25-75%)."""
-        stats = {"current_health": 75, "max_health": 100}
+        stats = {"current_dp": 75, "max_dp": 100}
         assert _get_health_label(stats) == "wounded"
 
-        stats = {"current_health": 50, "max_health": 100}
+        stats = {"current_dp": 50, "max_dp": 100}
         assert _get_health_label(stats) == "wounded"
 
-        stats = {"current_health": 25, "max_health": 100}
+        stats = {"current_dp": 25, "max_dp": 100}
         assert _get_health_label(stats) == "wounded"
 
     def test_get_health_label_critical(self):
         """Test health label for critical player (1-24%)."""
-        stats = {"current_health": 24, "max_health": 100}
+        stats = {"current_dp": 24, "max_dp": 100}
         assert _get_health_label(stats) == "critical"
 
-        stats = {"current_health": 10, "max_health": 100}
+        stats = {"current_dp": 10, "max_dp": 100}
         assert _get_health_label(stats) == "critical"
 
-        stats = {"current_health": 1, "max_health": 100}
+        stats = {"current_dp": 1, "max_dp": 100}
         assert _get_health_label(stats) == "critical"
 
     def test_get_health_label_mortally_wounded(self):
         """Test health label for mortally wounded player (<=0%)."""
-        stats = {"current_health": 0, "max_health": 100}
+        stats = {"current_dp": 0, "max_dp": 100}
         assert _get_health_label(stats) == "mortally wounded"
 
-        stats = {"current_health": -10, "max_health": 100}
+        stats = {"current_dp": -10, "max_dp": 100}
         assert _get_health_label(stats) == "mortally wounded"
 
 
@@ -486,8 +486,8 @@ class TestPlayerLookFunctionality:
         target_player = MagicMock()
         target_player.name = "Armitage"
         target_player.get_stats.return_value = {
-            "current_health": 100,
-            "max_health": 100,
+            "current_dp": 100,
+            "max_dp": 100,
             "lucidity": 100,
             "max_lucidity": 100,
         }
@@ -506,8 +506,8 @@ class TestPlayerLookFunctionality:
 
         # Test wounded player
         target_player.get_stats.return_value = {
-            "current_health": 50,
-            "max_health": 100,
+            "current_dp": 50,
+            "max_dp": 100,
             "lucidity": 100,
             "max_lucidity": 100,
         }
@@ -516,8 +516,8 @@ class TestPlayerLookFunctionality:
 
         # Test critical player
         target_player.get_stats.return_value = {
-            "current_health": 10,
-            "max_health": 100,
+            "current_dp": 10,
+            "max_dp": 100,
             "lucidity": 100,
             "max_lucidity": 100,
         }
