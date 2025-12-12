@@ -96,7 +96,6 @@ class TestSecurityHeadersVerification:
 
         return mock_persistence
 
-    @pytest.mark.slow
     def test_security_headers_on_api_endpoints(self, container_test_client_class, mock_security_persistence):
         """Test that security headers are applied to all API endpoints."""
         # Define all API endpoints to test
@@ -375,12 +374,15 @@ class TestSecurityHeadersVerification:
         ]
 
         for method_data in methods_to_test:
+            method = method_data[0]
+            endpoint = method_data[1]
             if len(method_data) == 2:
-                method, endpoint = method_data
                 kwargs = {}
-            else:
-                method, endpoint, data = method_data
+            elif len(method_data) == 3:
+                data = method_data[2]
                 kwargs = {"json": data}
+            else:
+                raise ValueError(f"Invalid method_data format: {method_data}")
 
             if method == "GET":
                 response = container_test_client_class.get(endpoint, **kwargs)
@@ -390,6 +392,8 @@ class TestSecurityHeadersVerification:
                 response = container_test_client_class.delete(endpoint, **kwargs)
             elif method == "OPTIONS":
                 response = container_test_client_class.options(endpoint, **kwargs)
+            else:
+                raise ValueError(f"Unsupported HTTP method: {method}")
 
             # Verify security headers are present
             security_headers = [

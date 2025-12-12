@@ -35,7 +35,6 @@ class TestRoomsListEndpoint:
         yield
         client.app.dependency_overrides.clear()
 
-    @pytest.mark.slow
     async def test_list_rooms_requires_plane_and_zone(self, container_test_client_class):
         """Test that plane and zone parameters are required."""
         client = container_test_client_class

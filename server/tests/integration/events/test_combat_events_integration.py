@@ -27,6 +27,15 @@ from server.services.combat_event_publisher import CombatEventPublisher
 class TestCombatEventPublisher:
     """Test combat event publisher integration with NATS."""
 
+    def __init__(self):
+        """Initialize test class attributes."""
+        self.mock_nats_service = None
+        self.publisher = None
+        self.test_combat_id = None
+        self.test_room_id = None
+        self.test_player_id = None
+        self.test_npc_id = None
+
     def setup_method(self):
         """Set up test fixtures."""
         # Create mock NATS service
@@ -119,8 +128,8 @@ class TestCombatEventPublisher:
             target_name="TestNPC",
             damage=5,
             action_type="punch",
-            target_current_hp=45,
-            target_max_hp=50,
+            target_current_dp=45,
+            target_max_dp=50,
         )
 
         # Execute
@@ -158,8 +167,8 @@ class TestCombatEventPublisher:
             npc_name="TestNPC",
             damage=3,
             action_type="kick",
-            target_current_hp=47,
-            target_max_hp=50,
+            target_current_dp=47,
+            target_max_dp=50,
         )
 
         # Execute
@@ -194,8 +203,8 @@ class TestCombatEventPublisher:
             npc_id=self.test_npc_id,
             npc_name="TestNPC",
             damage=5,
-            current_hp=10,
-            max_hp=15,
+            current_dp=10,
+            max_dp=15,
         )
 
         # Execute
@@ -216,8 +225,8 @@ class TestCombatEventPublisher:
         assert message_data["event_data"]["npc_id"] == str(self.test_npc_id)
         assert message_data["event_data"]["npc_name"] == "TestNPC"
         assert message_data["event_data"]["damage"] == 5
-        assert message_data["event_data"]["current_hp"] == 10
-        assert message_data["event_data"]["max_hp"] == 15
+        assert message_data["event_data"]["current_dp"] == 10
+        assert message_data["event_data"]["max_dp"] == 15
 
     @pytest.mark.asyncio
     async def test_publish_npc_died_success(self):
@@ -432,8 +441,8 @@ class TestExtendedEventTypes:
             source_id="player_001",
             combat_id="combat_001",
             npc_name="Goblin",
-            current_hp=10,
-            max_hp=15,
+            current_dp=10,
+            max_dp=15,
         )
 
         assert event.npc_id == "npc_001"
@@ -443,8 +452,8 @@ class TestExtendedEventTypes:
         assert event.source_id == "player_001"
         assert event.combat_id == "combat_001"
         assert event.npc_name == "Goblin"
-        assert event.current_hp == 10
-        assert event.max_hp == 15
+        assert event.current_dp == 10
+        assert event.max_dp == 15
 
     def test_npc_died_event_with_combat_data(self):
         """Test NPCDied event with combat data."""

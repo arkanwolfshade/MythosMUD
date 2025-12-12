@@ -16,9 +16,6 @@ from starlette.responses import Response
 
 from server.middleware.comprehensive_logging import ComprehensiveLoggingMiddleware
 
-# Mark entire module as slow for CI/CD-only execution
-pytestmark = pytest.mark.slow
-
 
 class TestComprehensiveLoggingMiddleware:
     """Test comprehensive logging middleware."""

@@ -106,7 +106,8 @@ class TestEventHandlerBroadcasting:
     def mock_connection_manager(self):
         """Create a mock connection manager."""
         cm = AsyncMock()
-        cm._get_player = AsyncMock()
+        cm.get_player = AsyncMock()
+        cm._get_player = AsyncMock()  # Keep for backward compatibility
         cm.persistence = Mock()
         # Mock async_persistence with get_room_by_id (sync method)
         cm.async_persistence = Mock()
@@ -120,8 +121,9 @@ class TestEventHandlerBroadcasting:
     @pytest.fixture
     def event_handler(self, event_bus, mock_connection_manager):
         """Create a RealTimeEventHandler with mocked dependencies."""
-        handler = RealTimeEventHandler(event_bus)
-        handler.connection_manager = mock_connection_manager
+        handler = RealTimeEventHandler(event_bus, connection_manager=mock_connection_manager)
+        # Also update player_handler's connection_manager
+        handler.player_handler.connection_manager = mock_connection_manager
         return handler
 
     @pytest.mark.asyncio
@@ -133,7 +135,7 @@ class TestEventHandlerBroadcasting:
         # Setup mock player
         mock_player = Mock()
         mock_player.name = "TestPlayer"
-        mock_connection_manager._get_player.return_value = mock_player
+        mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
 
         # Setup mock room - use get_room_by_id (sync method)
         mock_room = Mock()
@@ -146,7 +148,7 @@ class TestEventHandlerBroadcasting:
             evt.sequence_number = 1
             return evt
 
-        event_handler.room_sync_service._process_event_with_ordering = Mock(side_effect=mock_process_event)
+        event_handler.room_sync_service.process_event_with_ordering = Mock(side_effect=mock_process_event)
 
         # Mock chat logger
         event_handler.chat_logger.log_player_joined_room = Mock()
@@ -188,7 +190,7 @@ class TestEventHandlerBroadcasting:
         # Setup mock player
         mock_player = Mock()
         mock_player.name = "TestPlayer"
-        mock_connection_manager._get_player.return_value = mock_player
+        mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
 
         # Setup mock room - use get_room_by_id (sync method)
         mock_room = Mock()
@@ -201,7 +203,7 @@ class TestEventHandlerBroadcasting:
             evt.sequence_number = 1
             return evt
 
-        event_handler.room_sync_service._process_event_with_ordering = Mock(side_effect=mock_process_event)
+        event_handler.room_sync_service.process_event_with_ordering = Mock(side_effect=mock_process_event)
 
         # Mock chat logger
         event_handler.chat_logger.log_player_left_room = Mock()
@@ -240,7 +242,7 @@ class TestEventHandlerBroadcasting:
     ):
         """Test that RealTimeEventHandler handles missing players gracefully."""
         # Setup mock to return None for player lookup
-        mock_connection_manager._get_player.return_value = None
+        mock_connection_manager.get_player = AsyncMock(return_value=None)
 
         # Create and publish event
         event = PlayerEnteredRoom(player_id="nonexistent_player", room_id="test_room_001")
@@ -265,7 +267,7 @@ class TestEventHandlerBroadcasting:
         # Setup mock player
         mock_player = Mock()
         mock_player.name = "TestPlayer"
-        mock_connection_manager._get_player.return_value = mock_player
+        mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
 
         # Setup mock to return None for room lookup
         mock_connection_manager.async_persistence.get_room_by_id.return_value = None

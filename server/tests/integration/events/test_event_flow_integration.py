@@ -25,7 +25,8 @@ class TestCompleteEventFlowIntegration:
     def mock_connection_manager(self):
         """Create a mock connection manager with realistic behavior."""
         cm = AsyncMock()
-        cm._get_player = AsyncMock()
+        cm.get_player = AsyncMock()
+        cm._get_player = AsyncMock()  # Keep for backward compatibility
         cm.persistence = Mock()
         cm.broadcast_to_room = AsyncMock()
         cm.subscribe_to_room = AsyncMock()
@@ -40,9 +41,10 @@ class TestCompleteEventFlowIntegration:
         event_bus = EventBus()
         event_bus.set_main_loop(asyncio.get_running_loop())
 
-        # Create event handler
-        event_handler = RealTimeEventHandler(event_bus)
-        event_handler.connection_manager = mock_connection_manager
+        # Create event handler with connection_manager passed during initialization
+        event_handler = RealTimeEventHandler(event_bus, connection_manager=mock_connection_manager)
+        # Also update player_handler's connection_manager in case it was already initialized
+        event_handler.player_handler.connection_manager = mock_connection_manager
         # Use UUID for player_id
         player_id = uuid4()
 
@@ -50,13 +52,16 @@ class TestCompleteEventFlowIntegration:
         mock_player = Mock()
         mock_player.name = "TestPlayer"
         mock_player.id = player_id
-        mock_connection_manager._get_player.return_value = mock_player
+        # Mock get_player (async method used by get_player_info)
+        mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
 
         # Setup mock room
         mock_room = Mock()
         mock_room.name = "Test Room"
         mock_room.get_players.return_value = []
-        mock_connection_manager.persistence.get_room.return_value = mock_room
+        if not hasattr(mock_connection_manager, "persistence"):
+            mock_connection_manager.persistence = Mock()
+        mock_connection_manager.persistence.get_room = AsyncMock(return_value=mock_room)
 
         # Simulate the WebSocket connection flow
         # 1. Create room with event bus
@@ -105,9 +110,10 @@ class TestCompleteEventFlowIntegration:
         event_bus = EventBus()
         event_bus.set_main_loop(asyncio.get_running_loop())
 
-        # Create event handler
-        event_handler = RealTimeEventHandler(event_bus)
-        event_handler.connection_manager = mock_connection_manager
+        # Create event handler with connection_manager passed during initialization
+        event_handler = RealTimeEventHandler(event_bus, connection_manager=mock_connection_manager)
+        # Also update player_handler's connection_manager in case it was already initialized
+        event_handler.player_handler.connection_manager = mock_connection_manager
 
         # Use UUID for player_id
         player_id = uuid4()
@@ -116,13 +122,16 @@ class TestCompleteEventFlowIntegration:
         mock_player = Mock()
         mock_player.name = "TestPlayer"
         mock_player.id = player_id
-        mock_connection_manager._get_player.return_value = mock_player
+        # Mock get_player (async method used by get_player_info)
+        mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
 
         # Setup mock room
         mock_room = Mock()
         mock_room.name = "Test Room"
         mock_room.get_players.return_value = []
-        mock_connection_manager.persistence.get_room.return_value = mock_room
+        if not hasattr(mock_connection_manager, "persistence"):
+            mock_connection_manager.persistence = Mock()
+        mock_connection_manager.persistence.get_room = AsyncMock(return_value=mock_room)
 
         # Simulate the WebSocket disconnection flow
         # 1. Create room with event bus
@@ -190,7 +199,7 @@ class TestCompleteEventFlowIntegration:
                 return mock_player2
             return None
 
-        mock_connection_manager._get_player.side_effect = mock_get_player
+        mock_connection_manager.get_player = AsyncMock(side_effect=mock_get_player)
 
         # Setup mock room
         mock_room = Mock()
@@ -236,13 +245,15 @@ class TestCompleteEventFlowIntegration:
         # Setup mock player
         mock_player = Mock()
         mock_player.name = "TestPlayer"
-        mock_connection_manager._get_player.return_value = mock_player
+        mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
 
         # Setup mock room
         mock_room = Mock()
         mock_room.name = "Test Room"
         mock_room.get_players.return_value = []
-        mock_connection_manager.persistence.get_room.return_value = mock_room
+        if not hasattr(mock_connection_manager, "persistence"):
+            mock_connection_manager.persistence = Mock()
+        mock_connection_manager.persistence.get_room = AsyncMock(return_value=mock_room)
 
         # Use UUID for player_id
         player_id = uuid4()
@@ -300,7 +311,7 @@ class TestCompleteEventFlowIntegration:
         event_handler.connection_manager = mock_connection_manager
 
         # Setup mock to simulate errors
-        mock_connection_manager._get_player.side_effect = Exception("Database error")
+        mock_connection_manager.get_player = AsyncMock(side_effect=Exception("Database error"))
 
         # Use UUID for player_id
         player_id = uuid4()
@@ -321,10 +332,9 @@ class TestCompleteEventFlowIntegration:
         assert len(player_entered_calls) == 0
 
         # Verify the system is still functional by testing a successful event
-        mock_connection_manager._get_player.side_effect = None
         mock_player = Mock()
         mock_player.name = "TestPlayer"
-        mock_connection_manager._get_player.return_value = mock_player
+        mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
 
         # Reset mocks
         mock_connection_manager.broadcast_to_room.reset_mock()
@@ -361,8 +371,6 @@ class TestRealEventFlow:
     @pytest.fixture
     def event_bus(self):
         """Create an EventBus for testing."""
-        from server.events import EventBus
-
         return EventBus()
 
     @pytest.fixture
@@ -378,7 +386,8 @@ class TestRealEventFlow:
     def mock_connection_manager(self):
         """Create a mock connection manager."""
         cm = AsyncMock()
-        cm._get_player = AsyncMock()
+        cm.get_player = AsyncMock()
+        cm._get_player = AsyncMock()  # Keep for backward compatibility
         cm.persistence = Mock()
         cm.broadcast_to_room = AsyncMock()
         cm.subscribe_to_room = AsyncMock()
@@ -412,7 +421,7 @@ class TestRealEventFlow:
                 return mock_player if pid == test_player_id else None
             return mock_player if str(pid) == str(test_player_id) else None
 
-        mock_connection_manager._get_player = AsyncMock(side_effect=mock_get_player)
+        mock_connection_manager.get_player = AsyncMock(side_effect=mock_get_player)
 
         mock_room = Mock()
         mock_room.name = "Test Room"
@@ -453,8 +462,6 @@ class TestRealEventFlow:
 
         # Setup mock room data
         mock_room_data = {"id": "test_room_001", "name": "Test Room"}
-        from server.models.room import Room
-
         room = Room(mock_room_data, event_bus)
 
         # Use UUID for player_id

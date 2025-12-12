@@ -143,8 +143,10 @@ def ensure_containers_table():
 
 
 @pytest.fixture
-async def container_service(ensure_containers_table):
+async def container_service(request):
     """Create a ContainerService instance for testing with proper cleanup."""
+    # Ensure containers table exists (dependency injection via request)
+    request.getfixturevalue("ensure_containers_table")
 
     from server.async_persistence import AsyncPersistenceLayer
     from server.database import DatabaseManager
@@ -165,18 +167,19 @@ async def container_service(ensure_containers_table):
         db_manager = DatabaseManager.get_instance()
         if db_manager and hasattr(db_manager, "engine"):
             await db_manager.engine.dispose(close=True)
-    except Exception as e:
+    except (RuntimeError, asyncio.CancelledError) as e:
         # Log but don't fail on cleanup errors
+        # RuntimeError covers "Event loop is closed" errors
+        # asyncio.CancelledError covers cancellation during cleanup
         import logging
 
-        logging.getLogger(__name__).warning(f"Error during persistence cleanup: {e}")
+        logging.getLogger(__name__).warning("Error during persistence cleanup: %s", e)
 
 
 async def _create_test_player(persistence, player_id: UUID, name: str, room_id: str = "test_room_001") -> Player:
     """Helper function to create a test player in the database."""
     from datetime import UTC, datetime
 
-    from server.models.player import Player
     from server.models.user import User
 
     # Create user first (required foreign key)
@@ -192,9 +195,6 @@ async def _create_test_player(persistence, player_id: UUID, name: str, room_id: 
         is_verified=True,
     )
     # Use direct database insert for user (persistence doesn't have user methods)
-    import os
-    from datetime import datetime as dt
-
     import psycopg2
 
     database_url = os.getenv("DATABASE_URL")
@@ -208,7 +208,7 @@ async def _create_test_player(persistence, player_id: UUID, name: str, room_id: 
     conn.autocommit = True  # Enable autocommit for user creation
     cursor = conn.cursor()
     try:
-        now = dt.now(UTC).replace(tzinfo=None)
+        now = datetime.now(UTC).replace(tzinfo=None)
         cursor.execute(
             """
             INSERT INTO users (id, email, username, display_name, hashed_password, is_active, is_superuser, is_verified, created_at, updated_at)
@@ -252,6 +252,7 @@ async def _create_test_player(persistence, player_id: UUID, name: str, room_id: 
 
 
 @pytest.mark.asyncio
+# pylint: disable=redefined-outer-name
 class TestConcurrentContainerMutations:
     """Test concurrent container mutation operations."""
 
@@ -310,10 +311,11 @@ class TestConcurrentContainerMutations:
             skip_reason = str(e) if e else "Test timed out after 25 seconds"
             pytest.skip(skip_reason)
 
-    @pytest.mark.slow
     @pytest.mark.timeout(60)
     async def test_concurrent_transfer_operations(
-        self, container_service: ContainerService, ensure_test_item_prototypes
+        self,
+        container_service: ContainerService,
+        ensure_test_item_prototypes,  # noqa: ARG002
     ) -> None:
         """Test that concurrent transfers are handled correctly with mutation tokens."""
         # Create test container
@@ -383,7 +385,7 @@ class TestConcurrentContainerMutations:
                     item=cast(InventoryStack, stack),
                     quantity=1,
                 )
-            except Exception as e:
+            except ContainerServiceError as e:
                 return e
 
         results = await asyncio.gather(
@@ -517,7 +519,7 @@ class TestConcurrentContainerMutations:
                     mutation_token=token,
                 )
                 return None
-            except Exception as e:
+            except ContainerServiceError as e:
                 return e
 
         results = await asyncio.gather(
@@ -569,7 +571,7 @@ class TestConcurrentContainerMutations:
                     mutation_token=mutation_token,
                 )
                 return None
-            except Exception as e:
+            except ContainerServiceError as e:
                 return e
 
         async def open_container_again() -> dict[str, Any] | Exception:
@@ -578,7 +580,7 @@ class TestConcurrentContainerMutations:
                 # Small delay to allow close to potentially complete first
                 await asyncio.sleep(0.01)
                 return await container_service.open_container(container_id, player_id)
-            except Exception as e:
+            except ContainerServiceError as e:
                 return e
 
         results = await asyncio.gather(

@@ -334,11 +334,13 @@ class TestUUIDSerializationIntegration:
         """Test that EventHandler converts UUIDs to strings in messages."""
         connection_manager = Mock(spec=ConnectionManager)
         event_bus = EventBus()
-        event_handler = RealTimeEventHandler(event_bus)
+        # Pass connection_manager during initialization
+        event_handler = RealTimeEventHandler(event_bus, connection_manager=connection_manager)
 
         # Mock broadcast method and persistence
         connection_manager.broadcast_to_room = AsyncMock()
-        event_handler.connection_manager = connection_manager
+        # Also update player_handler's connection_manager
+        event_handler.player_handler.connection_manager = connection_manager
         event_handler.connection_manager.persistence = Mock()
         event_handler.connection_manager._get_player = AsyncMock(return_value=Mock(name="TestPlayer"))
 

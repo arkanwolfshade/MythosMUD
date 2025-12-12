@@ -5,7 +5,7 @@ This module tests the _get_npc_name_from_instance function to ensure
 proper retrieval of NPC names directly from the database via NPC instances.
 """
 
-from server.realtime.websocket_handler import _get_npc_name_from_instance
+from server.realtime.connection_manager import _get_npc_name_from_instance
 
 
 class TestNPCNameRetrieval:

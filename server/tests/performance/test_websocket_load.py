@@ -105,7 +105,6 @@ class TestWebSocketLoad:
         assert allowed_count <= 100, "Rate limit should cap at 100 messages"
         assert blocked_count >= 100, "Rate limit should block excess messages"
 
-    @pytest.mark.slow
     @pytest.mark.asyncio
     async def test_memory_leak_detection(self, connection_manager):
         """Test for memory leaks in connection management."""

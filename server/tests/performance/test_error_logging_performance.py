@@ -20,9 +20,6 @@ import pytest
 from server.exceptions import DatabaseError, ErrorContext, create_error_context
 from server.utils.error_logging import log_and_raise
 
-# Mark entire module as slow for CI/CD-only execution
-pytestmark = pytest.mark.slow
-
 
 class PerformanceTestMixin:
     """Mixin class providing performance testing utilities."""
@@ -46,8 +43,6 @@ class PerformanceTestMixin:
         Returns:
             Tuple of (memory_delta_mb, function_result)
         """
-        import os
-
         import psutil
 
         process = psutil.Process(os.getpid())
@@ -228,8 +223,10 @@ class TestErrorLoggingSystemPerformance:
         # even when loggers are mocked, if the underlying handlers are still active
         try:
             config = get_config()
-            log_base = config.logging.log_base
-            environment = config.logging.environment
+            # Use to_legacy_dict() to avoid type checker issues with Pydantic Field() access
+            logging_config = config.to_legacy_dict()["logging"]
+            log_base = logging_config["log_base"]
+            environment = logging_config["environment"]
             resolved_log_base = _resolve_log_base(log_base)
             env_log_dir = resolved_log_base / environment
             # Ensure all log file directories exist

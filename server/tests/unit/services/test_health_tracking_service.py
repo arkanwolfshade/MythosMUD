@@ -46,16 +46,16 @@ class TestHealthTrackingSystem:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=8,
-            max_hp=8,
+            current_dp=8,
+            max_dp=8,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -70,18 +70,18 @@ class TestHealthTrackingSystem:
         player_participant = combat.participants[player_id]
         npc_participant = combat.participants[npc_id]
 
-        assert player_participant.current_hp == 10
-        assert player_participant.max_hp == 10
-        assert npc_participant.current_hp == 8
-        assert npc_participant.max_hp == 8
+        assert player_participant.current_dp == 10
+        assert player_participant.max_dp == 10
+        assert npc_participant.current_dp == 8
+        assert npc_participant.max_dp == 8
 
         # Player attacks NPC
         result = await combat_service.process_attack(player_id, npc_id, damage=2)
 
         # Verify health was updated in real-time
         assert result.success is True
-        assert npc_participant.current_hp == 6  # 8 - 2 = 6
-        assert npc_participant.max_hp == 8  # Max HP unchanged
+        assert npc_participant.current_dp == 6  # 8 - 2 = 6
+        assert npc_participant.max_dp == 8  # Max HP unchanged
 
     @pytest.mark.asyncio
     async def test_npc_health_tracking_in_memory(self, combat_service):
@@ -94,16 +94,16 @@ class TestHealthTrackingSystem:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -120,7 +120,7 @@ class TestHealthTrackingSystem:
 
         # Verify NPC health is tracked in-memory
         npc_participant = combat.participants[npc_id]
-        assert npc_participant.current_hp == 5  # 10 - 3 - 2 = 5
+        assert npc_participant.current_dp == 5  # 10 - 3 - 2 = 5
 
         # End combat
         await combat_service.end_combat(combat.combat_id, "Test combat end")
@@ -140,16 +140,16 @@ class TestHealthTrackingSystem:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.NPC,
         )
@@ -167,7 +167,7 @@ class TestHealthTrackingSystem:
 
         # Verify player health is unchanged (NPC doesn't attack in passive mode)
         player_participant = combat.participants[player_id]
-        assert player_participant.current_hp == 10
+        assert player_participant.current_dp == 10
 
         # End combat
         await combat_service.end_combat(combat.combat_id, "Test combat end")
@@ -186,16 +186,16 @@ class TestHealthTrackingSystem:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=8,
-            max_hp=8,
+            current_dp=8,
+            max_dp=8,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -225,16 +225,16 @@ class TestHealthTrackingSystem:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=8,
-            max_hp=8,
+            current_dp=8,
+            max_dp=8,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -253,10 +253,10 @@ class TestHealthTrackingSystem:
         npc_participant = combat.participants[npc_id]
 
         # Verify health status can be checked on-demand
-        assert player_participant.current_hp == 10
-        assert player_participant.max_hp == 10
-        assert npc_participant.current_hp == 5  # 8 - 3 = 5
-        assert npc_participant.max_hp == 8
+        assert player_participant.current_dp == 10
+        assert player_participant.max_dp == 10
+        assert npc_participant.current_dp == 5  # 8 - 3 = 5
+        assert npc_participant.max_dp == 8
 
     @pytest.mark.asyncio
     async def test_health_tracking_integration_with_auto_progression(self, combat_service):
@@ -269,16 +269,16 @@ class TestHealthTrackingSystem:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=8,
-            max_hp=8,
+            current_dp=8,
+            max_dp=8,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -294,15 +294,15 @@ class TestHealthTrackingSystem:
 
         # Verify health was tracked during auto-progression
         npc_participant = combat.participants[npc_id]
-        assert npc_participant.current_hp == 6  # 8 - 2 = 6
+        assert npc_participant.current_dp == 6  # 8 - 2 = 6
 
         # Auto-progression should continue without affecting health
         # (NPC performs non-combat actions)
         await combat_service._process_automatic_combat_progression(combat)
 
         # Verify health remains unchanged after NPC non-combat action
-        assert npc_participant.current_hp == 6
-        assert npc_participant.max_hp == 8
+        assert npc_participant.current_dp == 6
+        assert npc_participant.max_dp == 8
 
     @pytest.mark.asyncio
     async def test_health_tracking_with_combat_end(self, combat_service):
@@ -315,16 +315,16 @@ class TestHealthTrackingSystem:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=3,
-            max_hp=8,
+            current_dp=3,
+            max_dp=8,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -345,7 +345,7 @@ class TestHealthTrackingSystem:
 
         # Verify NPC health reached 0
         npc_participant = combat.participants[npc_id]
-        assert npc_participant.current_hp == 0
+        assert npc_participant.current_dp == 0
 
     @pytest.mark.asyncio
     async def test_health_tracking_error_handling(self, combat_service):
@@ -358,16 +358,16 @@ class TestHealthTrackingSystem:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -398,16 +398,16 @@ class TestHealthTrackingSystem:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -432,7 +432,7 @@ class TestHealthTrackingSystem:
 
         # Verify health was tracked correctly
         npc_participant = combat.participants[npc_id]
-        assert npc_participant.current_hp == 0  # 10 - (10 * 1) = 0
+        assert npc_participant.current_dp == 0  # 10 - (10 * 1) = 0
 
     @pytest.mark.asyncio
     async def test_health_tracking_configuration(self, combat_service):

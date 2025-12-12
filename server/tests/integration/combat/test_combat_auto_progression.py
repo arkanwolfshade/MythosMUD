@@ -45,16 +45,16 @@ class TestAutoProgressionIntegration:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=8,
-            max_hp=8,
+            current_dp=8,
+            max_dp=8,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -85,7 +85,7 @@ class TestAutoProgressionIntegration:
 
         # Verify health was tracked correctly
         npc_participant = combat.participants[npc_id]
-        assert npc_participant.current_hp == 6  # 8 - 2 = 6
+        assert npc_participant.current_dp == 6  # 8 - 2 = 6
 
     @pytest.mark.asyncio
     async def test_auto_progression_event_system_integration(self, combat_service):
@@ -98,16 +98,16 @@ class TestAutoProgressionIntegration:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -140,16 +140,16 @@ class TestAutoProgressionIntegration:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -181,16 +181,16 @@ class TestAutoProgressionIntegration:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=5,
-            max_hp=8,
+            current_dp=5,
+            max_dp=8,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -219,7 +219,7 @@ class TestAutoProgressionIntegration:
 
         # Verify NPC health was reduced by attacks
         npc_participant = combat.participants[npc_id]
-        assert npc_participant.current_hp < 5  # Started with 5, should be reduced
+        assert npc_participant.current_dp < 5  # Started with 5, should be reduced
 
     @pytest.mark.asyncio
     async def test_auto_progression_with_multiple_combat_rounds(self, combat_service):
@@ -232,16 +232,16 @@ class TestAutoProgressionIntegration:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -270,7 +270,7 @@ class TestAutoProgressionIntegration:
 
         # Verify NPC health was reduced by attacks (NPCs don't die in passive mode)
         npc_participant = combat.participants[npc_id]
-        assert npc_participant.current_hp < 10  # Started with 10, should be reduced
+        assert npc_participant.current_dp < 10  # Started with 10, should be reduced
 
     @pytest.mark.asyncio
     async def test_auto_progression_timing_integration(self, combat_service):
@@ -283,16 +283,16 @@ class TestAutoProgressionIntegration:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -325,16 +325,16 @@ class TestAutoProgressionIntegration:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -372,16 +372,16 @@ class TestAutoProgressionIntegration:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -430,16 +430,16 @@ class TestAutoProgressionIntegration:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )

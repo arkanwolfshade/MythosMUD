@@ -25,26 +25,26 @@ class TestNPCPassiveBehaviorSystem:
         player_id,
         npc_id,
         attacker_hp=10,
-        attacker_max_hp=10,
+        attacker_max_dp=10,
         attacker_dex=10,
         target_hp=10,
-        target_max_hp=10,
+        target_max_dp=10,
         target_dex=10,
     ):
         """Helper to create CombatParticipantData objects for tests."""
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=attacker_hp,
-            max_hp=attacker_max_hp,
+            current_dp=attacker_hp,
+            max_dp=attacker_max_dp,
             dexterity=attacker_dex,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=target_hp,
-            max_hp=target_max_hp,
+            current_dp=target_hp,
+            max_dp=target_max_dp,
             dexterity=target_dex,
             participant_type=CombatParticipantType.NPC,
         )
@@ -76,10 +76,10 @@ class TestNPCPassiveBehaviorSystem:
             player_id,
             npc_id,
             attacker_hp=10,
-            attacker_max_hp=10,
+            attacker_max_dp=10,
             attacker_dex=15,
             target_hp=10,
-            target_max_hp=10,
+            target_max_dp=10,
             target_dex=10,
         )
         combat = await combat_service.start_combat(
@@ -102,7 +102,7 @@ class TestNPCPassiveBehaviorSystem:
 
         # Verify NPC performed combat action (damage dealt to player)
         player_participant = combat.participants[player_id]
-        assert player_participant.current_hp < 10  # Damage taken
+        assert player_participant.current_dp < 10  # Damage taken
 
     @pytest.mark.asyncio
     async def test_npc_non_combat_action_selection(self, combat_service):
@@ -116,10 +116,10 @@ class TestNPCPassiveBehaviorSystem:
             player_id,
             npc_id,
             attacker_hp=10,
-            attacker_max_hp=10,
+            attacker_max_dp=10,
             attacker_dex=10,
             target_hp=10,
-            target_max_hp=10,
+            target_max_dp=10,
             target_dex=15,
         )
         combat = await combat_service.start_combat(
@@ -139,7 +139,7 @@ class TestNPCPassiveBehaviorSystem:
             # Note: In a real implementation, we would track the specific actions
             # For now, we just verify no damage is dealt
             player_participant = combat.participants[player_id]
-            assert player_participant.current_hp == 10  # No damage taken
+            assert player_participant.current_dp == 10  # No damage taken
             combat.advance_turn(current_tick=2)
             current_participant = combat.get_current_turn_participant()
 
@@ -155,10 +155,10 @@ class TestNPCPassiveBehaviorSystem:
             player_id,
             npc_id,
             attacker_hp=10,
-            attacker_max_hp=10,
+            attacker_max_dp=10,
             attacker_dex=10,
             target_hp=10,
-            target_max_hp=10,
+            target_max_dp=10,
             target_dex=15,
         )
         combat = await combat_service.start_combat(
@@ -177,7 +177,7 @@ class TestNPCPassiveBehaviorSystem:
 
         # Verify NPC performed non-combat action
         player_participant = combat.participants[player_id]
-        assert player_participant.current_hp == 10  # No damage taken
+        assert player_participant.current_dp == 10  # No damage taken
 
     @pytest.mark.asyncio
     async def test_npc_taunt_messages(self, combat_service):
@@ -191,10 +191,10 @@ class TestNPCPassiveBehaviorSystem:
             player_id,
             npc_id,
             attacker_hp=10,
-            attacker_max_hp=10,
+            attacker_max_dp=10,
             attacker_dex=10,
             target_hp=10,
-            target_max_hp=10,
+            target_max_dp=10,
             target_dex=15,
         )
         combat = await combat_service.start_combat(
@@ -213,7 +213,7 @@ class TestNPCPassiveBehaviorSystem:
 
         # Verify NPC performed non-combat action
         player_participant = combat.participants[player_id]
-        assert player_participant.current_hp == 10  # No damage taken
+        assert player_participant.current_dp == 10  # No damage taken
 
     @pytest.mark.asyncio
     async def test_npc_thematic_behavior_messages(self, combat_service):
@@ -227,10 +227,10 @@ class TestNPCPassiveBehaviorSystem:
             player_id,
             npc_id,
             attacker_hp=10,
-            attacker_max_hp=10,
+            attacker_max_dp=10,
             attacker_dex=10,
             target_hp=10,
-            target_max_hp=10,
+            target_max_dp=10,
             target_dex=15,
         )
         combat = await combat_service.start_combat(
@@ -249,7 +249,7 @@ class TestNPCPassiveBehaviorSystem:
 
         # Verify NPC performed non-combat action
         player_participant = combat.participants[player_id]
-        assert player_participant.current_hp == 10  # No damage taken
+        assert player_participant.current_dp == 10  # No damage taken
 
     @pytest.mark.asyncio
     async def test_npc_turn_execution_with_non_combat_actions(self, combat_service):
@@ -263,10 +263,10 @@ class TestNPCPassiveBehaviorSystem:
             player_id,
             npc_id,
             attacker_hp=10,
-            attacker_max_hp=10,
+            attacker_max_dp=10,
             attacker_dex=10,
             target_hp=50,
-            target_max_hp=50,
+            target_max_dp=50,
             target_dex=15,
         )
         combat = await combat_service.start_combat(
@@ -285,7 +285,7 @@ class TestNPCPassiveBehaviorSystem:
 
         # Verify turn was processed without damage
         player_participant = combat.participants[player_id]
-        assert player_participant.current_hp == 10  # No damage taken
+        assert player_participant.current_dp == 10  # No damage taken
 
         # Verify combat continues
         assert combat.status == CombatStatus.ACTIVE
@@ -302,10 +302,10 @@ class TestNPCPassiveBehaviorSystem:
             player_id,
             npc_id,
             attacker_hp=50,
-            attacker_max_hp=50,
+            attacker_max_dp=50,
             attacker_dex=10,
             target_hp=10,
-            target_max_hp=10,
+            target_max_dp=10,
             target_dex=15,
         )
         combat = await combat_service.start_combat(
@@ -326,7 +326,7 @@ class TestNPCPassiveBehaviorSystem:
 
             # Verify damage was dealt to player
             player_participant = combat.participants[player_id]
-            assert player_participant.current_hp < 50  # Damage taken
+            assert player_participant.current_dp < 50  # Damage taken
         else:
             # Combat ended (player died), which is also valid
             assert combat.status == CombatStatus.ENDED
@@ -343,10 +343,10 @@ class TestNPCPassiveBehaviorSystem:
             player_id,
             npc_id,
             attacker_hp=50,
-            attacker_max_hp=50,
+            attacker_max_dp=50,
             attacker_dex=10,
             target_hp=50,
-            target_max_hp=50,
+            target_max_dp=50,
             target_dex=15,
         )
         combat = await combat_service.start_combat(
@@ -370,7 +370,7 @@ class TestNPCPassiveBehaviorSystem:
 
                 # Verify damage was dealt to player
                 player_participant = combat.participants[player_id]
-                assert player_participant.current_hp < 50  # Damage taken
+                assert player_participant.current_dp < 50  # Damage taken
 
                 # Advance to next round
                 combat.advance_turn(current_tick=2)
@@ -391,10 +391,10 @@ class TestNPCPassiveBehaviorSystem:
             player_id,
             npc_id,
             attacker_hp=10,
-            attacker_max_hp=10,
+            attacker_max_dp=10,
             attacker_dex=10,
             target_hp=50,
-            target_max_hp=50,
+            target_max_dp=50,
             target_dex=15,
         )
         combat = await combat_service.start_combat(
@@ -429,10 +429,10 @@ class TestNPCPassiveBehaviorSystem:
             player_id,
             npc_id,
             attacker_hp=10,
-            attacker_max_hp=10,
+            attacker_max_dp=10,
             attacker_dex=10,
             target_hp=10,
-            target_max_hp=10,
+            target_max_dp=10,
             target_dex=15,
         )
         combat = await combat_service.start_combat(

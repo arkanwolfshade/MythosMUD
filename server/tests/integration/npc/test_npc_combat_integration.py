@@ -16,6 +16,18 @@ from server.services.npc_combat_integration_service import NPCCombatIntegrationS
 class TestNPCCombatIntegrationService:
     """Test cases for NPC Combat Integration Service."""
 
+    def __init__(self):
+        """Initialize test attributes."""
+        self.event_bus = None
+        self.persistence = None
+        self.combat_service = None
+        self.messaging_integration = None
+        self.event_publisher = None
+        self.mock_npc_instance_service = None
+        self.npc_service_patcher = None
+        self.mock_get_service = None
+        self.service = None
+
     def setup_method(self):
         """Set up test environment."""
         self.event_bus = Mock()
@@ -35,6 +47,16 @@ class TestNPCCombatIntegrationService:
         self.messaging_integration.broadcast_combat_attack = AsyncMock(return_value=True)
         self.event_publisher = Mock()
 
+        # Mock NPC instance service to avoid initialization errors
+        self.mock_npc_instance_service = Mock()
+        self.mock_npc_instance_service.lifecycle_manager = Mock()
+        self.mock_npc_instance_service.lifecycle_manager.active_npcs = {}
+
+        # Patch get_npc_instance_service before creating the service
+        self.npc_service_patcher = patch("server.services.npc_instance_service.get_npc_instance_service")
+        self.mock_get_service = self.npc_service_patcher.start()
+        self.mock_get_service.return_value = self.mock_npc_instance_service
+
         with (
             patch("server.services.npc_combat_integration_service.CombatService") as mock_combat_service,
             patch("server.services.npc_combat_integration_service.CombatMessagingIntegration") as mock_messaging,
@@ -49,6 +71,11 @@ class TestNPCCombatIntegrationService:
                 combat_service=self.combat_service,
                 async_persistence=self.persistence,
             )
+
+    def teardown_method(self):
+        """Clean up test environment."""
+        if hasattr(self, "npc_service_patcher"):
+            self.npc_service_patcher.stop()
 
     @pytest.mark.asyncio
     async def test_handle_player_attack_on_npc_success(self):
@@ -77,7 +104,9 @@ class TestNPCCombatIntegrationService:
         npc_instance.current_room = room_id  # Set the room ID to match player
         npc_instance.room_id = room_id  # Also set room_id for compatibility
 
-        self.service._get_npc_instance = Mock(return_value=npc_instance)
+        # Set up NPC instance in mock service's active_npcs
+        self.mock_npc_instance_service.lifecycle_manager.active_npcs[npc_id] = npc_instance
+
         self.service._get_player_name = AsyncMock(return_value="TestPlayer")
         self.service._get_player_room_id = AsyncMock(return_value=room_id)
 
@@ -92,8 +121,7 @@ class TestNPCCombatIntegrationService:
 
         # Verify
         assert result is True
-        assert npc_id in self.service._npc_combat_memory
-        assert self.service._npc_combat_memory[npc_id] == player_id
+        assert self.service.get_npc_combat_memory(npc_id) == player_id
 
         # Verify combat service was called
         self.combat_service.process_attack.assert_called_once()
@@ -111,7 +139,8 @@ class TestNPCCombatIntegrationService:
         npc_instance = Mock()
         npc_instance.is_alive = False
 
-        self.service._get_npc_instance = Mock(return_value=npc_instance)
+        # Set up NPC instance in mock service's active_npcs
+        self.mock_npc_instance_service.lifecycle_manager.active_npcs[npc_id] = npc_instance
 
         # Execute
         result = await self.service.handle_player_attack_on_npc(
@@ -132,7 +161,7 @@ class TestNPCCombatIntegrationService:
         npc_id = str(uuid4())
         room_id = "test_room_001"
 
-        self.service._get_npc_instance = Mock(return_value=None)
+        # Don't add NPC to active_npcs to simulate NPC not found
 
         # Execute
         result = await self.service.handle_player_attack_on_npc(
@@ -171,9 +200,21 @@ class TestNPCCombatIntegrationService:
         game_mechanics.gain_experience.return_value = (True, "XP awarded")
         self.persistence.get_game_mechanics_service = AsyncMock(return_value=game_mechanics)
 
-        self.service._get_npc_instance = Mock(return_value=npc_instance)
-        self.service._get_npc_definition = AsyncMock(return_value=npc_definition)
-        self.persistence.get_player = AsyncMock(return_value=player)
+        # Set up NPC instance in mock service's active_npcs
+        self.mock_npc_instance_service.lifecycle_manager.active_npcs[npc_id] = npc_instance
+
+        # Mock NPC definition lookup through data provider
+        async def mock_get_npc_definition(npc_id):
+            return npc_definition
+
+        self.service._data_provider.get_npc_definition = mock_get_npc_definition
+
+        # Mock rewards handler to return XP reward
+        self.service._rewards.calculate_xp_reward = AsyncMock(return_value=5)
+        self.service._rewards.award_xp_to_killer = AsyncMock(return_value=True)
+
+        # Mock lifecycle handler
+        self.service._lifecycle.despawn_npc_safely = AsyncMock(return_value=True)
 
         # Execute
         result = await self.service.handle_npc_death(
@@ -192,7 +233,7 @@ class TestNPCCombatIntegrationService:
         # Setup
         npc_id = str(uuid4())
         attacker_id = str(uuid4())
-        self.service._npc_combat_memory[npc_id] = attacker_id
+        self.service._combat_memory.record_attack(npc_id, attacker_id)
 
         # Execute
         result = self.service.get_npc_combat_memory(npc_id)
@@ -216,14 +257,14 @@ class TestNPCCombatIntegrationService:
         # Setup
         npc_id = str(uuid4())
         attacker_id = str(uuid4())
-        self.service._npc_combat_memory[npc_id] = attacker_id
+        self.service._combat_memory.record_attack(npc_id, attacker_id)
 
         # Execute
         result = self.service.clear_npc_combat_memory(npc_id)
 
         # Verify
         assert result is True
-        assert npc_id not in self.service._npc_combat_memory
+        assert self.service.get_npc_combat_memory(npc_id) is None
 
     def test_clear_npc_combat_memory_not_found(self):
         """Test clearing NPC combat memory when not found."""
@@ -243,18 +284,16 @@ class TestNPCCombatIntegrationService:
         killer_id = str(uuid4())
 
         # Add memory first
-        self.service._npc_combat_memory[npc_id] = killer_id
+        self.service._combat_memory.record_attack(npc_id, killer_id)
 
         # Verify memory exists
-        assert npc_id in self.service._npc_combat_memory
-        assert self.service._npc_combat_memory[npc_id] == killer_id
+        assert self.service.get_npc_combat_memory(npc_id) == killer_id
 
         # Clear memory directly (simulating what happens in NPC death)
-        if npc_id in self.service._npc_combat_memory:
-            del self.service._npc_combat_memory[npc_id]
+        self.service._combat_memory.clear_memory(npc_id)
 
         # Verify memory is cleared
-        assert npc_id not in self.service._npc_combat_memory
+        assert self.service.get_npc_combat_memory(npc_id) is None
 
     @pytest.mark.asyncio
     async def test_handle_player_attack_error_handling(self):
@@ -270,7 +309,8 @@ class TestNPCCombatIntegrationService:
         npc_instance.name = "Test NPC"
         npc_instance.get_stats = Mock(side_effect=Exception("Test error"))
 
-        self.service._get_npc_instance = Mock(return_value=npc_instance)
+        # Set up NPC instance in mock service's active_npcs
+        self.mock_npc_instance_service.lifecycle_manager.active_npcs[npc_id] = npc_instance
 
         # Execute
         result = await self.service.handle_player_attack_on_npc(
@@ -289,8 +329,8 @@ class TestNPCCombatIntegrationService:
         npc_id = str(uuid4())
         room_id = "test_room_001"
 
-        # Mock NPC instance that raises exception
-        self.service._get_npc_instance = Mock(side_effect=Exception("Test error"))
+        # Don't add NPC to active_npcs to simulate NPC not found error
+        # This will cause get_npc_instance to return None
 
         # Execute
         result = await self.service.handle_npc_death(

@@ -14,9 +14,6 @@ import pytest
 
 from server.commands.system_commands import handle_help_command
 
-# Mark entire module as slow for CI/CD-only execution
-pytestmark = pytest.mark.slow
-
 
 class TestHelpCommand:
     """Test help command functionality."""

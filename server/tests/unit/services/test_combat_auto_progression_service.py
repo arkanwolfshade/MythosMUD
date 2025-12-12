@@ -38,16 +38,16 @@ class TestCombatAutoProgression:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=5,
-            max_hp=5,
+            current_dp=5,
+            max_dp=5,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -88,16 +88,16 @@ class TestCombatAutoProgression:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,  # Higher dexterity, goes first
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -118,7 +118,7 @@ class TestCombatAutoProgression:
 
         # Check that NPC's HP was reduced
         npc_participant = combat.participants[npc_id]
-        assert npc_participant.current_hp == 9  # 10 - 1 = 9
+        assert npc_participant.current_dp == 9  # 10 - 1 = 9
 
         # The automatic progression should have processed the NPC's turn
         # and advanced back to the player's turn
@@ -146,16 +146,16 @@ class TestCombatAutoProgression:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=5,
-            max_hp=5,
+            current_dp=5,
+            max_dp=5,
             dexterity=15,  # Higher dexterity, goes first
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -180,7 +180,7 @@ class TestCombatAutoProgression:
 
         # Check if player was damaged by NPC's automatic attack
         # (This depends on the NPC's damage output)
-        assert player_participant.current_hp <= 5  # Player took damage
+        assert player_participant.current_dp <= 5  # Player took damage
         # Verify it's now the player's turn again
         current_participant = combat.get_current_turn_participant()
         assert current_participant is not None
@@ -199,16 +199,16 @@ class TestCombatAutoProgression:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,  # Higher dexterity, goes first
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -245,16 +245,16 @@ class TestCombatAutoProgression:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -296,16 +296,16 @@ class TestCombatAutoProgression:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=100,
+            current_dp=10,
+            max_dp=100,
             dexterity=15,  # Higher dexterity, goes first
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=100,
-            max_hp=100,
+            current_dp=100,
+            max_dp=100,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -321,27 +321,27 @@ class TestCombatAutoProgression:
 
         # Record NPC's initial HP
         npc_participant = combat.participants[npc_id]
-        initial_npc_hp = npc_participant.current_hp
+        initial_npc_hp = npc_participant.current_dp
 
         # Player attacks NPC (3 damage)
         result1 = await combat_service.process_attack(player_id, npc_id, damage=3)
         assert result1.success is True
 
         # Verify NPC took damage
-        assert npc_participant.current_hp == initial_npc_hp - 3
+        assert npc_participant.current_dp == initial_npc_hp - 3
 
         # Get player participant and reduce HP to 0 (unconscious)
         player_participant = combat.participants[player_id]
-        player_participant.current_hp = 0
+        player_participant.current_dp = 0
 
         # Record NPC's HP before player's unconscious turn
-        npc_hp_before_unconscious_turn = npc_participant.current_hp
+        npc_hp_before_unconscious_turn = npc_participant.current_dp
 
         # Process player turn while unconscious (auto-progression)
         await combat_service._process_player_turn(combat, player_participant, current_tick=2)
 
         # CRITICAL: NPC HP should NOT have changed (unconscious player cannot attack)
-        assert npc_participant.current_hp == npc_hp_before_unconscious_turn
+        assert npc_participant.current_dp == npc_hp_before_unconscious_turn
 
         # Verify player's last action tick was updated (turn was acknowledged but no action taken)
         assert player_participant.last_action_tick == 2
@@ -362,16 +362,16 @@ class TestCombatAutoProgression:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=50,
-            max_hp=100,
+            current_dp=50,
+            max_dp=100,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=100,
-            max_hp=100,
+            current_dp=100,
+            max_dp=100,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -387,16 +387,16 @@ class TestCombatAutoProgression:
         npc_participant = combat.participants[npc_id]
 
         # Set player HP to mortally wounded state (-5 HP)
-        player_participant.current_hp = -5
+        player_participant.current_dp = -5
 
         # Record NPC's HP before player's turn
-        npc_hp_before = npc_participant.current_hp
+        npc_hp_before = npc_participant.current_dp
 
         # Process player turn while mortally wounded
         await combat_service._process_player_turn(combat, player_participant, current_tick=2)
 
         # CRITICAL: NPC HP should NOT have changed
-        assert npc_participant.current_hp == npc_hp_before
+        assert npc_participant.current_dp == npc_hp_before
 
         # Verify player's last action tick was updated
         assert player_participant.last_action_tick == 2
@@ -419,16 +419,16 @@ class TestCombatAutoProgression:
         attacker = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=100,
+            current_dp=10,
+            max_dp=100,
             dexterity=15,  # Higher dexterity, goes first
             participant_type=CombatParticipantType.NPC,
         )
         target = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=100,
-            max_hp=100,
+            current_dp=100,
+            max_dp=100,
             dexterity=10,
             participant_type=CombatParticipantType.PLAYER,
         )
@@ -447,26 +447,26 @@ class TestCombatAutoProgression:
         player_participant = combat.participants[player_id]
 
         # Record Player's initial HP
-        initial_player_hp = player_participant.current_hp
+        initial_player_hp = player_participant.current_dp
 
         # NPC attacks Player (3 damage)
         result1 = await combat_service.process_attack(npc_id, player_id, damage=3)
         assert result1.success is True
 
         # Verify Player took damage
-        assert player_participant.current_hp == initial_player_hp - 3
+        assert player_participant.current_dp == initial_player_hp - 3
 
         # Set NPC HP to 0 (dead)
-        npc_participant.current_hp = 0
+        npc_participant.current_dp = 0
 
         # Record Player's HP before NPC's dead turn
-        player_hp_before_dead_turn = player_participant.current_hp
+        player_hp_before_dead_turn = player_participant.current_dp
 
         # Process NPC turn while dead (auto-progression)
         await combat_service._process_npc_turn(combat, npc_participant, current_tick=2)
 
         # CRITICAL: Player HP should NOT have changed (dead NPC cannot attack)
-        assert player_participant.current_hp == player_hp_before_dead_turn
+        assert player_participant.current_dp == player_hp_before_dead_turn
 
         # Verify NPC's last action tick was updated (turn was acknowledged but no action taken)
         assert npc_participant.last_action_tick == 2
@@ -487,16 +487,16 @@ class TestCombatAutoProgression:
         attacker = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=50,
-            max_hp=100,
+            current_dp=50,
+            max_dp=100,
             dexterity=15,
             participant_type=CombatParticipantType.NPC,
         )
         target = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=100,
-            max_hp=100,
+            current_dp=100,
+            max_dp=100,
             dexterity=10,
             participant_type=CombatParticipantType.PLAYER,
         )
@@ -512,16 +512,16 @@ class TestCombatAutoProgression:
         player_participant = combat.participants[player_id]
 
         # Set NPC HP to negative (well beyond dead)
-        npc_participant.current_hp = -5
+        npc_participant.current_dp = -5
 
         # Record Player's HP before NPC's turn
-        player_hp_before = player_participant.current_hp
+        player_hp_before = player_participant.current_dp
 
         # Process NPC turn while dead
         await combat_service._process_npc_turn(combat, npc_participant, current_tick=2)
 
         # CRITICAL: Player HP should NOT have changed
-        assert player_participant.current_hp == player_hp_before
+        assert player_participant.current_dp == player_hp_before
 
         # Verify NPC's last action tick was updated
         assert npc_participant.last_action_tick == 2

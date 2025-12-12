@@ -45,16 +45,16 @@ class TestCombatAutoProgressionSystem:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -84,16 +84,16 @@ class TestCombatAutoProgressionSystem:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,  # Higher dexterity, goes first
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -130,16 +130,16 @@ class TestCombatAutoProgressionSystem:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,  # Higher dexterity, goes first
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -174,16 +174,16 @@ class TestCombatAutoProgressionSystem:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -213,16 +213,16 @@ class TestCombatAutoProgressionSystem:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,  # Higher dexterity, goes first
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -256,16 +256,16 @@ class TestCombatAutoProgressionSystem:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,  # Higher dexterity, goes first
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -302,16 +302,16 @@ class TestCombatAutoProgressionSystem:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -344,16 +344,16 @@ class TestCombatAutoProgressionSystem:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -388,16 +388,16 @@ class TestCombatAutoProgressionSystem:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -443,16 +443,16 @@ class TestCombatAutoProgressionSystem:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=10,
-            max_hp=10,
+            current_dp=10,
+            max_dp=10,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )

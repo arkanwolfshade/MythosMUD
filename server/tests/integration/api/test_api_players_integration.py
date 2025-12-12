@@ -138,7 +138,6 @@ class TestPlayerAPIIntegration:
             last_active=datetime.now(UTC).replace(tzinfo=None),
         )
 
-    @pytest.mark.slow
     def test_create_player_success(self, container_test_client_class, mock_persistence_for_api, sample_player_data):
         """
         Test successful player creation via API.
@@ -385,6 +384,8 @@ class TestPlayerAPIIntegration:
     def test_dependency_injection_works(self, container_test_client_class, mock_persistence_for_api):
         """Test that ApplicationContainer dependency injection works."""
         # Arrange: Container already initialized via fixture
+        # mock_persistence_for_api fixture sets up the persistence layer
+        assert mock_persistence_for_api is not None
 
         # Act: Make API request
         response = container_test_client_class.get("/api/players/")

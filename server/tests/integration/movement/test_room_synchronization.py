@@ -59,7 +59,7 @@ class TestEventProcessingOrder:
         # Process events in reverse order to test ordering
         processed_events = []
         for event in reversed(events):
-            processed_events.append(room_sync_service._process_event_with_ordering(event))
+            processed_events.append(room_sync_service.process_event_with_ordering(event))
 
         # Verify events are processed in chronological order (despite being submitted in reverse)
         assert len(processed_events) == 5
@@ -95,7 +95,7 @@ class TestEventProcessingOrder:
         }
 
         # Test that newer data takes precedence
-        merged_data = room_sync_service._merge_room_data(old_room_data, new_room_data)
+        merged_data = room_sync_service._room_data_cache.merge_room_data(old_room_data, new_room_data)
 
         assert merged_data["name"] == "New Room Name"
         assert merged_data["description"] == "New description"
@@ -107,15 +107,15 @@ class TestEventProcessingOrder:
 
         # Test fresh data (within 5 seconds)
         fresh_data = {"id": "test_room_1", "timestamp": current_time - 2}
-        assert room_sync_service._is_room_data_fresh(fresh_data, current_time)
+        assert room_sync_service._room_data_cache.is_room_data_fresh(fresh_data, current_time)
 
         # Test stale data (older than 5 seconds)
         stale_data = {"id": "test_room_1", "timestamp": current_time - 10}
-        assert not room_sync_service._is_room_data_fresh(stale_data, current_time)
+        assert not room_sync_service._room_data_cache.is_room_data_fresh(stale_data, current_time)
 
         # Test data without timestamp (should be considered stale)
         no_timestamp_data = {"id": "test_room_1"}
-        assert not room_sync_service._is_room_data_fresh(no_timestamp_data, current_time)
+        assert not room_sync_service._room_data_cache.is_room_data_fresh(no_timestamp_data, current_time)
 
     def test_event_processing_handles_race_conditions(self, room_sync_service):
         """Test that event processing handles race conditions properly."""
@@ -133,9 +133,15 @@ class TestEventProcessingOrder:
             room_updates.append(update)
 
         # Process updates concurrently to simulate race conditions
-        processed_updates = []
-        for update in room_updates:
-            processed_updates.append(room_sync_service._process_room_update_with_validation(update))
+        async def process_updates():
+            processed_updates = []
+            for update in room_updates:
+                result = await room_sync_service._process_room_update_with_validation(update)
+                processed_updates.append(result)
+            return processed_updates
+
+        # Run async processing
+        processed_updates = asyncio.run(process_updates())
 
         # Verify that the final state is consistent
         assert len(processed_updates) == 10
@@ -152,7 +158,7 @@ class TestEventProcessingOrder:
             "timestamp": time.time(),
         }
 
-        validation_result = room_sync_service._validate_room_data(incomplete_data)
+        validation_result = room_sync_service._validator.validate_room_data(incomplete_data)
         assert not validation_result["is_valid"]
         assert any("Missing required field" in error for error in validation_result["errors"])
 
@@ -164,7 +170,7 @@ class TestEventProcessingOrder:
             "timestamp": "invalid_timestamp",  # Should be number
         }
 
-        validation_result = room_sync_service._validate_room_data(invalid_data)
+        validation_result = room_sync_service._validator.validate_room_data(invalid_data)
         assert not validation_result["is_valid"]
         assert len(validation_result["errors"]) > 0
 
@@ -176,7 +182,7 @@ class TestEventProcessingOrder:
             "timestamp": time.time(),
         }
 
-        validation_result = room_sync_service._validate_room_data(valid_data)
+        validation_result = room_sync_service._validator.validate_room_data(valid_data)
         assert validation_result["is_valid"]
         assert len(validation_result["errors"]) == 0
 
@@ -212,7 +218,7 @@ class TestEventProcessingOrder:
         def process_events_batch(event_batch):
             """Process a batch of events serially."""
             for event in event_batch:
-                processed_event = room_sync_service._process_event_with_ordering(event)
+                processed_event = room_sync_service.process_event_with_ordering(event)
                 processed_events.put(processed_event)
 
         # Create multiple event batches
@@ -264,7 +270,7 @@ class TestRoomDataConsistency:
             "timestamp": time.time(),
         }
 
-        consistency_result = room_sync_service._validate_room_consistency(consistent_data)
+        consistency_result = room_sync_service._validator.validate_room_consistency(consistent_data)
         assert consistency_result["is_consistent"]
         assert len(consistency_result["inconsistencies"]) == 0
 
@@ -278,7 +284,7 @@ class TestRoomDataConsistency:
             "timestamp": time.time(),
         }
 
-        consistency_result = room_sync_service._validate_room_consistency(inconsistent_data)
+        consistency_result = room_sync_service._validator.validate_room_consistency(inconsistent_data)
         assert not consistency_result["is_consistent"]
         assert len(consistency_result["inconsistencies"]) > 0
         assert any("Occupant count mismatch" in error for error in consistency_result["inconsistencies"])
@@ -293,11 +299,11 @@ class TestRoomDataConsistency:
         for threshold in thresholds:
             # Data that should be fresh for this threshold
             fresh_data = {"id": "test_room_1", "timestamp": current_time - (threshold - 1)}
-            assert room_sync_service._is_room_data_fresh(fresh_data, current_time, threshold)
+            assert room_sync_service._room_data_cache.is_room_data_fresh(fresh_data, current_time, threshold)
 
             # Data that should be stale for this threshold
             stale_data = {"id": "test_room_1", "timestamp": current_time - (threshold + 1)}
-            assert not room_sync_service._is_room_data_fresh(stale_data, current_time, threshold)
+            assert not room_sync_service._room_data_cache.is_room_data_fresh(stale_data, current_time, threshold)
 
     def test_fallback_logic_for_stale_data(self, room_sync_service):
         """Test fallback logic when stale room data is detected."""
@@ -322,11 +328,13 @@ class TestRoomDataConsistency:
         room_data = {"id": "test_room_1", "name": "Test Room", "timestamp": time.time()}
 
         # Process room data (should trigger logging)
-        room_sync_service._process_room_update_with_validation(room_data)
+        async def process_room_data():
+            await room_sync_service._process_room_update_with_validation(room_data)
+            # Verify that the method executed successfully by checking the returned data
+            # The method should return processed room data with fixes applied
+            return await room_sync_service._process_room_update_with_validation(room_data.copy())
 
-        # Verify that the method executed successfully by checking the returned data
-        # The method should return processed room data with fixes applied
-        processed_data = room_sync_service._process_room_update_with_validation(room_data.copy())
+        processed_data = asyncio.run(process_room_data())
 
         # Check that the processed data has the required fields (fixes applied)
         assert "description" in processed_data  # The fix should have added description
