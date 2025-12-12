@@ -523,7 +523,7 @@ class PlayerService:
             logger.info("Player location updated", player_name=player_name, from_room=old_room, to_room=new_room_id)
             return True
 
-        except Exception as e:
+        except (DatabaseError, AttributeError) as e:
             logger.error("Failed to update player location", player_name=player_name, room_id=new_room_id, error=str(e))
             context = create_error_context()
             context.metadata["player_name"] = player_name
@@ -1024,7 +1024,7 @@ class PlayerService:
                     # Check if player is currently in combat using PlayerCombatService
                     if hasattr(self.player_combat_service, "is_player_in_combat"):
                         in_combat = await self.player_combat_service.is_player_in_combat(player.player_id)
-                except Exception as e:
+                except (DatabaseError, AttributeError) as e:
                     logger.warning("Failed to check combat state for player", player_id=player.player_id, error=str(e))
                     in_combat = False
 
@@ -1047,7 +1047,7 @@ class PlayerService:
                     profession_name = profession.name
                     profession_description = profession.description
                     profession_flavor_text = profession.flavor_text
-            except Exception as e:
+            except (DatabaseError, AttributeError) as e:
                 logger.warning("Failed to fetch profession", profession_id=player_profession_id, error=str(e))
 
         if hasattr(player, "player_id"):  # Player object
@@ -1074,6 +1074,38 @@ class PlayerService:
                     position_value=position_value,
                 )
                 position_state = PositionState.STANDING
+
+            # Add computed fields to stats dict if not present
+            try:
+                import math
+
+                con = stats.get("constitution", 50)
+                siz = stats.get("size", 50)
+                pow_val = stats.get("power", 50)
+                edu = stats.get("education", 50)
+
+                if "max_dp" not in stats:
+                    stats["max_dp"] = (con + siz) // 5
+                if "max_magic_points" not in stats:
+                    stats["max_magic_points"] = math.ceil(pow_val * 0.2)
+                if "max_lucidity" not in stats:
+                    stats["max_lucidity"] = edu
+
+                # Initialize magic_points to max if it's 0 (full MP at character creation)
+                if stats.get("magic_points", 0) == 0 and stats.get("max_magic_points", 0) > 0:
+                    stats["magic_points"] = stats["max_magic_points"]
+                # Cap lucidity to max_lucidity if it exceeds max
+                max_lucidity_val = stats.get("max_lucidity", edu)
+                if stats.get("lucidity", 100) > max_lucidity_val:
+                    stats["lucidity"] = max_lucidity_val
+            except (DatabaseError, AttributeError) as e:
+                logger.error(
+                    "Error adding computed fields to stats",
+                    player_id=getattr(player, "player_id", None),
+                    error=str(e),
+                    exc_info=True,
+                )
+                # Continue with stats as-is rather than failing completely
 
             return PlayerRead(
                 id=player.player_id,

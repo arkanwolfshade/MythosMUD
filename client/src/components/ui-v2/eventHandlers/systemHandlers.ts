@@ -9,7 +9,14 @@ import { sanitizeChatMessageForState } from '../utils/messageUtils';
 import type { EventHandler } from './types';
 
 export const handleLucidityChange: EventHandler = (event, context) => {
-  const { status: updatedStatus } = buildLucidityStatus(context.lucidityStatusRef.current, event.data, event.timestamp);
+  // Use player's max_lucidity as fallback if event doesn't provide correct max_lcd
+  const playerMaxLucidity = context.currentPlayerRef.current?.stats?.max_lucidity;
+  const { status: updatedStatus } = buildLucidityStatus(
+    context.lucidityStatusRef.current,
+    event.data,
+    event.timestamp,
+    playerMaxLucidity
+  );
   context.setLucidityStatus(updatedStatus);
   if (context.currentPlayerRef.current) {
     return {
