@@ -583,7 +583,7 @@ class NATSMessageHandler:
             strategy = channel_strategy_factory.get_strategy(channel)
             await strategy.broadcast(chat_event, room_id, party_id, target_player_id, sender_id, self)
 
-        except (NATSError, RuntimeError, ValueError, AttributeError, TypeError) as e:
+        except (NATSError, RuntimeError, ValueError, AttributeError, TypeError, Exception) as e:
             logger.error(
                 "Error broadcasting message by channel type",
                 error=str(e),

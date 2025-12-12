@@ -4,6 +4,11 @@ Tests for Pydantic-based configuration system.
 These tests verify that the new configuration system properly validates
 configuration fields, handles environment variables, and fails gracefully
 with clear error messages.
+
+IMPORTANT: When accessing nested Pydantic model attributes (e.g., config.database.url),
+always extract the nested config object first (e.g., database_config = config.database)
+to avoid Pylint FieldInfo type checker errors. See docs/TESTING_PYDANTIC_PATTERNS.md
+for the complete pattern and rationale.
 """
 
 import os
@@ -307,24 +312,29 @@ class TestPlayerStatsConfig:
         monkeypatch.delenv("DEFAULT_STATS_STRENGTH", raising=False)
         monkeypatch.delenv("DEFAULT_STATS_DEXTERITY", raising=False)
         monkeypatch.delenv("DEFAULT_STATS_CONSTITUTION", raising=False)
+        monkeypatch.delenv("DEFAULT_STATS_SIZE", raising=False)
         monkeypatch.delenv("DEFAULT_STATS_INTELLIGENCE", raising=False)
-        monkeypatch.delenv("DEFAULT_STATS_WISDOM", raising=False)
+        monkeypatch.delenv("DEFAULT_STATS_POWER", raising=False)
+        monkeypatch.delenv("DEFAULT_STATS_EDUCATION", raising=False)
         monkeypatch.delenv("DEFAULT_STATS_CHARISMA", raising=False)
+        monkeypatch.delenv("DEFAULT_STATS_LUCK", raising=False)
 
         config = PlayerStatsConfig()
         assert config.strength == 50
         assert config.dexterity == 50
         assert config.constitution == 50
+        assert config.size == 50
         assert config.intelligence == 50
-        assert config.wisdom == 50
+        assert config.power == 50
+        assert config.education == 50
         assert config.charisma == 50
-        assert config.max_health == 100
+        assert config.luck == 50
 
     def test_invalid_stat_too_low(self):
         """Test stat validation rejects values below 1."""
         with pytest.raises(ValidationError) as exc_info:
             PlayerStatsConfig(strength=0)
-        assert "Stats must be between 1 and 100" in str(exc_info.value)
+        assert "Stats must be at least 1" in str(exc_info.value)
 
     def test_invalid_stat_too_high(self):
         """Test stat validation - stats no longer have upper limit, only minimum of 1."""
@@ -372,14 +382,21 @@ class TestAppConfig:
     def test_app_config_loads_from_env(self):
         """Test that AppConfig loads from environment variables."""
         config = AppConfig()
-        # Extract server config to avoid type checker FieldInfo issues
+        # Extract nested configs to avoid type checker FieldInfo issues
+        # Pylint sees nested Pydantic fields as FieldInfo instances rather than the actual config objects
+        # Pattern: Extract nested config objects before accessing their attributes
         server_config = config.server
+        database_config = config.database
+        security_config = config.security
+        logging_config = config.logging
+        cors_config = config.cors
+
         assert server_config.port == 54731
-        assert config.database.url == "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
-        assert config.security.admin_password == "test_admin_pass"
-        assert config.logging.environment == "unit_test"
-        assert config.cors.allow_origins == ["http://localhost:5173", "http://127.0.0.1:5173"]
-        assert config.cors.allow_credentials is True
+        assert database_config.url == "postgresql+asyncpg://postgres:Cthulhu1@localhost:5432/mythos_unit"
+        assert security_config.admin_password == "test_admin_pass"
+        assert logging_config.environment == "unit_test"
+        assert cors_config.allow_origins == ["http://localhost:5173", "http://127.0.0.1:5173"]
+        assert cors_config.allow_credentials is True
 
     def test_app_config_sets_environment_variables(self):
         """Test that AppConfig sets environment variables for legacy compatibility."""

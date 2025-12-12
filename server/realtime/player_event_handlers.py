@@ -80,14 +80,15 @@ class PlayerEventHandler:
         )
 
     # Room-related methods (delegated to room handler)
-    async def handle_player_entered(self, event: PlayerEnteredRoom) -> None:
+    async def handle_player_entered(self, event: PlayerEnteredRoom, send_occupants_update: Any | None = None) -> None:
         """
         Handle player entering a room with enhanced synchronization.
 
         Args:
             event: The PlayerEnteredRoom event
+            send_occupants_update: Optional callable to send room occupants update
         """
-        await self._room_handler.handle_player_entered(event)
+        await self._room_handler.handle_player_entered(event, send_occupants_update)
 
     async def handle_player_left(self, event: PlayerLeftRoom, send_occupants_update: Any) -> None:
         """

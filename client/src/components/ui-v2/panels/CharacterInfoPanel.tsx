@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import type { HealthStatus } from '../../../types/health';
 import type { LucidityStatus } from '../../../types/lucidity';
 import { HealthMeter } from '../../health/HealthMeter';
 import { LucidityMeter } from '../../lucidity/LucidityMeter';
+import { MagicPointsMeter, type MagicPointsStatus } from '../../magic/MagicPointsMeter';
 import type { Player } from '../types';
 
 interface CharacterInfoPanelProps {
@@ -15,6 +16,21 @@ interface CharacterInfoPanelProps {
 // Login username is displayed in the header; character name is displayed here
 // Based on findings from "Character State Display in Mythos Interfaces" - Dr. Armitage, 1928
 export const CharacterInfoPanel: React.FC<CharacterInfoPanelProps> = ({ player, healthStatus, lucidityStatus }) => {
+  // Hooks must be called before any conditional returns
+  // Extract values for clearer dependency tracking
+  const magicPoints = player?.stats?.magic_points;
+  const maxMagicPoints = player?.stats?.max_magic_points;
+
+  const magicPointsStatus: MagicPointsStatus | null = useMemo(() => {
+    if (magicPoints !== undefined && maxMagicPoints !== undefined && maxMagicPoints > 0) {
+      return {
+        current: magicPoints,
+        max: maxMagicPoints,
+      };
+    }
+    return null;
+  }, [magicPoints, maxMagicPoints]);
+
   if (!player?.stats) {
     return (
       <div className="p-4 text-mythos-terminal-text-secondary">
@@ -41,10 +57,11 @@ export const CharacterInfoPanel: React.FC<CharacterInfoPanelProps> = ({ player, 
         </div>
       )}
 
-      {/* Health and Lucidity Bars */}
+      {/* Health, Lucidity, and Magic Points Bars */}
       <div className="space-y-2">
         <HealthMeter status={healthStatus} />
         <LucidityMeter status={lucidityStatus} className="mt-2" />
+        <MagicPointsMeter status={magicPointsStatus} className="mt-2" />
         {player.level !== undefined && (
           <div className="flex items-center justify-between">
             <span className="text-base text-mythos-terminal-text-secondary">Level:</span>
@@ -89,75 +106,57 @@ export const CharacterInfoPanel: React.FC<CharacterInfoPanelProps> = ({ player, 
           <h5 className="text-sm text-mythos-terminal-primary font-bold mb-1">Core Attributes:</h5>
           <div className="grid grid-cols-2 gap-1 text-sm">
             {player.stats.strength !== undefined && (
-              <div className="flex justify-between">
+              <div className="flex items-center gap-2">
                 <span className="text-mythos-terminal-text-secondary">STR:</span>
                 <span className="text-mythos-terminal-text">{player.stats.strength}</span>
               </div>
             )}
             {player.stats.dexterity !== undefined && (
-              <div className="flex justify-between">
+              <div className="flex items-center gap-2">
                 <span className="text-mythos-terminal-text-secondary">DEX:</span>
                 <span className="text-mythos-terminal-text">{player.stats.dexterity}</span>
               </div>
             )}
             {player.stats.constitution !== undefined && (
-              <div className="flex justify-between">
+              <div className="flex items-center gap-2">
                 <span className="text-mythos-terminal-text-secondary">CON:</span>
                 <span className="text-mythos-terminal-text">{player.stats.constitution}</span>
               </div>
             )}
             {player.stats.size !== undefined && (
-              <div className="flex justify-between">
+              <div className="flex items-center gap-2">
                 <span className="text-mythos-terminal-text-secondary">SIZ:</span>
                 <span className="text-mythos-terminal-text">{player.stats.size}</span>
               </div>
             )}
             {player.stats.intelligence !== undefined && (
-              <div className="flex justify-between">
+              <div className="flex items-center gap-2">
                 <span className="text-mythos-terminal-text-secondary">INT:</span>
                 <span className="text-mythos-terminal-text">{player.stats.intelligence}</span>
               </div>
             )}
             {player.stats.power !== undefined && (
-              <div className="flex justify-between">
+              <div className="flex items-center gap-2">
                 <span className="text-mythos-terminal-text-secondary">POW:</span>
                 <span className="text-mythos-terminal-text">{player.stats.power}</span>
               </div>
             )}
             {player.stats.education !== undefined && (
-              <div className="flex justify-between">
+              <div className="flex items-center gap-2">
                 <span className="text-mythos-terminal-text-secondary">EDU:</span>
                 <span className="text-mythos-terminal-text">{player.stats.education}</span>
               </div>
             )}
             {player.stats.charisma !== undefined && (
-              <div className="flex justify-between">
+              <div className="flex items-center gap-2">
                 <span className="text-mythos-terminal-text-secondary">CHA:</span>
                 <span className="text-mythos-terminal-text">{player.stats.charisma}</span>
               </div>
             )}
             {player.stats.luck !== undefined && (
-              <div className="flex justify-between">
+              <div className="flex items-center gap-2">
                 <span className="text-mythos-terminal-text-secondary">LUCK:</span>
                 <span className="text-mythos-terminal-text">{player.stats.luck}</span>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Derived Stats */}
-      {(player.stats.magic_points !== undefined || player.stats.max_magic_points !== undefined) && (
-        <div className="border-t border-mythos-terminal-border pt-2">
-          <h5 className="text-sm text-mythos-terminal-primary font-bold mb-1">Derived Stats:</h5>
-          <div className="grid grid-cols-2 gap-1 text-sm">
-            {player.stats.magic_points !== undefined && (
-              <div className="flex justify-between">
-                <span className="text-mythos-terminal-text-secondary">MP:</span>
-                <span className="text-mythos-terminal-text">
-                  {player.stats.magic_points}
-                  {player.stats.max_magic_points !== undefined && ` / ${player.stats.max_magic_points}`}
-                </span>
               </div>
             )}
           </div>
@@ -170,13 +169,13 @@ export const CharacterInfoPanel: React.FC<CharacterInfoPanelProps> = ({ player, 
           <h5 className="text-sm text-mythos-terminal-primary font-bold mb-1">Horror Stats:</h5>
           <div className="grid grid-cols-2 gap-1 text-sm">
             {player.stats.occult !== undefined && (
-              <div className="flex justify-between">
+              <div className="flex items-center gap-2">
                 <span className="text-mythos-terminal-text-secondary">Occult:</span>
                 <span className="text-mythos-terminal-text">{player.stats.occult}</span>
               </div>
             )}
             {player.stats.corruption !== undefined && (
-              <div className="flex justify-between">
+              <div className="flex items-center gap-2">
                 <span className="text-mythos-terminal-text-secondary">Corruption:</span>
                 <span className="text-mythos-terminal-text">{player.stats.corruption}</span>
               </div>

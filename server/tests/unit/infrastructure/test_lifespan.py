@@ -26,7 +26,7 @@ class TestGameTickLoop:
     """Test game tick loop functionality."""
 
     @pytest.mark.asyncio
-    @patch("server.app.lifespan.broadcast_game_event", new_callable=AsyncMock)
+    @patch("server.app.game_tick_processing.broadcast_game_event", new_callable=AsyncMock)
     async def test_game_tick_loop_runs(self, mock_broadcast):
         """Test game tick loop executes ticks."""
         mock_connection_manager = MagicMock()
@@ -53,7 +53,7 @@ class TestGameTickLoop:
         assert mock_broadcast.call_count >= 1
 
     @pytest.mark.asyncio
-    @patch("server.app.lifespan.broadcast_game_event", new_callable=AsyncMock)
+    @patch("server.app.game_tick_processing.broadcast_game_event", new_callable=AsyncMock)
     async def test_game_tick_loop_broadcast_data(self, mock_broadcast):
         """Test game tick loop broadcasts correct data."""
         mock_connection_manager = MagicMock()
@@ -86,7 +86,7 @@ class TestGameTickLoop:
             assert "active_players" in tick_data
 
     @pytest.mark.asyncio
-    @patch("server.app.lifespan.broadcast_game_event", new_callable=AsyncMock)
+    @patch("server.app.game_tick_processing.broadcast_game_event", new_callable=AsyncMock)
     async def test_game_tick_loop_handles_exception(self, mock_broadcast):
         """Test game tick loop continues after exception."""
         mock_connection_manager = MagicMock()
@@ -229,7 +229,7 @@ class TestGameTickLoopLegacy:
         """
         app = FastAPI()
 
-        with patch("server.app.lifespan.broadcast_game_event", new_callable=AsyncMock) as mock_broadcast:
+        with patch("server.app.game_tick_processing.broadcast_game_event", new_callable=AsyncMock) as mock_broadcast:
             mock_conn_mgr = MagicMock()
             mock_conn_mgr.player_websockets = {}
 
@@ -302,7 +302,9 @@ class TestGameTickLoopLegacy:
             # Succeed on subsequent calls
 
         with patch(
-            "server.app.lifespan.broadcast_game_event", new_callable=AsyncMock, side_effect=mock_broadcast_with_error
+            "server.app.game_tick_processing.broadcast_game_event",
+            new_callable=AsyncMock,
+            side_effect=mock_broadcast_with_error,
         ):
             mock_conn_mgr = MagicMock()
             mock_conn_mgr.player_websockets = {}
@@ -337,7 +339,11 @@ class TestGameTickLoopLegacy:
         async def capture_broadcast(event_type, data):
             captured_data.append((event_type, data))
 
-        with patch("server.app.lifespan.broadcast_game_event", new_callable=AsyncMock, side_effect=capture_broadcast):
+        with patch(
+            "server.app.game_tick_processing.broadcast_game_event",
+            new_callable=AsyncMock,
+            side_effect=capture_broadcast,
+        ):
             mock_conn_mgr = MagicMock()
             mock_conn_mgr.player_websockets = {"player1": Mock(), "player2": Mock()}
 

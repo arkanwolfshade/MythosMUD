@@ -155,7 +155,7 @@ class RealTimeEventHandler:
     # Event handler delegation methods
     async def _handle_player_entered(self, event: PlayerEnteredRoom) -> None:
         """Delegate player entered event to specialized handler."""
-        await self.player_handler.handle_player_entered(event)
+        await self.player_handler.handle_player_entered(event, self._send_room_occupants_update_internal)
 
     async def _handle_player_left(self, event: PlayerLeftRoom) -> None:
         """Delegate player left event to specialized handler."""

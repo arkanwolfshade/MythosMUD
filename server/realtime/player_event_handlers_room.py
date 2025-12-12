@@ -417,12 +417,13 @@ class PlayerRoomEventHandler:
 
         return player_name, exclude_player_id, room_id_str
 
-    async def handle_player_entered(self, event: PlayerEnteredRoom) -> None:
+    async def handle_player_entered(self, event: PlayerEnteredRoom, send_occupants_update: Any | None = None) -> None:
         """
         Handle player entering a room with enhanced synchronization.
 
         Args:
             event: The PlayerEnteredRoom event
+            send_occupants_update: Optional callable to send room occupants update
         """
         if not self.connection_manager:
             self._logger.debug(
@@ -454,6 +455,11 @@ class PlayerRoomEventHandler:
             )
 
             await self.broadcast_player_entered_message(message, room_id_str, exclude_player_id)
+
+            # Send room occupants update to all players in the room
+            if send_occupants_update is not None and room_id_str is not None:
+                await send_occupants_update(room_id_str, exclude_player=exclude_player_id)
+
             await self.subscribe_player_to_room(processed_event.player_id, room_id_str)
             await self.send_room_updates_to_entering_player(processed_event.player_id, player_name, room_id_str)
 
