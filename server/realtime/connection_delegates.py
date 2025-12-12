@@ -299,6 +299,24 @@ async def delegate_message_broadcaster(
         logger.error("Message broadcaster not initialized")
         return default_return
     method = getattr(message_broadcaster, method_name)
+    # Special handling for broadcast_global which expects (event, exclude_player, player_websockets)
+    if method_name == "broadcast_global":
+        # Extract event and exclude_player from args or kwargs
+        if args:
+            event = args[0]
+            exclude_player = args[1] if len(args) > 1 else kwargs.get("exclude_player")
+        else:
+            event = kwargs.pop("event", None)
+            exclude_player = kwargs.pop("exclude_player", None)
+        return await method(event, exclude_player, player_websockets)
+    # Special handling for broadcast_to_room which expects (room_id, event, exclude_player, player_websockets)
+    if method_name == "broadcast_to_room":
+        # Extract room_id, event, and exclude_player from kwargs
+        room_id = kwargs.pop("room_id", None)
+        event = kwargs.pop("event", None)
+        exclude_player = kwargs.pop("exclude_player", None)
+        return await method(room_id, event, exclude_player, player_websockets)
+    # For other methods, use the standard pattern (player_websockets first)
     return await method(player_websockets, *args, **kwargs)
 
 

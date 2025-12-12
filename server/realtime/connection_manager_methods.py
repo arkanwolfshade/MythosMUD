@@ -199,8 +199,8 @@ async def broadcast_global_impl(
         "broadcast_global",
         {"total_players": 0},
         manager.player_websockets,
-        event=event,
-        exclude_player=exclude_player,
+        event,
+        exclude_player,
     )
 
 
