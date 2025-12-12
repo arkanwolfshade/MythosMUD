@@ -87,9 +87,10 @@ class CombatDeathHandler:
     async def _handle_npc_death(self, target: CombatParticipant, combat: CombatInstance, xp_reward: int) -> None:
         """Handle NPC death event publishing and ID resolution."""
         try:
-            from ..realtime.connection_manager import get_global_connection_manager
+            from ..container import ApplicationContainer
 
-            connection_manager = get_global_connection_manager()
+            container = ApplicationContainer.get_instance()
+            connection_manager = getattr(container, "connection_manager", None) if container else None
             if connection_manager is not None:
                 canonical_room_id = connection_manager.canonical_room_id(combat.room_id) or combat.room_id
                 room_subscribers = connection_manager.room_subscriptions.get(canonical_room_id, set())

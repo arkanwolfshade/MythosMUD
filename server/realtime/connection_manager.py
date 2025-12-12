@@ -7,6 +7,7 @@ and testability.
 """
 
 import asyncio
+import inspect
 import time
 import uuid
 from typing import Any
@@ -34,12 +35,6 @@ from .connection_initialization import (
     initialize_health_monitor,
     initialize_messaging,
     initialize_room_event_handler,
-)
-from .connection_legacy import (
-    connection_manager,
-    get_global_connection_manager,
-    resolve_connection_manager,
-    set_global_connection_manager,
 )
 from .connection_manager_methods import (
     broadcast_global_event_impl,
@@ -619,6 +614,11 @@ class ConnectionManager:
         """Set the player combat service for the connection manager."""
         self._player_combat_service = player_combat_service
 
+    @property
+    def event_bus(self) -> Any:
+        """Get the event bus from connection manager."""
+        return self._event_bus
+
     def _get_event_bus(self):
         """Get the event bus from connection manager."""
         # Event bus is already available on connection_manager
@@ -644,14 +644,95 @@ class ConnectionManager:
 # Attach compatibility properties after class definition
 attach_compatibility_properties(ConnectionManager)
 
-# Re-export legacy functions for backward compatibility
+# Constants for async compatibility
+_ASYNC_METHODS_REQUIRING_COMPAT: set[str] = {
+    "handle_new_game_session",
+    "force_cleanup",
+    "check_connection_health",
+    "cleanup_orphaned_data",
+    "broadcast_room_event",
+    "broadcast_global_event",
+    "broadcast_global",
+    "send_personal_message",
+}
+
+
+def _ensure_async_compat(manager: "Any | None") -> "Any | None":
+    """
+    Ensure connection manager methods are awaitable.
+
+    Wraps synchronous callables in async wrappers to ensure production code
+    can await methods that might be synchronous (e.g., in test scenarios).
+    Uses duck typing to detect mock-like objects without importing test utilities.
+    """
+    if manager is None:
+        return None
+
+    for method_name in _ASYNC_METHODS_REQUIRING_COMPAT:
+        if not hasattr(manager, method_name):
+            continue
+
+        attr = getattr(manager, method_name)
+
+        # Already awaitable - nothing to do
+        if inspect.iscoroutinefunction(attr) or inspect.isawaitable(attr):
+            continue
+
+        # Wrap any callable (including mock-like objects) in an async wrapper
+        # This works for both real methods and test mocks without importing Mock types
+        if callable(attr):
+
+            async def _async_wrapper(*args, _attr=attr, **kwargs):
+                result = _attr(*args, **kwargs)
+                if inspect.isawaitable(result):
+                    return await result
+                return result
+
+            setattr(manager, method_name, _async_wrapper)
+
+    return manager
+
+
+def resolve_connection_manager(candidate: "Any | None" = None) -> "Any | None":
+    """
+    Resolve a connection manager instance.
+
+    Prefers explicitly supplied candidate, then tries to resolve from:
+    1. FastAPI app state container (if available in context)
+    2. ApplicationContainer.get_instance() (for background tasks)
+
+    Args:
+        candidate: Explicit connection manager to prefer.
+
+    Returns:
+        Optional[ConnectionManager]: The resolved connection manager instance (if any)
+    """
+    if candidate is not None:
+        return _ensure_async_compat(candidate)
+
+    # Try to get from app state (for API routes)
+    # This requires accessing the current request context, which is not always available
+    # For now, try ApplicationContainer.get_instance() as fallback
+    try:
+        from ..container import ApplicationContainer
+
+        container = ApplicationContainer.get_instance()
+        if container is not None:
+            manager = getattr(container, "connection_manager", None)
+            if manager is not None:
+                return _ensure_async_compat(manager)
+    except (AttributeError, RuntimeError, ImportError):
+        # Container not available or not initialized
+        pass
+
+    return None
+
+
+# Re-export for backward compatibility
 __all__ = [
     "ConnectionManager",
     "ConnectionMetadata",
-    "connection_manager",
-    "get_global_connection_manager",
     "resolve_connection_manager",
-    "set_global_connection_manager",
 ]
 
 

@@ -33,9 +33,12 @@ import asyncio
 import json
 import threading
 from datetime import datetime
+from json import JSONDecodeError
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
+
+from pydantic import ValidationError
 
 if TYPE_CHECKING:
     from .app.task_registry import TaskRegistry
@@ -246,9 +249,10 @@ class ApplicationContainer:
                 from .config import get_config
 
                 self.config = get_config()
-                # Access logging config directly - mypy correctly infers LoggingConfig type
-                logger.info("Configuration loaded", environment=self.config.logging.environment)
-                normalized_environment = normalize_environment(self.config.logging.environment)
+                # Access logging config directly - self.config.logging is a LoggingConfig instance
+                logging_environment = self.config.logging.environment
+                logger.info("Configuration loaded", environment=logging_environment)
+                normalized_environment = normalize_environment(logging_environment)
 
                 # Phase 2: Database infrastructure
                 logger.debug("Initializing database infrastructure...")
@@ -320,7 +324,12 @@ class ApplicationContainer:
                     try:
                         active = holiday_service.refresh_active(mythos_dt)
                         return [entry.name for entry in active]
-                    except Exception as exc:  # pragma: no cover - defensive logging
+                    except (
+                        ValueError,
+                        TypeError,
+                        AttributeError,
+                        RuntimeError,
+                    ) as exc:  # pragma: no cover - defensive logging
                         logger.warning("Failed to resolve holiday window for tick scheduler", error=str(exc))
                         return []
 
@@ -334,8 +343,7 @@ class ApplicationContainer:
 
                 # Phase 6: Real-time communication
                 logger.debug("Initializing real-time communication...")
-                from .realtime import nats_message_handler as nats_module
-                from .realtime.connection_manager import ConnectionManager, set_global_connection_manager
+                from .realtime.connection_manager import ConnectionManager
                 from .realtime.event_handler import RealTimeEventHandler
                 from .services.nats_service import NATSService
 
@@ -349,7 +357,6 @@ class ApplicationContainer:
 
                 # Initialize connection manager FIRST (needed by other services)
                 self.connection_manager = ConnectionManager()
-                set_global_connection_manager(self.connection_manager)
                 # ARCHITECTURAL FIX: Use async_persistence instead of sync persistence
                 # This eliminates the need for asyncio.to_thread() wrappers and provides
                 # true async database operations that don't block the event loop
@@ -389,9 +396,6 @@ class ApplicationContainer:
                     self.event_publisher = None
                     self.nats_message_handler = None
                     logger.info("NATS-dependent services skipped (NATS disabled or not connected)")
-
-                # Ensure legacy module-level reference is updated for tests and legacy imports
-                nats_module.set_global_connection_manager(self.connection_manager)
 
                 logger.info("Real-time communication initialized")
 
@@ -475,6 +479,7 @@ class ApplicationContainer:
     async def _initialize_item_services(self) -> None:
         """Load item prototypes from PostgreSQL and create the shared item factory."""
         from sqlalchemy import select
+        from sqlalchemy.exc import SQLAlchemyError
 
         from .game.items.item_factory import ItemFactory
         from .game.items.models import ItemPrototypeModel
@@ -520,7 +525,7 @@ class ApplicationContainer:
                     try:
                         prototype = ItemPrototypeModel.model_validate(payload)
                         prototypes[prototype.prototype_id] = prototype
-                    except Exception as exc:  # noqa: BLE001 - validation errors vary
+                    except ValidationError as exc:
                         logger.warning(
                             "Invalid item prototype skipped during initialization",
                             prototype_id=payload.get("prototype_id"),
@@ -542,7 +547,7 @@ class ApplicationContainer:
                 prototype_count=len(prototypes),
                 invalid_count=len(invalid_entries),
             )
-        except Exception as exc:
+        except SQLAlchemyError as exc:
             logger.error(
                 "Failed to load item prototypes from PostgreSQL database", error=str(exc), error_type=type(exc).__name__
             )
@@ -564,7 +569,7 @@ class ApplicationContainer:
             if expected_type is dict:
                 return dict(decoded)
             return decoded
-        except Exception:  # noqa: BLE001
+        except JSONDecodeError:  # noqa: BLE001
             logger.warning("Failed to decode JSON column; using default value", column_value=value)
             return expected_type()
 
@@ -600,7 +605,7 @@ class ApplicationContainer:
             if not path.is_absolute():
                 path = (project_root / path).resolve()
             return path
-        except Exception as exc:  # noqa: BLE001
+        except (ValueError, OSError) as exc:
             logger.error("Failed to normalize item database override", override=raw, error=str(exc))
             return None
 
@@ -615,70 +620,79 @@ class ApplicationContainer:
 
         try:
             # Shutdown in reverse order of initialization
-
-            # 1. Stop monitoring services
-            if self.log_aggregator is not None:
-                try:
-                    self.log_aggregator.shutdown()
-                    logger.debug("Log aggregator shutdown")
-                except Exception as e:
-                    logger.error("Error shutting down log aggregator", error=str(e))
-
-            # 2. Stop real-time services
-            # Stop NATS message handler first (depends on NATS service)
-            if self.nats_message_handler is not None:
-                try:
-                    await self.nats_message_handler.stop()
-                    logger.debug("NATS message handler stopped")
-                except Exception as e:
-                    logger.error("Error stopping NATS message handler", error=str(e))
-
-            # Then disconnect NATS service
-            if self.nats_service is not None:
-                try:
-                    await self.nats_service.disconnect()
-                    logger.debug("NATS service disconnected")
-                except Exception as e:
-                    logger.error("Error disconnecting NATS service", error=str(e))
-
-            # 3. Stop event bus
-            if self.event_bus is not None:
-                try:
-                    await self.event_bus.shutdown()
-                    logger.debug("Event bus shutdown")
-                except Exception as e:
-                    logger.error("Error shutting down event bus", error=str(e))
-
-            # 4. Close database connections
-            if self.database_manager is not None:
-                try:
-                    await self.database_manager.close()
-                    logger.debug("Database connections closed")
-                except Exception as e:
-                    logger.error("Error closing database connections", error=str(e))
-
-            # 4.5. Close async persistence connection pool
-            if self.async_persistence is not None:
-                try:
-                    await self.async_persistence.close()
-                    logger.debug("Async persistence connection pool closed")
-                except Exception as e:
-                    logger.error("Error closing async persistence pool", error=str(e))
-
-            # 5. Close NPC database connections
-            try:
-                from .npc_database import close_npc_db
-
-                await close_npc_db()
-                logger.debug("NPC database connections closed")
-            except Exception as e:
-                logger.error("Error closing NPC database connections", error=str(e))
+            await self._shutdown_log_aggregator()
+            await self._shutdown_nats_services()
+            await self._shutdown_event_bus()
+            await self._shutdown_database_services()
 
             logger.info("ApplicationContainer shutdown complete")
 
-        except Exception as e:
+        except RuntimeError as e:
             logger.error("Error during ApplicationContainer shutdown", error=str(e), exc_info=True)
             # Don't re-raise - best effort cleanup
+
+    async def _shutdown_log_aggregator(self) -> None:
+        """Shutdown log aggregator service."""
+        if self.log_aggregator is not None:
+            try:
+                self.log_aggregator.shutdown()
+                logger.debug("Log aggregator shutdown")
+            except RuntimeError as e:
+                logger.error("Error shutting down log aggregator", error=str(e))
+
+    async def _shutdown_nats_services(self) -> None:
+        """Shutdown NATS-related services."""
+        # Stop NATS message handler first (depends on NATS service)
+        if self.nats_message_handler is not None:
+            try:
+                await self.nats_message_handler.stop()
+                logger.debug("NATS message handler stopped")
+            except RuntimeError as e:
+                logger.error("Error stopping NATS message handler", error=str(e))
+
+        # Then disconnect NATS service
+        if self.nats_service is not None:
+            try:
+                await self.nats_service.disconnect()
+                logger.debug("NATS service disconnected")
+            except RuntimeError as e:
+                logger.error("Error disconnecting NATS service", error=str(e))
+
+    async def _shutdown_event_bus(self) -> None:
+        """Shutdown event bus service."""
+        if self.event_bus is not None:
+            try:
+                await self.event_bus.shutdown()
+                logger.debug("Event bus shutdown")
+            except RuntimeError as e:
+                logger.error("Error shutting down event bus", error=str(e))
+
+    async def _shutdown_database_services(self) -> None:
+        """Shutdown all database-related services."""
+        # Close database connections
+        if self.database_manager is not None:
+            try:
+                await self.database_manager.close()
+                logger.debug("Database connections closed")
+            except RuntimeError as e:
+                logger.error("Error closing database connections", error=str(e))
+
+        # Close async persistence connection pool
+        if self.async_persistence is not None:
+            try:
+                await self.async_persistence.close()
+                logger.debug("Async persistence connection pool closed")
+            except RuntimeError as e:
+                logger.error("Error closing async persistence pool", error=str(e))
+
+        # Close NPC database connections
+        try:
+            from .npc_database import close_npc_db
+
+            await close_npc_db()
+            logger.debug("NPC database connections closed")
+        except RuntimeError as e:
+            logger.error("Error closing NPC database connections", error=str(e))
 
     def _get_project_root(self) -> Path:
         """Return and cache the repository root directory."""

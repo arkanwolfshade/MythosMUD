@@ -11,7 +11,7 @@ from typing import Any
 # This will be called during class definition
 
 
-def attach_compatibility_properties[T](cls: type[T]) -> None:
+def attach_compatibility_properties(cls: type[Any]) -> None:
     """Attach compatibility properties to the ConnectionManager class."""
 
     # Room subscriptions
@@ -24,7 +24,7 @@ def attach_compatibility_properties[T](cls: type[T]) -> None:
     def room_subscriptions_deleter(self: Any) -> None:
         self.room_manager.room_subscriptions.clear()
 
-    cls.room_subscriptions = property(room_subscriptions_getter, room_subscriptions_setter, room_subscriptions_deleter)  # type: ignore[attr-defined]
+    cls.room_subscriptions = property(room_subscriptions_getter, room_subscriptions_setter, room_subscriptions_deleter)
 
     # Room occupants
     def room_occupants_getter(self: Any) -> Any:
@@ -36,7 +36,7 @@ def attach_compatibility_properties[T](cls: type[T]) -> None:
     def room_occupants_deleter(self: Any) -> None:
         self.room_manager.room_occupants.clear()
 
-    cls.room_occupants = property(room_occupants_getter, room_occupants_setter, room_occupants_deleter)  # type: ignore[attr-defined]
+    cls.room_occupants = property(room_occupants_getter, room_occupants_setter, room_occupants_deleter)
 
     # Connection attempts
     def connection_attempts_getter(self: Any) -> Any:
@@ -48,7 +48,7 @@ def attach_compatibility_properties[T](cls: type[T]) -> None:
     def connection_attempts_deleter(self: Any) -> None:
         self.rate_limiter.connection_attempts.clear()
 
-    cls.connection_attempts = property(  # type: ignore[attr-defined]
+    cls.connection_attempts = property(
         connection_attempts_getter, connection_attempts_setter, connection_attempts_deleter
     )
 
@@ -62,10 +62,10 @@ def attach_compatibility_properties[T](cls: type[T]) -> None:
     def pending_messages_deleter(self: Any) -> None:
         self.message_queue.pending_messages.clear()
 
-    cls.pending_messages = property(pending_messages_getter, pending_messages_setter, pending_messages_deleter)  # type: ignore[attr-defined]
+    cls.pending_messages = property(pending_messages_getter, pending_messages_setter, pending_messages_deleter)
 
     # Max connection attempts (read-only)
-    cls.max_connection_attempts = property(lambda self: self.rate_limiter.max_connection_attempts)  # type: ignore[attr-defined]
+    cls.max_connection_attempts = property(lambda self: self.rate_limiter.max_connection_attempts)
 
     # Connection window (read-only)
-    cls.connection_window = property(lambda self: self.rate_limiter.connection_window)  # type: ignore[attr-defined]
+    cls.connection_window = property(lambda self: self.rate_limiter.connection_window)

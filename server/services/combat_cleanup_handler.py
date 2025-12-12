@@ -39,9 +39,10 @@ class CombatCleanupHandler:
     def check_connection_state(self, room_id: str) -> None:
         """Check connection state before publishing combat ended event."""
         try:
-            from ..realtime.connection_manager import get_global_connection_manager
+            from ..container import ApplicationContainer
 
-            connection_manager = get_global_connection_manager()
+            container = ApplicationContainer.get_instance()
+            connection_manager = getattr(container, "connection_manager", None) if container else None
             if connection_manager is not None:
                 canonical_room_id = connection_manager.canonical_room_id(room_id) or room_id
                 room_subscribers = connection_manager.room_subscriptions.get(canonical_room_id, set())

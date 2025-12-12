@@ -57,9 +57,10 @@ class NPCCombatRewards:
             player_id: ID of the player to check
         """
         try:
-            from ..realtime.connection_manager import get_global_connection_manager
+            from ..container import ApplicationContainer
 
-            connection_manager = get_global_connection_manager()
+            container = ApplicationContainer.get_instance()
+            connection_manager = getattr(container, "connection_manager", None) if container else None
             player_uuid = UUID(player_id) if self._is_valid_uuid(player_id) else None
             if player_uuid and connection_manager is not None:
                 has_websocket = player_uuid in connection_manager.player_websockets
