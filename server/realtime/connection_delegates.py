@@ -5,6 +5,7 @@ This module provides helper functions that delegate to specialized
 components, reducing boilerplate in the main ConnectionManager class.
 """
 
+import uuid
 from typing import Any
 
 from ..logging.enhanced_logging_config import get_logger
@@ -308,6 +309,9 @@ async def delegate_message_broadcaster(
         else:
             event = kwargs.pop("event", None)
             exclude_player = kwargs.pop("exclude_player", None)
+        # Convert exclude_player UUID to string if needed (MessageBroadcaster expects str | None)
+        if exclude_player is not None and isinstance(exclude_player, uuid.UUID):
+            exclude_player = str(exclude_player)
         return await method(event, exclude_player, player_websockets)
     # Special handling for broadcast_to_room which expects (room_id, event, exclude_player, player_websockets)
     if method_name == "broadcast_to_room":
@@ -315,6 +319,7 @@ async def delegate_message_broadcaster(
         room_id = kwargs.pop("room_id", None)
         event = kwargs.pop("event", None)
         exclude_player = kwargs.pop("exclude_player", None)
+        # broadcast_to_room accepts uuid.UUID | str | None, so no conversion needed
         return await method(room_id, event, exclude_player, player_websockets)
     # For other methods, use the standard pattern (player_websockets first)
     return await method(player_websockets, *args, **kwargs)
@@ -348,6 +353,13 @@ async def delegate_personal_message_sender(
         logger.error("Personal message sender not initialized")
         return default_return
     method = getattr(personal_message_sender, method_name)
+    # Special handling for send_message which expects (player_id, event, player_websockets, active_websockets)
+    if method_name == "send_message":
+        # Extract player_id and event from kwargs
+        player_id = kwargs.pop("player_id", None)
+        event = kwargs.pop("event", None)
+        return await method(player_id, event, player_websockets, active_websockets)
+    # For other methods, use the standard pattern (player_websockets, active_websockets first)
     return await method(player_websockets, active_websockets, *args, **kwargs)
 
 
