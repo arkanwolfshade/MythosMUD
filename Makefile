@@ -1,6 +1,6 @@
 # MythosMUD Makefile
 
-.PHONY: help clean lint format test test-fast test-fast-serial test-ci test-comprehensive test-coverage test-client test-client-e2e test-e2e test-slow coverage build install run semgrep semgrep-autofix mypy lint-sqlalchemy setup-test-env check-postgresql setup-postgresql-test-db verify-schema
+.PHONY: help clean lint format test test-coverage test-client test-client-coverage test-server test-server-coverage coverage build install run semgrep semgrep-autofix mypy lint-sqlalchemy setup-test-env check-postgresql setup-postgresql-test-db verify-schema
 
 # Determine project root for worktree contexts
 PROJECT_ROOT := $(shell python -c "import os; print(os.path.dirname(os.getcwd()) if 'MythosMUD-' in os.getcwd() else os.getcwd())")
@@ -21,20 +21,13 @@ help:
 	@echo "  setup-postgresql-test-db - Create PostgreSQL test database"
 	@echo "  verify-schema          - Verify authoritative_schema.sql matches mythos_dev"
 	@echo ""
-	@echo "Testing - Daily Development:"
-	@echo "  test-fast        - Quick unit tests with parallelization (~2-3 min)"
-	@echo "  test-fast-serial - Quick unit tests serially (for debugging)"
-	@echo "  test             - Default pre-commit validation (~5-7 min target)"
-	@echo "  test-client      - Client unit tests only (Vitest)"
-	@echo "  test-client-e2e  - Automated client E2E tests (Playwright)"
-	@echo ""
-	@echo "Testing - CI/CD:"
-	@echo "  test-comprehensive - Full test suite for CI/CD (~30 min, rebuilds Docker image)"
-	@echo "  test-coverage      - Generate coverage reports"
-	@echo ""
-	@echo "Testing - On-Demand:"
-	@echo "  test-e2e        - Server E2E tests (requires running services)"
-	@echo "  test-slow       - All slow tests (performance, integration, etc.)"
+	@echo "Testing:"
+	@echo "  test                  - Run all tests (client + server, no coverage)"
+	@echo "  test-coverage         - Run all tests with coverage (client + server)"
+	@echo "  test-client           - Run client tests only (no coverage)"
+	@echo "  test-client-coverage  - Run client tests with coverage"
+	@echo "  test-server           - Run server tests only (no coverage)"
+	@echo "  test-server-coverage  - Run server tests with coverage"
 	@echo ""
 	@echo "Build & Deploy:"
 	@echo "  build           - Build the client (Node)"
@@ -79,70 +72,38 @@ format:
 	cd $(PROJECT_ROOT) && python scripts/format.py
 
 # ============================================================================
-# TESTING TARGETS - Simplified Hierarchy
+# TESTING TARGETS
 # ============================================================================
 
-# ----------------------------------------------------------------------------
-# Daily Development Workflow
-# ----------------------------------------------------------------------------
-
-test: setup-test-env
-	@echo "Running default test suite (pre-commit validation, ~5-7 min target)..."
-	cd $(PROJECT_ROOT) && uv run pytest server/tests/ -m "not slow and not e2e" -n auto --maxfail=10 --tb=short
-
+# Client tests (no coverage)
 test-client:
-	@echo "Running client unit tests..."
+	@echo "Running client tests (unit + E2E, no coverage)..."
 	cd $(PROJECT_ROOT)/client && npm run test:unit:run
-
-test-client-e2e:
-	@echo "Running automated client E2E tests..."
 	cd $(PROJECT_ROOT)/client && npm run test
 
-# ----------------------------------------------------------------------------
-# CI/CD Workflow
-# ----------------------------------------------------------------------------
+# Client tests (with coverage)
+test-client-coverage:
+	@echo "Running client tests with coverage..."
+	cd $(PROJECT_ROOT)/client && npm run test:coverage
+	cd $(PROJECT_ROOT)/client && npm run test
 
-ACT_RUNNER_IMAGE := mythosmud-gha-runner:latest
-ACT_RUNNER_DOCKERFILE := Dockerfile.github-runner
+# Server tests (no coverage)
+test-server: setup-test-env
+	@echo "Running server tests (no coverage)..."
+	cd $(PROJECT_ROOT) && uv run pytest server/tests/ -n auto --maxfail=10 --tb=short
 
-test-ci:
-	@echo "Running CI test suite (coverage enforced)..."
-	cd $(PROJECT_ROOT) && uv run pytest server/tests/ --cov=server \
-		--cov-report=xml --cov-report=html --cov-fail-under=80 -v --tb=short
+# Server tests (with coverage)
+test-server-coverage: setup-test-env
+	@echo "Running server tests with coverage..."
+	cd $(PROJECT_ROOT) && uv run pytest server/tests/ --cov=server --cov-report=html --cov-report=term-missing --cov-report=xml -n auto --maxfail=10 --tb=short
 
-test-comprehensive: setup-test-env
-	@echo "Running COMPREHENSIVE test suite via act (mirrors CI workflows)..."
-	@if not exist "$(PROJECT_ROOT)\\.act.secrets" ( \
-		echo ERROR: Missing $(PROJECT_ROOT)\\.act.secrets. Copy .act.secrets.example and populate secrets before running act. & \
-		exit 1 )
-	@echo "Building Docker runner image (this ensures dependencies are up-to-date)..."
-	cd $(PROJECT_ROOT) && docker build --pull -t $(ACT_RUNNER_IMAGE) -f $(ACT_RUNNER_DOCKERFILE) .
-	@echo "Running backend tests..."
-	cd $(PROJECT_ROOT) && act --env ACT=1 --env UV_PROJECT_ENVIRONMENT=.venv-ci --env UV_LINK_MODE=copy -W .github/workflows/ci.yml -j backend
-	@echo "Running frontend tests..."
-	cd $(PROJECT_ROOT) && act --reuse --env ACT=1 --env UV_PROJECT_ENVIRONMENT=.venv-ci --env UV_LINK_MODE=copy -W .github/workflows/ci.yml -j frontend
-	@echo "Test comprehensive run completed."
+# All tests (client + server, no coverage)
+test: test-client test-server
 
-test-coverage: setup-test-env
-	@echo "Generating coverage report..."
-	cd $(PROJECT_ROOT) && uv run pytest server/tests/ -m "not slow and not e2e" --cov --cov-report=html --cov-report=term-missing --cov-report=xml
+# All tests (client + server, with coverage)
+test-coverage: test-client-coverage test-server-coverage
 
-# ----------------------------------------------------------------------------
-# On-Demand Specialized Testing
-# ----------------------------------------------------------------------------
-
-test-e2e: setup-test-env
-	@echo "Running server E2E tests (requires running services)..."
-	cd $(PROJECT_ROOT) && uv run pytest server/tests/e2e/ -m "e2e" -v
-
-test-slow: setup-test-env
-	@echo "Running slow tests (performance, integration, etc.)..."
-	cd $(PROJECT_ROOT) && uv run pytest server/tests/ -m "slow" -v
-
-# ----------------------------------------------------------------------------
-# Legacy Aliases (for backward compatibility)
-# ----------------------------------------------------------------------------
-
+# Legacy alias for backward compatibility
 coverage: test-coverage
 
 build:
@@ -166,5 +127,4 @@ all:
 	cd $(PROJECT_ROOT) && make lint
 	cd $(PROJECT_ROOT) && make semgrep
 	cd $(PROJECT_ROOT) && make build
-	cd $(PROJECT_ROOT) && make test-client
-	cd $(PROJECT_ROOT) && make test-comprehensive
+	cd $(PROJECT_ROOT) && make test-coverage

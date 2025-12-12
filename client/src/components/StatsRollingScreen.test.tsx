@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { StatsRollingScreen } from './StatsRollingScreen';
 
@@ -140,15 +140,42 @@ describe('StatsRollingScreen', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByText('60')).toBeInTheDocument();
-        expect(screen.getByText('70')).toBeInTheDocument();
-        expect(screen.getByText('50')).toBeInTheDocument();
-        expect(screen.getByText('55')).toBeInTheDocument();
-        expect(screen.getByText('80')).toBeInTheDocument();
-        expect(screen.getByText('65')).toBeInTheDocument();
-        expect(screen.getByText('40')).toBeInTheDocument();
-        expect(screen.getByText('65')).toBeInTheDocument();
-        expect(screen.getByText('50')).toBeInTheDocument();
+        // Use within to scope queries to each stat-item to avoid conflicts with duplicate values
+        const strengthItem = screen.getByText('Strength:').closest('.stat-item');
+        expect(strengthItem).not.toBeNull();
+        expect(within(strengthItem as HTMLElement).getByText('60')).toBeInTheDocument();
+
+        const dexterityItem = screen.getByText('Dexterity:').closest('.stat-item');
+        expect(dexterityItem).not.toBeNull();
+        expect(within(dexterityItem as HTMLElement).getByText('70')).toBeInTheDocument();
+
+        const constitutionItem = screen.getByText('Constitution:').closest('.stat-item');
+        expect(constitutionItem).not.toBeNull();
+        expect(within(constitutionItem as HTMLElement).getByText('50')).toBeInTheDocument();
+
+        const sizeItem = screen.getByText('Size:').closest('.stat-item');
+        expect(sizeItem).not.toBeNull();
+        expect(within(sizeItem as HTMLElement).getByText('55')).toBeInTheDocument();
+
+        const intelligenceItem = screen.getByText('Intelligence:').closest('.stat-item');
+        expect(intelligenceItem).not.toBeNull();
+        expect(within(intelligenceItem as HTMLElement).getByText('80')).toBeInTheDocument();
+
+        const powerItem = screen.getByText('Power:').closest('.stat-item');
+        expect(powerItem).not.toBeNull();
+        expect(within(powerItem as HTMLElement).getByText('65')).toBeInTheDocument();
+
+        const educationItem = screen.getByText('Education:').closest('.stat-item');
+        expect(educationItem).not.toBeNull();
+        expect(within(educationItem as HTMLElement).getByText('40')).toBeInTheDocument();
+
+        const charismaItem = screen.getByText('Charisma:').closest('.stat-item');
+        expect(charismaItem).not.toBeNull();
+        expect(within(charismaItem as HTMLElement).getByText('65')).toBeInTheDocument();
+
+        const luckItem = screen.getByText('Luck:').closest('.stat-item');
+        expect(luckItem).not.toBeNull();
+        expect(within(luckItem as HTMLElement).getByText('50')).toBeInTheDocument();
       });
     });
 
@@ -176,17 +203,42 @@ describe('StatsRollingScreen', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByText('75')).toBeInTheDocument();
-        expect(screen.getByText('60')).toBeInTheDocument();
-        expect(screen.getByText('70')).toBeInTheDocument();
-        expect(screen.getByText('55')).toBeInTheDocument();
-        expect(screen.getByText('50')).toBeInTheDocument();
-        expect(screen.getByText('50')).toBeInTheDocument();
-        expect(screen.getByText('65')).toBeInTheDocument();
-        expect(screen.getByText('55')).toBeInTheDocument();
-        expect(screen.getByText('50')).toBeInTheDocument();
-        expect(screen.getByText('65')).toBeInTheDocument();
-        expect(screen.getByText('55')).toBeInTheDocument();
+        // Use within to scope queries to each stat-item to avoid conflicts with duplicate values
+        const strengthItem = screen.getByText('Strength:').closest('.stat-item');
+        expect(strengthItem).not.toBeNull();
+        expect(within(strengthItem as HTMLElement).getByText('75')).toBeInTheDocument();
+
+        const dexterityItem = screen.getByText('Dexterity:').closest('.stat-item');
+        expect(dexterityItem).not.toBeNull();
+        expect(within(dexterityItem as HTMLElement).getByText('60')).toBeInTheDocument();
+
+        const constitutionItem = screen.getByText('Constitution:').closest('.stat-item');
+        expect(constitutionItem).not.toBeNull();
+        expect(within(constitutionItem as HTMLElement).getByText('70')).toBeInTheDocument();
+
+        const sizeItem = screen.getByText('Size:').closest('.stat-item');
+        expect(sizeItem).not.toBeNull();
+        expect(within(sizeItem as HTMLElement).getByText('55')).toBeInTheDocument();
+
+        const intelligenceItem = screen.getByText('Intelligence:').closest('.stat-item');
+        expect(intelligenceItem).not.toBeNull();
+        expect(within(intelligenceItem as HTMLElement).getByText('50')).toBeInTheDocument();
+
+        const powerItem = screen.getByText('Power:').closest('.stat-item');
+        expect(powerItem).not.toBeNull();
+        expect(within(powerItem as HTMLElement).getByText('50')).toBeInTheDocument();
+
+        const educationItem = screen.getByText('Education:').closest('.stat-item');
+        expect(educationItem).not.toBeNull();
+        expect(within(educationItem as HTMLElement).getByText('65')).toBeInTheDocument();
+
+        const charismaItem = screen.getByText('Charisma:').closest('.stat-item');
+        expect(charismaItem).not.toBeNull();
+        expect(within(charismaItem as HTMLElement).getByText('55')).toBeInTheDocument();
+
+        const luckItem = screen.getByText('Luck:').closest('.stat-item');
+        expect(luckItem).not.toBeNull();
+        expect(within(luckItem as HTMLElement).getByText('50')).toBeInTheDocument();
       });
 
       expect(screen.getByText('Accept Stats & Create Character')).toBeInTheDocument();

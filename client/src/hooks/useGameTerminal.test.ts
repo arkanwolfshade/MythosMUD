@@ -412,7 +412,7 @@ describe('useGameTerminal', () => {
     });
 
     it('should execute onSendChatMessage callback', () => {
-      const mockAddGameLogEntry = vi.fn();
+      const mockAddChatMessage = vi.fn();
       vi.mocked(useConnectionStore).mockReturnValue({
         isFullyConnected: vi.fn().mockReturnValue(true),
         isConnecting: false,
@@ -433,7 +433,7 @@ describe('useGameTerminal', () => {
         room: null,
         chatMessages: [],
         gameLog: [],
-        addGameLogEntry: mockAddGameLogEntry,
+        addChatMessage: mockAddChatMessage,
         clearChatMessages: vi.fn(),
       } as any);
 
@@ -448,7 +448,7 @@ describe('useGameTerminal', () => {
 
       result.current.onSendChatMessage('Hello everyone', 'local');
 
-      expect(mockAddGameLogEntry).toHaveBeenCalledWith(
+      expect(mockAddChatMessage).toHaveBeenCalledWith(
         expect.objectContaining({
           text: 'Hello everyone',
           channel: 'local',
@@ -458,7 +458,7 @@ describe('useGameTerminal', () => {
     });
 
     it('should use playerName when characterName is not available', () => {
-      const mockAddGameLogEntry = vi.fn();
+      const mockAddChatMessage = vi.fn();
       vi.mocked(useConnectionStore).mockReturnValue({
         isFullyConnected: vi.fn().mockReturnValue(true),
         isConnecting: false,
@@ -479,7 +479,7 @@ describe('useGameTerminal', () => {
         room: null,
         chatMessages: [],
         gameLog: [],
-        addGameLogEntry: mockAddGameLogEntry,
+        addChatMessage: mockAddChatMessage,
         clearChatMessages: vi.fn(),
       } as any);
 
@@ -494,7 +494,7 @@ describe('useGameTerminal', () => {
 
       result.current.onSendChatMessage('Hello', 'local');
 
-      expect(mockAddGameLogEntry).toHaveBeenCalledWith(
+      expect(mockAddChatMessage).toHaveBeenCalledWith(
         expect.objectContaining({
           sender: 'TestPlayer',
         })
