@@ -80,13 +80,13 @@ format:
 test-client:
 	@echo "Running client tests (unit + E2E, no coverage)..."
 	cd $(PROJECT_ROOT)/client && npm run test:unit:run
-	@cd $(PROJECT_ROOT)/client && npm run test || echo "Note: E2E tests skipped (no tests found or Playwright not configured)"
+	cd $(PROJECT_ROOT)/client && npm run test
 
 # Client tests (with coverage)
 test-client-coverage:
 	@echo "Running client tests with coverage..."
 	cd $(PROJECT_ROOT)/client && npm run test:coverage
-	@cd $(PROJECT_ROOT)/client && npm run test || echo "Note: E2E tests skipped (no tests found or Playwright not configured)"
+	cd $(PROJECT_ROOT)/client && npm run test
 
 # Server tests (no coverage)
 test-server: setup-test-env
@@ -114,7 +114,7 @@ test-ci:
 	@if [ -n "$$CI" ] || [ -n "$$GITHUB_ACTIONS" ]; then \
 		echo "Running CI test suite directly (already in CI environment)..."; \
 		cd $(PROJECT_ROOT)/client && npm run test:coverage; \
-		cd $(PROJECT_ROOT)/client && npm run test || echo "Note: E2E tests skipped (no tests found or Playwright not configured)"; \
+		cd $(PROJECT_ROOT)/client && npm run test; \
 		cd $(PROJECT_ROOT) && source .venv-ci/bin/activate && pytest server/tests/ --cov=server --cov-report=xml --cov-report=html --cov-fail-under=80 -v --tb=short; \
 	else \
 		echo "Building Docker runner image (this ensures dependencies are up-to-date)..."; \
@@ -127,7 +127,7 @@ test-ci:
 			$(ACT_RUNNER_IMAGE) \
 			bash -c "service postgresql start && sleep 3 && \
 			cd /workspace/client && npm run test:coverage && \
-			cd /workspace/client && npm run test || echo 'Note: E2E tests skipped (no tests found or Playwright not configured)' && \
+			cd /workspace/client && npm run test && \
 			cd /workspace && source .venv/bin/activate && \
 			pytest server/tests/ --cov=server --cov-report=xml --cov-report=html --cov-fail-under=80 -v --tb=short"; \
 	fi

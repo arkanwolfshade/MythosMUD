@@ -10,7 +10,7 @@
     "format": "prettier --write .",
     "preview": "vite preview",
     "postinstall": "node scripts/apply-patches.js",
-    "test": "playwright test",
+    "test": "node scripts/run-playwright-tests.js",
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed",
     "test:unit": "vitest",
