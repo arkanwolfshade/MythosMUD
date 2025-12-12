@@ -12,7 +12,7 @@ const mockWebSocket = {
 };
 
 // Mock WebSocket constructor
-global.WebSocket = vi.fn(() => {
+global.WebSocket = vi.fn(function WebSocket() {
   // Simulate connection failure by triggering onerror after a short delay
   setTimeout(() => {
     if (mockWebSocket.onerror) {
