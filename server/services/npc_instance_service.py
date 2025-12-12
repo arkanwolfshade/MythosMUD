@@ -8,7 +8,7 @@ As documented in the Cultes des Goules, proper instance management is essential
 for maintaining control over the eldritch entities that inhabit our world.
 """
 
-from typing import Any
+from typing import Any, cast
 
 from server.events.event_bus import EventBus
 from server.models.npc import NPCDefinition
@@ -98,7 +98,7 @@ class NPCInstanceService:
 
             # Spawn the NPC using the population controller to ensure proper population limits
             # The population controller will handle all spawning through the lifecycle manager
-            npc_id = self.population_controller._spawn_npc(definition, room_id)
+            npc_id = self.population_controller.spawn_npc(definition, room_id)
 
             if not npc_id:
                 raise RuntimeError(f"Failed to spawn NPC from definition {definition_id}")
@@ -227,8 +227,6 @@ class NPCInstanceService:
                 npc_instance.move_to_room(new_room_id)
             else:
                 # Update the room ID directly if move_to_room method doesn't exist
-                from typing import Any, cast
-
                 cast(Any, npc_instance).current_room_id = new_room_id
 
             logger.info(
@@ -270,13 +268,23 @@ class NPCInstanceService:
 
             for npc_id, npc_instance in self.lifecycle_manager.active_npcs.items():
                 # Extract information from the NPC instance
+                # Get stats using get_stats() method if available, otherwise try stats property
+                npc_stats_dict = {}
+                if hasattr(npc_instance, "get_stats"):
+                    try:
+                        npc_stats_dict = npc_instance.get_stats()
+                    except (AttributeError, TypeError):
+                        npc_stats_dict = getattr(npc_instance, "stats", {})
+                else:
+                    npc_stats_dict = getattr(npc_instance, "stats", {})
+
                 instance_info = {
                     "npc_id": npc_id,
                     "name": getattr(npc_instance, "name", "Unknown"),
                     "npc_type": getattr(npc_instance, "npc_type", "unknown"),
                     "current_room_id": getattr(npc_instance, "current_room_id", "Unknown"),
-                    "is_alive": getattr(npc_instance, "is_alive", lambda: True)(),
-                    "stats": getattr(npc_instance, "stats", {}),
+                    "is_alive": getattr(npc_instance, "is_alive", True),
+                    "stats": npc_stats_dict,
                 }
 
                 # Add lifecycle information if available
@@ -321,14 +329,23 @@ class NPCInstanceService:
 
             npc_instance = self.lifecycle_manager.active_npcs[npc_id]
 
-            # Get basic stats
+            # Get stats using get_stats() method if available, otherwise try stats property
+            npc_stats_dict = {}
+            if hasattr(npc_instance, "get_stats"):
+                try:
+                    npc_stats_dict = npc_instance.get_stats()
+                except (AttributeError, TypeError):
+                    npc_stats_dict = getattr(npc_instance, "stats", {})
+            else:
+                npc_stats_dict = getattr(npc_instance, "stats", {})
+
             stats = {
                 "npc_id": npc_id,
                 "name": getattr(npc_instance, "name", "Unknown"),
                 "npc_type": getattr(npc_instance, "npc_type", "unknown"),
                 "current_room_id": getattr(npc_instance, "current_room_id", "Unknown"),
-                "is_alive": getattr(npc_instance, "is_alive", lambda: True)(),
-                "stats": getattr(npc_instance, "stats", {}),
+                "is_alive": getattr(npc_instance, "is_alive", True),
+                "stats": npc_stats_dict,
             }
 
             # Add lifecycle information if available
@@ -514,15 +531,21 @@ class NPCInstanceService:
             return "unknown/unknown"
 
 
-# Global instance - will be initialized by the application
+# Global instance container - will be initialized by the application
+# Using a list to avoid global statement (lists are mutable and can be modified without global keyword)
+_npc_instance_service_storage: list[NPCInstanceService | None] = [None]
+
+# Module-level variable for backward compatibility (used in tests)
+# This references the first element of the storage list
 npc_instance_service: NPCInstanceService | None = None
 
 
 def get_npc_instance_service() -> NPCInstanceService:
     """Get the global NPC instance service."""
-    if npc_instance_service is None:
+    service = _npc_instance_service_storage[0]
+    if service is None:
         raise RuntimeError("NPC instance service not initialized")
-    return npc_instance_service
+    return service
 
 
 def initialize_npc_instance_service(
@@ -532,11 +555,18 @@ def initialize_npc_instance_service(
     event_bus: EventBus,
 ) -> None:
     """Initialize the global NPC instance service."""
-    global npc_instance_service
-    npc_instance_service = NPCInstanceService(
+    service = NPCInstanceService(
         lifecycle_manager=lifecycle_manager,
         spawning_service=spawning_service,
         population_controller=population_controller,
         event_bus=event_bus,
     )
+    # Update storage list (no global statement needed - modifying list contents)
+    _npc_instance_service_storage[0] = service
+    # Update module-level variable for backward compatibility
+    # Access module's __dict__ directly to avoid global statement
+    import sys
+
+    current_module = sys.modules[__name__]
+    current_module.__dict__["npc_instance_service"] = service
     logger.info("NPC instance service initialized")

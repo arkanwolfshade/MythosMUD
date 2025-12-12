@@ -49,7 +49,8 @@ async def send_game_state_event_safely(
 
     ws_state = getattr(websocket, "application_state", None)
     if ws_state == WebSocketState.DISCONNECTED:
-        logger.warning("WebSocket already disconnected, skipping game_state send", player_id=player_id_str)
+        # WebSocket already disconnected - this is expected during cleanup, no need to warn
+        logger.debug("WebSocket already disconnected, skipping game_state send", player_id=player_id_str)
         return True
 
     try:

@@ -12,6 +12,9 @@ import uuid
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
+from fastapi import WebSocketDisconnect
+
+from ...exceptions import DatabaseError
 from ...logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
@@ -107,7 +110,7 @@ class PersonalMessageSender:
                     "message": "Message payload too large to transmit",
                     "details": {"max_size": optimizer.max_payload_size},
                 }
-            except Exception as opt_error:
+            except (DatabaseError, AttributeError) as opt_error:
                 # Optimization failed, but continue with original payload
                 logger.warning(
                     "Payload optimization failed, using original",
@@ -134,18 +137,34 @@ class PersonalMessageSender:
                         had_connection_attempts = True
                         websocket = active_websockets[connection_id]
                         try:
+                            # Check WebSocket state before sending
+                            from starlette.websockets import WebSocketState
+
+                            ws_state = getattr(websocket, "application_state", None)
+                            if ws_state == WebSocketState.DISCONNECTED:
+                                # WebSocket already disconnected, skip and clean up
+                                delivery_status["websocket_failed"] += 1
+                                await self.cleanup_dead_websocket(player_id, connection_id)
+                                continue
+
                             # Check if WebSocket is still open by attempting to send
                             await websocket.send_json(serializable_event)
                             delivery_status["websocket_delivered"] += 1
                             delivery_status["active_connections"] += 1
-                        except Exception as ws_error:
+                        except (RuntimeError, ConnectionError, WebSocketDisconnect) as ws_error:
                             # WebSocket is closed or in an invalid state
-                            logger.warning(
-                                "WebSocket send failed",
-                                player_id=player_id,
-                                connection_id=connection_id,
-                                error=str(ws_error),
-                            )
+                            error_message = str(ws_error)
+                            # Only log if it's not a simple "close message" error (expected during cleanup)
+                            if (
+                                "close message has been sent" not in error_message.lower()
+                                and "cannot call" not in error_message.lower()
+                            ):
+                                logger.warning(
+                                    "WebSocket send failed",
+                                    player_id=player_id,
+                                    connection_id=connection_id,
+                                    error=error_message,
+                                )
                             delivery_status["websocket_failed"] += 1
                             # Clean up the dead WebSocket connection
                             await self.cleanup_dead_websocket(player_id, connection_id)
@@ -174,7 +193,7 @@ class PersonalMessageSender:
             logger.debug("Message delivery status", player_id=player_id, delivery_status=delivery_status)
             return delivery_status
 
-        except Exception as e:
+        except (DatabaseError, AttributeError) as e:
             logger.error("Failed to send personal message", player_id=player_id, error=str(e))
             delivery_status["success"] = False
             return delivery_status

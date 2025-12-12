@@ -17,7 +17,7 @@ async def _dispatch_player_event(player_id: uuid.UUID | str, event_type: str, pa
     player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
 
     try:
-        from ..realtime.connection_manager import send_game_event
+        from ..realtime.connection_manager_api import send_game_event
     except Exception as exc:  # pragma: no cover - import side effects in tests
         logger.debug(
             "Lucidity event dispatch unavailable",

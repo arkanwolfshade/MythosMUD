@@ -12,7 +12,7 @@ from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..logging.enhanced_logging_config import get_logger
-from ..realtime.connection_manager import broadcast_game_event
+from ..realtime.connection_manager_api import broadcast_game_event
 from ..services.player_respawn_service import LIMBO_ROOM_ID
 from ..time.time_service import get_mythos_chronicle
 
