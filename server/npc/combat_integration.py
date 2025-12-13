@@ -15,7 +15,7 @@ from typing import Any
 
 from ..events import EventBus
 from ..events.event_types import NPCAttacked
-from ..exceptions import ValidationError
+from ..exceptions import DatabaseError, ValidationError
 from ..game.mechanics import GameMechanicsService
 from ..logging.enhanced_logging_config import get_logger
 
@@ -329,9 +329,21 @@ class NPCCombatIntegration:
             player = self._persistence.get_player(entity_id_uuid)
             if player:
                 stats = player.stats.model_dump()
+                # Use current_dp for determination points
+                current_dp = stats.get("current_dp", 100)
+                # Handle both max_dp and max_health for backward compatibility
+                # If neither exists, try to compute from constitution and size, or default to 100
+                max_dp = stats.get("max_dp")
+                if max_dp is None:
+                    max_dp = stats.get("max_health")
+                if max_dp is None:
+                    # Try to compute from constitution and size if available
+                    con = stats.get("constitution", 50)
+                    siz = stats.get("size", 50)
+                    max_dp = (con + siz) // 5 if con and siz else 100
                 return {
-                    "hp": stats.get("current_health", 100),
-                    "max_hp": stats.get("max_health", 100),
+                    "dp": current_dp,
+                    "max_dp": max_dp,
                     "strength": stats.get("strength", 50),
                     "constitution": stats.get("constitution", 50),
                     "lucidity": stats.get("lucidity", 100),
@@ -339,29 +351,38 @@ class NPCCombatIntegration:
                     "corruption": stats.get("corruption", 0),
                 }
 
-            # For NPCs, use provided stats or return empty dict
+            # For NPCs, normalize stats to include 'hp' for backward compatibility
             if npc_stats:
-                return npc_stats
+                normalized_stats = dict(npc_stats)
+                # Map determination_points or dp to hp if hp is missing
+                if "hp" not in normalized_stats:
+                    # Check determination_points first, then dp
+                    hp_value = normalized_stats.get("determination_points")
+                    if hp_value is None:
+                        hp_value = normalized_stats.get("dp")
+                    if hp_value is not None:
+                        normalized_stats["hp"] = hp_value
+                return normalized_stats
 
             logger.warning("Entity not found for combat stats", entity_id=entity_id)
             return {}
 
-        except (ValueError, TypeError, AttributeError) as e:
-            # If there's an error (e.g., invalid UUID, missing attributes, type mismatch),
-            # try to return NPC stats if provided
+        except (ValueError, TypeError, AttributeError, DatabaseError, ValidationError) as e:
+            # If there's an error (e.g., invalid UUID, missing attributes, type mismatch, database errors),
+            # try to return NPC stats if provided (normalized to include 'hp' for backward compatibility)
             if npc_stats:
                 logger.debug(
                     "Error getting combat stats, returning provided NPC stats", entity_id=entity_id, error=str(e)
                 )
-                return npc_stats
-            logger.error("Error getting combat stats", entity_id=entity_id, error=str(e))
-            return {}
-        except Exception as e:
-            # Catch any other exceptions (e.g., database errors) and return NPC stats if provided
-            if npc_stats:
-                logger.debug(
-                    "Error getting combat stats, returning provided NPC stats", entity_id=entity_id, error=str(e)
-                )
-                return npc_stats
+                normalized_stats = dict(npc_stats)
+                # Map determination_points or dp to hp if hp is missing
+                if "hp" not in normalized_stats:
+                    # Check determination_points first, then dp
+                    hp_value = normalized_stats.get("determination_points")
+                    if hp_value is None:
+                        hp_value = normalized_stats.get("dp")
+                    if hp_value is not None:
+                        normalized_stats["hp"] = hp_value
+                return normalized_stats
             logger.error("Error getting combat stats", entity_id=entity_id, error=str(e))
             return {}

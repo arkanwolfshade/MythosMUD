@@ -6,7 +6,7 @@ from uuid import uuid4
 from server.events.event_types import (
     PlayerDeliriumRespawnedEvent,
     PlayerDiedEvent,
-    PlayerHPDecayEvent,
+    PlayerDPDecayEvent,
     PlayerMortallyWoundedEvent,
     PlayerRespawnedEvent,
 )
@@ -49,31 +49,31 @@ class TestPlayerMortallyWoundedEvent:
 
 
 class TestPlayerHPDecayEvent:
-    """Test suite for PlayerHPDecayEvent."""
+    """Test suite for PlayerDPDecayEvent."""
 
     def test_event_creation_basic(self):
-        """Test basic HP decay event creation."""
+        """Test basic DP decay event creation."""
         test_player_id = uuid4()
-        event = PlayerHPDecayEvent(
+        event = PlayerDPDecayEvent(
             player_id=test_player_id,
-            old_hp=-3,
-            new_hp=-4,
+            old_dp=-3,
+            new_dp=-4,
         )
         event.timestamp = datetime.now(UTC)
 
         assert event.player_id == test_player_id
-        assert event.old_hp == -3
-        assert event.new_hp == -4
+        assert event.old_dp == -3
+        assert event.new_dp == -4
         assert event.decay_amount == 1
-        assert event.event_type == "PlayerHPDecayEvent"
+        assert event.event_type == "PlayerDPDecayEvent"
 
     def test_event_creation_with_room(self):
         """Test event creation with room info."""
         test_player_id = uuid4()
-        event = PlayerHPDecayEvent(
+        event = PlayerDPDecayEvent(
             player_id=test_player_id,
-            old_hp=0,
-            new_hp=-1,
+            old_dp=0,
+            new_dp=-1,
             decay_amount=1,
             room_id="test-room",
         )
@@ -132,16 +132,16 @@ class TestPlayerRespawnedEvent:
             player_id=test_player_id,
             player_name="TestPlayer",
             respawn_room_id="sanitarium-foyer",
-            old_hp=-10,
-            new_hp=100,
+            old_dp=-10,
+            new_dp=100,
         )
         event.timestamp = datetime.now(UTC)
 
         assert event.player_id == test_player_id
         assert event.player_name == "TestPlayer"
         assert event.respawn_room_id == "sanitarium-foyer"
-        assert event.old_hp == -10
-        assert event.new_hp == 100
+        assert event.old_dp == -10
+        assert event.new_dp == 100
         assert event.event_type == "PlayerRespawnedEvent"
 
     def test_event_creation_with_death_room(self):
@@ -151,8 +151,8 @@ class TestPlayerRespawnedEvent:
             player_id=test_player_id,
             player_name="TestPlayer",
             respawn_room_id="sanitarium-foyer",
-            old_hp=-10,
-            new_hp=100,
+            old_dp=-10,
+            new_dp=100,
             death_room_id="dangerous-cave",
         )
         event.timestamp = datetime.now(UTC)

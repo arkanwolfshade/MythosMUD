@@ -46,6 +46,7 @@ class TestChannelBroadcastingStrategies:
         mock_cm.broadcast_global = AsyncMock()
         mock_cm.send_personal_message = AsyncMock()
         mock_cm._canonical_room_id.return_value = "test_room"
+        mock_cm.canonical_room_id = MagicMock(side_effect=lambda room_id: room_id)
         # room_subscriptions expects string player IDs
         mock_cm.room_subscriptions = {
             "test_room": {
@@ -53,10 +54,15 @@ class TestChannelBroadcastingStrategies:
                 str(TestChannelBroadcastingStrategies.PLAYER_2),
             }
         }
+        # online_players should use string keys to match room_subscriptions
         mock_cm.online_players = {
-            TestChannelBroadcastingStrategies.PLAYER_1: {"current_room_id": "test_room"},
-            TestChannelBroadcastingStrategies.PLAYER_2: {"current_room_id": "test_room"},
+            str(TestChannelBroadcastingStrategies.PLAYER_1): {"current_room_id": "test_room"},
+            str(TestChannelBroadcastingStrategies.PLAYER_2): {"current_room_id": "test_room"},
         }
+        # Mock async_persistence as fallback for filtering helper
+        mock_async_persistence = MagicMock()
+        mock_async_persistence.get_player_by_id = AsyncMock(return_value=None)
+        mock_cm.async_persistence = mock_async_persistence
         return mock_cm
 
     @pytest.fixture
@@ -66,6 +72,7 @@ class TestChannelBroadcastingStrategies:
         mock_cm.broadcast_global = AsyncMock()
         mock_cm.send_personal_message = AsyncMock()
         mock_cm._canonical_room_id.return_value = "test_room"
+        mock_cm.canonical_room_id = MagicMock(side_effect=lambda room_id: room_id)
         # room_subscriptions expects string player IDs
         mock_cm.room_subscriptions = {
             "test_room": {
@@ -73,10 +80,15 @@ class TestChannelBroadcastingStrategies:
                 str(TestChannelBroadcastingStrategies.PLAYER_2),
             }
         }
+        # online_players should use string keys to match room_subscriptions
         mock_cm.online_players = {
-            TestChannelBroadcastingStrategies.PLAYER_1: {"current_room_id": "test_room"},
-            TestChannelBroadcastingStrategies.PLAYER_2: {"current_room_id": "test_room"},
+            str(TestChannelBroadcastingStrategies.PLAYER_1): {"current_room_id": "test_room"},
+            str(TestChannelBroadcastingStrategies.PLAYER_2): {"current_room_id": "test_room"},
         }
+        # Mock async_persistence as fallback for filtering helper
+        mock_async_persistence = MagicMock()
+        mock_async_persistence.get_player_by_id = AsyncMock(return_value=None)
+        mock_cm.async_persistence = mock_async_persistence
         return mock_cm
 
     @pytest.mark.asyncio
@@ -231,9 +243,9 @@ class TestChannelBroadcastingStrategies:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         nats_handler.connection_manager = mock_connection_manager
 
-        # Mock the filtering methods
+        # Mock the filtering methods - patch filtering helper directly
         with (
-            patch.object(nats_handler, "_is_player_in_room", return_value=True),
+            patch.object(nats_handler._filtering_helper, "is_player_in_room", return_value=True),
             patch.object(nats_handler, "_is_player_muted_by_receiver", return_value=False),
         ):
             # Test through the strategy pattern
@@ -248,9 +260,9 @@ class TestChannelBroadcastingStrategies:
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
         nats_handler.connection_manager = mock_connection_manager
 
-        # Mock the filtering methods
+        # Mock the filtering methods - patch filtering helper directly
         with (
-            patch.object(nats_handler, "_is_player_in_room", return_value=True),
+            patch.object(nats_handler._filtering_helper, "is_player_in_room", return_value=True),
             patch.object(nats_handler, "_is_player_muted_by_receiver", return_value=False),
         ):
             # Test through the strategy pattern
@@ -299,7 +311,7 @@ class TestChannelBroadcastingStrategies:
             return player_id == str(self.PLAYER_1)
 
         with (
-            patch.object(nats_handler, "_is_player_in_room", side_effect=mock_is_in_room),
+            patch.object(nats_handler._filtering_helper, "is_player_in_room", side_effect=mock_is_in_room),
             patch.object(nats_handler, "_is_player_muted_by_receiver", return_value=False),
         ):
             # Test through the strategy pattern
@@ -312,7 +324,6 @@ class TestChannelBroadcastingStrategies:
     async def test_error_handling_in_broadcast(self, nats_handler, mock_connection_manager):
         """Test error handling during broadcasting."""
         chat_event = {"type": "chat", "data": {"message": "Hello"}}
-        nats_handler.connection_manager = mock_connection_manager
 
         # Make broadcast_global raise an exception
         mock_connection_manager.broadcast_global.side_effect = Exception("Broadcast failed")
@@ -602,8 +613,6 @@ class TestStrategyIntegration:
     @pytest.mark.asyncio
     async def test_strategy_integration_with_nats_handler(self, mock_connection_manager):
         """Test that strategies work correctly with NATS handler."""
-        from server.realtime.nats_message_handler import NATSMessageHandler
-
         # Create NATS handler with mock service
         mock_nats_service = MagicMock()
         nats_handler = NATSMessageHandler(mock_nats_service)
@@ -626,8 +635,6 @@ class TestStrategyIntegration:
     @pytest.mark.asyncio
     async def test_strategy_integration_global_channel(self, mock_connection_manager):
         """Test that global channel strategy works with NATS handler."""
-        from server.realtime.nats_message_handler import NATSMessageHandler
-
         # Create NATS handler with mock service
         mock_nats_service = MagicMock()
         nats_handler = NATSMessageHandler(mock_nats_service)
@@ -644,8 +651,6 @@ class TestStrategyIntegration:
     @pytest.mark.asyncio
     async def test_strategy_integration_whisper_channel(self, mock_connection_manager):
         """Test that whisper channel strategy works with NATS handler."""
-        from server.realtime.nats_message_handler import NATSMessageHandler
-
         # Create NATS handler with mock service
         mock_nats_service = MagicMock()
         nats_handler = NATSMessageHandler(mock_nats_service)
@@ -662,8 +667,6 @@ class TestStrategyIntegration:
     @pytest.mark.asyncio
     async def test_strategy_integration_unknown_channel(self, mock_connection_manager):
         """Test that unknown channel strategy works with NATS handler."""
-        from server.realtime.nats_message_handler import NATSMessageHandler
-
         # Create NATS handler with mock service
         mock_nats_service = MagicMock()
         nats_handler = NATSMessageHandler(mock_nats_service)

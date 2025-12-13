@@ -37,8 +37,8 @@ class TestAsyncHealthPersistence:
             user_id="test_user_123",
             current_room_id="earth_arkhamcity_downtown_room_derby_st_001",
         )
-        player.current_hp = 100
-        player.max_hp = 100
+        player.current_dp = 100
+        player.max_dp = 100
         return player
 
     @pytest.mark.asyncio

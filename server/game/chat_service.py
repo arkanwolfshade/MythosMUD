@@ -378,7 +378,7 @@ class ChatService:
         message_dict = chat_message.to_dict()
 
         try:
-            from server.realtime.nats_message_handler import SUPPRESS_ECHO_MESSAGE_IDS
+            from server.realtime.message_filtering import SUPPRESS_ECHO_MESSAGE_IDS
         except Exception as import_error:  # pragma: no cover - defensive against circular import edge cases
             logger.debug(
                 "=== CHAT SERVICE DEBUG: Failed to register echo suppression token ===",
@@ -537,7 +537,7 @@ class ChatService:
         )
         # Register the message ID so the broadcasting layer can suppress duplicate echoes when no recipients exist.
         try:
-            from server.realtime.nats_message_handler import SUPPRESS_ECHO_MESSAGE_IDS
+            from server.realtime.message_filtering import SUPPRESS_ECHO_MESSAGE_IDS
         except Exception as import_error:  # pragma: no cover - defensive guard for import cycles
             logger.debug(
                 "=== CHAT SERVICE DEBUG: Failed to register echo suppression token ===",
@@ -1107,7 +1107,7 @@ class ChatService:
         message_dict = chat_message.to_dict()
 
         try:
-            from server.realtime.nats_message_handler import SUPPRESS_ECHO_MESSAGE_IDS
+            from server.realtime.message_filtering import SUPPRESS_ECHO_MESSAGE_IDS
         except Exception as import_error:  # pragma: no cover - defensive against circular import edge cases
             logger.debug(
                 "=== CHAT SERVICE DEBUG: Failed to register echo suppression token ===",

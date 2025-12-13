@@ -12,8 +12,8 @@ from server.logging.enhanced_logging_config import get_logger
 from server.schemas.combat_schema import validate_combat_messages
 
 # Type aliases for better readability
-type ErrorMessages = dict[str, str]
-type CombatMessages = dict[str, str]
+ErrorMessages = dict[str, str]
+CombatMessages = dict[str, str]
 
 logger = get_logger(__name__)
 

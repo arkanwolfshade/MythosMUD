@@ -30,8 +30,15 @@ class TestEmoteMuteFiltering:
         self.mock_connection_manager._canonical_room_id = Mock(
             return_value="earth_arkhamcity_sanitarium_room_hallway_001"
         )
+        self.mock_connection_manager.canonical_room_id = Mock(
+            side_effect=lambda room_id: room_id or "earth_arkhamcity_sanitarium_room_hallway_001"
+        )
         self.mock_connection_manager.room_subscriptions = {self.mock_connection_manager._canonical_room_id(): set()}
         self.mock_connection_manager.send_personal_message = AsyncMock()
+        # Mock async_persistence for filtering helper
+        mock_async_persistence = MagicMock()
+        mock_async_persistence.get_player_by_id = AsyncMock(return_value=None)
+        self.mock_connection_manager.async_persistence = mock_async_persistence
 
         # Create the service instances
         self.mock_nats_service = Mock()
@@ -150,9 +157,10 @@ class TestEmoteMuteFiltering:
         self.nats_handler.connection_manager = mock_conn_mgr
 
         # Mock player in room check
-        with patch.object(self.nats_handler, "_is_player_in_room", return_value=True):
+        with patch.object(self.nats_handler._filtering_helper, "is_player_in_room", return_value=True):
             # Mock mute check - receiver has muted sender
-            with patch.object(self.nats_handler, "_is_player_muted_by_receiver_with_user_manager", return_value=True):
+            # Patch _is_player_muted_by_receiver (not _with_user_manager) as the code checks this first
+            with patch.object(self.nats_handler, "_is_player_muted_by_receiver", return_value=True):
                 # Execute
                 await self.nats_handler._broadcast_to_room_with_filtering(
                     self.room_id, chat_event, self.sender_id, "emote"
@@ -184,7 +192,7 @@ class TestEmoteMuteFiltering:
         connection_manager.send_personal_message = AsyncMock()
 
         # Mock player in room check
-        with patch.object(self.nats_handler, "_is_player_in_room", return_value=True):
+        with patch.object(self.nats_handler._filtering_helper, "is_player_in_room", return_value=True):
             # Mock mute check - ArkanWolfshade has NOT muted Ithaqua
             with patch.object(self.nats_handler, "_is_player_muted_by_receiver", return_value=False):
                 # Process the emote message
@@ -313,9 +321,10 @@ class TestEmoteMuteFiltering:
         self.nats_handler._connection_manager = mock_conn_mgr
 
         # Mock player in room check
-        with patch.object(self.nats_handler, "_is_player_in_room", return_value=True):
+        with patch.object(self.nats_handler._filtering_helper, "is_player_in_room", return_value=True):
             # Mock mute check - ArkanWolfshade has muted Ithaqua
-            with patch.object(self.nats_handler, "_is_player_muted_by_receiver_with_user_manager", return_value=True):
+            # Patch _is_player_muted_by_receiver (not _with_user_manager) as the code checks this first
+            with patch.object(self.nats_handler, "_is_player_muted_by_receiver", return_value=True):
                 # Process the emote message
                 await self.nats_handler._broadcast_to_room_with_filtering(
                     self.room_id, chat_event, self.sender_id, "emote"
@@ -354,7 +363,7 @@ class TestEmoteMuteFiltering:
         connection_manager.send_personal_message = AsyncMock()
 
         # Mock player in room check
-        with patch.object(self.nats_handler, "_is_player_in_room", return_value=True):
+        with patch.object(self.nats_handler._filtering_helper, "is_player_in_room", return_value=True):
             # Mock mute check - ArkanWolfshade has NOT muted Ithaqua
             with patch.object(self.nats_handler, "_is_player_muted_by_receiver", return_value=False):
                 # Process the emote message

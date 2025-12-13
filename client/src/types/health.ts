@@ -21,10 +21,10 @@ export interface HealthMeterProps {
 }
 
 /**
- * Deterministic tier calculation based on current percent of max HP.
+ * Deterministic tier calculation based on current percent of max DP.
  * Keep thresholds aligned with encounter design noted in the Pnakotic combat charts.
  */
-export const determineHealthTier = (current: number, max: number): HealthTier => {
+export const determineDpTier = (current: number, max: number): HealthTier => {
   if (max <= 0) {
     return 'critical';
   }

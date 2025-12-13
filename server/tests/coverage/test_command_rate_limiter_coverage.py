@@ -10,12 +10,7 @@ is essential for preventing eldritch denial-of-service attacks.
 
 from datetime import UTC, datetime, timedelta
 
-import pytest
-
 from server.middleware.command_rate_limiter import CommandRateLimiter
-
-# Mark entire module as slow for CI/CD-only execution
-pytestmark = pytest.mark.slow
 
 
 class TestCommandRateLimiterStats:

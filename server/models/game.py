@@ -13,19 +13,20 @@ from pydantic import BaseModel, ConfigDict, Field, computed_field, model_validat
 
 
 class AttributeType(str, Enum):
-    """Core attribute types for the character system."""
+    """Core attribute types for the character system ."""
 
     STR = "strength"
     DEX = "dexterity"
     CON = "constitution"
+    SIZ = "size"
     INT = "intelligence"
-    WIS = "wisdom"
+    POW = "power"
+    EDU = "education"
     CHA = "charisma"
+    LUCK = "luck"
     LCD = "lucidity"
-    OCC = "occult_knowledge"
-    FEAR = "fear"
+    OCC = "occult"
     CORR = "corruption"
-    CULT = "cult_affiliation"
 
 
 class StatusEffectType(str, Enum):
@@ -92,26 +93,26 @@ class Stats(BaseModel):
     )
 
     # Physical Attributes
-    strength: int | None = Field(ge=1, le=100, default=None, description="Physical power and combat damage")
-    dexterity: int | None = Field(ge=1, le=100, default=None, description="Agility, reflexes, and speed")
-    constitution: int | None = Field(ge=1, le=100, default=None, description="Health, stamina, and resistance")
+    strength: int | None = Field(default=None, description="Physical power and combat damage")
+    dexterity: int | None = Field(default=None, description="Agility, reflexes, and speed")
+    constitution: int | None = Field(default=None, description="Health, stamina, and resistance")
+    size: int | None = Field(default=None, description="Height and weight combined (CoC: (2D6+6)*5)")
 
     # Mental Attributes
-    intelligence: int | None = Field(ge=1, le=100, default=None, description="Problem-solving and magical aptitude")
-    wisdom: int | None = Field(ge=1, le=100, default=None, description="Perception, common sense, and willpower")
-    charisma: int | None = Field(ge=1, le=100, default=None, description="Social skills and influence")
+    intelligence: int | None = Field(default=None, description="Problem-solving and magical aptitude")
+    power: int | None = Field(default=None, description="Willpower and magical potential")
+    education: int | None = Field(default=None, description="Formal learning and knowledge")
+    charisma: int | None = Field(default=None, description="Social skills and influence")
+    luck: int | None = Field(default=None, description="Fortune and chance")
 
     # Horror-Specific Attributes
-    lucidity: int = Field(ge=0, le=100, default=100, description="Mental clarity (0 = complete delirium)")
-    occult_knowledge: int = Field(ge=0, le=100, default=0, description="Knowledge of forbidden lore")
-    fear: int = Field(ge=0, le=100, default=0, description="Susceptibility to terror and panic")
+    lucidity: int = Field(default=100, description="Mental clarity (0 = complete delirium)")
+    occult: int = Field(default=0, description="Knowledge of forbidden lore")
+    corruption: int = Field(default=0, description="Taint from dark forces")
 
-    # Special Attributes
-    corruption: int = Field(ge=0, le=100, default=0, description="Taint from dark forces")
-    cult_affiliation: int = Field(ge=0, le=100, default=0, description="Ties to cults and secret societies")
-
-    # Current health (can be modified)
-    current_health: int = Field(ge=0, default=100, description="Current health points")
+    # Derived Stats (tracked separately from base stats)
+    current_dp: int = Field(default=100, description="Current determination points (DP)")
+    magic_points: int = Field(default=0, description="Current magic points (MP)")
 
     position: PositionState = Field(default=PositionState.STANDING, description="Current body posture")
 
@@ -124,9 +125,18 @@ class Stats(BaseModel):
         """
         # Handle backward compatibility: if no attributes provided, generate random ones
         # This maintains compatibility with existing code that calls Stats()
-        if not any(
-            key in data for key in ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]
-        ):
+        core_stats = [
+            "strength",
+            "dexterity",
+            "constitution",
+            "size",
+            "intelligence",
+            "power",
+            "education",
+            "charisma",
+            "luck",
+        ]
+        if not any(key in data for key in core_stats):
             # Import here to avoid circular dependency
             from ..game.stats_generator import generate_random_stats
 
@@ -134,51 +144,74 @@ class Stats(BaseModel):
             seed = data.pop("_test_seed", None)
             random_stats = generate_random_stats(seed=seed)
             # Merge random stats with any provided data (provided data takes precedence)
-            for key in ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]:
+            for key in core_stats:
                 if key not in data:
-                    data[key] = getattr(random_stats, key)
+                    data[key] = getattr(random_stats, key, None)
 
         # Replace None values with random values for backward compatibility
-        if any(
-            data.get(key) is None
-            for key in ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]
-        ):
+        if any(data.get(key) is None for key in core_stats):
             from ..game.stats_generator import generate_random_stats
 
             seed = data.pop("_test_seed", None)
             random_stats = generate_random_stats(seed=seed)
-            for field in ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]:
+            for field in core_stats:
                 if data.get(field) is None:
-                    data[field] = getattr(random_stats, field)
+                    data[field] = getattr(random_stats, field, None)
 
         super().__init__(**data)
 
     # Derived stats - computed fields
     @computed_field
-    def max_health(self) -> int:
-        """Calculate max health based on constitution."""
-        return self.constitution or 50
+    def max_dp(self) -> int:
+        """Calculate max determination points (DP) using formula: (CON + SIZ) / 5."""
+        # Compute directly to avoid mypy @computed_field inference issues
+        con = self.constitution or 50
+        siz = self.size or 50
+        return (con + siz) // 5
+
+    @computed_field
+    def max_magic_points(self) -> int:
+        """Calculate max magic points (MP) using formula: 20% of Power (ceiling rounded)."""
+        import math
+
+        pow_val = self.power or 50
+        return math.ceil(pow_val * 0.2)
 
     @computed_field
     def max_lucidity(self) -> int:
-        """Calculate max lucidity based on wisdom."""
-        return self.wisdom or 50
+        """Calculate max lucidity based on education."""
+        return self.education or 50
 
     @model_validator(mode="after")
     def validate_current_vs_max_stats(self) -> "Stats":
         """
-        Ensure current_health and lucidity don't exceed their max values.
+        Ensure current_dp (DP), magic_points (MP), and lucidity don't exceed their max values.
 
-        BUGFIX: Initialize current_health and lucidity to their max values if not explicitly provided.
-        This prevents new characters from having impossible stats like current_health=100, max_health=66.
+        BUGFIX: Initialize current_dp, magic_points, and lucidity to their max values if not explicitly provided.
+        This prevents new characters from having impossible stats.
         """
         # Compute max values directly to avoid mypy @computed_field inference issues
-        max_health_value = self.constitution or 50
-        max_lucidity_value = self.wisdom or 50
+        # Calculate max_dp: (CON + SIZ) / 5
+        con = self.constitution or 50
+        siz = self.size or 50
+        max_dp = (con + siz) // 5
 
-        # Cap current_health at max_health
-        if self.current_health > max_health_value:
-            self.current_health = max_health_value
+        # Calculate max_mp: 20% of Power (ceiling rounded)
+        import math
+
+        pow_val = self.power or 50
+        max_mp = math.ceil(pow_val * 0.2)
+
+        # Calculate max_lucidity: education value
+        max_lucidity_value = self.education or 50
+
+        # Cap current_dp (DP) at max_dp
+        if self.current_dp > max_dp:
+            self.current_dp = max_dp
+
+        # Cap magic_points at max_magic_points
+        if self.magic_points > max_mp:
+            self.magic_points = max_mp
 
         # Cap lucidity at max_lucidity
         if self.lucidity > max_lucidity_value:
@@ -259,15 +292,16 @@ class Player(BaseModel):
         Returns:
             bool: True if successful
         """
-        # Check if item already exists
-        for inv_item in self.inventory:
+        # Get actual inventory list using __getattribute__ to bypass field descriptor
+        inventory: list[InventoryItem] = object.__getattribute__(self, "inventory")
+        for inv_item in inventory:
             if inv_item.item_id == item_id:
                 # Increase quantity
                 object.__setattr__(inv_item, "quantity", inv_item.quantity + quantity)
                 return True
 
         # Add new item
-        self.inventory.append(InventoryItem(item_id=item_id, quantity=quantity))
+        inventory.append(InventoryItem(item_id=item_id, quantity=quantity))
         return True
 
     def remove_item(self, item_id: str, quantity: int = 1) -> bool:
@@ -281,13 +315,15 @@ class Player(BaseModel):
         Returns:
             bool: True if successful, False if item not found or insufficient quantity
         """
-        for i, inv_item in enumerate(self.inventory):
+        # Get actual inventory list using __getattribute__ to bypass field descriptor
+        inventory: list[InventoryItem] = object.__getattribute__(self, "inventory")
+        for i, inv_item in enumerate(inventory):
             if inv_item.item_id == item_id:
                 if inv_item.quantity >= quantity:
                     new_quantity = inv_item.quantity - quantity
                     if new_quantity == 0:
                         # Remove item completely
-                        self.inventory.pop(i)
+                        inventory.pop(i)
                     else:
                         # Decrease quantity
                         object.__setattr__(inv_item, "quantity", new_quantity)
@@ -303,7 +339,9 @@ class Player(BaseModel):
         Args:
             effect: StatusEffect to add
         """
-        self.status_effects.append(effect)
+        # Get actual status_effects list using __getattribute__ to bypass field descriptor
+        status_effects: list[StatusEffect] = object.__getattribute__(self, "status_effects")
+        status_effects.append(effect)
 
     def remove_status_effect(self, effect_type: StatusEffectType) -> bool:
         """
@@ -315,9 +353,11 @@ class Player(BaseModel):
         Returns:
             bool: True if effect was found and removed, False otherwise
         """
-        for i, effect in enumerate(self.status_effects):
+        # Get actual status_effects list using __getattribute__ to bypass field descriptor
+        status_effects: list[StatusEffect] = object.__getattribute__(self, "status_effects")
+        for i, effect in enumerate(status_effects):
             if effect.effect_type == effect_type:
-                self.status_effects.pop(i)
+                status_effects.pop(i)
                 return True
         return False
 
@@ -331,12 +371,12 @@ class Player(BaseModel):
         Returns:
             list[StatusEffect]: List of active effects
         """
-        return [effect for effect in self.status_effects if effect.is_active(current_tick)]
+        # Get actual status_effects list using __getattribute__ to bypass field descriptor
+        status_effects: list[StatusEffect] = object.__getattribute__(self, "status_effects")
+        return [effect for effect in status_effects if effect.is_active(current_tick)]
 
     def update_last_active(self) -> None:
         """Update the last_active timestamp to current time."""
-        from datetime import UTC, datetime
-
         object.__setattr__(self, "last_active", datetime.now(UTC).replace(tzinfo=None))
 
     def can_carry_weight(self, weight: float) -> bool:
@@ -349,6 +389,8 @@ class Player(BaseModel):
         Returns:
             bool: True if player can carry the weight
         """
+        # Get actual stats using __getattribute__ to bypass field descriptor
         # Carrying capacity is based on strength (10 lbs per point)
-        max_capacity = (self.stats.strength or 10) * 10
+        stats: Stats = object.__getattribute__(self, "stats")
+        max_capacity = (stats.strength or 10) * 10
         return weight <= max_capacity

@@ -46,6 +46,7 @@ interface ChatMessage {
     alias_name: string;
   }>;
   rawText?: string; // Added for plain text messages
+  tags?: string[];
 }
 
 interface ChatPanelProps {
@@ -172,12 +173,11 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   const formatTimestamp = (timestamp: string): string => {
     try {
       const date = new Date(timestamp);
-      return date.toLocaleTimeString('en-US', {
-        hour12: false,
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-      });
+      // Use UTC methods to ensure consistent formatting regardless of timezone
+      const hours = date.getUTCHours().toString().padStart(2, '0');
+      const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+      const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+      return `${hours}:${minutes}:${seconds}`;
     } catch {
       return timestamp;
     }

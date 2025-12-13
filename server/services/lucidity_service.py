@@ -10,6 +10,7 @@ from datetime import UTC, datetime
 from typing import Any, Protocol
 
 from sqlalchemy import Select, select
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -358,11 +359,38 @@ class LucidityService:
         await self._session.flush()
 
         if delta != 0 or previous_tier != new_tier:
+            # Calculate max_lcd from player's education stat (max_lucidity = education)
+            max_lcd = 100  # Default fallback
+            try:
+                # Try to access player through the relationship if loaded
+                if hasattr(record, "player") and record.player:
+                    stats = record.player.get_stats()
+                    max_lcd = stats.get("max_lucidity") or stats.get("education") or 100
+                else:
+                    # If relationship not loaded, fetch player from session
+                    from ..models.player import Player
+
+                    player = await self._session.get(Player, player_id)
+                    if player:
+                        stats = player.get_stats()
+                        max_lcd = stats.get("max_lucidity") or stats.get("education") or 100
+            except (AttributeError, SQLAlchemyError, TypeError) as e:
+                logger.warning(
+                    "Failed to calculate max_lcd from player stats, using default",
+                    player_id=player_id,
+                    error=str(e),
+                )
+
+            # Cap current_lcd to max_lcd before sending event (ensure consistency)
+            # The PlayerLucidity record might have a value > max_lcd from before the migration
+            current_lcd_to_send = min(new_lcd, max_lcd)
+
             await send_lucidity_change_event(
                 player_id=player_id,
-                current_lcd=new_lcd,
+                current_lcd=current_lcd_to_send,
                 delta=delta,
                 tier=new_tier,
+                max_lcd=max_lcd,
                 liabilities=decode_liabilities(record.liabilities),
                 reason=reason_code,
                 source=str(
@@ -479,7 +507,7 @@ class LucidityService:
             return "{}"
 
     def _default_liability_picker(
-        self, player_id: str, previous_lcd: int, new_lcd: int, reason_code: str
+        self, player_id: str, _previous_lcd: int, _new_lcd: int, _reason_code: str
     ) -> str | None:
         """Select the first liability not already applied, falling back to the first option."""
         # This deterministic picker ensures predictable unit tests while allowing overrides.

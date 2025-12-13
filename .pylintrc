@@ -5,3 +5,10 @@ max-line-length=120
 [MESSAGES CONTROL]
 # Disable line-too-long warnings since we handle this with max-line-length
 disable=line-too-long
+
+# Pydantic models use dynamic attributes that Pylint can't detect
+# Disable no-member for Pydantic BaseSettings instances
+# These are runtime-validated and type-safe via Pydantic
+[TYPECHECK]
+# Ignore no-member errors for Pydantic models - they use dynamic attribute access
+ignored-classes=pydantic.BaseSettings,pydantic_settings.BaseSettings

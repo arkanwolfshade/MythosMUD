@@ -43,6 +43,10 @@ from server.exceptions import LoggedHTTPException, RateLimitError, ValidationErr
 from server.game.stats_generator import StatsGenerator
 from server.models import AttributeType, Stats
 
+# pylint: disable=redefined-outer-name
+# Pytest fixtures are commonly used as function parameters, which triggers
+# redefined-outer-name warnings. This is expected behavior in pytest tests.
+
 
 @pytest.fixture
 def mock_current_user():
@@ -127,12 +131,12 @@ def mock_stats_generator():
     generator.validate_class_prerequisites = Mock()
     generator.get_available_classes = Mock()
     generator.CLASS_PREREQUISITES = {
-        "investigator": {AttributeType.INT: 12, AttributeType.WIS: 10},
-        "occultist": {AttributeType.INT: 14, AttributeType.WIS: 12},
+        "investigator": {AttributeType.INT: 12, AttributeType.EDU: 10},
+        "occultist": {AttributeType.INT: 14, AttributeType.POW: 12},
         "survivor": {AttributeType.CON: 12, AttributeType.DEX: 10},
         "cultist": {AttributeType.CHA: 12, AttributeType.INT: 10},
-        "academic": {AttributeType.INT: 14, AttributeType.WIS: 10},
-        "detective": {AttributeType.INT: 12, AttributeType.WIS: 12},
+        "academic": {AttributeType.INT: 14, AttributeType.EDU: 10},
+        "detective": {AttributeType.INT: 12, AttributeType.EDU: 12},
     }
     return generator
 
@@ -168,7 +172,11 @@ class TestPlayerCRUD:
     @patch("server.api.players.PlayerService")
     @pytest.mark.asyncio
     async def test_create_player_success(
-        self, mock_player_service_class, mock_current_user, sample_player_data, mock_request
+        self,
+        mock_player_service_class,
+        mock_current_user,
+        sample_player_data,
+        mock_request,
     ):
         """Test successful player creation."""
         # Setup mocks
@@ -890,15 +898,13 @@ class TestCharacterCreation:
         mock_stats_generator_class.return_value = mock_generator
 
         # Mock shutdown check and async_persistence
-        from unittest.mock import patch as mock_patch
-
         mock_profession = Mock()
         mock_profession.id = 1
         mock_profession.name = "TestProfession"
 
         with (
-            mock_patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False),
-            mock_patch("server.async_persistence.get_async_persistence") as mock_get_persistence,
+            patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False),
+            patch("server.async_persistence.get_async_persistence") as mock_get_persistence,
         ):
             mock_persistence = AsyncMock()
             mock_persistence.get_profession_by_id = AsyncMock(return_value=mock_profession)
@@ -934,11 +940,9 @@ class TestCharacterCreation:
         mock_stats_generator_class.return_value = mock_generator
 
         # Mock shutdown check and async_persistence
-        from unittest.mock import patch as mock_patch
-
         with (
-            mock_patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False),
-            mock_patch("server.async_persistence.get_async_persistence") as mock_get_persistence,
+            patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False),
+            patch("server.async_persistence.get_async_persistence") as mock_get_persistence,
         ):
             # Mock persistence to return None for invalid profession
             mock_persistence = AsyncMock()
@@ -1062,8 +1066,8 @@ class TestStatsValidation:
         # Setup mocks
         mock_generator = Mock()
         mock_generator.CLASS_PREREQUISITES = {
-            "investigator": {AttributeType.INT: 12, AttributeType.WIS: 10},
-            "occultist": {AttributeType.INT: 14, AttributeType.WIS: 12},
+            "investigator": {AttributeType.INT: 12, AttributeType.EDU: 10},
+            "occultist": {AttributeType.INT: 14, AttributeType.POW: 12},
         }
         mock_generator.MIN_STAT = 15
         mock_generator.MAX_STAT = 90

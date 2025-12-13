@@ -19,7 +19,7 @@ export interface GameTerminalState {
     id: string;
     name: string;
     stats: {
-      current_health: number;
+      current_dp: number;
       lucidity: number;
       strength?: number;
       dexterity?: number;
@@ -90,6 +90,12 @@ export const useGameTerminal = (): GameTerminalState => {
 
   // Transform chat messages to match component interface
   const transformedMessages = gameState.chatMessages.map(msg => {
+    type AliasChainItem = {
+      original: string;
+      expanded: string;
+      alias_name: string;
+    };
+
     const base = {
       text: msg.text,
       timestamp: msg.timestamp,
@@ -103,7 +109,7 @@ export const useGameTerminal = (): GameTerminalState => {
       isCompleteHtml?: boolean;
       channel?: string;
       rawText?: string;
-      aliasChain?: typeof msg.aliasChain;
+      aliasChain?: AliasChainItem[];
     };
 
     if (typeof msg.isCompleteHtml === 'boolean') {
@@ -116,7 +122,9 @@ export const useGameTerminal = (): GameTerminalState => {
       Object.defineProperty(base, 'rawText', { value: (msg as { rawText?: string }).rawText, enumerable: false });
     }
     if (Array.isArray(msg.aliasChain) && msg.aliasChain.length > 0) {
-      Object.defineProperty(base, 'aliasChain', { value: msg.aliasChain, enumerable: false });
+      // Type guard to ensure aliasChain has the correct structure
+      const aliasChain = msg.aliasChain as AliasChainItem[];
+      Object.defineProperty(base, 'aliasChain', { value: aliasChain, enumerable: false });
     }
 
     return base;
@@ -157,12 +165,23 @@ export const useGameTerminal = (): GameTerminalState => {
   const onSendChatMessage = useCallback(
     (message: string, channel: string) => {
       // This would typically send a chat message through the game connection
-      // For now, we'll add it to the game log
-      gameState.addGameLogEntry({
+      // For now, we'll add it to the chat messages
+      const channelTypeMap: Record<string, 'say' | 'tell' | 'shout' | 'whisper' | 'system' | 'combat' | 'emote'> = {
+        local: 'say',
+        global: 'shout',
+        tell: 'tell',
+        whisper: 'whisper',
+        system: 'system',
+        game: 'system',
+        party: 'say',
+      };
+
+      gameState.addChatMessage({
         text: message,
         timestamp: new Date().toISOString(),
-        type: 'chat',
-        channel,
+        isHtml: false,
+        type: channelTypeMap[channel] || 'say',
+        channel: channel as 'local' | 'global' | 'party' | 'tell' | 'system' | 'game',
         sender: sessionState.characterName || sessionState.playerName,
       });
     },

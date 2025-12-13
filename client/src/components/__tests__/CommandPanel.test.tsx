@@ -99,7 +99,7 @@ vi.mock('../ui/TerminalButton', () => ({
     children: React.ReactNode;
     onClick?: () => void;
     disabled?: boolean;
-    type?: string;
+    type?: 'button' | 'submit' | 'reset';
     variant?: string;
     size?: string;
     className?: string;
@@ -110,7 +110,7 @@ vi.mock('../ui/TerminalButton', () => ({
       data-testid="terminal-button"
       onClick={onClick}
       disabled={disabled}
-      type={type}
+      type={type || 'button'}
       className={`terminal-button ${variant || ''} ${size || ''} ${className || ''}`}
     >
       {children}

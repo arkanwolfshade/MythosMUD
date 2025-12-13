@@ -14,7 +14,7 @@ between speed and accuracy in our digital realm.
 import time
 from typing import Any
 
-import pytest
+from pydantic import ValidationError
 
 from server.models.alias import Alias
 from server.models.command import LookCommand, SayCommand
@@ -28,9 +28,6 @@ from server.models.health import (
     HealthStatus,
     ServerComponent,
 )
-
-# Mark entire module as slow for CI/CD-only execution
-pytestmark = pytest.mark.slow
 
 
 class ModelPerformanceBenchmarks:
@@ -76,7 +73,7 @@ class ModelPerformanceBenchmarks:
         for _ in range(iterations):
             try:
                 model_class.model_validate(test_data)
-            except Exception:
+            except ValidationError:
                 # Include validation failures in benchmark
                 pass
 
@@ -448,7 +445,7 @@ class TestModelPerformanceBenchmarks:
         for _ in range(1000):
             try:
                 Alias.model_validate(invalid_data)
-            except Exception:
+            except ValidationError:
                 # Expected to fail
                 pass
 

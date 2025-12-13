@@ -44,9 +44,9 @@ class TestSQLInjectionPrevention:
                             else existing_player.player_id
                         )
                         await persistence.delete_player(player_id)
-                except Exception:
+                except (DatabaseError, ValidationError):
                     pass  # Ignore cleanup errors - player might not exist
-        except Exception:
+        except (DatabaseError, ValidationError):
             pass  # Ignore cleanup errors - test will handle it
 
         yield
@@ -69,9 +69,9 @@ class TestSQLInjectionPrevention:
                             else existing_player.player_id
                         )
                         await persistence.delete_player(player_id)
-                except Exception:
+                except (DatabaseError, ValidationError):
                     pass  # Ignore cleanup errors
-        except Exception:
+        except (DatabaseError, ValidationError):
             pass  # Ignore cleanup errors
 
     @pytest.fixture
@@ -95,7 +95,7 @@ class TestSQLInjectionPrevention:
                 db_manager._initialized = False
                 db_manager.engine = None
                 db_manager.session_maker = None
-        except Exception:
+        except (DatabaseError, ValidationError):
             # Ignore errors - engine might not exist yet
             pass
 
@@ -167,7 +167,7 @@ class TestSQLInjectionPrevention:
                             )
                             await session.commit()
                             final_user_id = str(test_user_id)
-                        except Exception as e:
+                        except (DatabaseError, ValidationError) as e:
                             # Rollback failed transaction before trying fallback
                             await session.rollback()
                             # Fallback: try without username if column doesn't exist
@@ -193,7 +193,7 @@ class TestSQLInjectionPrevention:
                                 )
                                 await session.commit()
                                 final_user_id = str(test_user_id)
-                            except Exception as e2:
+                            except (DatabaseError, ValidationError) as e2:
                                 # If both fail, skip test
                                 await session.rollback()
                                 pytest.skip(
@@ -237,7 +237,7 @@ class TestSQLInjectionPrevention:
                     await session.execute(delete_stmt, {"user_id": test_user_id})
                     await session.commit()
                     break
-            except Exception:
+            except (DatabaseError, ValidationError):
                 pass  # Ignore cleanup errors
 
         yield persistence_instance
@@ -279,10 +279,10 @@ class TestSQLInjectionPrevention:
                 except RuntimeError:
                     # Event loop not running or already closed, skip shutdown
                     pass
-                except Exception:
+                except (DatabaseError, ValidationError):
                     # Ignore cleanup errors - test is ending anyway
                     pass
-        except Exception:
+        except (DatabaseError, ValidationError):
             pass  # Ignore cleanup errors
 
         # CRITICAL: Dispose database engine after test to prevent event loop closure issues
@@ -293,7 +293,7 @@ class TestSQLInjectionPrevention:
             db_manager = get_database_manager()
             if db_manager and db_manager.engine:
                 await db_manager.engine.dispose()
-        except Exception:
+        except (DatabaseError, ValidationError):
             # Ignore cleanup errors - test is ending anyway
             pass
 
@@ -317,7 +317,7 @@ class TestSQLInjectionPrevention:
             profession_id=1,  # Default profession ID
             created_at=datetime.now(),
             last_active=datetime.now(),
-            stats={"current_health": 100, "max_health": 100},  # JSONB accepts dict directly
+            stats={"current_dp": 100, "max_dp": 100},  # JSONB accepts dict directly
             status_effects=json.dumps([]),
             inventory=json.dumps([]),
         )
@@ -326,7 +326,7 @@ class TestSQLInjectionPrevention:
         # Test valid field names (only fields that are in stats JSONB)
         # Note: experience_points is NOT in stats JSONB - it's a separate INTEGER column
         valid_fields = [
-            "current_health",
+            "current_dp",
             "lucidity",
             "occult_knowledge",
             "fear",
@@ -384,7 +384,7 @@ class TestSQLInjectionPrevention:
             profession_id=1,  # Default profession ID
             created_at=datetime.now(),
             last_active=datetime.now(),
-            stats={"current_health": 100, "max_health": 100},  # JSONB accepts dict directly
+            stats={"current_dp": 100, "max_dp": 100},  # JSONB accepts dict directly
             status_effects=json.dumps([]),
             inventory=json.dumps([]),
         )
@@ -403,7 +403,7 @@ class TestSQLInjectionPrevention:
             player_id_uuid = UUID(str(player.player_id))
             await persistence._experience_repo.update_player_stat_field(
                 player_id_uuid,
-                "current_health",
+                "current_dp",
                 cast(int | float, malicious_delta),  # Intentionally passing wrong type to test type checking
                 "test",
             )
@@ -428,7 +428,7 @@ class TestSQLInjectionPrevention:
             profession_id=1,  # Default profession ID
             created_at=datetime.now(),
             last_active=datetime.now(),
-            stats={"current_health": 100, "max_health": 100},  # JSONB accepts dict directly
+            stats={"current_dp": 100, "max_dp": 100},  # JSONB accepts dict directly
             status_effects=json.dumps([]),
             inventory=json.dumps([]),
         )
@@ -471,7 +471,7 @@ class TestSQLInjectionPrevention:
             profession_id=1,  # Default profession ID
             created_at=datetime.now(),
             last_active=datetime.now(),
-            stats={"current_health": 100, "max_health": 100},  # JSONB accepts dict directly
+            stats={"current_dp": 100, "max_dp": 100},  # JSONB accepts dict directly
             status_effects=json.dumps([]),
             inventory=json.dumps([]),
         )

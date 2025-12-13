@@ -114,6 +114,9 @@ class TestSpawnNPCInstance:
 
         mock_get_session.return_value = mock_session_generator()
 
+        # Ensure population controller mock is set up correctly
+        npc_instance_service_fixture.population_controller.spawn_npc = MagicMock(return_value="npc_test_001")
+
         # Spawn NPC
         result = await npc_instance_service_fixture.spawn_npc_instance(definition_id=1, room_id="earth_arkham_001")
 
@@ -168,7 +171,7 @@ class TestSpawnNPCInstance:
         mock_get_session.return_value = mock_session_generator()
 
         # Mock population controller to return None (spawn failure)
-        npc_instance_service_fixture.population_controller._spawn_npc.return_value = None
+        npc_instance_service_fixture.population_controller.spawn_npc.return_value = None
 
         with pytest.raises(RuntimeError, match="Failed to spawn NPC from definition 1"):
             await npc_instance_service_fixture.spawn_npc_instance(definition_id=1, room_id="earth_arkham_001")
@@ -339,6 +342,9 @@ class TestGetNPCStats:
         mock_npc.current_room_id = "earth_arkham_001"
         mock_npc.is_alive = lambda: True
         mock_npc.stats = {"health": 100, "level": 5}
+        # Remove get_stats method so the service uses the stats attribute
+        if hasattr(mock_npc, "get_stats"):
+            delattr(mock_npc, "get_stats")
 
         npc_instance_service_fixture.lifecycle_manager.active_npcs["npc_001"] = mock_npc
 
@@ -364,6 +370,9 @@ class TestGetNPCStats:
         mock_npc.current_room_id = "earth_arkham_001"
         mock_npc.is_alive = lambda: True
         mock_npc.stats = {}
+        # Remove get_stats method so the service uses the stats attribute
+        if hasattr(mock_npc, "get_stats"):
+            delattr(mock_npc, "get_stats")
 
         mock_record = MagicMock()
         mock_record.current_state = MagicMock(value="active")
@@ -562,17 +571,24 @@ class TestGlobalServiceManagement:
 
     def test_get_npc_instance_service_not_initialized(self):
         """Test getting service before initialization raises error."""
-        # Need to temporarily set global to None
+        # Need to temporarily set global storage to None
         import server.services.npc_instance_service as service_module
 
-        original_service = service_module.npc_instance_service
+        # Store original service from the actual storage list
+        original_service = service_module._npc_instance_service_storage[0]
+        # Reset the storage to None
+        service_module._npc_instance_service_storage[0] = None
+        # Also reset the module-level variable for consistency
+        original_module_var = service_module.npc_instance_service
         service_module.npc_instance_service = None
 
         try:
             with pytest.raises(RuntimeError, match="NPC instance service not initialized"):
                 get_npc_instance_service()
         finally:
-            service_module.npc_instance_service = original_service
+            # Restore original service
+            service_module._npc_instance_service_storage[0] = original_service
+            service_module.npc_instance_service = original_module_var
 
     def test_initialize_npc_instance_service(
         self, mock_lifecycle_manager, mock_spawning_service, mock_population_controller, mock_event_bus

@@ -17,7 +17,7 @@ async def _dispatch_player_event(player_id: uuid.UUID | str, event_type: str, pa
     player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
 
     try:
-        from ..realtime.connection_manager import send_game_event
+        from ..realtime.connection_manager_api import send_game_event
     except Exception as exc:  # pragma: no cover - import side effects in tests
         logger.debug(
             "Lucidity event dispatch unavailable",
@@ -69,6 +69,7 @@ async def send_lucidity_change_event(
     current_lcd: int,
     delta: int,
     tier: str,
+    max_lcd: int | None = None,
     liabilities: Iterable[dict[str, Any]] | None = None,
     reason: str | None = None,
     source: str | None = None,
@@ -77,10 +78,12 @@ async def send_lucidity_change_event(
     """Notify a player that their LCD changed."""
     # Convert UUID to string for JSON payload (client expects string)
     player_id_str = str(player_id) if isinstance(player_id, uuid.UUID) else player_id
+    # Use provided max_lcd or default to 100 for backward compatibility
+    # Note: max_lcd should be calculated from player's education stat (max_lucidity = education)
     payload: dict[str, Any] = {
         "player_id": player_id_str,
         "current_lcd": current_lcd,
-        "max_lcd": 100,
+        "max_lcd": max_lcd if max_lcd is not None else 100,
         "delta": delta,
         "tier": tier,
     }

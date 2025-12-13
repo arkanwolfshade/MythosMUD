@@ -31,7 +31,7 @@ class PlayerCreate(PlayerBase):
     __slots__ = ()  # Performance optimization
 
     user_id: uuid.UUID = Field(..., description="Associated user ID")
-    stats: dict[str, Any] = Field(default={"health": 100, "lucidity": 100, "strength": 10}, description="Player stats")
+    stats: dict[str, Any] = Field(default={"health": 100, "lucidity": 100, "strength": 50}, description="Player stats")
     inventory: list[dict[str, Any]] = Field(default=[], description="Player inventory")
     status_effects: list[dict[str, Any]] = Field(default=[], description="Player status effects")
 
@@ -43,7 +43,7 @@ class PlayerCreate(PlayerBase):
                 "current_room_id": "earth_arkhamcity_northside_intersection_derby_high",
                 "experience_points": 0,
                 "level": 1,
-                "stats": {"health": 100, "lucidity": 100, "strength": 10},
+                "stats": {"health": 100, "lucidity": 100, "strength": 50},
                 "inventory": [],
                 "status_effects": [],
             }

@@ -60,15 +60,17 @@ class Player(Base):
             "strength": 50,
             "dexterity": 50,
             "constitution": 50,
+            "size": 50,
             "intelligence": 50,
-            "wisdom": 50,
+            "power": 50,
+            "education": 50,
             "charisma": 50,
+            "luck": 50,
             "lucidity": 100,
-            "occult_knowledge": 0,
-            "fear": 0,
+            "occult": 0,
             "corruption": 0,
-            "cult_affiliation": 0,
-            "current_health": 100,
+            "current_dp": 20,  # DP max = (CON + SIZ) / 5 = (50 + 50) / 5 = 20
+            "magic_points": 10,  # MP max = ceil(POW * 0.2) = ceil(50 * 0.2) = 10
             "position": "standing",
         },
     )
@@ -126,15 +128,17 @@ class Player(Base):
                 "strength": 50,
                 "dexterity": 50,
                 "constitution": 50,
+                "size": 50,
                 "intelligence": 50,
-                "wisdom": 50,
+                "power": 50,
+                "education": 50,
                 "charisma": 50,
+                "luck": 50,
                 "lucidity": 100,
-                "occult_knowledge": 0,
-                "fear": 0,
+                "occult": 0,
                 "corruption": 0,
-                "cult_affiliation": 0,
-                "current_health": 100,
+                "current_dp": 20,  # DP max = (CON + SIZ) / 5 = (50 + 50) / 5 = 20
+                "magic_points": 10,  # MP max = ceil(POW * 0.2) = ceil(50 * 0.2) = 10
                 "position": "standing",
             }
             return stats
@@ -220,47 +224,47 @@ class Player(Base):
         self.level = (self.experience_points // 100) + 1  # type: ignore[assignment]
 
     def is_alive(self) -> bool:
-        """Check if player is alive (HP > 0)."""
+        """Check if player is alive (DP > 0)."""
         stats = self.get_stats()
-        return bool(stats.get("current_health", 0) > 0)
+        return bool(stats.get("current_dp", 0) > 0)
 
     def is_mortally_wounded(self) -> bool:
         """
-        Check if player is mortally wounded (0 >= HP > -10).
+        Check if player is mortally wounded (0 >= DP > -10).
 
         Returns:
-            True if player has 0 to -9 HP (mortally wounded state)
+            True if player has 0 to -9 DP (mortally wounded state)
         """
         stats = self.get_stats()
-        current_hp = stats.get("current_health", 0)
-        return bool(0 >= current_hp > -10)
+        current_dp = stats.get("current_dp", 0)  # current_dp represents DP
+        return bool(0 >= current_dp > -10)
 
     def is_dead(self) -> bool:
         """
-        Check if player is dead (HP <= -10).
+        Check if player is dead (DP <= -10).
 
         Returns:
-            True if player has -10 HP or below
+            True if player has -10 DP or below
         """
         stats = self.get_stats()
-        current_hp = stats.get("current_health", 0)
-        return bool(current_hp <= -10)
+        current_dp = stats.get("current_dp", 0)  # current_dp represents DP
+        return bool(current_dp <= -10)
 
     def get_health_state(self) -> str:
         """
         Get player's current health state.
 
         Returns:
-            "alive" if HP > 0
-            "mortally_wounded" if 0 >= HP > -10
-            "dead" if HP <= -10
+            "alive" if DP > 0
+            "mortally_wounded" if 0 >= DP > -10
+            "dead" if DP <= -10
         """
         stats = self.get_stats()
-        current_hp = stats.get("current_health", 0)
+        current_dp = stats.get("current_dp", 0)  # current_dp represents DP
 
-        if current_hp > 0:
+        if current_dp > 0:
             return "alive"
-        elif current_hp > -10:
+        elif current_dp > -10:
             return "mortally_wounded"
         else:
             return "dead"
@@ -274,11 +278,16 @@ class Player(Base):
         self.is_admin = 1 if admin_status else 0  # type: ignore[assignment]
 
     def get_health_percentage(self) -> float:
-        """Get player health as percentage."""
+        """Get player determination points (DP) as percentage."""
         stats = self.get_stats()
-        current_health = stats.get("current_health", 100)
-        max_health = 100  # Could be made configurable
-        return float((current_health / max_health) * 100)
+        current_dp = stats.get("current_dp", 20)  # current_dp represents DP
+        # Calculate max DP from CON + SIZ if available, otherwise use default
+        constitution = stats.get("constitution", 50)
+        size = stats.get("size", 50)
+        max_dp = stats.get("max_dp", (constitution + size) // 5)  # DP max = (CON + SIZ) / 5
+        if max_dp == 0:
+            max_dp = 20  # Prevent division by zero
+        return float((current_dp / max_dp) * 100)
 
     lucidity: Mapped["PlayerLucidity"] = relationship(
         "PlayerLucidity",
@@ -389,6 +398,6 @@ def _convert_legacy_stats_string(target: Player, context: Any) -> None:
                 "fear": 0,
                 "corruption": 0,
                 "cult_affiliation": 0,
-                "current_health": 100,
+                "current_dp": 100,
                 "position": "standing",
             }

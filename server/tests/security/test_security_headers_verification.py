@@ -76,7 +76,8 @@ class TestSecurityHeadersVerification:
         mock_persistence.list_players = AsyncMock(return_value=[mock_player])
         mock_persistence.get_player = Mock(side_effect=mock_get_player)
         mock_persistence.get_player_by_name = Mock(return_value=mock_player)
-        mock_persistence.get_profession_by_id = Mock(return_value=mock_profession)
+        # get_profession_by_id is async in the actual persistence layer
+        mock_persistence.get_profession_by_id = AsyncMock(return_value=mock_profession)
         mock_persistence.get_room = AsyncMock(side_effect=mock_get_room)
         mock_persistence.save_player = Mock(return_value=None)
         mock_persistence.delete_player = AsyncMock(return_value=True)  # delete_player is async
@@ -84,6 +85,18 @@ class TestSecurityHeadersVerification:
         # Replace container persistence
         app.state.container.persistence = mock_persistence
         app.state.persistence = mock_persistence
+
+        # Mock database_manager if it exists to avoid session errors
+        if hasattr(app.state.container, "database_manager"):
+            mock_database_manager = Mock()
+            mock_session_maker = AsyncMock()
+            # Make session_maker() return an async context manager
+            mock_session = AsyncMock()
+            mock_session.__aenter__ = AsyncMock(return_value=mock_session)
+            mock_session.__aexit__ = AsyncMock(return_value=None)
+            mock_session_maker.return_value = mock_session
+            mock_database_manager.get_session_maker = Mock(return_value=mock_session_maker)
+            app.state.container.database_manager = mock_database_manager
 
         # Update service persistence references
         if hasattr(app.state.container, "player_service") and app.state.container.player_service:
@@ -96,7 +109,6 @@ class TestSecurityHeadersVerification:
 
         return mock_persistence
 
-    @pytest.mark.slow
     def test_security_headers_on_api_endpoints(self, container_test_client_class, mock_security_persistence):
         """Test that security headers are applied to all API endpoints."""
         # Define all API endpoints to test
@@ -375,12 +387,15 @@ class TestSecurityHeadersVerification:
         ]
 
         for method_data in methods_to_test:
+            method = method_data[0]
+            endpoint = method_data[1]
             if len(method_data) == 2:
-                method, endpoint = method_data
                 kwargs = {}
-            else:
-                method, endpoint, data = method_data
+            elif len(method_data) == 3:
+                data = method_data[2]
                 kwargs = {"json": data}
+            else:
+                raise ValueError(f"Invalid method_data format: {method_data}")
 
             if method == "GET":
                 response = container_test_client_class.get(endpoint, **kwargs)
@@ -390,6 +405,8 @@ class TestSecurityHeadersVerification:
                 response = container_test_client_class.delete(endpoint, **kwargs)
             elif method == "OPTIONS":
                 response = container_test_client_class.options(endpoint, **kwargs)
+            else:
+                raise ValueError(f"Unsupported HTTP method: {method}")
 
             # Verify security headers are present
             security_headers = [

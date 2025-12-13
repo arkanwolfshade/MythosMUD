@@ -100,15 +100,6 @@ jobs:
           (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -f db/databases/databases.sql)
           su postgres -c "psql -d mythos_unit -f $WORKSPACE_PATH/db/authoritative_schema.sql" || \
           (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -d mythos_unit -f db/authoritative_schema.sql)
-          # Apply UUID migration for players.player_id
-          su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -f $WORKSPACE_PATH/db/migrations/010_migrate_player_id_to_uuid.sql" || \
-          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -d mythos_unit -f db/migrations/010_migrate_player_id_to_uuid.sql)
-          # Create containers table (must run before 011 which adds column to it)
-          su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -f $WORKSPACE_PATH/db/migrations/012_create_containers_table.sql" || \
-          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -d mythos_unit -f db/migrations/012_create_containers_table.sql)
-          # Apply container schema normalization migration (adds container_item_instance_id column)
-          su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -f $WORKSPACE_PATH/db/migrations/011_add_container_item_instance_id.sql" || \
-          (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -d mythos_unit -f db/migrations/011_add_container_item_instance_id.sql)
           # Verify migrations were applied correctly
           su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -c \"SELECT column_name FROM information_schema.columns WHERE table_name = 'containers' AND column_name = 'container_item_instance_id';\"" | grep -q container_item_instance_id || \
           (command -v sudo >/dev/null 2>&1 && sudo -u postgres psql -v ON_ERROR_STOP=1 -d mythos_unit -c "SELECT column_name FROM information_schema.columns WHERE table_name = 'containers' AND column_name = 'container_item_instance_id';" | grep -q container_item_instance_id) || \

@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useCommandStore } from '../commandStore';
 import { useConnectionStore } from '../connectionStore';
-import { useGameStore } from '../gameStore';
+import { useGameStore, type Player, type Room } from '../gameStore';
 import { useSessionStore } from '../sessionStore';
 import { denormalizeGameData, normalizeGameData } from '../stateNormalization';
 
@@ -52,7 +52,7 @@ describe('State Management Integration', () => {
         player: {
           id: 'player-123',
           name: 'TestCharacter',
-          stats: { current_health: 100, lucidity: 80 },
+          stats: { current_dp: 100, lucidity: 80 },
           level: 5,
         },
         room: {
@@ -69,8 +69,8 @@ describe('State Management Integration', () => {
       const denormalizedData = denormalizeGameData(normalizedData);
 
       act(() => {
-        gameResult.current.setPlayer(denormalizedData.player);
-        gameResult.current.setRoom(denormalizedData.room);
+        gameResult.current.setPlayer((denormalizedData.player as Player | null) ?? null);
+        gameResult.current.setRoom((denormalizedData.room as Room | null) ?? null);
       });
 
       expect(gameResult.current.player?.name).toBe('TestCharacter');
@@ -108,7 +108,7 @@ describe('State Management Integration', () => {
         gameResult.current.setPlayer({
           id: 'player-123',
           name: 'TestPlayer',
-          stats: { current_health: 100, lucidity: 80 },
+          stats: { current_dp: 100, lucidity: 80 },
           level: 5,
         });
       });
@@ -151,7 +151,7 @@ describe('State Management Integration', () => {
         gameResult.current.setPlayer({
           id: 'player-123',
           name: 'TestCharacter',
-          stats: { current_health: 100, lucidity: 80 },
+          stats: { current_dp: 100, lucidity: 80 },
           level: 5,
         });
         commandResult.current.addToHistory('look around');
@@ -187,7 +187,7 @@ describe('State Management Integration', () => {
         player: {
           id: 'player-123',
           name: 'TestCharacter',
-          stats: { current_health: 100, lucidity: 80 },
+          stats: { current_dp: 100, lucidity: 80 },
           level: 5,
           inventory: [
             { id: 'item-1', name: 'Sword', type: 'weapon' },
@@ -241,10 +241,10 @@ describe('State Management Integration', () => {
       const denormalizedData = denormalizeGameData(normalizedData);
 
       act(() => {
-        gameResult.current.setPlayer(denormalizedData.player);
-        gameResult.current.setRoom(denormalizedData.room);
-        denormalizedData.chatMessages.forEach(msg => {
-          gameResult.current.addChatMessage(msg);
+        gameResult.current.setPlayer((denormalizedData.player as Player | null) ?? null);
+        gameResult.current.setRoom((denormalizedData.room as Room | null) ?? null);
+        (denormalizedData.chatMessages ?? []).forEach(msg => {
+          gameResult.current.addChatMessage(msg as Parameters<typeof gameResult.current.addChatMessage>[0]);
         });
       });
 
@@ -263,7 +263,7 @@ describe('State Management Integration', () => {
         player: {
           id: 'player-123',
           name: 'TestCharacter',
-          stats: { current_health: 100, lucidity: 80 },
+          stats: { current_dp: 100, lucidity: 80 },
           level: 5,
         },
         room: {
@@ -280,8 +280,8 @@ describe('State Management Integration', () => {
       const denormalizedInitial = denormalizeGameData(normalizedInitial);
 
       act(() => {
-        gameResult.current.setPlayer(denormalizedInitial.player);
-        gameResult.current.setRoom(denormalizedInitial.room);
+        gameResult.current.setPlayer((denormalizedInitial.player as Player | null) ?? null);
+        gameResult.current.setRoom((denormalizedInitial.room as Room | null) ?? null);
       });
 
       // Update with new entities
@@ -297,11 +297,11 @@ describe('State Management Integration', () => {
       const denormalizedUpdated = denormalizeGameData(normalizedUpdated);
 
       act(() => {
-        gameResult.current.setRoom(denormalizedUpdated.room);
+        gameResult.current.setRoom((denormalizedUpdated.room as Room | null) ?? null);
       });
 
-      expect(gameResult.current.room?.entities).toHaveLength(1);
-      expect(gameResult.current.room?.entities[0].name).toBe('New NPC');
+      expect(gameResult.current.room?.entities?.length).toBe(1);
+      expect(gameResult.current.room?.entities?.[0].name).toBe('New NPC');
     });
   });
 
@@ -446,7 +446,7 @@ describe('State Management Integration', () => {
         gameResult.current.setPlayer({
           id: 'player-123',
           name: 'TestCharacter',
-          stats: { current_health: 100, lucidity: 80 },
+          stats: { current_dp: 100, lucidity: 80 },
           level: 5,
         });
       });

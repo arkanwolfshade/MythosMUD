@@ -1,7 +1,7 @@
-import { describe, expect, it, beforeEach, vi } from 'vitest';
-import { FeedbackManager, useFeedbackManager } from '../feedbackManager';
+import { act, renderHook } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { FeedbackData } from '../feedbackManager';
-import { renderHook, act } from '@testing-library/react';
+import { FeedbackManager, useFeedbackManager } from '../feedbackManager';
 
 describe('FeedbackManager', () => {
   let manager: FeedbackManager;
@@ -60,6 +60,7 @@ describe('FeedbackManager', () => {
 
     it('should handle invalid JSON in localStorage gracefully', () => {
       // Arrange
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
       localStorage.setItem('mythosmud_feedback', 'invalid json');
 
       // Act - should not throw
@@ -67,6 +68,8 @@ describe('FeedbackManager', () => {
 
       // Assert
       expect(newManager.getAllFeedback()).toEqual([]);
+      expect(consoleWarnSpy).toHaveBeenCalledWith('Failed to load feedback from localStorage:', expect.any(Error));
+      consoleWarnSpy.mockRestore();
     });
   });
 
@@ -506,11 +509,16 @@ describe('FeedbackManager', () => {
     });
 
     it('should return false for invalid JSON', () => {
+      // Arrange
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
       // Act
       const success = manager.importFeedback('invalid json');
 
       // Assert
       expect(success).toBe(false);
+      expect(consoleWarnSpy).toHaveBeenCalledWith('Failed to import feedback:', expect.any(Error));
+      consoleWarnSpy.mockRestore();
     });
 
     it('should return false for non-array JSON', () => {

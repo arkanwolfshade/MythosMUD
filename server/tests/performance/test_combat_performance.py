@@ -16,9 +16,6 @@ from server.commands.combat import CombatCommandHandler
 from server.services.combat_service import CombatParticipantData, CombatParticipantType, CombatService
 from server.services.player_combat_service import PlayerCombatService
 
-# Mark entire module as slow for CI/CD-only execution
-pytestmark = pytest.mark.slow
-
 
 class TestCombatPerformance:
     """Performance tests for combat system."""
@@ -74,16 +71,16 @@ class TestCombatPerformance:
             attacker = CombatParticipantData(
                 participant_id=player_id,
                 name=f"Player_{i}",
-                current_hp=100,
-                max_hp=100,
+                current_dp=100,
+                max_dp=100,
                 dexterity=15,
                 participant_type=CombatParticipantType.PLAYER,
             )
             target = CombatParticipantData(
                 participant_id=npc_id,
                 name=f"NPC_{i}",
-                current_hp=50,
-                max_hp=50,
+                current_dp=50,
+                max_dp=50,
                 dexterity=10,
                 participant_type=CombatParticipantType.NPC,
             )
@@ -131,16 +128,16 @@ class TestCombatPerformance:
             attacker = CombatParticipantData(
                 participant_id=player_id,
                 name="TestPlayer",
-                current_hp=100,
-                max_hp=100,
+                current_dp=100,
+                max_dp=100,
                 dexterity=15,
                 participant_type=CombatParticipantType.PLAYER,
             )
             target = CombatParticipantData(
                 participant_id=npc_id,
                 name="TestNPC",
-                current_hp=1000,  # High HP to survive many attacks
-                max_hp=1000,
+                current_dp=1000,  # High HP to survive many attacks
+                max_dp=1000,
                 dexterity=10,
                 participant_type=CombatParticipantType.NPC,
             )
@@ -186,16 +183,16 @@ class TestCombatPerformance:
             attacker = CombatParticipantData(
                 participant_id=player_id,
                 name=f"Player_{i}",
-                current_hp=100,
-                max_hp=100,
+                current_dp=100,
+                max_dp=100,
                 dexterity=15,
                 participant_type=CombatParticipantType.PLAYER,
             )
             target = CombatParticipantData(
                 participant_id=npc_id,
                 name=f"NPC_{i}",
-                current_hp=50,
-                max_hp=50,
+                current_dp=50,
+                max_dp=50,
                 dexterity=10,
                 participant_type=CombatParticipantType.NPC,
             )
@@ -229,16 +226,16 @@ class TestCombatPerformance:
             attacker = CombatParticipantData(
                 participant_id=player_id,
                 name=f"Player_{i}",
-                current_hp=100,
-                max_hp=100,
+                current_dp=100,
+                max_dp=100,
                 dexterity=15,
                 participant_type=CombatParticipantType.PLAYER,
             )
             target = CombatParticipantData(
                 participant_id=npc_id,
                 name=f"NPC_{i}",
-                current_hp=50,
-                max_hp=50,
+                current_dp=50,
+                max_dp=50,
                 dexterity=10,
                 participant_type=CombatParticipantType.NPC,
             )
@@ -278,16 +275,16 @@ class TestCombatPerformance:
             attacker = CombatParticipantData(
                 participant_id=player_id,
                 name=f"Player_{i}",
-                current_hp=100,
-                max_hp=100,
+                current_dp=100,
+                max_dp=100,
                 dexterity=15,
                 participant_type=CombatParticipantType.PLAYER,
             )
             target = CombatParticipantData(
                 participant_id=npc_id,
                 name=f"NPC_{i}",
-                current_hp=50,
-                max_hp=50,
+                current_dp=50,
+                max_dp=50,
                 dexterity=10,
                 participant_type=CombatParticipantType.NPC,
             )
@@ -359,16 +356,16 @@ class TestCombatPerformance:
             attacker = CombatParticipantData(
                 participant_id=player_id,
                 name=f"Player_{i}",
-                current_hp=100,
-                max_hp=100,
+                current_dp=100,
+                max_dp=100,
                 dexterity=15,
                 participant_type=CombatParticipantType.PLAYER,
             )
             target = CombatParticipantData(
                 participant_id=npc_id,
                 name=f"NPC_{i}",
-                current_hp=50,
-                max_hp=50,
+                current_dp=50,
+                max_dp=50,
                 dexterity=10,
                 participant_type=CombatParticipantType.NPC,
             )
@@ -405,16 +402,16 @@ class TestCombatPerformance:
             attacker = CombatParticipantData(
                 participant_id=player_id,
                 name=f"Player_{i}",
-                current_hp=100,
-                max_hp=100,
+                current_dp=100,
+                max_dp=100,
                 dexterity=15,
                 participant_type=CombatParticipantType.PLAYER,
             )
             target = CombatParticipantData(
                 participant_id=npc_id,
                 name=f"NPC_{i}",
-                current_hp=50,
-                max_hp=50,
+                current_dp=50,
+                max_dp=50,
                 dexterity=10,
                 participant_type=CombatParticipantType.NPC,
             )
@@ -524,16 +521,16 @@ class TestCombatPerformance:
             attacker = CombatParticipantData(
                 participant_id=player_id,
                 name=f"Player_{i}",
-                current_hp=100,
-                max_hp=100,
+                current_dp=100,
+                max_dp=100,
                 dexterity=15,
                 participant_type=CombatParticipantType.PLAYER,
             )
             target = CombatParticipantData(
                 participant_id=npc_id,
                 name=f"NPC_{i}",
-                current_hp=100,  # High HP to survive attacks
-                max_hp=100,
+                current_dp=100,  # High HP to survive attacks
+                max_dp=100,
                 dexterity=10,
                 participant_type=CombatParticipantType.NPC,
             )

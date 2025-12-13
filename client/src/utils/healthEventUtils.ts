@@ -1,7 +1,7 @@
 import type { HealthStatus } from '../types/health';
-import { determineHealthTier } from '../types/health';
+import { determineDpTier } from '../types/health';
 
-const DEFAULT_MAX_HP = 100;
+const DEFAULT_MAX_DP = 100;
 
 const parseNumber = (value: unknown, fallback: number): number => {
   if (typeof value === 'number' && Number.isFinite(value)) {
@@ -49,12 +49,12 @@ export const buildHealthStatusFromEvent = (
   data: Record<string, unknown>,
   timestamp: string
 ): { status: HealthStatus; delta: number } => {
-  const oldHp = parseNumber(data.old_hp ?? data.oldHp ?? previous?.current ?? 0, previous?.current ?? 0);
-  const newHp = parseNumber(data.new_hp ?? data.newHp ?? oldHp, oldHp);
-  const delta = newHp - oldHp;
-  const maxHp = parseNumber(
-    data.max_hp ?? data.maxHp ?? previous?.max ?? DEFAULT_MAX_HP,
-    previous?.max ?? DEFAULT_MAX_HP
+  const oldDp = parseNumber(data.old_dp ?? data.oldDp ?? previous?.current ?? 0, previous?.current ?? 0);
+  const newDp = parseNumber(data.new_dp ?? data.newDp ?? oldDp, oldDp);
+  const delta = newDp - oldDp;
+  const maxDp = parseNumber(
+    data.max_dp ?? data.maxDp ?? previous?.max ?? DEFAULT_MAX_DP,
+    previous?.max ?? DEFAULT_MAX_DP
   );
   const reasonFromData = toReasonString(data.reason);
   const damageTaken = parseNumber(data.damage_taken ?? data.damageTaken ?? 0, 0);
@@ -77,9 +77,9 @@ export const buildHealthStatusFromEvent = (
         : undefined;
 
   const status: HealthStatus = {
-    current: newHp,
-    max: maxHp > 0 ? maxHp : DEFAULT_MAX_HP,
-    tier: determineHealthTier(newHp, maxHp > 0 ? maxHp : DEFAULT_MAX_HP),
+    current: newDp,
+    max: maxDp > 0 ? maxDp : DEFAULT_MAX_DP,
+    tier: determineDpTier(newDp, maxDp > 0 ? maxDp : DEFAULT_MAX_DP),
     posture,
     inCombat,
     lastChange: {

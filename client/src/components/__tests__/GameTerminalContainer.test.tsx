@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { useGameTerminal } from '../../hooks/useGameTerminal';
+import { useGameTerminal, type GameTerminalState } from '../../hooks/useGameTerminal';
 import { ChatMessage } from '../../stores/gameStore';
 import { GameTerminalContainer } from '../GameTerminalContainer';
 
@@ -23,7 +23,7 @@ function createDefaultGameTerminalState() {
     player: {
       id: 'player-1',
       name: 'TestPlayer',
-      stats: { current_health: 100, lucidity: 80, position: 'standing' },
+      stats: { current_dp: 100, lucidity: 80, position: 'standing' },
       level: 5,
     },
     room: {
@@ -74,6 +74,10 @@ vi.mock('../GameTerminalPresentation', () => ({
     messages: ChatMessage[];
     commandHistory: string[];
     onSendCommand: (command: string) => void;
+    onSendChatMessage: (message: string, channel: string) => void;
+    onClearMessages: () => void;
+    onClearHistory: () => void;
+    onDownloadLogs: () => void;
     [key: string]: unknown;
   }) => (
     <div data-testid="game-terminal-presentation">
@@ -176,6 +180,55 @@ describe('GameTerminalContainer', () => {
   });
 
   describe('Event Handling', () => {
+    const createMockStateWithHandlers = (handlers: {
+      onSendCommand: (command: string) => void;
+      onSendChatMessage: (message: string, channel: string) => void;
+      onClearMessages: () => void;
+      onClearHistory: () => void;
+      onDownloadLogs: () => void;
+    }): GameTerminalState => ({
+      // Connection state
+      isConnected: true,
+      isConnecting: false,
+      error: null,
+      reconnectAttempts: 0,
+
+      // Session state
+      playerName: 'TestPlayer',
+      characterName: 'TestCharacter',
+      isAuthenticated: true,
+      hasCharacter: true,
+
+      // Game state
+      player: {
+        id: 'player-1',
+        name: 'TestPlayer',
+        stats: { current_dp: 100, lucidity: 80, position: 'standing' },
+        level: 5,
+      },
+      room: {
+        id: 'room-1',
+        name: 'Test Room',
+        description: 'A test room',
+        exits: { north: 'room-2' },
+        occupants: ['player-1'],
+        occupant_count: 1,
+        entities: [{ name: 'Test NPC', type: 'npc' }],
+      },
+      messages: [
+        {
+          text: 'Welcome to the test room',
+          timestamp: '2024-01-01T12:00:00Z',
+          isHtml: false,
+          messageType: 'system',
+        },
+      ],
+      commandHistory: ['look', 'inventory', 'status'],
+
+      // Event handlers
+      ...handlers,
+    });
+
     it('should pass event handlers from useGameTerminal to presentation', () => {
       const mockOnSendCommand = vi.fn();
       const mockOnSendChatMessage = vi.fn();
@@ -183,52 +236,15 @@ describe('GameTerminalContainer', () => {
       const mockOnClearHistory = vi.fn();
       const mockOnDownloadLogs = vi.fn();
 
-      mockUseGameTerminal.mockReturnValue({
-        // Connection state
-        isConnected: true,
-        isConnecting: false,
-        error: null,
-        reconnectAttempts: 0,
-
-        // Session state
-        playerName: 'TestPlayer',
-        characterName: 'TestCharacter',
-        isAuthenticated: true,
-        hasCharacter: true,
-
-        // Game state
-        player: {
-          id: 'player-1',
-          name: 'TestPlayer',
-          stats: { current_health: 100, lucidity: 80, position: 'standing' },
-          level: 5,
-        },
-        room: {
-          id: 'room-1',
-          name: 'Test Room',
-          description: 'A test room',
-          exits: { north: 'room-2' },
-          occupants: ['player-1'],
-          occupant_count: 1,
-          entities: [{ name: 'Test NPC', type: 'npc' }],
-        },
-        messages: [
-          {
-            text: 'Welcome to the test room',
-            timestamp: '2024-01-01T12:00:00Z',
-            isHtml: false,
-            messageType: 'system',
-          },
-        ],
-        commandHistory: ['look', 'inventory', 'status'],
-
-        // Event handlers
-        onSendCommand: mockOnSendCommand,
-        onSendChatMessage: mockOnSendChatMessage,
-        onClearMessages: mockOnClearMessages,
-        onClearHistory: mockOnClearHistory,
-        onDownloadLogs: mockOnDownloadLogs,
-      });
+      mockUseGameTerminal.mockReturnValue(
+        createMockStateWithHandlers({
+          onSendCommand: mockOnSendCommand,
+          onSendChatMessage: mockOnSendChatMessage,
+          onClearMessages: mockOnClearMessages,
+          onClearHistory: mockOnClearHistory,
+          onDownloadLogs: mockOnDownloadLogs,
+        })
+      );
 
       render(<GameTerminalContainer />);
 
@@ -262,7 +278,7 @@ describe('GameTerminalContainer', () => {
     });
 
     it('should handle useGameTerminal returning undefined', () => {
-      mockUseGameTerminal.mockReturnValue(undefined);
+      mockUseGameTerminal.mockReturnValue(undefined as never);
 
       expect(() => {
         render(<GameTerminalContainer />);

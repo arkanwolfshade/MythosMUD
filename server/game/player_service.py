@@ -523,7 +523,7 @@ class PlayerService:
             logger.info("Player location updated", player_name=player_name, from_room=old_room, to_room=new_room_id)
             return True
 
-        except Exception as e:
+        except (DatabaseError, AttributeError) as e:
             logger.error("Failed to update player location", player_name=player_name, room_id=new_room_id, error=str(e))
             context = create_error_context()
             context.metadata["player_name"] = player_name
@@ -800,12 +800,12 @@ class PlayerService:
             context = create_error_context()
             context.metadata["operation"] = "respawn_player_by_user_id"
             context.metadata["user_id"] = user_id
-            context.metadata["player_hp"] = player.get_stats().get("current_health", 0)
+            context.metadata["player_dp"] = player.get_stats().get("current_dp", 0)
             log_and_raise_enhanced(
                 ValidationError,
-                "Player must be dead to respawn (HP must be -10 or below)",
+                "Player must be dead to respawn (DP must be -10 or below)",
                 context=context,
-                details={"user_id": user_id, "player_hp": player.get_stats().get("current_health", 0)},
+                details={"user_id": user_id, "player_dp": player.get_stats().get("current_dp", 0)},
                 user_friendly="Player must be dead to respawn",
             )
 
@@ -852,8 +852,8 @@ class PlayerService:
             "player": {
                 "id": player.player_id,
                 "name": player.name,
-                "hp": updated_stats.get("current_health", 100),
-                "max_hp": updated_stats.get("max_health", 100),
+                "dp": updated_stats.get("current_dp", 100),
+                "max_dp": updated_stats.get("max_dp", 100),
                 "current_room_id": respawn_room_id,
             },
             "room": room_data,
@@ -975,14 +975,28 @@ class PlayerService:
             "player": {
                 "id": player.player_id,
                 "name": player.name,
-                "hp": updated_stats.get("current_health", 100),
-                "max_hp": updated_stats.get("max_health", 100),
+                "dp": updated_stats.get("current_dp", 100),
+                "max_dp": updated_stats.get("max_dp", 100),
                 "lucidity": updated_lucidity,
                 "current_room_id": respawn_room_id,
             },
             "room": room_data,
             "message": "You have been restored to lucidity and returned to the Sanitarium",
         }
+
+    async def convert_player_to_schema(self, player) -> PlayerRead:
+        """
+        Convert a player object to PlayerRead schema.
+
+        This is a public method that wraps the internal conversion logic.
+
+        Args:
+            player: Player object or dictionary
+
+        Returns:
+            PlayerRead: The player data in schema format
+        """
+        return await self._convert_player_to_schema(player)
 
     async def _convert_player_to_schema(self, player) -> PlayerRead:
         """
@@ -1010,7 +1024,7 @@ class PlayerService:
                     # Check if player is currently in combat using PlayerCombatService
                     if hasattr(self.player_combat_service, "is_player_in_combat"):
                         in_combat = await self.player_combat_service.is_player_in_combat(player.player_id)
-                except Exception as e:
+                except (DatabaseError, AttributeError) as e:
                     logger.warning("Failed to check combat state for player", player_id=player.player_id, error=str(e))
                     in_combat = False
 
@@ -1033,7 +1047,7 @@ class PlayerService:
                     profession_name = profession.name
                     profession_description = profession.description
                     profession_flavor_text = profession.flavor_text
-            except Exception as e:
+            except (DatabaseError, AttributeError) as e:
                 logger.warning("Failed to fetch profession", profession_id=player_profession_id, error=str(e))
 
         if hasattr(player, "player_id"):  # Player object
@@ -1060,6 +1074,38 @@ class PlayerService:
                     position_value=position_value,
                 )
                 position_state = PositionState.STANDING
+
+            # Add computed fields to stats dict if not present
+            try:
+                import math
+
+                con = stats.get("constitution", 50)
+                siz = stats.get("size", 50)
+                pow_val = stats.get("power", 50)
+                edu = stats.get("education", 50)
+
+                if "max_dp" not in stats:
+                    stats["max_dp"] = (con + siz) // 5
+                if "max_magic_points" not in stats:
+                    stats["max_magic_points"] = math.ceil(pow_val * 0.2)
+                if "max_lucidity" not in stats:
+                    stats["max_lucidity"] = edu
+
+                # Initialize magic_points to max if it's 0 (full MP at character creation)
+                if stats.get("magic_points", 0) == 0 and stats.get("max_magic_points", 0) > 0:
+                    stats["magic_points"] = stats["max_magic_points"]
+                # Cap lucidity to max_lucidity if it exceeds max
+                max_lucidity_val = stats.get("max_lucidity", edu)
+                if stats.get("lucidity", 100) > max_lucidity_val:
+                    stats["lucidity"] = max_lucidity_val
+            except (DatabaseError, AttributeError) as e:
+                logger.error(
+                    "Error adding computed fields to stats",
+                    player_id=getattr(player, "player_id", None),
+                    error=str(e),
+                    exc_info=True,
+                )
+                # Continue with stats as-is rather than failing completely
 
             return PlayerRead(
                 id=player.player_id,

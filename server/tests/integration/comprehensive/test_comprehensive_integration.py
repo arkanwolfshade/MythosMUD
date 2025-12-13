@@ -67,7 +67,6 @@ class TestComprehensiveIntegration:
 
         return mock_persistence
 
-    @pytest.mark.slow
     def test_security_headers_integration(self, container_test_client_class, mock_persistence_comprehensive):
         """Test that security headers are applied to all endpoints."""
         # Test various endpoints to ensure security headers are present

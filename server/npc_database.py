@@ -392,6 +392,25 @@ async def close_npc_db():
         _npc_creation_loop_id = None
 
 
+def reset_npc_database() -> None:
+    """
+    Reset NPC database state for testing.
+
+    This function resets all global NPC database state, including engine,
+    session maker, database URL, and creation loop ID. Use this in test
+    fixtures to ensure clean state between tests.
+
+    Note: This does NOT close existing connections. Use close_npc_db() first
+    if you need to dispose of active connections.
+    """
+    global _npc_engine, _npc_async_session_maker, _npc_database_url, _npc_creation_loop_id
+    _npc_engine = None
+    _npc_async_session_maker = None
+    _npc_database_url = None
+    _npc_creation_loop_id = None
+    logger.debug("NPC database state reset")
+
+
 def get_npc_database_path() -> Path | None:
     """
     Get the NPC database file path.

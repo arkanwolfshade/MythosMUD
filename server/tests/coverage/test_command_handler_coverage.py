@@ -26,9 +26,6 @@ from server.exceptions import ValidationError
 from server.middleware.command_rate_limiter import command_rate_limiter
 from server.models.room import Room
 
-# Mark entire module as slow for CI/CD-only execution
-pytestmark = pytest.mark.slow
-
 
 class TestCommunicationCommands:
     """Test communication commands."""
@@ -1013,13 +1010,36 @@ class TestMovementAndExplorationCommands:
 
         # Mock room data with no north exit
         mock_room = Mock(spec=Room)
+        mock_room.id = "test_room_001"
         mock_room.name = "Test Room"
         mock_room.description = "A test room"
         mock_room.exits = {"south": "room2"}  # No north exit
+        mock_room.get_players = Mock(return_value=[])
         # Look command uses get_room_by_id, not get_room
         mock_request.app.state.persistence.get_room_by_id.return_value = mock_room
 
-        result = await process_command("look", ["north"], current_user, mock_request, mock_alias_storage, "testuser")
+        # Mock connection manager and room manager for room drops
+        mock_connection_manager = Mock()
+        mock_room_manager = Mock()
+        mock_room_manager.list_room_drops = Mock(return_value=[])
+        mock_connection_manager.room_manager = mock_room_manager
+        mock_request.app.state.connection_manager = mock_connection_manager
+
+        # Mock NPC instance service
+        import server.commands.look_npc as look_npc_module
+        import server.services.npc_instance_service as npc_service_module
+
+        mock_npc_instance_service = Mock()
+        mock_lifecycle_manager = Mock()
+        mock_lifecycle_manager.active_npcs = {}
+        mock_npc_instance_service.lifecycle_manager = mock_lifecycle_manager
+
+        with pytest.MonkeyPatch().context() as m:
+            m.setattr(npc_service_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+            m.setattr(look_npc_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+            result = await process_command(
+                "look", ["north"], current_user, mock_request, mock_alias_storage, "testuser"
+            )
 
         assert "result" in result
         assert "you see nothing special that way" in result["result"].lower()
@@ -1041,13 +1061,36 @@ class TestMovementAndExplorationCommands:
 
         # Mock room data with invalid target
         mock_room = Mock(spec=Room)
+        mock_room.id = "test_room_001"
         mock_room.name = "Test Room"
         mock_room.description = "A test room"
         mock_room.exits = {"north": "nonexistent_room"}
+        mock_room.get_players = Mock(return_value=[])
         # Look command uses get_room_by_id, not get_room
         mock_request.app.state.persistence.get_room_by_id.return_value = mock_room
 
-        result = await process_command("look", ["north"], current_user, mock_request, mock_alias_storage, "testuser")
+        # Mock connection manager and room manager for room drops
+        mock_connection_manager = Mock()
+        mock_room_manager = Mock()
+        mock_room_manager.list_room_drops = Mock(return_value=[])
+        mock_connection_manager.room_manager = mock_room_manager
+        mock_request.app.state.connection_manager = mock_connection_manager
+
+        # Mock NPC instance service
+        import server.commands.look_npc as look_npc_module
+        import server.services.npc_instance_service as npc_service_module
+
+        mock_npc_instance_service = Mock()
+        mock_lifecycle_manager = Mock()
+        mock_lifecycle_manager.active_npcs = {}
+        mock_npc_instance_service.lifecycle_manager = mock_lifecycle_manager
+
+        with pytest.MonkeyPatch().context() as m:
+            m.setattr(npc_service_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+            m.setattr(look_npc_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+            result = await process_command(
+                "look", ["north"], current_user, mock_request, mock_alias_storage, "testuser"
+            )
 
         assert "result" in result
         assert "test room" in result["result"].lower()
@@ -1069,13 +1112,34 @@ class TestMovementAndExplorationCommands:
 
         # Mock room data with null exits
         mock_room = Mock(spec=Room)
+        mock_room.id = "test_room_001"
         mock_room.name = "Test Room"
         mock_room.description = "A test room"
         mock_room.exits = {"north": None, "south": None}
+        mock_room.get_players = Mock(return_value=[])
         # Look command uses get_room_by_id, not get_room
         mock_request.app.state.persistence.get_room_by_id.return_value = mock_room
 
-        result = await process_command("look", [], current_user, mock_request, mock_alias_storage, "testuser")
+        # Mock connection manager and room manager for room drops
+        mock_connection_manager = Mock()
+        mock_room_manager = Mock()
+        mock_room_manager.list_room_drops = Mock(return_value=[])
+        mock_connection_manager.room_manager = mock_room_manager
+        mock_request.app.state.connection_manager = mock_connection_manager
+
+        # Mock NPC instance service
+        import server.commands.look_npc as look_npc_module
+        import server.services.npc_instance_service as npc_service_module
+
+        mock_npc_instance_service = Mock()
+        mock_lifecycle_manager = Mock()
+        mock_lifecycle_manager.active_npcs = {}
+        mock_npc_instance_service.lifecycle_manager = mock_lifecycle_manager
+
+        with pytest.MonkeyPatch().context() as m:
+            m.setattr(npc_service_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+            m.setattr(look_npc_module, "get_npc_instance_service", lambda: mock_npc_instance_service)
+            result = await process_command("look", [], current_user, mock_request, mock_alias_storage, "testuser")
 
         assert "result" in result
         assert "test room" in result["result"].lower()

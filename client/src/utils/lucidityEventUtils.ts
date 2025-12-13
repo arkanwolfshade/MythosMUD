@@ -28,14 +28,21 @@ const parseNumber = (value: unknown, fallback: number): number => {
 export const buildLucidityStatus = (
   previous: LucidityStatus | null,
   data: Record<string, unknown>,
-  timestamp: string
+  timestamp: string,
+  playerMaxLucidity?: number
 ): { status: LucidityStatus; delta: number } => {
   const delta = parseNumber(data.delta, 0);
-  const current = parseNumber(
+  // Prefer max_lcd from event, then previous max, then player stats, then default
+  const max = parseNumber(data.max_lcd ?? data.maxLcd, previous?.max ?? playerMaxLucidity ?? DEFAULT_MAX_LCD);
+  // Calculate current, then cap it to max if it exceeds (defensive check)
+  let current = parseNumber(
     data.current_lcd ?? data.currentLcd ?? (previous?.current ?? 0) + delta,
     previous?.current ?? 0
   );
-  const max = parseNumber(data.max_lcd ?? data.maxLcd, previous?.max ?? DEFAULT_MAX_LCD);
+  // Cap current to max if it exceeds (can happen if PlayerLucidity record has old value)
+  if (max > 0 && current > max) {
+    current = max;
+  }
   const tier = sanitizeTier(data.tier, previous?.tier ?? 'lucid');
   const liabilitiesSource = Array.isArray(data.liabilities) ? data.liabilities : (previous?.liabilities ?? []);
   const liabilities = liabilitiesSource.map(entry => String(entry)).filter(Boolean);

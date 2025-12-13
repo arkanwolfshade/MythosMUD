@@ -13,7 +13,6 @@ from server.game.player_service import PlayerService
 from server.game.room_service import RoomService
 
 
-@pytest.mark.slow
 class TestDependencyFunctions:
     """Test the dependency injection functions."""
 
@@ -210,7 +209,7 @@ class TestDependencyFunctions:
                 mock_request.app.state.persistence = mock_persistence
                 service = get_player_service(mock_request)
                 results.append(service)
-            except Exception as e:
+            except (AttributeError, RuntimeError) as e:
                 errors.append(e)
 
         # Create multiple threads

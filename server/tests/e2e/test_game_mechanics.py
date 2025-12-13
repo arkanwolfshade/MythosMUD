@@ -13,9 +13,6 @@ import pytest
 from server.exceptions import ValidationError
 from server.game.mechanics import GameMechanicsService
 
-# Mark entire module as slow for CI/CD-only execution
-pytestmark = pytest.mark.slow
-
 
 class TestGameMechanicsService:
     """Test cases for GameMechanicsService."""

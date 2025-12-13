@@ -1,20 +1,10 @@
-import { expect } from '@playwright/test';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, describe, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { CommandPanel } from '../panels/CommandPanel';
 
 // Mock the dependencies
-vi.mock('../src/components/ui/EldritchIcon', () => ({
-  EldritchIcon: ({
-    name,
-    _size,
-    _variant,
-    className,
-  }: {
-    name: string;
-    _size?: number;
-    _variant?: string;
-    className?: string;
-  }) => (
+vi.mock('../../ui/EldritchIcon', () => ({
+  EldritchIcon: ({ name, className }: { name: string; className?: string }) => (
     <span data-testid={`icon-${name}`} className={className}>
       {name}
     </span>
@@ -36,7 +26,7 @@ interface TerminalButtonProps {
   [key: string]: unknown;
 }
 
-vi.mock('../src/components/ui/TerminalButton', () => ({
+vi.mock('../../ui/TerminalButton', () => ({
   TerminalButton: ({ children, onClick, disabled, ...props }: TerminalButtonProps) => (
     <button onClick={onClick} disabled={disabled} {...props}>
       {children}
@@ -51,7 +41,7 @@ interface TerminalInputProps {
   [key: string]: unknown;
 }
 
-vi.mock('../src/components/ui/TerminalInput', () => ({
+vi.mock('../../ui/TerminalInput', () => ({
   TerminalInput: ({ value, onChange, onKeyDown, ...props }: TerminalInputProps) => (
     <input value={value} onChange={onChange} onKeyDown={onKeyDown} {...props} />
   ),
@@ -426,7 +416,7 @@ describe('CommandPanel', () => {
     });
 
     it('handles malformed command history', () => {
-      const malformedHistory = ['valid', null, undefined, '', 'another valid'];
+      const malformedHistory = ['valid', null, undefined, '', 'another valid'] as string[];
 
       render(<CommandPanel {...defaultProps} commandHistory={malformedHistory} />);
 

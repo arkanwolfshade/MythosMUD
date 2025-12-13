@@ -32,6 +32,7 @@ class ScheduleService:
 
         self._schedule_dir = resolved_dir
 
+        # Initialize _entries attribute (declared once to avoid redefinition)
         if collections is None:
             # Load from PostgreSQL database (required)
             if self._async_persistence is None:
@@ -41,12 +42,16 @@ class ScheduleService:
             if entries is None:
                 raise RuntimeError("Failed to load schedules from database")
 
-            self._entries = entries
+            self._entries: list[ScheduleEntry] = entries
             logger.info(
                 "Loaded Mythos schedule definitions from PostgreSQL database",
                 entry_count=len(self._entries),
                 environment=self._environment,
             )
+        else:
+            # If collections is provided, initialize entries as empty list
+            # (collections parameter is currently not used in implementation)
+            self._entries = []
 
     def _load_from_database(self) -> list[ScheduleEntry] | None:
         """Load schedules from PostgreSQL database."""
@@ -64,8 +69,10 @@ class ScheduleService:
         thread.start()
         thread.join()
 
-        if result_container["error"]:
-            raise result_container["error"]
+        error = result_container.get("error")
+        if error is not None:
+            # error is guaranteed to be an Exception from _async_load_from_database
+            raise error
 
         return result_container["entries"]
 
@@ -107,6 +114,10 @@ class ScheduleService:
 
                 entries = []
                 for row in rows:
+                    # Normalize applies_to and effects to lowercase to match validation requirements
+                    applies_to = [item.lower() for item in (row["applies_to"] or [])]
+                    effects = [item.lower() for item in (row["effects"] or [])]
+
                     schedule_entry = ScheduleEntry(
                         id=row["stable_id"],
                         name=row["name"],
@@ -114,8 +125,8 @@ class ScheduleService:
                         start_hour=row["start_hour"],
                         end_hour=row["end_hour"],
                         days=list(row["days"]) if row["days"] else [],  # Convert array to list
-                        applies_to=list(row["applies_to"]) if row["applies_to"] else [],  # Convert array to list
-                        effects=list(row["effects"]) if row["effects"] else [],  # Convert array to list
+                        applies_to=applies_to,
+                        effects=effects,
                         notes=row["notes"],
                     )
                     entries.append(schedule_entry)

@@ -57,10 +57,7 @@ class TestResolveConnectionManagerFromState:
     """Test _resolve_connection_manager_from_state helper function."""
 
     @patch("server.api.real_time.resolve_connection_manager")
-    @patch("server.api.real_time.set_global_connection_manager")
-    def test_resolves_manager_from_container_dict(
-        self, mock_set_global, mock_resolve, real_time_module, mock_connection_manager
-    ):
+    def test_resolves_manager_from_container_dict(self, mock_resolve, real_time_module, mock_connection_manager):
         """Test resolves connection manager from container __dict__."""
         mock_resolve.return_value = mock_connection_manager
 
@@ -72,13 +69,9 @@ class TestResolveConnectionManagerFromState:
 
         assert result == mock_connection_manager
         mock_resolve.assert_called_once()
-        mock_set_global.assert_called_once_with(mock_connection_manager)
 
     @patch("server.api.real_time.resolve_connection_manager")
-    @patch("server.api.real_time.set_global_connection_manager")
-    def test_resolves_manager_from_container_attribute(
-        self, _mock_set_global, mock_resolve, real_time_module, mock_connection_manager
-    ):
+    def test_resolves_manager_from_container_attribute(self, mock_resolve, real_time_module, mock_connection_manager):
         """Test resolves connection manager from container attribute."""
         mock_resolve.return_value = mock_connection_manager
 
@@ -94,8 +87,7 @@ class TestResolveConnectionManagerFromState:
         mock_resolve.assert_called_once()
 
     @patch("server.api.real_time.resolve_connection_manager")
-    @patch("server.api.real_time.set_global_connection_manager")
-    def test_handles_none_container(self, _mock_set_global, _mock_resolve, real_time_module):
+    def test_handles_none_container(self, _mock_resolve, real_time_module):
         """Test handles state with no container."""
         _mock_resolve.return_value = None
 
@@ -107,8 +99,7 @@ class TestResolveConnectionManagerFromState:
         assert result is None
 
     @patch("server.api.real_time.resolve_connection_manager")
-    @patch("server.api.real_time.set_global_connection_manager")
-    def test_handles_mock_container(self, _mock_set_global, _mock_resolve, real_time_module):
+    def test_handles_mock_container(self, _mock_resolve, real_time_module):
         """Test handles Mock container gracefully."""
         _mock_resolve.return_value = None
 
@@ -124,10 +115,7 @@ class TestEnsureConnectionManager:
     """Test _ensure_connection_manager helper function."""
 
     @patch("server.api.real_time._resolve_connection_manager_from_state")
-    @patch("server.api.real_time.set_global_connection_manager")
-    def test_returns_manager_when_available(
-        self, mock_set_global, mock_resolve, real_time_module, mock_connection_manager
-    ):
+    def test_returns_manager_when_available(self, mock_resolve, real_time_module, mock_connection_manager):
         """Test returns connection manager when available."""
         mock_resolve.return_value = mock_connection_manager
 
@@ -135,7 +123,6 @@ class TestEnsureConnectionManager:
         result = real_time_module._ensure_connection_manager(state)
 
         assert result == mock_connection_manager
-        mock_set_global.assert_called_once_with(mock_connection_manager)
 
     @patch("server.api.real_time._resolve_connection_manager_from_state")
     def test_raises_503_when_manager_not_available(self, mock_resolve, real_time_module):

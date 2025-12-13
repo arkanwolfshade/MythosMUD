@@ -53,25 +53,19 @@ EXPECTED_STATS_KEYS = {
     "fear",
     "corruption",
     "cult_affiliation",
-    "current_health",
+    "current_dp",
     "position",
 }
 
 
 async def verify_database(db_name: str, host: str, port: int, user: str, password: str) -> bool:
     """Verify a single database."""
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Verifying database: {db_name}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     try:
-        conn = await asyncpg.connect(
-            host=host,
-            port=port,
-            user=user,
-            password=password,
-            database=db_name
-        )
+        conn = await asyncpg.connect(host=host, port=port, user=user, password=password, database=db_name)
 
         try:
             # 1. Check if players table exists
@@ -112,10 +106,10 @@ async def verify_database(db_name: str, host: str, port: int, user: str, passwor
                     expected_type = EXPECTED_COLUMNS[col_name]
                     # Type matching is flexible (varchar vs character varying, etc.)
                     type_match = (
-                        expected_type in col_type or
-                        col_type in expected_type or
-                        (expected_type == "varchar" and "character varying" in col_type) or
-                        (expected_type == "integer" and col_type in ("integer", "bigint", "smallint"))
+                        expected_type in col_type
+                        or col_type in expected_type
+                        or (expected_type == "varchar" and "character varying" in col_type)
+                        or (expected_type == "integer" and col_type in ("integer", "bigint", "smallint"))
                     )
 
                     if not type_match:
@@ -257,7 +251,7 @@ async def verify_database(db_name: str, host: str, port: int, user: str, passwor
                     print(f"  level: {sample['level']}")
                     print(f"  experience_points: {sample['experience_points']}")
                     try:
-                        stats_sample = json.loads(sample['stats'])
+                        stats_sample = json.loads(sample["stats"])
                         print(f"  stats keys: {list(stats_sample.keys())[:5]}...")
                     except Exception:
                         print(f"  stats: {sample['stats'][:50]}...")
@@ -286,7 +280,7 @@ async def verify_database(db_name: str, host: str, port: int, user: str, passwor
                 print("\n[WARN] No foreign key constraints found")
 
             # Summary
-            print(f"\n{'='*60}")
+            print(f"\n{'=' * 60}")
             if schema_ok and not json_errors:
                 print(f"[SUCCESS] Database {db_name} verification passed")
                 return True
@@ -300,6 +294,7 @@ async def verify_database(db_name: str, host: str, port: int, user: str, passwor
     except Exception as e:
         print(f"[ERROR] Failed to verify {db_name}: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
@@ -310,10 +305,7 @@ async def main():
 
     parser = argparse.ArgumentParser(description="Verify players table migration")
     parser.add_argument(
-        "--database",
-        "-d",
-        default="all",
-        help="Database to verify (mythos_dev, mythos_unit, mythos_e2e, or 'all')"
+        "--database", "-d", default="all", help="Database to verify (mythos_dev, mythos_unit, mythos_e2e, or 'all')"
     )
     parser.add_argument("--host", default=DEFAULT_HOST, help="PostgreSQL host")
     parser.add_argument("--port", type=int, default=DEFAULT_PORT, help="PostgreSQL port")
@@ -331,17 +323,11 @@ async def main():
     # Verify each database
     all_passed = True
     for db in databases:
-        result = await verify_database(
-            db,
-            args.host,
-            args.port,
-            args.user,
-            args.password
-        )
+        result = await verify_database(db, args.host, args.port, args.user, args.password)
         if not result:
             all_passed = False
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     if all_passed:
         print("[SUCCESS] All databases verified successfully!")
         return 0

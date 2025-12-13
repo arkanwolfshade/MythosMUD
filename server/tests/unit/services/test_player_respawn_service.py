@@ -97,7 +97,7 @@ class TestPlayerRespawnService:
     async def test_respawn_player_success(self, player_respawn_service, mock_player):
         """Test successful player respawn."""
         # Set player to dead state
-        stats = {"current_health": -10}
+        stats = {"current_dp": -10, "max_dp": 100}
         mock_player.get_stats.return_value = stats
         mock_player.respawn_room_id = DEFAULT_RESPAWN_ROOM
         mock_player.current_room_id = LIMBO_ROOM_ID
@@ -108,10 +108,10 @@ class TestPlayerRespawnService:
         result = await player_respawn_service.respawn_player(TEST_PLAYER_ID, mock_session)
 
         assert result is True
-        # Verify HP was restored to 100
+        # Verify DP was restored to max_dp (100)
         mock_player.set_stats.assert_called_once()
         updated_stats = mock_player.set_stats.call_args[0][0]
-        assert updated_stats["current_health"] == 100
+        assert updated_stats["current_dp"] == 100
         # Verify player was moved to respawn room
         assert mock_player.current_room_id == DEFAULT_RESPAWN_ROOM
         mock_session.commit.assert_called_once()
@@ -119,7 +119,7 @@ class TestPlayerRespawnService:
     @pytest.mark.asyncio
     async def test_respawn_player_custom_respawn_room(self, player_respawn_service, mock_player):
         """Test respawn with custom respawn room."""
-        stats = {"current_health": -10}
+        stats = {"current_dp": -10, "max_dp": 100}
         mock_player.get_stats.return_value = stats
         mock_player.respawn_room_id = "custom-respawn-room"
         mock_player.current_room_id = LIMBO_ROOM_ID
@@ -158,7 +158,7 @@ class TestPlayerRespawnService:
 
             # Verify HP was set to exactly 100
             updated_stats = mock_player.set_stats.call_args[0][0]
-            assert updated_stats["current_health"] == 100
+            assert updated_stats["current_dp"] == 100
             # Verify other stats were preserved
             assert updated_stats["lucidity"] == 50
 
@@ -194,7 +194,7 @@ class TestPlayerRespawnService:
         mock_event_bus = Mock()
         service = PlayerRespawnService(event_bus=mock_event_bus)
 
-        stats = {"current_health": -10}
+        stats = {"current_dp": -10, "max_dp": 100}
         mock_player.get_stats.return_value = stats
         mock_player.name = "TestPlayer"
         mock_player.current_room_id = LIMBO_ROOM_ID
@@ -211,8 +211,8 @@ class TestPlayerRespawnService:
         event = mock_event_bus.publish.call_args[0][0]
         assert event.event_type == "PlayerRespawnedEvent"
         assert event.player_id == TEST_PLAYER_ID
-        assert event.old_hp == -10
-        assert event.new_hp == 100
+        assert event.old_dp == -10
+        assert event.new_dp == 100
         assert event.respawn_room_id == DEFAULT_RESPAWN_ROOM
 
     @pytest.mark.asyncio
@@ -222,7 +222,7 @@ class TestPlayerRespawnService:
         mock_session.get.return_value = mock_player
         mock_session.commit.side_effect = Exception("Database error")
 
-        mock_player.get_stats.return_value = {"current_health": -10}
+        mock_player.get_stats.return_value = {"current_dp": -10, "max_dp": 100}
 
         result = await player_respawn_service.respawn_player(TEST_PLAYER_ID, mock_session)
 
@@ -232,8 +232,6 @@ class TestPlayerRespawnService:
     @pytest.mark.asyncio
     async def test_respawn_player_clears_combat_state(self, mock_player):
         """Test that player respawn clears combat state (GitHub issue #244)."""
-        from uuid import uuid4
-
         # Create service with both event bus and player combat service
         mock_event_bus = Mock()
         mock_player_combat_service = AsyncMock()
@@ -241,7 +239,7 @@ class TestPlayerRespawnService:
 
         # Setup player in dead state
         player_id = str(uuid4())
-        stats = {"current_health": -10}
+        stats = {"current_dp": -10, "max_dp": 100}
         mock_player.player_id = player_id
         mock_player.get_stats.return_value = stats
         mock_player.name = "TestPlayer"
@@ -271,7 +269,7 @@ class TestPlayerRespawnService:
         mock_event_bus = Mock()
         service = PlayerRespawnService(event_bus=mock_event_bus, player_combat_service=None)
 
-        stats = {"current_health": -10}
+        stats = {"current_dp": -10, "max_dp": 100}
         mock_player.get_stats.return_value = stats
         mock_player.name = "TestPlayer"
         mock_player.current_room_id = LIMBO_ROOM_ID
@@ -292,7 +290,7 @@ class TestPlayerRespawnService:
         from server.models.lucidity import PlayerLucidity
 
         # Set player to delirious state (lucidity <= -10)
-        stats = {"current_health": 50, "position": "standing"}
+        stats = {"current_dp": 50, "max_dp": 100, "position": "standing"}
         mock_player.get_stats.return_value = stats
         mock_player.current_room_id = "test-room"
 
@@ -351,7 +349,7 @@ class TestPlayerRespawnService:
         mock_event_bus = Mock()
         service = PlayerRespawnService(event_bus=mock_event_bus)
 
-        stats = {"current_health": 50, "position": "standing"}
+        stats = {"current_dp": 50, "max_dp": 100, "position": "standing"}
         mock_player.get_stats.return_value = stats
         mock_player.name = "TestPlayer"
         mock_player.current_room_id = "test-room"
@@ -388,7 +386,7 @@ class TestPlayerRespawnService:
         mock_player_combat_service = AsyncMock()
         service = PlayerRespawnService(event_bus=mock_event_bus, player_combat_service=mock_player_combat_service)
 
-        stats = {"current_health": 50, "position": "standing"}
+        stats = {"current_dp": 50, "max_dp": 100, "position": "standing"}
         mock_player.player_id = TEST_PLAYER_ID
         mock_player.get_stats.return_value = stats
         mock_player.name = "TestPlayer"
@@ -426,7 +424,7 @@ class TestPlayerRespawnService:
         )
         mock_session.commit.side_effect = Exception("Database error")
 
-        mock_player.get_stats.return_value = {"current_health": 50}
+        mock_player.get_stats.return_value = {"current_dp": 50, "max_dp": 100}
 
         result = await player_respawn_service.respawn_player_from_delirium(TEST_PLAYER_ID, mock_session)
 

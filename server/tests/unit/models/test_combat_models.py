@@ -30,14 +30,14 @@ class TestCombatModels:
             participant_id=uuid4(),
             participant_type=CombatParticipantType.PLAYER,
             name="TestPlayer",
-            current_hp=100,
-            max_hp=100,
+            current_dp=100,
+            max_dp=100,
             dexterity=15,
         )
 
         assert participant.name == "TestPlayer"
-        assert participant.current_hp == 100
-        assert participant.max_hp == 100
+        assert participant.current_dp == 100
+        assert participant.max_dp == 100
         assert participant.dexterity == 15
         assert participant.is_alive() is True
 
@@ -48,8 +48,8 @@ class TestCombatModels:
             participant_id=uuid4(),
             participant_type=CombatParticipantType.PLAYER,
             name="MortallyWoundedPlayer",
-            current_hp=0,
-            max_hp=100,
+            current_dp=0,
+            max_dp=100,
             dexterity=15,
         )
         assert player_mortally_wounded.is_alive() is True  # Mortally wounded is still "alive" for combat
@@ -58,8 +58,8 @@ class TestCombatModels:
             participant_id=uuid4(),
             participant_type=CombatParticipantType.PLAYER,
             name="DeadPlayer",
-            current_hp=-10,
-            max_hp=100,
+            current_dp=-10,
+            max_dp=100,
             dexterity=15,
         )
         assert player_dead.is_alive() is False  # Dead at -10 HP
@@ -69,8 +69,8 @@ class TestCombatModels:
             participant_id=uuid4(),
             participant_type=CombatParticipantType.NPC,
             name="DeadNPC",
-            current_hp=0,
-            max_hp=50,
+            current_dp=0,
+            max_dp=50,
             dexterity=10,
         )
         assert npc_dead.is_alive() is False  # NPCs die at 0 HP
@@ -98,8 +98,8 @@ class TestCombatModels:
             participant_id=player_id,
             participant_type=CombatParticipantType.PLAYER,
             name="Player",
-            current_hp=100,
-            max_hp=100,
+            current_dp=100,
+            max_dp=100,
             dexterity=15,
         )
 
@@ -107,8 +107,8 @@ class TestCombatModels:
             participant_id=npc_id,
             participant_type=CombatParticipantType.NPC,
             name="NPC",
-            current_hp=50,
-            max_hp=50,
+            current_dp=50,
+            max_dp=50,
             dexterity=10,
         )
 
@@ -141,8 +141,8 @@ class TestCombatModels:
             participant_id=player_id,
             participant_type=CombatParticipantType.PLAYER,
             name="Player",
-            current_hp=100,
-            max_hp=100,
+            current_dp=100,
+            max_dp=100,
             dexterity=15,
         )
 
@@ -150,8 +150,8 @@ class TestCombatModels:
             participant_id=npc_id,
             participant_type=CombatParticipantType.NPC,
             name="NPC",
-            current_hp=50,
-            max_hp=50,
+            current_dp=50,
+            max_dp=50,
             dexterity=10,
         )
 
@@ -162,11 +162,11 @@ class TestCombatModels:
         assert combat.is_combat_over() is False
 
         # One dies - combat should end
-        npc.current_hp = 0
+        npc.current_dp = 0
         assert combat.is_combat_over() is True
 
         # Both die - combat should end
-        player.current_hp = 0
+        player.current_dp = 0
         assert combat.is_combat_over() is True
 
 
@@ -187,16 +187,16 @@ class TestCombatService:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=100,
-            max_hp=100,
+            current_dp=100,
+            max_dp=100,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=50,
-            max_hp=50,
+            current_dp=50,
+            max_dp=50,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -225,16 +225,16 @@ class TestCombatService:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=100,
-            max_hp=100,
+            current_dp=100,
+            max_dp=100,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=50,
-            max_hp=50,
+            current_dp=50,
+            max_dp=50,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -267,16 +267,16 @@ class TestCombatService:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=100,
-            max_hp=100,
+            current_dp=100,
+            max_dp=100,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=50,
-            max_hp=50,
+            current_dp=50,
+            max_dp=50,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -297,7 +297,7 @@ class TestCombatService:
 
         # Check that damage was applied
         npc = combat.participants[npc_id]
-        assert npc.current_hp == 45  # 50 - 5
+        assert npc.current_dp == 45  # 50 - 5
 
     @pytest.mark.asyncio
     async def test_process_attack_kills_target(self, combat_service):
@@ -315,16 +315,16 @@ class TestCombatService:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=100,
-            max_hp=100,
+            current_dp=100,
+            max_dp=100,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=5,
-            max_hp=50,
+            current_dp=5,
+            max_dp=50,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -347,7 +347,7 @@ class TestCombatService:
 
         # Check that target is dead
         npc = combat.participants[npc_id]
-        assert npc.current_hp == 0
+        assert npc.current_dp == 0
 
         # Check that combat ended
         assert combat.status == CombatStatus.ENDED
@@ -371,16 +371,16 @@ class TestCombatService:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=100,
-            max_hp=100,
+            current_dp=100,
+            max_dp=100,
             dexterity=10,  # Lower dex - goes second
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=50,
-            max_hp=50,
+            current_dp=50,
+            max_dp=50,
             dexterity=15,  # Higher dex - goes first
             participant_type=CombatParticipantType.NPC,
         )
@@ -405,16 +405,16 @@ class TestCombatService:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=100,
-            max_hp=100,
+            current_dp=100,
+            max_dp=100,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=50,
-            max_hp=50,
+            current_dp=50,
+            max_dp=50,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -446,16 +446,16 @@ class TestCombatService:
         attacker = CombatParticipantData(
             participant_id=player_id,
             name="TestPlayer",
-            current_hp=100,
-            max_hp=100,
+            current_dp=100,
+            max_dp=100,
             dexterity=15,
             participant_type=CombatParticipantType.PLAYER,
         )
         target = CombatParticipantData(
             participant_id=npc_id,
             name="TestNPC",
-            current_hp=50,
-            max_hp=50,
+            current_dp=50,
+            max_dp=50,
             dexterity=10,
             participant_type=CombatParticipantType.NPC,
         )
@@ -622,8 +622,8 @@ class TestCombatEvents:
             target_name="Rat",
             damage=5,
             action_type="punch",
-            target_current_hp=45,
-            target_max_hp=50,
+            target_current_dp=45,
+            target_max_dp=50,
         )
 
         assert event.attacker_name == "Player"

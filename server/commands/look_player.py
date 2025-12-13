@@ -51,7 +51,9 @@ async def _get_players_in_room(room: Any, persistence: Any) -> list[Any]:
                 # Convert string to UUID if needed
                 player_id = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
                 # Use get_player_by_id (async method)
-                player = await persistence.get_player_by_id(player_id) if hasattr(persistence, "get_player_by_id") else None
+                player = (
+                    await persistence.get_player_by_id(player_id) if hasattr(persistence, "get_player_by_id") else None
+                )
                 if player:
                     players.append(player)
             except (ValueError, AttributeError):

@@ -1,0 +1,76 @@
+// Event processing hook
+// Extracted from GameClientV2Container to reduce complexity
+// As documented in "Event Processing Architecture" - Dr. Armitage, 1928
+
+import { useCallback, useRef } from 'react';
+import { logger } from '../../../utils/logger';
+import { processGameEvent } from '../eventHandlers';
+import type { EventHandlerContext, GameEvent } from '../eventHandlers/types';
+import type { ChatMessage } from '../types';
+import type { GameState } from '../utils/stateUpdateUtils';
+import { applyEventUpdates, sanitizeAndApplyUpdates } from '../utils/stateUpdateUtils';
+
+interface UseEventProcessingParams {
+  currentMessagesRef: React.MutableRefObject<ChatMessage[]>;
+  setGameState: React.Dispatch<React.SetStateAction<GameState>>;
+  context: EventHandlerContext;
+}
+
+export const useEventProcessing = ({ currentMessagesRef, setGameState, context }: UseEventProcessingParams) => {
+  const isProcessingEvent = useRef(false);
+  const lastProcessedEvent = useRef<string>('');
+  const eventQueue = useRef<GameEvent[]>([]);
+  const processingTimeout = useRef<number | null>(null);
+
+  const processEventQueue = useCallback(() => {
+    if (isProcessingEvent.current || eventQueue.current.length === 0) {
+      return;
+    }
+
+    isProcessingEvent.current = true;
+
+    try {
+      const events = [...eventQueue.current];
+      eventQueue.current = [];
+      const updates: Partial<GameState> = {};
+
+      const appendMessage = (message: ChatMessage) => {
+        if (!updates.messages) {
+          updates.messages = [...currentMessagesRef.current];
+        }
+        updates.messages.push(message);
+      };
+
+      events.forEach(event => {
+        const eventUpdates = processGameEvent(event, context, appendMessage, lastProcessedEvent);
+        // Convert null to undefined to match applyEventUpdates signature
+        applyEventUpdates(eventUpdates ?? undefined, updates, currentMessagesRef.current);
+      });
+
+      sanitizeAndApplyUpdates(updates, setGameState);
+    } catch (error) {
+      logger.error('useEventProcessing', 'Error processing events', { error });
+    } finally {
+      isProcessingEvent.current = false;
+
+      if (eventQueue.current.length > 0) {
+        processingTimeout.current = window.setTimeout(processEventQueue, 10);
+      }
+    }
+  }, [context, currentMessagesRef, setGameState]);
+
+  const handleGameEvent = useCallback(
+    (event: GameEvent) => {
+      eventQueue.current.push(event);
+      if (!isProcessingEvent.current && !processingTimeout.current) {
+        processingTimeout.current = window.setTimeout(() => {
+          processingTimeout.current = null;
+          processEventQueue();
+        }, 10);
+      }
+    },
+    [processEventQueue]
+  );
+
+  return { handleGameEvent };
+};

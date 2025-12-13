@@ -105,8 +105,8 @@ class TestCombatAuditLoggerUnit:
         target_name = "TestTarget"
         action_type = "punch"
         damage_dealt = 5
-        target_hp_before = 50
-        target_hp_after = 45
+        target_dp_before = 50
+        target_dp_after = 45
         success = True
 
         combat_audit_logger.log_combat_attack(
@@ -116,8 +116,8 @@ class TestCombatAuditLoggerUnit:
             target_name=target_name,
             action_type=action_type,
             damage_dealt=damage_dealt,
-            target_hp_before=target_hp_before,
-            target_hp_after=target_hp_after,
+            target_dp_before=target_dp_before,
+            target_dp_after=target_dp_after,
             success=success,
         )
 
@@ -133,8 +133,8 @@ class TestCombatAuditLoggerUnit:
         assert call_args[1]["target_name"] == target_name
         assert call_args[1]["action_type"] == action_type
         assert call_args[1]["damage_dealt"] == damage_dealt
-        assert call_args[1]["target_hp_before"] == target_hp_before
-        assert call_args[1]["target_hp_after"] == target_hp_after
+        assert call_args[1]["target_dp_before"] == target_dp_before
+        assert call_args[1]["target_dp_after"] == target_dp_after
         assert call_args[1]["success"] == success
         assert call_args[1]["security_level"] == "medium"
         assert call_args[1]["compliance_required"] is True
@@ -461,8 +461,8 @@ class TestCombatAuditLoggerUnit:
             target_name="Test",
             action_type="attack",
             damage_dealt=1,
-            target_hp_before=50,
-            target_hp_after=49,
+            target_dp_before=50,
+            target_dp_after=49,
             success=True,
         )
         combat_audit_logger.log_combat_death(

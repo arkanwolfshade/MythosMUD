@@ -37,15 +37,16 @@ class TestPlayerHealthStates:
             "fear": 0,
             "corruption": 0,
             "cult_affiliation": 0,
-            "current_health": 100,
+            "current_dp": 100,
+            "max_dp": 100,
         }
         player.set_stats(stats)
         return player
 
     def test_player_alive_with_positive_hp(self, sample_player):
-        """Test that player is alive with positive HP."""
+        """Test that player is alive with positive DP."""
         stats = sample_player.get_stats()
-        stats["current_health"] = 50
+        stats["current_dp"] = 50
         sample_player.set_stats(stats)
 
         assert sample_player.is_alive() is True
@@ -54,9 +55,9 @@ class TestPlayerHealthStates:
         assert sample_player.get_health_state() == "alive"
 
     def test_player_alive_at_full_hp(self, sample_player):
-        """Test that player is alive at full HP."""
+        """Test that player is alive at full DP."""
         stats = sample_player.get_stats()
-        stats["current_health"] = 100
+        stats["current_dp"] = 100
         sample_player.set_stats(stats)
 
         assert sample_player.is_alive() is True
@@ -65,9 +66,9 @@ class TestPlayerHealthStates:
         assert sample_player.get_health_state() == "alive"
 
     def test_player_mortally_wounded_at_zero_hp(self, sample_player):
-        """Test that player is mortally wounded at exactly 0 HP."""
+        """Test that player is mortally wounded at exactly 0 DP."""
         stats = sample_player.get_stats()
-        stats["current_health"] = 0
+        stats["current_dp"] = 0
         sample_player.set_stats(stats)
 
         assert sample_player.is_alive() is False
@@ -76,12 +77,12 @@ class TestPlayerHealthStates:
         assert sample_player.get_health_state() == "mortally_wounded"
 
     def test_player_mortally_wounded_at_negative_hp(self, sample_player):
-        """Test that player is mortally wounded at negative HP (above -10)."""
+        """Test that player is mortally wounded at negative DP (above -10)."""
         test_values = [-1, -2, -5, -9]
 
-        for hp_value in test_values:
+        for dp_value in test_values:
             stats = sample_player.get_stats()
-            stats["current_health"] = hp_value
+            stats["current_dp"] = dp_value
             sample_player.set_stats(stats)
 
             assert sample_player.is_alive() is False
@@ -90,9 +91,9 @@ class TestPlayerHealthStates:
             assert sample_player.get_health_state() == "mortally_wounded"
 
     def test_player_dead_at_minus_ten_hp(self, sample_player):
-        """Test that player is dead at exactly -10 HP."""
+        """Test that player is dead at exactly -10 DP."""
         stats = sample_player.get_stats()
-        stats["current_health"] = -10
+        stats["current_dp"] = -10
         sample_player.set_stats(stats)
 
         assert sample_player.is_alive() is False
@@ -101,13 +102,13 @@ class TestPlayerHealthStates:
         assert sample_player.get_health_state() == "dead"
 
     def test_player_dead_below_minus_ten_hp(self, sample_player):
-        """Test that player is dead below -10 HP (should be capped at -10 by combat system)."""
-        # This tests the edge case where HP somehow goes below -10
+        """Test that player is dead below -10 DP (should be capped at -10 by combat system)."""
+        # This tests the edge case where DP somehow goes below -10
         test_values = [-11, -15, -100]
 
-        for hp_value in test_values:
+        for dp_value in test_values:
             stats = sample_player.get_stats()
-            stats["current_health"] = hp_value
+            stats["current_dp"] = dp_value
             sample_player.set_stats(stats)
 
             assert sample_player.is_alive() is False
@@ -117,24 +118,24 @@ class TestPlayerHealthStates:
 
     def test_health_state_boundaries(self, sample_player):
         """Test boundary conditions for health states."""
-        # Boundary test: 1 HP (alive)
+        # Boundary test: 1 DP (alive)
         stats = sample_player.get_stats()
-        stats["current_health"] = 1
+        stats["current_dp"] = 1
         sample_player.set_stats(stats)
         assert sample_player.get_health_state() == "alive"
 
-        # Boundary test: 0 HP (mortally wounded)
-        stats["current_health"] = 0
+        # Boundary test: 0 DP (mortally wounded)
+        stats["current_dp"] = 0
         sample_player.set_stats(stats)
         assert sample_player.get_health_state() == "mortally_wounded"
 
-        # Boundary test: -9 HP (mortally wounded)
-        stats["current_health"] = -9
+        # Boundary test: -9 DP (mortally wounded)
+        stats["current_dp"] = -9
         sample_player.set_stats(stats)
         assert sample_player.get_health_state() == "mortally_wounded"
 
-        # Boundary test: -10 HP (dead)
-        stats["current_health"] = -10
+        # Boundary test: -10 DP (dead)
+        stats["current_dp"] = -10
         sample_player.set_stats(stats)
         assert sample_player.get_health_state() == "dead"
 

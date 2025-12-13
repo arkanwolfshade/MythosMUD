@@ -168,9 +168,10 @@ class TestDatabaseHealth:
 class TestConnectionsHealth:
     """Test connections health checks."""
 
-    @patch("server.realtime.connection_manager.connection_manager")
-    def test_check_connections_health_healthy(self, mock_connection_manager):
+    @patch("server.services.health_service.resolve_connection_manager")
+    def test_check_connections_health_healthy(self, mock_resolve):
         """Test connections health check when healthy."""
+        mock_connection_manager = MagicMock()
         mock_connection_manager.get_memory_stats.return_value = {
             "connections": {
                 "active_connections": 30,
@@ -178,6 +179,7 @@ class TestConnectionsHealth:
                 "connection_rate_per_minute": 5.0,
             }
         }
+        mock_resolve.return_value = mock_connection_manager
 
         service = HealthService()
         health = service.check_connections_health()
@@ -187,9 +189,10 @@ class TestConnectionsHealth:
         assert health["max_connections"] == 100
         assert health["connection_rate_per_minute"] == 5.0
 
-    @patch("server.realtime.connection_manager.connection_manager")
-    def test_check_connections_health_degraded(self, mock_connection_manager):
+    @patch("server.services.health_service.resolve_connection_manager")
+    def test_check_connections_health_degraded(self, mock_resolve):
         """Test connections health check when degraded."""
+        mock_connection_manager = MagicMock()
         mock_connection_manager.get_memory_stats.return_value = {
             "connections": {
                 "active_connections": 60,
@@ -197,6 +200,7 @@ class TestConnectionsHealth:
                 "connection_rate_per_minute": 10.0,
             }
         }
+        mock_resolve.return_value = mock_connection_manager
 
         service = HealthService()
         health = service.check_connections_health()
@@ -204,9 +208,10 @@ class TestConnectionsHealth:
         assert health["status"] == HealthStatus.DEGRADED
         assert health["active_connections"] == 60
 
-    @patch("server.realtime.connection_manager.connection_manager")
-    def test_check_connections_health_unhealthy(self, mock_connection_manager):
+    @patch("server.services.health_service.resolve_connection_manager")
+    def test_check_connections_health_unhealthy(self, mock_resolve):
         """Test connections health check when unhealthy."""
+        mock_connection_manager = MagicMock()
         mock_connection_manager.get_memory_stats.return_value = {
             "connections": {
                 "active_connections": 85,
@@ -214,6 +219,7 @@ class TestConnectionsHealth:
                 "connection_rate_per_minute": 20.0,
             }
         }
+        mock_resolve.return_value = mock_connection_manager
 
         service = HealthService()
         health = service.check_connections_health()
@@ -221,10 +227,12 @@ class TestConnectionsHealth:
         assert health["status"] == HealthStatus.UNHEALTHY
         assert health["active_connections"] == 85
 
-    @patch("server.realtime.connection_manager.connection_manager")
-    def test_check_connections_health_exception(self, mock_connection_manager):
+    @patch("server.services.health_service.resolve_connection_manager")
+    def test_check_connections_health_exception(self, mock_resolve):
         """Test connections health check handles exceptions."""
+        mock_connection_manager = MagicMock()
         mock_connection_manager.get_memory_stats.side_effect = Exception("Connection manager error")
+        mock_resolve.return_value = mock_connection_manager
 
         service = HealthService()
         health = service.check_connections_health()

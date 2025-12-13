@@ -33,7 +33,7 @@ def event_bus():
 
 
 @pytest.fixture
-def population_controller(event_bus):
+def population_controller(event_bus):  # noqa: F811
     """Create a population controller with mocked zone configs."""
     # Create a mock async_persistence that doesn't actually load from database
     mock_persistence = MagicMock()
@@ -60,13 +60,13 @@ def population_controller(event_bus):
 
 
 @pytest.fixture
-def spawning_service(event_bus, population_controller):
+def spawning_service(event_bus, population_controller):  # noqa: F811
     """Create a spawning service for testing."""
     return NPCSpawningService(event_bus, population_controller)
 
 
 @pytest.fixture
-def lifecycle_manager(event_bus, population_controller, spawning_service):
+def lifecycle_manager(event_bus, population_controller, spawning_service):  # noqa: F811
     """Create a lifecycle manager for testing."""
     manager = NPCLifecycleManager(
         event_bus,
@@ -124,9 +124,9 @@ class TestPeriodicSpawning:
 
     def test_periodic_maintenance_spawns_optional_npcs(
         self,
-        lifecycle_manager,
-        population_controller,
-        optional_npc_definition,
+        lifecycle_manager,  # noqa: F811
+        population_controller,  # noqa: F811
+        optional_npc_definition,  # noqa: F811
     ):
         """Test that periodic maintenance can spawn optional NPCs."""
         # Add the optional NPC definition to population controller
@@ -158,9 +158,9 @@ class TestPeriodicSpawning:
 
     def test_periodic_maintenance_respects_spawn_interval(
         self,
-        lifecycle_manager,
-        population_controller,
-        optional_npc_definition,
+        lifecycle_manager,  # noqa: F811
+        population_controller,  # noqa: F811
+        optional_npc_definition,  # noqa: F811
     ):
         """Test that spawn checks respect minimum interval."""
         # Add optional NPC
@@ -177,9 +177,9 @@ class TestPeriodicSpawning:
 
     def test_periodic_maintenance_respects_population_limits(
         self,
-        lifecycle_manager,
-        population_controller,
-        optional_npc_definition,
+        lifecycle_manager,  # noqa: F811
+        population_controller,  # noqa: F811
+        optional_npc_definition,  # noqa: F811
     ):
         """Test that periodic spawning respects population limits."""
         # Add optional NPC
@@ -197,9 +197,9 @@ class TestPeriodicSpawning:
 
     def test_periodic_maintenance_skips_required_npcs(
         self,
-        lifecycle_manager,
-        population_controller,
-        required_npc_definition,
+        lifecycle_manager,  # noqa: F811
+        population_controller,  # noqa: F811
+        required_npc_definition,  # noqa: F811
     ):
         """Test that periodic spawn checks skip required NPCs."""
         # Add required NPC
@@ -215,14 +215,13 @@ class TestPeriodicSpawning:
 class TestNPCRespawning:
     """Test NPC respawning functionality."""
 
-    @pytest.mark.slow
     @pytest.mark.timeout(60)  # This test needs 30+ seconds for death suppression
     def test_npc_respawn_after_death(
         self,
-        lifecycle_manager,
-        population_controller,
-        spawning_service,
-        optional_npc_definition,
+        lifecycle_manager,  # noqa: F811
+        population_controller,  # noqa: F811
+        spawning_service,  # noqa: F811
+        optional_npc_definition,  # noqa: F811
     ):
         """Test that dead NPCs respawn after delay."""
         # Spawn an NPC first
@@ -283,9 +282,9 @@ class TestNPCRespawning:
 
     def test_respawn_queue_processes_correctly(
         self,
-        lifecycle_manager,
-        population_controller,
-        optional_npc_definition,
+        lifecycle_manager,  # noqa: F811
+        population_controller,  # noqa: F811
+        optional_npc_definition,  # noqa: F811
     ):
         """Test that respawn queue is processed correctly."""
         # Add definition
@@ -333,9 +332,9 @@ class TestNPCRespawning:
 
     def test_max_respawn_attempts_respected(
         self,
-        lifecycle_manager,
-        population_controller,
-        optional_npc_definition,
+        lifecycle_manager,  # noqa: F811
+        population_controller,  # noqa: F811
+        optional_npc_definition,  # noqa: F811
     ):
         """Test that max respawn attempts limit is respected."""
         # Add definition
@@ -413,9 +412,9 @@ class TestCompleteLifecycle:
     @pytest.mark.timeout(60)  # This test needs time for death suppression and respawn delays
     async def test_complete_spawn_despawn_respawn_cycle(
         self,
-        lifecycle_manager,
-        population_controller,
-        optional_npc_definition,
+        lifecycle_manager,  # noqa: F811
+        population_controller,  # noqa: F811
+        optional_npc_definition,  # noqa: F811
     ):
         """Test complete lifecycle: spawn -> despawn -> respawn."""
         # Add definition
@@ -485,9 +484,9 @@ class TestCompleteLifecycle:
 
     def test_periodic_spawn_checks_honor_probability(
         self,
-        lifecycle_manager,
-        population_controller,
-        optional_npc_definition,
+        lifecycle_manager,  # noqa: F811
+        population_controller,  # noqa: F811
+        optional_npc_definition,  # noqa: F811
     ):
         """Test that periodic spawn checks honor spawn probability."""
         # Add definition with low probability
@@ -524,8 +523,8 @@ class TestMultipleNPCTypes:
 
     def test_multiple_optional_npcs_spawn_independently(
         self,
-        lifecycle_manager,
-        population_controller,
+        lifecycle_manager,  # noqa: F811
+        population_controller,  # noqa: F811
     ):
         """Test that multiple optional NPCs are handled independently."""
         # Create multiple optional NPCs
@@ -592,9 +591,9 @@ class TestEdgeCases:
 
     def test_spawn_check_with_no_zone_config(
         self,
-        lifecycle_manager,
-        population_controller,
-        optional_npc_definition,
+        lifecycle_manager,  # noqa: F811
+        population_controller,  # noqa: F811
+        optional_npc_definition,  # noqa: F811
     ):
         """Test spawn check when zone config is missing."""
         # Add definition
@@ -611,8 +610,8 @@ class TestEdgeCases:
 
     def test_spawn_check_with_no_room_id(
         self,
-        lifecycle_manager,
-        population_controller,
+        lifecycle_manager,  # noqa: F811
+        population_controller,  # noqa: F811
     ):
         """Test spawn check when NPC has no room_id."""
         # Create NPC without room_id
@@ -659,9 +658,9 @@ class TestEdgeCases:
 
     def test_periodic_maintenance_handles_exceptions(
         self,
-        lifecycle_manager,
-        population_controller,
-        optional_npc_definition,
+        lifecycle_manager,  # noqa: F811
+        population_controller,  # noqa: F811
+        optional_npc_definition,  # noqa: F811
     ):
         """Test that periodic maintenance handles exceptions gracefully."""
         # Add definition

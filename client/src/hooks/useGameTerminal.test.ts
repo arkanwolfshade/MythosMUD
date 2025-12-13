@@ -25,7 +25,7 @@ vi.mock('../stores', () => ({
     player: {
       id: 'player-1',
       name: 'TestPlayer',
-      stats: { current_health: 100, lucidity: 80 },
+      stats: { current_dp: 100, lucidity: 80 },
       level: 5,
     },
     room: {
@@ -115,7 +115,7 @@ describe('useGameTerminal', () => {
       expect(result.current.player).toEqual({
         id: 'player-1',
         name: 'TestPlayer',
-        stats: { current_health: 100, lucidity: 80 },
+        stats: { current_dp: 100, lucidity: 80 },
         level: 5,
       });
       expect(result.current.messages).toHaveLength(1);
@@ -189,14 +189,14 @@ describe('useGameTerminal', () => {
     it('should update when game state changes', () => {
       const { result, rerender } = renderHook(() => useGameTerminal());
 
-      expect(result.current.player?.stats.current_health).toBe(100);
+      expect(result.current.player?.stats.current_dp).toBe(100);
 
       // Mock updated game state
       vi.mocked(useGameStore).mockReturnValue({
         player: {
           id: 'player-1',
           name: 'TestPlayer',
-          stats: { current_health: 80, lucidity: 60 },
+          stats: { current_dp: 80, lucidity: 60 },
           level: 5,
         },
         room: result.current.room,
@@ -206,7 +206,7 @@ describe('useGameTerminal', () => {
 
       rerender();
 
-      expect(result.current.player?.stats.current_health).toBe(80);
+      expect(result.current.player?.stats.current_dp).toBe(80);
       expect(result.current.player?.stats.lucidity).toBe(60);
     });
 
@@ -339,7 +339,7 @@ describe('useGameTerminal', () => {
         player: {
           id: 'player-1',
           name: 'TestPlayer',
-          stats: { current_health: 100, lucidity: 80 },
+          stats: { current_dp: 100, lucidity: 80 },
           level: 5,
         },
         room: {
@@ -412,7 +412,7 @@ describe('useGameTerminal', () => {
     });
 
     it('should execute onSendChatMessage callback', () => {
-      const mockAddGameLogEntry = vi.fn();
+      const mockAddChatMessage = vi.fn();
       vi.mocked(useConnectionStore).mockReturnValue({
         isFullyConnected: vi.fn().mockReturnValue(true),
         isConnecting: false,
@@ -433,7 +433,7 @@ describe('useGameTerminal', () => {
         room: null,
         chatMessages: [],
         gameLog: [],
-        addGameLogEntry: mockAddGameLogEntry,
+        addChatMessage: mockAddChatMessage,
         clearChatMessages: vi.fn(),
       } as any);
 
@@ -448,7 +448,7 @@ describe('useGameTerminal', () => {
 
       result.current.onSendChatMessage('Hello everyone', 'local');
 
-      expect(mockAddGameLogEntry).toHaveBeenCalledWith(
+      expect(mockAddChatMessage).toHaveBeenCalledWith(
         expect.objectContaining({
           text: 'Hello everyone',
           channel: 'local',
@@ -458,7 +458,7 @@ describe('useGameTerminal', () => {
     });
 
     it('should use playerName when characterName is not available', () => {
-      const mockAddGameLogEntry = vi.fn();
+      const mockAddChatMessage = vi.fn();
       vi.mocked(useConnectionStore).mockReturnValue({
         isFullyConnected: vi.fn().mockReturnValue(true),
         isConnecting: false,
@@ -479,7 +479,7 @@ describe('useGameTerminal', () => {
         room: null,
         chatMessages: [],
         gameLog: [],
-        addGameLogEntry: mockAddGameLogEntry,
+        addChatMessage: mockAddChatMessage,
         clearChatMessages: vi.fn(),
       } as any);
 
@@ -494,7 +494,7 @@ describe('useGameTerminal', () => {
 
       result.current.onSendChatMessage('Hello', 'local');
 
-      expect(mockAddGameLogEntry).toHaveBeenCalledWith(
+      expect(mockAddChatMessage).toHaveBeenCalledWith(
         expect.objectContaining({
           sender: 'TestPlayer',
         })

@@ -6,10 +6,10 @@ It replaces the previous Redis message handler with NATS-based messaging.
 """
 
 import uuid
+from collections.abc import Callable
 from datetime import UTC, datetime
 from types import SimpleNamespace
-from typing import TYPE_CHECKING, Any, cast
-from unittest.mock import Mock
+from typing import TYPE_CHECKING, Any
 
 from ..logging.enhanced_logging_config import get_logger
 from ..middleware.metrics_collector import metrics_collector
@@ -18,11 +18,11 @@ from ..realtime.dead_letter_queue import DeadLetterMessage, DeadLetterQueue
 from ..realtime.envelope import build_event
 from ..realtime.nats_retry_handler import NATSRetryHandler
 from ..schemas.nats_messages import validate_message
-from .connection_manager import (
-    get_global_connection_manager as _get_global_connection_manager,
-)
+from ..services.nats_exceptions import NATSError
 from .connection_manager import resolve_connection_manager as _resolve_connection_manager
-from .connection_manager import set_global_connection_manager as _set_connection_manager_bridge
+from .event_handlers import EventHandler
+from .message_filtering import MessageFilteringHelper
+from .message_formatters import format_message_content
 
 logger = get_logger("communications.nats_message_handler")
 
@@ -36,12 +36,10 @@ if TYPE_CHECKING:
 # patched while the runtime falls back to the live connection manager when present.
 
 
-SUPPRESS_ECHO_MESSAGE_IDS: set[str] = set()
-
 # Human reader: Centralize channel policy sets to keep mute filtering consistent with
 # the teachings of the Arkham communications thesis.
 # AI reader: Shared constants ensure mute/echo logic stays synchronized across helpers.
-MUTE_SENSITIVE_CHANNELS = frozenset({"say", "local", "emote", "pose", "whisper", "global", "system", "admin"})
+# Note: MUTE_SENSITIVE_CHANNELS and SUPPRESS_ECHO_MESSAGE_IDS are now in message_filtering.py
 ECHO_SENDER_CHANNELS = frozenset({"say", "local", "emote", "pose"})
 
 
@@ -61,22 +59,6 @@ _LEGACY_CONNECTION_MANAGER_STUB = SimpleNamespace(
     broadcast_room_event=_not_configured_async,
     send_personal_message=_not_configured_async,
 )
-
-# The module-level attribute defaults to a stub so unittest.patch can locate members.
-connection_manager: Any = _LEGACY_CONNECTION_MANAGER_STUB
-
-
-def set_global_connection_manager(manager: Any | None) -> None:
-    """
-    Update the module-level connection_manager reference for legacy compatibility.
-
-    Args:
-        manager: Connection manager instance to expose (or None to clear)
-    """
-    global connection_manager
-    connection_manager = manager if manager is not None else _LEGACY_CONNECTION_MANAGER_STUB
-    # Keep the runtime bridge in sync so both modules expose the same instance.
-    _set_connection_manager_bridge(manager)
 
 
 class NATSMessageHandler:
@@ -126,6 +108,10 @@ class NATSMessageHandler:
         self.circuit_breaker = CircuitBreaker(failure_threshold=5, timeout=timedelta(seconds=60), success_threshold=2)
         self.metrics = metrics_collector  # Shared global metrics instance
 
+        # Initialize helper classes for extracted functionality
+        self._filtering_helper = MessageFilteringHelper(self.connection_manager, user_manager)
+        self._event_handler = EventHandler(self.connection_manager)
+
         logger.info(
             "NATS message handler initialized with error boundaries",
             retry_max_attempts=3,
@@ -141,12 +127,8 @@ class NATSMessageHandler:
             if resolved is not None:
                 return resolved
 
-        # Next honour module-level bridges applied via set_global_connection_manager.
-        if connection_manager is not _LEGACY_CONNECTION_MANAGER_STUB:
-            return _resolve_connection_manager(connection_manager)
-
-        # Finally consult the connection_manager module's global reference
-        fallback = _resolve_connection_manager(_get_global_connection_manager())
+        # Try to resolve from container as fallback
+        fallback = _resolve_connection_manager(None)
         if fallback is not None:
             return fallback
 
@@ -156,6 +138,12 @@ class NATSMessageHandler:
     @connection_manager.setter
     def connection_manager(self, value):
         self._connection_manager = value
+        # Update filtering helper's connection_manager reference
+        if hasattr(self, "_filtering_helper"):
+            self._filtering_helper.connection_manager = value
+        # Update event handler's connection_manager reference
+        if hasattr(self, "_event_handler"):
+            self._event_handler.connection_manager = value
 
     async def start(self, enable_event_subscriptions: bool = True):
         """
@@ -182,7 +170,7 @@ class NATSMessageHandler:
                 "NATS message handler started successfully", event_subscriptions_enabled=enable_event_subscriptions
             )
             return True
-        except Exception as e:
+        except (NATSError, RuntimeError) as e:
             logger.error("Failed to start NATS message handler", error=str(e))
             return False
 
@@ -199,7 +187,7 @@ class NATSMessageHandler:
                 await self._unsubscribe_from_subject(subject)
             logger.info("NATS message handler stopped successfully")
             return True
-        except Exception as e:
+        except (NATSError, RuntimeError) as e:
             logger.error("Error stopping NATS message handler", error=str(e))
             return False
 
@@ -245,7 +233,17 @@ class NATSMessageHandler:
 
         for pattern in subscription_patterns:
             logger.info("About to subscribe to pattern", pattern=pattern, debug=True)
-            await self._subscribe_to_subject(pattern)
+            try:
+                await self._subscribe_to_subject(pattern)
+            except (NATSError, RuntimeError) as e:
+                logger.error(
+                    "Failed to subscribe to pattern, continuing with other patterns",
+                    pattern=pattern,
+                    error=str(e),
+                    debug=True,
+                )
+                # Continue with other patterns even if one fails
+                continue
 
         logger.info("Finished _subscribe_to_standardized_chat_subjects", debug=True)
 
@@ -265,7 +263,7 @@ class NATSMessageHandler:
             await self.nats_service.subscribe(subject, self._handle_nats_message)
             self.subscriptions[subject] = True
             logger.info("Successfully subscribed to NATS subject", subject=subject, debug=True)
-        except Exception as e:
+        except (NATSError, RuntimeError) as e:
             logger.error("Error subscribing to NATS subject", subject=subject, error=str(e), debug=True)
             # Re-raise to propagate error
             raise
@@ -282,7 +280,7 @@ class NATSMessageHandler:
             else:
                 logger.error("Failed to unsubscribe from NATS subject")
                 return False
-        except Exception as e:
+        except (NATSError, RuntimeError) as e:
             logger.error("Error unsubscribing from NATS subject", subject=subject, error=str(e))
             return False
 
@@ -334,7 +332,7 @@ class NATSMessageHandler:
 
             self.metrics.record_message_dlq(channel)
 
-        except Exception as e:
+        except (NATSError, RuntimeError) as e:
             # Unexpected error - should not happen if retry logic works correctly
             logger.critical(
                 "Unhandled error in message processing - this indicates a bug!",
@@ -423,30 +421,86 @@ class NATSMessageHandler:
 
         # Check if this is an event message
         if message_data.get("event_type"):
-            await self._handle_event_message(message_data)
+            await self._event_handler.handle_event_message(message_data)
             return
 
-        # Handle chat messages (existing logic)
-        # Extract message details
+        # Handle chat messages
+        chat_fields = self._extract_chat_message_fields(message_data)
+        self._validate_chat_message_fields(chat_fields, message_data)
+
+        # Format message content based on channel type
+        formatted_message = format_message_content(
+            chat_fields["channel"], chat_fields["sender_name"], chat_fields["content"]
+        )
+
+        # Create WebSocket event
+        chat_event = self._build_chat_event(chat_fields, formatted_message)
+
+        # Convert IDs to UUIDs and broadcast
+        sender_id_uuid, target_player_id_uuid = self._convert_ids_to_uuids(
+            chat_fields["sender_id"], chat_fields["target_player_id"]
+        )
+
+        await self._broadcast_by_channel_type(
+            chat_fields["channel"],
+            chat_event,
+            chat_fields["room_id"] or "",
+            chat_fields["party_id"] or "",
+            target_player_id_uuid,
+            sender_id_uuid,
+        )
+
+    def _extract_chat_message_fields(self, message_data: dict[str, Any]) -> dict[str, Any]:
+        """
+        Extract and normalize chat message fields from message data.
+
+        Args:
+            message_data: Raw message data from NATS
+
+        Returns:
+            Dictionary containing extracted and normalized fields
+        """
         channel = message_data.get("channel")
-        room_id = message_data.get("room_id")
-        party_id = message_data.get("party_id")
         target_player_id = message_data.get("target_player_id")
-        sender_id = message_data.get("sender_id")
-        sender_name = message_data.get("sender_name")
-        content = message_data.get("content")
-        message_id = message_data.get("message_id")
-        timestamp = message_data.get("timestamp")
         target_id = message_data.get("target_id")
-        target_name = message_data.get("target_name")
 
         # For whisper messages, ensure target_player_id is set from target_id
         # (chat_service publishes "target_id" but broadcasting expects "target_player_id")
         if channel == "whisper" and target_id and not target_player_id:
             target_player_id = target_id
 
-        # Validate required fields
-        if not all([channel, sender_id, sender_name, content, message_id]):
+        return {
+            "channel": channel,
+            "room_id": message_data.get("room_id"),
+            "party_id": message_data.get("party_id"),
+            "target_player_id": target_player_id,
+            "sender_id": message_data.get("sender_id"),
+            "sender_name": message_data.get("sender_name"),
+            "content": message_data.get("content"),
+            "message_id": message_data.get("message_id"),
+            "timestamp": message_data.get("timestamp"),
+            "target_id": target_id,
+            "target_name": message_data.get("target_name"),
+        }
+
+    def _validate_chat_message_fields(self, chat_fields: dict[str, Any], message_data: dict[str, Any]) -> None:
+        """
+        Validate that all required chat message fields are present.
+
+        Args:
+            chat_fields: Extracted chat message fields
+            message_data: Original message data for logging
+
+        Raises:
+            ValueError: If required fields are missing
+        """
+        channel = chat_fields["channel"]
+        sender_id = chat_fields["sender_id"]
+        sender_name = chat_fields["sender_name"]
+        content = chat_fields["content"]
+        message_id = chat_fields["message_id"]
+
+        if not channel or not sender_id or not sender_name or not content or not message_id:
             logger.warning("Invalid NATS message - missing required fields", message_data=message_data)
             raise ValueError("Missing required message fields")
 
@@ -456,43 +510,50 @@ class NATSMessageHandler:
         assert isinstance(content, str), "content must be str"
         assert isinstance(sender_id, str), "sender_id must be str"
 
-        # Format message content based on channel type
-        formatted_message = self._format_message_content(channel, sender_name, content)
+    def _build_chat_event(self, chat_fields: dict[str, Any], formatted_message: str) -> dict[str, Any]:
+        """
+        Build a WebSocket chat event from chat fields and formatted message.
 
-        # Create WebSocket event
-        chat_event = build_event(
+        Args:
+            chat_fields: Extracted chat message fields
+            formatted_message: Formatted message content
+
+        Returns:
+            WebSocket chat event dictionary
+        """
+        return build_event(
             "chat_message",
             {
-                "sender_id": str(sender_id),
-                "player_name": sender_name,
-                "channel": channel,
+                "sender_id": str(chat_fields["sender_id"]),
+                "player_name": chat_fields["sender_name"],
+                "channel": chat_fields["channel"],
                 "message": formatted_message,
-                "message_id": message_id,
-                "timestamp": timestamp,
-                "target_id": target_id,
-                "target_name": target_name,
+                "message_id": chat_fields["message_id"],
+                "timestamp": chat_fields["timestamp"],
+                "target_id": chat_fields["target_id"],
+                "target_name": chat_fields["target_name"],
             },
-            player_id=str(sender_id),
+            player_id=str(chat_fields["sender_id"]),
         )
 
-        # Broadcast based on channel type
-        # AI: This can raise exceptions if broadcasting fails
-        # Convert string IDs to UUIDs for _broadcast_by_channel_type
+    def _convert_ids_to_uuids(self, sender_id: str, target_player_id: str | None) -> tuple[uuid.UUID, uuid.UUID | None]:
+        """
+        Convert string IDs to UUIDs for broadcasting.
+
+        Args:
+            sender_id: Sender player ID (string or UUID)
+            target_player_id: Target player ID (string, UUID, or None)
+
+        Returns:
+            Tuple of (sender_id_uuid, target_player_id_uuid)
+        """
         sender_id_uuid = uuid.UUID(sender_id) if isinstance(sender_id, str) else sender_id
         target_player_id_uuid: uuid.UUID | None = None
         if target_player_id:
             target_player_id_uuid = (
                 uuid.UUID(target_player_id) if isinstance(target_player_id, str) else target_player_id
             )
-
-        await self._broadcast_by_channel_type(
-            channel,
-            chat_event,
-            room_id or "",
-            party_id or "",
-            target_player_id_uuid,
-            sender_id_uuid,
-        )
+        return sender_id_uuid, target_player_id_uuid
 
     async def _broadcast_by_channel_type(
         self,
@@ -522,7 +583,7 @@ class NATSMessageHandler:
             strategy = channel_strategy_factory.get_strategy(channel)
             await strategy.broadcast(chat_event, room_id, party_id, target_player_id, sender_id, self)
 
-        except Exception as e:
+        except (NATSError, RuntimeError, ValueError, AttributeError, TypeError, Exception) as e:
             logger.error(
                 "Error broadcasting message by channel type",
                 error=str(e),
@@ -530,6 +591,152 @@ class NATSMessageHandler:
                 room_id=room_id,
                 party_id=party_id,
                 target_player_id=target_player_id,
+            )
+
+    def _collect_room_targets(self, room_id: str) -> set[str]:
+        """Collect all players subscribed to a room (canonical and original IDs)."""
+        return self._filtering_helper.collect_room_targets(room_id)
+
+    async def _preload_receiver_mute_data(self, user_manager: "UserManager", targets: set[str], sender_id: str) -> None:
+        """Pre-load mute data for all potential receivers."""
+        await self._filtering_helper.preload_receiver_mute_data(user_manager, targets, sender_id)
+
+    def _extract_chat_event_info(self, chat_event: dict) -> tuple[str | None, dict, str | None, bool]:
+        """Extract information from chat event."""
+        return self._filtering_helper.extract_chat_event_info(chat_event)
+
+    def _should_apply_mute_check(self, channel: str, message_id: str | None) -> bool:
+        """Determine if mute check should be applied for a channel."""
+        return self._filtering_helper.should_apply_mute_check(channel, message_id)
+
+    async def _check_player_mute_status(
+        self, user_manager: "UserManager", player_id: str, sender_id: str, channel: str, chat_event_data: dict
+    ) -> bool:
+        """Check if a player has muted the sender."""
+        return await self._filtering_helper.check_player_mute_status(
+            user_manager, player_id, sender_id, channel, chat_event_data, self
+        )
+
+    async def _filter_target_players(
+        self,
+        targets: set[str],
+        sender_id: str,
+        room_id: str,
+        channel: str,
+        message_id: str | None,
+        user_manager: "UserManager",
+        chat_event_data: dict,
+    ) -> list[str]:
+        """Filter target players based on room location and mute status."""
+        return await self._filtering_helper.filter_target_players(
+            targets, sender_id, room_id, channel, message_id, user_manager, chat_event_data, self
+        )
+
+    async def _send_messages_to_players(
+        self, filtered_targets: list[str], chat_event: dict, room_id: str, sender_id: str, channel: str
+    ) -> None:
+        """
+        Send messages to filtered target players.
+
+        Args:
+            filtered_targets: List of filtered player IDs
+            chat_event: Chat event to send
+            room_id: Room ID
+            sender_id: Sender player ID
+            channel: Channel type
+        """
+        for player_id in filtered_targets:
+            logger.debug(
+                "=== BROADCAST FILTERING DEBUG: Sending message to player ===",
+                room_id=room_id,
+                sender_id=sender_id,
+                target_player_id=player_id,
+                channel=channel,
+            )
+            try:
+                player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+                await self.connection_manager.send_personal_message(player_id_uuid, chat_event)
+            except (ValueError, AttributeError, TypeError) as e:
+                logger.warning(
+                    "Invalid player_id format for send_personal_message",
+                    player_id=player_id,
+                    error=str(e),
+                )
+
+    def _should_echo_to_sender(
+        self,
+        channel: str,
+        event_type: str | None,
+        message_id: str | None,
+        filtered_targets: list[str],
+        sender_already_notified: bool,
+    ) -> bool:
+        """
+        Determine if message should be echoed to sender.
+
+        Args:
+            channel: Channel type
+            event_type: Event type
+            message_id: Message ID
+            filtered_targets: List of filtered targets
+            sender_already_notified: Whether sender was already notified
+
+        Returns:
+            True if message should be echoed to sender
+        """
+        should_echo_sender = channel in ECHO_SENDER_CHANNELS and event_type == "chat_message" and message_id is not None
+
+        if not should_echo_sender:
+            return False
+
+        if filtered_targets:
+            return True
+
+        return not sender_already_notified
+
+    async def _echo_message_to_sender(
+        self,
+        sender_id: str,
+        chat_event: dict,
+        room_id: str,
+        channel: str,
+        chat_event_data: dict,
+        message_id: str | None,
+    ) -> None:
+        """
+        Echo message back to sender.
+
+        Args:
+            sender_id: Sender player ID
+            chat_event: Chat event to echo
+            room_id: Room ID
+            channel: Channel type
+            chat_event_data: Chat event data dictionary
+            message_id: Message ID
+        """
+        if isinstance(chat_event_data, dict):
+            logger.debug(
+                "=== BROADCAST FILTERING DEBUG: Chat event data keys ===",
+                data_keys=list(chat_event_data.keys()),
+                message_id=message_id,
+            )
+
+        try:
+            sender_id_uuid = uuid.UUID(sender_id) if isinstance(sender_id, str) else sender_id
+            await self.connection_manager.send_personal_message(sender_id_uuid, chat_event)
+            logger.debug(
+                "=== BROADCAST FILTERING DEBUG: Echoed message to sender ===",
+                room_id=room_id,
+                sender_id=sender_id,
+                channel=channel,
+            )
+        except (NATSError, RuntimeError) as echo_error:
+            logger.warning(
+                "Failed to echo message to sender",
+                sender_id=sender_id,
+                room_id=room_id,
+                channel=channel,
+                error=str(echo_error),
             )
 
     async def _broadcast_to_room_with_filtering(self, room_id: str, chat_event: dict, sender_id: str, channel: str):
@@ -553,49 +760,9 @@ class NATSMessageHandler:
         )
 
         try:
-            # Get all players subscribed to this room
-            canonical_id = self.connection_manager._canonical_room_id(room_id) or room_id
-            logger.debug(
-                "=== BROADCAST FILTERING DEBUG: Room ID resolution ===",
-                room_id=room_id,
-                canonical_id=canonical_id,
-                sender_id=sender_id,
-                channel=channel,
-            )
-
-            targets: set[str] = set()
-
-            if canonical_id in self.connection_manager.room_subscriptions:
-                targets.update(self.connection_manager.room_subscriptions[canonical_id])
-                logger.debug(
-                    "=== BROADCAST FILTERING DEBUG: Added canonical room subscribers ===",
-                    room_id=room_id,
-                    canonical_id=canonical_id,
-                    canonical_subscribers=list(self.connection_manager.room_subscriptions[canonical_id]),
-                    sender_id=sender_id,
-                    channel=channel,
-                )
-            if room_id != canonical_id and room_id in self.connection_manager.room_subscriptions:
-                targets.update(self.connection_manager.room_subscriptions[room_id])
-                logger.debug(
-                    "=== BROADCAST FILTERING DEBUG: Added original room subscribers ===",
-                    room_id=room_id,
-                    original_subscribers=list(self.connection_manager.room_subscriptions[room_id]),
-                    sender_id=sender_id,
-                    channel=channel,
-                )
-
-            logger.debug(
-                "=== BROADCAST FILTERING DEBUG: Total targets before filtering ===",
-                room_id=room_id,
-                sender_id=sender_id,
-                channel=channel,
-                total_targets=list(targets),
-                target_count=len(targets),
-            )
+            targets = self._collect_room_targets(room_id)
 
             user_manager = self._get_user_manager()
-
             logger.debug(
                 "=== BROADCAST FILTERING DEBUG: Created UserManager instance ===",
                 room_id=room_id,
@@ -603,264 +770,18 @@ class NATSMessageHandler:
                 channel=channel,
             )
 
-            # Pre-load mute data for all potential receivers to ensure consistency (async batch loading)
-            receiver_ids = [pid for pid in targets if pid != sender_id]
-            if receiver_ids:
-                logger.debug(
-                    "=== BROADCAST FILTERING DEBUG: Pre-loading mute data for receivers ===",
-                    room_id=room_id,
-                    sender_id=sender_id,
-                    channel=channel,
-                    receiver_count=len(receiver_ids),
-                )
-                try:
-                    # Use async batch loading to prevent blocking the event loop
-                    # Cast to list[UUID | str] since load_player_mutes_batch accepts this type
-                    # and receiver_ids is list[str] which is compatible
-                    receiver_ids_typed: list[uuid.UUID | str] = cast(list[uuid.UUID | str], receiver_ids)
-                    load_results = await user_manager.load_player_mutes_batch(receiver_ids_typed)
-                    logger.debug(
-                        "=== BROADCAST FILTERING DEBUG: Batch loaded mute data ===",
-                        room_id=room_id,
-                        sender_id=sender_id,
-                        channel=channel,
-                        loaded_count=sum(1 for v in load_results.values() if v),
-                        failed_count=sum(1 for v in load_results.values() if not v),
-                    )
-                except Exception as e:
-                    logger.warning(
-                        "Failed to batch load mute data for receivers",
-                        room_id=room_id,
-                        sender_id=sender_id,
-                        channel=channel,
-                        receiver_count=len(receiver_ids),
-                        error=str(e),
-                    )
+            await self._preload_receiver_mute_data(user_manager, targets, sender_id)
 
-            event_type = chat_event.get("event_type") if isinstance(chat_event, dict) else None
-            if not event_type and isinstance(chat_event, dict):
-                event_type = chat_event.get("type")
+            event_type, chat_event_data, message_id, sender_already_notified = self._extract_chat_event_info(chat_event)
 
-            chat_event_data = {}
-            if isinstance(chat_event, dict):
-                potential_data = chat_event.get("data")
-                if isinstance(potential_data, dict):
-                    chat_event_data = potential_data
-
-            sender_already_notified = False
-            message_id = None
-            suppress_registry_hit = False
-            if chat_event_data:
-                message_id = chat_event_data.get("id")
-                sender_already_notified = bool(chat_event_data.get("echo_sent"))
-                if message_id in SUPPRESS_ECHO_MESSAGE_IDS:
-                    sender_already_notified = True
-                    suppress_registry_hit = True
-                    SUPPRESS_ECHO_MESSAGE_IDS.discard(message_id)
-
-            # Filter players based on their current room and mute status
-            filtered_targets = []
-            mute_sensitive_channels = MUTE_SENSITIVE_CHANNELS
-            for player_id in targets:
-                logger.debug(
-                    "=== BROADCAST FILTERING DEBUG: Processing target player ===",
-                    room_id=room_id,
-                    sender_id=sender_id,
-                    target_player_id=player_id,
-                    channel=channel,
-                )
-
-                if player_id == sender_id:
-                    logger.debug(
-                        "=== BROADCAST FILTERING DEBUG: Skipping sender ===",
-                        room_id=room_id,
-                        sender_id=sender_id,
-                        target_player_id=player_id,
-                        channel=channel,
-                    )
-                    continue  # Skip sender
-
-                # Check if player is currently in the message's room
-                is_in_room = await self._is_player_in_room(player_id, room_id)
-                logger.debug(
-                    "=== BROADCAST FILTERING DEBUG: Player in room check ===",
-                    room_id=room_id,
-                    sender_id=sender_id,
-                    target_player_id=player_id,
-                    is_in_room=is_in_room,
-                    channel=channel,
-                )
-
-                if not is_in_room:
-                    logger.debug(
-                        "Filtered out player not in room",
-                        player_id=player_id,
-                        message_room_id=room_id,
-                        channel=channel,
-                    )
-                    continue
-
-                should_apply_mute = channel in mute_sensitive_channels or (channel == "say" and message_id is None)
-                is_muted = False
-
-                if should_apply_mute:
-                    logger.info(
-                        "=== MUTE FILTERING: Starting mute check ===",
-                        room_id=room_id,
-                        sender_id=sender_id,
-                        sender_name=chat_event_data.get("sender_name", "unknown"),
-                        receiver_id=player_id,
-                        channel=channel,
-                        should_apply_mute=should_apply_mute,
-                    )
-                    patched_mute_checker = getattr(self, "_is_player_muted_by_receiver", None)
-                    if isinstance(patched_mute_checker, Mock):
-                        is_muted = patched_mute_checker(player_id, sender_id)
-                        logger.info(
-                            "=== MUTE FILTERING: Using patched mute checker (test mode) ===",
-                            receiver_id=player_id,
-                            sender_id=sender_id,
-                            is_muted=is_muted,
-                        )
-                    else:
-                        # Check if the receiving player has muted the sender using the shared UserManager instance
-                        logger.info(
-                            "=== MUTE FILTERING: Calling _is_player_muted_by_receiver_with_user_manager ===",
-                            receiver_id=player_id,
-                            sender_id=sender_id,
-                        )
-                        is_muted = await self._is_player_muted_by_receiver_with_user_manager(
-                            user_manager, player_id, sender_id
-                        )
-                        logger.info(
-                            "=== MUTE FILTERING: Mute check completed ===",
-                            receiver_id=player_id,
-                            sender_id=sender_id,
-                            is_muted=is_muted,
-                        )
-                    logger.debug(
-                        "=== BROADCAST FILTERING DEBUG: Mute check result ===",
-                        room_id=room_id,
-                        sender_id=sender_id,
-                        target_player_id=player_id,
-                        is_muted=is_muted,
-                        channel=channel,
-                    )
-
-                    if channel in {"emote", "pose"}:
-                        logger.info(
-                            "=== EMOTE MUTE FILTERING: Evaluation result ===",
-                            receiver_id=player_id,
-                            sender_id=sender_id,
-                            is_muted=is_muted,
-                            channel=channel,
-                            will_filter=should_apply_mute and is_muted,
-                        )
-                else:
-                    logger.debug(
-                        "=== BROADCAST FILTERING DEBUG: Mute check skipped for channel ===",
-                        room_id=room_id,
-                        sender_id=sender_id,
-                        target_player_id=player_id,
-                        channel=channel,
-                    )
-
-                if should_apply_mute and is_muted:
-                    logger.info(
-                        "=== MUTE FILTERING: Message FILTERED OUT due to mute ===",
-                        receiver_id=player_id,
-                        sender_id=sender_id,
-                        channel=channel,
-                        room_id=room_id,
-                    )
-                    continue
-                else:
-                    logger.info(
-                        "=== MUTE FILTERING: Message ALLOWED (not muted or mute check skipped) ===",
-                        receiver_id=player_id,
-                        sender_id=sender_id,
-                        channel=channel,
-                        is_muted=is_muted,
-                        should_apply_mute=should_apply_mute,
-                    )
-
-                logger.debug(
-                    "=== BROADCAST FILTERING DEBUG: Player passed all filters ===",
-                    room_id=room_id,
-                    sender_id=sender_id,
-                    target_player_id=player_id,
-                    channel=channel,
-                )
-                filtered_targets.append(player_id)
-
-            logger.debug(
-                "=== BROADCAST FILTERING DEBUG: Final filtered targets ===",
-                room_id=room_id,
-                sender_id=sender_id,
-                channel=channel,
-                filtered_targets=filtered_targets,
-                filtered_count=len(filtered_targets),
+            filtered_targets = await self._filter_target_players(
+                targets, sender_id, room_id, channel, message_id, user_manager, chat_event_data
             )
 
-            # Send message only to filtered players
-            for player_id in filtered_targets:
-                logger.debug(
-                    "=== BROADCAST FILTERING DEBUG: Sending message to player ===",
-                    room_id=room_id,
-                    sender_id=sender_id,
-                    target_player_id=player_id,
-                    channel=channel,
-                )
-                # Convert string player_id to UUID for send_personal_message
-                try:
-                    player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
-                    await self.connection_manager.send_personal_message(player_id_uuid, chat_event)
-                except (ValueError, AttributeError, TypeError) as e:
-                    logger.warning(
-                        "Invalid player_id format for send_personal_message",
-                        player_id=player_id,
-                        error=str(e),
-                    )
+            await self._send_messages_to_players(filtered_targets, chat_event, room_id, sender_id, channel)
 
-            # Echo emotes/poses back to the sender so they see their own action
-            if isinstance(chat_event_data, dict):
-                logger.debug(
-                    "=== BROADCAST FILTERING DEBUG: Chat event data keys ===",
-                    data_keys=list(chat_event_data.keys()),
-                    message_id=message_id,
-                    suppress_registry_hit=suppress_registry_hit,
-                )
-
-            should_echo_sender = (
-                channel in ECHO_SENDER_CHANNELS and event_type == "chat_message" and message_id is not None
-            )
-
-            needs_sender_echo = False
-            if should_echo_sender:
-                if filtered_targets:
-                    needs_sender_echo = True
-                elif not sender_already_notified:
-                    needs_sender_echo = True
-
-            if needs_sender_echo:
-                try:
-                    # Convert string sender_id to UUID for send_personal_message
-                    sender_id_uuid = uuid.UUID(sender_id) if isinstance(sender_id, str) else sender_id
-                    await self.connection_manager.send_personal_message(sender_id_uuid, chat_event)
-                    logger.debug(
-                        "=== BROADCAST FILTERING DEBUG: Echoed message to sender ===",
-                        room_id=room_id,
-                        sender_id=sender_id,
-                        channel=channel,
-                    )
-                except Exception as echo_error:
-                    logger.warning(
-                        "Failed to echo message to sender",
-                        sender_id=sender_id,
-                        room_id=room_id,
-                        channel=channel,
-                        error=str(echo_error),
-                    )
+            if self._should_echo_to_sender(channel, event_type, message_id, filtered_targets, sender_already_notified):
+                await self._echo_message_to_sender(sender_id, chat_event, room_id, channel, chat_event_data, message_id)
 
             logger.info(
                 "Room message broadcasted with server-side filtering",
@@ -872,7 +793,7 @@ class NATSMessageHandler:
                 excluded_count=len(targets) - len(filtered_targets) - 1,  # -1 for sender
             )
 
-        except Exception as e:
+        except (NATSError, RuntimeError) as e:
             logger.error(
                 "Error in server-side room message filtering",
                 error=str(e),
@@ -890,326 +811,33 @@ class NATSMessageHandler:
 
         return global_user_manager
 
+    def _compare_canonical_rooms(self, player_room_id: str, message_room_id: str) -> bool:
+        """Compare two room IDs using canonical room ID resolution."""
+        return self._filtering_helper.compare_canonical_rooms(player_room_id, message_room_id)
+
+    def _get_player_room_from_online_players(self, player_id: str) -> str | None:
+        """Get player's current room ID from online players cache."""
+        return self._filtering_helper.get_player_room_from_online_players(player_id)
+
+    async def _get_player_room_from_persistence(self, player_id: str) -> str | None:
+        """Get player's current room ID from async persistence layer."""
+        return await self._filtering_helper.get_player_room_from_persistence(player_id)
+
     async def _is_player_in_room(self, player_id: str, room_id: str) -> bool:
-        """
-        Check if a player is currently in the specified room.
-
-        Args:
-            player_id: Player ID to check
-            room_id: Room ID to check against
-
-        Returns:
-            bool: True if player is in the room, False otherwise
-        """
-        try:
-            # Get player's current room from connection manager's online players
-            online_players = getattr(self.connection_manager, "online_players", {})
-            if player_id in online_players:
-                player_info = online_players[player_id]
-                player_room_id = player_info.get("current_room_id") if isinstance(player_info, dict) else None
-
-                if isinstance(player_room_id, str) and player_room_id:
-                    # Use canonical room ID for comparison
-                    canonical_player_room = self.connection_manager._canonical_room_id(player_room_id) or player_room_id
-                    canonical_message_room = self.connection_manager._canonical_room_id(room_id) or room_id
-
-                    return canonical_player_room == canonical_message_room
-
-            # Fallback: check async persistence layer
-            async_persistence = getattr(self.connection_manager, "async_persistence", None)
-            if async_persistence:
-                player = await async_persistence.get_player_by_id(player_id)
-                if player and not isinstance(player, Mock):
-                    player_room_id = getattr(player, "current_room_id", None)
-                    if isinstance(player_room_id, str) and player_room_id:
-                        # _canonical_room_id is synchronous, not async
-                        canonical_player_room = (
-                            self.connection_manager._canonical_room_id(player_room_id) or player_room_id
-                        )
-                        canonical_message_room = self.connection_manager._canonical_room_id(room_id) or room_id
-
-                        return canonical_player_room == canonical_message_room
-
-            return False
-
-        except Exception as e:
-            logger.error(
-                "Error checking if player is in room",
-                error=str(e),
-                player_id=player_id,
-                room_id=room_id,
-            )
-            return False
+        """Check if a player is currently in the specified room."""
+        return await self._filtering_helper.is_player_in_room(player_id, room_id)
 
     def _is_player_muted_by_receiver(self, receiver_id: str, sender_id: str) -> bool:
-        """
-        Check if a receiving player has muted the sender.
-
-        Args:
-            receiver_id: Player ID of the message receiver
-            sender_id: Player ID of the message sender
-
-        Returns:
-            bool: True if receiver has muted sender, False otherwise
-        """
-        logger.debug(
-            "=== MUTE FILTERING DEBUG: Starting mute check ===",
-            receiver_id=receiver_id,
-            sender_id=sender_id,
-        )
-
-        try:
-            user_manager = self._get_user_manager()
-
-            logger.debug(
-                "=== MUTE FILTERING DEBUG: UserManager created ===",
-                receiver_id=receiver_id,
-                sender_id=sender_id,
-            )
-
-            # Load the receiver's mute data before checking
-            mute_load_result = user_manager.load_player_mutes(receiver_id)
-            logger.debug(
-                "=== MUTE FILTERING DEBUG: Mute data load result ===",
-                receiver_id=receiver_id,
-                sender_id=sender_id,
-                mute_load_result=mute_load_result,
-            )
-
-            # Check what mute data is available (only for debugging, not for logic)
-            try:
-                if hasattr(user_manager, "_player_mutes") and user_manager._player_mutes is not None:
-                    available_mute_data = list(user_manager._player_mutes.keys())
-                    logger.debug(
-                        "=== MUTE FILTERING DEBUG: Available mute data ===",
-                        receiver_id=receiver_id,
-                        sender_id=sender_id,
-                        available_mute_data=available_mute_data,
-                    )
-
-                    # Convert receiver_id to UUID if it's a valid UUID string
-                    # _player_mutes uses UUID keys, so we need to convert
-                    # receiver_id is typed as str in function parameter, so always convert
-                    receiver_id_uuid: uuid.UUID | None = None
-                    try:
-                        receiver_id_uuid = uuid.UUID(receiver_id)
-                    except (ValueError, AttributeError, TypeError):
-                        # If conversion fails, receiver_id is not a valid UUID, skip
-                        receiver_id_uuid = None
-
-                    if receiver_id_uuid and receiver_id_uuid in user_manager._player_mutes:
-                        receiver_mutes = list(user_manager._player_mutes[receiver_id_uuid].keys())
-                        logger.debug(
-                            "=== MUTE FILTERING DEBUG: Receiver's muted players ===",
-                            receiver_id=receiver_id,
-                            sender_id=sender_id,
-                            receiver_mutes=receiver_mutes,
-                        )
-                    else:
-                        logger.debug(
-                            "=== MUTE FILTERING DEBUG: No mute data for receiver ===",
-                            receiver_id=receiver_id,
-                            sender_id=sender_id,
-                        )
-                else:
-                    logger.debug(
-                        "=== MUTE FILTERING DEBUG: No internal mute data available (using API methods) ===",
-                        receiver_id=receiver_id,
-                        sender_id=sender_id,
-                    )
-            except Exception as debug_error:
-                logger.debug(
-                    "=== MUTE FILTERING DEBUG: Could not access internal mute data ===",
-                    receiver_id=receiver_id,
-                    sender_id=sender_id,
-                    debug_error=str(debug_error),
-                )
-
-            # Check if receiver has muted sender (personal mute)
-            logger.info(
-                "=== MUTE FILTERING: Checking personal mute ===",
-                receiver_id=receiver_id,
-                sender_id=sender_id,
-            )
-            is_personally_muted = user_manager.is_player_muted(receiver_id, sender_id)
-            logger.info(
-                "=== MUTE FILTERING: Personal mute check result ===",
-                receiver_id=receiver_id,
-                sender_id=sender_id,
-                is_personally_muted=is_personally_muted,
-            )
-
-            if is_personally_muted:
-                logger.info(
-                    "=== MUTE FILTERING: Player IS MUTED (personal mute) ===",
-                    receiver_id=receiver_id,
-                    sender_id=sender_id,
-                )
-                return True
-
-            # Load global mutes and check if sender is globally muted by anyone
-            # Only apply global mute if receiver is not an admin (admins can see globally muted players)
-            logger.info(
-                "=== MUTE FILTERING: Checking global mute ===",
-                receiver_id=receiver_id,
-                sender_id=sender_id,
-            )
-            is_globally_muted = user_manager.is_player_muted_by_others(sender_id)
-            is_receiver_admin = user_manager.is_admin_sync(receiver_id)
-
-            logger.info(
-                "=== MUTE FILTERING: Global mute check result ===",
-                receiver_id=receiver_id,
-                sender_id=sender_id,
-                is_globally_muted=is_globally_muted,
-                is_receiver_admin=is_receiver_admin,
-            )
-
-            if is_globally_muted and not is_receiver_admin:
-                logger.info(
-                    "=== MUTE FILTERING: Player IS MUTED (global mute) ===",
-                    receiver_id=receiver_id,
-                    sender_id=sender_id,
-                )
-                return True
-
-            logger.info(
-                "=== MUTE FILTERING: Player NOT MUTED by receiver ===",
-                receiver_id=receiver_id,
-                sender_id=sender_id,
-            )
-            return False
-
-        except Exception as e:
-            logger.error(
-                "Error checking mute status",
-                error=str(e),
-                receiver_id=receiver_id,
-                sender_id=sender_id,
-            )
-            return False
+        """Check if a receiving player has muted the sender."""
+        return self._filtering_helper.is_player_muted_by_receiver(receiver_id, sender_id)
 
     async def _is_player_muted_by_receiver_with_user_manager(
         self, user_manager, receiver_id: str, sender_id: str
     ) -> bool:
-        """
-        Check if a receiving player has muted the sender using a provided UserManager instance.
-
-        Args:
-            user_manager: UserManager instance to use for mute checks
-            receiver_id: Player ID of the message receiver
-            sender_id: Player ID of the message sender
-
-        Returns:
-            bool: True if receiver has muted sender, False otherwise
-        """
-        logger.debug(
-            "=== MUTE FILTERING DEBUG: Starting mute check with provided UserManager ===",
-            receiver_id=receiver_id,
-            sender_id=sender_id,
+        """Check if a receiving player has muted the sender using a provided UserManager instance."""
+        return await self._filtering_helper.is_player_muted_by_receiver_with_user_manager(
+            user_manager, receiver_id, sender_id
         )
-
-        try:
-            # Load the receiver's mute data before checking (if not already loaded) - async version
-            mute_load_result = await user_manager.load_player_mutes_async(receiver_id)
-            logger.debug(
-                "=== BROADCAST FILTERING DEBUG: Mute data load result (async) ===",
-                receiver_id=receiver_id,
-                sender_id=sender_id,
-                mute_load_result=mute_load_result,
-            )
-
-            # Check what mute data is available (only for debugging, not for logic)
-            try:
-                if hasattr(user_manager, "_player_mutes") and user_manager._player_mutes is not None:
-                    available_mute_data = list(user_manager._player_mutes.keys())
-                    logger.debug(
-                        "=== MUTE FILTERING DEBUG: Available mute data ===",
-                        receiver_id=receiver_id,
-                        sender_id=sender_id,
-                        available_mute_data=available_mute_data,
-                    )
-
-                    if receiver_id in user_manager._player_mutes:
-                        receiver_mutes = list(user_manager._player_mutes[receiver_id].keys())
-                        logger.debug(
-                            "=== MUTE FILTERING DEBUG: Receiver's muted players ===",
-                            receiver_id=receiver_id,
-                            sender_id=sender_id,
-                            receiver_mutes=receiver_mutes,
-                        )
-                    else:
-                        logger.debug(
-                            "=== MUTE FILTERING DEBUG: No mute data for receiver ===",
-                            receiver_id=receiver_id,
-                            sender_id=sender_id,
-                        )
-                else:
-                    logger.debug(
-                        "=== MUTE FILTERING DEBUG: No internal mute data available (using API methods) ===",
-                        receiver_id=receiver_id,
-                        sender_id=sender_id,
-                    )
-            except Exception as debug_error:
-                logger.debug(
-                    "=== MUTE FILTERING DEBUG: Could not access internal mute data ===",
-                    receiver_id=receiver_id,
-                    sender_id=sender_id,
-                    debug_error=str(debug_error),
-                )
-
-            # Check if receiver has muted sender (personal mute)
-            is_personally_muted = user_manager.is_player_muted(receiver_id, sender_id)
-            logger.debug(
-                "=== MUTE FILTERING DEBUG: Personal mute check result ===",
-                receiver_id=receiver_id,
-                sender_id=sender_id,
-                is_personally_muted=is_personally_muted,
-            )
-
-            if is_personally_muted:
-                logger.debug(
-                    "Player muted by receiver (personal mute)",
-                    receiver_id=receiver_id,
-                    sender_id=sender_id,
-                )
-                return True
-
-            # Load global mutes and check if sender is globally muted by anyone
-            # Only apply global mute if receiver is not an admin (admins can see globally muted players)
-            is_globally_muted = user_manager.is_player_muted_by_others(sender_id)
-            is_receiver_admin = await user_manager.is_admin(receiver_id)
-
-            logger.debug(
-                "=== MUTE FILTERING DEBUG: Global mute check ===",
-                receiver_id=receiver_id,
-                sender_id=sender_id,
-                is_globally_muted=is_globally_muted,
-                is_receiver_admin=is_receiver_admin,
-            )
-
-            if is_globally_muted and not is_receiver_admin:
-                logger.debug(
-                    "Player muted by receiver (global mute)",
-                    receiver_id=receiver_id,
-                    sender_id=sender_id,
-                )
-                return True
-
-            logger.info(
-                "=== MUTE FILTERING: Player NOT MUTED by receiver ===",
-                receiver_id=receiver_id,
-                sender_id=sender_id,
-            )
-            return False
-        except Exception as e:
-            logger.error(
-                "Error checking mute status with provided UserManager",
-                receiver_id=receiver_id,
-                sender_id=sender_id,
-                error=str(e),
-            )
-            return False
 
     async def subscribe_to_room(self, room_id: str):
         """
@@ -1303,7 +931,7 @@ class NATSMessageHandler:
                 logger.error("Failed to subscribe to sub-zone local channel", subzone=subzone, subject=subzone_subject)
                 return False
 
-        except Exception as e:
+        except NATSError as e:
             logger.error("Error subscribing to sub-zone local channel", error=str(e), subzone=subzone)
             return False
 
@@ -1351,7 +979,7 @@ class NATSMessageHandler:
                 logger.warning("Not subscribed to sub-zone local channel", subzone=subzone)
                 return False
 
-        except Exception as e:
+        except NATSError as e:
             logger.error("Error unsubscribing from sub-zone local channel", error=str(e), subzone=subzone)
             return False
 
@@ -1380,7 +1008,7 @@ class NATSMessageHandler:
             self.player_subzone_subscriptions[player_id] = subzone
             logger.debug("Tracked player sub-zone subscription", player_id=player_id, subzone=subzone)
 
-        except Exception as e:
+        except NATSError as e:
             logger.error(
                 "Error tracking player sub-zone subscription", error=str(e), player_id=player_id, subzone=subzone
             )
@@ -1402,7 +1030,7 @@ class NATSMessageHandler:
                     players.append(player_id)
             return players
 
-        except Exception as e:
+        except NATSError as e:
             logger.error("Error getting players in sub-zone", error=str(e), subzone=subzone)
             return []
 
@@ -1443,7 +1071,7 @@ class NATSMessageHandler:
                 if new_subzone:
                     self.track_player_subzone_subscription(player_id, new_subzone)
 
-        except Exception as e:
+        except NATSError as e:
             logger.error(
                 "Error handling player movement",
                 error=str(e),
@@ -1451,43 +1079,6 @@ class NATSMessageHandler:
                 old_room_id=old_room_id,
                 new_room_id=new_room_id,
             )
-
-    def _format_message_content(self, channel: str, sender_name: str, content: str) -> str:
-        """
-        Format message content based on channel type and sender name.
-
-        Args:
-            channel: Channel type (say, local, emote, pose, global, party, whisper, system, admin)
-            sender_name: Name of the message sender
-            content: Raw message content
-
-        Returns:
-            Formatted message content with sender name
-        """
-        try:
-            if channel == "say":
-                return f"{sender_name} says: {content}"
-            elif channel == "local":
-                return f"{sender_name} (local): {content}"
-            elif channel == "global":
-                return f"{sender_name} (global): {content}"
-            elif channel == "emote":
-                return f"{sender_name} {content}"
-            elif channel == "pose":
-                return f"{sender_name} {content}"
-            elif channel == "whisper":
-                return f"{sender_name} whispers: {content}"
-            elif channel == "system":
-                return f"[SYSTEM] {content}"
-            elif channel == "admin":
-                return f"[ADMIN] {sender_name}: {content}"
-            else:
-                # Default format for unknown channels
-                return f"{sender_name} ({channel}): {content}"
-
-        except Exception as e:
-            logger.error("Error formatting message content", error=str(e), channel=channel, sender_name=sender_name)
-            return content  # Return original content if formatting fails
 
     async def cleanup_empty_subzone_subscriptions(self) -> None:
         """Clean up sub-zone subscriptions that have no active players."""
@@ -1503,7 +1094,7 @@ class NATSMessageHandler:
                 await self.unsubscribe_from_subzone(subzone)
                 logger.info("Cleaned up empty sub-zone subscription", subzone=subzone)
 
-        except Exception as e:
+        except NATSError as e:
             logger.error("Error cleaning up empty sub-zone subscriptions", error=str(e))
 
     # Event subscription methods
@@ -1535,7 +1126,7 @@ class NATSMessageHandler:
                 try:
                     await self._subscribe_to_subject(subject)
                     success_count += 1
-                except Exception as e:
+                except NATSError as e:
                     logger.error(
                         "Failed to subscribe to event subject",
                         subject=subject,
@@ -1551,7 +1142,7 @@ class NATSMessageHandler:
                 )
                 return success_count == len(event_subjects)
 
-        except Exception as e:
+        except NATSError as e:
             logger.error("Error subscribing to event subjects", error=str(e))
             return False
 
@@ -1599,126 +1190,33 @@ class NATSMessageHandler:
                 )
                 return success_count == len(event_subjects)
 
-        except Exception as e:
+        except NATSError as e:
             logger.error("Error unsubscribing from event subjects", error=str(e))
             return False
 
+    def _get_event_handler_map(self) -> dict[str, Callable[[dict[str, Any]], Any]]:
+        """Get mapping of event types to their handler methods."""
+        return self._event_handler.get_event_handler_map()
+
+    def _validate_event_message(self, event_type: str | None, data: dict[str, Any]) -> bool:
+        """Validate that event message has required fields."""
+        return self._event_handler.validate_event_message(event_type, data)
+
     async def _handle_event_message(self, message_data: dict[str, Any]):
-        """
-        Handle incoming event messages from NATS.
-
-        Args:
-            message_data: Event message data from NATS
-        """
-        try:
-            logger.info("Handling event message", message_data=message_data)
-
-            # Extract event details
-            event_type = message_data.get("event_type")
-            data = message_data.get("event_data", {})
-
-            # Debug logging for all messages
-            logger.debug("NATS message received", event_type=event_type, data=data)
-
-            # Validate required fields
-            if not event_type or not data:
-                logger.warning("Invalid event message - missing required fields", message_data=message_data)
-                return
-
-            # Route event based on type
-            if event_type == "player_entered":
-                await self._handle_player_entered_event(data)
-            elif event_type == "player_left":
-                await self._handle_player_left_event(data)
-            elif event_type == "game_tick":
-                await self._handle_game_tick_event(data)
-            elif event_type == "combat_started":
-                await self._handle_combat_started_event(data)
-            elif event_type == "combat_ended":
-                await self._handle_combat_ended_event(data)
-            elif event_type == "player_attacked":
-                await self._handle_player_attacked_event(data)
-            elif event_type == "npc_attacked":
-                logger.debug("NPC attacked event received in NATS handler", data=data)
-                await self._handle_npc_attacked_event(data)
-            elif event_type == "npc_took_damage":
-                await self._handle_npc_took_damage_event(data)
-            elif event_type == "npc_died":
-                await self._handle_npc_died_event(data)
-            else:
-                logger.debug("Unknown event type received", event_type=event_type)
-
-        except Exception as e:
-            logger.error("Error handling event message", error=str(e), message_data=message_data)
+        """Handle incoming event messages from NATS."""
+        await self._event_handler.handle_event_message(message_data)
 
     async def _handle_player_entered_event(self, data: dict[str, Any]):
-        """
-        Handle player_entered event.
-
-        Args:
-            data: Event data containing player and room information
-        """
-        try:
-            room_id = data.get("room_id")
-            if not room_id:
-                logger.warning("Player entered event missing room_id", data=data)
-                return
-
-            # Broadcast to room using injected connection_manager
-            await self.connection_manager.broadcast_room_event("player_entered", room_id, data)
-
-            logger.debug(
-                "Player entered event broadcasted",
-                room_id=room_id,
-                player_id=data.get("player_id"),
-            )
-
-        except Exception as e:
-            logger.error("Error handling player entered event", error=str(e), data=data)
+        """Handle player_entered event."""
+        await self._event_handler.handle_player_entered_event(data)
 
     async def _handle_player_left_event(self, data: dict[str, Any]):
-        """
-        Handle player_left event.
-
-        Args:
-            data: Event data containing player and room information
-        """
-        try:
-            room_id = data.get("room_id")
-            if not room_id:
-                logger.warning("Player left event missing room_id", data=data)
-                return
-
-            # Broadcast to room using injected connection_manager
-            await self.connection_manager.broadcast_room_event("player_left", room_id, data)
-
-            logger.debug(
-                "Player left event broadcasted",
-                room_id=room_id,
-                player_id=data.get("player_id"),
-            )
-
-        except Exception as e:
-            logger.error("Error handling player left event", error=str(e), data=data)
+        """Handle player_left event."""
+        await self._event_handler.handle_player_left_event(data)
 
     async def _handle_game_tick_event(self, data: dict[str, Any]):
-        """
-        Handle game_tick event.
-
-        Args:
-            data: Event data containing tick information
-        """
-        try:
-            # Broadcast globally using injected connection_manager
-            await self.connection_manager.broadcast_global_event("game_tick", data)
-
-            logger.debug(
-                "Game tick event broadcasted",
-                tick_number=data.get("tick_number"),
-            )
-
-        except Exception as e:
-            logger.error("Error handling game tick event", error=str(e), data=data)
+        """Handle game_tick event."""
+        await self._event_handler.handle_game_tick_event(data)
 
     def get_event_subscription_count(self) -> int:
         """
@@ -1754,195 +1252,27 @@ class NATSMessageHandler:
 
     async def _handle_combat_started_event(self, data: dict[str, Any]):
         """Handle combat_started event."""
-        try:
-            room_id = data.get("room_id")
-            if not room_id:
-                logger.warning("Combat started event missing room_id", data=data)
-                return
-
-            # Broadcast to room using injected connection_manager
-            await self.connection_manager.broadcast_room_event("combat_started", room_id, data)
-            logger.debug("Combat started event broadcasted", room_id=room_id)
-
-            # Send player updates with in_combat status to all players in combat
-            participants = data.get("participants", {})
-            if participants:
-                from .envelope import build_event
-
-                for participant_id_str, _participant_data in participants.items():
-                    try:
-                        # Get player by ID to send update
-                        player = await self.connection_manager._get_player(participant_id_str)
-                        if player:
-                            # Send player update with in_combat status
-                            player_update_event = build_event(
-                                "player_update",
-                                {
-                                    "player_id": participant_id_str,
-                                    "in_combat": True,
-                                },
-                                player_id=participant_id_str,
-                            )
-                            await self.connection_manager.send_personal_message(participant_id_str, player_update_event)
-                            logger.debug("Sent player update with in_combat=True", player_id=participant_id_str)
-                    except Exception as e:
-                        logger.warning(
-                            "Error sending player update for combat start", player_id=participant_id_str, error=str(e)
-                        )
-
-        except Exception as e:
-            logger.error("Error handling combat started event", error=str(e), data=data)
+        await self._event_handler.handle_combat_started_event(data)
 
     async def _handle_combat_ended_event(self, data: dict[str, Any]):
         """Handle combat_ended event."""
-        try:
-            room_id = data.get("room_id")
-            if not room_id:
-                logger.warning("Combat ended event missing room_id", data=data)
-                return
-
-            # Broadcast to room using injected connection_manager
-            await self.connection_manager.broadcast_room_event("combat_ended", room_id, data)
-            logger.debug("Combat ended event broadcasted", room_id=room_id)
-
-            # Send player updates with in_combat status to all players who were in combat
-            participants = data.get("participants", {})
-            if participants:
-                from .envelope import build_event
-
-                for participant_id_str in participants:
-                    try:
-                        # Get player by ID to send update
-                        player = await self.connection_manager._get_player(participant_id_str)
-                        if player:
-                            # Send player update with in_combat status
-                            player_update_event = build_event(
-                                "player_update",
-                                {
-                                    "player_id": participant_id_str,
-                                    "in_combat": False,
-                                },
-                                player_id=participant_id_str,
-                            )
-                            await self.connection_manager.send_personal_message(participant_id_str, player_update_event)
-                            logger.debug("Sent player update with in_combat=False", player_id=participant_id_str)
-                    except Exception as e:
-                        logger.warning(
-                            "Error sending player update for combat end", player_id=participant_id_str, error=str(e)
-                        )
-
-        except Exception as e:
-            logger.error("Error handling combat ended event", error=str(e), data=data)
+        await self._event_handler.handle_combat_ended_event(data)
 
     async def _handle_player_attacked_event(self, data: dict[str, Any]):
         """Handle player_attacked event."""
-        try:
-            room_id = data.get("room_id")
-            if not room_id:
-                logger.warning("Player attacked event missing room_id", data=data)
-                return
-
-            # Broadcast to room using injected connection_manager
-            await self.connection_manager.broadcast_room_event("player_attacked", room_id, data)
-            logger.debug("Player attacked event broadcasted", room_id=room_id)
-
-        except Exception as e:
-            logger.error("Error handling player attacked event", error=str(e), data=data)
+        await self._event_handler.handle_player_attacked_event(data)
 
     async def _handle_npc_attacked_event(self, data: dict[str, Any]):
         """Handle npc_attacked event."""
-        try:
-            room_id = data.get("room_id")
-            if not room_id:
-                logger.warning("NPC attacked event missing room_id", data=data)
-                return
-
-            # Broadcast to room using injected connection_manager
-            await self.connection_manager.broadcast_room_event("npc_attacked", room_id, data)
-            logger.debug("NPC attacked event broadcasted", room_id=room_id)
-
-        except Exception as e:
-            logger.error("Error handling NPC attacked event", error=str(e), data=data)
+        await self._event_handler.handle_npc_attacked_event(data)
 
     async def _handle_npc_took_damage_event(self, data: dict[str, Any]):
         """Handle npc_took_damage event."""
-        try:
-            room_id = data.get("room_id")
-            if not room_id:
-                logger.warning("NPC took damage event missing room_id", data=data)
-                return
-
-            # Broadcast to room using injected connection_manager
-            await self.connection_manager.broadcast_room_event("npc_took_damage", room_id, data)
-            logger.debug("NPC took damage event broadcasted", room_id=room_id)
-
-        except Exception as e:
-            logger.error("Error handling NPC took damage event", error=str(e), data=data)
+        await self._event_handler.handle_npc_took_damage_event(data)
 
     async def _handle_npc_died_event(self, data: dict[str, Any]):
-        """
-        Handle npc_died event - NATS to EventBus bridge pattern.
-
-        ARCHITECTURE NOTE - Dual Event Path by Design:
-        This handler implements the NATS→EventBus bridge pattern, which is NOT redundant:
-
-        1. NATS Path (Inter-Service Communication):
-           - CombatService publishes NPCDiedEvent → NATS → NATSMessageHandler (here)
-           - Purpose: Broadcast death to WebSocket clients for UI updates
-
-        2. EventBus Path (Internal Game Logic):
-           - NATSMessageHandler publishes NPCDied → EventBus → NPCLifecycleManager
-           - Purpose: Trigger respawn queue processing with configured delay
-
-        This separation of concerns follows NATS.mdc best practices:
-        - NATS handles distributed messaging and client broadcasting
-        - EventBus handles internal domain logic and game state management
-        - Bridge pattern prevents tight coupling between communication and domain layers
-
-        AI Agent: This is the ONLY place that bridges NATS npc_died messages to EventBus.
-                  CombatService publishes to NATS only, not EventBus directly.
-                  Removing this bridge would break NPC respawning entirely!
-
-        Note: NPC removal from room is handled by the NPCLeftRoom event published
-        by the lifecycle manager. This handler broadcasts the death event to clients
-        AND publishes to EventBus for respawn queue processing.
-        """
-        try:
-            room_id = data.get("room_id")
-            npc_id = data.get("npc_id")
-            npc_name = data.get("npc_name")
-
-            if not room_id:
-                logger.warning("NPC died event missing room_id", data=data)
-                return
-
-            if not npc_id:
-                logger.warning("NPC died event missing npc_id", data=data)
-                return
-
-            # Import here to avoid circular imports
-            from server.events.event_types import NPCDied
-
-            # Broadcast death event to room clients using injected connection_manager
-            # AI: Room state mutation is handled by NPCLeftRoom event from lifecycle manager
-            # AI: This prevents duplicate removal attempts and maintains single source of truth
-            await self.connection_manager.broadcast_room_event("npc_died", room_id, data)
-            logger.debug("NPC died event broadcasted", room_id=room_id, npc_id=npc_id, npc_name=npc_name)
-
-            # AI Agent: CRITICAL - Publish to EventBus so lifecycle manager can queue for respawn
-            #           This ensures ALL NPCs (required and optional) respect respawn delay
-            event_bus = self.connection_manager._get_event_bus()
-            if event_bus:
-                npc_died_event = NPCDied(npc_id=str(npc_id), room_id=room_id, cause=data.get("cause", "combat"))
-                event_bus.publish(npc_died_event)
-                logger.info(
-                    "NPCDied event published to EventBus for respawn queue",
-                    npc_id=npc_id,
-                    npc_name=npc_name,
-                )
-
-        except Exception as e:
-            logger.error("Error handling NPC died event", error=str(e), data=data)
+        """Handle npc_died event - NATS to EventBus bridge pattern."""
+        await self._event_handler.handle_npc_died_event(data)
 
 
 # AI Agent: Global singleton removed - use ApplicationContainer.nats_message_handler instead

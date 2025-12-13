@@ -11,6 +11,7 @@ from uuid import uuid4
 import pytest
 
 from server.events.event_types import NPCAttacked
+from server.exceptions import DatabaseError
 from server.npc.combat_integration import NPCCombatIntegration
 
 
@@ -426,8 +427,8 @@ class TestNPCCombatIntegrationComprehensive:
         # Mock player
         player = Mock()
         player.stats.model_dump.return_value = {
-            "current_health": 75,
-            "max_health": 100,
+            "current_dp": 75,
+            "max_dp": 100,
             "strength": 12,
             "constitution": 14,
             "lucidity": 80,
@@ -438,8 +439,8 @@ class TestNPCCombatIntegrationComprehensive:
 
         result = self.integration.get_combat_stats(entity_id)
 
-        assert result["hp"] == 75
-        assert result["max_hp"] == 100
+        assert result["dp"] == 75
+        assert result["max_dp"] == 100
         assert result["strength"] == 12
         assert result["constitution"] == 14
         assert result["lucidity"] == 80
@@ -480,7 +481,7 @@ class TestNPCCombatIntegrationComprehensive:
         npc_stats = {"hp": 50, "max_hp": 50}
 
         # Mock database error - the method should catch it and return npc_stats
-        self.persistence.get_player.side_effect = Exception("Database error")
+        self.persistence.get_player.side_effect = DatabaseError("Database error")
 
         result = self.integration.get_combat_stats(entity_id, npc_stats)
 
@@ -491,7 +492,7 @@ class TestNPCCombatIntegrationComprehensive:
         entity_id = str(uuid4())
 
         # Mock database error
-        self.persistence.get_player.side_effect = Exception("Database error")
+        self.persistence.get_player.side_effect = DatabaseError("Database error")
 
         result = self.integration.get_combat_stats(entity_id)
 

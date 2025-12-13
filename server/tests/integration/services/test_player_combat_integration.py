@@ -51,8 +51,8 @@ class TestPlayerCombatState:
             participant_id=player_id,
             participant_type=CombatParticipantType.PLAYER,
             name="TestPlayer",
-            current_hp=100,
-            max_hp=100,
+            current_dp=100,
+            max_dp=100,
             dexterity=15,
         )
 
@@ -60,8 +60,8 @@ class TestPlayerCombatState:
             participant_id=npc_id,
             participant_type=CombatParticipantType.NPC,
             name="TestNPC",
-            current_hp=50,
-            max_hp=50,
+            current_dp=50,
+            max_dp=50,
             dexterity=10,
         )
 

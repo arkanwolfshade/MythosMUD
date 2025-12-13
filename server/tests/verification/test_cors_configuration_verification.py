@@ -12,7 +12,6 @@ import pytest
 from server.app.factory import create_app
 
 
-@pytest.mark.slow
 class TestCORSConfigurationVerification:
     """Test CORS configuration works with environment variables.
 

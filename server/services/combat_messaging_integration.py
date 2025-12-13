@@ -57,7 +57,7 @@ class CombatMessagingIntegration:
             if connection_manager is None:
                 raise RuntimeError("Application container does not have an initialized connection_manager")
             return connection_manager
-        except Exception as exc:
+        except (ImportError, AttributeError, RuntimeError, ValueError) as exc:
             logger.error(
                 "Failed to resolve connection manager from container",
                 error=str(exc),
@@ -220,7 +220,7 @@ class CombatMessagingIntegration:
 
         try:
             await self.connection_manager.send_personal_message(attacker_id, personal_event)
-        except Exception as e:
+        except (ConnectionError, OSError, RuntimeError, ValueError) as e:
             logger.warning(
                 "Failed to send personal combat message to attacker",
                 attacker_id=attacker_id,
@@ -456,7 +456,7 @@ class CombatMessagingIntegration:
         # Send personal message to the player
         try:
             await self.connection_manager.send_personal_message(player_id, personal_event)
-        except Exception as e:
+        except (ConnectionError, OSError, RuntimeError, ValueError) as e:
             logger.warning("Failed to send mortally wounded message to player", player_id=player_id, error=str(e))
 
         # Broadcast to all other players in the room
@@ -524,7 +524,7 @@ class CombatMessagingIntegration:
         # Send personal message to the player
         try:
             await self.connection_manager.send_personal_message(player_id, personal_event)
-        except Exception as e:
+        except (ConnectionError, OSError, RuntimeError, ValueError) as e:
             logger.warning("Failed to send death message to player", player_id=player_id, error=str(e))
 
         # Broadcast to all other players in the room
@@ -583,7 +583,7 @@ class CombatMessagingIntegration:
         # Send personal message to the player
         try:
             await self.connection_manager.send_personal_message(player_id, personal_event)
-        except Exception as e:
+        except (ConnectionError, OSError, RuntimeError, ValueError) as e:
             logger.warning("Failed to send respawn message to player", player_id=player_id, error=str(e))
 
         # Broadcast to all other players in the room
@@ -593,32 +593,32 @@ class CombatMessagingIntegration:
 
         return broadcast_stats
 
-    async def send_hp_decay_message(
+    async def send_dp_decay_message(
         self,
         player_id: str,
-        current_hp: int,
+        current_dp: int,
     ) -> dict[str, Any]:
         """
-        Send HP decay message to a specific mortally wounded player.
+        Send DP decay message to a specific mortally wounded player.
 
         Args:
-            player_id: ID of the player losing HP
-            current_hp: Current HP after decay
+            player_id: ID of the player losing DP
+            current_dp: Current DP after decay
 
         Returns:
             dict: Message delivery status
         """
-        logger.debug("Sending HP decay message", player_id=player_id, current_hp=current_hp)
+        logger.debug("Sending DP decay message", player_id=player_id, current_dp=current_dp)
 
         # Generate message
-        message = f"Your lifeforce ebbs away... (HP: {current_hp})"
+        message = f"Your lifeforce ebbs away... (DP: {current_dp})"
 
         # Create event for the player
         decay_event = build_event(
-            "player_hp_decay",
+            "player_dp_decay",
             {
                 "player_id": player_id,
-                "current_hp": current_hp,
+                "current_dp": current_dp,
                 "message": message,
             },
             player_id=player_id,
@@ -627,11 +627,11 @@ class CombatMessagingIntegration:
         # Send personal message to the player
         try:
             delivery_status = await self.connection_manager.send_personal_message(player_id, decay_event)
-        except Exception as e:
-            logger.warning("Failed to send HP decay message to player", player_id=player_id, error=str(e))
+        except (ConnectionError, OSError, RuntimeError, ValueError) as e:
+            logger.warning("Failed to send DP decay message to player", player_id=player_id, error=str(e))
             delivery_status = {"success": False, "error": str(e)}
 
-        logger.debug("HP decay message sent", player_id=player_id, delivery_status=delivery_status)
+        logger.debug("DP decay message sent", player_id=player_id, delivery_status=delivery_status)
 
         return delivery_status
 

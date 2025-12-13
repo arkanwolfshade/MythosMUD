@@ -143,9 +143,11 @@ class TestNATSMessageHandlerStandardizedPatterns:
         )
 
         # Mock subscribe to raise exception for some patterns (subscribe now raises instead of returning False)
+        from server.services.nats_exceptions import NATSSubscribeError
+
         async def mock_subscribe(subject, callback):
             if "chat.say.room.*" in subject:
-                raise Exception("Subscription failed")  # Simulate failure
+                raise NATSSubscribeError("Subscription failed", subject=subject)  # Simulate failure
             return True
 
         self.nats_service.subscribe = mock_subscribe

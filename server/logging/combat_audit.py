@@ -73,8 +73,8 @@ class CombatAuditLogger:
         target_name: str,
         action_type: str,
         damage_dealt: int,
-        target_hp_before: int,
-        target_hp_after: int,
+        target_dp_before: int,
+        target_dp_after: int,
         success: bool,
         timestamp: datetime | None = None,
     ) -> None:
@@ -88,8 +88,8 @@ class CombatAuditLogger:
             target_name: Name of the target
             action_type: Type of attack action
             damage_dealt: Amount of damage dealt
-            target_hp_before: Target's HP before attack
-            target_hp_after: Target's HP after attack
+            target_dp_before: Target's DP before attack
+            target_dp_after: Target's DP after attack
             success: Whether the attack was successful
             timestamp: When the attack occurred (defaults to now)
         """
@@ -105,8 +105,8 @@ class CombatAuditLogger:
             target_name=target_name,
             action_type=action_type,
             damage_dealt=damage_dealt,
-            target_hp_before=target_hp_before,
-            target_hp_after=target_hp_after,
+            target_dp_before=target_dp_before,
+            target_dp_after=target_dp_after,
             success=success,
             timestamp=timestamp.isoformat(),
             security_level="medium",

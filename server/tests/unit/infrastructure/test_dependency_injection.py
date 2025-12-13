@@ -7,7 +7,6 @@ services are properly injected into API endpoints.
 
 from unittest.mock import Mock
 
-import pytest
 from fastapi import Request
 
 from server.dependencies import get_player_service, get_room_service
@@ -15,7 +14,6 @@ from server.game.player_service import PlayerService
 from server.game.room_service import RoomService
 
 
-@pytest.mark.slow
 class TestDependencyInjection:
     """Test the dependency injection system."""
 

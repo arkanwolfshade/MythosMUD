@@ -21,13 +21,17 @@ from .look_room import _handle_direction_look, _handle_room_look
 logger = get_logger(__name__)
 
 
-async def _setup_look_command(
-    request: Any, current_user: dict, player_name: str
-) -> tuple[Any, Any, Any, Any, list[dict[str, Any]]] | None:
-    """Setup and validate look command prerequisites."""
+def _get_app_and_persistence(request: Any) -> tuple[Any, Any]:
+    """Extract app and persistence from request."""
     app = request.app if request else None
     persistence = app.state.persistence if app else None
+    return app, persistence
 
+
+async def _validate_look_prerequisites(
+    persistence: Any, current_user: dict, player_name: str
+) -> tuple[Any, Any] | None:
+    """Validate and retrieve player and room for look command."""
     if not persistence:
         logger.warning("Look command failed - no persistence layer", player=player_name)
         return None
@@ -43,15 +47,44 @@ async def _setup_look_command(
         logger.warning("Look command failed - room not found", player=player_name, room_id=room_id)
         return None
 
-    connection_manager = getattr(app.state, "connection_manager", None) if app else None
-    room_manager = getattr(connection_manager, "room_manager", None) if connection_manager else None
+    return player, room
+
+
+def _get_room_drops(app: Any, room_id: int, player_name: str) -> list[dict[str, Any]]:
+    """Get room drops from room manager."""
     room_drops: list[dict[str, Any]] = []
-    if room_manager and hasattr(room_manager, "list_room_drops"):
-        try:
-            drops = room_manager.list_room_drops(str(room_id))
-            room_drops = clone_room_drops(drops)
-        except (AttributeError, TypeError, ValueError) as exc:  # pragma: no cover - defensive logging path
-            logger.debug("Failed to list room drops", player=player_name, room_id=room_id, error=str(exc))
+    if not app:
+        return room_drops
+
+    connection_manager = getattr(app.state, "connection_manager", None)
+    if not connection_manager:
+        return room_drops
+
+    room_manager = getattr(connection_manager, "room_manager", None)
+    if not room_manager or not hasattr(room_manager, "list_room_drops"):
+        return room_drops
+
+    try:
+        drops = room_manager.list_room_drops(str(room_id))
+        room_drops = clone_room_drops(drops)
+    except (AttributeError, TypeError, ValueError) as exc:  # pragma: no cover - defensive logging path
+        logger.debug("Failed to list room drops", player=player_name, room_id=room_id, error=str(exc))
+
+    return room_drops
+
+
+async def _setup_look_command(
+    request: Any, current_user: dict, player_name: str
+) -> tuple[Any, Any, Any, Any, list[dict[str, Any]]] | None:
+    """Setup and validate look command prerequisites."""
+    app, persistence = _get_app_and_persistence(request)
+
+    prerequisites = await _validate_look_prerequisites(persistence, current_user, player_name)
+    if not prerequisites:
+        return None
+
+    player, room = prerequisites
+    room_drops = _get_room_drops(app, room.id, player_name)
 
     return (app, persistence, player, room, room_drops)
 
@@ -151,7 +184,7 @@ async def _handle_implicit_target_lookup(
         return result
 
     # Priority 2: Try NPCs
-    result = await _try_lookup_npc_implicit(target_lower, room, player_name)
+    result = await _try_lookup_npc_implicit(target_lower, room, player_name, player)
     if result:
         return result
 

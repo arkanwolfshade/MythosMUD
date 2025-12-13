@@ -19,6 +19,18 @@ from server.services.nats_service import NATSService
 class TestRoomBasedMuteFiltering:
     """Test mute filtering across all room-based message types."""
 
+    def __init__(self) -> None:
+        """Initialize test class attributes."""
+        self.mock_nats_service: MagicMock | None = None
+        self.room_id: str = ""
+        self.sender_id: str = ""
+        self.receiver_id: str = ""
+        self.sender_name: str = ""
+        self.receiver_name: str = ""
+        self.mock_connection_manager: MagicMock | None = None
+        self.mock_async_persistence: AsyncMock | None = None
+        self.handler: NATSMessageHandler | None = None
+
     def setup_method(self) -> None:
         """Set up shared fixtures for each test."""
         self.mock_nats_service = MagicMock(spec=NATSService)
@@ -29,6 +41,11 @@ class TestRoomBasedMuteFiltering:
         self.receiver_name = "ArkanWolfshade"
 
         self.mock_connection_manager = MagicMock()
+        # Set up async_persistence mock to avoid await errors
+        self.mock_async_persistence = AsyncMock()
+        self.mock_connection_manager.async_persistence = self.mock_async_persistence
+        # Default behavior: return None for get_player_by_id (player not found)
+        self.mock_async_persistence.get_player_by_id = AsyncMock(return_value=None)
         self.handler = NATSMessageHandler(
             self.mock_nats_service,
             connection_manager=self.mock_connection_manager,
@@ -36,6 +53,7 @@ class TestRoomBasedMuteFiltering:
 
     def _prepare_connection_manager(self, subscribers: set[str] | None = None) -> None:
         """Configure connection manager mocks for a given subscriber set."""
+        assert self.mock_connection_manager is not None, "mock_connection_manager must be set up before use"
         subscribers = subscribers or {self.sender_id, self.receiver_id}
         self.mock_connection_manager._canonical_room_id = MagicMock(return_value=self.room_id)
         self.mock_connection_manager.room_subscriptions = {self.room_id: set(subscribers)}
@@ -58,13 +76,20 @@ class TestRoomBasedMuteFiltering:
     @pytest.mark.asyncio
     async def test_say_message_respects_personal_mute(self) -> None:
         """Say channel should honour personal mutes and filter muted senders."""
+        assert self.handler is not None, "handler must be set up before use"
+        assert self.mock_connection_manager is not None, "mock_connection_manager must be set up before use"
         chat_event = self.create_chat_event("say", "Hello everyone!")
         self._prepare_connection_manager()
 
         with (
-            patch.object(self.handler, "_is_player_in_room", return_value=True),
             patch.object(
-                self.handler, "_is_player_muted_by_receiver_with_user_manager", return_value=True
+                self.handler._filtering_helper, "is_player_in_room", new_callable=AsyncMock, return_value=True
+            ),
+            patch.object(
+                self.handler._filtering_helper,
+                "is_player_muted_by_receiver_with_user_manager",
+                new_callable=AsyncMock,
+                return_value=True,
             ) as mock_mute_check,
         ):
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "say")
@@ -79,12 +104,21 @@ class TestRoomBasedMuteFiltering:
     @pytest.mark.asyncio
     async def test_local_message_mute_filtering(self) -> None:
         """Test that local messages are properly filtered when sender is muted."""
+        assert self.handler is not None, "handler must be set up before use"
+        assert self.mock_connection_manager is not None, "mock_connection_manager must be set up before use"
         chat_event = self.create_chat_event("local", "Anyone in the area?")
         self._prepare_connection_manager()
 
         with (
-            patch.object(self.handler, "_is_player_in_room", return_value=True),
-            patch.object(self.handler, "_is_player_muted_by_receiver_with_user_manager", return_value=True),
+            patch.object(
+                self.handler._filtering_helper, "is_player_in_room", new_callable=AsyncMock, return_value=True
+            ),
+            patch.object(
+                self.handler._filtering_helper,
+                "is_player_muted_by_receiver_with_user_manager",
+                new_callable=AsyncMock,
+                return_value=True,
+            ),
         ):
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "local")
 
@@ -96,12 +130,21 @@ class TestRoomBasedMuteFiltering:
     @pytest.mark.asyncio
     async def test_emote_message_mute_filtering(self) -> None:
         """Test that emote messages are properly filtered when sender is muted."""
+        assert self.handler is not None, "handler must be set up before use"
+        assert self.mock_connection_manager is not None, "mock_connection_manager must be set up before use"
         chat_event = self.create_chat_event("emote", "dance")
         self._prepare_connection_manager()
 
         with (
-            patch.object(self.handler, "_is_player_in_room", return_value=True),
-            patch.object(self.handler, "_is_player_muted_by_receiver_with_user_manager", return_value=True),
+            patch.object(
+                self.handler._filtering_helper, "is_player_in_room", new_callable=AsyncMock, return_value=True
+            ),
+            patch.object(
+                self.handler._filtering_helper,
+                "is_player_muted_by_receiver_with_user_manager",
+                new_callable=AsyncMock,
+                return_value=True,
+            ),
         ):
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "emote")
 
@@ -113,12 +156,21 @@ class TestRoomBasedMuteFiltering:
     @pytest.mark.asyncio
     async def test_pose_message_mute_filtering(self) -> None:
         """Test that pose messages are properly filtered when sender is muted."""
+        assert self.handler is not None, "handler must be set up before use"
+        assert self.mock_connection_manager is not None, "mock_connection_manager must be set up before use"
         chat_event = self.create_chat_event("pose", "looks around nervously")
         self._prepare_connection_manager()
 
         with (
-            patch.object(self.handler, "_is_player_in_room", return_value=True),
-            patch.object(self.handler, "_is_player_muted_by_receiver_with_user_manager", return_value=True),
+            patch.object(
+                self.handler._filtering_helper, "is_player_in_room", new_callable=AsyncMock, return_value=True
+            ),
+            patch.object(
+                self.handler._filtering_helper,
+                "is_player_muted_by_receiver_with_user_manager",
+                new_callable=AsyncMock,
+                return_value=True,
+            ),
         ):
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "pose")
 
@@ -130,6 +182,8 @@ class TestRoomBasedMuteFiltering:
     @pytest.mark.asyncio
     async def test_all_room_based_channels_allow_unmuted_messages(self) -> None:
         """Test that all room-based channels allow messages when sender is not muted."""
+        assert self.handler is not None, "handler must be set up before use"
+        assert self.mock_connection_manager is not None, "mock_connection_manager must be set up before use"
         channels = ["say", "local", "emote", "pose"]
         contents = ["Hello!", "Anyone here?", "waves", "smiles"]
 
@@ -138,8 +192,15 @@ class TestRoomBasedMuteFiltering:
             self._prepare_connection_manager()
 
             with (
-                patch.object(self.handler, "_is_player_in_room", return_value=True),
-                patch.object(self.handler, "_is_player_muted_by_receiver_with_user_manager", return_value=False),
+                patch.object(
+                    self.handler._filtering_helper, "is_player_in_room", new_callable=AsyncMock, return_value=True
+                ),
+                patch.object(
+                    self.handler._filtering_helper,
+                    "is_player_muted_by_receiver_with_user_manager",
+                    new_callable=AsyncMock,
+                    return_value=False,
+                ),
             ):
                 await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, channel)
 
@@ -154,13 +215,20 @@ class TestRoomBasedMuteFiltering:
     @pytest.mark.asyncio
     async def test_room_based_channels_apply_mute_filter_where_expected(self) -> None:
         """Room-based channels should invoke mute filtering when appropriate."""
+        assert self.handler is not None, "handler must be set up before use"
+        assert self.mock_connection_manager is not None, "mock_connection_manager must be set up before use"
         mute_sensitive_channels = ["local", "emote", "pose", "say"]
         self._prepare_connection_manager()
 
         with (
-            patch.object(self.handler, "_is_player_in_room", return_value=True),
             patch.object(
-                self.handler, "_is_player_muted_by_receiver_with_user_manager", return_value=True
+                self.handler._filtering_helper, "is_player_in_room", new_callable=AsyncMock, return_value=True
+            ),
+            patch.object(
+                self.handler._filtering_helper,
+                "is_player_muted_by_receiver_with_user_manager",
+                new_callable=AsyncMock,
+                return_value=True,
             ) as mock_mute_check,
         ):
             for channel in mute_sensitive_channels:
@@ -172,6 +240,8 @@ class TestRoomBasedMuteFiltering:
     @pytest.mark.asyncio
     async def test_room_based_channels_handle_multiple_receivers(self) -> None:
         """Test that room-based channels handle multiple receivers correctly."""
+        assert self.handler is not None, "handler must be set up before use"
+        assert self.mock_connection_manager is not None, "mock_connection_manager must be set up before use"
         receiver_ids = [str(uuid.uuid4()) for _ in range(3)]
         all_player_ids = {self.sender_id, *receiver_ids}
         chat_event = self.create_chat_event("local", "Hello everyone!")
@@ -183,8 +253,15 @@ class TestRoomBasedMuteFiltering:
             return receiver_id == receiver_ids[0]
 
         with (
-            patch.object(self.handler, "_is_player_in_room", return_value=True),
-            patch.object(self.handler, "_is_player_muted_by_receiver_with_user_manager", side_effect=mute_check),
+            patch.object(
+                self.handler._filtering_helper, "is_player_in_room", new_callable=AsyncMock, return_value=True
+            ),
+            patch.object(
+                self.handler._filtering_helper,
+                "is_player_muted_by_receiver_with_user_manager",
+                new_callable=AsyncMock,
+                side_effect=mute_check,
+            ),
         ):
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "local")
 
@@ -197,12 +274,21 @@ class TestRoomBasedMuteFiltering:
     @pytest.mark.asyncio
     async def test_room_based_channels_echo_sender_even_when_muted(self) -> None:
         """Test that the sender still receives an echo even when everyone else filters them out."""
+        assert self.handler is not None, "handler must be set up before use"
+        assert self.mock_connection_manager is not None, "mock_connection_manager must be set up before use"
         chat_event = self.create_chat_event("local", "Hello everyone!")
         self._prepare_connection_manager()
 
         with (
-            patch.object(self.handler, "_is_player_in_room", return_value=True),
-            patch.object(self.handler, "_is_player_muted_by_receiver_with_user_manager", return_value=True),
+            patch.object(
+                self.handler._filtering_helper, "is_player_in_room", new_callable=AsyncMock, return_value=True
+            ),
+            patch.object(
+                self.handler._filtering_helper,
+                "is_player_muted_by_receiver_with_user_manager",
+                new_callable=AsyncMock,
+                return_value=True,
+            ),
         ):
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "local")
 
@@ -214,12 +300,21 @@ class TestRoomBasedMuteFiltering:
     @pytest.mark.asyncio
     async def test_room_based_channels_handle_players_not_in_room(self) -> None:
         """Test that room-based channels filter out players not in the room."""
+        assert self.handler is not None, "handler must be set up before use"
+        assert self.mock_connection_manager is not None, "mock_connection_manager must be set up before use"
         chat_event = self.create_chat_event("say", "Hello everyone!")
         self._prepare_connection_manager()
 
         with (
-            patch.object(self.handler, "_is_player_in_room", return_value=False),
-            patch.object(self.handler, "_is_player_muted_by_receiver_with_user_manager", return_value=False),
+            patch.object(
+                self.handler._filtering_helper, "is_player_in_room", new_callable=AsyncMock, return_value=False
+            ),
+            patch.object(
+                self.handler._filtering_helper,
+                "is_player_muted_by_receiver_with_user_manager",
+                new_callable=AsyncMock,
+                return_value=False,
+            ),
         ):
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "say")
 
@@ -231,12 +326,22 @@ class TestRoomBasedMuteFiltering:
     @pytest.mark.asyncio
     async def test_room_based_channels_performance_with_optimized_user_manager(self) -> None:
         """Test that room-based channels use optimized UserManager instance management."""
+        assert self.handler is not None, "handler must be set up before use"
+        assert self.mock_connection_manager is not None, "mock_connection_manager must be set up before use"
         chat_event = self.create_chat_event("say", "Hello everyone!")
         self._prepare_connection_manager()
 
         with (
-            patch.object(self.handler, "_is_player_in_room", return_value=True),
+            patch.object(
+                self.handler._filtering_helper, "is_player_in_room", new_callable=AsyncMock, return_value=True
+            ),
             patch("server.services.user_manager.user_manager") as mock_user_manager,
+            patch.object(
+                self.handler._filtering_helper,
+                "is_player_muted_by_receiver_with_user_manager",
+                new_callable=AsyncMock,
+                return_value=False,
+            ),
         ):
             # Configure mock to return False for mute check (not muted)
             mock_user_manager.load_player_mutes_batch = AsyncMock(return_value={self.receiver_id: {}})

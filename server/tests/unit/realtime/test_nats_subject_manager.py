@@ -509,7 +509,7 @@ class TestSubscriptionPatterns:
         assert "events.player_left.*" in patterns
         assert "events.game_tick" in patterns
         assert "events.player_mortally_wounded.*" in patterns
-        assert "events.player_hp_decay.*" in patterns
+        assert "events.player_dp_decay.*" in patterns
         assert "events.player_died.*" in patterns
         assert "events.player_respawned.*" in patterns
 

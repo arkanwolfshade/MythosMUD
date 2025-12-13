@@ -20,7 +20,7 @@ Object.defineProperty(document, 'cookie', {
 });
 
 // Mock fetch
-global.fetch = vi.fn();
+globalThis.fetch = vi.fn();
 
 describe('Secure Token Storage', () => {
   beforeEach(() => {
@@ -180,6 +180,7 @@ describe('Secure Token Storage', () => {
     });
 
     it('should handle network errors during refresh', async () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       const mockFetch = vi.mocked(fetch);
       mockFetch.mockRejectedValueOnce(new Error('Network error'));
 
@@ -191,9 +192,11 @@ describe('Secure Token Storage', () => {
       const result = await secureTokenStorage.refreshTokenIfNeeded(token);
 
       expect(result).toBe(false);
+      consoleErrorSpy.mockRestore();
     });
 
     it('should handle missing refresh token', async () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       localStorageMock.getItem.mockReturnValue(null);
 
       // nosemgrep: generic.secrets.security.detected-jwt-token.detected-jwt-token
@@ -202,6 +205,7 @@ describe('Secure Token Storage', () => {
       const result = await secureTokenStorage.refreshTokenIfNeeded(token);
 
       expect(result).toBe(false);
+      consoleErrorSpy.mockRestore();
     });
 
     it('should handle refresh response without access_token', async () => {
@@ -266,7 +270,7 @@ describe('Secure Token Storage', () => {
       // In Vite/Vitest, import.meta.env values are replaced at build/test time,
       // so vi.stubEnv may not fully prevent code execution paths.
       // However, the critical security behavior is that the function returns null.
-      vi.stubEnv('DEV', '');
+      vi.stubEnv('DEV', false);
       vi.stubEnv('MODE', 'production');
 
       const token = secureTokenStorage.getToken();
@@ -287,7 +291,7 @@ describe('Secure Token Storage', () => {
       localStorageMock.getItem.mockClear();
 
       // Mock production environment (not DEV and not test)
-      vi.stubEnv('DEV', '');
+      vi.stubEnv('DEV', false);
       vi.stubEnv('MODE', 'production');
 
       const token = secureTokenStorage.getRefreshToken();

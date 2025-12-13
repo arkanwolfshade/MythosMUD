@@ -223,7 +223,9 @@ describe('ChatPanel', () => {
       render(<ChatPanel {...defaultProps} />);
 
       // Component shows message count in the chat history toggle section
-      const messageCountDisplays = screen.getAllByText((_, element) => element?.textContent?.includes('Messages: 1'));
+      const messageCountDisplays = screen.getAllByText((_, element) =>
+        Boolean(element?.textContent?.includes('Messages: 1'))
+      );
       expect(messageCountDisplays.length).toBeGreaterThan(0);
       // Note: ChatPanel does not display "Connected" status or "Channel: Local" in statistics
       // These features are not part of the current implementation
@@ -263,14 +265,14 @@ describe('ChatPanel', () => {
       const messagesWithCombat = [
         ...mockMessages,
         {
-          text: 'You hit Player2 for 10 damage! (90/100 HP)',
+          text: 'You hit Player2 for 10 damage! (90/100 DP)',
           timestamp: '2024-01-01T10:05:00Z',
           isHtml: false,
           messageType: 'combat',
           channel: 'combat',
         },
         {
-          text: 'NPC attacks you for 5 damage! (95/100 HP)',
+          text: 'NPC attacks you for 5 damage! (95/100 DP)',
           timestamp: '2024-01-01T10:06:00Z',
           isHtml: false,
           messageType: 'combat',
@@ -288,8 +290,8 @@ describe('ChatPanel', () => {
       render(<ChatPanel {...defaultProps} messages={messagesWithCombat} selectedChannel="all" />);
 
       // Combat messages should not appear in chat panel
-      expect(screen.queryByText('You hit Player2 for 10 damage! (90/100 HP)')).not.toBeInTheDocument();
-      expect(screen.queryByText('NPC attacks you for 5 damage! (95/100 HP)')).not.toBeInTheDocument();
+      expect(screen.queryByText('You hit Player2 for 10 damage! (90/100 DP)')).not.toBeInTheDocument();
+      expect(screen.queryByText('NPC attacks you for 5 damage! (95/100 DP)')).not.toBeInTheDocument();
       // Combat start message should also be excluded (it's a system message)
       expect(screen.queryByText('Combat has begun! Turn order: Player1, Player2')).not.toBeInTheDocument();
 
@@ -390,8 +392,8 @@ describe('ChatPanel', () => {
     it('should format timestamps correctly', () => {
       render(<ChatPanel {...defaultProps} />);
 
-      // Should display formatted timestamps (the mock formatTimestamp function shows 03:00:00)
-      expect(screen.getByText('03:00:00')).toBeInTheDocument();
+      // Should display formatted timestamps (formatTimestamp formats '2024-01-01T10:00:00Z' as '10:00:00')
+      expect(screen.getByText('10:00:00')).toBeInTheDocument();
     });
 
     it('should apply correct CSS classes for different message types', () => {
@@ -611,9 +613,7 @@ describe('ChatPanel', () => {
       // The component shows statistics inline in the chat history toggle section, not as a separate status region
     });
 
-    it('should support keyboard navigation', async () => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const user = userEvent.setup();
+    it('should support keyboard navigation', () => {
       render(<ChatPanel {...defaultProps} />);
 
       // Test that channel activity indicators are focusable

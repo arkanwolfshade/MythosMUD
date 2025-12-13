@@ -6,8 +6,9 @@ from typing import Any
 
 from server.events.event_bus import EventBus
 from server.events.event_types import MythosHourTickEvent
+from server.exceptions import DatabaseError
 from server.logging.enhanced_logging_config import get_logger
-from server.realtime.connection_manager import broadcast_game_event
+from server.realtime.connection_manager_api import broadcast_game_event
 from server.services.holiday_service import HolidayService
 from server.services.schedule_service import ScheduleService
 from server.time.time_service import ChronicleLike
@@ -55,13 +56,13 @@ class MythosTimeEventConsumer:
                     is_daytime=event.is_daytime,
                     active_holidays=holiday_names,
                 )
-            except Exception as exc:  # pragma: no cover - defensive logging
+            except (ValueError, TypeError, AttributeError, RuntimeError) as exc:  # pragma: no cover - defensive logging
                 logger.error("Failed to update room environment state", error=str(exc))
 
         if self._npc_lifecycle_manager and hasattr(self._npc_lifecycle_manager, "apply_schedule_state"):
             try:
                 self._npc_lifecycle_manager.apply_schedule_state(active_schedules)
-            except Exception as exc:  # pragma: no cover - defensive logging
+            except (ValueError, TypeError, AttributeError, RuntimeError) as exc:  # pragma: no cover - defensive logging
                 logger.error("Failed to apply NPC schedule state", error=str(exc))
 
         logger.debug(
@@ -75,7 +76,13 @@ class MythosTimeEventConsumer:
         payload = self._build_broadcast_payload(event, active_holidays, active_schedules)
         try:
             await broadcast_game_event("mythos_time_update", payload)
-        except Exception as exc:  # pragma: no cover - defensive logging
+        except (
+            RuntimeError,
+            AttributeError,
+            DatabaseError,
+            ConnectionError,
+            TimeoutError,
+        ) as exc:  # pragma: no cover - defensive logging
             logger.error("Failed to broadcast Mythos time update", error=str(exc))
 
     def describe_state(self) -> dict:

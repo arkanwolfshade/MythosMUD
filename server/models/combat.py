@@ -51,8 +51,8 @@ class CombatParticipant:
     participant_id: UUID
     participant_type: CombatParticipantType
     name: str
-    current_hp: int
-    max_hp: int
+    current_dp: int  # Current determination points (DP)
+    max_dp: int  # Maximum determination points (DP)
     dexterity: int
     is_active: bool = True
     last_action_tick: int | None = None
@@ -61,15 +61,15 @@ class CombatParticipant:
         """
         Check if participant is alive enough to be in combat.
 
-        For players: alive if HP > -10 (includes mortally wounded state)
-        For NPCs: alive if HP > 0
+        For players: alive if DP > -10 (includes mortally wounded state)
+        For NPCs: alive if DP > 0
         """
         if self.participant_type == CombatParticipantType.PLAYER:
-            # Players remain "in combat" until -10 HP (mortally wounded at 0 HP is still "alive" for combat purposes)
-            return self.current_hp > -10 and self.is_active
+            # Players remain "in combat" until -10 DP (mortally wounded at 0 DP is still "alive" for combat purposes)
+            return self.current_dp > -10 and self.is_active
         else:
-            # NPCs die at 0 HP
-            return self.current_hp > 0 and self.is_active
+            # NPCs die at 0 DP
+            return self.current_dp > 0 and self.is_active
 
 
 @dataclass

@@ -24,7 +24,7 @@ export interface GameTerminalPresentationProps {
     id: string;
     name: string;
     stats: {
-      current_health: number;
+      current_dp: number;
       lucidity: number;
       strength?: number;
       dexterity?: number;
@@ -265,7 +265,7 @@ export const GameTerminalPresentation: React.FC<GameTerminalPresentationProps> =
                 <>
                   <div className="flex items-center justify-between">
                     <span className="text-base text-mythos-terminal-text-secondary">Health:</span>
-                    <span className="text-base text-mythos-terminal-text">{player.stats.current_health}</span>
+                    <span className="text-base text-mythos-terminal-text">{player.stats.current_dp}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-base text-mythos-terminal-text-secondary">Lucidity:</span>

@@ -41,7 +41,7 @@ class PlayerRespawnService:
     This service handles:
     - Moving dead players to limbo (isolated from game world)
     - Determining respawn location (custom or default)
-    - Restoring player HP and moving to respawn room
+    - Restoring player DP and moving to respawn room
     - Publishing respawn events for UI updates
     - Clearing combat state when player respawns
     """
@@ -142,10 +142,10 @@ class PlayerRespawnService:
 
     async def respawn_player(self, player_id: uuid.UUID, session: AsyncSession) -> bool:
         """
-        Respawn a dead player at their respawn location with full HP.
+        Respawn a dead player at their respawn location with full DP.
 
         This method:
-        1. Restores player HP to their max_health (not hardcoded 100)
+        1. Restores player DP to their max_dp (not hardcoded 100)
         2. Moves player from limbo to respawn room
         3. Publishes respawn event for UI updates
 
@@ -166,11 +166,11 @@ class PlayerRespawnService:
             # Get respawn room using async API
             respawn_room = await self.get_respawn_room(player_id, session)
 
-            # Get current stats and restore HP to max health
+            # Get current stats and restore DP to max determination points
             stats = player.get_stats()
-            old_hp = stats.get("current_health", -10)
-            max_hp = stats.get("max_health", 100)  # Default to 100 if max_health not found
-            stats["current_health"] = max_hp  # Restore to max health, not hardcoded 100
+            old_dp = stats.get("current_dp", 0)
+            max_dp = stats.get("max_dp", 100)  # Default to 100 if max_dp not found
+            stats["current_dp"] = max_dp  # Restore to max determination points, not hardcoded 100
 
             # BUGFIX: Restore posture to standing when player respawns
             # As documented in "Resurrection and Corporeal Restoration" - Dr. Armitage, 1930
@@ -205,9 +205,9 @@ class PlayerRespawnService:
                 player_id=player_id,
                 player_name=player.name,
                 respawn_room=respawn_room,
-                old_hp=old_hp,
-                new_hp=max_hp,
-                max_hp=max_hp,
+                old_dp=old_dp,
+                new_dp=max_dp,
+                max_dp=max_dp,
                 from_limbo=old_room == LIMBO_ROOM_ID,
             )
 
@@ -217,8 +217,8 @@ class PlayerRespawnService:
                     player_id=player_id,
                     player_name=str(player.name),
                     respawn_room_id=respawn_room,
-                    old_hp=old_hp,
-                    new_hp=max_hp,  # Use max_hp instead of hardcoded 100
+                    old_dp=old_dp,
+                    new_dp=max_dp,  # Use max_dp instead of hardcoded 100
                     death_room_id=old_room if old_room != LIMBO_ROOM_ID else None,  # type: ignore[arg-type]
                 )
                 self._event_bus.publish(event)

@@ -174,7 +174,9 @@ def test_guard_token_ttl_allows_reprocessing_after_expiry():
     with guard.acquire("investigator-4", "token-expiring") as decision:
         assert decision.should_apply
 
-    time.sleep(0.06)
+    # Sleep longer than TTL to ensure token expires even under system load
+    # Using 2x TTL to account for timing precision and parallel test execution
+    time.sleep(0.10)
 
     with guard.acquire("investigator-4", "token-expiring") as decision:
         assert decision.should_apply

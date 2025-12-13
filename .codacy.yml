@@ -11,13 +11,38 @@ exclude_paths:
 # Ignore assert statements in test files
 # Assert statements are standard and expected in test files (pytest uses them extensively)
 # Common assert-related patterns: Bandit B101, Pylint warnings
+#
+# NOTE: Bandit B101 is now handled via bandit.yml file (skip B101 only for test files).
+# ignore_patterns does not work for Bandit rules in Codacy - Bandit requires its own config file.
+# The entry below is kept for documentation but may not be effective for Bandit rules.
 ignore_patterns:
   # Bandit B101: Use of assert detected (security warning that's acceptable in tests)
+  # NOTE: This is handled by bandit.yml - see bandit.yml for actual Bandit configuration
   - pattern_id: 'Bandit_B101'
     file_paths:
       - '**/test_*.py'
       - '**/tests/**/*.py'
       - '**/*_test.py'
+  # # Lizard CCN: Ignore cyclomatic complexity warnings for complexity <= 10
+  # # We want to only report complexity > 10, but Codacy doesn't support custom CCN thresholds
+  # # So we suppress the medium severity warnings (which report complexity > 8)
+  # # This effectively sets our threshold to 11 (only reports complexity > 10)
+  # - pattern_id: 'Lizard_ccn-medium'
+  #   reason: 'Cyclomatic complexity threshold set to 11 (only report > 10). Medium severity reports > 8, which we want to ignore.'
+
+# Cyclomatic complexity configuration
+# Set cyclomatic complexity threshold to 11 (only report > 10)
+# Since Codacy doesn't support custom CCN thresholds, we use ignore_patterns to suppress
+# Lizard_ccn-medium (which reports complexity > 8), effectively setting threshold to 11
+# Also configured in .codacy/codacy.yaml under engines.lizard.config.CCN (for CLI, if supported)
+# Set file-nloc threshold to 550 (default is 500)
+# Configured in .codacy/codacy.yaml under engines.lizard.config.file-nloc
+
+# # Engine-specific exclusions (alternative format that may work for CLI)
+# engines:
+#   lizard:
+#     exclude_patterns:
+#       - 'Lizard_ccn-medium'
 
 # Line length configuration
 # The project uses 120 character line length (not Codacy's default of 100)

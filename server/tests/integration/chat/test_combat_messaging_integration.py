@@ -176,7 +176,7 @@ class TestCombatMessagingIntegration:
         """Test that attack broadcast works even if personal message fails."""
         # AI Agent: Use mock from setup_method (injected via constructor)
         self.mock_connection_manager.broadcast_to_room = AsyncMock(return_value={"successful_deliveries": 2})
-        self.mock_connection_manager.send_personal_message = AsyncMock(side_effect=Exception("NATS error"))
+        self.mock_connection_manager.send_personal_message = AsyncMock(side_effect=RuntimeError("NATS error"))
 
         # Should not raise exception even if personal message fails
         result = await self.integration.broadcast_combat_attack(

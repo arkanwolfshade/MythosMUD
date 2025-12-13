@@ -18,12 +18,31 @@ from server.services.nats_service import NATSService
 class TestMultiplePlayersMuting:
     """Test multiple players muting the same person."""
 
+    def __init__(self):
+        """Initialize test class attributes."""
+        self.mock_nats_service = None
+        self.mock_connection_manager = None
+        self.mock_async_persistence = None
+        self.handler = None
+        self.room_id = None
+        self.sender_id = None
+        self.sender_name = None
+        self.muted_receivers = None
+        self.unmuted_receivers = None
+        self.all_players = None
+
     def setup_method(self):
         """Set up test fixtures."""
         self.mock_nats_service = MagicMock(spec=NATSService)
         # AI Agent: Inject mock connection_manager via constructor (no longer a global)
         #           Post-migration: NATSMessageHandler requires connection_manager
         self.mock_connection_manager = MagicMock()
+        # Mock async_persistence for filtering helper's is_player_in_room method
+        self.mock_async_persistence = MagicMock()
+        self.mock_async_persistence.get_player_by_id = AsyncMock(return_value=None)
+        self.mock_connection_manager.async_persistence = self.mock_async_persistence
+        # Mock canonical_room_id method used by filtering helper
+        self.mock_connection_manager.canonical_room_id = MagicMock(side_effect=lambda room_id: room_id)
         self.handler = NATSMessageHandler(self.mock_nats_service, connection_manager=self.mock_connection_manager)
 
         # Test data
@@ -62,8 +81,8 @@ class TestMultiplePlayersMuting:
         self.mock_connection_manager._canonical_room_id.return_value = self.room_id
         self.mock_connection_manager.send_personal_message = AsyncMock()
 
-        # Mock player in room check
-        with patch.object(self.handler, "_is_player_in_room", return_value=True):
+        # Mock player in room check - patch filtering helper's method directly
+        with patch.object(self.handler._filtering_helper, "is_player_in_room", return_value=True):
             await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "say")
 
         # send_personal_message receives UUID objects, not strings
@@ -81,15 +100,14 @@ class TestMultiplePlayersMuting:
         self.mock_connection_manager._canonical_room_id.return_value = self.room_id
         self.mock_connection_manager.send_personal_message = AsyncMock()
 
-        # Mock player in room check
-        with patch.object(self.handler, "_is_player_in_room", return_value=True):
+        # Mock player in room check - patch filtering helper's method directly
+        with patch.object(self.handler._filtering_helper, "is_player_in_room", return_value=True):
             # Mock mute check - muted receivers have muted sender, unmuted receivers haven't
-            def mock_mute_check(user_manager, receiver_id, sender_id):
+            # Patch _is_player_muted_by_receiver (not _with_user_manager) as the code checks this first
+            def mock_mute_check(receiver_id, sender_id):
                 return receiver_id in self.muted_receivers
 
-            with patch.object(
-                self.handler, "_is_player_muted_by_receiver_with_user_manager", side_effect=mock_mute_check
-            ):
+            with patch.object(self.handler, "_is_player_muted_by_receiver", side_effect=mock_mute_check):
                 # Execute
                 await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "emote")
 
@@ -117,15 +135,14 @@ class TestMultiplePlayersMuting:
         self.mock_connection_manager._canonical_room_id.return_value = self.room_id
         self.mock_connection_manager.send_personal_message = AsyncMock()
 
-        # Mock player in room check
-        with patch.object(self.handler, "_is_player_in_room", return_value=True):
+        # Mock player in room check - patch filtering helper's method directly
+        with patch.object(self.handler._filtering_helper, "is_player_in_room", return_value=True):
             # Mock mute check - muted receivers have muted sender, unmuted receivers haven't
-            def mock_mute_check(user_manager, receiver_id, sender_id):
+            # Patch _is_player_muted_by_receiver (not _with_user_manager) as the code checks this first
+            def mock_mute_check(receiver_id, sender_id):
                 return receiver_id in self.muted_receivers
 
-            with patch.object(
-                self.handler, "_is_player_muted_by_receiver_with_user_manager", side_effect=mock_mute_check
-            ):
+            with patch.object(self.handler, "_is_player_muted_by_receiver", side_effect=mock_mute_check):
                 # Execute
                 await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "local")
 
@@ -153,15 +170,14 @@ class TestMultiplePlayersMuting:
         self.mock_connection_manager._canonical_room_id.return_value = self.room_id
         self.mock_connection_manager.send_personal_message = AsyncMock()
 
-        # Mock player in room check
-        with patch.object(self.handler, "_is_player_in_room", return_value=True):
+        # Mock player in room check - patch filtering helper's method directly
+        with patch.object(self.handler._filtering_helper, "is_player_in_room", return_value=True):
             # Mock mute check - muted receivers have muted sender, unmuted receivers haven't
-            def mock_mute_check(user_manager, receiver_id, sender_id):
+            # Patch _is_player_muted_by_receiver (not _with_user_manager) as the code checks this first
+            def mock_mute_check(receiver_id, sender_id):
                 return receiver_id in self.muted_receivers
 
-            with patch.object(
-                self.handler, "_is_player_muted_by_receiver_with_user_manager", side_effect=mock_mute_check
-            ):
+            with patch.object(self.handler, "_is_player_muted_by_receiver", side_effect=mock_mute_check):
                 # Execute
                 await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "pose")
 
@@ -189,15 +205,15 @@ class TestMultiplePlayersMuting:
         self.mock_connection_manager._canonical_room_id.return_value = self.room_id
         self.mock_connection_manager.send_personal_message = AsyncMock()
 
-        # Mock player in room check
-        with patch.object(self.handler, "_is_player_in_room", return_value=True):
+        # Mock player in room check - patch filtering helper's method directly
+        with patch.object(self.handler._filtering_helper, "is_player_in_room", return_value=True):
             # Mock mute check - all receivers have muted sender
-            def mock_mute_check(user_manager, receiver_id, sender_id):
+            # Patch _is_player_muted_by_receiver (not _with_user_manager) as the code checks this first
+            # The method signature is (receiver_id, sender_id), not (user_manager, receiver_id, sender_id)
+            def mock_mute_check(receiver_id, sender_id):
                 return receiver_id != self.sender_id  # All receivers except sender have muted
 
-            with patch.object(
-                self.handler, "_is_player_muted_by_receiver_with_user_manager", side_effect=mock_mute_check
-            ):
+            with patch.object(self.handler, "_is_player_muted_by_receiver", side_effect=mock_mute_check):
                 # Execute
                 await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "local")
 
@@ -227,7 +243,7 @@ class TestMultiplePlayersMuting:
         def mock_in_room_check(player_id, room_id):
             return player_id in players_in_room
 
-        with patch.object(self.handler, "_is_player_in_room", side_effect=mock_in_room_check):
+        with patch.object(self.handler._filtering_helper, "is_player_in_room", side_effect=mock_in_room_check):
             # Mock mute check - muted receivers have muted sender
             def mock_mute_check(user_manager, receiver_id, sender_id):
                 return receiver_id in self.muted_receivers
@@ -271,28 +287,23 @@ class TestMultiplePlayersMuting:
         self.mock_connection_manager._canonical_room_id.return_value = self.room_id
         self.mock_connection_manager.send_personal_message = AsyncMock()
 
-        # Mock player in room check
-        with patch.object(self.handler, "_is_player_in_room", return_value=True):
-            # Mock mute check
-            def mock_mute_check(user_manager, receiver_id, sender_id):
-                return receiver_id in self.muted_receivers
+        # Mock player in room check - patch filtering helper's method directly
+        with patch.object(self.handler._filtering_helper, "is_player_in_room", return_value=True):
+            # Mock the global user_manager instance
+            with patch("server.services.user_manager.user_manager") as mock_user_manager:
+                # Mock batch loading method (implementation now uses batch loading for efficiency)
+                # Return mutes for muted_receivers
+                mock_mutes = {receiver_id: {self.sender_id} for receiver_id in self.muted_receivers}
+                mock_user_manager.load_player_mutes_batch = AsyncMock(return_value=mock_mutes)
+                # Also mock load_player_mutes_async which is called by is_player_muted_by_receiver_with_user_manager
+                mock_user_manager.load_player_mutes_async = AsyncMock(return_value=set())
 
-            with patch.object(
-                self.handler, "_is_player_muted_by_receiver_with_user_manager", side_effect=mock_mute_check
-            ):
-                # Mock the global user_manager instance
-                with patch("server.services.user_manager.user_manager") as mock_user_manager:
-                    # Mock batch loading method (implementation now uses batch loading for efficiency)
-                    mock_user_manager.load_player_mutes_batch = AsyncMock(return_value={})
+                # Execute
+                await self.handler._broadcast_to_room_with_filtering(self.room_id, chat_event, self.sender_id, "local")
 
-                    # Execute
-                    await self.handler._broadcast_to_room_with_filtering(
-                        self.room_id, chat_event, self.sender_id, "local"
-                    )
-
-                    # Verify that mute data was pre-loaded for all receivers using batch loading
-                    expected_receivers = [pid for pid in self.all_players if pid != self.sender_id]
-                    # Implementation now uses load_player_mutes_batch instead of individual calls
-                    mock_user_manager.load_player_mutes_batch.assert_called_once()
-                    call_args = mock_user_manager.load_player_mutes_batch.call_args[0][0]
-                    assert set(call_args) == set(expected_receivers), "Batch load should include all expected receivers"
+                # Verify that mute data was pre-loaded for all receivers using batch loading
+                expected_receivers = [pid for pid in self.all_players if pid != self.sender_id]
+                # Implementation now uses load_player_mutes_batch instead of individual calls
+                mock_user_manager.load_player_mutes_batch.assert_called_once()
+                call_args = mock_user_manager.load_player_mutes_batch.call_args[0][0]
+                assert set(call_args) == set(expected_receivers), "Batch load should include all expected receivers"

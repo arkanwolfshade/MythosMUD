@@ -1,10 +1,10 @@
-import { fireEvent, render, screen, waitFor, act } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { StatsRollingScreen } from './StatsRollingScreen';
 
 // Mock fetch globally
 const mockFetch = vi.fn();
-global.fetch = mockFetch;
+vi.stubGlobal('fetch', mockFetch);
 
 // Mock the logger
 vi.mock('../utils/logger', () => ({
@@ -37,12 +37,15 @@ describe('StatsRollingScreen', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           stats: {
-            strength: 12,
-            dexterity: 14,
-            constitution: 10,
-            intelligence: 16,
-            wisdom: 8,
-            charisma: 13,
+            strength: 60,
+            dexterity: 70,
+            constitution: 50,
+            size: 55,
+            intelligence: 80,
+            power: 65,
+            education: 40,
+            charisma: 65,
+            luck: 50,
           },
         }),
       };
@@ -69,12 +72,15 @@ describe('StatsRollingScreen', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           stats: {
-            strength: 12,
-            dexterity: 14,
-            constitution: 10,
-            intelligence: 16,
-            wisdom: 8,
-            charisma: 13,
+            strength: 60,
+            dexterity: 70,
+            constitution: 50,
+            size: 55,
+            intelligence: 80,
+            power: 65,
+            education: 40,
+            charisma: 65,
+            luck: 50,
           },
         }),
       } as unknown as Response;
@@ -104,12 +110,15 @@ describe('StatsRollingScreen', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           stats: {
-            strength: 12,
-            dexterity: 14,
-            constitution: 10,
-            intelligence: 16,
-            wisdom: 8,
-            charisma: 13,
+            strength: 60,
+            dexterity: 70,
+            constitution: 50,
+            size: 55,
+            intelligence: 80,
+            power: 65,
+            education: 40,
+            charisma: 65,
+            luck: 50,
           },
         }),
       };
@@ -131,12 +140,42 @@ describe('StatsRollingScreen', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByText('12')).toBeInTheDocument();
-        expect(screen.getByText('14')).toBeInTheDocument();
-        expect(screen.getByText('10')).toBeInTheDocument();
-        expect(screen.getByText('16')).toBeInTheDocument();
-        expect(screen.getByText('8')).toBeInTheDocument();
-        expect(screen.getByText('13')).toBeInTheDocument();
+        // Use within to scope queries to each stat-item to avoid conflicts with duplicate values
+        const strengthItem = screen.getByText('Strength:').closest('.stat-item');
+        expect(strengthItem).not.toBeNull();
+        expect(within(strengthItem as HTMLElement).getByText('60')).toBeInTheDocument();
+
+        const dexterityItem = screen.getByText('Dexterity:').closest('.stat-item');
+        expect(dexterityItem).not.toBeNull();
+        expect(within(dexterityItem as HTMLElement).getByText('70')).toBeInTheDocument();
+
+        const constitutionItem = screen.getByText('Constitution:').closest('.stat-item');
+        expect(constitutionItem).not.toBeNull();
+        expect(within(constitutionItem as HTMLElement).getByText('50')).toBeInTheDocument();
+
+        const sizeItem = screen.getByText('Size:').closest('.stat-item');
+        expect(sizeItem).not.toBeNull();
+        expect(within(sizeItem as HTMLElement).getByText('55')).toBeInTheDocument();
+
+        const intelligenceItem = screen.getByText('Intelligence:').closest('.stat-item');
+        expect(intelligenceItem).not.toBeNull();
+        expect(within(intelligenceItem as HTMLElement).getByText('80')).toBeInTheDocument();
+
+        const powerItem = screen.getByText('Power:').closest('.stat-item');
+        expect(powerItem).not.toBeNull();
+        expect(within(powerItem as HTMLElement).getByText('65')).toBeInTheDocument();
+
+        const educationItem = screen.getByText('Education:').closest('.stat-item');
+        expect(educationItem).not.toBeNull();
+        expect(within(educationItem as HTMLElement).getByText('40')).toBeInTheDocument();
+
+        const charismaItem = screen.getByText('Charisma:').closest('.stat-item');
+        expect(charismaItem).not.toBeNull();
+        expect(within(charismaItem as HTMLElement).getByText('65')).toBeInTheDocument();
+
+        const luckItem = screen.getByText('Luck:').closest('.stat-item');
+        expect(luckItem).not.toBeNull();
+        expect(within(luckItem as HTMLElement).getByText('50')).toBeInTheDocument();
       });
     });
 
@@ -145,12 +184,15 @@ describe('StatsRollingScreen', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           stats: {
-            strength: 15,
-            dexterity: 12,
-            constitution: 14,
-            intelligence: 10,
-            wisdom: 13,
-            charisma: 11,
+            strength: 75,
+            dexterity: 60,
+            constitution: 70,
+            size: 55,
+            intelligence: 50,
+            power: 50,
+            education: 65,
+            charisma: 55,
+            luck: 50,
           },
         }),
       };
@@ -161,12 +203,42 @@ describe('StatsRollingScreen', () => {
       });
 
       await waitFor(() => {
-        expect(screen.getByText('15')).toBeInTheDocument();
-        expect(screen.getByText('12')).toBeInTheDocument();
-        expect(screen.getByText('14')).toBeInTheDocument();
-        expect(screen.getByText('10')).toBeInTheDocument();
-        expect(screen.getByText('13')).toBeInTheDocument();
-        expect(screen.getByText('11')).toBeInTheDocument();
+        // Use within to scope queries to each stat-item to avoid conflicts with duplicate values
+        const strengthItem = screen.getByText('Strength:').closest('.stat-item');
+        expect(strengthItem).not.toBeNull();
+        expect(within(strengthItem as HTMLElement).getByText('75')).toBeInTheDocument();
+
+        const dexterityItem = screen.getByText('Dexterity:').closest('.stat-item');
+        expect(dexterityItem).not.toBeNull();
+        expect(within(dexterityItem as HTMLElement).getByText('60')).toBeInTheDocument();
+
+        const constitutionItem = screen.getByText('Constitution:').closest('.stat-item');
+        expect(constitutionItem).not.toBeNull();
+        expect(within(constitutionItem as HTMLElement).getByText('70')).toBeInTheDocument();
+
+        const sizeItem = screen.getByText('Size:').closest('.stat-item');
+        expect(sizeItem).not.toBeNull();
+        expect(within(sizeItem as HTMLElement).getByText('55')).toBeInTheDocument();
+
+        const intelligenceItem = screen.getByText('Intelligence:').closest('.stat-item');
+        expect(intelligenceItem).not.toBeNull();
+        expect(within(intelligenceItem as HTMLElement).getByText('50')).toBeInTheDocument();
+
+        const powerItem = screen.getByText('Power:').closest('.stat-item');
+        expect(powerItem).not.toBeNull();
+        expect(within(powerItem as HTMLElement).getByText('50')).toBeInTheDocument();
+
+        const educationItem = screen.getByText('Education:').closest('.stat-item');
+        expect(educationItem).not.toBeNull();
+        expect(within(educationItem as HTMLElement).getByText('65')).toBeInTheDocument();
+
+        const charismaItem = screen.getByText('Charisma:').closest('.stat-item');
+        expect(charismaItem).not.toBeNull();
+        expect(within(charismaItem as HTMLElement).getByText('55')).toBeInTheDocument();
+
+        const luckItem = screen.getByText('Luck:').closest('.stat-item');
+        expect(luckItem).not.toBeNull();
+        expect(within(luckItem as HTMLElement).getByText('50')).toBeInTheDocument();
       });
 
       expect(screen.getByText('Accept Stats & Create Character')).toBeInTheDocument();
@@ -214,12 +286,15 @@ describe('StatsRollingScreen', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           stats: {
-            strength: 12,
-            dexterity: 14,
-            constitution: 10,
-            intelligence: 16,
-            wisdom: 8,
-            charisma: 13,
+            strength: 60,
+            dexterity: 70,
+            constitution: 50,
+            size: 55,
+            intelligence: 80,
+            power: 65,
+            education: 40,
+            charisma: 65,
+            luck: 50,
           },
         }),
       };
@@ -252,12 +327,15 @@ describe('StatsRollingScreen', () => {
 
       await waitFor(() => {
         expect(defaultProps.onStatsAccepted).toHaveBeenCalledWith({
-          strength: 12,
-          dexterity: 14,
-          constitution: 10,
-          intelligence: 16,
-          wisdom: 8,
-          charisma: 13,
+          strength: 60,
+          dexterity: 70,
+          constitution: 50,
+          size: 55,
+          intelligence: 80,
+          power: 65,
+          education: 40,
+          charisma: 65,
+          luck: 50,
         });
       });
     });
@@ -269,12 +347,15 @@ describe('StatsRollingScreen', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           stats: {
-            strength: 12,
-            dexterity: 14,
-            constitution: 10,
-            intelligence: 16,
-            wisdom: 8,
-            charisma: 13,
+            strength: 60,
+            dexterity: 70,
+            constitution: 50,
+            size: 55,
+            intelligence: 80,
+            power: 65,
+            education: 40,
+            charisma: 65,
+            luck: 50,
           },
         }),
       };

@@ -22,7 +22,7 @@ from ..game.movement_monitor import get_movement_monitor
 from ..models.health import HealthErrorResponse, HealthResponse, HealthStatus
 
 # Removed: from ..persistence import get_persistence - now using async_persistence from request
-from ..realtime.connection_manager import resolve_connection_manager, set_global_connection_manager
+from ..realtime.connection_manager import resolve_connection_manager
 from ..services.health_service import get_health_service
 from ..utils.error_logging import create_context_from_request
 
@@ -37,8 +37,6 @@ def _resolve_connection_manager_from_request(request: Request):
     container = getattr(request.app.state, "container", None)
     candidate = getattr(container, "connection_manager", None) if container else None
     manager = resolve_connection_manager(candidate)
-    if manager is not None:
-        set_global_connection_manager(manager)
     if manager is None:
         raise RuntimeError("Connection manager is not configured")
     return manager

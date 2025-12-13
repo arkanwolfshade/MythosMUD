@@ -30,7 +30,7 @@ function createDefaultGameTerminalState() {
     player: {
       id: 'player-1',
       name: 'TestPlayer',
-      stats: { current_health: 100, lucidity: 80 },
+      stats: { current_dp: 100, lucidity: 80 },
       level: 5,
     },
     room: {
@@ -262,6 +262,7 @@ describe('GameTerminalContext', () => {
     });
 
     it('should surface error when used outside provider', () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       render(
         <ErrorBoundary>
           <TestComponent />
@@ -271,6 +272,7 @@ describe('GameTerminalContext', () => {
       expect(screen.getByTestId('error-boundary')).toHaveTextContent(
         'useGameTerminalContext must be used within a GameTerminalProvider'
       );
+      consoleErrorSpy.mockRestore();
     });
   });
 
@@ -287,6 +289,7 @@ describe('GameTerminalContext', () => {
     });
 
     it('should surface error when used outside provider', () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       render(
         <ErrorBoundary>
           <ConnectionTestComponent />
@@ -296,6 +299,7 @@ describe('GameTerminalContext', () => {
       expect(screen.getByTestId('error-boundary')).toHaveTextContent(
         'useGameTerminalContext must be used within a GameTerminalProvider'
       );
+      consoleErrorSpy.mockRestore();
     });
   });
 
@@ -313,6 +317,7 @@ describe('GameTerminalContext', () => {
     });
 
     it('should surface error when used outside provider', () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       render(
         <ErrorBoundary>
           <SessionTestComponent />
@@ -322,6 +327,7 @@ describe('GameTerminalContext', () => {
       expect(screen.getByTestId('error-boundary')).toHaveTextContent(
         'useGameTerminalContext must be used within a GameTerminalProvider'
       );
+      consoleErrorSpy.mockRestore();
     });
   });
 
@@ -340,6 +346,7 @@ describe('GameTerminalContext', () => {
     });
 
     it('should surface error when used outside provider', () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       render(
         <ErrorBoundary>
           <GameStateTestComponent />
@@ -349,6 +356,7 @@ describe('GameTerminalContext', () => {
       expect(screen.getByTestId('error-boundary')).toHaveTextContent(
         'useGameTerminalContext must be used within a GameTerminalProvider'
       );
+      consoleErrorSpy.mockRestore();
     });
   });
 
@@ -391,7 +399,7 @@ describe('GameTerminalContext', () => {
         player: {
           id: 'player-1',
           name: 'TestPlayer',
-          stats: { current_health: 100, lucidity: 80 },
+          stats: { current_dp: 100, lucidity: 80 },
           level: 5,
         },
         room: {
@@ -445,6 +453,7 @@ describe('GameTerminalContext', () => {
     });
 
     it('should surface error when used outside provider', () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       render(
         <ErrorBoundary>
           <GameActionsTestComponent />
@@ -454,6 +463,7 @@ describe('GameTerminalContext', () => {
       expect(screen.getByTestId('error-boundary')).toHaveTextContent(
         'useGameTerminalContext must be used within a GameTerminalProvider'
       );
+      consoleErrorSpy.mockRestore();
     });
   });
 

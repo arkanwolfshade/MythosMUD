@@ -9,11 +9,13 @@ from __future__ import annotations
 
 from typing import Any
 
+from sqlalchemy.exc import SQLAlchemyError
+
 from ..alias_storage import AliasStorage
 from ..logging.enhanced_logging_config import get_logger
 from ..realtime.envelope import build_event
 from ..services.player_position_service import PlayerPositionService
-from .utility_commands import get_username_from_user
+from ..utils.command_parser import get_username_from_user
 
 logger = get_logger(__name__)
 
@@ -37,7 +39,6 @@ def _format_room_posture_message(player_name: str, previous_position: str | None
 
 
 async def _handle_position_change(
-    command_data: dict,
     current_user: dict,
     request: Any,
     alias_storage: AliasStorage | None,
@@ -103,7 +104,13 @@ async def _handle_position_change(
                     new_position=result["position"],
                     room_id=room_id,
                 )
-            except Exception as exc:  # pragma: no cover - defensive logging path
+            except (
+                ValueError,
+                AttributeError,
+                ImportError,
+                SQLAlchemyError,
+                TypeError,
+            ) as exc:  # pragma: no cover - defensive logging path
                 logger.warning(
                     "Failed to broadcast posture change",
                     player_name=player_display_name,
@@ -133,7 +140,7 @@ async def _handle_position_change(
 
 
 async def handle_sit_command(
-    command_data: dict,
+    _command_data: dict,
     current_user: dict,
     request: Any,
     alias_storage: AliasStorage | None,
@@ -141,7 +148,6 @@ async def handle_sit_command(
 ) -> dict[str, Any]:
     """Handle /sit command."""
     return await _handle_position_change(
-        command_data,
         current_user,
         request,
         alias_storage,
@@ -152,7 +158,7 @@ async def handle_sit_command(
 
 
 async def handle_stand_command(
-    command_data: dict,
+    _command_data: dict,
     current_user: dict,
     request: Any,
     alias_storage: AliasStorage | None,
@@ -160,7 +166,6 @@ async def handle_stand_command(
 ) -> dict[str, Any]:
     """Handle /stand command."""
     return await _handle_position_change(
-        command_data,
         current_user,
         request,
         alias_storage,
@@ -171,7 +176,7 @@ async def handle_stand_command(
 
 
 async def handle_lie_command(
-    command_data: dict,
+    _command_data: dict,
     current_user: dict,
     request: Any,
     alias_storage: AliasStorage | None,
@@ -179,7 +184,6 @@ async def handle_lie_command(
 ) -> dict[str, Any]:
     """Handle /lie command (accepts optional 'down')."""
     return await _handle_position_change(
-        command_data,
         current_user,
         request,
         alias_storage,

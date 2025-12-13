@@ -37,7 +37,6 @@ class BaseEvent:
         """Initialize the event timestamp if not already set."""
         # Timestamp is already set by default_factory
         # event_type is set by child classes
-        pass
 
 
 @dataclass
@@ -195,8 +194,8 @@ class NPCTookDamage(BaseEvent):
     source_id: str | None = None  # ID of the entity that caused the damage
     combat_id: str | None = None  # Combat context
     npc_name: str | None = None  # NPC name for combat messages
-    current_hp: int | None = None  # Current HP after damage
-    max_hp: int | None = None  # Maximum HP
+    current_dp: int | None = None  # Current DP after damage
+    max_dp: int | None = None  # Maximum DP
 
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
@@ -209,7 +208,7 @@ class NPCDied(BaseEvent):
     """
     Event fired when an NPC dies.
 
-    This event is triggered when an NPC's health reaches zero
+    This event is triggered when an NPC's determination points reaches zero
     or when it is otherwise removed from the game world.
     """
 
@@ -270,18 +269,18 @@ class NPCListened(BaseEvent):
 
 
 @dataclass
-class PlayerHPUpdated(BaseEvent):
+class PlayerDPUpdated(BaseEvent):
     """
-    Event fired when a player's HP changes.
+    Event fired when a player's DP changes.
 
     This event is triggered when a player takes damage, heals,
-    or otherwise has their HP modified.
+    or otherwise has their DP modified.
     """
 
     player_id: UUID
-    old_hp: int
-    new_hp: int
-    max_hp: int
+    old_dp: int
+    new_dp: int
+    max_dp: int
     damage_taken: int = 0  # Amount of damage taken (negative for healing)
     source_id: str | None = None  # ID of the entity that caused the change
     combat_id: str | None = None  # Combat context if applicable
@@ -290,17 +289,17 @@ class PlayerHPUpdated(BaseEvent):
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "PlayerHPUpdated"
+        self.event_type = "PlayerDPUpdated"
 
 
 @dataclass
 class PlayerMortallyWoundedEvent(BaseEvent):
     """
-    Event fired when a player enters mortally wounded state (HP = 0).
+    Event fired when a player enters mortally wounded state (DP = 0).
 
-    This event is triggered when a player's HP reaches 0 but before they die.
-    The player enters a mortally wounded state where they lose 1 HP per tick
-    until reaching -10 HP (death).
+    This event is triggered when a player's DP reaches 0 but before they die.
+    The player enters a mortally wounded state where they lose 1 DP per tick
+    until reaching -10 DP (death).
     """
 
     player_id: str
@@ -317,32 +316,32 @@ class PlayerMortallyWoundedEvent(BaseEvent):
 
 
 @dataclass
-class PlayerHPDecayEvent(BaseEvent):
+class PlayerDPDecayEvent(BaseEvent):
     """
-    Event fired when a mortally wounded player loses HP due to decay.
+    Event fired when a mortally wounded player loses DP due to decay.
 
     This event is triggered once per game tick for players in mortally wounded
-    state, decreasing their HP by 1 until they reach -10 HP (death).
+    state, decreasing their DP by 1 until they reach -10 DP (death).
     """
 
     player_id: UUID
-    old_hp: int
-    new_hp: int
-    decay_amount: int = 1  # Amount of HP lost due to decay
+    old_dp: int
+    new_dp: int
+    decay_amount: int = 1  # Amount of DP lost due to decay
     room_id: str | None = None  # Room where the decay occurred
 
     def __post_init__(self) -> None:
         """Initialize the event with proper type."""
         super().__post_init__()
-        self.event_type = "PlayerHPDecayEvent"
+        self.event_type = "PlayerDPDecayEvent"
 
 
 @dataclass
 class PlayerDiedEvent(BaseEvent):
     """
-    Event fired when a player dies (HP <= -10).
+    Event fired when a player dies (DP <= -10).
 
-    This event is triggered when a player's HP reaches -10 or below,
+    This event is triggered when a player's DP reaches -10 or below,
     signaling the transition to the death/respawn sequence.
     """
 
@@ -372,8 +371,8 @@ class PlayerRespawnedEvent(BaseEvent):
     player_id: UUID
     player_name: str
     respawn_room_id: str
-    old_hp: int
-    new_hp: int
+    old_dp: int
+    new_dp: int
     death_room_id: str | None = None  # Where the player died
 
     def __post_init__(self) -> None:

@@ -360,7 +360,7 @@ class GameConfig(BaseSettings):
     motd_file: str = Field(default="data/motd.html", description="Message of the day file")
 
     # Game mechanics
-    hp_regen_rate: int = Field(default=1, description="Health regeneration rate")
+    dp_regen_rate: int = Field(default=1, description="Determination regeneration rate")
     combat_tick_interval: int = Field(default=6, description="Combat tick interval in seconds")
     game_tick_rate: float = Field(default=1.0, description="Game tick rate")
     weather_update_interval: int = Field(default=300, description="Weather update interval in seconds")
@@ -573,7 +573,7 @@ class CORSConfig(BaseSettings):
             parsed = self._parse_csv(env_raw, allow_empty=False)
             try:
                 object.__setattr__(self, "allow_origins", parsed)
-            except Exception:
+            except (AttributeError, TypeError):
                 # Fallback assignment if model is mutable
                 self.allow_origins = parsed
 
@@ -590,9 +590,54 @@ class CORSConfig(BaseSettings):
             parsed = self._parse_csv(env_raw, allow_empty=False)
             try:
                 object.__setattr__(self, "allow_origins", parsed)
-            except Exception:
+            except (AttributeError, TypeError):
                 self.allow_origins = parsed
         return self
+
+    @classmethod
+    def _parse_allow_origins_from_env(cls) -> list[str] | None:
+        """Parse CORS allow origins from environment variables."""
+        cors_env = os.getenv("CORS_ALLOW_ORIGINS") or os.getenv("CORS_ORIGINS") or os.getenv("CORS_ALLOWED_ORIGINS")
+        if cors_env is not None:
+            return cls._parse_csv(cors_env, allow_empty=False)
+
+        legacy = os.getenv("ALLOWED_ORIGINS")
+        if legacy is not None:
+            return cls._parse_csv(legacy, allow_empty=False)
+
+        return None
+
+    @classmethod
+    def _parse_allow_methods_from_env(cls) -> list[str] | None:
+        """Parse CORS allow methods from environment variables."""
+        raw_methods = os.getenv("CORS_ALLOW_METHODS") or os.getenv("ALLOWED_METHODS")
+        if raw_methods is not None:
+            return [m.upper() for m in cls._parse_csv(raw_methods, allow_empty=False)]
+        return None
+
+    @classmethod
+    def _parse_allow_headers_from_env(cls) -> list[str] | None:
+        """Parse CORS allow headers from environment variables."""
+        raw_headers = os.getenv("CORS_ALLOW_HEADERS") or os.getenv("ALLOWED_HEADERS")
+        if raw_headers is not None:
+            return cls._parse_csv(raw_headers, allow_empty=False)
+        return None
+
+    @classmethod
+    def _parse_max_age_from_env(cls) -> int | None:
+        """Parse CORS max age from environment variables."""
+        raw_max_age = os.getenv("CORS_MAX_AGE")
+        if raw_max_age is not None and raw_max_age.isdigit():
+            return int(raw_max_age)
+        return None
+
+    @classmethod
+    def _parse_allow_credentials_from_env(cls) -> bool | None:
+        """Parse CORS allow credentials from environment variables."""
+        raw_creds = os.getenv("CORS_ALLOW_CREDENTIALS")
+        if raw_creds is not None:
+            return str(raw_creds).strip().lower() in {"1", "true", "yes", "on"}
+        return None
 
     @classmethod
     def settings_customise_sources(
@@ -604,63 +649,68 @@ class CORSConfig(BaseSettings):
         file_secret_settings,
         **_kwargs,
     ):
-        def legacy_cors_normalizer():
-            """Normalize legacy CORS origins from CSV to list before env parsing.
-
-            This ensures providers do not attempt JSON decoding on comma-separated strings.
-            """
-            raw_origins = (
-                os.getenv("CORS_ALLOW_ORIGINS")
-                or os.getenv("CORS_ORIGINS")
-                or os.getenv("CORS_ALLOWED_ORIGINS")
-                or os.getenv("ALLOWED_ORIGINS")
-            )
-
-            if not raw_origins:
-                return {}
-
-            candidate = raw_origins.strip()
-            if candidate.startswith("[") and candidate.endswith("]"):
-                # Already JSON-style; let normal env source handle it
-                return {}
-
-            items = [item.strip() for item in candidate.split(",") if item.strip()]
-            if not items:
-                return {}
-
-            return {"allow_origins": items}
-
         def manual_env_source() -> dict[str, Any]:
             """Manually parse environment for CORS fields to avoid JSON decoding issues."""
             state: dict[str, Any] = {}
 
-            cors_env = os.getenv("CORS_ALLOW_ORIGINS") or os.getenv("CORS_ORIGINS") or os.getenv("CORS_ALLOWED_ORIGINS")
-            if cors_env is not None:
-                state["allow_origins"] = cls._parse_csv(cors_env, allow_empty=False)
-            else:
-                legacy = os.getenv("ALLOWED_ORIGINS")
-                if legacy is not None:
-                    state["allow_origins"] = cls._parse_csv(legacy, allow_empty=False)
+            allow_origins = cls._parse_allow_origins_from_env()
+            if allow_origins is not None:
+                state["allow_origins"] = allow_origins
 
-            raw_methods = os.getenv("CORS_ALLOW_METHODS") or os.getenv("ALLOWED_METHODS")
-            if raw_methods is not None:
-                state["allow_methods"] = [m.upper() for m in cls._parse_csv(raw_methods, allow_empty=False)]
+            allow_methods = cls._parse_allow_methods_from_env()
+            if allow_methods is not None:
+                state["allow_methods"] = allow_methods
 
-            raw_headers = os.getenv("CORS_ALLOW_HEADERS") or os.getenv("ALLOWED_HEADERS")
-            if raw_headers is not None:
-                state["allow_headers"] = cls._parse_csv(raw_headers, allow_empty=False)
+            allow_headers = cls._parse_allow_headers_from_env()
+            if allow_headers is not None:
+                state["allow_headers"] = allow_headers
 
-            raw_max_age = os.getenv("CORS_MAX_AGE")
-            if raw_max_age is not None and raw_max_age.isdigit():
-                state["max_age"] = int(raw_max_age)
+            max_age = cls._parse_max_age_from_env()
+            if max_age is not None:
+                state["max_age"] = max_age
 
-            raw_creds = os.getenv("CORS_ALLOW_CREDENTIALS")
-            if raw_creds is not None:
-                state["allow_credentials"] = str(raw_creds).strip().lower() in {"1", "true", "yes", "on"}
+            allow_credentials = cls._parse_allow_credentials_from_env()
+            if allow_credentials is not None:
+                state["allow_credentials"] = allow_credentials
 
             return state
 
         return init_settings, manual_env_source, dotenv_settings, file_secret_settings
+
+    @staticmethod
+    def _validate_non_empty(cleaned: list[str], allow_empty: bool) -> None:
+        """Validate that cleaned list is not empty if allow_empty is False."""
+        if not cleaned and not allow_empty:
+            raise ValueError("At least one entry must be provided")
+
+    @staticmethod
+    def _clean_list_items(items: list[Any]) -> list[str]:
+        """Clean and filter list items, removing empty strings."""
+        return [str(item).strip() for item in items if str(item).strip()]
+
+    @staticmethod
+    def _parse_json_array(candidate: str, allow_empty: bool) -> list[str] | None:
+        """Parse JSON array string if it looks like one, otherwise return None."""
+        if not (candidate.startswith("[") and candidate.endswith("]")):
+            return None
+
+        try:
+            loaded = json.loads(candidate)
+            if isinstance(loaded, list):
+                cleaned = CORSConfig._clean_list_items(loaded)
+                CORSConfig._validate_non_empty(cleaned, allow_empty)
+                return cleaned
+        except json.JSONDecodeError:
+            pass
+
+        return None
+
+    @staticmethod
+    def _parse_comma_separated(candidate: str, allow_empty: bool) -> list[str]:
+        """Parse comma-separated string into cleaned list."""
+        items = [item.strip() for item in candidate.split(",") if item.strip()]
+        CORSConfig._validate_non_empty(items, allow_empty)
+        return items
 
     @staticmethod
     def _parse_csv(value: object, allow_empty: bool) -> list[str]:
@@ -671,28 +721,17 @@ class CORSConfig(BaseSettings):
             raise ValueError("At least one entry must be provided")
 
         if isinstance(value, list):
-            cleaned = [str(item).strip() for item in value if str(item).strip()]
-            if not cleaned and not allow_empty:
-                raise ValueError("At least one entry must be provided")
+            cleaned = CORSConfig._clean_list_items(value)
+            CORSConfig._validate_non_empty(cleaned, allow_empty)
             return cleaned
 
         if isinstance(value, str):
             candidate = value.strip()
-            if candidate.startswith("[") and candidate.endswith("]"):
-                try:
-                    loaded = json.loads(candidate)
-                    if isinstance(loaded, list):
-                        cleaned = [str(item).strip() for item in loaded if str(item).strip()]
-                        if not cleaned and not allow_empty:
-                            raise ValueError("At least one entry must be provided")
-                        return cleaned
-                except json.JSONDecodeError:
-                    pass
+            json_result = CORSConfig._parse_json_array(candidate, allow_empty)
+            if json_result is not None:
+                return json_result
 
-            items = [item.strip() for item in candidate.split(",") if item.strip()]
-            if not items and not allow_empty:
-                raise ValueError("At least one entry must be provided")
-            return items
+            return CORSConfig._parse_comma_separated(candidate, allow_empty)
 
         raise ValueError("Value must be a list of strings or a comma-separated string")
 
@@ -717,7 +756,10 @@ class CORSConfig(BaseSettings):
             return cls._parse_csv(value, allow_empty=False)
 
         # Final fallback to the model default
-        default_factory = cls.model_fields["allow_origins"].default_factory
+        field_info = cls.model_fields.get("allow_origins")
+        if field_info is None:
+            raise ValueError("Field 'allow_origins' not found in model fields")
+        default_factory = field_info.default_factory
         defaults = list(default_factory()) if default_factory else []  # type: ignore[call-arg]
         if not defaults:
             raise ValueError("At least one CORS origin must be provided")
@@ -772,31 +814,45 @@ class PlayerStatsConfig(BaseSettings):
     strength: int = Field(default=50, description="Default strength")
     dexterity: int = Field(default=50, description="Default dexterity")
     constitution: int = Field(default=50, description="Default constitution")
+    size: int = Field(default=50, description="Default size")
     intelligence: int = Field(default=50, description="Default intelligence")
-    wisdom: int = Field(default=50, description="Default wisdom")
+    power: int = Field(default=50, description="Default power")
+    education: int = Field(default=50, description="Default education")
     charisma: int = Field(default=50, description="Default charisma")
-    max_health: int = Field(default=100, description="Default max health")
+    luck: int = Field(default=50, description="Default luck")
+    max_dp: int = Field(default=20, description="Default max determination points (DP)")
+    max_magic_points: int = Field(default=10, description="Default max magic points (MP)")
     max_lucidity: int = Field(default=100, description="Default max lucidity")
-    health: int = Field(default=100, description="Default starting health")
+    determination_points: int = Field(default=20, description="Default starting determination points (DP)")
+    magic_points: int = Field(default=10, description="Default starting magic points (MP)")
     lucidity: int = Field(default=100, description="Default starting lucidity")
-    fear: int = Field(default=0, description="Default fear level")
     corruption: int = Field(default=0, description="Default corruption level")
-    occult_knowledge: int = Field(default=0, description="Default occult knowledge")
+    occult: int = Field(default=0, description="Default occult knowledge")
 
-    @field_validator("strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma")
+    @field_validator(
+        "strength", "dexterity", "constitution", "size", "intelligence", "power", "education", "charisma", "luck"
+    )
     @classmethod
     def validate_stat_range(cls, v: int) -> int:
         """Validate stats are in valid range."""
-        if v < 1 or v > 100:
-            raise ValueError("Stats must be between 1 and 100")
+        # No hard caps as requested - just ensure positive
+        if v < 1:
+            raise ValueError("Stats must be at least 1")
         return v
 
-    @field_validator("max_health", "max_lucidity", "health", "lucidity")
+    @field_validator(
+        "max_dp",
+        "max_magic_points",
+        "max_lucidity",
+        "determination_points",
+        "magic_points",
+        "lucidity",
+    )
     @classmethod
-    def validate_health_Lucidity(cls, v: int) -> int:
-        """Validate health/lucidity values."""
-        if v < 1 or v > 1000:
-            raise ValueError("Health/lucidity must be between 1 and 1000")
+    def validate_derived_stats(cls, v: int) -> int:
+        """Validate derived stats values."""
+        if v < 0:
+            raise ValueError("Derived stats must be non-negative")
         return v
 
     model_config = {"env_prefix": "DEFAULT_STATS_", "case_sensitive": False, "extra": "ignore"}
@@ -807,16 +863,20 @@ class PlayerStatsConfig(BaseSettings):
             "strength": self.strength,
             "dexterity": self.dexterity,
             "constitution": self.constitution,
+            "size": self.size,
             "intelligence": self.intelligence,
-            "wisdom": self.wisdom,
+            "power": self.power,
+            "education": self.education,
             "charisma": self.charisma,
-            "max_health": self.max_health,
+            "luck": self.luck,
+            "max_dp": self.max_dp,
+            "max_magic_points": self.max_magic_points,
             "max_lucidity": self.max_lucidity,
-            "health": self.health,
+            "determination_points": self.determination_points,
+            "magic_points": self.magic_points,
             "lucidity": self.lucidity,
-            "fear": self.fear,
             "corruption": self.corruption,
-            "occult_knowledge": self.occult_knowledge,
+            "occult": self.occult,
         }
 
 
@@ -853,19 +913,27 @@ class AppConfig(BaseSettings):
             else:
                 raise
 
-        # Set DATABASE_URL environment variable for legacy code that reads it directly
-        import os
-
-        if self.database.url:
-            os.environ["DATABASE_URL"] = self.database.url
-
-        if self.database.npc_url:
-            os.environ["NPC_DATABASE_URL"] = self.database.npc_url
-
-        if self.game.aliases_dir:
-            os.environ["ALIASES_DIR"] = self.game.aliases_dir
-
         # Avoid mutating environment for CORS values to prevent cross-test leakage
+
+    @model_validator(mode="after")
+    def set_legacy_environment_variables(self) -> "AppConfig":
+        """Set environment variables for legacy code that reads them directly."""
+        # In mode="after", all fields are validated and instantiated as their config types
+        # pylint: disable=no-member
+        database = self.database
+        game = self.game
+
+        if database.url:
+            os.environ["DATABASE_URL"] = database.url
+
+        if database.npc_url:
+            os.environ["NPC_DATABASE_URL"] = database.npc_url
+
+        if game.aliases_dir:
+            os.environ["ALIASES_DIR"] = game.aliases_dir
+        # pylint: enable=no-member
+
+        return self
 
     @staticmethod
     def _sanitize_environment_for_nested_configs() -> None:
@@ -891,84 +959,97 @@ class AppConfig(BaseSettings):
 
         This allows gradual migration of code that expects dict-based config access.
         """
+        # Pylint can't detect Pydantic dynamic attributes, so disable no-member for this method
+        # pylint: disable=no-member
+        server = self.server
+        database = self.database
+        security = self.security
+        logging_config = self.logging
+        game = self.game
+        nats = self.nats
+        chat = self.chat
+        cors = self.cors
+        default_player_stats = self.default_player_stats
+
         return {
             # Server
-            "host": self.server.host,
-            "port": self.server.port,
+            "host": server.host,
+            "port": server.port,
             # Database
-            "database_url": self.database.url,
-            "npc_database_url": self.database.npc_url,
+            "database_url": database.url,
+            "npc_database_url": database.npc_url,
             # Security
-            "admin_password": self.security.admin_password,
-            "invite_codes_file": self.security.invite_codes_file,
+            "admin_password": security.admin_password,
+            "invite_codes_file": security.invite_codes_file,
             # Logging (convert to nested dict)
-            "logging": self.logging.to_legacy_dict(),
+            "logging": logging_config.to_legacy_dict(),
             # Game
-            "default_player_room": self.game.default_player_room,
-            "max_connections_per_player": self.game.max_connections_per_player,
-            "rate_limit_window": self.game.rate_limit_window,
-            "rate_limit_max_requests": self.game.rate_limit_max_requests,
-            "max_command_length": self.game.max_command_length,
-            "max_alias_depth": self.game.max_alias_depth,
-            "max_alias_length": self.game.max_alias_length,
-            "max_aliases_per_player": self.game.max_aliases_per_player,
-            "aliases_dir": self.game.aliases_dir,
-            "motd_file": self.game.motd_file,
-            "hp_regen_rate": self.game.hp_regen_rate,
-            "combat_tick_interval": self.game.combat_tick_interval,
-            "game_tick_rate": self.game.game_tick_rate,
-            "weather_update_interval": self.game.weather_update_interval,
-            "save_interval": self.game.save_interval,
+            "default_player_room": game.default_player_room,
+            "max_connections_per_player": game.max_connections_per_player,
+            "rate_limit_window": game.rate_limit_window,
+            "rate_limit_max_requests": game.rate_limit_max_requests,
+            "max_command_length": game.max_command_length,
+            "max_alias_depth": game.max_alias_depth,
+            "max_alias_length": game.max_alias_length,
+            "max_aliases_per_player": game.max_aliases_per_player,
+            "aliases_dir": game.aliases_dir,
+            "motd_file": game.motd_file,
+            "dp_regen_rate": game.dp_regen_rate,
+            "combat_tick_interval": game.combat_tick_interval,
+            "game_tick_rate": game.game_tick_rate,
+            "weather_update_interval": game.weather_update_interval,
+            "save_interval": game.save_interval,
             # Combat configuration
-            "combat_enabled": self.game.combat_enabled,
-            "combat_timeout_seconds": self.game.combat_timeout_seconds,
-            "combat_xp_multiplier": self.game.combat_xp_multiplier,
-            "combat_logging_enabled": self.game.combat_logging_enabled,
-            "combat_monitoring_enabled": self.game.combat_monitoring_enabled,
-            "combat_alert_threshold": self.game.combat_alert_threshold,
-            "combat_performance_threshold": self.game.combat_performance_threshold,
-            "combat_error_threshold": self.game.combat_error_threshold,
+            "combat_enabled": game.combat_enabled,
+            "combat_timeout_seconds": game.combat_timeout_seconds,
+            "combat_xp_multiplier": game.combat_xp_multiplier,
+            "combat_logging_enabled": game.combat_logging_enabled,
+            "combat_monitoring_enabled": game.combat_monitoring_enabled,
+            "combat_alert_threshold": game.combat_alert_threshold,
+            "combat_performance_threshold": game.combat_performance_threshold,
+            "combat_error_threshold": game.combat_error_threshold,
             # NATS (convert to nested dict)
             "nats": {
-                "enabled": self.nats.enabled,
-                "url": self.nats.url,
-                "max_payload": self.nats.max_payload,
-                "reconnect_time_wait": self.nats.reconnect_time_wait,
-                "max_reconnect_attempts": self.nats.max_reconnect_attempts,
-                "connect_timeout": self.nats.connect_timeout,
-                "ping_interval": self.nats.ping_interval,
-                "max_outstanding_pings": self.nats.max_outstanding_pings,
+                "enabled": nats.enabled,
+                "url": nats.url,
+                "max_payload": nats.max_payload,
+                "reconnect_time_wait": nats.reconnect_time_wait,
+                "max_reconnect_attempts": nats.max_reconnect_attempts,
+                "connect_timeout": nats.connect_timeout,
+                "ping_interval": nats.ping_interval,
+                "max_outstanding_pings": nats.max_outstanding_pings,
             },
             # Chat (convert to nested dict)
             "chat": {
                 "rate_limiting": {
                     "enabled": True,
-                    "global": self.chat.rate_limit_global,
-                    "local": self.chat.rate_limit_local,
-                    "say": self.chat.rate_limit_say,
-                    "party": self.chat.rate_limit_party,
-                    "whisper": self.chat.rate_limit_whisper,
+                    "global": chat.rate_limit_global,
+                    "local": chat.rate_limit_local,
+                    "say": chat.rate_limit_say,
+                    "party": chat.rate_limit_party,
+                    "whisper": chat.rate_limit_whisper,
                 },
                 "content_filtering": {
-                    "enabled": self.chat.content_filtering_enabled,
-                    "profanity_filter": self.chat.profanity_filter,
-                    "keyword_detection": self.chat.keyword_detection,
+                    "enabled": chat.content_filtering_enabled,
+                    "profanity_filter": chat.profanity_filter,
+                    "keyword_detection": chat.keyword_detection,
                 },
                 "message_history": {
-                    "enabled": self.chat.message_history_enabled,
-                    "retention_days": self.chat.message_retention_days,
-                    "max_messages_per_channel": self.chat.max_messages_per_channel,
+                    "enabled": chat.message_history_enabled,
+                    "retention_days": chat.message_retention_days,
+                    "max_messages_per_channel": chat.max_messages_per_channel,
                 },
             },
             # CORS configuration
             "cors": {
-                "allow_origins": self.cors.allow_origins,
-                "allow_credentials": self.cors.allow_credentials,
-                "allow_methods": self.cors.allow_methods,
-                "allow_headers": self.cors.allow_headers,
-                "expose_headers": self.cors.expose_headers,
-                "max_age": self.cors.max_age,
+                "allow_origins": cors.allow_origins,
+                "allow_credentials": cors.allow_credentials,
+                "allow_methods": cors.allow_methods,
+                "allow_headers": cors.allow_headers,
+                "expose_headers": cors.expose_headers,
+                "max_age": cors.max_age,
             },
             # Default player stats
-            "default_player_stats": self.default_player_stats.to_dict(),
+            "default_player_stats": default_player_stats.to_dict(),
         }
+        # pylint: enable=no-member

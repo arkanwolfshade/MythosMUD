@@ -1,10 +1,10 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../App';
 
 // Mock fetch globally
 const mockFetch = vi.fn();
-global.fetch = mockFetch;
+globalThis.fetch = mockFetch as typeof fetch;
 
 // Mock the logger
 vi.mock('../utils/logger', () => ({
@@ -720,9 +720,11 @@ describe('Profession System Error Handling and Edge Cases', () => {
 
       // Rapidly click reroll button
       const rerollButton = screen.getByText('Reroll Stats');
-      fireEvent.click(rerollButton);
-      fireEvent.click(rerollButton);
-      fireEvent.click(rerollButton);
+      await act(async () => {
+        fireEvent.click(rerollButton);
+        fireEvent.click(rerollButton);
+        fireEvent.click(rerollButton);
+      });
 
       // Should handle rapid rerolling gracefully
       expect(screen.getByText('Character Creation')).toBeInTheDocument();
