@@ -111,26 +111,7 @@ ACT_RUNNER_IMAGE := mythosmud-gha-runner:latest
 ACT_RUNNER_DOCKERFILE := Dockerfile.github-runner
 
 test-ci:
-	@if [ -n "$$CI" ] || [ -n "$$GITHUB_ACTIONS" ]; then \
-		echo "Running CI test suite directly (already in CI environment)..."; \
-		cd $(PROJECT_ROOT)/client && npm run test:coverage; \
-		cd $(PROJECT_ROOT)/client && npm run test; \
-		cd $(PROJECT_ROOT) && source .venv-ci/bin/activate && pytest server/tests/ --cov=server --cov-report=xml --cov-report=html --cov-fail-under=80 -v --tb=short; \
-	else \
-		echo "Building Docker runner image (this ensures dependencies are up-to-date)..."; \
-		cd $(PROJECT_ROOT) && docker build --pull -t $(ACT_RUNNER_IMAGE) -f $(ACT_RUNNER_DOCKERFILE) .; \
-		echo "Running CI test suite in Docker (coverage enforced)..."; \
-		echo "Starting PostgreSQL service in container..."; \
-		docker run --rm \
-			-v "$(PROJECT_ROOT):/workspace" \
-			-w /workspace \
-			$(ACT_RUNNER_IMAGE) \
-			bash -c "service postgresql start && sleep 3 && \
-			cd /workspace/client && npm run test:coverage && \
-			cd /workspace/client && npm run test && \
-			cd /workspace && source .venv/bin/activate && \
-			pytest server/tests/ --cov=server --cov-report=xml --cov-report=html --cov-fail-under=80 -v --tb=short"; \
-	fi
+	cd $(PROJECT_ROOT) && python scripts/run_test_ci.py
 
 # Legacy alias for backward compatibility
 coverage: test-coverage
