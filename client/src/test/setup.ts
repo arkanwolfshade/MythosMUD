@@ -1,7 +1,13 @@
+/// <reference types="node" />
 import '@testing-library/jest-dom/vitest';
-import { afterAll, beforeAll, vi } from 'vitest';
 import { mkdirSync } from 'fs';
 import { join } from 'path';
+import { afterAll, beforeAll, vi } from 'vitest';
+
+// Type definition for global in test environment
+declare global {
+  var global: typeof globalThis;
+}
 
 // Ensure coverage temp directory exists
 try {

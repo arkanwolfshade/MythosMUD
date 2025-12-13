@@ -113,6 +113,9 @@ async def test_catatonia_clearance_resets_timestamp_and_notifies(session_factory
     session_maker = session_factory
     async with session_maker() as session:
         player = await create_player(session, name="victim", lucidity=5, tier="deranged")
+        # Commit player creation to ensure foreign key constraints are satisfied
+        await session.commit()
+
         observer = MagicMock()
         service = LucidityService(session, catatonia_observer=observer)
 

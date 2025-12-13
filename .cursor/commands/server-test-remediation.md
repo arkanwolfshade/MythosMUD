@@ -13,7 +13,7 @@
 - **Test Runner**: pytest with uv for Python dependency management
 - **Test Database**: SQLite test database in `server/tests/data/players/`
 - **Test Environment**: Isolated test environment with test-specific configuration
-- **Command**: `make test` (runs server-side Python tests only)
+- **Command**: `make test-server` (runs server-side Python tests only)
 - **Coverage Target**: Minimum 80% code coverage
 - **Test Execution**: Serial execution (not parallel) for database tests
 
@@ -32,7 +32,7 @@
 
 ### 1. Initial Assessment
 
-**EXECUTE**: `make test`
+**EXECUTE**: `make test-server`
 **ANALYZE**: Parse output for failure patterns
 **CATEGORIZE**: Match failures to categories below
 **DOCUMENT**: Record findings before proceeding

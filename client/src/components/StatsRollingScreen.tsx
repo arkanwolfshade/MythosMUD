@@ -10,6 +10,7 @@ interface Stats {
   intelligence: number;
   power: number;
   education: number;
+  wisdom: number;
   charisma: number;
   luck: number;
 }

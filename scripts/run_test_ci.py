@@ -84,20 +84,45 @@ else:
 
     docker_cmd = (
         "service postgresql start && sleep 3 && "
+        # Install npm dependencies in container (node_modules uses Docker volume, not Windows mount)
+        # This ensures Linux-specific optional dependencies are installed correctly
+        "cd /workspace/client && npm install && "
         "cd /workspace/client && npm run test:coverage && "
         "cd /workspace/client && npm run test && "
+        # Use .venv from Docker volume (preserved from build, not overwritten by mount)
         "cd /workspace && source .venv/bin/activate && "
         "pytest server/tests/ --cov=server --cov-report=xml --cov-report=html "
         "--cov-fail-under=80 -v --tb=short"
     )
 
+    # Mount workspace from host, but use Docker volumes to override dependencies and caches
+    # This ensures we only use source code from the host, not host's .venv, node_modules, or caches
+    # Docker volumes take precedence over bind mounts, so host dependencies are ignored
+    # This avoids Windows filesystem I/O issues and ensures Linux-specific dependencies work correctly
     subprocess.run(
         [
             "docker",
             "run",
             "--rm",
+            # Mount workspace (source code only - dependencies overridden by volumes below)
             "-v",
             f"{PROJECT_ROOT}:/workspace",
+            # Override host dependencies with Docker volumes (Linux-specific)
+            "-v",
+            "mythosmud-node-modules:/workspace/client/node_modules",
+            "-v",
+            "mythosmud-venv:/workspace/.venv",
+            # Override host caches and build artifacts with Docker volumes
+            "-v",
+            "mythosmud-npm-cache:/root/.npm",
+            "-v",
+            "mythosmud-pytest-cache:/workspace/.pytest_cache",
+            "-v",
+            "mythosmud-coverage:/workspace/htmlcov",
+            "-v",
+            "mythosmud-client-coverage:/workspace/client/coverage",
+            "-v",
+            "mythosmud-client-dist:/workspace/client/dist",
             "-w",
             "/workspace",
             ACT_RUNNER_IMAGE,

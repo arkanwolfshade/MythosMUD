@@ -1,20 +1,10 @@
-import { expect } from '@playwright/test';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, describe, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { GameLogPanel } from '../panels/GameLogPanel';
 
 // Mock the dependencies
-vi.mock('../src/components/ui/EldritchIcon', () => ({
-  EldritchIcon: ({
-    name,
-    _size,
-    _variant,
-    className,
-  }: {
-    name: string;
-    _size?: number;
-    _variant?: string;
-    className?: string;
-  }) => (
+vi.mock('../../ui/EldritchIcon', () => ({
+  EldritchIcon: ({ name, className }: { name: string; className?: string }) => (
     <span data-testid={`icon-${name}`} className={className}>
       {name}
     </span>
@@ -33,7 +23,7 @@ interface TerminalButtonProps {
   [key: string]: unknown;
 }
 
-vi.mock('../src/components/ui/TerminalButton', () => ({
+vi.mock('../../ui/TerminalButton', () => ({
   TerminalButton: ({ children, onClick, disabled, ...props }: TerminalButtonProps) => (
     <button onClick={onClick} disabled={disabled} {...props}>
       {children}
@@ -41,7 +31,7 @@ vi.mock('../src/components/ui/TerminalButton', () => ({
   ),
 }));
 
-vi.mock('../src/utils/ansiToHtml', () => ({
+vi.mock('../../utils/ansiToHtml', () => ({
   ansiToHtmlWithBreaks: (text: string) => text.replace(/\n/g, '<br>'),
 }));
 
@@ -391,8 +381,10 @@ describe('GameLogPanel', () => {
           messageType: 'chat',
         },
         {
-          // Missing required fields
+          // Malformed message with invalid timestamp format
           text: 'Invalid message',
+          timestamp: 'invalid-timestamp',
+          isHtml: false,
         },
       ];
 

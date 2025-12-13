@@ -1335,24 +1335,28 @@ class TestSessionBoundaryEnforcement:
     _session_loop_registry: dict[str, Any] = {}
 
     @classmethod
-    def register_test_loop(cls, test_id: str, loop: asyncio.AbstractEventLoop):
+    def register_test_loop(cls, test_id: str, loop: asyncio.AbstractEventLoop | None):
         """Register a test loop to prevent conflicts."""
         if test_id in cls._session_loop_registry:
             raise RuntimeError(f"Test loop conflict detected: {test_id} already has an active loop")
 
         cls._session_loop_registry[test_id] = loop
-        cls._active_loops.add(loop)
+        # Only add non-None loops to active_loops set
+        if loop is not None:
+            cls._active_loops.add(loop)
 
     @classmethod
     def unregister_test_loop(cls, test_id: str):
         """Unregister a test loop after test completion."""
         if test_id in cls._session_loop_registry:
             loop = cls._session_loop_registry[test_id]
-            cls._active_loops.discard(loop)
+            # Only remove non-None loops from active_loops
+            if loop is not None:
+                cls._active_loops.discard(loop)
             del cls._session_loop_registry[test_id]
 
-            # Ensure loop is properly closed
-            if not loop.is_closed():
+            # Ensure loop is properly closed (skip None placeholders)
+            if loop is not None and not loop.is_closed():
                 try:
                     # Only try to get tasks if the loop is still running
                     if loop.is_running():
@@ -1388,9 +1392,10 @@ class TestSessionBoundaryEnforcement:
             print(f"Warning: {len(cls._active_loops)} orphaned test loops detected")
             for loop in list(cls._active_loops):
                 try:
-                    if not loop.is_closed():
+                    # Skip None placeholders (registered but no actual loop)
+                    if loop is not None and not loop.is_closed():
                         loop.close()
-                except (RuntimeError, TypeError):
+                except (RuntimeError, TypeError, AttributeError):
                     pass
             cls._active_loops.clear()
             cls._session_loop_registry.clear()

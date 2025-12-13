@@ -83,8 +83,9 @@ COPY client/package.json client/package-lock.json ./client/
 COPY client/scripts ./client/scripts/
 WORKDIR /workspace/client
 # Human reader: use npm ci for reproducible builds, fallback to npm install if lock file is out of sync.
-# AI reader: npm ci requires lock file to be in sync with package.json. If it fails, use npm install.
-RUN npm ci || npm install
+# AI reader: npm ci requires lock file to be in sync with package.json. If it fails, clean and reinstall.
+# If npm ci fails, remove node_modules and package-lock.json, then run npm install to ensure optional dependencies are installed.
+RUN npm ci || (rm -rf node_modules package-lock.json && npm install)
 
 # Copy full source after dependency layers are cached.
 WORKDIR /workspace
@@ -125,9 +126,6 @@ RUN service postgresql start && \
     su postgres -c "psql -f /workspace/db/roles/roles.sql" && \
     su postgres -c "psql -f /workspace/db/databases/databases.sql" && \
     su postgres -c "psql -d mythos_unit -f /workspace/db/authoritative_schema.sql" && \
-    su postgres -c "psql -d mythos_unit -f /workspace/db/migrations/010_migrate_player_id_to_uuid.sql" && \
-    su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -f /workspace/db/migrations/012_create_containers_table.sql" && \
-    su postgres -c "psql -v ON_ERROR_STOP=1 -d mythos_unit -f /workspace/db/migrations/011_add_container_item_instance_id.sql" && \
     su postgres -c "psql -d mythos_unit -f /workspace/data/db/00_world_and_emotes.sql" && \
     su postgres -c "psql -d mythos_unit -f /workspace/data/db/01_professions.sql" && \
     su postgres -c "psql -d mythos_unit -f /workspace/data/db/02_item_prototypes.sql" && \

@@ -392,8 +392,8 @@ describe('ChatPanel', () => {
     it('should format timestamps correctly', () => {
       render(<ChatPanel {...defaultProps} />);
 
-      // Should display formatted timestamps (the mock formatTimestamp function shows 03:00:00)
-      expect(screen.getByText('03:00:00')).toBeInTheDocument();
+      // Should display formatted timestamps (formatTimestamp formats '2024-01-01T10:00:00Z' as '10:00:00')
+      expect(screen.getByText('10:00:00')).toBeInTheDocument();
     });
 
     it('should apply correct CSS classes for different message types', () => {
