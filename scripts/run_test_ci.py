@@ -3,8 +3,10 @@
 
 import json
 import os
+import queue
 import subprocess
 import sys
+import threading
 import time
 
 # Configure stdout/stderr encoding for Windows to handle Unicode characters
@@ -187,11 +189,35 @@ else:
         pass  # Ignore logging errors
     # #endregion
 
+    # #region agent log
+    try:
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "id": f"log_{int(time.time())}_docker_run_start",
+                        "timestamp": int(time.time() * 1000),
+                        "location": "run_test_ci.py:194",
+                        "message": "Starting Docker run command",
+                        "data": {"image": ACT_RUNNER_IMAGE},
+                        "sessionId": "debug-session",
+                        "runId": "docker-ci",
+                        "hypothesisId": "A",
+                    }
+                )
+                + "\n"
+            )
+    except (RuntimeError, TypeError):
+        pass  # Ignore logging errors
+    # #endregion
+
     # Mount workspace from host, but use Docker volumes to override dependencies and caches
     # This ensures we only use source code from the host, not host's .venv, node_modules, or caches
     # Docker volumes take precedence over bind mounts, so host dependencies are ignored
     # This avoids Windows filesystem I/O issues and ensures Linux-specific dependencies work correctly
-    result = subprocess.run(
+    # Use Popen with real-time output to avoid deadlock from output buffering
+    start_time = time.time()
+    process = subprocess.Popen(
         [
             "docker",
             "run",
@@ -222,12 +248,205 @@ else:
             "-c",
             docker_cmd,
         ],
-        check=False,
-        capture_output=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
         text=True,
         encoding="utf-8",
-        errors="replace",  # Replace un-decodable bytes with replacement character instead of failing
+        errors="replace",
+        bufsize=1,  # Line buffered
     )
+
+    # #region agent log
+    try:
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "id": f"log_{int(time.time())}_docker_process_created",
+                        "timestamp": int(time.time() * 1000),
+                        "location": "run_test_ci.py:230",
+                        "message": "Docker process created, starting output reading",
+                        "data": {"pid": process.pid},
+                        "sessionId": "debug-session",
+                        "runId": "docker-ci",
+                        "hypothesisId": "A",
+                    }
+                )
+                + "\n"
+            )
+    except (RuntimeError, TypeError):
+        pass
+    # #endregion
+
+    # Read output line by line to avoid deadlock from output buffering
+    # Use a queue and thread to read output with timeout detection
+    output_queue = queue.Queue()
+    output_lines = []
+    last_output_time = time.time()
+
+    def read_output():
+        """Read process output in background thread."""
+        try:
+            for line in process.stdout:
+                output_queue.put(("line", line))
+        except Exception as e:
+            output_queue.put(("error", str(e)))
+
+    reader_thread = threading.Thread(target=read_output, daemon=True)
+    reader_thread.start()
+
+    try:
+        # #region agent log
+        try:
+            with open(log_path, "a", encoding="utf-8") as f:
+                f.write(
+                    json.dumps(
+                        {
+                            "id": f"log_{int(time.time())}_reading_output_start",
+                            "timestamp": int(time.time() * 1000),
+                            "location": "run_test_ci.py:282",
+                            "message": "Starting to read Docker output",
+                            "data": {},
+                            "sessionId": "debug-session",
+                            "runId": "docker-ci",
+                            "hypothesisId": "A",
+                        }
+                    )
+                    + "\n"
+                )
+        except (RuntimeError, TypeError):
+            pass
+        # #endregion
+
+        # Read from queue - no timeout, let tests complete naturally
+        while True:
+            # Check if process finished
+            if process.poll() is not None and output_queue.empty():
+                break
+
+            try:
+                item_type, item = output_queue.get(timeout=1.0)
+                if item_type == "line":
+                    output_lines.append(item)
+                    print(item, end="", flush=True)
+
+                    # #region agent log - Track important milestones
+                    if any(
+                        keyword in item.lower()
+                        for keyword in [
+                            "postgresql",
+                            "starting",
+                            "test:coverage",
+                            "pytest",
+                            "timeout",
+                            "error",
+                            "failed",
+                        ]
+                    ):
+                        try:
+                            with open(log_path, "a", encoding="utf-8") as f:
+                                f.write(
+                                    json.dumps(
+                                        {
+                                            "id": f"log_{int(time.time())}_docker_milestone",
+                                            "timestamp": int(time.time() * 1000),
+                                            "location": "run_test_ci.py:340",
+                                            "message": "Docker output milestone",
+                                            "data": {
+                                                "line_preview": item[:150].strip(),
+                                                "output_lines_count": len(output_lines),
+                                            },
+                                            "sessionId": "debug-session",
+                                            "runId": "docker-ci",
+                                            "hypothesisId": "A",
+                                        }
+                                    )
+                                    + "\n"
+                                )
+                        except (RuntimeError, TypeError):
+                            pass
+                    # #endregion
+                elif item_type == "error":
+                    raise Exception(f"Error reading output: {item}")
+            except queue.Empty:
+                # Check if process is still running
+                if process.poll() is not None:
+                    # Process finished, drain remaining queue
+                    while not output_queue.empty():
+                        try:
+                            item_type, item = output_queue.get_nowait()
+                            if item_type == "line":
+                                output_lines.append(item)
+                                print(item, end="", flush=True)
+                        except queue.Empty:
+                            break
+                    break
+                continue
+
+        returncode = process.returncode if process.poll() is not None else 1
+        stdout = "".join(output_lines)
+        stderr = ""
+
+        # #region agent log
+        try:
+            with open(log_path, "a", encoding="utf-8") as f:
+                f.write(
+                    json.dumps(
+                        {
+                            "id": f"log_{int(time.time())}_process_complete",
+                            "timestamp": int(time.time() * 1000),
+                            "location": "run_test_ci.py:380",
+                            "message": "Process completed",
+                            "data": {
+                                "returncode": returncode,
+                                "total_output_lines": len(output_lines),
+                                "elapsed_time": int(time.time() - start_time),
+                            },
+                            "sessionId": "debug-session",
+                            "runId": "docker-ci",
+                            "hypothesisId": "A",
+                        }
+                    )
+                    + "\n"
+                )
+        except (RuntimeError, TypeError):
+            pass
+        # #endregion
+    except Exception as e:
+        # #region agent log
+        try:
+            with open(log_path, "a", encoding="utf-8") as f:
+                f.write(
+                    json.dumps(
+                        {
+                            "id": f"log_{int(time.time())}_docker_error",
+                            "timestamp": int(time.time() * 1000),
+                            "location": "run_test_ci.py:365",
+                            "message": "Error reading Docker output",
+                            "data": {"error": str(e), "type": type(e).__name__},
+                            "sessionId": "debug-session",
+                            "runId": "docker-ci",
+                            "hypothesisId": "A",
+                        }
+                    )
+                    + "\n"
+                )
+        except (RuntimeError, TypeError):
+            pass
+        # #endregion
+        process.kill()
+        returncode = 1
+        stdout = "".join(output_lines)
+        stderr = str(e)
+
+    # Create result-like object
+    class Result:
+        def __init__(self, returncode, stdout, stderr):
+            self.returncode = returncode
+            self.stdout = stdout
+            self.stderr = stderr
+
+    result = Result(returncode, stdout, stderr)
 
     # #region agent log
     try:
