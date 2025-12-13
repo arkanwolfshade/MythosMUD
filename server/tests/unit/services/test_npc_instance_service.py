@@ -571,17 +571,24 @@ class TestGlobalServiceManagement:
 
     def test_get_npc_instance_service_not_initialized(self):
         """Test getting service before initialization raises error."""
-        # Need to temporarily set global to None
+        # Need to temporarily set global storage to None
         import server.services.npc_instance_service as service_module
 
-        original_service = service_module.npc_instance_service
+        # Store original service from the actual storage list
+        original_service = service_module._npc_instance_service_storage[0]
+        # Reset the storage to None
+        service_module._npc_instance_service_storage[0] = None
+        # Also reset the module-level variable for consistency
+        original_module_var = service_module.npc_instance_service
         service_module.npc_instance_service = None
 
         try:
             with pytest.raises(RuntimeError, match="NPC instance service not initialized"):
                 get_npc_instance_service()
         finally:
-            service_module.npc_instance_service = original_service
+            # Restore original service
+            service_module._npc_instance_service_storage[0] = original_service
+            service_module.npc_instance_service = original_module_var
 
     def test_initialize_npc_instance_service(
         self, mock_lifecycle_manager, mock_spawning_service, mock_population_controller, mock_event_bus

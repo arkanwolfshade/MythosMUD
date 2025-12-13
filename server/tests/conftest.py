@@ -72,7 +72,10 @@ logger = get_logger(__name__)
 
 # Import Windows-specific logging fixes
 try:
-    from .windows_logging_fix import configure_windows_logging, disable_problematic_log_handlers
+    from .windows_logging_fix import (  # pyright: ignore
+        configure_windows_logging,
+        disable_problematic_log_handlers,
+    )
 
     configure_windows_logging()
     disable_problematic_log_handlers()
@@ -82,7 +85,7 @@ except ImportError:
 
 # Import Windows-specific event loop fixes
 try:
-    from .windows_event_loop_fix import configure_windows_event_loops
+    from .windows_event_loop_fix import configure_windows_event_loops  # pyright: ignore
 
     configure_windows_event_loops()
 except ImportError:
@@ -183,7 +186,7 @@ def validate_test_environment():
 
     # Validate that the file has required content
     try:
-        with open(TEST_ENV_PATH) as f:
+        with open(TEST_ENV_PATH, encoding="utf-8") as f:
             content = f.read()
             required_vars = ["SERVER_PORT=", "DATABASE_URL=", "DATABASE_NPC_URL=", "MYTHOSMUD_ADMIN_PASSWORD="]
             missing_vars = []
@@ -290,11 +293,11 @@ def _cleanup_on_exit():
                         # Just try to dispose directly
                         try:
                             asyncio.run_coroutine_threadsafe(db_manager.close(), cleanup_loop)
-                        except Exception:
+                        except (RuntimeError, TypeError):
                             pass
                     else:
                         cleanup_loop.run_until_complete(db_manager.close())
-            except Exception:
+            except (RuntimeError, TypeError):
                 pass
 
             # Clean up NPC database
@@ -302,11 +305,11 @@ def _cleanup_on_exit():
                 if cleanup_loop.is_running():
                     try:
                         asyncio.run_coroutine_threadsafe(close_npc_db(), cleanup_loop)
-                    except Exception:
+                    except (RuntimeError, TypeError):
                         pass
                 else:
                     cleanup_loop.run_until_complete(close_npc_db())
-            except Exception:
+            except (RuntimeError, TypeError):
                 pass
 
             # Close the loop if we created it
@@ -318,10 +321,10 @@ def _cleanup_on_exit():
                     if pending:
                         cleanup_loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
                     cleanup_loop.close()
-                except Exception:
+                except (RuntimeError, TypeError):
                     pass
 
-    except Exception:
+    except (RuntimeError, TypeError):
         # Ignore all errors during exit cleanup
         pass
 
@@ -409,7 +412,7 @@ def sync_test_environment():
     finally:
         try:
             loop.run_until_complete(test_env_manager.destroy_environment(env_name))
-        except Exception:
+        except (RuntimeError, TypeError):
             pass  # Ignore cleanup errors
         finally:
             # Restore original environment variables
@@ -475,8 +478,10 @@ def pytest_configure(config):
                 )
             apply_worker_suffix = False
 
-    global TEST_DB_PATH, TEST_NPC_DB_PATH
-    TEST_DB_PATH, TEST_NPC_DB_PATH = _configure_database_urls(worker_id, apply_worker_suffix=apply_worker_suffix)
+    # Store database paths in pytest config instead of using global variables
+    test_db_path, test_npc_db_path = _configure_database_urls(worker_id, apply_worker_suffix=apply_worker_suffix)
+    config.test_db_path = test_db_path
+    config.test_npc_db_path = test_npc_db_path
 
     # Ensure we're using the correct path for test logs (matches .env.unit_test)
     test_logs_dir = project_root / "logs" / "unit_test"
@@ -610,9 +615,9 @@ def _cleanup_event_loop(loop):
                                 # If disposal fails or times out, continue with cleanup
                                 # The engine will be garbage collected eventually
                                 pass
-                except Exception:
+                except (RuntimeError, TypeError):
                     pass
-        except Exception:
+        except (RuntimeError, TypeError):
             # Ignore errors during database cleanup
             pass
 
@@ -626,7 +631,7 @@ def _cleanup_event_loop(loop):
         if pending:
             try:
                 loop.run_until_complete(asyncio.wait_for(asyncio.gather(*pending, return_exceptions=True), timeout=0.5))
-            except (TimeoutError, RuntimeError, Exception):
+            except (TimeoutError, RuntimeError, TypeError):
                 # If we can't wait, just proceed to close
                 pass
 
@@ -639,17 +644,17 @@ def _cleanup_event_loop(loop):
                         transport.close()
                     elif hasattr(transport, "close"):
                         transport.close()
-                except Exception:
+                except (RuntimeError, TypeError):
                     pass
 
         # Close the loop
         loop.close()
-    except Exception:
+    except (RuntimeError, TypeError):
         # If cleanup fails, try to close anyway
         try:
             if not loop.is_closed():
                 loop.close()
-        except Exception:
+        except (RuntimeError, TypeError):
             pass
 
 
@@ -692,7 +697,7 @@ def cleanup_session_resources():
                             pass
                     else:
                         cleanup_loop.run_until_complete(db_manager.close())
-            except Exception:
+            except (RuntimeError, TypeError):
                 pass
 
             # Clean up NPC database
@@ -705,7 +710,7 @@ def cleanup_session_resources():
                         pass
                 else:
                     cleanup_loop.run_until_complete(close_npc_db())
-            except Exception:
+            except (RuntimeError, TypeError):
                 pass
 
             # Close all remaining tasks and the loop if we created it
@@ -718,7 +723,7 @@ def cleanup_session_resources():
                     if pending:
                         cleanup_loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
                     cleanup_loop.close()
-                except Exception:
+                except (RuntimeError, TypeError):
                     pass
 
         # Also ensure any default event loop is closed
@@ -733,13 +738,13 @@ def cleanup_session_resources():
                     if pending:
                         default_loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
                     default_loop.close()
-                except Exception:
+                except (RuntimeError, TypeError):
                     pass
         except RuntimeError:
             # No default loop - that's fine
             pass
 
-    except Exception:
+    except (RuntimeError, TypeError):
         # Ignore all cleanup errors - process exit will clean up
         pass
 
@@ -895,7 +900,7 @@ async def async_test_client(mock_application_container):
             db_manager._initialized = False
             db_manager.engine = None
             db_manager.session_maker = None
-    except Exception:
+    except (RuntimeError, TypeError):
         # Ignore errors - engine might not exist yet
         pass
 
@@ -932,13 +937,32 @@ async def async_test_client(mock_application_container):
     client = AsyncClient(transport=transport, base_url="http://test")
     client.app = app  # Attach app for backward compatibility
     client.app.state.server_shutdown_pending = False
+
+    # For serial tests, ensure database transactions are properly isolated
+    # by flushing any pending operations before starting the test
+    try:
+        # Force a small delay to ensure any pending database operations are committed
+        import asyncio
+
+        await asyncio.sleep(0.05)  # Small delay for transaction isolation
+    except (RuntimeError, TypeError):
+        pass  # Ignore errors in test setup
+
     try:
         yield client
     finally:
+        # For serial tests, ensure transactions are committed before cleanup
+        try:
+            import asyncio
+
+            await asyncio.sleep(0.05)  # Small delay to ensure transaction commit
+        except (RuntimeError, TypeError):
+            pass  # Ignore errors in test teardown
+
         # Explicitly close the client and transport to prevent ResourceWarnings
         try:
             await client.aclose()
-        except Exception:
+        except (RuntimeError, TypeError):
             pass
         # Cleanup database connections before event loop closes (Windows-specific fix)
         # This prevents "Event loop is closed" errors when asyncpg tries to use closed loop
@@ -949,7 +973,7 @@ async def async_test_client(mock_application_container):
             if db_manager and hasattr(db_manager, "engine") and db_manager.engine:
                 # Dispose of connection pool to close all connections
                 await db_manager.engine.dispose()
-        except Exception:
+        except (RuntimeError, TypeError):
             # Ignore cleanup errors - connections will be cleaned up by process exit
             pass
 
@@ -996,7 +1020,7 @@ async def async_event_bus():
     # Cleanup
     try:
         await event_bus.shutdown()
-    except Exception:
+    except (RuntimeError, TypeError):
         pass  # Ignore cleanup errors
 
 
@@ -1017,7 +1041,7 @@ async def async_connection_manager():
     # Cleanup
     try:
         await connection_manager.force_cleanup()
-    except Exception:
+    except (RuntimeError, TypeError):
         pass  # Ignore cleanup errors
 
 
@@ -1034,7 +1058,7 @@ async def async_event_handler(async_event_bus, async_connection_manager):
     # Cleanup
     try:
         event_handler.shutdown()
-    except Exception:
+    except (RuntimeError, TypeError):
         pass  # Ignore cleanup errors
 
 
@@ -1092,7 +1116,7 @@ def cleanup_all_asyncio_tasks():
                         if not task.done():
                             task.cancel()
                     eventbus._active_tasks.clear()
-        except Exception:
+        except (RuntimeError, TypeError):
             # Ignore cleanup errors during teardown
             pass
 
@@ -1122,13 +1146,13 @@ def cleanup_all_asyncio_tasks():
                 except RuntimeError:
                     # No running loop, just cancel tasks without waiting
                     pass
-                except Exception:
+                except TypeError:
                     # Ignore timeout or other errors during cleanup
                     pass
         except RuntimeError:
             # No event loop running, skip task cleanup
             pass
-    except Exception:
+    except (RuntimeError, TypeError):
         # Ignore any errors during task cleanup
         pass
 
@@ -1296,7 +1320,7 @@ class TestingAsyncMixin:
         if cleanup_tasks:
             try:
                 await asyncio.gather(*cleanup_tasks, return_exceptions=True)
-            except Exception:
+            except (RuntimeError, TypeError):
                 pass  # Ignore cleanup errors
 
 
@@ -1348,7 +1372,7 @@ class TestSessionBoundaryEnforcement:
                             pass
 
                     loop.close()
-                except Exception as e:
+                except (RuntimeError, TypeError) as e:
                     # Log but don't fail the test
                     print(f"Warning: Error closing test loop for {test_id}: {e}")
 
@@ -1366,7 +1390,7 @@ class TestSessionBoundaryEnforcement:
                 try:
                     if not loop.is_closed():
                         loop.close()
-                except Exception:
+                except (RuntimeError, TypeError):
                     pass
             cls._active_loops.clear()
             cls._session_loop_registry.clear()
@@ -1473,7 +1497,7 @@ def isolated_event_loop(request):
             # Wait for tasks to complete with timeout
             if pending_tasks:
                 loop.run_until_complete(asyncio.wait(pending_tasks, timeout=1.0, return_when=asyncio.ALL_COMPLETED))
-        except Exception:
+        except (RuntimeError, TypeError):
             pass  # Ignore cleanup errors
 
         # Close the loop
@@ -1550,7 +1574,7 @@ def pytest_sessionfinish(session, exitstatus):
                     else:
                         # Loop exists but not running - we can use run_until_complete
                         cleanup_loop.run_until_complete(db_manager.close())
-            except Exception:
+            except (RuntimeError, TypeError):
                 # Ignore cleanup errors - resources will be cleaned up by process exit
                 pass
 
@@ -1566,7 +1590,7 @@ def pytest_sessionfinish(session, exitstatus):
                             pass
                     else:
                         cleanup_loop.run_until_complete(close_npc_db())
-            except Exception:
+            except (RuntimeError, TypeError):
                 # Ignore cleanup errors
                 pass
 
@@ -1582,11 +1606,11 @@ def pytest_sessionfinish(session, exitstatus):
                         cleanup_loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
                     # Close the loop
                     cleanup_loop.close()
-                except Exception:
+                except (RuntimeError, TypeError):
                     # Ignore errors during loop closure
                     pass
 
-    except Exception:
+    except (RuntimeError, TypeError):
         # Ignore any errors during session cleanup - process exit will clean up resources
         pass
 
@@ -1603,7 +1627,7 @@ def pytest_sessionfinish(session, exitstatus):
 
     # Windows-specific cleanup
     try:
-        from .windows_event_loop_fix import cleanup_windows_event_loops
+        from .windows_event_loop_fix import cleanup_windows_event_loops  # pyright: ignore
 
         cleanup_windows_event_loops()
     except ImportError:
@@ -1617,6 +1641,25 @@ def pytest_runtest_setup(item):
     if active_loops > 0:
         print(f"Warning: {active_loops} active loops detected before test {item.name}")
 
+    # Handle serial marker - ensure database transactions are isolated
+    if item.get_closest_marker("serial"):
+        # For serial tests, add a delay to ensure previous test's transactions are committed
+        import time
+
+        time.sleep(0.2)  # Longer delay for serial tests to ensure transaction isolation
+
+        # Also ensure database connections are properly initialized
+        try:
+            from ..database import get_database_manager
+
+            db_manager = get_database_manager()
+            if db_manager and db_manager.engine:
+                # Force a connection to ensure the engine is ready
+                # This helps with transaction isolation
+                pass
+        except (RuntimeError, TypeError):
+            pass  # Ignore errors - database might not be initialized yet
+
 
 def pytest_runtest_teardown(item, nextitem):
     """Called to perform the teardown phase for a test item."""
@@ -1625,6 +1668,34 @@ def pytest_runtest_teardown(item, nextitem):
 
     # Note: Event loop cleanup is handled by the event_loop fixture
     # We don't close the loop here because pytest-asyncio is still managing it
+
+    # Handle serial marker - ensure database transactions are committed
+    if item.get_closest_marker("serial"):
+        # For serial tests, add a delay to ensure this test's transactions are committed
+        import time
+
+        time.sleep(0.2)  # Delay to ensure transaction commit
+
+
+def pytest_collection_modifyitems(config, items):
+    """
+    Modify test collection to handle serial tests.
+
+    Serial tests are moved to the end of the collection to ensure they run
+    after parallel tests, reducing the chance of race conditions.
+    """
+    serial_items = []
+    parallel_items = []
+
+    for item in items:
+        if item.get_closest_marker("serial"):
+            serial_items.append(item)
+        else:
+            parallel_items.append(item)
+
+    # Reorder: parallel tests first, then serial tests
+    # This ensures serial tests run after parallel tests complete
+    items[:] = parallel_items + serial_items
 
 
 # Track test outcomes to suppress teardown-only failures

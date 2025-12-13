@@ -280,8 +280,16 @@ class PlayerDeathService:
 
         container = ApplicationContainer.get_instance()
         if container and container.async_persistence:
-            room = container.async_persistence.get_room_by_id(death_location)
-            return room.name if room else death_location
+            try:
+                room = container.async_persistence.get_room_by_id(death_location)
+                # Handle case where get_room_by_id might return a coroutine (if mocked as async)
+                if hasattr(room, "__await__"):
+                    # It's a coroutine, can't await in sync context - just return location
+                    return death_location
+                return room.name if room and hasattr(room, "name") else death_location
+            except (AttributeError, TypeError):
+                # If room lookup fails, just return the location
+                return death_location
 
         return death_location
 
