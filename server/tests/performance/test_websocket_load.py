@@ -116,9 +116,15 @@ class TestWebSocketLoad:
             patch("server.realtime.integration.game_state_provider.logger") as mock_game_state_logger,
             patch("server.realtime.connection_manager.logger") as mock_connection_logger,
             patch("server.realtime.websocket_handler.logger") as mock_websocket_logger,
+            patch("server.realtime.connection_disconnection.logger") as mock_disconnection_logger,
         ):
             # Mock all logging methods for all loggers
-            for mock_logger in [mock_game_state_logger, mock_connection_logger, mock_websocket_logger]:
+            for mock_logger in [
+                mock_game_state_logger,
+                mock_connection_logger,
+                mock_websocket_logger,
+                mock_disconnection_logger,
+            ]:
                 mock_logger.warning = Mock()
                 mock_logger.info = Mock()
                 mock_logger.debug = Mock()
