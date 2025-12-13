@@ -117,7 +117,7 @@ export const handleMythosTimeUpdate: EventHandler = (event, context, appendMessa
 };
 
 export const handleGameTick: EventHandler = (event, _context, appendMessage) => {
-  const tickNumber = typeof event.data?.tick_number === 'number' ? event.data.tick_number : 0;
+  const tickNumber = typeof event.data.tick_number === 'number' ? event.data.tick_number : 0;
 
   // Display every 10th tick
   if (tickNumber % 10 === 0 && tickNumber >= 0) {

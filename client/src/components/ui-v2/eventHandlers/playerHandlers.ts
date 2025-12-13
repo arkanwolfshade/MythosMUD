@@ -23,7 +23,7 @@ export const handlePlayerEnteredGame: EventHandler = (event, _context, appendMes
 
 export const handlePlayerEntered: EventHandler = (event, _context, appendMessage) => {
   const playerName = event.data.player_name as string;
-  const messageText = event.data?.message as string;
+  const messageText = event.data.message as string;
   if (messageText && playerName) {
     appendMessage({
       text: messageText,
