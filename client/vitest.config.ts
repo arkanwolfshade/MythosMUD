@@ -10,6 +10,7 @@ export default defineConfig({
     exclude: ['tests/**/*', '**/*.spec.ts', '**/*.spec.tsx', 'node_modules/**/*'],
     pool: 'threads',
     maxConcurrency: 1,
+    // @ts-expect-error - poolOptions is valid but types are incomplete in vitest 4.0.15
     poolOptions: {
       threads: {
         singleThread: true,
@@ -20,6 +21,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       enabled: true,
+      clean: false, // Disable automatic cleaning to prevent EBUSY errors with Docker volume mounts
       include: ['src/**/*.{ts,tsx}'],
       exclude: [
         'src/**/*.test.{ts,tsx}',
