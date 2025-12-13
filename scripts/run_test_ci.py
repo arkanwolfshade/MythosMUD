@@ -72,6 +72,10 @@ if IN_CI:
     else:
         python_exe = os.path.join(PROJECT_ROOT, ".venv-ci", "bin", "python")
 
+    # Set environment variables to prevent output buffering issues in CI/Docker
+    env = os.environ.copy()
+    env["PYTHONUNBUFFERED"] = "1"
+
     subprocess.run(
         [
             python_exe,
@@ -87,6 +91,7 @@ if IN_CI:
         ],
         cwd=PROJECT_ROOT,
         check=True,
+        env=env,
     )
 else:
     print("Building Docker runner image (this ensures dependencies are up-to-date)...")
@@ -156,7 +161,7 @@ else:
         "cd /workspace/client && npm run test && "
         # Use .venv from Docker volume (preserved from build, not overwritten by mount)
         "cd /workspace && source .venv/bin/activate && "
-        "pytest server/tests/ --cov=server --cov-report=xml --cov-report=html "
+        "PYTHONUNBUFFERED=1 pytest server/tests/ --cov=server --cov-report=xml --cov-report=html "
         "--cov-fail-under=80 -v --tb=short"
     )
 
