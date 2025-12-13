@@ -29,8 +29,8 @@ class TestCombatSchemaValidation:
     def test_validate_base_stats_combat_data_valid(self):
         """Test validation of valid base stats combat data."""
         valid_data = {
-            "hp": 50,
-            "max_hp": 100,
+            "determination_points": 50,
+            "max_dp": 100,
             "xp_value": 10,
             "dexterity": 12,
             "strength": 15,
@@ -43,8 +43,8 @@ class TestCombatSchemaValidation:
     def test_validate_base_stats_combat_data_missing_required(self):
         """Test validation fails when required fields are missing."""
         invalid_data = {
-            "hp": 50,
-            # Missing max_hp and xp_value
+            "determination_points": 50,
+            # Missing max_dp and xp_value
         }
 
         with pytest.raises(CombatSchemaValidationError) as exc_info:
@@ -53,10 +53,10 @@ class TestCombatSchemaValidation:
         assert "Base stats combat data validation failed" in str(exc_info.value)
 
     def test_validate_base_stats_combat_data_invalid_hp(self):
-        """Test validation fails with invalid HP values."""
+        """Test validation fails with invalid DP values."""
         invalid_data = {
-            "hp": -10,  # Negative HP
-            "max_hp": 100,
+            "determination_points": -10,  # Negative DP
+            "max_dp": 100,
             "xp_value": 10,
         }
 
@@ -64,10 +64,10 @@ class TestCombatSchemaValidation:
             validate_base_stats_combat_data(invalid_data)
 
     def test_validate_base_stats_combat_data_invalid_max_hp(self):
-        """Test validation fails with invalid max HP values."""
+        """Test validation fails with invalid max DP values."""
         invalid_data = {
-            "hp": 50,
-            "max_hp": 0,  # Zero max HP
+            "determination_points": 50,
+            "max_dp": 0,  # Zero max DP
             "xp_value": 10,
         }
 
@@ -77,8 +77,8 @@ class TestCombatSchemaValidation:
     def test_validate_base_stats_combat_data_invalid_xp_value(self):
         """Test validation fails with negative XP value."""
         invalid_data = {
-            "hp": 50,
-            "max_hp": 100,
+            "determination_points": 50,
+            "max_dp": 100,
             "xp_value": -5,  # Negative XP
         }
 
@@ -88,10 +88,10 @@ class TestCombatSchemaValidation:
     def test_validate_base_stats_combat_data_invalid_dexterity(self):
         """Test validation fails with invalid dexterity values."""
         invalid_data = {
-            "hp": 50,
-            "max_hp": 100,
+            "determination_points": 50,
+            "max_dp": 100,
             "xp_value": 10,
-            "dexterity": 25,  # Too high
+            "dexterity": 0,  # Too low (below minimum of 1)
         }
 
         with pytest.raises(CombatSchemaValidationError):
@@ -100,8 +100,8 @@ class TestCombatSchemaValidation:
     def test_validate_base_stats_combat_data_invalid_strength(self):
         """Test validation fails with invalid strength values."""
         invalid_data = {
-            "hp": 50,
-            "max_hp": 100,
+            "determination_points": 50,
+            "max_dp": 100,
             "xp_value": 10,
             "strength": 0,  # Too low
         }
@@ -112,10 +112,10 @@ class TestCombatSchemaValidation:
     def test_validate_base_stats_combat_data_invalid_constitution(self):
         """Test validation fails with invalid constitution values."""
         invalid_data = {
-            "hp": 50,
-            "max_hp": 100,
+            "determination_points": 50,
+            "max_dp": 100,
             "xp_value": 10,
-            "constitution": 21,  # Too high
+            "constitution": 0,  # Too low (below minimum of 1)
         }
 
         with pytest.raises(CombatSchemaValidationError):
@@ -310,8 +310,8 @@ class TestCombatDataDefaults:
     def test_add_default_combat_data_to_stats_complete(self):
         """Test adding default combat data to complete stats."""
         stats = {
-            "hp": 75,
-            "max_hp": 100,
+            "determination_points": 75,
+            "max_dp": 100,
             "xp_value": 15,
             "dexterity": 12,
             "strength": 15,
@@ -322,8 +322,8 @@ class TestCombatDataDefaults:
         result = add_default_combat_data_to_stats(stats)
 
         # Should not modify existing values
-        assert result["hp"] == 75
-        assert result["max_hp"] == 100
+        assert result["determination_points"] == 75
+        assert result["max_dp"] == 100
         assert result["xp_value"] == 15
         assert result["dexterity"] == 12
         assert result["strength"] == 15
@@ -333,15 +333,15 @@ class TestCombatDataDefaults:
     def test_add_default_combat_data_to_stats_partial(self):
         """Test adding default combat data to partial stats."""
         stats = {
-            "hp": 50,
+            "determination_points": 50,
             "custom_field": "custom_value",
         }
 
         result = add_default_combat_data_to_stats(stats)
 
         # Should add missing defaults
-        assert result["hp"] == 50  # Existing value preserved
-        assert result["max_hp"] == DEFAULT_COMBAT_STATS["max_hp"]
+        assert result["determination_points"] == 50  # Existing value preserved
+        assert result["max_dp"] == DEFAULT_COMBAT_STATS["max_dp"]
         assert result["xp_value"] == DEFAULT_COMBAT_STATS["xp_value"]
         assert result["dexterity"] == DEFAULT_COMBAT_STATS["dexterity"]
         assert result["strength"] == DEFAULT_COMBAT_STATS["strength"]
@@ -417,8 +417,8 @@ class TestNPCCombatDataValidation:
         npc_definition = Mock()
         npc_definition.name = "Test NPC"
         npc_definition.get_base_stats = lambda: {
-            "hp": 50,
-            "max_hp": 100,
+            "determination_points": 50,
+            "max_dp": 100,
             "xp_value": 10,
             "dexterity": 12,
             "strength": 15,
@@ -447,8 +447,8 @@ class TestNPCCombatDataValidation:
         npc_definition = Mock()
         npc_definition.name = "Test NPC"
         npc_definition.get_base_stats = lambda: {
-            "hp": -10,  # Invalid HP
-            "max_hp": 100,
+            "determination_points": -10,  # Invalid DP
+            "max_dp": 100,
             "xp_value": 10,
         }
         npc_definition.get_behavior_config = lambda: {}
@@ -464,8 +464,8 @@ class TestNPCCombatDataValidation:
         npc_definition = Mock()
         npc_definition.name = "Test NPC"
         npc_definition.get_base_stats = lambda: {
-            "hp": 50,
-            "max_hp": 100,
+            "determination_points": 50,
+            "max_dp": 100,
             "xp_value": 10,
         }
         npc_definition.get_behavior_config = lambda: {
@@ -485,8 +485,8 @@ class TestNPCCombatDataValidation:
         npc_definition = Mock()
         npc_definition.name = "Test NPC"
         npc_definition.get_base_stats = lambda: {
-            "hp": 50,
-            "max_hp": 100,
+            "determination_points": 50,
+            "max_dp": 100,
             "xp_value": 10,
         }
         npc_definition.get_behavior_config = lambda: {
@@ -511,8 +511,8 @@ class TestCombatStatsSummary:
         npc_definition.name = "Test NPC"
         npc_definition.npc_type = "aggressive_mob"
         npc_definition.get_base_stats = lambda: {
-            "hp": 75,
-            "max_hp": 100,
+            "determination_points": 75,
+            "max_dp": 100,
             "xp_value": 15,
             "dexterity": 12,
             "strength": 15,
@@ -527,8 +527,8 @@ class TestCombatStatsSummary:
 
         assert result["npc_name"] == "Test NPC"
         assert result["npc_type"] == "aggressive_mob"
-        assert result["combat_stats"]["hp"] == 75
-        assert result["combat_stats"]["max_hp"] == 100
+        assert result["combat_stats"]["determination_points"] == 75
+        assert result["combat_stats"]["max_dp"] == 100
         assert result["combat_stats"]["xp_value"] == 15
         assert result["combat_stats"]["dexterity"] == 12
         assert result["combat_stats"]["strength"] == 15
@@ -543,8 +543,8 @@ class TestCombatStatsSummary:
         npc_definition.name = "Test NPC"
         npc_definition.npc_type = "passive_mob"
         npc_definition.get_base_stats = lambda: {
-            "hp": 50,
-            "max_hp": 50,
+            "determination_points": 50,
+            "max_dp": 50,
             "xp_value": 5,
         }
         npc_definition.get_behavior_config = lambda: {}
@@ -553,12 +553,12 @@ class TestCombatStatsSummary:
 
         assert result["npc_name"] == "Test NPC"
         assert result["npc_type"] == "passive_mob"
-        assert result["combat_stats"]["hp"] == 50
-        assert result["combat_stats"]["max_hp"] == 50
+        assert result["combat_stats"]["determination_points"] == 50
+        assert result["combat_stats"]["max_dp"] == 50
         assert result["combat_stats"]["xp_value"] == 5
-        assert result["combat_stats"]["dexterity"] == 10  # Default value
-        assert result["combat_stats"]["strength"] == 10  # Default value
-        assert result["combat_stats"]["constitution"] == 8  # Default value
+        assert result["combat_stats"]["dexterity"] == 50  # Default value
+        assert result["combat_stats"]["strength"] == 50  # Default value
+        assert result["combat_stats"]["constitution"] == 50  # Default value
         assert result["has_combat_messages"] is False
         assert result["has_combat_behavior"] is False
 
@@ -575,12 +575,12 @@ class TestCombatStatsSummary:
 
         assert result["npc_name"] == "Test NPC"
         assert result["npc_type"] == "neutral_mob"
-        assert result["combat_stats"]["hp"] == 0  # Default value
-        assert result["combat_stats"]["max_hp"] == 0  # Default value
+        assert result["combat_stats"]["determination_points"] == 0  # Default value
+        assert result["combat_stats"]["max_dp"] == 0  # Default value
         assert result["combat_stats"]["xp_value"] == 0  # Default value
-        assert result["combat_stats"]["dexterity"] == 10  # Default value
-        assert result["combat_stats"]["strength"] == 10  # Default value
-        assert result["combat_stats"]["constitution"] == 8  # Default value
+        assert result["combat_stats"]["dexterity"] == 50  # Default value
+        assert result["combat_stats"]["strength"] == 50  # Default value
+        assert result["combat_stats"]["constitution"] == 50  # Default value
         assert result["has_combat_messages"] is False
         assert result["has_combat_behavior"] is False
 

@@ -76,24 +76,17 @@ class PlayerDeathService:
                 current_dp = stats.get("current_dp", 0)  # current_dp represents DP
                 if 0 >= current_dp > -10:
                     mortally_wounded.append(player)
-
-            logger.debug(
-                "Found mortally wounded players",
-                count=len(mortally_wounded),
-                player_ids=[p.player_id for p in mortally_wounded],
-            )
-
-            return mortally_wounded
-
-        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
-            log_exception_once(
-                logger,
-                "error",
-                "Error retrieving mortally wounded players",
-                exc=e,
-                exc_info=True,
-            )
+        except Exception as e:
+            logger.error("Error getting mortally wounded players", error=str(e), exc_info=True)
             return []
+
+        logger.debug(
+            "Found mortally wounded players",
+            count=len(mortally_wounded),
+            player_ids=[p.player_id for p in mortally_wounded],
+        )
+
+        return mortally_wounded
 
     async def get_dead_players(self, session: AsyncSession) -> list[Player]:
         """
@@ -214,7 +207,7 @@ class PlayerDeathService:
 
             return True
 
-        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
+        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError, Exception) as e:
             log_exception_once(
                 logger,
                 "error",
@@ -367,7 +360,7 @@ class PlayerDeathService:
 
             return True
 
-        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
+        except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError, Exception) as e:
             log_exception_once(
                 logger,
                 "error",

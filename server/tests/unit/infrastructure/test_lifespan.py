@@ -36,6 +36,10 @@ class TestGameTickLoop:
         app = FastAPI()
         app.state.container = MagicMock()
         app.state.container.connection_manager = mock_connection_manager
+        # Mock persistence with async methods for corpse cleanup
+        mock_persistence = MagicMock()
+        mock_persistence.get_decayed_containers = AsyncMock(return_value=[])
+        app.state.container.persistence = mock_persistence
 
         task = asyncio.create_task(game_tick_loop(app))
 
@@ -63,6 +67,10 @@ class TestGameTickLoop:
         app = FastAPI()
         app.state.container = MagicMock()
         app.state.container.connection_manager = mock_connection_manager
+        # Mock persistence with async methods for corpse cleanup
+        mock_persistence = MagicMock()
+        mock_persistence.get_decayed_containers = AsyncMock(return_value=[])
+        app.state.container.persistence = mock_persistence
 
         task = asyncio.create_task(game_tick_loop(app))
 
@@ -97,7 +105,7 @@ class TestGameTickLoop:
             call_count[0] += 1
             # First call succeeds, second call fails
             if call_count[0] == 2:
-                raise Exception("Broadcast error")
+                raise RuntimeError("Broadcast error")
             # Third call should succeed (loop continues)
 
         mock_broadcast.side_effect = broadcast_with_error
@@ -105,6 +113,10 @@ class TestGameTickLoop:
         app = FastAPI()
         app.state.container = MagicMock()
         app.state.container.connection_manager = mock_connection_manager
+        # Mock persistence with async methods for corpse cleanup
+        mock_persistence = MagicMock()
+        mock_persistence.get_decayed_containers = AsyncMock(return_value=[])
+        app.state.container.persistence = mock_persistence
 
         task = asyncio.create_task(game_tick_loop(app))
 
@@ -132,6 +144,10 @@ class TestGameTickLoop:
         app = FastAPI()
         app.state.container = MagicMock()
         app.state.container.connection_manager = mock_connection_manager
+        # Mock persistence with async methods for corpse cleanup
+        mock_persistence = MagicMock()
+        mock_persistence.get_decayed_containers = AsyncMock(return_value=[])
+        app.state.container.persistence = mock_persistence
 
         task = asyncio.create_task(game_tick_loop(app))
 
@@ -298,7 +314,7 @@ class TestGameTickLoopLegacy:
             nonlocal call_count
             call_count += 1
             if call_count == 1:
-                raise Exception("Broadcast error")
+                raise RuntimeError("Broadcast error")
             # Succeed on subsequent calls
 
         with patch(

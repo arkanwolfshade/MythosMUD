@@ -76,7 +76,8 @@ class TestSecurityHeadersVerification:
         mock_persistence.list_players = AsyncMock(return_value=[mock_player])
         mock_persistence.get_player = Mock(side_effect=mock_get_player)
         mock_persistence.get_player_by_name = Mock(return_value=mock_player)
-        mock_persistence.get_profession_by_id = Mock(return_value=mock_profession)
+        # get_profession_by_id is async in the actual persistence layer
+        mock_persistence.get_profession_by_id = AsyncMock(return_value=mock_profession)
         mock_persistence.get_room = AsyncMock(side_effect=mock_get_room)
         mock_persistence.save_player = Mock(return_value=None)
         mock_persistence.delete_player = AsyncMock(return_value=True)  # delete_player is async
@@ -84,6 +85,18 @@ class TestSecurityHeadersVerification:
         # Replace container persistence
         app.state.container.persistence = mock_persistence
         app.state.persistence = mock_persistence
+
+        # Mock database_manager if it exists to avoid session errors
+        if hasattr(app.state.container, "database_manager"):
+            mock_database_manager = Mock()
+            mock_session_maker = AsyncMock()
+            # Make session_maker() return an async context manager
+            mock_session = AsyncMock()
+            mock_session.__aenter__ = AsyncMock(return_value=mock_session)
+            mock_session.__aexit__ = AsyncMock(return_value=None)
+            mock_session_maker.return_value = mock_session
+            mock_database_manager.get_session_maker = Mock(return_value=mock_session_maker)
+            app.state.container.database_manager = mock_database_manager
 
         # Update service persistence references
         if hasattr(app.state.container, "player_service") and app.state.container.player_service:

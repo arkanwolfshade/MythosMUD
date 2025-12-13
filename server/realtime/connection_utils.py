@@ -36,6 +36,6 @@ def get_npc_name_from_instance(npc_id: str) -> str | None:
                     return name
 
         return None
-    except (AttributeError, ValueError, TypeError) as e:
+    except (AttributeError, ValueError, TypeError, RuntimeError) as e:
         logger.debug("Error getting NPC name from instance", npc_id=npc_id, error=str(e))
         return None
