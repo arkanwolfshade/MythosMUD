@@ -1,0 +1,15 @@
+# Bandit configuration for Codacy
+# This file configures Bandit to skip B101 (assert_used) checks only in test files
+# Assert statements are standard and expected in test files (pytest uses them extensively)
+# but should still be flagged in production code for security reasons
+
+# Configure assert_used plugin to skip B101 checks only for test files
+# This keeps B101 enabled for production code while allowing assert statements in tests
+assert_used:
+  skips:
+    - '*/test_*.py'     # Matches test_*.py files at any directory depth (e.g., server/tests/unit/services/test_models.py)
+    - '*_test.py'       # Matches *_test.py files (alternative naming convention)
+    - '*/tests/*.py'    # Matches all Python files directly in tests directories (e.g., server/tests/conftest.py)
+
+# Note: B101 will remain enabled for production code files to catch inappropriate
+# use of assert statements that would be removed in optimized byte code.
