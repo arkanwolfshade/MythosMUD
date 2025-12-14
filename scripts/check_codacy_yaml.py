@@ -13,7 +13,7 @@ CODACY_YAML = Path(".codacy/codacy.yaml")
 def check_codacy_yaml():
     """Check if codacy.yaml exists and contains required tools."""
     if not CODACY_YAML.exists():
-        print("⚠️  WARNING: .codacy/codacy.yaml not found!")
+        print("WARNING: .codacy/codacy.yaml not found!")
         return 0  # Don't fail, just warn
 
     content = CODACY_YAML.read_text(encoding="utf-8")
@@ -34,7 +34,7 @@ def check_codacy_yaml():
             missing_tools.append(f"{tool} ({description})")
 
     if missing_tools:
-        print("⚠️  WARNING: .codacy/codacy.yaml may have been auto-modified!")
+        print("WARNING: .codacy/codacy.yaml may have been auto-modified!")
         print(f"   Missing expected tools: {', '.join(missing_tools)}")
         print("   This file should be manually managed.")
         print("   Check if Codacy extension auto-discovery is disabled.")
@@ -43,7 +43,7 @@ def check_codacy_yaml():
 
     # Check if Python version was downgraded (common auto-modification issue)
     if "python@3.11.11" in content and "python@3.12.10" not in content:
-        print("⚠️  WARNING: .codacy/codacy.yaml has wrong Python version (3.11.11 instead of 3.12.10)")
+        print("WARNING: .codacy/codacy.yaml has wrong Python version (3.11.11 instead of 3.12.10)")
         print("   This file may have been auto-modified by Codacy extension.")
         print("   Project uses Python 3.12.10 - update the file manually.")
         return 1

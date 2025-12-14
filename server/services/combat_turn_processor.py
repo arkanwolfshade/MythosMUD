@@ -277,6 +277,25 @@ class CombatTurnProcessor:
                 logger.warning("No target found for player", player_name=player.name, combat_id=combat.combat_id)
                 return
 
+            # Check if player is casting a spell - if so, skip autoattack
+            # Casting spells takes priority over autoattacks
+            try:
+                # Access magic_service through combat_service
+                magic_service = getattr(self._combat_service, "magic_service", None)
+                if magic_service and magic_service.casting_state_manager.is_casting(player.participant_id):
+                    casting_state = magic_service.casting_state_manager.get_casting_state(player.participant_id)
+                    logger.debug(
+                        "Player is casting, skipping autoattack",
+                        player_name=player.name,
+                        spell_name=casting_state.spell_name if casting_state else "unknown",
+                    )
+                    # Update player's last action tick but don't attack
+                    player.last_action_tick = current_tick
+                    return
+            except (AttributeError, TypeError, KeyError) as e:
+                # If we can't check casting state, allow autoattack to proceed
+                logger.debug("Could not check casting state for autoattack", player_name=player.name, error=str(e))
+
             # Perform automatic basic attack
             logger.debug("Player performing automatic attack", player_name=player.name, target_name=target.name)
 

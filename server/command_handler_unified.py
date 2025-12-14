@@ -106,7 +106,7 @@ def _is_predefined_emote(command: str) -> bool:
 
         emote_service = EmoteService()
         return emote_service.is_emote_alias(command)
-    except Exception as e:
+    except (ImportError, AttributeError, TypeError, RuntimeError) as e:
         logger.warning("Error checking predefined emote", error=str(e))
         return False
 
@@ -336,6 +336,26 @@ async def process_command_unified(
         logger.info("Command blocked due to catatonia", player=player_name, command=cmd, message=catatonia_message)
         return {"result": catatonia_message}
 
+    # Step 4.5: Check if player is casting (block most commands during casting)
+    # Allow: stop, interrupt, status
+    allowed_during_casting = ["stop", "interrupt", "status"]
+    if cmd not in allowed_during_casting:
+        try:
+            # Get magic service from app state
+            magic_service = getattr(request.app.state, "magic_service", None)
+            if magic_service and magic_service.casting_state_manager:
+                # Get player ID
+                player_service = getattr(request.app.state, "player_service", None)
+                if player_service:
+                    player = await player_service.get_player_by_name(player_name)
+                    if player and magic_service.casting_state_manager.is_casting(player.player_id):
+                        casting_state = magic_service.casting_state_manager.get_casting_state(player.player_id)
+                        if casting_state:
+                            return {"result": f"You are casting {casting_state.spell_name}. Use 'stop' to interrupt."}
+        except (AttributeError, OSError, TypeError, RuntimeError) as e:
+            # If we can't check casting state, allow command to proceed
+            logger.debug("Could not check casting state", player=player_name, error=str(e))
+
     # Step 5: Handle alias management commands first (don't expand these)
     if cmd in ["alias", "aliases", "unalias"]:
         logger.debug("Processing alias management command", player=player_name, command=cmd)
@@ -540,7 +560,7 @@ async def process_command_with_validation(
         # Human reader: do not expose exception details to users.
         # AI reader: CodeQL requires no exception information exposure to external users.
         return {"result": "Invalid command format"}
-    except Exception as e:
+    except (ImportError, AttributeError, TypeError, RuntimeError) as e:
         # Format exception traceback and sanitize ANSI codes for Windows compatibility
         try:
             exc_traceback = traceback.format_exc()
@@ -553,7 +573,7 @@ async def process_command_with_validation(
                 error_type=type(e).__name__,
                 traceback=sanitized_traceback,
             )
-        except Exception as log_error:
+        except (ImportError, AttributeError, TypeError, RuntimeError) as log_error:
             # If logging itself fails, use a minimal safe log
             try:
                 logger.error(
@@ -562,7 +582,7 @@ async def process_command_with_validation(
                     error=str(e)[:200],  # Truncate to avoid encoding issues
                     log_error=str(log_error)[:200],
                 )
-            except Exception:
+            except (ImportError, AttributeError, TypeError, RuntimeError):
                 # Last resort: silent failure to prevent test crashes
                 pass
         return {"result": "An error occurred while processing your command."}
@@ -654,7 +674,7 @@ async def _load_player_for_catatonia_check(request: Request, player_name: str, p
         try:
             player = await persistence.get_player_by_name(player_name)
             cache_player(request, player_name, player)
-        except Exception:  # pragma: no cover - defensive
+        except (ImportError, AttributeError, TypeError, RuntimeError):  # pragma: no cover - defensive
             logger.exception("Failed to load player for catatonia check", player=player_name)
             return None
     return player
@@ -671,7 +691,7 @@ def _check_catatonia_registry(state: Any, player_id: str | uuid.UUID, player_nam
                     True,
                     "Your body lies unresponsive, trapped in catatonia. Another must ground you.",
                 )
-        except Exception:  # pragma: no cover - defensive
+        except (ImportError, AttributeError, TypeError, RuntimeError):  # pragma: no cover - defensive
             logger.exception("Catatonia registry lookup failed", player=player_name)
     return False, None
 
@@ -703,7 +723,7 @@ async def _query_lucidity_record(player_id_uuid: uuid.UUID, player_name: str):
         async for session in get_async_session():
             try:
                 return await _fetch_lucidity_record(session, player_id_uuid, player_name)
-            except Exception as e:
+            except (ImportError, AttributeError, TypeError, RuntimeError) as e:
                 logger.warning(
                     "Failed to check catatonia status in database",
                     player=player_name,
@@ -711,11 +731,8 @@ async def _query_lucidity_record(player_id_uuid: uuid.UUID, player_name: str):
                     error_type=type(e).__name__,
                 )
                 return None
-    except (RuntimeError, AttributeError) as e:
+    except (ImportError, AttributeError, TypeError, RuntimeError) as e:
         logger.debug("Database session unavailable for catatonia check", player=player_name, error=str(e))
-        return None
-    except Exception as e:
-        logger.warning("Error checking catatonia status", player=player_name, error=str(e))
         return None
     return None
 

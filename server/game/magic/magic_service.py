@@ -9,13 +9,18 @@ import random
 import uuid
 from typing import Any
 
+from server.app.game_tick_processing import get_current_tick
+from server.game.magic.casting_state_manager import CastingStateManager
+from server.game.magic.spell_costs import SpellCostsService
 from server.game.magic.spell_effects import SpellEffects
+from server.game.magic.spell_materials import SpellMaterialsService
 from server.game.magic.spell_registry import SpellRegistry
 from server.game.magic.spell_targeting import SpellTargetingService
 from server.game.player_service import PlayerService
 from server.logging.enhanced_logging_config import get_logger
 from server.models.spell import Spell
 from server.persistence.repositories.player_spell_repository import PlayerSpellRepository
+from server.schemas.target_resolution import TargetMatch
 
 logger = get_logger(__name__)
 
@@ -36,6 +41,10 @@ class MagicService:
         spell_effects: SpellEffects,
         player_spell_repository: PlayerSpellRepository | None = None,
         spell_learning_service=None,
+        casting_state_manager: CastingStateManager | None = None,
+        combat_service=None,
+        spell_costs_service: SpellCostsService | None = None,
+        spell_materials_service: SpellMaterialsService | None = None,
     ):
         """
         Initialize the magic service.
@@ -47,6 +56,10 @@ class MagicService:
             spell_effects: Engine for processing spell effects
             player_spell_repository: Optional repository for mastery tracking
             spell_learning_service: Optional spell learning service for mastery progression
+            casting_state_manager: Optional casting state manager for tracking active castings
+            combat_service: Optional combat service for combat integration
+            spell_costs_service: Optional service for applying spell costs
+            spell_materials_service: Optional service for handling spell materials
         """
         self.spell_registry = spell_registry
         self.player_service = player_service
@@ -54,6 +67,10 @@ class MagicService:
         self.spell_effects = spell_effects
         self.player_spell_repository = player_spell_repository or PlayerSpellRepository()
         self.spell_learning_service = spell_learning_service
+        self.casting_state_manager = casting_state_manager or CastingStateManager()
+        self.combat_service = combat_service
+        self.spell_costs_service = spell_costs_service or SpellCostsService(player_service)
+        self.spell_materials_service = spell_materials_service or SpellMaterialsService(player_service)
         logger.info("MagicService initialized")
 
     async def can_cast_spell(self, player_id: uuid.UUID, spell: Spell) -> tuple[bool, str]:
@@ -95,7 +112,7 @@ class MagicService:
 
         # Check materials
         if spell.materials:
-            missing_materials = await self._check_materials(player_id, spell)
+            missing_materials = await self.spell_materials_service.check_materials(player_id, spell)
             if missing_materials:
                 material_list = ", ".join(missing_materials)
                 return False, f"You are missing required materials: {material_list}."
@@ -115,6 +132,20 @@ class MagicService:
             dict: Result with success, messages, and effect details
         """
         logger.info("Casting spell", player_id=player_id, spell_id=spell_id, target_name=target_name)
+
+        # Check if player is already casting
+        if self.casting_state_manager.is_casting(player_id):
+            casting_state = self.casting_state_manager.get_casting_state(player_id)
+            if casting_state is None:
+                # This should not happen if is_casting returns True, but handle defensively
+                return {
+                    "success": False,
+                    "message": "You are already casting a spell. Use 'stop' to interrupt.",
+                }
+            return {
+                "success": False,
+                "message": f"You are already casting {casting_state.spell_name}. Use 'stop' to interrupt.",
+            }
 
         # Get spell from registry
         spell = self.spell_registry.get_spell(spell_id)
@@ -140,7 +171,7 @@ class MagicService:
 
         # Consume materials (before casting roll, so materials are consumed even on failure)
         if spell.materials:
-            material_result = await self._consume_materials(player_id, spell)
+            material_result = await self.spell_materials_service.consume_materials(player_id, spell)
             if not material_result.get("success"):
                 return {"success": False, "message": material_result.get("message", "Failed to consume materials.")}
 
@@ -148,34 +179,96 @@ class MagicService:
         casting_success = await self._casting_roll(player_id, spell, mastery)
         if not casting_success:
             # Still pay costs on failure
-            await self._apply_costs(player_id, spell)
+            await self.spell_costs_service.apply_costs(player_id, spell)
             return {
                 "success": False,
                 "message": f"{spell.name} failed! The cosmic forces resist your incantation.",
                 "costs_paid": True,
             }
 
-        # Apply costs
-        await self._apply_costs(player_id, spell)
+        # If casting time is 0, execute immediately (instant cast)
+        if spell.casting_time_seconds == 0:
+            # Apply costs
+            await self.spell_costs_service.apply_costs(player_id, spell)
 
-        # Process effect
-        effect_result = await self.spell_effects.process_effect(spell, target, player_id, mastery)
+            # Process effect
+            effect_result = await self.spell_effects.process_effect(spell, target, player_id, mastery)
 
-        # Record spell cast
-        await self.player_spell_repository.record_spell_cast(player_id, spell.spell_id)
+            # Record spell cast
+            await self.player_spell_repository.record_spell_cast(player_id, spell.spell_id)
 
-        # Increase mastery on successful cast
-        if self.spell_learning_service:
-            await self.spell_learning_service.increase_mastery_on_cast(player_id, spell.spell_id, casting_success)
+            # Increase mastery on successful cast
+            if self.spell_learning_service:
+                await self.spell_learning_service.increase_mastery_on_cast(player_id, spell.spell_id, casting_success)
 
-        # Combine results
+            # Combine results
+            return {
+                "success": True,
+                "message": effect_result.get("message", f"{spell.name} cast successfully."),
+                "spell_name": spell.name,
+                "target": target.target_name,
+                "effect_result": effect_result,
+                "mastery": mastery,
+            }
+
+        # Casting time > 0: Start casting process
+        current_tick = get_current_tick()
+        combat_id = None
+        next_initiative_tick = None
+
+        # Check if in combat and handle initiative
+        if self.combat_service:
+            combat = await self.combat_service.get_combat_by_participant(player_id)
+            if combat:
+                combat_id = combat.combat_id
+                current_participant = combat.get_current_turn_participant()
+                # Check if it's player's turn
+                if current_participant and current_participant.participant_id == player_id:
+                    # It's their turn, start casting immediately
+                    next_initiative_tick = None
+                else:
+                    # Not their turn, wait for next initiative
+                    # Calculate next turn tick (6 ticks per turn)
+                    next_initiative_tick = combat.next_turn_tick
+                    # If next_turn_tick is 0 or in the past, calculate from current
+                    if next_initiative_tick is None or next_initiative_tick <= current_tick:
+                        next_initiative_tick = current_tick + combat.turn_interval_ticks
+
+        # Start casting state
+        try:
+            # Store target_type as string value for later reconstruction
+            target_type_str = (
+                target.target_type.value if hasattr(target.target_type, "value") else str(target.target_type)
+            )
+            self.casting_state_manager.start_casting(
+                player_id=player_id,
+                spell=spell,
+                start_tick=current_tick,
+                combat_id=combat_id,
+                next_initiative_tick=next_initiative_tick,
+                target_name=target.target_name,
+                target_id=target.target_id,
+                target_type=target_type_str,
+                mastery=mastery,
+            )
+        except ValueError as e:
+            return {"success": False, "message": str(e)}
+
+        # Store target info for later use (we'll need it when casting completes)
+        # The target is stored in casting_state, so we can retrieve it later
+
+        message = f"You begin casting {spell.name}..."
+        if next_initiative_tick is not None:
+            message += " (waiting for your turn in combat)"
+        elif spell.casting_time_seconds > 0:
+            message += f" ({spell.casting_time_seconds} seconds)"
+
         return {
             "success": True,
-            "message": effect_result.get("message", f"{spell.name} cast successfully."),
+            "message": message,
             "spell_name": spell.name,
-            "target": target.target_name,
-            "effect_result": effect_result,
-            "mastery": mastery,
+            "casting_time": spell.casting_time_seconds,
+            "is_casting": True,
         }
 
     async def _casting_roll(self, player_id: uuid.UUID, spell: Spell, mastery: int) -> bool:
@@ -217,52 +310,6 @@ class MagicService:
 
         return success
 
-    async def _apply_costs(self, player_id: uuid.UUID, spell: Spell) -> None:
-        """
-        Apply spell costs (MP and lucidity if Mythos).
-
-        Args:
-            player_id: Player ID
-            spell: Spell being cast
-        """
-        player = await self.player_service.persistence.get_player_by_id(player_id)
-        if not player:
-            return
-
-        stats = player.get_stats()
-
-        # Spend MP
-        current_mp = stats.get("magic_points", 0)
-        new_mp = max(0, current_mp - spell.mp_cost)
-        stats["magic_points"] = new_mp
-        logger.debug("Spent MP", player_id=player_id, mp_cost=spell.mp_cost, remaining_mp=new_mp)
-
-        # Spend lucidity for Mythos spells
-        if spell.is_mythos() and spell.requires_lucidity():
-            current_lucidity = stats.get("lucidity", 100)
-            new_lucidity = max(0, current_lucidity - spell.lucidity_cost)
-            stats["lucidity"] = new_lucidity
-            logger.debug(
-                "Spent lucidity",
-                player_id=player_id,
-                lucidity_cost=spell.lucidity_cost,
-                remaining_lucidity=new_lucidity,
-            )
-
-        # Apply corruption if Mythos spell
-        if spell.is_mythos() and spell.corruption_on_cast > 0:
-            current_corruption = stats.get("corruption", 0)
-            stats["corruption"] = current_corruption + spell.corruption_on_cast
-            logger.debug(
-                "Applied corruption",
-                player_id=player_id,
-                corruption_gained=spell.corruption_on_cast,
-                total_corruption=stats["corruption"],
-            )
-
-        # Save player
-        await self.player_service.persistence.save_player(player)
-
     async def restore_mp(self, player_id: uuid.UUID, amount: int) -> dict[str, Any]:
         """
         Restore magic points to a player.
@@ -274,144 +321,151 @@ class MagicService:
         Returns:
             dict: Result message
         """
+        return await self.spell_costs_service.restore_mp(player_id, amount)
+
+    async def check_casting_progress(self, current_tick: int) -> None:
+        """
+        Check and process casting progress for all active castings.
+
+        Called by game tick processing to advance casting timers.
+
+        Args:
+            current_tick: Current game tick
+        """
+        casting_players = self.casting_state_manager.get_all_casting_players()
+        for player_id in casting_players:
+            casting_state = self.casting_state_manager.get_casting_state(player_id)
+            if not casting_state:
+                continue
+
+            # Update progress
+            is_complete = self.casting_state_manager.update_casting_progress(player_id, current_tick)
+            if is_complete:
+                # Casting is complete, process it
+                await self._complete_casting(player_id, casting_state)
+
+    async def _complete_casting(self, player_id: uuid.UUID, casting_state: Any) -> None:
+        """
+        Complete a casting and apply spell effects.
+
+        Args:
+            player_id: Player ID
+            casting_state: The casting state to complete
+        """
+        from server.schemas.target_resolution import TargetType
+
+        spell = casting_state.spell
+
+        # Get player to get room_id
         player = await self.player_service.persistence.get_player_by_id(player_id)
         if not player:
-            return {"success": False, "message": "Player not found"}
+            logger.error("Player not found when completing casting", player_id=player_id)
+            self.casting_state_manager.complete_casting(player_id)
+            return
+
+        room_id = player.current_room_id or ""
+
+        # Recreate target from stored state
+        # Convert target_type string back to enum
+        target_type_str = casting_state.target_type or "player"
+        try:
+            target_type = TargetType(target_type_str)
+        except ValueError:
+            # Fallback to player if invalid
+            target_type = TargetType.PLAYER
+
+        target = TargetMatch(
+            target_id=casting_state.target_id or str(player_id),
+            target_name=casting_state.target_name or player.name,
+            target_type=target_type,
+            room_id=room_id,
+        )
+
+        # Apply costs (MP was not consumed at start, do it now)
+        await self.spell_costs_service.apply_costs(player_id, spell)
+
+        # Process effect
+        effect_result = await self.spell_effects.process_effect(spell, target, player_id, casting_state.mastery)
+
+        # Record spell cast
+        await self.player_spell_repository.record_spell_cast(player_id, spell.spell_id)
+
+        # Increase mastery on successful cast
+        if self.spell_learning_service:
+            await self.spell_learning_service.increase_mastery_on_cast(player_id, spell.spell_id, True)
+
+        # Remove casting state
+        self.casting_state_manager.complete_casting(player_id)
+
+        logger.info(
+            "Completed casting",
+            player_id=player_id,
+            spell_id=spell.spell_id,
+            effect_success=effect_result.get("success", False),
+        )
+
+    async def interrupt_casting(self, player_id: uuid.UUID) -> dict[str, Any]:
+        """
+        Interrupt a casting with LUCK check.
+
+        Args:
+            player_id: Player ID
+
+        Returns:
+            dict: Result with success, message, and MP loss status
+        """
+        casting_state = self.casting_state_manager.get_casting_state(player_id)
+        if not casting_state:
+            return {"success": False, "message": "You are not casting a spell."}
+
+        # Perform LUCK check
+        luck_check_passed = await self._perform_luck_check(player_id)
+
+        # Remove casting state
+        self.casting_state_manager.interrupt_casting(player_id)
+
+        if luck_check_passed:
+            # Passed LUCK check: don't lose MP
+            return {
+                "success": True,
+                "message": f"You interrupt your casting of {casting_state.spell_name}. Your luck preserves your magic points.",
+                "mp_lost": False,
+            }
+        else:
+            # Failed LUCK check: lose MP
+            await self.spell_costs_service.apply_costs(player_id, casting_state.spell)
+            return {
+                "success": True,
+                "message": f"You interrupt your casting of {casting_state.spell_name}. The disruption costs you {casting_state.mp_cost} MP.",
+                "mp_lost": True,
+                "mp_cost": casting_state.mp_cost,
+            }
+
+    async def _perform_luck_check(self, player_id: uuid.UUID) -> bool:
+        """
+        Perform a LUCK check for the player.
+
+        Args:
+            player_id: Player ID
+
+        Returns:
+            bool: True if LUCK check passes (roll <= LUCK stat), False otherwise
+        """
+        player = await self.player_service.persistence.get_player_by_id(player_id)
+        if not player:
+            return False
 
         stats = player.get_stats()
-        current_mp = stats.get("magic_points", 0)
-        max_mp = stats.get("max_magic_points", 10)  # Fallback if not computed
+        luck = stats.get("luck", 50)
+        roll = random.randint(1, 100)
 
-        # Calculate max_mp from power if not present
-        if "max_magic_points" not in stats:
-            import math
+        success = roll <= luck
+        logger.debug(
+            "LUCK check",
+            player_id=player_id,
+            luck=luck,
+            roll=roll,
+            success=success,
+        )
 
-            power = stats.get("power", 50)
-            max_mp = math.ceil(power * 0.2)
-
-        new_mp = min(max_mp, current_mp + amount)
-        stats["magic_points"] = new_mp
-
-        await self.player_service.persistence.save_player(player)
-
-        return {
-            "success": True,
-            "message": f"Restored {new_mp - current_mp} MP",
-            "current_mp": new_mp,
-            "max_mp": max_mp,
-        }
-
-    async def _check_materials(self, player_id: uuid.UUID, spell: Spell) -> list[str]:
-        """
-        Check if player has all required materials.
-
-        Args:
-            player_id: Player ID
-            spell: Spell to check materials for
-
-        Returns:
-            list[str]: List of missing material item IDs (empty if all present)
-        """
-        if not spell.materials:
-            return []
-
-        player = await self.player_service.persistence.get_player_by_id(player_id)
-        if not player:
-            return [material.item_id for material in spell.materials]
-
-        inventory = player.get_inventory()
-        missing = []
-
-        for material in spell.materials:
-            # Check if player has this item in inventory
-            found = False
-            for item in inventory:
-                # Match by item_id or prototype_id
-                item_id = item.get("item_id") or item.get("prototype_id", "")
-                if item_id == material.item_id:
-                    found = True
-                    break
-
-            if not found:
-                missing.append(material.item_id)
-
-        return missing
-
-    async def _consume_materials(self, player_id: uuid.UUID, spell: Spell) -> dict[str, Any]:
-        """
-        Consume spell materials from player inventory.
-
-        Args:
-            player_id: Player ID
-            spell: Spell being cast
-
-        Returns:
-            dict: Result with success status and message
-        """
-        if not spell.materials:
-            return {"success": True, "message": ""}
-
-        player = await self.player_service.persistence.get_player_by_id(player_id)
-        if not player:
-            return {"success": False, "message": "Player not found."}
-
-        inventory = player.get_inventory()
-        consumed_items = []
-        final_inventory = []
-        processed_materials = set()
-
-        # Process each material requirement
-        for material in spell.materials:
-            material_id = material.item_id
-            found = False
-
-            # Find matching item in inventory
-            for i, item in enumerate(inventory):
-                if i in processed_materials:
-                    continue
-
-                item_id = item.get("item_id") or item.get("prototype_id", "")
-                if item_id == material_id:
-                    processed_materials.add(i)
-
-                    if material.consumed:
-                        # Consume the material
-                        quantity = item.get("quantity", 1)
-                        if quantity > 1:
-                            # Reduce quantity
-                            updated_item = item.copy()
-                            updated_item["quantity"] = quantity - 1
-                            final_inventory.append(updated_item)
-                        # If quantity == 1, don't add to final_inventory (item is consumed)
-                        consumed_items.append(material_id)
-                    else:
-                        # Reusable material - keep it in inventory
-                        final_inventory.append(item)
-
-                    found = True
-                    break
-
-            if not found:
-                return {
-                    "success": False,
-                    "message": f"Missing required material: {material_id}.",
-                }
-
-        # Add all items that weren't materials
-        for i, item in enumerate(inventory):
-            if i not in processed_materials:
-                final_inventory.append(item)
-
-        # Update player inventory
-        player.set_inventory(final_inventory)
-        await self.player_service.persistence.save_player(player)
-
-        if consumed_items:
-            logger.info(
-                "Consumed spell materials",
-                player_id=player_id,
-                spell_id=spell.spell_id,
-                materials=consumed_items,
-            )
-
-        return {"success": True, "message": "", "consumed": consumed_items}
+        return success

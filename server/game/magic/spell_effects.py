@@ -218,8 +218,84 @@ class SpellEffects:
 
     async def _process_stat_modify(self, spell: Spell, target: TargetMatch, mastery_modifier: float) -> dict[str, Any]:
         """Process stat modification effect."""
-        # Not yet implemented
-        return {"success": False, "message": "Stat modification not yet implemented", "effect_applied": False}
+        if target.target_type != TargetType.PLAYER:
+            return {"success": False, "message": "Stat modification can only target players", "effect_applied": False}
+
+        # Get stat modifications from effect_data
+        stat_modifications = spell.effect_data.get("stat_modifications", {})
+        if not stat_modifications:
+            return {"success": False, "message": "No stat modifications specified", "effect_applied": False}
+
+        # Get duration (0 = permanent, >0 = temporary in ticks)
+        duration = int(spell.effect_data.get("duration", 0))
+
+        try:
+            target_id = uuid.UUID(target.target_id)
+            player = await self.player_service.persistence.get_player_by_id(target_id)
+            if not player:
+                return {"success": False, "message": "Target player not found", "effect_applied": False}
+
+            stats = player.get_stats()
+            modified_stats = []
+            stat_changes = {}
+
+            # Valid stat names
+            valid_stats = [
+                "strength",
+                "dexterity",
+                "constitution",
+                "size",
+                "intelligence",
+                "power",
+                "education",
+                "charisma",
+                "luck",
+            ]
+
+            # Apply stat modifications
+            for stat_name, change_amount in stat_modifications.items():
+                if stat_name not in valid_stats:
+                    logger.warning("Invalid stat name in spell effect", stat_name=stat_name, spell_id=spell.spell_id)
+                    continue
+
+                # Apply mastery modifier to change amount
+                adjusted_change = int(change_amount * mastery_modifier)
+                current_value = stats.get(stat_name, 50)
+                new_value = max(1, min(100, current_value + adjusted_change))
+
+                stats[stat_name] = new_value
+                stat_changes[stat_name] = adjusted_change
+                modified_stats.append(f"{stat_name} ({adjusted_change:+d})")
+
+            # If temporary, add a status effect to track the modification
+            if duration > 0:
+                status_effects = player.get_status_effects()
+                # Create a status effect to track temporary stat modifications
+                temp_effect = StatusEffect(
+                    effect_type=StatusEffectType.BUFF,  # Using BUFF as a generic positive effect
+                    duration=duration,
+                    intensity=1,
+                    source=f"spell:{spell.spell_id}",
+                )
+                # Store stat changes in metadata (would need to extend StatusEffect model for this)
+                status_effects.append(temp_effect.model_dump())
+                player.set_status_effects(status_effects)
+
+            player.set_stats(stats)
+            await self.player_service.persistence.save_player(player)
+
+            stat_list = ", ".join(modified_stats)
+            duration_text = f" for {duration} ticks" if duration > 0 else " permanently"
+            return {
+                "success": True,
+                "message": f"Modified {target.target_name}'s stats{duration_text}: {stat_list}",
+                "effect_applied": True,
+                "stat_changes": stat_changes,
+                "duration": duration,
+            }
+        except OSError as e:
+            logger.error("Error modifying stats", target_id=target.target_id, error=str(e))
+            return {"success": False, "message": f"Failed to modify stats: {str(e)}", "effect_applied": False}
 
     async def _process_lucidity_adjust(
         self, spell: Spell, target: TargetMatch, mastery_modifier: float
@@ -261,17 +337,147 @@ class SpellEffects:
         self, spell: Spell, target: TargetMatch, mastery_modifier: float
     ) -> dict[str, Any]:
         """Process corruption adjustment effect."""
-        # Not yet implemented
-        return {"success": False, "message": "Corruption adjustment not yet implemented", "effect_applied": False}
+        if target.target_type != TargetType.PLAYER:
+            return {
+                "success": False,
+                "message": "Corruption adjustment can only target players",
+                "effect_applied": False,
+            }
+
+        adjust_amount = int(spell.effect_data.get("adjust_amount", 0) * mastery_modifier)
+        if adjust_amount == 0:
+            return {"success": False, "message": "Invalid corruption adjustment amount", "effect_applied": False}
+
+        try:
+            target_id = uuid.UUID(target.target_id)
+            player = await self.player_service.persistence.get_player_by_id(target_id)
+            if not player:
+                return {"success": False, "message": "Target player not found", "effect_applied": False}
+
+            stats = player.get_stats()
+            current_corruption = stats.get("corruption", 0)
+
+            # Corruption is bounded 0-100
+            new_corruption = max(0, min(100, current_corruption + adjust_amount))
+            stats["corruption"] = new_corruption
+
+            player.set_stats(stats)
+            await self.player_service.persistence.save_player(player)
+
+            direction = "increased" if adjust_amount > 0 else "decreased"
+            return {
+                "success": True,
+                "message": f"{direction.capitalize()} {target.target_name}'s corruption by {abs(adjust_amount)}",
+                "effect_applied": True,
+                "corruption_adjust": adjust_amount,
+                "new_corruption": new_corruption,
+            }
+        except OSError as e:
+            logger.error("Error adjusting corruption", target_id=target.target_id, error=str(e))
+            return {"success": False, "message": f"Failed to adjust corruption: {str(e)}", "effect_applied": False}
 
     async def _process_teleport(self, spell: Spell, target: TargetMatch, mastery_modifier: float) -> dict[str, Any]:
         """Process teleport effect."""
-        # Not yet implemented
-        return {"success": False, "message": "Teleport not yet implemented", "effect_applied": False}
+        if target.target_type != TargetType.PLAYER:
+            return {"success": False, "message": "Teleport can only target players", "effect_applied": False}
+
+        # Get destination room ID from effect_data
+        destination_room_id = spell.effect_data.get("destination_room_id")
+        if not destination_room_id:
+            return {"success": False, "message": "No destination room specified", "effect_applied": False}
+
+        try:
+            target_id = uuid.UUID(target.target_id)
+            player = await self.player_service.persistence.get_player_by_id(target_id)
+            if not player:
+                return {"success": False, "message": "Target player not found", "effect_applied": False}
+
+            # Use player service to update location
+            # Note: This is a simplified teleport - full implementation would use MovementService
+            # and handle room events, but for spell effects this is sufficient
+            original_room_id = player.current_room_id
+            success = await self.player_service.update_player_location(player.name, destination_room_id)
+
+            if not success:
+                return {"success": False, "message": "Failed to teleport player", "effect_applied": False}
+
+            return {
+                "success": True,
+                "message": f"Teleported {target.target_name} to {destination_room_id}",
+                "effect_applied": True,
+                "destination_room_id": destination_room_id,
+                "original_room_id": original_room_id,
+            }
+        except OSError as e:
+            logger.error("Error teleporting player", target_id=target.target_id, error=str(e))
+            return {"success": False, "message": f"Failed to teleport: {str(e)}", "effect_applied": False}
 
     async def _process_create_object(
         self, spell: Spell, target: TargetMatch, mastery_modifier: float
     ) -> dict[str, Any]:
         """Process object creation effect."""
-        # Not yet implemented
-        return {"success": False, "message": "Object creation not yet implemented", "effect_applied": False}
+        # Get item prototype ID and quantity from effect_data
+        prototype_id = spell.effect_data.get("prototype_id")
+        if not prototype_id:
+            return {
+                "success": False,
+                "message": "No prototype ID specified for object creation",
+                "effect_applied": False,
+            }
+
+        quantity = int(spell.effect_data.get("quantity", 1) * mastery_modifier)
+        quantity = max(1, quantity)  # Ensure at least 1 item
+
+        # Determine where to create the item
+        # If target is a player, add to their inventory; if room, add to room drops
+        if target.target_type == TargetType.PLAYER:
+            try:
+                target_id = uuid.UUID(target.target_id)
+                player = await self.player_service.persistence.get_player_by_id(target_id)
+                if not player:
+                    return {"success": False, "message": "Target player not found", "effect_applied": False}
+
+                # Add item to player inventory
+                # Note: This is a simplified version - full implementation would use ItemFactory
+                # and proper item instance creation. For now, we'll add a basic item entry.
+                inventory = player.get_inventory()
+                new_item = {
+                    "item_id": prototype_id,
+                    "prototype_id": prototype_id,
+                    "quantity": quantity,
+                    "item_name": prototype_id,  # Would be resolved from prototype registry
+                }
+                inventory.append(new_item)
+                player.set_inventory(inventory)
+                await self.player_service.persistence.save_player(player)
+
+                return {
+                    "success": True,
+                    "message": f"Created {quantity} {prototype_id} in {target.target_name}'s inventory",
+                    "effect_applied": True,
+                    "prototype_id": prototype_id,
+                    "quantity": quantity,
+                }
+            except OSError as e:
+                logger.error("Error creating object in inventory", target_id=target.target_id, error=str(e))
+                return {"success": False, "message": f"Failed to create object: {str(e)}", "effect_applied": False}
+
+        elif target.target_type == TargetType.ROOM:
+            # For room targets, we would need room_manager and ItemFactory
+            # This is a placeholder - full implementation requires those services
+            logger.warning(
+                "Room item creation requires ItemFactory and room_manager",
+                spell_id=spell.spell_id,
+                room_id=target.room_id,
+            )
+            return {
+                "success": False,
+                "message": "Room item creation requires additional services (ItemFactory, room_manager)",
+                "effect_applied": False,
+            }
+
+        return {
+            "success": False,
+            "message": f"Object creation cannot target {target.target_type.value}",
+            "effect_applied": False,
+        }

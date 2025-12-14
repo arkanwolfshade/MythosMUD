@@ -66,7 +66,13 @@ from .lucidity_recovery_commands import (
     handle_pray_command,
     handle_therapy_command,
 )
-from .magic_commands import handle_cast_command, handle_learn_command, handle_spell_command, handle_spells_command
+from .magic_commands import (
+    handle_cast_command,
+    handle_learn_command,
+    handle_spell_command,
+    handle_spells_command,
+    handle_stop_command,
+)
 from .npc_admin_commands import handle_npc_command
 from .position_commands import handle_lie_command, handle_sit_command, handle_stand_command
 from .read_command import handle_read_command
@@ -151,6 +157,7 @@ class CommandService:
             "spells": handle_spells_command,
             "spell": handle_spell_command,
             "learn": handle_learn_command,
+            "stop": handle_stop_command,
             "teach": handle_teach_command,
             "pickup": handle_pickup_command,
             "drop": handle_drop_command,

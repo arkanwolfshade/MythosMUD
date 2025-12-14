@@ -323,6 +323,42 @@ class MagicCommandHandler:
 
         return {"result": message}
 
+    async def handle_stop_command(
+        self,
+        _command_data: dict,
+        _current_user: dict,
+        _request: Any,
+        _alias_storage: AliasStorage | None,
+        player_name: str,
+    ) -> dict[str, str]:
+        """
+        Handle /stop command - interrupt current spell casting.
+
+        Args:
+            command_data: Command data dictionary
+            _current_user: Current user information
+            _request: FastAPI request object
+            _alias_storage: Alias storage instance
+            player_name: Player name
+
+        Returns:
+            dict: Command result
+        """
+        logger.debug("Handling stop command", player_name=player_name)
+
+        # Get player
+        player = await self.magic_service.player_service.persistence.get_player_by_name(player_name)
+        if not player:
+            return {"result": "You are not recognized by the cosmic forces."}
+
+        # Interrupt casting
+        result = await self.magic_service.interrupt_casting(player.player_id)
+
+        if not result.get("success"):
+            return {"result": result.get("message", "Failed to interrupt casting.")}
+
+        return {"result": result.get("message", "Casting interrupted.")}
+
 
 # Command handler functions for integration with CommandService
 async def handle_cast_command(
@@ -413,3 +449,25 @@ async def handle_learn_command(
 
     handler = MagicCommandHandler(magic_service, spell_registry, spell_learning_service=spell_learning_service)
     return await handler.handle_learn_command(command_data, current_user, request, alias_storage, player_name)
+
+
+async def handle_stop_command(
+    command_data: dict,
+    current_user: dict,
+    request: Any,
+    alias_storage: AliasStorage | None,
+    player_name: str,
+) -> dict[str, str]:
+    """
+    Handle /stop command.
+
+    This is a wrapper function for integration with CommandService.
+    """
+    magic_service = getattr(request.app.state, "magic_service", None)
+    spell_registry = getattr(request.app.state, "spell_registry", None)
+
+    if not magic_service or not spell_registry:
+        return {"result": "Magic system not initialized."}
+
+    handler = MagicCommandHandler(magic_service, spell_registry)
+    return await handler.handle_stop_command(command_data, current_user, request, alias_storage, player_name)

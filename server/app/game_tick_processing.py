@@ -219,6 +219,15 @@ async def process_combat_tick(app: FastAPI, tick_count: int) -> None:
             logger.error("Error processing combat tick", tick_count=tick_count, error=str(e))
 
 
+async def process_casting_progress(app: FastAPI, tick_count: int) -> None:
+    """Process casting progress for all active spell castings."""
+    if hasattr(app.state, "magic_service") and app.state.magic_service:
+        try:
+            await app.state.magic_service.check_casting_progress(tick_count)
+        except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
+            logger.error("Error processing casting progress", tick_count=tick_count, error=str(e))
+
+
 async def _process_mortally_wounded_player(app: FastAPI, player: "Player", session: AsyncSession) -> None:
     """Process a single mortally wounded player's DP decay and death check."""
     await app.state.player_death_service.process_mortally_wounded_tick(player.player_id, session)
@@ -468,6 +477,7 @@ async def game_tick_loop(app: FastAPI):
             logger.debug("Game tick", tick_count=tick_count)
             _current_tick = tick_count
             await process_combat_tick(app, tick_count)
+            await process_casting_progress(app, tick_count)
             await process_dp_decay_and_death(app, tick_count)
             await process_npc_maintenance(app, tick_count)
             await cleanup_decayed_corpses(app, tick_count)

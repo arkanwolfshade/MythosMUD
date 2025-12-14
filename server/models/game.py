@@ -39,6 +39,7 @@ class StatusEffectType(str, Enum):
     TREMBLING = "trembling"
     CORRUPTED = "corrupted"
     DELIRIOUS = "delirious"
+    BUFF = "buff"
 
 
 class PositionState(str, Enum):

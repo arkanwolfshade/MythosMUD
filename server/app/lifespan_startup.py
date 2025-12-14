@@ -418,6 +418,8 @@ async def initialize_magic_services(app: FastAPI, container: ApplicationContaine
     logger.info("MPRegenerationService initialized")
 
     # Initialize MagicService (needs all of the above)
+    # Get combat_service if available (for combat integration)
+    combat_service = getattr(app.state, "combat_service", None)
     magic_service = MagicService(
         spell_registry=spell_registry,
         player_service=container.player_service,
@@ -425,8 +427,15 @@ async def initialize_magic_services(app: FastAPI, container: ApplicationContaine
         spell_effects=spell_effects,
         player_spell_repository=player_spell_repository,
         spell_learning_service=spell_learning_service,
+        combat_service=combat_service,
     )
     app.state.magic_service = magic_service
+
+    # Set magic_service reference in combat_service if available
+    if combat_service:
+        combat_service.magic_service = magic_service
+        logger.info("MagicService linked to CombatService")
+
     logger.info("MagicService initialized")
 
     logger.info("All magic system services initialized and added to app.state")
