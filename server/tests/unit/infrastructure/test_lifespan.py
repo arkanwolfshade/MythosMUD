@@ -11,15 +11,7 @@ from unittest.mock import AsyncMock, MagicMock, Mock, patch
 import pytest
 from fastapi import FastAPI
 
-from server.app.lifespan import TICK_INTERVAL, game_tick_loop, lifespan
-
-
-class TestTickIntervalConstant:
-    """Test module constants."""
-
-    def test_tick_interval_constant(self):
-        """Test TICK_INTERVAL is defined correctly."""
-        assert TICK_INTERVAL == 1.0
+from server.app.lifespan import game_tick_loop, lifespan
 
 
 class TestGameTickLoop:
@@ -43,8 +35,8 @@ class TestGameTickLoop:
 
         task = asyncio.create_task(game_tick_loop(app))
 
-        # Let it run for a few ticks (TICK_INTERVAL is 1.0 seconds, need at least 1.1 seconds for one tick)
-        await asyncio.sleep(1.5)
+        # Let it run for a few ticks (tick interval is 0.1 seconds, need at least 0.15 seconds for one tick)
+        await asyncio.sleep(0.2)
 
         # Cancel the task
         task.cancel()
@@ -74,8 +66,8 @@ class TestGameTickLoop:
 
         task = asyncio.create_task(game_tick_loop(app))
 
-        # Let one tick execute (TICK_INTERVAL is 1.0 seconds, need at least 1.1 seconds for one tick)
-        await asyncio.sleep(1.5)
+        # Let one tick execute (tick interval is 0.1 seconds, need at least 0.15 seconds for one tick)
+        await asyncio.sleep(0.2)
 
         # Cancel the task
         task.cancel()
@@ -101,7 +93,7 @@ class TestGameTickLoop:
         mock_connection_manager.player_websockets = {}
         call_count = [0]  # Use list to avoid closure issues
 
-        async def broadcast_with_error(*args, **kwargs):
+        async def broadcast_with_error(*_args, **_kwargs):
             call_count[0] += 1
             # First call succeeds, second call fails
             if call_count[0] == 2:
@@ -255,8 +247,8 @@ class TestGameTickLoopLegacy:
             # Run loop for a short time
             task = asyncio.create_task(game_tick_loop(app))
 
-            # Wait for at least one tick (TICK_INTERVAL is 1.0 seconds, need at least 1.1 seconds for one tick)
-            await asyncio.sleep(1.5)
+            # Wait for at least one tick (tick interval is 0.1 seconds, need at least 0.15 seconds for one tick)
+            await asyncio.sleep(0.2)
 
             # Cancel the loop
             task.cancel()
@@ -310,7 +302,7 @@ class TestGameTickLoopLegacy:
 
         call_count = 0
 
-        async def mock_broadcast_with_error(*args, **kwargs):
+        async def mock_broadcast_with_error(*_args, **_kwargs):
             nonlocal call_count
             call_count += 1
             if call_count == 1:
@@ -330,8 +322,8 @@ class TestGameTickLoopLegacy:
 
             task = asyncio.create_task(game_tick_loop(app))
 
-            # Wait for multiple ticks (2 seconds at 1 second interval = 2 ticks minimum)
-            await asyncio.sleep(2.5)
+            # Wait for multiple ticks (0.3 seconds at 0.1 second interval = 3 ticks minimum)
+            await asyncio.sleep(0.35)
 
             task.cancel()
             try:
@@ -368,8 +360,8 @@ class TestGameTickLoopLegacy:
 
             task = asyncio.create_task(game_tick_loop(app))
 
-            # Wait for at least one tick (TICK_INTERVAL is 1.0 seconds, need at least 1.1 seconds for one tick)
-            await asyncio.sleep(1.5)
+            # Wait for at least one tick (tick interval is 0.1 seconds, need at least 0.15 seconds for one tick)
+            await asyncio.sleep(0.2)
 
             task.cancel()
             try:

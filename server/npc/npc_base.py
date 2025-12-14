@@ -140,9 +140,9 @@ class NPCBase(ABC):
             # Enable for mob types, disable for shopkeepers and quest givers
             config["idle_movement_enabled"] = self.npc_type in ["passive_mob", "aggressive_mob"]
 
-        # Default movement interval (10 seconds)
+        # Default movement interval (100 seconds, scaled 10x for 100ms tick rate)
         if "idle_movement_interval" not in config:
-            config["idle_movement_interval"] = 10
+            config["idle_movement_interval"] = 100
 
         # Default movement probability (25%)
         if "idle_movement_probability" not in config:

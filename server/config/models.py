@@ -361,8 +361,8 @@ class GameConfig(BaseSettings):
 
     # Game mechanics
     dp_regen_rate: int = Field(default=1, description="Determination regeneration rate")
-    combat_tick_interval: int = Field(default=6, description="Combat tick interval in seconds")
-    game_tick_rate: float = Field(default=1.0, description="Game tick rate")
+    combat_tick_interval: int = Field(default=6, description="Combat tick interval in seconds (1 Mythos minute)")
+    server_tick_rate: float = Field(default=0.1, description="Server tick rate in seconds (100ms default)")
     weather_update_interval: int = Field(default=300, description="Weather update interval in seconds")
     save_interval: int = Field(default=60, description="Player save interval in seconds")
 
@@ -996,7 +996,7 @@ class AppConfig(BaseSettings):
             "motd_file": game.motd_file,
             "dp_regen_rate": game.dp_regen_rate,
             "combat_tick_interval": game.combat_tick_interval,
-            "game_tick_rate": game.game_tick_rate,
+            "server_tick_rate": game.server_tick_rate,
             "weather_update_interval": game.weather_update_interval,
             "save_interval": game.save_interval,
             # Combat configuration

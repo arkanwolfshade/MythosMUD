@@ -18,7 +18,7 @@ from fastapi import FastAPI
 from ..container import ApplicationContainer
 from ..logging.enhanced_logging_config import get_logger, update_logging_with_player_service
 from ..time.time_service import get_mythos_chronicle
-from .game_tick_processing import TICK_INTERVAL, game_tick_loop, get_current_tick, reset_current_tick
+from .game_tick_processing import game_tick_loop, get_current_tick, reset_current_tick
 from .lifespan_shutdown import shutdown_services
 from .lifespan_startup import (
     initialize_chat_service,
@@ -35,7 +35,7 @@ from .lifespan_startup import (
 logger = get_logger("server.lifespan")
 
 # Re-export tick functions for backward compatibility
-__all__ = ["lifespan", "get_current_tick", "reset_current_tick", "TICK_INTERVAL"]
+__all__ = ["lifespan", "get_current_tick", "reset_current_tick"]
 
 
 @asynccontextmanager

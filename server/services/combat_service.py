@@ -52,6 +52,7 @@ class CombatService:
         magic_service=None,
     ):
         """Initialize the combat service."""
+        from server.config import get_config
         from server.events.event_bus import EventBus
 
         self._active_combats: dict[UUID, CombatInstance] = {}
@@ -88,7 +89,9 @@ class CombatService:
             raise
         # Auto-progression configuration
         self._auto_progression_enabled = True
-        self._turn_interval_seconds = 6
+        # Get combat tick interval from config (defaults to 6 seconds = 1 Mythos minute)
+        config = get_config()
+        self._turn_interval_seconds = config.game.combat_tick_interval
 
         # Initialize helper handlers
         self._turn_processor = CombatTurnProcessor(self)

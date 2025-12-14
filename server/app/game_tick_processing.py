@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ..config import get_config
 from ..logging.enhanced_logging_config import get_logger
 from ..realtime.connection_manager_api import broadcast_game_event
 from ..services.player_respawn_service import LIMBO_ROOM_ID
@@ -21,8 +22,6 @@ if TYPE_CHECKING:
     from ..models.player import Player
 
 logger = get_logger("server.game_tick")
-
-TICK_INTERVAL = 1.0  # seconds
 
 # Global tick counter for combat system
 # NOTE: This remains global for now as it's shared state needed by combat system
@@ -39,6 +38,16 @@ def reset_current_tick() -> None:
     """Reset the current tick for testing."""
     global _current_tick  # pylint: disable=global-statement
     _current_tick = 0
+
+
+def get_tick_interval() -> float:
+    """Get the server tick interval from configuration.
+
+    Returns:
+        float: Tick interval in seconds
+    """
+    config = get_config()
+    return config.game.server_tick_rate
 
 
 def _validate_app_state_for_status_effects(app: FastAPI) -> tuple[bool, "ApplicationContainer | None"]:
@@ -469,7 +478,8 @@ async def game_tick_loop(app: FastAPI):
 
     global _current_tick  # pylint: disable=global-statement
     tick_count = 0
-    logger.info("Game tick loop started")
+    tick_interval = get_tick_interval()
+    logger.info("Game tick loop started", tick_interval=tick_interval)
 
     while True:
         try:
@@ -484,7 +494,7 @@ async def game_tick_loop(app: FastAPI):
             await broadcast_tick_event(app, tick_count)
 
             # Sleep for tick interval
-            await asyncio.sleep(TICK_INTERVAL)
+            await asyncio.sleep(tick_interval)
             tick_count += 1
         except asyncio.CancelledError:
             logger.info("Game tick loop cancelled")
@@ -492,7 +502,7 @@ async def game_tick_loop(app: FastAPI):
         except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
             logger.error("Error in game tick loop", tick_count=tick_count, error=str(e), exc_info=True)
             try:
-                await asyncio.sleep(TICK_INTERVAL)
+                await asyncio.sleep(tick_interval)
             except asyncio.CancelledError:
                 logger.info("Game tick loop cancelled during error recovery")
                 break
