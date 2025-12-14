@@ -5,6 +5,7 @@ This module provides processors for sanitizing sensitive data, adding correlatio
 request context, and enhancing player IDs with names.
 """
 
+import re
 import threading
 import uuid
 from datetime import UTC, datetime
@@ -52,22 +53,31 @@ def sanitize_sensitive_data(_logger: Any, _name: str, event_dict: dict[str, Any]
     Returns:
         Sanitized event dictionary
     """
-    sensitive_keys = [
-        "password",
-        "token",
-        "secret",
-        "key",
-        "credential",
-        "auth",
-        "jwt",
-        "api_key",
-        "private_key",
-        "session_token",
-        "access_token",
-        "refresh_token",
-        "bearer",
-        "authorization",
+    # Sensitive patterns that should be redacted
+    # These patterns match whole words or specific suffixes/prefixes
+    sensitive_patterns = [
+        r"\bpassword\b",
+        r"\btoken\b",
+        r"\bsecret\b",
+        r"_key\b",  # Matches fields ending with _key (api_key, private_key, etc.)
+        r"\bkey_\b",  # Matches fields starting with key_ (key_id, key_value, etc.)
+        r"^key$",  # Matches exact field name "key"
+        r"\bcredential\b",
+        r"\bauth\b",
+        r"\bjwt\b",
+        r"\bbearer\b",
+        r"\bauthorization\b",
     ]
+
+    # Safe field names that should never be redacted even if they match patterns
+    safe_fields = {
+        "subzone_key",
+        "zone_key",
+        "room_key",
+        "object_key",
+        "item_key",
+        "npc_key",
+    }
 
     def sanitize_dict(d: dict[str, Any]) -> dict[str, Any]:
         """Recursively sanitize dictionary values."""
@@ -75,10 +85,17 @@ def sanitize_sensitive_data(_logger: Any, _name: str, event_dict: dict[str, Any]
         for key, value in d.items():
             if isinstance(value, dict):
                 sanitized[key] = sanitize_dict(value)
-            elif isinstance(key, str) and any(sensitive in key.lower() for sensitive in sensitive_keys):
-                sanitized[key] = "[REDACTED]"
             else:
-                sanitized[key] = value
+                # Since dict is typed as dict[str, Any], key is always str
+                key_lower = key.lower()
+                # Check if field is in safe list
+                if key_lower in safe_fields:
+                    sanitized[key] = value
+                # Check if field matches any sensitive pattern
+                elif any(re.search(pattern, key_lower) for pattern in sensitive_patterns):
+                    sanitized[key] = "[REDACTED]"
+                else:
+                    sanitized[key] = value
         return sanitized
 
     return sanitize_dict(event_dict)

@@ -249,6 +249,7 @@ class PlayerRoomEventHandler:
             npcs=occupants_data["npcs"],
         )
         if len(occupants_data["npcs"]) == 0:
+            # Log as warning to help identify NPC spawning issues
             self._logger.warning(
                 "No NPCs included in occupants snapshot - player may not see NPCs",
                 player_id=player_id_uuid,

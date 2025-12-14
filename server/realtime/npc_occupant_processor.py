@@ -146,7 +146,6 @@ class NPCOccupantProcessor:
         room_matches = self.room_id_utils.check_npc_room_match(
             npc_room_id, npc_canonical_room_id, room_id, canonical_room_id
         )
-
         self._logger.debug(
             "Checking NPC for room match",
             room_id=room_id,
