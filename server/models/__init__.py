@@ -17,6 +17,9 @@ from .item import ItemComponentState, ItemInstance, ItemPrototype
 from .lucidity import LucidityAdjustmentLog, LucidityCooldown, LucidityExposureState, PlayerLucidity
 from .npc import NPCDefinition, NPCDefinitionType, NPCSpawnRule
 from .player import Player
+from .player_spells import PlayerSpell
+from .spell import Spell, SpellEffectType, SpellMaterial, SpellRangeType, SpellSchool, SpellTargetType
+from .spell_db import SpellDB
 from .user import User
 
 # ARCHITECTURE FIX Phase 3.1: Removed setup_relationships import
@@ -47,4 +50,12 @@ __all__ = [
     "ContainerComponent",
     "ContainerSourceType",
     "ContainerLockState",
+    "Spell",
+    "SpellSchool",
+    "SpellTargetType",
+    "SpellRangeType",
+    "SpellEffectType",
+    "SpellMaterial",
+    "PlayerSpell",
+    "SpellDB",
 ]

@@ -104,7 +104,7 @@ class CommandProcessor:
 
             return None, error_message, None
 
-        except Exception as e:
+        except (TypeError, AttributeError, KeyError, RuntimeError) as e:
             # Handle unexpected errors
             error_message = f"Unexpected error processing command: {str(e)}"
             context = create_error_context()
@@ -117,6 +117,40 @@ class CommandProcessor:
             logger.error("Unexpected error in command processing", error_message=error_message)
 
             return None, error_message, None
+
+    def _extract_attributes(self, validated_command: Any, attribute_map: dict[str, str]) -> dict[str, Any]:
+        """
+        Extract attributes from validated command using a mapping configuration.
+
+        Args:
+            validated_command: The validated Pydantic command object
+            attribute_map: Dictionary mapping source attribute names to target keys
+
+        Returns:
+            Dictionary containing extracted attributes
+        """
+        extracted = {}
+        for source_attr, target_key in attribute_map.items():
+            if hasattr(validated_command, source_attr):
+                extracted[target_key] = getattr(validated_command, source_attr)
+        return extracted
+
+    def _is_combat_command(self, command_type: CommandType) -> bool:
+        """
+        Check if a command type is a combat command.
+
+        Args:
+            command_type: The command type to check
+
+        Returns:
+            True if the command is a combat command, False otherwise
+        """
+        return command_type in [
+            CommandType.ATTACK,
+            CommandType.PUNCH,
+            CommandType.KICK,
+            CommandType.STRIKE,
+        ]
 
     def extract_command_data(self, validated_command: Any) -> dict[str, Any]:
         """
@@ -136,92 +170,48 @@ class CommandProcessor:
             "player_name": None,  # Will be set by the calling code
         }
 
-        # Extract command-specific data based on type
-        if hasattr(validated_command, "direction"):
-            # Direction is already a string value due to use_enum_values=True
-            command_data["direction"] = validated_command.direction
+        # Define attribute mappings: source_attribute -> target_key
+        # Special cases (target, player_name) are handled separately below
+        attribute_map = {
+            "direction": "direction",
+            "message": "message",
+            "target_player": "target_player",
+            "index": "index",
+            "quantity": "quantity",
+            "item": "item",
+            "container": "container",
+            "prototype_id": "prototype_id",
+            "target_type": "target_type",
+            "search_term": "search_term",
+            "action": "action",
+            "pose": "pose",
+            "alias_name": "alias_name",
+            "subcommand": "subcommand",
+            "alias_command": "alias_command",
+            "duration_minutes": "duration_minutes",
+            "reason": "reason",
+            "filter_name": "filter_name",
+            "target_slot": "target_slot",
+            "slot": "slot",
+            "look_in": "look_in",
+            "instance_number": "instance_number",
+            "spell_name": "spell_name",
+            "args": "args",
+        }
 
-        if hasattr(validated_command, "message"):
-            command_data["message"] = validated_command.message
+        # Extract standard attributes
+        command_data.update(self._extract_attributes(validated_command, attribute_map))
 
+        # Handle special case: target attribute
         if hasattr(validated_command, "target"):
             command_data["target"] = validated_command.target
             # For combat commands, also set target_player for compatibility
-            # Compare against enum values, not strings
-            if command_data["command_type"] in [
-                CommandType.ATTACK,
-                CommandType.PUNCH,
-                CommandType.KICK,
-                CommandType.STRIKE,
-            ]:
+            if self._is_combat_command(command_data["command_type"]):
                 command_data["target_player"] = validated_command.target
 
-        if hasattr(validated_command, "target_player"):
-            command_data["target_player"] = validated_command.target_player
-
-        if hasattr(validated_command, "index"):
-            command_data["index"] = validated_command.index
-
-        if hasattr(validated_command, "quantity"):
-            command_data["quantity"] = validated_command.quantity
-
-        if hasattr(validated_command, "item"):
-            command_data["item"] = validated_command.item
-
-        if hasattr(validated_command, "container"):
-            command_data["container"] = validated_command.container
-
-        if hasattr(validated_command, "prototype_id"):
-            command_data["prototype_id"] = validated_command.prototype_id
-
-        if hasattr(validated_command, "target_type"):
-            command_data["target_type"] = validated_command.target_type
-
-        if hasattr(validated_command, "search_term"):
-            command_data["search_term"] = validated_command.search_term
-
-        if hasattr(validated_command, "action"):
-            command_data["action"] = validated_command.action
-
-        if hasattr(validated_command, "pose"):
-            command_data["pose"] = validated_command.pose
-
-        if hasattr(validated_command, "alias_name"):
-            command_data["alias_name"] = validated_command.alias_name
-
-        if hasattr(validated_command, "subcommand"):
-            command_data["subcommand"] = validated_command.subcommand
-
-        if hasattr(validated_command, "alias_command"):
-            command_data["alias_command"] = validated_command.alias_command
-
-        if hasattr(validated_command, "duration_minutes"):
-            command_data["duration_minutes"] = validated_command.duration_minutes
-
-        if hasattr(validated_command, "reason"):
-            command_data["reason"] = validated_command.reason
-
+        # Handle special case: player_name maps to target_player
         if hasattr(validated_command, "player_name"):
             command_data["target_player"] = validated_command.player_name
-
-        if hasattr(validated_command, "filter_name"):
-            command_data["filter_name"] = validated_command.filter_name
-
-        if hasattr(validated_command, "target_slot"):
-            command_data["target_slot"] = validated_command.target_slot
-
-        if hasattr(validated_command, "slot"):
-            command_data["slot"] = validated_command.slot
-
-        if hasattr(validated_command, "look_in"):
-            command_data["look_in"] = validated_command.look_in
-
-        if hasattr(validated_command, "instance_number"):
-            command_data["instance_number"] = validated_command.instance_number
-
-        # Extract args field for commands that need it (like shutdown)
-        if hasattr(validated_command, "args"):
-            command_data["args"] = validated_command.args
 
         logger.debug(
             "Extracted command data", command_type=command_data["command_type"], keys=list(command_data.keys())
@@ -262,7 +252,7 @@ class CommandProcessor:
         """
         try:
             return self.parser.get_command_help(command_name)
-        except Exception as e:
+        except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
             context = create_error_context()
             context.metadata = {"command_name": command_name, "error_type": type(e).__name__, "error_message": str(e)}
             logger.error("Error getting command help", error=str(e))

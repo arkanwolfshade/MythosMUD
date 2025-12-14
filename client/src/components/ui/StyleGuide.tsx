@@ -316,7 +316,9 @@ export const StyleGuide: React.FC = () => {
                 <TerminalInput
                   placeholder="Character name"
                   value={formInputValue}
-                  onChange={e => { setFormInputValue(e.target.value); }}
+                  onChange={e => {
+                    setFormInputValue(e.target.value);
+                  }}
                 />
                 <div className="flex gap-2">
                   <TerminalButton type="submit" variant="primary">

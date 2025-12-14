@@ -74,6 +74,7 @@ The system automatically routes logs to subsystem-specific files. Each subsystem
 - **infrastructure.log**: NATS broker, message broker, infrastructure components
 - **validators.log**: Input validation, command validation, security validation
 - **combat.log**: Combat system, combat events, combat services
+- **magic.log**: Magic system, spellcasting, spell effects, MP management
 - **access.log**: Access control, permissions, API access
 - **security.log**: Security events, audit trails, security violations
 

@@ -1,6 +1,8 @@
 [FORMAT]
 # Maximum line length (Codacy default is 100, project standard is 120)
 max-line-length=120
+# Maximum module lines (project standard is 500 per user rules)
+max-module-lines=550
 
 [MESSAGES CONTROL]
 # Disable line-too-long warnings since we handle this with max-line-length

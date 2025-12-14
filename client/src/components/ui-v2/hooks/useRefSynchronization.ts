@@ -61,7 +61,9 @@ export const useRefSynchronization = ({
     rescueStateRef.current = rescueState;
 
     if (rescueState && ['success', 'failed', 'sanitarium'].includes(rescueState.status)) {
-      rescueTimeoutRef.current = window.setTimeout(() => { setRescueState(null); }, 8_000);
+      rescueTimeoutRef.current = window.setTimeout(() => {
+        setRescueState(null);
+      }, 8_000);
     }
 
     return () => {

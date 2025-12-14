@@ -78,13 +78,11 @@ repos:
         types: [javascript, ts, json, markdown]
         pass_filenames: false
         always_run: true
-  # Temporarily disabled due to download issues
-  # - repo: https://github.com/gitleaks/gitleaks
-  #   rev: v8.16.3
-  #   hooks:
-  #     - id: gitleaks
-  # Temporarily disabled due to version incompatibility with client ESLint v9
-  # - repo: https://github.com/pre-commit/mirrors-eslint
-  #   rev: v8.38.0
-  #   hooks:
-  #     - id: eslint
+      - id: check-codacy-yaml
+        name: Check Codacy YAML Configuration
+        entry: python scripts/check_codacy_yaml.py
+        language: system
+        types: [yaml]
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]

@@ -164,6 +164,12 @@
     },
     "[dockerfile]": {
       "editor.defaultFormatter": "ms-azuretools.vscode-containers"
+    },
+    "codacy.autoDiscover": false,
+    "codacy.autoSync": false,
+    "codacy.enabled": true,
+    "files.readonlyInclude": {
+      ".codacy/codacy.yaml": true
     }
   },
   "extensions": {

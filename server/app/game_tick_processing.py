@@ -277,6 +277,38 @@ async def _process_passive_lucidity_flux(app: FastAPI, session: AsyncSession, ti
         logger.error("Error processing passive LCD flux", tick_count=tick_count, error=str(lcd_flux_error))
 
 
+async def _process_mp_regeneration(app: FastAPI, _session: AsyncSession, tick_count: int) -> None:
+    """Process MP regeneration for online players."""
+    if not hasattr(app.state, "mp_regeneration_service"):
+        return
+
+    if not hasattr(app.state, "connection_manager"):
+        return
+
+    try:
+        online_player_ids = list(app.state.connection_manager.online_players.keys())
+        if not online_player_ids:
+            return
+
+        mp_service = app.state.mp_regeneration_service
+        processed_count = 0
+
+        for player_id_str in online_player_ids:
+            try:
+                player_uuid = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
+                result = await mp_service.process_tick_regeneration(player_uuid)
+                if result.get("mp_restored", 0) > 0:
+                    processed_count += 1
+            except (ValueError, AttributeError, TypeError) as e:
+                logger.warning("Error processing MP regeneration for player", player_id=player_id_str, error=str(e))
+                continue
+
+        if processed_count > 0:
+            logger.debug("Processed MP regeneration", tick_count=tick_count, players_processed=processed_count)
+    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as mp_regen_error:
+        logger.error("Error processing MP regeneration", tick_count=tick_count, error=str(mp_regen_error))
+
+
 async def _process_dead_players(app: FastAPI, session: AsyncSession) -> None:
     """Process dead players and move them to limbo if needed."""
     dead_players = await app.state.player_death_service.get_dead_players(session)
@@ -304,6 +336,7 @@ async def _process_session_dp_decay_and_death(app: FastAPI, session: AsyncSessio
     """Process DP decay and death for a single database session."""
     await _process_mortally_wounded_players(app, session, tick_count)
     await _process_passive_lucidity_flux(app, session, tick_count)
+    await _process_mp_regeneration(app, session, tick_count)
     await _process_dead_players(app, session)
 
 

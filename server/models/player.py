@@ -25,6 +25,7 @@ if TYPE_CHECKING:
         LucidityExposureState,
         PlayerLucidity,
     )
+    from .player_spells import PlayerSpell
     from .user import User
 
 
@@ -93,6 +94,9 @@ class Player(Base):
     # ARCHITECTURE FIX Phase 3.1: Relationships defined directly in model (no circular imports)
     # Using simple string reference - SQLAlchemy resolves via registry after all models imported
     user: Mapped["User"] = relationship("User", back_populates="player", overlaps="player")
+    spells: Mapped[list["PlayerSpell"]] = relationship(
+        "PlayerSpell", back_populates="player", cascade="all, delete-orphan"
+    )
 
     # Profession - add index for queries filtering by profession
     profession_id = Column(Integer(), default=0, nullable=False, index=True)

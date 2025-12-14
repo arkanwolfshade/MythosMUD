@@ -24,6 +24,7 @@ from .lifespan_startup import (
     initialize_chat_service,
     initialize_combat_services,
     initialize_container_and_legacy_services,
+    initialize_magic_services,
     initialize_mythos_time_consumer,
     initialize_nats_and_combat_services,
     initialize_npc_services,
@@ -81,6 +82,7 @@ async def lifespan(app: FastAPI):
 
     await initialize_nats_and_combat_services(app, container)
     await initialize_chat_service(app, container)
+    await initialize_magic_services(app, container)
 
     # Start the game tick loop using TaskRegistry from container
     assert container.task_registry is not None, "TaskRegistry must be initialized"
