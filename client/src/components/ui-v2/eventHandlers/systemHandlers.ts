@@ -119,8 +119,9 @@ export const handleMythosTimeUpdate: EventHandler = (event, context, appendMessa
 export const handleGameTick: EventHandler = (event, _context, appendMessage) => {
   const tickNumber = typeof event.data.tick_number === 'number' ? event.data.tick_number : 0;
 
-  // Display every 10th tick
-  if (tickNumber % 10 === 0 && tickNumber >= 0) {
+  // Display every 10th received tick message (10 seconds)
+  // Server broadcasts every 10 ticks (1 second), so we display every 100th tick (10 seconds)
+  if (tickNumber % 100 === 0 && tickNumber >= 0) {
     appendMessage(
       sanitizeChatMessageForState({
         text: `[Tick ${tickNumber}]`,

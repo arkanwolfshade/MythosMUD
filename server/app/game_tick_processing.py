@@ -491,7 +491,9 @@ async def game_tick_loop(app: FastAPI):
             await process_dp_decay_and_death(app, tick_count)
             await process_npc_maintenance(app, tick_count)
             await cleanup_decayed_corpses(app, tick_count)
-            await broadcast_tick_event(app, tick_count)
+            # Broadcast tick event every 10 ticks (1 second at 100ms per tick)
+            if tick_count % 10 == 0:
+                await broadcast_tick_event(app, tick_count)
 
             # Sleep for tick interval
             await asyncio.sleep(tick_interval)
