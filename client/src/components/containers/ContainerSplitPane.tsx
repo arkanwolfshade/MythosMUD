@@ -51,8 +51,8 @@ export const ContainerSplitPane: React.FC<ContainerSplitPaneProps> = ({
   const playerInventory = useMemo(() => {
     // Type assertion: player.inventory may have a different type definition in gameStore,
     // but at runtime it should be InventoryStack[] based on how the component uses it.
-    return (player?.inventory as unknown as InventoryStack[]) || [];
-  }, [player?.inventory]);
+    return player?.inventory ? (player.inventory as unknown as InventoryStack[]) : [];
+  }, [player]);
 
   // All hooks must be called before any early returns
   const containerRef = useRef<HTMLDivElement>(null);
@@ -69,6 +69,31 @@ export const ContainerSplitPane: React.FC<ContainerSplitPaneProps> = ({
     }
   }, [container, isContainerOpen]);
 
+  // Focus trap handler for modal mode
+  const handleFocusTrap = useCallback((e: React.KeyboardEvent) => {
+    const focusableElements = containerRef.current?.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (!focusableElements || focusableElements.length === 0) return;
+
+    const firstElement = focusableElements[0] as HTMLElement;
+    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+    if (e.shiftKey) {
+      // Shift + Tab
+      if (document.activeElement === firstElement) {
+        e.preventDefault();
+        lastElement.focus();
+      }
+    } else {
+      // Tab
+      if (document.activeElement === lastElement) {
+        e.preventDefault();
+        firstElement.focus();
+      }
+    }
+  }, []);
+
   // Keyboard event handlers - must be before early returns
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -81,30 +106,10 @@ export const ContainerSplitPane: React.FC<ContainerSplitPaneProps> = ({
 
       // Focus trap for modal mode
       if (modal && e.key === 'Tab') {
-        const focusableElements = containerRef.current?.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
-        if (!focusableElements || focusableElements.length === 0) return;
-
-        const firstElement = focusableElements[0] as HTMLElement;
-        const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
-
-        if (e.shiftKey) {
-          // Shift + Tab
-          if (document.activeElement === firstElement) {
-            e.preventDefault();
-            lastElement.focus();
-          }
-        } else {
-          // Tab
-          if (document.activeElement === lastElement) {
-            e.preventDefault();
-            firstElement.focus();
-          }
-        }
+        handleFocusTrap(e);
       }
     },
-    [modal, onClose]
+    [modal, onClose, handleFocusTrap]
   );
 
   // Drag and drop handlers - must be before early returns

@@ -97,10 +97,10 @@ export const DraggablePanelTest: React.FC = () => {
               closePanel(panel.id);
             }}
             onMinimize={() => {
-              console.log('Minimize panel:', panel.id);
+              console.log({ action: 'Minimize panel', panelId: panel.id });
             }}
             onMaximize={() => {
-              console.log('Maximize panel:', panel.id);
+              console.log({ action: 'Maximize panel', panelId: panel.id });
             }}
           >
             <div className="space-y-4">

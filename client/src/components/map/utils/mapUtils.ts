@@ -91,7 +91,8 @@ export const roomsToNodes = (
   // Separate nodes with stored positions from those needing grid layout
   const nodesWithPositions = nodes.filter(node => {
     const room = rooms.find(r => r.id === node.id) as RoomWithCoordinates | undefined;
-    return room?.map_x !== null && room?.map_x !== undefined && room.map_y !== null && room?.map_y !== undefined;
+    if (!room) return false;
+    return room.map_x !== null && room.map_x !== undefined && room.map_y !== null && room.map_y !== undefined;
   });
   const nodesNeedingLayout = nodes.filter(node => !nodesWithPositions.some(n => n.id === node.id));
 

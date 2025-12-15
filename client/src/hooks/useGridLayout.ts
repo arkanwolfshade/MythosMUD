@@ -165,13 +165,18 @@ export const useGridLayout = (): UseGridLayoutReturn => {
 
   // Toggle panel state (minimize, maximize, visibility)
   const togglePanelState = useCallback((panelId: string, state: keyof PanelState) => {
-    setPanelStates(prev => ({
-      ...prev,
-      [panelId]: {
-        ...prev[panelId],
-        [state]: !prev[panelId][state],
-      },
-    }));
+    setPanelStates(prev => {
+      const currentPanel = prev[panelId] || {};
+      // Type-safe property access: state is keyof PanelState, so this is safe
+      const currentValue = currentPanel[state] ?? false;
+      return {
+        ...prev,
+        [panelId]: {
+          ...currentPanel,
+          [state]: !currentValue,
+        },
+      };
+    });
   }, []);
 
   // Auto-save layout when it changes
