@@ -386,14 +386,14 @@ class TestGameTickIntegration:
 
     def test_maintenance_config_get_respawn_delay(self):
         """Test getting respawn delay for different NPC types."""
-        # Test configured types (current config values in seconds)
-        assert NPCMaintenanceConfig.get_respawn_delay("quest_giver") == 6000.0
-        assert NPCMaintenanceConfig.get_respawn_delay("shopkeeper") == 3000.0
-        assert NPCMaintenanceConfig.get_respawn_delay("passive_mob") == 1800.0
-        assert NPCMaintenanceConfig.get_respawn_delay("aggressive_mob") == 3000.0
+        # Test configured types (values in seconds - corrected from 10x scaling bug)
+        assert NPCMaintenanceConfig.get_respawn_delay("quest_giver") == 600.0
+        assert NPCMaintenanceConfig.get_respawn_delay("shopkeeper") == 300.0
+        assert NPCMaintenanceConfig.get_respawn_delay("passive_mob") == 180.0
+        assert NPCMaintenanceConfig.get_respawn_delay("aggressive_mob") == 300.0
 
         # Test default for unknown type
-        assert NPCMaintenanceConfig.get_respawn_delay("unknown_type") == 3000.0
+        assert NPCMaintenanceConfig.get_respawn_delay("unknown_type") == 300.0
 
     def test_maintenance_config_summary(self):
         """Test configuration summary."""
@@ -404,7 +404,7 @@ class TestGameTickIntegration:
         assert "respawn_delays" in summary
         assert "min_spawn_check_interval" in summary
         assert summary["maintenance_interval_ticks"] == 600
-        assert summary["spawn_reroll_interval"] == 6000.0
+        assert summary["spawn_reroll_interval"] == 600.0
 
 
 class TestCompleteLifecycle:

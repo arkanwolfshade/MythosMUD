@@ -31,27 +31,27 @@ class NPCMaintenanceConfig:
 
     # How often to re-roll optional NPC spawns (in seconds)
     # This controls how frequently we check if optional NPCs should spawn
-    SPAWN_REROLL_INTERVAL: float = 6000.0  # Every 10 minutes
+    SPAWN_REROLL_INTERVAL: float = 600.0  # Every 10 minutes
 
     # Respawn delay overrides per NPC type (in seconds)
     # These values override the default respawn delay for specific NPC types
     RESPAWN_DELAYS: dict[str, float] = {
-        "quest_giver": 6000.0,  # 10 minutes - important NPCs respawn quickly
-        "shopkeeper": 3000.0,  # 5 minutes (default) - essential services
-        "passive_mob": 1800.0,  # 3 minutes - common creatures respawn faster
-        "aggressive_mob": 3000.0,  # 5 minutes - balanced respawn rate
+        "quest_giver": 600.0,  # 10 minutes - important NPCs respawn quickly
+        "shopkeeper": 300.0,  # 5 minutes (default) - essential services
+        "passive_mob": 180.0,  # 3 minutes - common creatures respawn faster
+        "aggressive_mob": 300.0,  # 5 minutes - balanced respawn rate
     }
 
     # Minimum interval between spawn checks per NPC definition (in seconds)
     # This prevents spam spawning of the same NPC type
-    MIN_SPAWN_CHECK_INTERVAL: float = 3000.0  # 5 minutes between checks
+    MIN_SPAWN_CHECK_INTERVAL: float = 300.0  # 5 minutes between checks
 
     # Default values (also defined in lifecycle_manager.py, documented here for reference)
     # These are the baseline values used by the lifecycle manager
-    DEFAULT_RESPAWN_DELAY: float = 3000.0  # 5 minutes
-    DEATH_SUPPRESSION_DURATION: float = 300.0  # 30 seconds after death (scaled 10x)
+    DEFAULT_RESPAWN_DELAY: float = 300.0  # 5 minutes
+    DEATH_SUPPRESSION_DURATION: float = 30.0  # 30 seconds after death
     MAX_RESPAWN_ATTEMPTS: int = 3  # Maximum attempts before giving up
-    CLEANUP_INTERVAL: float = 36000.0  # 1 hour - cleanup old lifecycle records
+    CLEANUP_INTERVAL: float = 3600.0  # 1 hour - cleanup old lifecycle records
 
     @classmethod
     def get_respawn_delay(cls, npc_type: str) -> float:

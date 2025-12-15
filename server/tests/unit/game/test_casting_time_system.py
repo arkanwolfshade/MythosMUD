@@ -189,12 +189,13 @@ class TestCastingStateManager:
 
         casting_state_manager.start_casting(player_id=player_id, spell=spell, start_tick=0, mastery=50)
 
-        # Update after 2 ticks
-        is_complete = casting_state_manager.update_casting_progress(player_id, 2)
+        # Update after 20 ticks (2 seconds at 0.1s per tick)
+        is_complete = casting_state_manager.update_casting_progress(player_id, 20)
         state = casting_state_manager.get_casting_state(player_id)
 
         assert state is not None
-        assert state.remaining_seconds == 3
+        # 5 seconds - (20 ticks * 0.1s/tick) = 5 - 2 = 3 seconds remaining
+        assert abs(state.remaining_seconds - 3.0) < 0.01
         assert is_complete is False
 
     def test_update_casting_progress_completes_when_time_elapsed(self, casting_state_manager, create_test_spell):
@@ -204,8 +205,8 @@ class TestCastingStateManager:
 
         casting_state_manager.start_casting(player_id=player_id, spell=spell, start_tick=0, mastery=50)
 
-        # Update after 5 ticks (casting time)
-        is_complete = casting_state_manager.update_casting_progress(player_id, 5)
+        # Update after 50 ticks (5 seconds at 0.1s per tick: 50 * 0.1 = 5 seconds)
+        is_complete = casting_state_manager.update_casting_progress(player_id, 50)
 
         assert is_complete is True
 
@@ -260,8 +261,8 @@ class TestCastingStateManager:
         assert state.next_initiative_tick is None  # Initiative arrived
         assert state.start_tick == 6  # Casting starts now
 
-        # Update after 5 more ticks (tick 11)
-        is_complete = casting_state_manager.update_casting_progress(player_id, 11)
+        # Update after 50 more ticks (tick 56: 6 + 50 = 56, which is 5 seconds at 0.1s per tick)
+        is_complete = casting_state_manager.update_casting_progress(player_id, 56)
 
         assert is_complete is True
 
@@ -376,12 +377,12 @@ class TestMagicServiceCastingTime:
         await magic_service.cast_spell(mock_player.player_id, "progress_spell")
         assert magic_service.casting_state_manager.is_casting(mock_player.player_id)
 
-        # Progress 2 ticks (not complete yet)
-        await magic_service.check_casting_progress(2)
+        # Progress 20 ticks (2 seconds at 0.1s per tick, not complete yet)
+        await magic_service.check_casting_progress(20)
         assert magic_service.casting_state_manager.is_casting(mock_player.player_id)
 
-        # Progress to 3 ticks (should complete)
-        await magic_service.check_casting_progress(3)
+        # Progress to 30 ticks (3 seconds at 0.1s per tick, should complete)
+        await magic_service.check_casting_progress(30)
         assert not magic_service.casting_state_manager.is_casting(mock_player.player_id)
 
         # Verify effect was processed
@@ -508,7 +509,7 @@ class TestMagicServiceCastingTime:
         # Progress before initiative - should not advance
         await magic_service.check_casting_progress(3)
         casting_state = magic_service.casting_state_manager.get_casting_state(mock_player.player_id)
-        assert casting_state.remaining_seconds == 3  # Still waiting
+        assert casting_state.remaining_seconds == 3  # Still waiting (hasn't started casting yet)
 
         # Progress to initiative - should start casting
         await magic_service.check_casting_progress(6)
@@ -516,8 +517,8 @@ class TestMagicServiceCastingTime:
         assert casting_state.next_initiative_tick is None  # Started casting
         assert casting_state.start_tick == 6
 
-        # Complete casting
-        await magic_service.check_casting_progress(9)  # 6 + 3 = 9
+        # Complete casting (3 seconds = 30 ticks at 0.1s per tick, so 6 + 30 = 36)
+        await magic_service.check_casting_progress(36)
         assert not magic_service.casting_state_manager.is_casting(mock_player.player_id)
 
     @pytest.mark.asyncio
@@ -542,14 +543,16 @@ class TestMagicServiceCastingTime:
         # Start casting
         await magic_service.cast_spell(mock_player.player_id, "multi_round_spell")
 
-        # Progress through first round (6 ticks)
-        await magic_service.check_casting_progress(6)
+        # Progress through first round (60 ticks = 6 seconds at 0.1s per tick)
+        await magic_service.check_casting_progress(60)
         casting_state = magic_service.casting_state_manager.get_casting_state(mock_player.player_id)
         assert casting_state is not None
-        assert casting_state.remaining_seconds == 4  # 10 - 6 = 4
+        # 10 seconds - (60 ticks * 0.1s/tick) = 10 - 6 = 4 seconds remaining
+        assert abs(casting_state.remaining_seconds - 4.0) < 0.01
 
-        # Progress through second round (10 ticks total)
-        await magic_service.check_casting_progress(10)
+        # Progress through second round (100 ticks total = 10 seconds at 0.1s per tick)
+        # Start was at tick 0, so after 100 ticks we've elapsed 10 seconds
+        await magic_service.check_casting_progress(100)
         assert not magic_service.casting_state_manager.is_casting(mock_player.player_id)
 
         # Verify effect was processed

@@ -23,7 +23,7 @@ class CastingState:
     spell_name: str
     start_tick: int
     casting_time_seconds: int
-    remaining_seconds: int
+    remaining_seconds: float
     combat_id: uuid.UUID | None
     next_initiative_tick: int | None
     mp_cost: int
@@ -188,7 +188,9 @@ class CastingStateManager:
             casting_state.start_tick = current_tick
 
         # Calculate elapsed time
-        elapsed_seconds = current_tick - casting_state.start_tick
+        # Convert tick difference to seconds (tick rate is 0.1s per tick)
+        elapsed_ticks = current_tick - casting_state.start_tick
+        elapsed_seconds = elapsed_ticks * 0.1
         casting_state.remaining_seconds = max(0, casting_state.casting_time_seconds - elapsed_seconds)
 
         # Check if complete
