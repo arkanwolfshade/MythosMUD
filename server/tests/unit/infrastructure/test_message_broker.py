@@ -339,7 +339,7 @@ class TestMessageBrokerProtocol:
         for handler in handlers:
             result = await handler({"test": "data"})
             # Results vary by handler type, just verify they can be called
-            assert result is None or isinstance(result, (dict, str))
+            assert result is None or isinstance(result, dict | str)
 
     @pytest.mark.asyncio
     async def test_protocol_method_signatures(self):

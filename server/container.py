@@ -558,7 +558,7 @@ class ApplicationContainer:
         """Decode a JSON column value, returning the type's default on failure."""
         if value is None or value == "":
             return expected_type()
-        if isinstance(value, (list, dict)):
+        if isinstance(value, list | dict):
             return value
         try:
             decoded = json.loads(value)

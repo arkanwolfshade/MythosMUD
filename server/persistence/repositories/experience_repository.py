@@ -182,7 +182,7 @@ class ExperienceRepository:
             DatabaseError: If database operation fails
         """
         # Validate delta type
-        if not isinstance(delta, (int, float)):
+        if not isinstance(delta, int | float):
             raise TypeError(f"delta must be int or float, got {type(delta).__name__}")
 
         # Validate field name (whitelist approach for security)

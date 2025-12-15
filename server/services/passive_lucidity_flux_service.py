@@ -608,7 +608,7 @@ class PassiveLucidityFluxService:
             return {
                 key: float(value)
                 for key, value in profile.items()
-                if key in {"day", "night", "all"} and isinstance(value, (int, float))
+                if key in {"day", "night", "all"} and isinstance(value, int | float)
             }
 
         for key, profile in config.get("environment_defaults", {}).items():
@@ -763,7 +763,7 @@ class PassiveLucidityFluxService:
         if not isinstance(special_rules, dict):
             return None
         value = special_rules.get("lucidity_drain_rate")
-        if isinstance(value, (int, float)):
+        if isinstance(value, int | float):
             return float(value)
         return None
 

@@ -119,7 +119,7 @@ def _parse_stat_datetime(dt_value: Any) -> str:
         return "Unknown"
 
     try:
-        if isinstance(dt_value, (int, float)):
+        if isinstance(dt_value, int | float):
             dt = datetime.fromtimestamp(dt_value)
         elif isinstance(dt_value, datetime):
             dt = dt_value

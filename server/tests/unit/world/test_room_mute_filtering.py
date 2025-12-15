@@ -356,5 +356,5 @@ class TestRoomBasedMuteFiltering:
         assert call_args is not None
         # load_player_mutes_batch takes receiver_ids as first positional argument
         receiver_ids = call_args[0][0] if call_args[0] else []
-        assert isinstance(receiver_ids, (list, set)), f"Expected list or set, got {type(receiver_ids)}"
+        assert isinstance(receiver_ids, list | set), f"Expected list or set, got {type(receiver_ids)}"
         assert self.receiver_id in receiver_ids, f"Expected {self.receiver_id} in {receiver_ids}"

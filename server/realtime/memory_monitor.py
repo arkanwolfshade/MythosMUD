@@ -64,9 +64,9 @@ class MemoryMonitor:
         try:
             process = psutil.Process()
             memory_percent = process.memory_percent()
-            assert isinstance(memory_percent, (int, float))
+            assert isinstance(memory_percent, int | float)
             return float(memory_percent) / 100.0
-        except (OSError, ValueError, TypeError, RuntimeError, Exception) as e:
+        except (OSError, ValueError, TypeError, RuntimeError) as e:
             logger.error("Error getting memory usage", error=str(e), error_type=type(e).__name__, exc_info=True)
             return 0.0
 
@@ -87,7 +87,7 @@ class MemoryMonitor:
                 "available_mb": psutil.virtual_memory().available / 1024 / 1024,
                 "total_mb": psutil.virtual_memory().total / 1024 / 1024,
             }
-        except (OSError, ValueError, TypeError, RuntimeError, Exception) as e:
+        except (OSError, ValueError, TypeError, RuntimeError) as e:
             logger.error("Error getting memory stats", error=str(e), error_type=type(e).__name__, exc_info=True)
             return {}
 
@@ -129,8 +129,8 @@ class MemoryMonitor:
             if stale_count > 0:
                 alerts.append(f"WARNING: {stale_count} stale connections detected")
 
-        except Exception as e:
-            logger.error("Error getting memory alerts", error=str(e), exc_info=True)
+        except (OSError, ValueError, TypeError, RuntimeError) as e:
+            logger.error("Error getting memory alerts", error=str(e), error_type=type(e).__name__, exc_info=True)
             alerts.append(f"ERROR: Failed to get memory alerts: {e}")
 
         return alerts
@@ -144,7 +144,7 @@ class MemoryMonitor:
         try:
             gc.collect()
             logger.debug("Forced garbage collection completed")
-        except (RuntimeError, Exception) as e:
+        except RuntimeError as e:
             logger.error(
                 "Error during forced garbage collection", error=str(e), error_type=type(e).__name__, exc_info=True
             )

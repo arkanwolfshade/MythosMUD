@@ -538,7 +538,7 @@ class NPCPopulationController:
             # Get spawn time from NPC instance
             spawned_at_value = getattr(npc_instance, "spawned_at", None)
             # Ensure spawned_at is a number (handle Mock objects)
-            if not spawned_at_value or not isinstance(spawned_at_value, (int, float)):
+            if not spawned_at_value or not isinstance(spawned_at_value, int | float):
                 continue
 
             age = current_time - spawned_at_value

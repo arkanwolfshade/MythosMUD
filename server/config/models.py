@@ -793,7 +793,7 @@ class CORSConfig(BaseSettings):
                 return int(env_max_age)
             except ValueError:
                 pass
-        return int(value) if isinstance(value, (int, str)) and str(value).isdigit() else 600
+        return int(value) if isinstance(value, int | str) and str(value).isdigit() else 600
 
     @field_validator("expose_headers", mode="before")
     @classmethod

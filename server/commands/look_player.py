@@ -28,7 +28,7 @@ async def _get_players_in_room(room: Any, persistence: Any) -> list[Any]:
     player_ids = room.get_players() if hasattr(room, "get_players") else []
     # Ensure player_ids is iterable (handle Mock objects in tests)
     # Check if it's a list/tuple first, then try to iterate safely
-    if not isinstance(player_ids, (list, tuple)):
+    if not isinstance(player_ids, list | tuple):
         # If it's not a list/tuple, try to convert it safely
         # Mock objects can be iterable but might not behave as expected
         try:
