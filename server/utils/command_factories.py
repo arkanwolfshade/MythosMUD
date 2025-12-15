@@ -226,6 +226,18 @@ class CommandFactory:
         """Create ShutdownCommand from arguments."""
         return self._utility.create_shutdown_command(args)
 
+    def create_cast_command(self, args: list[str]):
+        """Create CastCommand from arguments."""
+        return self._utility.create_cast_command(args)
+
+    def create_spell_command(self, args: list[str]):
+        """Create SpellCommand from arguments."""
+        return self._utility.create_spell_command(args)
+
+    def create_spells_command(self, args: list[str]):
+        """Create SpellsCommand from arguments."""
+        return self._utility.create_spells_command(args)
+
     def create_learn_command(self, args: list[str]):
         """Create LearnCommand from arguments."""
         return self._utility.create_learn_command(args)

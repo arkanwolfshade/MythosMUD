@@ -191,7 +191,7 @@ class TestPlayerXPIntegration:
         xp_reward = 25
 
         # Mock persistence to return the player
-        player_combat_service._persistence.async_get_player = AsyncMock(return_value=sample_player)
+        player_combat_service._persistence.get_player_by_id = AsyncMock(return_value=sample_player)
         player_combat_service._persistence.save_player = AsyncMock()
 
         # Award XP
@@ -212,7 +212,7 @@ class TestPlayerXPIntegration:
         xp_reward = 25
 
         # Mock persistence to return None (player not found)
-        player_combat_service._persistence.async_get_player = AsyncMock(return_value=None)
+        player_combat_service._persistence.get_player_by_id = AsyncMock(return_value=None)
 
         # Award XP should not raise error but log warning
         await player_combat_service.award_xp_on_npc_death(player_id=player_id, npc_id=npc_id, xp_amount=xp_reward)
@@ -272,7 +272,7 @@ class TestPlayerXPIntegration:
         xp_reward = 150  # Enough to level up
 
         # Mock persistence
-        player_combat_service._persistence.async_get_player = AsyncMock(return_value=sample_player)
+        player_combat_service._persistence.get_player_by_id = AsyncMock(return_value=sample_player)
         player_combat_service._persistence.save_player = AsyncMock()
 
         # Award XP
@@ -290,7 +290,7 @@ class TestPlayerXPIntegration:
         xp_reward = 25
 
         # Mock persistence
-        player_combat_service._persistence.async_get_player = AsyncMock(return_value=sample_player)
+        player_combat_service._persistence.get_player_by_id = AsyncMock(return_value=sample_player)
         player_combat_service._persistence.save_player = AsyncMock()
 
         # Award XP
@@ -382,7 +382,7 @@ class TestPlayerCombatIntegration:
         xp_reward = 30
 
         # Mock persistence
-        player_combat_service._persistence.async_get_player = AsyncMock(return_value=sample_player)
+        player_combat_service._persistence.get_player_by_id = AsyncMock(return_value=sample_player)
         player_combat_service._persistence.save_player = AsyncMock()
 
         # Start combat tracking
@@ -472,7 +472,7 @@ class TestPlayerCombatIntegration:
         xp_reward = 25
 
         # Mock persistence to raise an error
-        player_combat_service._persistence.async_get_player = AsyncMock(side_effect=Exception("Database error"))
+        player_combat_service._persistence.get_player_by_id = AsyncMock(side_effect=Exception("Database error"))
 
         # Award XP should not raise error but handle gracefully
         await player_combat_service.award_xp_on_npc_death(player_id=player_id, npc_id=npc_id, xp_amount=xp_reward)

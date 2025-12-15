@@ -46,7 +46,7 @@ from .command_inventory import (
 )
 
 # Import magic commands
-from .command_magic import LearnCommand
+from .command_magic import CastCommand, LearnCommand, SpellCommand, SpellsCommand
 
 # Import moderation commands
 from .command_moderation import (
@@ -129,6 +129,9 @@ __all__ = [
     "KickCommand",
     "StrikeCommand",
     # Magic commands
+    "CastCommand",
+    "SpellCommand",
+    "SpellsCommand",
     "LearnCommand",
     # Union type
     "Command",
@@ -178,6 +181,9 @@ Command = (
     | PunchCommand
     | KickCommand
     | StrikeCommand
+    | CastCommand
+    | SpellCommand
+    | SpellsCommand
     | LearnCommand
     | AdminCommand
     | NPCCommand

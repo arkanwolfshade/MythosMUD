@@ -12,12 +12,15 @@ from ..logging.enhanced_logging_config import get_logger
 from ..models.command import (
     AliasCommand,
     AliasesCommand,
+    CastCommand,
     Direction,
     GotoCommand,
     HelpCommand,
     LearnCommand,
     NPCCommand,
     ShutdownCommand,
+    SpellCommand,
+    SpellsCommand,
     SummonCommand,
     TeleportCommand,
     UnaliasCommand,
@@ -219,6 +222,44 @@ class UtilityCommandFactory:
         - "cancel": Cancel active shutdown
         """
         return ShutdownCommand(args=args)
+
+    @staticmethod
+    def create_cast_command(args: list[str]) -> CastCommand:
+        """Create CastCommand from arguments."""
+        if not args:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError, "Cast command requires a spell name", context=context, logger_name=__name__
+            )
+        # Join all arguments as spell name to support multi-word spell names (e.g., "basic heal")
+        # Target parsing can be added later with a separator syntax if needed
+        spell_name = " ".join(args)
+        target = None
+        return CastCommand(spell_name=spell_name, target=target)
+
+    @staticmethod
+    def create_spell_command(args: list[str]) -> SpellCommand:
+        """Create SpellCommand from arguments."""
+        if not args:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError, "Spell command requires a spell name", context=context, logger_name=__name__
+            )
+        spell_name = " ".join(args)  # Allow multi-word spell names
+        return SpellCommand(spell_name=spell_name)
+
+    @staticmethod
+    def create_spells_command(args: list[str]) -> SpellsCommand:
+        """Create SpellsCommand from arguments."""
+        if args:
+            context = create_error_context()
+            context.metadata = {"args": args}
+            log_and_raise_enhanced(
+                MythosValidationError, "Spells command takes no arguments", context=context, logger_name=__name__
+            )
+        return SpellsCommand()
 
     @staticmethod
     def create_learn_command(args: list[str]) -> LearnCommand:

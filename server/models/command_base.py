@@ -82,6 +82,9 @@ class CommandType(str, Enum):
     # NPC admin commands
     NPC = "npc"
     # Magic commands
+    CAST = "cast"
+    SPELL = "spell"
+    SPELLS = "spells"
     LEARN = "learn"
 
 

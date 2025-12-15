@@ -91,6 +91,16 @@ class MagicService:
 
         stats = player.get_stats()
 
+        # Apply same MP normalization as _convert_player_to_schema (UI uses this logic)
+        # Initialize magic_points to max if it's 0 (full MP at character creation)
+        import math
+
+        pow_val = stats.get("power", 50)
+        if "max_magic_points" not in stats:
+            stats["max_magic_points"] = math.ceil(pow_val * 0.2)
+        if stats.get("magic_points", 0) == 0 and stats.get("max_magic_points", 0) > 0:
+            stats["magic_points"] = stats["max_magic_points"]
+
         # Check MP cost
         current_mp = stats.get("magic_points", 0)
         if current_mp < spell.mp_cost:

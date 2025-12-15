@@ -89,6 +89,9 @@ class CommandParser:
             CommandType.KICK.value: self.factory.create_kick_command,
             CommandType.STRIKE.value: self.factory.create_strike_command,
             # Magic commands
+            CommandType.CAST.value: self.factory.create_cast_command,
+            CommandType.SPELL.value: self.factory.create_spell_command,
+            CommandType.SPELLS.value: self.factory.create_spells_command,
             CommandType.LEARN.value: self.factory.create_learn_command,
         }
 

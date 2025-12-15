@@ -5,6 +5,8 @@ This module provides an in-memory cache of all spells loaded from the database,
 with methods for lookup, filtering, and searching.
 """
 
+from sqlalchemy.exc import SQLAlchemyError
+
 from server.logging.enhanced_logging_config import get_logger
 from server.models.spell import Spell, SpellSchool
 from server.persistence.repositories.spell_repository import SpellRepository
@@ -59,12 +61,12 @@ class SpellRegistry:
 
                     spell = Spell.model_validate(spell_dict)
                     self._spells[spell.spell_id] = spell
-                except Exception as e:
+                except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError) as e:
                     logger.warning("Failed to load spell", spell_id=spell_dict.get("spell_id"), error=str(e))
 
             self._loaded = True
             logger.info("Spells loaded successfully", spell_count=len(self._spells))
-        except Exception as e:
+        except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError) as e:
             logger.error("Failed to load spells", error=str(e))
             raise
 
@@ -86,7 +88,12 @@ class SpellRegistry:
 
     def get_spell_by_name(self, name: str) -> Spell | None:
         """
-        Get a spell by name (case-insensitive).
+        Get a spell by name using fuzzy matching (case-insensitive).
+
+        Uses the same fuzzy matching heuristics as item and NPC name resolution:
+        1. Exact match (highest priority)
+        2. Starts with match (high priority)
+        3. Contains match (lower priority)
 
         Args:
             name: The spell name to look up
@@ -98,10 +105,28 @@ class SpellRegistry:
             logger.warning("Spells not loaded, returning None", spell_name=name)
             return None
 
-        name_lower = name.lower()
+        normalized = name.strip().lower()
+        if not normalized:
+            return None
+
+        # Priority 1: Exact match (case-insensitive)
         for spell in self._spells.values():
-            if spell.name.lower() == name_lower:
+            if spell.name.lower() == normalized:
+                logger.debug("Spell found via exact match", spell_name=name, matched_spell=spell.name)
                 return spell
+
+        # Priority 2: Starts with match
+        for spell in self._spells.values():
+            if spell.name.lower().startswith(normalized):
+                logger.debug("Spell found via starts-with match", spell_name=name, matched_spell=spell.name)
+                return spell
+
+        # Priority 3: Contains match (substring)
+        for spell in self._spells.values():
+            if normalized in spell.name.lower():
+                logger.debug("Spell found via contains match", spell_name=name, matched_spell=spell.name)
+                return spell
+
         return None
 
     def list_spells(self, school: SpellSchool | None = None) -> list[Spell]:

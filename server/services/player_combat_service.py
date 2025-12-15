@@ -14,6 +14,8 @@ from datetime import UTC, datetime, timedelta
 from typing import Any
 from uuid import UUID
 
+from sqlalchemy.exc import SQLAlchemyError
+
 from server.events.event_types import BaseEvent
 from server.logging.enhanced_logging_config import get_logger
 
@@ -270,7 +272,7 @@ class PlayerCombatService:
         )
         try:
             # Get player from persistence
-            player = await self._persistence.async_get_player(player_id)
+            player = await self._persistence.get_player_by_id(player_id)
             if not player:
                 logger.warning("Player not found for XP award", player_id=player_id)
                 return
@@ -294,7 +296,7 @@ class PlayerCombatService:
 
             logger.info("Awarded XP to player", xp_amount=xp_amount, player_name=player.name, new_level=player.level)
 
-        except Exception as e:
+        except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError) as e:
             logger.error(
                 "Error awarding XP to player",
                 # Structlog handles UUID objects automatically, no need to convert to string
@@ -395,7 +397,7 @@ class PlayerCombatService:
                     )
             else:
                 logger.debug("Persistence does not have get_npc_lifecycle_manager method")
-        except Exception as e:
+        except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError) as e:
             logger.warning(
                 "Error reading NPC XP value from database",
                 npc_id=npc_id,

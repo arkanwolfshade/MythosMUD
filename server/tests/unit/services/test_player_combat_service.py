@@ -171,7 +171,7 @@ class TestPlayerCombatServiceUnit:
         xp_amount = 10
 
         # Mock persistence to return sample player
-        mock_persistence.async_get_player.return_value = sample_player
+        mock_persistence.get_player_by_id.return_value = sample_player
         mock_persistence.save_player = AsyncMock()
 
         # Award XP
@@ -182,7 +182,7 @@ class TestPlayerCombatServiceUnit:
         )
 
         # Verify player was retrieved and saved
-        mock_persistence.async_get_player.assert_called_once_with(player_id)
+        mock_persistence.get_player_by_id.assert_called_once_with(player_id)
         mock_persistence.save_player.assert_called_once()
 
         # Verify XP was added
@@ -196,7 +196,7 @@ class TestPlayerCombatServiceUnit:
         xp_amount = 10
 
         # Mock persistence to return None (player not found)
-        mock_persistence.async_get_player.return_value = None
+        mock_persistence.get_player_by_id.return_value = None
         mock_persistence.save_player = AsyncMock()
 
         # Award XP
@@ -207,7 +207,7 @@ class TestPlayerCombatServiceUnit:
         )
 
         # Verify player was retrieved but not saved
-        mock_persistence.async_get_player.assert_called_once_with(player_id)
+        mock_persistence.get_player_by_id.assert_called_once_with(player_id)
         mock_persistence.save_player.assert_not_called()
 
     @pytest.mark.asyncio
@@ -220,7 +220,7 @@ class TestPlayerCombatServiceUnit:
         xp_amount = 10
 
         # Mock persistence to return sample player
-        mock_persistence.async_get_player.return_value = sample_player
+        mock_persistence.get_player_by_id.return_value = sample_player
         mock_persistence.save_player = AsyncMock()
 
         # Award XP
@@ -375,7 +375,7 @@ class TestPlayerCombatServiceUnit:
         xp_amount = 10
 
         # Mock persistence
-        mock_persistence.async_get_player.return_value = sample_player
+        mock_persistence.get_player_by_id.return_value = sample_player
         mock_persistence.save_player = AsyncMock()
 
         # Call handle_npc_death
@@ -386,7 +386,7 @@ class TestPlayerCombatServiceUnit:
         )
 
         # Verify award_xp_on_npc_death was called
-        mock_persistence.async_get_player.assert_called_once_with(player_id)
+        mock_persistence.get_player_by_id.assert_called_once_with(player_id)
         mock_persistence.save_player.assert_called_once()
 
     @pytest.mark.asyncio
@@ -397,7 +397,7 @@ class TestPlayerCombatServiceUnit:
         xp_amount = 10
 
         # Mock persistence to raise an exception
-        mock_persistence.async_get_player.side_effect = Exception("Database error")
+        mock_persistence.get_player_by_id.side_effect = Exception("Database error")
 
         # Award XP should not raise exception
         await player_combat_service.award_xp_on_npc_death(
@@ -407,4 +407,4 @@ class TestPlayerCombatServiceUnit:
         )
 
         # Should have attempted to get player
-        mock_persistence.async_get_player.assert_called_once_with(player_id)
+        mock_persistence.get_player_by_id.assert_called_once_with(player_id)

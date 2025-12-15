@@ -498,7 +498,7 @@ class PlayerService:
         """
         try:
             # Get the raw SQLAlchemy player object for modification
-            player = await self.persistence.async_get_player_by_name(player_name)
+            player = await self.persistence.get_player_by_name(player_name)
             if not player:
                 logger.warning("Cannot update location - player not found", player_name=player_name)
                 context = create_error_context()
