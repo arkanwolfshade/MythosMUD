@@ -69,6 +69,7 @@ A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulh
 - **Command Processing** - Unified command handler with alias system and help system
 - **Admin Tools** - Teleportation, player management, and monitoring commands
 - **NPC System** - Basic NPC spawning, behavior, and combat interactions
+- **Magic/Spellcasting System** - Complete spell system with MP (Magic Points), spell learning and mastery, material components, casting times, and integration with combat and lucidity systems
 - **Database Layer** - PostgreSQL persistence with async operations, connection pooling, and migration support
 - **Enhanced Logging** - Structured logging with MDC, correlation IDs, security sanitization, and performance monitoring
 - **Testing Framework** - Comprehensive test suite with 80%+ coverage, 304 test files, and automated E2E tests
@@ -83,7 +84,6 @@ A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulh
 
 ### 📋 Planned Features
 
-- **Magic/Spellcasting** - Spell system with lucidity costs and eldritch effects
 - **Quest System** - Dynamic quest generation and tracking
 - **Crafting System** - Item crafting and modification
 - **Advanced World Systems** - Dynamic events, weather, and time progression
@@ -96,11 +96,12 @@ A text-based, browser-accessible Multi-User Dungeon (MUD) inspired by the Cthulh
 
 ### Core Gameplay
 
-- **Real-time Multiplayer** - Multiple players can interact simultaneously
+- **Real-time Multiplayer** - Multiple players can interact simultaneously (100ms server tick rate for responsive gameplay)
 - **Character Creation** - Random stats generation with Lovecraftian investigator archetypes
 - **Room-based Exploration** - Navigate through a persistent world with exits and descriptions
 - **Chat Communication** - Multiple channels including say, local, whisper, and system messages
 - **Command System** - Text-based commands with alias support and help system
+- **Magic System** - Cast spells, learn new spells, track mastery, and manage MP (Magic Points) with automatic regeneration
 
 ### Technical Features
 

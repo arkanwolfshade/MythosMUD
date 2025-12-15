@@ -537,6 +537,295 @@ No players found matching 'xyz'. Try 'who' to see all online players.
 </div>
 """,
     },
+    "cast": {
+        "category": "Magic",
+        "description": "Cast a learned spell",
+        "usage": "cast <spell_name> [target]",
+        "examples": ["cast heal", "cast heal self", "cast fireball goblin"],
+        "detailed_help": """
+<div style="color: #9370DB;">
+<h3>CAST Command</h3>
+<p>Harness the eldritch forces that lie beyond the veil of reality. Casting spells requires
+Magic Points (MP) and, for Mythos spells, lucidity. The forbidden knowledge exacts its price.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>cast [spell_name]</strong> - Cast a spell on yourself (self-target spells)</li>
+<li><strong>cast [spell_name] [target]</strong> - Cast a spell on a specific target</li>
+</ul>
+
+<h4>Spell Casting:</h4>
+<ul>
+<li>You must have learned the spell first (use /learn or /teach)</li>
+<li>Spells cost Magic Points (MP) to cast</li>
+<li>Mythos spells also cost lucidity</li>
+<li>Some spells require material components (consumed on cast)</li>
+<li>Spells with casting times require you to wait - use /stop to interrupt</li>
+</ul>
+
+<h4>Combat Integration:</h4>
+<ul>
+<li>In combat, if no target is specified, the spell targets your combat opponent</li>
+<li>Casting spells with casting times waits for your turn in combat</li>
+<li>You can interrupt casting with /stop (may cost MP if LUCK check fails)</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>cast heal</li>
+<li>cast heal self</li>
+<li>cast fireball goblin</li>
+<li>cast bless party</li>
+</ul>
+
+<h4>Mastery:</h4>
+<p>Your mastery level affects spell effectiveness and success chance. Mastery increases
+with successful casts. Use /spells to see your learned spells and mastery levels.</p>
+
+<p>Warning: "That which calls upon the void may yet call back." - Prof. Armitage</p>
+</div>
+""",
+    },
+    "spells": {
+        "category": "Magic",
+        "description": "List all learned spells with mastery levels",
+        "usage": "spells",
+        "examples": ["spells"],
+        "detailed_help": """
+<div style="color: #9370DB;">
+<h3>SPELLS Command</h3>
+<p>Review your accumulated arcane knowledge. This command displays all spells you have
+learned along with your current mastery level for each.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>spells</strong> - List all your learned spells with mastery percentages</li>
+</ul>
+
+<h4>Output Format:</h4>
+<ul>
+<li><strong>Spell Name - Mastery: XX%</strong> - Each learned spell with mastery level</li>
+</ul>
+
+<h4>Mastery Levels:</h4>
+<ul>
+<li>Mastery ranges from 0% to 100%</li>
+<li>Mastery increases with successful spell casts</li>
+<li>Higher mastery improves spell effectiveness and success chance</li>
+<li>Use /spell [name] to see detailed spell information</li>
+</ul>
+
+<h4>Example:</h4>
+<ul>
+<li>spells</li>
+</ul>
+
+<h4>Learning Spells:</h4>
+<p>Learn new spells using /learn or have another player teach you with /teach.
+Some spells can be learned from spellbooks using /read.</p>
+
+<p>As the Necronomicon warns: "Knowledge gained is knowledge that cannot be unlearned."</p>
+</div>
+""",
+    },
+    "spell": {
+        "category": "Magic",
+        "description": "Show detailed information about a specific spell",
+        "usage": "spell <spell_name>",
+        "examples": ["spell heal", "spell fireball"],
+        "detailed_help": """
+<div style="color: #9370DB;">
+<h3>SPELL Command</h3>
+<p>Examine the intricate details of a specific spell. This command reveals the spell's
+costs, effects, requirements, and your current mastery level if you know it.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>spell [spell_name]</strong> - Show detailed information about a spell</li>
+</ul>
+
+<h4>Spell Information Displayed:</h4>
+<ul>
+<li><strong>Name</strong> - Spell name</li>
+<li><strong>Description</strong> - What the spell does</li>
+<li><strong>School</strong> - Spell school (mythos, clerical, elemental, other)</li>
+<li><strong>MP Cost</strong> - Magic Points required to cast</li>
+<li><strong>Lucidity Cost</strong> - Lucidity required (Mythos spells only)</li>
+<li><strong>Corruption on Cast</strong> - Corruption gained (some Mythos spells)</li>
+<li><strong>Casting Time</strong> - Time in seconds before spell completes</li>
+<li><strong>Target Type</strong> - Who/what the spell can target</li>
+<li><strong>Range</strong> - How far the spell can reach</li>
+<li><strong>Effect</strong> - What effect the spell produces</li>
+<li><strong>Required Materials</strong> - Material components needed (if any)</li>
+<li><strong>Your Mastery</strong> - Your mastery level (if learned) or "Not learned"</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>spell heal</li>
+<li>spell fireball</li>
+<li>spell call_cthulhu</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>You can view spell information even if you haven't learned it</li>
+<li>Use this to plan which spells to learn</li>
+<li>Material components marked as "(consumed)" are used up when casting</li>
+<li>Material components marked as "(reusable)" are not consumed</li>
+</ul>
+
+<p>Remember: "Understanding the cost of power is the first lesson in wielding it."</p>
+</div>
+""",
+    },
+    "learn": {
+        "category": "Magic",
+        "description": "Learn a new spell",
+        "usage": "learn <spell_name>",
+        "examples": ["learn heal", "learn fireball"],
+        "detailed_help": """
+<div style="color: #9370DB;">
+<h3>LEARN Command</h3>
+<p>Acquire new arcane knowledge. Learning spells requires access to the spell's secrets,
+which may come from spellbooks, teachers, or other sources. Beware: some knowledge
+comes with a price.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>learn [spell_name]</strong> - Learn a spell from available sources</li>
+</ul>
+
+<h4>Learning Methods:</h4>
+<ul>
+<li><strong>From Spellbooks</strong> - Use /read on a spellbook containing the spell</li>
+<li><strong>From Teachers</strong> - Have another player use /teach to teach you</li>
+<li><strong>Command Learning</strong> - Use /learn directly (may require special circumstances)</li>
+</ul>
+
+<h4>Learning Costs:</h4>
+<ul>
+<li>Mythos spells may apply corruption when learned</li>
+<li>Some spells may have prerequisites (stats, other spells)</li>
+<li>Once learned, spells start at 0% mastery</li>
+<li>Practice casting to increase mastery</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>learn heal</li>
+<li>learn fireball</li>
+<li>learn bless</li>
+</ul>
+
+<h4>After Learning:</h4>
+<ul>
+<li>Use /spells to see your newly learned spell</li>
+<li>Use /spell [name] to review spell details</li>
+<li>Cast the spell to increase mastery</li>
+</ul>
+
+<p>Warning: "The price of forbidden knowledge is often paid in sanity." - Cultes des Goules</p>
+</div>
+""",
+    },
+    "teach": {
+        "category": "Magic",
+        "description": "Teach a spell to another player",
+        "usage": "teach <player_name> <spell_name>",
+        "examples": ["teach alice heal", "teach bob fireball"],
+        "detailed_help": """
+<div style="color: #9370DB;">
+<h3>TEACH Command</h3>
+<p>Share your arcane knowledge with fellow investigators. Teaching allows you to pass
+on spells you have learned to other players who are present in your location.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>teach [player_name] [spell_name]</strong> - Teach a spell to another player</li>
+</ul>
+
+<h4>Requirements:</h4>
+<ul>
+<li>You must know the spell (have learned it yourself)</li>
+<li>The target player must be in the same room as you</li>
+<li>The target player must not already know the spell</li>
+</ul>
+
+<h4>Teaching Process:</h4>
+<ul>
+<li>Teaching shares your knowledge of the spell</li>
+<li>The student starts with 0% mastery</li>
+<li>If the spell applies corruption on learn, the student receives it</li>
+<li>Both teacher and student see messages about the teaching</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>teach alice heal</li>
+<li>teach bob fireball</li>
+<li>teach charlie bless</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>You can only teach spells you have learned</li>
+<li>The student can also use /learn if they have access to other sources</li>
+<li>Teaching is a way to help new players learn useful spells</li>
+</ul>
+
+<p>As noted: "Knowledge shared multiplies the power of the arcane."</p>
+</div>
+""",
+    },
+    "stop": {
+        "category": "Magic",
+        "description": "Interrupt your current spell casting",
+        "usage": "stop",
+        "examples": ["stop"],
+        "detailed_help": """
+<div style="color: #9370DB;">
+<h3>STOP Command</h3>
+<p>Abandon your current spell casting attempt. Interrupting a spell mid-cast is dangerous
+and may cost you Magic Points depending on your luck.</p>
+
+<h4>Usage:</h4>
+<ul>
+<li><strong>stop</strong> - Interrupt your current spell casting</li>
+</ul>
+
+<h4>When to Use:</h4>
+<ul>
+<li>You're casting a spell with a casting time and want to cancel it</li>
+<li>You need to change tactics during combat</li>
+<li>You realize you're casting the wrong spell</li>
+</ul>
+
+<h4>Interruption Cost:</h4>
+<ul>
+<li>A LUCK check determines if you avoid MP loss</li>
+<li>If LUCK check passes: No MP lost, casting stops safely</li>
+<li>If LUCK check fails: You lose the spell's MP cost</li>
+<li>Spell does not complete and has no effect</li>
+</ul>
+
+<h4>Examples:</h4>
+<ul>
+<li>stop</li>
+</ul>
+
+<h4>Notes:</h4>
+<ul>
+<li>Only works if you are currently casting a spell</li>
+<li>Instant cast spells (0 casting time) cannot be interrupted</li>
+<li>Material components already consumed are not refunded</li>
+<li>Useful for canceling long casting times when needed</li>
+</ul>
+
+<p>Warning: "Interrupting the flow of eldritch power is not without risk."</p>
+</div>
+""",
+    },
 }
 
 
