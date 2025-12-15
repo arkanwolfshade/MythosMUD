@@ -9,6 +9,8 @@ import random
 import uuid
 from typing import Any
 
+from sqlalchemy.exc import SQLAlchemyError
+
 from server.app.game_tick_processing import get_current_tick
 from server.game.magic.casting_state_manager import CastingStateManager
 from server.game.magic.spell_costs import SpellCostsService
@@ -366,53 +368,176 @@ class MagicService:
 
         spell = casting_state.spell
 
-        # Get player to get room_id
-        player = await self.player_service.persistence.get_player_by_id(player_id)
-        if not player:
-            logger.error("Player not found when completing casting", player_id=player_id)
-            self.casting_state_manager.complete_casting(player_id)
-            return
-
-        room_id = player.current_room_id or ""
-
-        # Recreate target from stored state
-        # Convert target_type string back to enum
-        target_type_str = casting_state.target_type or "player"
+        # CRITICAL: Clear casting state IMMEDIATELY to prevent race conditions
+        # If we clear it at the end, a second cast attempt might see the state and think it's still casting
+        # But we need the state data, so we'll clear it in the finally block instead
+        # Actually, we should clear it early but keep a local reference
         try:
-            target_type = TargetType(target_type_str)
-        except ValueError:
-            # Fallback to player if invalid
-            target_type = TargetType.PLAYER
+            # Get player to get room_id
+            player = await self.player_service.persistence.get_player_by_id(player_id)
+            if not player:
+                logger.error("Player not found when completing casting", player_id=player_id)
+                self.casting_state_manager.complete_casting(player_id)
+                return
 
-        target = TargetMatch(
-            target_id=casting_state.target_id or str(player_id),
-            target_name=casting_state.target_name or player.name,
-            target_type=target_type,
-            room_id=room_id,
-        )
+            room_id = player.current_room_id or ""
 
-        # Apply costs (MP was not consumed at start, do it now)
-        await self.spell_costs_service.apply_costs(player_id, spell)
+            # Recreate target from stored state
+            # Convert target_type string back to enum
+            target_type_str = casting_state.target_type or "player"
+            try:
+                target_type = TargetType(target_type_str)
+            except ValueError:
+                # Fallback to player if invalid
+                target_type = TargetType.PLAYER
 
-        # Process effect
-        effect_result = await self.spell_effects.process_effect(spell, target, player_id, casting_state.mastery)
+            target = TargetMatch(
+                target_id=casting_state.target_id or str(player_id),
+                target_name=casting_state.target_name or player.name,
+                target_type=target_type,
+                room_id=room_id,
+            )
 
-        # Record spell cast
-        await self.player_spell_repository.record_spell_cast(player_id, spell.spell_id)
+            # CRITICAL: Clear casting state BEFORE processing effect to prevent race conditions
+            # If we clear it after, a rapid second cast might see the state and think it's still casting
+            # We've already extracted all needed data from casting_state, so it's safe to clear now
+            self.casting_state_manager.complete_casting(player_id)
 
-        # Increase mastery on successful cast
-        if self.spell_learning_service:
-            await self.spell_learning_service.increase_mastery_on_cast(player_id, spell.spell_id, True)
+            # Apply costs (MP was not consumed at start, do it now)
+            await self.spell_costs_service.apply_costs(player_id, spell)
 
-        # Remove casting state
-        self.casting_state_manager.complete_casting(player_id)
+            # Process effect
+            effect_result = await self.spell_effects.process_effect(spell, target, player_id, casting_state.mastery)
 
-        logger.info(
-            "Completed casting",
-            player_id=player_id,
-            spell_id=spell.spell_id,
-            effect_success=effect_result.get("success", False),
-        )
+            # Record spell cast
+            await self.player_spell_repository.record_spell_cast(player_id, spell.spell_id)
+
+            # Increase mastery on successful cast
+            if self.spell_learning_service:
+                await self.spell_learning_service.increase_mastery_on_cast(player_id, spell.spell_id, True)
+
+            logger.info(
+                "Completed casting",
+                player_id=player_id,
+                spell_id=spell.spell_id,
+                effect_success=effect_result.get("success", False),
+            )
+
+            # Send spell completion message to player
+            try:
+                from server.realtime.connection_manager_api import send_game_event
+
+                # Send completion message using command_response event type (client handles this)
+                if effect_result.get("success") and effect_result.get("message"):
+                    await send_game_event(
+                        player_id,
+                        "command_response",
+                        {
+                            "result": effect_result.get("message", ""),
+                            "game_log_message": effect_result.get("message", ""),
+                            "game_log_channel": "game-log",
+                        },
+                    )
+                elif not effect_result.get("success"):
+                    # Send failure message
+                    failure_message = effect_result.get("message", "The spell failed.")
+                    await send_game_event(
+                        player_id,
+                        "command_response",
+                        {
+                            "result": failure_message,
+                            "game_log_message": failure_message,
+                            "game_log_channel": "game-log",
+                        },
+                    )
+            except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError) as msg_error:
+                logger.warning(
+                    "Failed to send spell completion message",
+                    player_id=player_id,
+                    spell_id=spell.spell_id,
+                    error=str(msg_error),
+                )
+
+            # Send player_dp_updated event to refresh health display if healing occurred
+            if (
+                effect_result.get("success")
+                and effect_result.get("effect_applied")
+                and effect_result.get("heal_amount")
+            ):
+                try:
+                    from server.container import ApplicationContainer
+                    from server.events.event_types import PlayerDPUpdated
+
+                    # Get updated player to calculate DP values
+                    updated_player = await self.player_service.persistence.get_player_by_id(player_id)
+                    if updated_player:
+                        stats = updated_player.get_stats()
+                        current_dp = stats.get("current_dp", 0)
+                        max_dp = stats.get("max_dp", 0)
+                        heal_amount = effect_result.get("heal_amount", 0)
+                        old_dp = max(0, current_dp - heal_amount)  # Calculate old DP before healing
+
+                        # Publish PlayerDPUpdated event for health UI update
+                        container = ApplicationContainer.get_instance()
+                        if container and container.event_bus:
+                            dp_event = PlayerDPUpdated(
+                                player_id=player_id,
+                                old_dp=old_dp,
+                                new_dp=current_dp,
+                                max_dp=max_dp,
+                                damage_taken=-heal_amount,  # Negative for healing
+                                source_id=spell.spell_id,
+                                room_id=room_id,
+                            )
+                            container.event_bus.publish(dp_event)
+                        else:
+                            # Fallback: send player_dp_updated event directly if event bus unavailable
+                            from server.realtime.connection_manager_api import send_game_event
+
+                            await send_game_event(
+                                player_id,
+                                "player_dp_updated",
+                                {
+                                    "old_dp": old_dp,
+                                    "new_dp": current_dp,
+                                    "max_dp": max_dp,
+                                    "damage_taken": -heal_amount,  # Negative for healing
+                                    "player": {
+                                        "stats": {
+                                            "current_dp": current_dp,
+                                            "max_dp": max_dp,
+                                        },
+                                    },
+                                },
+                            )
+                            logger.warning(
+                                "Event bus not available for DP update after spell",
+                                player_id=player_id,
+                                spell_id=spell.spell_id,
+                            )
+                except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError) as dp_error:
+                    logger.warning(
+                        "Failed to publish PlayerDPUpdated event after spell",
+                        player_id=player_id,
+                        spell_id=spell.spell_id,
+                        error=str(dp_error),
+                    )
+        except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError) as e:
+            logger.error(
+                "Error completing casting - clearing stuck state",
+                player_id=player_id,
+                spell_id=spell.spell_id if spell else None,
+                error=str(e),
+                error_type=type(e).__name__,
+                exc_info=True,
+            )
+        finally:
+            # Always remove casting state, even if an error occurred
+            # This prevents infinite error loops from stuck castings
+            # NOTE: State is already cleared before processing effect (line 473) to prevent race conditions
+            # This finally block is a safety net in case of early returns
+            if self.casting_state_manager.is_casting(player_id):
+                self.casting_state_manager.complete_casting(player_id)
 
     async def interrupt_casting(self, player_id: uuid.UUID) -> dict[str, Any]:
         """

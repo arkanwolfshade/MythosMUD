@@ -151,15 +151,47 @@ export const handlePlayerDeliriumRespawned: EventHandler = (event, context) => {
 };
 
 export const handlePlayerUpdate: EventHandler = (event, context) => {
-  const playerData = event.data as { in_combat?: boolean; [key: string]: unknown };
-  if (context.currentPlayerRef.current && playerData.in_combat !== undefined) {
-    return {
-      player: {
-        ...context.currentPlayerRef.current,
-        in_combat: playerData.in_combat,
-      },
+  const playerData = event.data as {
+    in_combat?: boolean;
+    stats?: {
+      magic_points?: number;
+      max_magic_points?: number;
+      current_dp?: number;
+      max_dp?: number;
+      [key: string]: unknown;
     };
+    [key: string]: unknown;
+  };
+
+  const updates: GameStateUpdates = {};
+
+  if (context.currentPlayerRef.current) {
+    const updatedPlayer = { ...context.currentPlayerRef.current };
+
+    // Update in_combat if provided
+    if (playerData.in_combat !== undefined) {
+      updatedPlayer.in_combat = playerData.in_combat;
+    }
+
+    // Update stats if provided
+    if (playerData.stats) {
+      const existingStats = context.currentPlayerRef.current.stats;
+      // Ensure required fields are preserved if not provided in update
+      const currentDp = playerData.stats.current_dp ?? existingStats?.current_dp ?? 0;
+      const lucidity = playerData.stats.lucidity ?? existingStats?.lucidity ?? 0;
+
+      updatedPlayer.stats = {
+        ...(existingStats || {}),
+        ...playerData.stats,
+        current_dp: currentDp,
+        lucidity: lucidity,
+      } as Player['stats'];
+    }
+
+    updates.player = updatedPlayer;
   }
+
+  return updates;
 };
 
 export const handlePlayerDpUpdated: EventHandler = (event, context) => {

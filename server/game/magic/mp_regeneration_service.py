@@ -9,13 +9,16 @@ import math
 import uuid
 from typing import Any
 
+from sqlalchemy.exc import SQLAlchemyError
+
 from server.game.player_service import PlayerService
 from server.logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
 # Default MP regeneration rates (per tick)
-DEFAULT_MP_REGEN_RATE = 0.1  # 0.1 MP per tick (1 tick = 1 second, so ~6 MP per minute)
+# NOTE: Server tick rate is 0.1 seconds, so 0.01 MP per tick = 0.1 MP per second = 6 MP per minute
+DEFAULT_MP_REGEN_RATE = 0.01  # 0.01 MP per tick (tick = 0.1s, so ~6 MP per minute)
 REST_MP_REGEN_MULTIPLIER = 3.0  # 3x faster when resting
 MEDITATION_MP_REGEN_MULTIPLIER = 5.0  # 5x faster when meditating
 
@@ -72,12 +75,29 @@ class MPRegenerationService:
         regen_multiplier = self._get_regen_multiplier(stats)
         mp_to_restore = self.regen_rate * regen_multiplier
 
-        # Restore MP (ceiling to ensure at least some progress)
-        new_mp = min(max_mp, current_mp + math.ceil(mp_to_restore * 10) / 10)  # Round to 0.1
+        # Get fractional MP from stats (stored as _mp_fractional for accumulation)
+        # If not present, initialize from current_mp (which might be fractional)
+        mp_fractional = stats.get("_mp_fractional", 0.0)
+        if isinstance(current_mp, float):
+            # If current_mp is already fractional, extract the fractional part
+            mp_fractional = current_mp - int(current_mp)
+            current_mp = int(current_mp)
+
+        # Add regeneration to fractional accumulator
+        mp_fractional += mp_to_restore
+
+        # Calculate new MP: integer part + accumulated fractional part
+        mp_to_add = int(mp_fractional)  # Whole MP to add
+        mp_fractional = mp_fractional - mp_to_add  # Remaining fractional part
+
+        new_mp = min(max_mp, current_mp + mp_to_add)
+
+        # Store fractional part for next tick
+        stats["_mp_fractional"] = mp_fractional
 
         # Only update if there's actual change (avoid unnecessary saves)
-        if new_mp > current_mp:
-            stats["magic_points"] = int(new_mp)  # Store as integer
+        if new_mp > current_mp or mp_fractional > 0:
+            stats["magic_points"] = new_mp  # Store as integer (fractional part stored separately)
             await self.player_service.persistence.save_player(player)
 
             mp_restored = new_mp - current_mp
@@ -88,9 +108,28 @@ class MPRegenerationService:
                 current_mp=new_mp,
                 max_mp=max_mp,
                 multiplier=regen_multiplier,
+                mp_fractional=mp_fractional,
             )
 
-            return {"mp_restored": mp_restored, "current_mp": int(new_mp), "max_mp": max_mp}
+            # Send player_update event to notify client of MP change
+            if new_mp > current_mp:
+                try:
+                    from server.realtime.connection_manager_api import send_game_event
+
+                    await send_game_event(
+                        player_id,
+                        "player_update",
+                        {
+                            "stats": {
+                                "magic_points": new_mp,
+                                "max_magic_points": max_mp,
+                            },
+                        },
+                    )
+                except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError) as e:
+                    logger.warning("Failed to send MP regeneration update event", player_id=player_id, error=str(e))
+
+            return {"mp_restored": mp_restored, "current_mp": new_mp, "max_mp": max_mp}
 
         return {"mp_restored": 0, "current_mp": current_mp, "max_mp": max_mp}
 

@@ -502,8 +502,16 @@ class AsyncPersistenceLayer:
         """Heal a player. Delegates to HealthRepository."""
         await self._health_repo.heal_player(player, amount)
 
+    async def async_heal_player(self, player: Player, amount: int) -> None:
+        """Async alias for heal_player. Delegates to HealthRepository."""
+        await self._health_repo.heal_player(player, amount)
+
     async def damage_player(self, player: Player, amount: int, damage_type: str = "physical") -> None:
         """Damage a player. Delegates to HealthRepository."""
+        await self._health_repo.damage_player(player, amount, damage_type)
+
+    async def async_damage_player(self, player: Player, amount: int, damage_type: str = "physical") -> None:
+        """Async alias for damage_player. Delegates to HealthRepository."""
         await self._health_repo.damage_player(player, amount, damage_type)
 
     # Container methods

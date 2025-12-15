@@ -7,6 +7,8 @@ This module handles applying spell costs (MP, lucidity, corruption) to players.
 import uuid
 from typing import Any
 
+from sqlalchemy.exc import SQLAlchemyError
+
 from server.game.player_service import PlayerService
 from server.logging.enhanced_logging_config import get_logger
 from server.models.spell import Spell
@@ -75,6 +77,33 @@ class SpellCostsService:
 
         # Save player
         await self.player_service.persistence.save_player(player)
+
+        # Send player_update event to notify client of MP change
+        try:
+            from server.realtime.connection_manager_api import send_game_event
+
+            # Send full player stats update so client can update both MP and health
+            await send_game_event(
+                player_id,
+                "player_update",
+                {
+                    "stats": {
+                        "magic_points": new_mp,
+                        "max_magic_points": stats.get("max_magic_points", 10),
+                        "current_dp": stats.get("current_dp", 0),
+                        "max_dp": stats.get("max_dp", 0),
+                    },
+                },
+            )
+            logger.debug(
+                "Sent MP update event",
+                player_id=player_id,
+                old_mp=current_mp,
+                new_mp=new_mp,
+                mp_cost=spell.mp_cost,
+            )
+        except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError) as e:
+            logger.warning("Failed to send MP update event", player_id=player_id, error=str(e))
 
     async def restore_mp(self, player_id: uuid.UUID, amount: int) -> dict[str, Any]:
         """

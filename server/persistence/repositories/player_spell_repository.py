@@ -99,7 +99,6 @@ class PlayerSpellRepository:
                 details={"player_id": str(player_id), "spell_id": spell_id, "error": str(e)},
                 user_friendly="Failed to retrieve spell",
             )
-            raise AssertionError("unreachable") from None  # log_and_raise never returns
 
     async def learn_spell(self, player_id: uuid.UUID, spell_id: str, initial_mastery: int = 0) -> PlayerSpell:  # type: ignore[return]
         """
@@ -150,7 +149,6 @@ class PlayerSpellRepository:
                 details={"player_id": str(player_id), "spell_id": spell_id, "error": str(e)},
                 user_friendly="Failed to learn spell",
             )
-            raise AssertionError("unreachable") from None  # log_and_raise never returns
 
     async def update_mastery(self, player_id: uuid.UUID, spell_id: str, new_mastery: int) -> PlayerSpell | None:  # type: ignore[return]
         """
@@ -175,7 +173,12 @@ class PlayerSpellRepository:
 
         try:
             async for session in get_async_session():
-                player_spell = await self.get_player_spell(player_id, spell_id)
+                # Load PlayerSpell within the same session context to avoid session management errors
+                stmt = select(PlayerSpell).where(
+                    PlayerSpell.player_id == str(player_id), PlayerSpell.spell_id == spell_id
+                )
+                result = await session.execute(stmt)
+                player_spell = result.scalar_one_or_none()
                 if not player_spell:
                     return None
 
@@ -197,7 +200,6 @@ class PlayerSpellRepository:
                 details={"player_id": str(player_id), "spell_id": spell_id, "error": str(e)},
                 user_friendly="Failed to update spell mastery",
             )
-            raise AssertionError("unreachable") from None  # log_and_raise never returns
 
     async def record_spell_cast(self, player_id: uuid.UUID, spell_id: str) -> PlayerSpell | None:  # type: ignore[return]
         """
@@ -220,7 +222,12 @@ class PlayerSpellRepository:
 
         try:
             async for session in get_async_session():
-                player_spell = await self.get_player_spell(player_id, spell_id)
+                # Load PlayerSpell within the same session context to avoid session management errors
+                stmt = select(PlayerSpell).where(
+                    PlayerSpell.player_id == str(player_id), PlayerSpell.spell_id == spell_id
+                )
+                result = await session.execute(stmt)
+                player_spell = result.scalar_one_or_none()
                 if not player_spell:
                     return None
 
@@ -239,4 +246,3 @@ class PlayerSpellRepository:
                 details={"player_id": str(player_id), "spell_id": spell_id, "error": str(e)},
                 user_friendly="Failed to record spell cast",
             )
-            raise AssertionError("unreachable") from None  # log_and_raise never returns
