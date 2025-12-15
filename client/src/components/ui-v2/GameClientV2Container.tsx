@@ -87,7 +87,9 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
 
   useEffect(() => {
     detector.start();
-    return () => detector.stop();
+    return () => {
+      detector.stop();
+    };
   }, [detector]);
 
   // Refs for stable references and event processing
@@ -270,7 +272,9 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
           onSendChatMessage={handleChatMessage}
           onClearMessages={handleClearMessages}
           onClearHistory={handleClearHistory}
-          onDownloadLogs={() => logger.downloadLogs()}
+          onDownloadLogs={() => {
+            logger.downloadLogs();
+          }}
         />
       )}
 
@@ -299,7 +303,7 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               content: (
                 <MapView
                   isOpen={true}
-                  onClose={() => closeTab(`map-${gameState.room!.id}`)}
+                  onClose={() => closeTab(`map-${gameState.room?.id}`)}
                   currentRoom={gameState.room}
                   authToken={authToken}
                   hideHeader={true}
@@ -329,7 +333,9 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
       {/* Legacy MapView for backward compatibility (can be removed later) */}
       <MapView
         isOpen={showMap && tabs.length === 0}
-        onClose={() => setShowMap(false)}
+        onClose={() => {
+          setShowMap(false);
+        }}
         currentRoom={gameState.room}
         authToken={authToken}
       />

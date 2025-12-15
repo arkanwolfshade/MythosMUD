@@ -162,18 +162,24 @@ export const StyleGuide: React.FC = () => {
                 <TerminalInput
                   placeholder="Enter text..."
                   value={inputValue}
-                  onChange={e => setInputValue(e.target.value)}
+                  onChange={e => {
+                    setInputValue(e.target.value);
+                  }}
                 />
                 <TerminalInput
                   placeholder="Disabled input"
                   value={disabledInputValue}
-                  onChange={e => setDisabledInputValue(e.target.value)}
+                  onChange={e => {
+                    setDisabledInputValue(e.target.value);
+                  }}
                   disabled
                 />
                 <TerminalInput
                   placeholder="Error state"
                   value={errorInputValue}
-                  onChange={e => setErrorInputValue(e.target.value)}
+                  onChange={e => {
+                    setErrorInputValue(e.target.value);
+                  }}
                   className="border-red-500 focus:border-red-500 focus:ring-red-500"
                 />
               </div>
@@ -187,19 +193,25 @@ export const StyleGuide: React.FC = () => {
                   size="sm"
                   placeholder="Small input"
                   value={sizeSmValue}
-                  onChange={e => setSizeSmValue(e.target.value)}
+                  onChange={e => {
+                    setSizeSmValue(e.target.value);
+                  }}
                 />
                 <TerminalInput
                   size="md"
                   placeholder="Medium input"
                   value={sizeMdValue}
-                  onChange={e => setSizeMdValue(e.target.value)}
+                  onChange={e => {
+                    setSizeMdValue(e.target.value);
+                  }}
                 />
                 <TerminalInput
                   size="lg"
                   placeholder="Large input"
                   value={sizeLgValue}
-                  onChange={e => setSizeLgValue(e.target.value)}
+                  onChange={e => {
+                    setSizeLgValue(e.target.value);
+                  }}
                 />
               </div>
             </div>

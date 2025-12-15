@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import { describe, vi } from 'vitest';
+import { describe, vi, type Mock } from 'vitest';
 import App from '../../App';
 
 /**
@@ -97,9 +97,16 @@ vi.mock('../../components/StatsRollingScreen', () => ({
   }) => (
     <div data-testid="stats-rolling-screen">
       <button
-        onClick={() =>
-          onStatsAccepted({ strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 10, charisma: 10 })
-        }
+        onClick={() => {
+          onStatsAccepted({
+            strength: 10,
+            dexterity: 10,
+            constitution: 10,
+            intelligence: 10,
+            wisdom: 10,
+            charisma: 10,
+          });
+        }}
       >
         Accept Stats
       </button>
@@ -257,9 +264,7 @@ describe.skip('Logout Flow Integration', () => {
 
       // Mock logout handler with delay
       const { logoutHandler } = await import('../../utils/logoutHandler');
-      (logoutHandler as jest.MockedFunction<typeof logoutHandler>).mockImplementation(
-        () => new Promise(resolve => setTimeout(resolve, 100))
-      );
+      (logoutHandler as Mock).mockImplementation(() => new Promise(resolve => setTimeout(resolve, 100)));
 
       render(<App />);
 
@@ -318,7 +323,7 @@ describe.skip('Logout Flow Integration', () => {
 
       // Mock logout handler to throw error
       const { logoutHandler } = await import('../../utils/logoutHandler');
-      (logoutHandler as jest.MockedFunction<typeof logoutHandler>).mockRejectedValueOnce(new Error('Logout failed'));
+      (logoutHandler as Mock).mockRejectedValueOnce(new Error('Logout failed'));
 
       render(<App />);
 
@@ -408,9 +413,7 @@ describe.skip('Logout Flow Integration', () => {
 
       // Mock logout handler with delay
       const { logoutHandler } = await import('../../utils/logoutHandler');
-      (logoutHandler as jest.MockedFunction<typeof logoutHandler>).mockImplementation(
-        () => new Promise(resolve => setTimeout(resolve, 100))
-      );
+      (logoutHandler as Mock).mockImplementation(() => new Promise(resolve => setTimeout(resolve, 100)));
 
       render(<App />);
 

@@ -385,9 +385,9 @@ function App() {
         }
         // Trigger the appropriate action
         if (isRegistering) {
-          handleRegisterClick();
+          void handleRegisterClick();
         } else {
-          handleLoginClick();
+          void handleLoginClick();
         }
       }
     }
@@ -404,7 +404,11 @@ function App() {
     return (
       <div className="App">
         <Suspense fallback={<LoadingFallback />}>
-          <EldritchEffectsDemo onExit={() => setShowDemo(false)} />
+          <EldritchEffectsDemo
+            onExit={() => {
+              setShowDemo(false);
+            }}
+          />
         </Suspense>
       </div>
     );
@@ -425,7 +429,9 @@ function App() {
                 placeholder="Username"
                 className="login-input"
                 value={playerName}
-                onChange={e => setPlayerName(e.target.value)}
+                onChange={e => {
+                  setPlayerName(e.target.value);
+                }}
                 onKeyDown={handleKeyDown}
                 data-testid="username-input"
               />
@@ -444,7 +450,9 @@ function App() {
                   placeholder="Invite Code"
                   className="login-input"
                   value={inviteCode}
-                  onChange={e => setInviteCode(e.target.value)}
+                  onChange={e => {
+                    setInviteCode(e.target.value);
+                  }}
                   onKeyDown={handleKeyDown}
                 />
               )}
@@ -478,7 +486,9 @@ function App() {
 
             <div className="demo-button">
               <button
-                onClick={() => setShowDemo(true)}
+                onClick={() => {
+                  setShowDemo(true);
+                }}
                 className="text-mythos-terminal-text-secondary hover:text-mythos-terminal-primary transition-colors"
               >
                 View Eldritch Effects Demo

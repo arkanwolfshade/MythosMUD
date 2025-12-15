@@ -1,6 +1,9 @@
-import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useWebSocketConnection } from '../useWebSocketConnection';
+
+// Ensure TypeScript recognizes the Node-style global object in this test file
+declare const global: typeof globalThis;
 
 // Mock logger
 vi.mock('../../utils/logger', () => ({
@@ -52,15 +55,19 @@ const originalClearInterval = global.clearInterval;
 const intervalIds = new Set<number>();
 let intervalIdCounter = 1;
 
-global.setInterval = vi.fn((callback: () => void, delay?: number) => {
+const mockedSetInterval = vi.fn((handler: TimerHandler, timeout?: number, ...args: unknown[]) => {
   const id = intervalIdCounter++;
   intervalIds.add(id);
-  return originalSetInterval(callback, delay);
-}) as typeof setInterval;
+  // Call original to maintain behavior, but return the numeric ID for browser API compatibility
+  originalSetInterval(handler, timeout, ...(args as Parameters<typeof setInterval>));
+  return id;
+}) as unknown as typeof setInterval;
+
+global.setInterval = mockedSetInterval;
 
 global.clearInterval = vi.fn((id: number) => {
   intervalIds.delete(id);
-  return originalClearInterval(id);
+  originalClearInterval(id);
 }) as typeof clearInterval;
 
 // Global variable to track the latest WebSocket instance
@@ -165,7 +172,7 @@ describe('useWebSocketConnection', () => {
     (global.WebSocket as unknown as { CLOSED: number }).CLOSED = 3;
 
     // Mock environment
-    vi.stubEnv('DEV', 'true');
+    vi.stubEnv('DEV', true);
   });
 
   afterEach(() => {
@@ -1053,7 +1060,7 @@ describe('useWebSocketConnection', () => {
 
     it('should perform health check in dev mode', async () => {
       vi.useFakeTimers();
-      vi.stubEnv('DEV', 'true');
+      vi.stubEnv('DEV', true);
       (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({ ok: true });
 
       const { result } = renderHook(() => useWebSocketConnection(defaultOptions));
@@ -1104,7 +1111,7 @@ describe('useWebSocketConnection', () => {
 
     it('should handle health check failure in dev mode', async () => {
       vi.useFakeTimers();
-      vi.stubEnv('DEV', 'true');
+      vi.stubEnv('DEV', true);
       (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({ ok: false });
 
       const { result } = renderHook(() => useWebSocketConnection(defaultOptions));
@@ -1149,7 +1156,7 @@ describe('useWebSocketConnection', () => {
 
     it('should handle health check error in dev mode', async () => {
       vi.useFakeTimers();
-      vi.stubEnv('DEV', 'true');
+      vi.stubEnv('DEV', true);
       (global.fetch as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('Network error'));
 
       const { result } = renderHook(() => useWebSocketConnection(defaultOptions));
@@ -1199,7 +1206,7 @@ describe('useWebSocketConnection', () => {
       // mode, the health check fetch should ideally not be called, or if called, should fail
       // gracefully since the endpoint might not exist in production.
       vi.useFakeTimers();
-      vi.stubEnv('DEV', '');
+      vi.stubEnv('DEV', false);
       vi.stubEnv('MODE', 'production');
       (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({ ok: true });
 

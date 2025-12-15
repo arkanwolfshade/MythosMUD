@@ -272,7 +272,7 @@ export class MemoryMonitor {
       typeof window !== 'undefined' &&
       (window as { gtag?: (event: string, data: Record<string, unknown>) => void }).gtag
     ) {
-      (window as { gtag: (event: string, data: Record<string, unknown>) => void }).gtag('event', 'memory_warning', {
+      (window as unknown as { gtag: (event: string, data: Record<string, unknown>) => void }).gtag('memory_warning', {
         memory_usage: snapshot.usedJSHeapSize / 1024 / 1024,
         timestamp: snapshot.timestamp,
       });
@@ -290,7 +290,7 @@ export class MemoryMonitor {
       typeof window !== 'undefined' &&
       (window as { gtag?: (event: string, data: Record<string, unknown>) => void }).gtag
     ) {
-      (window as { gtag: (event: string, data: Record<string, unknown>) => void }).gtag('event', 'memory_critical', {
+      (window as unknown as { gtag: (event: string, data: Record<string, unknown>) => void }).gtag('memory_critical', {
         memory_usage: snapshot.usedJSHeapSize / 1024 / 1024,
         timestamp: snapshot.timestamp,
       });
@@ -386,7 +386,9 @@ export const useMemoryMonitor = (componentName: string) => {
     detector,
     getStats: () => monitor.getComponentStats(componentName),
     generateReport: () => monitor.generateReport(componentName),
-    unregister: () => monitor.unregisterComponent(componentName),
+    unregister: () => {
+      monitor.unregisterComponent(componentName);
+    },
   };
 };
 

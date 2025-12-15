@@ -30,7 +30,12 @@ vi.mock('../panels/ChatPanel', () => ({
   }) => (
     <div data-testid="chat-panel">
       <div data-testid="chat-messages-count">{messages.length}</div>
-      <button data-testid="send-chat" onClick={() => onSendChatMessage('test message', 'local')}>
+      <button
+        data-testid="send-chat"
+        onClick={() => {
+          onSendChatMessage('test message', 'local');
+        }}
+      >
         Send Chat
       </button>
       <button data-testid="clear-messages" onClick={onClearMessages}>
@@ -58,7 +63,12 @@ vi.mock('../panels/CommandPanel', () => ({
   }) => (
     <div data-testid="command-panel">
       <div data-testid="command-history-count">{commandHistory.length}</div>
-      <button data-testid="send-command" onClick={() => onSendCommand('look')}>
+      <button
+        data-testid="send-command"
+        onClick={() => {
+          onSendCommand('look');
+        }}
+      >
         Send Command
       </button>
       <button data-testid="clear-history" onClick={onClearHistory}>

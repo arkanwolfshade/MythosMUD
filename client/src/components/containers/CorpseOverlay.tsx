@@ -79,8 +79,8 @@ const isCorpseOwner = (corpse: ContainerComponent, playerId: string | undefined)
  * Check if grace period is active.
  */
 const isGracePeriodActive = (corpse: ContainerComponent): boolean => {
-  const gracePeriodStart = corpse.metadata?.grace_period_start as string | undefined;
-  const gracePeriodSeconds = (corpse.metadata?.grace_period_seconds as number) || 300;
+  const gracePeriodStart = corpse.metadata.grace_period_start as string | undefined;
+  const gracePeriodSeconds = (corpse.metadata.grace_period_seconds as number) || 300;
 
   if (!gracePeriodStart) {
     return false;
@@ -116,7 +116,7 @@ export const CorpseOverlay: React.FC<CorpseOverlayProps> = ({ onOpen, className 
       return [];
     }
     return getCorpseContainersInRoom(room.id);
-  }, [room.id, getCorpseContainersInRoom]);
+  }, [getCorpseContainersInRoom, room.id]);
 
   // Don't render if no corpses
   if (corpseContainers.length === 0) {
@@ -223,7 +223,9 @@ export const CorpseOverlay: React.FC<CorpseOverlayProps> = ({ onOpen, className 
 
         {/* Open Button */}
         <TerminalButton
-          onClick={() => handleOpenCorpse(corpse.container_id)}
+          onClick={() => {
+            void handleOpenCorpse(corpse.container_id);
+          }}
           disabled={!canOpen}
           variant="danger"
           className="w-full"
@@ -232,7 +234,7 @@ export const CorpseOverlay: React.FC<CorpseOverlayProps> = ({ onOpen, className 
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
               if (canOpen) {
-                handleOpenCorpse(corpse.container_id);
+                void handleOpenCorpse(corpse.container_id);
               }
             }
           }}

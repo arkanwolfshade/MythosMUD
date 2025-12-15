@@ -52,7 +52,9 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
       <select
         data-testid="channel-selector"
         value={selectedChannel}
-        onChange={e => handleChannelSelect(e.target.value)}
+        onChange={e => {
+          handleChannelSelect(e.target.value);
+        }}
         disabled={disabled}
         className="sr-only"
       >
@@ -109,7 +111,9 @@ export const ChannelSelector: React.FC<ChannelSelectorProps> = ({
           {channels.map(channel => (
             <button
               key={channel.id}
-              onClick={() => handleChannelSelect(channel.id)}
+              onClick={() => {
+                handleChannelSelect(channel.id);
+              }}
               disabled={channel.disabled}
               className={`
                 w-full flex items-center gap-3 px-3 py-2 text-left text-sm font-mono

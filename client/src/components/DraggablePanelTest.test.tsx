@@ -22,7 +22,7 @@ vi.mock('./DraggablePanel', () => ({
     onMaximize: () => void;
     children: React.ReactNode;
   }) => (
-    <div data-testid={`draggable-panel-${title?.toLowerCase().replace(/\s+/g, '-')}`}>
+    <div data-testid={`draggable-panel-${title.toLowerCase().replace(/\s+/g, '-')}`}>
       <div data-testid="panel-header">
         <h3 data-testid="panel-title">{title}</h3>
         <button onClick={onClose} data-testid="close-button">
@@ -99,7 +99,7 @@ vi.mock('./ui/TerminalInput', () => ({
   }) => (
     <input
       value={value}
-      onChange={onChange}
+      onChange={e => onChange(e.target.value)}
       placeholder={placeholder}
       onKeyDown={onKeyDown}
       data-testid="terminal-input"

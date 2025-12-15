@@ -1,8 +1,8 @@
-import { describe, expect, it, beforeEach } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
+import React from 'react';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { PanelProvider } from '../../PanelContext';
 import { usePanel, usePanelActions, usePanelLayout } from '../usePanelContext';
-import React from 'react';
 
 describe('usePanelContext Hooks', () => {
   beforeEach(() => {
@@ -18,7 +18,7 @@ describe('usePanelContext Hooks', () => {
 
       // Assert
       expect(result.current.panel).toBeDefined();
-      expect(result.current.panel?.id).toBe('chat');
+      expect(result.current.panel.id).toBe('chat');
       expect(result.current.updatePanel).toBeDefined();
       expect(typeof result.current.updatePanel).toBe('function');
     });
@@ -33,8 +33,8 @@ describe('usePanelContext Hooks', () => {
       });
 
       // Assert
-      expect(result.current.panel?.title).toBe('Updated Chat');
-      expect(result.current.panel?.isVisible).toBe(false);
+      expect(result.current.panel.title).toBe('Updated Chat');
+      expect(result.current.panel.isVisible).toBe(false);
     });
 
     it('should return undefined panel for non-existent panel', () => {

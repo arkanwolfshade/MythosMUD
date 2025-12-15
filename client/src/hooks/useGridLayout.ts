@@ -169,7 +169,7 @@ export const useGridLayout = (): UseGridLayoutReturn => {
       ...prev,
       [panelId]: {
         ...prev[panelId],
-        [state]: !prev[panelId]?.[state],
+        [state]: !prev[panelId][state],
       },
     }));
   }, []);

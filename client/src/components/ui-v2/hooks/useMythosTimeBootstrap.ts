@@ -2,9 +2,9 @@
 // Extracted from GameClientV2Container to reduce complexity
 
 import { useEffect } from 'react';
+import type { MythosTimePayload, MythosTimeState } from '../../../types/mythosTime';
 import { logger } from '../../../utils/logger';
 import { buildMythosTimeState } from '../../../utils/mythosTime';
-import type { MythosTimePayload, MythosTimeState } from '../../../types/mythosTime';
 
 interface UseMythosTimeBootstrapParams {
   authToken: string;
@@ -49,7 +49,7 @@ export const useMythosTimeBootstrap = ({
       }
     };
 
-    bootstrapMythosTime();
+    void bootstrapMythosTime();
     return () => {
       cancelled = true;
     };

@@ -9,16 +9,16 @@
  * relationships is essential for understanding the eldritch architecture of our world.
  */
 
-import React, { useMemo, useState, useCallback } from 'react';
-import ReactFlow, { Controls, Background, MiniMap, type Node, type Edge } from 'reactflow';
+import React, { useCallback, useMemo, useState } from 'react';
+import ReactFlow, { Background, Controls, MiniMap, type Edge, type Node } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { useRoomMapData } from './hooks/useRoomMapData';
-import { useMapLayout } from './hooks/useMapLayout';
-import { roomsToNodes, createEdgesFromRooms } from './utils/mapUtils';
-import { nodeTypes, edgeTypes } from './config';
-import type { RoomNodeData, ExitEdgeData } from './types';
 import { MapControls } from './MapControls';
 import { RoomDetailsPanel } from './RoomDetailsPanel';
+import { edgeTypes, nodeTypes } from './config';
+import { useMapLayout } from './hooks/useMapLayout';
+import { useRoomMapData } from './hooks/useRoomMapData';
+import type { ExitEdgeData, RoomNodeData } from './types';
+import { createEdgesFromRooms, roomsToNodes } from './utils/mapUtils';
 
 export interface RoomMapViewerProps {
   /** Plane name (required) */
@@ -77,9 +77,9 @@ export const RoomMapViewer: React.FC<RoomMapViewerProps> = ({
     const query = searchQuery.toLowerCase();
     return rooms.filter(room => {
       return (
-        room.name?.toLowerCase().includes(query) ||
-        room.id?.toLowerCase().includes(query) ||
-        room.description?.toLowerCase().includes(query) ||
+        room.name.toLowerCase().includes(query) ||
+        room.id.toLowerCase().includes(query) ||
+        room.description.toLowerCase().includes(query) ||
         room.zone?.toLowerCase().includes(query) ||
         room.sub_zone?.toLowerCase().includes(query)
       );
@@ -161,7 +161,9 @@ export const RoomMapViewer: React.FC<RoomMapViewerProps> = ({
         </div>
         {searchQuery && (
           <button
-            onClick={() => setSearchQuery('')}
+            onClick={() => {
+              setSearchQuery('');
+            }}
             className="px-4 py-2 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80"
           >
             Clear Search
@@ -193,7 +195,9 @@ export const RoomMapViewer: React.FC<RoomMapViewerProps> = ({
           onSubZoneChange={setSelectedSubZone}
           availablePlanes={[plane]} // TODO: Get from API
           availableZones={[zone]} // TODO: Get from API
-          availableSubZones={Array.from(new Set(rooms.map(r => r.sub_zone).filter(Boolean)))} // Extract from rooms
+          availableSubZones={Array.from(
+            new Set(rooms.map(r => r.sub_zone).filter((zone): zone is string => Boolean(zone)))
+          )} // Extract from rooms
         />
       </div>
 

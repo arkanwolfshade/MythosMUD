@@ -34,7 +34,7 @@ export const handleCommandResponse: EventHandler = (event, context, appendMessag
   const message = typeof event.data.result === 'string' ? (event.data.result as string) : '';
   const isHtml = Boolean(event.data.is_html);
   const gameLogChannel =
-    typeof event.data?.game_log_channel === 'string' && event.data.game_log_channel
+    typeof event.data.game_log_channel === 'string' && event.data.game_log_channel
       ? (event.data.game_log_channel as string)
       : GAME_LOG_CHANNEL;
   const gameLogMessage =
@@ -145,8 +145,8 @@ export const handleChatMessage: EventHandler = (_event, _context, appendMessage)
 export const handleRoomMessage: EventHandler = (event, _context, appendMessage) => {
   const message = typeof event.data.message === 'string' ? (event.data.message as string) : '';
   const messageTypeFromEvent =
-    typeof event.data?.message_type === 'string' ? (event.data.message_type as string) : undefined;
-  const isHtml = Boolean(event.data?.is_html);
+    typeof event.data.message_type === 'string' ? (event.data.message_type as string) : undefined;
+  const isHtml = Boolean(event.data.is_html);
 
   if (message) {
     let messageType: string;
@@ -173,7 +173,7 @@ export const handleRoomMessage: EventHandler = (event, _context, appendMessage) 
 };
 
 export const handleSystem: EventHandler = (event, _context, appendMessage) => {
-  const systemMessage = event.data?.message;
+  const systemMessage = event.data.message;
   if (systemMessage && typeof systemMessage === 'string') {
     appendMessage({
       text: systemMessage,

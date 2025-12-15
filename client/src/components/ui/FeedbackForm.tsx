@@ -63,7 +63,7 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit, onCancel, 
       <div className="bg-mythos-terminal-background border border-mythos-terminal-border rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-mythos-terminal-text-primary flex items-center gap-2">
-            <EldritchIcon name={MythosIcons.system} size="sm" />
+            <EldritchIcon name={MythosIcons.system} size={20} />
             Feedback & Suggestions
           </h2>
           <TerminalButton onClick={onCancel} variant="secondary" size="sm">
@@ -77,7 +77,9 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit, onCancel, 
             <label className="block text-sm font-medium text-mythos-terminal-text-secondary mb-2">Feedback Type</label>
             <select
               value={feedback.type}
-              onChange={e => handleChange('type', e.target.value)}
+              onChange={e => {
+                handleChange('type', e.target.value);
+              }}
               className="w-full bg-mythos-terminal-surface border border-mythos-terminal-border rounded px-3 py-2 text-mythos-terminal-text-primary focus:outline-none focus:border-mythos-terminal-primary"
             >
               <option value="general">General Feedback</option>
@@ -94,7 +96,9 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit, onCancel, 
             </label>
             <select
               value={feedback.component}
-              onChange={e => handleChange('component', e.target.value)}
+              onChange={e => {
+                handleChange('component', e.target.value);
+              }}
               className="w-full bg-mythos-terminal-surface border border-mythos-terminal-border rounded px-3 py-2 text-mythos-terminal-text-primary focus:outline-none focus:border-mythos-terminal-primary"
             >
               <option value="all">All Components</option>
@@ -109,7 +113,9 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit, onCancel, 
             <label className="block text-sm font-medium text-mythos-terminal-text-secondary mb-2">Priority</label>
             <select
               value={feedback.priority}
-              onChange={e => handleChange('priority', e.target.value)}
+              onChange={e => {
+                handleChange('priority', e.target.value);
+              }}
               className="w-full bg-mythos-terminal-surface border border-mythos-terminal-border rounded px-3 py-2 text-mythos-terminal-text-primary focus:outline-none focus:border-mythos-terminal-primary"
             >
               <option value="low">Low</option>
@@ -124,7 +130,9 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit, onCancel, 
             <label className="block text-sm font-medium text-mythos-terminal-text-secondary mb-2">Title *</label>
             <TerminalInput
               value={feedback.title}
-              onChange={value => handleChange('title', value)}
+              onChange={e => {
+                handleChange('title', e.target.value);
+              }}
               placeholder="Brief description of your feedback"
               required
             />
@@ -135,7 +143,9 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit, onCancel, 
             <label className="block text-sm font-medium text-mythos-terminal-text-secondary mb-2">Description *</label>
             <textarea
               value={feedback.description}
-              onChange={e => handleChange('description', e.target.value)}
+              onChange={e => {
+                handleChange('description', e.target.value);
+              }}
               placeholder="Please provide detailed information about your feedback, including steps to reproduce if it's a bug report."
               required
               rows={6}

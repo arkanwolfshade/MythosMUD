@@ -75,7 +75,12 @@ const TestComponent: React.FC = () => {
       <div data-testid="player-name">{context.playerName}</div>
       <div data-testid="is-connected">{context.isConnected ? 'connected' : 'disconnected'}</div>
       <div data-testid="messages-count">{context.messages.length}</div>
-      <button data-testid="send-command" onClick={() => context.onSendCommand('look')}>
+      <button
+        data-testid="send-command"
+        onClick={() => {
+          context.onSendCommand('look');
+        }}
+      >
         Send Command
       </button>
     </div>
@@ -129,10 +134,20 @@ const GameActionsTestComponent: React.FC = () => {
 
   return (
     <div>
-      <button data-testid="action-send-command" onClick={() => gameActions.onSendCommand('look')}>
+      <button
+        data-testid="action-send-command"
+        onClick={() => {
+          gameActions.onSendCommand('look');
+        }}
+      >
         Send Command
       </button>
-      <button data-testid="action-send-chat" onClick={() => gameActions.onSendChatMessage('hello', 'local')}>
+      <button
+        data-testid="action-send-chat"
+        onClick={() => {
+          gameActions.onSendChatMessage('hello', 'local');
+        }}
+      >
         Send Chat
       </button>
       <button data-testid="action-clear-messages" onClick={gameActions.onClearMessages}>

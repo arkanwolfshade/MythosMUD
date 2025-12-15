@@ -146,8 +146,8 @@ export const PlayerName: React.FC = () => {
 // Health stat sub-component
 export const HealthStat: React.FC = () => {
   const { player } = useStatusPanel();
-  const currentDp = player?.stats?.current_dp;
-  const maxDp = player?.stats?.max_dp ?? 100;
+  const currentDp = player?.stats.current_dp;
+  const maxDp = player?.stats.max_dp ?? 100;
 
   if (currentDp === undefined) return null;
 
@@ -157,7 +157,7 @@ export const HealthStat: React.FC = () => {
 // Lucidity stat sub-component
 export const LucidityStat: React.FC = () => {
   const { player } = useStatusPanel();
-  const lucidity = player?.stats?.lucidity;
+  const lucidity = player?.stats.lucidity;
   return <SingleStat label="Lucidity" value={lucidity} />;
 };
 

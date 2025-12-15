@@ -119,7 +119,9 @@ export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({ messages, onClearM
         <div className="flex space-x-2">
           <select
             value={messageFilter}
-            onChange={e => setMessageFilter(e.target.value)}
+            onChange={e => {
+              setMessageFilter(e.target.value);
+            }}
             className="bg-mythos-terminal-surface border border-gray-600 rounded px-2 py-1 text-xs"
           >
             <option value="all">All Messages</option>
@@ -134,7 +136,9 @@ export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({ messages, onClearM
             type="text"
             placeholder="Search messages..."
             value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
+            onChange={e => {
+              setSearchQuery(e.target.value);
+            }}
             className="bg-mythos-terminal-surface border border-gray-600 rounded px-2 py-1 text-xs flex-1"
           />
         </div>
@@ -151,7 +155,7 @@ export const GameInfoPanel: React.FC<GameInfoPanelProps> = ({ messages, onClearM
           filteredMessages.map((message, index) => (
             <div key={index} className="message message-item">
               <div className="flex items-start space-x-2">
-                <span className="text-xs text-mythos-terminal-text-secondary flex-shrink-0">
+                <span className="text-xs text-mythos-terminal-text-secondary shrink-0">
                   {formatTimestamp(message.timestamp)}
                 </span>
                 <div className={`flex-1 ${getMessageClass(message.messageType)}`} data-message-text={message.text}>

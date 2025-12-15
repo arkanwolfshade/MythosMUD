@@ -6,12 +6,12 @@
  * artifacts between containers and personal inventory.
  */
 
-import React, { useMemo, useEffect, useRef, useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { InventoryStack } from '../../stores/containerStore';
 import { useContainerStore } from '../../stores/containerStore';
 import { useGameStore } from '../../stores/gameStore';
 import { MythosPanel } from '../ui/MythosPanel';
 import { TerminalButton } from '../ui/TerminalButton';
-import type { InventoryStack } from '../../stores/containerStore';
 
 export interface ContainerSplitPaneProps {
   /** Container ID to display */
@@ -49,7 +49,9 @@ export const ContainerSplitPane: React.FC<ContainerSplitPaneProps> = ({
   const player = useGameStore(state => state.player);
 
   const playerInventory = useMemo(() => {
-    return (player?.inventory as InventoryStack[]) || [];
+    // Type assertion: player.inventory may have a different type definition in gameStore,
+    // but at runtime it should be InventoryStack[] based on how the component uses it.
+    return (player?.inventory as unknown as InventoryStack[]) || [];
   }, [player?.inventory]);
 
   // All hooks must be called before any early returns
@@ -259,7 +261,9 @@ export const ContainerSplitPane: React.FC<ContainerSplitPaneProps> = ({
                   ? firstButtonRef
                   : undefined
             }
-            onClick={() => handleTransfer(item)}
+            onClick={() => {
+              handleTransfer(item);
+            }}
             disabled={!mutationToken}
             className="ml-2"
             aria-label={`Transfer ${item.item_name} ${isContainerItem ? 'from' : 'to'} container`}
@@ -293,9 +297,13 @@ export const ContainerSplitPane: React.FC<ContainerSplitPaneProps> = ({
             dragOverTarget === 'container' ? 'bg-mythos-terminal-primary/10 border-mythos-terminal-primary' : ''
           }`}
           aria-label="Container inventory"
-          onDragOver={e => handleDragOver(e, 'container')}
+          onDragOver={e => {
+            handleDragOver(e, 'container');
+          }}
           onDragLeave={handleDragLeave}
-          onDrop={e => handleDrop(e, 'container')}
+          onDrop={e => {
+            handleDrop(e, 'container');
+          }}
         >
           <h3 className="text-lg font-bold text-mythos-terminal-text mb-2">
             Container ({container.items.length}/{container.capacity_slots})
@@ -315,9 +323,13 @@ export const ContainerSplitPane: React.FC<ContainerSplitPaneProps> = ({
             dragOverTarget === 'player' ? 'bg-mythos-terminal-primary/10 border-mythos-terminal-primary' : ''
           }`}
           aria-label="Player inventory"
-          onDragOver={e => handleDragOver(e, 'player')}
+          onDragOver={e => {
+            handleDragOver(e, 'player');
+          }}
           onDragLeave={handleDragLeave}
-          onDrop={e => handleDrop(e, 'player')}
+          onDrop={e => {
+            handleDrop(e, 'player');
+          }}
         >
           <h3 className="text-lg font-bold text-mythos-terminal-text mb-2">Inventory ({playerInventory.length}/20)</h3>
           <div className="flex-1 overflow-y-auto" role="list">

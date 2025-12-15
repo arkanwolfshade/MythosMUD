@@ -212,31 +212,31 @@ export const usePerformanceTester = () => {
 
   const runTest = useCallback(
     async (name: string, testFunction: () => void | Promise<void>, config?: Partial<PerformanceTestConfig>) => {
-      return testerRef.current!.runTest(name, testFunction, config);
+      return testerRef.current?.runTest(name, testFunction, config);
     },
     []
   );
 
   const runComponentTest = useCallback(
     async (name: string, renderFunction: () => React.ReactElement, config?: Partial<PerformanceTestConfig>) => {
-      return testerRef.current!.runComponentRenderTest(name, renderFunction, config);
+      return testerRef.current?.runComponentRenderTest(name, renderFunction, config);
     },
     []
   );
 
   const runMemoryTest = useCallback(
     async (name: string, testFunction: () => void | Promise<void>, config?: Partial<PerformanceTestConfig>) => {
-      return testerRef.current!.runMemoryTest(name, testFunction, config);
+      return testerRef.current?.runMemoryTest(name, testFunction, config);
     },
     []
   );
 
   const getResults = useCallback(() => {
-    return testerRef.current!.getResults();
+    return testerRef.current?.getResults();
   }, []);
 
   const generateReport = useCallback(() => {
-    return testerRef.current!.generateReport();
+    return testerRef.current?.generateReport();
   }, []);
 
   return {

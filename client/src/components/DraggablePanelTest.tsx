@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { DraggablePanel } from './DraggablePanel';
+import { EldritchIcon, MythosIcons } from './ui/EldritchIcon';
 import { MythosPanel } from './ui/MythosPanel';
 import { TerminalButton } from './ui/TerminalButton';
 import { TerminalInput } from './ui/TerminalInput';
-import { EldritchIcon, MythosIcons } from './ui/EldritchIcon';
 
 export const DraggablePanelTest: React.FC = () => {
   const [panels, setPanels] = useState([
@@ -69,7 +69,12 @@ export const DraggablePanelTest: React.FC = () => {
                 <EldritchIcon name={MythosIcons.maximize} size={16} className="mr-2" />
                 Add New Panel
               </TerminalButton>
-              <TerminalButton variant="secondary" onClick={() => setPanels([])}>
+              <TerminalButton
+                variant="secondary"
+                onClick={() => {
+                  setPanels([]);
+                }}
+              >
                 <EldritchIcon name={MythosIcons.clear} size={16} className="mr-2" />
                 Clear All Panels
               </TerminalButton>
@@ -88,9 +93,15 @@ export const DraggablePanelTest: React.FC = () => {
             variant={panel.variant}
             defaultPosition={panel.position}
             defaultSize={panel.size}
-            onClose={() => closePanel(panel.id)}
-            onMinimize={() => console.log('Minimize panel:', panel.id)}
-            onMaximize={() => console.log('Maximize panel:', panel.id)}
+            onClose={() => {
+              closePanel(panel.id);
+            }}
+            onMinimize={() => {
+              console.log('Minimize panel:', panel.id);
+            }}
+            onMaximize={() => {
+              console.log('Maximize panel:', panel.id);
+            }}
           >
             <div className="space-y-4">
               <MythosPanel

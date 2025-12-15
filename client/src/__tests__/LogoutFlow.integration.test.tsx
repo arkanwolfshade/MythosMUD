@@ -226,10 +226,11 @@ describe.skip('Complete Logout Flow Integration', () => {
       });
 
       // Mock logout handler to take time
-      let resolveLogout: () => void;
+      // Explicitly widen the resolver type to avoid TS inferring `never`
+      let resolveLogout: (() => void) | null | undefined;
       mockLogoutHandler.mockImplementation(async ({ disconnect, clearState, navigateToLogin }) => {
         await new Promise<void>(resolve => {
-          resolveLogout = resolve;
+          resolveLogout = () => resolve();
         });
         disconnect();
         clearState();
@@ -261,8 +262,10 @@ describe.skip('Complete Logout Flow Integration', () => {
       // Verify loading state
       expect(screen.getByTestId('logout-button')).toBeDisabled();
 
-      // Complete logout
-      resolveLogout!();
+      // Safely complete logout only if resolveLogout was set.
+      if (resolveLogout) {
+        (resolveLogout as () => void)();
+      }
       await waitFor(() => {
         expect(screen.getByPlaceholderText('Username')).toBeInTheDocument();
       });

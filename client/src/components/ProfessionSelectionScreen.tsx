@@ -75,7 +75,7 @@ export const ProfessionSelectionScreen: React.FC<ProfessionSelectionScreenProps>
   }, [baseUrl, authToken, onError]);
 
   useEffect(() => {
-    fetchProfessions();
+    void fetchProfessions();
   }, [fetchProfessions]);
 
   const handleProfessionSelect = (profession: Profession) => {

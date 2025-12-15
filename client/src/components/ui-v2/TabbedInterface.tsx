@@ -8,8 +8,8 @@
  * requires careful management of multiple viewing portals.
  */
 
-import React, { useState, useCallback } from 'react';
 import { X } from 'lucide-react';
+import React, { useCallback, useState } from 'react';
 
 export interface Tab {
   id: string;
@@ -38,18 +38,6 @@ export const TabbedInterface: React.FC<TabbedInterfaceProps> = ({
   const [tabs, setTabs] = useState<Tab[]>(initialTabs);
   const [activeTabId, setActiveTabId] = useState<string | null>(initialTabs.length > 0 ? initialTabs[0].id : null);
 
-  const addTab = useCallback(
-    (tab: Tab) => {
-      setTabs(prev => {
-        const newTabs = [...prev, tab];
-        onTabsChange?.(newTabs);
-        return newTabs;
-      });
-      setActiveTabId(tab.id);
-    },
-    [onTabsChange]
-  );
-
   const closeTab = useCallback(
     (tabId: string) => {
       setTabs(prev => {
@@ -77,18 +65,6 @@ export const TabbedInterface: React.FC<TabbedInterfaceProps> = ({
 
   const activeTab = tabs.find(tab => tab.id === activeTabId);
 
-  // Expose methods via ref or context if needed
-  React.useImperativeHandle(
-    React.useRef(),
-    () => ({
-      addTab,
-      closeTab,
-      setActiveTab,
-      tabs,
-    }),
-    [addTab, closeTab, setActiveTab, tabs]
-  );
-
   return (
     <div className="flex flex-col h-full w-full bg-mythos-terminal-background">
       {showTabBar && tabs.length > 0 && (
@@ -105,7 +81,9 @@ export const TabbedInterface: React.FC<TabbedInterfaceProps> = ({
                     : 'bg-mythos-terminal-background text-mythos-terminal-text hover:bg-mythos-terminal-border/50'
                 }
               `}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => {
+                setActiveTab(tab.id);
+              }}
             >
               <span className="text-sm font-medium whitespace-nowrap">{tab.label}</span>
               {tab.closable !== false && (
