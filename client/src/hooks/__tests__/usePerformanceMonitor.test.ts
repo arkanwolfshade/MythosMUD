@@ -97,8 +97,8 @@ describe('usePerformanceMonitor', () => {
     // Assert
     const stats = result.current.getStats();
     expect(stats?.totalRenders).toBe(5);
-    expect(stats!.minRenderTime).toBeLessThanOrEqual(stats!.averageRenderTime);
-    expect(stats!.maxRenderTime).toBeGreaterThanOrEqual(stats!.averageRenderTime);
+    expect(stats?.minRenderTime).toBeLessThanOrEqual(stats?.averageRenderTime);
+    expect(stats?.maxRenderTime).toBeGreaterThanOrEqual(stats?.averageRenderTime);
     expect(stats?.recentMetrics.length).toBeLessThanOrEqual(10);
   });
 
