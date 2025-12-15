@@ -119,7 +119,9 @@ export const CommandInputPanel: React.FC<CommandInputPanelProps> = ({
           <TerminalInput
             ref={inputRef}
             value={commandInput}
-            onChange={e => setCommandInput(e.target.value)}
+            onChange={e => {
+              setCommandInput(e.target.value);
+            }}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             disabled={disabled || !isConnected}

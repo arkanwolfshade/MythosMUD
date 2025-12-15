@@ -235,7 +235,7 @@ export const useFeedbackManager = () => {
 
   const addFeedback = useCallback(
     (feedbackData: Omit<FeedbackData, 'id' | 'status'>) => {
-      const id = managerRef.current!.addFeedback(feedbackData);
+      const id = managerRef.current?.addFeedback(feedbackData);
       refreshFeedback();
       return id;
     },
@@ -244,7 +244,7 @@ export const useFeedbackManager = () => {
 
   const updateFeedback = useCallback(
     (id: string, updates: Partial<FeedbackData>) => {
-      const success = managerRef.current!.updateFeedback(id, updates);
+      const success = managerRef.current?.updateFeedback(id, updates);
       if (success) {
         refreshFeedback();
       }
@@ -255,7 +255,7 @@ export const useFeedbackManager = () => {
 
   const deleteFeedback = useCallback(
     (id: string) => {
-      const success = managerRef.current!.deleteFeedback(id);
+      const success = managerRef.current?.deleteFeedback(id);
       if (success) {
         refreshFeedback();
       }
@@ -269,11 +269,11 @@ export const useFeedbackManager = () => {
   }, []);
 
   const getFeedbackByType = useCallback((type: FeedbackData['type']) => {
-    return managerRef.current!.getFeedbackByType(type);
+    return managerRef.current?.getFeedbackByType(type);
   }, []);
 
   const getFeedbackByComponent = useCallback((component: FeedbackData['component']) => {
-    return managerRef.current!.getFeedbackByComponent(component);
+    return managerRef.current?.getFeedbackByComponent(component);
   }, []);
 
   const exportFeedback = useCallback(() => {
@@ -282,7 +282,7 @@ export const useFeedbackManager = () => {
 
   const importFeedback = useCallback(
     (data: string) => {
-      const success = managerRef.current!.importFeedback(data);
+      const success = managerRef.current?.importFeedback(data);
       if (success) {
         refreshFeedback();
       }
@@ -292,7 +292,7 @@ export const useFeedbackManager = () => {
   );
 
   const clearFeedback = useCallback(() => {
-    managerRef.current!.clearFeedback();
+    managerRef.current?.clearFeedback();
     refreshFeedback();
   }, [refreshFeedback]);
 

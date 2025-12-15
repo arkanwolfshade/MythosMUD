@@ -85,10 +85,20 @@ vi.mock('../GameTerminalPresentation', () => ({
       <div data-testid="connection-status">{isConnected ? 'connected' : 'disconnected'}</div>
       <div data-testid="messages-count">{messages.length}</div>
       <div data-testid="command-history-count">{commandHistory.length}</div>
-      <button data-testid="send-command" onClick={() => props.onSendCommand('look')}>
+      <button
+        data-testid="send-command"
+        onClick={() => {
+          props.onSendCommand('look');
+        }}
+      >
         Send Command
       </button>
-      <button data-testid="send-chat" onClick={() => props.onSendChatMessage('hello', 'local')}>
+      <button
+        data-testid="send-chat"
+        onClick={() => {
+          props.onSendChatMessage('hello', 'local');
+        }}
+      >
         Send Chat
       </button>
       <button data-testid="clear-messages" onClick={props.onClearMessages}>

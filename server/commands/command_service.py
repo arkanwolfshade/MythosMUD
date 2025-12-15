@@ -391,10 +391,15 @@ class CommandService:
                 container_type=type(container_value).__name__,
             )
 
+        # Exclude Pydantic internal attributes that trigger deprecation warnings
+        # These should be accessed from the class, not the instance (Pydantic V2.11+)
+        pydantic_internal_attrs = {"model_computed_fields", "model_fields", "model_config"}
         all_attrs = {
             key: getattr(parsed_command, key, "<NOT FOUND>")
             for key in dir(parsed_command)
-            if not key.startswith("_") and not callable(getattr(parsed_command, key, None))
+            if not key.startswith("_")
+            and not callable(getattr(parsed_command, key, None))
+            and key not in pydantic_internal_attrs
         }
         logger.debug(
             "Parsed command all attributes",

@@ -10,9 +10,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { RoomMapViewer } from '../components/map';
-import { secureTokenStorage } from '../utils/security';
 import { API_BASE_URL } from '../utils/config';
 import { logger } from '../utils/logger';
+import { secureTokenStorage } from '../utils/security';
 
 interface RoomData {
   id: string;
@@ -79,7 +79,7 @@ export const MapPage: React.FC = () => {
         setIsLoading(false);
       } else {
         // Try to fetch current room from API
-        fetchCurrentRoom(token);
+        void fetchCurrentRoom(token);
       }
     };
 
@@ -105,7 +105,9 @@ export const MapPage: React.FC = () => {
           <h1 className="text-2xl font-bold mb-4 text-mythos-terminal-error">Error</h1>
           <p className="mb-4">{error}</p>
           <button
-            onClick={() => window.close()}
+            onClick={() => {
+              window.close();
+            }}
             className="px-4 py-2 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80"
           >
             Close

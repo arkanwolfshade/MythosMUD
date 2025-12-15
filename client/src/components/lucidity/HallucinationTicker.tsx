@@ -59,7 +59,9 @@ export const HallucinationTicker = memo<HallucinationTickerProps>(({ hallucinati
                   <button
                     type="button"
                     className="rounded bg-transparent px-2 py-1 text-[11px] uppercase tracking-wide text-mythos-terminal-text-secondary hover:text-mythos-terminal-error focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mythos-terminal-primary/60"
-                    onClick={() => onDismiss(entry.id)}
+                    onClick={() => {
+                      onDismiss(entry.id);
+                    }}
                   >
                     Dismiss
                   </button>

@@ -138,7 +138,9 @@ export const ChatPanelRefactored: React.FC<ChatPanelRefactoredProps> = ({
 
       <ChatHistoryToggle
         showChatHistory={showChatHistory}
-        onToggleHistory={() => setShowChatHistory(!showChatHistory)}
+        onToggleHistory={() => {
+          setShowChatHistory(!showChatHistory);
+        }}
         chatFilter={chatFilter}
         onFilterChange={setChatFilter}
         currentChannelMessages={chatStats.currentChannelMessages}

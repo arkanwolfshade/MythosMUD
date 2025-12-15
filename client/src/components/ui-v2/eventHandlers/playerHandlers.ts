@@ -8,7 +8,7 @@ import type { Player } from '../types';
 import type { EventHandler, GameStateUpdates } from './types';
 
 export const handlePlayerEnteredGame: EventHandler = (event, _context, appendMessage) => {
-  const playerName = event.data?.player_name as string | undefined;
+  const playerName = event.data.player_name as string | undefined;
   if (playerName && typeof playerName === 'string' && playerName.trim()) {
     appendMessage({
       text: `${playerName} has entered the game.`,
@@ -51,7 +51,7 @@ export const handlePlayerLeftGame: EventHandler = (event, _context, appendMessag
 };
 
 export const handlePlayerLeft: EventHandler = (event, _context, appendMessage) => {
-  const messageText = event.data?.message as string;
+  const messageText = event.data.message as string;
   if (messageText) {
     appendMessage({
       text: messageText,

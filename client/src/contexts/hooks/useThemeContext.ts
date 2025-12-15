@@ -15,7 +15,9 @@ export const useThemePreference = () => {
   const { preferences, updatePreferences } = useTheme();
   return {
     theme: preferences.theme,
-    setTheme: (theme: Theme) => updatePreferences({ theme }),
+    setTheme: (theme: Theme) => {
+      updatePreferences({ theme });
+    },
   };
 };
 
@@ -31,7 +33,9 @@ export const useFontSizePreference = () => {
   const { preferences, updatePreferences } = useTheme();
   return {
     fontSize: preferences.fontSize,
-    setFontSize: (fontSize: FontSize) => updatePreferences({ fontSize }),
+    setFontSize: (fontSize: FontSize) => {
+      updatePreferences({ fontSize });
+    },
   };
 };
 
@@ -39,7 +43,9 @@ export const useAnimationPreference = () => {
   const { preferences, updatePreferences } = useTheme();
   return {
     animations: preferences.animations,
-    setAnimations: (animations: boolean) => updatePreferences({ animations }),
+    setAnimations: (animations: boolean) => {
+      updatePreferences({ animations });
+    },
   };
 };
 
@@ -47,7 +53,9 @@ export const useCompactModePreference = () => {
   const { preferences, updatePreferences } = useTheme();
   return {
     compactMode: preferences.compactMode,
-    setCompactMode: (compactMode: boolean) => updatePreferences({ compactMode }),
+    setCompactMode: (compactMode: boolean) => {
+      updatePreferences({ compactMode });
+    },
   };
 };
 
@@ -55,9 +63,13 @@ export const useAccessibilityPreference = () => {
   const { preferences, updatePreferences } = useTheme();
   return {
     highContrast: preferences.highContrast,
-    setHighContrast: (highContrast: boolean) => updatePreferences({ highContrast }),
+    setHighContrast: (highContrast: boolean) => {
+      updatePreferences({ highContrast });
+    },
     reducedMotion: preferences.reducedMotion,
-    setReducedMotion: (reducedMotion: boolean) => updatePreferences({ reducedMotion }),
+    setReducedMotion: (reducedMotion: boolean) => {
+      updatePreferences({ reducedMotion });
+    },
   };
 };
 
@@ -65,6 +77,8 @@ export const useDebugInfoPreference = () => {
   const { preferences, updatePreferences } = useTheme();
   return {
     showDebugInfo: preferences.showDebugInfo,
-    setShowDebugInfo: (showDebugInfo: boolean) => updatePreferences({ showDebugInfo }),
+    setShowDebugInfo: (showDebugInfo: boolean) => {
+      updatePreferences({ showDebugInfo });
+    },
   };
 };

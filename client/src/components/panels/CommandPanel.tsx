@@ -41,10 +41,10 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
     console.debug('CommandPanel received isConnected prop', {
       isConnected,
       disabled,
-      commandInputLength: commandInput?.length || 0,
-      buttonDisabled: !commandInput?.trim() || disabled || !isConnected,
+      commandInputLength: commandInput.length || 0,
+      buttonDisabled: !commandInput.trim() || disabled || !isConnected,
       buttonDisabledReason: {
-        noCommand: !commandInput?.trim(),
+        noCommand: !commandInput.trim(),
         panelDisabled: disabled,
         notConnected: !isConnected,
       },
@@ -68,7 +68,9 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
     };
 
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [onLogout, disabled, isConnected]);
 
   const handleCommandSubmit = (e: React.FormEvent) => {
@@ -165,7 +167,9 @@ export const CommandPanel: React.FC<CommandPanelProps> = ({
           <TerminalInput
             ref={inputRef}
             value={commandInput}
-            onChange={e => setCommandInput(e.target.value)}
+            onChange={e => {
+              setCommandInput(e.target.value);
+            }}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             disabled={disabled || !isConnected}

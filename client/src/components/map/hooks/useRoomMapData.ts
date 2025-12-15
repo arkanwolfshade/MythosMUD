@@ -113,7 +113,7 @@ export function useRoomMapData(options: UseRoomMapDataOptions): UseRoomMapDataRe
 
   // Fetch data when dependencies change
   useEffect(() => {
-    fetchRooms();
+    void fetchRooms();
   }, [fetchRooms]);
 
   return {

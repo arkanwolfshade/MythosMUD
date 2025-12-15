@@ -9,10 +9,10 @@
  * of our eldritch architecture.
  */
 
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import type { Node } from 'reactflow';
-import type { RoomNodeData } from './types';
 import type { EdgeCreationData, EdgeValidationResult } from './hooks/useMapEditing';
+import type { RoomNodeData } from './types';
 
 export interface EdgeCreationModalProps {
   /** Whether the modal is open */
@@ -230,7 +230,9 @@ export const EdgeCreationModal: React.FC<EdgeCreationModalProps> = ({
     >
       <div
         className="bg-mythos-terminal-background border-2 border-mythos-terminal-border rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl"
-        onClick={e => e.stopPropagation()}
+        onClick={e => {
+          e.stopPropagation();
+        }}
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -265,7 +267,9 @@ export const EdgeCreationModal: React.FC<EdgeCreationModalProps> = ({
               id="target-room-search"
               type="text"
               value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
+              onChange={e => {
+                setSearchQuery(e.target.value);
+              }}
               placeholder="Search rooms..."
               className="w-full px-3 py-2 bg-mythos-terminal-background border border-mythos-terminal-border rounded text-mythos-terminal-text mb-2"
             />
@@ -301,7 +305,9 @@ export const EdgeCreationModal: React.FC<EdgeCreationModalProps> = ({
                 type="checkbox"
                 id="use-custom-direction"
                 checked={useCustomDirection}
-                onChange={e => setUseCustomDirection(e.target.checked)}
+                onChange={e => {
+                  setUseCustomDirection(e.target.checked);
+                }}
                 className="w-4 h-4"
               />
               <label htmlFor="use-custom-direction" className="text-sm text-mythos-terminal-text">
@@ -320,7 +326,9 @@ export const EdgeCreationModal: React.FC<EdgeCreationModalProps> = ({
             ) : (
               <select
                 value={direction}
-                onChange={e => setDirection(e.target.value)}
+                onChange={e => {
+                  setDirection(e.target.value);
+                }}
                 required
                 className="w-full px-3 py-2 bg-mythos-terminal-background border border-mythos-terminal-border rounded text-mythos-terminal-text"
               >
@@ -360,7 +368,9 @@ export const EdgeCreationModal: React.FC<EdgeCreationModalProps> = ({
             <textarea
               id="description"
               value={description}
-              onChange={e => setDescription(e.target.value)}
+              onChange={e => {
+                setDescription(e.target.value);
+              }}
               placeholder="Exit description..."
               rows={3}
               className="w-full px-3 py-2 bg-mythos-terminal-background border border-mythos-terminal-border rounded text-mythos-terminal-text"

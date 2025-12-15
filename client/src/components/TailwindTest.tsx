@@ -46,13 +46,17 @@ export const TailwindTest: React.FC = () => {
                 <div className="space-y-3">
                   <TerminalInput
                     value={inputValue}
-                    onChange={e => setInputValue(e.target.value)}
+                    onChange={e => {
+                      setInputValue(e.target.value);
+                    }}
                     placeholder="Enter command..."
                     size="md"
                   />
                   <TerminalInput
                     value={passwordValue}
-                    onChange={e => setPasswordValue(e.target.value)}
+                    onChange={e => {
+                      setPasswordValue(e.target.value);
+                    }}
                     placeholder="Password"
                     type="password"
                     size="sm"

@@ -114,7 +114,7 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({
 
   const modalContent = (
     <div
-      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[100]"
+      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-100"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -123,7 +123,9 @@ export const MainMenuModal: React.FC<MainMenuModalProps> = ({
     >
       <div
         className="bg-mythos-terminal-background border-2 border-mythos-terminal-border rounded-lg p-6 w-full max-w-md shadow-xl"
-        onClick={e => e.stopPropagation()}
+        onClick={e => {
+          e.stopPropagation();
+        }}
         style={{ pointerEvents: 'auto' }}
       >
         <div className="flex items-center justify-between mb-6">

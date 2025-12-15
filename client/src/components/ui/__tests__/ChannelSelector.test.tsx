@@ -199,7 +199,7 @@ describe('ChannelSelector', () => {
       const dropdown = screen.getByTestId('channel-dropdown');
       const dropdownButtons = within(dropdown).getAllByRole('button');
       const localDropdownButton = dropdownButtons.find(
-        btn => btn.textContent?.includes('Local') && btn.textContent?.includes('Chat with players in the same sub-zone')
+        btn => btn.textContent?.includes('Local') && btn.textContent.includes('Chat with players in the same sub-zone')
       );
       expect(localDropdownButton).toHaveClass('bg-mythos-terminal-primary/20');
     });

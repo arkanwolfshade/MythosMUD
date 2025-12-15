@@ -144,7 +144,9 @@ vi.mock('../../ui/ChannelSelector', () => ({
             {channels.map(channel => (
               <button
                 key={channel.id}
-                onClick={() => handleChannelSelect(channel.id)}
+                onClick={() => {
+                  handleChannelSelect(channel.id);
+                }}
                 className="w-full flex items-center gap-3 px-3 py-2 text-left text-sm font-mono border-b border-gray-700 last:border-b-0"
               >
                 <div data-testid={`icon-${channel.id}`} data-size="16" data-variant="secondary">

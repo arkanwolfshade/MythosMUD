@@ -46,7 +46,13 @@ vi.mock('./components/StatsRollingScreen', () => ({
         <h2>Character Creation</h2>
         <p>Character: {characterName}</p>
         {error && <div className="error-message">{error}</div>}
-        <button onClick={() => onStatsAccepted({ strength: 10 })}>Accept Stats & Create Character</button>
+        <button
+          onClick={() => {
+            onStatsAccepted({ strength: 10 });
+          }}
+        >
+          Accept Stats & Create Character
+        </button>
         <button onClick={handleError}>Trigger Error</button>
       </div>
     );
@@ -1075,7 +1081,14 @@ describe('App', () => {
           character_name: 'testuser',
         }),
       };
-      mockFetch.mockImplementation(() => new Promise(resolve => setTimeout(() => resolve(mockResponse), 100)));
+      mockFetch.mockImplementation(
+        () =>
+          new Promise(resolve =>
+            setTimeout(() => {
+              resolve(mockResponse);
+            }, 100)
+          )
+      );
 
       render(<App />);
 
@@ -1127,7 +1140,11 @@ describe('App', () => {
 
       mockFetch.mockImplementation(url => {
         if (url.includes('/auth/register')) {
-          return new Promise(resolve => setTimeout(() => resolve(mockResponse), 100));
+          return new Promise(resolve =>
+            setTimeout(() => {
+              resolve(mockResponse);
+            }, 100)
+          );
         } else if (url.includes('/professions')) {
           return Promise.resolve(mockProfessionsResponse);
         }

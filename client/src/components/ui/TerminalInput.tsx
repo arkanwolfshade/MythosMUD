@@ -18,54 +18,62 @@ interface TerminalInputProps {
   'data-testid'?: string;
 }
 
-export const TerminalInput: React.FC<TerminalInputProps> = ({
-  value,
-  onChange,
-  placeholder,
-  type = 'text',
-  size = 'md',
-  disabled = false,
-  className = '',
-  onKeyDown,
-  onFocus,
-  onBlur,
-  autoFocus = false,
-  required = false,
-  name,
-  id,
-  'data-testid': dataTestId,
-}) => {
-  const baseClasses =
-    'font-mono bg-mythos-terminal-surface border border-gray-700 text-mythos-terminal-text placeholder-mythos-terminal-text-secondary rounded transition-eldritch duration-eldritch ease-eldritch focus:outline-none focus:ring-2 focus:ring-mythos-terminal-primary focus:border-mythos-terminal-primary focus:animate-eldritch-border';
+export const TerminalInput = React.forwardRef<HTMLInputElement, TerminalInputProps>(
+  (
+    {
+      value,
+      onChange,
+      placeholder,
+      type = 'text',
+      size = 'md',
+      disabled = false,
+      className = '',
+      onKeyDown,
+      onFocus,
+      onBlur,
+      autoFocus = false,
+      required = false,
+      name,
+      id,
+      'data-testid': dataTestId,
+    },
+    ref
+  ) => {
+    const baseClasses =
+      'font-mono bg-mythos-terminal-surface border border-gray-700 text-mythos-terminal-text placeholder-mythos-terminal-text-secondary rounded transition-eldritch duration-eldritch ease-eldritch focus:outline-none focus:ring-2 focus:ring-mythos-terminal-primary focus:border-mythos-terminal-primary focus:animate-eldritch-border';
 
-  const sizeClasses = {
-    sm: 'px-2 py-1 text-sm',
-    md: 'px-3 py-2 text-base',
-    lg: 'px-4 py-3 text-lg',
-  };
+    const sizeClasses = {
+      sm: 'px-2 py-1 text-sm',
+      md: 'px-3 py-2 text-base',
+      lg: 'px-4 py-3 text-lg',
+    };
 
-  const disabledClasses = disabled
-    ? 'opacity-50 cursor-not-allowed bg-mythos-terminal-background'
-    : 'cursor-text hover:border-mythos-terminal-primary/50';
+    const disabledClasses = disabled
+      ? 'opacity-50 cursor-not-allowed bg-mythos-terminal-background'
+      : 'cursor-text hover:border-mythos-terminal-primary/50';
 
-  const classes = `${baseClasses} ${sizeClasses[size]} ${disabledClasses} ${className}`;
+    const classes = `${baseClasses} ${sizeClasses[size]} ${disabledClasses} ${className}`;
 
-  return (
-    <input
-      type={type}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      disabled={disabled}
-      className={classes}
-      onKeyDown={onKeyDown}
-      onFocus={onFocus}
-      onBlur={onBlur}
-      autoFocus={autoFocus}
-      required={required}
-      name={name}
-      id={id}
-      data-testid={dataTestId}
-    />
-  );
-};
+    return (
+      <input
+        ref={ref}
+        type={type}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        disabled={disabled}
+        className={classes}
+        onKeyDown={onKeyDown}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        autoFocus={autoFocus}
+        required={required}
+        name={name}
+        id={id}
+        data-testid={dataTestId}
+      />
+    );
+  }
+);
+
+TerminalInput.displayName = 'TerminalInput';

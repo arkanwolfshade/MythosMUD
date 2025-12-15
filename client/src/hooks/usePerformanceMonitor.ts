@@ -113,7 +113,9 @@ export const usePerformanceMonitor = (options: UsePerformanceMonitorOptions) => 
       }
     }, 5000); // Check every 5 seconds
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+    };
   }, [enabled, componentName]);
 
   // Don't return metrics directly - they should be accessed via getStats()

@@ -10,7 +10,7 @@
  * of our eldritch architecture.
  */
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import type { Room } from '../../stores/gameStore';
 import type { RoomNodeData } from './types';
 
@@ -182,7 +182,9 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({ isOpen, onClose, r
     >
       <div
         className="bg-mythos-terminal-background border-2 border-mythos-terminal-border rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-xl"
-        onClick={e => e.stopPropagation()}
+        onClick={e => {
+          e.stopPropagation();
+        }}
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -209,7 +211,9 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({ isOpen, onClose, r
         {/* Tabs */}
         <div className="flex gap-2 mb-6 border-b border-mythos-terminal-border">
           <button
-            onClick={() => setActiveTab('basic')}
+            onClick={() => {
+              setActiveTab('basic');
+            }}
             className={`px-4 py-2 font-medium text-sm ${
               activeTab === 'basic'
                 ? 'text-mythos-terminal-primary border-b-2 border-mythos-terminal-primary'
@@ -219,7 +223,9 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({ isOpen, onClose, r
             Basic Info
           </button>
           <button
-            onClick={() => setActiveTab('location')}
+            onClick={() => {
+              setActiveTab('location');
+            }}
             className={`px-4 py-2 font-medium text-sm ${
               activeTab === 'location'
                 ? 'text-mythos-terminal-primary border-b-2 border-mythos-terminal-primary'
@@ -229,7 +235,9 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({ isOpen, onClose, r
             Location
           </button>
           <button
-            onClick={() => setActiveTab('properties')}
+            onClick={() => {
+              setActiveTab('properties');
+            }}
             className={`px-4 py-2 font-medium text-sm ${
               activeTab === 'properties'
                 ? 'text-mythos-terminal-primary border-b-2 border-mythos-terminal-primary'
@@ -254,7 +262,9 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({ isOpen, onClose, r
                   id="room-name"
                   type="text"
                   value={formData.name}
-                  onChange={e => handleFieldChange('name', e.target.value)}
+                  onChange={e => {
+                    handleFieldChange('name', e.target.value);
+                  }}
                   required
                   className={`w-full px-3 py-2 bg-mythos-terminal-background border rounded text-mythos-terminal-text ${
                     errors.name ? 'border-mythos-terminal-error' : 'border-mythos-terminal-border'
@@ -271,7 +281,9 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({ isOpen, onClose, r
                 <textarea
                   id="room-description"
                   value={formData.description}
-                  onChange={e => handleFieldChange('description', e.target.value)}
+                  onChange={e => {
+                    handleFieldChange('description', e.target.value);
+                  }}
                   rows={6}
                   className={`w-full px-3 py-2 bg-mythos-terminal-background border rounded text-mythos-terminal-text ${
                     errors.description ? 'border-mythos-terminal-error' : 'border-mythos-terminal-border'
@@ -297,7 +309,9 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({ isOpen, onClose, r
                   id="room-plane"
                   type="text"
                   value={formData.plane}
-                  onChange={e => handleFieldChange('plane', e.target.value)}
+                  onChange={e => {
+                    handleFieldChange('plane', e.target.value);
+                  }}
                   required
                   disabled
                   className="w-full px-3 py-2 bg-mythos-terminal-surface border border-mythos-terminal-border rounded text-mythos-terminal-text/50 font-mono text-sm disabled:opacity-50 disabled:cursor-not-allowed"
@@ -316,7 +330,9 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({ isOpen, onClose, r
                   id="room-zone"
                   type="text"
                   value={formData.zone}
-                  onChange={e => handleFieldChange('zone', e.target.value)}
+                  onChange={e => {
+                    handleFieldChange('zone', e.target.value);
+                  }}
                   required
                   className={`w-full px-3 py-2 bg-mythos-terminal-background border rounded text-mythos-terminal-text ${
                     errors.zone ? 'border-mythos-terminal-error' : 'border-mythos-terminal-border'
@@ -334,7 +350,9 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({ isOpen, onClose, r
                   id="room-subzone"
                   type="text"
                   value={formData.sub_zone}
-                  onChange={e => handleFieldChange('sub_zone', e.target.value)}
+                  onChange={e => {
+                    handleFieldChange('sub_zone', e.target.value);
+                  }}
                   className="w-full px-3 py-2 bg-mythos-terminal-background border border-mythos-terminal-border rounded text-mythos-terminal-text"
                 />
               </div>
@@ -352,7 +370,9 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({ isOpen, onClose, r
                 <select
                   id="room-environment"
                   value={formData.environment}
-                  onChange={e => handleFieldChange('environment', e.target.value)}
+                  onChange={e => {
+                    handleFieldChange('environment', e.target.value);
+                  }}
                   className="w-full px-3 py-2 bg-mythos-terminal-background border border-mythos-terminal-border rounded text-mythos-terminal-text"
                 >
                   <option value="">Select environment...</option>

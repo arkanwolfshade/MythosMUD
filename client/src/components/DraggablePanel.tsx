@@ -191,7 +191,9 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
     };
 
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, [defaultPosition, defaultSize, size.width, size.height, isGridPositioned]);
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
@@ -543,43 +545,59 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
           {/* Corner resize handles */}
           <div
             className="absolute top-0 right-0 w-3 h-3 cursor-se-resize hover:bg-mythos-terminal-primary/30 z-10"
-            onMouseDown={e => handleMouseDown(e, 'se')}
+            onMouseDown={e => {
+              handleMouseDown(e, 'se');
+            }}
             title="Resize"
           />
           <div
             className="absolute bottom-0 left-0 w-3 h-3 cursor-sw-resize hover:bg-mythos-terminal-primary/30 z-10"
-            onMouseDown={e => handleMouseDown(e, 'sw')}
+            onMouseDown={e => {
+              handleMouseDown(e, 'sw');
+            }}
             title="Resize"
           />
           <div
             className="absolute bottom-0 right-0 w-3 h-3 cursor-se-resize hover:bg-mythos-terminal-primary/30 z-10"
-            onMouseDown={e => handleMouseDown(e, 'se')}
+            onMouseDown={e => {
+              handleMouseDown(e, 'se');
+            }}
             title="Resize"
           />
           <div
             className="absolute top-0 left-0 w-3 h-3 cursor-nw-resize hover:bg-mythos-terminal-primary/30 z-10"
-            onMouseDown={e => handleMouseDown(e, 'nw')}
+            onMouseDown={e => {
+              handleMouseDown(e, 'nw');
+            }}
             title="Resize"
           />
           {/* Edge resize handles */}
           <div
             className="absolute top-1/2 left-0 w-2 h-8 -translate-y-1/2 cursor-w-resize hover:bg-mythos-terminal-primary/30 z-10"
-            onMouseDown={e => handleMouseDown(e, 'w')}
+            onMouseDown={e => {
+              handleMouseDown(e, 'w');
+            }}
             title="Resize width"
           />
           <div
             className="absolute top-1/2 right-0 w-2 h-8 -translate-y-1/2 cursor-e-resize hover:bg-mythos-terminal-primary/30 z-10"
-            onMouseDown={e => handleMouseDown(e, 'e')}
+            onMouseDown={e => {
+              handleMouseDown(e, 'e');
+            }}
             title="Resize width"
           />
           <div
             className="absolute left-1/2 top-0 w-8 h-2 -translate-x-1/2 cursor-n-resize hover:bg-mythos-terminal-primary/30 z-10"
-            onMouseDown={e => handleMouseDown(e, 'n')}
+            onMouseDown={e => {
+              handleMouseDown(e, 'n');
+            }}
             title="Resize height"
           />
           <div
             className="absolute left-1/2 bottom-0 w-8 h-2 -translate-x-1/2 cursor-s-resize hover:bg-mythos-terminal-primary/30 z-10"
-            onMouseDown={e => handleMouseDown(e, 's')}
+            onMouseDown={e => {
+              handleMouseDown(e, 's');
+            }}
             title="Resize height"
           />
         </>

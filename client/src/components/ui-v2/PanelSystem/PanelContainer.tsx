@@ -68,7 +68,9 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(
       };
 
       window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
     }, []);
 
     // Calculate maximized size to fill viewport completely

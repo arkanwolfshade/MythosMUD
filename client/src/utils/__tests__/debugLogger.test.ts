@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { debugLogger } from '../debugLogger';
 
@@ -184,7 +185,7 @@ describe('debugLogger', () => {
       const timestampMatch = logCall.match(/\[(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z)\]/);
       expect(timestampMatch).toBeTruthy();
 
-      const logTime = timestampMatch![1];
+      const logTime = timestampMatch?.[1];
       expect(logTime >= beforeTime && logTime <= afterTime).toBe(true);
     });
 
@@ -229,7 +230,9 @@ describe('debugLogger', () => {
       const logger = debugLogger('TestComponent');
 
       // Should not throw error even if debug is called
-      expect(() => logger.debug('Test message')).not.toThrow();
+      expect(() => {
+        logger.debug('Test message');
+      }).not.toThrow();
     });
   });
 });

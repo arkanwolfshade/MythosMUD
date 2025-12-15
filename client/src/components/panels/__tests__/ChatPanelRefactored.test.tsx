@@ -23,14 +23,18 @@ vi.mock('../chat', () => ({
   }) => (
     <div data-testid="channel-selector">
       <button
-        onClick={() => onChannelSelect('local')}
+        onClick={() => {
+          onChannelSelect('local');
+        }}
         disabled={disabled}
         className={selectedChannel === 'local' ? 'selected' : ''}
       >
         Local
       </button>
       <button
-        onClick={() => onChannelSelect('global')}
+        onClick={() => {
+          onChannelSelect('global');
+        }}
         disabled={disabled}
         className={selectedChannel === 'global' ? 'selected' : ''}
       >
@@ -49,7 +53,12 @@ vi.mock('../chat', () => ({
   }) => (
     <div data-testid="activity-indicators">
       {Object.entries(unreadCounts).map(([channel, count]) => (
-        <span key={channel} onClick={() => onChannelSelect(channel)}>
+        <span
+          key={channel}
+          onClick={() => {
+            onChannelSelect(channel);
+          }}
+        >
           {channel}: {count}
         </span>
       ))}
@@ -69,8 +78,19 @@ vi.mock('../chat', () => ({
     currentChannelMessages: number;
   }) => (
     <div data-testid="chat-history-toggle">
-      <button onClick={onToggleHistory}>{showChatHistory ? 'Hide' : 'Show'} History</button>
-      <select value={chatFilter} onChange={e => onFilterChange(e.target.value)}>
+      <button
+        onClick={() => {
+          onToggleHistory();
+        }}
+      >
+        {showChatHistory ? 'Hide' : 'Show'} History
+      </button>
+      <select
+        value={chatFilter}
+        onChange={e => {
+          onFilterChange(e.target.value);
+        }}
+      >
         <option value="current">Current</option>
         <option value="all">All</option>
       </select>

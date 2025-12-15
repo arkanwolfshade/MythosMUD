@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { EldritchIcon } from '../ui/EldritchIcon';
 import { getApiBaseUrl } from '../../utils/config';
+import { EldritchIcon } from '../ui/EldritchIcon';
 import './MonitoringPanel.css';
 
 interface MonitoringData {
@@ -98,11 +98,13 @@ export const MonitoringPanel: React.FC<MonitoringPanelProps> = ({
   }, [baseUrl]);
 
   useEffect(() => {
-    fetchMonitoringData();
+    void fetchMonitoringData();
 
     if (refreshInterval > 0) {
       const interval = setInterval(fetchMonitoringData, refreshInterval);
-      return () => clearInterval(interval);
+      return () => {
+        clearInterval(interval);
+      };
     }
   }, [baseUrl, refreshInterval, fetchMonitoringData]);
 

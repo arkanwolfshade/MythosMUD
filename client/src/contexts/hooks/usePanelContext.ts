@@ -17,7 +17,9 @@ export const usePanel = (panelId: string) => {
 
   return {
     panel,
-    updatePanel: (updates: Partial<PanelState>) => updatePanel(panelId, updates),
+    updatePanel: (updates: Partial<PanelState>) => {
+      updatePanel(panelId, updates);
+    },
   };
 };
 
@@ -26,12 +28,24 @@ export const usePanelActions = (panelId: string) => {
     usePanelContext();
 
   return {
-    toggleVisibility: () => togglePanelVisibility(panelId),
-    toggleMinimized: () => togglePanelMinimized(panelId),
-    toggleMaximized: () => togglePanelMaximized(panelId),
-    move: (position: PanelPosition) => movePanel(panelId, position),
-    resize: (size: PanelSize) => resizePanel(panelId, size),
-    bringToFront: () => bringToFront(panelId),
+    toggleVisibility: () => {
+      togglePanelVisibility(panelId);
+    },
+    toggleMinimized: () => {
+      togglePanelMinimized(panelId);
+    },
+    toggleMaximized: () => {
+      togglePanelMaximized(panelId);
+    },
+    move: (position: PanelPosition) => {
+      movePanel(panelId, position);
+    },
+    resize: (size: PanelSize) => {
+      resizePanel(panelId, size);
+    },
+    bringToFront: () => {
+      bringToFront(panelId);
+    },
   };
 };
 
