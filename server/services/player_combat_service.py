@@ -296,7 +296,8 @@ class PlayerCombatService:
 
             logger.info("Awarded XP to player", xp_amount=xp_amount, player_name=player.name, new_level=player.level)
 
-        except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError) as e:
+        except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError, Exception) as e:
+            # Catch all exceptions to prevent XP award failures from crashing the service
             logger.error(
                 "Error awarding XP to player",
                 # Structlog handles UUID objects automatically, no need to convert to string

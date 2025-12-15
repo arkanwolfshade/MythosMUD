@@ -158,8 +158,15 @@ class TestCommunicationCommands:
         mock_player.id = "test_player_id"
         mock_player.player_id = "test_player_id"
         mock_player_service.resolve_player_name.return_value = mock_player
+        mock_player_service.get_player_by_name = AsyncMock(return_value=mock_player)
+        # Mock magic_service to prevent casting state check from blocking emote
+        mock_magic_service = Mock()
+        mock_casting_state_manager = Mock()
+        mock_casting_state_manager.is_casting.return_value = False
+        mock_magic_service.casting_state_manager = mock_casting_state_manager
         mock_request.app.state.chat_service = mock_chat_service
         mock_request.app.state.player_service = mock_player_service
+        mock_request.app.state.magic_service = mock_magic_service
         mock_alias_storage = Mock()
         mock_alias_storage.get_alias.return_value = None
         current_user = {"username": "testuser"}
@@ -207,8 +214,15 @@ class TestCommunicationCommands:
         mock_player.id = "test_player_id"
         mock_player.player_id = uuid.uuid4()
         mock_player_service.resolve_player_name.return_value = mock_player
+        mock_player_service.get_player_by_name = AsyncMock(return_value=mock_player)
+        # Mock magic_service to prevent casting state check from blocking emote
+        mock_magic_service = Mock()
+        mock_casting_state_manager = Mock()
+        mock_casting_state_manager.is_casting.return_value = False
+        mock_magic_service.casting_state_manager = mock_casting_state_manager
         mock_request.app.state.chat_service = mock_chat_service
         mock_request.app.state.player_service = mock_player_service
+        mock_request.app.state.magic_service = mock_magic_service
         # Mock player for catatonia check
         mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_alias_storage = Mock()
@@ -241,8 +255,15 @@ class TestCommunicationCommands:
         mock_player.player_id = uuid.uuid4()
         mock_player.get_stats.return_value = {"position": "standing"}
         mock_player_service.resolve_player_name.return_value = mock_player
+        mock_player_service.get_player_by_name = AsyncMock(return_value=mock_player)
+        # Mock magic_service to prevent casting state check from blocking emote
+        mock_magic_service = Mock()
+        mock_casting_state_manager = Mock()
+        mock_casting_state_manager.is_casting.return_value = False
+        mock_magic_service.casting_state_manager = mock_casting_state_manager
         mock_request.app.state.chat_service = mock_chat_service
         mock_request.app.state.player_service = mock_player_service
+        mock_request.app.state.magic_service = mock_magic_service
         # Mock player for catatonia check
         mock_request.app.state.persistence.get_player_by_name = AsyncMock(return_value=mock_player)
         mock_alias_storage = Mock()

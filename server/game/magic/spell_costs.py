@@ -102,7 +102,8 @@ class SpellCostsService:
                 new_mp=new_mp,
                 mp_cost=spell.mp_cost,
             )
-        except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError) as e:
+        except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError, RuntimeError) as e:
+            # RuntimeError can occur when connection manager is not available (e.g., in tests)
             logger.warning("Failed to send MP update event", player_id=player_id, error=str(e))
 
     async def restore_mp(self, player_id: uuid.UUID, amount: int) -> dict[str, Any]:

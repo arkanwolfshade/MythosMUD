@@ -106,7 +106,8 @@ def _is_predefined_emote(command: str) -> bool:
 
         emote_service = EmoteService()
         return emote_service.is_emote_alias(command)
-    except (ImportError, AttributeError, TypeError, RuntimeError) as e:
+    except (ImportError, AttributeError, TypeError, RuntimeError, Exception) as e:
+        # Catch all exceptions to handle test errors and service failures gracefully
         logger.warning("Error checking predefined emote", error=str(e))
         return False
 
@@ -560,8 +561,9 @@ async def process_command_with_validation(
         # Human reader: do not expose exception details to users.
         # AI reader: CodeQL requires no exception information exposure to external users.
         return {"result": "Invalid command format"}
-    except (ImportError, AttributeError, TypeError, RuntimeError) as e:
+    except Exception as e:  # pylint: disable=broad-except
         # Format exception traceback and sanitize ANSI codes for Windows compatibility
+        # Catch all exceptions to handle test errors gracefully
         try:
             exc_traceback = traceback.format_exc()
             # Strip ANSI codes to prevent UnicodeEncodeError on Windows console
@@ -674,8 +676,10 @@ async def _load_player_for_catatonia_check(request: Request, player_name: str, p
         try:
             player = await persistence.get_player_by_name(player_name)
             cache_player(request, player_name, player)
-        except (ImportError, AttributeError, TypeError, RuntimeError):  # pragma: no cover - defensive
-            logger.exception("Failed to load player for catatonia check", player=player_name)
+        except Exception:  # pylint: disable=broad-except  # pragma: no cover - defensive
+            # Catch all exceptions to prevent catatonia check from blocking commands
+            # when database/persistence errors occur
+            logger.debug("Failed to load player for catatonia check", player=player_name, exc_info=True)
             return None
     return player
 

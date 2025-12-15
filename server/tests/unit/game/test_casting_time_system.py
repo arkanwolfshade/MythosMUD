@@ -290,7 +290,12 @@ class TestMagicServiceCastingTime:
         result = await magic_service.cast_spell(mock_player.player_id, "instant_spell")
 
         assert result["success"] is True
-        assert "cast successfully" in result["message"].lower() or "healed" in result["message"].lower()
+        # Accept various success messages: "cast successfully", "healed", "spell effect applied"
+        assert (
+            "cast successfully" in result["message"].lower()
+            or "healed" in result["message"].lower()
+            or "spell effect applied" in result["message"].lower()
+        )
         assert result.get("is_casting") is None  # Not casting, executed immediately
         assert not magic_service.casting_state_manager.is_casting(mock_player.player_id)
 

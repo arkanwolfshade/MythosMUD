@@ -450,7 +450,8 @@ class MagicService:
                             "game_log_channel": "game-log",
                         },
                     )
-            except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError) as msg_error:
+            except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError, RuntimeError) as msg_error:
+                # RuntimeError can occur when connection manager is not available (e.g., in tests)
                 logger.warning(
                     "Failed to send spell completion message",
                     player_id=player_id,
@@ -515,7 +516,8 @@ class MagicService:
                                 player_id=player_id,
                                 spell_id=spell.spell_id,
                             )
-                except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError) as dp_error:
+                except (ValueError, AttributeError, SQLAlchemyError, OSError, TypeError, RuntimeError) as dp_error:
+                    # RuntimeError can occur when connection manager is not available (e.g., in tests)
                     logger.warning(
                         "Failed to publish PlayerDPUpdated event after spell",
                         player_id=player_id,

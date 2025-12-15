@@ -317,13 +317,20 @@ class TestGameTickLoopLegacy:
             mock_conn_mgr = MagicMock()
             mock_conn_mgr.player_websockets = {}
 
+            # Mock persistence with async methods for corpse cleanup
+            mock_persistence = MagicMock()
+            mock_persistence.get_decayed_containers = AsyncMock(return_value=[])
+
             app.state.container = MagicMock()
             app.state.container.connection_manager = mock_conn_mgr
+            app.state.container.persistence = mock_persistence
 
             task = asyncio.create_task(game_tick_loop(app))
 
-            # Wait for multiple ticks (0.3 seconds at 0.1 second interval = 3 ticks minimum)
-            await asyncio.sleep(0.35)
+            # Wait for multiple ticks (1.5 seconds at 0.1 second interval = 15 ticks minimum)
+            # This ensures we get at least 2 broadcast attempts (tick 0 and tick 10)
+            # Need extra time to account for error handling delays
+            await asyncio.sleep(1.5)
 
             task.cancel()
             try:
@@ -331,7 +338,8 @@ class TestGameTickLoopLegacy:
             except asyncio.CancelledError:
                 pass
 
-            # Should have attempted multiple ticks despite first error
+            # Should have attempted multiple broadcasts despite first error
+            # Broadcast happens every 10 ticks, so at 1.5 seconds we should see tick 0 and tick 10
             assert call_count >= 2
 
     @pytest.mark.asyncio
