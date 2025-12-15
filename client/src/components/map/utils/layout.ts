@@ -10,7 +10,7 @@
  * as documented in the Pnakotic Manuscripts' section on graph visualization.
  */
 
-import type { Node, Edge } from 'reactflow';
+import type { Edge, Node } from 'reactflow';
 import type { RoomNodeData } from '../types';
 
 /**
@@ -196,11 +196,18 @@ export const applyForceLayout = (
     ])
   );
 
-  // Create edge list with node references
-  const edgeList = edges.map(edge => ({
-    source: nodeMap.get(edge.source)!,
-    target: nodeMap.get(edge.target)!,
-  }));
+  // Create edge list with node references, filtering out edges with missing nodes
+  const edgeList = edges
+    .filter(edge => {
+      const source = nodeMap.get(edge.source);
+      const target = nodeMap.get(edge.target);
+      return source && target;
+    })
+    .map(edge => {
+      const source = nodeMap.get(edge.source)!;
+      const target = nodeMap.get(edge.target)!;
+      return { source, target };
+    });
 
   // Run force simulation
   for (let iteration = 0; iteration < config.iterations; iteration++) {

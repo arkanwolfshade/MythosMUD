@@ -49,11 +49,10 @@ export default defineConfig({
         functions: 61,
         lines: 61,
         // Critical code: security, authentication, data handling → 90%
-        // Note: security.ts branches currently at 87.64% - threshold adjusted to 87% for now
-        // Will revisit to improve coverage for lines 265, 269 (cleanup interval branches)
+        // Note: security.ts now at 100% coverage including branches (cleanup interval branches fully tested)
         'src/utils/security.ts': {
           statements: 90,
-          branches: 87,
+          branches: 90,
           functions: 90,
           lines: 90,
         },
@@ -76,6 +75,12 @@ export default defineConfig({
           lines: 90,
         },
         'src/hooks/useWebSocketConnection.ts': {
+          statements: 90,
+          branches: 90,
+          functions: 90,
+          lines: 90,
+        },
+        'src/hooks/useSessionManagement.ts': {
           statements: 90,
           branches: 90,
           functions: 90,

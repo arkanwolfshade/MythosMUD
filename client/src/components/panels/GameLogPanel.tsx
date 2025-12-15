@@ -104,20 +104,27 @@ export const GameLogPanel: React.FC<GameLogPanelProps> = ({ messages, onClearMes
       const now = new Date();
       const diffMinutes = (now.getTime() - messageTime.getTime()) / (1000 * 60);
 
-      switch (timeFilter) {
-        case 'last5min':
-          if (diffMinutes > 5) return false;
-          break;
-        case 'lastHour':
-          if (diffMinutes > 60) return false;
-          break;
-        case 'today':
-          if (messageTime.toDateString() !== now.toDateString()) return false;
-          break;
-        case 'thisWeek': {
-          const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-          if (messageTime < weekAgo) return false;
-          break;
+      // Handle numeric time filter values (minutes)
+      const filterMinutes = parseInt(timeFilter, 10);
+      if (!isNaN(filterMinutes)) {
+        if (diffMinutes > filterMinutes) return false;
+      } else {
+        // Handle string time filter values
+        switch (timeFilter) {
+          case 'last5min':
+            if (diffMinutes > 5) return false;
+            break;
+          case 'lastHour':
+            if (diffMinutes > 60) return false;
+            break;
+          case 'today':
+            if (messageTime.toDateString() !== now.toDateString()) return false;
+            break;
+          case 'thisWeek': {
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            if (messageTime < weekAgo) return false;
+            break;
+          }
         }
       }
     }

@@ -4,18 +4,18 @@ This document outlines our tiered approach to test coverage, focusing testing ef
 
 ## Coverage Targets by Category
 
-### 🔴 Critical Code: 98%
+### 🔴 Critical Code: 90%
 
 **Security, authentication, and data handling**
 
-These files require near-complete test coverage due to their critical role in application security and data integrity:
+These files require high test coverage due to their critical role in application security and data integrity:
 
 - `src/utils/security.ts` - Security utilities and sanitization
 - `src/utils/errorHandler.ts` - Error handling and reporting
 - `src/utils/logoutHandler.ts` - Authentication and logout flows
 - `src/hooks/useGameConnection.ts` - Connection management
-- `src/hooks/useSSEConnection.ts` - SSE connection handling
 - `src/hooks/useWebSocketConnection.ts` - WebSocket connection handling
+- `src/hooks/useSessionManagement.ts` - Session ID generation and management (uses cryptographic APIs)
 - `src/stores/sessionStore.ts` - Session state management
 - `src/stores/connectionStore.ts` - Connection state management
 
@@ -103,7 +103,7 @@ cd client && npm run test:coverage
 
 When adding new files:
 
-1. **Critical code**: Add to the 98% threshold list in `vitest.config.ts`
+1. **Critical code**: Add to the 90% threshold list in `vitest.config.ts`
 2. **Core business logic**: Add to the 85% threshold list in `vitest.config.ts`
 3. **UI components**: Will use the global 70% threshold
 4. **Utilities**: Will use the global 70% threshold (adjust if critical)
@@ -111,7 +111,7 @@ When adding new files:
 ## Coverage Goals
 
 - **Overall**: Maintain 70%+ global coverage
-- **Critical**: Achieve and maintain 98% coverage
+- **Critical**: Achieve and maintain 90% coverage
 - **Core**: Achieve and maintain 85%+ coverage
 - **UI/Utilities**: Maintain 60-80% coverage (focus on behavior)
 
