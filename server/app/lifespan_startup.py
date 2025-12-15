@@ -19,8 +19,6 @@ logger = get_logger("server.lifespan.startup")
 
 async def initialize_container_and_legacy_services(app: FastAPI, container: ApplicationContainer) -> None:
     """Initialize container and set up legacy compatibility services on app.state."""
-    from ..container import ApplicationContainer
-
     ApplicationContainer.set_instance(container)
 
     app.state.container = container
@@ -126,7 +124,7 @@ async def initialize_npc_services(app: FastAPI, container: ApplicationContainer)
             spawn_rules = await npc_service.get_spawn_rules(npc_session)
             app.state.npc_population_controller.load_spawn_rules(spawn_rules)
             logger.info("NPC spawn rules loaded", count=len(spawn_rules))
-        except Exception as e:
+        except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
             logger.error("Error loading NPC definitions and spawn rules", error=str(e))
         break
 
@@ -145,10 +143,10 @@ async def initialize_npc_services(app: FastAPI, container: ApplicationContainer)
                     try:
                         await app.state.npc_lifecycle_manager.thread_manager.start_npc_thread(npc_id, definition)
                         logger.debug("Started queued NPC thread", npc_id=npc_id)
-                    except Exception as e:
+                    except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
                         logger.warning("Failed to start queued NPC thread", npc_id=npc_id, error=str(e))
                 pending_starts.clear()
-        except Exception as e:
+        except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
             logger.error("Failed to start NPC thread manager", error=str(e))
 
 
@@ -185,7 +183,7 @@ async def initialize_combat_services(app: FastAPI, container: ApplicationContain
 
         try:
             session_maker = container.database_manager.get_session_maker()
-        except Exception as exc:
+        except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as exc:
             logger.error(
                 "Failed to get session maker for catatonia failover",
                 player_id=player_id,
@@ -199,7 +197,13 @@ async def initialize_combat_services(app: FastAPI, container: ApplicationContain
                 await app.state.player_respawn_service.move_player_to_limbo(player_id, "catatonia_failover", session)
                 await app.state.player_respawn_service.respawn_player(player_id, session)
                 logger.info("Catatonia failover completed", player_id=player_id, lcd=current_lcd)
-            except Exception as exc:  # pragma: no cover - defensive
+            except (
+                ValueError,
+                TypeError,
+                AttributeError,
+                KeyError,
+                RuntimeError,
+            ) as exc:  # pragma: no cover - defensive
                 logger.error("Catatonia failover failed", player_id=player_id, error=str(exc), exc_info=True)
                 await session.rollback()
 
@@ -235,7 +239,7 @@ async def initialize_mythos_time_consumer(app: FastAPI, container: ApplicationCo
         logger.warning("Mythos time consumer not initialized due to missing dependencies")
 
 
-async def initialize_npc_startup_spawning(app: FastAPI) -> None:
+async def initialize_npc_startup_spawning(_app: FastAPI) -> None:
     """Initialize and run NPC startup spawning."""
     from ..services.npc_startup_service import get_npc_startup_service
 
@@ -257,7 +261,7 @@ async def initialize_npc_startup_spawning(app: FastAPI) -> None:
             logger.warning("NPC startup spawning had errors", error_count=len(startup_results["errors"]))
             for error in startup_results["errors"]:
                 logger.warning("Startup spawning error", error=str(error))
-    except Exception as e:
+    except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
         logger.error("Critical error during NPC startup spawning", error=str(e))
         logger.warning("Continuing server startup despite NPC spawning errors")
 
@@ -298,7 +302,7 @@ async def initialize_nats_and_combat_services(app: FastAPI, container: Applicati
             else:
                 logger.warning("NATS message handler not available in container (NATS disabled or failed)")
                 app.state.nats_message_handler = None
-        except Exception as e:
+        except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
             logger.error("Error starting NATS message handler", error=str(e))
             app.state.nats_message_handler = None
     else:
@@ -344,3 +348,94 @@ async def initialize_chat_service(app: FastAPI, container: ApplicationContainer)
         raise RuntimeError("Chat service NATS connection failed - NATS is mandatory for chat system")
 
     logger.info("Chat service initialized")
+
+
+async def initialize_magic_services(app: FastAPI, container: ApplicationContainer) -> None:
+    """Initialize magic system services and wire them to app.state."""
+    from ..game.magic.magic_service import MagicService
+    from ..game.magic.mp_regeneration_service import MPRegenerationService
+    from ..game.magic.spell_effects import SpellEffects
+    from ..game.magic.spell_learning_service import SpellLearningService
+    from ..game.magic.spell_registry import SpellRegistry
+    from ..game.magic.spell_targeting import SpellTargetingService
+    from ..persistence.repositories.player_spell_repository import PlayerSpellRepository
+    from ..persistence.repositories.spell_repository import SpellRepository as SpellRepositoryClass
+    from ..services.target_resolution_service import TargetResolutionService
+
+    logger.info("Initializing magic system services...")
+
+    # Initialize repositories
+    spell_repository = SpellRepositoryClass()
+    player_spell_repository = PlayerSpellRepository()
+    logger.info("Spell repositories initialized")
+
+    # Initialize SpellRegistry and load spells
+    spell_registry = SpellRegistry(spell_repository)
+    await spell_registry.load_spells()
+    spell_count = len(spell_registry._spells)  # pylint: disable=protected-access
+    app.state.spell_registry = spell_registry
+    logger.info("SpellRegistry initialized and loaded", spell_count=spell_count)
+
+    # Initialize SpellTargetingService (needs TargetResolutionService, CombatService, PlayerCombatService)
+    if container.async_persistence is None:
+        raise RuntimeError("async_persistence must be initialized before magic services")
+    if container.player_service is None:
+        raise RuntimeError("player_service must be initialized before magic services")
+    # TargetResolutionService accepts both sync and async persistence layers
+    # The protocol is too strict for mypy, but the service handles both at runtime
+    target_resolution_service = TargetResolutionService(
+        persistence=container.async_persistence,  # type: ignore[arg-type]
+        player_service=container.player_service,
+    )
+    spell_targeting_service = SpellTargetingService(
+        target_resolution_service=target_resolution_service,
+        combat_service=getattr(app.state, "combat_service", None),
+        player_combat_service=getattr(app.state, "player_combat_service", None),
+    )
+    app.state.spell_targeting_service = spell_targeting_service
+    logger.info("SpellTargetingService initialized")
+
+    # Initialize SpellEffects (needs PlayerService)
+    # player_service is already checked above, but mypy doesn't know that
+    if container.player_service is None:
+        raise RuntimeError("player_service must be initialized before magic services")
+    spell_effects = SpellEffects(player_service=container.player_service)
+    app.state.spell_effects = spell_effects
+    logger.info("SpellEffects initialized")
+
+    # Initialize SpellLearningService (needs SpellRegistry, PlayerService, PlayerSpellRepository)
+    spell_learning_service = SpellLearningService(
+        spell_registry=spell_registry,
+        player_service=container.player_service,
+        player_spell_repository=player_spell_repository,
+    )
+    app.state.spell_learning_service = spell_learning_service
+    logger.info("SpellLearningService initialized")
+
+    # Initialize MPRegenerationService (needs PlayerService)
+    mp_regeneration_service = MPRegenerationService(player_service=container.player_service)
+    app.state.mp_regeneration_service = mp_regeneration_service
+    logger.info("MPRegenerationService initialized")
+
+    # Initialize MagicService (needs all of the above)
+    # Get combat_service if available (for combat integration)
+    combat_service = getattr(app.state, "combat_service", None)
+    magic_service = MagicService(
+        spell_registry=spell_registry,
+        player_service=container.player_service,
+        spell_targeting_service=spell_targeting_service,
+        spell_effects=spell_effects,
+        player_spell_repository=player_spell_repository,
+        spell_learning_service=spell_learning_service,
+        combat_service=combat_service,
+    )
+    app.state.magic_service = magic_service
+
+    # Set magic_service reference in combat_service if available
+    if combat_service:
+        combat_service.magic_service = magic_service
+        logger.info("MagicService linked to CombatService")
+
+    logger.info("MagicService initialized")
+
+    logger.info("All magic system services initialized and added to app.state")

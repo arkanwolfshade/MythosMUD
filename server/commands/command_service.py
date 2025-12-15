@@ -66,10 +66,20 @@ from .lucidity_recovery_commands import (
     handle_pray_command,
     handle_therapy_command,
 )
+from .magic_commands import (
+    handle_cast_command,
+    handle_learn_command,
+    handle_spell_command,
+    handle_spells_command,
+    handle_stop_command,
+)
 from .npc_admin_commands import handle_npc_command
 from .position_commands import handle_lie_command, handle_sit_command, handle_stand_command
+from .read_command import handle_read_command
 from .rescue_commands import handle_ground_command
+from .rest_command import handle_rest_command
 from .system_commands import handle_help_command
+from .teach_command import handle_teach_command
 from .utility_commands import (
     handle_emote_command,
     handle_logout_command,
@@ -107,6 +117,7 @@ class CommandService:
             # Exploration commands
             "look": handle_look_command,
             "go": handle_go_command,
+            "read": handle_read_command,
             # Communication commands
             "say": handle_say_command,
             "me": handle_me_command,
@@ -141,6 +152,13 @@ class CommandService:
             "status": handle_status_command,
             "time": handle_time_command,
             "inventory": handle_inventory_command,
+            # Magic commands
+            "cast": handle_cast_command,
+            "spells": handle_spells_command,
+            "spell": handle_spell_command,
+            "learn": handle_learn_command,
+            "stop": handle_stop_command,
+            "teach": handle_teach_command,
             "pickup": handle_pickup_command,
             "drop": handle_drop_command,
             "put": handle_put_command,
@@ -151,6 +169,7 @@ class CommandService:
             "sit": handle_sit_command,
             "stand": handle_stand_command,
             "lie": handle_lie_command,
+            "rest": handle_rest_command,
             # NPC Admin commands
             "npc": handle_npc_command,
             # Combat commands
@@ -213,7 +232,7 @@ class CommandService:
             # Type assertion to help MyPy understand the return type
             assert isinstance(result, dict)
             return result
-        except Exception as e:
+        except (ValueError, TypeError, AttributeError, KeyError, RuntimeError, MythosValidationError) as e:
             # Format exception traceback and sanitize ANSI codes for Windows compatibility
             try:
                 exc_traceback = traceback.format_exc()
@@ -229,7 +248,7 @@ class CommandService:
                     error_message=str(e),
                     traceback=sanitized_traceback,
                 )
-            except Exception as log_error:
+            except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as log_error:
                 # If logging itself fails, use a minimal safe log
                 try:
                     logger.error(
@@ -239,8 +258,9 @@ class CommandService:
                         error=str(e)[:200],  # Truncate to avoid encoding issues
                         log_error=str(log_error)[:200],
                     )
-                except Exception:
+                except (ValueError, TypeError, AttributeError, KeyError, RuntimeError):  # pylint: disable=broad-exception-caught
                     # Last resort: silent failure to prevent test crashes
+                    # Using broad exception catch as this is defensive code to prevent cascading failures
                     pass
             return {"result": f"Error processing {command_type} command: {str(e)}"}
 
@@ -266,7 +286,7 @@ class CommandService:
         except MythosValidationError as e:
             logger.info("Command validation failed", error=str(e))
             return {"result": str(e)}
-        except Exception as e:
+        except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
             logger.error("Unexpected error during command parsing", error=str(e))
             return {"result": f"Error processing command: {str(e)}"}
 
@@ -330,7 +350,7 @@ class CommandService:
                 for key in dir(parsed_command)
                 if not key.startswith("_") and not callable(getattr(parsed_command, key)) and key not in command_data
             }
-        except Exception as e:
+        except (ValueError, TypeError, KeyError, RuntimeError) as e:
             logger.error(
                 "ERROR: Exception during model_dump",
                 player=player_name,
@@ -419,7 +439,7 @@ class CommandService:
             logger.debug("Command processed successfully with command_data", player=player_name, command=cmd)
             assert isinstance(result, dict)
             return result
-        except Exception as e:
+        except (ValueError, TypeError, AttributeError, KeyError, RuntimeError, MythosValidationError) as e:
             logger.error(
                 "Command processing error",
                 player=player_name,

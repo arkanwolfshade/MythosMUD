@@ -26,8 +26,8 @@ class NPCMaintenanceConfig:
     """
 
     # How often to run NPC maintenance (in game ticks)
-    # 60 ticks = 1 minute (assuming 1 second per tick)
-    MAINTENANCE_INTERVAL_TICKS: int = 60
+    # 600 ticks = 1 minute (at 100ms per tick: 600 * 0.1s = 60s)
+    MAINTENANCE_INTERVAL_TICKS: int = 600
 
     # How often to re-roll optional NPC spawns (in seconds)
     # This controls how frequently we check if optional NPCs should spawn

@@ -36,3 +36,6 @@
 
 # Makefile must use LF
 Makefile text eol=lf
+
+# Codacy configuration is manually managed - prevent accidental modifications
+.codacy/codacy.yaml -diff -merge

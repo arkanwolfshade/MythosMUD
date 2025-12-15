@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ..config import get_config
 from ..logging.enhanced_logging_config import get_logger
 from ..realtime.connection_manager_api import broadcast_game_event
 from ..services.player_respawn_service import LIMBO_ROOM_ID
@@ -21,8 +22,6 @@ if TYPE_CHECKING:
     from ..models.player import Player
 
 logger = get_logger("server.game_tick")
-
-TICK_INTERVAL = 1.0  # seconds
 
 # Global tick counter for combat system
 # NOTE: This remains global for now as it's shared state needed by combat system
@@ -39,6 +38,16 @@ def reset_current_tick() -> None:
     """Reset the current tick for testing."""
     global _current_tick  # pylint: disable=global-statement
     _current_tick = 0
+
+
+def get_tick_interval() -> float:
+    """Get the server tick interval from configuration.
+
+    Returns:
+        float: Tick interval in seconds
+    """
+    config = get_config()
+    return config.game.server_tick_rate
 
 
 def _validate_app_state_for_status_effects(app: FastAPI) -> tuple[bool, "ApplicationContainer | None"]:
@@ -219,6 +228,15 @@ async def process_combat_tick(app: FastAPI, tick_count: int) -> None:
             logger.error("Error processing combat tick", tick_count=tick_count, error=str(e))
 
 
+async def process_casting_progress(app: FastAPI, tick_count: int) -> None:
+    """Process casting progress for all active spell castings."""
+    if hasattr(app.state, "magic_service") and app.state.magic_service:
+        try:
+            await app.state.magic_service.check_casting_progress(tick_count)
+        except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
+            logger.error("Error processing casting progress", tick_count=tick_count, error=str(e))
+
+
 async def _process_mortally_wounded_player(app: FastAPI, player: "Player", session: AsyncSession) -> None:
     """Process a single mortally wounded player's DP decay and death check."""
     await app.state.player_death_service.process_mortally_wounded_tick(player.player_id, session)
@@ -277,6 +295,38 @@ async def _process_passive_lucidity_flux(app: FastAPI, session: AsyncSession, ti
         logger.error("Error processing passive LCD flux", tick_count=tick_count, error=str(lcd_flux_error))
 
 
+async def _process_mp_regeneration(app: FastAPI, _session: AsyncSession, tick_count: int) -> None:
+    """Process MP regeneration for online players."""
+    if not hasattr(app.state, "mp_regeneration_service"):
+        return
+
+    if not hasattr(app.state, "connection_manager"):
+        return
+
+    try:
+        online_player_ids = list(app.state.connection_manager.online_players.keys())
+        if not online_player_ids:
+            return
+
+        mp_service = app.state.mp_regeneration_service
+        processed_count = 0
+
+        for player_id_str in online_player_ids:
+            try:
+                player_uuid = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
+                result = await mp_service.process_tick_regeneration(player_uuid)
+                if result.get("mp_restored", 0) > 0:
+                    processed_count += 1
+            except (ValueError, AttributeError, TypeError) as e:
+                logger.warning("Error processing MP regeneration for player", player_id=player_id_str, error=str(e))
+                continue
+
+        if processed_count > 0:
+            logger.debug("Processed MP regeneration", tick_count=tick_count, players_processed=processed_count)
+    except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as mp_regen_error:
+        logger.error("Error processing MP regeneration", tick_count=tick_count, error=str(mp_regen_error))
+
+
 async def _process_dead_players(app: FastAPI, session: AsyncSession) -> None:
     """Process dead players and move them to limbo if needed."""
     dead_players = await app.state.player_death_service.get_dead_players(session)
@@ -304,6 +354,7 @@ async def _process_session_dp_decay_and_death(app: FastAPI, session: AsyncSessio
     """Process DP decay and death for a single database session."""
     await _process_mortally_wounded_players(app, session, tick_count)
     await _process_passive_lucidity_flux(app, session, tick_count)
+    await _process_mp_regeneration(app, session, tick_count)
     await _process_dead_players(app, session)
 
 
@@ -427,7 +478,8 @@ async def game_tick_loop(app: FastAPI):
 
     global _current_tick  # pylint: disable=global-statement
     tick_count = 0
-    logger.info("Game tick loop started")
+    tick_interval = get_tick_interval()
+    logger.info("Game tick loop started", tick_interval=tick_interval)
 
     while True:
         try:
@@ -435,13 +487,16 @@ async def game_tick_loop(app: FastAPI):
             logger.debug("Game tick", tick_count=tick_count)
             _current_tick = tick_count
             await process_combat_tick(app, tick_count)
+            await process_casting_progress(app, tick_count)
             await process_dp_decay_and_death(app, tick_count)
             await process_npc_maintenance(app, tick_count)
             await cleanup_decayed_corpses(app, tick_count)
-            await broadcast_tick_event(app, tick_count)
+            # Broadcast tick event every 10 ticks (1 second at 100ms per tick)
+            if tick_count % 10 == 0:
+                await broadcast_tick_event(app, tick_count)
 
             # Sleep for tick interval
-            await asyncio.sleep(TICK_INTERVAL)
+            await asyncio.sleep(tick_interval)
             tick_count += 1
         except asyncio.CancelledError:
             logger.info("Game tick loop cancelled")
@@ -449,7 +504,7 @@ async def game_tick_loop(app: FastAPI):
         except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
             logger.error("Error in game tick loop", tick_count=tick_count, error=str(e), exc_info=True)
             try:
-                await asyncio.sleep(TICK_INTERVAL)
+                await asyncio.sleep(tick_interval)
             except asyncio.CancelledError:
                 logger.info("Game tick loop cancelled during error recovery")
                 break

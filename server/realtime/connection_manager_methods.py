@@ -662,7 +662,7 @@ async def safe_close_websocket_impl(
         return
     try:
         await asyncio.wait_for(websocket.close(code=code, reason=reason), timeout=2.0)
-    except (AttributeError, ValueError, TypeError):
+    except (AttributeError, ValueError, TypeError, RuntimeError):
         pass
     finally:
         manager.mark_websocket_closed(ws_id)

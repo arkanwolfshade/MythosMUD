@@ -20,10 +20,10 @@ logger = get_logger(__name__)
 
 async def _perform_recovery_action(
     action_code: str,
-    command_data: dict,
+    _command_data: dict,
     current_user: dict,
     request: Any,
-    alias_storage: AliasStorage | None,
+    _alias_storage: AliasStorage | None,
     player_name: str,
 ) -> dict[str, str]:
     """Common execution path for LCD recovery commands."""
@@ -74,7 +74,7 @@ async def _perform_recovery_action(
         except UnknownLucidityActionError:
             await session.rollback()
             return {"result": "That rite is uncharted in the Pnakotic addenda. Choose a known discipline."}
-        except Exception as exc:  # pragma: no cover - defensive logging
+        except OSError as exc:  # pragma: no cover - defensive logging
             await session.rollback()
             logger.error(
                 "Recovery ritual failed",
@@ -92,8 +92,26 @@ async def _perform_recovery_action(
                 f"You complete the {action_code.replace('_', ' ')} rite. "
                 f"Stability shifts {sign}{delta}, settling at {new_total}/100."
             )
+
+            # Restore MP for meditation and rest actions
+            mp_message = ""
+            if action_code in ("meditate", "pray"):
+                mp_regeneration_service = getattr(app.state, "mp_regeneration_service", None) if app else None
+                if mp_regeneration_service:
+                    if action_code == "meditate":
+                        mp_result = await mp_regeneration_service.restore_mp_from_meditation(
+                            player.player_id, duration_seconds=180
+                        )
+                    else:  # pray
+                        mp_result = await mp_regeneration_service.restore_mp_from_rest(
+                            player.player_id, duration_seconds=60
+                        )
+
+                    if mp_result.get("mp_restored", 0) > 0:
+                        mp_message = f" You also recover {mp_result['mp_restored']} magic points."
+
             lore_note = "Archivist's Aside: record this moment; resilience is born in repeated discipline."
-            return {"result": f"{narrative}\n{lore_note}"}
+            return {"result": f"{narrative}{mp_message}\n{lore_note}"}
 
     return {"result": "The rite fizzles before contact is made with the numinous."}
 

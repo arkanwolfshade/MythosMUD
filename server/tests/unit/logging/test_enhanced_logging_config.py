@@ -66,7 +66,7 @@ def _close_all_logging_handlers():
             handler.flush()
             handler.close()
             root_logger.removeHandler(handler)
-        except Exception:
+        except (OSError, AttributeError, ValueError):
             pass  # Ignore errors during cleanup
 
     # Close all subsystem logger handlers
@@ -77,7 +77,7 @@ def _close_all_logging_handlers():
                 handler.flush()
                 handler.close()
                 logger.removeHandler(handler)
-            except Exception:
+            except (OSError, AttributeError, ValueError):
                 pass  # Ignore errors during cleanup
 
     # Also check for any other loggers that might have handlers
@@ -90,7 +90,7 @@ def _close_all_logging_handlers():
                 handler.flush()
                 handler.close()
                 logger.removeHandler(handler)
-            except Exception:
+            except (OSError, AttributeError, ValueError):
                 pass  # Ignore errors during cleanup
 
     # Give Windows a moment to release file handles
@@ -169,7 +169,7 @@ class TestEnhancedLoggingConfig:
         mock_get_logger.assert_called_once_with("test")
         mock_wrap_logger.assert_called_once_with(mock_base_logger)
 
-    @patch("server.logging.enhanced_logging_config.bind_contextvars")
+    @patch("server.logging.logging_context.bind_contextvars")
     def test_bind_request_context(self, mock_bind_contextvars):
         """Test that request context is bound correctly."""
         correlation_id = "test-correlation-id"
@@ -200,8 +200,9 @@ class TestEnhancedLoggingConfig:
         debug_logger = Mock()
         mock_get_logger.side_effect = [info_logger, debug_logger]
 
-        logging_config._LOGGING_INITIALIZED = False
-        logging_config._LOGGING_SIGNATURE = None
+        # Reset logging state to ensure clean test
+        logging_config._logging_state.initialized = False
+        logging_config._logging_state.signature = None
 
         config = {"logging": {"environment": "local", "level": "INFO", "log_base": "logs"}}
 
@@ -214,8 +215,8 @@ class TestEnhancedLoggingConfig:
         assert debug_logger.debug.call_count == 1
 
         # Reset for downstream tests
-        logging_config._LOGGING_INITIALIZED = False
-        logging_config._LOGGING_SIGNATURE = None
+        logging_config._logging_state.initialized = False
+        logging_config._logging_state.signature = None
 
     def test_log_exception_once_marks_logged_exceptions(self):
         """Ensure log_exception_once honors logged exception markers."""

@@ -49,8 +49,10 @@ class CombatService:
         player_death_service=None,
         player_respawn_service=None,
         event_bus=None,
+        magic_service=None,
     ):
         """Initialize the combat service."""
+        from server.config import get_config
         from server.events.event_bus import EventBus
 
         self._active_combats: dict[UUID, CombatInstance] = {}
@@ -62,6 +64,7 @@ class CombatService:
         self._npc_combat_integration_service = npc_combat_integration_service
         self._player_death_service = player_death_service
         self._player_respawn_service = player_respawn_service
+        self.magic_service = magic_service  # For casting state checks
         # CRITICAL: Use shared EventBus instance, not a new one
         self._event_bus = event_bus or EventBus()
         # Create combat event publisher with proper NATS service and subject_manager
@@ -86,7 +89,9 @@ class CombatService:
             raise
         # Auto-progression configuration
         self._auto_progression_enabled = True
-        self._turn_interval_seconds = 6
+        # Get combat tick interval from config (defaults to 6 seconds = 1 Mythos minute)
+        config = get_config()
+        self._turn_interval_seconds = config.game.combat_tick_interval
 
         # Initialize helper handlers
         self._turn_processor = CombatTurnProcessor(self)

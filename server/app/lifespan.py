@@ -18,12 +18,13 @@ from fastapi import FastAPI
 from ..container import ApplicationContainer
 from ..logging.enhanced_logging_config import get_logger, update_logging_with_player_service
 from ..time.time_service import get_mythos_chronicle
-from .game_tick_processing import TICK_INTERVAL, game_tick_loop, get_current_tick, reset_current_tick
+from .game_tick_processing import game_tick_loop, get_current_tick, reset_current_tick
 from .lifespan_shutdown import shutdown_services
 from .lifespan_startup import (
     initialize_chat_service,
     initialize_combat_services,
     initialize_container_and_legacy_services,
+    initialize_magic_services,
     initialize_mythos_time_consumer,
     initialize_nats_and_combat_services,
     initialize_npc_services,
@@ -34,7 +35,7 @@ from .lifespan_startup import (
 logger = get_logger("server.lifespan")
 
 # Re-export tick functions for backward compatibility
-__all__ = ["lifespan", "get_current_tick", "reset_current_tick", "TICK_INTERVAL"]
+__all__ = ["lifespan", "get_current_tick", "reset_current_tick"]
 
 
 @asynccontextmanager
@@ -81,6 +82,7 @@ async def lifespan(app: FastAPI):
 
     await initialize_nats_and_combat_services(app, container)
     await initialize_chat_service(app, container)
+    await initialize_magic_services(app, container)
 
     # Start the game tick loop using TaskRegistry from container
     assert container.task_registry is not None, "TaskRegistry must be initialized"

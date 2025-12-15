@@ -16,6 +16,7 @@ class TargetType(str, Enum):
 
     PLAYER = "player"
     NPC = "npc"
+    ROOM = "room"
 
 
 class TargetMatch(BaseModel):
