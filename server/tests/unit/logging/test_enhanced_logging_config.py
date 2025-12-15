@@ -200,8 +200,9 @@ class TestEnhancedLoggingConfig:
         debug_logger = Mock()
         mock_get_logger.side_effect = [info_logger, debug_logger]
 
-        logging_config._LOGGING_INITIALIZED = False
-        logging_config._LOGGING_SIGNATURE = None
+        # Reset logging state to ensure clean test
+        logging_config._logging_state.initialized = False
+        logging_config._logging_state.signature = None
 
         config = {"logging": {"environment": "local", "level": "INFO", "log_base": "logs"}}
 
@@ -214,8 +215,8 @@ class TestEnhancedLoggingConfig:
         assert debug_logger.debug.call_count == 1
 
         # Reset for downstream tests
-        logging_config._LOGGING_INITIALIZED = False
-        logging_config._LOGGING_SIGNATURE = None
+        logging_config._logging_state.initialized = False
+        logging_config._logging_state.signature = None
 
     def test_log_exception_once_marks_logged_exceptions(self):
         """Ensure log_exception_once honors logged exception markers."""

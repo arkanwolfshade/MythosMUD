@@ -260,16 +260,18 @@ class TestNPCRespawning:
                 # Record death AFTER despawn (simulating actual death flow)
                 lifecycle_manager.record_npc_death(npc_id)
 
-                # Try to schedule respawn immediately - should fail due to death suppression
-                result = lifecycle_manager.respawn_npc(npc_id, delay=0.1, reason="death")
-                assert result is False  # Death suppression blocks respawn
+                # Patch death suppression duration to a small value for testing (0.5 seconds instead of 300)
+                with patch.object(lifecycle_manager, "death_suppression_duration", 0.5):
+                    # Try to schedule respawn immediately - should fail due to death suppression
+                    result = lifecycle_manager.respawn_npc(npc_id, delay=0.1, reason="death")
+                    assert result is False  # Death suppression blocks respawn
 
-                # Wait for death suppression to expire
-                time.sleep(lifecycle_manager.death_suppression_duration + 0.1)
+                    # Wait for death suppression to expire
+                    time.sleep(lifecycle_manager.death_suppression_duration + 0.1)
 
-                # Now respawn should work
-                result = lifecycle_manager.respawn_npc(npc_id, delay=0.1, reason="death")
-                assert result is True
+                    # Now respawn should work
+                    result = lifecycle_manager.respawn_npc(npc_id, delay=0.1, reason="death")
+                    assert result is True
 
                 # Wait for respawn delay
                 time.sleep(0.2)
@@ -372,26 +374,26 @@ class TestGameTickIntegration:
 
     def test_maintenance_config_should_run_maintenance(self):
         """Test maintenance interval configuration."""
-        # Should run on multiples of 60
-        assert NPCMaintenanceConfig.should_run_maintenance(60) is True
-        assert NPCMaintenanceConfig.should_run_maintenance(120) is True
-        assert NPCMaintenanceConfig.should_run_maintenance(180) is True
+        # Should run on multiples of 600 (current config: 600 ticks = 1 minute)
+        assert NPCMaintenanceConfig.should_run_maintenance(600) is True
+        assert NPCMaintenanceConfig.should_run_maintenance(1200) is True
+        assert NPCMaintenanceConfig.should_run_maintenance(1800) is True
 
         # Should not run on non-multiples
-        assert NPCMaintenanceConfig.should_run_maintenance(59) is False
-        assert NPCMaintenanceConfig.should_run_maintenance(61) is False
-        assert NPCMaintenanceConfig.should_run_maintenance(119) is False
+        assert NPCMaintenanceConfig.should_run_maintenance(599) is False
+        assert NPCMaintenanceConfig.should_run_maintenance(601) is False
+        assert NPCMaintenanceConfig.should_run_maintenance(1199) is False
 
     def test_maintenance_config_get_respawn_delay(self):
         """Test getting respawn delay for different NPC types."""
-        # Test configured types
-        assert NPCMaintenanceConfig.get_respawn_delay("quest_giver") == 600.0
-        assert NPCMaintenanceConfig.get_respawn_delay("shopkeeper") == 300.0
-        assert NPCMaintenanceConfig.get_respawn_delay("passive_mob") == 180.0
-        assert NPCMaintenanceConfig.get_respawn_delay("aggressive_mob") == 300.0
+        # Test configured types (current config values in seconds)
+        assert NPCMaintenanceConfig.get_respawn_delay("quest_giver") == 6000.0
+        assert NPCMaintenanceConfig.get_respawn_delay("shopkeeper") == 3000.0
+        assert NPCMaintenanceConfig.get_respawn_delay("passive_mob") == 1800.0
+        assert NPCMaintenanceConfig.get_respawn_delay("aggressive_mob") == 3000.0
 
         # Test default for unknown type
-        assert NPCMaintenanceConfig.get_respawn_delay("unknown_type") == 300.0
+        assert NPCMaintenanceConfig.get_respawn_delay("unknown_type") == 3000.0
 
     def test_maintenance_config_summary(self):
         """Test configuration summary."""
@@ -401,8 +403,8 @@ class TestGameTickIntegration:
         assert "spawn_reroll_interval" in summary
         assert "respawn_delays" in summary
         assert "min_spawn_check_interval" in summary
-        assert summary["maintenance_interval_ticks"] == 60
-        assert summary["spawn_reroll_interval"] == 600.0
+        assert summary["maintenance_interval_ticks"] == 600
+        assert summary["spawn_reroll_interval"] == 6000.0
 
 
 class TestCompleteLifecycle:
@@ -466,15 +468,17 @@ class TestCompleteLifecycle:
 
                 # Step 3: Record death and schedule respawn
                 lifecycle_manager.record_npc_death(npc_id)
-                # Wait for death suppression to expire
-                await asyncio.sleep(lifecycle_manager.death_suppression_duration + 0.1)
+                # Patch death suppression duration to a small value for testing (0.5 seconds instead of 300)
+                with patch.object(lifecycle_manager, "death_suppression_duration", 0.5):
+                    # Wait for death suppression to expire
+                    await asyncio.sleep(lifecycle_manager.death_suppression_duration + 0.1)
 
-                result = lifecycle_manager.respawn_npc(npc_id, delay=0.1, reason="death")
-                assert result is True
-                assert npc_id in lifecycle_manager.respawn_queue
+                    result = lifecycle_manager.respawn_npc(npc_id, delay=0.1, reason="death")
+                    assert result is True
+                    assert npc_id in lifecycle_manager.respawn_queue
 
-                # Step 4: Wait for respawn delay
-                await asyncio.sleep(0.15)
+                    # Step 4: Wait for respawn delay
+                    await asyncio.sleep(0.15)
 
                 # Step 5: Process respawn queue
                 respawned_count = lifecycle_manager.process_respawn_queue()
