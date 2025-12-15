@@ -116,21 +116,27 @@ class HealthRepository:
             if max_dp == 0:
                 max_dp = 20  # Prevent division by zero
             new_dp = min(max_dp, current_dp + amount)
+            actual_heal_amount = new_dp - current_dp  # Calculate actual amount healed (capped)
 
             # Update the in-memory player object (for immediate UI feedback)
             stats["current_dp"] = new_dp
             player.set_stats(stats)
 
-            # Atomic database update
-            await self.update_player_health(player.player_id, amount, "healing")  # type: ignore[arg-type]
+            # Atomic database update - use actual heal amount to ensure consistency
+            # The SQL query will also cap at max_dp, but using actual_heal_amount ensures
+            # the database matches the in-memory state
+            if actual_heal_amount > 0:
+                await self.update_player_health(player.player_id, actual_heal_amount, "healing")  # type: ignore[arg-type]
 
             self._logger.info(
                 "Player health increased atomically",
                 player_id=player.player_id,
                 player_name=player.name,
-                healing=amount,
+                healing=actual_heal_amount,
+                requested_healing=amount,
                 old_dp=current_dp,
                 new_dp=new_dp,
+                max_dp=max_dp,
             )
         except ValueError:
             raise
@@ -168,13 +174,29 @@ class HealthRepository:
             async for session in get_async_session():
                 # Use JSON path update for atomic health modification
                 # This prevents race conditions by updating only the current_dp field
+                # Calculate max_dp: use stats->>'max_dp' if present, otherwise (CON + SIZ) / 5, with fallback to 20 if 0
+                # Cap healing at max_dp to prevent exceeding maximum health
                 update_query = text(
                     """
                     UPDATE players
                     SET stats = jsonb_set(
                         stats,
                         '{current_dp}',
-                        (GREATEST(0, LEAST(100, (stats->>'current_dp')::int + :delta)))::text::jsonb
+                        (
+                            GREATEST(
+                                0,
+                                LEAST(
+                                    GREATEST(
+                                        COALESCE(
+                                            (stats->>'max_dp')::int,
+                                            ((COALESCE((stats->>'constitution')::int, 50) + COALESCE((stats->>'size')::int, 50)) / 5)
+                                        ),
+                                        20
+                                    ),
+                                    (stats->>'current_dp')::int + :delta
+                                )
+                            )
+                        )::text::jsonb
                     )
                     WHERE player_id = :player_id
                     """
