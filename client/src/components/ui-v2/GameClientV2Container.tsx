@@ -303,7 +303,9 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
               content: (
                 <MapView
                   isOpen={true}
-                  onClose={() => { closeTab(`map-${gameState.room?.id}`); }}
+                  onClose={() => {
+                    closeTab(`map-${gameState.room?.id}`);
+                  }}
                   currentRoom={gameState.room}
                   authToken={authToken}
                   hideHeader={true}

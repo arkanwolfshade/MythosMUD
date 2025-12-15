@@ -99,7 +99,9 @@ vi.mock('./ui/TerminalInput', () => ({
   }) => (
     <input
       value={value}
-      onChange={e => { onChange(e.target.value); }}
+      onChange={e => {
+        onChange(e.target.value);
+      }}
       placeholder={placeholder}
       onKeyDown={onKeyDown}
       data-testid="terminal-input"
@@ -247,7 +249,7 @@ describe('DraggablePanelTest', () => {
       const minimizeButtons = screen.getAllByTestId('minimize-button');
       fireEvent.click(minimizeButtons[0]);
 
-      expect(mockConsoleLog).toHaveBeenCalledWith('Minimize panel:', '1');
+      expect(mockConsoleLog).toHaveBeenCalledWith({ action: 'Minimize panel', panelId: '1' });
     });
 
     it('should call maximize function when maximize button is clicked', () => {
@@ -256,7 +258,7 @@ describe('DraggablePanelTest', () => {
       const maximizeButtons = screen.getAllByTestId('maximize-button');
       fireEvent.click(maximizeButtons[0]);
 
-      expect(mockConsoleLog).toHaveBeenCalledWith('Maximize panel:', '1');
+      expect(mockConsoleLog).toHaveBeenCalledWith({ action: 'Maximize panel', panelId: '1' });
     });
 
     it('should call close function when close button is clicked', async () => {

@@ -230,7 +230,9 @@ describe.skip('Complete Logout Flow Integration', () => {
       let resolveLogout: (() => void) | null | undefined;
       mockLogoutHandler.mockImplementation(async ({ disconnect, clearState, navigateToLogin }) => {
         await new Promise<void>(resolve => {
-          resolveLogout = () => { resolve(); };
+          resolveLogout = () => {
+            resolve();
+          };
         });
         disconnect();
         clearState();
