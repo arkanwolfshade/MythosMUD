@@ -10,30 +10,30 @@
 
 import React, { useCallback, useMemo, useState } from 'react';
 import ReactFlow, {
-  Controls,
   Background,
+  Controls,
   MiniMap,
-  type Node,
   type Edge,
-  type NodeChange,
   type EdgeChange,
+  type Node,
+  type NodeChange,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { useRoomMapData } from './hooks/useRoomMapData';
-import { useMapLayout } from './hooks/useMapLayout';
-import { useMapEditing } from './hooks/useMapEditing';
-import { roomsToNodes, createEdgesFromRooms } from './utils/mapUtils';
-import { nodeTypes, edgeTypes } from './config';
-import type { RoomNodeData, ExitEdgeData } from './types';
-import type { EdgeCreationData, EdgeValidationResult } from './hooks/useMapEditing';
-import { MapControls } from './MapControls';
-import { RoomDetailsPanel } from './RoomDetailsPanel';
-import { MapEditToolbar } from './MapEditToolbar';
+import { getApiBaseUrl } from '../../utils/config';
 import { EdgeCreationModal } from './EdgeCreationModal';
 import { EdgeDetailsPanel } from './EdgeDetailsPanel';
+import { MapControls } from './MapControls';
+import { MapEditToolbar } from './MapEditToolbar';
+import { RoomDetailsPanel } from './RoomDetailsPanel';
 import { RoomEditModal } from './RoomEditModal';
+import { edgeTypes, nodeTypes } from './config';
+import type { EdgeCreationData, EdgeValidationResult } from './hooks/useMapEditing';
+import { useMapEditing } from './hooks/useMapEditing';
+import { useMapLayout } from './hooks/useMapLayout';
+import { useRoomMapData } from './hooks/useRoomMapData';
+import type { ExitEdgeData, RoomNodeData } from './types';
+import { createEdgesFromRooms, roomsToNodes } from './utils/mapUtils';
 import { saveMapChanges } from './utils/saveMapChanges';
-import { getApiBaseUrl } from '../../utils/config';
 
 export interface RoomMapEditorProps {
   /** Plane name (required) */
@@ -97,9 +97,9 @@ export const RoomMapEditor: React.FC<RoomMapEditorProps> = ({
     const query = searchQuery.toLowerCase();
     return rooms.filter(room => {
       return (
-        room.name?.toLowerCase().includes(query) ||
-        room.id?.toLowerCase().includes(query) ||
-        room.description?.toLowerCase().includes(query) ||
+        room.name.toLowerCase().includes(query) ||
+        room.id.toLowerCase().includes(query) ||
+        room.description.toLowerCase().includes(query) ||
         room.zone?.toLowerCase().includes(query) ||
         room.sub_zone?.toLowerCase().includes(query)
       );
@@ -124,6 +124,25 @@ export const RoomMapEditor: React.FC<RoomMapEditorProps> = ({
     useStoredCoordinates: true,
   });
 
+  // Standard exit directions
+  const availableDirections = useMemo(
+    () => [
+      'north',
+      'south',
+      'east',
+      'west',
+      'northeast',
+      'northwest',
+      'southeast',
+      'southwest',
+      'up',
+      'down',
+      'in',
+      'out',
+    ],
+    []
+  );
+
   // Use editing hook for admin operations
   const {
     nodes: editedNodes,
@@ -132,6 +151,7 @@ export const RoomMapEditor: React.FC<RoomMapEditorProps> = ({
     canUndo,
     canRedo,
     updateNodePosition,
+    createEdge,
     deleteEdge,
     updateEdge,
     updateRoom,
@@ -190,6 +210,11 @@ export const RoomMapEditor: React.FC<RoomMapEditorProps> = ({
     },
     [onRoomSelect]
   );
+
+  // Handle edge click
+  const handleEdgeClick = useCallback((_event: React.MouseEvent, edge: Edge<ExitEdgeData>) => {
+    setSelectedEdgeId(edge.id);
+  }, []);
 
   // Get selected room data
   const selectedRoom = useMemo(() => {
@@ -283,6 +308,18 @@ export const RoomMapEditor: React.FC<RoomMapEditorProps> = ({
     };
   }, [editingEdgeId, editedEdges]);
 
+  // Handle edge creation
+  const handleCreateEdge = useCallback(
+    (edgeData: EdgeCreationData) => {
+      createEdge(edgeData);
+      setIsEdgeCreationOpen(false);
+      setSelectedRoomId(null);
+      setPreviewEdge(null);
+      setEdgeValidation(null);
+    },
+    [createEdge]
+  );
+
   // Handle edge update
   const handleUpdateEdge = useCallback(
     (edgeId: string, edgeData: EdgeCreationData) => {
@@ -299,6 +336,43 @@ export const RoomMapEditor: React.FC<RoomMapEditorProps> = ({
       setEdgeValidation(null);
     },
     [updateEdge]
+  );
+
+  // Handle preview change
+  const handlePreviewChange = useCallback(
+    (edgeData: EdgeCreationData | null) => {
+      if (!edgeData) {
+        setPreviewEdge(null);
+        setEdgeValidation(null);
+        return;
+      }
+
+      // Validate the edge
+      const validation = validateEdgeCreation(edgeData);
+      setEdgeValidation(validation);
+
+      // Create preview edge if valid
+      if (validation.isValid && edgeData.targetRoomId) {
+        const preview: Edge<ExitEdgeData> = {
+          id: `preview-${edgeData.sourceRoomId}-${edgeData.direction}-${edgeData.targetRoomId}`,
+          source: edgeData.sourceRoomId,
+          target: edgeData.targetRoomId,
+          type: 'exit',
+          data: {
+            direction: edgeData.direction,
+            sourceRoomId: edgeData.sourceRoomId,
+            targetRoomId: edgeData.targetRoomId,
+            flags: edgeData.flags,
+            description: edgeData.description,
+          },
+          style: { strokeDasharray: '5,5', opacity: 0.5 },
+        };
+        setPreviewEdge(preview);
+      } else {
+        setPreviewEdge(null);
+      }
+    },
+    [validateEdgeCreation]
   );
 
   // Loading state
@@ -334,7 +408,9 @@ export const RoomMapEditor: React.FC<RoomMapEditorProps> = ({
         </div>
         {searchQuery && (
           <button
-            onClick={() => setSearchQuery('')}
+            onClick={() => {
+              setSearchQuery('');
+            }}
             className="px-4 py-2 bg-mythos-terminal-primary text-white rounded hover:bg-mythos-terminal-primary/80"
           >
             Clear Search
@@ -379,7 +455,13 @@ export const RoomMapEditor: React.FC<RoomMapEditorProps> = ({
           onSubZoneChange={setSelectedSubZone}
           availablePlanes={[plane]} // TODO: Get from API
           availableZones={[zone]} // TODO: Get from API
-          availableSubZones={Array.from(new Set(rooms.map(r => r.sub_zone).filter(Boolean)))} // Extract from rooms
+          availableSubZones={Array.from(
+            new Set(
+              rooms
+                .map(r => r.sub_zone)
+                .filter((subZone): subZone is string => typeof subZone === 'string' && subZone.length > 0)
+            )
+          )} // Extract from rooms
         />
       </div>
 

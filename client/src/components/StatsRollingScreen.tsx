@@ -116,7 +116,7 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
   // Roll initial stats when component mounts and authToken is available
   useEffect(() => {
     if (authToken) {
-      rollStats();
+      void rollStats();
     }
   }, [authToken, rollStats]);
 
@@ -126,7 +126,9 @@ export const StatsRollingScreen: React.FC<StatsRollingScreenProps> = ({
       const timer = setTimeout(() => {
         setRerollCooldown(rerollCooldown - 1);
       }, 1000);
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+      };
     }
   }, [rerollCooldown]);
 

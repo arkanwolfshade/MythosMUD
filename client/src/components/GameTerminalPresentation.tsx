@@ -120,7 +120,9 @@ export const GameTerminalPresentation: React.FC<GameTerminalPresentationProps> =
     };
 
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []); // No dependencies to prevent infinite recursion
 
   return (
@@ -156,9 +158,15 @@ export const GameTerminalPresentation: React.FC<GameTerminalPresentationProps> =
             variant="eldritch"
             defaultSize={{ width: 500, height: 400 }}
             defaultPosition={{ x: 50, y: 50 }}
-            onClose={() => console.log('Chat panel closed')}
-            onMinimize={() => console.log('Chat panel minimized')}
-            onMaximize={() => console.log('Chat panel maximized')}
+            onClose={() => {
+              console.log('Chat panel closed');
+            }}
+            onMinimize={() => {
+              console.log('Chat panel minimized');
+            }}
+            onMaximize={() => {
+              console.log('Chat panel maximized');
+            }}
           >
             <ChatPanel
               messages={messages}
@@ -177,9 +185,15 @@ export const GameTerminalPresentation: React.FC<GameTerminalPresentationProps> =
             defaultSize={{ width: 500, height: 400 }}
             defaultPosition={{ x: 600, y: 50 }}
             autoSize={true}
-            onClose={() => console.log('Game Log panel closed')}
-            onMinimize={() => console.log('Game Log panel minimized')}
-            onMaximize={() => console.log('Game Log panel maximized')}
+            onClose={() => {
+              console.log('Game Log panel closed');
+            }}
+            onMinimize={() => {
+              console.log('Game Log panel minimized');
+            }}
+            onMaximize={() => {
+              console.log('Game Log panel maximized');
+            }}
           >
             <GameLogPanel messages={messages} onClearMessages={onClearMessages} onDownloadLogs={onDownloadLogs} />
           </DraggablePanel>
@@ -191,9 +205,15 @@ export const GameTerminalPresentation: React.FC<GameTerminalPresentationProps> =
             variant="elevated"
             defaultSize={{ width: 500, height: 200 }}
             defaultPosition={{ x: 50, y: 500 }}
-            onClose={() => console.log('Command panel closed')}
-            onMinimize={() => console.log('Command panel minimized')}
-            onMaximize={() => console.log('Command panel maximized')}
+            onClose={() => {
+              console.log('Command panel closed');
+            }}
+            onMinimize={() => {
+              console.log('Command panel minimized');
+            }}
+            onMaximize={() => {
+              console.log('Command panel maximized');
+            }}
           >
             {/* Debug logging for isConnected prop passing */}
             {(() => {
@@ -220,9 +240,15 @@ export const GameTerminalPresentation: React.FC<GameTerminalPresentationProps> =
             variant="default"
             defaultSize={{ width: 300, height: 300 }}
             defaultPosition={{ x: 600, y: 500 }}
-            onClose={() => console.log('Room panel closed')}
-            onMinimize={() => console.log('Room panel minimized')}
-            onMaximize={() => console.log('Room panel maximized')}
+            onClose={() => {
+              console.log('Room panel closed');
+            }}
+            onMinimize={() => {
+              console.log('Room panel minimized');
+            }}
+            onMaximize={() => {
+              console.log('Room panel maximized');
+            }}
           >
             <RoomInfoPanel
               room={room}
@@ -242,9 +268,15 @@ export const GameTerminalPresentation: React.FC<GameTerminalPresentationProps> =
             variant="default"
             defaultSize={{ width: 300, height: 200 }}
             defaultPosition={{ x: 950, y: 50 }}
-            onClose={() => console.log('Status panel closed')}
-            onMinimize={() => console.log('Status panel minimized')}
-            onMaximize={() => console.log('Status panel maximized')}
+            onClose={() => {
+              console.log('Status panel closed');
+            }}
+            onMinimize={() => {
+              console.log('Status panel minimized');
+            }}
+            onMaximize={() => {
+              console.log('Status panel maximized');
+            }}
           >
             <div className="space-y-4">
               <div className="flex items-center justify-between">

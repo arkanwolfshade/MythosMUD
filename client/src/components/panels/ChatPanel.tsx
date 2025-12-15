@@ -307,7 +307,9 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         <select
           className="ml-2 text-xs bg-mythos-terminal-surface border border-gray-700 rounded px-1"
           value={isHistoryVisible ? 'all' : 'current'}
-          onChange={event => setIsHistoryVisible(event.target.value === 'all')}
+          onChange={event => {
+            setIsHistoryVisible(event.target.value === 'all');
+          }}
         >
           <option value="current">Current</option>
           <option value="all">All</option>

@@ -1,5 +1,5 @@
-import { describe, expect, it, beforeEach, vi, afterEach } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { usePerformanceMonitor } from '../usePerformanceMonitor';
 
 describe('usePerformanceMonitor', () => {
@@ -97,9 +97,12 @@ describe('usePerformanceMonitor', () => {
     // Assert
     const stats = result.current.getStats();
     expect(stats?.totalRenders).toBe(5);
-    expect(stats?.minRenderTime).toBeLessThanOrEqual(stats!.averageRenderTime);
-    expect(stats?.maxRenderTime).toBeGreaterThanOrEqual(stats!.averageRenderTime);
-    expect(stats?.recentMetrics.length).toBeLessThanOrEqual(10);
+    expect(stats).not.toBeNull();
+    if (stats) {
+      expect(stats.minRenderTime).toBeLessThanOrEqual(stats.averageRenderTime);
+      expect(stats.maxRenderTime).toBeGreaterThanOrEqual(stats.averageRenderTime);
+      expect(stats.recentMetrics.length).toBeLessThanOrEqual(10);
+    }
   });
 
   it('should warn when render time exceeds threshold', () => {

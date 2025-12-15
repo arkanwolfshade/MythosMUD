@@ -73,7 +73,7 @@ export const buildHealthStatusFromEvent = (
     typeof data.in_combat === 'boolean'
       ? data.in_combat
       : typeof previous?.inCombat === 'boolean'
-        ? previous?.inCombat
+        ? previous.inCombat
         : undefined;
 
   const status: HealthStatus = {

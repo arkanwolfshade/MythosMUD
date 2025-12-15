@@ -1,10 +1,9 @@
-import { describe, expect, it, beforeEach, vi } from 'vitest';
-import { render, screen, act, waitFor } from '@testing-library/react';
+import { act, render, renderHook, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import { renderHook } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { PanelPosition, PanelSize } from '../PanelContext';
 import { PanelProvider } from '../PanelContext';
 import { usePanelContext } from '../hooks/usePanelContext';
-import type { PanelPosition, PanelSize } from '../PanelContext';
 
 describe('PanelContext', () => {
   beforeEach(() => {
@@ -133,8 +132,8 @@ describe('PanelContext', () => {
 
       // Assert
       expect(result.current.panels.test).toBeDefined();
-      expect(result.current.panels.test?.title).toBe('Test Panel');
-      expect(result.current.panels.test?.isVisible).toBe(true);
+      expect(result.current.panels.test.title).toBe('Test Panel');
+      expect(result.current.panels.test.isVisible).toBe(true);
     });
 
     it('should add panel with custom position and size', () => {
@@ -150,8 +149,8 @@ describe('PanelContext', () => {
 
       // Assert
       expect(result.current.panels.custom).toBeDefined();
-      expect(result.current.panels.custom?.position).toEqual(position);
-      expect(result.current.panels.custom?.size).toEqual(size);
+      expect(result.current.panels.custom.position).toEqual(position);
+      expect(result.current.panels.custom.size).toEqual(size);
     });
 
     it('should remove panel', () => {
@@ -170,7 +169,7 @@ describe('PanelContext', () => {
     it('should toggle panel visibility', () => {
       // Arrange
       const { result } = renderHook(() => usePanelContext(), { wrapper });
-      const initialVisibility = result.current.panels.chat?.isVisible;
+      const initialVisibility = result.current.panels.chat.isVisible;
 
       // Act
       act(() => {
@@ -178,7 +177,7 @@ describe('PanelContext', () => {
       });
 
       // Assert
-      expect(result.current.panels.chat?.isVisible).toBe(!initialVisibility);
+      expect(result.current.panels.chat.isVisible).toBe(!initialVisibility);
     });
 
     it('should toggle panel minimized state', () => {
@@ -191,8 +190,8 @@ describe('PanelContext', () => {
       });
 
       // Assert
-      expect(result.current.panels.chat?.isMinimized).toBe(true);
-      expect(result.current.panels.chat?.isMaximized).toBe(false); // Should unmaximize
+      expect(result.current.panels.chat.isMinimized).toBe(true);
+      expect(result.current.panels.chat.isMaximized).toBe(false); // Should unmaximize
     });
 
     it('should toggle panel maximized state', () => {
@@ -205,8 +204,8 @@ describe('PanelContext', () => {
       });
 
       // Assert
-      expect(result.current.panels.chat?.isMaximized).toBe(true);
-      expect(result.current.panels.chat?.isMinimized).toBe(false); // Should unminimize
+      expect(result.current.panels.chat.isMaximized).toBe(true);
+      expect(result.current.panels.chat.isMinimized).toBe(false); // Should unminimize
     });
 
     it('should move panel', () => {
@@ -219,7 +218,7 @@ describe('PanelContext', () => {
       });
 
       // Assert
-      expect(result.current.panels.chat?.position).toEqual({ x: 200, y: 300 });
+      expect(result.current.panels.chat.position).toEqual({ x: 200, y: 300 });
     });
 
     it('should resize panel', () => {
@@ -232,13 +231,13 @@ describe('PanelContext', () => {
       });
 
       // Assert
-      expect(result.current.panels.chat?.size).toEqual({ width: 800, height: 600 });
+      expect(result.current.panels.chat.size).toEqual({ width: 800, height: 600 });
     });
 
     it('should bring panel to front', () => {
       // Arrange
       const { result } = renderHook(() => usePanelContext(), { wrapper });
-      const initialZIndex = result.current.panels.chat?.zIndex || 0;
+      const initialZIndex = result.current.panels.chat.zIndex || 0;
 
       // Act
       act(() => {
@@ -246,7 +245,7 @@ describe('PanelContext', () => {
       });
 
       // Assert
-      expect(result.current.panels.chat?.zIndex).toBeGreaterThan(initialZIndex);
+      expect(result.current.panels.chat.zIndex).toBeGreaterThan(initialZIndex);
     });
 
     it('should reset panel layout', () => {
@@ -291,10 +290,10 @@ describe('PanelContext', () => {
       });
 
       // Assert
-      expect(result.current.panels.chat?.title).toBe('Updated Chat');
-      expect(result.current.panels.chat?.isVisible).toBe(false);
+      expect(result.current.panels.chat.title).toBe('Updated Chat');
+      expect(result.current.panels.chat.isVisible).toBe(false);
       // Other properties should remain unchanged
-      expect(result.current.panels.chat?.position).toBeDefined();
+      expect(result.current.panels.chat.position).toBeDefined();
     });
 
     it('should save panels to localStorage when they change', async () => {

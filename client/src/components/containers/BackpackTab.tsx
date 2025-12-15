@@ -7,10 +7,10 @@
  */
 
 import React, { useMemo } from 'react';
+import type { ContainerComponent } from '../../stores/containerStore';
 import { useContainerStore } from '../../stores/containerStore';
 import { useGameStore } from '../../stores/gameStore';
 import { EldritchIcon, MythosIcons } from '../ui/EldritchIcon';
-import type { ContainerComponent } from '../../stores/containerStore';
 
 export interface BackpackTabProps {
   /** Callback when container is selected */
@@ -81,13 +81,13 @@ export const BackpackTab: React.FC<BackpackTabProps> = ({ onSelect, className = 
       }
 
       const nextTab = tabs[nextIndex] as HTMLElement;
-      nextTab?.focus();
+      nextTab.focus();
     }
   };
 
   const getContainerDisplayName = (container: ContainerComponent): string => {
-    const itemName = container.metadata?.item_name as string | undefined;
-    const itemId = container.metadata?.item_id as string | undefined;
+    const itemName = container.metadata.item_name as string | undefined;
+    const itemId = container.metadata.item_id as string | undefined;
     return itemName || itemId || 'Container';
   };
 
@@ -105,8 +105,12 @@ export const BackpackTab: React.FC<BackpackTabProps> = ({ onSelect, className = 
             role="tab"
             aria-selected={isSelected}
             aria-label={`${displayName} container, ${itemCount} of ${capacity} items`}
-            onClick={() => handleTabClick(container.container_id)}
-            onKeyDown={e => handleKeyDown(e, container.container_id, wearableContainers.indexOf(container))}
+            onClick={() => {
+              handleTabClick(container.container_id);
+            }}
+            onKeyDown={e => {
+              handleKeyDown(e, container.container_id, wearableContainers.indexOf(container));
+            }}
             className={`
               flex items-center gap-2 px-3 py-2 rounded border font-mono text-sm
               transition-eldritch duration-eldritch ease-eldritch

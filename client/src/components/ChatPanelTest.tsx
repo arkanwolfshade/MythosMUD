@@ -136,6 +136,18 @@ export const ChatPanelTest: React.FC = () => {
     }
   };
 
+  const handleSendChatMessage = (message: string, _channel: string) => {
+    // For test purposes, add the message to local state
+    // The channel parameter is provided but we'll use the current messageType for consistency
+    const messageObj: ChatMessage = {
+      text: message,
+      timestamp: new Date().toISOString(),
+      isHtml: false,
+      messageType,
+    };
+    setMessages(prev => [...prev, messageObj]);
+  };
+
   const clearMessages = () => {
     setMessages([]);
   };
@@ -176,7 +188,12 @@ export const ChatPanelTest: React.FC = () => {
           {/* Chat Panel */}
           <div className="lg:col-span-2">
             <MythosPanel title="Chat Interface" variant="eldritch" size="lg" className="h-[600px]">
-              <ChatPanel messages={messages} onClearMessages={clearMessages} onDownloadLogs={downloadLogs} />
+              <ChatPanel
+                messages={messages}
+                onSendChatMessage={handleSendChatMessage}
+                onClearMessages={clearMessages}
+                onDownloadLogs={downloadLogs}
+              />
             </MythosPanel>
           </div>
 
@@ -188,7 +205,9 @@ export const ChatPanelTest: React.FC = () => {
                   <label className="text-sm text-mythos-terminal-text-secondary">Message Type:</label>
                   <select
                     value={messageType}
-                    onChange={e => setMessageType(e.target.value as ChatMessageType)}
+                    onChange={e => {
+                      setMessageType(e.target.value as ChatMessageType);
+                    }}
                     className="w-full p-2 bg-mythos-terminal-surface border border-gray-700 rounded text-mythos-terminal-text focus:border-mythos-terminal-primary focus:outline-none"
                   >
                     <option value="chat">Chat</option>
@@ -204,7 +223,9 @@ export const ChatPanelTest: React.FC = () => {
                   <label className="text-sm text-mythos-terminal-text-secondary">New Message:</label>
                   <TerminalInput
                     value={newMessage}
-                    onChange={e => setNewMessage(e.target.value)}
+                    onChange={e => {
+                      setNewMessage(e.target.value);
+                    }}
                     placeholder="Type your message..."
                     onKeyDown={e => e.key === 'Enter' && addMessage()}
                   />
@@ -236,9 +257,9 @@ export const ChatPanelTest: React.FC = () => {
                 <TerminalButton
                   variant="secondary"
                   size="sm"
-                  onClick={() =>
-                    addSampleMessage('emote', 'You *shudders as the eldritch knowledge courses through your mind*')
-                  }
+                  onClick={() => {
+                    addSampleMessage('emote', 'You *shudders as the eldritch knowledge courses through your mind*');
+                  }}
                   className="w-full"
                 >
                   Add Emote
@@ -247,9 +268,9 @@ export const ChatPanelTest: React.FC = () => {
                 <TerminalButton
                   variant="secondary"
                   size="sm"
-                  onClick={() =>
-                    addSampleMessage('whisper', 'You whisper to yourself: "The stars are almost right..."')
-                  }
+                  onClick={() => {
+                    addSampleMessage('whisper', 'You whisper to yourself: "The stars are almost right..."');
+                  }}
                   className="w-full"
                 >
                   Add Whisper

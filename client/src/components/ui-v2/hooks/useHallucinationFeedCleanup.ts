@@ -17,6 +17,8 @@ export const useHallucinationFeedCleanup = (
       );
     }, 10_000);
 
-    return () => window.clearInterval(interval);
+    return () => {
+      window.clearInterval(interval);
+    };
   }, [setHallucinationFeed]);
 };

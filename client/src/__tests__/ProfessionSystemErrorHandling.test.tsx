@@ -734,7 +734,9 @@ describe('Profession System Error Handling and Edge Cases', () => {
       // Mock network timeout
       mockFetch.mockImplementation(() => {
         return new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('Network timeout')), 100);
+          setTimeout(() => {
+            reject(new Error('Network timeout'));
+          }, 100);
         });
       });
 

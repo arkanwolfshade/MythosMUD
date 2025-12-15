@@ -10,9 +10,9 @@
  * eldritch architecture.
  */
 
-import type { Node, Edge } from 'reactflow';
+import type { Edge, Node } from 'reactflow';
 import type { Room } from '../../../stores/gameStore';
-import type { RoomNodeData, ExitEdgeData } from '../types';
+import type { ExitEdgeData, RoomNodeData } from '../types';
 import { applyGridLayout, type GridLayoutConfig } from './layout';
 
 /**
@@ -91,7 +91,8 @@ export const roomsToNodes = (
   // Separate nodes with stored positions from those needing grid layout
   const nodesWithPositions = nodes.filter(node => {
     const room = rooms.find(r => r.id === node.id) as RoomWithCoordinates | undefined;
-    return room?.map_x !== null && room?.map_x !== undefined && room?.map_y !== null && room?.map_y !== undefined;
+    if (!room) return false;
+    return room.map_x !== null && room.map_x !== undefined && room.map_y !== null && room.map_y !== undefined;
   });
   const nodesNeedingLayout = nodes.filter(node => !nodesWithPositions.some(n => n.id === node.id));
 

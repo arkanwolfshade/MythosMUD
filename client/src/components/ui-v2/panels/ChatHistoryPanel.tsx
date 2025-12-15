@@ -173,7 +173,9 @@ export const ChatHistoryPanel: React.FC<ChatHistoryPanelProps> = ({
       <div className="p-2 border-b border-gray-700 bg-mythos-terminal-background">
         <button
           className="text-xs text-mythos-terminal-primary"
-          onClick={() => setIsHistoryVisible(!isHistoryVisible)}
+          onClick={() => {
+            setIsHistoryVisible(!isHistoryVisible);
+          }}
           type="button"
         >
           {isHistoryVisible ? 'Current' : 'All'} Messages

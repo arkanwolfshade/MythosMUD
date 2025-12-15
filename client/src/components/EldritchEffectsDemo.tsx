@@ -116,7 +116,9 @@ export const EldritchEffectsDemo: React.FC<EldritchEffectsDemoProps> = ({ onExit
           {effects.map(effect => (
             <TerminalButton
               key={effect.name}
-              onClick={() => toggleEffect(effect.name)}
+              onClick={() => {
+                toggleEffect(effect.name);
+              }}
               variant={activeEffects.includes(effect.name) ? 'success' : 'primary'}
               size="sm"
               className="flex items-center justify-center"
@@ -134,7 +136,9 @@ export const EldritchEffectsDemo: React.FC<EldritchEffectsDemoProps> = ({ onExit
           <MythosPanel title="Animated Button" variant="elevated" interactive>
             <div className="flex flex-col items-center space-y-4">
               <TerminalButton
-                onClick={() => alert('Button clicked!')}
+                onClick={() => {
+                  alert('Button clicked!');
+                }}
                 variant="primary"
                 size="lg"
                 className={`w-full ${activeEffects.includes('eldritch-glow') ? 'animate-eldritch-glow' : ''} ${activeEffects.includes('eldritch-scale') ? 'animate-eldritch-scale' : ''}`}
@@ -151,7 +155,9 @@ export const EldritchEffectsDemo: React.FC<EldritchEffectsDemoProps> = ({ onExit
             <div className="flex flex-col items-center space-y-4">
               <TerminalInput
                 value={inputValue}
-                onChange={e => setInputValue(e.target.value)}
+                onChange={e => {
+                  setInputValue(e.target.value);
+                }}
                 placeholder="Type your incantation..."
                 className={`w-full ${activeEffects.includes('eldritch-border') ? 'animate-eldritch-border' : ''} ${activeEffects.includes('eldritch-shimmer') ? 'animate-eldritch-shimmer' : ''}`}
               />

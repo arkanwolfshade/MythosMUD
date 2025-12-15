@@ -17,7 +17,12 @@ vi.mock('./panels/CommandPanel', () => ({
   }) => (
     <div data-testid="command-panel">
       <div data-testid="command-count">{commandHistory.length} commands</div>
-      <button onClick={() => onSendCommand('test command')} data-testid="send-command">
+      <button
+        onClick={() => {
+          onSendCommand('test command');
+        }}
+        data-testid="send-command"
+      >
         Send Command
       </button>
       <button onClick={onClearHistory} data-testid="clear-history">

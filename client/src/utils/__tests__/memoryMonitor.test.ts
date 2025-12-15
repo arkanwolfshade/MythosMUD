@@ -56,7 +56,7 @@ describe('MemoryMonitor', () => {
     console.error = vi.fn();
 
     // Reset singleton instance
-    (MemoryMonitor as { instance: MemoryMonitor | null }).instance = null;
+    (MemoryMonitor as unknown as { instance: MemoryMonitor | null }).instance = null;
     monitor = MemoryMonitor.getInstance({
       enableReporting: false, // Disable reporting for tests
       warningThreshold: 30,
@@ -127,7 +127,9 @@ describe('MemoryMonitor', () => {
     });
 
     it('should handle unregistering non-existent component', () => {
-      expect(() => monitor.unregisterComponent('NonExistent')).not.toThrow();
+      expect(() => {
+        monitor.unregisterComponent('NonExistent');
+      }).not.toThrow();
     });
   });
 
@@ -180,7 +182,7 @@ describe('MemoryMonitor', () => {
 
     it('should limit number of stored reports', () => {
       // Reset singleton to create new instance with maxReports: 3
-      (MemoryMonitor as { instance: MemoryMonitor | null }).instance = null;
+      (MemoryMonitor as unknown as { instance: MemoryMonitor | null }).instance = null;
       monitor = MemoryMonitor.getInstance({ maxReports: 3 });
 
       monitor.generateReport('Component1');
@@ -197,7 +199,8 @@ describe('MemoryMonitor', () => {
   describe('Memory Warnings and Recommendations', () => {
     it('should generate warnings for high memory usage', () => {
       // Set memory above warning threshold
-      (global.performance as { memory: { usedJSHeapSize: number } }).memory.usedJSHeapSize = 40 * 1024 * 1024; // 40MB
+      const perf = global.performance as unknown as { memory: { usedJSHeapSize: number } };
+      perf.memory.usedJSHeapSize = 40 * 1024 * 1024; // 40MB
 
       // Start the detector to collect memory data
       monitor.start();
@@ -214,7 +217,8 @@ describe('MemoryMonitor', () => {
 
     it('should generate critical warnings for very high memory usage', () => {
       // Set memory above critical threshold
-      (global.performance as { memory: { usedJSHeapSize: number } }).memory.usedJSHeapSize = 90 * 1024 * 1024; // 90MB
+      const perf = global.performance as unknown as { memory: { usedJSHeapSize: number } };
+      perf.memory.usedJSHeapSize = 90 * 1024 * 1024; // 90MB
 
       // Start the detector to collect memory data
       monitor.start();
@@ -231,7 +235,8 @@ describe('MemoryMonitor', () => {
 
     it('should not generate warnings for normal memory usage', () => {
       // Set memory below warning threshold
-      (global.performance as { memory: { usedJSHeapSize: number } }).memory.usedJSHeapSize = 20 * 1024 * 1024; // 20MB
+      const perf = global.performance as unknown as { memory: { usedJSHeapSize: number } };
+      perf.memory.usedJSHeapSize = 20 * 1024 * 1024; // 20MB
 
       const report = monitor.generateReport();
 
@@ -281,7 +286,7 @@ describe('MemoryMonitor', () => {
   describe('Reporting', () => {
     it('should start automatic reporting when enabled', () => {
       // Reset singleton to create new instance
-      (MemoryMonitor as { instance: MemoryMonitor | null }).instance = null;
+      (MemoryMonitor as unknown as { instance: MemoryMonitor | null }).instance = null;
 
       const reportingMonitor = MemoryMonitor.getInstance({
         enableReporting: true,
@@ -318,7 +323,7 @@ describe('useMemoryMonitor Hook', () => {
     console.warn = vi.fn();
     console.error = vi.fn();
 
-    (MemoryMonitor as { instance: MemoryMonitor | null }).instance = null;
+    (MemoryMonitor as unknown as { instance: MemoryMonitor | null }).instance = null;
     monitor = MemoryMonitor.getInstance({ enableReporting: false });
   });
 

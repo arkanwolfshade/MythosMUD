@@ -6,12 +6,12 @@
  * artifacts between containers and personal inventory.
  */
 
-import React, { useMemo, useEffect, useRef, useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { InventoryStack } from '../../stores/containerStore';
 import { useContainerStore } from '../../stores/containerStore';
 import { useGameStore } from '../../stores/gameStore';
 import { MythosPanel } from '../ui/MythosPanel';
 import { TerminalButton } from '../ui/TerminalButton';
-import type { InventoryStack } from '../../stores/containerStore';
 
 export interface ContainerSplitPaneProps {
   /** Container ID to display */
@@ -49,8 +49,10 @@ export const ContainerSplitPane: React.FC<ContainerSplitPaneProps> = ({
   const player = useGameStore(state => state.player);
 
   const playerInventory = useMemo(() => {
-    return (player?.inventory as InventoryStack[]) || [];
-  }, [player?.inventory]);
+    // Type assertion: player.inventory may have a different type definition in gameStore,
+    // but at runtime it should be InventoryStack[] based on how the component uses it.
+    return player?.inventory ? (player.inventory as unknown as InventoryStack[]) : [];
+  }, [player]);
 
   // All hooks must be called before any early returns
   const containerRef = useRef<HTMLDivElement>(null);
@@ -67,6 +69,31 @@ export const ContainerSplitPane: React.FC<ContainerSplitPaneProps> = ({
     }
   }, [container, isContainerOpen]);
 
+  // Focus trap handler for modal mode
+  const handleFocusTrap = useCallback((e: React.KeyboardEvent) => {
+    const focusableElements = containerRef.current?.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (!focusableElements || focusableElements.length === 0) return;
+
+    const firstElement = focusableElements[0] as HTMLElement;
+    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+    if (e.shiftKey) {
+      // Shift + Tab
+      if (document.activeElement === firstElement) {
+        e.preventDefault();
+        lastElement.focus();
+      }
+    } else {
+      // Tab
+      if (document.activeElement === lastElement) {
+        e.preventDefault();
+        firstElement.focus();
+      }
+    }
+  }, []);
+
   // Keyboard event handlers - must be before early returns
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -79,30 +106,10 @@ export const ContainerSplitPane: React.FC<ContainerSplitPaneProps> = ({
 
       // Focus trap for modal mode
       if (modal && e.key === 'Tab') {
-        const focusableElements = containerRef.current?.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
-        if (!focusableElements || focusableElements.length === 0) return;
-
-        const firstElement = focusableElements[0] as HTMLElement;
-        const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
-
-        if (e.shiftKey) {
-          // Shift + Tab
-          if (document.activeElement === firstElement) {
-            e.preventDefault();
-            lastElement.focus();
-          }
-        } else {
-          // Tab
-          if (document.activeElement === lastElement) {
-            e.preventDefault();
-            firstElement.focus();
-          }
-        }
+        handleFocusTrap(e);
       }
     },
-    [modal, onClose]
+    [modal, onClose, handleFocusTrap]
   );
 
   // Drag and drop handlers - must be before early returns
@@ -259,7 +266,9 @@ export const ContainerSplitPane: React.FC<ContainerSplitPaneProps> = ({
                   ? firstButtonRef
                   : undefined
             }
-            onClick={() => handleTransfer(item)}
+            onClick={() => {
+              handleTransfer(item);
+            }}
             disabled={!mutationToken}
             className="ml-2"
             aria-label={`Transfer ${item.item_name} ${isContainerItem ? 'from' : 'to'} container`}
@@ -293,9 +302,13 @@ export const ContainerSplitPane: React.FC<ContainerSplitPaneProps> = ({
             dragOverTarget === 'container' ? 'bg-mythos-terminal-primary/10 border-mythos-terminal-primary' : ''
           }`}
           aria-label="Container inventory"
-          onDragOver={e => handleDragOver(e, 'container')}
+          onDragOver={e => {
+            handleDragOver(e, 'container');
+          }}
           onDragLeave={handleDragLeave}
-          onDrop={e => handleDrop(e, 'container')}
+          onDrop={e => {
+            handleDrop(e, 'container');
+          }}
         >
           <h3 className="text-lg font-bold text-mythos-terminal-text mb-2">
             Container ({container.items.length}/{container.capacity_slots})
@@ -315,9 +328,13 @@ export const ContainerSplitPane: React.FC<ContainerSplitPaneProps> = ({
             dragOverTarget === 'player' ? 'bg-mythos-terminal-primary/10 border-mythos-terminal-primary' : ''
           }`}
           aria-label="Player inventory"
-          onDragOver={e => handleDragOver(e, 'player')}
+          onDragOver={e => {
+            handleDragOver(e, 'player');
+          }}
           onDragLeave={handleDragLeave}
-          onDrop={e => handleDrop(e, 'player')}
+          onDrop={e => {
+            handleDrop(e, 'player');
+          }}
         >
           <h3 className="text-lg font-bold text-mythos-terminal-text mb-2">Inventory ({playerInventory.length}/20)</h3>
           <div className="flex-1 overflow-y-auto" role="list">
