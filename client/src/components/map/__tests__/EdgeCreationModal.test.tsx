@@ -98,7 +98,7 @@ describe('EdgeCreationModal', () => {
     if (directionSelect) {
       fireEvent.change(directionSelect, { target: { value: 'north' } });
     }
-      fireEvent.change(directionSelect, { target: { value: 'north' } });
+    fireEvent.change(directionSelect, { target: { value: 'north' } });
     // Wait for validation
     await waitFor(() => {
       expect(mockOnValidateValid).toHaveBeenCalled();
