@@ -8,7 +8,7 @@ import { ChatMessage } from '../ChatMessage';
 
 // Mock ansiToHtmlWithBreaks
 vi.mock('../../../utils/ansiToHtml', () => ({
-  ansiToHtmlWithBreaks: (text: string) => `<span>${text}</span>`,
+  ansiToHtmlWithBreaks: (text: string) => `<span>${(text)}</span>`,
 }));
 
 // Mock inputSanitizer
