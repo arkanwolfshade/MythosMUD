@@ -281,7 +281,13 @@ describe('MonitoringPanel', () => {
     await waitFor(
       () => {
         expect(fetch).toHaveBeenCalled();
-        const hasCustomUrl = fetchCalls.some(call => call.includes('https://custom-api.example.com'));
+        const hasCustomUrl = fetchCalls.some(call => {
+          try {
+            return new URL(call).origin === 'https://custom-api.example.com';
+          } catch {
+            return false;
+          }
+        });
         expect(hasCustomUrl).toBe(true);
       },
       { timeout: 3000 }
