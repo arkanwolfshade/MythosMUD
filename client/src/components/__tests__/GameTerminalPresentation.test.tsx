@@ -423,7 +423,7 @@ describe('GameTerminalPresentation', () => {
       const playerWithAllStats = {
         ...defaultProps.player!,
         stats: {
-          ...defaultProps.player!.stats,
+          ...(defaultProps.player?.stats ?? {}),
           strength: 10,
           dexterity: 12,
           constitution: 14,
@@ -704,7 +704,7 @@ describe('GameTerminalPresentation', () => {
       const playerWithAllStats = {
         ...defaultProps.player!,
         stats: {
-          ...defaultProps.player!.stats,
+          ...(defaultProps.player?.stats ?? {}),
           strength: 10,
           dexterity: 12,
           constitution: 14,

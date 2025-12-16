@@ -7,6 +7,7 @@ and security checks in security_utils.py.
 
 import os
 import tempfile
+import unittest.mock as mock
 from pathlib import Path
 
 import pytest
@@ -410,3 +411,36 @@ class TestEdgeCases:
             # But first it will be caught by the ".." check
             with pytest.raises(HTTPException):
                 validate_secure_path(base_path, user_path)
+
+    def test_validate_secure_path_commonpath_failure(self):
+        """Test path traversal detection via commonpath check (lines 59-66)."""
+        # Test the case where commonpath != base_path
+        # This tests the logger.warning and HTTPException at lines 59-66
+        base_path = "/tmp/test"
+        user_path = "file.txt"
+
+        # Mock os.path.commonpath to return a different path than base_path
+        # This simulates a path that escapes the base directory
+        with mock.patch("server.security_utils.os.path.commonpath") as mock_commonpath:
+            mock_commonpath.return_value = "/tmp"  # Different from base_path
+
+            with pytest.raises(HTTPException) as exc_info:
+                validate_secure_path(base_path, user_path)
+
+            assert exc_info.value.status_code == 400
+            assert exc_info.value.detail == "Path traversal attempt detected"
+
+    def test_validate_secure_path_valueerror_exception(self):
+        """Test ValueError exception handling for cross-drive paths (lines 70-74)."""
+        # Test the ValueError exception path which occurs on Windows
+        # when paths are on different drives
+        base_path = "/tmp/test"
+        user_path = "file.txt"
+
+        # Mock os.path.commonpath to raise ValueError (simulating cross-drive scenario)
+        with mock.patch("server.security_utils.os.path.commonpath") as mock_commonpath:
+            mock_commonpath.side_effect = ValueError("Paths don't have a common prefix")
+
+            # Should not raise an exception, should handle gracefully
+            result = validate_secure_path(base_path, user_path)
+            assert isinstance(result, str)

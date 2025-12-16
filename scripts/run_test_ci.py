@@ -175,7 +175,7 @@ else:
         "cd /workspace && source .venv/bin/activate && "
         "PYTHONUNBUFFERED=1 pytest server/tests/ --cov=server --cov-report=xml --cov-report=html "
         "--cov-config=.coveragerc -v --tb=short && "
-        "python scripts/check_coverage_thresholds.py"
+        "uv run python scripts/check_coverage_thresholds.py"
     )
 
     # #region agent log
