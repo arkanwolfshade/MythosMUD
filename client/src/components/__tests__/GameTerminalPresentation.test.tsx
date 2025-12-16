@@ -421,9 +421,9 @@ describe('GameTerminalPresentation', () => {
   describe('Player Stats Display', () => {
     it('should display all core attributes when present', () => {
       const playerWithAllStats = {
-        ...defaultProps.player!,
+        ...defaultProps.player?.!
         stats: {
-          ...defaultProps.player!.stats,
+          ...defaultProps.player?.stats,
           strength: 10,
           dexterity: 12,
           constitution: 14,
