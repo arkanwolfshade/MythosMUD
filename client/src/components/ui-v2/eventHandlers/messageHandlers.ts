@@ -151,14 +151,17 @@ export const handleRoomMessage: EventHandler = (event, _context, appendMessage) 
   if (message) {
     let messageType: string;
     let channel: string;
+    let type: string;
 
     if (messageTypeFromEvent === 'system') {
       messageType = 'system';
       channel = GAME_LOG_CHANNEL;
+      type = 'system'; // System messages should always have type 'system'
     } else {
       const messageTypeResult = determineMessageType(message);
       messageType = messageTypeResult.type;
       channel = messageTypeResult.channel ?? 'game';
+      type = resolveChatTypeFromChannel(channel);
     }
 
     appendMessage({
@@ -167,7 +170,7 @@ export const handleRoomMessage: EventHandler = (event, _context, appendMessage) 
       isHtml,
       messageType: messageType,
       channel: channel,
-      type: resolveChatTypeFromChannel(channel),
+      type: type,
     });
   }
 };
