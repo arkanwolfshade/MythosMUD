@@ -43,11 +43,12 @@ export default defineConfig({
         // Global threshold adjusted to reflect current coverage state.
         // Per-file thresholds below enforce category-specific requirements.
         // Note: Vitest requires exact file paths (not globs) for per-file thresholds.
-        // TODO: Improve global coverage over time - currently at ~61% lines/functions, ~54% branches
-        statements: 61,
-        branches: 54,
-        functions: 61,
-        lines: 61,
+        // Current coverage: 82.53% statements, 75.13% branches, 81.05% functions, 82.91% lines
+        // Thresholds set with ~7-8% buffer to allow for normal fluctuations
+        statements: 75,
+        branches: 68,
+        functions: 74,
+        lines: 75,
         // Critical code: security, authentication, data handling → 90%
         // Note: security.ts now at 100% coverage including branches (cleanup interval branches fully tested)
         'src/utils/security.ts': {
@@ -152,7 +153,7 @@ export default defineConfig({
         },
         // Note: UI components (src/components/**/*.tsx, src/pages/**/*.tsx)
         // and utilities (src/utils/**/*.ts, src/types/**/*.ts, src/config/**/*.ts)
-        // use the global 70% threshold above.
+        // use the global thresholds above (75% statements/lines, 74% functions, 68% branches).
         // See docs/TEST_COVERAGE_STRATEGY.md for detailed category-specific targets.
       },
       reporter: ['text', 'html', 'json'],
