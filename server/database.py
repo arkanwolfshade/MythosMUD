@@ -103,6 +103,7 @@ class DatabaseManager:
 
         # Allow test override via module-level _database_url
         # Note: Reading module-level variable, no assignment needed
+        database_url: str | None = None
         if _database_url is not None:
             database_url = _database_url
         else:
@@ -120,6 +121,14 @@ class DatabaseManager:
                 )
 
         # PostgreSQL-only: Verify we have a PostgreSQL URL
+        # Ensure database_url is set before checking
+        if database_url is None:
+            log_and_raise(
+                ValidationError,
+                "Database URL is not configured",
+                context=context,
+                user_friendly="Database configuration error - URL not set",
+            )
         if not database_url.startswith("postgresql"):
             log_and_raise(
                 ValidationError,
@@ -442,14 +451,25 @@ class DatabaseManager:
 
                 # For Windows/asyncpg: Close connections gracefully before disposal
                 # CRITICAL: asyncpg connections must be closed in the same event loop they were created in
-                # We add a small delay to allow any pending operations to complete before disposal
-                # This helps prevent RuntimeWarning about unawaited Connection._cancel coroutines
+                # We need to ensure all connections are properly closed before disposal to prevent
+                # RuntimeWarning about unawaited Connection._cancel coroutines during GC
                 try:
-                    # Give any pending operations a moment to complete
-                    await asyncio.sleep(0.1)
+                    # Step 1: Wait for any pending operations to complete
+                    # This gives time for any in-flight queries to finish
+                    await asyncio.sleep(0.3)
 
-                    # Try graceful disposal first
-                    await asyncio.wait_for(engine.dispose(), timeout=1.0)
+                    # Step 2: Shield disposal from cancellation to ensure cleanup completes
+                    # This prevents Connection._cancel coroutines from being interrupted during cleanup
+                    async def _dispose_engine():
+                        await engine.dispose()
+                        # Wait a bit more to ensure all asyncpg cleanup coroutines complete
+                        # This helps prevent Connection._cancel coroutines from being garbage collected
+                        # before they're awaited
+                        await asyncio.sleep(0.2)
+
+                    # Shield the disposal to prevent cancellation from interrupting cleanup
+                    await asyncio.wait_for(asyncio.shield(_dispose_engine()), timeout=3.0)
+
                     logger.info("Database connections closed")
                 except TimeoutError:
                     # If disposal times out, try to force close connections

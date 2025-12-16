@@ -53,12 +53,18 @@ class TestArgon2HashGeneration:
 
     def test_hash_password_basic(self):
         """Test basic password hashing."""
-        password = "test_password"
-        hashed = hash_password(password)
+        from unittest.mock import patch
 
-        assert isinstance(hashed, str)
-        assert hashed.startswith("$argon2")
-        assert len(hashed) > 50  # Argon2 hashes are long
+        password = "test_password"
+        with patch("server.auth.argon2_utils.logger.debug") as mock_debug:
+            hashed = hash_password(password)
+
+            assert isinstance(hashed, str)
+            assert hashed.startswith("$argon2")
+            assert len(hashed) > 50  # Argon2 hashes are long
+            # Should log debug messages
+            assert any("Hashing password" in str(call) for call in mock_debug.call_args_list)
+            assert any("Password hashed successfully" in str(call) for call in mock_debug.call_args_list)
 
     def test_hash_password_empty(self):
         """Test hashing empty password."""
@@ -101,9 +107,16 @@ class TestArgon2PasswordVerification:
 
     def test_verify_password_correct(self):
         """Test verifying correct password."""
+        from unittest.mock import patch
+
         password = "test_password"
         hashed = hash_password(password)
-        assert verify_password(password, hashed) is True
+        with patch("server.auth.argon2_utils.logger.debug") as mock_debug:
+            result = verify_password(password, hashed)
+            assert result is True
+            # Should log debug messages
+            assert any("Verifying password" in str(call) for call in mock_debug.call_args_list)
+            assert any("Password verification successful" in str(call) for call in mock_debug.call_args_list)
 
     def test_verify_password_incorrect(self):
         """Test verifying incorrect password."""
@@ -227,18 +240,28 @@ class TestArgon2CustomHasher:
 
     def test_create_hasher_with_params(self):
         """Test creating hasher with custom parameters."""
-        hasher = create_hasher_with_params(
-            time_cost=1,
-            memory_cost=1024,
-            parallelism=2,
-            hash_len=16,
-        )
-        assert hasher is not None
+        from unittest.mock import patch
+
+        with patch("server.auth.argon2_utils.logger.debug") as mock_debug:
+            hasher = create_hasher_with_params(
+                time_cost=1,
+                memory_cost=1024,
+                parallelism=2,
+                hash_len=16,
+            )
+            assert hasher is not None
+            # Should log debug message
+            mock_debug.assert_called_once()
 
     def test_create_hasher_default_params(self):
         """Test creating hasher with default parameters."""
-        hasher = create_hasher_with_params()
-        assert hasher is not None
+        from unittest.mock import patch
+
+        with patch("server.auth.argon2_utils.logger.debug") as mock_debug:
+            hasher = create_hasher_with_params()
+            assert hasher is not None
+            # Should log debug message
+            mock_debug.assert_called_once()
 
 
 class TestArgon2ErrorHandling:
@@ -271,11 +294,43 @@ class TestArgon2ErrorHandling:
 
     def test_verify_password_invalid_hash_type_int(self):
         """Test verification with invalid hash type (int)."""
-        assert verify_password("password", 123) is False
+        from unittest.mock import patch
+
+        with patch("server.auth.argon2_utils.logger.warning") as mock_warning:
+            result = verify_password("password", 123)
+            assert result is False
+            # Should log warning for hash not a string
+            assert any("hash not a string" in str(call) for call in mock_warning.call_args_list)
 
     def test_verify_password_invalid_hash_type_none(self):
         """Test verification with invalid hash type (None)."""
-        assert verify_password("password", None) is False
+        from unittest.mock import patch
+
+        with patch("server.auth.argon2_utils.logger.warning") as mock_warning:
+            result = verify_password("password", None)
+            assert result is False
+            # Should log warning for hash not a string
+            assert any("hash not a string" in str(call) for call in mock_warning.call_args_list)
+
+    def test_verify_password_invalid_hash_type_list(self):
+        """Test verification with invalid hash type (list)."""
+        from unittest.mock import patch
+
+        with patch("server.auth.argon2_utils.logger.warning") as mock_warning:
+            result = verify_password("password", [123])
+            assert result is False
+            # Should log warning for hash not a string
+            assert any("hash not a string" in str(call) for call in mock_warning.call_args_list)
+
+    def test_verify_password_empty_hash_string(self):
+        """Test verification with empty hash string."""
+        from unittest.mock import patch
+
+        with patch("server.auth.argon2_utils.logger.warning") as mock_warning:
+            result = verify_password("password", "")
+            assert result is False
+            # Should log warning for empty hash
+            assert any("empty hash" in str(call) for call in mock_warning.call_args_list)
 
 
 class TestArgon2Security:
@@ -519,3 +574,230 @@ class TestArgon2EnvironmentVariables:
         assert server.auth.argon2_utils.MEMORY_COST == 65536
         assert server.auth.argon2_utils.PARALLELISM == 1
         assert server.auth.argon2_utils.HASH_LENGTH == 32
+
+
+class TestArgon2ExceptionHandling:
+    """Test exception handling in Argon2 utilities."""
+
+    def test_create_hasher_warning_low_time_cost(self):
+        """Test create_hasher_with_params logs warning for low time_cost."""
+        from unittest.mock import patch
+
+        with patch("server.auth.argon2_utils.logger.warning") as mock_warning:
+            with patch("server.auth.argon2_utils.logger.debug") as mock_debug:
+                create_hasher_with_params(time_cost=2)  # Below recommended minimum of 3
+                mock_warning.assert_called_once()
+                # Verify debug log is also called
+                mock_debug.assert_called_once()
+
+    def test_create_hasher_warning_low_memory_cost(self):
+        """Test create_hasher_with_params logs warning for low memory_cost."""
+        from unittest.mock import patch
+
+        with patch("server.auth.argon2_utils.logger.warning") as mock_warning:
+            with patch("server.auth.argon2_utils.logger.debug") as mock_debug:
+                create_hasher_with_params(memory_cost=32768)  # Below recommended minimum of 65536
+                mock_warning.assert_called_once()
+                # Verify debug log is also called
+                mock_debug.assert_called_once()
+
+    def test_is_argon2_hash_with_non_string_types(self):
+        """Test is_argon2_hash handles non-string types."""
+        # Test with None (already tested, but ensure logger.debug is called)
+        assert is_argon2_hash(None) is False
+
+        # Test with integer
+        assert is_argon2_hash(123) is False
+
+        # Test with list
+        assert is_argon2_hash(["hash"]) is False
+
+    def test_get_hash_info_with_malformed_hash_parts(self):
+        """Test get_hash_info handles hash with non-numeric parameter values."""
+        # Hash with non-numeric parameter that causes ValueError in int conversion
+        # This tests the ValueError exception path in get_hash_info
+        malformed_hash = "$argon2id$v=19$m=invalid,t=3,p=1$salt$hash"
+
+        result = get_hash_info(malformed_hash)
+        # The function catches ValueError and stores the string value instead of int
+        # So it returns a dict with string values for invalid params
+        assert result is not None
+        assert isinstance(result, dict)
+        assert result["m"] == "invalid"  # String value preserved
+        assert result["t"] == 3  # Valid int
+        assert result["p"] == 1  # Valid int
+
+    def test_get_hash_info_with_hash_containing_string_params(self):
+        """Test get_hash_info handles hash with string parameter values."""
+        # Create a hash-like string that has non-numeric values
+        # This tests the ValueError path when trying to convert to int
+        hash_with_strings = "$argon2id$v=19$m=abc,t=3,p=1$salt$hash"
+
+        result = get_hash_info(hash_with_strings)
+        # Should handle ValueError and store string value
+        assert result is not None
+        assert isinstance(result, dict)
+        assert result["m"] == "abc"  # String value preserved
+        assert result["t"] == 3
+        assert result["p"] == 1
+
+    def test_get_hash_info_with_too_few_parts(self):
+        """Test get_hash_info handles hash with too few parts."""
+        # Hash with fewer than 5 parts (after splitting by $)
+        short_hash = "$argon2id$v=19$m=65536"
+
+        result = get_hash_info(short_hash)
+        # Should return None when parts < 5
+        assert result is None
+
+    def test_needs_rehash_with_exception_handling(self):
+        """Test needs_rehash handles exceptions in check_needs_rehash."""
+        from unittest.mock import MagicMock, patch
+
+        # Create a valid Argon2 hash
+        password = "test_password"
+        hashed = hash_password(password)
+
+        # Create a mock hasher that raises an exception
+        mock_hasher = MagicMock()
+        mock_hasher.check_needs_rehash.side_effect = AttributeError("Method not found")
+
+        # Patch the _default_hasher at the module level
+        with patch("server.auth.argon2_utils._default_hasher", mock_hasher):
+            with patch("server.auth.argon2_utils.logger.error") as mock_error:
+                result = needs_rehash(hashed)
+                # Should return True (needs rehash) when exception occurs
+                assert result is True
+                # Should log error
+                mock_error.assert_called_once()
+
+    def test_needs_rehash_with_value_error_exception(self):
+        """Test needs_rehash handles ValueError exception."""
+        from unittest.mock import MagicMock, patch
+
+        # Create a valid Argon2 hash
+        password = "test_password"
+        hashed = hash_password(password)
+
+        # Create a mock hasher that raises ValueError
+        mock_hasher = MagicMock()
+        mock_hasher.check_needs_rehash.side_effect = ValueError("Value error")
+
+        # Patch the _default_hasher at the module level
+        with patch("server.auth.argon2_utils._default_hasher", mock_hasher):
+            with patch("server.auth.argon2_utils.logger.error") as mock_error:
+                result = needs_rehash(hashed)
+                # Should return True (needs rehash) when exception occurs
+                assert result is True
+                # Should log error
+                mock_error.assert_called_once()
+
+    def test_needs_rehash_with_type_error_exception(self):
+        """Test needs_rehash handles TypeError exception."""
+        from unittest.mock import MagicMock, patch
+
+        # Create a valid Argon2 hash
+        password = "test_password"
+        hashed = hash_password(password)
+
+        # Create a mock hasher that raises TypeError
+        mock_hasher = MagicMock()
+        mock_hasher.check_needs_rehash.side_effect = TypeError("Type error")
+
+        # Patch the _default_hasher at the module level
+        with patch("server.auth.argon2_utils._default_hasher", mock_hasher):
+            with patch("server.auth.argon2_utils.logger.error") as mock_error:
+                result = needs_rehash(hashed)
+                # Should return True (needs rehash) when exception occurs
+                assert result is True
+                # Should log error
+                mock_error.assert_called_once()
+
+    def test_get_hash_info_exception_handling(self):
+        """Test get_hash_info handles exceptions during parsing."""
+        # Test with invalid hash format (doesn't pass is_argon2_hash check)
+        invalid_hash = "not_a_valid_argon2_hash_format"
+        result = get_hash_info(invalid_hash)
+        # Should return None (fails is_argon2_hash check, not exception)
+        assert result is None
+
+        # Test with None input
+        result = get_hash_info(None)
+        assert result is None
+
+        # Test with hash that has wrong format (too few parts)
+        malformed_hash = "$argon2id$v=19$m=65536"
+        result = get_hash_info(malformed_hash)
+        # Should return None when parts are insufficient
+        assert result is None
+
+    def test_get_hash_info_exception_handling_logs_error(self):
+        """Test get_hash_info logs error when exception occurs during parsing."""
+        from unittest.mock import MagicMock, patch
+
+        # Create a mock object that passes is_argon2_hash but raises exception during parsing
+        mock_hash = MagicMock()
+        mock_hash.startswith = MagicMock(return_value=True)  # Passes is_argon2_hash check
+        mock_hash.split = MagicMock(side_effect=AttributeError("Attribute error"))
+
+        with patch("server.auth.argon2_utils.is_argon2_hash", return_value=True):
+            with patch("server.auth.argon2_utils.logger.error") as mock_error:
+                result = get_hash_info(mock_hash)
+                # Should return None when exception occurs during parsing
+                assert result is None
+                # Should log error
+                mock_error.assert_called_once()
+
+    def test_is_argon2_hash_with_dict_type(self):
+        """Test is_argon2_hash handles dict type input."""
+        from unittest.mock import patch
+
+        # Test with dict (should return False and log debug)
+        with patch("server.auth.argon2_utils.logger.debug") as mock_debug:
+            result = is_argon2_hash({"hash": "value"})
+            assert result is False
+            # Should log debug message
+            mock_debug.assert_called_once()
+
+    def test_is_argon2_hash_with_tuple_type(self):
+        """Test is_argon2_hash handles tuple type input."""
+        from unittest.mock import patch
+
+        # Test with tuple (should return False and log debug)
+        with patch("server.auth.argon2_utils.logger.debug") as mock_debug:
+            result = is_argon2_hash(("hash", "value"))
+            assert result is False
+            # Should log debug message
+            mock_debug.assert_called_once()
+
+    def test_is_argon2_hash_logs_debug_for_valid_hash(self):
+        """Test is_argon2_hash logs debug message for valid Argon2 hash."""
+        from unittest.mock import patch
+
+        # Create a valid Argon2 hash
+        password = "test_password"
+        hashed = hash_password(password)
+
+        # Verify it's detected as Argon2 hash and debug is logged
+        with patch("server.auth.argon2_utils.logger.debug") as mock_debug:
+            result = is_argon2_hash(hashed)
+            assert result is True
+            # Should log debug message with is_argon2=True
+            mock_debug.assert_called()
+            # Check that the call includes is_argon2=True
+            call_args = mock_debug.call_args
+            assert call_args is not None
+            assert "is_argon2" in call_args.kwargs or any("is_argon2" in str(arg) for arg in call_args)
+
+    def test_is_argon2_hash_logs_debug_for_non_argon2_string(self):
+        """Test is_argon2_hash logs debug message for non-Argon2 string."""
+        from unittest.mock import patch
+
+        # Test with a string that doesn't start with $argon2
+        non_argon2_hash = "bcrypt_hash_string"
+
+        with patch("server.auth.argon2_utils.logger.debug") as mock_debug:
+            result = is_argon2_hash(non_argon2_hash)
+            assert result is False
+            # Should log debug message with is_argon2=False
+            mock_debug.assert_called()

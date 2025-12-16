@@ -99,10 +99,20 @@ class TestServiceDependencyInjection:
     @pytest.fixture
     def client(self, app):
         """Create test client."""
+        # Ensure container is set up before creating client
+        assert hasattr(app.state, "container"), "Container must be set up in app.state"
+        assert app.state.container is not None, "Container must not be None"
+        assert app.state.container.player_service is not None, "PlayerService must be set in container"
+        assert app.state.container.room_service is not None, "RoomService must be set in container"
         return TestClient(app)
 
     def test_player_service_dependency_injection_via_endpoint(self, client):
         """Test that PlayerService is correctly injected via API endpoint."""
+        # Ensure container is accessible before making request
+        assert hasattr(client.app.state, "container"), "Container must be set up in app.state"
+        assert client.app.state.container is not None, "Container must not be None"
+        assert client.app.state.container.player_service is not None, "PlayerService must be set in container"
+
         response = client.get("/api/players/")
         assert response.status_code in [200, 401]
 
@@ -202,6 +212,10 @@ class TestServiceDependencyInjection:
 
     def test_api_endpoints_use_dependency_injection(self, client):
         """Test that API endpoints actually use the dependency injection system."""
+        # Ensure container is accessible before making requests
+        assert hasattr(client.app.state, "container"), "Container must be set up in app.state"
+        assert client.app.state.container is not None, "Container must not be None"
+
         endpoints_to_test = ["/api/players/", "/rooms/test_room"]
 
         for endpoint in endpoints_to_test:

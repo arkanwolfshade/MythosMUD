@@ -144,11 +144,15 @@ class InventoryMutationGuard:
                                 )
                         except TypeError:
                             # Fallback to safest keyword invocation if signature introspection was misleading
-                            record_custom_alert(  # pylint: disable=not-callable
-                                "inventory_duplicate",
-                                severity="warning",
-                                metadata=alert_metadata,
-                            )
+                            try:
+                                record_custom_alert(  # pylint: disable=not-callable
+                                    "inventory_duplicate",
+                                    severity="warning",
+                                    metadata=alert_metadata,
+                                )
+                            except TypeError:
+                                # If fallback also fails, silently ignore - alert recording is non-critical
+                                pass
                     decision = MutationDecision(should_apply=False, duplicate=True)
                     yield decision
                     return
@@ -229,11 +233,15 @@ class InventoryMutationGuard:
                                 )
                         except TypeError:
                             # Fallback to safest keyword invocation if signature introspection was misleading
-                            record_custom_alert(  # pylint: disable=not-callable
-                                "inventory_duplicate",
-                                severity="warning",
-                                metadata=alert_metadata,
-                            )
+                            try:
+                                record_custom_alert(  # pylint: disable=not-callable
+                                    "inventory_duplicate",
+                                    severity="warning",
+                                    metadata=alert_metadata,
+                                )
+                            except TypeError:
+                                # If fallback also fails, silently ignore - alert recording is non-critical
+                                pass
                     decision = MutationDecision(should_apply=False, duplicate=True)
                     yield decision
                     return

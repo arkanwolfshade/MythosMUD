@@ -77,7 +77,27 @@ class TestEndpoints:
         test_client.app.state.player_service = player_service
         test_client.app.state.room_service = mock_application_container.room_service
 
-        return test_client
+        # Mock get_current_user dependency to avoid authentication failures
+        # This is needed because all player endpoints require authentication
+        from server.api.players import get_current_user
+
+        # Create a mock user for authentication
+        mock_user = Mock()
+        mock_user.id = uuid.uuid4()
+        mock_user.username = "testuser"
+        mock_user.email = "test@example.com"
+
+        async def mock_get_current_user():
+            return mock_user
+
+        # Override the dependency
+        app.dependency_overrides[get_current_user] = mock_get_current_user
+
+        # Use pytest's yield fixture pattern for proper cleanup
+        yield test_client
+
+        # Cleanup: restore original dependencies after test
+        app.dependency_overrides.pop(get_current_user, None)
 
     def test_read_root(self, client):
         """Test the root endpoint."""

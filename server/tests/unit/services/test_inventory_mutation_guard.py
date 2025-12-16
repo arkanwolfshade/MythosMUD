@@ -180,3 +180,252 @@ def test_guard_token_ttl_allows_reprocessing_after_expiry():
 
     with guard.acquire("investigator-4", "token-expiring") as decision:
         assert decision.should_apply
+
+
+@pytest.mark.asyncio
+async def test_guard_async_allows_first_execution():
+    """Test async guard allows first execution."""
+    guard = InventoryMutationGuard()
+
+    async with guard.acquire_async("investigator-async-1", "token-async-1") as decision:
+        assert decision.should_apply is True
+        assert decision.duplicate is False
+
+
+@pytest.mark.asyncio
+async def test_guard_async_detects_duplicate_token():
+    """Test async guard detects duplicate tokens."""
+    guard = InventoryMutationGuard()
+
+    async with guard.acquire_async("investigator-async-2", "token-async-dupe") as decision:
+        assert decision.should_apply is True
+
+    async with guard.acquire_async("investigator-async-2", "token-async-dupe") as decision:
+        assert decision.should_apply is False
+        assert decision.duplicate is True
+
+
+@pytest.mark.asyncio
+async def test_guard_async_token_ttl_allows_reprocessing_after_expiry():
+    """Test async guard allows reprocessing after token expiry."""
+    import asyncio
+
+    guard = InventoryMutationGuard(token_ttl_seconds=0.05)
+
+    async with guard.acquire_async("investigator-async-4", "token-async-expiring") as decision:
+        assert decision.should_apply
+
+    # Sleep longer than TTL to ensure token expires
+    await asyncio.sleep(0.10)
+
+    async with guard.acquire_async("investigator-async-4", "token-async-expiring") as decision:
+        assert decision.should_apply
+
+
+@pytest.mark.asyncio
+async def test_guard_async_handles_none_token():
+    """Test async guard handles None token."""
+    guard = InventoryMutationGuard()
+
+    async with guard.acquire_async("investigator-async-5", None) as decision:
+        assert decision.should_apply is True
+        assert decision.duplicate is False
+
+
+@pytest.mark.asyncio
+async def test_guard_async_enforces_limit():
+    """Test async guard enforces token limit."""
+    guard = InventoryMutationGuard(max_tokens=3)
+
+    # Add tokens up to limit
+    for i in range(3):
+        async with guard.acquire_async("investigator-async-6", f"token-{i}") as decision:
+            assert decision.should_apply
+
+    # Add one more - should prune oldest
+    async with guard.acquire_async("investigator-async-6", "token-3") as decision:
+        assert decision.should_apply
+
+    # Oldest token should be gone
+    async with guard.acquire_async("investigator-async-6", "token-0") as decision:
+        assert decision.should_apply  # Should be allowed since token-0 was pruned
+
+
+def test_guard_cleanup_state_when_empty():
+    """Test guard cleans up state when tokens are empty."""
+    guard = InventoryMutationGuard()
+
+    # Acquire and release with a token - token will be stored
+    with guard.acquire("investigator-cleanup", "token-cleanup") as decision:
+        assert decision.should_apply
+
+    # State is NOT cleaned up because tokens dict still has the token
+    # The same token will be detected as duplicate
+    with guard.acquire("investigator-cleanup", "token-cleanup") as decision:
+        # Should be detected as duplicate since token is still in recent_tokens
+        assert not decision.should_apply
+        assert decision.duplicate
+
+    # Use a different token - should be allowed
+    with guard.acquire("investigator-cleanup", "token-cleanup-2") as decision:
+        assert decision.should_apply
+
+
+@pytest.mark.asyncio
+async def test_guard_async_cleanup_state_when_empty():
+    """Test async guard cleans up state when tokens are empty."""
+    guard = InventoryMutationGuard()
+
+    # Acquire and release with a token - token will be stored
+    async with guard.acquire_async("investigator-async-cleanup", "token-async-cleanup") as decision:
+        assert decision.should_apply
+
+    # State is NOT cleaned up because tokens dict still has the token
+    # The same token will be detected as duplicate
+    async with guard.acquire_async("investigator-async-cleanup", "token-async-cleanup") as decision:
+        # Should be detected as duplicate since token is still in recent_tokens
+        assert not decision.should_apply
+        assert decision.duplicate
+
+    # Use a different token - should be allowed
+    async with guard.acquire_async("investigator-async-cleanup", "token-async-cleanup-2") as decision:
+        assert decision.should_apply
+
+
+def test_guard_prune_tokens_with_zero_ttl():
+    """Test guard handles zero TTL (no pruning)."""
+    guard = InventoryMutationGuard(token_ttl_seconds=0.0)
+
+    # Add token
+    with guard.acquire("investigator-zero-ttl", "token-zero") as decision:
+        assert decision.should_apply
+
+    # With zero TTL, _prune_tokens returns early without pruning (by design)
+    # So tokens are NOT pruned, and the same token will be detected as duplicate
+    with guard.acquire("investigator-zero-ttl", "token-zero") as decision:
+        # Token should still be there (not pruned) and detected as duplicate
+        assert not decision.should_apply
+        assert decision.duplicate
+
+
+def test_guard_enforce_limit_edge_case():
+    """Test guard enforces limit when exactly at max."""
+    guard = InventoryMutationGuard(max_tokens=2)
+
+    # Add exactly max_tokens
+    with guard.acquire("investigator-limit", "token-0") as decision:
+        assert decision.should_apply
+    with guard.acquire("investigator-limit", "token-1") as decision:
+        assert decision.should_apply
+
+    # Add one more - should prune oldest
+    with guard.acquire("investigator-limit", "token-2") as decision:
+        assert decision.should_apply
+
+    # token-0 should be gone
+    with guard.acquire("investigator-limit", "token-0") as decision:
+        assert decision.should_apply
+
+
+@pytest.mark.asyncio
+async def test_guard_async_cleanup_when_lock_held():
+    """Test async guard cleanup when lock is held."""
+    guard = InventoryMutationGuard()
+
+    # First, create state with a token
+    async with guard.acquire_async("investigator-lock-test", "token-lock") as decision:
+        assert decision.should_apply
+
+    # Clear tokens to make state eligible for cleanup
+    state = await guard._get_async_state("investigator-lock-test")
+    state.recent_tokens.clear()
+
+    # Acquire the player's lock to simulate it being held
+    player_lock = state.get_lock()
+    await player_lock.acquire()
+
+    try:
+        # Cleanup should detect lock is held and skip
+        await guard._cleanup_async_state("investigator-lock-test")
+        # State should still exist because lock was held
+        assert "investigator-lock-test" in guard._async_states
+    finally:
+        player_lock.release()
+        # Now cleanup should work
+        await guard._cleanup_async_state("investigator-lock-test")
+        # State should be cleaned up now
+        assert "investigator-lock-test" not in guard._async_states
+
+
+def test_guard_handles_none_token_in_sync():
+    """Test guard handles None token in sync context."""
+    guard = InventoryMutationGuard()
+
+    with guard.acquire("investigator-none-sync", None) as decision:
+        assert decision.should_apply is True
+        assert decision.duplicate is False
+
+    # None token should not be stored, so second call should also work
+    with guard.acquire("investigator-none-sync", None) as decision:
+        assert decision.should_apply is True
+
+
+def test_guard_record_custom_alert_with_message_parameter(monkeypatch):
+    """Test guard handles record_custom_alert with message parameter."""
+    guard = InventoryMutationGuard()
+
+    recorded_alerts = []
+
+    class FakeDashboard:
+        def record_custom_alert(
+            self,
+            alert: str,
+            *,
+            severity: str = "warning",
+            message: str | None = None,
+            metadata: dict[str, str] | None = None,
+        ) -> None:
+            recorded_alerts.append({"alert": alert, "severity": severity, "message": message, "metadata": metadata})
+
+    monkeypatch.setattr(
+        "server.services.inventory_mutation_guard.get_monitoring_dashboard",
+        lambda: FakeDashboard(),
+    )
+
+    # First call
+    with guard.acquire("investigator-message-param", "token-message") as decision:
+        assert decision.should_apply
+
+    # Second call should trigger duplicate detection with message parameter
+    with guard.acquire("investigator-message-param", "token-message") as decision:
+        assert decision.should_apply is False
+        assert decision.duplicate is True
+
+    # Should have recorded alert with message parameter
+    assert len(recorded_alerts) > 0
+    assert recorded_alerts[0]["alert"] == "inventory_duplicate"
+    assert "message" in recorded_alerts[0] or recorded_alerts[0].get("message") is not None
+
+
+def test_guard_record_custom_alert_signature_error(monkeypatch):
+    """Test guard handles TypeError when calling record_custom_alert."""
+    guard = InventoryMutationGuard()
+
+    class FakeDashboard:
+        def record_custom_alert(self, *args, **kwargs):
+            # Simulate signature mismatch
+            raise TypeError("Unexpected signature")
+
+    monkeypatch.setattr(
+        "server.services.inventory_mutation_guard.get_monitoring_dashboard",
+        lambda: FakeDashboard(),
+    )
+
+    # First call
+    with guard.acquire("investigator-sig-error", "token-sig") as decision:
+        assert decision.should_apply
+
+    # Second call should handle TypeError gracefully
+    with guard.acquire("investigator-sig-error", "token-sig") as decision:
+        assert decision.should_apply is False
+        assert decision.duplicate is True

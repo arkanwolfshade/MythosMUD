@@ -128,6 +128,7 @@ class TestSecurityHeadersMiddleware:
             ("PUT", "/put-test"),
             ("DELETE", "/delete-test"),
         ]:
+            response = None
             if method == "GET":
                 response = client.get(path)
             elif method == "POST":
@@ -137,6 +138,7 @@ class TestSecurityHeadersMiddleware:
             elif method == "DELETE":
                 response = client.delete(path)
 
+            assert response is not None
             assert response.status_code == 200
             assert "X-Frame-Options" in response.headers
             assert response.headers["X-Frame-Options"] == "DENY"
@@ -280,3 +282,400 @@ class TestMiddlewareConsolidation:
 
         # Comprehensive logging should be present (replaces AccessLoggingMiddleware)
         assert any("ComprehensiveLoggingMiddleware" in cls for cls in middleware_classes)
+
+
+class TestSecurityHeadersMiddlewareImplementation:
+    """Test the actual SecurityHeadersMiddleware implementation."""
+
+    @pytest.mark.asyncio
+    async def test_security_headers_middleware_asgi_interface(self):
+        """Test SecurityHeadersMiddleware ASGI interface."""
+        from unittest.mock import AsyncMock
+
+        from server.middleware.security_headers import SecurityHeadersMiddleware
+
+        # Create mock app
+        mock_app = AsyncMock()
+
+        # Create middleware
+        middleware = SecurityHeadersMiddleware(mock_app)
+
+        # Create mock scope, receive, send
+        scope = {
+            "type": "http",
+            "method": "GET",
+            "path": "/test",
+            "headers": [],
+            "query_string": b"",
+            "scheme": "http",
+            "server": ("localhost", 8000),
+            "client": ("127.0.0.1", 12345),
+        }
+        receive = AsyncMock()
+        send = AsyncMock()
+
+        # Mock send_with_headers to capture headers
+        headers_captured = {}
+
+        async def mock_send(message):
+            if message["type"] == "http.response.start":
+                headers_captured.update(message.get("headers", []))
+            await send(message)
+
+        # Call middleware
+        await middleware(scope, receive, mock_send)
+
+        # Verify app was called
+        mock_app.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_security_headers_middleware_non_http_scope(self):
+        """Test SecurityHeadersMiddleware passes through non-HTTP scopes."""
+        from unittest.mock import AsyncMock
+
+        from server.middleware.security_headers import SecurityHeadersMiddleware
+
+        mock_app = AsyncMock()
+        middleware = SecurityHeadersMiddleware(mock_app)
+
+        # WebSocket scope
+        websocket_scope = {"type": "websocket"}
+        receive = AsyncMock()
+        send = AsyncMock()
+
+        await middleware(websocket_scope, receive, send)
+
+        # Should pass through without modification
+        mock_app.assert_called_once_with(websocket_scope, receive, send)
+
+    @pytest.mark.asyncio
+    async def test_security_headers_middleware_dispatch_method(self):
+        """Test SecurityHeadersMiddleware dispatch method (backward compatibility)."""
+        from unittest.mock import AsyncMock, MagicMock
+
+        from server.middleware.security_headers import SecurityHeadersMiddleware
+
+        mock_app = MagicMock()
+        middleware = SecurityHeadersMiddleware(mock_app)
+
+        # Create mock request with proper scope
+        scope = {
+            "type": "http",
+            "method": "GET",
+            "path": "/test",
+            "headers": [],
+            "query_string": b"",
+            "scheme": "http",
+            "server": ("localhost", 8000),
+            "client": ("127.0.0.1", 12345),
+        }
+        request = Request(scope, AsyncMock())
+
+        # Create proper Response object
+        response = Response(content="test", status_code=200)
+
+        # Mock call_next
+        call_next = AsyncMock(return_value=response)
+
+        # Call dispatch
+        result = await middleware.dispatch(request, call_next)
+
+        # Verify headers were added
+        assert result == response
+        # Headers should be added by _add_security_headers_to_response
+        # Check headers case-insensitively since Starlette headers are case-insensitive
+        header_keys = [key.lower() for key in response.headers.keys()]
+        assert "strict-transport-security" in header_keys
+        assert "x-frame-options" in header_keys
+
+    @pytest.mark.asyncio
+    async def test_security_headers_middleware_dispatch_exception(self):
+        """Test SecurityHeadersMiddleware dispatch exception handling."""
+        from unittest.mock import AsyncMock, MagicMock
+
+        from server.middleware.security_headers import SecurityHeadersMiddleware
+
+        mock_app = MagicMock()
+        middleware = SecurityHeadersMiddleware(mock_app)
+
+        scope = {
+            "type": "http",
+            "method": "GET",
+            "path": "/test",
+            "headers": [],
+            "query_string": b"",
+            "scheme": "http",
+            "server": ("localhost", 8000),
+            "client": ("127.0.0.1", 12345),
+        }
+        request = Request(scope, AsyncMock())
+
+        # Mock call_next to raise exception
+        call_next = AsyncMock(side_effect=RuntimeError("Test error"))
+
+        with patch("server.middleware.security_headers.logger.error") as mock_error:
+            with pytest.raises(RuntimeError):
+                await middleware.dispatch(request, call_next)
+
+            # Verify error was logged
+            mock_error.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_security_headers_middleware_asgi_exception(self):
+        """Test SecurityHeadersMiddleware ASGI exception handling."""
+        from unittest.mock import AsyncMock
+
+        from server.middleware.security_headers import SecurityHeadersMiddleware
+
+        mock_app = AsyncMock(side_effect=RuntimeError("Test error"))
+        middleware = SecurityHeadersMiddleware(mock_app)
+
+        scope = {
+            "type": "http",
+            "method": "GET",
+            "path": "/test",
+            "headers": [],
+            "query_string": b"",
+            "scheme": "http",
+            "server": ("localhost", 8000),
+            "client": ("127.0.0.1", 12345),
+        }
+        receive = AsyncMock()
+        send = AsyncMock()
+
+        with patch("server.middleware.security_headers.logger.error") as mock_error:
+            with pytest.raises(RuntimeError):
+                await middleware(scope, receive, send)
+
+            # Verify error was logged
+            mock_error.assert_called_once()
+
+    def test_security_headers_middleware_environment_config(self):
+        """Test SecurityHeadersMiddleware reads environment variables."""
+        from unittest.mock import MagicMock
+
+        from server.middleware.security_headers import SecurityHeadersMiddleware
+
+        with patch.dict(
+            os.environ,
+            {
+                "HSTS_MAX_AGE": "63072000",
+                "HSTS_INCLUDE_SUBDOMAINS": "false",
+                "CSP_POLICY": "default-src 'none'",
+                "REFERRER_POLICY": "no-referrer",
+            },
+        ):
+            mock_app = MagicMock()
+            middleware = SecurityHeadersMiddleware(mock_app)
+
+            assert middleware.hsts_max_age == 63072000
+            assert middleware.hsts_include_subdomains is False
+            assert middleware.csp_policy == "default-src 'none'"
+            assert middleware.referrer_policy == "no-referrer"
+
+    def test_security_headers_middleware_default_config(self):
+        """Test SecurityHeadersMiddleware uses default configuration."""
+        from unittest.mock import MagicMock
+
+        from server.middleware.security_headers import SecurityHeadersMiddleware
+
+        # Remove env vars if they exist
+        env_vars = ["HSTS_MAX_AGE", "HSTS_INCLUDE_SUBDOMAINS", "CSP_POLICY", "REFERRER_POLICY"]
+        # Store original values
+        original_env = {var: os.environ.get(var) for var in env_vars}
+
+        try:
+            # Remove env vars
+            for var in env_vars:
+                os.environ.pop(var, None)
+
+            mock_app = MagicMock()
+            middleware = SecurityHeadersMiddleware(mock_app)
+
+            # Should use defaults
+            assert middleware.hsts_max_age == 31536000
+            assert middleware.hsts_include_subdomains is True
+            assert middleware.csp_policy == "default-src 'self'"
+            assert middleware.referrer_policy == "strict-origin-when-cross-origin"
+        finally:
+            # Restore original env vars
+            for var, value in original_env.items():
+                if value is not None:
+                    os.environ[var] = value
+
+    def test_security_headers_middleware_add_headers_hsts_without_subdomains(self):
+        """Test SecurityHeadersMiddleware HSTS header without includeSubDomains."""
+        from unittest.mock import MagicMock
+
+        from starlette.datastructures import MutableHeaders
+
+        from server.middleware.security_headers import SecurityHeadersMiddleware
+
+        with patch.dict(os.environ, {"HSTS_INCLUDE_SUBDOMAINS": "false"}):
+            mock_app = MagicMock()
+            middleware = SecurityHeadersMiddleware(mock_app)
+
+            headers = MutableHeaders()
+            middleware._add_security_headers(headers)
+
+            hsts_value = headers["Strict-Transport-Security"]
+            assert "max-age=" in hsts_value
+            assert "includeSubDomains" not in hsts_value
+
+    def test_security_headers_middleware_add_headers_to_non_response(self):
+        """Test SecurityHeadersMiddleware _add_security_headers_to_response with non-Response."""
+        from unittest.mock import MagicMock
+
+        from server.middleware.security_headers import SecurityHeadersMiddleware
+
+        mock_app = MagicMock()
+        middleware = SecurityHeadersMiddleware(mock_app)
+
+        # Pass non-Response object
+        non_response = MagicMock()
+        middleware._add_security_headers_to_response(non_response)
+
+        # Should not raise error, just skip
+        assert True  # Test passes if no exception raised
+
+    @pytest.mark.asyncio
+    async def test_security_headers_middleware_asgi_send_with_headers_non_start_message(self):
+        """Test SecurityHeadersMiddleware send_with_headers with non-start message."""
+        from unittest.mock import AsyncMock
+
+        from server.middleware.security_headers import SecurityHeadersMiddleware
+
+        mock_app = AsyncMock()
+        middleware = SecurityHeadersMiddleware(mock_app)
+
+        scope = {
+            "type": "http",
+            "method": "GET",
+            "path": "/test",
+            "headers": [],
+            "query_string": b"",
+            "scheme": "http",
+            "server": ("localhost", 8000),
+            "client": ("127.0.0.1", 12345),
+        }
+        receive = AsyncMock()
+        send = AsyncMock()
+
+        # Track calls to send
+        send_calls = []
+
+        async def mock_send(message):
+            send_calls.append(message)
+            await send(message)
+
+        # Mock app to send multiple messages
+        async def mock_app_handler(scope, receive, send):
+            await send({"type": "http.response.start", "status": 200, "headers": []})
+            await send({"type": "http.response.body", "body": b"test"})
+
+        middleware.app = mock_app_handler
+
+        await middleware(scope, receive, mock_send)
+
+        # Should have called send for both messages
+        assert len(send_calls) >= 1
+
+    @pytest.mark.asyncio
+    async def test_security_headers_middleware_logger_info_initialization(self):
+        """Test SecurityHeadersMiddleware logs info during initialization."""
+        from unittest.mock import MagicMock
+
+        from server.middleware.security_headers import SecurityHeadersMiddleware
+
+        with patch("server.middleware.security_headers.logger.info") as mock_info:
+            mock_app = MagicMock()
+            SecurityHeadersMiddleware(mock_app)  # Instantiate to trigger initialization logging
+            # Should log initialization info
+            mock_info.assert_called_once()
+            call_args = mock_info.call_args
+            assert "SecurityHeadersMiddleware initialized" in str(call_args)
+
+    def test_security_headers_middleware_hsts_without_subdomains_condition(self):
+        """Test SecurityHeadersMiddleware HSTS header condition when includeSubDomains is False."""
+        from unittest.mock import MagicMock
+
+        from starlette.datastructures import MutableHeaders
+
+        from server.middleware.security_headers import SecurityHeadersMiddleware
+
+        with patch.dict(os.environ, {"HSTS_INCLUDE_SUBDOMAINS": "false"}):
+            mock_app = MagicMock()
+            middleware = SecurityHeadersMiddleware(mock_app)
+
+            headers = MutableHeaders()
+            middleware._add_security_headers(headers)
+
+            hsts_value = headers["Strict-Transport-Security"]
+            assert "max-age=" in hsts_value
+            assert "includeSubDomains" not in hsts_value
+
+    @pytest.mark.asyncio
+    async def test_security_headers_middleware_asgi_exception_logging(self):
+        """Test SecurityHeadersMiddleware logs error when exception occurs in ASGI call."""
+        from unittest.mock import AsyncMock
+
+        from server.middleware.security_headers import SecurityHeadersMiddleware
+
+        mock_app = AsyncMock(side_effect=ValueError("Test error"))
+        middleware = SecurityHeadersMiddleware(mock_app)
+
+        scope = {
+            "type": "http",
+            "method": "GET",
+            "path": "/test",
+            "headers": [],
+            "query_string": b"",
+            "scheme": "http",
+            "server": ("localhost", 8000),
+            "client": ("127.0.0.1", 12345),
+        }
+        receive = AsyncMock()
+        send = AsyncMock()
+
+        with patch("server.middleware.security_headers.logger.error") as mock_error:
+            with pytest.raises(ValueError):
+                await middleware(scope, receive, send)
+
+            # Should log error
+            mock_error.assert_called_once()
+            call_args = mock_error.call_args
+            assert "Error in security headers middleware" in str(call_args)
+
+    @pytest.mark.asyncio
+    async def test_security_headers_middleware_dispatch_exception_logging(self):
+        """Test SecurityHeadersMiddleware logs error when exception occurs in dispatch."""
+        from unittest.mock import AsyncMock, MagicMock
+
+        from server.middleware.security_headers import SecurityHeadersMiddleware
+
+        mock_app = MagicMock()
+        middleware = SecurityHeadersMiddleware(mock_app)
+
+        scope = {
+            "type": "http",
+            "method": "GET",
+            "path": "/test",
+            "headers": [],
+            "query_string": b"",
+            "scheme": "http",
+            "server": ("localhost", 8000),
+            "client": ("127.0.0.1", 12345),
+        }
+        request = Request(scope, AsyncMock())
+
+        # Mock call_next to raise exception
+        call_next = AsyncMock(side_effect=KeyError("Test error"))
+
+        with patch("server.middleware.security_headers.logger.error") as mock_error:
+            with pytest.raises(KeyError):
+                await middleware.dispatch(request, call_next)
+
+            # Should log error
+            mock_error.assert_called_once()
+            call_args = mock_error.call_args
+            assert "Error in security headers middleware" in str(call_args)

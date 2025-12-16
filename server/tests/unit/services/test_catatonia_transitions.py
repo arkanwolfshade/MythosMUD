@@ -45,12 +45,13 @@ async def create_player(
 ) -> Player:
     """Create a player and associated lucidity record for testing."""
 
-    player_id = str(uuid.uuid4())
+    player_id = uuid.uuid4()
+    user_id = uuid.uuid4()
     # Add unique suffix to username to avoid conflicts in parallel test runs
     unique_suffix = str(uuid.uuid4())[:8]
     unique_username = f"{name}-{unique_suffix}"
     user = User(
-        id=str(uuid.uuid4()),
+        id=user_id,
         email=f"{player_id}@example.org",
         username=unique_username,
         display_name=unique_username,
@@ -60,13 +61,13 @@ async def create_player(
         is_verified=True,
     )
     player = Player(
-        player_id=player_id,
-        user_id=user.id,
+        player_id=str(player_id),  # Player model stores as string (UUID(as_uuid=False))
+        user_id=str(user_id),  # User model stores as string
         name=unique_username,  # Use unique username to avoid duplicate key violations
         current_room_id="earth_arkhamcity_sanitarium_room_foyer_001",
     )
     lucidity_record = PlayerLucidity(
-        player_id=player_id,
+        player_id=player_id,  # PlayerLucidity expects UUID type
         current_lcd=lucidity,
         current_tier=tier,
     )
@@ -86,20 +87,20 @@ async def test_catatonia_entry_sets_timestamp_and_notifies(session_factory):
         service = LucidityService(session, catatonia_observer=observer)
 
         result = await service.apply_lucidity_adjustment(
-            player.player_id,
+            uuid.UUID(player.player_id),
             -10,
             reason_code="eldritch_cascade",
             metadata={"source": "unit_test"},
         )
         await session.commit()
 
-        refreshed = await session.get(PlayerLucidity, player.player_id)
+        refreshed = await session.get(PlayerLucidity, uuid.UUID(player.player_id))
         assert refreshed is not None
         assert refreshed.current_tier == "catatonic"
         assert refreshed.catatonia_entered_at is not None
 
         observer.on_catatonia_entered.assert_called_once_with(
-            player_id=player.player_id,
+            player_id=uuid.UUID(player.player_id),
             entered_at=ANY,
             current_lcd=result.new_lcd,
         )
@@ -119,21 +120,22 @@ async def test_catatonia_clearance_resets_timestamp_and_notifies(session_factory
         observer = MagicMock()
         service = LucidityService(session, catatonia_observer=observer)
 
-        await service.apply_lucidity_adjustment(player.player_id, -15, reason_code="shock")
+        player_id_uuid = uuid.UUID(player.player_id)
+        await service.apply_lucidity_adjustment(player_id_uuid, -15, reason_code="shock")
         await session.commit()
 
         # Refresh the lucidity record to ensure we have the latest state after commit
-        lucidity_record = await session.get(PlayerLucidity, player.player_id)
+        lucidity_record = await session.get(PlayerLucidity, player_id_uuid)
         if lucidity_record:
             await session.refresh(lucidity_record)
 
         observer.reset_mock()
 
-        await service.apply_lucidity_adjustment(player.player_id, 20, reason_code="rescue_ritual")
+        await service.apply_lucidity_adjustment(player_id_uuid, 20, reason_code="rescue_ritual")
         await session.commit()
 
         # Refresh to get the latest state after the second adjustment
-        refreshed = await session.get(PlayerLucidity, player.player_id)
+        refreshed = await session.get(PlayerLucidity, player_id_uuid)
         if refreshed:
             await session.refresh(refreshed)
         assert refreshed is not None
@@ -144,7 +146,7 @@ async def test_catatonia_clearance_resets_timestamp_and_notifies(session_factory
         assert observer.on_catatonia_cleared.called, "on_catatonia_cleared should have been called"
         call_args = observer.on_catatonia_cleared.call_args
         assert call_args is not None, "on_catatonia_cleared should have been called with arguments"
-        assert call_args.kwargs["player_id"] == player.player_id
+        assert call_args.kwargs["player_id"] == player_id_uuid
         assert "resolved_at" in call_args.kwargs
 
 
@@ -158,14 +160,15 @@ async def test_catatonia_failover_notifies_when_san_bottoms_out(session_factory)
         observer = MagicMock()
         service = LucidityService(session, catatonia_observer=observer)
 
-        await service.apply_lucidity_adjustment(player.player_id, -200, reason_code="void_gaze")
+        player_id_uuid = uuid.UUID(player.player_id)
+        await service.apply_lucidity_adjustment(player_id_uuid, -200, reason_code="void_gaze")
         await session.commit()
 
-        refreshed = await session.get(PlayerLucidity, player.player_id)
+        refreshed = await session.get(PlayerLucidity, player_id_uuid)
         assert refreshed is not None
         assert refreshed.current_lcd == -100
 
         observer.on_sanitarium_failover.assert_called_once_with(
-            player_id=player.player_id,
+            player_id=player_id_uuid,
             current_lcd=-100,
         )

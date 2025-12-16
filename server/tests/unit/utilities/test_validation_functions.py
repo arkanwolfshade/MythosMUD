@@ -17,6 +17,7 @@ from server.validators.security_validator import (
     get_injection_patterns,
     validate_action_content,
     validate_alias_name,
+    validate_combat_target,
     validate_command_content,
     validate_filter_name,
     validate_message_content,
@@ -355,6 +356,85 @@ class TestTargetPlayerValidation:
                 validate_target_player(target)
 
 
+class TestCombatTargetValidation:
+    """Test centralized combat target validation."""
+
+    def test_validate_combat_target_valid(self):
+        """Test validation with valid combat target names."""
+        valid_targets = [
+            "Alice",
+            "Bob123",
+            "Dr. Francis Morgan",  # NPC with title
+            "Professor Smith",
+            "Alice_Bob",
+            "Charlie-Test",
+            "NPC Name",  # Spaces allowed for NPCs
+        ]
+
+        for target in valid_targets:
+            result = validate_combat_target(target)
+            assert result == target
+
+    def test_validate_combat_target_dangerous_characters(self):
+        """Test validation with dangerous characters in combat targets."""
+        dangerous_targets = [
+            ("Alice<script>", "<"),
+            ("Bob>Test", ">"),
+            ("Charlie&Test", "&"),
+            ('Diana"Test', '"'),
+            ("Eve'Test", "'"),
+            ("Frank\\Test", "\\"),
+            ("Grace/Test", "/"),
+            ("Henry|Test", "|"),
+            ("Iris:Test", ":"),
+            ("Jack;Test", ";"),
+            ("Kate*Test", "*"),
+            ("Liam?Test", "?"),
+        ]
+
+        for target, char in dangerous_targets:
+            # Escape special regex characters in the match pattern
+            escaped_char = char.replace("\\", "\\\\").replace("|", "\\|").replace("*", "\\*").replace("?", "\\?")
+            with pytest.raises(ValueError, match=f"cannot contain '{escaped_char}'"):
+                validate_combat_target(target)
+
+    def test_validate_combat_target_length_limits(self):
+        """Test validation with length limits."""
+        # Empty string should return empty
+        result = validate_combat_target("")
+        assert result == ""
+
+        # Too long
+        long_target = "A" * 51
+        with pytest.raises(ValueError, match="must be 50 characters or less"):
+            validate_combat_target(long_target)
+
+    def test_validate_combat_target_start_character(self):
+        """Test validation requires starting with letter or number."""
+        invalid_starts = [
+            "@Alice",
+            "#Bob",
+            "$Charlie",
+            " Alice",  # Starts with space
+        ]
+
+        for target in invalid_starts:
+            with pytest.raises(ValueError, match="must start with a letter or number"):
+                validate_combat_target(target)
+
+    def test_validate_combat_target_invalid_characters(self):
+        """Test validation with invalid characters."""
+        invalid_targets = [
+            "Alice@Bob",
+            "Bob#Test",
+            "Charlie$Test",
+        ]
+
+        for target in invalid_targets:
+            with pytest.raises(ValueError, match="can only contain"):
+                validate_combat_target(target)
+
+
 class TestComprehensiveValidation:
     """Test comprehensive security validation."""
 
@@ -381,6 +461,33 @@ class TestComprehensiveValidation:
 
         with pytest.raises(ValueError):
             validate_security_comprehensive("123Alice", "player_name")
+
+    def test_validate_security_comprehensive_combat_target_type(self):
+        """Test comprehensive validation with combat_target field type."""
+        result = validate_security_comprehensive("Alice", "combat_target")
+        assert result == "Alice"
+
+        result = validate_security_comprehensive("Dr. Francis Morgan", "combat_target")
+        assert result == "Dr. Francis Morgan"
+
+        with pytest.raises(ValueError):
+            validate_security_comprehensive("Alice<script>", "combat_target")
+
+    def test_validate_security_comprehensive_reason_type(self):
+        """Test comprehensive validation with reason field type."""
+        result = validate_security_comprehensive("Spam", "reason")
+        assert result == "Spam"
+
+        with pytest.raises(ValueError):
+            validate_security_comprehensive("Spam<script>alert('xss')</script>", "reason")
+
+    def test_validate_security_comprehensive_pose_type(self):
+        """Test comprehensive validation with pose field type."""
+        result = validate_security_comprehensive("sits quietly", "pose")
+        assert result == "sits quietly"
+
+        with pytest.raises(ValueError):
+            validate_security_comprehensive("sits<script>alert('xss')</script>", "pose")
 
     def test_validate_security_comprehensive_unknown_type(self):
         """Test comprehensive validation with unknown field type defaults to message."""
@@ -493,6 +600,7 @@ class TestValidationConsistency:
 
         for test_input, field_type in test_cases:
             # Comprehensive validation should match individual validation
+            individual_result = None
             if field_type == "message":
                 individual_result = validate_message_content(test_input)
             elif field_type == "action":
@@ -511,6 +619,10 @@ class TestValidationConsistency:
                 individual_result = validate_filter_name(test_input)
             elif field_type == "target":
                 individual_result = validate_target_player(test_input)
+            elif field_type == "combat_target":
+                individual_result = validate_combat_target(test_input)
+            else:
+                pytest.fail(f"Unhandled field_type: {field_type}")
 
             comprehensive_result = validate_security_comprehensive(test_input, field_type)
             assert individual_result == comprehensive_result
