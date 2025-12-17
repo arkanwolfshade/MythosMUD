@@ -145,7 +145,7 @@ describe.skip('App.tsx Logout State Management', () => {
       });
 
       // Mock logout handler to take time and then complete
-      let resolveLogout: () => void;
+      let resolveLogout: (() => void) | undefined;
       mockLogoutHandler.mockImplementation(async ({ clearState, navigateToLogin }) => {
         await new Promise<void>(resolve => {
           resolveLogout = resolve;
@@ -162,6 +162,7 @@ describe.skip('App.tsx Logout State Management', () => {
       expect(screen.getByTestId('logout-button')).toBeDisabled();
 
       // Complete logout by resolving the promise
+      expect(resolveLogout).toBeDefined();
       resolveLogout!();
 
       await waitFor(() => {
@@ -192,7 +193,7 @@ describe.skip('App.tsx Logout State Management', () => {
       });
 
       // Mock logout handler to take time and then complete
-      let resolveLogout: () => void;
+      let resolveLogout: (() => void) | undefined;
       mockLogoutHandler.mockImplementation(async ({ clearState, navigateToLogin }) => {
         await new Promise<void>(resolve => {
           resolveLogout = resolve;
@@ -210,6 +211,7 @@ describe.skip('App.tsx Logout State Management', () => {
       expect(mockLogoutHandler).toHaveBeenCalledTimes(1);
 
       // Complete logout by resolving the promise
+      expect(resolveLogout).toBeDefined();
       resolveLogout!();
       await waitFor(() => {
         expect(screen.getByPlaceholderText('Username')).toBeInTheDocument();

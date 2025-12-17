@@ -293,7 +293,9 @@ export const GameClientV2Container: React.FC<GameClientV2ContainerProps> = ({
 
       <MainMenuModal
         isOpen={isMainMenuOpen}
-        onClose={() => setIsMainMenuOpen(false)}
+        onClose={() => {
+          setIsMainMenuOpen(false);
+        }}
         onMapClick={() => {
           // Add map as a tab in the tabbed interface
           if (gameState.room) {

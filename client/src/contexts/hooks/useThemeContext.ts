@@ -25,7 +25,9 @@ export const useColorSchemePreference = () => {
   const { preferences, updatePreferences } = useTheme();
   return {
     colorScheme: preferences.colorScheme,
-    setColorScheme: (colorScheme: ColorScheme) => updatePreferences({ colorScheme }),
+    setColorScheme: (colorScheme: ColorScheme) => {
+      updatePreferences({ colorScheme });
+    },
   };
 };
 

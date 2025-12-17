@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { MemoryLeakDetector, useMemoryLeakDetector } from '../memoryLeakDetector';
+import { MemoryLeakDetector, useMemoryLeakDetector, type MemorySnapshot } from '../memoryLeakDetector';
 
 // Mock performance.memory
 const mockMemory = {
@@ -19,7 +19,8 @@ Object.defineProperty(global, 'performance', {
 });
 
 // Also set the global performance for compatibility
-(global as typeof globalThis & { performance: { memory: typeof mockMemory } }).performance = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(global as any).performance = {
   memory: mockMemory,
 };
 
@@ -39,15 +40,15 @@ Object.defineProperty(global, 'clearInterval', {
 
 describe('MemoryLeakDetector', () => {
   let detector: MemoryLeakDetector;
-  let onWarning: ReturnType<typeof vi.fn>;
-  let onCritical: ReturnType<typeof vi.fn>;
+  let onWarning: (message: string, snapshot: MemorySnapshot) => void;
+  let onCritical: (message: string, snapshot: MemorySnapshot) => void;
   let originalConsoleWarn: typeof console.warn;
   let originalConsoleError: typeof console.error;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    onWarning = vi.fn();
-    onCritical = vi.fn();
+    onWarning = vi.fn<(message: string, snapshot: MemorySnapshot) => void>();
+    onCritical = vi.fn<(message: string, snapshot: MemorySnapshot) => void>();
 
     // Mock console methods to prevent stderr noise during tests
     originalConsoleWarn = console.warn;
@@ -61,7 +62,8 @@ describe('MemoryLeakDetector', () => {
     mockMemory.jsHeapSizeLimit = 200 * 1024 * 1024;
 
     // Set up performance mock in beforeEach
-    (global as typeof globalThis & { performance: { memory: typeof mockMemory } }).performance = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (global as any).performance = {
       memory: mockMemory,
     };
 
@@ -121,7 +123,9 @@ describe('MemoryLeakDetector', () => {
     });
 
     it('should handle stop() when not started', () => {
-      expect(() => detector.stop()).not.toThrow();
+      expect(() => {
+        detector.stop();
+      }).not.toThrow();
     });
   });
 

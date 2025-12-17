@@ -276,7 +276,9 @@ export const EdgeCreationModal: React.FC<EdgeCreationModalProps> = ({
             <select
               id="target-room"
               value={targetRoomId}
-              onChange={e => setTargetRoomId(e.target.value)}
+              onChange={e => {
+                setTargetRoomId(e.target.value);
+              }}
               required
               disabled={isEditMode} // Don't allow changing target in edit mode
               className="w-full px-3 py-2 bg-mythos-terminal-background border border-mythos-terminal-border rounded text-mythos-terminal-text disabled:opacity-50 disabled:cursor-not-allowed"
@@ -318,7 +320,9 @@ export const EdgeCreationModal: React.FC<EdgeCreationModalProps> = ({
               <input
                 type="text"
                 value={customDirection}
-                onChange={e => setCustomDirection(e.target.value)}
+                onChange={e => {
+                  setCustomDirection(e.target.value);
+                }}
                 placeholder="Enter direction (e.g., 'portal', 'secret')"
                 required
                 className="w-full px-3 py-2 bg-mythos-terminal-background border border-mythos-terminal-border rounded text-mythos-terminal-text"
@@ -351,7 +355,9 @@ export const EdgeCreationModal: React.FC<EdgeCreationModalProps> = ({
                   <input
                     type="checkbox"
                     checked={flags.includes(flag)}
-                    onChange={() => toggleFlag(flag)}
+                    onChange={() => {
+                      toggleFlag(flag);
+                    }}
                     className="w-4 h-4"
                   />
                   <span className="text-sm text-mythos-terminal-text">{flag}</span>

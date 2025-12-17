@@ -447,7 +447,7 @@ describe('GameTerminalPresentation', () => {
       const playerWithHorrorStats = {
         ...defaultProps.player!,
         stats: {
-          ...defaultProps.player!.stats,
+          ...(defaultProps.player?.stats ?? {}),
           occult_knowledge: 5,
           fear: 3,
           corruption: 2,
@@ -485,7 +485,7 @@ describe('GameTerminalPresentation', () => {
       const playerWithPartialHorrorStats = {
         ...defaultProps.player!,
         stats: {
-          ...defaultProps.player!.stats,
+          ...(defaultProps.player?.stats ?? {}),
           occult_knowledge: 5,
           // Other horror stats missing
         },
@@ -728,7 +728,7 @@ describe('GameTerminalPresentation', () => {
       const playerWithHorrorStats = {
         ...defaultProps.player!,
         stats: {
-          ...defaultProps.player!.stats,
+          ...(defaultProps.player?.stats ?? {}),
           occult_knowledge: 5,
           fear: 3,
           corruption: 2,
@@ -773,7 +773,7 @@ describe('GameTerminalPresentation', () => {
       const playerWithPartialHorrorStats = {
         ...defaultProps.player!,
         stats: {
-          ...defaultProps.player!.stats,
+          ...(defaultProps.player?.stats ?? {}),
           occult_knowledge: 5,
           // Other horror stats missing
         },

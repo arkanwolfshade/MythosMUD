@@ -96,7 +96,7 @@ describe('StatsRollingScreen', () => {
 
       // Now resolve the fetch to clean up and prevent hanging
       await act(async () => {
-        resolveFetch!(mockResponse);
+        resolveFetch?.(mockResponse);
         await fetchPromise;
         // Wait a bit for state updates to complete
         await new Promise(resolve => setTimeout(resolve, 0));
