@@ -323,7 +323,9 @@ export const StyleGuide: React.FC = () => {
                 <TerminalInput
                   placeholder="Player name"
                   value={inputValue}
-                  onChange={e => setInputValue(e.target.value)}
+                  onChange={e => {
+                    setInputValue(e.target.value);
+                  }}
                 />
                 <TerminalInput
                   placeholder="Character name"

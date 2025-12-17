@@ -440,7 +440,9 @@ function App() {
                 placeholder="Password"
                 className="login-input"
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onChange={e => {
+                  setPassword(e.target.value);
+                }}
                 onKeyDown={handleKeyDown}
                 data-testid="password-input"
               />

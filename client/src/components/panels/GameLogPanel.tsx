@@ -275,7 +275,9 @@ export const GameLogPanel: React.FC<GameLogPanelProps> = ({ messages, onClearMes
             <TerminalButton
               variant="secondary"
               size="sm"
-              onClick={() => setShowSearchHistory(false)}
+              onClick={() => {
+                setShowSearchHistory(false);
+              }}
               className="px-2 py-1 text-xs"
             >
               Close

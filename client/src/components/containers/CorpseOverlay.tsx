@@ -116,7 +116,7 @@ export const CorpseOverlay: React.FC<CorpseOverlayProps> = ({ onOpen, className 
       return [];
     }
     return getCorpseContainersInRoom(room.id);
-  }, [getCorpseContainersInRoom, room.id]);
+  }, [getCorpseContainersInRoom, room]);
 
   // Don't render if no corpses
   if (corpseContainers.length === 0) {
@@ -149,8 +149,8 @@ export const CorpseOverlay: React.FC<CorpseOverlayProps> = ({ onOpen, className 
   };
 
   const renderCorpse = (corpse: ContainerComponent) => {
-    const gracePeriodStart = corpse.metadata?.grace_period_start as string | undefined;
-    const gracePeriodSeconds = (corpse.metadata?.grace_period_seconds as number) || 300;
+    const gracePeriodStart = corpse.metadata.grace_period_start as string | undefined;
+    const gracePeriodSeconds = (corpse.metadata.grace_period_seconds as number) || 300;
     const gracePeriodEnd = gracePeriodStart
       ? new Date(new Date(gracePeriodStart).getTime() + gracePeriodSeconds * 1000)
       : null;

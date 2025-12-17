@@ -265,7 +265,7 @@ export const useFeedbackManager = () => {
   );
 
   const searchFeedback = useCallback((query: string) => {
-    return managerRef.current!.searchFeedback(query);
+    return managerRef.current?.searchFeedback(query);
   }, []);
 
   const getFeedbackByType = useCallback((type: FeedbackData['type']) => {
@@ -277,7 +277,7 @@ export const useFeedbackManager = () => {
   }, []);
 
   const exportFeedback = useCallback(() => {
-    return managerRef.current!.exportFeedback();
+    return managerRef.current?.exportFeedback();
   }, []);
 
   const importFeedback = useCallback(

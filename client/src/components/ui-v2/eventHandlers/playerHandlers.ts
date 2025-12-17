@@ -37,7 +37,7 @@ export const handlePlayerEntered: EventHandler = (event, _context, appendMessage
 };
 
 export const handlePlayerLeftGame: EventHandler = (event, _context, appendMessage) => {
-  const playerName = event.data?.player_name as string;
+  const playerName = event.data.player_name as string;
   if (playerName) {
     appendMessage({
       text: `${playerName} has left the game.`,
