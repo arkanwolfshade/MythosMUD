@@ -111,7 +111,18 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'mock-token',
-          characters: [{ id: 'char-1', name: 'testuser', player_id: 'char-1' }],
+          characters: [
+            {
+              id: 'char-1',
+              name: 'testuser',
+              player_id: 'char-1',
+              profession_id: 1,
+              profession_name: 'Professor',
+              level: 1,
+              created_at: new Date().toISOString(),
+              last_active: new Date().toISOString(),
+            },
+          ],
         }),
       };
       mockFetch.mockResolvedValue(mockResponse);
@@ -630,7 +641,18 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'mock-token',
-          characters: [{ id: 'char-1', name: 'testuser', player_id: 'char-1' }],
+          characters: [
+            {
+              id: 'char-1',
+              name: 'testuser',
+              player_id: 'char-1',
+              profession_id: 1,
+              profession_name: 'Professor',
+              level: 1,
+              created_at: new Date().toISOString(),
+              last_active: new Date().toISOString(),
+            },
+          ],
         }),
       };
       mockFetch.mockResolvedValue(mockResponse);
@@ -825,7 +847,18 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'mock-token',
-          characters: [{ id: 'char-1', name: 'testuser', player_id: 'char-1' }],
+          characters: [
+            {
+              id: 'char-1',
+              name: 'testuser',
+              player_id: 'char-1',
+              profession_id: 1,
+              profession_name: 'Professor',
+              level: 1,
+              created_at: new Date().toISOString(),
+              last_active: new Date().toISOString(),
+            },
+          ],
         }),
       };
       mockFetch.mockResolvedValue(mockResponse);
@@ -858,7 +891,18 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'mock-token',
-          characters: [{ id: 'char-1', name: 'testuser', player_id: 'char-1' }],
+          characters: [
+            {
+              id: 'char-1',
+              name: 'testuser',
+              player_id: 'char-1',
+              profession_id: 1,
+              profession_name: 'Professor',
+              level: 1,
+              created_at: new Date().toISOString(),
+              last_active: new Date().toISOString(),
+            },
+          ],
         }),
       };
       mockFetch.mockResolvedValue(mockResponse);
@@ -890,7 +934,18 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: '', // Empty token
-          characters: [{ id: 'char-1', name: 'testuser', player_id: 'char-1' }],
+          characters: [
+            {
+              id: 'char-1',
+              name: 'testuser',
+              player_id: 'char-1',
+              profession_id: 1,
+              profession_name: 'Professor',
+              level: 1,
+              created_at: new Date().toISOString(),
+              last_active: new Date().toISOString(),
+            },
+          ],
         }),
       };
       mockFetch.mockResolvedValue(mockResponse);
@@ -916,7 +971,18 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'valid-token-123',
-          characters: [{ id: 'char-1', name: 'testuser', player_id: 'char-1' }],
+          characters: [
+            {
+              id: 'char-1',
+              name: 'testuser',
+              player_id: 'char-1',
+              profession_id: 1,
+              profession_name: 'Professor',
+              level: 1,
+              created_at: new Date().toISOString(),
+              last_active: new Date().toISOString(),
+            },
+          ],
         }),
       };
       mockFetch.mockResolvedValue(mockResponse);
@@ -1010,7 +1076,18 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'mock-token',
-          characters: [{ id: 'char-1', name: 'testuser', player_id: 'char-1' }],
+          characters: [
+            {
+              id: 'char-1',
+              name: 'testuser',
+              player_id: 'char-1',
+              profession_id: 1,
+              profession_name: 'Professor',
+              level: 1,
+              created_at: new Date().toISOString(),
+              last_active: new Date().toISOString(),
+            },
+          ],
         }),
       };
       mockFetch.mockResolvedValue(mockResponse);
@@ -1059,7 +1136,18 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'mock-token',
-          characters: [{ id: 'char-1', name: 'testuser', player_id: 'char-1' }],
+          characters: [
+            {
+              id: 'char-1',
+              name: 'testuser',
+              player_id: 'char-1',
+              profession_id: 1,
+              profession_name: 'Professor',
+              level: 1,
+              created_at: new Date().toISOString(),
+              last_active: new Date().toISOString(),
+            },
+          ],
         }),
       };
       mockFetch.mockResolvedValue(mockResponse);
@@ -1080,7 +1168,18 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'mock-token',
-          characters: [{ id: 'char-1', name: 'testuser', player_id: 'char-1' }],
+          characters: [
+            {
+              id: 'char-1',
+              name: 'testuser',
+              player_id: 'char-1',
+              profession_id: 1,
+              profession_name: 'Professor',
+              level: 1,
+              created_at: new Date().toISOString(),
+              last_active: new Date().toISOString(),
+            },
+          ],
         }),
       };
       mockFetch.mockImplementation(

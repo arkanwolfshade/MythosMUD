@@ -103,6 +103,7 @@ function App() {
     setIsAuthenticated(false);
     setCharacters([]);
     setSelectedCharacterName('');
+    setSelectedCharacterId('');
     setShowMotd(false);
     setShowCharacterSelection(false);
   }, []); // Only run on mount
@@ -435,6 +436,7 @@ function App() {
     setIsAuthenticated(false);
     setCharacters([]);
     setSelectedCharacterName('');
+    setSelectedCharacterId('');
     setPlayerName('');
     setPassword('');
     setInviteCode('');
@@ -782,6 +784,7 @@ function App() {
     setIsAuthenticated(false);
     setCharacters([]);
     setSelectedCharacterName('');
+    setSelectedCharacterId('');
     setError('Session expired. Please log in again.');
     // The component will re-render and show login screen due to !isAuthenticated check above
     return null;
