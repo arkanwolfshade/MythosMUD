@@ -166,7 +166,35 @@ class SecurityHeadersMiddleware:
         """Add security headers to Response object (compatibility method)."""
 
         if isinstance(response, Response):
-            self._add_security_headers(MutableHeaders(response.headers))
+            # Response.headers is a mutable dict-like object
+            # Directly modify response.headers like correlation middleware does
+            # Strict Transport Security (HSTS)
+            hsts_value = f"max-age={self.hsts_max_age}"
+            if self.hsts_include_subdomains:
+                hsts_value += "; includeSubDomains"
+            response.headers["Strict-Transport-Security"] = hsts_value
+
+            # X-Frame-Options (clickjacking protection)
+            response.headers["X-Frame-Options"] = "DENY"
+
+            # X-Content-Type-Options (MIME type sniffing protection)
+            response.headers["X-Content-Type-Options"] = "nosniff"
+
+            # Referrer Policy (information disclosure protection)
+            response.headers["Referrer-Policy"] = self.referrer_policy
+
+            # Content Security Policy (XSS protection)
+            response.headers["Content-Security-Policy"] = self.csp_policy
+
+            # X-XSS-Protection (legacy XSS protection for older browsers)
+            response.headers["X-XSS-Protection"] = "1; mode=block"
+
+            # Permissions Policy (feature policy replacement)
+            response.headers["Permissions-Policy"] = (
+                "geolocation=(), microphone=(), camera=(), "
+                "payment=(), usb=(), magnetometer=(), gyroscope=(), "
+                "accelerometer=(), ambient-light-sensor=()"
+            )
 
     def _add_security_headers(self, headers: MutableHeaders) -> None:
         """Add all security headers to the response."""

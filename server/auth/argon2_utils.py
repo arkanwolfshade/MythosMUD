@@ -133,7 +133,7 @@ def hash_password(password: str) -> str:
             details={"original_error": str(e), "error_type": type(e).__name__},
             user_friendly="Password processing failed",
         )
-    except Exception as e:
+    except (TypeError, ValueError, MemoryError) as e:
         logger.error("Unexpected error during password hashing", error=str(e), error_type=type(e).__name__)
         log_and_raise(
             AuthenticationError,
@@ -162,6 +162,10 @@ def verify_password(password: str, hashed: str) -> bool:
         logger.warning("Password verification failed - password not a string", password_type=type(password).__name__)  # type: ignore[unreachable]
         return False
 
+    if not isinstance(hashed, str):
+        logger.warning("Password verification failed - hash not a string", hash_type=type(hashed).__name__)  # type: ignore[unreachable]
+        return False
+
     if not hashed:
         logger.warning("Password verification failed - empty hash")
         return False
@@ -174,7 +178,7 @@ def verify_password(password: str, hashed: str) -> bool:
     except (VerificationError, exceptions.InvalidHash) as e:
         logger.warning("Password verification failed - invalid hash", error=str(e))
         return False
-    except Exception as e:
+    except (TypeError, ValueError, MemoryError) as e:
         logger.error("Password verification error", error=str(e), error_type=type(e).__name__)
         return False
 

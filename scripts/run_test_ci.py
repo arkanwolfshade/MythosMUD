@@ -78,6 +78,7 @@ if IN_CI:
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
 
+    # Run tests with coverage
     subprocess.run(
         [
             python_exe,
@@ -87,10 +88,19 @@ if IN_CI:
             "--cov=server",
             "--cov-report=xml",
             "--cov-report=html",
-            "--cov-fail-under=80",
+            "--cov-config=.coveragerc",
             "-v",
             "--tb=short",
         ],
+        cwd=PROJECT_ROOT,
+        check=True,
+        env=env,
+    )
+
+    # Check per-file thresholds
+    check_script = os.path.join(PROJECT_ROOT, "scripts", "check_coverage_thresholds.py")
+    subprocess.run(
+        [python_exe, check_script],
         cwd=PROJECT_ROOT,
         check=True,
         env=env,
@@ -164,7 +174,8 @@ else:
         # Use .venv from Docker volume (preserved from build, not overwritten by mount)
         "cd /workspace && source .venv/bin/activate && "
         "PYTHONUNBUFFERED=1 pytest server/tests/ --cov=server --cov-report=xml --cov-report=html "
-        "--cov-fail-under=80 -v --tb=short"
+        "--cov-config=.coveragerc -v --tb=short && "
+        "uv run python scripts/check_coverage_thresholds.py"
     )
 
     # #region agent log
@@ -289,7 +300,7 @@ else:
         try:
             for line in process.stdout:
                 output_queue.put(("line", line))
-        except Exception as e:
+        except OSError as e:
             output_queue.put(("error", str(e)))
 
     reader_thread = threading.Thread(target=read_output, daemon=True)
@@ -367,7 +378,7 @@ else:
                             pass
                     # #endregion
                 elif item_type == "error":
-                    raise Exception(f"Error reading output: {item}")
+                    raise OSError(f"Error reading output: {item}")
             except queue.Empty:
                 # Check if process is still running
                 if process.poll() is not None:
@@ -412,7 +423,7 @@ else:
         except (RuntimeError, TypeError):
             pass
         # #endregion
-    except Exception as e:
+    except (OSError, KeyboardInterrupt, RuntimeError) as e:
         # #region agent log
         try:
             with open(log_path, "a", encoding="utf-8") as f:
@@ -441,10 +452,10 @@ else:
 
     # Create result-like object
     class Result:
-        def __init__(self, returncode, stdout, stderr):
-            self.returncode = returncode
-            self.stdout = stdout
-            self.stderr = stderr
+        def __init__(self, retcode, stdout_data, stderr_data):
+            self.returncode = retcode
+            self.stdout = stdout_data
+            self.stderr = stderr_data
 
     result = Result(returncode, stdout, stderr)
 

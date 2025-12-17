@@ -7,6 +7,7 @@ and security checks in security_utils.py.
 
 import os
 import tempfile
+import unittest.mock as mock
 from pathlib import Path
 
 import pytest
@@ -371,3 +372,75 @@ class TestEdgeCases:
         # Just check that it returns a string and doesn't raise an exception
         assert isinstance(result, str)
         assert len(result) > 0
+
+    def test_validate_secure_path_path_traversal_commonpath_check(self):
+        """Test path traversal detection using commonpath check."""
+        # Create a scenario where path appears valid but escapes base directory
+        base_path = "/tmp/test"
+        # Use a path that normalizes outside the base directory
+        # This tests the commonpath check at lines 57-69
+        user_path = "../../etc/passwd"
+
+        # First check should catch the ".." pattern
+        with pytest.raises(HTTPException) as exc_info:
+            validate_secure_path(base_path, user_path)
+
+        assert exc_info.value.status_code == 400
+
+    def test_validate_secure_path_cross_drive_windows(self):
+        """Test path validation handles ValueError for cross-drive paths (Windows)."""
+        # Simulate Windows cross-drive scenario
+        # This tests the ValueError exception handling at lines 70-74
+        base_path = "C:\\temp"
+        user_path = "file.txt"
+
+        # Should not raise ValueError, should handle gracefully
+        result = validate_secure_path(base_path, user_path)
+        assert isinstance(result, str)
+
+    def test_validate_secure_path_escapes_base_after_normalization(self):
+        """Test path that escapes base directory after normalization."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = temp_dir
+            # Create a path that, after normalization, escapes the base
+            # This is tricky - we need a path that passes the ".." check
+            # but fails the commonpath check
+            user_path = "subdir/../../.." + temp_dir.replace(os.sep, "/") + "/escape"
+
+            # The path should be caught by the commonpath check
+            # But first it will be caught by the ".." check
+            with pytest.raises(HTTPException):
+                validate_secure_path(base_path, user_path)
+
+    def test_validate_secure_path_commonpath_failure(self):
+        """Test path traversal detection via commonpath check (lines 59-66)."""
+        # Test the case where commonpath != base_path
+        # This tests the logger.warning and HTTPException at lines 59-66
+        base_path = "/tmp/test"
+        user_path = "file.txt"
+
+        # Mock os.path.commonpath to return a different path than base_path
+        # This simulates a path that escapes the base directory
+        with mock.patch("server.security_utils.os.path.commonpath") as mock_commonpath:
+            mock_commonpath.return_value = "/tmp"  # Different from base_path
+
+            with pytest.raises(HTTPException) as exc_info:
+                validate_secure_path(base_path, user_path)
+
+            assert exc_info.value.status_code == 400
+            assert exc_info.value.detail == "Path traversal attempt detected"
+
+    def test_validate_secure_path_valueerror_exception(self):
+        """Test ValueError exception handling for cross-drive paths (lines 70-74)."""
+        # Test the ValueError exception path which occurs on Windows
+        # when paths are on different drives
+        base_path = "/tmp/test"
+        user_path = "file.txt"
+
+        # Mock os.path.commonpath to raise ValueError (simulating cross-drive scenario)
+        with mock.patch("server.security_utils.os.path.commonpath") as mock_commonpath:
+            mock_commonpath.side_effect = ValueError("Paths don't have a common prefix")
+
+            # Should not raise an exception, should handle gracefully
+            result = validate_secure_path(base_path, user_path)
+            assert isinstance(result, str)

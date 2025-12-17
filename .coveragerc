@@ -1,0 +1,27 @@
+[run]
+source = server
+omit =
+    */tests/*
+    */alembic/*
+    */__pycache__/*
+    */stubs/*
+
+[report]
+precision = 2
+show_missing = True
+skip_covered = False
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+    # Don't complain about missing debug-only code
+    def __repr__
+    # Don't complain if tests don't hit defensive assertion code
+    raise AssertionError
+    raise NotImplementedError
+    # Don't complain if non-runnable code isn't run
+    if __name__ == .__main__.:
+    # Don't complain about abstract methods
+    @(abc\.)?abstractmethod
+
+# Normal files - 70% threshold (default)
+fail_under = 70

@@ -406,6 +406,126 @@ describe('GameTerminalPresentation', () => {
       // Component should still be rendered
       expect(container.firstChild).toBeInTheDocument();
     });
+
+    it('should clean up resize event listener on unmount', () => {
+      const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
+      const { unmount } = render(<GameTerminalPresentation {...defaultProps} />);
+
+      unmount();
+
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('resize', expect.any(Function));
+      removeEventListenerSpy.mockRestore();
+    });
+  });
+
+  describe('Player Stats Display', () => {
+    it('should display all core attributes when present', () => {
+      const playerWithAllStats = {
+        ...defaultProps.player!,
+        stats: {
+          ...(defaultProps.player?.stats ?? {}),
+          strength: 10,
+          dexterity: 12,
+          constitution: 14,
+          intelligence: 16,
+          wisdom: 13,
+          charisma: 15,
+        },
+      };
+
+      render(<GameTerminalPresentation {...defaultProps} player={playerWithAllStats} />);
+
+      expect(screen.getByText('STR:')).toBeInTheDocument();
+      expect(screen.getByText('DEX:')).toBeInTheDocument();
+      expect(screen.getByText('CON:')).toBeInTheDocument();
+      expect(screen.getByText('INT:')).toBeInTheDocument();
+      expect(screen.getByText('WIS:')).toBeInTheDocument();
+      expect(screen.getByText('CHA:')).toBeInTheDocument();
+    });
+
+    it('should display horror stats when present', () => {
+      const playerWithHorrorStats = {
+        ...defaultProps.player!,
+        stats: {
+          ...defaultProps.player!.stats,
+          occult_knowledge: 5,
+          fear: 3,
+          corruption: 2,
+          cult_affiliation: 1,
+        },
+      };
+
+      render(<GameTerminalPresentation {...defaultProps} player={playerWithHorrorStats} />);
+
+      expect(screen.getByText('Occult:')).toBeInTheDocument();
+      expect(screen.getByText('Fear:')).toBeInTheDocument();
+      expect(screen.getByText('Corruption:')).toBeInTheDocument();
+      expect(screen.getByText('Cult:')).toBeInTheDocument();
+    });
+
+    it('should display only present core attributes', () => {
+      const playerWithPartialStats = {
+        ...defaultProps.player!,
+        stats: {
+          current_dp: 100,
+          lucidity: 80,
+          strength: 10,
+          // Other stats missing
+        },
+      };
+
+      render(<GameTerminalPresentation {...defaultProps} player={playerWithPartialStats} />);
+
+      expect(screen.getByText('STR:')).toBeInTheDocument();
+      expect(screen.queryByText('DEX:')).not.toBeInTheDocument();
+      expect(screen.queryByText('CON:')).not.toBeInTheDocument();
+    });
+
+    it('should display only present horror stats', () => {
+      const playerWithPartialHorrorStats = {
+        ...defaultProps.player!,
+        stats: {
+          ...defaultProps.player!.stats,
+          occult_knowledge: 5,
+          // Other horror stats missing
+        },
+      };
+
+      render(<GameTerminalPresentation {...defaultProps} player={playerWithPartialHorrorStats} />);
+
+      expect(screen.getByText('Occult:')).toBeInTheDocument();
+      expect(screen.queryByText('Fear:')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Header Display', () => {
+    it('should display player name in header', () => {
+      render(<GameTerminalPresentation {...defaultProps} playerName="CustomPlayer" />);
+
+      expect(screen.getByText('Player: CustomPlayer')).toBeInTheDocument();
+    });
+
+    it('should display connection status badge correctly', () => {
+      const { container } = render(<GameTerminalPresentation {...defaultProps} isConnected={true} />);
+
+      const statusBadge = container.querySelector('.bg-mythos-terminal-success');
+      expect(statusBadge).toBeInTheDocument();
+      expect(statusBadge).toHaveTextContent('Connected');
+    });
+
+    it('should display error badge when error exists', () => {
+      const { container } = render(<GameTerminalPresentation {...defaultProps} error="Test Error" />);
+
+      const errorElement = container.querySelector('.text-mythos-terminal-error');
+      expect(errorElement).toBeInTheDocument();
+      expect(errorElement).toHaveTextContent('Test Error');
+    });
+
+    it('should not display reconnect attempts when 0', () => {
+      render(<GameTerminalPresentation {...defaultProps} reconnectAttempts={0} />);
+
+      expect(screen.queryByText(/Reconnect:/)).not.toBeInTheDocument();
+    });
   });
 
   describe('Edge Cases', () => {
@@ -552,6 +672,171 @@ describe('GameTerminalPresentation', () => {
       expect(() => {
         render(<GameTerminalPresentation {...minimalProps} />);
       }).not.toThrow();
+    });
+  });
+
+  describe('Window Resize Handling', () => {
+    it('should handle window resize events', () => {
+      const { container } = render(<GameTerminalPresentation {...defaultProps} />);
+
+      // Simulate window resize
+      const resizeEvent = new Event('resize');
+      window.dispatchEvent(resizeEvent);
+
+      // Component should still be rendered and functional
+      expect(container.firstChild).toBeInTheDocument();
+      expect(screen.getByTestId('chat-panel')).toBeInTheDocument();
+    });
+
+    it('should clean up resize event listener on unmount', () => {
+      const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
+      const { unmount } = render(<GameTerminalPresentation {...defaultProps} />);
+
+      unmount();
+
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('resize', expect.any(Function));
+      removeEventListenerSpy.mockRestore();
+    });
+  });
+
+  describe('Player Stats Display', () => {
+    it('should display all core attributes when present', () => {
+      const playerWithAllStats = {
+        ...defaultProps.player!,
+        stats: {
+          ...(defaultProps.player?.stats ?? {}),
+          strength: 10,
+          dexterity: 12,
+          constitution: 14,
+          intelligence: 16,
+          wisdom: 13,
+          charisma: 15,
+        },
+      };
+
+      render(<GameTerminalPresentation {...defaultProps} player={playerWithAllStats} />);
+
+      expect(screen.getByText('STR:')).toBeInTheDocument();
+      expect(screen.getByText('DEX:')).toBeInTheDocument();
+      expect(screen.getByText('CON:')).toBeInTheDocument();
+      expect(screen.getByText('INT:')).toBeInTheDocument();
+      expect(screen.getByText('WIS:')).toBeInTheDocument();
+      expect(screen.getByText('CHA:')).toBeInTheDocument();
+    });
+
+    it('should display horror stats when present', () => {
+      const playerWithHorrorStats = {
+        ...defaultProps.player!,
+        stats: {
+          ...defaultProps.player!.stats,
+          occult_knowledge: 5,
+          fear: 3,
+          corruption: 2,
+          cult_affiliation: 1,
+        },
+      };
+
+      render(<GameTerminalPresentation {...defaultProps} player={playerWithHorrorStats} />);
+
+      expect(screen.getByText('Occult:')).toBeInTheDocument();
+      expect(screen.getByText('Fear:')).toBeInTheDocument();
+      expect(screen.getByText('Corruption:')).toBeInTheDocument();
+      expect(screen.getByText('Cult:')).toBeInTheDocument();
+    });
+
+    it('should not display stats section when player stats are missing', () => {
+      render(<GameTerminalPresentation {...defaultProps} player={null} />);
+
+      expect(screen.queryByText('Health:')).not.toBeInTheDocument();
+      expect(screen.queryByText('Lucidity:')).not.toBeInTheDocument();
+    });
+
+    it('should display only present core attributes', () => {
+      const playerWithPartialStats = {
+        ...defaultProps.player!,
+        stats: {
+          current_dp: 100,
+          lucidity: 80,
+          strength: 10,
+          // Other stats missing
+        },
+      };
+
+      render(<GameTerminalPresentation {...defaultProps} player={playerWithPartialStats} />);
+
+      expect(screen.getByText('STR:')).toBeInTheDocument();
+      expect(screen.queryByText('DEX:')).not.toBeInTheDocument();
+      expect(screen.queryByText('CON:')).not.toBeInTheDocument();
+    });
+
+    it('should display only present horror stats', () => {
+      const playerWithPartialHorrorStats = {
+        ...defaultProps.player!,
+        stats: {
+          ...defaultProps.player!.stats,
+          occult_knowledge: 5,
+          // Other horror stats missing
+        },
+      };
+
+      render(<GameTerminalPresentation {...defaultProps} player={playerWithPartialHorrorStats} />);
+
+      expect(screen.getByText('Occult:')).toBeInTheDocument();
+      expect(screen.queryByText('Fear:')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Debug Logging', () => {
+    it('should initialize debug logger on mount', () => {
+      // The component uses debugLogger internally
+      // We verify it renders without errors
+      const { container } = render(<GameTerminalPresentation {...defaultProps} />);
+
+      expect(container.firstChild).toBeInTheDocument();
+    });
+  });
+
+  describe('Header Display', () => {
+    it('should display player name in header', () => {
+      render(<GameTerminalPresentation {...defaultProps} playerName="CustomPlayer" />);
+
+      expect(screen.getByText('Player: CustomPlayer')).toBeInTheDocument();
+    });
+
+    it('should display connection status badge correctly', () => {
+      const { container } = render(<GameTerminalPresentation {...defaultProps} isConnected={true} />);
+
+      const statusBadge = container.querySelector('.bg-mythos-terminal-success');
+      expect(statusBadge).toBeInTheDocument();
+      expect(statusBadge).toHaveTextContent('Connected');
+    });
+
+    it('should display error badge when error exists', () => {
+      const { container } = render(<GameTerminalPresentation {...defaultProps} error="Test Error" />);
+
+      const errorElement = container.querySelector('.text-mythos-terminal-error');
+      expect(errorElement).toBeInTheDocument();
+      expect(errorElement).toHaveTextContent('Test Error');
+    });
+
+    it('should not display reconnect attempts when 0', () => {
+      render(<GameTerminalPresentation {...defaultProps} reconnectAttempts={0} />);
+
+      expect(screen.queryByText(/Reconnect:/)).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Panel Variants', () => {
+    it('should render panels with correct variants', () => {
+      render(<GameTerminalPresentation {...defaultProps} />);
+
+      // Chat panel should have eldritch variant
+      const chatPanel = screen.getByTestId('draggable-panel-chat');
+      expect(chatPanel).toBeInTheDocument();
+
+      // Command panel should have elevated variant
+      const commandPanel = screen.getByTestId('draggable-panel-commands');
+      expect(commandPanel).toBeInTheDocument();
     });
   });
 });

@@ -10,7 +10,7 @@
  * as documented in the Pnakotic Manuscripts' section on graph visualization.
  */
 
-import type { Node, Edge } from 'reactflow';
+import type { Edge, Node } from 'reactflow';
 import type { RoomNodeData } from '../types';
 
 /**
@@ -149,6 +149,142 @@ export const calculateGridPosition = (
 };
 
 /**
+ * Node state for force simulation.
+ */
+interface NodeState {
+  id: string;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+}
+
+/**
+ * Initialize node positions in a spiral pattern to avoid initial overlaps.
+ */
+const initializeNodePositions = (nodes: Node<RoomNodeData>[], minDistance: number): Node<RoomNodeData>[] => {
+  return nodes.map((node, index) => {
+    // Check if node has a meaningful position (not just at origin)
+    const hasPosition = !(node.position.x === 0 && node.position.y === 0) || index === 0;
+
+    if (!hasPosition) {
+      // Spread initial positions in a wider circle/spiral pattern
+      // Use a spiral to ensure nodes are well-separated initially
+      const angle = (index * 2.4 * Math.PI) / Math.sqrt(nodes.length); // Golden angle approximation
+      const radius = Math.sqrt(index) * (minDistance * 1.5); // Spiral outward
+      return {
+        ...node,
+        position: {
+          x: Math.cos(angle) * radius,
+          y: Math.sin(angle) * radius,
+        },
+      };
+    }
+    return node;
+  });
+};
+
+/**
+ * Apply link forces (attraction between connected nodes).
+ */
+const applyLinkForces = (edgeList: Array<{ source: NodeState; target: NodeState }>, linkDistance: number): void => {
+  for (const edge of edgeList) {
+    const dx = edge.target.x - edge.source.x;
+    const dy = edge.target.y - edge.source.y;
+    const distance = Math.sqrt(dx * dx + dy * dy) || 1;
+    const force = (distance - linkDistance) * 0.1;
+
+    const fx = (dx / distance) * force;
+    const fy = (dy / distance) * force;
+
+    edge.source.vx += fx;
+    edge.source.vy += fy;
+    edge.target.vx -= fx;
+    edge.target.vy -= fy;
+  }
+};
+
+/**
+ * Apply collision forces when nodes are too close.
+ */
+const applyCollisionForces = (
+  node1: NodeState,
+  node2: NodeState,
+  minDistance: number,
+  collisionStrength: number
+): void => {
+  const dx = node2.x - node1.x;
+  const dy = node2.y - node1.y;
+  const distance = Math.sqrt(dx * dx + dy * dy) || 0.1;
+
+  if (distance < minDistance) {
+    // Calculate overlap amount
+    const overlap = minDistance - distance;
+    // Apply strong repulsive force proportional to overlap
+    const force = overlap * collisionStrength;
+    const fx = (dx / distance) * force;
+    const fy = (dy / distance) * force;
+    node1.vx -= fx;
+    node1.vy -= fy;
+    node2.vx += fx;
+    node2.vy += fy;
+  }
+};
+
+/**
+ * Apply charge forces (repulsion between all nodes).
+ */
+const applyChargeForces = (nodesArray: NodeState[], config: ForceLayoutConfig): void => {
+  for (let i = 0; i < nodesArray.length; i++) {
+    for (let j = i + 1; j < nodesArray.length; j++) {
+      const node1 = nodesArray[i];
+      const node2 = nodesArray[j];
+
+      const dx = node2.x - node1.x;
+      const dy = node2.y - node1.y;
+      const distance = Math.sqrt(dx * dx + dy * dy) || 0.1; // Avoid division by zero
+
+      // Strong collision force when nodes are too close (prevents overlap)
+      if (distance < config.minDistance) {
+        applyCollisionForces(node1, node2, config.minDistance, config.collisionStrength);
+      } else {
+        // Standard repulsive force (inverse square law)
+        // Use a smoother falloff to prevent sudden jumps
+        const force = config.chargeStrength / (distance * distance + 1);
+        const fx = (dx / distance) * force;
+        const fy = (dy / distance) * force;
+        node1.vx -= fx;
+        node1.vy -= fy;
+        node2.vx += fx;
+        node2.vy += fy;
+      }
+    }
+  }
+};
+
+/**
+ * Apply center force to keep nodes centered.
+ */
+const applyCenterForce = (nodeMap: Map<string, NodeState>, centerStrength: number): void => {
+  const centerX = 0;
+  const centerY = 0;
+  for (const node of nodeMap.values()) {
+    node.vx += (centerX - node.x) * centerStrength;
+    node.vy += (centerY - node.y) * centerStrength;
+  }
+};
+
+/**
+ * Update node positions with damping.
+ */
+const updateNodePositions = (nodeMap: Map<string, NodeState>, damping: number): void => {
+  for (const node of nodeMap.values()) {
+    node.x += node.vx * damping;
+    node.y += node.vy * damping;
+  }
+};
+
+/**
  * Apply force-directed layout to minimize edge crossings.
  * This uses a physics simulation to position nodes optimally.
  */
@@ -162,28 +298,10 @@ export const applyForceLayout = (
   }
 
   // Initialize positions if not set - spread nodes in a wider pattern to avoid initial overlaps
-  const positionedNodes = nodes.map((node, index) => {
-    // Check if node has a meaningful position (not just at origin)
-    const hasPosition = !(node.position.x === 0 && node.position.y === 0) || index === 0;
-
-    if (!hasPosition) {
-      // Spread initial positions in a wider circle/spiral pattern
-      // Use a spiral to ensure nodes are well-separated initially
-      const angle = (index * 2.4 * Math.PI) / Math.sqrt(nodes.length); // Golden angle approximation
-      const radius = Math.sqrt(index) * (config.minDistance * 1.5); // Spiral outward
-      return {
-        ...node,
-        position: {
-          x: Math.cos(angle) * radius,
-          y: Math.sin(angle) * radius,
-        },
-      };
-    }
-    return node;
-  });
+  const positionedNodes = initializeNodePositions(nodes, config.minDistance);
 
   // Create node map for quick lookup
-  const nodeMap = new Map(
+  const nodeMap = new Map<string, NodeState>(
     positionedNodes.map(n => [
       n.id,
       {
@@ -196,11 +314,18 @@ export const applyForceLayout = (
     ])
   );
 
-  // Create edge list with node references
-  const edgeList = edges.map(edge => ({
-    source: nodeMap.get(edge.source)!,
-    target: nodeMap.get(edge.target)!,
-  }));
+  // Create edge list with node references, filtering out edges with missing nodes
+  const edgeList = edges
+    .filter(edge => {
+      const source = nodeMap.get(edge.source);
+      const target = nodeMap.get(edge.target);
+      return source && target;
+    })
+    .map(edge => {
+      const source = nodeMap.get(edge.source)!;
+      const target = nodeMap.get(edge.target)!;
+      return { source, target };
+    });
 
   // Run force simulation
   for (let iteration = 0; iteration < config.iterations; iteration++) {
@@ -211,71 +336,17 @@ export const applyForceLayout = (
     }
 
     // Apply link forces (attraction between connected nodes)
-    for (const edge of edgeList) {
-      const dx = edge.target.x - edge.source.x;
-      const dy = edge.target.y - edge.source.y;
-      const distance = Math.sqrt(dx * dx + dy * dy) || 1;
-      const force = (distance - config.linkDistance) * 0.1;
-
-      const fx = (dx / distance) * force;
-      const fy = (dy / distance) * force;
-
-      edge.source.vx += fx;
-      edge.source.vy += fy;
-      edge.target.vx -= fx;
-      edge.target.vy -= fy;
-    }
+    applyLinkForces(edgeList, config.linkDistance);
 
     // Apply charge forces and collision avoidance (repulsion between all nodes)
     const nodesArray = Array.from(nodeMap.values());
-    for (let i = 0; i < nodesArray.length; i++) {
-      for (let j = i + 1; j < nodesArray.length; j++) {
-        const node1 = nodesArray[i];
-        const node2 = nodesArray[j];
-
-        const dx = node2.x - node1.x;
-        const dy = node2.y - node1.y;
-        const distance = Math.sqrt(dx * dx + dy * dy) || 0.1; // Avoid division by zero
-
-        // Strong collision force when nodes are too close (prevents overlap)
-        if (distance < config.minDistance) {
-          // Calculate overlap amount
-          const overlap = config.minDistance - distance;
-          // Apply strong repulsive force proportional to overlap
-          const force = overlap * config.collisionStrength;
-          const fx = (dx / distance) * force;
-          const fy = (dy / distance) * force;
-          node1.vx -= fx;
-          node1.vy -= fy;
-          node2.vx += fx;
-          node2.vy += fy;
-        } else {
-          // Standard repulsive force (inverse square law)
-          // Use a smoother falloff to prevent sudden jumps
-          const force = config.chargeStrength / (distance * distance + 1);
-          const fx = (dx / distance) * force;
-          const fy = (dy / distance) * force;
-          node1.vx -= fx;
-          node1.vy -= fy;
-          node2.vx += fx;
-          node2.vy += fy;
-        }
-      }
-    }
+    applyChargeForces(nodesArray, config);
 
     // Apply center force
-    const centerX = 0;
-    const centerY = 0;
-    for (const node of nodeMap.values()) {
-      node.vx += (centerX - node.x) * config.centerStrength;
-      node.vy += (centerY - node.y) * config.centerStrength;
-    }
+    applyCenterForce(nodeMap, config.centerStrength);
 
     // Update positions with damping
-    for (const node of nodeMap.values()) {
-      node.x += node.vx * config.damping;
-      node.y += node.vy * config.damping;
-    }
+    updateNodePositions(nodeMap, config.damping);
   }
 
   // Convert back to React Flow nodes

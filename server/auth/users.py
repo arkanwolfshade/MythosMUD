@@ -9,7 +9,7 @@ import os
 import uuid
 from typing import Any
 
-from fastapi import Depends, Request
+from fastapi import Depends, HTTPException, Request
 from fastapi_users import BaseUserManager, FastAPIUsers, UUIDIDMixin
 from fastapi_users.authentication import (
     AuthenticationBackend,
@@ -70,9 +70,15 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         """Parse a value into a UUID instance."""
         if isinstance(value, uuid.UUID):
             return value
+        # Convert non-string values to string first
+        if not isinstance(value, str):
+            try:
+                value = str(value)
+            except Exception as err:
+                raise InvalidID() from err
         try:
             return uuid.UUID(value)
-        except (ValueError, TypeError) as err:
+        except (ValueError, TypeError, AttributeError) as err:
             raise InvalidID() from err
 
 
@@ -159,7 +165,6 @@ get_current_active_user = fastapi_users.current_user(active=True)
 # Enhanced logging wrapper for get_current_user
 def get_current_user_with_logging():
     """Enhanced get_current_user with detailed logging."""
-    logger = get_logger(__name__)
 
     async def _get_current_user_with_logging(request: Request | None = None) -> dict | None:
         try:
@@ -179,8 +184,11 @@ def get_current_user_with_logging():
                 logger.warning("Authentication failed: No user returned from get_current_user")
 
             return user
+        except HTTPException as e:
+            logger.warning("Authentication HTTP error", status_code=e.status_code, detail=e.detail)
+            return None
         except Exception as e:
-            logger.error("Authentication error", error_type=type(e).__name__, error=str(e))
+            logger.error("Unexpected authentication error", error_type=type(e).__name__, error=str(e))
             logger.debug("Authentication error details", error_type=type(e).__name__, error=str(e))
             return None
 

@@ -43,11 +43,16 @@ async def session_factory():
 
 async def create_player(session: AsyncSession, username: str) -> Player:
     """Provision a user/player pair for lucidity service tests."""
+    # Use unique identifiers to avoid conflicts in parallel test runs
+    unique_id = uuid.uuid4().hex[:8]
+    unique_username = f"{username}_{unique_id}"
+    unique_email = f"{unique_username}@example.com"
+
     user = User(
         id=str(uuid.uuid4()),
-        email=f"{username}@example.com",
-        username=username,
-        display_name=username,
+        email=unique_email,
+        username=unique_username,
+        display_name=unique_username,
         hashed_password="hashed",
         is_active=True,
         is_superuser=False,
@@ -56,7 +61,7 @@ async def create_player(session: AsyncSession, username: str) -> Player:
     player = Player(
         player_id=uuid.uuid4(),
         user_id=user.id,
-        name=username.capitalize(),
+        name=unique_username.capitalize(),
     )
     session.add_all([user, player])
     await session.flush()

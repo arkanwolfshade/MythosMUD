@@ -13,6 +13,7 @@ from datetime import datetime
 from typing import cast
 
 import pytest
+from sqlalchemy.exc import SQLAlchemyError
 
 from server.async_persistence import AsyncPersistenceLayer
 from server.exceptions import DatabaseError, ValidationError
@@ -232,9 +233,13 @@ class TestSQLInjectionPrevention:
                                 break
                     else:
                         pytest.skip("Could not find or create a test user - database may be empty or schema mismatch")
-                except Exception:
-                    # If anything fails, continue to next iteration or skip
-                    await session.rollback()
+                except (DatabaseError, ValidationError, SQLAlchemyError):
+                    # If database operations fail, rollback and continue to next iteration
+                    try:
+                        await session.rollback()
+                    except (DatabaseError, ValidationError, SQLAlchemyError):
+                        # Ignore rollback errors - session may already be closed
+                        pass
                     continue
                 break
 
@@ -250,10 +255,6 @@ class TestSQLInjectionPrevention:
         if test_user_id:
             try:
                 # Try to find and delete any existing test players
-                from sqlalchemy import text
-
-                from server.database import get_async_session
-
                 async for session in get_async_session():
                     # Delete test players that might exist from previous test runs
                     # Since player_id is now UUID, delete by user_id (which has unique constraint)
@@ -515,6 +516,12 @@ class TestSQLInjectionPrevention:
         test_user_id = getattr(persistence, "_test_user_id", None)
         if not test_user_id:
             pytest.skip("Test user ID not available from persistence fixture")
+
+        # Verify user exists before creating player
+        user_exists = await self._verify_user_exists(test_user_id)
+        if not user_exists:
+            pytest.skip(f"Test user {test_user_id} does not exist in database")
+
         test_player_id = str(uuid.uuid4())
         player = Player(
             player_id=test_player_id,

@@ -9,23 +9,27 @@ export function MotdContent() {
       </div>
 
       <div className="yellow-sign">
-        *
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~
         <br />
-        /|\
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ &nbsp;\
         <br />
-        / @ \
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;( &nbsp;&nbsp;)
         <br />
-        / | \
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ &nbsp;@ &nbsp;\
         <br />
-        *---+---*
+        &nbsp;&nbsp;&nbsp;&nbsp;/ &nbsp;&nbsp;| &nbsp;&nbsp;\
         <br />
-        / | /
+        &nbsp;&nbsp;&nbsp;( &nbsp;&nbsp;&nbsp;| &nbsp;&nbsp;&nbsp;)
         <br />
-        * +-/---*
+        &nbsp;&nbsp;&nbsp;\ &nbsp;&nbsp;&nbsp;| &nbsp;&nbsp;&nbsp;/
         <br />
-        |/
+        &nbsp;&nbsp;&nbsp;&nbsp;\ &nbsp;&nbsp;| &nbsp;&nbsp;/
         <br />
-        *
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\ &nbsp;| &nbsp;/
+        <br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\ | /
+        <br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* &nbsp;&nbsp;&nbsp;*
         <br />
       </div>
 

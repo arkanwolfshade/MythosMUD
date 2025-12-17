@@ -48,12 +48,30 @@ class TestCORSConfigurationVerification:
         app.state.room_service = mock_application_container.room_service
         app.state.event_bus = mock_application_container.event_bus
 
+        # Mock get_current_user dependency to avoid authentication failures
+        import uuid
+        from unittest.mock import Mock
+
+        from server.api.players import get_current_user
+
+        mock_user = Mock()
+        mock_user.id = uuid.uuid4()
+        mock_user.username = "testuser"
+        mock_user.email = "test@example.com"
+
+        async def mock_get_current_user():
+            return mock_user
+
+        app.dependency_overrides[get_current_user] = mock_get_current_user
+
         return app
 
     @pytest.fixture
     def client(self, app):
         """Create TestClient for testing."""
-        return TestClient(app)
+        # Cleanup dependency overrides after test
+        yield TestClient(app)
+        app.dependency_overrides.clear()
 
     def test_cors_preflight_request_with_allowed_origin(self, client):
         """Test CORS preflight request with allowed origin."""

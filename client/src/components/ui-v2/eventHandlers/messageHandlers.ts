@@ -8,25 +8,27 @@ import type { EventHandler, GameStateUpdates } from './types';
 
 const GAME_LOG_CHANNEL = 'game-log';
 
+/**
+ * Channel to chat type mapping for O(1) lookup complexity.
+ */
+const CHANNEL_TO_TYPE_MAP: Record<string, string> = {
+  whisper: 'whisper',
+  shout: 'shout',
+  emote: 'emote',
+  party: 'tell',
+  tell: 'tell',
+  system: 'system',
+  game: 'system',
+  local: 'say',
+  say: 'say',
+};
+
+/**
+ * Resolve chat type from channel name.
+ * Uses a lookup map for O(1) complexity instead of switch statement.
+ */
 const resolveChatTypeFromChannel = (channel: string): string => {
-  switch (channel) {
-    case 'whisper':
-      return 'whisper';
-    case 'shout':
-      return 'shout';
-    case 'emote':
-      return 'emote';
-    case 'party':
-    case 'tell':
-      return 'tell';
-    case 'system':
-    case 'game':
-      return 'system';
-    case 'local':
-    case 'say':
-    default:
-      return 'say';
-  }
+  return CHANNEL_TO_TYPE_MAP[channel] ?? 'say';
 };
 
 export const handleCommandResponse: EventHandler = (event, context, appendMessage) => {
@@ -151,14 +153,17 @@ export const handleRoomMessage: EventHandler = (event, _context, appendMessage) 
   if (message) {
     let messageType: string;
     let channel: string;
+    let type: string;
 
     if (messageTypeFromEvent === 'system') {
       messageType = 'system';
       channel = GAME_LOG_CHANNEL;
+      type = 'system'; // System messages should always have type 'system'
     } else {
       const messageTypeResult = determineMessageType(message);
       messageType = messageTypeResult.type;
       channel = messageTypeResult.channel ?? 'game';
+      type = resolveChatTypeFromChannel(channel);
     }
 
     appendMessage({
@@ -167,7 +172,7 @@ export const handleRoomMessage: EventHandler = (event, _context, appendMessage) 
       isHtml,
       messageType: messageType,
       channel: channel,
-      type: resolveChatTypeFromChannel(channel),
+      type: type,
     });
   }
 };

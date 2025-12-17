@@ -24,9 +24,7 @@ class TestZoneConfigurationDatabaseSchema:
         import asyncpg
 
         database_url = os.getenv("DATABASE_URL")
-        if not database_url:
-            pytest.skip("DATABASE_URL not set")
-
+        # DATABASE_URL is guaranteed by conftest.py, but we still need to convert format
         # Convert SQLAlchemy-style URL to asyncpg-compatible format
         if database_url.startswith("postgresql+asyncpg://"):
             database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
@@ -86,9 +84,7 @@ class TestZoneConfigurationDatabaseSchema:
         import asyncpg
 
         database_url = os.getenv("DATABASE_URL")
-        if not database_url:
-            pytest.skip("DATABASE_URL not set")
-
+        # DATABASE_URL is guaranteed by conftest.py, but we still need to convert format
         # Convert SQLAlchemy-style URL to asyncpg-compatible format
         if database_url.startswith("postgresql+asyncpg://"):
             database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
@@ -121,9 +117,7 @@ class TestZoneConfigurationDatabaseSchema:
         import asyncpg
 
         database_url = os.getenv("DATABASE_URL")
-        if not database_url:
-            pytest.skip("DATABASE_URL not set")
-
+        # DATABASE_URL is guaranteed by conftest.py, but we still need to convert format
         # Convert SQLAlchemy-style URL to asyncpg-compatible format
         if database_url.startswith("postgresql+asyncpg://"):
             database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
@@ -158,9 +152,7 @@ class TestSubzonesDatabaseSchema:
         import asyncpg
 
         database_url = os.getenv("DATABASE_URL")
-        if not database_url:
-            pytest.skip("DATABASE_URL not set")
-
+        # DATABASE_URL is guaranteed by conftest.py, but we still need to convert format
         # Convert SQLAlchemy-style URL to asyncpg-compatible format
         if database_url.startswith("postgresql+asyncpg://"):
             database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
@@ -207,9 +199,7 @@ class TestSubzonesDatabaseSchema:
         import asyncpg
 
         database_url = os.getenv("DATABASE_URL")
-        if not database_url:
-            pytest.skip("DATABASE_URL not set")
-
+        # DATABASE_URL is guaranteed by conftest.py, but we still need to convert format
         # Convert SQLAlchemy-style URL to asyncpg-compatible format
         if database_url.startswith("postgresql+asyncpg://"):
             database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
@@ -243,9 +233,7 @@ class TestSubzonesDatabaseSchema:
         import asyncpg
 
         database_url = os.getenv("DATABASE_URL")
-        if not database_url:
-            pytest.skip("DATABASE_URL not set")
-
+        # DATABASE_URL is guaranteed by conftest.py, but we still need to convert format
         # Convert SQLAlchemy-style URL to asyncpg-compatible format
         if database_url.startswith("postgresql+asyncpg://"):
             database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
@@ -285,9 +273,7 @@ class TestZoneConfigurationDataLoading:
         import asyncpg
 
         database_url = os.getenv("DATABASE_URL")
-        if not database_url:
-            pytest.skip("DATABASE_URL not set")
-
+        # DATABASE_URL is guaranteed by conftest.py, but we still need to convert format
         # Convert SQLAlchemy-style URL to asyncpg-compatible format
         if database_url.startswith("postgresql+asyncpg://"):
             database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
@@ -357,9 +343,7 @@ class TestZoneConfigurationDataLoading:
         import asyncpg
 
         database_url = os.getenv("DATABASE_URL")
-        if not database_url:
-            pytest.skip("DATABASE_URL not set")
-
+        # DATABASE_URL is guaranteed by conftest.py, but we still need to convert format
         # Convert SQLAlchemy-style URL to asyncpg-compatible format
         if database_url.startswith("postgresql+asyncpg://"):
             database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)

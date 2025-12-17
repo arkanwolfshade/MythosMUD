@@ -350,14 +350,25 @@ async def close_npc_db():
 
                 # For Windows/asyncpg: Close connections gracefully before disposal
                 # CRITICAL: asyncpg connections must be closed in the same event loop they were created in
-                # We add a small delay to allow any pending operations to complete before disposal
-                # This helps prevent RuntimeWarning about unawaited Connection._cancel coroutines
+                # We need to ensure all connections are properly closed before disposal to prevent
+                # RuntimeWarning about unawaited Connection._cancel coroutines during GC
                 try:
-                    # Give any pending operations a moment to complete
-                    await asyncio.sleep(0.1)
+                    # Step 1: Wait for any pending operations to complete
+                    # This gives time for any in-flight queries to finish
+                    await asyncio.sleep(0.3)
 
-                    # Now dispose the engine
-                    await engine.dispose()
+                    # Step 2: Shield disposal from cancellation to ensure cleanup completes
+                    # This prevents Connection._cancel coroutines from being interrupted during cleanup
+                    async def _dispose_engine():
+                        await engine.dispose()
+                        # Wait a bit more to ensure all asyncpg cleanup coroutines complete
+                        # This helps prevent Connection._cancel coroutines from being garbage collected
+                        # before they're awaited
+                        await asyncio.sleep(0.2)
+
+                    # Shield the disposal to prevent cancellation from interrupting cleanup
+                    await asyncio.wait_for(asyncio.shield(_dispose_engine()), timeout=3.0)
+
                     logger.info("NPC database connections closed")
                 except TimeoutError:
                     # If disposal times out, log but continue

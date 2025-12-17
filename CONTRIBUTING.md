@@ -799,34 +799,58 @@ class TestCombatSystem:
 
 **Requirements**:
 
-- **Minimum**: 80% test coverage for all new code
-- **Target**: 90% test coverage
-- **Critical Code**: 100% coverage (auth, security, data persistence)
+- **Critical Files**: 90% test coverage (security, authentication, data handling)
+  - `server/auth/*` - Authentication and password hashing
+  - `server/security_utils.py` - Security utilities
+  - `server/validators/security_validator.py` - Security validation
+  - `server/database.py` - Database initialization
+  - `server/persistence/*` - Data persistence
+  - `server/services/admin_auth_service.py` - Admin authentication
+  - `server/services/inventory_mutation_guard.py` - Inventory security
+- **Normal Files**: 70% test coverage (all other code)
+- **CI Enforcement**: Coverage thresholds are enforced in CI/CD
+- **Pre-commit Hook**: Coverage thresholds checked before commit (if coverage.xml exists)
 
 **Coverage Exclusions**:
 
-- Type stubs and protocol definitions
+- Type stubs and protocol definitions (`server/stubs/*`)
+- Test files (`server/tests/*`)
+- Database migrations (`server/alembic/*`)
 - Intentionally unreachable code (defensive programming)
 - Third-party integration code (test integration points)
 
 **Check Coverage**:
 
 ```powershell
-cd server
-uv run pytest --cov=. --cov-report=html --cov-report=term
+# Run tests with coverage
+make test-server-coverage
 
 # View HTML report
 # Open htmlcov/index.html in browser
+
+# Check coverage thresholds
+python scripts/check_coverage_thresholds.py
+
+# Analyze coverage gaps and generate status document
+python scripts/analyze_coverage_gaps.py
 ```
+
+**Coverage Configuration**:
+
+- Coverage settings are in `.coveragerc` and `pyproject.toml`
+- Per-file thresholds are enforced via `scripts/check_coverage_thresholds.py`
+- Coverage reports are automatically uploaded to Codacy in CI/CD
 
 **Coverage Report Example**:
 
 ```
 Name                                    Stmts   Miss  Cover
 -----------------------------------------------------------
-server/game/combat.py                      45      3    93%
-server/game/movement.py                    32      0   100%
-server/commands/chat.py                    56      8    86%
+server/auth/argon2_utils.py               234      5    98%  (CRITICAL: requires 90%)
+server/security_utils.py                 147      8    95%  (CRITICAL: requires 90%)
+server/game/combat.py                     45      3    93%
+server/game/movement.py                   32      0   100%
+server/commands/chat.py                   56     18    68%  (NORMAL: requires 70%)
 -----------------------------------------------------------
 TOTAL                                    1234     89    93%
 ```
@@ -851,6 +875,15 @@ make test-client
 
 # Run client E2E tests (Playwright)
 make test-client-runtime
+
+# Run tests with coverage
+make test-server-coverage
+
+# Check coverage thresholds (after running tests)
+python scripts/check_coverage_thresholds.py
+
+# Analyze coverage gaps
+python scripts/analyze_coverage_gaps.py
 
 # Run specific test file
 cd server

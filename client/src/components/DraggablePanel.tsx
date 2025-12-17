@@ -109,53 +109,93 @@ export const DraggablePanel: React.FC<DraggablePanelProps> = ({
   // Ensure panels are on-screen after mount and when viewport/defaults change
   // For grid panels, this effect is skipped since CSS Grid handles positioning
   // Use useLayoutEffect to run synchronously before paint, preventing visual flash
+  // Use refs to track previous values and prevent infinite loops
+  const prevDefaultPositionRef = useRef(defaultPosition);
+  const prevDefaultSizeRef = useRef(defaultSize);
+  const hasInitializedRef = useRef(false);
+
   useLayoutEffect(() => {
     // Skip position fixing for grid-positioned panels - CSS Grid handles it
     if (isGridPositioned) return;
 
-    const fixPosition = () => {
-      const currentViewport = getViewportDimensions();
-      if (currentViewport.width === 0 || currentViewport.height === 0) {
-        // If viewport not ready, use fallback and schedule retry
-        const fallbackPos = relativeToAbsolute(defaultPosition, 1920, 1080);
-        const fallbackSize = relativeSizeToAbsolute(defaultSize, 1920, 1080);
+    // Check if defaults have actually changed (object reference comparison)
+    const positionChanged =
+      prevDefaultPositionRef.current.x !== defaultPosition.x || prevDefaultPositionRef.current.y !== defaultPosition.y;
+    const sizeChanged =
+      prevDefaultSizeRef.current.width !== defaultSize.width ||
+      prevDefaultSizeRef.current.height !== defaultSize.height;
+
+    // Only update if defaults changed or this is the first initialization
+    if (!hasInitializedRef.current || positionChanged || sizeChanged) {
+      const fixPosition = () => {
+        const currentViewport = getViewportDimensions();
+        if (currentViewport.width === 0 || currentViewport.height === 0) {
+          // If viewport not ready, use fallback and schedule retry
+          const fallbackPos = relativeToAbsolute(defaultPosition, 1920, 1080);
+          const fallbackSize = relativeSizeToAbsolute(defaultSize, 1920, 1080);
+          const padding = 50;
+          const newPos = {
+            x: Math.max(padding, Math.min(fallbackPos.x, 1920 - fallbackSize.width - padding)),
+            y: Math.max(padding, Math.min(fallbackPos.y, 1080 - fallbackSize.height - padding)),
+          };
+          // Only update if values actually changed
+          setPosition(prev => {
+            if (prev.x !== newPos.x || prev.y !== newPos.y) {
+              return newPos;
+            }
+            return prev;
+          });
+          setSize(prev => {
+            if (prev.width !== fallbackSize.width || prev.height !== fallbackSize.height) {
+              return fallbackSize;
+            }
+            return prev;
+          });
+          // Retry with actual viewport once available
+          setTimeout(fixPosition, 0);
+          return;
+        }
+
+        const currentAbsolutePosition = relativeToAbsolute(
+          defaultPosition,
+          currentViewport.width,
+          currentViewport.height
+        );
+        const currentAbsoluteSize = relativeSizeToAbsolute(defaultSize, currentViewport.width, currentViewport.height);
+
         const padding = 50;
-        setPosition({
-          x: Math.max(padding, Math.min(fallbackPos.x, 1920 - fallbackSize.width - padding)),
-          y: Math.max(padding, Math.min(fallbackPos.y, 1080 - fallbackSize.height - padding)),
+        const safePos = {
+          x: Math.max(
+            padding,
+            Math.min(currentAbsolutePosition.x, currentViewport.width - currentAbsoluteSize.width - padding)
+          ),
+          y: Math.max(
+            padding,
+            Math.min(currentAbsolutePosition.y, currentViewport.height - currentAbsoluteSize.height - padding)
+          ),
+        };
+
+        // Only update if values actually changed to prevent infinite loops
+        setPosition(prev => {
+          if (prev.x !== safePos.x || prev.y !== safePos.y) {
+            return safePos;
+          }
+          return prev;
         });
-        setSize(fallbackSize);
-        // Retry with actual viewport once available
-        setTimeout(fixPosition, 0);
-        return;
-      }
-
-      const currentAbsolutePosition = relativeToAbsolute(
-        defaultPosition,
-        currentViewport.width,
-        currentViewport.height
-      );
-      const currentAbsoluteSize = relativeSizeToAbsolute(defaultSize, currentViewport.width, currentViewport.height);
-
-      const padding = 50;
-      const safePos = {
-        x: Math.max(
-          padding,
-          Math.min(currentAbsolutePosition.x, currentViewport.width - currentAbsoluteSize.width - padding)
-        ),
-        y: Math.max(
-          padding,
-          Math.min(currentAbsolutePosition.y, currentViewport.height - currentAbsoluteSize.height - padding)
-        ),
+        setSize(prev => {
+          if (prev.width !== currentAbsoluteSize.width || prev.height !== currentAbsoluteSize.height) {
+            return currentAbsoluteSize;
+          }
+          return prev;
+        });
       };
 
-      // Always use safe default position - no localStorage persistence
-      setPosition(safePos);
-      setSize(currentAbsoluteSize);
-    };
-
-    // Run immediately - useLayoutEffect runs synchronously before paint
-    fixPosition();
+      // Run immediately - useLayoutEffect runs synchronously before paint
+      fixPosition();
+      hasInitializedRef.current = true;
+      prevDefaultPositionRef.current = defaultPosition;
+      prevDefaultSizeRef.current = defaultSize;
+    }
   }, [defaultPosition, defaultSize, isGridPositioned]);
   const isRelativePositionRef = useRef(defaultPosition.x <= 1 && defaultPosition.y <= 1);
   const isRelativeSizeRef = useRef(defaultSize.width <= 1 && defaultSize.height <= 1);

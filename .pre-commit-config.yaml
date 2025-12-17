@@ -86,3 +86,14 @@ repos:
         pass_filenames: false
         always_run: true
         stages: [pre-commit]
+      - id: check-coverage-thresholds
+        name: Check Coverage Thresholds
+        entry: python scripts/check_coverage_thresholds.py
+        language: system
+        types: [python]
+        pass_filenames: false
+        always_run: false
+        stages: [pre-commit]
+        # Only run if coverage.xml exists (after tests have been run)
+        # This prevents blocking commits when coverage hasn't been generated
+        # Developers should run 'make test-server-coverage' before committing

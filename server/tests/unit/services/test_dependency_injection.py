@@ -96,12 +96,30 @@ class TestServiceDependencyInjection:
             mock_application_container.connection_manager = connection_manager  # AI: Use local instance, not global
             app.state.container = mock_application_container
 
+            # Mock get_current_user dependency to avoid authentication failures
+            import uuid
+            from unittest.mock import Mock
+
+            from server.api.players import get_current_user
+
+            mock_user = Mock()
+            mock_user.id = uuid.uuid4()
+            mock_user.username = "testuser"
+            mock_user.email = "test@example.com"
+
+            async def mock_get_current_user():
+                return mock_user
+
+            app.dependency_overrides[get_current_user] = mock_get_current_user
+
             return app
 
     @pytest.fixture
     def client(self, app):
         """Create test client."""
-        return TestClient(app)
+        # Cleanup dependency overrides after test
+        yield TestClient(app)
+        app.dependency_overrides.clear()
 
     def test_player_service_dependency_injection_via_endpoint(self, client):
         """Test that PlayerService is correctly injected via API endpoint."""
