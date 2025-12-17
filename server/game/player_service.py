@@ -144,19 +144,37 @@ class PlayerService:
             user_id=user_id,
         )
 
-        # Check if player already exists
+        # MULTI-CHARACTER: Check character limit if user_id is provided
+        if user_id is not None:
+            active_characters = await self.persistence.get_active_players_by_user_id(str(user_id))
+            if len(active_characters) >= 3:
+                logger.warning("Character creation failed - character limit reached", user_id=user_id)
+                context = create_error_context()
+                context.metadata["user_id"] = str(user_id)
+                context.metadata["operation"] = "create_player_with_stats"
+                context.metadata["active_character_count"] = len(active_characters)
+                log_and_raise_enhanced(
+                    ValidationError,
+                    "Character limit reached",
+                    context=context,
+                    details={"user_id": str(user_id), "active_character_count": len(active_characters)},
+                    user_friendly="You have reached the maximum number of characters (3). Please delete a character to create a new one.",
+                )
+
+        # MULTI-CHARACTER: Check if character name already exists (case-insensitive, active characters only)
+        # get_player_by_name now excludes deleted characters and uses case-insensitive comparison
         existing_player = await self.persistence.get_player_by_name(name)
         if existing_player:
-            logger.warning("Player creation failed - name already exists")
+            logger.warning("Character creation failed - name already exists", name=name)
             context = create_error_context()
             context.metadata["player_name"] = name
             context.metadata["operation"] = "create_player_with_stats"
             log_and_raise_enhanced(
                 ValidationError,
-                "Player name already exists",
+                "Character name already exists",
                 context=context,
                 details={"player_name": name, "existing_player_id": str(existing_player.player_id)},
-                user_friendly="A player with this name already exists",
+                user_friendly="A character with this name already exists (names are case-insensitive)",
             )
 
         # Generate user_id if not provided
@@ -484,6 +502,94 @@ class PlayerService:
         logger.debug("Player aliases deleted")
 
         return True, f"Player {player_name} has been deleted"
+
+    async def get_user_characters(self, user_id: uuid.UUID) -> list[PlayerRead]:
+        """
+        Get all active characters for a user.
+
+        MULTI-CHARACTER: Returns list of active (non-deleted) characters for a user.
+
+        Args:
+            user_id: The user's ID (UUID)
+
+        Returns:
+            list[PlayerRead]: List of active character data
+        """
+        logger.debug("Getting user characters", user_id=user_id)
+        players = await self.persistence.get_active_players_by_user_id(str(user_id))
+        return [await self._convert_player_to_schema(player) for player in players]
+
+    async def soft_delete_character(self, player_id: uuid.UUID, user_id: uuid.UUID) -> tuple[bool, str]:
+        """
+        Soft delete a character (sets is_deleted=True, deleted_at=timestamp).
+
+        MULTI-CHARACTER: Soft deletion allows character names to be reused while preserving data.
+        Validates that the character belongs to the user before deletion.
+
+        Args:
+            player_id: The character's ID (UUID)
+            user_id: The user's ID (UUID) - used for validation
+
+        Returns:
+            tuple[bool, str]: (success, message)
+
+        Raises:
+            ValidationError: If character not found or doesn't belong to user
+        """
+        logger.debug("Attempting to soft delete character", player_id=player_id, user_id=user_id)
+        player = await self.persistence.get_player_by_id(player_id)
+        if not player:
+            logger.warning("Character not found for soft deletion", player_id=player_id)
+            context = create_error_context()
+            context.metadata["player_id"] = player_id
+            context.metadata["operation"] = "soft_delete_character"
+            log_and_raise_enhanced(
+                ValidationError,
+                "Character not found for deletion",
+                context=context,
+                details={"player_id": player_id},
+                user_friendly="Character not found",
+            )
+
+        # Validate that character belongs to user
+        if str(player.user_id) != str(user_id):
+            logger.warning("Character does not belong to user", player_id=player_id, user_id=user_id)
+            context = create_error_context()
+            context.metadata["player_id"] = player_id
+            context.metadata["user_id"] = str(user_id)
+            context.metadata["operation"] = "soft_delete_character"
+            log_and_raise_enhanced(
+                ValidationError,
+                "Character does not belong to user",
+                context=context,
+                details={"player_id": player_id, "user_id": str(user_id)},
+                user_friendly="You can only delete your own characters",
+            )
+
+        # Check if already deleted
+        if player.is_deleted:
+            logger.warning("Character already deleted", player_id=player_id)
+            return False, "Character is already deleted"
+
+        # Soft delete the character
+        success = await self.persistence.soft_delete_player(player_id)
+        if not success:
+            logger.error("Failed to soft delete character", player_id=player_id)
+            context = create_error_context()
+            context.metadata["player_id"] = player_id
+            context.metadata["operation"] = "soft_delete_character"
+            log_and_raise_enhanced(
+                DatabaseError,
+                "Failed to soft delete character",
+                context=context,
+                details={"player_id": player_id},
+                user_friendly="Failed to delete character",
+            )
+
+        player_name = player.name if hasattr(player, "name") else "unknown"
+        logger.info("Character soft-deleted successfully", player_id=player_id, character_name=player_name)
+
+        return True, f"Character {player_name} has been deleted"
 
     async def update_player_location(self, player_name: str, new_room_id: str) -> bool:
         """

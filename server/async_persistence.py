@@ -20,6 +20,7 @@ from .exceptions import DatabaseError
 from .logging.enhanced_logging_config import get_logger
 from .models.player import Player
 from .models.profession import Profession
+from .models.user import User
 from .persistence.repositories import (
     ContainerRepository,
     ExperienceRepository,
@@ -402,9 +403,59 @@ class AsyncPersistenceLayer:
         """Get a player by ID. Delegates to PlayerRepository."""
         return await self._player_repo.get_player_by_id(player_id)
 
+    async def get_players_by_user_id(self, user_id: str) -> list[Player]:
+        """Get all players (including deleted) for a user ID. Delegates to PlayerRepository."""
+        return await self._player_repo.get_players_by_user_id(user_id)
+
+    async def get_active_players_by_user_id(self, user_id: str) -> list[Player]:
+        """Get active (non-deleted) players for a user ID. Delegates to PlayerRepository."""
+        return await self._player_repo.get_active_players_by_user_id(user_id)
+
     async def get_player_by_user_id(self, user_id: str) -> Player | None:
-        """Get a player by user ID. Delegates to PlayerRepository."""
+        """Get the first active player by user ID (backward compatibility). Delegates to PlayerRepository."""
         return await self._player_repo.get_player_by_user_id(user_id)
+
+    async def soft_delete_player(self, player_id: uuid.UUID) -> bool:
+        """Soft delete a player (sets is_deleted=True). Delegates to PlayerRepository."""
+        return await self._player_repo.soft_delete_player(player_id)
+
+    async def get_user_by_username_case_insensitive(self, username: str) -> User | None:
+        """
+        Get a user by username (case-insensitive).
+
+        MULTI-CHARACTER: Usernames are stored case-sensitively but checked case-insensitively for uniqueness.
+
+        Args:
+            username: Username (case-insensitive matching)
+
+        Returns:
+            User | None: User object or None if not found
+
+        Raises:
+            DatabaseError: If database operation fails
+        """
+        from sqlalchemy import func
+
+        context = create_error_context()
+        context.metadata["operation"] = "get_user_by_username_case_insensitive"
+        context.metadata["username"] = username
+
+        try:
+            async for session in get_async_session():
+                # Use case-insensitive comparison
+                stmt = select(User).where(func.lower(User.username) == func.lower(username))
+                result = await session.execute(stmt)
+                user = result.scalar_one_or_none()
+                return user
+            return None
+        except Exception as e:
+            log_and_raise(
+                DatabaseError,
+                f"Database error retrieving user by username '{username}': {e}",
+                context=context,
+                details={"username": username, "error": str(e)},
+                user_friendly="Failed to retrieve user information",
+            )
 
     async def save_player(self, player: Player) -> None:
         """Save a player. Delegates to PlayerRepository."""

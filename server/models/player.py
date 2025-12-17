@@ -9,7 +9,7 @@ import json
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
 
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text, event, text
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text, event, text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.ext.mutable import MutableDict, MutableList
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -44,11 +44,14 @@ class Player(Base):
     player_id = Column(UUID(as_uuid=False), primary_key=True)
 
     # Foreign key to users table - use UUID to match users.id (UUID type in PostgreSQL)
-    # Explicit index=True for clarity (unique=True already creates index, but explicit is better)
-    user_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), unique=True, nullable=False, index=True)
+    # MULTI-CHARACTER: Removed unique=True to allow multiple characters per user
+    # Explicit index=True for efficient queries
+    user_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), nullable=False, index=True)
 
     # Player information
-    name = Column(String(length=50), unique=True, nullable=False, index=True)
+    # MULTI-CHARACTER: Removed unique=True - uniqueness enforced by case-insensitive partial unique index
+    # in database (idx_players_name_lower_unique_active) for active characters only
+    name = Column(String(length=50), nullable=False, index=True)
 
     # Game data stored as JSONB (migrated from TEXT in migration 006)
     # BUGFIX: Use MutableDict to track in-place mutations for proper persistence
@@ -92,8 +95,9 @@ class Player(Base):
     is_admin = Column(Integer(), default=0, nullable=False)
 
     # ARCHITECTURE FIX Phase 3.1: Relationships defined directly in model (no circular imports)
+    # MULTI-CHARACTER: Changed to one-to-many relationship (uselist=True)
     # Using simple string reference - SQLAlchemy resolves via registry after all models imported
-    user: Mapped["User"] = relationship("User", back_populates="player", overlaps="player")
+    user: Mapped["User"] = relationship("User", back_populates="players", overlaps="player")
     spells: Mapped[list["PlayerSpell"]] = relationship(
         "PlayerSpell", back_populates="player", cascade="all, delete-orphan"
     )
@@ -101,9 +105,19 @@ class Player(Base):
     # Profession - add index for queries filtering by profession
     profession_id = Column(Integer(), default=0, nullable=False, index=True)
 
+    # MULTI-CHARACTER: Soft deletion support
+    is_deleted = Column(Boolean, default=False, nullable=False, index=True)
+    deleted_at = Column(DateTime(), nullable=True)
+
     # Timestamps (persist naive UTC)
     created_at = Column(DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
     last_active = Column(DateTime(), default=lambda: datetime.now(UTC).replace(tzinfo=None), nullable=False)
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Initialize Player instance."""
+        super().__init__(*args, **kwargs)
+        # Initialize instance attributes
+        self._equipped_items: dict[str, Any] | None = None
 
     def __repr__(self) -> str:
         """String representation of the player."""
@@ -151,7 +165,7 @@ class Player(Base):
             stats["position"] = "standing"
             try:
                 self.set_stats(stats)
-            except Exception:
+            except (json.JSONDecodeError, TypeError, AttributeError):
                 # Fallback silently if persistence update fails during read-time normalization
                 pass
 
@@ -211,7 +225,7 @@ class Player(Base):
         if isinstance(equipped, str):
             try:
                 equipped_dict = cast(dict[str, Any], json.loads(equipped))
-            except (TypeError, json.JSONDecodeError):
+            except (json.JSONDecodeError, TypeError, AttributeError):
                 equipped_dict = {}
             self._equipped_items = equipped_dict
             return equipped_dict
@@ -381,7 +395,7 @@ def _convert_legacy_stats_string(target: Player, context: Any) -> None:
 
     Args:
         target: The Player instance being loaded
-        context: SQLAlchemy load context
+        context: SQLAlchemy query context (unused but required by event signature)
     """
     if isinstance(target.stats, str):  # type: ignore[unreachable]
         try:  # type: ignore[unreachable]

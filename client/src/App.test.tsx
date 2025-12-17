@@ -111,8 +111,7 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'mock-token',
-          has_character: true,
-          character_name: 'testuser',
+          characters: [{ id: 'char-1', name: 'testuser', player_id: 'char-1' }],
         }),
       };
       mockFetch.mockResolvedValue(mockResponse);
@@ -237,8 +236,7 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'mock-token',
-          has_character: false,
-          character_name: '',
+          characters: [],
         }),
       };
 
@@ -338,8 +336,7 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'mock-token',
-          has_character: false,
-          character_name: '',
+          characters: [],
         }),
       };
 
@@ -392,8 +389,7 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'mock-token',
-          has_character: false,
-          character_name: '',
+          characters: [],
         }),
       };
 
@@ -465,8 +461,7 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'mock-token',
-          has_character: false,
-          character_name: '',
+          characters: [],
         }),
       };
 
@@ -531,8 +526,7 @@ describe('App', () => {
             ok: true,
             json: vi.fn().mockResolvedValue({
               access_token: 'mock-token',
-              has_character: false,
-              character_name: '',
+              characters: [],
             }),
           });
         } else if (url.includes('/professions')) {
@@ -636,8 +630,7 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'mock-token',
-          has_character: true,
-          character_name: 'testuser',
+          characters: [{ id: 'char-1', name: 'testuser', player_id: 'char-1' }],
         }),
       };
       mockFetch.mockResolvedValue(mockResponse);
@@ -663,8 +656,7 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'mock-token',
-          has_character: false,
-          character_name: '',
+          characters: [],
         }),
       };
 
@@ -833,8 +825,7 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'mock-token',
-          has_character: true,
-          character_name: 'testuser',
+          characters: [{ id: 'char-1', name: 'testuser', player_id: 'char-1' }],
         }),
       };
       mockFetch.mockResolvedValue(mockResponse);
@@ -850,9 +841,9 @@ describe('App', () => {
       fireEvent.change(passwordInput, { target: { value: 'testpass' } });
       fireEvent.click(loginButton);
 
-      // Wait for MOTD screen to appear (new flow for existing users)
+      // Wait for character selection screen (new flow for existing users with characters)
       await waitFor(() => {
-        expect(screen.getByText(/Welcome to the Dreamlands/)).toBeInTheDocument();
+        expect(screen.getByText(/Select Your Character/)).toBeInTheDocument();
       });
 
       // Verify the logout handler mock is set up
@@ -867,8 +858,7 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'mock-token',
-          has_character: true,
-          character_name: 'testuser',
+          characters: [{ id: 'char-1', name: 'testuser', player_id: 'char-1' }],
         }),
       };
       mockFetch.mockResolvedValue(mockResponse);
@@ -884,9 +874,9 @@ describe('App', () => {
       fireEvent.change(passwordInput, { target: { value: 'testpass' } });
       fireEvent.click(loginButton);
 
-      // Wait for MOTD screen to appear (new flow for existing users)
+      // Wait for character selection screen (new flow for existing users with characters)
       await waitFor(() => {
-        expect(screen.getByText(/Welcome to the Dreamlands/)).toBeInTheDocument();
+        expect(screen.getByText(/Select Your Character/)).toBeInTheDocument();
       });
 
       // Verify the logout handler mock is set up
@@ -900,8 +890,7 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: '', // Empty token
-          has_character: true,
-          character_name: 'testuser',
+          characters: [{ id: 'char-1', name: 'testuser', player_id: 'char-1' }],
         }),
       };
       mockFetch.mockResolvedValue(mockResponse);
@@ -927,8 +916,7 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'valid-token-123',
-          has_character: true,
-          character_name: 'testuser',
+          characters: [{ id: 'char-1', name: 'testuser', player_id: 'char-1' }],
         }),
       };
       mockFetch.mockResolvedValue(mockResponse);
@@ -943,7 +931,16 @@ describe('App', () => {
       fireEvent.change(passwordInput, { target: { value: 'testpass' } });
       fireEvent.click(loginButton);
 
-      // Should successfully authenticate and show MOTD screen (new flow)
+      // Should successfully authenticate and show character selection screen
+      await waitFor(() => {
+        expect(screen.getByText(/Select Your Character/)).toBeInTheDocument();
+      });
+
+      // Select a character
+      const selectButton = screen.getByText('Select Character');
+      fireEvent.click(selectButton);
+
+      // Wait for MOTD screen to appear after character selection
       await waitFor(() => {
         expect(screen.getByText(/Welcome to the Dreamlands/)).toBeInTheDocument();
       });
@@ -966,8 +963,7 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: null, // Null token
-          has_character: false,
-          character_name: '',
+          characters: [],
         }),
       };
 
@@ -1014,8 +1010,7 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'mock-token',
-          has_character: true,
-          character_name: 'testuser',
+          characters: [{ id: 'char-1', name: 'testuser', player_id: 'char-1' }],
         }),
       };
       mockFetch.mockResolvedValue(mockResponse);
@@ -1030,6 +1025,15 @@ describe('App', () => {
       fireEvent.change(usernameInput, { target: { value: 'testuser' } });
       fireEvent.change(passwordInput, { target: { value: 'testpass' } });
       fireEvent.click(loginButton);
+
+      // Wait for character selection screen
+      await waitFor(() => {
+        expect(screen.getByText(/Select Your Character/)).toBeInTheDocument();
+      });
+
+      // Select a character to get to MOTD screen
+      const selectButton = screen.getByText('Select Character');
+      fireEvent.click(selectButton);
 
       // Wait for MOTD screen
       await waitFor(() => {
@@ -1055,8 +1059,7 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'mock-token',
-          has_character: true,
-          character_name: 'testuser',
+          characters: [{ id: 'char-1', name: 'testuser', player_id: 'char-1' }],
         }),
       };
       mockFetch.mockResolvedValue(mockResponse);
@@ -1077,8 +1080,7 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'mock-token',
-          has_character: true,
-          character_name: 'testuser',
+          characters: [{ id: 'char-1', name: 'testuser', player_id: 'char-1' }],
         }),
       };
       mockFetch.mockImplementation(
@@ -1115,8 +1117,7 @@ describe('App', () => {
         ok: true,
         json: vi.fn().mockResolvedValue({
           access_token: 'mock-token',
-          has_character: false,
-          character_name: '',
+          characters: [],
         }),
       };
 

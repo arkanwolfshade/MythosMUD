@@ -22,9 +22,13 @@ const ProfessionSelectionScreen = lazy(() =>
 const StatsRollingScreen = lazy(() =>
   import('./components/StatsRollingScreen').then(m => ({ default: m.StatsRollingScreen }))
 );
+const CharacterSelectionScreen = lazy(() =>
+  import('./components/CharacterSelectionScreen').then(m => ({ default: m.CharacterSelectionScreen }))
+);
 
 // Import types that are needed for props
 import type { Profession } from './components/ProfessionCard';
+import type { CharacterInfo, LoginResponse } from './types/auth';
 
 // Import the Stats interface from StatsRollingScreen
 interface Stats {
@@ -36,16 +40,32 @@ interface Stats {
   charisma: number;
 }
 
+// Server response character type (server returns 'id', client expects 'player_id')
+interface ServerCharacterResponse {
+  id?: string;
+  player_id?: string;
+  name: string;
+  profession_id: number;
+  profession_name?: string;
+  level: number;
+  created_at: string;
+  last_active: string;
+}
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [hasCharacter, setHasCharacter] = useState(false);
-  const [characterName, setCharacterName] = useState('');
+  // MULTI-CHARACTER: Replaced hasCharacter/characterName with characters array
+  const [characters, setCharacters] = useState<CharacterInfo[]>([]);
+  const [selectedCharacterName, setSelectedCharacterName] = useState<string>('');
+  const [selectedCharacterId, setSelectedCharacterId] = useState<string>('');
   const [playerName, setPlayerName] = useState('');
   const [password, setPassword] = useState('');
   const [inviteCode, setInviteCode] = useState('');
   const [authToken, setAuthToken] = useState('');
   const [showDemo, setShowDemo] = useState(false); // Demo disabled for normal flow
   const [showMotd, setShowMotd] = useState(false); // Track MOTD display state
+  // MULTI-CHARACTER: Character selection screen
+  const [showCharacterSelection, setShowCharacterSelection] = useState(false);
 
   // Character creation flow state
   const [selectedProfession, setSelectedProfession] = useState<Profession | undefined>(undefined);
@@ -81,9 +101,10 @@ function App() {
     // Also clear any auth state that might have been restored
     setAuthToken('');
     setIsAuthenticated(false);
-    setHasCharacter(false);
-    setCharacterName('');
+    setCharacters([]);
+    setSelectedCharacterName('');
     setShowMotd(false);
+    setShowCharacterSelection(false);
   }, []); // Only run on mount
 
   const handleLoginClick = async () => {
@@ -127,15 +148,26 @@ function App() {
 
       setAuthToken(token);
       setIsAuthenticated(true);
-      setHasCharacter(data?.has_character || false);
-      setCharacterName(data?.character_name || '');
+      // MULTI-CHARACTER: Update to use characters array
+      const loginData = data as LoginResponse;
+      const charactersList = loginData?.characters || [];
+      // Map server response (id) to client interface (player_id)
+      const mappedCharacters = charactersList.map(
+        (c: ServerCharacterResponse): CharacterInfo => ({
+          ...c,
+          player_id: c.id || c.player_id || '', // Server returns 'id', client expects 'player_id'
+        })
+      );
+      setCharacters(mappedCharacters);
 
       // For new users without characters, show profession selection
-      if (!data?.has_character) {
+      if (charactersList.length === 0) {
         setShowProfessionSelection(true);
+        setShowCharacterSelection(false);
       } else {
-        // For existing users with characters, show MOTD screen
-        setShowMotd(true);
+        // For existing users with characters, show character selection screen
+        setShowCharacterSelection(true);
+        setShowProfessionSelection(false);
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -190,15 +222,26 @@ function App() {
 
       setAuthToken(token);
       setIsAuthenticated(true);
-      setHasCharacter(data?.has_character || false);
-      setCharacterName(data?.character_name || '');
+      // MULTI-CHARACTER: Update to use characters array
+      const registerData = data as LoginResponse;
+      const charactersList = registerData?.characters || [];
+      // Map server response (id) to client interface (player_id)
+      const mappedCharacters = charactersList.map(
+        (c: ServerCharacterResponse): CharacterInfo => ({
+          ...c,
+          player_id: c.id || c.player_id || '', // Server returns 'id', client expects 'player_id'
+        })
+      );
+      setCharacters(mappedCharacters);
 
       // For new users without characters, show profession selection
-      if (!data?.has_character) {
+      if (charactersList.length === 0) {
         setShowProfessionSelection(true);
+        setShowCharacterSelection(false);
       } else {
-        // For existing users with characters, show MOTD screen
-        setShowMotd(true);
+        // For existing users with characters, show character selection screen
+        setShowCharacterSelection(true);
+        setShowProfessionSelection(false);
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -215,42 +258,153 @@ function App() {
   const handleProfessionSelectionBack = () => {
     setShowProfessionSelection(false);
     setSelectedProfession(undefined);
-    // Go back to login screen
-    setIsAuthenticated(false);
-    setHasCharacter(false);
-    setCharacterName('');
-    setPlayerName('');
-    setPassword('');
-    setInviteCode('');
-    setAuthToken('');
+    // Go back to character selection or login
+    if (characters.length > 0) {
+      setShowCharacterSelection(true);
+    } else {
+      setIsAuthenticated(false);
+      setCharacters([]);
+      setSelectedCharacterName('');
+      setSelectedCharacterId('');
+      setPlayerName('');
+      setPassword('');
+      setInviteCode('');
+      setAuthToken('');
+    }
   };
 
   const handleProfessionSelectionError = (error: string) => {
     setError(error);
   };
 
-  const handleStatsAccepted = (_stats: Stats) => {
-    setHasCharacter(true);
-    setCharacterName(playerName);
+  const handleStatsAccepted = async (_stats: Stats, _characterName: string) => {
+    // MULTI-CHARACTER: Refresh characters list after creation
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/players/characters`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (response.ok) {
+        const charactersList = (await response.json()) as ServerCharacterResponse[];
+        // Map server response (id) to client interface (player_id)
+        const mappedCharacters = charactersList.map(
+          (c: ServerCharacterResponse): CharacterInfo => ({
+            ...c,
+            player_id: c.id || c.player_id || '', // Server returns 'id', client expects 'player_id'
+          })
+        );
+        setCharacters(mappedCharacters);
+      }
+    } catch (error) {
+      // If refresh fails, we'll still show character selection
+      // The character was created, so we can proceed
+      console.error('Failed to refresh characters list:', error);
+    }
+
     // Reset character creation state
     setSelectedProfession(undefined);
     setShowProfessionSelection(false);
-    // Show MOTD screen after character creation
-    setShowMotd(true);
+    // Show character selection screen after creation
+    setShowCharacterSelection(true);
   };
 
   const handleStatsError = (error: string) => {
     setError(error);
-    setIsAuthenticated(false);
-    setAuthToken('');
-    // Clear secure tokens
-    secureTokenStorage.clearAllTokens();
+    // Don't clear authentication on stats error - allow user to retry
     // Reset character creation state
     setSelectedProfession(undefined);
     setShowProfessionSelection(false);
   };
 
   const handleStatsRollingBack = () => {
+    setShowProfessionSelection(true);
+  };
+
+  // MULTI-CHARACTER: Character selection handler
+  const handleCharacterSelected = async (characterId: string) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/players/select-character`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({ character_id: characterId }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        const errorMessage = errorData.detail?.message || errorData.detail || 'Failed to select character';
+        setError(errorMessage);
+        return;
+      }
+
+      const characterData = await response.json();
+      const selectedId = characterData.id || characterData.player_id || characterId;
+      setSelectedCharacterName(characterData.name || '');
+      // Store the selected character ID for WebSocket connection
+      setSelectedCharacterId(selectedId);
+      setShowCharacterSelection(false);
+      // Show MOTD screen after character selection
+      setShowMotd(true);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to select character';
+      setError(errorMessage);
+    }
+  };
+
+  // MULTI-CHARACTER: Character deletion handler
+  const handleDeleteCharacter = async (characterId: string) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/players/characters/${characterId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        const errorMessage = errorData.detail?.message || errorData.detail || 'Failed to delete character';
+        throw new Error(errorMessage);
+      }
+
+      // Refresh characters list after deletion
+      const charactersResponse = await fetch(`${API_BASE_URL}/api/players/characters`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (charactersResponse.ok) {
+        const charactersList = (await charactersResponse.json()) as ServerCharacterResponse[];
+        // Map server response (id) to client interface (player_id)
+        const mappedCharacters = charactersList.map(
+          (c: ServerCharacterResponse): CharacterInfo => ({
+            ...c,
+            player_id: c.id || c.player_id || '', // Server returns 'id', client expects 'player_id'
+          })
+        );
+        setCharacters(mappedCharacters);
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete character';
+      throw new Error(errorMessage);
+    }
+  };
+
+  // MULTI-CHARACTER: Create new character handler
+  const handleCreateCharacter = () => {
+    // Reset character creation state to start fresh
+    setSelectedProfession(undefined);
+    setShowCharacterSelection(false);
     setShowProfessionSelection(true);
   };
 
@@ -264,8 +418,11 @@ function App() {
       // If it does, redirect to login. This indicates a state loss issue that needs investigation.
       setError('Authentication token is missing. Please log in again.');
       setIsAuthenticated(false);
-      setHasCharacter(false);
+      setCharacters([]);
+      setSelectedCharacterName('');
+      setSelectedCharacterId('');
       setShowMotd(false);
+      setShowCharacterSelection(false);
       return;
     }
 
@@ -276,13 +433,14 @@ function App() {
   const handleMotdReturnToLogin = () => {
     // Clear all state and return to login
     setIsAuthenticated(false);
-    setHasCharacter(false);
-    setCharacterName('');
+    setCharacters([]);
+    setSelectedCharacterName('');
     setPlayerName('');
     setPassword('');
     setInviteCode('');
     setAuthToken('');
     setShowMotd(false);
+    setShowCharacterSelection(false);
     secureTokenStorage.clearAllTokens();
     focusUsernameInput();
   };
@@ -317,13 +475,15 @@ function App() {
     // Helper function to clear all state
     const clearAllState = () => {
       setIsAuthenticated(false);
-      setHasCharacter(false);
-      setCharacterName('');
+      setCharacters([]);
+      setSelectedCharacterName('');
+      setSelectedCharacterId('');
       setPlayerName('');
       setPassword('');
       setInviteCode('');
       setAuthToken('');
       setError(null);
+      setShowCharacterSelection(false);
       secureTokenStorage.clearAllTokens();
 
       // Focus the username input for accessibility
@@ -351,12 +511,14 @@ function App() {
       // Force return to login screen regardless of server response
       // Clear all state except the error message
       setIsAuthenticated(false);
-      setHasCharacter(false);
-      setCharacterName('');
+      setCharacters([]);
+      setSelectedCharacterName('');
+      setSelectedCharacterId('');
       setPlayerName('');
       setPassword('');
       setInviteCode('');
       setAuthToken('');
+      setShowCharacterSelection(false);
       secureTokenStorage.clearAllTokens();
 
       // Focus the username input for accessibility
@@ -502,8 +664,28 @@ function App() {
     );
   }
 
-  // If authenticated but no character, show character creation flow
-  if (!hasCharacter) {
+  // MULTI-CHARACTER: Show character selection screen if user has characters
+  if (isAuthenticated && showCharacterSelection && characters.length > 0) {
+    return (
+      <div className="App">
+        <Suspense fallback={<LoadingFallback />}>
+          <CharacterSelectionScreen
+            characters={characters}
+            onCharacterSelected={handleCharacterSelected}
+            onCreateCharacter={handleCreateCharacter}
+            onDeleteCharacter={handleDeleteCharacter}
+            onError={setError}
+            baseUrl={API_BASE_URL}
+            authToken={authToken}
+          />
+        </Suspense>
+      </div>
+    );
+  }
+
+  // MULTI-CHARACTER: Show character creation flow for users with existing characters
+  // This handles the case when user clicks "Create New Character" while having existing characters
+  if (isAuthenticated && characters.length > 0 && (showProfessionSelection || selectedProfession)) {
     // Show profession selection screen first
     if (showProfessionSelection) {
       return (
@@ -527,7 +709,44 @@ function App() {
       <div className="App">
         <Suspense fallback={<LoadingFallback />}>
           <StatsRollingScreen
-            characterName={playerName}
+            onStatsAccepted={handleStatsAccepted}
+            onError={handleStatsError}
+            onBack={handleStatsRollingBack}
+            baseUrl={API_BASE_URL}
+            authToken={authToken}
+            professionId={selectedProfession?.id}
+            profession={selectedProfession as Profession | undefined}
+          />
+        </Suspense>
+      </div>
+    );
+  }
+
+  // If authenticated but no characters, show character creation flow
+  if (isAuthenticated && characters.length === 0) {
+    // Show profession selection screen first
+    if (showProfessionSelection) {
+      return (
+        <div className="App">
+          <Suspense fallback={<LoadingFallback />}>
+            <ProfessionSelectionScreen
+              characterName={playerName}
+              onProfessionSelected={handleProfessionSelected}
+              onError={handleProfessionSelectionError}
+              onBack={handleProfessionSelectionBack}
+              baseUrl={API_BASE_URL}
+              authToken={authToken}
+            />
+          </Suspense>
+        </div>
+      );
+    }
+
+    // Show stats rolling screen after profession selection
+    return (
+      <div className="App">
+        <Suspense fallback={<LoadingFallback />}>
+          <StatsRollingScreen
             onStatsAccepted={handleStatsAccepted}
             onError={handleStatsError}
             onBack={handleStatsRollingBack}
@@ -561,7 +780,8 @@ function App() {
     // Token is missing - redirect to login
     // This should not happen in normal flow but protects against state loss
     setIsAuthenticated(false);
-    setHasCharacter(false);
+    setCharacters([]);
+    setSelectedCharacterName('');
     setError('Session expired. Please log in again.');
     // The component will re-render and show login screen due to !isAuthenticated check above
     return null;
@@ -576,8 +796,9 @@ function App() {
     <div className="App">
       <Suspense fallback={<LoadingFallback />}>
         <GameClientV2Container
-          playerName={characterName || playerName}
+          playerName={selectedCharacterName || playerName}
           authToken={finalAuthToken}
+          characterId={selectedCharacterId}
           onLogout={handleLogout}
           isLoggingOut={isLoggingOut}
           onDisconnect={handleDisconnectCallback}

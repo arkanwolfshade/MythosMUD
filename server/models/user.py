@@ -42,8 +42,10 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     # The base class SQLAlchemyBaseUserTableUUID already provides the proper UUID handling
 
     # User authentication fields (email and hashed_password are inherited from base)
+    # MULTI-CHARACTER: Removed unique=True - uniqueness enforced by case-insensitive unique index
+    # in database (idx_users_username_lower_unique) for case-insensitive uniqueness
     # Using Mapped[] with mapped_column for SQLAlchemy 2.0 type safety
-    username: Mapped[str] = mapped_column(String(length=255), unique=True, nullable=False, index=True)
+    username: Mapped[str] = mapped_column(String(length=255), nullable=False, index=True)
 
     # Display name - defaults to username if not provided
     # Note: We'll set this explicitly in registration, but provide a default for safety
@@ -70,8 +72,9 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     )
 
     # ARCHITECTURE FIX Phase 3.1: Relationships defined directly in model (no circular imports)
+    # MULTI-CHARACTER: Changed to one-to-many relationship (uselist=True) to support multiple characters per user
     # Using simple string references - SQLAlchemy resolves via registry after all models imported
-    player: Mapped["Player"] = relationship("Player", uselist=False, back_populates="user", lazy="joined")
+    players: Mapped[list["Player"]] = relationship("Player", uselist=True, back_populates="user", lazy="select")
     created_invites: Mapped[list["Invite"]] = relationship(
         "Invite", foreign_keys="Invite.created_by_user_id", back_populates="created_by_user"
     )

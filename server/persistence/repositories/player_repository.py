@@ -10,7 +10,7 @@ import uuid
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
 
-from sqlalchemy import select, update
+from sqlalchemy import func, select, update
 
 from server.database import get_async_session
 from server.exceptions import DatabaseError
@@ -81,10 +81,13 @@ class PlayerRepository:
     @retry_with_backoff(max_attempts=3, initial_delay=1.0, max_delay=10.0)
     async def get_player_by_name(self, name: str) -> Player | None:
         """
-        Get a player by name.
+        Get an active player by name (case-insensitive, excludes deleted characters).
+
+        MULTI-CHARACTER: Updated to use case-insensitive comparison and exclude soft-deleted characters.
+        Character names are stored case-sensitively but checked case-insensitively for uniqueness.
 
         Args:
-            name: Player name
+            name: Player name (case-insensitive matching)
 
         Returns:
             Player | None: Player object or None if not found
@@ -98,7 +101,10 @@ class PlayerRepository:
 
         try:
             async for session in get_async_session():
-                stmt = select(Player).where(Player.name == name)
+                # Use case-insensitive comparison and exclude deleted characters
+                stmt = (
+                    select(Player).where(func.lower(Player.name) == func.lower(name)).where(Player.is_deleted == False)  # noqa: E712
+                )
                 result = await session.execute(stmt)
                 player = result.scalar_one_or_none()
                 if player:
@@ -152,41 +158,104 @@ class PlayerRepository:
                 user_friendly="Failed to retrieve player information",
             )
 
-    async def get_player_by_user_id(self, user_id: str) -> Player | None:
+    async def get_players_by_user_id(self, user_id: str) -> list[Player]:
         """
-        Get a player by user ID.
+        Get all players (including deleted) for a user ID.
+
+        MULTI-CHARACTER: Returns list of all characters for a user, including soft-deleted ones.
+        Use get_active_players_by_user_id() to get only active characters.
 
         Args:
             user_id: User ID
 
         Returns:
-            Player | None: Player object or None if not found
+            list[Player]: List of player objects (may be empty)
 
         Raises:
             DatabaseError: If database operation fails
         """
         context = create_error_context()
-        context.metadata["operation"] = "get_player_by_user_id"
+        context.metadata["operation"] = "get_players_by_user_id"
         context.metadata["user_id"] = user_id
 
         try:
             async for session in get_async_session():
                 stmt = select(Player).where(Player.user_id == user_id)
                 result = await session.execute(stmt)
-                player = result.scalar_one_or_none()
-                if player:
+                players = list(result.scalars().all())
+                # Validate and fix room for each player
+                for player in players:
                     self.validate_and_fix_player_room(player)
-                    return player
-                return None
-            return None
+                return players
+            return []
         except Exception as e:
             log_and_raise(
                 DatabaseError,
-                f"Database error retrieving player by user ID '{user_id}': {e}",
+                f"Database error retrieving players by user ID '{user_id}': {e}",
                 context=context,
                 details={"user_id": user_id, "error": str(e)},
                 user_friendly="Failed to retrieve player information",
             )
+
+    async def get_active_players_by_user_id(self, user_id: str) -> list[Player]:
+        """
+        Get active (non-deleted) players for a user ID.
+
+        MULTI-CHARACTER: Returns only active characters, excluding soft-deleted ones.
+
+        Args:
+            user_id: User ID
+
+        Returns:
+            list[Player]: List of active player objects (may be empty)
+
+        Raises:
+            DatabaseError: If database operation fails
+        """
+        context = create_error_context()
+        context.metadata["operation"] = "get_active_players_by_user_id"
+        context.metadata["user_id"] = user_id
+
+        try:
+            async for session in get_async_session():
+                stmt = (
+                    select(Player).where(Player.user_id == user_id).where(Player.is_deleted == False)  # noqa: E712
+                )
+                result = await session.execute(stmt)
+                players = list(result.scalars().all())
+                # Validate and fix room for each player
+                for player in players:
+                    self.validate_and_fix_player_room(player)
+                return players
+            return []
+        except Exception as e:
+            log_and_raise(
+                DatabaseError,
+                f"Database error retrieving active players by user ID '{user_id}': {e}",
+                context=context,
+                details={"user_id": user_id, "error": str(e)},
+                user_friendly="Failed to retrieve player information",
+            )
+
+    # Backward compatibility alias
+    async def get_player_by_user_id(self, user_id: str) -> Player | None:
+        """
+        Get the first active player by user ID (backward compatibility).
+
+        MULTI-CHARACTER: This method is kept for backward compatibility.
+        New code should use get_active_players_by_user_id() to get all characters.
+
+        Args:
+            user_id: User ID
+
+        Returns:
+            Player | None: First active player object or None if not found
+
+        Raises:
+            DatabaseError: If database operation fails
+        """
+        players = await self.get_active_players_by_user_id(user_id)
+        return players[0] if players else None
 
     @retry_with_backoff(max_attempts=3, initial_delay=1.0, max_delay=10.0)
     async def save_player(self, player: Player) -> None:
@@ -327,6 +396,53 @@ class PlayerRepository:
                 context=context,
                 details={"player_count": len(players), "error": str(e)},
                 user_friendly="Failed to save players",
+            )
+
+    async def soft_delete_player(self, player_id: uuid.UUID) -> bool:
+        """
+        Soft delete a player (sets is_deleted=True, deleted_at=timestamp).
+
+        MULTI-CHARACTER: Soft deletion allows character names to be reused while preserving data.
+
+        Args:
+            player_id: Player UUID
+
+        Returns:
+            bool: True if soft-deleted, False if not found
+
+        Raises:
+            DatabaseError: If database operation fails
+        """
+        context = create_error_context()
+        context.metadata["operation"] = "soft_delete_player"
+        context.metadata["player_id"] = player_id
+
+        try:
+            async for session in get_async_session():
+                # Check if player exists
+                stmt = select(Player).where(Player.player_id == player_id)
+                result = await session.execute(stmt)
+                player = result.scalar_one_or_none()
+
+                if not player:
+                    self._logger.debug("Soft delete attempted for non-existent player", player_id=player_id)
+                    return False
+
+                # Soft delete the player
+                player.is_deleted = True  # type: ignore[assignment]
+                player.deleted_at = datetime.now(UTC).replace(tzinfo=None)  # type: ignore[assignment]
+                await session.commit()
+                self._logger.info("Player soft-deleted successfully", player_id=player_id)
+
+                return True
+            return False
+        except Exception as e:
+            log_and_raise(
+                DatabaseError,
+                f"Database error soft-deleting player {player_id}: {e}",
+                context=context,
+                details={"player_id": player_id, "error": str(e)},
+                user_friendly="Failed to delete player",
             )
 
     async def delete_player(self, player_id: uuid.UUID) -> bool:

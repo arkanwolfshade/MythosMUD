@@ -6,6 +6,7 @@ creation, retrieval, listing, deletion, and effects application.
 Following the academic rigor outlined in the Pnakotic Manuscripts of Testing Methodology.
 """
 
+import types
 import uuid
 from datetime import datetime
 from unittest.mock import AsyncMock, Mock, patch
@@ -13,7 +14,32 @@ from unittest.mock import AsyncMock, Mock, patch
 import pytest
 from fastapi import HTTPException
 
+from server.api.character_creation import (
+    create_character_with_stats,
+    roll_character_stats,
+    validate_character_stats,
+)
+from server.api.player_effects import (
+    apply_corruption,
+    apply_fear,
+    apply_lucidity_loss,
+    damage_player,
+    gain_occult_knowledge,
+    heal_player,
+)
 from server.api.players import (
+    create_player,
+    delete_player,
+    get_available_classes,
+    get_class_description,
+    get_player,
+    get_player_by_name,
+    list_players,
+)
+from server.exceptions import LoggedHTTPException, RateLimitError, ValidationError, create_error_context
+from server.game.stats_generator import StatsGenerator
+from server.models import AttributeType, Stats
+from server.schemas.player_requests import (
     CorruptionRequest,
     CreateCharacterRequest,
     DamageRequest,
@@ -22,30 +48,16 @@ from server.api.players import (
     LucidityLossRequest,
     OccultKnowledgeRequest,
     RollStatsRequest,
-    apply_corruption,
-    apply_fear,
-    apply_lucidity_loss,
-    create_character_with_stats,
-    create_player,
-    damage_player,
-    delete_player,
-    gain_occult_knowledge,
-    get_available_classes,
-    get_class_description,
-    get_player,
-    get_player_by_name,
-    heal_player,
-    list_players,
-    roll_character_stats,
-    validate_character_stats,
 )
-from server.exceptions import LoggedHTTPException, RateLimitError, ValidationError, create_error_context
-from server.game.stats_generator import StatsGenerator
-from server.models import AttributeType, Stats
 
 # pylint: disable=redefined-outer-name
 # Pytest fixtures are commonly used as function parameters, which triggers
 # redefined-outer-name warnings. This is expected behavior in pytest tests.
+
+
+def _mock_getitem(self, key):
+    """Helper function to support dictionary-style access on mock objects."""
+    return getattr(self, key)
 
 
 @pytest.fixture
@@ -55,7 +67,7 @@ def mock_current_user():
     user.id = str(uuid.uuid4())
     user.username = "testuser"
     # Make the mock support dictionary access for all attributes
-    user.__getitem__ = lambda self, key: getattr(self, key)
+    user.__getitem__ = types.MethodType(_mock_getitem, user)
     return user
 
 
