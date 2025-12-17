@@ -13,7 +13,7 @@ import pytest
 
 
 @pytest.fixture(autouse=True)
-def ensure_test_isolation(monkeypatch: pytest.MonkeyPatch):
+def ensure_test_isolation():
     """
     Ensure test isolation by resetting any shared state.
 
@@ -60,10 +60,10 @@ def stub_invite_manager(monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
     validate_mock = AsyncMock(return_value=None)
     use_mock = AsyncMock(return_value=None)
 
-    async def _validate(self, invite_code, request):
+    async def _validate(_, invite_code, request):
         return await validate_mock(invite_code, request)
 
-    async def _use(self, invite_code, user_id):
+    async def _use(_, invite_code, user_id):
         return await use_mock(invite_code, user_id)
 
     monkeypatch.setattr("server.auth.invites.InviteManager.validate_invite", _validate, raising=False)
@@ -105,8 +105,7 @@ class TestCharacterRecoveryFlow:
         register_data = register_response.json()
         assert "access_token" in register_data
         assert "user_id" in register_data
-        assert not register_data["has_character"]
-        assert register_data["character_name"] is None
+        assert len(register_data["characters"]) == 0  # MULTI-CHARACTER: New users have no characters
 
         # Step 2: Login with the same user (simulating reconnection)
         # Add delay to ensure database transaction is committed (longer for parallel execution)
@@ -135,7 +134,7 @@ class TestCharacterRecoveryFlow:
             try:
                 error_data = login_response.json()
                 error_msg = str(error_data)
-            except Exception:
+            except ValueError:
                 error_msg = f"Status code: {login_response.status_code}"
         else:
             error_msg = f"Status code: {login_response.status_code}"
@@ -144,8 +143,7 @@ class TestCharacterRecoveryFlow:
         login_data = login_response.json()
         assert "access_token" in login_data
         assert "user_id" in login_data
-        assert not login_data["has_character"]
-        assert login_data["character_name"] is None
+        assert len(login_data["characters"]) == 0  # MULTI-CHARACTER: No characters yet
 
         # Step 3: Verify the user can roll stats (indicating they're in stats rolling flow)
         token = login_data["access_token"]
@@ -248,7 +246,7 @@ class TestCharacterRecoveryFlow:
             try:
                 error_data = login_response.json()
                 error_msg = str(error_data)
-            except Exception:
+            except ValueError:
                 error_msg = f"Status code: {login_response.status_code}"
         else:
             error_msg = f"Status code: {login_response.status_code}"
@@ -257,8 +255,8 @@ class TestCharacterRecoveryFlow:
         login_data = login_response.json()
         assert "access_token" in login_data
         assert "user_id" in login_data
-        assert login_data["has_character"]
-        assert login_data["character_name"] == unique_username
+        assert len(login_data["characters"]) > 0  # MULTI-CHARACTER: User has character
+        assert any(c["name"] == unique_username for c in login_data["characters"])
 
     @pytest.mark.asyncio
     async def test_registration_returns_no_character(self, async_test_client):
@@ -271,5 +269,4 @@ class TestCharacterRecoveryFlow:
 
         assert register_response.status_code == 200
         register_data = register_response.json()
-        assert not register_data["has_character"]
-        assert register_data["character_name"] is None
+        assert len(register_data["characters"]) == 0  # MULTI-CHARACTER: New users have no characters

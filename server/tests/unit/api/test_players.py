@@ -8,7 +8,7 @@ Following the academic rigor outlined in the Pnakotic Manuscripts of Testing Met
 
 import types
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
@@ -39,6 +39,7 @@ from server.api.players import (
 from server.exceptions import LoggedHTTPException, RateLimitError, ValidationError, create_error_context
 from server.game.stats_generator import StatsGenerator
 from server.models import AttributeType, Stats
+from server.schemas.player import PlayerRead
 from server.schemas.player_requests import (
     CorruptionRequest,
     CreateCharacterRequest,
@@ -626,7 +627,7 @@ class TestCharacterCreation:
     """Test cases for character creation and stats generation."""
 
     @patch("server.api.players.StatsGenerator")
-    @patch("server.api.players.stats_roll_limiter")
+    @patch("server.api.character_creation.stats_roll_limiter")
     @pytest.mark.asyncio
     async def test_roll_stats_success(
         self, mock_limiter, mock_stats_generator_class, mock_current_user, sample_stats_data, mock_request
@@ -653,7 +654,7 @@ class TestCharacterCreation:
         assert "available_classes" in result
         assert result["method_used"] == "3d6"
 
-    @patch("server.api.players.stats_roll_limiter")
+    @patch("server.api.character_creation.stats_roll_limiter")
     @pytest.mark.asyncio
     async def test_roll_stats_rate_limited(self, mock_limiter, mock_current_user, mock_request):
         """Test stats rolling when rate limited."""
@@ -692,7 +693,7 @@ class TestCharacterCreation:
         assert "Authentication required" in str(exc_info.value.detail)
 
     @patch("server.api.players.StatsGenerator")
-    @patch("server.api.players.stats_roll_limiter")
+    @patch("server.api.character_creation.stats_roll_limiter")
     @pytest.mark.asyncio
     async def test_roll_stats_validation_error(
         self, mock_limiter, mock_stats_generator_class, mock_current_user, mock_request
@@ -719,7 +720,7 @@ class TestCharacterCreation:
 
     @pytest.mark.asyncio
     @patch("server.api.players.PlayerServiceDep")
-    @patch("server.api.players.character_creation_limiter")
+    @patch("server.api.character_creation.character_creation_limiter")
     async def test_create_character_success(
         self,
         mock_limiter,
@@ -749,7 +750,7 @@ class TestCharacterCreation:
         mock_service.create_player_with_stats.assert_called_once()
 
     @pytest.mark.asyncio
-    @patch("server.api.players.character_creation_limiter")
+    @patch("server.api.character_creation.character_creation_limiter")
     async def test_create_character_rate_limited(self, mock_limiter, mock_current_user, mock_request):
         """Test character creation when rate limited."""
         # Setup mocks
@@ -783,23 +784,44 @@ class TestCharacterCreation:
         assert "Authentication required" in str(exc_info.value.detail)
 
     @pytest.mark.asyncio
-    @patch("server.api.players.PlayerService")
-    @patch("server.api.players.character_creation_limiter")
+    @patch("server.api.character_creation.PlayerServiceDep")
+    @patch("server.api.character_creation.character_creation_limiter")
     async def test_create_character_name_mismatch(
-        self, mock_limiter, mock_player_service_class, mock_current_user, mock_request
+        self, mock_limiter, mock_player_service_dep, mock_current_user, mock_request
     ):
-        """Test character creation with name mismatch."""
+        """Test character creation with name different from username (MULTI-CHARACTER: allowed)."""
         # Setup mocks
         mock_limiter.enforce_rate_limit.return_value = None
-        mock_request.app.state.persistence = Mock()
 
         # Mock PlayerService instance
         mock_player_service = Mock()
-        mock_player_service_class.return_value = mock_player_service
+        mock_player_service.create_player_with_stats = AsyncMock(
+            return_value=PlayerRead(
+                id=uuid.uuid4(),
+                user_id=mock_current_user.id,
+                name="different_name",
+                profession_id=0,
+                level=1,
+                stats={
+                    "strength": 10,
+                    "dexterity": 10,
+                    "constitution": 10,
+                    "intelligence": 10,
+                    "wisdom": 10,
+                    "charisma": 10,
+                },
+                inventory=[],
+                status_effects=[],
+                created_at=datetime.now(UTC).replace(tzinfo=None),
+                last_active=datetime.now(UTC).replace(tzinfo=None),
+            )
+        )
+        mock_player_service_dep.return_value = mock_player_service
 
         # Test data - use proper CreateCharacterRequest object
+        # MULTI-CHARACTER: Character names are independent of usernames
         request_data = CreateCharacterRequest(
-            name="different_name",  # Different from current_user.username
+            name="different_name",  # Different from current_user.username - this is now allowed
             stats={
                 "strength": 10,
                 "dexterity": 10,
@@ -811,15 +833,19 @@ class TestCharacterCreation:
             starting_room_id="arkhamcity_downtown_001",
         )
 
-        with pytest.raises(HTTPException) as exc_info:
-            await create_character_with_stats(request_data, mock_request, mock_current_user)
+        # MULTI-CHARACTER: Character creation should succeed with different name
+        result = await create_character_with_stats(request_data, mock_request, mock_current_user, mock_player_service)
 
-        assert exc_info.value.status_code == 400
-        assert "Invalid input" in str(exc_info.value.detail)
+        # Result is a dict (from model_dump())
+        assert isinstance(result, dict)
+        assert result["name"] == "different_name"
+        # user_id comparison: result has UUID, mock_current_user.id might be string or UUID
+        assert str(result["user_id"]) == str(mock_current_user.id)
+        mock_player_service.create_player_with_stats.assert_called_once()
 
     @pytest.mark.asyncio
     @patch("server.api.players.PlayerServiceDep")
-    @patch("server.api.players.character_creation_limiter")
+    @patch("server.api.character_creation.character_creation_limiter")
     async def test_create_character_validation_error(
         self, mock_limiter, mock_player_service_dep, mock_current_user, mock_request
     ):
@@ -842,7 +868,7 @@ class TestCharacterCreation:
         assert "Invalid input" in str(exc_info.value.detail)
 
     @patch("server.api.players.StatsGenerator")
-    @patch("server.api.players.stats_roll_limiter")
+    @patch("server.api.character_creation.stats_roll_limiter")
     @patch("server.async_persistence.get_async_persistence")
     @pytest.mark.asyncio
     async def test_roll_stats_with_profession_success(
@@ -893,7 +919,7 @@ class TestCharacterCreation:
         assert result["meets_requirements"] is True
 
     @patch("server.api.players.StatsGenerator")
-    @patch("server.api.players.stats_roll_limiter")
+    @patch("server.api.character_creation.stats_roll_limiter")
     @pytest.mark.asyncio
     async def test_roll_stats_with_profession_requirements_not_met(
         self, mock_limiter, mock_stats_generator_class, mock_current_user, mock_request, sample_stats_data
@@ -939,7 +965,7 @@ class TestCharacterCreation:
         assert result["meets_requirements"] is False
 
     @patch("server.api.players.StatsGenerator")
-    @patch("server.api.players.stats_roll_limiter")
+    @patch("server.api.character_creation.stats_roll_limiter")
     @pytest.mark.asyncio
     async def test_roll_stats_with_invalid_profession(
         self, mock_limiter, mock_stats_generator_class, mock_current_user, mock_request
@@ -975,7 +1001,7 @@ class TestCharacterCreation:
             assert "not found" in str(exc_info.value.detail).lower()
 
     @patch("server.api.players.StatsGenerator")
-    @patch("server.api.players.stats_roll_limiter")
+    @patch("server.api.character_creation.stats_roll_limiter")
     @patch("server.async_persistence.get_async_persistence")
     @pytest.mark.asyncio
     async def test_roll_stats_with_profession_validation_error(

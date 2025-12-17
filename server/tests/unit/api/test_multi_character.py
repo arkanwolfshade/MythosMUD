@@ -5,6 +5,7 @@ Tests character creation limits, soft deletion, and character selection.
 """
 
 import uuid
+from datetime import UTC, datetime
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -35,6 +36,8 @@ async def test_get_user_characters_success(mock_user, mock_player_service):
     """Test successful retrieval of user characters."""
     from server.schemas.player import PlayerRead
 
+    # Use valid datetime values for required fields
+    test_datetime = datetime.now(UTC)
     mock_characters = [
         PlayerRead(
             id=uuid.uuid4(),
@@ -45,8 +48,8 @@ async def test_get_user_characters_success(mock_user, mock_player_service):
             stats={},
             inventory=[],
             status_effects=[],
-            created_at=None,
-            last_active=None,
+            created_at=test_datetime,
+            last_active=test_datetime,
         ),
         PlayerRead(
             id=uuid.uuid4(),
@@ -57,8 +60,8 @@ async def test_get_user_characters_success(mock_user, mock_player_service):
             stats={},
             inventory=[],
             status_effects=[],
-            created_at=None,
-            last_active=None,
+            created_at=test_datetime,
+            last_active=test_datetime,
         ),
     ]
 
@@ -121,6 +124,8 @@ async def test_select_character_success(mock_user):
 
     from server.schemas.player import PlayerRead
 
+    # Use valid datetime values for required fields
+    test_datetime = datetime.now(UTC)
     mock_character = PlayerRead(
         id=uuid.UUID(character_id),
         user_id=mock_user.id,
@@ -130,8 +135,8 @@ async def test_select_character_success(mock_user):
         stats={},
         inventory=[],
         status_effects=[],
-        created_at=None,
-        last_active=None,
+        created_at=test_datetime,
+        last_active=test_datetime,
     )
 
     mock_player_service = MagicMock()
@@ -147,7 +152,7 @@ async def test_select_character_success(mock_user):
 
     with (
         patch("server.api.players.PlayerServiceDep", return_value=mock_player_service),
-        patch("server.api.players.get_async_persistence", return_value=mock_persistence),
+        patch("server.async_persistence.get_async_persistence", return_value=mock_persistence),
     ):
         result = await select_character(
             request_data=MagicMock(character_id=character_id),
@@ -168,6 +173,8 @@ async def test_select_character_disconnects_other_characters(mock_user):
 
     from server.schemas.player import PlayerRead
 
+    # Use valid datetime values for required fields
+    test_datetime = datetime.now(UTC)
     mock_character = PlayerRead(
         id=character_id_2,
         user_id=mock_user.id,
@@ -177,8 +184,8 @@ async def test_select_character_disconnects_other_characters(mock_user):
         stats={},
         inventory=[],
         status_effects=[],
-        created_at=None,
-        last_active=None,
+        created_at=test_datetime,
+        last_active=test_datetime,
     )
 
     mock_player_service = MagicMock()
@@ -214,7 +221,7 @@ async def test_select_character_disconnects_other_characters(mock_user):
 
     with (
         patch("server.api.players.PlayerServiceDep", return_value=mock_player_service),
-        patch("server.api.players.get_async_persistence", return_value=mock_persistence),
+        patch("server.async_persistence.get_async_persistence", return_value=mock_persistence),
     ):
         result = await select_character(
             request_data=MagicMock(character_id=str(character_id_2)),
@@ -238,6 +245,8 @@ async def test_select_character_no_other_connections(mock_user):
 
     from server.schemas.player import PlayerRead
 
+    # Use valid datetime values for required fields
+    test_datetime = datetime.now(UTC)
     mock_character = PlayerRead(
         id=character_id,
         user_id=mock_user.id,
@@ -247,8 +256,8 @@ async def test_select_character_no_other_connections(mock_user):
         stats={},
         inventory=[],
         status_effects=[],
-        created_at=None,
-        last_active=None,
+        created_at=test_datetime,
+        last_active=test_datetime,
     )
 
     mock_player_service = MagicMock()
@@ -273,7 +282,7 @@ async def test_select_character_no_other_connections(mock_user):
 
     with (
         patch("server.api.players.PlayerServiceDep", return_value=mock_player_service),
-        patch("server.api.players.get_async_persistence", return_value=mock_persistence),
+        patch("server.async_persistence.get_async_persistence", return_value=mock_persistence),
     ):
         result = await select_character(
             request_data=MagicMock(character_id=str(character_id)),

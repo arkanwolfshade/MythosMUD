@@ -27,13 +27,13 @@ logger = get_logger(__name__)
 # Create player router
 player_router = APIRouter(prefix="/api/players", tags=["players"])
 
-# Import character_creation to register its routes with player_router
+# Import sub-modules to register their routes with player_router
 # This must happen after player_router is created but before it's exported
-# The import triggers the decorators in character_creation.py which register routes
-from . import character_creation  # noqa: E402
+# The imports trigger the decorators which register routes
+from . import character_creation, player_effects, player_respawn  # noqa: E402
 
-# Explicitly reference the import to indicate it's used for side effects (route registration)
-_ = character_creation  # noqa: F401
+# Explicitly reference the imports to indicate they're used for side effects
+_ = (character_creation, player_effects, player_respawn)  # noqa: F401
 
 
 @player_router.post("/", response_model=PlayerRead)

@@ -582,7 +582,7 @@ class TestAPIErrorLoggingIntegration:
                 # Arrange: Setup mock to raise error
                 mock_create_player.side_effect = MythosValidationError("Player name already exists")
 
-                with patch("server.api.players.create_context_from_request") as mock_create_context:
+                with patch("server.api.player_helpers.create_context_from_request") as mock_create_context:
                     mock_context = create_error_context(user_id="test-user-id")
                     mock_create_context.return_value = mock_context
 
@@ -607,7 +607,7 @@ class TestAPIErrorLoggingIntegration:
                 # Arrange: Setup mock to return (False, "Player not found") to trigger 404
                 mock_delete_player.return_value = (False, "Player not found")
 
-                with patch("server.api.players.create_context_from_request") as mock_create_context:
+                with patch("server.api.player_helpers.create_context_from_request") as mock_create_context:
                     mock_context = create_error_context(user_id="test-user-id")
                     mock_create_context.return_value = mock_context
 
@@ -630,7 +630,7 @@ class TestAPIErrorLoggingIntegration:
                 # Arrange: Setup mock to return None (not found)
                 mock_get_player.return_value = None
 
-                with patch("server.api.players.create_context_from_request") as mock_create_context:
+                with patch("server.api.player_helpers.create_context_from_request") as mock_create_context:
                     mock_context = create_error_context(user_id="test-user-id")
                     mock_create_context.return_value = mock_context
 

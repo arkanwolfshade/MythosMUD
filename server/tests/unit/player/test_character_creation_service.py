@@ -18,6 +18,9 @@ from server.models import Stats
 class TestCharacterCreationServiceLayer:
     """Test the CharacterCreationService layer functionality."""
 
+    mock_player_service: Mock
+    character_creation_service: CharacterCreationService
+
     def setup_method(self):
         """Set up test fixtures."""
         self.mock_player_service = Mock()
@@ -53,7 +56,7 @@ class TestCharacterCreationServiceLayer:
 
         # Verify stats generator calls
         self.character_creation_service.stats_generator.roll_stats_with_profession.assert_called_once_with(
-            method="3d6", profession_id=1, max_attempts=10
+            method="3d6", profession_id=1, max_attempts=10, timeout_seconds=5.0
         )
 
     def test_roll_character_stats_with_class_success(self):
@@ -157,9 +160,9 @@ class TestCharacterCreationServiceLayer:
 
     def test_validate_character_stats_invalid_format(self):
         """Test stats validation with invalid stats format."""
-        # Mock stats generator to raise exception
+        # Mock stats generator to raise ValueError (which is caught)
         self.character_creation_service.stats_generator.get_available_classes = Mock(
-            side_effect=Exception("Invalid stats format")
+            side_effect=ValueError("Invalid stats format")
         )
 
         # Attempt to validate invalid stats
@@ -205,8 +208,8 @@ class TestCharacterCreationServiceLayer:
 
     def test_create_character_with_stats_failure(self):
         """Test character creation failure."""
-        # Mock player service to raise exception
-        self.mock_player_service.create_player_with_stats = Mock(side_effect=Exception("Player creation failed"))
+        # Mock player service to raise ValueError (which is caught)
+        self.mock_player_service.create_player_with_stats = Mock(side_effect=ValueError("Player creation failed"))
 
         # Attempt to create character
         stats_dict = {

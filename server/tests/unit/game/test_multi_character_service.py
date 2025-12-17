@@ -18,6 +18,7 @@ from server.models import Stats
 def mock_persistence():
     """Create a mock persistence layer."""
     persistence = MagicMock()
+    persistence.get_profession_by_id = AsyncMock(return_value=None)
     return persistence
 
 
@@ -33,10 +34,25 @@ async def test_create_player_with_stats_character_limit(player_service, mock_per
     user_id = uuid.uuid4()
 
     # Mock 3 active characters
+    from datetime import UTC, datetime
+
     from server.models.player import Player
 
+    test_datetime = datetime.now(UTC).replace(tzinfo=None)
     mock_characters = [
-        Player(player_id=uuid.uuid4(), user_id=user_id, name=f"Char{i}", is_deleted=False) for i in range(3)
+        Player(
+            player_id=uuid.uuid4(),
+            user_id=user_id,
+            name=f"Char{i}",
+            is_deleted=False,
+            current_room_id="room1",
+            experience_points=0,
+            level=1,
+            profession_id=0,
+            created_at=test_datetime,
+            last_active=test_datetime,
+        )
+        for i in range(3)
     ]
 
     mock_persistence.get_active_players_by_user_id = AsyncMock(return_value=mock_characters)
@@ -71,10 +87,24 @@ async def test_create_player_with_stats_case_insensitive_name_conflict(player_se
     """Test that character creation fails with case-insensitive name conflict."""
     user_id = uuid.uuid4()
 
+    from datetime import UTC, datetime
+
     from server.models.player import Player
 
+    test_datetime = datetime.now(UTC).replace(tzinfo=None)
     # Mock existing character with different case
-    existing_player = Player(player_id=uuid.uuid4(), user_id=uuid.uuid4(), name="Ithaqua", is_deleted=False)
+    existing_player = Player(
+        player_id=uuid.uuid4(),
+        user_id=uuid.uuid4(),
+        name="Ithaqua",
+        is_deleted=False,
+        current_room_id="room1",
+        experience_points=0,
+        level=1,
+        profession_id=0,
+        created_at=test_datetime,
+        last_active=test_datetime,
+    )
 
     mock_persistence.get_active_players_by_user_id = AsyncMock(return_value=[])  # Under limit
     mock_persistence.get_player_by_name = AsyncMock(return_value=existing_player)  # Name conflict (case-insensitive)
@@ -108,11 +138,36 @@ async def test_get_user_characters(player_service, mock_persistence):
     """Test retrieving user characters."""
     user_id = uuid.uuid4()
 
+    from datetime import UTC, datetime
+
     from server.models.player import Player
 
+    test_datetime = datetime.now(UTC).replace(tzinfo=None)
     mock_characters = [
-        Player(player_id=uuid.uuid4(), user_id=user_id, name="Char1", is_deleted=False),
-        Player(player_id=uuid.uuid4(), user_id=user_id, name="Char2", is_deleted=False),
+        Player(
+            player_id=uuid.uuid4(),
+            user_id=user_id,
+            name="Char1",
+            is_deleted=False,
+            current_room_id="room1",
+            experience_points=0,
+            level=1,
+            profession_id=0,
+            created_at=test_datetime,
+            last_active=test_datetime,
+        ),
+        Player(
+            player_id=uuid.uuid4(),
+            user_id=user_id,
+            name="Char2",
+            is_deleted=False,
+            current_room_id="room1",
+            experience_points=0,
+            level=1,
+            profession_id=0,
+            created_at=test_datetime,
+            last_active=test_datetime,
+        ),
     ]
 
     mock_persistence.get_active_players_by_user_id = AsyncMock(return_value=mock_characters)
@@ -131,9 +186,23 @@ async def test_soft_delete_character_success(player_service, mock_persistence):
     user_id = uuid.uuid4()
     character_id = uuid.uuid4()
 
+    from datetime import UTC, datetime
+
     from server.models.player import Player
 
-    mock_player = Player(player_id=character_id, user_id=user_id, name="TestChar", is_deleted=False)
+    test_datetime = datetime.now(UTC).replace(tzinfo=None)
+    mock_player = Player(
+        player_id=character_id,
+        user_id=user_id,
+        name="TestChar",
+        is_deleted=False,
+        current_room_id="room1",
+        experience_points=0,
+        level=1,
+        profession_id=0,
+        created_at=test_datetime,
+        last_active=test_datetime,
+    )
 
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
     mock_persistence.soft_delete_player = AsyncMock(return_value=True)
@@ -152,9 +221,23 @@ async def test_soft_delete_character_wrong_user(player_service, mock_persistence
     other_user_id = uuid.uuid4()
     character_id = uuid.uuid4()
 
+    from datetime import UTC, datetime
+
     from server.models.player import Player
 
-    mock_player = Player(player_id=character_id, user_id=other_user_id, name="TestChar", is_deleted=False)
+    test_datetime = datetime.now(UTC).replace(tzinfo=None)
+    mock_player = Player(
+        player_id=character_id,
+        user_id=other_user_id,
+        name="TestChar",
+        is_deleted=False,
+        current_room_id="room1",
+        experience_points=0,
+        level=1,
+        profession_id=0,
+        created_at=test_datetime,
+        last_active=test_datetime,
+    )
 
     mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
 

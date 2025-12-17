@@ -76,28 +76,27 @@ class TestRegisterUser:
         mock_session.commit = AsyncMock()
         mock_session.refresh = AsyncMock()
 
-        mock_user = Mock(spec=User)
-        mock_user.id = uuid.uuid4()
-        mock_user.username = "newuser"
+        # Don't patch User - let SQLAlchemy use the real class for queries
+        # Mock session.add to be a no-op (the user will be created by the endpoint)
+        mock_session.add = Mock()
 
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
             with patch("server.auth.argon2_utils.hash_password", return_value="hashed_password"):
                 with patch("fastapi_users.jwt.generate_jwt", return_value="test_token"):
-                    with patch("server.auth.endpoints.User", return_value=mock_user):
-                        with patch("server.auth.endpoints.logger.info") as mock_info:
-                            with patch("server.auth.endpoints.logger.debug") as mock_debug:
-                                result = await register_user(user_create, mock_request, Mock(), Mock(), mock_session)
+                    with patch("server.auth.endpoints.logger.info") as mock_info:
+                        with patch("server.auth.endpoints.logger.debug") as mock_debug:
+                            result = await register_user(
+                                user_create, mock_request, invite_manager=Mock(), session=mock_session
+                            )
 
-                                assert isinstance(result, LoginResponse)
-                                assert result.access_token == "test_token"
-                                assert result.has_character is False
-                                # Should log successful registration
-                                assert any(
-                                    "User registered successfully" in str(call) for call in mock_info.call_args_list
-                                )
-                                assert any("Registration successful" in str(call) for call in mock_info.call_args_list)
-                                # Should log JWT debug messages
-                                assert any("JWT token generated" in str(call) for call in mock_debug.call_args_list)
+                            assert isinstance(result, LoginResponse)
+                            assert result.access_token == "test_token"
+                            assert len(result.characters) == 0  # MULTI-CHARACTER: New users have no characters
+                            # Should log successful registration
+                            assert any("User registered successfully" in str(call) for call in mock_info.call_args_list)
+                            assert any("Registration successful" in str(call) for call in mock_info.call_args_list)
+                            # Should log JWT debug messages
+                            assert any("JWT token generated" in str(call) for call in mock_debug.call_args_list)
 
     @pytest.mark.asyncio
     async def test_register_user_with_invite_success(self):
@@ -120,22 +119,17 @@ class TestRegisterUser:
         mock_session.commit = AsyncMock()
         mock_session.refresh = AsyncMock()
 
-        mock_user = Mock(spec=User)
-        mock_user.id = uuid.uuid4()
-        mock_user.username = "newuser"
-
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
             with patch("server.auth.argon2_utils.hash_password", return_value="hashed_password"):
                 with patch("fastapi_users.jwt.generate_jwt", return_value="test_token"):
-                    with patch("server.auth.endpoints.User", return_value=mock_user):
-                        with patch("server.auth.endpoints.logger.info") as mock_info:
-                            result = await register_user(
-                                user_create, mock_request, mock_invite_manager, Mock(), mock_session
-                            )
+                    with patch("server.auth.endpoints.logger.info") as mock_info:
+                        result = await register_user(
+                            user_create, mock_request, mock_invite_manager, session=mock_session
+                        )
 
-                            assert isinstance(result, LoginResponse)
-                            # Should log invite marking success
-                            assert any("Invite marked as used" in str(call) for call in mock_info.call_args_list)
+                        assert isinstance(result, LoginResponse)
+                        # Should log invite marking success
+                        assert any("Invite marked as used" in str(call) for call in mock_info.call_args_list)
 
     @pytest.mark.asyncio
     async def test_register_user_shutdown_pending(self):
@@ -150,7 +144,7 @@ class TestRegisterUser:
                 return_value="Server shutting down",
             ):
                 with pytest.raises(LoggedHTTPException) as exc_info:
-                    await register_user(user_create, mock_request, Mock(), Mock(), Mock())
+                    await register_user(user_create, mock_request, Mock(), Mock())
 
                 assert exc_info.value.status_code == 503
 
@@ -165,12 +159,12 @@ class TestRegisterUser:
         mock_session = AsyncMock(spec=AsyncSession)
         mock_existing_user = Mock(spec=User)
         mock_result = Mock()
-        mock_result.scalar_one_or_none = AsyncMock(return_value=mock_existing_user)
+        mock_result.scalar_one_or_none = Mock(return_value=mock_existing_user)
         mock_session.execute = AsyncMock(return_value=mock_result)
 
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
             with pytest.raises(LoggedHTTPException) as exc_info:
-                await register_user(user_create, mock_request, Mock(), Mock(), mock_session)
+                await register_user(user_create, mock_request, Mock(), session=mock_session)
 
                 assert exc_info.value.status_code == 400
                 assert "Username already exists" in exc_info.value.detail
@@ -197,13 +191,12 @@ class TestRegisterUser:
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
             with patch("server.auth.argon2_utils.hash_password", return_value="hashed_password"):
                 with patch("fastapi_users.jwt.generate_jwt", return_value="test_token"):
-                    with patch("server.auth.endpoints.User", return_value=mock_user):
-                        with patch("server.auth.endpoints.logger.info") as mock_info:
-                            result = await register_user(user_create, mock_request, Mock(), Mock(), mock_session)
+                    with patch("server.auth.endpoints.logger.info") as mock_info:
+                        result = await register_user(user_create, mock_request, Mock(), mock_session)
 
-                            assert isinstance(result, LoginResponse)
-                            # Should log email generation
-                            assert any("Generated simple bogus email" in str(call) for call in mock_info.call_args_list)
+                        assert isinstance(result, LoginResponse)
+                        # Should log email generation
+                        assert any("Generated simple bogus email" in str(call) for call in mock_info.call_args_list)
 
     @pytest.mark.asyncio
     async def test_register_user_integrity_error_username(self):
@@ -222,12 +215,11 @@ class TestRegisterUser:
 
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
             with patch("server.auth.argon2_utils.hash_password", return_value="hashed_password"):
-                with patch("server.auth.endpoints.User", return_value=Mock()):
-                    with pytest.raises(LoggedHTTPException) as exc_info:
-                        await register_user(user_create, mock_request, Mock(), Mock(), mock_session)
+                with pytest.raises(LoggedHTTPException) as exc_info:
+                    await register_user(user_create, mock_request, Mock(), mock_session)
 
-                        assert exc_info.value.status_code == 400
-                        assert "Username already exists" in exc_info.value.detail
+                    assert exc_info.value.status_code == 400
+                    assert "Username already exists" in exc_info.value.detail
 
     @pytest.mark.asyncio
     async def test_register_user_integrity_error_email(self):
@@ -247,12 +239,11 @@ class TestRegisterUser:
 
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
             with patch("server.auth.argon2_utils.hash_password", return_value="hashed_password"):
-                with patch("server.auth.endpoints.User", return_value=Mock()):
-                    with pytest.raises(LoggedHTTPException) as exc_info:
-                        await register_user(user_create, mock_request, Mock(), Mock(), mock_session)
+                with pytest.raises(LoggedHTTPException) as exc_info:
+                    await register_user(user_create, mock_request, Mock(), mock_session)
 
-                        assert exc_info.value.status_code == 400
-                        assert "Email already exists" in exc_info.value.detail
+                    assert exc_info.value.status_code == 400
+                    assert "Email already exists" in exc_info.value.detail
 
 
 class TestLoginUser:
@@ -282,7 +273,7 @@ class TestLoginUser:
         mock_user_manager.authenticate = AsyncMock(return_value=mock_user)
 
         mock_persistence = Mock()
-        mock_persistence.get_player_by_user_id = AsyncMock(return_value=None)
+        mock_persistence.get_active_players_by_user_id = AsyncMock(return_value=[])
         mock_request.app.state.container.persistence = mock_persistence
 
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
@@ -293,7 +284,7 @@ class TestLoginUser:
                     assert isinstance(result, LoginResponse)
                     assert result.access_token == "test_token"
                     assert result.user_id == str(mock_user.id)
-                    assert result.has_character is False
+                    assert len(result.characters) == 0  # MULTI-CHARACTER: New users have no characters
 
     @pytest.mark.asyncio
     async def test_login_user_shutdown_pending(self):
@@ -422,8 +413,8 @@ class TestLoginUser:
                         mock_error.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_login_user_session_management_success(self):
-        """Test login_user handles session management when user has character."""
+    async def test_login_user_with_character(self):
+        """Test login_user returns characters list when player exists."""
         login_req = LoginRequest(username="testuser", password="password123")
         mock_request = Mock(spec=Request)
         mock_request.app = Mock()
@@ -437,169 +428,43 @@ class TestLoginUser:
 
         mock_session = AsyncMock(spec=AsyncSession)
         mock_result = Mock()
-        mock_result.scalar_one_or_none = Mock(return_value=mock_user)
+        mock_result.scalar_one_or_none = Mock(return_value=mock_user)  # scalar_one_or_none is synchronous
         mock_session.execute = AsyncMock(return_value=mock_result)
 
         mock_user_manager = Mock()
         mock_user_manager.authenticate = AsyncMock(return_value=mock_user)
 
+        # MULTI-CHARACTER: Mock active players list
         mock_player = Mock()
         mock_player.name = "TestCharacter"
         mock_player.player_id = uuid.uuid4()
+        mock_player.profession_id = 0
+        mock_player.level = 1
+        mock_player.created_at = datetime.now(UTC).replace(tzinfo=None)
+        mock_player.last_active = datetime.now(UTC).replace(tzinfo=None)
 
         mock_persistence = Mock()
-        mock_persistence.get_player_by_user_id = AsyncMock(return_value=mock_player)
-
-        mock_connection_manager = Mock()
-        mock_connection_manager.handle_new_game_session = AsyncMock(
-            return_value={"success": True, "connections_disconnected": 2}
-        )
-        mock_request.app.state.container.connection_manager = mock_connection_manager
+        mock_persistence.get_active_players_by_user_id = AsyncMock(return_value=[mock_player])
+        mock_persistence.get_profession_by_id = AsyncMock(return_value=None)
         mock_request.app.state.container.persistence = mock_persistence
 
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
             with patch("fastapi_users.jwt.generate_jwt", return_value="test_token"):
                 with patch("server.async_persistence.get_async_persistence", return_value=mock_persistence):
                     with patch("server.auth.endpoints.logger.info") as mock_info:
-                        result = await login_user(login_req, mock_request, mock_user_manager, mock_session)
-
-                        assert isinstance(result, LoginResponse)
-                        assert result.has_character is True
-                        # Should log session management success
-                        assert any(
-                            "Disconnected existing connections" in str(call) for call in mock_info.call_args_list
+                        result = await login_user(
+                            login_req, mock_request, user_manager=mock_user_manager, session=mock_session
                         )
 
-    @pytest.mark.asyncio
-    async def test_login_user_session_management_failure(self):
-        """Test login_user handles session management failure."""
-        login_req = LoginRequest(username="testuser", password="password123")
-        mock_request = Mock(spec=Request)
-        mock_request.app = Mock()
-        mock_request.app.state = Mock()
-        mock_request.app.state.container = Mock()
-
-        mock_user = Mock(spec=User)
-        mock_user.id = uuid.uuid4()
-        mock_user.username = "testuser"
-        mock_user.email = "testuser@example.com"
-
-        mock_session = AsyncMock(spec=AsyncSession)
-        mock_result = Mock()
-        mock_result.scalar_one_or_none = Mock(return_value=mock_user)
-        mock_session.execute = AsyncMock(return_value=mock_result)
-
-        mock_user_manager = Mock()
-        mock_user_manager.authenticate = AsyncMock(return_value=mock_user)
-
-        mock_player = Mock()
-        mock_player.name = "TestCharacter"
-        mock_player.player_id = uuid.uuid4()
-
-        mock_persistence = Mock()
-        mock_persistence.get_player_by_user_id = AsyncMock(return_value=mock_player)
-
-        mock_connection_manager = Mock()
-        mock_connection_manager.handle_new_game_session = AsyncMock(
-            return_value={"success": False, "errors": ["Connection error"]}
-        )
-        mock_request.app.state.container.connection_manager = mock_connection_manager
-        mock_request.app.state.container.persistence = mock_persistence
-
-        with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
-            with patch("fastapi_users.jwt.generate_jwt", return_value="test_token"):
-                with patch("server.async_persistence.get_async_persistence", return_value=mock_persistence):
-                    with patch("server.auth.endpoints.logger.warning") as mock_warning:
-                        result = await login_user(login_req, mock_request, mock_user_manager, mock_session)
-
                         assert isinstance(result, LoginResponse)
-                        assert result.has_character is True
-                        # Should log session management failure
-                        mock_warning.assert_called_once()
-
-    @pytest.mark.asyncio
-    async def test_login_user_id_mismatch(self):
-        """Test login_user raises exception when user ID mismatch."""
-        login_req = LoginRequest(username="testuser", password="password123")
-        mock_request = Mock(spec=Request)
-        mock_request.app = Mock()
-        mock_request.app.state = Mock()
-
-        mock_user = Mock(spec=User)
-        mock_user.id = uuid.uuid4()
-        mock_user.username = "testuser"
-        mock_user.email = "testuser@example.com"
-
-        mock_authenticated_user = Mock(spec=User)
-        mock_authenticated_user.id = uuid.uuid4()  # Different ID
-
-        mock_session = AsyncMock(spec=AsyncSession)
-        mock_result = Mock()
-        mock_result.scalar_one_or_none = Mock(return_value=mock_user)  # scalar_one_or_none is synchronous
-        mock_session.execute = AsyncMock(return_value=mock_result)
-
-        mock_user_manager = Mock()
-        mock_user_manager.authenticate = AsyncMock(return_value=mock_authenticated_user)
-
-        with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
-            with pytest.raises(LoggedHTTPException) as exc_info:
-                await login_user(login_req, mock_request, mock_user_manager, mock_session)
-
-                assert exc_info.value.status_code == 401
-                assert "Invalid credentials" in exc_info.value.detail
-
-    @pytest.mark.asyncio
-    async def test_login_user_with_character(self):
-        """Test login_user returns has_character=True when player exists."""
-        login_req = LoginRequest(username="testuser", password="password123")
-        mock_request = Mock(spec=Request)
-        mock_request.app = Mock()
-        mock_request.app.state = Mock()
-        mock_request.app.state.container = Mock()
-        mock_request.app.state.container.connection_manager = Mock()
-
-        mock_user = Mock(spec=User)
-        mock_user.id = uuid.uuid4()
-        mock_user.username = "testuser"
-        mock_user.email = "testuser@example.com"
-
-        mock_session = AsyncMock(spec=AsyncSession)
-        mock_result = Mock()
-        mock_result.scalar_one_or_none = Mock(return_value=mock_user)  # scalar_one_or_none is synchronous
-        mock_session.execute = AsyncMock(return_value=mock_result)
-
-        mock_user_manager = Mock()
-        mock_user_manager.authenticate = AsyncMock(return_value=mock_user)
-
-        mock_player = Mock()
-        mock_player.name = "TestCharacter"
-        mock_player.player_id = uuid.uuid4()
-
-        mock_persistence = Mock()
-        mock_persistence.get_player_by_user_id = AsyncMock(return_value=mock_player)
-        mock_request.app.state.container.persistence = mock_persistence
-
-        mock_connection_manager = Mock()
-        mock_connection_manager.handle_new_game_session = AsyncMock(
-            return_value={"success": True, "connections_disconnected": 0}
-        )
-        mock_request.app.state.container.connection_manager = mock_connection_manager
-
-        with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
-            with patch("fastapi_users.jwt.generate_jwt", return_value="test_token"):
-                with patch("server.async_persistence.get_async_persistence", return_value=mock_persistence):
-                    with patch("server.auth.endpoints.logger.info") as mock_info:
-                        result = await login_user(login_req, mock_request, mock_user_manager, mock_session)
-
-                        assert isinstance(result, LoginResponse)
-                        assert result.has_character is True
-                        assert result.character_name == "TestCharacter"
+                        assert len(result.characters) == 1  # MULTI-CHARACTER: User has one character
+                        assert result.characters[0]["name"] == "TestCharacter"
                         # Should log login successful
                         assert any("Login successful" in str(call) for call in mock_info.call_args_list)
 
     @pytest.mark.asyncio
     async def test_login_user_without_character(self):
-        """Test login_user returns has_character=False when player doesn't exist."""
+        """Test login_user returns empty characters list when player doesn't exist."""
         login_req = LoginRequest(username="testuser", password="password123")
         mock_request = Mock(spec=Request)
         mock_request.app = Mock()
@@ -619,17 +484,18 @@ class TestLoginUser:
         mock_user_manager.authenticate = AsyncMock(return_value=mock_user)
 
         mock_persistence = Mock()
-        mock_persistence.get_player_by_user_id = AsyncMock(return_value=None)
+        mock_persistence.get_active_players_by_user_id = AsyncMock(return_value=[])
 
         with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
             with patch("fastapi_users.jwt.generate_jwt", return_value="test_token"):
                 with patch("server.async_persistence.get_async_persistence", return_value=mock_persistence):
                     with patch("server.auth.endpoints.logger.info") as mock_info:
-                        result = await login_user(login_req, mock_request, mock_user_manager, mock_session)
+                        result = await login_user(
+                            login_req, mock_request, user_manager=mock_user_manager, session=mock_session
+                        )
 
                         assert isinstance(result, LoginResponse)
-                        assert result.has_character is False
-                        assert result.character_name is None
+                        assert len(result.characters) == 0  # MULTI-CHARACTER: User has no characters
                         # Should log login successful
                         assert any("Login successful" in str(call) for call in mock_info.call_args_list)
 
@@ -684,7 +550,7 @@ class TestListInvites:
         mock_invite_manager = Mock()
         mock_invite_manager.list_invites = AsyncMock(return_value=[mock_invite1, mock_invite2])
 
-        result = await list_invites(current_user=mock_user, invite_manager=mock_invite_manager)
+        result = await list_invites(_current_user=mock_user, invite_manager=mock_invite_manager)
 
         assert len(result) == 2
         assert result[0]["invite_code"] == "INVITE-123"
@@ -712,7 +578,7 @@ class TestCreateInvite:
         mock_invite_manager = Mock()
         mock_invite_manager.create_invite = AsyncMock(return_value=mock_invite)
 
-        result = await create_invite(current_user=mock_user, invite_manager=mock_invite_manager)
+        result = await create_invite(_current_user=mock_user, invite_manager=mock_invite_manager)
 
         assert result["invite_code"] == "NEW-INVITE"
         assert result["is_active"] is True

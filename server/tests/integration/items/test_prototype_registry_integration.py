@@ -10,7 +10,7 @@ def write_payload(directory: Path, name: str, payload: dict):
     return file_path
 
 
-def test_registry_emits_observability_warning_for_malformed_payload(tmp_path: Path, caplog):
+def test_registry_emits_observability_warning_for_malformed_payload(tmp_path: Path):
     valid = {
         "prototype_id": "artifact.miskatonic.codex",
         "name": "Codex of Whispered Secrets",
@@ -43,8 +43,11 @@ def test_registry_emits_observability_warning_for_malformed_payload(tmp_path: Pa
     write_payload(tmp_path, "valid_codex", valid)
     write_payload(tmp_path, "malformed_codex", malformed)
 
-    with caplog.at_level("WARNING"):
+    from unittest.mock import patch
+
+    with patch("server.game.items.prototype_registry.logger") as mock_logger:
         registry = PrototypeRegistry.load_from_path(tmp_path)
 
-    assert any("invalid prototype payload" in record.message for record in caplog.records)
+    # Verify that logger.warning was called at least once with the expected message
+    assert any("invalid prototype payload" in str(call) for call in mock_logger.warning.call_args_list)
     assert registry.invalid_entries()[0]["prototype_id"] == "artifact.miskatonic.corrupted"
